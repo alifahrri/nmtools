@@ -29,6 +29,17 @@ namespace numeric {
             };
             fixed_point(f,g,x0,xr,es,imax,iter,ea,zero);
         }
+
+        template <typename F, typename Scalar>
+        auto secant(F &f, Scalar x0, Scalar x_1, Scalar &xr, Scalar es, size_t imax, size_t &iter, Scalar &ea, Scalar zero = Scalar{1e-6})
+        {
+            auto g = [&f,&x_1](Scalar x){
+                auto xr = (x-(f(x)*(x_1-x)/(f(x_1)-f(x))));
+                x_1 = x;
+                return xr;
+            };
+            fixed_point(f,g,x0,xr,es,imax,iter,ea,zero);
+        }
     } // namespace roots
 } // namespace numeric
 #endif // OPEN_ROOTS_HPP

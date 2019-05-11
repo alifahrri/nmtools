@@ -18,3 +18,18 @@ TEST(roots,newton_raphson)
         << "iter = " << iter << "\n"
         << "ea = " << ea;
 }
+
+TEST(roots,secant)
+{
+    auto f = [](double x) {
+        return std::exp(-x)-x;
+    };
+    double x0{1.0}, x_1{0.0}, es{5e-3}, xr, ea;
+    size_t imax{1000}, iter{0};
+
+    numeric::roots::secant(f,x0,x_1,xr,es,imax,iter,ea);
+    EXPECT_NEAR(f(xr),0.0,es)
+        << "xr = " << xr << "\n"
+        << "iter = " << iter << "\n"
+        << "ea = " << ea;
+}
