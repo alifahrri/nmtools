@@ -48,3 +48,28 @@ TEST(roots,modified_secant)
         << "iter = " << iter << "\n"
         << "ea = " << ea;
 }
+
+TEST(roots,fzero)
+{
+    auto f = [](double x) {
+        return (x+3)*std::pow(x-1,2);
+    };
+    std::stringstream ss;
+    size_t i=0;
+    auto logger = [&](std::map<std::string,double> map) {
+        ss << "LOG : " << i++ << "\n";
+        ss << "(a,fa) " << "(" << map["a"] << "," << map["fa"] << "); ";
+        ss << "(b,fb) " << "(" << map["b"] << "," << map["fb"] << "); ";
+        ss << "(c,fc) " << "(" << map["c"] << "," << map["fc"] << "); ";
+        ss << "(s,fs) " << "(" << map["s"] << "," << map["fs"] << ")";
+        // for(auto e : map) 
+        //     ss << e.first << " : " << e.second << "; ";
+        ss << std::endl;
+    };
+    double xl{-4.0}, xu{4.0/3.0}, xr;
+
+    numeric::roots::fzero(f,xl,xu,xr,1e-6,std::numeric_limits<double>::epsilon(),&logger);
+    EXPECT_NEAR(f(xr),0.0,1e-6)
+        << "xr = " << xr << "\n"
+        << ss.str();
+}
