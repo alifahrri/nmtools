@@ -73,3 +73,15 @@ TEST(roots,fzero)
         << "xr = " << xr << "\n"
         << ss.str();
 }
+
+TEST(roots,fzero_no_logger)
+{
+    auto f = [](double x) {
+        return (x+3)*std::pow(x-1,2);
+    };
+    double xl{-4.0}, xu{4.0/3.0}, xr;
+
+    numeric::roots::fzero(f,xl,xu,xr,1e-6);
+    EXPECT_NEAR(f(xr),0.0,1e-6)
+        << "xr = " << xr;
+}

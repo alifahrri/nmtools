@@ -57,31 +57,42 @@ namespace numeric {
         }
 
         namespace helper {
-            template <typename Scalar, typename U>
-            auto make_var(std::map<std::string,Scalar> &map, const U& u) {
-                map[u.first] = u.second;
+            namespace detail {
+                template <typename Scalar, typename U>
+                auto make_var(std::map<std::string,Scalar> &map, const U& u) {
+                    map[u.first] = u.second;
+                }
+                template <typename Scalar, typename U, typename ...T>
+                auto make_var(std::map<std::string,Scalar> &map, const U& u, const T&... t) {
+                    make_var(map, u);
+                    make_var(map, t...);
+                }
+                template <typename Scalar, typename ...Args>
+                auto log(const Args& ...args) {
+                    std::map<std::string,Scalar> map;
+                    make_var(map, args...);
+                    return map;
+                }
             }
-            template <typename Scalar, typename U, typename ...T>
-            auto make_var(std::map<std::string,Scalar> &map, const U& u, const T&... t) {
-                make_var(map, u);
-                make_var(map, t...);
-            }
-            template <typename Scalar, typename ...Args>
-            auto log(const Args& ...args) {
-                std::map<std::string,Scalar> map;
-                make_var(map, args...);
-                return map;
-            }
-            template <typename Logger, typename Scalar, typename ...Args>
-            auto log(Logger *logger, const Args& ...args) {
-                if(!logger) return;
-                std::map<std::string,Scalar> map;
-                make_var(map, args...);
-                (*logger)(map);
-            }
+            template <typename Scalar, typename Logger>
+            struct Log {
+                template <typename ...Args>
+                static auto log(Logger *logger, const Args& ...args) {
+                    if(!logger) return;
+                    (*logger)(detail::log<Scalar>(args...));
+                }
+            };
+
+            template <typename Scalar>
+            struct Log<Scalar,void> {
+                template <typename ...Args>
+                static auto log(void*, const Args& ...args) {
+                    return;
+                }
+            };
         }
 
-        template <typename F, typename Scalar, typename Logger = nullptr_t>
+        template <typename F, typename Scalar, typename Logger=void>
         auto fzero(F &f, Scalar a, Scalar b, Scalar &xr, Scalar zero = Scalar{1e-6}, Scalar eps = std::numeric_limits<Scalar>::epsilon(), Logger *logger = nullptr)
         {
             Scalar tol = zero;
@@ -97,7 +108,7 @@ namespace numeric {
             Scalar s; Scalar d; Scalar fs;
             bool mflag{true};
             auto log = [&]() {
-                helper::log<Logger,Scalar>(
+                helper::Log<Scalar,Logger>::log(
                     logger,
                     VNP(a), VNP(b), VNP(c),
                     VNP(fa), VNP(fb), VNP(fc),
