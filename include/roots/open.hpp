@@ -163,6 +163,7 @@ namespace numeric {
                 fa = f(a); fb = f(b); fc = f(c);
             } while(std::fabs(fb) > zero && std::fabs(b-a)>tol);
             xr = b;
+            log();
         }
     } // namespace roots
 } // namespace numeric

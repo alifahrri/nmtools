@@ -56,7 +56,9 @@ TEST(roots,fzero)
     };
     std::stringstream ss;
     size_t i=0;
+    double fxr;
     auto logger = [&](std::map<std::string,double> map) {
+        fxr = map["fb"];
         ss << "LOG : " << i++ << "\n";
         ss << "(a,fa) " << "(" << map["a"] << "," << map["fa"] << "); ";
         ss << "(b,fb) " << "(" << map["b"] << "," << map["fb"] << "); ";
@@ -69,7 +71,7 @@ TEST(roots,fzero)
     double xl{-4.0}, xu{4.0/3.0}, xr;
 
     numeric::roots::fzero(f,xl,xu,xr,1e-6,std::numeric_limits<double>::epsilon(),&logger);
-    EXPECT_NEAR(f(xr),0.0,1e-6)
+    EXPECT_NEAR(fxr,0.0,1e-6)
         << "xr = " << xr << "\n"
         << ss.str();
 }
