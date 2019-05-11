@@ -8,7 +8,7 @@ namespace numeric {
     namespace roots {
         namespace detail {
             template <typename F, typename Scalar, typename RootEstimator>
-            auto closed_method(
+            auto bracketing(
                 F& f, 
                 Scalar xu, Scalar xl, 
                 Scalar es, 
@@ -54,7 +54,7 @@ namespace numeric {
             auto root_estimator = [](F& f, Scalar xl, Scalar xu) {
                 return (xl+xu)/2;
             };
-            detail::closed_method(f, xu, xl, es, xr, imax, iter, ea, zero, root_estimator);
+            detail::bracketing(f, xu, xl, es, xr, imax, iter, ea, zero, root_estimator);
         }
 
         template <typename F, typename Scalar>
@@ -72,7 +72,7 @@ namespace numeric {
             auto root_estimator = [](F& f, Scalar xl, Scalar xu) {
                 return (xu - (f(xu) * (xl-xu)) / (f(xl)-f(xu)));
             };
-            detail::closed_method(f, xu, xl, es, xr, imax, iter, ea, zero, root_estimator);
+            detail::bracketing(f, xu, xl, es, xr, imax, iter, ea, zero, root_estimator);
         }
 
         template <typename F, typename Scalar>

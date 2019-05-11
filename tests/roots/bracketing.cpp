@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "roots/bisection.hpp"
+#include "roots.hpp"
 
 TEST(roots,bisection)
 {
