@@ -40,6 +40,15 @@ namespace numeric {
             };
             fixed_point(f,g,x0,xr,es,imax,iter,ea,zero);
         }
+
+        template <typename F, typename Scalar>
+        auto modified_secant(F &f, Scalar x0, Scalar delta, Scalar &xr, Scalar es, size_t imax, size_t &iter, Scalar &ea, Scalar zero = Scalar{1e-6})
+        {
+            auto g = [&f,delta](Scalar x){
+                return (x-(delta*f(x)/(f(x+delta)-f(x))));
+            };
+            fixed_point(f,g,x0,xr,es,imax,iter,ea,zero);
+        }
     } // namespace roots
 } // namespace numeric
 #endif // OPEN_ROOTS_HPP
