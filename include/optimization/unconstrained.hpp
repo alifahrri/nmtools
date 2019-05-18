@@ -170,9 +170,11 @@ namespace numeric {
                 xopt_old = xopt;
                 fx_old = fx;
 
-                auto opt = std::max_element(pts.begin(), pts.end(), [&](pair_t a, pair_t b){
-                    return !op(a.second, b.second);
+                auto opt_pair = std::minmax_element(pts.begin(), pts.end(), [&](pair_t a, pair_t b){
+                    return a.second < b.second;
                 });
+                auto opt = (op(opt_pair.first->second,opt_pair.second->second) ?
+                    opt_pair.first : opt_pair.second);
                 std::tie(xopt,fx) = (*opt);
 
                 /* assign ea for termination check */
@@ -181,18 +183,13 @@ namespace numeric {
                 iter = iter + 1;
 
                 if(opt == pts.begin())  {
-                    x0 = pts[0].first;
-                    x1 = pts[1].first;
-                    x2 = pts[2].first;
+                    opt++;
                 } else if(opt == pts.end()) {
-                    x0 = pts[1].first;
-                    x1 = pts[2].first;
-                    x2 = pts[3].first;
-                } else {
-                    x0 = (opt-1)->first;
-                    x1 = (opt)->first;
-                    x2 = (opt+1)->first;
+                    opt--;
                 }
+                x0 = (opt-1)->first;
+                x1 = (opt)->first;
+                x2 = (opt+1)->first;
 
                 f0 = f(x0); f1 = f(x1); f2 = f(x2);
                 x3 = (f0*(x1*x1 - x2*x2) + f1*(x2*x2 - x0*x0) + f2*(x0*x0 - x1*x1)) /
@@ -214,6 +211,12 @@ namespace numeric {
                 xopt = x3; fx = f3;
             }
             LOGVAR(logger, iter, x0, x1, x2, x3, f0, f1, f2, f3, ea, xopt, fx);
+        }
+
+        template <typename F, typename DF, typename DDF, typename Scalar, typename Op = typename std::greater<Scalar>, typename Logger = void>
+        auto newton(F &f, DF &df, DDF &ddf, Scalar x0, Scalar &xopt, size_t imax, size_t &iter, Scalar es, Scalar &ea, Scalar &fx, const Op &op = Op{}, Logger *logger = nullptr)
+        {
+
         }
     } // namespace optimization
 } // namespace numeric
