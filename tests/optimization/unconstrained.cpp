@@ -134,6 +134,69 @@ TEST(optimization, parabolic_interpolation_min_1)
     EXPECT_NEAR(f(xopt),fx_true,1e-4) << ss.str();
     EXPECT_NEAR(fxopt,fx_true,1e-4) << ss.str();
 }
+
+TEST(optimization, newton_max_0)
+{
+    auto f = [](double x){
+        return 2*sin(x)-(std::pow(x,2)/10.);
+    };
+    auto df = [](double x){
+        return 2*cos(x)-(x/5.);
+    };
+    auto ddf = [](double x){
+        return -2*sin(x)-(1./5.);
+    };
+    std::stringstream ss;
+    auto logger = [&](std::map<std::string,double> map) {
+        ss << "LOG : " << map["iter"] << "\n";
+        ss << "(x0,f0) " << "(" << map["x0"] << "," << map["f0"] << "); ";
+        ss << "(x1,f1) " << "(" << map["x1"] << "," << map["f1"] << "); ";
+        ss << "(df,ddf) " << "(" << map["df"] << "," << map["ddf"] << "); ";
+        ss << "(xo,fx) " << "(" << map["xopt"] << "," << map["fx"] << "); ";
+        ss << "ea : " << "(" << map["ea"] << ")";
+        ss << std::endl;
+    };
+    auto op = std::greater<double>{};
+    double x0{2.5}, xopt;
+    double es{1e-4}, ea, fxopt;
+    size_t imax{1000}, iter;
+    opt::newton(f,df,ddf,x0,xopt,imax,iter,es,ea,fxopt,op,&logger);
+    /* see chapra numerical method */
+    double x_true{1.4276}, fx_true{1.7757};
+    EXPECT_NEAR(xopt,x_true,1e-4) << ss.str();
+    EXPECT_NEAR(fxopt,fx_true,1e-4) << ss.str();
+}
+
+/* todo : resolve minimization*/
+TEST(optimization, newton_min_0)
+{
+    auto f = [](double x){
+        return sin(x);
+    };
+    auto df = [](double x){
+        return cos(x);
+    };
+    auto ddf = [](double x){
+        return -sin(x);
+    };
+    std::stringstream ss;
+    auto logger = [&](std::map<std::string,double> map) {
+        ss << "LOG : " << map["iter"] << "\n";
+        ss << "(x0,f0) " << "(" << map["x0"] << "," << map["f0"] << "); ";
+        ss << "(x1,f1) " << "(" << map["x1"] << "," << map["f1"] << "); ";
+        ss << "(df,ddf) " << "(" << map["df"] << "," << map["ddf"] << "); ";
+        ss << "(xo,fx) " << "(" << map["xopt"] << "," << map["fx"] << "); ";
+        ss << "ea : " << "(" << map["ea"] << ")";
+        ss << std::endl;
+    };
+    auto op = std::less<double>{};
+    double x0{2.5/2*M_PI}, xopt;
+    double es{1e-4}, ea, fxopt;
+    size_t imax{1000}, iter;
+    opt::newton(f,df,ddf,x0,xopt,imax,iter,es,ea,fxopt,op,&logger);
+    double x_true{-1.}, fx_true{-1.};
+    EXPECT_NEAR(fxopt,fx_true,1e-4) << ss.str();
+}
 /*
 TEST(optimization, gold_section_minimum)
 {

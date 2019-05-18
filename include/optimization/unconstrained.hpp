@@ -213,10 +213,24 @@ namespace numeric {
             LOGVAR(logger, iter, x0, x1, x2, x3, f0, f1, f2, f3, ea, xopt, fx);
         }
 
-        template <typename F, typename DF, typename DDF, typename Scalar, typename Op = typename std::greater<Scalar>, typename Logger = void>
-        auto newton(F &f, DF &df, DDF &ddf, Scalar x0, Scalar &xopt, size_t imax, size_t &iter, Scalar es, Scalar &ea, Scalar &fx, const Op &op = Op{}, Logger *logger = nullptr)
+        template <typename F, typename DF, typename DDF, typename Scalar, typename Op = std::greater<Scalar>, typename Logger = void>
+        auto newton(F &f, DF &df, DDF &ddf, Scalar x0, Scalar &xopt, size_t imax, size_t &iter, Scalar es, Scalar &ea, Scalar &fx, const Op &op, Logger *logger = nullptr)
         {
-
+            iter = 1;
+            do {
+                auto f0 = f(x0);
+                auto df0 = df(x0);
+                auto ddf0 = ddf(x0);
+                auto x1 = x0 - (!op(ddf0,0) ? 1 : -1) * df0 / ddf0;
+                auto f1 = f(x1);
+                if(std::fabs(x1 - xopt) > 0) 
+                    ea = Scalar(100) * std::fabs((f1-fx)/(x1-xopt));
+                x0 = x1;
+                xopt = x1;
+                fx = f1;
+                LOGVAR(logger, iter, x0, f0, df0, ddf0, x1, f1, xopt, fx, ea);
+                iter = iter+1;
+            } while(ea > es && iter < imax);
         }
     } // namespace optimization
 } // namespace numeric
