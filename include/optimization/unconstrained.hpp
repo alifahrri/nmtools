@@ -210,7 +210,9 @@ namespace numeric {
                     return !op(lhs.first,rhs.first);
                 });
             } while(ea > es && iter < imax);
-            xopt = x3; fx = f3;
+            if(op(f3,fx)) {
+                xopt = x3; fx = f3;
+            }
             LOGVAR(logger, iter, x0, x1, x2, x3, f0, f1, f2, f3, ea, xopt, fx);
         }
     } // namespace optimization
