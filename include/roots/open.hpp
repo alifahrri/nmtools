@@ -5,10 +5,7 @@
 #include <cstdio>
 #include <cmath>
 #include <limits>
-
-#define VAR_NAME(x) (#x)
-#define VAR_NAME_PAIR(x) (std::make_pair(std::string(#x),x))
-#define VNP(x) (VAR_NAME_PAIR(x))
+#include "utility.hpp"
 
 namespace numeric {
     namespace roots {
@@ -56,42 +53,6 @@ namespace numeric {
             fixed_point(f,g,x0,xr,es,imax,iter,ea,zero);
         }
 
-        namespace helper {
-            namespace detail {
-                template <typename Scalar, typename U>
-                auto make_var(std::map<std::string,Scalar> &map, const U& u) {
-                    map[u.first] = u.second;
-                }
-                template <typename Scalar, typename U, typename ...T>
-                auto make_var(std::map<std::string,Scalar> &map, const U& u, const T&... t) {
-                    make_var(map, u);
-                    make_var(map, t...);
-                }
-                template <typename Scalar, typename ...Args>
-                auto log(const Args& ...args) {
-                    std::map<std::string,Scalar> map;
-                    make_var(map, args...);
-                    return map;
-                }
-            }
-            template <typename Scalar, typename Logger>
-            struct Log {
-                template <typename ...Args>
-                static auto log(Logger *logger, const Args& ...args) {
-                    if(!logger) return;
-                    (*logger)(detail::log<Scalar>(args...));
-                }
-            };
-
-            template <typename Scalar>
-            struct Log<Scalar,void> {
-                template <typename ...Args>
-                static auto log(void*, const Args& ...args) {
-                    return;
-                }
-            };
-        }
-
         template <typename F, typename Scalar, typename Logger=void>
         auto fzero(F &f, Scalar a, Scalar b, Scalar &xr, Scalar zero = Scalar{1e-6}, Scalar eps = std::numeric_limits<Scalar>::epsilon(), Logger *logger = nullptr)
         {
@@ -107,15 +68,7 @@ namespace numeric {
             auto c = a; auto fc = f(c);
             Scalar s; Scalar d; Scalar fs;
             bool mflag{true};
-            auto log = [&]() {
-                helper::Log<Scalar,Logger>::log(
-                    logger,
-                    VNP(a), VNP(b), VNP(c),
-                    VNP(fa), VNP(fb), VNP(fc),
-                    VNP(d), VNP(s), VNP(fs),
-                    VNP(tol), VNP(eps)
-                );
-            };
+            LOGVAR(logger, a, b, c, fa, fb, fc, d, s, fs, tol, eps);
             auto in_range = [](Scalar s, Scalar a, Scalar b) {
                 auto t0 = (3*a+b)/4;
                 auto t1 = b;
@@ -151,7 +104,7 @@ namespace numeric {
                 fs = f(s);
                 d = c;
                 c = b;
-                log();
+                LOGVAR(logger, a, b, c, fa, fb, fc, d, s, fs, tol, eps);
                 if(fa*fs < Scalar(0)) {
                     b = s;
                 } else {
@@ -163,7 +116,7 @@ namespace numeric {
                 fa = f(a); fb = f(b); fc = f(c);
             } while(std::fabs(fb) > zero && std::fabs(b-a)>tol);
             xr = b;
-            log();
+            LOGVAR(logger, a, b, c, fa, fb, fc, d, s, fs, tol, eps);
         }
     } // namespace roots
 } // namespace numeric
