@@ -4,7 +4,9 @@
 #include <cstdio>
 #include <cmath>
 #include <tuple>
+#include <algorithm>
 #include <functional>
+#include "utility.hpp"
 
 namespace numeric {
     namespace optimization {
@@ -142,6 +144,75 @@ namespace numeric {
             } while(ea > es && iter < imax);
         }
         
+        template <typename F, typename Scalar, typename Op = typename std::greater<Scalar>, typename Logger = void>
+        auto parabolic_interpolation(F &f, Scalar x0, Scalar x1, Scalar x2, Scalar &xopt, size_t imax, size_t &iter, Scalar es, Scalar &ea, Scalar &fx, const Op &op = Op{}, Logger *logger = nullptr)
+        {
+            auto f0 = f(x0); auto f1 = f(x1); auto f2 = f(x2);
+            auto x3 = (f0*(x1*x1 - x2*x2) + f1*(x2*x2 - x0*x0) + f2*(x0*x0 - x1*x1)) /
+                      (2*f0*(x1 - x2) + 2*f1*(x2 - x0) + 2*f2*(x0 - x1));
+            auto f3 = f(x3);
+            iter = 1;
+            auto fx_old = fx;
+            auto xopt_old = xopt;
+            std::array<std::pair<Scalar,Scalar>,4> pts{
+                std::make_pair(x0,f0), std::make_pair(x1,f1), 
+                std::make_pair(x1,f2), std::make_pair(x3,f3), 
+            };
+            using pair_t = decltype(pts[0]);
+
+            /* TODO : optimize */
+            std::sort(pts.begin(), pts.end(),[&](pair_t lhs, pair_t rhs){
+                return !op(lhs.first,rhs.first);
+            });
+
+            LOGVAR(logger, iter, x0, x1, x2, x3, f0, f1, f2, f3, ea, xopt, fx);
+            do {
+                xopt_old = xopt;
+                fx_old = fx;
+
+                auto opt = std::max_element(pts.begin(), pts.end(), [&](pair_t a, pair_t b){
+                    return !op(a.second, b.second);
+                });
+                std::tie(xopt,fx) = (*opt);
+
+                /* assign ea for termination check */
+                if(std::fabs((xopt - xopt_old)) > 0) 
+                    ea = Scalar(100) * std::fabs((fx - fx_old) * (xopt - xopt_old));
+                iter = iter + 1;
+
+                if(opt == pts.begin())  {
+                    x0 = pts[0].first;
+                    x1 = pts[1].first;
+                    x2 = pts[2].first;
+                } else if(opt == pts.end()) {
+                    x0 = pts[1].first;
+                    x1 = pts[2].first;
+                    x2 = pts[3].first;
+                } else {
+                    x0 = (opt-1)->first;
+                    x1 = (opt)->first;
+                    x2 = (opt+1)->first;
+                }
+
+                f0 = f(x0); f1 = f(x1); f2 = f(x2);
+                x3 = (f0*(x1*x1 - x2*x2) + f1*(x2*x2 - x0*x0) + f2*(x0*x0 - x1*x1)) /
+                      (2*f0*(x1 - x2) + 2*f1*(x2 - x0) + 2*f2*(x0 - x1));
+                f3 = f(x3);
+
+                LOGVAR(logger, iter, x0, x1, x2, x3, f0, f1, f2, f3, ea, xopt, fx);
+
+                pts = {
+                    std::make_pair(x0,f0), std::make_pair(x1,f1), 
+                    std::make_pair(x2,f2), std::make_pair(x3,f3), 
+                };
+                /* TODO : optimize */
+                std::sort(pts.begin(), pts.end(),[&](pair_t lhs, pair_t rhs){
+                    return !op(lhs.first,rhs.first);
+                });
+            } while(ea > es && iter < imax);
+            xopt = x3; fx = f3;
+            LOGVAR(logger, iter, x0, x1, x2, x3, f0, f1, f2, f3, ea, xopt, fx);
+        }
     } // namespace optimization
 } // namespace numeric
 
