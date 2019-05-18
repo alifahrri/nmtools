@@ -110,6 +110,30 @@ TEST(optimization, parabolic_interpolation_max_2)
     EXPECT_NEAR(fxopt,fx_true,1e-4) << ss.str();
 }
 
+TEST(optimization, parabolic_interpolation_min_1)
+{
+    auto f = [](double x){
+        return cos(x);
+    };
+    std::stringstream ss;
+    auto logger = [&](std::map<std::string,double> map) {
+        ss << "LOG : " << map["iter"] << "\n";
+        ss << "(x0,f0) " << "(" << map["x0"] << "," << map["f0"] << "); ";
+        ss << "(x1,f1) " << "(" << map["x1"] << "," << map["f1"] << "); ";
+        ss << "(x2,f2) " << "(" << map["x2"] << "," << map["f2"] << "); ";
+        ss << "(x3,f3) " << "(" << map["x3"] << "," << map["f3"] << "); ";
+        ss << "(xo,fx) " << "(" << map["xopt"] << "," << map["fx"] << "); ";
+        ss << "ea : " << "(" << map["ea"] << ")";
+        ss << std::endl;
+    };
+    double x0{4}, x1{0}, x2{-2}, xopt;
+    double es{1e-4}, ea, fxopt;
+    size_t imax{1000}, iter;
+    opt::parabolic_interpolation(f,x0,x1,x2,xopt,imax,iter,es,ea,fxopt,std::less<double>{},&logger);
+    double x_true{M_PI}, fx_true{-1.};
+    EXPECT_NEAR(f(xopt),fx_true,1e-4) << ss.str();
+    EXPECT_NEAR(fxopt,fx_true,1e-4) << ss.str();
+}
 /*
 TEST(optimization, gold_section_minimum)
 {
