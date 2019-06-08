@@ -1,0 +1,15 @@
+sudo: required
+
+services:
+  - docker
+  
+language: cpp
+
+compiler:
+  - gcc
+
+before_script:
+  - docker build -t numeric_tools -f docker/Dockerfile .
+
+script:
+  - docker run --rm numeric_tools
