@@ -12,6 +12,7 @@ add_executable(numeric_tests tests/tests.cpp
     tests/optimization/unconstrained.cpp
     tests/integration/trapezoidal.cpp
     tests/differentiation/finite.cpp
+    tests/ode/euler.cpp
 )
 target_link_libraries(numeric_tests ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(all_numeric_tests numeric_tests)
