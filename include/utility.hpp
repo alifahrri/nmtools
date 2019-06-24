@@ -2,10 +2,25 @@
 #define UTILITY_HPP
 
 #include <map>
+#include <ratio>
 
 namespace numeric {
     namespace helper {
         namespace detail {
+            /* helper struct */
+            template <size_t order>
+            struct Order {};
+
+            template <typename Scalar, size_t denom, int ... constants>
+            struct Constants {
+                constexpr Constants()  {}
+                /* TODO : make sure these variables are compile time constants */
+                const size_t N = sizeof...(constants);
+                const Scalar values[sizeof...(constants)] = {
+                    (Scalar(std::ratio<constants,denom>::num)/Scalar(std::ratio<constants,denom>::den))...
+                };
+            };
+
             template <typename Scalar, typename U>
             auto make_var(std::map<std::string,Scalar> &map, const U& u) {
                 map[u.first] = u.second;
