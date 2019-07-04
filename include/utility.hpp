@@ -11,12 +11,16 @@ namespace numeric {
             template <size_t order>
             struct Order {};
 
+            constexpr size_t triangular_number(size_t n) {
+                return (n>1) ? n + triangular_number(n-1) : 1;
+            }
+
             template <typename Scalar, size_t denom, int ... constants>
             struct Constants {
                 constexpr Constants()  {}
                 /* TODO : make sure these variables are compile time constants */
-                const size_t N = sizeof...(constants);
-                const Scalar values[sizeof...(constants)] = {
+                constexpr static size_t N = sizeof...(constants);
+                constexpr static Scalar values[sizeof...(constants)] = {
                     (Scalar(std::ratio<constants,denom>::num)/Scalar(std::ratio<constants,denom>::den))...
                 };
             };
