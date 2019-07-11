@@ -203,3 +203,110 @@ TEST(templated_trapezoidal, test8)
     integration::trapezoid<2>(f,a,b,I);
     EXPECT_NEAR(I,1.0688,1e-4);
 }
+
+TEST(trapezoidal, zero_test) {
+    double w{M_PI/2};
+    double T{2*M_PI/w};
+    auto f = [=](double x) {
+        double t = x - T/2;
+        if ( (t>(-3*T/4)) && (t<-T/4) ) return -1.;
+        else if ( (t>(-T/4)) && (t<(T/4)) ) return 1.;
+        else if ( (t>(T/4)) && (t<(3*T/4)) ) return -1.;
+        else return 1.;
+    };
+    double a{10};
+    double zero = 1e-4;
+    integration::trapezoid<100000>(f,double{0},T,a);
+    EXPECT_NEAR(a,0,zero);
+}
+
+TEST(compile_time_trapezoidal, test0)
+{
+    constexpr auto f = [](double x){
+        return 0.2 + 25*x - 200*std::pow(x,2) + 675*std::pow(x,3) - 900*std::pow(x,4) + 400*std::pow(x,5);
+    };
+    constexpr double a{0}, b{0.8};
+    constexpr double zero{1e-4};
+    constexpr double I = integration::trapezoid(f,a,b,10);
+    constexpr double e = std::fabs(I-1.6150);
+    static_assert(e <= zero);
+    ASSERT_TRUE(e<=zero);
+}
+
+TEST(compile_time_trapezoidal, test1)
+{
+    constexpr auto f = [](double x){
+        return 0.2 + 25*x - 200*std::pow(x,2) + 675*std::pow(x,3) - 900*std::pow(x,4) + 400*std::pow(x,5);
+    };
+    constexpr double a{0}, b{0.8};
+    constexpr double zero{1e-4};
+    constexpr double I = integration::trapezoid(f,a,b,9);
+    constexpr double e = std::fabs(I-1.6091);
+    static_assert(e <= zero);
+    ASSERT_TRUE(e<=zero);
+}
+
+TEST(compile_time_trapezoidal, test2)
+{
+    constexpr auto f = [](double x){
+        return 0.2 + 25*x - 200*std::pow(x,2) + 675*std::pow(x,3) - 900*std::pow(x,4) + 400*std::pow(x,5);
+    };
+    constexpr double a{0}, b{0.8};
+    constexpr double zero{1e-4};
+    constexpr double I = integration::trapezoid(f,a,b,8);
+    constexpr double e = std::fabs(I-1.6008);
+    static_assert( e<=zero );
+    ASSERT_TRUE( e<=zero );
+}
+
+TEST(compile_time_trapezoidal, test3)
+{
+    constexpr auto f = [](double x){
+        return 0.2 + 25*x - 200*std::pow(x,2) + 675*std::pow(x,3) - 900*std::pow(x,4) + 400*std::pow(x,5);
+    };
+    constexpr double a{0}, b{0.8};
+    constexpr double zero{1e-4};
+    constexpr double I = integration::trapezoid(f,a,b,7);
+    constexpr double e = std::fabs(I-1.5887);
+    static_assert( e<=zero );
+    ASSERT_TRUE( e<=zero );
+}
+
+TEST(compile_time_trapezoidal, test4)
+{
+    constexpr auto f = [](double x){
+        return 0.2 + 25*x - 200*std::pow(x,2) + 675*std::pow(x,3) - 900*std::pow(x,4) + 400*std::pow(x,5);
+    };
+    constexpr double a{0}, b{0.8};
+    constexpr double zero{1e-4};
+    constexpr double I = integration::trapezoid(f,a,b,6);
+    constexpr double e = std::fabs(I-1.5703);
+    static_assert( e<=zero );
+    ASSERT_TRUE( e<=zero );
+}
+
+TEST(compile_time_trapezoidal, test5)
+{
+    constexpr auto f = [](double x){
+        return 0.2 + 25*x - 200*std::pow(x,2) + 675*std::pow(x,3) - 900*std::pow(x,4) + 400*std::pow(x,5);
+    };
+    constexpr double a{0}, b{0.8};
+    constexpr double zero{1e-4};
+    constexpr double I = integration::trapezoid(f,a,b,5);
+    constexpr double e = std::fabs(I-1.5399);
+    static_assert( e<=zero );
+    ASSERT_TRUE( e<=zero );
+}
+
+TEST(compile_time_trapezoidal, test6)
+{
+    constexpr auto f = [](double x){
+        return 0.2 + 25*x - 200*std::pow(x,2) + 675*std::pow(x,3) - 900*std::pow(x,4) + 400*std::pow(x,5);
+    };
+    constexpr double a{0}, b{0.8};
+    constexpr double zero{1e-4};
+    constexpr double I = integration::trapezoid(f,a,b,4);
+    constexpr double e = std::fabs(I-1.4848);
+    static_assert( e<=zero );
+    ASSERT_TRUE( e<=zero );
+}
