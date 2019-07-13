@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(numeric)
 
+add_compile_options(-std=c++17)
+
 include_directories(include)
 
 enable_testing()

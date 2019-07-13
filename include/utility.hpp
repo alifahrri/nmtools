@@ -5,6 +5,10 @@
 #include <ratio>
 
 namespace numeric {
+
+    template <int Num, int Denom>
+    using ratio = std::ratio<Num,Denom>;
+    
     namespace helper {
         namespace detail {
             /* helper struct */

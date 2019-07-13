@@ -2,6 +2,8 @@
 #define RUNGE_KUTTA_HPP
 
 #include "utility.hpp"
+#include <iterator>
+#include <type_traits>
 
 namespace numeric {
     namespace ode {
@@ -43,18 +45,62 @@ namespace numeric {
                 // const Scalar k[N];
             };
 
-            // template <size_t order, typename ...Scalar>
-            // struct RK_K : RK_K<order-1> {
-            //     constexpr RK_K(Scalar ...) : k() {};
-            //     Scalar k;
-            // };
+            template <typename A, typename B, typename C>
+            constexpr auto butcher_tableau(A &a, B &b, C &c) 
+                -> decltype(a[0][0], b[0], c[0], bool())
+            {
+                assert( std::size(a) == std::size(c) );
+                assert( std::size(b) == std::size(c)+1 );
+                auto s = std::size(c);
+                for (size_t i=0; i<s; i++) {
+                    using value_t = std::decay_t<decltype(c[0])>;
+                    value_t a_sum{};
+                    for (size_t j=0; j<=i; j++)
+                        a_sum += a[i][j];
+                    if (a_sum != c[i])
+                        return false;
+                }
+                return true;
+            }
 
-            // template <>
-            // struct RK_K<1> {
-            //     constexpr RK_K() {};
-                
-            // };
+            template <typename F, typename T, typename Y, typename H, typename A, typename C, typename Ks>
+            constexpr auto k(size_t n, const F &f, const T &x, const Y &y, const H& h, const A &a, const C& c, const Ks &ks) 
+                -> decltype(a[0][0],c[0],f(x,y),std::decay_t<decltype(ks[0])>())
+            {
+                if (n) {
+                    auto i = n-1;
+                    using k_type = std::decay_t<decltype(ks[0])>;
+                    k_type sum{0};
+                    for (size_t j=0; j<n; j++)
+                        sum += a[i][j] * ks[j];
+                    return f(x+c[i]*h,y+h*sum);
+                } else {
+                    return f(x,y);
+                }
+            }
+
+#if 0
+            template <typename F, typename T, typename A, typename B, typename C>
+            constexpr auto rk_driver(F &f, T x, T yi, T h, const A& a, const B& b, const C &c) {
+                using y_t = std::decay_t<decltype(yi)>;
+                using Ks = std::decay_t<decltype(b[0])>;
+                y_t sum{}; Ks ks;
+            }
+
+            template <typename F, typename T, typename A, typename B, typename C>
+            constexpr auto rk_driver(F &f, T xi, T xf, T yi, T h, const A& a, const B& b, const C &c) {
+                auto n = (xf-xi) / h;
+                for (size_t i=0; i<n; i++) {
+                    
+                }
+            }
+#endif
         } // namespace detail
+
+        template <typename F>
+        constexpr auto ralston(F &f) {
+
+        }
     } // namespace ode
 } // namespace numeric
 #endif //RUNGE_KUTTA_HPP
