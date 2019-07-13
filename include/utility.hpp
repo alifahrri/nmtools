@@ -2,8 +2,13 @@
 #define UTILITY_HPP
 
 #include <map>
+#include <ratio>
 
 namespace numeric {
+
+    template <int Num, int Denom>
+    using ratio = std::ratio<Num,Denom>;
+    
     namespace helper {
 
         namespace tag {
@@ -26,6 +31,24 @@ namespace numeric {
         } // namespace tag
 
         namespace detail {
+            /* helper struct */
+            template <size_t order>
+            struct Order {};
+
+            constexpr size_t triangular_number(size_t n) {
+                return (n>1) ? n + triangular_number(n-1) : 1;
+            }
+
+            template <typename Scalar, size_t denom, int ... constants>
+            struct Constants {
+                constexpr Constants()  {}
+                /* TODO : make sure these variables are compile time constants */
+                constexpr static size_t N = sizeof...(constants);
+                constexpr static Scalar values[sizeof...(constants)] = {
+                    (Scalar(std::ratio<constants,denom>::num)/Scalar(std::ratio<constants,denom>::den))...
+                };
+            };
+
             template <typename Scalar, typename U>
             auto make_var(std::map<std::string,Scalar> &map, const U& u) {
                 map[u.first] = u.second;
