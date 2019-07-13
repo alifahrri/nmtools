@@ -16,16 +16,13 @@ add_executable(numeric_tests tests/tests.cpp
     tests/optimization/unconstrained.cpp
     tests/integration/trapezoidal.cpp
     tests/differentiation/finite.cpp
-<<<<<<< HEAD
     tests/taylor/taylor.cpp
     tests/curvefit/sinusoid.cpp
     tests/fourier/series.cpp
     tests/utility/utility.cpp
     tests/fourier/transform.cpp
-=======
     tests/ode/euler.cpp
     tests/ode/runge_kutta.cpp
->>>>>>> devel
 )
 target_link_libraries(numeric_tests ${GTEST_BOTH_LIBRARIES} pthread)
 target_compile_options(numeric_tests PRIVATE -g)
