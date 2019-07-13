@@ -10,6 +10,26 @@ namespace numeric {
     using ratio = std::ratio<Num,Denom>;
     
     namespace helper {
+
+        namespace tag {
+            struct insert {};
+            struct raw {};
+
+            template <typename T, typename V, typename = void>
+            struct resolve_insert_tag {};
+
+            template <typename T, typename V>
+            struct resolve_insert_tag<T,V
+                , std::void_t<decltype(std::declval<T>().insert(std::declval<T>().end(),std::declval<V>()))>
+            > { using type = insert; };
+
+            template <typename T, typename V>
+            struct resolve_insert_tag<T,V
+                , std::enable_if_t< std::is_same_v<T,std::array<typename T::value_type,std::tuple_size<T>::value> > 
+                > /* enable_if */
+            > { using type = raw; };
+        } // namespace tag
+
         namespace detail {
             /* helper struct */
             template <size_t order>
@@ -44,7 +64,79 @@ namespace numeric {
                 make_var(map, args...);
                 return map;
             }
-        }// namespace detail 
+
+            /* BEGIN : inserter boilerplate */
+            template <typename Container, typename Value>
+            auto insert(Container &d, Value v, tag::insert) 
+                /* This decltype is actually redundant (?) */
+                -> decltype(d.insert(std::begin(d),v),void()) 
+            {
+                d.insert(std::begin(d),v);
+            }
+
+            template <typename Container, typename Value>
+            auto insert(Container &d, Value v, tag::raw) 
+                /* This decltype is actually redundant (?) */
+                -> decltype(*std::begin(d)=v,void()) 
+            {
+                *std::begin(d)=v;
+            }
+
+            template <typename Container, typename Value, typename Iterator>
+            auto insert(Container &d, Iterator pos, Value v, tag::insert) 
+                /* This decltype is actually redundant (?) */
+                -> decltype(d.insert(pos,v),void()) 
+            {
+                d.insert(pos,v);
+            }
+
+            template <typename Container, typename Value, typename Iterator>
+            auto insert(Container &d, Iterator pos, Value v, tag::raw) 
+                /* This decltype is actually redundant (?) */
+                -> decltype(*pos=v,void()) 
+            {
+                *pos=v;
+            }
+
+            template <typename Container, typename InputIterator, typename Iterator>
+            auto insert(Container &d, Iterator pos, InputIterator begin, InputIterator end, tag::insert) 
+                -> decltype(d.insert(pos,begin,end),void()) 
+            {
+                d.insert(pos,begin,end);
+            }
+
+            template <typename Container, typename InputIterator, typename Iterator>
+            auto insert(Container &d, Iterator pos, InputIterator begin, InputIterator end, tag::raw) 
+                -> decltype(begin != end, begin++, pos++, *pos = *begin, void())
+            {
+                auto p = pos;
+                for (auto it = begin; (it != end) && (pos != std::end(d)); it++) {
+                    *p = *it; p++;
+                }
+            }
+            /* END : inserter boilerplate */
+        } // namespace detail 
+
+        /* entrypoints */
+        template <typename Container, typename Value>
+        auto insert(Container &d, Value v) 
+        -> decltype(detail::insert(d,v,typename tag::resolve_insert_tag<Container,Value>::type{})) {
+            using insert_tag = typename tag::resolve_insert_tag<Container,Value>::type;
+            detail::insert(d,v,insert_tag{});
+        }
+        template <typename Container, typename Value, typename Iterator>
+        auto insert(Container &d, Iterator pos, Value v) 
+        -> decltype(detail::insert(d,pos,v,typename tag::resolve_insert_tag<Container,Value>::type{})) 
+        {
+            using insert_tag = typename tag::resolve_insert_tag<Container,Value>::type;
+            detail::insert(d,pos,v,insert_tag{});
+        }
+        template <typename Container, typename InputIterator, typename Iterator>
+        auto insert(Container &d, Iterator pos, InputIterator begin, InputIterator end)
+        -> decltype(detail::insert(d,pos,begin,end,typename tag::resolve_insert_tag<Container,decltype(*begin)>::type{})) {
+            using insert_tag = typename tag::resolve_insert_tag<Container,decltype(*begin)>::type;
+            detail::insert(d,pos,begin,end,insert_tag{});
+        }
 
         template <typename Scalar, typename Logger>
         struct Log {

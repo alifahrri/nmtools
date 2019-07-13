@@ -4,6 +4,7 @@ project(numeric)
 add_compile_options(-std=c++17)
 
 include_directories(include)
+add_compile_options(-std=c++17)
 
 enable_testing()
 find_package(GTest REQUIRED)
@@ -15,10 +16,19 @@ add_executable(numeric_tests tests/tests.cpp
     tests/optimization/unconstrained.cpp
     tests/integration/trapezoidal.cpp
     tests/differentiation/finite.cpp
+<<<<<<< HEAD
+    tests/taylor/taylor.cpp
+    tests/curvefit/sinusoid.cpp
+    tests/fourier/series.cpp
+    tests/utility/utility.cpp
+    tests/fourier/transform.cpp
+=======
     tests/ode/euler.cpp
     tests/ode/runge_kutta.cpp
+>>>>>>> devel
 )
 target_link_libraries(numeric_tests ${GTEST_BOTH_LIBRARIES} pthread)
+target_compile_options(numeric_tests PRIVATE -g)
 add_test(all_numeric_tests numeric_tests)
 
 # include(GoogleTest)
