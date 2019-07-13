@@ -3,11 +3,81 @@
 
 #include <map>
 #include <ratio>
+#include <complex>
 
 namespace numeric {
 
     template <int Num, int Denom>
     using ratio = std::ratio<Num,Denom>;
+
+    namespace traits {
+        template <typename D, typename = void>
+        struct is_std_array : std::false_type {};
+
+        template <typename D>
+        struct is_std_array<D, std::enable_if_t<
+            std::is_same_v<
+                D, std::array<typename D::value_type, std::tuple_size<D>::value>
+            > // is_same
+        > /* enable_if */ > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct is_std_complex : std::false_type {};
+
+        template <typename T>
+        struct is_std_complex<T, std::enable_if_t<
+            std::is_same_v< 
+                T, std::complex< typename T::value_type > 
+            > // is_same
+        > /* enable_if */ > : std::true_type {};
+
+        template <typename T, typename = void, typename = void, typename = void, typename = void>
+        struct is_insertable : std::false_type {};
+
+        template <typename T, typename U>
+        struct is_insertable<T, U, std::void_t< 
+            decltype(std::declval<T>().insert(std::declval<T>().begin(),std::declval<const U&>()))
+        >, void, void > : std::true_type {};
+
+        template <typename T, typename I, typename U>
+        struct is_insertable<T, I, U, std::void_t< 
+            decltype(std::declval<T>().insert(std::declval<I>(),std::declval<const U&>()))
+        >, void > : std::true_type {};
+
+        template <typename T, typename I, typename B, typename E>
+        struct is_insertable<T, I, B, E, std::void_t< 
+            decltype(std::declval<T>().insert(std::declval<I>(),std::declval<B>(),std::declval<E>()))
+        > > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct is_clearable : std::false_type {};
+
+        template <typename T>
+        struct is_clearable<T, std::enable_if_t<
+            std::is_same_v<
+                decltype(std::declval<T>().clear()),void
+            > // is_same
+        > /* enable_if */ > : std::false_type {};
+
+        template <typename T, typename = void>
+        struct is_resizeable : std::false_type {};
+
+        template <typename T>
+        struct is_resizeable<T, std::enable_if_t< 
+            std::is_same_v<
+                decltype(std::declval<T>().resize(std::size_t{})),void
+            > // is_same
+        > /* enable_if */ > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct has_ref_square_bracket_operator : std::false_type {};
+
+        template <typename T>
+        struct has_ref_square_bracket_operator<T, std::enable_if_t< 
+            !std::is_const<decltype(std::declval<T>()[size_t{}])>::value &&
+            std::is_reference<decltype(std::declval<T>()[size_t{}])>::value
+        > > : std::true_type {};
+    } // namespace traits
     
     namespace helper {
 
