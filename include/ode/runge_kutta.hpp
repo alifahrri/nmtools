@@ -19,6 +19,9 @@ namespace numeric {
             // struct Q {
 
             // };
+
+            // using declval = std::declval;
+
             template <typename T>
             constexpr size_t size(T t) {
                 return t.N;
@@ -65,7 +68,13 @@ namespace numeric {
 
             template <typename F, typename T, typename Y, typename H, typename A, typename C, typename Ks>
             constexpr auto k(size_t n, const F &f, const T &x, const Y &y, const H& h, const A &a, const C& c, const Ks &ks) 
-                -> decltype(a[0][0],c[0],f(x,y),std::decay_t<decltype(ks[0])>())
+                -> std::enable_if_t< std::conjunction_v < 
+                    traits::is_2d_array< A >, 
+                    std::is_same< std::void_t <
+                        decltype(std::declval<C>()[0]),
+                        decltype(std::declval<F>()(std::declval<T>(),std::declval<Y>()))>, void 
+                    > /* is_same */
+                >, /* conjuction */ std::decay_t< decltype(ks[0]) > > /* enable_if */
             {
                 if (n) {
                     auto i = n-1;
@@ -79,27 +88,87 @@ namespace numeric {
                 }
             }
 
-#if 0
-            template <typename F, typename T, typename A, typename B, typename C>
-            constexpr auto rk_driver(F &f, T x, T yi, T h, const A& a, const B& b, const C &c) {
-                using y_t = std::decay_t<decltype(yi)>;
-                using Ks = std::decay_t<decltype(b[0])>;
-                y_t sum{}; Ks ks;
+            template <typename F, typename T, typename Y, typename H, typename A, typename C, typename Ks>
+            constexpr auto k(size_t n, const F &f, const T &x, const Y &y, const H& h, const A &a, const C& c, const Ks &ks) 
+                -> std::enable_if_t< std::conjunction_v < 
+                    std::negation< traits::is_2d_array< A > >, 
+                    std::is_same< std::void_t <
+                        decltype(std::declval<C>()[0]),
+                        decltype(std::declval<F>()(std::declval<T>(),std::declval<Y>()))>, void 
+                    > /* is_same */
+                >, /* conjuction */ std::decay_t< decltype(ks[0]) > > /* enable_if */
+            {
+                namespace hp = helper;
+                if (n) {
+                    auto i = n-1;
+                    using k_type = std::decay_t<decltype(ks[0])>;
+                    k_type sum{0};
+                    for (size_t j=0; j<n; j++) {
+                        auto a_idx = hp::detail::triangular_number(n)-1 + j;
+                        sum += a[a_idx] * ks[j];
+                    }
+                    return f(x+c[i]*h,y+h*sum);
+                } else {
+                    return f(x,y);
+                }
+            }
+
+            template <typename F, typename X, typename T, typename A, typename B, typename C>
+            constexpr auto rk_driver(F &f, X x, T yi, X h, const A& a, const B& b, const C &c) 
+                -> decltype(f(x,yi),b[0],T())
+            {
+                namespace hp = helper;
+                using Ks = std::decay_t<decltype(b)>;
+                T sum{}; Ks ks{};
+                for (size_t i=0; i<std::size(b); i++) {
+                    auto ki = k(i,f,x,yi,h,a,c,ks);
+                    auto p = std::begin(ks)+i;
+                    sum += b[i]*ki;
+                    hp::insert(ks,p,ki);
+                }
+                return yi + h*sum;
             }
 
             template <typename F, typename T, typename A, typename B, typename C>
             constexpr auto rk_driver(F &f, T xi, T xf, T yi, T h, const A& a, const B& b, const C &c) {
                 auto n = (xf-xi) / h;
-                for (size_t i=0; i<n; i++) {
-                    
+                T yn = yi;
+                for (size_t i=1; i<=n; i++) {
+                    auto x = xi + i*h;
+                    yn = rk_driver(f,x,yn,h,a,b,c);
                 }
+                return yn;
             }
-#endif
         } // namespace detail
 
-        template <typename F>
-        constexpr auto ralston(F &f) {
+        template <typename F, typename T, typename Y>
+        constexpr auto ralston(F &f, T xi, T xf, Y yi, T h) {
+            constexpr std::array<double,1> c = { 2./3. };
+            constexpr std::array<double,1> a = { 2./3. };
+            constexpr std::array<double,2> b = {
+                1./4., 3./4.
+            };
+            return detail::rk_driver(f,xi,xf,yi,h,a,b,c);
+        }
 
+        template <typename F, typename T, typename Y>
+        constexpr auto midpoint(F &f, T xi, T xf, Y yi, T h) {
+            constexpr std::array<double,1> c = { 1./2. };
+            constexpr std::array<double,1> a = { 1./2. };
+            constexpr std::array<double,2> b = {
+                0., 1.
+            };
+            return detail::rk_driver(f,xi,xf,yi,h,a,b,c);
+        }
+
+        template <typename F, typename T, typename Y>
+        constexpr auto rk4(F &f, T xi, T xf, Y yi, T h) {
+            constexpr std::array<double,3> c = { 1./2., 1./2., 1. };
+            constexpr std::array<double,6> a = { 1./2., 0., 1./2., 0., 0., 1. };
+            constexpr std::array<double,4> b = {
+                1./6., 1./3., 1./3., 1./6.
+            };
+            return detail::rk_driver(f,xi,xf,yi,h,a,b,c);
         }
     } // namespace ode
 } // namespace numeric

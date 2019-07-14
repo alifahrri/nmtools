@@ -77,6 +77,13 @@ namespace numeric {
             !std::is_const<decltype(std::declval<T>()[size_t{}])>::value &&
             std::is_reference<decltype(std::declval<T>()[size_t{}])>::value
         > > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct is_2d_array : std::false_type {};
+
+        template <typename T>
+        struct is_2d_array<T, std::void_t<decltype(std::declval<T>()[0][0])> 
+        > : std::true_type {};
     } // namespace traits
     
     namespace helper {
