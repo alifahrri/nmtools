@@ -2,8 +2,108 @@
 #define UTILITY_HPP
 
 #include <map>
+#include <ratio>
+#include <complex>
 
 namespace numeric {
+
+    template <int Num, int Denom>
+    using ratio = std::ratio<Num,Denom>;
+
+    namespace traits {
+        template <typename D, typename = void>
+        struct is_std_array : std::false_type {};
+
+        template <typename D>
+        struct is_std_array<D, std::enable_if_t<
+            std::is_same_v<
+                D, std::array<typename D::value_type, std::tuple_size<D>::value>
+            > // is_same
+        > /* enable_if */ > : std::true_type {};
+
+        template <typename D, typename = void>
+        struct is_std_vector : std::false_type {};
+
+        template <typename D>
+        struct is_std_vector<D, std::enable_if_t<
+            std::is_same_v<
+                D, std::vector<typename D::value_type>
+            > // is_same
+        > /* enable_if */ > : std::true_type {};
+
+        template <typename D, typename = void>
+        struct has_push_back_op : std::false_type {};
+
+        template <typename D>
+        struct has_push_back_op<D, std::void_t<
+                decltype(std::declval<D>().push_back(std::declval<typename D::value_type>()))
+        > /* void_t */ > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct is_std_complex : std::false_type {};
+
+        template <typename T>
+        struct is_std_complex<T, std::enable_if_t<
+            std::is_same_v< 
+                T, std::complex< typename T::value_type > 
+            > // is_same
+        > /* enable_if */ > : std::true_type {};
+
+        template <typename T, typename = void, typename = void, typename = void, typename = void>
+        struct is_insertable : std::false_type {};
+
+        template <typename T, typename U>
+        struct is_insertable<T, U, std::void_t< 
+            decltype(std::declval<T>().insert(std::declval<T>().begin(),std::declval<const U&>()))
+        >, void, void > : std::true_type {};
+
+        template <typename T, typename I, typename U>
+        struct is_insertable<T, I, U, std::void_t< 
+            decltype(std::declval<T>().insert(std::declval<I>(),std::declval<const U&>()))
+        >, void > : std::true_type {};
+
+        template <typename T, typename I, typename B, typename E>
+        struct is_insertable<T, I, B, E, std::void_t< 
+            decltype(std::declval<T>().insert(std::declval<I>(),std::declval<B>(),std::declval<E>()))
+        > > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct is_clearable : std::false_type {};
+
+        template <typename T>
+        struct is_clearable<T, std::enable_if_t<
+            std::is_same_v<
+                decltype(std::declval<T>().clear()),void
+            > // is_same
+        > /* enable_if */ > : std::false_type {};
+
+        template <typename T, typename = void>
+        struct is_resizeable : std::false_type {};
+
+        template <typename T>
+        struct is_resizeable<T, std::enable_if_t< 
+            std::is_same_v<
+                decltype(std::declval<T>().resize(std::size_t{})),void
+            > // is_same
+        > /* enable_if */ > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct has_ref_square_bracket_operator : std::false_type {};
+
+        template <typename T>
+        struct has_ref_square_bracket_operator<T, std::enable_if_t< 
+            !std::is_const<decltype(std::declval<T>()[size_t{}])>::value &&
+            std::is_reference<decltype(std::declval<T>()[size_t{}])>::value
+        > > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct is_2d_array : std::false_type {};
+
+        template <typename T>
+        struct is_2d_array<T, std::void_t<decltype(std::declval<T>()[0][0])> 
+        > : std::true_type {};
+    } // namespace traits
+    
     namespace helper {
 
         namespace tag {
@@ -26,6 +126,24 @@ namespace numeric {
         } // namespace tag
 
         namespace detail {
+            /* helper struct */
+            template <size_t order>
+            struct Order {};
+
+            constexpr size_t triangular_number(size_t n) {
+                return (n>1) ? n + triangular_number(n-1) : 1;
+            }
+
+            template <typename Scalar, size_t denom, int ... constants>
+            struct Constants {
+                constexpr Constants()  {}
+                /* TODO : make sure these variables are compile time constants */
+                constexpr static size_t N = sizeof...(constants);
+                constexpr static Scalar values[sizeof...(constants)] = {
+                    (Scalar(std::ratio<constants,denom>::num)/Scalar(std::ratio<constants,denom>::den))...
+                };
+            };
+
             template <typename Scalar, typename U>
             auto make_var(std::map<std::string,Scalar> &map, const U& u) {
                 map[u.first] = u.second;
@@ -92,6 +210,13 @@ namespace numeric {
                 }
             }
             /* END : inserter boilerplate */
+
+            template <size_t N, size_t ...I>
+            auto append_array(auto a, std::index_sequence<I...>, auto value) 
+                -> std::array<typename decltype(a)::value_type, N>
+            {
+                return {a[I]..., value};
+            }
         } // namespace detail 
 
         /* entrypoints */
@@ -131,6 +256,28 @@ namespace numeric {
                 return;
             }
         };
+
+        template <typename Container, typename value_type = typename Container::value_type>
+        constexpr auto append(Container &container, const value_type &value) 
+            -> std::enable_if_t<
+                traits::has_push_back_op<Container>::value, std::add_lvalue_reference_t<Container>
+            > /* enable_if */
+        {
+            container.push_back(value);
+            return (container);
+        }
+
+        template <typename Container, typename value_type = typename Container::value_type>
+        constexpr auto append(Container &container, const value_type &value) 
+            -> std::enable_if_t<
+                /* Container == std::array */           /* return type : std::array (+1 size) */
+                traits::is_std_array<Container>::value, std::array<value_type,std::tuple_size<Container>::value+1>
+            > /* enable_if */
+        {
+            constexpr size_t N = std::tuple_size<Container>::value + 1;
+            using indexes = std::make_index_sequence<std::tuple_size<Container>::value>;
+            return detail::append_array<N>(container, indexes{}, value);
+        }
     } // namespace helper
 } // namespace numeric
 
