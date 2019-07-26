@@ -21,6 +21,24 @@ namespace numeric {
             > // is_same
         > /* enable_if */ > : std::true_type {};
 
+        template <typename D, typename = void>
+        struct is_std_vector : std::false_type {};
+
+        template <typename D>
+        struct is_std_vector<D, std::enable_if_t<
+            std::is_same_v<
+                D, std::vector<typename D::value_type>
+            > // is_same
+        > /* enable_if */ > : std::true_type {};
+
+        template <typename D, typename = void>
+        struct has_push_back_op : std::false_type {};
+
+        template <typename D>
+        struct has_push_back_op<D, std::void_t<
+                decltype(std::declval<D>().push_back(std::declval<typename D::value_type>()))
+        > /* void_t */ > : std::true_type {};
+
         template <typename T, typename = void>
         struct is_std_complex : std::false_type {};
 
@@ -192,6 +210,13 @@ namespace numeric {
                 }
             }
             /* END : inserter boilerplate */
+
+            template <size_t N, size_t ...I>
+            auto append_array(auto a, std::index_sequence<I...>, auto value) 
+                -> std::array<typename decltype(a)::value_type, N>
+            {
+                return {a[I]..., value};
+            }
         } // namespace detail 
 
         /* entrypoints */
@@ -231,6 +256,28 @@ namespace numeric {
                 return;
             }
         };
+
+        template <typename Container, typename value_type = typename Container::value_type>
+        constexpr auto append(Container &container, const value_type &value) 
+            -> std::enable_if_t<
+                traits::has_push_back_op<Container>::value, std::add_lvalue_reference_t<Container>
+            > /* enable_if */
+        {
+            container.push_back(value);
+            return (container);
+        }
+
+        template <typename Container, typename value_type = typename Container::value_type>
+        constexpr auto append(Container &container, const value_type &value) 
+            -> std::enable_if_t<
+                /* Container == std::array */           /* return type : std::array (+1 size) */
+                traits::is_std_array<Container>::value, std::array<value_type,std::tuple_size<Container>::value+1>
+            > /* enable_if */
+        {
+            constexpr size_t N = std::tuple_size<Container>::value + 1;
+            using indexes = std::make_index_sequence<std::tuple_size<Container>::value>;
+            return detail::append_array<N>(container, indexes{}, value);
+        }
     } // namespace helper
 } // namespace numeric
 
