@@ -25,3 +25,60 @@ TEST(utility, append_vector) {
     EXPECT_EQ(b.size(),5);
     EXPECT_EQ(b[4],5.);
 }
+
+TEST(traits, is_callable) {
+    namespace nm = numeric;
+    auto f1 = [](double) {};
+    auto f2 = [](double,double) {};
+    static_assert( nm::traits::is_callable<decltype(f1),double>::value);
+    static_assert(!nm::traits::is_callable<decltype(f1),double,double>::value);
+    static_assert( nm::traits::is_callable<decltype(f2),double,double>::value);
+    static_assert(!nm::traits::is_callable<decltype(f2),double>::value);
+}
+
+TEST(traits, multiplicative) {
+    namespace nm = numeric;
+    auto f1 = [](double) { return double{}; };
+    auto f2 = [](double,double) { return double{}; };
+    static_assert( nm::traits::multiplicative<decltype(f1(double{})),decltype(f2(double{},double{}))>::value );
+    static_assert(!nm::traits::multiplicative<double,std::string>::value);
+}
+
+TEST(traits, additive) {
+    namespace nm = numeric;
+    auto f1 = [](double) { return double{}; };
+    auto f2 = [](double,double) { return double{}; };
+    static_assert( nm::traits::additive<decltype(f1(double{})),decltype(f2(double{},double{}))>::value );
+    static_assert(!nm::traits::additive<double,std::string>::value);
+}
+
+struct transposeable_t {
+    std::array<double,2> transpose() {
+        return std::array<double,2>{};
+    }
+};
+
+TEST(traits, has_transpose_op) {
+    namespace nm = numeric;
+    static_assert( nm::traits::has_transpose_op<transposeable_t>::value );
+    static_assert(!nm::traits::has_transpose_op<double>::value );
+}
+
+TEST(traits, is_transposeable) {
+    namespace nm = numeric;
+    static_assert( nm::traits::is_transposeable<transposeable_t>::value );
+    static_assert( nm::traits::is_transposeable<double>::value );
+    static_assert(!nm::traits::is_transposeable<std::string>::value );
+}
+
+TEST(helper, transpose) 
+{
+    namespace nm = numeric;
+    static_assert( std::is_same_v<
+        decltype(nm::helper::transpose(transposeable_t{})),
+        std::array<double,2>
+    >);
+    static_assert( std::is_same_v<
+        decltype(nm::helper::transpose(double{})), double
+    >);
+}
