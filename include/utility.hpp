@@ -102,6 +102,53 @@ namespace numeric {
         template <typename T>
         struct is_2d_array<T, std::void_t<decltype(std::declval<T>()[0][0])> 
         > : std::true_type {};
+
+        template <typename T, typename U, typename = void>
+        struct multiplicative : std::false_type {};
+
+        template <typename T, typename U>
+        struct multiplicative<T, U, std::void_t<
+            decltype(std::declval<T>() * std::declval<U>())
+        > > : std::true_type {};
+
+        template <typename T, typename U, typename = void>
+        struct additive : std::false_type {};
+
+        template <typename T, typename U>
+        struct additive<T, U, std::void_t<
+            decltype(std::declval<T>() + std::declval<U>())
+        > > : std::true_type {};
+
+        template <typename F, typename...Args>
+        struct is_callable {
+        private:
+            template <typename FN>
+            constexpr static auto test(int) -> decltype(std::declval<FN>()(std::declval<Args>()...), bool()) {
+                return true;
+            }
+            template <typename>
+            constexpr static auto test(...) -> decltype(bool()) {
+                return false;
+            }
+        public:
+            constexpr static bool value = test<F>(int{});
+        };
+
+        template <typename T, typename = void>
+        struct has_transpose_op : std::false_type {};
+
+        template <typename T>
+        struct has_transpose_op<T, std::void_t<
+            decltype(std::declval<T>().transpose())
+        > > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct is_transposeable : std::false_type {};
+
+        template <typename T>
+        struct is_transposeable<T, std::enable_if_t< 
+            std::is_arithmetic_v<T> || has_transpose_op<T>::value 
+        > > : std::true_type {};
     } // namespace traits
     
     namespace helper {
@@ -256,6 +303,21 @@ namespace numeric {
                 return;
             }
         };
+
+        /* Collection of adaptor */
+
+        template <typename StateType>
+        constexpr auto transpose(StateType &&x) {
+            static_assert(
+                traits::is_transposeable<StateType>::value,
+                "unsupported transpose operation"
+            );
+            if constexpr (traits::has_transpose_op<StateType>::value) {
+                return x.transpose();
+            } else if (std::is_arithmetic<StateType>::value) {
+                return x;
+            }
+        }
 
         template <typename Container, typename value_type = typename Container::value_type>
         constexpr auto append(Container &container, const value_type &value) 

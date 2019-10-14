@@ -231,7 +231,71 @@ namespace numeric {
                 LOGVAR(logger, iter, x0, f0, df0, ddf0, x1, f1, xopt, fx, ea);
                 iter = iter+1;
             } while(ea > es && iter < imax);
-        }
+        } // newton
+
+        /**
+         * @brief backtracking line search, compute step size for optimizer
+         * 
+         * @tparam F the type objective function, automatically deduced
+         * @tparam StateType automatically deduced
+         * @tparam Scalar automatically deduced
+         * @param f objective function
+         * @param xi initial state
+         * @param d search direction
+         * @param alpha_init 
+         * @param tau 
+         * @return auto 
+         */
+        template <typename F, typename StateType, typename Scalar>
+        auto backtracking_line_search(F &&f, StateType &&xi, StateType &&d, Scalar alpha_init, Scalar tau) 
+        {
+            using mult_t = decltype(alpha_init*d);
+            static_assert(traits::multiplicative<Scalar,StateType>::value, "these expr should be valid : 'alpha_init * d'");
+            static_assert(traits::additive<StateType,mult_t>::value, "these expr should be valid : 'xi + alpha * d'");
+            static_assert(traits::is_callable<F,StateType>::value, "these expr should be valid : f(xi)");
+            /* TODO : give warning or error if tau > 0 */
+            auto fk = f(xi);
+            auto alpha = alpha_init;
+            while ( f(xi+alpha*d) >= fk)
+                alpha = alpha * tau;
+            return alpha;
+        } // backtracking_line_search
+
+
+        /**
+         * @brief backtracking line search with armijo condition to compute step size for optimizer
+         * 
+         * @tparam F the type of objective function, automatically deduced
+         * @tparam DF the type of the first derivative of objective function, automatically deduced
+         * @tparam StateType automatically deduced
+         * @tparam Scalar automatically deduced
+         * @param f objective function
+         * @param g the first derivative of the objective function
+         * @param xi initial state
+         * @param d search direction
+         * @param alpha_init 
+         * @param beta 
+         * @param tau 
+         * @return auto 
+         */
+        template <typename F, typename DF, typename StateType, typename Scalar>
+        auto backtracking_armijo_line_search(F &&f, DF &&g, StateType &&xi, StateType &&d, Scalar alpha_init, Scalar beta, Scalar tau)
+        {
+            using mult_t = decltype(alpha_init*d);
+            static_assert(traits::multiplicative<Scalar,StateType>::value, "these expr should be valid : 'alpha_init * d'");
+            static_assert(traits::additive<StateType,mult_t>::value, "these expr should be valid : 'xi + alpha * d'");
+            static_assert(traits::is_callable<F,StateType>::value, "these expr should be valid : f(xi)");
+            static_assert(traits::is_callable<DF,StateType>::value, "these expr should be valid : g(xi)");
+            static_assert(traits::is_transposeable<decltype(g(xi))>::value, "these expr should be valid : transpose(g(xi))");
+            /* TODO : give warning or error if tau & beta > 0 */
+            auto fk = f(xi);
+            auto alpha = alpha_init;
+            auto gt = helper::transpose(g(xi));
+            while ( f(xi+alpha*d) > (fk+alpha*beta*gt*d))
+                alpha = alpha * tau;
+            return alpha;
+        } // backtracking_armijo_line_search
+        
     } // namespace optimization
 } // namespace numeric
 

@@ -197,6 +197,39 @@ TEST(optimization, newton_min_0)
     double x_true{-1.}, fx_true{-1.};
     EXPECT_NEAR(fxopt,fx_true,1e-4) << ss.str();
 }
+
+TEST(optimization, backtracking_line_search) 
+{
+    namespace nm = numeric;
+    auto f = [](double x) {
+        return x*x;
+    };
+    auto alpha_init{1.0};
+    auto xi{1.0};
+    auto d{-2.};
+    auto tau{0.5};
+    auto alpha = nm::optimization::backtracking_line_search(f,xi,d,alpha_init,tau);
+    EXPECT_NEAR(alpha,0.5,1e-6);
+}
+
+TEST(optimization, backtracking_armijo_line_search) 
+{
+    namespace nm = numeric;
+    auto f = [](double x) {
+        return x*x;
+    };
+    auto df = [](double x) {
+        return 2*x;
+    };
+    auto alpha_init{1.0};
+    auto beta{1.0};
+    auto xi{1.0};
+    auto d{-2.};
+    auto tau{0.5};
+    auto alpha = nm::optimization::backtracking_armijo_line_search(f,df,xi,d,alpha_init,beta,tau);
+    EXPECT_NEAR(alpha,0.0,1e-6);
+}
+
 /*
 TEST(optimization, gold_section_minimum)
 {
