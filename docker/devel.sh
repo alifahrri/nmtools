@@ -25,5 +25,8 @@ if [ -z "$IMG" -a "$IMG" != " " ]; then
         IMG="numeric_tools"
 fi
 
-## assuming this script is located in root/scripts & Dockerfile in root/docker
-docker build -t $IMG -f ${DIR}/Dockerfile ${DIR}/..
+RUN_ARGS=${POSITIONAL[@]}
+
+echo $RUN_ARGS
+
+docker run -it --rm -v $DIR/../:/app/numeric_tools/ $RUN_ARGS $IMG bash
