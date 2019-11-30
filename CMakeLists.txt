@@ -18,6 +18,7 @@ add_executable(numeric_tests tests/tests.cpp
     tests/differentiation/finite.cpp
     tests/taylor/taylor.cpp
     tests/curvefit/sinusoid.cpp
+    tests/curvefit/spline.cpp
     tests/fourier/series.cpp
     tests/utility/utility.cpp
     tests/fourier/transform.cpp
@@ -31,3 +32,9 @@ add_test(all_numeric_tests numeric_tests)
 # include(GoogleTest)
 # add_executable(numeric_tests tests/tests.cpp tests/roots/bisection.cpp)
 # gtest_add_test(TARGET numeric_tests)
+
+option(BUILD_EXAMPLES "build example programs" OFF)
+
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif(BUILD_EXAMPLES)
