@@ -4,6 +4,10 @@
 #include <map>
 #include <ratio>
 #include <complex>
+#include <vector>
+#include <array>
+#include <tuple>
+#include <type_traits>
 
 namespace numeric {
 
@@ -78,16 +82,6 @@ namespace numeric {
         > /* enable_if */ > : std::false_type {};
 
         template <typename T, typename = void>
-        struct is_resizeable : std::false_type {};
-
-        template <typename T>
-        struct is_resizeable<T, std::enable_if_t< 
-            std::is_same_v<
-                decltype(std::declval<T>().resize(std::size_t{})),void
-            > // is_same
-        > /* enable_if */ > : std::true_type {};
-
-        template <typename T, typename = void>
         struct has_ref_square_bracket_operator : std::false_type {};
 
         template <typename T>
@@ -149,8 +143,81 @@ namespace numeric {
         struct is_transposeable<T, std::enable_if_t< 
             std::is_arithmetic_v<T> || has_transpose_op<T>::value 
         > > : std::true_type {};
+
+        /* TODO : move (?) */
+        using std::begin;
+        using std::end;
+
+        template <typename T>
+        struct is_iterable {
+        private:
+            template <typename It>
+            static constexpr auto test(int)
+                -> decltype(begin(std::declval<It>()), end(std::declval<It>()), bool())
+            { return true; }
+            template <typename It>
+            static constexpr auto test(char)
+            { return false; }
+        public:
+            constexpr static bool value = test<T>(int());
+        };
+
+        template <typename T, typename = void>
+        struct is_indexable : std::false_type {};
+        template <typename T>
+        struct is_indexable<T, std::void_t<decltype(std::declval<T>()[size_t{}])> > : std::true_type {};
+
+        template <typename T, typename = void>
+        struct is_resizeable : std::false_type {};
+        template <typename T>
+        struct is_resizeable<T, 
+            std::void_t<decltype(std::declval<T>().resize(std::declval<typename T::size_type>()))> >
+        : std::true_type {};
+
+        template <typename ...T>
+        struct all_iterable {
+            constexpr static bool value = std::conjunction_v<is_iterable<T>...>;
+        };
+
+        template <typename ...T>
+        struct all_indexable {
+            constexpr static bool value = std::conjunction_v<is_indexable<T>...>;
+        };
+
+        template <typename ...T>
+        constexpr bool all_iterable_v = all_iterable<T...>::value;
+
+        template <typename ...T>
+        constexpr bool all_indexable_v = all_indexable<T...>::value;
+
+        template <typename T>
+        using is_std_array_or_vector = std::disjunction<is_std_array<std::decay_t<T>>,is_std_vector<std::decay_t<T>>>;
+
     } // namespace traits
-    
+
+    namespace mpl {
+        template <typename T, typename V, size_t, typename=void>
+        struct copy_std_container {
+            using type = std::enable_if_t<
+                traits::is_std_array_or_vector<T>::value, std::vector<std::decay_t<V>>
+            >;
+        };
+        template <typename T, typename V>
+        struct copy_std_container<T,V,0,std::enable_if_t<traits::is_std_array<T>::value>> {
+            using type = std::enable_if_t<
+                traits::is_std_array_or_vector<T>::value, std::array<std::decay_t<V>,std::tuple_size<T>::value>
+            >;
+        };
+        template <typename T, typename V, size_t n>
+        struct copy_std_container<T,V,n,std::enable_if_t<traits::is_std_array<T>::value>> {
+            using type = std::enable_if_t<
+                traits::is_std_array_or_vector<T>::value, std::array<std::decay_t<V>,n>
+            >;
+        };
+        template <typename T, typename V, size_t n=0>
+        using copy_std_container_t = typename copy_std_container<T,V,n>::type;
+    } // namespace mpl
+
     namespace helper {
 
         namespace tag {
