@@ -295,6 +295,62 @@ namespace numeric {
                 alpha = alpha * tau;
             return alpha;
         } // backtracking_armijo_line_search
+
+        namespace detail {
+            template <typename StateType, typename Scalar>
+            auto line_search_interpolation(StateType &&f_0, StateType &&f_l, StateType &&df_l, Scalar &alpha_0, Scalar &alpha_u, Scalar alpha_l, Scalar tau)
+            {
+                if (alpha_0 < alpha_u)
+                    alpha_u = alpha_0;
+                auto alpha_hat = alpha_l + (
+                    std::pow(alpha_0 - alpha_l, 2) * df_l /
+                    ( 2 * (f_l - f_0 + (alpha_0 - alpha_l) * df_l) )
+                );
+                if (alpha_hat < alpha_l + tau * (alpha_u - alpha_l))
+                    alpha_hat = alpha_l + tau * (alpha_u - alpha_l);
+                if (alpha_hat > alpha_u - tau * (alpha_u - alpha_l))
+                    alpha_hat = alpha_u - tau * (alpha_u - alpha_l);
+                return alpha_hat;
+            } // line_search_interpolation
+            template <typename StateType, typename Scalar>
+            auto line_search_extrapolation(StateType &&df_0, StateType &&df_l, Scalar &&alpha_0, Scalar &&alpha_l, Scalar tau, Scalar chi)
+            {
+                auto d_alpha_0 = (alpha_0 - alpha_l) * df_0 / (df_l - df_0);
+                if (d_alpha_0 < tau * (alpha_0 - alpha_l))
+                    d_alpha_0 = tau * (alpha_0 - alpha_l);
+                if (d_alpha_0 > chi * (alpha_0 - alpha_l))
+                    d_alpha_0 = chi * (alpha_0 - alpha_l);
+                auto alpha_hat = alpha_0 + d_alpha_0;
+                return alpha_hat;
+            }
+        } // namespace detail
+
+        template <typename F, typename DF, typename StateType, typename Scalar>
+        auto inexact_line_search(F &&f, DF &&g, StateType &&xi, StateType &&d, Scalar alpha_0, Scalar rho, Scalar sigma, Scalar tau, Scalar chi)
+        {
+            Scalar alpha_l{0};
+            Scalar alpha_u{1e99};
+            auto gk = g(xi);
+            auto f_l = f(xi + alpha_l * d);
+            auto df_l = helper::transpose( g(xi + alpha_l * d) ) * d;
+            STEP_4 :
+            auto f_0 = f(xi+alpha_0*d);
+            if (f_0 > f_l + rho * (alpha_0 - alpha_l) * df_l) {
+                auto alpha_hat = detail::line_search_interpolation(f_0, f_l, df_l, alpha_0, alpha_u, alpha_l, tau);
+                alpha_0 = alpha_hat;
+                goto STEP_4;
+            }
+            auto df_0 = helper::transpose( g(xi + alpha_0 * d) ) * d;
+            if (df_0 < sigma * df_l) {
+                auto alpha_hat = detail::line_search_extrapolation(df_0, df_l, alpha_0, alpha_l, tau, chi);
+                alpha_l = alpha_0;
+                alpha_0 = alpha_hat;
+                f_l = f_0;
+                df_l = df_0;
+                goto STEP_4;
+            }
+            return alpha_0;
+        } // inexact_line_search
         
     } // namespace optimization
 } // namespace numeric
