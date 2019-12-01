@@ -24,3 +24,8 @@ $ docker/run.sh
 
 ## Examples
 **TODO**. In the meantime please look at unit tests files located at `tests` directory.
+
+## Reference  
+```
+Chapra SC, Canale RP. Numerical methods for engineers. New York: Mcgraw-hill; 1998.
+```
