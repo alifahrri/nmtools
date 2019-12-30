@@ -9,7 +9,7 @@ compiler:
   - gcc
 
 before_script:
-  - docker build -t numeric_tools -f docker/Dockerfile .
+  - docker build -t numeric_tools -f docker/dockerfile .
 
 script:
   - docker run --rm numeric_tools
