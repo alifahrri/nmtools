@@ -3,8 +3,8 @@ A generic codes collection on Numerical Methods.
 
 | Branch 	| Build Status                                                                                                                      	|
 |--------	|-----------------------------------------------------------------------------------------------------------------------------------	|
-| `master` 	| [![Build Status](https://travis-ci.org/alifahrri/nmtools.svg?branch=master)](https://travis-ci.org/alifahrri/numeric_tools) 	|
-|  `devel` 	|  [![Build Status](https://travis-ci.org/alifahrri/nmtools.svg?branch=devel)](https://travis-ci.org/alifahrri/numeric_tools) 	|   
+| `master` 	| [![Build Status](https://travis-ci.org/alifahrri/nmtools.svg?branch=master)](https://travis-ci.org/alifahrri/nmtools) 	|
+|  `devel` 	|  [![Build Status](https://travis-ci.org/alifahrri/nmtools.svg?branch=devel)](https://travis-ci.org/alifahrri/nmtools) 	|   
 
 
 ## Quick Start
