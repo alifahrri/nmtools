@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "taylor.hpp"
+#include "nmtools/taylor.hpp"
 #include <cmath>
 
 namespace cos_fn {
@@ -33,7 +33,7 @@ constexpr double c4 = c3+(cos(M_PI/4)/24*std::pow(M_PI/12,4));
 /* define min difference */
 constexpr double zero = 1e-15;
 
-using namespace numeric::taylor;
+using namespace nmtools::taylor;
 
 TEST(taylor, constexpr_taylor_series) 
 {

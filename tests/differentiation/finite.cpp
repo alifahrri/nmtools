@@ -1,8 +1,8 @@
-#include "differentiation.hpp"
+#include "nmtools/differentiation.hpp"
 #include <gtest/gtest.h>
 #include <cmath>
 
-namespace diff = numeric::differentiation;
+namespace diff = nmtools::differentiation;
 
 TEST(finite, first_order_centered_0)
 {

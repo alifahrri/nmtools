@@ -26,4 +26,4 @@ if [ -z "$IMG" -a "$IMG" != " " ]; then
 fi
 
 ## assuming this script is located in root/scripts & Dockerfile in root/docker
-docker build -t $IMG -f ${DIR}/Dockerfile ${DIR}/..
+docker build -t $IMG -f ${DIR}/dockerfile ${DIR}/..

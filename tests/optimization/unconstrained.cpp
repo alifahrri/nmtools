@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <cmath>
-#include "optimization.hpp"
+#include "nmtools/optimization.hpp"
 
-namespace opt = numeric::optimization;
+namespace opt = nmtools::optimization;
 
 TEST(optimization, gold_section_maximum)
 {
@@ -200,7 +200,7 @@ TEST(optimization, newton_min_0)
 
 TEST(optimization, backtracking_line_search) 
 {
-    namespace nm = numeric;
+    namespace nm = nmtools;
     auto f = [](double x) {
         return x*x;
     };
@@ -214,7 +214,7 @@ TEST(optimization, backtracking_line_search)
 
 TEST(optimization, backtracking_armijo_line_search) 
 {
-    namespace nm = numeric;
+    namespace nm = nmtools;
     auto f = [](double x) {
         return x*x;
     };

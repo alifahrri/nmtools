@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include "ode.hpp"
+#include "nmtools/ode.hpp"
 #include <cmath>
 #include <sstream>
 
-namespace nm = numeric;
+namespace nm = nmtools;
 namespace ode = nm::ode;
 namespace hlp = nm::helper;
 
@@ -15,7 +15,7 @@ TEST(utility, is_2d_array) {
 }
 
 TEST(rk_helper,constants) {
-    namespace detail = numeric::helper::detail;
+    namespace detail = nmtools::helper::detail;
 
     constexpr detail::Constants<double,100,50,25,25> constants;
     static_assert(constants.values[0]==0.5);
@@ -24,7 +24,7 @@ TEST(rk_helper,constants) {
 }
 
 TEST(rk_helper,triangular_number) {
-    namespace detail = numeric::helper::detail;
+    namespace detail = nmtools::helper::detail;
     static_assert(detail::triangular_number(1)==1);
     static_assert(detail::triangular_number(2)==3);
     static_assert(detail::triangular_number(3)==6);

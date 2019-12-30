@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "ode.hpp"
+#include "nmtools/ode.hpp"
 #include <cmath>
 
 TEST(euler, test_0) {
@@ -11,7 +11,7 @@ TEST(euler, test_0) {
     double xf{4};
     double dx{0.5};
     double yf;
-    numeric::ode::euler(dydx,yi,xi,xf,dx,yf);
+    nmtools::ode::euler(dydx,yi,xi,xf,dx,yf);
     EXPECT_NEAR(yf,7,1e-6);
 }
 
@@ -24,7 +24,7 @@ TEST(midpoint, test_0) {
     double xf{4};
     double dx{0.5};
     double yf;
-    numeric::ode::midpoint(dydx,yi,xi,xf,dx,yf);
+    nmtools::ode::midpoint(dydx,yi,xi,xf,dx,yf);
     EXPECT_NEAR(yf,3,1e-6);
 }
 
@@ -37,6 +37,6 @@ TEST(heun, test_0) {
     double xf{4};
     double dx{0.5};
     double yf;
-    numeric::ode::heun(dydx,yi,xi,xf,dx,yf);
+    nmtools::ode::heun(dydx,yi,xi,xf,dx,yf);
     EXPECT_NEAR(yf,3,1e-6);
 }
