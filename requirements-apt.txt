@@ -1,0 +1,6 @@
+cmake 
+gcc 
+build-essential 
+git
+wget
+python3

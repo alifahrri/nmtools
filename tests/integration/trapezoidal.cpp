@@ -1,8 +1,8 @@
-#include "integration.hpp"
+#include "nmtools/integration.hpp"
 #include <cmath>
 #include <gtest/gtest.h>
 
-namespace integration = numeric::integration;
+namespace integration = nmtools::integration;
 
 /* for true value, see chapra numerical method, chapter newton-cotes integration */
 

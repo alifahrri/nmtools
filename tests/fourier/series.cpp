@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "fourier/series.hpp"
+#include "nmtools/fourier/series.hpp"
 #include <array>
 
 TEST(fourier,series_double_precision) {
@@ -14,7 +14,7 @@ TEST(fourier,series_double_precision) {
         else if ( (t>(T/4)) && (t<(3*T/4)) ) return -1.;
         else return 1.;
     };
-    numeric::fourier::series<10000>(f,T,a0,a,b);
+    nmtools::fourier::series<10000>(f,T,a0,a,b);
     double zero = 1e-3;
     EXPECT_NEAR(a0,0,zero);
     for (size_t i=0; i<10; i++) {
@@ -41,7 +41,7 @@ TEST(fourier,series_single_precision) {
         else if ( (t>(T/4)) && (t<(3*T/4)) ) return -1.;
         else return 1.;
     };
-    numeric::fourier::series<10000>(f,T,a0,a,b);
+    nmtools::fourier::series<10000>(f,T,a0,a,b);
     float zero = 1e-3;
     EXPECT_NEAR(a0,0,zero);
     for (size_t i=0; i<10; i++) {

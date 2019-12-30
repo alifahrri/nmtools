@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "roots.hpp"
+#include "nmtools/roots.hpp"
 
 TEST(roots,newton_raphson)
 {
@@ -12,7 +12,7 @@ TEST(roots,newton_raphson)
     double x0{0.0}, es{5e-3}, xr, ea;
     size_t imax{1000}, iter{0};
 
-    numeric::roots::newton_raphson(f,df,x0,xr,es,imax,iter,ea);
+    nmtools::roots::newton_raphson(f,df,x0,xr,es,imax,iter,ea);
     EXPECT_NEAR(f(xr),0.0,es)
         << "xr = " << xr << "\n"
         << "iter = " << iter << "\n"
@@ -27,7 +27,7 @@ TEST(roots,secant)
     double x0{1.0}, x_1{0.0}, es{5e-3}, xr, ea;
     size_t imax{1000}, iter{0};
 
-    numeric::roots::secant(f,x0,x_1,xr,es,imax,iter,ea);
+    nmtools::roots::secant(f,x0,x_1,xr,es,imax,iter,ea);
     EXPECT_NEAR(f(xr),0.0,es)
         << "xr = " << xr << "\n"
         << "iter = " << iter << "\n"
@@ -42,7 +42,7 @@ TEST(roots,modified_secant)
     double x0{1.0}, delta{1e-2}, es{5e-3}, xr, ea;
     size_t imax{1000}, iter{0};
 
-    numeric::roots::modified_secant(f,x0,delta,xr,es,imax,iter,ea);
+    nmtools::roots::modified_secant(f,x0,delta,xr,es,imax,iter,ea);
     EXPECT_NEAR(f(xr),0.0,es)
         << "xr = " << xr << "\n"
         << "iter = " << iter << "\n"
@@ -70,7 +70,7 @@ TEST(roots,fzero)
     };
     double xl{-4.0}, xu{4.0/3.0}, xr;
 
-    numeric::roots::fzero(f,xl,xu,xr,1e-6,std::numeric_limits<double>::epsilon(),&logger);
+    nmtools::roots::fzero(f,xl,xu,xr,1e-6,std::numeric_limits<double>::epsilon(),&logger);
     EXPECT_NEAR(fxr,0.0,1e-6)
         << "xr = " << xr << "\n"
         << ss.str();
@@ -83,7 +83,7 @@ TEST(roots,fzero_no_logger)
     };
     double xl{-4.0}, xu{4.0/3.0}, xr;
 
-    numeric::roots::fzero(f,xl,xu,xr,1e-6);
+    nmtools::roots::fzero(f,xl,xu,xr,1e-6);
     EXPECT_NEAR(f(xr),0.0,1e-6)
         << "xr = " << xr;
 }

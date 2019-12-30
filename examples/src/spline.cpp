@@ -1,4 +1,4 @@
-#include "curvefit/spline.hpp"
+#include "nmtools/curvefit/spline.hpp"
 #include <vector>
 #include <iostream>
 
@@ -16,15 +16,15 @@ int main(int argc, char **argv)
     std::vector<double> x_data{
         0.0, 0.125, 0.25, 0.4375, 0.625, 0.8125, 1.0, 1.0, 1.0
     };
-    auto [e, f, g, r] = numeric::curvefit::helper::tridiag(t_data, y_data);
+    auto [e, f, g, r] = nmtools::curvefit::helper::tridiag(t_data, y_data);
     assert(
         std::size(e)==std::size(f) &&
         std::size(f)==std::size(g) &&
         std::size(g)==std::size(r)
     );
-    auto x_results = numeric::curvefit::cubic_spline(t_data, x_data, t_data);
-    auto y_results = numeric::curvefit::cubic_spline(t_data, y_data, t_data);
-    auto z_results = numeric::curvefit::cubic_spline(t_data, z_data, t_data);
+    auto x_results = nmtools::curvefit::cubic_spline(t_data, x_data, t_data);
+    auto y_results = nmtools::curvefit::cubic_spline(t_data, y_data, t_data);
+    auto z_results = nmtools::curvefit::cubic_spline(t_data, z_data, t_data);
 
     assert(std::size(x_results)==std::size(y_results));
     assert(std::size(x_results)==std::size(z_results));

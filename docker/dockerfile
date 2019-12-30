@@ -1,0 +1,26 @@
+FROM ubuntu:bionic
+
+WORKDIR /opt/
+
+## install sytem requirements
+COPY requirements-apt.txt requirements.txt
+RUN apt update && xargs apt install -y < requirements.txt
+
+## install gtest
+RUN git clone -b 'release-1.8.1' https://github.com/google/googletest.git \
+    && cd googletest \
+    && mkdir build && cd build \
+    && cmake .. && make && make install
+
+## install miniconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
+
+WORKDIR /app/numeric_tools/
+
+COPY . /app/numeric_tools/
+
+RUN mkdir build && cd build \
+    && cmake .. && make
+
+CMD ["bash","scripts/run_unit_tests.sh"]

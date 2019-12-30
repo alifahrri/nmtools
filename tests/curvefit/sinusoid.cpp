@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "curvefit.hpp"
+#include "nmtools/curvefit.hpp"
 
 TEST(curvefit,sinusoid_double_precision) {
-    namespace fit = numeric::curvefit;
+    namespace fit = nmtools::curvefit;
     double t[] = { 0.,      0.15,   0.30,   0.45,   0.60,   0.75,   0.90,   1.05,   1.20,   1.35  };
     double y[] = { 2.200,   1.595,  1.031,  0.722,  0.786,  1.200,  1.805,  2.369,  2.678,  2.614 };
     double a0, a1, b1;
@@ -15,7 +15,7 @@ TEST(curvefit,sinusoid_double_precision) {
 }
 
 TEST(curvefit,sinusoid_single_precision) {
-    namespace fit = numeric::curvefit;
+    namespace fit = nmtools::curvefit;
     float t[] = { 0.,      0.15,   0.30,   0.45,   0.60,   0.75,   0.90,   1.05,   1.20,   1.35  };
     float y[] = { 2.200,   1.595,  1.031,  0.722,  0.786,  1.200,  1.805,  2.369,  2.678,  2.614 };
     float a0, a1, b1;
