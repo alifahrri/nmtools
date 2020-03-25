@@ -4,3 +4,4 @@ build-essential
 git
 wget
 python3
+tar
