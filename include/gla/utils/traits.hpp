@@ -54,6 +54,16 @@ namespace gla
             template <typename T, typename elements_type>
             static constexpr bool has_set_elements_v = has_set_elements<T,elements_type>::value;
 
+            template <typename T, typename matrix_type, typename = void>
+            struct has_lu_decompostion : std::false_type {};
+
+            template <typename T, typename matrix_type>
+            struct has_lu_decompostion<T, matrix_type, std::void_t<
+                decltype(T::lu_decomposition(std::declval<matrix_type>()))
+            > /* void_t */ > : std::true_type {};
+
+            template <typename T, typename matrix_type>
+            static constexpr bool has_lu_decomposition_v = has_lu_decompostion<T,matrix_type>::value;
         } // namespace traits
         
     } // namespace utils
