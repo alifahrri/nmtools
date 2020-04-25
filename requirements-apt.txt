@@ -5,3 +5,5 @@ git
 wget
 python3
 tar
+libblas-dev
+liblapack-dev
