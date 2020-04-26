@@ -22,6 +22,13 @@ namespace gla
                         arma::lu(L, U, P, matrix);
                         return std::make_tuple(L,U);
                     }
+
+                    template <typename Matrix>
+                    static auto inverse(const Matrix& matrix)
+                    {
+                        auto inv = arma::inv(matrix);
+                        return inv;
+                    }
                 };
 
                 using functional = functional_base<functional_impl>;
