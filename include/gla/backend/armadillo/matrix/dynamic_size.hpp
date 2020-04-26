@@ -3,21 +3,23 @@
 
 #include <armadillo>
 
+#include "gla/matrix/dynamic_size.hpp"
+
 namespace gla
 {
-    namespace matrix
+    namespace backend
     {
-        namespace backend
+        namespace armadillo
         {
-            namespace armadillo
+            namespace matrix
             {
                 template <typename DataType>
-                struct dynamic : arma::Mat<DataType>
+                struct dynamic_impl : arma::Mat<DataType>
                 {
                     using data_t = DataType;
                     using base_t = arma::Mat<DataType>;
 
-                    dynamic(int rows, int cols) : base_t(rows, cols) {}
+                    dynamic_impl(int rows, int cols) : base_t(rows, cols) {}
                     
                     const int n_rows() const
                     {
@@ -47,10 +49,14 @@ namespace gla
                             }
                     }
                 };
-            } // namespace armadillo
-        } // namespace backend
+
+                template <typename data_type>
+                using dynamic = ::gla::matrix::dynamic_base<dynamic_impl,data_type>;
+
+            } // namespace matrix
+        } // namespace armadillo
         
-    } // namespace matrix
+    } // namespace backend
     
 } // namespace gla
 

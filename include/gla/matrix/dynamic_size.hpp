@@ -8,12 +8,12 @@ namespace gla
     namespace matrix
     {
         template <template<typename> typename MatrixImpl, typename DataType>
-        struct dynamic : public MatrixImpl<DataType>
+        struct dynamic_base : public MatrixImpl<DataType>
         {
             using impl_t = MatrixImpl<DataType>;
             using data_t = typename impl_t::data_t;
 
-            dynamic(int rows, int cols) : impl_t(rows, cols) {}
+            dynamic_base(int rows, int cols) : impl_t(rows, cols) {}
 
             const auto n_rows() const 
             {
