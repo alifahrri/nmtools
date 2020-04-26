@@ -30,6 +30,13 @@ namespace gla
                         Eigen::MatrixXd u = lu_mat.matrixLU().triangularView<Eigen::Upper>();
                         return std::make_tuple(l,u);
                     }
+
+                    template <typename Matrix>
+                    static auto inverse(const Matrix& matrix)
+                    {
+                        auto inv = matrix.inverse();
+                        return inv;
+                    }
                 };
 
                 using functional = functional_base<functional_impl>;
