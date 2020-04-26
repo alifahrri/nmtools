@@ -3,17 +3,17 @@
 #include <armadillo>
 
 #include <gla/matrix/dynamic_size.hpp>
-#include <gla/functional/backend/eigen.hpp>
-#include <gla/functional/backend/armadillo.hpp>
-#include <gla/matrix/backend/eigen/dynamic_size.hpp>
-#include <gla/matrix/backend/armadillo/dynamic_size.hpp>
+#include <gla/backend/eigen/functional.hpp>
+#include <gla/backend/armadillo/functional.hpp>
+#include <gla/backend/eigen/matrix/dynamic_size.hpp>
+#include <gla/backend/armadillo/matrix/dynamic_size.hpp>
 
 namespace matrix = gla::matrix;
-namespace eigen_backend = gla::matrix::backend::eigen;
-namespace arma_backend = gla::matrix::backend::armadillo;
+namespace eigen_backend = gla::backend::eigen::matrix;
+namespace arma_backend = gla::backend::armadillo::matrix;
 
-using eigen_f = gla::functional::backend::eigen::functional;
-using arma_f = gla::functional::backend::armadillo::functional;
+using eigen_f = gla::backend::eigen::functional;
+using arma_f = gla::backend::armadillo::functional;
 
 int main()
 {
@@ -81,7 +81,7 @@ int main()
     /** gla **/
     {
         std::cout << "creating 2x2 gla matrix with eigen backend" << std::endl;
-        matrix::dynamic<eigen_backend::dynamic,double> a(2,2);
+        eigen_backend::dynamic<double> a(2,2);
         std::cout << "setting elements of 2x2 gla matrix with eigen backend" << std::endl;
         a.set_elements(test);
         std::cout << a << std::endl;
@@ -93,7 +93,7 @@ int main()
         }
 
         std::cout << "creating 2x2 gla matrix with armadillo backend" << std::endl;
-        matrix::dynamic<arma_backend::dynamic,double> b(2,2);
+        arma_backend::dynamic<double> b(2,2);
         std::cout << "setting elements of 2x2 gla matrix with eigen backend" << std::endl;
         b.set_elements(test);
         std::cout << b;

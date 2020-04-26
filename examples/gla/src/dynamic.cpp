@@ -3,15 +3,15 @@
 #include <armadillo>
 
 #include <gla/matrix/dynamic_size.hpp>
-#include <gla/matrix/backend/eigen/dynamic_size.hpp>
-#include <gla/matrix/backend/armadillo/dynamic_size.hpp>
+#include <gla/backend/eigen/matrix/dynamic_size.hpp>
+#include <gla/backend/armadillo/matrix/dynamic_size.hpp>
 
 using Eigen::MatrixXd;
 using Eigen::Matrix2d;
 
 namespace matrix = gla::matrix;
-namespace eigen_backend = gla::matrix::backend::eigen;
-namespace arma_backend = gla::matrix::backend::armadillo;
+namespace eigen_backend = gla::backend::eigen::matrix;
+namespace arma_backend = gla::backend::armadillo::matrix;
 
 int main()
 {
@@ -41,7 +41,7 @@ int main()
     std::vector<double> test3{1.,2.,3.,4.,5.,6.,7.,8.,9.};
 
     std::cout << "creating 2x2 gla matrix with eigen backend" << std::endl;
-    matrix::dynamic<eigen_backend::dynamic,double> a(2,2);
+    eigen_backend::dynamic<double> a(2,2);
     std::cout << a.n_rows() << "x" << a.n_cols() << std::endl;
     std::cout << a << std::endl;
     std::cout << "setting elements of 2x2 gla matrix with eigen backend" << std::endl;
@@ -54,7 +54,7 @@ int main()
     a.set_elements(test3);
     
     std::cout << "creating 2x2 gla matrix with armadillo backend" << std::endl;
-    matrix::dynamic<arma_backend::dynamic,double> b(2,2);
+    arma_backend::dynamic<double> b(2,2);
     std::cout << b.n_rows() << "x" << b.n_cols() << std::endl;
     std::cout << b;
     std::cout << "setting elements of 2x2 gla matrix with eigen backend" << std::endl;
