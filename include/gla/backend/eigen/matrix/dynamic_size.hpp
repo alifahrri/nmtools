@@ -6,21 +6,23 @@
 #include <cassert>
 #include <vector>
 
+#include "gla/matrix/dynamic_size.hpp"
+
 namespace gla
 {
-    namespace matrix
+    namespace backend
     {
-        namespace backend
+        namespace eigen
         {
-            namespace eigen
+            namespace matrix
             {
                 template <typename DataType>
-                struct dynamic : Eigen::Matrix<DataType,Eigen::Dynamic,Eigen::Dynamic>
+                struct dynamic_impl : Eigen::Matrix<DataType,Eigen::Dynamic,Eigen::Dynamic>
                 {
                     using data_t = DataType;
                     using base_t = Eigen::Matrix<DataType,Eigen::Dynamic,Eigen::Dynamic>;
 
-                    dynamic(int rows, int cols) : base_t(rows, cols) {}
+                    dynamic_impl(int rows, int cols) : base_t(rows, cols) {}
 
                     const int n_rows() const
                     {
@@ -50,11 +52,15 @@ namespace gla
                             }
                     }
                 };
-            } // namespace eigen
+
+                template <typename data_type>
+                using dynamic = ::gla::matrix::dynamic_base<dynamic_impl,data_type>;
+                
+            } // namespace matrix
             
-        } // namespace backend
+        } // namespace eigen
         
-    } // namespace matrix
+    } // namespace backend
     
 } // namespace gla
 
