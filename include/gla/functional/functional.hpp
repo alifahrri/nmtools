@@ -22,6 +22,18 @@ namespace gla
             auto [l, u] = impl_t::lu_decomposition(matrix);
             return std::make_tuple(l,u);
         }
+
+        template <typename MatrixType>
+        static auto inverse(const MatrixType& matrix)
+        {
+            static_assert(
+                utils::traits::has_inverse_v<impl_t, const MatrixType&>,
+                "dev notes : inverse not implemented"
+            );
+            /* TODO : check return type */
+            auto inv = impl_t::inverse(matrix);
+            return inv;
+        }
     };
     
 } // namespace gla
