@@ -10,6 +10,8 @@ namespace gla
         template <template<typename> typename MatrixImpl, typename DataType>
         struct dynamic_base : public MatrixImpl<DataType>
         {
+            template <typename data_type> using matrix_t = MatrixImpl<data_type>;
+
             using impl_t = MatrixImpl<DataType>;
             using data_t = typename impl_t::data_t;
 
@@ -33,6 +35,13 @@ namespace gla
                 return impl_t::n_cols();
             }
 
+            const auto size() const
+            {
+                return std::make_pair(
+                    this->n_rows(), this->n_cols()
+                );
+            }
+
             void resize(int row, int col)
             {
                 static_assert(
@@ -50,6 +59,14 @@ namespace gla
                     "dev notes : set_elements() not implemented"
                 );
                 return impl_t::set_elements(elements);
+            }
+
+            dynamic_base<matrix_t,data_t>& operator=(std::initializer_list<data_t> elements)
+            {
+                /* TODO: allow impl to override this fn, use default otherwise */
+                std::vector<data_t> v_elements = elements;
+                this->set_elements(v_elements);
+                return *this;
             }
         };
         
