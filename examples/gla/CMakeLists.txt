@@ -83,3 +83,31 @@ target_link_libraries(
     inverse PRIVATE
     armadillo
 )
+
+add_executable(
+    transpose
+    src/transpose.cpp
+)
+
+set_target_properties(
+    transpose
+    PROPERTIES
+    CXX_STANDARD 17
+)
+
+target_compile_options(
+    transpose PRIVATE
+    -g
+)
+
+target_include_directories(
+    transpose PRIVATE
+    ## TODO : properly find package instead of directly specifying include dir
+    /usr/local/include/eigen3
+    /app/numeric_tools/include
+)
+
+target_link_libraries(
+    transpose PRIVATE
+    armadillo
+)
