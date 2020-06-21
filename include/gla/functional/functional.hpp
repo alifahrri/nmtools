@@ -34,6 +34,19 @@ namespace gla
             auto inv = impl_t::inverse(matrix);
             return inv;
         }
+
+        template <typename MatrixType>
+        static auto transpose(const MatrixType& matrix)
+        {
+            static_assert(
+                utils::traits::has_transpose_v<impl_t, const MatrixType&>,
+                "dev notes : transpose not implemented"
+            );
+            /* TODO : check return type */
+            auto transposed = impl_t::transpose(matrix);
+            /* */
+            return transposed;
+        }
     };
     
 } // namespace gla

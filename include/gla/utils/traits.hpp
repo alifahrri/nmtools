@@ -75,6 +75,18 @@ namespace gla
 
             template <typename T, typename matrix_type>
             static constexpr bool has_inverse_v = has_inverse<T,matrix_type>::value;
+
+            template <typename T, typename matrix_type, typename=void>
+            struct has_transpose : std::false_type {};
+
+            template <typename T, typename matrix_type>
+            struct has_transpose<T, matrix_type, std::void_t<
+                decltype(T::transpose(std::declval<matrix_type>()))
+            > /* void_t */ > : std::true_type {};
+
+            template <typename T, typename matrix_type>
+            static constexpr bool has_transpose_v = has_transpose<T,matrix_type>::value;
+
         } // namespace traits
         
     } // namespace utils

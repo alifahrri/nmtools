@@ -27,6 +27,13 @@ namespace gla
                     auto inv = arma::inv(matrix);
                     return inv;
                 }
+
+                template <typename Matrix>
+                static auto transpose(const Matrix& matrix)
+                {
+                    auto trans = matrix.t();
+                    return trans;
+                }
             };
 
             using functional = functional_base<functional_impl>;
