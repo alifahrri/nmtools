@@ -35,6 +35,13 @@ namespace gla
                     auto inv = matrix.inverse();
                     return inv;
                 }
+
+                template <typename Matrix>
+                static auto transpose(const Matrix& matrix)
+                {
+                    auto trans = matrix.transpose();
+                    return trans;
+                }
             };
 
             using functional = functional_base<functional_impl>;
