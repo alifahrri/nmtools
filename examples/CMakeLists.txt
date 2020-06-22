@@ -1,2 +1,2 @@
-add_subdirectory(spline)
+add_subdirectory(nmtools)
 add_subdirectory(gla)
