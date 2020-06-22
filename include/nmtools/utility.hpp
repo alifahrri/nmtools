@@ -407,6 +407,51 @@ namespace nmtools {
             using indexes = std::make_index_sequence<std::tuple_size<Container>::value>;
             return detail::append_array<N>(container, indexes{}, value);
         }
+
+        /**
+         * @brief compute nth value of fibonacci sequence
+         * 
+         * @tparam integer_t whole number
+         * @param n
+         * @return constexpr integer_t 
+         */
+        template <typename integer_t>
+        constexpr integer_t fibonacci(integer_t n) {
+            return n <= 1 ? n : fibonacci(n-1) + fibonacci(n-2);
+        }
+
+        /**
+         * @brief compute fibonacci sequence up-to n
+         * 
+         * @tparam integer_t whole number
+         * @param n 
+         * @return auto 
+         */
+        template <typename integer_t>
+        auto fibonacci_sequence(integer_t n) {
+            /* TODO: make this constexpr */
+            std::vector<integer_t> sequence;
+            for (size_t i=0; i<n; i++)
+                sequence.push_back(fibonacci(i));
+            return sequence;
+        }
+
+        /**
+         * @brief constexpr version to compute fibonacci sequence up-to n
+         * n is passed as template parameter
+         * 
+         * @tparam n 
+         * @return constexpr std::array<integer_t,n> 
+         */
+        template <size_t n, typename integer_t = size_t>
+        constexpr std::array<integer_t,n> fibonacci_sequence() {
+            /* NOTE: workaround for compile-time version since 
+                c++17 doesn't have constexpr vector */
+            std::array<integer_t,n> sequence{};
+            for (size_t i=0; i<n; i++)
+                sequence[i] = fibonacci(i);
+            return sequence;
+        }
     } // namespace helper
 } // namespace nmtools
 
