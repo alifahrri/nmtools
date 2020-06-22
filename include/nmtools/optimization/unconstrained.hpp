@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cmath>
 #include <tuple>
+#include <array>
 #include <algorithm>
 #include <functional>
 #include "nmtools/utility.hpp"
@@ -323,6 +324,58 @@ namespace nmtools {
                 auto alpha_hat = alpha_0 + d_alpha_0;
                 return alpha_hat;
             }
+
+            /**
+             * @brief actual implementation of fibonacci search
+             * 
+             * @tparam F type of objective function
+             * @tparam Scalar real-valued scalar
+             * @tparam Sequence container for fibonacci sequence
+             * @tparam Logger=std::nullptr_t optional logger type
+             * @param f objective function
+             * @param x_L0 lower bound
+             * @param x_U0 upper bound
+             * @param fibo_seq fibonacci sequence
+             * @param logger optional logging
+             * @return constexpr auto x_opt
+             */
+            template <typename F, typename Scalar, typename Sequence, typename Logger=std::nullptr_t>
+            constexpr auto fibonacci_search(const F &f, const Scalar &x_L0, const Scalar &x_U0, const Sequence& fibo_seq, Logger logger=Logger{})
+            {
+                auto n = std::size(fibo_seq);
+                auto x_L = x_L0;
+                auto x_U = x_U0;
+                auto I0 = x_U - x_L;
+                auto I1 = (Scalar(fibo_seq[n-2]) / Scalar(fibo_seq[n-1])) * I0;
+                auto x_a = x_U - I1;
+                auto x_b = x_L + I1;
+                auto f_a = f(x_a);
+                auto f_b = f(x_b);
+                for (size_t k=0; k<n-2; k++) {
+                    if constexpr (!std::is_same_v<Logger,std::nullptr_t>) {
+                        static_assert(std::is_pointer_v<Logger>);
+                        (*logger)(std::map<std::string,Scalar>{
+                            {"iteration", k}, {"x_a", x_a}, {"x_b", x_b},
+                            {"f_a", f_a}, {"f_b", f_b}, {"I", I1}
+                        });
+                    }
+                    auto I2 = (Scalar(fibo_seq[n-(k+1)-2]) / Scalar(fibo_seq[n-(k+1)-1])) * I1;
+                    if (f_a >= f_b) {
+                        x_L = x_a; x_U = x_U;
+                        x_a = x_b; x_b = x_L + I2;
+                        f_a = f_b; f_b = f(x_b);
+                    } else {
+                        x_L = x_L; x_U = x_b;
+                        x_b = x_a; x_a = x_U - I2;
+                        f_b = f_a; f_a = f(x_a);
+                    }
+                    if (x_a > x_b)
+                        break;
+                    I1 = I2;
+                }
+                return x_a;
+            } // fibonacci_search
+
         } // namespace detail
 
         template <typename F, typename DF, typename StateType, typename Scalar>
@@ -351,6 +404,61 @@ namespace nmtools {
             }
             return alpha_0;
         } // inexact_line_search
+
+        /**
+         * @brief runtime version of fibonacci search
+         * 
+         * @tparam F objective function type
+         * @tparam Scalar real-valued scalar
+         * @tparam Logger=std::nullptr_t optional for logging
+         * @param f objective function
+         * @param x_L lower bound
+         * @param x_U upper bound
+         * @param n number of iteration
+         * @param logger optional intermediate value logger
+         * @return auto optimal x
+         * @reference @book{antoniou2007practical,
+                title={Practical optimization: algorithms and engineering applications},
+                author={Antoniou, Andreas and Lu, Wu-Sheng},
+                year={2007},
+                publisher={Springer Science \& Business Media}
+            }
+         */
+        template <typename F, typename Scalar, typename Logger=std::nullptr_t>
+        auto fibonacci_search(F &&f, Scalar &&x_L, Scalar &&x_U, int n, Logger logger=Logger{})
+        {
+            /* TODO: unify with constexpr version */
+
+            auto fibo_seq = helper::fibonacci_sequence(n);
+            return detail::fibonacci_search(f,x_L,x_U,fibo_seq,logger);
+        } // fibonacci_search
+
+        /**
+         * @brief constexpr version of fibonacci search,
+         * intermediate value loggin not supported at compile time
+         * 
+         * @tparam n number of iteration
+         * @tparam F type of objective function
+         * @tparam Scalar real-valued scalar
+         * @tparam Logger=std::nullptr_t optional for logging
+         * @param f objective function
+         * @param x_L lower bound
+         * @param x_U upper bound
+         * @param logger optional intermediate value logger
+         * @return constexpr auto optimal x
+         * @reference @book{antoniou2007practical,
+                title={Practical optimization: algorithms and engineering applications},
+                author={Antoniou, Andreas and Lu, Wu-Sheng},
+                year={2007},
+                publisher={Springer Science \& Business Media}
+            }
+         */
+        template <size_t n, typename F, typename Scalar, typename Logger=std::nullptr_t>
+        constexpr auto fibonacci_search(F &&f, Scalar &&x_L, Scalar &&x_U, Logger logger=Logger{})
+        {
+            auto fibo_seq = helper::fibonacci_sequence<n>();
+            return detail::fibonacci_search(f,x_L,x_U,fibo_seq,logger);
+        }
         
     } // namespace optimization
 } // namespace nmtools
