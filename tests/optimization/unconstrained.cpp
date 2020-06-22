@@ -230,6 +230,53 @@ TEST(optimization, backtracking_armijo_line_search)
     EXPECT_NEAR(alpha,0.0,1e-6);
 }
 
+#define EPS 1e-9
+#define NEAR(x,y) (std::fabs(x-y) < EPS)
+
+TEST(optimization, fibonacci_search)
+{
+    namespace nm = nmtools;
+    constexpr auto x_l = -1.0;
+    constexpr auto x_u = 1.0;
+    {
+        auto f = [](double x) {
+            return x*x;
+        };
+        auto x_opt = nm::optimization::fibonacci_search<10>(f,x_l,x_u);
+        EXPECT_NEAR(x_opt,0.0,1e-6) << x_opt;
+        {
+            std::stringstream ss;
+            auto logger = [&ss](std::map<std::string,double> iv){
+                for (const auto &[k,v] : iv)
+                    ss << k << ": " << v << std::endl;
+            };
+            {
+                auto x_opt = nm::optimization::fibonacci_search(f,x_l,x_u,10,&logger);
+                EXPECT_NEAR(x_opt,0.0,1e-6) << ss.str();
+            }
+            {
+                auto x_opt = nm::optimization::fibonacci_search<10>(f,x_l,x_u,&logger);
+                EXPECT_NEAR(x_opt,0.0,1e-6) << ss.str();
+            }
+        }
+        {
+            constexpr auto x_opt = nm::optimization::fibonacci_search<10>(f,x_l,x_u);
+            static_assert(NEAR(x_opt,0.0));
+        }
+    }
+    {
+        auto f = [](double x) {
+            return 3. - x*x;
+        };
+        auto x_opt = nm::optimization::fibonacci_search<10>(f,x_l,x_u);
+        EXPECT_NEAR(x_opt,1.0,1e-6) << x_opt;
+        {
+            constexpr auto x_opt = nm::optimization::fibonacci_search<10>(f,x_l,x_u);
+            static_assert(NEAR(x_opt,1.0));
+        }
+    }
+}
+
 /*
 TEST(optimization, gold_section_minimum)
 {
