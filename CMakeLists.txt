@@ -38,3 +38,12 @@ option(BUILD_EXAMPLES "build example programs" OFF)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif(BUILD_EXAMPLES)
+
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(CodeCoverage)
+append_coverage_compiler_flags()
+setup_target_for_coverage_lcov(
+    NAME ${PROJECT_NAME}_coverage 
+    EXECUTABLE numeric_tests
+    EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "${GTEST_INCLUDE_DIRS}/*" "/usr/*"
+)
