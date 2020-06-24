@@ -12,4 +12,5 @@ before_script:
   - docker build -t numeric_tools -f docker/dockerfile .
 
 script:
-  - docker run --rm numeric_tools
+  - ci_env=`bash <(curl -s https://codecov.io/env)`
+  - docker run --rm $ci_env numeric_tools
