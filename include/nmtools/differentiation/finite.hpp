@@ -42,11 +42,27 @@ namespace nmtools::differentiation {
         }
     } // namespace detail
     
+    /**
+     * @brief compute numerical differentiation using finite difference method
+     * 
+     * @tparam order=1 order of derivative
+     * @tparam formula=Formulas::Centered derivative formula [Centered,Forward,Backward]
+     * @tparam F type of function to be differentiated
+     * @tparam Scalar real number
+     * @param f function to be differentiated
+     * @param x differentiation point
+     * @param step differentiation step
+     * @return constexpr auto 
+     * @reference @book{Chapra2010,
+            author = {Chapra, Steven C and Canale, Raymond P},
+            title = {{Numerical Methods for Engineers Sixth Edition Chapra Canale}},
+        } 
+     */
     template <size_t order=1, Formulas formula=Formulas::Centered, typename F, typename Scalar>
     constexpr auto finite_difference(F &f, Scalar x, Scalar step)
     {
         return detail::finite_difference(detail::Order<order>{}, detail::ComputeType<formula>{}, f, x, step);
     }
-    
+
 } // namespace nmtools
 #endif // NMTOOLS_FINITE_HPP
