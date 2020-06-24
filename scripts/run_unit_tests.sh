@@ -7,8 +7,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $DIR/../build/
 make numeric_coverage
 
+cd $DIR/..
 if [[ ! -z ${CODECOV_TOKEN} ]]; then
-    bash <(curl -s https://codecov.io/bash) -f numeric_coverage.info || echo "Codecov did not collect coverage reports"
+    bash <(curl -s https://codecov.io/bash) -f build/numeric_coverage.info || echo "Codecov did not collect coverage reports"
 fi
 
 cd $CWD
