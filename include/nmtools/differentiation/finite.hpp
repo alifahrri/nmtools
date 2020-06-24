@@ -15,37 +15,38 @@ namespace nmtools {
         /* workaround for function template partial specialization */
         namespace detail
         {
+            /* TODO: add second order differentiation */
             template <size_t order>
             struct Order{};
             template <Formulas fomula>
             struct ComputeType{};
 
             template <typename F, typename Scalar>
-            void finite_difference(Order<1>, ComputeType<Formulas::Forward>, F &f, Scalar x, Scalar step, Scalar &d)
+            constexpr auto finite_difference(Order<1>, ComputeType<Formulas::Forward>, F &f, Scalar x, Scalar step)
             {
-                const auto& h = step;
-                d = (-f(x+2*h) + 4*f(x+h) - 3*f(x)) / (2*h);
+                const auto& h = step; // alias
+                return (-f(x+2*h) + 4*f(x+h) - 3*f(x)) / (2*h);
             }
 
             template <typename F, typename Scalar>
-            void finite_difference(Order<1>, ComputeType<Formulas::Backward>, F &f, Scalar x, Scalar step, Scalar &d)
+            constexpr auto finite_difference(Order<1>, ComputeType<Formulas::Backward>, F &f, Scalar x, Scalar step)
             {
-                const auto& h = step;
-                d = ((3*f(x)) - 4*f(x-h) + f(x-2*h)) / (2*h);
+                const auto& h = step; // alias
+                return ((3*f(x)) - 4*f(x-h) + f(x-2*h)) / (2*h);
             }
 
             template <typename F, typename Scalar>
-            void finite_difference(Order<1>, ComputeType<Formulas::Centered>, F &f, Scalar x, Scalar step, Scalar &d)
+            constexpr auto finite_difference(Order<1>, ComputeType<Formulas::Centered>, F &f, Scalar x, Scalar step)
             {
-                const auto& h = step;
-                d = (-f(x+2*h) + 8*f(x+h) - 8*f(x-h) + f(x-2*h)) / (12*h);
+                const auto& h = step; // alias
+                return (-f(x+2*h) + 8*f(x+h) - 8*f(x-h) + f(x-2*h)) / (12*h);
             }
         } // namespace detail
         
-        template <size_t order, Formulas formula = Formulas::Centered, typename F, typename Scalar>
-        void finite_difference(F &f, Scalar x, Scalar step, Scalar &d)
+        template <size_t order=1, Formulas formula=Formulas::Centered, typename F, typename Scalar>
+        constexpr auto finite_difference(F &f, Scalar x, Scalar step)
         {
-            detail::finite_difference(detail::Order<order>{}, detail::ComputeType<formula>{}, f, x, step, d);
+            return detail::finite_difference(detail::Order<order>{}, detail::ComputeType<formula>{}, f, x, step);
         }
 
         /* unfortunately, we cant do this */
