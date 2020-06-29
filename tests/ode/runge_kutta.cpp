@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include "nmtools/ode.hpp"
+#include <gtest/gtest.h>
 #include <cmath>
 #include <sstream>
 
@@ -37,13 +37,13 @@ struct F {
     double operator()(double,double){ return 0; }
 };
 
-TEST(rk_helper,k_constants) {
-    constexpr size_t N = 4;
-    constexpr hlp::detail::Constants<double,100,50,25,25> p;
-    constexpr hlp::detail::Constants<double,100,50,25,25,10,10,10> q;
-    constexpr F f;
-    constexpr ode::detail::K<N,F,double,decltype(p),decltype(q)> k(f,0,0,1,p,q);
-}
+// TEST(rk_helper,k_constants) {
+//     constexpr size_t N = 4;
+//     constexpr hlp::detail::Constants<double,100,50,25,25> p;
+//     constexpr hlp::detail::Constants<double,100,50,25,25,10,10,10> q;
+//     constexpr F f;
+//     constexpr ode::detail::K<N,F,double,decltype(p),decltype(q)> k(f,0,0,1,p,q);
+// }
 
 TEST(rk_helper,butcher_tableau) {
     constexpr std::array<double,3> c = {
@@ -60,111 +60,111 @@ TEST(rk_helper,butcher_tableau) {
     EXPECT_TRUE( ode::detail::butcher_tableau(a, b, c) );
 }
 
-TEST(rk_helper,k_0) {
-    auto dy = [](double x, double y) {
-        return tan(y) + 1;
-    };
-    std::array<double,1> c = { 2./3. };
-    std::vector<std::vector<double>> a = { {2./3.} };
-    std::vector<double> ks;
-    double h{0.025};
-    ks.emplace_back( ode::detail::k(0,dy,double{1.025},double{1},h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(1,dy,double{1.025},double{1},h,a,c,ks) );
-    double zero{1e-6};
-    EXPECT_TRUE( ks.size() == 2 );
-    EXPECT_NEAR( ks[0], 2.557407725, zero );
-    EXPECT_NEAR( ks[1], 2.7138981184, zero );
-}
+// TEST(rk_helper,k_0) {
+//     auto dy = [](double x, double y) {
+//         return tan(y) + 1;
+//     };
+//     std::array<double,1> c = { 2./3. };
+//     std::vector<std::vector<double>> a = { {2./3.} };
+//     std::vector<double> ks;
+//     double h{0.025};
+//     ks.emplace_back( ode::detail::k(0,dy,double{1.025},double{1},h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(1,dy,double{1.025},double{1},h,a,c,ks) );
+//     double zero{1e-6};
+//     EXPECT_TRUE( ks.size() == 2 );
+//     EXPECT_NEAR( ks[0], 2.557407725, zero );
+//     EXPECT_NEAR( ks[1], 2.7138981184, zero );
+// }
 
-TEST(rk_helper,k_1) {
-    auto dy = [](double x, double y) {
-        return tan(y) + 1;
-    };
-    std::array<double,1> c = { 2./3. };
-    std::array<double,1> a = { 2./3. };
-    std::vector<double> ks;
-    double h{0.025};
-    ks.emplace_back( ode::detail::k(0,dy,double{1.025},double{1},h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(1,dy,double{1.025},double{1},h,a,c,ks) );
-    double zero{1e-6};
-    EXPECT_TRUE( ks.size() == 2 );
-    EXPECT_NEAR( ks[0], 2.557407725, zero );
-    EXPECT_NEAR( ks[1], 2.7138981184, zero );
-}
+// TEST(rk_helper,k_1) {
+//     auto dy = [](double x, double y) {
+//         return tan(y) + 1;
+//     };
+//     std::array<double,1> c = { 2./3. };
+//     std::array<double,1> a = { 2./3. };
+//     std::vector<double> ks;
+//     double h{0.025};
+//     ks.emplace_back( ode::detail::k(0,dy,double{1.025},double{1},h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(1,dy,double{1.025},double{1},h,a,c,ks) );
+//     double zero{1e-6};
+//     EXPECT_TRUE( ks.size() == 2 );
+//     EXPECT_NEAR( ks[0], 2.557407725, zero );
+//     EXPECT_NEAR( ks[1], 2.7138981184, zero );
+// }
 
-TEST(rk_helper,k_2_a1d) {
-    constexpr auto dy = [](double x, double y) {
-        return 4*std::exp(0.8*x) - 0.5*y;
-    };
-    constexpr std::array<double,3> c = { 1./2., 1./2., 1. };
-    constexpr std::array<double,6> a = { 1./2., 0., 1./2., 0., 0., 1. };
-    constexpr double h{0.5};
-    constexpr double x{0.0}, y{2.0};
-    constexpr double zero{5e-5};
-    std::vector<double> ks;
-    ks.emplace_back( ode::detail::k(0,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(1,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(2,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(3,dy,x,y,h,a,c,ks) );
-    std::stringstream ss; ss << ks[0] << "; " << ks[1] << "; " << ks[2] << "; " << ks[3];
-    EXPECT_TRUE( ks.size() == 4 );
-    EXPECT_NEAR( ks[0], 3.0, zero ) << ss.str(); 
-    EXPECT_NEAR( ks[1], 3.510611, zero ) << ss.str();
-    EXPECT_NEAR( ks[2], 3.446785, zero ) << ss.str();
-    EXPECT_NEAR( ks[3], 4.105603, zero ) << ss.str(); 
-}
+// TEST(rk_helper,k_2_a1d) {
+//     constexpr auto dy = [](double x, double y) {
+//         return 4*std::exp(0.8*x) - 0.5*y;
+//     };
+//     constexpr std::array<double,3> c = { 1./2., 1./2., 1. };
+//     constexpr std::array<double,6> a = { 1./2., 0., 1./2., 0., 0., 1. };
+//     constexpr double h{0.5};
+//     constexpr double x{0.0}, y{2.0};
+//     constexpr double zero{5e-5};
+//     std::vector<double> ks;
+//     ks.emplace_back( ode::detail::k(0,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(1,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(2,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(3,dy,x,y,h,a,c,ks) );
+//     std::stringstream ss; ss << ks[0] << "; " << ks[1] << "; " << ks[2] << "; " << ks[3];
+//     EXPECT_TRUE( ks.size() == 4 );
+//     EXPECT_NEAR( ks[0], 3.0, zero ) << ss.str(); 
+//     EXPECT_NEAR( ks[1], 3.510611, zero ) << ss.str();
+//     EXPECT_NEAR( ks[2], 3.446785, zero ) << ss.str();
+//     EXPECT_NEAR( ks[3], 4.105603, zero ) << ss.str(); 
+// }
 
-TEST(rk_helper,k_2_a2dvector) {
-    constexpr auto dy = [](double x, double y) {
-        return 4*std::exp(0.8*x) - 0.5*y;
-    };
-    constexpr std::array<double,3> c = { 1./2., 1./2., 1. };
-    std::vector<std::vector<double>> a = {
-        { 1./2. },
-        { 0., 1./2. },
-        { 0., 0., 1. }
-    };
-    constexpr double h{0.5};
-    constexpr double x{0.0}, y{2.0};
-    constexpr double zero{5e-5};
-    std::vector<double> ks;
-    ks.emplace_back( ode::detail::k(0,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(1,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(2,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(3,dy,x,y,h,a,c,ks) );
-    std::stringstream ss; ss << ks[0] << "; " << ks[1] << "; " << ks[2] << "; " << ks[3];
-    EXPECT_TRUE( ks.size() == 4 );
-    EXPECT_NEAR( ks[0], 3.0, zero ) << ss.str(); 
-    EXPECT_NEAR( ks[1], 3.510611, zero ) << ss.str();
-    EXPECT_NEAR( ks[2], 3.446785, zero ) << ss.str();
-    EXPECT_NEAR( ks[3], 4.105603, zero ) << ss.str(); 
-}
+// TEST(rk_helper,k_2_a2dvector) {
+//     constexpr auto dy = [](double x, double y) {
+//         return 4*std::exp(0.8*x) - 0.5*y;
+//     };
+//     constexpr std::array<double,3> c = { 1./2., 1./2., 1. };
+//     std::vector<std::vector<double>> a = {
+//         { 1./2. },
+//         { 0., 1./2. },
+//         { 0., 0., 1. }
+//     };
+//     constexpr double h{0.5};
+//     constexpr double x{0.0}, y{2.0};
+//     constexpr double zero{5e-5};
+//     std::vector<double> ks;
+//     ks.emplace_back( ode::detail::k(0,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(1,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(2,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(3,dy,x,y,h,a,c,ks) );
+//     std::stringstream ss; ss << ks[0] << "; " << ks[1] << "; " << ks[2] << "; " << ks[3];
+//     EXPECT_TRUE( ks.size() == 4 );
+//     EXPECT_NEAR( ks[0], 3.0, zero ) << ss.str(); 
+//     EXPECT_NEAR( ks[1], 3.510611, zero ) << ss.str();
+//     EXPECT_NEAR( ks[2], 3.446785, zero ) << ss.str();
+//     EXPECT_NEAR( ks[3], 4.105603, zero ) << ss.str(); 
+// }
 
-TEST(rk_helper,k_2_a2darray) {
-    constexpr auto dy = [](double x, double y) {
-        return 4*std::exp(0.8*x) - 0.5*y;
-    };
-    constexpr std::array<double,3> c = { 1./2., 1./2., 1. };
-    constexpr std::array<std::array<double,3>,3> a = {
-        std::array<double,3>{ 1./2., 0.,    0. },
-        std::array<double,3>{ 0.,    1./2., 0. },
-        std::array<double,3>{ 0.,    0.,    1. }
-    };
-    constexpr double h{0.5};
-    constexpr double x{0.0}, y{2.0};
-    constexpr double zero{5e-5};
-    std::vector<double> ks;
-    ks.emplace_back( ode::detail::k(0,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(1,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(2,dy,x,y,h,a,c,ks) );
-    ks.emplace_back( ode::detail::k(3,dy,x,y,h,a,c,ks) );
-    std::stringstream ss; ss << ks[0] << "; " << ks[1] << "; " << ks[2] << "; " << ks[3];
-    EXPECT_TRUE( ks.size() == 4 );
-    EXPECT_NEAR( ks[0], 3.0, zero ) << ss.str(); 
-    EXPECT_NEAR( ks[1], 3.510611, zero ) << ss.str();
-    EXPECT_NEAR( ks[2], 3.446785, zero ) << ss.str();
-    EXPECT_NEAR( ks[3], 4.105603, zero ) << ss.str(); 
-}
+// TEST(rk_helper,k_2_a2darray) {
+//     constexpr auto dy = [](double x, double y) {
+//         return 4*std::exp(0.8*x) - 0.5*y;
+//     };
+//     constexpr std::array<double,3> c = { 1./2., 1./2., 1. };
+//     constexpr std::array<std::array<double,3>,3> a = {
+//         std::array<double,3>{ 1./2., 0.,    0. },
+//         std::array<double,3>{ 0.,    1./2., 0. },
+//         std::array<double,3>{ 0.,    0.,    1. }
+//     };
+//     constexpr double h{0.5};
+//     constexpr double x{0.0}, y{2.0};
+//     constexpr double zero{5e-5};
+//     std::vector<double> ks;
+//     ks.emplace_back( ode::detail::k(0,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(1,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(2,dy,x,y,h,a,c,ks) );
+//     ks.emplace_back( ode::detail::k(3,dy,x,y,h,a,c,ks) );
+//     std::stringstream ss; ss << ks[0] << "; " << ks[1] << "; " << ks[2] << "; " << ks[3];
+//     EXPECT_TRUE( ks.size() == 4 );
+//     EXPECT_NEAR( ks[0], 3.0, zero ) << ss.str(); 
+//     EXPECT_NEAR( ks[1], 3.510611, zero ) << ss.str();
+//     EXPECT_NEAR( ks[2], 3.446785, zero ) << ss.str();
+//     EXPECT_NEAR( ks[3], 4.105603, zero ) << ss.str(); 
+// }
 
 TEST(rk_helper,rk_driver_core_0) {
     auto dy = [](double x, double y) {
@@ -188,7 +188,7 @@ TEST(rk_helper,rk_driver_core_1) {
         return tan(y) + 1;
     };
     std::array<double,1> c = { 2./3. };
-    std::array<double,1> a = { {2./3.} };
+    std::array<std::array<double,1>,1> a = { {2./3.} };
     constexpr std::array<double,2> b = {
         1./4., 3./4.
     };
@@ -212,7 +212,7 @@ TEST(rk_helper,rk_driver_0) {
     double h{0.025};
     double xi{1.0}, xf{1.1}, y{1};
     double zero{1e-6};
-    auto yn = ode::detail::rk_driver(dy,xi,xf,y,h,a,b,c);
+    auto yn = ode::rk_driver(dy,xi,xf,y,h,a,b,c);
     EXPECT_NEAR(yn,1.335079087,zero);
 }
 
@@ -221,16 +221,21 @@ TEST(rk_helper,rk_driver_1) {
         return tan(y) + 1;
     };
     constexpr std::array<double,1> c = { 2./3. };
-    constexpr std::array<double,1> a = { 2./3. };
+    constexpr std::array<std::array<double,1>,1> a = { 2./3. };
     constexpr std::array<double,2> b = {
         1./4., 3./4.
     };
     constexpr double h{0.025};
     constexpr double xi{1.0}, xf{1.1}, y{1};
     constexpr double zero{1e-6};
-    /* TODO : support compile-time computation */
-    auto yn = ode::detail::rk_driver(dy,xi,xf,y,h,a,b,c);
-    EXPECT_NEAR(yn,1.335079087,zero);
+    {
+        auto yn = ode::rk_driver(dy,xi,xf,y,h,a,b,c);
+        EXPECT_NEAR(yn,1.335079087,zero);
+    }
+    {
+        constexpr auto yn = ode::rk_driver(dy,xi,xf,y,h,a,b,c);
+        static_assert(nm::near(yn,1.335079087,zero));
+    }
 }
 
 TEST(runge_kutta,ralston) {
@@ -240,9 +245,14 @@ TEST(runge_kutta,ralston) {
     constexpr double h{0.025};
     constexpr double xi{1.0}, xf{1.1}, y{1};
     constexpr double zero{1e-6};
-    /* TODO : support compile-time computation */
-    auto yn = ode::ralston(dy,xi,xf,y,h);
-    EXPECT_NEAR(yn,1.335079087,zero);
+    {
+        auto yn = ode::rk_ralston(dy,xi,xf,y,h);
+        EXPECT_NEAR(yn,1.335079087,zero);
+    }
+    {
+        constexpr auto yn = ode::rk_ralston(dy,xi,xf,y,h);
+        static_assert(nm::near(yn,1.335079087,zero));
+    }
 }
 
 TEST(runge_kutta,midpoint) {
@@ -252,9 +262,14 @@ TEST(runge_kutta,midpoint) {
     constexpr double h{0.025};
     constexpr double xi{1.0}, xf{1.1}, y{1};
     constexpr double zero{1e-6};
-    /* TODO : support compile-time computation */
-    auto yn = ode::midpoint(dy,xi,xf,y,h);
-    EXPECT_NEAR(yn,1.333900694,zero);
+    {
+        auto yn = ode::rk_midpoint(dy,xi,xf,y,h);
+        EXPECT_NEAR(yn,1.333900694,zero);
+    }
+    {
+        constexpr auto yn = ode::rk_midpoint(dy,xi,xf,y,h);
+        static_assert(nm::near(yn,1.333900694,zero));
+    }
 }
 
 TEST(runge_kutta,rk4_0) {
@@ -271,7 +286,7 @@ TEST(runge_kutta,rk4_0) {
     constexpr double h{0.5};
     constexpr double xi{0.0}, xf{0.5}, y{2.0};
     constexpr double zero{5e-6};
-    /* TODO : support compile-time computation */
+    /* cant compute at compile time when using logger */
     auto yn = ode::rk4(dy,xi,xf,y,h,&logger);
     EXPECT_NEAR(yn,3.751699,zero) << ss.str();
 }
@@ -283,7 +298,12 @@ TEST(runge_kutta,rk4_1) {
     constexpr double h{0.5};
     constexpr double xi{0.0}, xf{0.5}, y{1.0};
     constexpr double zero{5e-5};
-    /* TODO : support compile-time computation */
-    auto yn = ode::rk4(dy,xi,xf,y,h);
-    EXPECT_NEAR(yn,3.21875,zero);
+    {
+        auto yn = ode::rk4(dy,xi,xf,y,h);
+        EXPECT_NEAR(yn,3.21875,zero);
+    }
+    {
+        constexpr auto yn = ode::rk4(dy,xi,xf,y,h);
+        static_assert(nm::near(yn,3.21875,zero));
+    }
 }
