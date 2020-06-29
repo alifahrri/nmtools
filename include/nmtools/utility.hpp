@@ -174,6 +174,9 @@ namespace nmtools {
             std::void_t<decltype(std::declval<T>().resize(std::declval<typename T::size_type>()))> >
         : std::true_type {};
 
+        template <typename T>
+        static constexpr auto is_resizeable_v = is_resizeable<T>::value;
+
         template <typename ...T>
         struct all_iterable {
             constexpr static bool value = std::conjunction_v<is_iterable<T>...>;
@@ -195,6 +198,7 @@ namespace nmtools {
 
     } // namespace traits
 
+    /* TODO: remove */
     namespace mpl {
         template <typename T, typename V, size_t, typename=void>
         struct copy_std_container {
@@ -274,6 +278,7 @@ namespace nmtools {
                 return map;
             }
 
+            /* TODO: remove */
             /* BEGIN : inserter boilerplate */
             template <typename Container, typename Value>
             auto insert(Container &d, Value v, tag::insert) 
@@ -333,6 +338,7 @@ namespace nmtools {
             }
         } // namespace detail 
 
+        /* TODO: remove */
         /* entrypoints */
         template <typename Container, typename Value>
         auto insert(Container &d, Value v) 
@@ -354,6 +360,7 @@ namespace nmtools {
             detail::insert(d,pos,begin,end,insert_tag{});
         }
 
+        /* TODO: remove */
         template <typename Scalar, typename Logger>
         struct Log {
             template <typename ...Args>
@@ -363,6 +370,7 @@ namespace nmtools {
             }
         };
 
+        /* TODO: remove */
         template <typename Scalar>
         struct Log<Scalar,void> {
             template <typename ...Args>
@@ -386,6 +394,7 @@ namespace nmtools {
             }
         }
 
+        /* TODO: remove */
         template <typename Container, typename value_type = typename Container::value_type>
         constexpr auto append(Container &container, const value_type &value) 
             -> std::enable_if_t<
@@ -396,6 +405,7 @@ namespace nmtools {
             return (container);
         }
 
+        /* TODO: remove */
         template <typename Container, typename value_type = typename Container::value_type>
         constexpr auto append(Container &container, const value_type &value) 
             -> std::enable_if_t<
@@ -453,6 +463,11 @@ namespace nmtools {
             return sequence;
         }
     } // namespace helper
+
+    constexpr auto near(auto x, auto y, auto eps=1e-9)
+    {
+        return fabs(x - y) < eps;
+    }
 } // namespace nmtools
 
 #define VAR_NAME(X) (#X)
