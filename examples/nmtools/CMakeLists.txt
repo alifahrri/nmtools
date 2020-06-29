@@ -43,3 +43,25 @@ target_include_directories(
     ## TODO : properly find package instead of directly specifying include dir
     /app/numeric_tools/include
 )
+
+add_executable(
+    ode
+    src/ode.cpp
+)
+
+set_target_properties(
+    ode
+    PROPERTIES
+    CXX_STANDARD 17
+)
+
+target_compile_options(
+    ode PRIVATE
+    -g
+)
+
+target_include_directories(
+    ode PRIVATE
+    ## TODO : properly find package instead of directly specifying include dir
+    /app/numeric_tools/include
+)
