@@ -7,10 +7,16 @@ COPY requirements-apt.txt requirements.txt
 RUN apt update && xargs apt install -y < requirements.txt
 
 ## install gtest
-RUN git clone -b 'release-1.8.1' https://github.com/google/googletest.git \
-    && cd googletest \
-    && mkdir build && cd build \
-    && cmake .. && make && make install
+COPY scripts/install_gtest.sh install_gtest.sh
+RUN bash install_gtest.sh
+
+## install benchmark
+COPY scripts/install_benchmark.sh install_benchmark.sh
+RUN bash install_benchmark.sh
+
+## install nanobench
+COPY scripts/install_nanobench.sh install_nanobench.sh
+RUN bash install_nanobench.sh
 
 ## install miniconda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
@@ -30,6 +36,7 @@ RUN wget https://github.com/eigenteam/eigen-git-mirror/archive/3.3.7.tar.gz && \
 
 WORKDIR /app/numeric_tools/
 
+COPY benchmarks benchmarks
 COPY examples examples
 COPY include include
 COPY scripts scripts
