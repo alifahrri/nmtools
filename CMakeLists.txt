@@ -34,10 +34,15 @@ add_test(all_numeric_tests numeric_tests)
 # gtest_add_test(TARGET numeric_tests)
 
 option(BUILD_EXAMPLES "build example programs" OFF)
+option(BUILD_BENCHMARKS "build benchmark programs" ON)
 
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif(BUILD_EXAMPLES)
+
+if(BUILD_BENCHMARKS)
+    add_subdirectory(benchmarks)
+endif(BUILD_BENCHMARKS)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(CodeCoverage)
