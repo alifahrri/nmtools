@@ -73,6 +73,30 @@ target_include_directories(
 )
 
 add_executable(
+    linalg_benchmark
+    src/linalg.cpp
+)
+
+set_target_properties(
+    linalg_benchmark
+    PROPERTIES
+    CXX_STANDARD 17
+)
+
+target_compile_options(
+    linalg_benchmark PRIVATE
+    -O3 -march=native
+)
+
+target_include_directories(
+    linalg_benchmark PRIVATE
+    ## TODO : properly find package instead of directly specifying include dir
+    /opt/nanobench/include
+    /app/numeric_tools/include
+    include
+)
+
+add_executable(
     benchmark
     src/benchmark.cpp
 )
