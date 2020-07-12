@@ -65,3 +65,25 @@ target_include_directories(
     ## TODO : properly find package instead of directly specifying include dir
     /app/numeric_tools/include
 )
+
+add_executable(
+    elimination
+    src/elimination.cpp
+)
+
+set_target_properties(
+    elimination
+    PROPERTIES
+    CXX_STANDARD 17
+)
+
+target_compile_options(
+    elimination PRIVATE
+    -g
+)
+
+target_include_directories(
+    elimination PRIVATE
+    ## TODO : properly find package instead of directly specifying include dir
+    /app/numeric_tools/include
+)
