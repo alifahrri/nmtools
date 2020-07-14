@@ -25,6 +25,8 @@ add_executable(numeric_tests tests/tests.cpp
     tests/ode/euler.cpp
     tests/ode/runge_kutta.cpp
     tests/linalg/elimination.cpp
+    tests/linalg/decomposition.cpp
+    tests/linalg/matvec.cpp
 )
 target_link_libraries(numeric_tests ${GTEST_BOTH_LIBRARIES} pthread)
 target_compile_options(numeric_tests PRIVATE -g)
