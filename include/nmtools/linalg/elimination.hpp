@@ -17,6 +17,8 @@ namespace nmtools::linalg {
     using helper::log;
 
     using std::is_null_pointer_v;
+    using std::tuple;
+    using std::is_base_of;
     using std::is_base_of_v;
     using std::common_type_t;
 
@@ -28,6 +30,7 @@ namespace nmtools::linalg {
     using std::make_tuple;
 
     namespace tag {
+        using helper::type_in_tuple;
         /**
          * @brief default tag for partial_pivot
          * 
@@ -63,6 +66,11 @@ namespace nmtools::linalg {
          */
         struct elimination_with_pivot_t : elimination_t {};
         /**
+         * @brief tag for forward_elimination to keep lower mat esp. for decomposition
+         * 
+         */
+        struct elimination_keep_lower_mat_t : elimination_t {};
+        /**
          * @brief helper variable template to determine 
          * if T is valid elimination tag
          * 
@@ -70,6 +78,50 @@ namespace nmtools::linalg {
          */
         template <typename T>
         inline constexpr bool is_elimination_v = is_base_of_v<elimination_t,T>;
+        /**
+         * @brief specialized version of is_elimination_v to handle tuple
+         * 
+         * @tparam Args 
+         */
+        template <typename ...Args>
+        inline constexpr bool is_elimination_v<tuple<Args...>> = type_in_tuple<is_base_of>(elimination_t{},tuple<Args...>{});
+
+        using traits::is_tuple_v;
+
+        /**
+         * @brief check if given tag is present in T
+         * in which T could be single type or tuple
+         * specialization on tuple checks if tag is
+         * presents in any of the tuple's arguments
+         * 
+         * @tparam tag_t 
+         * @tparam T 
+         * @tparam void 
+         */
+        template <typename tag_t, typename T, typename = void>
+        struct is_tag_enabled : std::is_same<tag_t,T> {};
+
+        /**
+         * @brief partial specialization when T is tuple
+         * 
+         * @tparam tag_t 
+         * @tparam T 
+         */
+        template <typename tag_t, typename T>
+        struct is_tag_enabled<tag_t,T,std::enable_if_t<is_tuple_v<T>> > 
+        {
+            static constexpr bool value = type_in_tuple(tag_t{},T{});
+        };
+
+        /**
+         * @brief helper variable template to check if tag_t is enabled, 
+         * given T, where T can be single tag or tuple of tag
+         * 
+         * @tparam tag_t tag to check
+         * @tparam T tuple of tag or single tag
+         */
+        template <typename tag_t, typename T>
+        inline constexpr bool is_tag_enabled_v = is_tag_enabled<tag_t,T>::value;
     } // namespace tag
 
     /**
@@ -198,16 +250,29 @@ namespace nmtools::linalg {
     constexpr auto forward_elimination(const Matrix& A, const Vector& b, Scales scales=Scales{}, Logger logger=Logger{}, elimination_tag=elimination_tag{})
     {
         using tag::elimination_with_pivot_t;
+        using tag::elimination_keep_lower_mat_t;
         using tag::is_elimination_v;
+        using tag::is_tag_enabled_v;
 
         using namespace std::string_literals;
 
-        /* check if we should use pivot */
+        /* make sure elimination tag is valid */
         static_assert(
             is_elimination_v<elimination_tag>, 
             "unsupported forward_elimination tag"
         );
-        constexpr bool use_pivot_v = std::is_same_v<elimination_tag,elimination_with_pivot_t>;
+
+        /* check if we should use pivot */
+        constexpr bool use_pivot_v = is_tag_enabled_v<elimination_with_pivot_t,elimination_tag>;
+
+        /* check if we should store lower mat */
+        constexpr bool keep_lower_v = is_tag_enabled_v<elimination_keep_lower_mat_t,elimination_tag>;
+
+        /* for now, keep_lower_mat can't be used together with pivot */
+        static_assert(
+            (use_pivot_v && !keep_lower_v) || (!use_pivot_v && keep_lower_v) || (!use_pivot_v && !keep_lower_v),
+            "cant use pivot together with keep lower mat"
+        );
 
         using common_t = common_type_t<decltype(A[0][0]),decltype(b[0])>;
         using mapping_t = std::map<std::string,common_t>;
@@ -226,9 +291,26 @@ namespace nmtools::linalg {
         /* TODO: assert if A is square matrix */
         auto n = size(A);
 
+        using traits::remove_cvref_t;
+        using detail::transform_bounded_array_t;
+        using matrix_t = transform_bounded_array_t<remove_cvref_t<Matrix>>;
+        using vector_t = transform_bounded_array_t<remove_cvref_t<Vector>>;
+
         /* placeholder for result */
-        Matrix Ae = A;
-        Vector be = b;
+        matrix_t Ae{};
+        vector_t be{};
+        if constexpr (traits::is_bounded_array_v<Matrix>) {
+            /* convert from raw array to std::array */
+            for (size_t i=0; i<n; i++) {
+                be[i] = b[i];
+                for (size_t j=0; j<size(Ae[0]); j++)
+                    Ae[i][j] = A[i][j];
+            }
+        } else {
+            /* we will just copy otherwise */
+            Ae = A;
+            be = b;
+        }
         Scales se = scales;
 
         /* perform forward elimination */
@@ -271,7 +353,13 @@ namespace nmtools::linalg {
                         log(logger, mapping_t{{"A[i][j]"s, Ae[i][j]}, {"j"s, j}});
                 }
                 be[i] = be[i] - factor * be[k];
-                Ae[i][k] = 0;
+
+                /* conditional compilation to store 
+                    lower matrix (esp. for decomposition) */
+                if constexpr (keep_lower_v)
+                    Ae[i][k] = factor;
+                else
+                    Ae[i][k] = 0;
             }
         }
 
