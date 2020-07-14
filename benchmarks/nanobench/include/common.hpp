@@ -2,6 +2,7 @@
 #define COMMON_HPP
 
 #include "nanobench/nanobench.h"
+#include <fstream>
 
 void gen(std::string const& typeName, char const* mustacheTemplate,
          ankerl::nanobench::Bench const& bench) {
