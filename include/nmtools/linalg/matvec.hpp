@@ -4,8 +4,11 @@
 #include "nmtools/traits.hpp"
 #include <type_traits>
 #include <cmath>
+#include <cassert>
 
 namespace nmtools::linalg {
+
+    using std::size;
 
     namespace detail {
 
@@ -14,8 +17,8 @@ namespace nmtools::linalg {
          * 
          * @tparam V vector-like 
          * @tparam S scalar 
-         * @param v vector
-         * @param s scalar
+         * @param v left-hand-side vector
+         * @param s right-hand-side scalar
          * @return constexpr auto vector-like
          */
         template <typename V, typename S>
@@ -32,8 +35,8 @@ namespace nmtools::linalg {
          * 
          * @tparam M matrix-like
          * @tparam S scalar 
-         * @param m matrix
-         * @param s scalar
+         * @param m left-hand-side matrix
+         * @param s right-hand-side scalar
          * @return constexpr auto matrix-like
          */
         template <typename M, typename S>
@@ -50,8 +53,8 @@ namespace nmtools::linalg {
          * 
          * @tparam V1 vector-like
          * @tparam V2 vector-like
-         * @param v1 left-hand side vector
-         * @param v2 right-hand side vector
+         * @param v1 left-hand-side vector
+         * @param v2 right-hand-side vector
          * @return constexpr auto scalar, common type of element v1 & v2
          */
         template <typename V1, typename V2>
@@ -81,8 +84,8 @@ namespace nmtools::linalg {
          * 
          * @tparam M matrix-like
          * @tparam V vector-like
-         * @param m matrix
-         * @param v vector
+         * @param m left-hand-side matrix
+         * @param v right-hand-side vector
          * @return constexpr auto vector-like
          */
         template <typename M, typename V>
@@ -99,6 +102,53 @@ namespace nmtools::linalg {
                 ret[i] = dot(m[i], v);
             return ret;
         }
+
+        /**
+         * @brief transform (bounded) raw array to std::array
+         * should have member type `type` with type of std::array
+         * if given T is bounded (1D or 2D) raw array, 
+         * `type` has type of T otherwise
+         * 
+         * @tparam T 
+         */
+        template <typename T>
+        struct transform_bounded_array 
+        {
+            using type = T;
+        };
+
+        /**
+         * @brief overloaded version of transform_bounded_array for T[N]
+         * 
+         * @tparam T element type
+         * @tparam N number of elements
+         */
+        template <typename T, std::size_t N>
+        struct transform_bounded_array<T[N]>
+        {
+            using type = std::array<T,N>;
+        };
+
+        /**
+         * @brief overloaded version of transform_bounded_array for T[N][M]
+         * 
+         * @tparam T element type
+         * @tparam N number of first indices
+         * @tparam M number of last indices
+         */
+        template <typename T, std::size_t N, std::size_t M>
+        struct transform_bounded_array<T[N][M]>
+        {
+            using type = std::array<std::array<T,M>,N>;
+        };
+
+        /**
+         * @brief helper alias template to transform (bounded) raw array to std::array
+         * 
+         * @tparam T (bounded) array
+         */
+        template <typename T>
+        using transform_bounded_array_t = typename transform_bounded_array<T>::type;
     } // namespace detail
 
     using detail::msmul;
@@ -119,12 +169,15 @@ namespace nmtools::linalg {
     {
         /** TODO: proper constraints **/
         static_assert(
-            traits::is_std_array_v<Array> ||
-            traits::is_resizeable_v<Array> ||
+            traits::is_array1d_v<Array> ||
+            traits::is_array2d_v<Array> ||
             std::is_arithmetic_v<Array>,
             "unsupported type for zeros_like"
         );
-        auto ret = Array{};
+        using traits::remove_cvref_t;
+        using detail::transform_bounded_array_t;
+        using return_t = transform_bounded_array_t<remove_cvref_t<Array>>;
+        auto ret = return_t{};
         /* ret is aritmethic type (scalr), return as it is */
         if constexpr (std::is_arithmetic_v<Array>)
             return ret;
@@ -137,6 +190,45 @@ namespace nmtools::linalg {
                 ret[i] = zeros_like(a[i]);
             return ret;
         }
+    }
+
+    /**
+     * @brief make identity matrix
+     * 
+     * @tparam Array matrix-like
+     * @param a square matrix
+     * @return constexpr auto identity matrix
+     */
+    template <typename Array>
+    constexpr auto identity(const Array& a)
+    {
+        using traits::remove_cvref_t;
+        using traits::get_container_value_type_t;
+        using traits::is_resizeable_v;
+        using traits::is_array2d_v;
+
+        /* remove cv-ref to make sure we get non const */
+        using element_t = remove_cvref_t<get_container_value_type_t<Array>>;
+
+        static_assert(
+            is_array2d_v<Array>,
+            "only support 2D array"
+        );
+
+        auto ret = zeros_like(a);
+        auto n = size(a);
+        auto m = size(a[0]);
+        assert (m==n);
+
+        if constexpr (is_resizeable_v<Array>)
+            ret.resize(n);
+
+        for (size_t i=0; i<n; i++) {
+            if constexpr (is_resizeable_v<element_t>)
+                ret[i].resize(m);
+            ret[i][i] = 1.;
+        }
+        return ret;
     }
 
     /**
@@ -183,12 +275,15 @@ namespace nmtools::linalg {
             "unsupported type for fabs"
         );
 
+        /* dispatch if Array is 1d or 2d */
         if constexpr (is_array1d_v<Array> || is_array2d_v<Array>) {
             auto ret = zeros_like(a);
             for (size_t i=0; i<size(a); i++)
                 ret[i] = fabs(a[i]);
             return ret;
-        } else {
+        }
+        /* dispatch if Array is arithmetic type */
+        else {
             auto ret = fabs(a);
             return ret;
         }
@@ -208,6 +303,7 @@ namespace nmtools::linalg {
     {
         using traits::is_array2d;
         using traits::is_array1d;
+        using traits::is_multiplicative_v;
         using std::disjunction_v;
         using std::conjunction_v;
         using std::negation_v;
@@ -219,17 +315,25 @@ namespace nmtools::linalg {
             "unsupported type(s) for mul(lhs,rhs)"
         );
 
-        if constexpr (disjunction_v<is_array2d<A>,is_array2d<B>>) {
+        /* dispatch if A & B is multiplicative */
+        if constexpr (is_multiplicative_v<A,B>) {
+            return lhs * rhs;
+        }
+        /* dispatch matrix-matrix multiplication */
+        else if (conjunction_v<is_array2d<A>,is_array2d<B>>) {
             /* TODO: implement matmul */
             mmmul(lhs, rhs);
         }
-        else if (disjunction_v<is_array2d<A>,is_array1d<B>>) {
+        /* dispatch matrix-vector multiplication */
+        else if (conjunction_v<is_array2d<A>,is_array1d<B>>) {
             return mvmul(lhs, rhs);
         }
-        else if (disjunction_v<is_array2d<A>,is_arithmetic_v<B>>) {
+        /* dispatch matrix-scalar multiplication */
+        else if (conjunction_v<is_array2d<A>,is_arithmetic_v<B>>) {
             return msmul(lhs, rhs);
         }
-        else if (disjunction_v<is_array1d<A>,is_arithmetic_v<B>>) {
+        /* dispatch vector-scalar multiplication */
+        else if (conjunction_v<is_array1d<A>,is_arithmetic_v<B>>) {
             return vsmul(lhs, rhs);
         }
         else {

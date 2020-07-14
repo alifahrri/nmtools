@@ -24,4 +24,23 @@ void gauss_elimination_benchmark(ankerl::nanobench::Bench *bench, char const *na
     });
 }
 
+template <typename Array>
+void lu_decomposition_benchmark(ankerl::nanobench::Bench *bench, char const *name, const Array& A) 
+{
+    bench->run(name, [&](){
+        auto [L,U] = nla::lu_decomposition(A);
+        ankerl::nanobench::doNotOptimizeAway(L);
+        ankerl::nanobench::doNotOptimizeAway(U);
+    });
+}
+
+template <typename Array>
+void inverse_benchmark(ankerl::nanobench::Bench *bench, char const *name, const Array& A) 
+{
+    bench->run(name, [&](){
+        auto inv = nla::inverse(A);
+        ankerl::nanobench::doNotOptimizeAway(inv);
+    });
+}
+
 #endif

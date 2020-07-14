@@ -87,3 +87,25 @@ target_include_directories(
     ## TODO : properly find package instead of directly specifying include dir
     /app/numeric_tools/include
 )
+
+add_executable(
+    decomposition_example
+    src/decomposition.cpp
+)
+
+set_target_properties(
+    decomposition_example
+    PROPERTIES
+    CXX_STANDARD 17
+)
+
+target_compile_options(
+    decomposition_example PRIVATE
+    -g
+)
+
+target_include_directories(
+    decomposition_example PRIVATE
+    ## TODO : properly find package instead of directly specifying include dir
+    /app/numeric_tools/include
+)

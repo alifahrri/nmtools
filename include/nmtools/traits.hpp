@@ -387,6 +387,46 @@ namespace nmtools::traits {
     template <typename T>
     using remove_cvref_t = std::remove_cv_t<std::remove_reference_t<T>>;
 
+    using std::tuple;
+
+    /**
+     * @brief check if given type is tuple
+     */
+    template <typename>
+    struct is_tuple : false_type {};
+    template <typename ...Args>
+    struct is_tuple<tuple<Args...>> : true_type {};
+
+    /**
+     * @brief helper variable template to check if given type is tuple
+     * 
+     * @tparam Args automatically deduced
+     * @example 
+     *  static_assert(is_tuple_v<std::tuple<int,double>> == true);
+     *  static_assert(is_tuple_v<double> == false);
+     */
+    template <typename ...Args>
+    inline constexpr bool is_tuple_v = is_tuple<Args...>::value;
+
+    /**
+     * @brief check if T is bounded array
+     * 
+     * @tparam T 
+     */
+    template<typename T>
+    struct is_bounded_array: std::false_type {};
+    
+    template<typename T, std::size_t N>
+    struct is_bounded_array<T[N]> : std::true_type {};
+
+    /**
+     * @brief helper variable template to check if T is bounded array
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    inline constexpr bool is_bounded_array_v = is_bounded_array<T>::value;
+
 } // namespace nmtools::traits
 
 #endif // NMTOOLS_TRAITS_HPP
