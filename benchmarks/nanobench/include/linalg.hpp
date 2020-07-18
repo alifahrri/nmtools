@@ -43,4 +43,13 @@ void inverse_benchmark(ankerl::nanobench::Bench *bench, char const *name, const 
     });
 }
 
+template <typename Array>
+void cholesky_decomposition_benchmark(ankerl::nanobench::Bench *bench, char const *name, const Array& A) 
+{
+    bench->run(name, [&](){
+        auto L = nla::cholesky_decomposition(A);
+        ankerl::nanobench::doNotOptimizeAway(L);
+    });
+}
+
 #endif

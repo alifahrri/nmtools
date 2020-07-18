@@ -133,6 +133,54 @@ namespace nmtools::linalg
 
         return I;
     }
+
+    template <typename T>
+    using get_value_type_t = traits::get_container_value_type_t<T>;
+
+    /**
+     * @brief perform cholesky decomposition on symmetric matrix
+     * 
+     * @tparam Matrix matrix-like
+     * @param A symmetric matrix
+     * @return constexpr auto matrix L, where A = LL^{T}
+     * @cite chapra2014numerical_cholesky_decomposition
+     */
+    template <typename Matrix>
+    constexpr auto cholesky_decomposition(const Matrix& A)
+    {
+        static_assert(
+            traits::is_array2d_v<Matrix>,
+            "unsupported type of Matrix A"
+        );
+        using traits::remove_cvref_t;
+        using value_t = remove_cvref_t<get_value_type_t<get_value_type_t<Matrix>>>;
+
+        /* TODO: check if matrix A is symmetric */
+        auto n = size(A);
+
+        /* placeholder for results */
+        auto L = zeros_like(A);
+
+        /* traverse row */
+        for (int k=0; k<n; k++) {
+            /* traverse column, note that this doesn't traverse full column */
+            for (int i=0; i<k; i++) {
+                value_t sum{0};
+                for (int j=0; j<i; j++)
+                    sum += L[i][j] * L[k][j];
+                /* set column i of row k */
+                L[k][i] = (A[k][i] - sum) / L[i][i];
+            }
+            /* sum of squared elements at row k from column 0 to k-1 */
+            value_t sum{0};
+            for (int j=0; j<k; j++)
+                sum += L[k][j] * L[k][j];
+            /* compute diagonal entry */
+            L[k][k] = sqrt(A[k][k] - sum);
+        }
+
+        return L;
+    }
 } // namespace nmtools::linalg
 
 #endif // NMTOOLS_LINALG_DECOMPOSITION_HPP
