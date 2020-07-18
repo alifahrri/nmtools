@@ -132,7 +132,7 @@ namespace nmtools::traits {
 
     template <typename T>
     struct is_array2d<T, 
-        void_t<decltype(declval<T>()[0][0]), enable_if_t<!is_array3d_v<T>> > 
+        void_t<decltype(declval<T>()[0][0])> 
     > : true_type {};
 
     template <typename T>
@@ -151,7 +151,7 @@ namespace nmtools::traits {
 
     template <typename T>
     struct is_array1d<T, 
-        void_t<decltype(declval<T>()[0]), enable_if_t<!is_array2d_v<T>> >
+        void_t<decltype(declval<T>()[0])>
     > : true_type {};
 
     /**
@@ -305,11 +305,46 @@ namespace nmtools::traits {
     struct is_indexable<T, std::void_t<decltype(std::declval<T>()[size_t{}])> > : std::true_type {};
 
     template <typename T, typename = void>
+    struct has_size_type : std::false_type {};
+
+    template <typename T>
+    struct has_size_type<T,
+        std::void_t<typename T::size_type>
+    > : std::true_type {};
+
+    template <typename T>
+    inline constexpr bool has_size_type_v = has_size_type<T>::value;
+
+    template <typename T>
+    using enable_if_has_size_type = std::enable_if<has_size_type_v<T>>;
+
+    template <typename T>
+    using enable_if_has_size_type_t = typename enable_if_has_size_type<T>::type;
+
+    template <typename T>
+    using disable_if_has_size_type = std::enable_if<!has_size_type_v<T>>;
+
+    template <typename T>
+    using disable_if_has_size_type_t = typename disable_if_has_size_type<T>::type;
+
+    template <typename T, typename = void>
     struct is_resizeable : std::false_type {};
+
     template <typename T>
     struct is_resizeable<T, 
-        std::void_t<decltype(std::declval<T>().resize(std::declval<typename T::size_type>()))> >
-    : std::true_type {};
+        std::void_t<
+            disable_if_has_size_type_t<T>,
+            decltype(std::declval<T>().resize(std::declval<size_t>()))
+        >
+    > : std::true_type {};
+
+    template <typename T>
+    struct is_resizeable<T, 
+        std::void_t<
+            enable_if_has_size_type_t<T>,
+            decltype(std::declval<T>().resize(std::declval<typename T::size_type>()))
+        >
+    > : std::true_type {};
 
     template <typename T>
     static constexpr auto is_resizeable_v = is_resizeable<T>::value;

@@ -7,6 +7,8 @@
 namespace nmt = nmtools;
 namespace nla = nmt::linalg;
 
+using nmt::helper::isclose;
+
 using std::array;
 template <size_t n, size_t m, typename T>
 using mat_t = array<array<T,n>,m>;
@@ -135,6 +137,164 @@ TEST(linalg, gauss_elimination)
     {
         constexpr auto x = nla::gauss_elimination(A,b);
         static_assert(nmt::helper::isclose(x,expected_x));
+    }
+}
+
+TEST(linalg, tridiagonal_decomposition)
+{
+    constexpr auto e = std::array<double,4>{0, -1, -1, -1};
+    constexpr auto f = std::array<double,4>{2.04, 2.04, 2.04, 2.04};
+    constexpr auto g = std::array<double,4>{-1, -1, -1, 0};
+    auto ve = std::vector<double>{0, -1, -1, -1};
+    auto vf = std::vector<double>{2.04, 2.04, 2.04, 2.04};
+    auto vg = std::vector<double>{-1, -1, -1, 0};
+    double re[4] = {0, -1, -1, -1};
+    double rf[4] = {2.04, 2.04, 2.04, 2.04};
+    double rg[4] = {-1, -1, -1, 0};
+    constexpr auto expected_l = std::array<double,4>{0, -0.4901, -0.6452, -0.7169};
+    constexpr auto expected_u = std::array<double,4>{2.04, 1.5498, 1.3947, 1.3230};
+
+    /* test with array container at runtime */
+    {
+        auto [l,u] = nla::tridiagonal_decomposition(e,f,g);
+        using return_t = std::array<double,4>;
+        static_assert(std::is_same_v<decltype(l),return_t>);
+        static_assert(std::is_same_v<decltype(u),return_t>);
+        EXPECT_TRUE(isclose(l,expected_l,1e-3));
+        EXPECT_TRUE(isclose(u,expected_u,1e-3));
+    }
+    /* test with vector container at runtime */
+    {
+        auto [l,u] = nla::tridiagonal_decomposition(ve,vf,vg);
+        using return_t = std::vector<double>;
+        static_assert(std::is_same_v<decltype(l),return_t>);
+        static_assert(std::is_same_v<decltype(u),return_t>);
+        EXPECT_TRUE(isclose(l,expected_l,1e-3));
+        EXPECT_TRUE(isclose(u,expected_u,1e-3));
+    }
+    /* test with raw at runtime */
+    {
+        auto [l,u] = nla::tridiagonal_decomposition(re,rf,rg);
+        using return_t = std::array<double,4>;
+        static_assert(std::is_same_v<decltype(l),return_t>);
+        static_assert(std::is_same_v<decltype(u),return_t>);
+        EXPECT_TRUE(isclose(l,expected_l,1e-3));
+        EXPECT_TRUE(isclose(u,expected_u,1e-3));
+    }
+    /* test with array container at compile-time */
+    {
+        constexpr auto lu = nla::tridiagonal_decomposition(e,f,g);
+        constexpr auto l = std::get<0>(lu);
+        constexpr auto u = std::get<1>(lu);
+        using return_t = const std::array<double,4>;
+        static_assert(std::is_same_v<decltype(l),return_t>);
+        static_assert(std::is_same_v<decltype(u),return_t>);
+        static_assert(isclose(l,expected_l,1e-3));
+        static_assert(isclose(u,expected_u,1e-3));
+    }
+}
+
+TEST(linalg, tridiagonal_substitution)
+{
+    constexpr auto e = std::array<double,4>{0, -0.49, -0.645, -0.717};
+    constexpr auto r = std::array<double,4>{40.8, 0.8, 0.8, 200.8};
+    auto ve = std::vector<double>{0, -0.49, -0.645, -0.717};
+    auto vr = std::vector<double>{40.8, 0.8, 0.8, 200.8};
+    double re[4] = {0, -0.49, -0.645, -0.717};
+    double rr[4] = {40.8, 0.8, 0.8, 200.8};
+    constexpr auto expected_d = std::array<double,4>{40.8, 20.792, 14.210, 210.989};
+    /* test with array container at runtime */
+    {
+        auto d = nla::tridiagonal_substitution(e,r);
+        using return_t = std::array<double,4>;
+        static_assert(std::is_same_v<decltype(d),return_t>);
+        EXPECT_TRUE(isclose(d,expected_d,1e-3));
+    }
+    /* test with vector container at runtime */
+    {
+        auto d = nla::tridiagonal_substitution(ve,vr);
+        using return_t = std::vector<double>;
+        static_assert(std::is_same_v<decltype(d),return_t>);
+        EXPECT_TRUE(isclose(d,expected_d,1e-3));
+    }
+    /* test with raw array at runtime */
+    {
+        auto d = nla::tridiagonal_substitution(re,rr);
+        using return_t = std::array<double,4>;
+        static_assert(std::is_same_v<decltype(d),return_t>);
+        EXPECT_TRUE(isclose(d,expected_d,1e-3));
+    }
+    /* test with array container at compile-time */
+    {
+        constexpr auto d = nla::tridiagonal_substitution(e,r);
+        using return_t = const std::array<double,4>;
+        static_assert(std::is_same_v<decltype(d),return_t>);
+        static_assert(isclose(d,expected_d,1e-3));
+    }
+}
+
+TEST(linalg, tridiagonal_backward)
+{
+    constexpr auto u = std::array<double,4>{2.04, 1.550, 1.395, 1.323};
+    constexpr auto d = std::array<double,4>{40.8, 20.792, 14.210, 210.989};
+    constexpr auto g = std::array<double,4>{-1, -1, -1, 0};
+    auto vu = std::vector<double>{2.04, 1.550, 1.395, 1.323};
+    auto vd = std::vector<double>{40.8, 20.792, 14.210, 210.989};
+    auto vg = std::vector<double>{-1, -1, -1, 0};
+    double ru[4] = {2.04, 1.550, 1.395, 1.323};
+    double rd[4] = {40.8, 20.792, 14.210, 210.989};
+    double rg[4] = {-1, -1, -1, 0};
+    constexpr auto expected_x = std::array<double,4>{65.9517, 93.7415, 124.507, 159.478};
+    /* test with array container at runtime */
+    {
+        auto x = nla::tridiagonal_backward(u,g,d);
+        using return_t = std::array<double,4>;
+        static_assert(std::is_same_v<decltype(x),return_t>);
+        EXPECT_TRUE(isclose(x,expected_x,1e-3));
+    }
+    /* test with vector container at runtime */
+    {
+        auto x = nla::tridiagonal_backward(vu,vg,vd);
+        using return_t = std::vector<double>;
+        static_assert(std::is_same_v<decltype(x),return_t>);
+        EXPECT_TRUE(isclose(x,expected_x,1e-3));
+    }
+    /* test with raw array at runtime */
+    {
+        auto x = nla::tridiagonal_backward(ru,rg,rd);
+        using return_t = std::array<double,4>;
+        static_assert(std::is_same_v<decltype(x),return_t>);
+        EXPECT_TRUE(isclose(x,expected_x,1e-3));
+    }
+    /* test with array container at compile-time */
+    {
+        constexpr auto x = nla::tridiagonal_backward(u,g,d);
+        using return_t = const std::array<double,4>;
+        static_assert(std::is_same_v<decltype(x),return_t>);
+        static_assert(isclose(x,expected_x,1e-3));
+    }
+}
+
+TEST(linalg, tridiagonal_elimination)
+{
+    constexpr auto e = std::array<double,4>{0, -1, -1, -1};
+    constexpr auto f = std::array<double,4>{2.04, 2.04, 2.04, 2.04};
+    constexpr auto g = std::array<double,4>{-1, -1, -1, 0};
+    constexpr auto b = std::array<double,4>{40.8, 0.8, 0.8, 200.8};
+    constexpr auto expected_x = std::array<double,4>{65.9698, 93.7778, 124.538, 159.480};
+    /* test with array container at runtime */
+    {
+        auto x = nla::tridiagonal_elimination(e,f,g,b);
+        using return_t = std::array<double,4>;
+        static_assert(std::is_same_v<decltype(x),return_t>);
+        EXPECT_TRUE(isclose(x,expected_x,1e-3));
+    }
+    /* test with array container at compile-time */
+    {
+        constexpr auto x = nla::tridiagonal_elimination(e,f,g,b);
+        using return_t = const std::array<double,4>;
+        static_assert(std::is_same_v<decltype(x),return_t>);
+        static_assert(isclose(x,expected_x,1e-3));
     }
 }
 

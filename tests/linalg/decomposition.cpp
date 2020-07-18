@@ -180,3 +180,67 @@ TEST(linalg, inverse)
         static_assert(isclose(inv,inverse_A,1e-4));
     }
 }
+
+TEST(linalg, cholesky_decomposition)
+{
+    constexpr auto A = mat3_t{
+        vec3_t{ 6,  15,  55},
+        vec3_t{15,  55, 225},
+        vec3_t{55, 225, 979},
+    };
+    auto vA = std::vector<std::vector<double>>{
+        std::vector<double>{ 6,  15,  55},
+        std::vector<double>{15,  55, 225},
+        std::vector<double>{55, 225, 979},
+    };
+    constexpr double rA[3][3] = {
+        { 6,  15,  55},
+        {15,  55, 225},
+        {55, 225, 979},
+    };
+    constexpr auto expected_L = mat3_t{
+        vec3_t{2.44949, 0      , 0},
+        vec3_t{6.12372, 4.1833 , 0},
+        vec3_t{22.4537, 20.9165, 6.1101},
+    };
+    /* test with array container at runtime */
+    {
+        auto L = nla::cholesky_decomposition(A);
+        /* type of L should be same as A which is mat3_t */
+        using return_t = mat3_t;
+        static_assert(std::is_same_v<decltype(L),return_t>);
+        EXPECT_TRUE(isclose(L,expected_L,1e-4));
+    }
+    /* test with vector container at runtime */
+    {
+        auto L = nla::cholesky_decomposition(vA);
+        /* type of L should be same as vA which is vector<vector<double>> */
+        using return_t = std::vector<std::vector<double>>;
+        static_assert(std::is_same_v<decltype(L),return_t>);
+        EXPECT_TRUE(isclose(L,expected_L,1e-4));
+    }
+    /* test with raw array at runtime */
+    {
+        auto L = nla::cholesky_decomposition(rA);
+        /* type of L should be array<array<double,3>,3> (raw array converted to std::array) */
+        using return_t = std::array<std::array<double,3>,3>;
+        static_assert(std::is_same_v<decltype(L),return_t>);
+        EXPECT_TRUE(isclose(L,expected_L,1e-4));
+    }
+    /* test with array container at compile-time */
+    {
+        constexpr auto L = nla::cholesky_decomposition(A);
+        /* type of L should be same as A which is mat3_t */
+        using return_t = const mat3_t;
+        static_assert(std::is_same_v<decltype(L),return_t>);
+        static_assert(isclose(L,expected_L,1e-4));
+    }
+    /* test with raw array at compile-time */
+    {
+        constexpr auto L = nla::cholesky_decomposition(rA);
+        /* type of L should be same as A which is mat3_t */
+        using return_t = const std::array<std::array<double,3>,3>;
+        static_assert(std::is_same_v<decltype(L),return_t>);
+        static_assert(isclose(L,expected_L,1e-4));
+    }
+}

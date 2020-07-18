@@ -2,6 +2,7 @@
 #define NMTOOLS_LINALG_MATVEC_HPP
 
 #include "nmtools/traits.hpp"
+#include "nmtools/meta.hpp"
 #include <type_traits>
 #include <cmath>
 #include <cassert>
@@ -103,52 +104,6 @@ namespace nmtools::linalg {
             return ret;
         }
 
-        /**
-         * @brief transform (bounded) raw array to std::array
-         * should have member type `type` with type of std::array
-         * if given T is bounded (1D or 2D) raw array, 
-         * `type` has type of T otherwise
-         * 
-         * @tparam T 
-         */
-        template <typename T>
-        struct transform_bounded_array 
-        {
-            using type = T;
-        };
-
-        /**
-         * @brief overloaded version of transform_bounded_array for T[N]
-         * 
-         * @tparam T element type
-         * @tparam N number of elements
-         */
-        template <typename T, std::size_t N>
-        struct transform_bounded_array<T[N]>
-        {
-            using type = std::array<T,N>;
-        };
-
-        /**
-         * @brief overloaded version of transform_bounded_array for T[N][M]
-         * 
-         * @tparam T element type
-         * @tparam N number of first indices
-         * @tparam M number of last indices
-         */
-        template <typename T, std::size_t N, std::size_t M>
-        struct transform_bounded_array<T[N][M]>
-        {
-            using type = std::array<std::array<T,M>,N>;
-        };
-
-        /**
-         * @brief helper alias template to transform (bounded) raw array to std::array
-         * 
-         * @tparam T (bounded) array
-         */
-        template <typename T>
-        using transform_bounded_array_t = typename transform_bounded_array<T>::type;
     } // namespace detail
 
     using detail::msmul;
@@ -175,7 +130,7 @@ namespace nmtools::linalg {
             "unsupported type for zeros_like"
         );
         using traits::remove_cvref_t;
-        using detail::transform_bounded_array_t;
+        using meta::transform_bounded_array_t;
         using return_t = transform_bounded_array_t<remove_cvref_t<Array>>;
         auto ret = return_t{};
         /* ret is aritmethic type (scalr), return as it is */
@@ -188,6 +143,41 @@ namespace nmtools::linalg {
             }
             for (size_t i=0; i<size(a); i++)
                 ret[i] = zeros_like(a[i]);
+            return ret;
+        }
+    }
+
+    /**
+     * @brief clone matrix/vector 
+     * 
+     * @tparam Array 
+     * @param a matrix/vector/arithmetic
+     * @return constexpr auto 
+     */
+    template <typename Array>
+    constexpr auto clone(const Array& a)
+    {
+        /** TODO: proper constraints **/
+        static_assert(
+            traits::is_array1d_v<Array> ||
+            traits::is_array2d_v<Array> ||
+            std::is_arithmetic_v<Array>,
+            "unsupported type for zeros_like"
+        );
+        using traits::remove_cvref_t;
+        using meta::transform_bounded_array_t;
+        using return_t = transform_bounded_array_t<remove_cvref_t<Array>>;
+        auto ret = return_t{};
+        /* ret is aritmethic type (scalr), return as it is */
+        if constexpr (std::is_arithmetic_v<Array>)
+            return a;
+        /* ret is conteiner, for each elements call zeros_like */
+        else {
+            if constexpr (traits::is_resizeable_v<Array>) {
+                ret.resize(size(a));
+            }
+            for (size_t i=0; i<size(a); i++)
+                ret[i] = clone(a[i]);
             return ret;
         }
     }
@@ -207,13 +197,14 @@ namespace nmtools::linalg {
         using traits::is_resizeable_v;
         using traits::is_array2d_v;
 
-        /* remove cv-ref to make sure we get non const */
-        using element_t = remove_cvref_t<get_container_value_type_t<Array>>;
-
         static_assert(
             is_array2d_v<Array>,
             "only support 2D array"
         );
+
+        /* remove cv-ref to make sure we get non const */
+        using element_t = remove_cvref_t<get_container_value_type_t<Array>>;
+        using value_t = remove_cvref_t<get_container_value_type_t<element_t>>;
 
         auto ret = zeros_like(a);
         auto n = size(a);
@@ -226,7 +217,7 @@ namespace nmtools::linalg {
         for (size_t i=0; i<n; i++) {
             if constexpr (is_resizeable_v<element_t>)
                 ret[i].resize(m);
-            ret[i][i] = 1.;
+            ret[i][i] = static_cast<value_t>(1);
         }
         return ret;
     }
