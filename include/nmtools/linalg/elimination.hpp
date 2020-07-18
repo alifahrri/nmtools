@@ -5,6 +5,7 @@
 #include "nmtools/linalg/matvec.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/traits.hpp"
+#include "nmtools/meta.hpp"
 
 #include <map>
 #include <tuple>
@@ -30,7 +31,7 @@ namespace nmtools::linalg {
     using std::make_tuple;
 
     namespace tag {
-        using helper::type_in_tuple;
+        using meta::type_in_tuple;
         /**
          * @brief default tag for partial_pivot
          * 
@@ -292,7 +293,7 @@ namespace nmtools::linalg {
         auto n = size(A);
 
         using traits::remove_cvref_t;
-        using detail::transform_bounded_array_t;
+        using meta::transform_bounded_array_t;
         using matrix_t = transform_bounded_array_t<remove_cvref_t<Matrix>>;
         using vector_t = transform_bounded_array_t<remove_cvref_t<Vector>>;
 
