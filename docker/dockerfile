@@ -34,6 +34,14 @@ RUN wget https://github.com/eigenteam/eigen-git-mirror/archive/3.3.7.tar.gz && \
 	tar -zxvf 3.3.7.tar.gz && rm 3.3.7.tar.gz && \
 	cd eigen-git-mirror-3.3.7 && mkdir build && cd build && cmake .. && make install
 
+## install std::experimental::simd
+COPY scripts/install_stdx_simd.sh install_stdx_simd.sh
+RUN bash install_stdx_simd.sh
+
+## install xsimd
+COPY scripts/install_xsimd.sh install_xsimd.sh
+RUN bash install_xsimd.sh
+
 WORKDIR /app/numeric_tools/
 
 COPY benchmarks benchmarks
