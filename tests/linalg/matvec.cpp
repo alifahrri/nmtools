@@ -124,6 +124,98 @@ TEST(linalg, zeros_like)
     }
 }
 
+TEST(linalg, clone)
+{
+    constexpr auto a = array<double,3>{ 1, 2, 3 };
+    auto v = vector<double>{ 1, 2, 3 };
+    constexpr double r[3] = { 1, 2, 3, };
+    constexpr auto ma = array<array<double,3>,3> {
+        array<double,3>{1, 2, 3},
+        array<double,3>{1, 2, 3},
+        array<double,3>{1, 2, 3},
+    };
+    auto mv = vector<vector<double>> {
+        vector<double>{1, 2, 3},
+        vector<double>{1, 2, 3},
+        vector<double>{1, 2, 3},
+    };
+    constexpr double mr[3][3] = {
+        {1, 2, 3},
+        {1, 2, 3},
+        {1, 2, 3},
+    };
+    /* test for vector with array container at runtime */
+    {
+        using return_t = array<double,3>;
+        auto z = nla::clone(a);
+        EXPECT_TRUE(isclose(z,a));
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+    }
+    /* test for vector with array container at compile-time */
+    {
+        using return_t = const array<double,3>;
+        constexpr auto z = nla::clone(a);
+        static_assert(isclose(z,a));
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+    }
+    /* test for vector with vector container at runtime */
+    {
+        using return_t = vector<double>;
+        auto z = nla::clone(v);
+        EXPECT_TRUE(isclose(z,v));
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+    }
+    /* test for vector with raw array at runtime */
+    {
+        using return_t = array<double,3>;
+        auto z = nla::clone(r);
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+        EXPECT_TRUE(isclose(z,a));
+    }
+    /* test for vector with raw array at compile-time */
+    {
+        using return_t = const array<double,3>;
+        constexpr auto z = nla::clone(r);
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+        static_assert(isclose(z,a));
+    }
+    /* test for matrix with array container at runtime */
+    {
+        using return_t = array<array<double,3>,3>;
+        auto z = nla::clone(ma);
+        EXPECT_TRUE(isclose(z,ma));
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+    }
+    /* test for matrix with array container at compile-time */
+    {
+        using return_t = const array<array<double,3>,3>;
+        constexpr auto z = nla::clone(ma);
+        static_assert(isclose(z,ma));
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+    }
+    /* test for matrix with vector container at runtime */
+    {
+        using return_t = vector<vector<double>>;
+        auto z = nla::clone(mv);
+        EXPECT_TRUE(isclose(z,mv));
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+    }
+    /* test for matrix with raw array at runtime */
+    {
+        using return_t = array<array<double,3>,3>;
+        auto z = nla::clone(mr);
+        EXPECT_TRUE(isclose(z,ma));
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+    }
+    /* test for matrix with raw array at compile-time */
+    {
+        using return_t = const array<array<double,3>,3>;
+        constexpr auto z = nla::clone(mr);
+        static_assert(isclose(z,ma));
+        static_assert(std::is_same_v<return_t,decltype(z)>);
+    }
+}
+
 TEST(linalg, identity)
 {
     auto ma = array<array<double,3>,3> {

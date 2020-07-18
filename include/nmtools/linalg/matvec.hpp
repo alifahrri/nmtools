@@ -148,6 +148,41 @@ namespace nmtools::linalg {
     }
 
     /**
+     * @brief clone matrix/vector 
+     * 
+     * @tparam Array 
+     * @param a matrix/vector/arithmetic
+     * @return constexpr auto 
+     */
+    template <typename Array>
+    constexpr auto clone(const Array& a)
+    {
+        /** TODO: proper constraints **/
+        static_assert(
+            traits::is_array1d_v<Array> ||
+            traits::is_array2d_v<Array> ||
+            std::is_arithmetic_v<Array>,
+            "unsupported type for zeros_like"
+        );
+        using traits::remove_cvref_t;
+        using meta::transform_bounded_array_t;
+        using return_t = transform_bounded_array_t<remove_cvref_t<Array>>;
+        auto ret = return_t{};
+        /* ret is aritmethic type (scalr), return as it is */
+        if constexpr (std::is_arithmetic_v<Array>)
+            return a;
+        /* ret is conteiner, for each elements call zeros_like */
+        else {
+            if constexpr (traits::is_resizeable_v<Array>) {
+                ret.resize(size(a));
+            }
+            for (size_t i=0; i<size(a); i++)
+                ret[i] = clone(a[i]);
+            return ret;
+        }
+    }
+
+    /**
      * @brief make identity matrix
      * 
      * @tparam Array matrix-like
