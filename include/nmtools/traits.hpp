@@ -132,7 +132,7 @@ namespace nmtools::traits {
 
     template <typename T>
     struct is_array2d<T, 
-        void_t<decltype(declval<T>()[0][0]), enable_if_t<!is_array3d_v<T>> > 
+        void_t<decltype(declval<T>()[0][0])> 
     > : true_type {};
 
     template <typename T>
@@ -151,7 +151,7 @@ namespace nmtools::traits {
 
     template <typename T>
     struct is_array1d<T, 
-        void_t<decltype(declval<T>()[0]), enable_if_t<!is_array2d_v<T>> >
+        void_t<decltype(declval<T>()[0])>
     > : true_type {};
 
     /**
