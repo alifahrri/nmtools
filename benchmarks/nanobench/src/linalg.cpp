@@ -182,8 +182,8 @@ int main()
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float", Af3x3);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double_simd", Ad3x3_simd);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float_simd", Af3x3_simd);
-        // cholesky_decomposition_benchmark(&b, "cholesky_decomposition_valarray_double", Ad3x3_val);
-        // cholesky_decomposition_benchmark(&b, "cholesky_decomposition_valarray_float", Af3x3_val);
+        cholesky_decomposition_benchmark(&b, "cholesky_decomposition_valarray_double", Ad3x3_val);
+        cholesky_decomposition_benchmark(&b, "cholesky_decomposition_valarray_float", Af3x3_val);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_vector_double", Vd3x3);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_vector_float", Vf3x3);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_raw_double", Rd3x3);
@@ -353,5 +353,79 @@ int main()
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_raw_float", Rf5x5);
 
         gen("cholesky_decomposition_5x5.html", ankerl::nanobench::templates::htmlBoxplot(), b);
+    }
+
+    {
+        /* basic type */
+        auto ae_d4 = std::array<double,4>{0, -1, -1, -1};
+        auto af_d4 = std::array<double,4>{2.04, 2.04, 2.04, 2.04};
+        auto ag_d4 = std::array<double,4>{-1, -1, -1, 0};
+        auto ab_d4 = std::array<double,4>{40.8, 0.8, 0.8, 200.8};
+
+        auto ve_d4 = std::vector<double>{0, -1, -1, -1};
+        auto vf_d4 = std::vector<double>{2.04, 2.04, 2.04, 2.04};
+        auto vg_d4 = std::vector<double>{-1, -1, -1, 0};
+        auto vb_d4 = std::vector<double>{40.8, 0.8, 0.8, 200.8};
+
+        auto ae_f4 = std::array<float,4>{0, -1, -1, -1};
+        auto af_f4 = std::array<float,4>{2.04, 2.04, 2.04, 2.04};
+        auto ag_f4 = std::array<float,4>{-1, -1, -1, 0};
+        auto ab_f4 = std::array<float,4>{40.8, 0.8, 0.8, 200.8};
+
+        auto ve_f4 = std::vector<float>{0, -1, -1, -1};
+        auto vf_f4 = std::vector<float>{2.04, 2.04, 2.04, 2.04};
+        auto vg_f4 = std::vector<float>{-1, -1, -1, 0};
+        auto vb_f4 = std::vector<float>{40.8, 0.8, 0.8, 200.8};
+
+        double re_d4[4] = {0, -1, -1, -1};
+        double rf_d4[4] = {2.04, 2.04, 2.04, 2.04};
+        double rg_d4[4] = {-1, -1, -1, 0};
+        double rb_d4[4] = {40.8, 0.8, 0.8, 200.8};
+
+        float re_f4[4] = {0, -1, -1, -1};
+        float rf_f4[4] = {2.04, 2.04, 2.04, 2.04};
+        float rg_f4[4] = {-1, -1, -1, 0};
+        float rb_f4[4] = {40.8, 0.8, 0.8, 200.8};
+
+        /* simd type */
+        auto ae_d4_simd = std::array<native_simd<double>,4>{0, -1, -1, -1};
+        auto af_d4_simd = std::array<native_simd<double>,4>{2.04, 2.04, 2.04, 2.04};
+        auto ag_d4_simd = std::array<native_simd<double>,4>{-1, -1, -1, 0};
+        auto ab_d4_simd = std::array<native_simd<double>,4>{40.8, 0.8, 0.8, 200.8};
+
+        auto ae_d4_xsimd = xs::batch<double,4>{0, -1, -1, -1};
+        auto af_d4_xsimd = xs::batch<double,4>{2.04, 2.04, 2.04, 2.04};
+        auto ag_d4_xsimd = xs::batch<double,4>{-1, -1, -1, 0};
+        auto ab_d4_xsimd = xs::batch<double,4>{40.8, 0.8, 0.8, 200.8};
+
+        auto ae_f4_simd = std::array<native_simd<float>,4>{0.f, -1.f, -1.f, -1.f};
+        auto af_f4_simd = std::array<native_simd<float>,4>{2.04f, 2.04f, 2.04f, 2.04f};
+        auto ag_f4_simd = std::array<native_simd<float>,4>{-1.f, -1.f, -1.f, 0.f};
+        auto ab_f4_simd = std::array<native_simd<float>,4>{40.8f, 0.8f, 0.8f, 200.8f};
+
+        auto ae_f4_xsimd = xs::batch<float,4>(0.f, -1.f, -1.f, -1.f);
+        auto af_f4_xsimd = xs::batch<float,4>(2.04f, 2.04f, 2.04f, 2.04f);
+        auto ag_f4_xsimd = xs::batch<float,4>(-1.f, -1.f, -1.f, 0.f);
+        auto ab_f4_xsimd = xs::batch<float,4>(40.8f, 0.8f, 0.8f, 200.8f);
+
+        ankerl::nanobench::Bench b;
+        b.title("Tridiagonal Elimination (4x4)")
+            .warmup(100)
+            .epochs(1000)
+            .relative(true);
+        b.performanceCounters(true);
+
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double", ae_d4, af_d4, ag_d4, ab_d4);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double", ae_f4, af_f4, ag_f4, ab_f4);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_simd", ae_d4_simd, af_d4_simd, ag_d4_simd, ab_d4_simd);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_simd", ae_f4_simd, af_f4_simd, ag_f4_simd, ab_f4_simd);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_xsimd", ae_d4_xsimd, af_d4_xsimd, ag_d4_xsimd, ab_d4_xsimd);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_xsimd", ae_f4_xsimd, af_f4_xsimd, ag_f4_xsimd, ab_f4_xsimd);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_vector_double", ve_d4, vf_d4, vg_d4, vb_d4);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_vector_double", ve_f4, vf_f4, vg_f4, vb_f4);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_raw_double", re_d4, rf_d4, rg_d4, rb_d4);
+        tridiagonal_elimination_benchmark(&b, "tridiagonal_raw_double", re_f4, rf_f4, rg_f4, rb_f4);
+
+        gen("tridiagonal_elimination_4x4.html", ankerl::nanobench::templates::htmlBoxplot(), b);
     }
 }

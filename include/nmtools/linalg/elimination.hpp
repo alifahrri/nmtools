@@ -32,6 +32,78 @@ namespace nmtools::linalg {
 
     namespace tag {
         using meta::type_in_tuple;
+
+        /**
+         * @brief tag for assertion
+         * 
+         */
+        struct assert_t {};
+
+        /**
+         * @brief size assertion
+         * 
+         */
+        struct size_assert_t : assert_t {};
+
+        /**
+         * @brief size assertion
+         * 
+         */
+        struct no_assert_t : assert_t {};
+
+        /**
+         * @brief helper variable template to determine 
+         * if T is valid elimination tag
+         * 
+         * @tparam T 
+         */
+        template <typename T>
+        inline constexpr bool is_assert_v = is_base_of_v<assert_t,T>;
+        /**
+         * @brief specialized version of is_elimination_v to handle tuple
+         * 
+         * @tparam Args 
+         */
+        template <typename ...Args>
+        inline constexpr bool is_assert_v<tuple<Args...>> = type_in_tuple<is_base_of>(assert_t{},tuple<Args...>{});
+
+        using traits::is_tuple_v;
+
+        /**
+         * @brief check if given tag is present in T
+         * in which T could be single type or tuple
+         * specialization on tuple checks if tag is
+         * presents in any of the tuple's arguments
+         * 
+         * @tparam tag_t 
+         * @tparam T 
+         * @tparam void 
+         */
+        template <typename tag_t, typename T, typename = void>
+        struct is_tag_enabled : std::is_same<tag_t,T> {};
+
+        /**
+         * @brief partial specialization when T is tuple
+         * 
+         * @tparam tag_t 
+         * @tparam T 
+         */
+        template <typename tag_t, typename T>
+        struct is_tag_enabled<tag_t,T,std::enable_if_t<is_tuple_v<T>> > 
+        {
+            static constexpr bool value = type_in_tuple(tag_t{},T{});
+        };
+
+        /**
+         * @brief helper variable template to check if tag_t is enabled, 
+         * given T, where T can be single tag or tuple of tag
+         * 
+         * @tparam tag_t tag to check
+         * @tparam T tuple of tag or single tag
+         */
+        template <typename tag_t, typename T>
+        inline constexpr bool is_tag_enabled_v = is_tag_enabled<tag_t,T>::value;
+
         /**
          * @brief default tag for partial_pivot
          * 
@@ -86,43 +158,6 @@ namespace nmtools::linalg {
          */
         template <typename ...Args>
         inline constexpr bool is_elimination_v<tuple<Args...>> = type_in_tuple<is_base_of>(elimination_t{},tuple<Args...>{});
-
-        using traits::is_tuple_v;
-
-        /**
-         * @brief check if given tag is present in T
-         * in which T could be single type or tuple
-         * specialization on tuple checks if tag is
-         * presents in any of the tuple's arguments
-         * 
-         * @tparam tag_t 
-         * @tparam T 
-         * @tparam void 
-         */
-        template <typename tag_t, typename T, typename = void>
-        struct is_tag_enabled : std::is_same<tag_t,T> {};
-
-        /**
-         * @brief partial specialization when T is tuple
-         * 
-         * @tparam tag_t 
-         * @tparam T 
-         */
-        template <typename tag_t, typename T>
-        struct is_tag_enabled<tag_t,T,std::enable_if_t<is_tuple_v<T>> > 
-        {
-            static constexpr bool value = type_in_tuple(tag_t{},T{});
-        };
-
-        /**
-         * @brief helper variable template to check if tag_t is enabled, 
-         * given T, where T can be single tag or tuple of tag
-         * 
-         * @tparam tag_t tag to check
-         * @tparam T tuple of tag or single tag
-         */
-        template <typename tag_t, typename T>
-        inline constexpr bool is_tag_enabled_v = is_tag_enabled<tag_t,T>::value;
     } // namespace tag
 
     /**
@@ -457,6 +492,131 @@ namespace nmtools::linalg {
         auto [Ae, be] = forward_elimination<elimination_t>(A,b,s,logger);
         auto x = backward_substitution(Ae,be);
 
+        return x;
+    }
+
+    /**
+     * @brief perform decomposition for tridiagonal system
+     * 
+     * @tparam E vector-like
+     * @tparam F vector-like
+     * @tparam G vector-like
+     * @param e lower elements (A_{1,0}, A_{2,0}, ...), e[0] should be zero
+     * @param f diagonal elements (A_{0,0}, A_{1,1}, ...)
+     * @param g upper elements (A_{0,1}, A{1,2}, ...), g[n-1] should be zero
+     * @return constexpr auto [l,u], 
+     *  l: lower entry of decomposed matrix,
+     *  u: upper entry of decomposed matrix,
+     * @cite chapra2014numerical_tridiagonal_systems
+     */
+    template <typename tag_t=tag::size_assert_t, typename E, typename F, typename G>
+    constexpr auto tridiagonal_decomposition(const E& e, const F& f, const G& g)
+    {
+        static_assert(
+            is_array1d_v<E> && is_array1d_v<F> && is_array1d_v<G>,
+            "unsupported types for tridiagonal system elimination"
+        );
+
+        static_assert(
+            tag::is_assert_v<tag_t>,
+            "unsupported tag for tridiagonal_decomposition"
+        );
+
+        auto ne = size(e);
+        auto nf = size(f);
+        auto ng = size(g);
+
+        if constexpr (tag::is_tag_enabled_v<tag::size_assert_t,tag_t>) {
+            assert( (ne == nf) && (e[0]   ==0) );
+            assert( (ng == nf) && (g[ng-1]==0) );
+        }
+
+        auto l = zeros_like(e);
+        auto u = zeros_like(f);
+
+        u[0] = f[0];
+        for (int i=1; i<nf; i++) {
+            l[i] = e[i] / u[i-1];
+            u[i] = f[i] - l[i] * g[i-1];
+        }
+
+        return std::make_tuple(l,u);
+    }
+
+    /**
+     * @brief perform forward substitution for tridiagonal system
+     * 
+     * @tparam L vector-like
+     * @tparam B vector-like
+     * @param l decomposed lower diagonal entry
+     * @param b original result vector
+     * @return constexpr auto L, substituted result vector
+     * @cite chapra2014numerical_tridiagonal_systems
+     */
+    template <typename L, typename B>
+    constexpr auto tridiagonal_substitution(const L& l, const B& b)
+    {
+        static_assert(
+            is_array1d_v<L> && is_array1d_v<B>,
+            "unsupported type E for tridiagonal_substitution"
+        );
+
+        auto d = clone(b);
+        auto n = size(l);
+        for (size_t i=1; i<n; i++)
+            d[i] = b[i] - l[i] * d[i-1];
+        return d;
+    }
+
+    /**
+     * @brief perfom backward substitution for tridiagonal sytem
+     * 
+     * @tparam U vector-like
+     * @tparam G vector-like
+     * @tparam D vector-like
+     * @param u upper elements of decomposed matrix
+     * @param g upper element of original matrix
+     * @param d substituted result vector
+     * @return constexpr auto 
+     * @cite chapra2014numerical_tridiagonal_systems
+     */
+    template <typename U, typename G, typename D>
+    constexpr auto tridiagonal_backward(const U& u, const G& g, const D& d)
+    {
+        static_assert(
+            is_array1d_v<U> && is_array1d_v<G> && is_array1d_v<D>,
+            "unsupported types for tridiagonal_backward"
+        );
+
+        auto x = zeros_like(d);
+        auto n = size(d);
+        
+        x[n-1] = d[n-1] / u[n-1];
+        for (int i=n-2; i>=0; i--)
+            x[i] = (d[i] - g[i] * x[i+1]) / u[i];
+        return x;
+    }
+
+    /**
+     * @brief perform elimination on tridiagonal system
+     * 
+     * @tparam E vector-like
+     * @tparam F vector-like
+     * @tparam G vector-like
+     * @tparam B vector-like
+     * @param e lower elements (A_{1,0}, A_{2,0}, ...), e[0] should be zero
+     * @param f diagonal elements (A_{0,0}, A_{1,1}, ...)
+     * @param g upper elements (A_{0,1}, A{1,2}, ...), g[n-1] should be zero
+     * @param b right hand side vector
+     * @return constexpr auto x
+     * @cite chapra2014numerical_tridiagonal_systems
+     */
+    template <typename tag_t=tag::size_assert_t, typename E, typename F, typename G, typename B>
+    constexpr auto tridiagonal_elimination(const E& e, const F& f, const G& g, const B& b)
+    {
+        auto [l,u] = tridiagonal_decomposition<tag_t>(e,f,g);
+        auto d = tridiagonal_substitution(l,b);
+        auto x = tridiagonal_backward(u,g,d);
         return x;
     }
 

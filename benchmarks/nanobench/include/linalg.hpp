@@ -52,4 +52,14 @@ void cholesky_decomposition_benchmark(ankerl::nanobench::Bench *bench, char cons
     });
 }
 
+template <typename E, typename F, typename G, typename B>
+void tridiagonal_elimination_benchmark(ankerl::nanobench::Bench *bench, char const *name, const E& e, const F& f, const G& g, const B& b)
+{
+    using tag_t = nla::tag::no_assert_t;
+    bench->run(name, [&](){
+        auto x = nla::tridiagonal_elimination<tag_t>(e,f,g,b);
+        ankerl::nanobench::doNotOptimizeAway(x);
+    });
+}
+
 #endif

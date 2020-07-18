@@ -165,4 +165,25 @@ int main()
             print_matrix(x);
         }
     }
+
+    DESC("elimination for tridiagonal systems")
+    {
+        constexpr auto e = std::array<double,4>{0, -1, -1, -1};
+        constexpr auto f = std::array<double,4>{2.04, 2.04, 2.04, 2.04};
+        constexpr auto g = std::array<double,4>{-1, -1, -1, 0};
+        constexpr auto b = std::array<double,4>{40.8, 0.8, 0.8, 200.8};
+
+        DESC("tridiagonal elimination")
+        {
+            DESC("diagonal entry");
+            print_matrix(f);
+            DESC("lower diagonal entry");
+            print_matrix(e);
+            DESC("upper diagonal entry");
+            print_matrix(g);
+            auto x = nla::tridiagonal_elimination(e,f,g,b);
+            DESC("solution vector");
+            print_matrix(x);
+        }
+    }
 }
