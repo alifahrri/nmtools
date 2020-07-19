@@ -24,8 +24,11 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [ -z "$DEST" -a "$DEST" != " " ]; then
-    DEST="/opt/nanobench/include/nanobench"
+    DEST="/opt/nanobench/"
     mkdir -p $DEST
 fi
 
 wget -O $DEST/nanobench.h https://raw.githubusercontent.com/martinus/nanobench/v4.0.0/src/include/nanobench.h
+
+mkdir -p /usr/local/include/nanobench/
+cp $DEST/nanobench.h /usr/local/include/nanobench/
