@@ -53,6 +53,6 @@ COPY cmake cmake
 COPY CMakeLists.txt CMakeLists.txt 
 
 RUN mkdir build && cd build \
-    && cmake .. && make
+    && cmake -DBUILD_EXAMPLES=ON -DBUILD_BENCHMARKS=ON .. && make
 
 CMD ["bash","scripts/run_unit_tests.sh"]
