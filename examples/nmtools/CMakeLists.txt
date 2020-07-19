@@ -1,111 +1,52 @@
 cmake_minimum_required(VERSION 3.10)
+project(nmtools-example)
 
 add_executable(
-    fibonacci_search
+    ${PROJECT_NAME}-fibonacci_search
     src/fibonacci_search.cpp
 )
 
-set_target_properties(
-    fibonacci_search
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    fibonacci_search PRIVATE
-    -g
-)
-
-target_include_directories(
-    fibonacci_search PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /app/numeric_tools/include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-fibonacci_search
+    COMPILE_OPTIONS "-g"
 )
 
 add_executable(
-    spline
+    ${PROJECT_NAME}-spline
     src/spline.cpp
 )
 
-set_target_properties(
-    spline
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    spline PRIVATE
-    -g
-)
-
-target_include_directories(
-    spline PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /app/numeric_tools/include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-spline
+    COMPILE_OPTIONS "-g"
 )
 
 add_executable(
-    ode
+    ${PROJECT_NAME}-ode
     src/ode.cpp
 )
 
-set_target_properties(
-    ode
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    ode PRIVATE
-    -g
-)
-
-target_include_directories(
-    ode PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /app/numeric_tools/include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-ode
+    COMPILE_OPTIONS "-g"
 )
 
 add_executable(
-    elimination
+    ${PROJECT_NAME}-elimination
     src/elimination.cpp
 )
 
-set_target_properties(
-    elimination
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    elimination PRIVATE
-    -g
-)
-
-target_include_directories(
-    elimination PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /app/numeric_tools/include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-elimination
+    COMPILE_OPTIONS "-g"
 )
 
 add_executable(
-    decomposition_example
+    ${PROJECT_NAME}-decomposition
     src/decomposition.cpp
 )
 
-set_target_properties(
-    decomposition_example
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    decomposition_example PRIVATE
-    -g
-)
-
-target_include_directories(
-    decomposition_example PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /app/numeric_tools/include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-decomposition
+    COMPILE_OPTIONS "-g"
 )

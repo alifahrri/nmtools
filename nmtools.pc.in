@@ -1,0 +1,8 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/include
+
+Name: nmtools
+Description: nmtools provides a collections of generic algorithm for numerical computations
+Version: 0.0.0
+Cflags: -I${includedir}

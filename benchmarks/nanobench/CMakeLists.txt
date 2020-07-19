@@ -1,121 +1,64 @@
 cmake_minimum_required(VERSION 3.10)
+project(nmtools-benchmark-nanobench)
+
+if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    find_package(nmtools REQUIRED CONFIG)
+    set(NMTOOLS_INCLUDE_DIR ${nmtools_INCLUDE_DIRS})
+    set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
+endif()
+
+include(nmtools)
+
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 add_executable(
-    ode_benchmark
+    ${PROJECT_NAME}-ode
     src/ode.cpp
 )
 
-set_target_properties(
-    ode_benchmark
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    ode_benchmark PRIVATE
-    -O3 -march=native
-)
-
-target_include_directories(
-    ode_benchmark PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /opt/nanobench/include
-    /app/numeric_tools/include
-    include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-ode
+    COMPILE_OPTIONS -O3 -march=native
 )
 
 add_executable(
-    fibonacci_search_benchmark
+    ${PROJECT_NAME}-fibonacci_search
     src/fibonacci_search.cpp
 )
 
-set_target_properties(
-    fibonacci_search_benchmark
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    fibonacci_search_benchmark PRIVATE
-    -O3 -march=native
-)
-
-target_include_directories(
-    fibonacci_search_benchmark PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /opt/nanobench/include
-    /app/numeric_tools/include
-    include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-fibonacci_search
+    COMPILE_OPTIONS -O3 -march=native
 )
 
 add_executable(
-    cubic_spline_benchmark
+    ${PROJECT_NAME}-cubic_spline
     src/spline.cpp
 )
 
-set_target_properties(
-    cubic_spline_benchmark
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    cubic_spline_benchmark PRIVATE
-    -O3 -march=native
-)
-
-target_include_directories(
-    cubic_spline_benchmark PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /opt/nanobench/include
-    /app/numeric_tools/include
-    include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-cubic_spline
+    COMPILE_OPTIONS -O3 -march=native
 )
 
 add_executable(
-    linalg_benchmark
+    ${PROJECT_NAME}-linalg
     src/linalg.cpp
 )
 
-set_target_properties(
-    linalg_benchmark
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    linalg_benchmark PRIVATE
-    -O3 -march=native
-)
-
-target_include_directories(
-    linalg_benchmark PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /opt/nanobench/include
-    /app/numeric_tools/include
-    include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-linalg
+    COMPILE_OPTIONS -O3 -march=native
 )
 
 add_executable(
-    benchmark
+    ${PROJECT_NAME}
     src/benchmark.cpp
 )
 
-set_target_properties(
-    benchmark
-    PROPERTIES
-    CXX_STANDARD 17
-)
-
-target_compile_options(
-    benchmark PRIVATE
-    -O3 -march=native
-)
-
-target_include_directories(
-    benchmark PRIVATE
-    ## TODO : properly find package instead of directly specifying include dir
-    /opt/nanobench/include
-    /app/numeric_tools/include
-    include
+apply_nmtools(
+    TARGET ${PROJECT_NAME}
+    COMPILE_OPTIONS -O3 -march=native
 )
