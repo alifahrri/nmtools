@@ -51,8 +51,10 @@ COPY scripts scripts
 COPY tests tests
 COPY cmake cmake
 COPY CMakeLists.txt CMakeLists.txt 
+COPY nmtools.pc.in nmtools.pc.in
+COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
 RUN mkdir build && cd build \
-    && cmake -DBUILD_EXAMPLES=ON -DBUILD_BENCHMARKS=ON .. && make
+    && cmake -DBUILD_EXAMPLES=ON -DBUILD_BENCHMARKS=ON .. && make && make install
 
 CMD ["bash","scripts/run_unit_tests.sh"]
