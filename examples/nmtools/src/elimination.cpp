@@ -86,7 +86,7 @@ int main()
         DESC("in-place partial pivoting")
         {
             /* pivot tag selection, here we will perform in-place pivoting */
-            using pivot_t = nla::tag::pivot_inplace_t;
+            using pivot_t = nla::elimination_tag::pivot_inplace_t;
             auto [Ar,br] = nla::partial_pivot<pivot_t>(A,b,row);
 
             DESC("matrix A after pivot");
@@ -110,7 +110,7 @@ int main()
             print_matrix(b);
 
             /* pivot tag selection, here we will perform in-place pivoting */
-            using pivot_t = nla::tag::pivot_inplace_t;
+            using pivot_t = nla::elimination_tag::pivot_inplace_t;
             /* partial pivot with scales */
             auto [Ar,br,s] = nla::partial_pivot<pivot_t>(A,b,row,scales);
 
@@ -137,7 +137,7 @@ int main()
             print_matrix(b);
 
             /* use forward elimination with pivot */
-            using elim_t = nla::tag::elimination_with_pivot_t;
+            using elim_t = nla::elimination_tag::elimination_with_pivot_t;
             auto [Ae, be] = nla::forward_elimination<elim_t>(A,b,scales);
 
             DESC("matrix A after elimination");
