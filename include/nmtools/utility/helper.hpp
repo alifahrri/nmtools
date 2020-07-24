@@ -46,6 +46,7 @@ namespace nmtools::helper {
     {
         using traits::is_array1d_v;
         using traits::is_array2d_v;
+        using traits::has_tuple_size_v;
         using std::is_arithmetic_v;
         static_assert(
             (is_arithmetic_v<T> && is_arithmetic_v<U>) ||
@@ -58,7 +59,15 @@ namespace nmtools::helper {
         else {
             auto nm = size(M);
             auto nn = size(N);
-            assert(nm==nn);
+            /* size is known at compile-time, assert at compile-time */
+            if constexpr (has_tuple_size_v<T> && has_tuple_size_v<U>) {
+                constexpr auto nm = std::tuple_size_v<T>;
+                constexpr auto nn = std::tuple_size_v<U>;
+                static_assert(nm==nn);
+            }
+            /* defer assertion to runtime */
+            else assert(nm==nn);
+            
             for (size_t i=0; i<nm; i++) {
                 auto m = M[i];
                 auto n = N[i];
