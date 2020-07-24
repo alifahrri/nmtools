@@ -50,3 +50,13 @@ apply_nmtools(
     TARGET ${PROJECT_NAME}-decomposition
     COMPILE_OPTIONS "-g"
 )
+
+add_executable(
+    ${PROJECT_NAME}-curvefit
+    src/curvefit.cpp
+)
+
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-curvefit
+    COMPILE_OPTIONS "-g"
+)

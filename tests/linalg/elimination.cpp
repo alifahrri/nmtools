@@ -107,13 +107,13 @@ TEST(linalg, partial_pivot)
         static_assert(p==1);
     }
     {
-        using pivot_t = nla::tag::pivot_inplace_t;
+        using pivot_t = nla::elimination_tag::pivot_inplace_t;
         auto [Ap,bp] = nla::partial_pivot<pivot_t>(A,b,row);
         EXPECT_TRUE(nmt::helper::isclose(Ap,expected_A));
         EXPECT_TRUE(nmt::helper::isclose(bp,expected_b));
     }
     {
-        using pivot_t = nla::tag::pivot_inplace_t;
+        using pivot_t = nla::elimination_tag::pivot_inplace_t;
         constexpr auto tuple = nla::partial_pivot<pivot_t>(A,b,row);
         constexpr auto Ap = std::get<0>(tuple);
         constexpr auto bp = std::get<1>(tuple);

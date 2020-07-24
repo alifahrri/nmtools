@@ -2,7 +2,7 @@
 
 #include "fibonacci_search.hpp"
 #include "ode.hpp"
-#include "spline.hpp"
+#include "curvefit.hpp"
 #include "common.hpp"
 
 int main()

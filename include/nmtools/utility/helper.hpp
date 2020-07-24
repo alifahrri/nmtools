@@ -41,37 +41,53 @@ namespace nmtools::helper {
      * @param eps tolerance
      * @return constexpr auto 
      */
-    constexpr auto isclose(auto M, auto N, double eps=1e-6)
+    template <typename T, typename U, typename E=double>
+    constexpr auto isclose(const T& M, const U& N, E eps=1e-6)
     {
         using traits::is_array1d_v;
         using traits::is_array2d_v;
+        using traits::has_tuple_size_v;
+        using std::is_arithmetic_v;
         static_assert(
-            (is_array1d_v<decltype(M)> == is_array1d_v<decltype(N)>) &&
-            (is_array2d_v<decltype(M)> == is_array2d_v<decltype(N)>),
+            (is_arithmetic_v<T> && is_arithmetic_v<U>) ||
+            (is_array1d_v<T> && is_array1d_v<U>) ||
+            (is_array2d_v<T> && is_array2d_v<U>),
             "unsupported isclose"
         );
-        auto nm = size(M);
-        auto nn = size(N);
-        assert(nm==nn);
-        for (size_t i=0; i<nm; i++) {
-            auto m = M[i];
-            auto n = N[i];
-            if constexpr (std::is_arithmetic_v<decltype(m)>) {
-                if (fabs(m-n) > eps)
-                    return false;
-            } else {
-                auto nmm = size(m);
-                auto nnn = size(n);
-                assert (nmm=nnn);
-                for (size_t j=0; j<nmm; j++) {
-                    auto mm = m[j];
-                    auto nn = n[j];
-                    if (fabs(mm-nn) > eps)
+        if constexpr (is_arithmetic_v<T>)
+            return fabs(M-N) < eps;
+        else {
+            auto nm = size(M);
+            auto nn = size(N);
+            /* size is known at compile-time, assert at compile-time */
+            if constexpr (has_tuple_size_v<T> && has_tuple_size_v<U>) {
+                constexpr auto nm = std::tuple_size_v<T>;
+                constexpr auto nn = std::tuple_size_v<U>;
+                static_assert(nm==nn);
+            }
+            /* defer assertion to runtime */
+            else assert(nm==nn);
+            
+            for (size_t i=0; i<nm; i++) {
+                auto m = M[i];
+                auto n = N[i];
+                if constexpr (std::is_arithmetic_v<decltype(m)>) {
+                    if (fabs(m-n) > eps)
                         return false;
+                } else {
+                    auto nmm = size(m);
+                    auto nnn = size(n);
+                    assert (nmm=nnn);
+                    for (size_t j=0; j<nmm; j++) {
+                        auto mm = m[j];
+                        auto nn = n[j];
+                        if (fabs(mm-nn) > eps)
+                            return false;
+                    }
                 }
             }
+            return true;
         }
-        return true;
     }
 
 } // namespace nmtools::helper

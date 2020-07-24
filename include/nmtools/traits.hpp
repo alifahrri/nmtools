@@ -304,16 +304,82 @@ namespace nmtools::traits {
     template <typename T>
     struct is_indexable<T, std::void_t<decltype(std::declval<T>()[size_t{}])> > : std::true_type {};
 
+    /**
+     * @brief check if type T has member type size_type
+     * 
+     * @tparam T type to check
+     * @tparam void 
+     */
     template <typename T, typename = void>
     struct has_size_type : std::false_type {};
 
+    /**
+     * @brief specialization when T actually size_type
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     struct has_size_type<T,
         std::void_t<typename T::size_type>
     > : std::true_type {};
 
+    /**
+     * @brief helper variable template to check if T has size_type
+     * 
+     * @tparam T 
+     */
     template <typename T>
     inline constexpr bool has_size_type_v = has_size_type<T>::value;
+
+    /**
+     * @brief check if T has member type value_type
+     * 
+     * @tparam T type to check
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct has_value_type : std::false_type {};
+
+    /**
+     * @brief specialization when T actually has value_type
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct has_value_type<T, std::void_t<typename T::value_type> > : std::true_type {};
+
+    /**
+     * @brief helper variable template to check if T has member type value_type
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool has_value_type_v = has_value_type<T>::value;
+
+    /**
+     * @brief check if type T has member type allocator_type
+     * 
+     * @tparam T type to check
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct has_allocator_type : std::false_type {};
+
+    /**
+     * @brief specialization when T actually has allocator_type
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct has_allocator_type<T,std::void_t<typename T::allocator_type> > : std::true_type {};
+
+    /**
+     * @brief helper variable template to chek if T has allocator_type
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool has_allocator_type_v = has_allocator_type<T>::value;
 
     template <typename T>
     using enable_if_has_size_type = std::enable_if<has_size_type_v<T>>;
@@ -461,6 +527,12 @@ namespace nmtools::traits {
      */
     template <typename T>
     inline constexpr bool is_bounded_array_v = is_bounded_array<T>::value;
+
+    template <template<typename...> typename T, typename...>
+    struct is_template_instantiable : std::false_type {};
+    
+    template <template<typename...> typename T, typename U, typename ...Args>
+    struct is_template_instantiable<T,T<U,Args...>> : std::true_type {};
 
 } // namespace nmtools::traits
 

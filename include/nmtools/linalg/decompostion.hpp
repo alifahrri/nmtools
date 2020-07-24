@@ -2,6 +2,7 @@
 #define NMTOOLS_LINALG_DECOMPOSITION_HPP
 
 #include "nmtools/traits.hpp"
+#include "nmtools/linalg/elimination.hpp"
 
 namespace nmtools::linalg
 {
@@ -23,7 +24,7 @@ namespace nmtools::linalg
             "unsupported type for Matrix"
         );
 
-        using elim_t = tag::elimination_keep_lower_mat_t;
+        using elim_t = elimination_tag::elimination_keep_lower_mat_t;
 
         /* TODO : check if matrix A is square */
         auto n = size(A);

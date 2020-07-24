@@ -3,6 +3,7 @@
 
 #include "nmtools/utility/helper.hpp"
 #include "nmtools/linalg/matvec.hpp"
+#include "nmtools/utility/tag.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
@@ -27,82 +28,14 @@ namespace nmtools::linalg {
     using traits::get_container_value_type_t;
     using traits::is_multiplicative_v;
     using traits::is_array1d_v;
+    using tag::is_tag_enabled_v;
+    using tag::size_assert_t;
+    using tag::is_assert_v;
 
     using std::make_tuple;
 
-    namespace tag {
+    namespace elimination_tag {
         using meta::type_in_tuple;
-
-        /**
-         * @brief tag for assertion
-         * 
-         */
-        struct assert_t {};
-
-        /**
-         * @brief size assertion
-         * 
-         */
-        struct size_assert_t : assert_t {};
-
-        /**
-         * @brief size assertion
-         * 
-         */
-        struct no_assert_t : assert_t {};
-
-        /**
-         * @brief helper variable template to determine 
-         * if T is valid elimination tag
-         * 
-         * @tparam T 
-         */
-        template <typename T>
-        inline constexpr bool is_assert_v = is_base_of_v<assert_t,T>;
-        /**
-         * @brief specialized version of is_elimination_v to handle tuple
-         * 
-         * @tparam Args 
-         */
-        template <typename ...Args>
-        inline constexpr bool is_assert_v<tuple<Args...>> = type_in_tuple<is_base_of>(assert_t{},tuple<Args...>{});
-
-        using traits::is_tuple_v;
-
-        /**
-         * @brief check if given tag is present in T
-         * in which T could be single type or tuple
-         * specialization on tuple checks if tag is
-         * presents in any of the tuple's arguments
-         * 
-         * @tparam tag_t 
-         * @tparam T 
-         * @tparam void 
-         */
-        template <typename tag_t, typename T, typename = void>
-        struct is_tag_enabled : std::is_same<tag_t,T> {};
-
-        /**
-         * @brief partial specialization when T is tuple
-         * 
-         * @tparam tag_t 
-         * @tparam T 
-         */
-        template <typename tag_t, typename T>
-        struct is_tag_enabled<tag_t,T,std::enable_if_t<is_tuple_v<T>> > 
-        {
-            static constexpr bool value = type_in_tuple(tag_t{},T{});
-        };
-
-        /**
-         * @brief helper variable template to check if tag_t is enabled, 
-         * given T, where T can be single tag or tuple of tag
-         * 
-         * @tparam tag_t tag to check
-         * @tparam T tuple of tag or single tag
-         */
-        template <typename tag_t, typename T>
-        inline constexpr bool is_tag_enabled_v = is_tag_enabled<tag_t,T>::value;
 
         /**
          * @brief default tag for partial_pivot
@@ -158,7 +91,9 @@ namespace nmtools::linalg {
          */
         template <typename ...Args>
         inline constexpr bool is_elimination_v<tuple<Args...>> = type_in_tuple<is_base_of>(elimination_t{},tuple<Args...>{});
-    } // namespace tag
+    } // namespace elimination_tag
+
+    namespace etag = elimination_tag;
 
     /**
      * @brief perform partial (row-only) pivoting
@@ -177,11 +112,11 @@ namespace nmtools::linalg {
      *  - tuple [A,b,scales] if pivot_tag is pivot_inplace_t and scales is given
      * @cite chapra2014numerical_partial_pivot
      */
-    template <typename pivot_tag=tag::pivot_t, typename Matrix, typename Vector, typename Scales=std::nullptr_t>
+    template <typename pivot_tag=etag::pivot_t, typename Matrix, typename Vector, typename Scales=std::nullptr_t>
     constexpr auto partial_pivot(Matrix A, Vector b, auto k, Scales scales=Scales{}, pivot_tag=pivot_tag{})
     {
         static_assert(
-            tag::is_pivot_v<pivot_tag>,
+            etag::is_pivot_v<pivot_tag>,
             "invalid pivot tag"
         );
         static_assert(
@@ -212,7 +147,7 @@ namespace nmtools::linalg {
             }
         }
         /* perform in-place pivoting */
-        if constexpr (std::is_same_v<pivot_tag,tag::pivot_inplace_t>) {
+        if constexpr (std::is_same_v<pivot_tag,etag::pivot_inplace_t>) {
             Matrix A_ = A;
             Vector b_ = b;
             Scales s_ = scales;
@@ -282,13 +217,12 @@ namespace nmtools::linalg {
      * @return constexpr auto [A,b]
      * @cite chapra2014numerical_forward_elimination
      */
-    template <typename elimination_tag=tag::elimination_t, typename Logger=std::nullptr_t, typename Matrix, typename Vector, typename Scales=std::nullptr_t>
+    template <typename elimination_tag=etag::elimination_t, typename Logger=std::nullptr_t, typename Matrix, typename Vector, typename Scales=std::nullptr_t>
     constexpr auto forward_elimination(const Matrix& A, const Vector& b, Scales scales=Scales{}, Logger logger=Logger{}, elimination_tag=elimination_tag{})
     {
-        using tag::elimination_with_pivot_t;
-        using tag::elimination_keep_lower_mat_t;
-        using tag::is_elimination_v;
-        using tag::is_tag_enabled_v;
+        using etag::elimination_with_pivot_t;
+        using etag::elimination_keep_lower_mat_t;
+        using etag::is_elimination_v;
 
         using namespace std::string_literals;
 
@@ -358,7 +292,7 @@ namespace nmtools::linalg {
             if constexpr (use_pivot_v) {
                 /* TODO: support index mapping pivot */
                 /* perform partial pivot inplace with optional scales (disabled by default) */
-                auto tuple = partial_pivot<tag::pivot_inplace_t>(Ae,be,k,se);
+                auto tuple = partial_pivot<etag::pivot_inplace_t>(Ae,be,k,se);
 
                 /* when pivot is enabled, set A and B to pivoted mat/vec */
                 Ae = std::get<0>(tuple);
@@ -487,7 +421,7 @@ namespace nmtools::linalg {
             s[i] = max(A_abs[i]);
         
         /* perform forward elimination with pivot and scaling */
-        using elimination_t = tag::elimination_with_pivot_t;
+        using elimination_t = etag::elimination_with_pivot_t;
 
         auto [Ae, be] = forward_elimination<elimination_t>(A,b,s,logger);
         auto x = backward_substitution(Ae,be);
@@ -509,7 +443,7 @@ namespace nmtools::linalg {
      *  u: upper entry of decomposed matrix,
      * @cite chapra2014numerical_tridiagonal_systems
      */
-    template <typename tag_t=tag::size_assert_t, typename E, typename F, typename G>
+    template <typename tag_t=size_assert_t, typename E, typename F, typename G>
     constexpr auto tridiagonal_decomposition(const E& e, const F& f, const G& g)
     {
         static_assert(
@@ -518,7 +452,7 @@ namespace nmtools::linalg {
         );
 
         static_assert(
-            tag::is_assert_v<tag_t>,
+            is_assert_v<tag_t>,
             "unsupported tag for tridiagonal_decomposition"
         );
 
@@ -526,7 +460,7 @@ namespace nmtools::linalg {
         auto nf = size(f);
         auto ng = size(g);
 
-        if constexpr (tag::is_tag_enabled_v<tag::size_assert_t,tag_t>) {
+        if constexpr (is_tag_enabled_v<tag::size_assert_t,tag_t>) {
             assert( (ne == nf) && (e[0]   ==0) );
             assert( (ng == nf) && (g[ng-1]==0) );
         }
@@ -611,7 +545,7 @@ namespace nmtools::linalg {
      * @return constexpr auto x
      * @cite chapra2014numerical_tridiagonal_systems
      */
-    template <typename tag_t=tag::size_assert_t, typename E, typename F, typename G, typename B>
+    template <typename tag_t=size_assert_t, typename E, typename F, typename G, typename B>
     constexpr auto tridiagonal_elimination(const E& e, const F& f, const G& g, const B& b)
     {
         auto [l,u] = tridiagonal_decomposition<tag_t>(e,f,g);
