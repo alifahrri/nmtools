@@ -52,4 +52,23 @@ void spline_benchmark<std::array<float,9>>(ankerl::nanobench::Bench *bench, char
     });
 }
 
+template <typename X, typename Y>
+void linear_regression_benchmark(ankerl::nanobench::Bench *bench, char const* name, const X& x, const Y& y)
+{
+    bench->run(name, [&](){
+        auto results = cvt::linear_regression(x,y);
+        ankerl::nanobench::doNotOptimizeAway(results);
+    });
+}
+
+template <typename X, typename Y, typename ...Vector>
+
+void least_square_regression_benchmark(ankerl::nanobench::Bench *bench, char const* name, const Y& y, const X& x, const Vector&...xs)
+{
+    bench->run(name, [&](){
+        auto results = cvt::least_square_regression(y,x,xs...);
+        ankerl::nanobench::doNotOptimizeAway(results);
+    });
+}
+
 #endif

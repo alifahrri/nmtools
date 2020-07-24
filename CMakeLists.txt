@@ -12,6 +12,7 @@ message(STATUS "nmtools v${${PROJECT_NAME}_VERSION}")
 
 set(NMTOOLS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(NMTOOLS_HEADERS
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/regression.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/sinusoid.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/spline.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/differentiation/finite.hpp
@@ -28,6 +29,7 @@ set(NMTOOLS_HEADERS
     ${NMTOOLS_INCLUDE_DIR}/nmtools/roots/open.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/taylor/taylor.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/helper.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/tag.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/differentiation.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/fourier.hpp

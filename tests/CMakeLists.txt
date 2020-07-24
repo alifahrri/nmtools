@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     integration/trapezoidal.cpp
     differentiation/finite.cpp
     taylor/taylor.cpp
+    curvefit/regression.cpp
     curvefit/sinusoid.cpp
     curvefit/spline.cpp
     fourier/series.cpp

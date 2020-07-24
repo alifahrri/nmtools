@@ -34,12 +34,12 @@ apply_nmtools(
 )
 
 add_executable(
-    ${PROJECT_NAME}-cubic_spline
-    src/spline.cpp
+    ${PROJECT_NAME}-curvefit
+    src/curvefit.cpp
 )
 
 apply_nmtools(
-    TARGET ${PROJECT_NAME}-cubic_spline
+    TARGET ${PROJECT_NAME}-curvefit
     COMPILE_OPTIONS -O3 -march=native
 )
 
