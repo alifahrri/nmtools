@@ -9,9 +9,185 @@
 
 namespace nmtools::linalg {
 
+    /* make symbols accessible for unqualified-lookup */
     using std::size;
+    using std::tuple_size;
+    
+    /**
+     * @brief make zeros array, given size known at compile-time
+     * 
+     * @tparam Array vector-like
+     * @tparam n number of elements
+     * @return constexpr auto 
+     */
+    template <typename Array, size_t N>
+    constexpr auto zeros()
+    {
+        static_assert(
+            traits::is_array1d_v<Array> && traits::has_value_type_v<Array>,
+            "unsupported type Array for zeros<size_t>"
+        );
+        using value_t   = traits::remove_cvref_t<typename Array::value_type>;
+        using new_size  = std::integral_constant<size_t,N>;
+        using new_array = meta::replace_template_parameter<Array,value_t,new_size>;
+        using return_t  = typename new_array::type;
+        static_assert(!std::is_same_v<return_t,void>);
+        auto zero = return_t{};
+        return zero;
+    }
+
+    /**
+     * @brief make zeros array, given size & type
+     * 
+     * @tparam Array matrix-like, resizeable
+     * @param m number of rows
+     * @param n number of columns
+     * @return constexpr auto
+     */
+    template <typename Array>
+    auto zeros(size_t m, size_t n)
+    {
+        static_assert(
+            traits::is_array2d_v<Array> && traits::is_resizeable_v<Array>,
+            "unsupported type Array for zeros(size_t,size_t)"
+        );
+        using value_t = traits::remove_cvref_t<typename Array::value_type>;
+        auto z = Array{};
+        /* TODO: check if this expr is well-formed first! */
+        z.resize(m, value_t(m));
+        return z;
+    }
+
+    /**
+     * @brief make zeros array, given size known at compile-time
+     * 
+     * @tparam m number of rows
+     * @tparam n number of columns
+     * @tparam Array matrix-like, has_tuple_size, has_value_type
+     * @return constexpr auto 
+     */
+    template <typename Array, size_t M, size_t N>
+    constexpr auto zeros()
+    {
+        static_assert(
+            traits::is_array2d_v<Array> && traits::has_tuple_size_v<Array>,
+            "unsupported type Array for zeros<size_t,size_t>()"
+        );
+        using row_t = Array;
+        using col_t = traits::remove_cvref_t<typename row_t::value_type>;
+        using element_t = traits::remove_cvref_t<typename col_t::value_type>;
+        using new_col_size = std::integral_constant<size_t,N>;
+        using new_row_size = std::integral_constant<size_t,M>;
+        using new_col_t = meta::replace_template_parameter<col_t,element_t,new_col_size>;
+        using new_row_t = meta::replace_template_parameter<row_t,typename new_col_t::type,new_row_size>;
+        using return_t = typename new_row_t::type;
+        static_assert(!std::is_same_v<return_t,void>);
+        auto z = return_t{};
+        return z;
+    }
+
+    /**
+     * @brief make zeros array, given size & type
+     * 
+     * @tparam Array vector-like
+     * @param n number of elements
+     * @return constexpr auto 
+     */
+    template <typename Array>
+    auto zeros(size_t n)
+    {
+        static_assert(
+            traits::is_array1d_v<Array> && traits::is_resizeable_v<Array>,
+            "unsupported type Array for zeros(size_t)"
+        );
+        auto z = Array{};
+        z.resize(n);
+        return z;
+    }
+
+    /**
+     * @brief create zero matrix/vector 
+     * 
+     * @tparam T matrix/vector/arithmetic
+     * @param a example of existing matrix/vector
+     * @return constexpr auto 
+     */
+    template <typename T>
+    constexpr auto zeros_like(const T& a)
+    {
+        /** TODO: proper constraints **/
+        static_assert(
+            traits::is_array1d_v<T> ||
+            traits::is_array2d_v<T> ||
+            std::is_arithmetic_v<T>,
+            "unsupported type for zeros_like"
+        );
+        using traits::remove_cvref_t;
+        using meta::transform_bounded_array_t;
+        using return_t = transform_bounded_array_t<remove_cvref_t<T>>;
+        auto ret = return_t{};
+        /* ret is aritmethic type (scalr), return as it is */
+        if constexpr (std::is_arithmetic_v<T>)
+            return static_cast<T>(0);
+        /* ret is conteiner, for each elements call zeros_like */
+        else {
+            if constexpr (traits::is_resizeable_v<T>)
+                ret.resize(size(a));
+            for (size_t i=0; i<size(a); i++)
+                ret[i] = zeros_like(a[i]);
+            return ret;
+        }
+    }
+
+    /**
+     * @brief create matrix/vector filled with 1s
+     * 
+     * @tparam T matrix/vector/arithmetic
+     * @param a example of existing matrix/vector
+     * @return constexpr auto 
+     */
+    template <typename T>
+    constexpr auto ones_like(const T& a)
+    {
+        /** TODO: proper constraints **/
+        static_assert(
+            traits::is_array1d_v<T> ||
+            traits::is_array2d_v<T> ||
+            std::is_arithmetic_v<T>,
+            "unsupported type for zeros_like"
+        );
+        using traits::remove_cvref_t;
+        using meta::transform_bounded_array_t;
+        using return_t = transform_bounded_array_t<remove_cvref_t<T>>;
+        auto ret = return_t{};
+        /* ret is aritmethic type (scalr), return as it is */
+        if constexpr (std::is_arithmetic_v<T>)
+            return static_cast<T>(1);
+        /* ret is conteiner, for each elements call zeros_like */
+        else {
+            if constexpr (traits::is_resizeable_v<T>)
+                ret.resize(size(a));
+            for (size_t i=0; i<size(a); i++)
+                ret[i] = ones_like(a[i]);
+            return ret;
+        }
+    }
 
     namespace detail {
+        /**
+         * @brief make array
+         * 
+         * @tparam Args 
+         * @param args 
+         * @return std::array<std::common_type_t<Args...>, sizeof...(Args)> 
+         */
+        template <typename... Args>
+        constexpr auto make_array(Args&&... args)
+        {
+            using common_t = std::common_type_t<Args...>;
+            using return_t = std::array<common_t, sizeof...(Args)>;
+            return return_t{{std::forward<Args>(args)...}};
+        }
 
         /**
          * @brief vector-scalar multiplication
@@ -92,20 +268,164 @@ namespace nmtools::linalg {
         template <typename M, typename V>
         constexpr auto mvmul(const M& m, const V& v)
         {
-            auto ret = zeros_like(v);
+            static_assert(
+                traits::is_array2d_v<M> &&
+                traits::is_array1d_v<V> &&
+                traits::has_value_type_v<M> && 
+                traits::has_value_type_v<V>,
+                "unsupported type for mvmul"
+            );
 
-            auto n1 = size(m);
-            auto n2 = size(v);
-            /* TODO: make assertion optional (?) */
-            assert(n1==n2);
+            /* deduce resulting size of matrix */
+            /* TODO: consider to provide traits to check if type has fixed size mat traits */
+            constexpr auto is_fixed_size_M = traits::has_tuple_size_v<M>;
+            constexpr auto is_fixed_size_V = traits::has_tuple_size_v<V>;
 
-            for (size_t i=0; i<n1; i++)
-                ret[i] = dot(m[i], v);
-            return ret;
+            /* get row type of matrix M, element type of M & v, and common type */
+            using row_t = typename M::value_type;
+            /* TODO: handle if M1 is not a nested container type! (theris no RowA::value_type) */
+            using m_t = typename row_t::value_type;
+            using v_t = typename V::value_type;
+            using common_t = std::common_type_t<m_t,v_t>;
+
+            /* dispatch compile-time version 
+                both are fixed size, the resulting shape will be known at compile time */
+            if constexpr (is_fixed_size_M && is_fixed_size_V) {
+                constexpr auto n = std::tuple_size_v<M>;
+                /* TODO: check if this expr well-formed first! */
+                constexpr auto n1 = std::tuple_size_v<row_t>;
+                constexpr auto n2 = std::tuple_size_v<V>;
+                static_assert(n1==n2);
+
+                /* prepare placeholder for the resulting matrix */
+                auto ret = zeros<V,n>();
+
+                for (size_t i=0; i<n; i++)
+                    ret[i] = dot(m[i], v);
+                return ret;
+            }
+            /* dispatch runtime version
+                one of the matrix are dynamic, the resulting shape will be known at runtime time */
+            else {
+                auto n = size(m);
+                auto n1 = size(m[0]);
+                auto n2 = size(v);
+                /* TODO: make assertion optional (?) */
+                assert(n1==n2);
+
+                /* make sure one of the matrix type is resizeable */
+                static_assert(
+                    traits::is_resizeable_v<M> ||
+                    traits::is_resizeable_v<V>
+                );
+                /* select resizeable mat over fixed ones for return type */
+                using return_t = meta::select_resizeable_mat_t<M,V>;
+                auto ret = zeros<return_t>(n);
+
+                for (size_t i=0; i<n; i++)
+                    ret[i] = dot(m[i], v);
+                return ret;
+            }
+        }
+
+        /**
+         * @brief matrix-matrix multiplication A*B
+         * 
+         * @tparam M1 matrix-like
+         * @tparam M2 matrix-like
+         * @param A 
+         * @param B 
+         * @return constexpr auto 
+         */
+        template <typename M1, typename M2>
+        constexpr auto mmmul(const M1& A, const M2& B)
+        {
+            static_assert(
+                traits::is_matrix_like_v<M1> &&
+                traits::is_matrix_like_v<M2>,
+                "unsupported type M1 & M2 of A & B for mmmul"
+            );
+
+            /* deduce resulting size of matrix */
+            /* TODO: consider to provide traits to check if type has fixed size mat traits */
+            constexpr auto is_fixed_size_mat_A = traits::has_tuple_size_v<M1>;
+            constexpr auto is_fixed_size_mat_B = traits::has_tuple_size_v<M2>;
+
+            /* deduce row type and element type */
+            /* TODO: check if this expr is well-formed first! */
+            using RowA = typename M1::value_type;
+            using RowB = typename M2::value_type;
+            /* TODO: handle if M1 is not a nested container type! (theris no RowA::value_type) */
+            using a_t = typename RowA::value_type;
+            using b_t = typename RowB::value_type;
+            /* get common type of matrix A & B */
+            using common_t = std::common_type_t<a_t,b_t>;
+
+            /* dispatch compile-time version 
+                both are fixed size matrix, the resulting shape will be known at compile time */
+            if constexpr (is_fixed_size_mat_A && is_fixed_size_mat_B) {
+                constexpr auto row_a = tuple_size<M1>::value;
+                constexpr auto row_b = tuple_size<M2>::value;
+                constexpr auto col_a = tuple_size<RowA>::value;
+                constexpr auto col_b = tuple_size<RowB>::value;
+                static_assert(col_a == row_b);
+                static_assert(row_a == col_b);
+
+                /* prepare placeholder for the resulting matrix */
+                auto mat = zeros<M1,row_a,col_b>();
+
+                /* naively multiply for each element */
+                /* TODO: figure-out best way to perform this op */
+                for (int i=0; i<row_a; i++) {
+                    for (int j=0; j<col_b; j++) {
+                        auto sum = static_cast<common_t>(0);
+                        for (int k=0; k<col_a; k++)
+                            sum += A[i][k] * B[k][j];
+                        mat[i][j] = sum;
+                    }
+                }
+                return mat;
+            }
+            /* dispatch runtime version
+                one of the matrix are dynamic, the resulting shape will be known at runtime time */
+            else {
+                /* TODO: consider to provide 'shape' helper function */
+                auto row_a = size(A);
+                auto col_a = size(A[0]);
+                auto row_b = size(B);
+                auto col_b = size(B[0]);
+
+                assert (col_a == row_b);
+                assert (row_a == col_b);
+
+                /* make sure one of the matrix type is resizeable */
+                static_assert(
+                    traits::is_resizeable_v<M1> ||
+                    traits::is_resizeable_v<M2>
+                );
+                /* select resizeable mat over fixed ones for return type */
+                using return_t = meta::select_resizeable_mat_t<M1,M2>;
+                auto mat = zeros<return_t>(row_a,col_b);
+
+                /* naively multiply for each element */
+                /* TODO: figure-out best way to perform this op */
+                for (int i=0; i<row_a; i++) {
+                    for (int j=0; j<col_b; j++) {
+                        auto sum = static_cast<common_t>(0);
+                        for (int k=0; k<col_a; k++)
+                            sum += A[i][k] * B[k][j];
+                        mat[i][j] = sum;
+                    }
+                }
+
+                return mat;
+            }
         }
 
     } // namespace detail
 
+    /* make symbols accessible for unqualified-lookup */
+    using detail::mmmul;
     using detail::msmul;
     using detail::mvmul;
     using detail::vsmul;
@@ -113,37 +433,47 @@ namespace nmtools::linalg {
     using std::fabs;
 
     /**
-     * @brief create zero matrix/vector 
+     * @brief compute matrix transpose
      * 
-     * @tparam Array 
-     * @param a matrix/vector/arithmetic
+     * @tparam Array matrix-like
+     * @param a matrix to be transposed
      * @return constexpr auto 
      */
     template <typename Array>
-    constexpr auto zeros_like(const Array& a)
+    constexpr auto transpose(const Array& a)
     {
-        /** TODO: proper constraints **/
-        static_assert(
-            traits::is_array1d_v<Array> ||
-            traits::is_array2d_v<Array> ||
-            std::is_arithmetic_v<Array>,
-            "unsupported type for zeros_like"
-        );
+        using traits::get_container_value_type_t;
         using traits::remove_cvref_t;
-        using meta::transform_bounded_array_t;
-        using return_t = transform_bounded_array_t<remove_cvref_t<Array>>;
-        auto ret = return_t{};
-        /* ret is aritmethic type (scalr), return as it is */
-        if constexpr (std::is_arithmetic_v<Array>)
-            return ret;
-        /* ret is conteiner, for each elements call zeros_like */
+        using traits::has_tuple_size_v;
+        static_assert(
+            traits::is_array2d_v<Array>,
+            "transpose only support 2D array for now"
+        );
+        using row_element_t = remove_cvref_t<get_container_value_type_t<Array>>;
+        using col_element_t = remove_cvref_t<get_container_value_type_t<row_element_t>>;
+        static_assert(
+            has_tuple_size_v<Array> == has_tuple_size_v<row_element_t>,
+            "transpose doesn't support mixed dynamic-static container"
+        );
+        /* dispatch compile-time version */
+        if constexpr (has_tuple_size_v<Array>) {
+            constexpr auto rows = tuple_size<Array>::value;
+            constexpr auto cols = tuple_size<row_element_t>::value;
+            auto transposed = zeros<Array,cols,rows>();
+            for (int i=0; i<cols; i++)
+                for (int j=0; j<rows; j++)
+                    transposed[i][j] = a[j][i];
+            return transposed;
+        }
+        /* dispatch runtime version */
         else {
-            if constexpr (traits::is_resizeable_v<Array>) {
-                ret.resize(size(a));
-            }
-            for (size_t i=0; i<size(a); i++)
-                ret[i] = zeros_like(a[i]);
-            return ret;
+            auto rows = size(a);
+            auto cols = size(a[0]);
+            auto transposed = zeros<Array>(cols,rows);
+            for (int i=0; i<cols; i++)
+                for (int j=0; j<rows; j++)
+                    transposed[i][j] = a[j][i];
+            return transposed;
         }
     }
 
@@ -288,49 +618,55 @@ namespace nmtools::linalg {
      * @param lhs 
      * @param rhs 
      * @return constexpr auto 
+     * @todo consider to remove this, prefer explicit call
      */
     template <typename A, typename B>
     constexpr auto mul(const A& lhs, const B& rhs)
     {
         using traits::is_array2d;
         using traits::is_array1d;
+        using traits::is_array2d_v;
+        using traits::is_array1d_v;
         using traits::is_multiplicative_v;
         using std::disjunction_v;
         using std::conjunction_v;
         using std::negation_v;
+        using std::is_arithmetic;
         using std::is_arithmetic_v;
 
         static_assert(
             disjunction_v<is_array1d<A>,is_array2d<A>> &&
-            disjunction_v<is_array1d<B>,is_array2d<B>,is_arithmetic_v<B>>,
+            disjunction_v<is_array1d<B>,is_array2d<B>,is_arithmetic<B>>,
             "unsupported type(s) for mul(lhs,rhs)"
         );
 
         /* dispatch if A & B is multiplicative */
-        if constexpr (is_multiplicative_v<A,B>) {
+        if constexpr (is_multiplicative_v<A,B>)
             return lhs * rhs;
-        }
-        /* dispatch matrix-matrix multiplication */
-        else if (conjunction_v<is_array2d<A>,is_array2d<B>>) {
-            /* TODO: implement matmul */
-            mmmul(lhs, rhs);
-        }
-        /* dispatch matrix-vector multiplication */
-        else if (conjunction_v<is_array2d<A>,is_array1d<B>>) {
-            return mvmul(lhs, rhs);
-        }
-        /* dispatch matrix-scalar multiplication */
-        else if (conjunction_v<is_array2d<A>,is_arithmetic_v<B>>) {
-            return msmul(lhs, rhs);
-        }
-        /* dispatch vector-scalar multiplication */
-        else if (conjunction_v<is_array1d<A>,is_arithmetic_v<B>>) {
-            return vsmul(lhs, rhs);
-        }
         else {
-            static_assert(negation_v<std::conjunction<is_array1d<A>,is_array1d<B>>>,
-                "vector * vector operation not supported for mul, use dot instead");
-        }
+            /* dispatch matrix-matrix multiplication */
+            if constexpr (is_array2d_v<A> && is_array2d_v<B>)
+                return mmmul(lhs, rhs);
+            else {
+                /* dispatch matrix-vector multiplication */
+                if constexpr (is_array2d_v<A> && is_array1d_v<B>)
+                    return mvmul(lhs, rhs);
+                else {
+                    /* dispatch matrix-scalar multiplication */
+                    if constexpr (is_array2d_v<A> && is_arithmetic_v<B>)
+                        return msmul(lhs, rhs);
+                    else {
+                        /* dispatch vector-scalar multiplication */
+                        if constexpr (is_array1d_v<A> && is_arithmetic_v<B>)
+                            return vsmul(lhs, rhs);
+                        else {
+                            static_assert(negation_v<std::conjunction<is_array1d<A>,is_array1d<B>>>,
+                                "vector * vector operation not supported for mul, use dot instead");
+                        } // (is_array1d_v<A> && is_arithmetic_v<B>)
+                    } // (is_array2d_v<A> && is_arithmetic_v<B>)
+                } // (is_array2d_v<A> && is_array1d_v<B>)
+            } // (is_array2d_v<A> && is_array2d_v<B>)
+        } // (is_multiplicative_v<A,B>)
     }
 
 } // namespace nmtools::linalg
