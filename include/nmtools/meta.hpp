@@ -182,6 +182,150 @@ namespace nmtools::meta
     template <typename T>
     using transform_bounded_array_t = typename transform_bounded_array<T>::type;
 
+    /**
+     * @brief get T::value_type as member type or type == T
+     * 
+     * @tparam T type to transform
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct get_value_type_or_same
+    {
+        using type = T;
+    };
+
+    /**
+     * @brief specialization when T actually has value_type
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct get_value_type_or_same<T,std::enable_if_t<traits::has_value_type_v<T>>>
+    {
+        using type = typename T::value_type;
+    };
+
+    /**
+     * @brief helper alias template to transform get T::value_type
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    using get_value_type_or_same_t = typename get_value_type_or_same<T>::type;
+
+    /**
+     * @brief given T<Origin..>, transform to T<Substitution...>, if failed type is void
+     * variadic template parameter Origin... & Substitution... should be type parameter. 
+     * For non-type template parameter, only std::array is supported for now
+     * 
+     * @tparam T 
+     * @tparam  
+     */
+    template <typename T, typename...>
+    struct replace_template_parameter 
+    {
+        using type = void;
+    };
+
+    /**
+     * @brief specialization for replace_template_parameter for success case
+     * 
+     * @tparam T 
+     * @tparam Subs 
+     * @tparam Origin 
+     */
+    template <template<typename...> typename T, typename ...Subs, typename ...Origin>
+    struct replace_template_parameter<T<Origin...>,Subs...>
+    {
+        using type = T<Subs...>;
+    };
+
+    /**
+     * @brief specialization for replace_template_parameter for std::array, 
+     * since we can't mix non-type & type as variadic template parameter.
+     * The new size of new array should be supplied via std::integral_constant,
+     * since we expects type here.
+     * 
+     * @tparam value_t origin value_type
+     * @tparam N origin size
+     * @tparam subs_value_t value_type for substitution
+     * @tparam subs_N substitution size
+     */
+    template <typename value_t, auto N, typename subs_value_t, auto subs_N, typename size_type>
+    struct replace_template_parameter<std::array<value_t,N>,subs_value_t,std::integral_constant<size_type,subs_N>>
+    {
+        using type = std::array<subs_value_t,subs_N>;
+    };
+
+    /*
+    TODO: consider to provide specialization for replace_template_parameter, that accepts
+        - T<typename,auto..>, 
+        - T<auto,typename...>, etc.
+    */
+
+    /**
+     * @brief metafunction to select resizeable matrix type
+     * 
+     * @tparam A 
+     * @tparam B 
+     * @tparam typename=void 
+     */
+    template <typename A, typename B, typename=void>
+    struct select_resizeable_mat {};
+
+    /**
+     * @brief specialization of select_resizeable_mat when both A & B is resizeable
+     * will have member type `type` that is resizeable
+     * 
+     * @tparam A 
+     * @tparam B 
+     */
+    template <typename A, typename B>
+    struct select_resizeable_mat<A,B,
+        std::enable_if_t<traits::is_resizeable_v<A> && traits::is_resizeable_v<B> >
+    >
+    {
+        using type = A;
+    };
+
+    /**
+     * @brief specialization of select_resizeable_mat when A is resizeable and B is not
+     * will have member type `type` that is resizeable
+     * 
+     * @tparam A 
+     * @tparam B 
+     */
+    template <typename A, typename B>
+    struct select_resizeable_mat<A,B,
+        std::enable_if_t<traits::is_resizeable_v<A> && !traits::is_resizeable_v<B> >
+    >
+    {
+        using type = A;
+    };
+
+    /**
+     * @brief specialization of select_resizeable_mat when B is resizeable and A is not
+     * will have member type `type` that is resizeable
+     * 
+     * @tparam A 
+     * @tparam B 
+     */
+    template <typename A, typename B>
+    struct select_resizeable_mat<A,B,
+        std::enable_if_t<traits::is_resizeable_v<B> && !traits::is_resizeable_v<A> >
+    >
+    {
+        using type = B;
+    };
+
+    /**
+     * @brief helper alias template to select resizeable mat
+     * 
+     * @tparam A 
+     * @tparam B 
+     */
+    template <typename A, typename B>
+    using select_resizeable_mat_t = typename select_resizeable_mat<A,B>::type;
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_HPP
