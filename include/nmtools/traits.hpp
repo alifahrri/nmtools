@@ -460,12 +460,19 @@ namespace nmtools::traits {
      * @brief get the velue type of container T via decltype, has void member type if failed
      * - using type = decltype(std::declval<T>()[0]); 
      * 
-     * @tparam T 
+     * @tparam T type to check
      * @tparam typename=void 
+     * @todo move to meta
      */
     template <typename T, typename=void>
     struct get_container_value_type { using type = void; };
 
+    /**
+     * @brief get the velue type of container T via decltype, has void member type if failed
+     * 
+     * @tparam T type to check
+     * @todo move to meta
+     */
     template <typename T>
     struct get_container_value_type<T,std::void_t<decltype(std::declval<T>()[0])>> 
     { 
