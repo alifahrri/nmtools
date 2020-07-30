@@ -21,7 +21,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     taylor/taylor.cpp
     curvefit/regression.cpp
     curvefit/sinusoid.cpp
-    curvefit/spline.cpp
+    curvefit/interpolation.cpp
     fourier/series.cpp
     utility/utility.cpp
     # fourier/transform.cpp
