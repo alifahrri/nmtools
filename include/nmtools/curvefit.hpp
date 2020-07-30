@@ -3,6 +3,6 @@
 
 #include "nmtools/curvefit/regression.hpp"
 #include "nmtools/curvefit/sinusoid.hpp"
-#include "nmtools/curvefit/spline.hpp"
+#include "nmtools/curvefit/interpolation.hpp"
 
 #endif // NMTOOLS_CURVEFIT_HPP

@@ -415,22 +415,6 @@ namespace nmtools::traits {
     template <typename T>
     static constexpr auto is_resizeable_v = is_resizeable<T>::value;
 
-    template <typename ...T>
-    struct all_iterable {
-        constexpr static bool value = std::conjunction_v<is_iterable<T>...>;
-    };
-
-    template <typename ...T>
-    struct all_indexable {
-        constexpr static bool value = std::conjunction_v<is_indexable<T>...>;
-    };
-
-    template <typename ...T>
-    constexpr bool all_iterable_v = all_iterable<T...>::value;
-
-    template <typename ...T>
-    constexpr bool all_indexable_v = all_indexable<T...>::value;
-
     template <typename T>
     using is_std_array_or_vector = std::disjunction<is_std_array<std::decay_t<T>>,is_std_vector<std::decay_t<T>>>;
 
@@ -460,12 +444,19 @@ namespace nmtools::traits {
      * @brief get the velue type of container T via decltype, has void member type if failed
      * - using type = decltype(std::declval<T>()[0]); 
      * 
-     * @tparam T 
+     * @tparam T type to check
      * @tparam typename=void 
+     * @todo move to meta
      */
     template <typename T, typename=void>
     struct get_container_value_type { using type = void; };
 
+    /**
+     * @brief get the velue type of container T via decltype, has void member type if failed
+     * 
+     * @tparam T type to check
+     * @todo move to meta
+     */
     template <typename T>
     struct get_container_value_type<T,std::void_t<decltype(std::declval<T>()[0])>> 
     { 

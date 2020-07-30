@@ -16,30 +16,6 @@ namespace nmtools {
     template <int Num, int Denom>
     using ratio = std::ratio<Num,Denom>;
 
-    /* TODO: remove */
-    namespace mpl {
-        template <typename T, typename V, size_t, typename=void>
-        struct copy_std_container {
-            using type = std::enable_if_t<
-                traits::is_std_array_or_vector<T>::value, std::vector<std::decay_t<V>>
-            >;
-        };
-        template <typename T, typename V>
-        struct copy_std_container<T,V,0,std::enable_if_t<traits::is_std_array<T>::value>> {
-            using type = std::enable_if_t<
-                traits::is_std_array_or_vector<T>::value, std::array<std::decay_t<V>,std::tuple_size<T>::value>
-            >;
-        };
-        template <typename T, typename V, size_t n>
-        struct copy_std_container<T,V,n,std::enable_if_t<traits::is_std_array<T>::value>> {
-            using type = std::enable_if_t<
-                traits::is_std_array_or_vector<T>::value, std::array<std::decay_t<V>,n>
-            >;
-        };
-        template <typename T, typename V, size_t n=0>
-        using copy_std_container_t = typename copy_std_container<T,V,n>::type;
-    } // namespace mpl
-
     namespace helper {
 
         namespace tag {

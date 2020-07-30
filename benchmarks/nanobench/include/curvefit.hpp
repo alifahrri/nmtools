@@ -10,45 +10,39 @@
 namespace nmt = nmtools;
 namespace cvt = nmt::curvefit;
 
-template <typename Container>
-void spline_benchmark(ankerl::nanobench::Bench *bench, char const* name) {
-    Container t_data{
-        0.0, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 1.0
-    };
-    Container x_data{
-        0.0, 0.125, 0.25, 0.4375, 0.625, 0.8125, 1.0, 1.0, 1.0
-    };
+template <typename X, typename Y>
+void cubic_spline_construct_benchmark(ankerl::nanobench::Bench *bench, char const* name, const X& x, const Y& y)
+{
     bench->run(name, [&](){
-        auto results = cvt::cubic_spline(t_data, x_data, t_data);
-        ankerl::nanobench::doNotOptimizeAway(results);
+        auto result = cvt::cubic_spline(x,y);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
-template <>
-void spline_benchmark<std::array<double,9>>(ankerl::nanobench::Bench *bench, char const* name) {
-    std::array<double,9> t_data{
-        0.0, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 1.0
-    };
-    std::array<double,9> x_data{
-        0.0, 0.125, 0.25, 0.4375, 0.625, 0.8125, 1.0, 1.0, 1.0
-    };
+template <typename F, typename T>
+void cubic_spline_eval_benchmark(ankerl::nanobench::Bench *bench, char const* name, const F& f, const T& t)
+{
     bench->run(name, [&](){
-        auto results = cvt::cubic_spline(t_data, x_data, t_data);
-        ankerl::nanobench::doNotOptimizeAway(results);
+        auto result = f(t);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
-template <>
-void spline_benchmark<std::array<float,9>>(ankerl::nanobench::Bench *bench, char const* name) {
-    std::array<float,9> t_data{
-        0.0, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 1.0
-    };
-    std::array<float,9> x_data{
-        0.0, 0.125, 0.25, 0.4375, 0.625, 0.8125, 1.0, 1.0, 1.0
-    };
+template <typename X, typename Y>
+void linear_spline_construct_benchmark(ankerl::nanobench::Bench *bench, char const* name, const X& x, const Y& y)
+{
     bench->run(name, [&](){
-        auto results = cvt::cubic_spline(t_data, x_data, t_data);
-        ankerl::nanobench::doNotOptimizeAway(results);
+        auto result = cvt::linear_spline(x,y);
+        ankerl::nanobench::doNotOptimizeAway(result);
+    });
+}
+
+template <typename F, typename T>
+void linear_spline_eval_benchmark(ankerl::nanobench::Bench *bench, char const* name, const F& f, const T& t)
+{
+    bench->run(name, [&](){
+        auto result = f(t);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -62,7 +56,6 @@ void linear_regression_benchmark(ankerl::nanobench::Bench *bench, char const* na
 }
 
 template <typename X, typename Y, typename ...Vector>
-
 void least_square_regression_benchmark(ankerl::nanobench::Bench *bench, char const* name, const Y& y, const X& x, const Vector&...xs)
 {
     bench->run(name, [&](){
