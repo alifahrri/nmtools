@@ -257,6 +257,24 @@ namespace nmtools::meta
         using type = std::array<subs_value_t,subs_N>;
     };
 
+    /**
+     * @brief helper alias template to replace tparam
+     * 
+     * @tparam T original type
+     * @tparam Args template parameter for substitution
+     */
+    template <typename T, typename...Args>
+    using replace_template_parameter_t = typename replace_template_parameter<T,Args...>::type;
+
+    /**
+     * @brief helper alias template to replace tparam
+     * 
+     * @tparam T original type
+     * @tparam Args template parameter for substitution
+     */
+    template <typename T, typename...Args>
+    using replace_tparam_t = typename replace_template_parameter<T,Args...>::type;
+
     /*
     TODO: consider to provide specialization for replace_template_parameter, that accepts
         - T<typename,auto..>, 
@@ -326,6 +344,125 @@ namespace nmtools::meta
      */
     template <typename A, typename B>
     using select_resizeable_mat_t = typename select_resizeable_mat<A,B>::type;
+
+    /**
+     * @brief helper alias template to add specialization 
+     * (which check if T is rezieable) to overload set
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    using enable_if_resizeable_t = std::enable_if_t<traits::is_resizeable_v<T>>;
+
+    /**
+     * @brief helper alias template to add specialization
+     * (which check if T has tuple size) to overload set
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    using enable_if_fixed_t = std::enable_if_t<traits::has_tuple_size_v<T>>;
+
+    /**
+     * @brief helper alias template to remove specialization
+     * (which check if T is resizeable) from overload set
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    using disable_if_resizeable_t = std::enable_if_t<!traits::is_resizeable_v<T>>;
+
+    /**
+     * @brief helper alias template to remove specialization
+     * (which check if T has tuple size) from overload set
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    using disable_if_fixed_t = std::enable_if_t<!traits::has_tuple_size_v<T>>;
+
+    /**
+     * @brief given type A, B, C, select A (has type = A) 
+     * if A is resizeable (satisfy is_resizeable_v) and B is not resizeable;
+     * select B if B is resizeable and A is not, select C 
+     * 
+     * @tparam A type to check
+     * @tparam B type to check
+     * @tparam C default type when specialization fails
+     * @tparam typename=void 
+     */
+    template <typename A, typename B, typename C, typename=void>
+    struct select_resizeable
+    {
+        using type = C;
+    };
+
+    /**
+     * @brief specialization of select_resizeable when A is resizeable and B is not
+     * 
+     * @tparam A 
+     * @tparam B 
+     * @tparam C 
+     */
+    template <typename A, typename B, typename C>
+    struct select_resizeable<A,B,C,
+        std::void_t<enable_if_resizeable_t<A>,disable_if_resizeable_t<B>>
+    >
+    {
+        using type = A;
+    };
+
+    /**
+     * @brief specialization of select resizeable when B is resizeable and A is not
+     * 
+     * @tparam A 
+     * @tparam B 
+     * @tparam C 
+     */
+    template <typename A, typename B, typename C>
+    struct select_resizeable<A,B,C,
+        std::void_t<enable_if_resizeable_t<B>,disable_if_resizeable_t<A>>
+    >
+    {
+        using type = B;
+    };
+
+    /**
+     * @brief helper alias template for select_resizeable
+     * 
+     * @tparam A type to check
+     * @tparam B type to check
+     * @tparam C default type
+     */
+    template <typename A, typename B, typename C>
+    using select_resizeable_t = typename select_resizeable<A,B,C>::type;
+
+
+    template <typename A, typename B, typename C, typename=void>
+    struct select_fixed
+    {
+        using type = C;
+    };
+
+    template <typename A, typename B, typename C>
+    struct select_fixed<A,B,C,
+        std::void_t<enable_if_fixed_t<A>,disable_if_fixed_t<B>>
+    >
+    {
+        using type = A;
+    };
+
+    template <typename A, typename B, typename C>
+    struct select_fixed<A,B,C,
+        std::void_t<enable_if_fixed_t<B>,disable_if_fixed_t<A>>
+    >
+    {
+        using type = B;
+    };
+
+    template <typename A, typename B, typename C>
+    using select_fixed_t = typename select_fixed<A,B,C>::type;
+
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_HPP
