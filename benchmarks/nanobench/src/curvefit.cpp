@@ -27,19 +27,6 @@ namespace xsimd {
 int main() {
     {
         ankerl::nanobench::Bench b;
-        b.title("Cubic Spline")
-            .warmup(100)
-            .epochs(1000)
-            .relative(true);
-        b.performanceCounters(true);
-
-        spline_benchmark<std::vector<double>>(&b, "cubic_spline_vector_double");
-        spline_benchmark<std::vector<float>>(&b, "cubic_spline_vector_float");
-        spline_benchmark<std::array<double,9>>(&b, "cubic_spline_array_double");
-        spline_benchmark<std::array<float,9>>(&b, "cubic_spline_array_float");
-    }
-    {
-        ankerl::nanobench::Bench b;
         b.title("Linear Regression (8)")
             .warmup(100)
             .epochs(1000)
@@ -187,5 +174,90 @@ int main() {
         // least_square_regression_benchmark(&b, "least_square_regression_vector_float",  vyf, vaf, vbf);
         // least_square_regression_benchmark(&b, "least_square_regression_raw_double", ryd, rad, rbd);
         // least_square_regression_benchmark(&b, "least_square_regression_raw_float",  ryf, raf, rbf);
+    }
+    {
+        /* array double */
+        auto axd = array<double,4>{3.0, 4.5, 7.0, 9.0};
+        auto ayd = array<double,4>{2.5, 1.0, 2.5, 0.5};
+        /* array float */
+        auto axf = array<float,4>{3.0, 4.5, 7.0, 9.0};
+        auto ayf = array<float,4>{2.5, 1.0, 2.5, 0.5};
+        /* vector double */
+        auto vxd = vector<double>{3.0, 4.5, 7.0, 9.0};
+        auto vyd = vector<double>{2.5, 1.0, 2.5, 0.5};
+        /* vector float */
+        auto vxf = vector<float>{3.0, 4.5, 7.0, 9.0};
+        auto vyf = vector<float>{2.5, 1.0, 2.5, 0.5};
+        /* vector double */
+        auto vaxd = valarray<double>{3.0, 4.5, 7.0, 9.0};
+        auto vayd = valarray<double>{2.5, 1.0, 2.5, 0.5};
+        /* vector float */
+        auto vaxf = valarray<float>{3.0, 4.5, 7.0, 9.0};
+        auto vayf = valarray<float>{2.5, 1.0, 2.5, 0.5};
+        /* raw double */
+        double rxd[4] = {3.0, 4.5, 7.0, 9.0};
+        double ryd[4] = {2.5, 1.0, 2.5, 0.5};
+        /* raw float */
+        float rxf[4] = {3.0, 4.5, 7.0, 9.0};
+        float ryf[4] = {2.5, 1.0, 2.5, 0.5};
+        /* array simd double */
+        auto axd_simd = array<native_simd<double>,4>{3.0, 4.5, 7.0, 9.0};
+        auto ayd_simd = array<native_simd<double>,4>{2.5, 1.0, 2.5, 0.5};
+        /* array simd float */
+        auto axf_simd = array<native_simd<float>,4>{3.0f, 4.5f, 7.0f, 9.0f};
+        auto ayf_simd = array<native_simd<float>,4>{2.5f, 1.0f, 2.5f, 0.5f};
+
+        {
+            ankerl::nanobench::Bench b;
+            b.title("Cubic Spline Construct (4 intv)")
+                .warmup(100)
+                .epochs(1000)
+                .relative(true);
+            b.performanceCounters(true);
+
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_double", axd, ayd);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_float",  axf, ayf);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_double_simd", axd_simd, ayd_simd);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_float_simd",  axf_simd, ayf_simd);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_vector_double", vxd, vyd);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_vector_float",  vxf, vyf);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_valarray_double", vaxd, vayd);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_valarray_float",  vaxf, vayf);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_raw_double", rxd, ryd);
+            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_raw_float",  rxf, ryf);
+        }
+
+        {
+            auto afd = cvt::cubic_spline(axd, ayd);
+            auto aff = cvt::cubic_spline(axf, ayf);
+            auto vfd = cvt::cubic_spline(vxd, vyd);
+            auto vff = cvt::cubic_spline(vxf, vyf);
+            auto vafd = cvt::cubic_spline(vaxd, vayd);
+            auto vaff = cvt::cubic_spline(vaxf, vayf);
+            auto rfd = cvt::cubic_spline(rxd, ryd);
+            auto rff = cvt::cubic_spline(rxf, ryf);
+            auto afd_simd = cvt::cubic_spline(axd_simd, ayd_simd);
+            auto aff_simd = cvt::cubic_spline(axf_simd, ayf_simd);
+
+            ankerl::nanobench::Bench b;
+            b.title("Cubic Spline Eval (4 intv)")
+                .warmup(100)
+                .epochs(1000)
+                .relative(true);
+            b.performanceCounters(true);
+
+            cubic_spline_eval_benchmark(&b, "cubic_spline_eval_array_double", afd, axd[1]);
+            cubic_spline_eval_benchmark(&b, "cubic_spline_eval_array_float",  aff, axf[1]);
+            /* cannot convert operator to 'bool' */
+            /* TODO: make this supported */
+            // cubic_spline_eval_benchmark(&b, "cubic_spline_eval_array_double", afd_simd, axd_simd[1]);
+            // cubic_spline_eval_benchmark(&b, "cubic_spline_eval_array_float",  aff_simd, axf_simd[1]);
+            cubic_spline_eval_benchmark(&b, "cubic_spline_eval_vector_double", vfd, vxd[1]);
+            cubic_spline_eval_benchmark(&b, "cubic_spline_eval_vector_float",  vff, vxf[1]);
+            cubic_spline_eval_benchmark(&b, "cubic_spline_eval_valarray_double", vafd, vaxd[1]);
+            cubic_spline_eval_benchmark(&b, "cubic_spline_eval_valarray_float",  vaff, vaxf[1]);
+            cubic_spline_eval_benchmark(&b, "cubic_spline_eval_raw_double", rfd, rxd[1]);
+            cubic_spline_eval_benchmark(&b, "cubic_spline_eval_raw_float",  rff, rxf[1]);
+        }
     }
 }
