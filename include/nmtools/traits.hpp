@@ -415,22 +415,6 @@ namespace nmtools::traits {
     template <typename T>
     static constexpr auto is_resizeable_v = is_resizeable<T>::value;
 
-    template <typename ...T>
-    struct all_iterable {
-        constexpr static bool value = std::conjunction_v<is_iterable<T>...>;
-    };
-
-    template <typename ...T>
-    struct all_indexable {
-        constexpr static bool value = std::conjunction_v<is_indexable<T>...>;
-    };
-
-    template <typename ...T>
-    constexpr bool all_iterable_v = all_iterable<T...>::value;
-
-    template <typename ...T>
-    constexpr bool all_indexable_v = all_indexable<T...>::value;
-
     template <typename T>
     using is_std_array_or_vector = std::disjunction<is_std_array<std::decay_t<T>>,is_std_vector<std::decay_t<T>>>;
 

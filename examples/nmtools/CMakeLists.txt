@@ -12,16 +12,6 @@ apply_nmtools(
 )
 
 add_executable(
-    ${PROJECT_NAME}-spline
-    src/spline.cpp
-)
-
-apply_nmtools(
-    TARGET ${PROJECT_NAME}-spline
-    COMPILE_OPTIONS "-g"
-)
-
-add_executable(
     ${PROJECT_NAME}-ode
     src/ode.cpp
 )

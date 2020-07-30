@@ -47,45 +47,4 @@ void bm_ode(benchmark::State& state) {
 BENCHMARK_TEMPLATE(bm_ode, double);
 BENCHMARK_TEMPLATE(bm_ode, float);
 
-template <typename Container>
-void spline(benchmark::State& state) {
-    Container t_data{
-        0.0, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 1.0
-    };
-    Container x_data{
-        0.0, 0.125, 0.25, 0.4375, 0.625, 0.8125, 1.0, 1.0, 1.0
-    };
-    for (auto _ : state) {
-        auto results = cvt::cubic_spline(t_data, x_data, t_data);
-    }
-}
-template <>
-void spline<std::array<double,9>>(benchmark::State& state) {
-    std::array<double,9> t_data{
-        0.0, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 1.0
-    };
-    std::array<double,9> x_data{
-        0.0, 0.125, 0.25, 0.4375, 0.625, 0.8125, 1.0, 1.0, 1.0
-    };
-    for (auto _ : state) {
-        auto results = cvt::cubic_spline(t_data, x_data, t_data);
-    }
-}
-template <>
-void spline<std::array<float,9>>(benchmark::State& state) {
-    std::array<float,9> t_data{
-        0.0, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 1.0
-    };
-    std::array<float,9> x_data{
-        0.0, 0.125, 0.25, 0.4375, 0.625, 0.8125, 1.0, 1.0, 1.0
-    };
-    for (auto _ : state) {
-        auto results = cvt::cubic_spline(t_data, x_data, t_data);
-    }
-}
-BENCHMARK_TEMPLATE(spline, std::vector<double>);
-BENCHMARK_TEMPLATE(spline, std::vector<float>); 
-BENCHMARK_TEMPLATE(spline, std::array<double,9>);
-BENCHMARK_TEMPLATE(spline, std::array<float,9>);
-
 BENCHMARK_MAIN();
