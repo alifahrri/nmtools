@@ -14,93 +14,6 @@ namespace nmtools::traits {
     using std::void_t;
     using std::enable_if_t;
 
-    template <typename D, typename = void>
-    struct is_std_array : false_type {};
-
-    template <typename D>
-    struct is_std_array<D, enable_if_t<
-        std::is_same_v<
-            D, std::array<typename D::value_type, std::tuple_size<D>::value>
-        > // is_same
-    > /* enable_if */ > : true_type {};
-
-    template <typename T>
-    inline constexpr bool is_std_array_v = is_std_array<T>::value;
-
-    template <typename D, typename = void>
-    struct is_std_vector : false_type {};
-
-    template <typename D>
-    struct is_std_vector<D, std::enable_if_t<
-        std::is_same_v<
-            D, std::vector<typename D::value_type>
-        > // is_same
-    > /* enable_if */ > : true_type {};
-
-    template <typename D, typename = void>
-    struct has_push_back_op : false_type {};
-
-    template <typename D>
-    struct has_push_back_op<D, void_t<
-            decltype(std::declval<D>().push_back(std::declval<typename D::value_type>()))
-    > /* void_t */ > : true_type {};
-
-    template <typename T, typename = void>
-    struct is_std_complex : false_type {};
-
-    template <typename T>
-    struct is_std_complex<T, enable_if_t<
-        std::is_same_v< 
-            T, std::complex< typename T::value_type > 
-        > // is_same
-    > /* enable_if */ > : true_type {};
-
-    template <typename T, typename = void, typename = void, typename = void, typename = void>
-    struct is_insertable : false_type {};
-
-    template <typename T, typename U>
-    struct is_insertable<T, U, void_t< 
-        decltype(declval<T>().insert(declval<T>().begin(),declval<const U&>()))
-    >, void, void > : true_type {};
-
-    template <typename T, typename I, typename U>
-    struct is_insertable<T, I, U, std::void_t< 
-        decltype(declval<T>().insert(declval<I>(),declval<const U&>()))
-    >, void > : std::true_type {};
-
-    template <typename T, typename I, typename B, typename E>
-    struct is_insertable<T, I, B, E, std::void_t< 
-        decltype(declval<T>().insert(declval<I>(),declval<B>(),declval<E>()))
-    > > : std::true_type {};
-
-    template <typename T, typename = void>
-    struct is_clearable : std::false_type {};
-
-    template <typename T>
-    struct is_clearable<T, std::enable_if_t<
-        std::is_same_v<
-            decltype(declval<T>().clear()),void
-        > // is_same
-    > /* enable_if */ > : std::false_type {};
-
-    template <typename T, typename = void>
-    struct has_ref_square_bracket_operator : std::false_type {};
-
-    template <typename T>
-    struct has_ref_square_bracket_operator<T, enable_if_t< 
-        !std::is_const<decltype(declval<T>()[size_t{}])>::value &&
-        std::is_reference<decltype(declval<T>()[size_t{}])>::value
-    > > : std::true_type {};
-
-    /* TODO: remove */
-    template <typename T, typename = void>
-    struct is_2d_array : false_type {};
-
-    /* TODO: remove */
-    template <typename T>
-    struct is_2d_array<T, void_t<decltype(declval<T>()[0][0])> 
-    > : true_type {};
-
     /**
      * @brief check if T t{} are:
      * - t[0][0][0] is valid
@@ -184,26 +97,6 @@ namespace nmtools::traits {
     template <typename T>
     inline constexpr bool is_matrix_like_v = is_matrix_like<T>::value;
 
-    /* TODO: remove */
-    template <typename T, typename U, typename = void>
-    struct multiplicative : std::false_type {};
-
-    /* TODO: remove */
-    template <typename T, typename U>
-    struct multiplicative<T, U, std::void_t<
-        decltype(std::declval<T>() * std::declval<U>())
-    > > : std::true_type {};
-
-    /* TODO: remove */
-    template <typename T, typename U, typename = void>
-    struct additive : std::false_type {};
-
-    /* TODO: remove */
-    template <typename T, typename U>
-    struct additive<T, U, std::void_t<
-        decltype(std::declval<T>() + std::declval<U>())
-    > > : std::true_type {};
-
     /**
      * @brief check if T() * U() is valid
      * 
@@ -262,22 +155,6 @@ namespace nmtools::traits {
         constexpr static bool value = test<F>(int{});
     };
 
-    template <typename T, typename = void>
-    struct has_transpose_op : std::false_type {};
-
-    template <typename T>
-    struct has_transpose_op<T, std::void_t<
-        decltype(std::declval<T>().transpose())
-    > > : std::true_type {};
-
-    template <typename T, typename = void>
-    struct is_transposeable : std::false_type {};
-
-    template <typename T>
-    struct is_transposeable<T, std::enable_if_t< 
-        std::is_arithmetic_v<T> || has_transpose_op<T>::value 
-    > > : std::true_type {};
-
     /* TODO : move (?) */
     using std::begin;
     using std::end;
@@ -298,11 +175,6 @@ namespace nmtools::traits {
 
     template <typename T>
     inline constexpr bool is_iterable_v = is_iterable<T>::value;
-
-    template <typename T, typename = void>
-    struct is_indexable : std::false_type {};
-    template <typename T>
-    struct is_indexable<T, std::void_t<decltype(std::declval<T>()[size_t{}])> > : std::true_type {};
 
     /**
      * @brief check if type T has member type size_type
@@ -414,9 +286,6 @@ namespace nmtools::traits {
 
     template <typename T>
     static constexpr auto is_resizeable_v = is_resizeable<T>::value;
-
-    template <typename T>
-    using is_std_array_or_vector = std::disjunction<is_std_array<std::decay_t<T>>,is_std_vector<std::decay_t<T>>>;
 
     /**
      * @brief check if std::tuple_size<T> is valid for T
