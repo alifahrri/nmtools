@@ -12,7 +12,6 @@ include(nmtools)
 enable_testing()
 find_package(GTest REQUIRED)
 add_executable(${PROJECT_NAME} tests.cpp 
-    utility.cpp
     roots/bracketing.cpp
     roots/open.cpp
     optimization/unconstrained.cpp
@@ -22,9 +21,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     curvefit/regression.cpp
     curvefit/sinusoid.cpp
     curvefit/interpolation.cpp
-    fourier/series.cpp
     utility/utility.cpp
-    # fourier/transform.cpp
     ode/euler.cpp
     ode/runge_kutta.cpp
     linalg/elimination.cpp

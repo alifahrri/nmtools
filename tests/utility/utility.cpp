@@ -1,19 +1,20 @@
 #include <gtest/gtest.h>
 #include "nmtools/utility.hpp"
-#include <vector>
-#include <array>
 
-TEST(utility,inserter) {
-    using namespace nmtools::helper;
-    std::vector<double> w{2,3,4};
-    std::vector<double> v;
-    insert(v,double{1});
-    insert(v,v.end(),double{2});
-    insert(v,v.end(),w.begin(),w.end());
-    EXPECT_EQ(v.size(),5);
-    EXPECT_EQ(v[0],1.);
-    EXPECT_EQ(v[1],2.);
-    EXPECT_EQ(v[2],2.);
-    EXPECT_EQ(v[3],3.);
-    EXPECT_EQ(v[4],4.);
+TEST(utility, constants) {
+    namespace detail = nmtools::helper::detail;
+    constexpr detail::Constants<double,100,50,25,25> constants;
+    static_assert(constants.values[0]==0.5);
+    static_assert(constants.values[1]==0.25);
+    static_assert(constants.values[2]==0.25);
+}
+
+TEST(traits, is_callable) {
+    namespace nm = nmtools;
+    auto f1 = [](double) {};
+    auto f2 = [](double,double) {};
+    static_assert( nm::traits::is_callable<decltype(f1),double>::value);
+    static_assert(!nm::traits::is_callable<decltype(f1),double,double>::value);
+    static_assert( nm::traits::is_callable<decltype(f2),double,double>::value);
+    static_assert(!nm::traits::is_callable<decltype(f2),double>::value);
 }

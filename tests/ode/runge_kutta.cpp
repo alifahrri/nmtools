@@ -7,13 +7,6 @@ namespace nm = nmtools;
 namespace ode = nm::ode;
 namespace hlp = nm::helper;
 
-TEST(utility, is_2d_array) {
-    std::array<double,1> array1d;
-    std::array<std::array<double,1>,1> array2d;
-    static_assert( nm::traits::is_2d_array<decltype(array2d)>::value );
-    static_assert( !nm::traits::is_2d_array<decltype(array1d)>::value );
-}
-
 TEST(rk_helper,constants) {
     namespace detail = nmtools::helper::detail;
 

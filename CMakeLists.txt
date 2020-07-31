@@ -16,8 +16,6 @@ set(NMTOOLS_HEADERS
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/sinusoid.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/interpolation.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/differentiation/finite.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/fourier/series.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/fourier/transform.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/integration/trapezoidal.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/decomposition.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/elimination.hpp
@@ -32,7 +30,6 @@ set(NMTOOLS_HEADERS
     ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/tag.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/differentiation.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/fourier.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/integration.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/meta.hpp
