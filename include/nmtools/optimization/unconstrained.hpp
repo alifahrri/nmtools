@@ -12,6 +12,16 @@
 namespace nmtools {
     namespace optimization {
         namespace detail {
+
+            template <typename StateType>
+            constexpr auto transpose(StateType &&x) {
+                static_assert(
+                    std::is_arithmetic_v<StateType>,
+                    "unsupported transpose operation"
+                );
+                return x;
+            }
+            
             /* boiler-plates */
             template<int...> struct seq {};
 
@@ -251,8 +261,8 @@ namespace nmtools {
         auto backtracking_line_search(F &&f, StateType &&xi, StateType &&d, Scalar alpha_init, Scalar tau) 
         {
             using mult_t = decltype(alpha_init*d);
-            static_assert(traits::multiplicative<Scalar,StateType>::value, "these expr should be valid : 'alpha_init * d'");
-            static_assert(traits::additive<StateType,mult_t>::value, "these expr should be valid : 'xi + alpha * d'");
+            static_assert(traits::is_multiplicative<Scalar,StateType>::value, "these expr should be valid : 'alpha_init * d'");
+            static_assert(traits::is_additive<StateType,mult_t>::value, "these expr should be valid : 'xi + alpha * d'");
             static_assert(traits::is_callable<F,StateType>::value, "these expr should be valid : f(xi)");
             /* TODO : give warning or error if tau > 0 */
             auto fk = f(xi);
@@ -283,15 +293,14 @@ namespace nmtools {
         auto backtracking_armijo_line_search(F &&f, DF &&g, StateType &&xi, StateType &&d, Scalar alpha_init, Scalar beta, Scalar tau)
         {
             using mult_t = decltype(alpha_init*d);
-            static_assert(traits::multiplicative<Scalar,StateType>::value, "these expr should be valid : 'alpha_init * d'");
-            static_assert(traits::additive<StateType,mult_t>::value, "these expr should be valid : 'xi + alpha * d'");
+            static_assert(traits::is_multiplicative<Scalar,StateType>::value, "these expr should be valid : 'alpha_init * d'");
+            static_assert(traits::is_additive<StateType,mult_t>::value, "these expr should be valid : 'xi + alpha * d'");
             static_assert(traits::is_callable<F,StateType>::value, "these expr should be valid : f(xi)");
             static_assert(traits::is_callable<DF,StateType>::value, "these expr should be valid : g(xi)");
-            static_assert(traits::is_transposeable<decltype(g(xi))>::value, "these expr should be valid : transpose(g(xi))");
             /* TODO : give warning or error if tau & beta > 0 */
             auto fk = f(xi);
             auto alpha = alpha_init;
-            auto gt = helper::transpose(g(xi));
+            auto gt = detail::transpose(g(xi));
             while ( f(xi+alpha*d) > (fk+alpha*beta*gt*d))
                 alpha = alpha * tau;
             return alpha;
@@ -385,7 +394,7 @@ namespace nmtools {
             Scalar alpha_u{1e99};
             auto gk = g(xi);
             auto f_l = f(xi + alpha_l * d);
-            auto df_l = helper::transpose( g(xi + alpha_l * d) ) * d;
+            auto df_l = detail::transpose( g(xi + alpha_l * d) ) * d;
             STEP_4 :
             auto f_0 = f(xi+alpha_0*d);
             if (f_0 > f_l + rho * (alpha_0 - alpha_l) * df_l) {
@@ -393,7 +402,7 @@ namespace nmtools {
                 alpha_0 = alpha_hat;
                 goto STEP_4;
             }
-            auto df_0 = helper::transpose( g(xi + alpha_0 * d) ) * d;
+            auto df_0 = detail::transpose( g(xi + alpha_0 * d) ) * d;
             if (df_0 < sigma * df_l) {
                 auto alpha_hat = detail::line_search_extrapolation(df_0, df_l, alpha_0, alpha_l, tau, chi);
                 alpha_l = alpha_0;
