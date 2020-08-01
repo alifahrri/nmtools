@@ -1,22 +1,24 @@
 #ifndef NMTOOLS_UNCONSTRAINED_OPTIMIZATION_HPP
 #define NMTOOLS_UNCONSTRAINED_OPTIMIZATION_HPP
 
+#include "nmtools/linalg/matvec.hpp"
+#include "nmtools/utility.hpp"
+
 #include <cstdio>
 #include <cmath>
 #include <tuple>
 #include <array>
 #include <algorithm>
 #include <functional>
-#include "nmtools/utility.hpp"
 
 namespace nmtools {
     namespace optimization {
         namespace detail {
 
-            template <typename StateType>
-            constexpr auto transpose(StateType &&x) {
+            template <typename X>
+            constexpr auto transpose(X &&x) {
                 static_assert(
-                    std::is_arithmetic_v<StateType>,
+                    std::is_arithmetic_v<X>,
                     "unsupported transpose operation"
                 );
                 return x;
@@ -245,70 +247,64 @@ namespace nmtools {
         } // newton
 
         /**
-         * @brief backtracking line search, compute step size for optimizer
+         * @brief backtracking line search with Armijo condition (Algorithm 3.1. in Nocedal's book)
+         *  f(x_k + p_k \alpha) \leq f(x_k) + c_1 \alpha \nabla f_k^{T} p_k
          * 
-         * @tparam F the type objective function, automatically deduced
-         * @tparam StateType automatically deduced
-         * @tparam Scalar automatically deduced
+         * @tparam F callable
+         * @tparam DF callable
+         * @tparam X vector-like or arithmetic
+         * @tparam D vector-like or arithmetic
+         * @tparam alpha_t scalar
+         * @tparam rho_t scalar
+         * @tparam c_t scalar
          * @param f objective function
-         * @param xi initial state
-         * @param d search direction
-         * @param alpha_init 
-         * @param tau 
-         * @return auto 
+         * @param g jacobian function
+         * @param x_k initial state
+         * @param p_k search direction
+         * @param alpha initial step length \alpha
+         * @param rho contraction factor \rho
+         * @param c constant for armijo condition
+         * @param max_iter 
+         * @return constexpr auto alpha
+         * @cite nocedal2006numerical_backtracikng_line_search
          */
-        template <typename F, typename StateType, typename Scalar>
-        auto backtracking_line_search(F &&f, StateType &&xi, StateType &&d, Scalar alpha_init, Scalar tau) 
+        template <typename F, typename DF, typename X, typename D, typename alpha_t, typename rho_t, typename c_t>
+        constexpr auto backtracking_line_search(F &&f, DF &&g, X &&x_k, D &&p_k, alpha_t alpha, rho_t rho, c_t c, size_t max_iter=10)
         {
-            using mult_t = decltype(alpha_init*d);
-            static_assert(traits::is_multiplicative<Scalar,StateType>::value, "these expr should be valid : 'alpha_init * d'");
-            static_assert(traits::is_additive<StateType,mult_t>::value, "these expr should be valid : 'xi + alpha * d'");
-            static_assert(traits::is_callable<F,StateType>::value, "these expr should be valid : f(xi)");
-            /* TODO : give warning or error if tau > 0 */
-            auto fk = f(xi);
-            auto alpha = alpha_init;
-            while ( f(xi+alpha*d) >= fk)
-                alpha = alpha * tau;
-            return alpha;
-        } // backtracking_line_search
-
-
-        /**
-         * @brief backtracking line search with armijo condition to compute step size for optimizer
-         * 
-         * @tparam F the type of objective function, automatically deduced
-         * @tparam DF the type of the first derivative of objective function, automatically deduced
-         * @tparam StateType automatically deduced
-         * @tparam Scalar automatically deduced
-         * @param f objective function
-         * @param g the first derivative of the objective function
-         * @param xi initial state
-         * @param d search direction
-         * @param alpha_init 
-         * @param beta 
-         * @param tau 
-         * @return auto 
-         */
-        template <typename F, typename DF, typename StateType, typename Scalar>
-        auto backtracking_armijo_line_search(F &&f, DF &&g, StateType &&xi, StateType &&d, Scalar alpha_init, Scalar beta, Scalar tau)
-        {
-            using mult_t = decltype(alpha_init*d);
-            static_assert(traits::is_multiplicative<Scalar,StateType>::value, "these expr should be valid : 'alpha_init * d'");
-            static_assert(traits::is_additive<StateType,mult_t>::value, "these expr should be valid : 'xi + alpha * d'");
-            static_assert(traits::is_callable<F,StateType>::value, "these expr should be valid : f(xi)");
-            static_assert(traits::is_callable<DF,StateType>::value, "these expr should be valid : g(xi)");
+            using linalg::dot;
+            using linalg::mul;
+            using linalg::add;
+            using direction_t = decltype(mul(p_k,alpha));
+            /* make sure alpha_t, beta_t, tau_t have common type */
+            using common_t = std::common_type_t<alpha_t,rho_t,c_t>;
+            static_assert(
+                traits::is_callable_v<F,X>              // F(X)
+                && traits::is_callable_v<DF,X>          // DF(X)
+                && (traits::is_array1d_v<X> || std::is_arithmetic_v<X>)
+                && (traits::is_array1d_v<D> || std::is_arithmetic_v<D>)
+                /* TODO: check if add(...), mul(...) (see ops below) are well-formed */
+                , "unsupported type(s) for backtracking_armijo_line_search"
+            );
             /* TODO : give warning or error if tau & beta > 0 */
-            auto fk = f(xi);
-            auto alpha = alpha_init;
-            auto gt = detail::transpose(g(xi));
-            while ( f(xi+alpha*d) > (fk+alpha*beta*gt*d))
-                alpha = alpha * tau;
-            return alpha;
+            auto fk = f(x_k);
+            auto gk = g(x_k);
+            auto a  = alpha;
+            auto dk = dot(gk,p_k);
+            /* Armijo condition:
+                f(x_k + p_k \alpha) \leq f(x_k) + c_1 \alpha_k \nabla f_k^{T} p_k
+             */
+            /* note: \nabla f_k^{T} p_k is performed using dot product */
+            for (size_t i=0; i<max_iter; i++) {
+                if ( f(add(x_k,mul(p_k,a))) > add(fk,mul(dk,a*c)) )
+                    break;
+                a = mul(a,rho);
+            }
+            return a;
         } // backtracking_armijo_line_search
 
         namespace detail {
-            template <typename StateType, typename Scalar>
-            auto line_search_interpolation(StateType &&f_0, StateType &&f_l, StateType &&df_l, Scalar &alpha_0, Scalar &alpha_u, Scalar alpha_l, Scalar tau)
+            template <typename X, typename Scalar>
+            auto line_search_interpolation(X &&f_0, X &&f_l, X &&df_l, Scalar &alpha_0, Scalar &alpha_u, Scalar alpha_l, Scalar tau)
             {
                 if (alpha_0 < alpha_u)
                     alpha_u = alpha_0;
@@ -322,8 +318,8 @@ namespace nmtools {
                     alpha_hat = alpha_u - tau * (alpha_u - alpha_l);
                 return alpha_hat;
             } // line_search_interpolation
-            template <typename StateType, typename Scalar>
-            auto line_search_extrapolation(StateType &&df_0, StateType &&df_l, Scalar &&alpha_0, Scalar &&alpha_l, Scalar tau, Scalar chi)
+            template <typename X, typename Scalar>
+            auto line_search_extrapolation(X &&df_0, X &&df_l, Scalar &&alpha_0, Scalar &&alpha_l, Scalar tau, Scalar chi)
             {
                 auto d_alpha_0 = (alpha_0 - alpha_l) * df_0 / (df_l - df_0);
                 if (d_alpha_0 < tau * (alpha_0 - alpha_l))
@@ -387,8 +383,8 @@ namespace nmtools {
 
         } // namespace detail
 
-        template <typename F, typename DF, typename StateType, typename Scalar>
-        auto inexact_line_search(F &&f, DF &&g, StateType &&xi, StateType &&d, Scalar alpha_0, Scalar rho, Scalar sigma, Scalar tau, Scalar chi)
+        template <typename F, typename DF, typename X, typename Scalar>
+        auto inexact_line_search(F &&f, DF &&g, X &&xi, X &&d, Scalar alpha_0, Scalar rho, Scalar sigma, Scalar tau, Scalar chi)
         {
             Scalar alpha_l{0};
             Scalar alpha_u{1e99};
