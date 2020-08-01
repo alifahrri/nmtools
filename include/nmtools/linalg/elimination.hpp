@@ -28,9 +28,10 @@ namespace nmtools::linalg {
     using traits::get_container_value_type_t;
     using traits::is_multiplicative_v;
     using traits::is_array1d_v;
-    using tag::is_tag_enabled_v;
-    using tag::size_assert_t;
-    using tag::is_assert_v;
+    /* make sure use common tag namespace */
+    using ::nmtools::tag::is_tag_enabled_v;
+    using ::nmtools::tag::size_assert_t;
+    using ::nmtools::tag::is_assert_v;
 
     using std::make_tuple;
 
@@ -460,7 +461,7 @@ namespace nmtools::linalg {
         auto nf = size(f);
         auto ng = size(g);
 
-        if constexpr (is_tag_enabled_v<tag::size_assert_t,tag_t>) {
+        if constexpr (is_tag_enabled_v<size_assert_t,tag_t>) {
             assert( (ne == nf) && (e[0]   ==0) );
             assert( (ng == nf) && (g[ng-1]==0) );
         }
