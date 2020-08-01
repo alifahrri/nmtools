@@ -513,3 +513,215 @@ TEST(linalg, ones_like)
         EXPECT_TRUE(isclose(ones,expected));
     }
 }
+
+TEST(linalg, vvadd)
+{
+    using nla::detail::vvadd;
+    {
+        using vector_t = array<double,3>;
+        constexpr auto v = vector_t{1., 2., 3.};
+        constexpr auto r = vvadd(v,v);
+        constexpr auto expected = vector_t{2., 4., 6.};
+        static_assert(isclose(r,expected));
+    }
+}
+
+TEST(linalg, mmadd)
+{
+    using nla::detail::mmadd;
+    {
+        using vector_t = array<double,3>;
+        using matrix_t = array<vector_t,3>;
+        constexpr auto m1 = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto m2 = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto r = mmadd(m1,m2);
+        constexpr auto expected = matrix_t{{
+            {2., 2., 2.},
+            {2., 2., 2.},
+            {2., 2., 2.},
+        }};
+        static_assert(isclose(r,expected));
+    }
+}
+
+namespace nlt =  nla::tag;
+
+TEST(linalg, get_tag)
+{
+    using vector_t = array<double,3>;
+    using matrix_t = array<vector_t,3>;
+    using scalar_t = double;
+
+    using vv_t = nlt::get_t<vector_t,vector_t>;
+    static_assert( std::is_same_v<vv_t,nlt::vector_vector_t>);
+    static_assert(!std::is_same_v<vv_t,nlt::vector_scalar_t>);
+    static_assert(!std::is_same_v<vv_t,nlt::matrix_scalar_t>);
+    static_assert(!std::is_same_v<vv_t,nlt::matrix_vector_t>);
+    static_assert(!std::is_same_v<vv_t,nlt::matrix_matrix_t>);
+    static_assert(!std::is_same_v<vv_t,nlt::scalar_scalar_t>);
+
+    using mm_t = nlt::get_t<matrix_t,matrix_t>;
+    static_assert(!std::is_same_v<mm_t,nlt::vector_vector_t>);
+    static_assert(!std::is_same_v<mm_t,nlt::vector_scalar_t>);
+    static_assert(!std::is_same_v<mm_t,nlt::matrix_scalar_t>);
+    static_assert(!std::is_same_v<mm_t,nlt::matrix_vector_t>);
+    static_assert( std::is_same_v<mm_t,nlt::matrix_matrix_t>);
+    static_assert(!std::is_same_v<mm_t,nlt::scalar_scalar_t>);
+
+    using ss_t = nlt::get_t<scalar_t,scalar_t>;
+    static_assert(!std::is_same_v<ss_t,nlt::vector_vector_t>);
+    static_assert(!std::is_same_v<ss_t,nlt::vector_scalar_t>);
+    static_assert(!std::is_same_v<ss_t,nlt::matrix_scalar_t>);
+    static_assert(!std::is_same_v<ss_t,nlt::matrix_vector_t>);
+    static_assert(!std::is_same_v<ss_t,nlt::matrix_matrix_t>);
+    static_assert( std::is_same_v<ss_t,nlt::scalar_scalar_t>);
+
+    using mv_t = nlt::get_t<matrix_t,vector_t>;
+    static_assert(!std::is_same_v<mv_t,nlt::vector_vector_t>);
+    static_assert(!std::is_same_v<mv_t,nlt::vector_scalar_t>);
+    static_assert(!std::is_same_v<mv_t,nlt::matrix_scalar_t>);
+    static_assert( std::is_same_v<mv_t,nlt::matrix_vector_t>);
+    static_assert(!std::is_same_v<mv_t,nlt::matrix_matrix_t>);
+    static_assert(!std::is_same_v<mv_t,nlt::scalar_scalar_t>);
+
+    using ms_t = nlt::get_t<matrix_t,scalar_t>;
+    static_assert(!std::is_same_v<ms_t,nlt::vector_vector_t>);
+    static_assert(!std::is_same_v<ms_t,nlt::vector_scalar_t>);
+    static_assert( std::is_same_v<ms_t,nlt::matrix_scalar_t>);
+    static_assert(!std::is_same_v<ms_t,nlt::matrix_vector_t>);
+    static_assert(!std::is_same_v<ms_t,nlt::matrix_matrix_t>);
+    static_assert(!std::is_same_v<ms_t,nlt::scalar_scalar_t>);
+
+    using vs_t = nlt::get_t<vector_t,scalar_t>;
+    static_assert(!std::is_same_v<vs_t,nlt::vector_vector_t>);
+    static_assert( std::is_same_v<vs_t,nlt::vector_scalar_t>);
+    static_assert(!std::is_same_v<vs_t,nlt::matrix_scalar_t>);
+    static_assert(!std::is_same_v<vs_t,nlt::matrix_vector_t>);
+    static_assert(!std::is_same_v<vs_t,nlt::matrix_matrix_t>);
+    static_assert(!std::is_same_v<vs_t,nlt::scalar_scalar_t>);
+}
+
+TEST(linalg, mul)
+{
+    using nla::mul;
+    using vector_t = array<double,3>;
+    using matrix_t = array<vector_t,3>;
+    using scalar_t = double;
+
+    /* scalar-scalar multiplication */
+    {
+        constexpr auto a = mul(3.,3.);
+        static_assert(isclose(a,9.));
+    }
+    /* vector-scalar multiplication */
+    {
+        constexpr auto v = vector_t{1., 2., 3.};
+        constexpr auto r = mul(v,3.);
+        constexpr auto expected = vector_t{3., 6., 9.};
+        static_assert(isclose(r,expected));
+    }
+    /* matrix-scalar multiplication */
+    {
+        constexpr auto m = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto r = mul(m,3.);
+        constexpr auto expected = matrix_t{{
+            {3., 3., 3.},
+            {3., 3., 3.},
+            {3., 3., 3.},
+        }};
+        static_assert(isclose(r,expected));
+    }
+    /* matrix-vector multiplication */
+    {
+        constexpr auto m = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto v = vector_t{
+            1.,
+            2.,
+            3.
+        };
+        constexpr auto r = mul(m,v);
+        constexpr auto expected = vector_t{
+            6.,
+            6.,
+            6.
+        };
+        static_assert(isclose(r,expected));
+    }
+    /* matrix-matrix multiplication */
+    {
+        constexpr auto m1 = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto m2 = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto r = mul(m1,m2);
+        constexpr auto expected = matrix_t{{
+            {3., 3., 3.},
+            {3., 3., 3.},
+            {3., 3., 3.},
+        }};
+        static_assert(isclose(r,expected));
+    }
+}
+
+TEST(linalg, add)
+{
+    using nla::add;
+    using vector_t = array<double,3>;
+    using matrix_t = array<vector_t,3>;
+    using scalar_t = double;
+
+    /* scalar-scalar add */
+    {
+        constexpr auto a = add(3., 3.);
+        static_assert(isclose(a,6.));
+    }
+    /* vector-vector add */
+    {
+        constexpr auto v = vector_t{1., 2., 3.};
+        constexpr auto r = add(v,v);
+        constexpr auto expected = vector_t{2., 4., 6.};
+        static_assert(isclose(r,expected));
+    }
+    /* matrix-matrix multiplication */
+    {
+        constexpr auto m1 = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto m2 = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto r = add(m1,m2);
+        constexpr auto expected = matrix_t{{
+            {2., 2., 2.},
+            {2., 2., 2.},
+            {2., 2., 2.},
+        }};
+        static_assert(isclose(r,expected));
+    }
+}

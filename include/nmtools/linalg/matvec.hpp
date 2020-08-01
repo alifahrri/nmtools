@@ -9,6 +9,213 @@
 
 namespace nmtools::linalg {
 
+    namespace tag {
+
+        /**
+         * @brief tag for vector vector ops
+         * 
+         */
+        struct vector_vector_t {};
+        
+        /**
+         * @brief tag for matrix matrix ops
+         * 
+         */
+        struct matrix_matrix_t {};
+
+        /**
+         * @brief tag for matrix vector ops
+         * 
+         */
+        struct matrix_vector_t {};
+
+        /**
+         * @brief tag for vector scalar ops
+         * 
+         */
+        struct vector_scalar_t {};
+
+        /**
+         * @brief tag for matrix scalar ops
+         * 
+         */
+        struct matrix_scalar_t {};
+
+        /**
+         * @brief tag for scalar scalar ops
+         * 
+         */
+        struct scalar_scalar_t {};
+
+        using traits::is_array1d_v;
+        using traits::is_array2d_v;
+        using std::enable_if_t;
+        using std::void_t;
+
+        /**
+         * @brief helper alias template to add specialization to overload set if T is vector-like
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using enable_if_vector_t = enable_if_t<is_array1d_v<T>>;
+
+        /**
+         * @brief helper alias template to add specialization to overload set if T is matrix-like
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using enable_if_matrix_t = enable_if_t<is_array2d_v<T>>;
+
+        /**
+         * @brief helper alias template to add specialization to overload set if T is arithmetic
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using enable_if_scalar_t = enable_if_t<std::is_arithmetic_v<T>>;
+
+        /**
+         * @brief helper alias template to remove specialization from overload set if T is vector-like
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using disable_if_vector_t = enable_if_t<!is_array1d_v<T>>;
+
+        /**
+         * @brief helper alias template to remove specialization from overload set if T is matrix-like
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using disable_if_matrix_t = enable_if_t<!is_array2d_v<T>>;
+
+        /**
+         * @brief helper alias template to remove specialization from overload set if T is arithmetic
+         * 
+         * @tparam T 
+         */
+        template <typename T>
+        using disable_if_scalar_t = enable_if_t<!std::is_arithmetic_v<T>>;
+
+        /**
+         * @brief resolve matvec ops tag
+         * 
+         * @tparam T lhs
+         * @tparam U rhs
+         * @tparam typename=void 
+         */
+        template <typename T, typename U, typename=void>
+        struct get {
+            // invalid
+            using type = void;
+        };
+
+        /**
+         * @brief get vector-vector ops tag
+         * 
+         * @tparam T lhs
+         * @tparam U rhs
+         */
+        template <typename T, typename U>
+        struct get<T,U,void_t<
+            enable_if_vector_t  <T>, enable_if_vector_t  <U>,
+            disable_if_matrix_t <T>, disable_if_matrix_t <U>,
+            disable_if_scalar_t <T>, disable_if_scalar_t <U>
+        >> {
+            using type = vector_vector_t;
+        };
+
+        /**
+         * @brief get matrix-matrix ops tag
+         * 
+         * @tparam T lhs
+         * @tparam U rhs
+         */
+        template <typename T, typename U>
+        struct get<T,U,void_t<
+            /* current impl have matrix-like is subset of vector-like */
+            // disable_if_vector_t <T>, disable_if_vector_t <U>,
+            enable_if_matrix_t  <T>, enable_if_matrix_t  <U>,
+            disable_if_scalar_t <T>, disable_if_scalar_t <U>
+        >> {
+            using type = matrix_matrix_t;
+        };
+
+        /**
+         * @brief get scalar-scalar ops tag
+         * 
+         * @tparam T lhs
+         * @tparam U rhs
+         */
+        template <typename T, typename U>
+        struct get<T,U,void_t<
+            disable_if_vector_t <T>, disable_if_vector_t <U>,
+            disable_if_matrix_t <T>, disable_if_matrix_t <U>,
+            enable_if_scalar_t  <T>, enable_if_scalar_t  <U>
+        >> {
+            using type = scalar_scalar_t;
+        };
+
+        /**
+         * @brief get matrix-vector ops tag
+         * 
+         * @tparam T lhs
+         * @tparam U rhs
+         */
+        template <typename T, typename U>
+        struct get<T,U,void_t<
+            /* current impl have matrix-like is subset of vector-like */
+            /* disable_if_vector_t <T>, */ enable_if_vector_t  <U>,
+            enable_if_matrix_t  <T>, disable_if_matrix_t <U>,
+            disable_if_scalar_t <T>, disable_if_scalar_t <U>
+        >> {
+            using type = matrix_vector_t;
+        };
+
+        /**
+         * @brief get matrix-scalar ops tag
+         * 
+         * @tparam T lhs
+         * @tparam U rhs
+         */
+        template <typename T, typename U>
+        struct get<T,U,void_t<
+            /* current impl have matrix-like is subset of vector-like */
+            /* disable_if_vector_t <T>, */ disable_if_vector_t <U>,
+            enable_if_matrix_t  <T>, disable_if_matrix_t <U>,
+            disable_if_scalar_t <T>, enable_if_scalar_t  <U>
+        >> {
+            using type = matrix_scalar_t;
+        };
+
+        /**
+         * @brief get vector-scalar ops tag
+         * 
+         * @tparam T lhs
+         * @tparam U rhs
+         */
+        template <typename T, typename U>
+        struct get<T,U,void_t<
+            enable_if_vector_t  <T>, disable_if_vector_t <U>,
+            disable_if_matrix_t <T>, disable_if_matrix_t <U>,
+            disable_if_scalar_t <T>, enable_if_scalar_t  <U>
+        >> {
+            using type = vector_scalar_t;
+        };
+
+        /**
+         * @brief helper alias template to get op tag
+         * 
+         * @tparam T lhs
+         * @tparam U rhs
+         */
+        template <typename T, typename U>
+        using get_t = typename get<T,U>::type;
+    } // namespace tag
+
     /* make symbols accessible for unqualified-lookup */
     using std::size;
     using std::tuple_size;
@@ -220,8 +427,9 @@ namespace nmtools::linalg {
         constexpr auto msmul(const M& m, const S& s)
         {
             auto ret = zeros_like(m);
-            for (auto& e : ret)
-                e = vsmul(e,s);
+            auto n = size(ret);
+            for (size_t i=0; i<n; i++)
+                ret[i] = vsmul(m[i],s);
             return ret;
         }
 
@@ -237,23 +445,38 @@ namespace nmtools::linalg {
         template <typename V1, typename V2>
         constexpr auto dot(const V1& v1, const V2& v2)
         {
+            static_assert(
+                (
+                    traits::is_array1d_v<V1>
+                    && traits::is_array1d_v<V2>
+                ) ||
+                (
+                    std::is_arithmetic_v<V1>
+                    && std::is_arithmetic_v<V2>
+                )
+                , "unsupported type for dot"
+            );
             using std::remove_cv_t;
             using std::remove_reference_t;
+            using meta::get_value_type_or_same_t;
 
-            using e1_t = remove_cv_t<remove_reference_t<decltype(v1[0])>>;
-            using e2_t = remove_cv_t<remove_reference_t<decltype(v2[0])>>;
+            using e1_t = remove_cv_t<remove_reference_t<get_value_type_or_same_t<V1>>>;
+            using e2_t = remove_cv_t<remove_reference_t<get_value_type_or_same_t<V2>>>;
             using value_t = std::common_type_t<e1_t,e2_t>;
 
-            value_t ret{0};
-
-            auto n1 = size(v1);
-            auto n2 = size(v2);
-            /* TODO: make assertio optional (?) */
-            assert(n1==n2);
-            
-            for (size_t i = 0; i < n1; i++)
-                ret += v1[i] * v2[i];
-            return ret;
+            if constexpr (std::is_arithmetic_v<V1>)
+                return value_t{v1 * v2};
+            else {
+                value_t ret{0};
+                auto n1 = size(v1);
+                auto n2 = size(v2);
+                /* TODO: make assertio optional (?) */
+                assert(n1==n2);
+                
+                for (size_t i = 0; i < n1; i++)
+                    ret += v1[i] * v2[i];
+                return ret;
+            }
         }
 
         /**
@@ -422,6 +645,157 @@ namespace nmtools::linalg {
             }
         }
 
+        /**
+         * @brief vector vector addition a+b
+         * 
+         * @tparam V1 vector-like
+         * @tparam V2 vector-like
+         * @param v1 lhs
+         * @param v2 rhs
+         * @return constexpr auto 
+         */
+        template <typename V1, typename V2>
+        constexpr auto vvadd(const V1& a, const V2& b)
+        {
+            static_assert(
+                traits::is_array1d_v<V1>
+                && traits::is_array1d_v<V2>,
+                "unsupported type for vvadd"
+            );
+
+            /* deduce resulting size of matrix */
+            /* TODO: consider to provide traits to check if type has fixed size mat traits */
+            constexpr auto is_fixed_size_vec_A = traits::has_tuple_size_v<V1>;
+            constexpr auto is_fixed_size_vec_B = traits::has_tuple_size_v<V2>;
+
+            using std::remove_cv_t;
+            using std::remove_reference_t;
+            using meta::get_value_type_or_same_t;
+
+            using e1_t = remove_cv_t<remove_reference_t<get_value_type_or_same_t<V1>>>;
+            using e2_t = remove_cv_t<remove_reference_t<get_value_type_or_same_t<V2>>>;
+            using return_t = std::common_type_t<e1_t,e2_t>;
+
+            /* dispatch compile time ver. */
+            if constexpr (is_fixed_size_vec_A && is_fixed_size_vec_B) {
+                constexpr auto n1 = size(a);
+                constexpr auto n2 = size(b);
+                constexpr auto n  = n1;
+
+                static_assert (n1==n2);
+
+                auto ret = zeros<V1,n>();
+                for (size_t i=0; i<n; i++)
+                    ret[i] = a[i] + b[i];
+                return ret;
+            }
+            /* dispatch runtime ver. */
+            else {
+                /* make sure one of the matrix type is resizeable */
+                static_assert(
+                    traits::is_resizeable_v<V1> ||
+                    traits::is_resizeable_v<V2>
+                );
+
+                auto n1 = size(a);
+                auto n2 = size(b);
+                /* TODO: make assertio optional (?) */
+                assert(n1==n2);
+                auto n = n1;
+
+                /* select resizeable mat over fixed ones for return type */
+                using return_t = meta::select_resizeable_mat_t<V1,V2>;
+                auto ret = zeros<return_t>(n);
+
+                for (size_t i=0; i<n; i++)
+                    ret[i] = a[i] + b[i];
+                return ret;
+            }
+        }
+
+        /**
+         * @brief matrix matrix additon A+B
+         * 
+         * @tparam M1 matrix-like
+         * @tparam M2 matrix-like
+         * @param A lhs
+         * @param B rhs
+         * @return constexpr auto 
+         */
+        template <typename M1, typename M2>
+        constexpr auto mmadd(const M1& A, const M2& B)
+        {
+            static_assert(
+                traits::is_matrix_like_v<M1> &&
+                traits::is_matrix_like_v<M2>,
+                "unsupported type M1 & M2 of A & B for mmadd"
+            );
+
+            /* deduce resulting size of matrix */
+            /* TODO: consider to provide traits to check if type has fixed size mat traits */
+            constexpr auto is_fixed_size_mat_A = traits::has_tuple_size_v<M1>;
+            constexpr auto is_fixed_size_mat_B = traits::has_tuple_size_v<M2>;
+
+            /* deduce row type and element type */
+            /* TODO: check if this expr is well-formed first! */
+            using RowA = typename M1::value_type;
+            using RowB = typename M2::value_type;
+            /* TODO: handle if M1 is not a nested container type! (theris no RowA::value_type) */
+            using a_t = typename RowA::value_type;
+            using b_t = typename RowB::value_type;
+            /* get common type of matrix A & B */
+            using common_t = std::common_type_t<a_t,b_t>;
+
+            /* dispatch compile-time version 
+                both are fixed size matrix, the resulting shape will be known at compile time */
+            if constexpr (is_fixed_size_mat_A && is_fixed_size_mat_B) {
+                constexpr auto row_a = tuple_size<M1>::value;
+                constexpr auto row_b = tuple_size<M2>::value;
+                constexpr auto col_a = tuple_size<RowA>::value;
+                constexpr auto col_b = tuple_size<RowB>::value;
+                static_assert(col_a == row_b);
+                static_assert(row_a == col_b);
+
+                /* prepare placeholder for the resulting matrix */
+                auto mat = zeros<M1,row_a,col_b>();
+
+                /* naively multiply for each element */
+                /* TODO: figure-out best way to perform this op */
+                for (int i=0; i<row_a; i++)
+                    for (int j=0; j<col_b; j++)
+                        mat[i][j] = A[i][j] + B[i][j];
+                return mat;
+            }
+            /* dispatch runtime version
+                one of the matrix are dynamic, the resulting shape will be known at runtime time */
+            else {
+                /* TODO: consider to provide 'shape' helper function */
+                auto row_a = size(A);
+                auto col_a = size(A[0]);
+                auto row_b = size(B);
+                auto col_b = size(B[0]);
+
+                assert (col_a == row_b);
+                assert (row_a == col_b);
+
+                /* make sure one of the matrix type is resizeable */
+                static_assert(
+                    traits::is_resizeable_v<M1> ||
+                    traits::is_resizeable_v<M2>
+                );
+                /* select resizeable mat over fixed ones for return type */
+                using return_t = meta::select_resizeable_mat_t<M1,M2>;
+                auto mat = zeros<return_t>(row_a,col_b);
+
+                /* naively multiply for each element */
+                /* TODO: figure-out best way to perform this op */
+                for (int i=0; i<row_a; i++)
+                    for (int j=0; j<col_b; j++)
+                        mat[i][j] = A[i][j] + B[i][j];
+                return mat;
+            }
+        }
+
     } // namespace detail
 
     /* make symbols accessible for unqualified-lookup */
@@ -429,6 +803,8 @@ namespace nmtools::linalg {
     using detail::msmul;
     using detail::mvmul;
     using detail::vsmul;
+    using detail::vvadd;
+    using detail::mmadd;
     using detail::dot;
     using std::fabs;
 
@@ -613,60 +989,93 @@ namespace nmtools::linalg {
     /**
      * @brief perform lhs * rhs
      * 
-     * @tparam A matrix-like or vector-like
-     * @tparam B matrix-like or vector-like or arithmetic type
+     * @tparam A matrix-like or vector-like or A*B is multiplicative
+     * @tparam B matrix-like or vector-like or arithmetic type or A*B is multiplicative
      * @param lhs 
      * @param rhs 
      * @return constexpr auto 
-     * @todo consider to remove this, prefer explicit call
      */
     template <typename A, typename B>
     constexpr auto mul(const A& lhs, const B& rhs)
     {
-        using traits::is_array2d;
-        using traits::is_array1d;
-        using traits::is_array2d_v;
-        using traits::is_array1d_v;
         using traits::is_multiplicative_v;
-        using std::disjunction_v;
-        using std::conjunction_v;
-        using std::negation_v;
-        using std::is_arithmetic;
-        using std::is_arithmetic_v;
+
+        /* get operation tag */
+        using op_t = tag::get_t<A,B>;
 
         static_assert(
-            disjunction_v<is_array1d<A>,is_array2d<A>> &&
-            disjunction_v<is_array1d<B>,is_array2d<B>,is_arithmetic<B>>,
-            "unsupported type(s) for mul(lhs,rhs)"
+            is_multiplicative_v<A,B>
+            || (
+                !std::is_same_v<op_t,void> 
+                && !std::is_same_v<op_t,tag::vector_vector_t>
+            )
+            , "unsupported type(s) for mul(lhs,rhs)"
         );
 
         /* dispatch if A & B is multiplicative */
         if constexpr (is_multiplicative_v<A,B>)
             return lhs * rhs;
+        /* dispatch matrix-matrix multiplication */
+        else if constexpr (std::is_same_v<op_t,tag::matrix_matrix_t>)
+            return mmmul(lhs, rhs);
+        /* dispatch matrix-vector multiplication */
+        else if constexpr (std::is_same_v<op_t,tag::matrix_vector_t>)
+            return mvmul(lhs, rhs);
+        /* dispatch matrix-scalar multiplication */
+        else if constexpr (std::is_same_v<op_t,tag::matrix_scalar_t>)
+            return msmul(lhs, rhs);
+        /* dispatch vector-scalar multiplication */
+        else if constexpr (std::is_same_v<op_t,tag::vector_scalar_t>)
+            return vsmul(lhs, rhs);
+        /* dispatch scalar-scalar multiplication, should be multiplicative though */
+        else if constexpr (std::is_same_v<op_t,tag::scalar_scalar_t>)
+            return lhs * rhs;
         else {
-            /* dispatch matrix-matrix multiplication */
-            if constexpr (is_array2d_v<A> && is_array2d_v<B>)
-                return mmmul(lhs, rhs);
-            else {
-                /* dispatch matrix-vector multiplication */
-                if constexpr (is_array2d_v<A> && is_array1d_v<B>)
-                    return mvmul(lhs, rhs);
-                else {
-                    /* dispatch matrix-scalar multiplication */
-                    if constexpr (is_array2d_v<A> && is_arithmetic_v<B>)
-                        return msmul(lhs, rhs);
-                    else {
-                        /* dispatch vector-scalar multiplication */
-                        if constexpr (is_array1d_v<A> && is_arithmetic_v<B>)
-                            return vsmul(lhs, rhs);
-                        else {
-                            static_assert(negation_v<std::conjunction<is_array1d<A>,is_array1d<B>>>,
-                                "vector * vector operation not supported for mul, use dot instead");
-                        } // (is_array1d_v<A> && is_arithmetic_v<B>)
-                    } // (is_array2d_v<A> && is_arithmetic_v<B>)
-                } // (is_array2d_v<A> && is_array1d_v<B>)
-            } // (is_array2d_v<A> && is_array2d_v<B>)
-        } // (is_multiplicative_v<A,B>)
+            // vector-vector
+            // TODO: compile error here
+        }
+    }
+
+    /**
+     * @brief perform lhs + rhs
+     * 
+     * @tparam A vector-like or matrix-like or scalar
+     * @tparam B vector-like or matrix-like or scalar
+     * @param lhs 
+     * @param rhs 
+     * @return constexpr auto 
+     */
+    template <typename A, typename B>
+    constexpr auto add(const A& lhs, const B& rhs)
+    {
+        using traits::is_additive_v;
+
+        /* get operation tag */
+        using op_t = tag::get_t<A,B>;
+
+        static_assert(
+            is_additive_v<A,B>
+            || (
+                !std::is_same_v<op_t,void> 
+                && !std::is_same_v<op_t,tag::vector_scalar_t>
+                && !std::is_same_v<op_t,tag::matrix_scalar_t>
+                && !std::is_same_v<op_t,tag::matrix_vector_t>
+            )
+            , "unsupported type(s) for add(lhs,rhs)"
+        );
+
+        /* dispatch if A & B is additive */
+        if constexpr (is_additive_v<A,B>)
+            return lhs + rhs;
+        /* dispatch vector-vector addition */
+        else if constexpr (std::is_same_v<op_t,tag::vector_vector_t>)
+            return vvadd(lhs, rhs);
+        /* dispatch matrix-matrix addition */
+        else if constexpr (std::is_same_v<op_t,tag::matrix_matrix_t>)
+            return mmadd(lhs, rhs);
+        else {
+            // TODO: compile error here
+        }
     }
 
 } // namespace nmtools::linalg

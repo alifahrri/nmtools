@@ -1,6 +1,8 @@
+#include "nmtools/optimization.hpp"
+#include "nmtools/utility/helper.hpp"
+
 #include <gtest/gtest.h>
 #include <cmath>
-#include "nmtools/optimization.hpp"
 
 namespace opt = nmtools::optimization;
 
@@ -198,36 +200,94 @@ TEST(optimization, newton_min_0)
     EXPECT_NEAR(fxopt,fx_true,1e-4) << ss.str();
 }
 
+namespace nm = nmtools;
+namespace opt = nmtools::optimization;
+using std::array;
+using std::vector;
+using std::get;
+using nmtools::helper::isclose;
+
 TEST(optimization, backtracking_line_search) 
 {
-    namespace nm = nmtools;
-    auto f = [](double x) {
-        return x*x;
-    };
-    auto alpha_init{1.0};
-    auto xi{1.0};
-    auto d{-2.};
-    auto tau{0.5};
-    auto alpha = nm::optimization::backtracking_line_search(f,xi,d,alpha_init,tau);
-    EXPECT_NEAR(alpha,0.5,1e-6);
-}
+    /* note: parameter, obj fn, & expected values are from scipy example:
+        https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.line_search.html
+    */
+    /* from nocedal's book:
+        In this procedure, the initial step length ¯α is chosen to be 1 in Newton methods and quasi-Newton,
+        but can have different values in other algorithms such as steepest descent or conjugate gradient.
+    */
+    /* test using fixed-size container */
+    {
+        using array2d = array<double,2>;
+        auto f = [](auto x){
+            // using std::array means that we can use structured-binding
+            // resulting in nice syntax
+            const auto& [x0,x1] = x;
+            return x0*x0 + x1*x1;
+        };
+        auto df = [](auto x){
+            const auto& [x0,x1] = x;
+            return array2d{2*x0, 2*x1};
+        };
+        auto xi = array2d{1.8, 1.7};
+        auto pk = array2d{-1.0, -1.0};
 
-TEST(optimization, backtracking_armijo_line_search) 
-{
-    namespace nm = nmtools;
-    auto f = [](double x) {
-        return x*x;
-    };
-    auto df = [](double x) {
-        return 2*x;
-    };
-    auto alpha_init{1.0};
-    auto beta{1.0};
-    auto xi{1.0};
-    auto d{-2.};
-    auto tau{0.5};
-    auto alpha = nm::optimization::backtracking_armijo_line_search(f,df,xi,d,alpha_init,beta,tau);
-    EXPECT_NEAR(alpha,0.0,1e-6);
+        auto alpha = 1.0;
+        auto beta  = 1e-4;
+        auto tau   = 0.9;
+
+        auto a = opt::backtracking_line_search(f,df,xi,pk,alpha,beta,tau);
+        EXPECT_NEAR(a,1.0,1e-6) << a;
+    }
+    /* test using dynamic-size container */
+    {
+        using array2d = vector<double>;
+        auto f = [](auto x){
+            // unfortunately we can't use structured-binding for vector
+            // const auto& [x0,x1] = x;
+            const auto& x0 = x[0];
+            const auto& x1 = x[1];
+            return x0*x0 + x1*x1;
+        };
+        auto df = [](auto x){
+            // const auto& [x0,x1] = x;
+            const auto& x0 = x[0];
+            const auto& x1 = x[1];
+            return array2d{2*x0, 2*x1};
+        };
+        auto xi = array2d{1.8, 1.7};
+        auto pk = array2d{-1.0, -1.0};
+
+        auto alpha = 1.0;
+        auto beta  = 1e-4;
+        auto tau   = 0.9;
+
+        auto a = opt::backtracking_line_search(f,df,xi,pk,alpha,beta,tau);
+        EXPECT_NEAR(a,1.0,1e-6) << a;
+    }
+    /* test using fixed-size container, at compile time */
+    {
+        using array2d = array<double,2>;
+        constexpr auto f = [](auto x){
+            // using std::array means that we can use structured-binding
+            // resulting in nice syntax
+            const auto& [x0,x1] = x;
+            return x0*x0 + x1*x1;
+        };
+        constexpr auto df = [](auto x){
+            const auto& [x0,x1] = x;
+            return array2d{2*x0, 2*x1};
+        };
+        constexpr auto xi = array2d{1.8, 1.7};
+        constexpr auto pk = array2d{-1.0, -1.0};
+
+        constexpr auto alpha = 1.0;
+        constexpr auto beta  = 1e-4;
+        constexpr auto tau   = 0.9;
+
+        constexpr auto a = opt::backtracking_line_search(f,df,xi,pk,alpha,beta,tau);
+        static_assert(isclose(a,1.0,1e-6));
+    }
 }
 
 #define EPS 1e-9
