@@ -107,6 +107,12 @@ namespace nmtools::traits {
     template <typename T, typename U, typename = void>
     struct is_multiplicative : std::false_type {};
 
+    /**
+     * @brief specialization of is_multiplicative
+     * 
+     * @tparam T lhs
+     * @tparam U rhs
+     */
     template <typename T, typename U>
     struct is_multiplicative<T, U, std::void_t<
         decltype(std::declval<T>() * std::declval<U>())
@@ -116,8 +122,8 @@ namespace nmtools::traits {
      * @brief helper variable template to check if
      * T and U is multiplicative
      * 
-     * @tparam T 
-     * @tparam U 
+     * @tparam T lhs
+     * @tparam U rhs
      */
     template <typename T, typename U>
     inline constexpr bool is_multiplicative_v = is_multiplicative<T,U>::value;
@@ -125,21 +131,40 @@ namespace nmtools::traits {
     /**
      * @brief check if T() + U() is valid
      * 
-     * @tparam T 
-     * @tparam U 
+     * @tparam T lhs
+     * @tparam U rhs
      * @tparam void 
      */
     template <typename T, typename U, typename = void>
     struct is_additive : std::false_type {};
 
+    /**
+     * @brief specialization of is_additive
+     * 
+     * @tparam T lhs
+     * @tparam U rhs
+     */
     template <typename T, typename U>
     struct is_additive<T, U, std::void_t<
         decltype(std::declval<T>() + std::declval<U>())
     > > : std::true_type {};
 
+    /**
+     * @brief helper variable template to check if
+     * T and U is additive
+     * 
+     * @tparam T lhs
+     * @tparam U rhs
+     */
     template <typename T, typename U>
     inline constexpr bool is_additive_v = is_additive<T,U>::value;
 
+    /**
+     * @brief check if F(Args...) is well-formed
+     * 
+     * @tparam F function
+     * @tparam Args arguments
+     */
     template <typename F, typename...Args>
     struct is_callable {
     private:
@@ -154,6 +179,15 @@ namespace nmtools::traits {
     public:
         constexpr static bool value = test<F>(int{});
     };
+
+    /**
+     * @brief helper variable template for is_callable
+     * 
+     * @tparam F function
+     * @tparam Args arguments
+     */
+    template <typename F, typename...Args>
+    inline constexpr bool is_callable_v = is_callable<F,Args...>::value;
 
     /* TODO : move (?) */
     using std::begin;
@@ -253,21 +287,52 @@ namespace nmtools::traits {
     template <typename T>
     inline constexpr bool has_allocator_type_v = has_allocator_type<T>::value;
 
+    /**
+     * @brief helper alias template to enable/add to overload set if T has size_type
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     using enable_if_has_size_type = std::enable_if<has_size_type_v<T>>;
 
+    /**
+     * @brief helper alias template to enable/add to overload set if T has size_type
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     using enable_if_has_size_type_t = typename enable_if_has_size_type<T>::type;
 
+    /**
+     * @brief helper alias template to disable/remove from overload set if T has size_type
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     using disable_if_has_size_type = std::enable_if<!has_size_type_v<T>>;
 
+    /**
+     * @brief helper alias template to disable/remove from overload set if T has size_type
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     using disable_if_has_size_type_t = typename disable_if_has_size_type<T>::type;
 
+    /**
+     * @brief check if T is resizeable
+     * 
+     * @tparam T type to check
+     * @tparam void 
+     */
     template <typename T, typename = void>
     struct is_resizeable : std::false_type {};
 
+    /**
+     * @brief specialization of is_resizeable when T is resizeable using size_t
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     struct is_resizeable<T, 
         std::void_t<
@@ -276,6 +341,11 @@ namespace nmtools::traits {
         >
     > : std::true_type {};
 
+    /**
+     * @brief specialization of is_resizeable when T is resizeable using T::size_type
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     struct is_resizeable<T, 
         std::void_t<
@@ -284,6 +354,11 @@ namespace nmtools::traits {
         >
     > : std::true_type {};
 
+    /**
+     * @brief helper variable template to check if T is resizeable
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     static constexpr auto is_resizeable_v = is_resizeable<T>::value;
 
@@ -297,6 +372,11 @@ namespace nmtools::traits {
     template <typename T, typename=void>
     struct has_tuple_size : std::false_type {};
 
+    /**
+     * @brief specialization of has_tuple_size when tuple_size<T> is well-formed
+     * 
+     * @tparam T type to check
+     */
     template <typename T>
     struct has_tuple_size<T, std::void_t<typename std::tuple_size<T>::type>> : std::true_type {};
 
@@ -304,7 +384,7 @@ namespace nmtools::traits {
      * @brief helper variable template to check if std::tuple_size<T> is valid
      * 
      * @todo test
-     * @tparam T 
+     * @tparam T type to check
      */
     template <typename T>
     inline constexpr bool has_tuple_size_v = has_tuple_size<T>::value;
