@@ -1,18 +1,18 @@
-#include "nmtools/linalg/matvec.hpp"
+#include "nmtools/blas/blas.hpp"
 #include "nmtools/utility/helper.hpp"
 #include <gtest/gtest.h>
 #include <array>
 #include <vector>
 
 namespace nmt = nmtools;
-namespace nla = nmt::linalg;
+namespace nla = nmt::blas;
 
 using std::array;
 using std::vector;
 
 using nmt::helper::isclose;
 
-TEST(linalg, zeros_like)
+TEST(blas, zeros_like)
 {
     auto a = array<double,3>{ 1, 2, 3 };
     auto v = vector<double>{ 1, 2, 3 };
@@ -124,7 +124,7 @@ TEST(linalg, zeros_like)
     }
 }
 
-TEST(linalg, clone)
+TEST(blas, clone)
 {
     constexpr auto a = array<double,3>{ 1, 2, 3 };
     auto v = vector<double>{ 1, 2, 3 };
@@ -216,7 +216,7 @@ TEST(linalg, clone)
     }
 }
 
-TEST(linalg, identity)
+TEST(blas, identity)
 {
     auto ma = array<array<double,3>,3> {
         array<double,3>{1, 2, 3},
@@ -291,7 +291,7 @@ TEST(linalg, identity)
     }
 }
 
-TEST(linalg, zeros)
+TEST(blas, zeros)
 {
     /* test 1D zeros with vector container */
     {
@@ -331,7 +331,7 @@ TEST(linalg, zeros)
     }
 }
 
-TEST(linalg, transpose)
+TEST(blas, transpose)
 {
     /* test transpose with vector container */
     {
@@ -367,9 +367,26 @@ TEST(linalg, transpose)
         static_assert(std::is_same_v<decltype(transposed),return_t>);
         EXPECT_TRUE(isclose(transposed,expected));
     }
+    /* test transpose with raw container */
+    {
+        using array_t = array<array<double,3>,2>;
+        using return_t = array<array<double,2>,3>;
+        double a[2][3] = {
+            {1,2,3},
+            {4,5,6}
+        };
+        auto transposed = nla::transpose(a);
+        auto expected = return_t{{
+            {1,4},
+            {2,5},
+            {3,6}
+        }};
+        static_assert(std::is_same_v<decltype(transposed),return_t>);
+        EXPECT_TRUE(isclose(transposed,expected));
+    }
 }
 
-TEST(linalg, mmmul)
+TEST(blas, mmmul)
 {
     /* test mmmul with array container */
     {
@@ -393,6 +410,27 @@ TEST(linalg, mmmul)
         }};
         static_assert(std::is_same_v<decltype(C),return_t>);
         EXPECT_TRUE(isclose(C,expected));
+    }
+    /* test mmmul with raw container */
+    {
+        using return_t = array<array<double,3>,3>;
+        constexpr double A[3][2] = {
+            {1,2},
+            {3,4},
+            {5,6}
+        };
+        constexpr double B[2][3] = {
+            {1,3,5},
+            {2,4,6}
+        };
+        constexpr auto C = nla::mmmul(A,B);
+        constexpr auto expected = return_t{{
+            {1+4,    3+8,  5+12},
+            {3+8,   9+16, 15+24},
+            {5+12, 15+24, 25+36},
+        }};
+        static_assert(std::is_same_v<decltype(C),const return_t>);
+        static_assert(isclose(C,expected));
     }
     /* test mmmul with vector container */
     {
@@ -444,7 +482,7 @@ TEST(linalg, mmmul)
     }
 }
 
-TEST(linalg, mvmul)
+TEST(blas, mvmul)
 {
     /* test mul with matrix-vector */
     {
@@ -458,9 +496,20 @@ TEST(linalg, mvmul)
         static_assert(std::is_same_v<decltype(ZTy),array<double,2>>);
         EXPECT_TRUE(isclose(ZTy,expected));
     }
+    {
+        constexpr double ayd[15] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+        constexpr double ZT[2][15] = {
+            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        };
+        constexpr auto ZTy = nla::mvmul(ZT,ayd);
+        constexpr auto expected = array<double,2>{15,15};
+        static_assert(std::is_same_v<decltype(ZTy),const array<double,2>>);
+        EXPECT_TRUE(isclose(ZTy,expected));
+    }
 }
 
-TEST(linalg, make_array)
+TEST(blas, make_array)
 {
     /* test make array with array container */
     {
@@ -482,7 +531,7 @@ TEST(linalg, make_array)
     }
 }
 
-TEST(linalg, ones_like)
+TEST(blas, ones_like)
 {
     /* test ones_like 1D with array container */
     {
@@ -514,9 +563,9 @@ TEST(linalg, ones_like)
     }
 }
 
-TEST(linalg, vvadd)
+TEST(blas, vvadd)
 {
-    using nla::detail::vvadd;
+    using nla::vvadd;
     {
         using vector_t = array<double,3>;
         constexpr auto v = vector_t{1., 2., 3.};
@@ -524,11 +573,26 @@ TEST(linalg, vvadd)
         constexpr auto expected = vector_t{2., 4., 6.};
         static_assert(isclose(r,expected));
     }
+    {
+        using vector_t = vector<double>;
+        auto v = vector_t{1., 2., 3.};
+        auto r = vvadd(v,v);
+        auto expected = vector_t{2., 4., 6.};
+        EXPECT_TRUE(isclose(r,expected));
+    }
+    {
+        using vector_t = array<double,3>;
+        constexpr double v[3] = {1., 2., 3.};
+        constexpr auto r = vvadd(v,v);
+        constexpr auto expected = vector_t{2., 4., 6.};
+        static_assert(std::is_same_v<decltype(r),const vector_t>);
+        static_assert(isclose(r,expected));
+    }
 }
 
-TEST(linalg, mmadd)
+TEST(blas, mmadd)
 {
-    using nla::detail::mmadd;
+    using nla::mmadd;
     {
         using vector_t = array<double,3>;
         using matrix_t = array<vector_t,3>;
@@ -550,11 +614,138 @@ TEST(linalg, mmadd)
         }};
         static_assert(isclose(r,expected));
     }
+    {
+        using vector_t = vector<double>;
+        using matrix_t = vector<vector_t>;
+        auto m1 = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        auto m2 = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        auto r = mmadd(m1,m2);
+        auto expected = matrix_t{{
+            {2., 2., 2.},
+            {2., 2., 2.},
+            {2., 2., 2.},
+        }};
+        EXPECT_TRUE(isclose(r,expected));
+    }
+    {
+        using vector_t = array<double,3>;
+        using matrix_t = array<vector_t,3>;
+        constexpr double m1[3][3] = {
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        };
+        constexpr double m2[3][3] = {
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        };
+        constexpr auto r = mmadd(m1,m2);
+        constexpr auto expected = matrix_t{{
+            {2., 2., 2.},
+            {2., 2., 2.},
+            {2., 2., 2.},
+        }};
+        static_assert(std::is_same_v<decltype(r),const matrix_t>);
+        static_assert(isclose(r,expected));
+    }
+}
+
+TEST(blas, vsmul)
+{
+    using nla::vsmul;
+    using vector_t = array<double,3>;
+    using matrix_t = array<vector_t,3>;
+    using scalar_t = double;
+
+    /* fixed */
+    {
+        constexpr auto v = vector_t{1., 2., 3.};
+        constexpr auto s = 3.;
+        constexpr auto r = vsmul(v,s);
+        constexpr auto e = vector_t{3, 6, 9};
+        static_assert(std::is_same_v<decltype(r),const vector_t>);
+        static_assert(isclose(r,e));
+    }
+    /* raw */
+    {
+        constexpr double v[3] = {1.,2.,3.};
+        constexpr auto s = 3.;
+        constexpr auto r = vsmul(v,s);
+        constexpr auto e = vector_t{3, 6, 9};
+        static_assert(std::is_same_v<decltype(r),const vector_t>);
+        static_assert(isclose(r,e));
+    }
+}
+
+TEST(blas, msmul)
+{
+    using nla::msmul;
+    {
+        using vector_t = array<double,3>;
+        using matrix_t = array<vector_t,3>;
+        constexpr auto m = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto s = 2.;
+        constexpr auto r = msmul(m,s);
+        constexpr auto expected = matrix_t{{
+            {2., 2., 2.},
+            {2., 2., 2.},
+            {2., 2., 2.},
+        }};
+        static_assert(isclose(r,expected));
+    }
+    {
+        using vector_t = vector<double>;
+        using matrix_t = vector<vector_t>;
+        auto m = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        auto s = 2.;
+        auto r = msmul(m,s);
+        auto expected = matrix_t{{
+            {2., 2., 2.},
+            {2., 2., 2.},
+            {2., 2., 2.},
+        }};
+        EXPECT_TRUE(isclose(r,expected));
+    }
+    {
+        using vector_t = array<double,3>;
+        using matrix_t = array<vector_t,3>;
+        constexpr double m[3][3] = {
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        };
+        constexpr auto s = 2.;
+        constexpr auto r = msmul(m,s);
+        constexpr auto expected = matrix_t{{
+            {2., 2., 2.},
+            {2., 2., 2.},
+            {2., 2., 2.},
+        }};
+        static_assert(std::is_same_v<decltype(r),const matrix_t>);
+        static_assert(isclose(r,expected));
+    }
 }
 
 namespace nlt =  nla::tag;
 
-TEST(linalg, get_tag)
+TEST(blas, get_tag)
 {
     using vector_t = array<double,3>;
     using matrix_t = array<vector_t,3>;
@@ -609,7 +800,7 @@ TEST(linalg, get_tag)
     static_assert(!std::is_same_v<vs_t,nlt::scalar_scalar_t>);
 }
 
-TEST(linalg, mul)
+TEST(blas, mul)
 {
     using nla::mul;
     using vector_t = array<double,3>;
@@ -685,7 +876,7 @@ TEST(linalg, mul)
     }
 }
 
-TEST(linalg, add)
+TEST(blas, add)
 {
     using nla::add;
     using vector_t = array<double,3>;
@@ -723,5 +914,177 @@ TEST(linalg, add)
             {2., 2., 2.},
         }};
         static_assert(isclose(r,expected));
+    }
+}
+
+TEST(blas, saxpy)
+{
+    using nla::saxpy;
+    using vector_t = array<double,3>;
+    using matrix_t = array<vector_t,3>;
+    using scalar_t = double;
+
+    using dvector_t = std::vector<double>;
+
+    /* compile-time version */
+    {
+        constexpr auto a = 2.;
+        constexpr auto v = vector_t{1., 2., 3.};
+        constexpr auto r = saxpy(a,v,v);
+        constexpr auto expected = vector_t{2.*1.+1., 2*2.+2., 2*3.+3};
+        /* return type of r should be the same as y type (vector_t), need const since this is computed at compile-time */
+        static_assert(std::is_same_v<decltype(r),const vector_t>);
+        static_assert(isclose(r,expected));
+    }
+    /* dynamic version */
+    {
+        auto a = 2.;
+        auto x = vector_t {1., 2., 3.};
+        auto y = dvector_t{1. ,2., 3.};
+        auto r = saxpy(a,x,y);
+        auto expected = vector_t{2.*1.+1., 2*2.+2., 2*3.+3};
+        /* return type of r should be the same as y type (vector_t) */
+        static_assert(std::is_same_v<decltype(r),dvector_t>);
+        EXPECT_TRUE(isclose(r,expected));
+    }
+}
+
+TEST(blas, gaxpy)
+{
+    using nla::gaxpy;
+    using vector_t = array<double,3>;
+    using matrix_t = array<vector_t,3>;
+    using scalar_t = double;
+
+    using dvector_t = std::vector<double>;
+
+    /* compile-time version */
+    {
+        constexpr auto a = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        constexpr auto x = vector_t{1., 2., 3.};
+        constexpr auto y = vector_t{1., 2., 3.};
+        constexpr auto r = gaxpy(a,x,y);
+        constexpr auto expected = vector_t{
+            1.*1.+1.*2.+1.*3.+1.,
+            1.*1.+1.*2.+1.*3.+2.,
+            1.*1.+1.*2.+1.*3.+3.,
+        };
+        /* return type of r should be the same as y type (vector_t), need const since this is computed at compile-time */
+        static_assert(std::is_same_v<decltype(r),const vector_t>);
+        static_assert(isclose(r,expected));
+    }
+    /* dynamic version */
+    {
+        constexpr auto a = matrix_t{{
+            {1., 1., 1.},
+            {1., 1., 1.},
+            {1., 1., 1.},
+        }};
+        auto x = vector_t {1., 2., 3.};
+        auto y = dvector_t{1. ,2., 3.};
+        auto r = gaxpy(a,x,y);
+        auto expected = vector_t{
+            1.*1.+1.*2.+1.*3.+1.,
+            1.*1.+1.*2.+1.*3.+2.,
+            1.*1.+1.*2.+1.*3.+3.,
+        };
+        /* return type of r should be the same as y type (vector_t) */
+        static_assert(std::is_same_v<decltype(r),dvector_t>);
+        EXPECT_TRUE(isclose(r,expected));
+    }
+}
+
+TEST(blas, dot)
+{
+    using vector_t = array<double,3>;
+    using matrix_t = array<vector_t,3>;
+    using scalar_t = double;
+    using dvector_t = vector<double>;
+    /* fixed-size runtime version */
+    {
+        auto a = vector_t{1.,2.,3.};
+        auto b = vector_t{3.,4.,5.};
+        auto r = nla::dot(a,b);
+        auto e = 1.*3 + 2*4 + 3*5;
+        EXPECT_TRUE(isclose(r,e));
+    }
+    /* compile-time */
+    {
+        constexpr auto a = vector_t{1.,2.,3.};
+        constexpr auto b = vector_t{3.,4.,5.};
+        constexpr auto r = nla::dot(a,b);
+        constexpr auto e = 1.*3 + 2*4 + 3*5;
+        static_assert(isclose(r,e));
+    }
+    /* dynamic-size runtime */
+    {
+        auto a = dvector_t{1.,2.,3.};
+        auto b = dvector_t{3.,4.,5.};
+        auto r = nla::dot(a,b);
+        auto e = 1.*3 + 2*4 + 3*5;
+        EXPECT_TRUE(isclose(r,e));
+    }
+}
+
+TEST(blas, outer)
+{
+    using vector_t = array<double,3>;
+    using matrix_t = array<vector_t,3>;
+    using scalar_t = double;
+    using dvector_t = vector<double>;
+    /* fixed-size runtime version */
+    {
+        auto a = vector_t{1.,2.,3.};
+        auto b = vector_t{3.,4.,5.};
+        auto r = nla::outer(a,b);
+        auto e = matrix_t{{
+            {1*3, 1*4, 1*5},
+            {2*3, 2*4, 2*5},
+            {3*3, 3*4, 3*5},
+        }};
+        static_assert(std::is_same_v<decltype(r),matrix_t>);
+        EXPECT_TRUE(isclose(r,e));
+    }
+    /* compile-time */
+    {
+        constexpr auto a = vector_t{1.,2.,3.};
+        constexpr auto b = vector_t{3.,4.,5.};
+        constexpr auto r = nla::outer(a,b);
+        constexpr auto e = matrix_t{{
+            {1*3, 1*4, 1*5},
+            {2*3, 2*4, 2*5},
+            {3*3, 3*4, 3*5},
+        }};
+        static_assert(std::is_same_v<decltype(r),const matrix_t>);
+        static_assert(isclose(r,e));
+    }
+    /* dynamic-size runtime */
+    {
+        auto a = dvector_t{1.,2.,3.};
+        auto b = dvector_t{3.,4.,5.};
+        auto r = nla::outer(a,b);
+        auto e = matrix_t{{
+            {1*3, 1*4, 1*5},
+            {2*3, 2*4, 2*5},
+            {3*3, 3*4, 3*5},
+        }};
+        EXPECT_TRUE(isclose(r,e));
+    }
+    /* mix vector-array */
+    {
+        auto a = dvector_t{1.,2.,3.};
+        auto b = vector_t{3.,4.,5.};
+        auto r = nla::outer(a,b);
+        auto e = matrix_t{{
+            {1*3, 1*4, 1*5},
+            {2*3, 2*4, 2*5},
+            {3*3, 3*4, 3*5},
+        }};
+        static_assert(std::is_same_v<decltype(r),std::vector<std::array<double,3>>>);
+        EXPECT_TRUE(isclose(r,e));
     }
 }

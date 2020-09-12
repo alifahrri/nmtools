@@ -363,6 +363,34 @@ namespace nmtools::traits {
     static constexpr auto is_resizeable_v = is_resizeable<T>::value;
 
     /**
+     * @brief check if T can be resized with 2 arguments, e.g. declval<T>().resize(i,i)
+     * 
+     * @tparam T type to check
+     * @tparam void 
+     */
+    template <typename T, typename = void>
+    struct is_resizeable2d : std::false_type {};
+
+    template <typename T>
+    struct is_resizeable2d<T, 
+        std::void_t<
+            disable_if_has_size_type_t<T>,
+            decltype(declval<T>().resize(declval<size_t>(),declval<size_t>()))
+        >
+    > : true_type {};
+
+    template <typename T>
+    struct is_resizeable2d<T, 
+        std::void_t<
+            enable_if_has_size_type_t<T>,
+            decltype(declval<T>().resize(declval<typename T::size_type>(),declval<typename T::size_type>()))
+        >
+    > : true_type {};
+
+    template <typename T>
+    static constexpr auto is_resizeable2d_v = is_resizeable2d<T>::value;
+
+    /**
      * @brief check if std::tuple_size<T> is valid for T
      * should be true for std::array, std::tuple, std::pair
      * 
@@ -388,37 +416,6 @@ namespace nmtools::traits {
      */
     template <typename T>
     inline constexpr bool has_tuple_size_v = has_tuple_size<T>::value;
-
-    /**
-     * @brief get the velue type of container T via decltype, has void member type if failed
-     * - using type = decltype(std::declval<T>()[0]); 
-     * 
-     * @tparam T type to check
-     * @tparam typename=void 
-     * @todo move to meta
-     */
-    template <typename T, typename=void>
-    struct get_container_value_type { using type = void; };
-
-    /**
-     * @brief get the velue type of container T via decltype, has void member type if failed
-     * 
-     * @tparam T type to check
-     * @todo move to meta
-     */
-    template <typename T>
-    struct get_container_value_type<T,std::void_t<decltype(std::declval<T>()[0])>> 
-    { 
-        using type = decltype(std::declval<T>()[0]);
-    };
-
-    /**
-     * @brief helper alias template to get the value type of container T
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    using get_container_value_type_t = typename get_container_value_type<T>::type;
 
     /**
      * @brief helper alias template combining remove_cv and remove_reference
@@ -474,6 +471,228 @@ namespace nmtools::traits {
     template <template<typename...> typename T, typename U, typename ...Args>
     struct is_template_instantiable<T,T<U,Args...>> : std::true_type {};
 
+    /**
+     * @brief check if type T has operator at with size_type as single argument.
+     * 
+     * @tparam T type to check.
+     * @tparam size_type argument type.
+     * @tparam typename=void 
+     */
+    template <typename T, typename size_type, typename=void>
+    struct has_at : false_type {};
+
+    /**
+     * @brief specialization of has_at for true case.
+     * Enabled if T has operator at with size_type as single argument,
+     * e.g. declval<T>().at(i), with i of size_type, is well-formed.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    struct has_at<T,size_type,
+        void_t<decltype(declval<T>().at(declval<size_type>()))>
+    > : true_type {};
+
+    /**
+     * @brief helper variable template for has_at
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    inline constexpr bool has_at_v = has_at<T,size_type>::value;
+
+    /**
+     * @brief check if T has square bracket operator ([]) with size_type as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     * @tparam typename=void 
+     */
+    template <typename T, typename size_type, typename=void>
+    struct has_square_bracket : false_type {};
+
+    /**
+     * @brief specialization of has_square_bracket for true case.
+     * Enabled if T has square bracket operator with size_type as argument,
+     * e.g. declval<T>()[i], with i of type size_type, is well-formed.
+     * 
+     * @tparam T 
+     * @tparam size_type 
+     */
+    template <typename T, typename size_type>
+    struct has_square_bracket<T,size_type,
+        void_t<decltype(declval<T>()[declval<size_type>()])>
+    > : true_type {};
+
+    /**
+     * @brief helper variable template for has_square_bracket
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    inline constexpr bool has_square_bracket_v = has_square_bracket<T,size_type>::value;
+
+    /**
+     * @brief check if T has bracket operator (()) with size_type as argument
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     * @tparam typename=void 
+     */
+    template <typename T, typename size_type, typename=void>
+    struct has_bracket : false_type {};
+
+    /**
+     * @brief specialization of has_bracket for true case.
+     * Enabled if T has bracket operator with size_type as argument,
+     * e.g. declval<T>()(i), with i of type size_type, is well-formed.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    struct has_bracket<T,size_type,
+        void_t<decltype(declval<T>()(declval<size_type>()))>
+    > : true_type {};
+
+    /**
+     * @brief helper variable template for has_bracket.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    inline constexpr bool has_bracket_v = has_bracket<T,size_type>::value;
+
+    /**
+     * @brief check if type T has operator at with size_type as single argument.
+     * 
+     * @tparam T type to check.
+     * @tparam size_type argument type.
+     * @tparam typename=void 
+     */
+    template <typename T, typename size_type, typename=void>
+    struct has_at2d : false_type {};
+
+    /**
+     * @brief specialization of has_at for true case.
+     * Enabled if T has operator at with size_type as single argument,
+     * e.g. declval<T>().at(i,i), with i of size_type, is well-formed.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    struct has_at2d<T,size_type,
+        void_t<decltype(declval<T>().at(declval<size_type>(),declval<size_type>()))>
+    > : true_type {};
+
+    /**
+     * @brief helper variable template for has_at2d
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    inline constexpr bool has_at2d_v = has_at2d<T,size_type>::value;
+
+    /**
+     * @brief check if T has square bracket operator ([]) with size_type as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     * @tparam typename=void 
+     */
+    template <typename T, typename size_type, typename=void>
+    struct has_square_bracket2d : false_type {};
+
+    /**
+     * @brief specialization of has_square_bracket2d for true case.
+     * Enabled if T has square bracket operator with size_type as argument,
+     * e.g. declval<T>()[i,i], with i of type size_type, is well-formed.
+     * 
+     * @tparam T 
+     * @tparam size_type 
+     */
+    template <typename T, typename size_type>
+    struct has_square_bracket2d<T,size_type,
+        /* note: use .operator[](i,i) so that 
+            it doesn't implicitly call [] with comma operator .operator[](operator,(i,i))*/
+        void_t<decltype(declval<T>().operator[](declval<size_type>(),declval<size_type>()))>
+    > : true_type {};
+
+    /**
+     * @brief helper variable template for has_square_bracket2d
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    inline constexpr bool has_square_bracket2d_v = has_square_bracket2d<T,size_type>::value;
+
+    /**
+     * @brief check if T has bracket operator (()) with size_type as argument
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     * @tparam typename=void 
+     */
+    template <typename T, typename size_type, typename=void>
+    struct has_bracket2d : false_type {};
+
+    /**
+     * @brief specialization of has_bracket2d for true case.
+     * Enabled if T has bracket operator with size_type as argument,
+     * e.g. declval<T>()(i,i), with i of type size_type, is well-formed.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    struct has_bracket2d<T,size_type,
+        void_t<decltype(declval<T>()(declval<size_type>(),declval<size_type>()))>
+    > : true_type {};
+
+    /**
+     * @brief helper variable template for has_bracket2d.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    inline constexpr bool has_bracket2d_v = has_bracket2d<T,size_type>::value;
+
+    /**
+     * @brief check if T is nested 2d array,
+     * default is false unless specialization is provided.
+     * 
+     * @tparam T 
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct is_nested_array2d : false_type {};
+
+    /**
+     * @brief specialization of is_nested_array2d when
+     * expression T{}[0][0] is well-formed;
+     * 
+     * @tparam T type to check.
+     */
+    template <typename T>
+    struct is_nested_array2d<T,
+        void_t<decltype(std::declval<T>()[0][0])>
+    > : true_type {};
+
+    /**
+     * @brief helper variable template to check if T is_nested_array2d.
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    inline constexpr bool is_nested_array2d_v = is_nested_array2d<T>::value;
 } // namespace nmtools::traits
 
 #endif // NMTOOLS_TRAITS_HPP

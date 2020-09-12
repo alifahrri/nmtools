@@ -2,11 +2,11 @@
 #define NMTOOLS_SPLINE_HPP
 
 #include "nmtools/linalg/elimination.hpp"
-#include "nmtools/linalg/matvec.hpp"
 #include "nmtools/utility/tag.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/blas.hpp"
 
 #include <cassert>
 #include <algorithm>
@@ -342,7 +342,7 @@ namespace nmtools::curvefit
             );
 
             using traits::remove_cvref_t;
-            using traits::get_container_value_type_t;
+            using meta::get_container_value_type_t;
 
 
 

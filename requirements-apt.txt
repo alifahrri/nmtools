@@ -9,3 +9,4 @@ libblas-dev
 liblapack-dev
 lcov
 curl
+libboost-dev

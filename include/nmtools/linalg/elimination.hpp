@@ -2,11 +2,11 @@
 #define NMTOOLS_LINALG_ELIMINATION_HPP
 
 #include "nmtools/utility/helper.hpp"
-#include "nmtools/linalg/matvec.hpp"
 #include "nmtools/utility/tag.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/blas.hpp"
 
 #include <map>
 #include <tuple>
@@ -14,6 +14,9 @@
 #include <unordered_map>
 
 namespace nmtools::linalg {
+
+    /* reduce verbosity for nmtools::blas functions */
+    using namespace ::nmtools::blas;
 
     using std::size;
     using helper::log;
@@ -24,8 +27,8 @@ namespace nmtools::linalg {
     using std::is_base_of_v;
     using std::common_type_t;
 
+    using meta::get_container_value_type_t;
     using traits::remove_cvref_t;
-    using traits::get_container_value_type_t;
     using traits::is_multiplicative_v;
     using traits::is_array1d_v;
     /* make sure use common tag namespace */

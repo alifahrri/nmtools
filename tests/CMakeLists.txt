@@ -26,7 +26,10 @@ add_executable(${PROJECT_NAME} tests.cpp
     ode/runge_kutta.cpp
     linalg/elimination.cpp
     linalg/decomposition.cpp
-    linalg/matvec.cpp
+    blas/blas.cpp
+    array/dynamic.cpp
+    array/fixed.cpp
+    array/utility.cpp
 )
 
 apply_nmtools(

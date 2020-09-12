@@ -136,7 +136,7 @@ namespace nmtools::linalg
     }
 
     template <typename T>
-    using get_value_type_t = traits::get_container_value_type_t<T>;
+    using get_value_type_t = meta::get_container_value_type_t<T>;
 
     /**
      * @brief perform cholesky decomposition on symmetric matrix

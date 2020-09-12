@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_UNCONSTRAINED_OPTIMIZATION_HPP
 #define NMTOOLS_UNCONSTRAINED_OPTIMIZATION_HPP
 
-#include "nmtools/linalg/matvec.hpp"
+#include "nmtools/blas/blas.hpp"
 #include "nmtools/utility.hpp"
 
 #include <cstdio>
@@ -271,9 +271,9 @@ namespace nmtools {
         template <typename F, typename DF, typename X, typename D, typename alpha_t, typename rho_t, typename c_t>
         constexpr auto backtracking_line_search(F &&f, DF &&g, X &&x_k, D &&p_k, alpha_t alpha, rho_t rho, c_t c, size_t max_iter=10)
         {
-            using linalg::dot;
-            using linalg::mul;
-            using linalg::add;
+            using blas::dot;
+            using blas::mul;
+            using blas::add;
             using direction_t = decltype(mul(p_k,alpha));
             /* make sure alpha_t, beta_t, tau_t have common type */
             using common_t = std::common_type_t<alpha_t,rho_t,c_t>;
