@@ -12,6 +12,9 @@ message(STATUS "nmtools v${${PROJECT_NAME}_VERSION}")
 
 set(NMTOOLS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(NMTOOLS_HEADERS
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/array/fixed.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/array/utility.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/blas/blas.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/regression.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/sinusoid.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/interpolation.hpp
@@ -19,7 +22,6 @@ set(NMTOOLS_HEADERS
     ${NMTOOLS_INCLUDE_DIR}/nmtools/integration/trapezoidal.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/decomposition.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/elimination.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/matvec.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/ode/euler.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/runge_kutta.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/optimization/unconstrained.hpp
@@ -28,6 +30,7 @@ set(NMTOOLS_HEADERS
     ${NMTOOLS_INCLUDE_DIR}/nmtools/taylor/taylor.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/helper.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/tag.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/blas.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/differentiation.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/integration.hpp
