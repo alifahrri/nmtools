@@ -7,6 +7,9 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 endif()
 
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
 include(nmtools)
 
 include_directories(
@@ -50,6 +53,16 @@ add_executable(
 
 apply_nmtools(
     TARGET ${PROJECT_NAME}-linalg
+    COMPILE_OPTIONS -O3 -march=native
+)
+
+add_executable(
+    ${PROJECT_NAME}-blas
+    src/blas.cpp
+)
+
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-blas
     COMPILE_OPTIONS -O3 -march=native
 )
 
