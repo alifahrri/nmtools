@@ -98,8 +98,8 @@ int main()
 
         lu_decomposition_benchmark(&b, "lu_decomposition_array_double", Ad3x3);
         lu_decomposition_benchmark(&b, "lu_decomposition_array_float", Af3x3);
-        lu_decomposition_benchmark(&b, "lu_decomposition_array_double_simd", Ad3x3_simd);
-        lu_decomposition_benchmark(&b, "lu_decomposition_array_float_simd", Af3x3_simd);
+        // lu_decomposition_benchmark(&b, "lu_decomposition_array_double_simd", Ad3x3_simd);
+        // lu_decomposition_benchmark(&b, "lu_decomposition_array_float_simd", Af3x3_simd);
         lu_decomposition_benchmark(&b, "lu_decomposition_vector_double", Vd3x3);
         lu_decomposition_benchmark(&b, "lu_decomposition_vector_float", Vf3x3);
         gen("lu_decomposition_3x3.html", ankerl::nanobench::templates::htmlBoxplot(), b);
@@ -115,8 +115,8 @@ int main()
 
         inverse_benchmark(&b, "inverse_array_double", Ad3x3);
         inverse_benchmark(&b, "inverse_array_float", Af3x3);
-        inverse_benchmark(&b, "inverse_array_double_simd", Ad3x3_simd);
-        inverse_benchmark(&b, "inverse_array_float_simd", Af3x3_simd);
+        // inverse_benchmark(&b, "inverse_array_double_simd", Ad3x3_simd);
+        // inverse_benchmark(&b, "inverse_array_float_simd", Af3x3_simd);
         inverse_benchmark(&b, "inverse_vector_double", Vd3x3);
         inverse_benchmark(&b, "inverse_vector_float", Vf3x3);
         gen("inverse_3x3.html", ankerl::nanobench::templates::htmlBoxplot(), b);
@@ -180,8 +180,8 @@ int main()
 
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double", Ad3x3);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float", Af3x3);
-        cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double_simd", Ad3x3_simd);
-        cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float_simd", Af3x3_simd);
+        // cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double_simd", Ad3x3_simd);
+        // cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float_simd", Af3x3_simd);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_valarray_double", Ad3x3_val);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_valarray_float", Af3x3_val);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_vector_double", Vd3x3);
@@ -267,8 +267,8 @@ int main()
 
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double", Ad4x4);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float", Af4x4);
-        cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double_simd", Ad4x4_simd);
-        cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float_simd", Af4x4_simd);
+        // cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double_simd", Ad4x4_simd);
+        // cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float_simd", Af4x4_simd);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double_xsimd", Ad4x4_xsimd);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float_xsimd", Af4x4_xsimd);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_vector_double", Vd4x4);
@@ -345,8 +345,8 @@ int main()
 
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double", Ad5x5);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float", Af5x5);
-        cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double_simd", Ad5x5_simd);
-        cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float_simd", Af5x5_simd);
+        // cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_double_simd", Ad5x5_simd);
+        // cholesky_decomposition_benchmark(&b, "cholesky_decomposition_array_float_simd", Af5x5_simd);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_vector_double", Vd5x5);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_vector_float", Vf5x5);
         cholesky_decomposition_benchmark(&b, "cholesky_decomposition_raw_double", Rd5x5);
@@ -417,8 +417,8 @@ int main()
 
         tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double", ae_d4, af_d4, ag_d4, ab_d4);
         tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double", ae_f4, af_f4, ag_f4, ab_f4);
-        tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_simd", ae_d4_simd, af_d4_simd, ag_d4_simd, ab_d4_simd);
-        tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_simd", ae_f4_simd, af_f4_simd, ag_f4_simd, ab_f4_simd);
+        // tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_simd", ae_d4_simd, af_d4_simd, ag_d4_simd, ab_d4_simd);
+        // tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_simd", ae_f4_simd, af_f4_simd, ag_f4_simd, ab_f4_simd);
         tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_xsimd", ae_d4_xsimd, af_d4_xsimd, ag_d4_xsimd, ab_d4_xsimd);
         tridiagonal_elimination_benchmark(&b, "tridiagonal_array_double_xsimd", ae_f4_xsimd, af_f4_xsimd, ag_f4_xsimd, ab_f4_xsimd);
         tridiagonal_elimination_benchmark(&b, "tridiagonal_vector_double", ve_d4, vf_d4, vg_d4, vb_d4);

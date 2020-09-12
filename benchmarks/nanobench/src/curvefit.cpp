@@ -217,8 +217,8 @@ int main() {
 
             cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_double", axd, ayd);
             cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_float",  axf, ayf);
-            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_double_simd", axd_simd, ayd_simd);
-            cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_float_simd",  axf_simd, ayf_simd);
+            // cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_double_simd", axd_simd, ayd_simd);
+            // cubic_spline_construct_benchmark(&b, "cubic_spline_construct_array_float_simd",  axf_simd, ayf_simd);
             cubic_spline_construct_benchmark(&b, "cubic_spline_construct_vector_double", vxd, vyd);
             cubic_spline_construct_benchmark(&b, "cubic_spline_construct_vector_float",  vxf, vyf);
             cubic_spline_construct_benchmark(&b, "cubic_spline_construct_valarray_double", vaxd, vayd);
@@ -236,8 +236,8 @@ int main() {
             auto vaff = cvt::cubic_spline(vaxf, vayf);
             auto rfd = cvt::cubic_spline(rxd, ryd);
             auto rff = cvt::cubic_spline(rxf, ryf);
-            auto afd_simd = cvt::cubic_spline(axd_simd, ayd_simd);
-            auto aff_simd = cvt::cubic_spline(axf_simd, ayf_simd);
+            // auto afd_simd = cvt::cubic_spline(axd_simd, ayd_simd);
+            // auto aff_simd = cvt::cubic_spline(axf_simd, ayf_simd);
 
             ankerl::nanobench::Bench b;
             b.title("Cubic Spline Eval (4 intv)")
