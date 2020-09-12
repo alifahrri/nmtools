@@ -1,13 +1,13 @@
 #ifndef NMTOOLS_META_HPP
 #define NMTOOLS_META_HPP
 
+#include "nmtools/traits.hpp"
 #include <type_traits>
 #include <cassert>
 #include <iterator>
 #include <cmath>
 #include <tuple>
 #include <array>
-#include "nmtools/traits.hpp"
 
 namespace nmtools::meta
 {
@@ -218,12 +218,18 @@ namespace nmtools::meta
      * variadic template parameter Origin... & Substitution... should be type parameter. 
      * For non-type template parameter, only std::array is supported for now
      * 
-     * @tparam T 
+     * @tparam T class which its template parameter to be replaced
      * @tparam  
      */
     template <typename T, typename...>
     struct replace_template_parameter 
     {
+        /**
+         * @brief define resulting type as void, so that
+         * replace_template_parameter_t still well-formed
+         * while error handling can be deferred to the caller
+         * hence gives much more context
+         */
         using type = void;
     };
 
@@ -237,6 +243,12 @@ namespace nmtools::meta
     template <template<typename...> typename T, typename ...Subs, typename ...Origin>
     struct replace_template_parameter<T<Origin...>,Subs...>
     {
+        /**
+         * @brief this assumes that the number of given substitute type, sizeof...(Subs),
+         * is sufficient to instantiate T<Subs...>. Consider a case where this requirement
+         * may not be met, we may need to substitute the missing template parameter from Subs
+         * using appropriate type from Origin....
+         */
         using type = T<Subs...>;
     };
 
@@ -266,6 +278,47 @@ namespace nmtools::meta
     template <typename T, typename...Args>
     using replace_template_parameter_t = typename replace_template_parameter<T,Args...>::type;
 
+    template <typename T, typename=void>
+    struct replace_template_parameter_from_typelist
+    {
+        /**
+         * @brief define resulting type as void, so that
+         * replace_template_parameter_t still well-formed
+         * while error handling can be deferred to the caller
+         * hence gives much more context
+         */
+        using type = void;
+    };
+
+    /**
+     * @brief replace template parameter of class T with parameter(s) packed as tuple.
+     *
+     * @example 
+     * @tparam T template template parameter, deduced automatically
+     * @tparam Origin template parameter(s) of T, deduced automatically
+     * @tparam Subs substitute for Origin, deduced automatically
+     */
+    template <template <typename...> typename T, typename...Origin, typename...Subs>
+    struct replace_template_parameter_from_typelist<T<Origin...>,std::tuple<Subs...>>
+    {
+        /**
+         * @brief call replace_template_parameter here so that any existing specialization
+         * can be used, e.g. specialization of std::array which unpacks integral_constant<...>
+         * to size_t as template parameter.
+         * 
+         */
+        using type = replace_template_parameter_t<T<Origin...>,Subs...>;
+    };
+
+    /**
+     * @brief helper alias template for replace_template_parameter_from_typelist.
+     * 
+     * @tparam T class which its template parameter(s) are to be replaced.
+     * @tparam TypeList type list, e.g. std::tuple<...>, which holds types for substitution.
+     */
+    template <typename T, typename TypeList>
+    using replace_template_parameter_from_typelist_t = typename replace_template_parameter_from_typelist<T,TypeList>::type;
+
     /**
      * @brief helper alias template to replace tparam
      * 
@@ -282,11 +335,81 @@ namespace nmtools::meta
     */
 
     /**
+     * @brief metafunction to extract template paramters.
+     * Given type T, return its template parameters as tuple,
+     * e.g. given T<Params...>, return std::tuple<Params...>{}.
+     * 
+     * @tparam T type which its template parameters are to be extracted
+     * @tparam Params template parameters of T, automatically deduced.
+     * @return constexpr auto tuple of template parameters of T.
+     */
+    template <template<typename...> typename T, typename...Params>
+    constexpr auto extract_template_parameters(const T<Params...>)
+    {
+        /* TODO: use consteval instead */
+        /* template parameter packs must be the last template parameter,
+            can't have typename=void at the end, deduce using function instead */
+        /* assuming each type from Rest... can be instantiated this way */
+        return std::tuple<Params...>{};
+    }
+
+    /**
+     * @brief specialization of extract_template_parameters
+     * for std::array since it accepts template parameters that is not a type
+     * (size_t N as its element size), N will be packed as integral_constant
+     * so that its value can be treated as type.
+     * 
+     * @tparam T value_type of std::array, automatically deduced.
+     * @tparam N element size of std::array, automatically deduced.
+     * @return constexpr auto tuple<T,integral_constant<size_t,N>>;
+     */
+    template <typename T, size_t N>
+    constexpr auto extract_template_parameters(const std::array<T,N>)
+    {
+        return std::tuple<T,std::integral_constant<size_t,N>>{};
+    }
+
+    /**
+     * @brief helper alias template for extract_template_parameters.
+     * 
+     * @tparam T type which its template parameters are to be extracted.
+     */
+    template <typename T>
+    using extract_template_parameters_t = decltype(extract_template_parameters(std::declval<T>()));
+
+    template <typename T>
+    struct pop_first
+    {
+        /**
+        * @brief pop first type of std::tuple
+        * 
+        * @tparam First 
+        * @tparam Rest 
+        * @return constexpr auto 
+        */
+        template <typename First, typename ...Rest>
+        static constexpr auto _pop_first(const std::tuple<First,Rest...>)
+        {
+            /* NOTE: implemented as function for easy tparam extract */
+            return std::tuple<First,std::tuple<Rest...>>{};
+        }
+
+        using pair  = decltype(_pop_first(std::declval<T>()));
+        /* first type from pair */
+        using first = std::tuple_element_t<0,pair>;
+        using type  = std::tuple_element_t<1,pair>;
+    };
+
+    template <typename T>
+    using pop_first_t = typename pop_first<T>::type;
+
+    /**
      * @brief metafunction to select resizeable matrix type
      * 
      * @tparam A 
      * @tparam B 
      * @tparam typename=void 
+     * @TODO: rename this to select_resizeable_container to avoid confusion
      */
     template <typename A, typename B, typename=void>
     struct select_resizeable_mat {};
@@ -297,6 +420,7 @@ namespace nmtools::meta
      * 
      * @tparam A 
      * @tparam B 
+     * @TODO: rename this to select_resizeable_container to avoid confusion
      */
     template <typename A, typename B>
     struct select_resizeable_mat<A,B,
@@ -312,6 +436,7 @@ namespace nmtools::meta
      * 
      * @tparam A 
      * @tparam B 
+     * @TODO: rename this to select_resizeable_container to avoid confusion
      */
     template <typename A, typename B>
     struct select_resizeable_mat<A,B,
@@ -327,6 +452,7 @@ namespace nmtools::meta
      * 
      * @tparam A 
      * @tparam B 
+     * @TODO: rename this to select_resizeable_container to avoid confusion
      */
     template <typename A, typename B>
     struct select_resizeable_mat<A,B,
@@ -341,10 +467,93 @@ namespace nmtools::meta
      * 
      * @tparam A 
      * @tparam B 
+     * @TODO: rename this to select_resizeable_container to avoid confusion
      */
     template <typename A, typename B>
     using select_resizeable_mat_t = typename select_resizeable_mat<A,B>::type;
 
+    template <typename A, typename B, typename=void>
+    struct select_resizeable_matrix {};
+
+    template <typename A, typename B>
+    struct select_resizeable_matrix<A,B,
+        std::enable_if_t<
+            /* BOTH A and B should be array2d */
+            traits::is_array2d_v<A> && traits::is_array2d_v<B> &&
+            traits::is_resizeable_v<A> && traits::is_resizeable_v<B>
+        >
+    >{
+        /* when both A and B is resizeable, select A */
+        using type = A;
+    };
+
+    template <typename A, typename B>
+    struct select_resizeable_matrix<A,B,
+        std::enable_if_t<
+            /* BOTH A and B should be array2d */
+            traits::is_array2d_v<A> && traits::is_array2d_v<B> &&
+            !traits::is_resizeable_v<A> && traits::is_resizeable_v<B>
+        >
+    >{
+        using type = B;
+    };
+
+    template <typename A, typename B>
+    struct select_resizeable_matrix<A,B,
+        std::enable_if_t<
+            /* BOTH A and B should be array2d */
+            traits::is_array2d_v<A> && traits::is_array2d_v<B> &&
+            traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>
+        >
+    >{
+        using type = A;
+    };
+
+    template <typename A, typename B>
+    using select_resizeable_matrix_t = typename select_resizeable_matrix<A,B>::type;
+
+    /* select resizeable vector */
+
+    template <typename A, typename B, typename=void>
+    struct select_resizeable_vector {};
+
+    template <typename A, typename B>
+    struct select_resizeable_vector<A,B,
+        std::enable_if_t<
+            /* BOTH A and B should be array1d */
+            traits::is_array1d_v<A> && traits::is_array1d_v<B> &&
+            traits::is_resizeable_v<A> && traits::is_resizeable_v<B>
+        >
+    >{
+        /* when both A and B is resizeable, select A */
+        using type = A;
+    };
+
+    template <typename A, typename B>
+    struct select_resizeable_vector<A,B,
+        std::enable_if_t<
+            /* BOTH A and B should be array1d */
+            traits::is_array1d_v<A> && traits::is_array1d_v<B> &&
+            !traits::is_resizeable_v<A> && traits::is_resizeable_v<B>
+        >
+    >{
+        using type = B;
+    };
+
+    template <typename A, typename B>
+    struct select_resizeable_vector<A,B,
+        std::enable_if_t<
+            /* BOTH A and B should be array1d */
+            traits::is_array1d_v<A> && traits::is_array1d_v<B> &&
+            traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>
+        >
+    >{
+        using type = A;
+    };
+
+    template <typename A, typename B>
+    using select_resizeable_vector_t = typename select_resizeable_vector<A,B>::type;
+    
     /**
      * @brief helper alias template to add specialization 
      * (which check if T is rezieable) to overload set
@@ -462,6 +671,262 @@ namespace nmtools::meta
 
     template <typename A, typename B, typename C>
     using select_fixed_t = typename select_fixed<A,B,C>::type;
+
+    /**
+     * @brief get the velue type of container T via decltype, has void member type if failed
+     * - using type = decltype(std::declval<T>()[0]); 
+     * 
+     * @tparam T type to check
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct get_container_value_type { using type = void; };
+
+    /**
+     * @brief get the velue type of container T via decltype, has void member type if failed
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct get_container_value_type<T,std::void_t<decltype(std::declval<T>()[0])>> 
+    { 
+        /* TODO: consider to use nmtools::at from nmtools/array/utility.hpp for generic case */
+        /* TODO: use std::remove_cvref_t when possible */
+        using type = traits::remove_cvref_t<decltype(std::declval<T>()[0])>;
+    };
+
+    /**
+     * @brief get the velue type of container T via decltype, has void member type if failed
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct get_container_value_type<T,std::void_t<decltype(std::declval<T>()(0))>>
+    { 
+        /* TODO: consider to use nmtools::at from nmtools/array/utility.hpp for generic case */
+        /* TODO: use std::remove_cvref_t when possible */
+        using type = traits::remove_cvref_t<decltype(std::declval<T>()(0))>;
+    };
+
+    /**
+     * @brief helper alias template to get the value type of container T
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    using get_container_value_type_t = typename get_container_value_type<T>::type;
+
+    /**
+     * @brief specialization of enable_if, to improve readibility,
+     * for cases where T::value_type is well-formed.
+     * used by get_matrix_value_type
+     * 
+     * @tparam T type to test
+     */
+    template <typename T>
+    using enable_if_has_value_type = std::enable_if<traits::has_value_type_v<T>>;
+
+    /**
+     * @brief helper alias template for enable_if_has_value_type.
+     * 
+     * @tparam T type to test
+     */
+    template <typename T>
+    using enable_if_has_value_type_t = typename enable_if_has_value_type<T>::type;
+
+    /**
+     * @brief specialization of enable_if to disable nested 2d array specialization.
+     * used by get_matrix_value_type.
+     * 
+     * @tparam T type to test
+     */
+    template <typename T>
+    using disable_if_nested_array2d = std::enable_if<!traits::is_nested_array2d_v<T>>;
+
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    using disable_if_nested_array2d_t = typename disable_if_nested_array2d<T>::type;
+
+    /**
+     * @brief metafunction to get matrix element type, has public
+     * member type `type` (T::value_type or deduced from experession)
+     * 
+     * @tparam T 
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct get_matrix_value_type
+    {
+        /* TODO: consider to set value_type to void 
+            to allow easier to set error message with context */
+        /* assuming nested vector */
+        /* TODO: consider to use nmtools::at from nmtools/array/utility.hpp for generic case */
+        /* TODO: use std::remove_cvref_t when possible */
+        using type = traits::remove_cvref_t<decltype(std::declval<T>()[0][0])>;
+    };
+
+    /**
+     * @brief specialization of metafunction get_matrix_value_type
+     * when T actually has public member type value_type
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct get_matrix_value_type<T,
+        /* has value type but not nested array (which also has value_type) */
+        std::void_t<enable_if_has_value_type_t<T>,disable_if_nested_array2d_t<T>>
+    >
+    {
+        using type = typename T::value_type;
+    };
+    
+    /**
+     * @brief helper alias template for metafunction get_matrix_value_type
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    using get_matrix_value_type_t = typename get_matrix_value_type<T>::type;
+
+    /**
+     * @brief alias for get_container_value_type
+     * 
+     * @tparam T type to test
+     */
+    template <typename T>
+    struct get_vector_value_type : get_container_value_type<T> {};
+
+    /**
+     * @brief helper alias template for get_vector_value_type
+     * 
+     * @tparam T type to test
+     */
+    template <typename T>
+    using get_vector_value_type_t = typename get_vector_value_type<T>::type;
+
+    /**
+     * @brief metafunction to make vector with new size N from original type T
+     * default implementation will try to replace template parameter of T with new size,
+     * may be specialized with custom type implementation.
+     * 
+     * @tparam T original fixed-size vector with fixed compile time size
+     * @tparam N new desired size
+     * @tparam typename=void 
+     */
+    template <typename T, size_t N, typename=void>
+    struct make_zeros_vector
+    {
+        using value_t   = traits::remove_cvref_t<typename T::value_type>;
+        using new_size  = std::integral_constant<size_t,N>;
+        using new_array = replace_template_parameter<T,value_t,new_size>;
+
+        /* final type */
+        using type = typename new_array::type;
+    };
+
+    /**
+     * @brief helper alias template to make vector with new size N from original type T
+     * 
+     * @tparam T original fixed-size vector with fixed compile time size
+     * @tparam N new desired size
+     */
+    template <typename T, size_t N>
+    using make_zeros_vector_t = typename make_zeros_vector<T,N>::type;
+
+    /**
+     * @brief metafunction to make zeros matrix with new Rows and Cols
+     * default implementation assumes nested array-like
+     * and will try to replace its template parameters with new size.
+     * 
+     * @tparam T original fixed-size matrix with fixed compile-time size
+     * @tparam Rows new desired rows
+     * @tparam Cols new desired cols
+     * @tparam typename=void 
+     */
+    template <typename T, size_t Rows, size_t Cols, typename=void>
+    struct make_zeros_matrix
+    {
+        /* NOTE: assuming nested array */
+        using row_t = T;
+        using col_t = traits::remove_cvref_t<typename row_t::value_type>;
+        using element_t = traits::remove_cvref_t<typename col_t::value_type>;
+        using new_col_size = std::integral_constant<size_t,Cols>;
+        using new_row_size = std::integral_constant<size_t,Rows>;
+        using new_col_t = replace_template_parameter<col_t,element_t,new_col_size>;
+        using new_row_t = replace_template_parameter<row_t,typename new_col_t::type,new_row_size>;
+
+        /* final type, implicitly assumed that it has constructor that fills it elements with zero */
+        using type = typename new_row_t::type;
+
+        /* TODO: consider to provide operator() that actually return zeros matrix */
+    };
+
+    /**
+     * @brief helper alias template for make_zeros_matrix.
+     * 
+     * @tparam T original fixed-size matrix with fixed compile-time size
+     * @tparam Rows new desired rows
+     * @tparam Cols new desired cols
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    using make_zeros_matrix_t = typename make_zeros_matrix<T,Rows,Cols>::type;
+    
+    /**
+     * @brief make matrix type for outer product operations.
+     * 
+     * @tparam V1 lhs vector type
+     * @tparam V2 rhs vector type
+     * @tparam typename=void 
+     */
+    template <typename V1, typename V2, typename=void>
+    struct make_outer_matrix
+    {
+        /* TODO: assert if V1 and v2 is vector-like */
+        
+        /* default implementation will try to replace value_type (and value_type only) of V1 with V2 */
+        using col_t = traits::remove_cvref_t<V2>;
+        using col_tparam = extract_template_parameters_t<col_t>;
+        using col_value_type = traits::remove_cvref_t<typename pop_first<col_tparam>::first>;
+
+        using row_t = traits::remove_cvref_t<V1>;
+        using row_tparam = extract_template_parameters_t<row_t>;
+        using row_value_type = traits::remove_cvref_t<typename pop_first<row_tparam>::first>;
+
+        /* TODO: tell matrix_t to use common_t! */
+        using common_t = std::common_type_t<col_value_type,row_value_type>;
+        using matrix_t = replace_template_parameter_from_typelist_t<V1,std::tuple<col_t>>;
+
+        using type = matrix_t;
+    };
+
+    /**
+     * @brief specialization of make_outer_matrix for std::array.
+     * 
+     * @tparam row_t lhs vector value_type
+     * @tparam col_t lhs vector value_type
+     * @tparam M 
+     * @tparam N 
+     */
+    template <typename row_t, typename col_t, size_t M, size_t N>
+    struct make_outer_matrix<std::array<row_t,M>,std::array<col_t,N>>
+    {
+        using common_t = std::common_type_t<row_t,col_t>;
+        using type = std::array<std::array<common_t,N>,M>;
+    };
+
+    /**
+     * @brief helper alias template for make_outer_matrix.
+     * example: https://godbolt.org/z/zMMosG
+     * 
+     * @tparam V1 lhs vector type
+     * @tparam V2 rhs vector type
+     */
+    template <typename V1, typename V2>
+    using make_outer_matrix_t = typename make_outer_matrix<V1,V2>::type;
 
 } // namespace nmtools::meta
 
