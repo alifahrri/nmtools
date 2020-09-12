@@ -1,10 +1,10 @@
 #ifndef NMTOOLS_CURVEFIT_REGRESSION_HPP
 #define NMTOOLS_CURVEFIT_REGRESSION_HPP
 
+#include "nmtools/blas.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/utility/tag.hpp"
-#include "nmtools/linalg/matvec.hpp"
 #include "nmtools/linalg/elimination.hpp"
 
 #include <tuple>
@@ -87,8 +87,8 @@ namespace nmtools::curvefit
     template <typename tag_t=size_assert_t, typename X, typename Y>
     constexpr auto linear_regression(const X& x, const Y& y)
     {
+        using meta::get_container_value_type_t;
         using traits::remove_cvref_t;
-        using traits::get_container_value_type_t;
         using traits::is_array1d_v;
         using std::common_type_t;
 
