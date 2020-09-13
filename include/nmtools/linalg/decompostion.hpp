@@ -1,7 +1,9 @@
 #ifndef NMTOOLS_LINALG_DECOMPOSITION_HPP
 #define NMTOOLS_LINALG_DECOMPOSITION_HPP
 
+#include "nmtools/blas.hpp"
 #include "nmtools/traits.hpp"
+#include "nmtools/array/utility.hpp"
 #include "nmtools/linalg/elimination.hpp"
 
 namespace nmtools::linalg
@@ -27,10 +29,11 @@ namespace nmtools::linalg
         using elim_t = elimination_tag::elimination_keep_lower_mat_t;
 
         /* TODO : check if matrix A is square */
-        auto n = size(A);
+        /* TODO: rename to [rows,cols] */
+        auto [n,m] = matrix_size(A);
 
         /* TODO: make forward elimination skip rhs computation */
-        auto b = zeros_like(A[0]);
+        auto b = zeros_like(row(A,0));
         auto [U,_] = forward_elimination<elim_t>(A,b);
 
         /* placeholder for L */
@@ -40,12 +43,12 @@ namespace nmtools::linalg
             swap elemnts between L and U */
         for (size_t i=0; i<(n-1); i++) {
             for (size_t j=i+1; j<n; j++) {
-                L[j][i] = U[j][i];
-                U[j][i] = 0;
+                at(L,j,i) = at(U,j,i);
+                at(U,j,i) = 0;
             }
         }
         return std::make_tuple(L,U);
-    }
+    } // constexpr auto lu_decomposition(const Matrix& A)
 
     /**
      * @brief perform forward substitution
@@ -75,19 +78,19 @@ namespace nmtools::linalg
         auto d = zeros_like(b);
 
         /* TODO: check if matrix L is square and is indeed lower triangular */
-        auto n = size(b);
+        auto n = vector_size(b);
 
         /* perform forward substitution */
-        d[0] = b[0];
+        at(d,0) = at(b,0);
         for (size_t i=1; i<n; i++) {
-            auto sum = b[i];
+            auto sum = at(b,i);
             for (size_t j=0; j<i; j++)
-                sum -= L[i][j] * b[j];
-            d[i] = sum;
+                sum -= at(L,i,j) * at(b,j);
+            at(d,i) = sum;
         }
 
         return d;
-    }
+    } // constexpr auto substitution(const Matrix &L, const Vector& b)
 
     /**
      * @brief calculate inverse of matrix A
@@ -108,7 +111,8 @@ namespace nmtools::linalg
         auto [L,U] = lu_decomposition(A);
 
         /* TODO: check if matrix A is square */
-        auto n = size(A);
+        /* TODO: rename to [rows,cols] */
+        auto [n,m] = matrix_size(A);
 
         /* placeholder for results */
         auto I = zeros_like(A);
@@ -118,8 +122,8 @@ namespace nmtools::linalg
         for (size_t i=0; i<n; i++) {
 
             /* create corresponding column in identity matrix */
-            auto b = zeros_like(A[0]);
-            b[i] = 1;
+            auto b = zeros_like(row(A,0));
+            at(b,i) = 1;
 
             /* forward substitution */
             auto d = substitution(L, b);
@@ -129,11 +133,11 @@ namespace nmtools::linalg
 
             /* fill column of inv placeholder with x */
             for (size_t j=0; j<n; j++)
-                I[j][i] = x[j];
+                at(I,j,i) = at(x,j);
         }
 
         return I;
-    }
+    } // constexpr auto inverse(const Matrix& A)
 
     template <typename T>
     using get_value_type_t = meta::get_container_value_type_t<T>;
@@ -154,10 +158,11 @@ namespace nmtools::linalg
             "unsupported type of Matrix A"
         );
         using traits::remove_cvref_t;
-        using value_t = remove_cvref_t<get_value_type_t<get_value_type_t<Matrix>>>;
+        using value_t = meta::get_matrix_value_type_t<Matrix>;
 
         /* TODO: check if matrix A is symmetric */
-        auto n = size(A);
+        /* TODO: rename to [rows,cols] */
+        auto [n,m] = matrix_size(A);
 
         /* placeholder for results */
         auto L = zeros_like(A);
@@ -168,20 +173,21 @@ namespace nmtools::linalg
             for (int i=0; i<k; i++) {
                 value_t sum{0};
                 for (int j=0; j<i; j++)
-                    sum += L[i][j] * L[k][j];
+                    sum += at(L,i,j) * at(L,k,j);
                 /* set column i of row k */
-                L[k][i] = (A[k][i] - sum) / L[i][i];
+                at(L,k,i) = (at(A,k,i) - sum) / at(L,i,i);
             }
             /* sum of squared elements at row k from column 0 to k-1 */
             value_t sum{0};
             for (int j=0; j<k; j++)
-                sum += L[k][j] * L[k][j];
+                sum += at(L,k,j) * at(L,k,j);
             /* compute diagonal entry */
-            L[k][k] = sqrt(A[k][k] - sum);
+            at(L,k,k) = sqrt(at(A,k,k) - sum);
         }
 
         return L;
-    }
+    }// constexpr auto cholesky_decomposition(const Matrix& A)
+
 } // namespace nmtools::linalg
 
 #endif // NMTOOLS_LINALG_DECOMPOSITION_HPP
