@@ -2,8 +2,6 @@
 #define NMTOOLS_BENCHMARK_BLAS_HPP
 
 #include "nmtools/blas/blas.hpp"
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
 // TODO: rename to nmtools/bench/common/ or something
 #include "common.hpp"
 
