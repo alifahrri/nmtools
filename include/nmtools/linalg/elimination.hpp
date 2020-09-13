@@ -7,10 +7,12 @@
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/blas.hpp"
+#include "nmtools/array/utility.hpp"
 
 #include <map>
 #include <tuple>
 #include <string>
+#include <algorithm> // for std::max
 #include <unordered_map>
 
 namespace nmtools::linalg {
@@ -21,16 +23,18 @@ namespace nmtools::linalg {
     using std::size;
     using helper::log;
 
-    using std::is_null_pointer_v;
+    using std::max;
     using std::tuple;
     using std::is_base_of;
     using std::is_base_of_v;
     using std::common_type_t;
+    using std::is_null_pointer_v;
 
     using meta::get_container_value_type_t;
     using traits::remove_cvref_t;
     using traits::is_multiplicative_v;
     using traits::is_array1d_v;
+
     /* make sure use common tag namespace */
     using ::nmtools::tag::is_tag_enabled_v;
     using ::nmtools::tag::size_assert_t;
@@ -124,27 +128,35 @@ namespace nmtools::linalg {
             "invalid pivot tag"
         );
         static_assert(
-            is_null_pointer_v<Scales> || is_array1d_v<Scales>,
+            is_null_pointer_v<Scales>
+            || is_array1d_v<Scales>,
             "unsupported type for scales"
+        );
+        static_assert(
+            traits::is_array2d_v<Matrix>
+            && is_array1d_v<Vector>
+            /* TODO: helpful error message here */
         );
         
         constexpr auto use_scales_v = !is_null_pointer_v<Scales>;
 
         /* TODO: assert if len(A) == len(b) == len(scales) */
-        auto n = size(A);
+        // auto n = size(A);
+        /* TODO: rename to [rows,cols] */
+        auto [n,m] = matrix_size(A);
         /* selected pivot row */
         auto p = k;
 
         /* initial value at init pivot row */
-        auto big = fabs(A[k][k]);
+        auto big = fabs(at(A,k,k));
         if constexpr (use_scales_v)
-            big = big / scales[k];
+            big = big / at(scales,k);
         
         /* find best pivot point, starting at row k+1 down to n */
         for (auto ii=k+1; ii<n; ii++) {
-            auto dummy = fabs(A[ii][k]);
+            auto dummy = fabs(at(A,ii,k));
             if constexpr (use_scales_v)
-                dummy = dummy / scales[ii];
+                dummy = dummy / at(scales,ii);
             if (dummy > big) {
                 p = ii;
                 big = dummy;
@@ -160,19 +172,19 @@ namespace nmtools::linalg {
                 /* swap p-th row with k-th row */
                 /* TODO: consider using swap() */
                 for (auto jj=k; jj<n; jj++) {
-                    auto dummy = A_[p][jj];
-                    A_[p][jj] = A_[k][jj];
-                    A_[k][jj] = dummy;
+                    auto dummy  = at(A_,p,jj);
+                    at(A_,p,jj) = at(A_,k,jj);
+                    at(A_,k,jj) = dummy;
                 }
                 /* TODO: consider using swap() */
-                auto dummy = b[k];
-                b_[k] = b[p];
-                b_[p] = dummy;
+                auto dummy = at(b,k);
+                at(b_,k)   = at(b,p);
+                at(b_,p)   = dummy;
 
                 if constexpr (use_scales_v) {
-                    auto dummy = scales[k];
-                    s_[k] = scales[p];
-                    s_[p] = dummy;
+                    auto dummy = at(scales,k);
+                    at(s_,k) = at(scales,p);
+                    at(s_,p) = dummy;
                 }
             }
 
@@ -197,7 +209,7 @@ namespace nmtools::linalg {
         else {
             return p;
         }
-    }
+    } // constexpr auto partial_pivot(Matrix A, Vector b, auto k, Scales scales=Scales{}, pivot_tag=pivot_tag{})
 
     /**
      * @brief forward elimination of unknowns
@@ -228,7 +240,7 @@ namespace nmtools::linalg {
         using etag::elimination_keep_lower_mat_t;
         using etag::is_elimination_v;
 
-        using namespace std::string_literals;
+        // using namespace std::string_literals;
 
         /* make sure elimination tag is valid */
         static_assert(
@@ -236,55 +248,69 @@ namespace nmtools::linalg {
             "unsupported forward_elimination tag"
         );
 
+        static_assert(
+            traits::is_array2d_v<Matrix>
+            && traits::is_array1d_v<Vector>
+            /* TODO: helpful error message here */
+        );
+
         /* check if we should use pivot */
         constexpr bool use_pivot_v = is_tag_enabled_v<elimination_with_pivot_t,elimination_tag>;
-
         /* check if we should store lower mat */
         constexpr bool keep_lower_v = is_tag_enabled_v<elimination_keep_lower_mat_t,elimination_tag>;
-
         /* for now, keep_lower_mat can't be used together with pivot */
         static_assert(
             (use_pivot_v && !keep_lower_v) || (!use_pivot_v && keep_lower_v) || (!use_pivot_v && !keep_lower_v),
             "cant use pivot together with keep lower mat"
         );
 
-        using common_t = common_type_t<decltype(A[0][0]),decltype(b[0])>;
-        using mapping_t = std::map<std::string,common_t>;
+        auto Ae = blas::clone(A);
+        auto be = blas::clone(b);
+
+        using matrix_t = remove_cvref_t<decltype(Ae)>;
+        using vector_t = remove_cvref_t<decltype(be)>;
+
+        using a_t = meta::get_matrix_value_type_t<matrix_t>;
+        using b_t = meta::get_vector_value_type_t<vector_t>;
+        using common_t = common_type_t<a_t,b_t>;
+        // using mapping_t = std::map<std::string,common_t>;
 
         /* check if Scales is valid type */
         using scale_t = remove_cvref_t<get_container_value_type_t<Scales>>;
         static_assert(
-            is_multiplicative_v<common_t,scale_t> || is_null_pointer_v<Scales>, 
+            is_multiplicative_v<common_t,scale_t>
+            || is_null_pointer_v<Scales>, 
             "unsupported type for scales"
         );
 
         /* check if we should log intermediate value */
         /* TODO: check if logger is actually callable with mapping_t */
-        constexpr auto log_v = !is_null_pointer_v<Logger>;
+        // constexpr auto log_v = !is_null_pointer_v<Logger>;
         
         /* TODO: assert if A is square matrix */
-        auto n = size(A);
-
-        using traits::remove_cvref_t;
-        using meta::transform_bounded_array_t;
-        using matrix_t = transform_bounded_array_t<remove_cvref_t<Matrix>>;
-        using vector_t = transform_bounded_array_t<remove_cvref_t<Vector>>;
+        // auto n = size(A);
+        /* TODO: rename to [rows, cols] */
+        auto [n,m] = matrix_size(A);
 
         /* placeholder for result */
-        matrix_t Ae{};
-        vector_t be{};
-        if constexpr (traits::is_bounded_array_v<Matrix>) {
-            /* convert from raw array to std::array */
-            for (size_t i=0; i<n; i++) {
-                be[i] = b[i];
-                for (size_t j=0; j<size(Ae[0]); j++)
-                    Ae[i][j] = A[i][j];
-            }
-        } else {
-            /* we will just copy otherwise */
-            Ae = A;
-            be = b;
-        }
+        // matrix_t Ae{};
+        // vector_t be{};
+        // if constexpr (traits::is_bounded_array_v<Matrix>) {
+        //     /* convert from raw array to std::array */
+        //     for (size_t i=0; i<n; i++) {
+        //         be[i] = b[i];
+        //         for (size_t j=0; j<size(Ae[0]); j++)
+        //             Ae[i][j] = A[i][j];
+        //     }
+        // } else {
+        //     /* we will just copy otherwise */
+        //     Ae = A;
+        //     be = b;
+        // }
+
+        /* scales will be used for determining pivot point,
+            but actually optional with default type nullptr_t */
+        /* TODO: consider to make distinct no-op type for optional scales */
         Scales se = scales;
 
         /* perform forward elimination */
@@ -308,37 +334,37 @@ namespace nmtools::linalg {
             }
 
             /* optional logging */
-            if constexpr (log_v)
-                log(logger, mapping_t{{"k"s, k}});
+            // if constexpr (log_v)
+            //     log(logger, mapping_t{{"k"s, k}});
 
             /* moves below the pivot to each of subsequent rows where elimination takes place */
             for (size_t i=k+1; i<n; i++) {    // row
 
                 /* compute scale factor that will eliminate row i column k*/
-                auto factor = Ae[i][k] / Ae[k][k];
-                if constexpr (log_v)
-                    log(logger, mapping_t{{"factor"s, factor}, {"i"s, i}});
+                auto factor = at(Ae,i,k) / at(Ae,k,k);
+                // if constexpr (log_v)
+                //     log(logger, mapping_t{{"factor"s, factor}, {"i"s, i}});
 
                 /* progresses across column to eliminate or transform the elements */
                 for (size_t j=k+1; j<n; j++) {
-                    Ae[i][j] = Ae[i][j] - factor * Ae[k][j];
+                    at(Ae,i,j) = at(Ae,i,j) - factor * at(Ae,k,j);
                     /* optional logging */
-                    if constexpr (log_v)
-                        log(logger, mapping_t{{"A[i][j]"s, Ae[i][j]}, {"j"s, j}});
+                    // if constexpr (log_v)
+                    //     log(logger, mapping_t{{"A[i][j]"s, Ae[i][j]}, {"j"s, j}});
                 }
-                be[i] = be[i] - factor * be[k];
+                at(be,i) = at(be,i) - factor * at(be,k);
 
                 /* conditional compilation to store 
                     lower matrix (esp. for decomposition) */
                 if constexpr (keep_lower_v)
-                    Ae[i][k] = factor;
+                    at(Ae,i,k) = factor;
                 else
-                    Ae[i][k] = 0;
+                    at(Ae,i,k) = 0;
             }
         }
 
         return std::make_tuple(Ae,be);
-    }
+    } // constexpr auto forward_elimination
 
     /**
      * @brief perform backward substitution on upper tridiagonal matrix & modified vector
@@ -355,30 +381,39 @@ namespace nmtools::linalg {
     template <typename Matrix, typename Vector, typename Logger=std::nullptr_t>
     constexpr auto backward_substitution(const Matrix& A, const Vector& b, Logger logger=Logger{})
     {
-        using namespace std::string_literals;
-        using common_t = common_type_t<decltype(A[0][0]),decltype(b[0])>;
-        using mapping_t = std::map<std::string,common_t>;
+        static_assert(
+            traits::is_array2d_v<Matrix>
+            && traits::is_array1d_v<Vector>
+            /* TODO: helpful error message here */
+        );
+        // using namespace std::string_literals;
+        // using mapping_t = std::map<std::string,common_t>;
         /* TODO: make sure A is square matrix */
-        auto n = size(b);
+        // auto n = size(b);
+        auto n = vector_size(b);
 
         /* placeholder for result */
         auto x = zeros_like(b);
+        using result_t = remove_cvref_t<decltype(x)>;
+        using a_t = meta::get_matrix_value_type_t<Matrix>;
+        using b_t = meta::get_vector_value_type_t<Vector>;
+        using r_t = meta::get_vector_value_type_t<result_t>;
+        using common_t = common_type_t<a_t,b_t,r_t>;
         /* solve first element */
-        x[n-1] = b[n-1] / A[n-1][n-1];
+        at(x,n-1) = at(b,n-1) / at(A,n-1,n-1);
 
         /* check if we should log intermediate value */
-        constexpr auto log = !is_null_pointer_v<Logger>;
+        // constexpr auto log = !is_null_pointer_v<Logger>;
 
         /* TODO: actually log intermediate value */
         for (int i=n-2; i>=0; i--) {
-            common_t sum = b[i];
-            for (int j=i+1; j<n; j++) {
-                sum -= A[i][j] * x[j];
-            }
-            x[i] = sum / A[i][i];
+            common_t sum = at(b,i);
+            for (int j=i+1; j<n; j++)
+                sum -= at(A,i,j) * at(x,j);
+            at(x,i) = sum / at(A,i,i);
         }
         return x;
-    }
+    } // constexpr auto backward_substitution
 
     /**
      * @brief solve linear system Ax=b using naive gauss elimination
@@ -395,10 +430,15 @@ namespace nmtools::linalg {
     template <typename Matrix, typename Vector, typename Logger=std::nullptr_t>
     constexpr auto naive_gauss_elimination(const Matrix& A, const Vector& b, Logger logger=Logger{})
     {
+        static_assert(
+            traits::is_array2d_v<Matrix>
+            && traits::is_array1d_v<Vector>
+            /* TODO: helpful error message here */
+        );
         auto [Ae,be] = forward_elimination(A,b,logger);
         auto x = backward_substitution(Ae,be);
         return x;
-    }
+    } // constexpr auto naive_gauss_elimination
 
     /**
      * @brief solve linear system Ax=b using 
@@ -416,22 +456,32 @@ namespace nmtools::linalg {
     template <typename Matrix, typename Vector, typename Logger=std::nullptr_t>
     constexpr auto gauss_elimination(const Matrix& A, const Vector& b, Logger logger=Logger{})
     {
+        static_assert(
+            traits::is_array2d_v<Matrix>
+            && traits::is_array1d_v<Vector>
+            /* TODO: helpful error message here */
+        );
+
         /* TODO: check if A & b has the same row */
-        auto n = size(A);
+        // auto n = size(A);
+        auto [rows,cols] = matrix_size(A);
 
         auto A_abs = fabs(A);
-        Vector s = zeros_like(b);
-        for (size_t i=0; i<n; i++)
-            s[i] = max(A_abs[i]);
+        auto s = zeros_like(b);
+
+        /* TODO: find-out better way to perform this op */
+        for (size_t i=0; i<rows; i++)
+            for (size_t j=0; j<cols; j++)
+                at(s,i) = max(at(A_abs,i,j),at(s,i));
         
         /* perform forward elimination with pivot and scaling */
         using elimination_t = etag::elimination_with_pivot_t;
 
-        auto [Ae, be] = forward_elimination<elimination_t>(A,b,s,logger);
+        auto [Ae, be] = forward_elimination<elimination_t>(A,b,s);
         auto x = backward_substitution(Ae,be);
 
         return x;
-    }
+    } // constexpr auto gauss_elimination
 
     /**
      * @brief perform decomposition for tridiagonal system
@@ -451,7 +501,9 @@ namespace nmtools::linalg {
     constexpr auto tridiagonal_decomposition(const E& e, const F& f, const G& g)
     {
         static_assert(
-            is_array1d_v<E> && is_array1d_v<F> && is_array1d_v<G>,
+            is_array1d_v<E>
+            && is_array1d_v<F>
+            && is_array1d_v<G>,
             "unsupported types for tridiagonal system elimination"
         );
 
@@ -460,26 +512,26 @@ namespace nmtools::linalg {
             "unsupported tag for tridiagonal_decomposition"
         );
 
-        auto ne = size(e);
-        auto nf = size(f);
-        auto ng = size(g);
+        auto ne = vector_size(e);
+        auto nf = vector_size(f);
+        auto ng = vector_size(g);
 
         if constexpr (is_tag_enabled_v<size_assert_t,tag_t>) {
-            assert( (ne == nf) && (e[0]   ==0) );
-            assert( (ng == nf) && (g[ng-1]==0) );
+            assert( (ne == nf) && (at(e,0)   ==0) );
+            assert( (ng == nf) && (at(g,ng-1)==0) );
         }
 
         auto l = zeros_like(e);
         auto u = zeros_like(f);
 
-        u[0] = f[0];
+        at(u,0) = at(f,0);
         for (int i=1; i<nf; i++) {
-            l[i] = e[i] / u[i-1];
-            u[i] = f[i] - l[i] * g[i-1];
+            at(l,i) = at(e,i) / at(u,i-1);
+            at(u,i) = at(f,i) - at(l,i) * at(g,i-1);
         }
 
         return std::make_tuple(l,u);
-    }
+    } // constexpr auto tridiagonal_decomposition
 
     /**
      * @brief perform forward substitution for tridiagonal system
@@ -495,16 +547,17 @@ namespace nmtools::linalg {
     constexpr auto tridiagonal_substitution(const L& l, const B& b)
     {
         static_assert(
-            is_array1d_v<L> && is_array1d_v<B>,
+            is_array1d_v<L>
+            && is_array1d_v<B>,
             "unsupported type E for tridiagonal_substitution"
         );
 
         auto d = clone(b);
-        auto n = size(l);
+        auto n = vector_size(l);
         for (size_t i=1; i<n; i++)
-            d[i] = b[i] - l[i] * d[i-1];
+            at(d,i) = at(b,i) - at(l,i) * at(d,i-1);
         return d;
-    }
+    } // constexpr auto tridiagonal_substitution
 
     /**
      * @brief perfom backward substitution for tridiagonal sytem
@@ -522,18 +575,20 @@ namespace nmtools::linalg {
     constexpr auto tridiagonal_backward(const U& u, const G& g, const D& d)
     {
         static_assert(
-            is_array1d_v<U> && is_array1d_v<G> && is_array1d_v<D>,
+            is_array1d_v<U>
+            && is_array1d_v<G>
+            && is_array1d_v<D>,
             "unsupported types for tridiagonal_backward"
         );
 
         auto x = zeros_like(d);
-        auto n = size(d);
+        auto n = vector_size(d);
         
-        x[n-1] = d[n-1] / u[n-1];
+        at(x,n-1) = at(d,n-1) / at(u,n-1);
         for (int i=n-2; i>=0; i--)
-            x[i] = (d[i] - g[i] * x[i+1]) / u[i];
+            at(x,i) = (at(d,i) - at(g,i) * at(x,i+1)) / at(u,i);
         return x;
-    }
+    } // constexpr auto tridiagonal_backward
 
     /**
      * @brief perform elimination on tridiagonal system
@@ -552,11 +607,18 @@ namespace nmtools::linalg {
     template <typename tag_t=size_assert_t, typename E, typename F, typename G, typename B>
     constexpr auto tridiagonal_elimination(const E& e, const F& f, const G& g, const B& b)
     {
+        static_assert(
+            is_array1d_v<E>
+            && is_array1d_v<F>
+            && is_array1d_v<G>
+            && is_array1d_v<B>
+            /* TODO: helpful error message here */
+        );
         auto [l,u] = tridiagonal_decomposition<tag_t>(e,f,g);
         auto d = tridiagonal_substitution(l,b);
         auto x = tridiagonal_backward(u,g,d);
         return x;
-    }
+    } // constexpr auto tridiagonal_elimination
 
 } // nmtools::linalg
 

@@ -13,6 +13,8 @@ namespace nmtools::array {
      */
     namespace detail
     {
+        using ::nmtools::detail::make_array;
+
         /**
          * @brief helper alias template to make array of reference
          * 
@@ -31,40 +33,6 @@ namespace nmtools::array {
         using size_constant = std::integral_constant<size_t,N>;
 
         /**
-         * @brief create array of reference from a,
-         * 
-         * @tparam T value_type of a
-         * @tparam N size of a
-         * @tparam I index sequence for fold-expression
-         * @param a array to take reference of
-         * @param offset starting index, e.g. a[I+offset]...
-         * @return auto array of reference
-         */
-        template <typename T, size_t N, size_t ...I>
-        constexpr auto make_array_ref(std::array<T,N> &a, std::integer_sequence<size_t, I...>, size_t offset=0)
-        {
-            using array_ref_t = array_ref<T,sizeof...(I)>;
-            return array_ref_t{a[I+offset]...};
-        }
-
-        /**
-         * @brief create array of reference from a,
-         * 
-         * @tparam T value_type of a
-         * @tparam N size of a
-         * @tparam I index sequence for fold-expression
-         * @param a array to take reference of
-         * @param offset starting index, e.g. a[I+offset]...
-         * @return auto array of reference
-         */
-        template <typename T, size_t N, size_t ...I>
-        constexpr auto make_array_ref(const std::array<T,N> &a, std::integer_sequence<size_t, I...>, size_t offset=0)
-        {
-            using array_ref_t = array_ref<const T,sizeof...(I)>;
-            return array_ref_t{a[I+offset]...};
-        }
-
-        /**
          * @brief create array of reference from a.
          * With new_size starting from offset.
          * 
@@ -78,7 +46,8 @@ namespace nmtools::array {
         template <typename T, size_t N, size_t new_size>
         constexpr auto make_array_ref(std::array<T,N> &a, size_constant<new_size>, size_t offset=0)
         {
-            return make_array_ref(a, std::make_index_sequence<new_size>{}, offset);
+            using array_t = array_ref<T,N>;
+            return make_array<array_t>(a, std::make_index_sequence<new_size>{}, offset);
         }
 
         /**
@@ -95,37 +64,8 @@ namespace nmtools::array {
         template <typename T, size_t N, size_t new_size>
         constexpr auto make_array_ref(const std::array<T,N> &a, size_constant<new_size>, size_t offset=0)
         {
-            return make_array_ref(a, std::make_index_sequence<new_size>{}, offset);
-        }
-
-        /**
-         * @brief create array of refrerence from a with same size as a, starting from offset. 
-         * 
-         * @tparam T value_type of a
-         * @tparam N size of a
-         * @param a array to take reference of
-         * @param offset starting index, e.g. a[I+offset]...
-         * @return auto array of reference
-         */
-        template <typename T, size_t N>
-        constexpr auto make_array_ref(std::array<T,N> &a, size_t offset=0)
-        {
-            return make_array_ref(a, std::make_index_sequence<N>{}, offset);
-        }
-
-        /**
-         * @brief create array of refrerence from a with same size as a, starting from offset. 
-         * 
-         * @tparam T value_type of a
-         * @tparam N size of a
-         * @param a array to take reference of
-         * @param offset starting index, e.g. a[I+offset]...
-         * @return auto array of reference
-         */
-        template <typename T, size_t N>
-        constexpr auto make_array_ref(const std::array<T,N> &a, size_t offset=0)
-        {
-            return make_array_ref(a, std::make_index_sequence<N>{}, offset);
+            using array_t = array_ref<const T,N>;
+            return make_array(a, std::make_index_sequence<new_size>{}, offset);
         }
     } // namespace detail
     
@@ -279,6 +219,24 @@ namespace nmtools::array {
 
 namespace nmtools
 {
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     * @tparam Rows 
+     * @tparam Cols 
+     * @param M 
+     * @param r 
+     * @return constexpr auto 
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    constexpr auto row(const array::fixed_matrix<T,Rows,Cols>& M, size_t r)
+    {
+        using array_t = std::array<T,Cols>;
+        using indices_t = std::make_index_sequence<Cols>;
+        return array::detail::make_array<array_t>(M.data, indices_t{}, r*Cols);
+    } // constexpr auto row
+
     /**
      * @brief extract I-th elemen of fixed_vector a.
      * 

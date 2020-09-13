@@ -152,6 +152,63 @@ namespace nmtools {
     } // constexpr auto& at(Array& a, size_type i, size_type j)
 
     /**
+     * @brief given marix M, get its r-th row.
+     * 
+     * @tparam Matrix matrix-like
+     * @param M matrix in which its row to be taken.
+     * @param r row.
+     * @return constexpr auto 
+     */
+    template <typename Matrix>
+    constexpr auto row(const Matrix& M, size_t r)
+    {
+        static_assert(
+            traits::is_array2d_v<Matrix>
+            /* TODO: helpful error message here */
+        );
+        // assuming possibly nested matrix or its
+        // at operator support single indexing
+        return at(M,r);
+    } // constexpr auto row(const Matrix, size_type r)
+
+    namespace detail {
+        /**
+         * @brief given array-like a, make array of type array_t,
+         * where the element is initialized using elements of array-like a
+         * at indices I... with offset, e.g. {a[I+offset]...}.
+         * 
+         * @tparam array_t desired array_t, asuming aggregate initialization is well-formed
+         * @tparam T array-like
+         * @tparam I integer sequence to take elements of a
+         * @param a array to initialize the resulting array
+         * @param offset index offset
+         * @return constexpr auto 
+         */
+        template <typename array_t, typename T, size_t ...I>
+        constexpr auto make_array(const T &a, std::integer_sequence<size_t, I...>, size_t offset=0)
+        {
+            return array_t{a[I+offset]...};
+        }
+    }
+
+    /**
+     * @brief specialization of row function for nested raw array.
+     * 
+     * @tparam T element type of raw array
+     * @tparam M size of array at first axis, automatically deduced
+     * @tparam N size of array at second axis, automatically deduced
+     * @param r row
+     * @return constexpr auto 
+     */
+    template <typename T, size_t M, size_t N>
+    constexpr auto row(const T(&t)[M][N], size_t r)
+    {
+        using array_t = std::array<T,N>;
+        using index_t = std::make_index_sequence<N>;
+        return detail::make_array<array_t>(t[r],index_t{});
+    } // constexpr auto row
+
+    /**
      * @brief get fixed-matrix's size at compile time.
      * well-formed specialization should have `value` and `value_type`.
      * 

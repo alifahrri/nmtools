@@ -30,6 +30,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     array/dynamic.cpp
     array/fixed.cpp
     array/utility.cpp
+    array/linalg.cpp
 )
 
 apply_nmtools(

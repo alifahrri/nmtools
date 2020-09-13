@@ -3,6 +3,8 @@
 
 #include "nanobench/nanobench.h"
 #include "nmtools/linalg.hpp"
+// TODO: rename to nmtools/bench/common/ or something
+#include "common.hpp"
 #include <array>
 
 namespace nmt = nmtools;
@@ -60,6 +62,27 @@ void tridiagonal_elimination_benchmark(ankerl::nanobench::Bench *bench, char con
         auto x = nla::tridiagonal_elimination<tag_t>(e,f,g,b);
         ankerl::nanobench::doNotOptimizeAway(x);
     });
+}
+
+namespace nmtools::bench::nanobench
+{
+    /**
+     * @brief extends linalg functions to 
+     * accepts nanobench::Bench as first arguments.
+     */
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, forward_elimination);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, backward_substitution);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, naive_gauss_elimination);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, partial_pivot);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, gauss_elimination);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, tridiagonal_decomposition);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, tridiagonal_substitution);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, tridiagonal_backward);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, tridiagonal_elimination);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, lu_decomposition);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, substitution);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, inverse);
+    NMTOOLS_BENCH_WRAPPER_TYPEID(linalg, cholesky_decomposition);
 }
 
 #endif
