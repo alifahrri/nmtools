@@ -599,9 +599,6 @@ namespace nmtools::blas {
     template <typename Array>
     constexpr auto identity(const Array& a)
     {
-        using meta::get_container_value_type_t;
-        using traits::remove_cvref_t;
-        using traits::is_resizeable_v;
         using traits::is_array2d_v;
 
         static_assert(
@@ -610,22 +607,14 @@ namespace nmtools::blas {
         );
 
         /* remove cv-ref to make sure we get non const */
-        using element_t = remove_cvref_t<get_container_value_type_t<Array>>;
-        using value_t = remove_cvref_t<get_container_value_type_t<element_t>>;
+        using element_t = meta::get_matrix_value_type_t<Array>;
 
         auto ret = zeros_like(a);
-        auto n = size(a);
-        auto m = size(at(a,0));
+        auto [n,m] = matrix_size(a);
         assert (m==n);
 
-        if constexpr (is_resizeable_v<Array>)
-            ret.resize(n);
-
-        for (size_t i=0; i<n; i++) {
-            if constexpr (is_resizeable_v<element_t>)
-                at(ret,i).resize(m);
-            at(ret,i,i) = static_cast<value_t>(1);
-        }
+        for (size_t i=0; i<m; i++)
+            at(ret,i,i) = static_cast<element_t>(1);
         return ret;
     } // constexpr auto identity(const Array& a)
 
@@ -674,9 +663,18 @@ namespace nmtools::blas {
         );
 
         /* dispatch if Array is 1d or 2d */
-        if constexpr (is_array1d_v<Array> || is_array2d_v<Array>) {
+        if constexpr (is_array2d_v<Array>) {
             auto ret = zeros_like(a);
-            for (size_t i=0; i<size(a); i++)
+            auto [rows,cols] = matrix_size(a);
+            for (size_t i=0; i<rows; i++)
+                for (size_t j=0; j<cols; j++)
+                    at(ret,i,j) = fabs(at(a,i,j));
+            return ret;
+        }
+        else if constexpr (is_array1d_v<Array>) {
+            auto ret = zeros_like(a);
+            auto n = vector_size(a);
+            for (size_t i=0; i<n; i++)
                 at(ret,i) = fabs(at(a,i));
             return ret;
         }
@@ -716,8 +714,8 @@ namespace nmtools::blas {
         using std::remove_reference_t;
         using meta::get_value_type_or_same_t;
 
-        using e1_t = remove_cv_t<remove_reference_t<get_value_type_or_same_t<V1>>>;
-        using e2_t = remove_cv_t<remove_reference_t<get_value_type_or_same_t<V2>>>;
+        using e1_t = meta::get_vector_value_type_t<V1>;
+        using e2_t = meta::get_vector_value_type_t<V2>;
         using value_t = std::common_type_t<e1_t,e2_t>;
 
         /* TODO: consider to drop arithmetic mul for this fn */
@@ -725,8 +723,8 @@ namespace nmtools::blas {
             return value_t{v1 * v2};
         else {
             value_t ret{0};
-            auto n1 = size(v1);
-            auto n2 = size(v2);
+            auto n1 = vector_size(v1);
+            auto n2 = vector_size(v2);
             /* TODO: make assertio optional (?) */
             assert(n1==n2);
             
@@ -755,8 +753,11 @@ namespace nmtools::blas {
             /* TODO: helpful error message here */
         );
 
+        using v1_t = meta::transform_bounded_array_t<V1>;
+        using v2_t = meta::transform_bounded_array_t<V2>;
+
         /* first, let's deduce the resulting type */
-        using matrix_t = meta::make_outer_matrix_t<V1,V2>;
+        using matrix_t = meta::make_outer_matrix_t<v1_t,v2_t>;
 
         static_assert(
             traits::is_array2d_v<matrix_t>
