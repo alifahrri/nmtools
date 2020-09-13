@@ -122,6 +122,32 @@ TEST(array, fixed_matrix)
     }
 }
 
+TEST(array, fixed_matrix_row)
+{
+    {
+        /* TODO: support nesed initializer list */
+        auto a = fixed_matrix<double,2,3>{
+            1., 2., 3.,
+            4., 5., 6.,
+        };
+        /* NOTE: should be explicit size_t */
+        auto r = nmt::row(a,size_t{1});
+        auto e = std::array<double,3>{4., 5., 6.};
+        EXPECT_TRUE(isclose(r,e));
+    }
+}
+
+TEST(array, fixed_vector_blas_fabs)
+{
+    {
+        auto a = fixed_vector<double,3>{-1,0,1};
+        auto f = nmt::blas::fabs(a);
+        auto e = std::array<double,3>{1,0,1};
+        static_assert(std::is_same_v<decltype(f),fixed_vector<double,3>>);
+        EXPECT_TRUE(isclose(f,e));
+    }
+}
+
 TEST(array, fixed_vector_zeros_like)
 {
     /* fixed_vector with runtime value */
@@ -159,6 +185,23 @@ TEST(array, fixed_vector_ones_like)
         constexpr auto e = std::array<double,3>{1,1,1};
         static_assert(std::is_same_v<decltype(z),const fixed_vector<double,3>>);
         static_assert(isclose(z,e));
+    }
+}
+
+TEST(array, fixed_matrix_blas_fabs)
+{
+    {
+        auto a = fixed_matrix<double,2,3>{
+            -1., 2., 3.,
+            4., -5., 6.,
+        };
+        auto f = nmt::blas::fabs(a);
+        auto e = std::array<std::array<double,3>,2>{{
+            {1., 2., 3.},
+            {4., 5., 6.},
+        }};
+        static_assert(std::is_same_v<decltype(f),fixed_matrix<double,2,3>>);
+        EXPECT_TRUE(isclose(f,e));
     }
 }
 
@@ -223,6 +266,26 @@ TEST(array, fixed_matrix_blas_ones_like)
         }};
         static_assert(std::is_same_v<decltype(z),const fixed_matrix<double,2,3>>);
         static_assert(isclose(z,e));
+    }
+}
+
+TEST(array, fixed_matrix_blas_identity)
+{
+    /* fixed_matrix with runtime value */
+    {
+        auto a = fixed_matrix<double,3,3>{
+            1., 2., 3.,
+            4., 5., 6.,
+            7., 8., 9.,
+        };
+        auto i = nmt::blas::identity(a);
+        auto e = std::array<std::array<double,3>,3>{{
+            {1,0,0},
+            {0,1,0},
+            {0,0,1},
+        }};
+        static_assert(std::is_same_v<decltype(i),fixed_matrix<double,3,3>>);
+        EXPECT_TRUE(isclose(i,e));
     }
 }
 

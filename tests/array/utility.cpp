@@ -9,14 +9,15 @@ using std::vector;
 namespace nmt = nmtools;
 using nmt::helper::isclose;
 
+using vector_t = array<double,3>;
+using matrix_t = array<vector_t,4>;
+using scalar_t = double;
+
+using dvector_t = std::vector<double>;
+using dmatrix_t = std::vector<dvector_t>;
+
 TEST(array, at)
 {
-    using vector_t = array<double,3>;
-    using matrix_t = array<vector_t,4>;
-    using scalar_t = double;
-
-    using dvector_t = std::vector<double>;
-
     /* compile-time version */
     {
         constexpr auto a = vector_t{
@@ -84,5 +85,33 @@ TEST(array, at)
             {10., 11., 13.},
         }};
         EXPECT_TRUE(isclose(a,e));
+    }
+}
+
+TEST(array, row)
+{
+    {
+        constexpr auto a = matrix_t{{
+            {1.,   2.,  3.},
+            {4.,   5.,  6.},
+            {7.,   8.,  9.},
+            {10., 11., 12.},
+        }};
+        constexpr auto e = vector_t{10., 11., 12.};
+        constexpr auto x = nmt::row(a,3);
+        static_assert(std::is_same_v<decltype(x),const vector_t>);
+        static_assert(isclose(x,e));
+    }
+    {
+        auto a = dmatrix_t{{
+            {1.,   2.,  3.},
+            {4.,   5.,  6.},
+            {7.,   8.,  9.},
+            {10., 11., 12.},
+        }};
+        auto e = dvector_t{10., 11., 12.};
+        auto x = nmt::row(a,3);
+        static_assert(std::is_same_v<decltype(x),dvector_t>);
+        EXPECT_TRUE(isclose(x,e));
     }
 }

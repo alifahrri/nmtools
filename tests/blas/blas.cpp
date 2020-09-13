@@ -1028,6 +1028,14 @@ TEST(blas, dot)
         auto e = 1.*3 + 2*4 + 3*5;
         EXPECT_TRUE(isclose(r,e));
     }
+    /* raw array runtime */
+    {
+        double a[3] = {1.,2.,3.};
+        double b[3] = {3.,4.,5.};
+        auto r = nla::dot(a,b);
+        auto e = 1.*3 + 2*4 + 3*5;
+        EXPECT_TRUE(isclose(r,e));
+    }
 }
 
 TEST(blas, outer)
@@ -1066,6 +1074,18 @@ TEST(blas, outer)
     {
         auto a = dvector_t{1.,2.,3.};
         auto b = dvector_t{3.,4.,5.};
+        auto r = nla::outer(a,b);
+        auto e = matrix_t{{
+            {1*3, 1*4, 1*5},
+            {2*3, 2*4, 2*5},
+            {3*3, 3*4, 3*5},
+        }};
+        EXPECT_TRUE(isclose(r,e));
+    }
+    /* raw array runtime */
+    {
+        double a[3] = {1.,2.,3.};
+        double b[3] = {3.,4.,5.};
         auto r = nla::outer(a,b);
         auto e = matrix_t{{
             {1*3, 1*4, 1*5},
