@@ -190,6 +190,17 @@ namespace nmtools::array
 
 namespace nmtools
 {
+    template <typename T>
+    auto row(const array::dynamic_matrix<T>& M, size_t r)
+    {
+        using return_t = std::vector<T>;
+        auto [rows, cols] = M.shape();
+        auto ret = return_t(cols);
+        for (size_t i=0; i<cols; i++)
+            ret[i] = M(r,i);
+        return ret;
+    }
+
     /**
      * @brief specialization of vector_size for dynamic_vector
      * 
