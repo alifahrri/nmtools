@@ -9,29 +9,66 @@ endif()
 
 include(nmtools)
 
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
 enable_testing()
 find_package(GTest REQUIRED)
-add_executable(${PROJECT_NAME} tests.cpp 
-    roots/bracketing.cpp
-    roots/open.cpp
-    optimization/unconstrained.cpp
-    integration/trapezoidal.cpp
-    differentiation/finite.cpp
-    taylor/taylor.cpp
-    curvefit/regression.cpp
-    curvefit/sinusoid.cpp
-    curvefit/interpolation.cpp
-    utility/utility.cpp
-    ode/euler.cpp
-    ode/runge_kutta.cpp
-    linalg/elimination.cpp
-    linalg/decomposition.cpp
-    blas/blas.cpp
-    array/dynamic.cpp
-    array/fixed.cpp
-    array/utility.cpp
-    array/linalg.cpp
+add_executable(${PROJECT_NAME} src/gtest/tests.cpp 
+    src/gtest/roots/bracketing.cpp
+    src/gtest/roots/open.cpp
+    src/gtest/optimization/unconstrained.cpp
+    src/gtest/integration/trapezoidal.cpp
+    src/gtest/differentiation/finite.cpp
+    src/gtest/taylor/taylor.cpp
+    src/gtest/curvefit/regression.cpp
+    src/gtest/curvefit/sinusoid.cpp
+    src/gtest/curvefit/interpolation.cpp
+    src/gtest/utility/utility.cpp
+    src/gtest/ode/euler.cpp
+    src/gtest/ode/runge_kutta.cpp
+    src/gtest/linalg/elimination.cpp
+    src/gtest/linalg/decomposition.cpp
+    src/gtest/blas/blas.cpp
+    src/gtest/array/dynamic.cpp
+    src/gtest/array/fixed.cpp
+    src/gtest/array/utility.cpp
+    src/gtest/array/linalg.cpp
 )
+
+## disable benchmarks
+add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
+## may use scripts/install_doctest.sh to install
+find_package(doctest REQUIRED)
+
+add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp 
+    ## blas module
+    src/doctest/blas/clone.cpp
+    src/doctest/blas/ones_like.cpp
+    src/doctest/blas/zeros_like.cpp
+    src/doctest/blas/transpose.cpp
+    src/doctest/blas/vvadd.cpp
+    src/doctest/blas/mmadd.cpp
+    src/doctest/blas/dot.cpp
+    src/doctest/blas/outer.cpp
+    src/doctest/blas/col_sum.cpp
+    src/doctest/blas/row_sum.cpp
+    src/doctest/blas/sum.cpp
+    src/doctest/blas/vector_norm.cpp
+    src/doctest/blas/matrix_norm.cpp
+    src/doctest/blas/vsmul.cpp
+    src/doctest/blas/msmul.cpp
+    src/doctest/blas/mvmul.cpp
+    src/doctest/blas/mmmul.cpp
+    src/doctest/blas/saxpy.cpp
+    src/doctest/blas/gaxpy.cpp
+    ## array utility
+    src/doctest/array/utility.cpp
+    ## metafunctions
+    src/doctest/meta.cpp
+)
+target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 
 apply_nmtools(
     TARGET ${PROJECT_NAME}
@@ -40,9 +77,19 @@ apply_nmtools(
 target_include_directories(
     ${PROJECT_NAME} PRIVATE
     ${GTEST_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(tests ${PROJECT_NAME})
+
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-doctest
+    COMPILE_OPTIONS -g
+)
+target_include_directories(
+    ${PROJECT_NAME}-doctest PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 include(CodeCoverage)
 append_coverage_compiler_flags()
