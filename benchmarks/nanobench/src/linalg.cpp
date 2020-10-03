@@ -1,5 +1,3 @@
-#define ANKERL_NANOBENCH_IMPLEMENT
-
 // NOTE: seems like it is required to include these headers first
 // TODO: fix dependency
 #include "nmtools/array/fixed.hpp"
