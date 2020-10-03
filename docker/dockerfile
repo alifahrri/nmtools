@@ -23,7 +23,7 @@ COPY scripts/install_doctest.sh install_doctest.sh
 RUN bash install_doctest.sh
 
 ## install fmt
-COPY scripts/install_doctest.sh install_fmt.sh
+COPY scripts/install_fmt.sh install_fmt.sh
 RUN bash install_fmt.sh
 
 ## install miniconda
