@@ -2,11 +2,17 @@
 #define NMTOOLS_TRAITS_HPP
 
 #include <type_traits>
+/** @todo use __has_include */
 #include <array>
 #include <vector>
 #include <complex>
 
 namespace nmtools::traits {
+
+    /** @defgroup traits
+    * Collections of type traits used accross the library
+    * @{ 
+    */
 
     using std::false_type;
     using std::true_type;
@@ -35,7 +41,6 @@ namespace nmtools::traits {
     /**
      * @brief check if T t{} are:
      * - t[0][0] is valid
-     * - t[0][0][0] is invalid
      * 
      * @tparam T 
      * @tparam void 
@@ -54,7 +59,6 @@ namespace nmtools::traits {
     /**
      * @brief check if T t{} are:
      * - t[0] is valid
-     * - t[0][0] is invalid
      * 
      * @tparam T 
      * @tparam void 
@@ -693,6 +697,63 @@ namespace nmtools::traits {
      */
     template <typename T>
     inline constexpr bool is_nested_array2d_v = is_nested_array2d<T>::value;
-} // namespace nmtools::traits
 
+    /**
+     * @brief traits to check if type T is fixed-size matrix
+     * 
+     * @tparam T type to check
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct is_fixed_size_matrix : std::false_type {};
+
+    /**
+     * @brief helper variable template for is_fixed_size_matrix
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_fixed_size_matrix_v = is_fixed_size_matrix<T>::value;
+
+    /**
+     * @brief trait to check if type T is fixed-size vector (as in math vector, not container ones).
+     * 
+     * @tparam T type to check
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct is_fixed_size_vector : false_type {};
+
+    /**
+     * @brief specializaton fo is_fixed_size_vector for raw array type.
+     * 
+     * @tparam T element type of raw array, automatically deduced
+     * @tparam N size of raw array, automatically deduced
+     */
+    template <typename T, size_t N>
+    struct is_fixed_size_vector<T[N]> : true_type {};
+
+    /**
+     * @brief helper variable template for is_fixed_size_vector.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_fixed_size_vector_v = is_fixed_size_vector<T>::value;
+
+    template <typename T>
+    struct is_dynamic_size_matrix : std::negation<is_fixed_size_matrix<T>> {};
+
+    template <typename T>
+    inline constexpr bool is_dynamic_size_matrix_v = is_dynamic_size_matrix<T>::value;
+
+    template <typename T>
+    struct is_dynamic_size_vector : std::negation<is_fixed_size_vector<T>> {};
+
+    template <typename T>
+    inline constexpr bool is_dynamic_size_vector_v = is_dynamic_size_vector<T>::value;
+    
+    /** @} */ // end group traits
+
+} // namespace nmtools::traits
 #endif // NMTOOLS_TRAITS_HPP
