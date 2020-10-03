@@ -30,6 +30,7 @@ if [ -z "$DEST" -a "$DEST" != " " ]; then
     DEST="$HOME/tmp/"
 fi
 
+mkdir -p $DEST
 wget -O $DEST/$fmt_file $fmt_url
 
 cd $DEST
