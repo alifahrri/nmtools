@@ -1,5 +1,3 @@
-#define ANKERL_NANOBENCH_IMPLEMENT
-
 #include "ode.hpp"
 
 int main() {

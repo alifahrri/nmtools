@@ -65,6 +65,11 @@ namespace nmtools::meta
         }
     } // namespace detail
 
+    /** @defgroup meta
+    * Collections of metafunctions used accross the library
+    * @{
+    */
+
     /**
      * @brief find type T in tuple Tuple, return tuple element index
      * https://devblogs.microsoft.com/oldnewthing/20200629-00/?p=103910#comment-136848
@@ -278,6 +283,14 @@ namespace nmtools::meta
     template <typename T, typename...Args>
     using replace_template_parameter_t = typename replace_template_parameter<T,Args...>::type;
 
+    /**
+     * @brief similar to replace_template_parameter but assuming
+     * new parameter are packed in typelist (tuple). default impl
+     * has void as resulting type.
+     * 
+     * @tparam T 
+     * @tparam typename=void 
+     */
     template <typename T, typename=void>
     struct replace_template_parameter_from_typelist
     {
@@ -291,7 +304,7 @@ namespace nmtools::meta
     };
 
     /**
-     * @brief replace template parameter of class T with parameter(s) packed as tuple.
+     * @brief replace_template_parameter of class T with parameter(s) packed as tuple.
      *
      * @example 
      * @tparam T template template parameter, deduced automatically
@@ -325,6 +338,7 @@ namespace nmtools::meta
      * @tparam T original type
      * @tparam Args template parameter for substitution
      */
+    /* TODO: remove */
     template <typename T, typename...Args>
     using replace_tparam_t = typename replace_template_parameter<T,Args...>::type;
 
@@ -333,6 +347,56 @@ namespace nmtools::meta
         - T<typename,auto..>, 
         - T<auto,typename...>, etc.
     */
+
+    /**
+     * @brief metafunction to resize fixed vector.
+     * 
+     * @tparam T fixed vector type to be resized.
+     * @tparam N new size.
+     */
+    template <typename T, auto N, typename=void>
+    struct resize_fixed_vector
+    {
+        /* pack new size as type instead of non-type template param */
+        using new_size = std::integral_constant<size_t,N>;
+        using type = replace_template_parameter_t<T,new_size>;
+    };
+
+    /**
+     * @brief specialization of resize_fixed_vector for std::array type
+     * 
+     * @tparam T value_type of std::array, automatically deduced
+     * @tparam N size of std::array, automatically deduced
+     * @tparam new_size new desired size
+     */
+    template <typename T, auto N, auto new_size>
+    struct resize_fixed_vector<std::array<T,N>,new_size>
+    {
+        using type = std::array<T,new_size>;
+    };
+
+    /**
+     * @brief specialization of resize_fixed_vector for raw array type,
+     * resulting type is std::array instead of raw array.
+     * 
+     * @tparam T element type of raw array, automatically deduced
+     * @tparam N size of raw array, automatically deduced
+     * @tparam new_size new desired size
+     */
+    template <typename T, auto N, auto new_size>
+    struct resize_fixed_vector<T[N],new_size>
+    {
+        using type = std::array<T,new_size>;
+    };
+
+    /**
+     * @brief helper alias template to resize metafunction to resize fixed vector.
+     * 
+     * @tparam T fixed vector type to be resized.
+     * @tparam N new size.
+     */
+    template <typename T, auto N>
+    using resize_fixed_vector_t = typename resize_fixed_vector<T,N>::type;
 
     /**
      * @brief metafunction to extract template paramters.
@@ -809,6 +873,49 @@ namespace nmtools::meta
     using get_vector_value_type_t = typename get_vector_value_type<T>::type;
 
     /**
+     * @brief 
+     * 
+     * @tparam T 
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct get_element_type
+    {
+        /**
+         * @brief helper function to deduce resulting type
+         * 
+         * @return constexpr auto 
+         */
+        static inline constexpr auto __get_type()
+        {
+            /**
+             * @note since is_array1d_v and is_array2d_v may not be mutually exclusive,
+             * it is hard to use std::enable_if / std::void_t to specialize,
+             * hence using helper function instead
+             * to deduce the resulting element type.
+             * 
+             * @todo make this fn consteval
+             */
+            if constexpr (traits::is_array2d_v<T>)
+                return get_matrix_value_type_t<T>{};
+            else if constexpr (traits::is_array1d_v<T>)
+                return get_vector_value_type_t<T>{};
+            else if constexpr (std::is_arithmetic_v<T>)
+                return T{};
+            else return;
+        }
+        using type = decltype(__get_type());
+    };
+
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    using get_element_type_t = typename get_element_type<T>::type;
+
+    /**
      * @brief metafunction to make vector with new size N from original type T
      * default implementation will try to replace template parameter of T with new size,
      * may be specialized with custom type implementation.
@@ -928,6 +1035,104 @@ namespace nmtools::meta
     template <typename V1, typename V2>
     using make_outer_matrix_t = typename make_outer_matrix<V1,V2>::type;
 
+    /**
+     * @brief metafunction to deduce type of column operation for matrix.
+     * 
+     * @tparam T matrix type
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct get_column_type
+    {
+        using type = void;
+    };
+
+    /**
+     * @brief specialization of metafunction get_column_type when T
+     * satifies is_nested_array2d and has_value_type traits.
+     * 
+     * @tparam T matrix type
+     */
+    template <typename T>
+    struct get_column_type<T,std::enable_if_t<traits::is_nested_array2d_v<T> && traits::has_value_type_v<T>>>
+    {
+        using type = typename T::value_type;
+    };
+
+    /**
+     * @brief specialization of metafunction get_column_type when T is raw 2d array.
+     * 
+     * @tparam T element type of raw array, automatically deduced
+     * @tparam M size of first axis (rows) of raw array, automatically deduced
+     * @tparam N size of second axis (cols) of raw array, automatically deduced
+     */
+    template <typename T, size_t M, size_t N>
+    struct get_column_type<T[M][N],void>
+    {
+        using value_t = traits::remove_cvref_t<T>;
+        using type    = std::array<value_t,N>;
+    };
+
+    /**
+     * @brief helper alias template for metafunction get_column_type
+     * to deduce the type of column operation.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    using get_column_type_t = typename get_column_type<T>::type;
+
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct get_row_type
+    {
+        using type = void;
+    };
+
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct get_row_type<T,std::enable_if_t<traits::is_nested_array2d_v<T> && traits::has_value_type_v<T> && traits::is_dynamic_size_matrix_v<T>>>
+    {
+        using col_type = typename T::value_type;
+        using value_type = typename col_type::value_type;
+        using type = replace_template_parameter_t<T,value_type>;
+    };
+
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     */
+    template <typename T, size_t M, size_t N>
+    struct get_row_type<std::array<std::array<T,N>,M>>
+    {
+        using type = std::array<T,M>;
+    };
+
+    template <typename T, size_t M, size_t N>
+    struct get_row_type<T[M][N]>
+    {
+        using type = std::array<T,M>;
+    };
+
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    using get_row_type_t = typename get_row_type<T>::type;
+
+    /** @} */ // end group meta
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_HPP

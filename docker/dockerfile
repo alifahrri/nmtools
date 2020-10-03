@@ -18,6 +18,14 @@ RUN bash install_benchmark.sh
 COPY scripts/install_nanobench.sh install_nanobench.sh
 RUN bash install_nanobench.sh
 
+## install doctest
+COPY scripts/install_doctest.sh install_doctest.sh
+RUN bash install_doctest.sh
+
+## install fmt
+COPY scripts/install_fmt.sh install_fmt.sh
+RUN bash install_fmt.sh
+
 ## install miniconda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda

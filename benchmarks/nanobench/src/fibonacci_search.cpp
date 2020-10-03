@@ -1,5 +1,3 @@
-#define ANKERL_NANOBENCH_IMPLEMENT
-
 #include "fibonacci_search.hpp"
 
 int main() {

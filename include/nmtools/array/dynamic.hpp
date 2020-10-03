@@ -12,10 +12,22 @@ namespace nmtools::array
 {
     using std::initializer_list;
 
-    template <typename T>
+    /**
+     * @addtogroup Dynamic Dynamic Array
+     * @ingroup array
+     * @{
+     */
+
+    /**
+     * @brief sample implementation of resizeable vector
+     * 
+     * @tparam T elemen type of dynamic vector
+     * @tparam storage_type=std::vector template template parameter which will be used to store actual data
+     */
+    template <typename T, template <typename> typename storage_type=std::vector>
     struct dynamic_vector
     {
-        using data_type = std::vector<T>;
+        using data_type = storage_type<T>;
         using value_type = T;
         using size_type = size_t;
         using reference = value_type&;
@@ -83,10 +95,16 @@ namespace nmtools::array
         }
     };
 
-    template <typename T>
+    /**
+     * @brief sample implementation of dynamic matrix with flat storage
+     * 
+     * @tparam T element type of dynamic matrix
+     * @tparam storage_type=std::vector template template parameter to store actual data
+     */
+    template <typename T, template <typename> typename storage_type=std::vector>
     struct dynamic_matrix
     {
-        using data_type = std::vector<T>;
+        using data_type = storage_type<T>;
         using value_type = T;
         using size_type = size_t;
         using reference = value_type&;
@@ -185,6 +203,65 @@ namespace nmtools::array
             data.resize(rows*cols);
         }
     };
+
+    /**
+     * @brief helper traits to check if given type T is dynamic_matrix
+     * 
+     * @tparam T 
+     * @tparam typename=void 
+     * @see nmtools::testing::cast
+     */
+    template <typename T, typename=void>
+    struct is_dynamic_matrix : std::false_type {};
+
+    /**
+     * @brief specialization of is_dynamic_matrix in which given type is actually dynamic_matrix
+     * 
+     * @tparam T element type of dynamic_matrix
+     * @see nmtools::testing::cast
+     */
+    template <typename T>
+    struct is_dynamic_matrix<dynamic_matrix<T>> : std::true_type {};
+
+    /**
+     * @brief make dynamic_vector can be used with range-based for loop
+     * 
+     * @tparam T value_type of dynamic_vector, deduced automatically
+     * @param v 
+     * @return constexpr auto 
+     */
+    template <typename T>
+    constexpr auto begin(dynamic_vector<T>& v)
+    {
+        return v.data.begin();
+    } // constexpr auto begin
+
+    template <typename T>
+    constexpr auto begin(const dynamic_vector<T>& v)
+    {
+        return v.data.begin();
+    } // constexpr auto begin
+
+    /**
+     * @brief make dynamic_vector can be used with range-based for loop
+     * 
+     * @tparam T value_type of dynamic_vector, deduced automatically
+     * @param v 
+     * @return constexpr auto 
+     */
+    template <typename T>
+    constexpr auto end(dynamic_vector<T>& v)
+    {
+        return v.data.end();
+    } // constexpr auto end
+
+    template <typename T>
+    constexpr auto end(const dynamic_vector<T>& v)
+    {
+        return v.data.end();
+    } // constexpr auto end
+
+    /** @} */ // end group dynamic
     
 } // namespace nmtools::array
 
@@ -342,6 +419,18 @@ namespace nmtools::meta
     {
         using common_t = std::common_type_t<T,U>;
         using type = array::dynamic_matrix<common_t>;
+    };
+
+    template <typename T>
+    struct get_column_type<array::dynamic_matrix<T>>
+    {
+        using type = array::dynamic_vector<T>;
+    };
+
+    template <typename T>
+    struct get_row_type<array::dynamic_matrix<T>>
+    {
+        using type = array::dynamic_vector<T>;
     };
 } // namespace nmtools::meta
 

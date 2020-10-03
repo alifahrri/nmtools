@@ -36,107 +36,207 @@ namespace nmtools::helper {
     }
 
     /**
-     * @brief check if M is close with N given tolerance
-     * 
-     * @param M matrix-like or vector-like
-     * @param N matrix-like or vector-like
-     * @param eps tolerance
-     * @return constexpr auto 
+     * @addtogroup utils
+     * @{
      */
-    template <typename T, typename U, typename E=double>
-    constexpr auto isclose(const T& M, const U& N, E eps=1e-6)
-    {
+
+    /**
+     * @brief implemenatation detail for isclose
+     * 
+     */
+    namespace detail {
+
         using traits::is_array1d_v;
         using traits::is_array2d_v;
         using traits::has_tuple_size_v;
         using traits::is_fixed_size_matrix_v;
         using std::get;
         using std::is_arithmetic_v;
-        static_assert(
-            (is_arithmetic_v<T> && is_arithmetic_v<U>) ||
-            (is_array1d_v<T> && is_array1d_v<U>) ||
-            (is_array2d_v<T> && is_array2d_v<U>),
-            "unsupported isclose"
-        );
-        if constexpr (is_array2d_v<T> && is_array2d_v<U>)
+
+        /**
+        * @brief check if M is close with N given tolerance
+        * 
+        * @param M matrix-like or vector-like
+        * @param N matrix-like or vector-like
+        * @param eps tolerance
+        * @return constexpr auto 
+        */
+        template <typename T, typename U, typename E=double>
+        constexpr auto isclose(const T& M, const U& N, E eps=1e-6)
         {
-            if constexpr (is_fixed_size_matrix_v<T> && is_fixed_size_matrix_v<U>) {
-                constexpr auto msize = fixed_matrix_size_v<T>;
-                constexpr auto nsize = fixed_matrix_size_v<U>;
-                constexpr auto nrow = get<0>(nsize);
-                constexpr auto ncol = get<1>(nsize);
-                constexpr auto mrow = get<0>(msize);
-                constexpr auto mcol = get<1>(msize);
-                /* TODO: size assertion */
-                /* TODO: unify this loop with runtime version */
-                for (size_t i=0; i<nrow; i++)
-                    for (size_t j=0; j<ncol; j++)
-                        if (fabs(at(M,i,j)-at(N,i,j)) > eps)
-                            return false;
-                return true;
-            }
-            else {
-                auto [nrow, ncols] = matrix_size(N);
-                auto [mrow, mcols] = matrix_size(M);
-                /* TODO: size assertion */
-                /* TODO: unify this loop with compile-time version */
-                for (size_t i=0; i<nrow; i++)
-                    for (size_t j=0; j<ncols; j++)
-                        if (fabs(at(M,i,j)-at(N,i,j)) > eps)
-                            return false;
-                return true;
-            }
-        }
-        else if constexpr (is_array1d_v<T> && is_array1d_v<U>)
-        {
-            auto nm = size(M);
-            auto nn = size(N);
-            /* TODO: size assertion */
-            for (size_t i=0; i<nm; i++)
-                if (fabs(at(M,i)-at(N,i)) > eps)
-                    return false;
-            return true;
-        }
-        else if constexpr (is_arithmetic_v<T> && is_arithmetic_v<U>)
-        {
-            return fabs(M-N) < eps;
-        }
-        /* TODO: remove */
-        else
-        {
-            auto nm = size(M);
-            auto nn = size(N);
-            /* size is known at compile-time, assert at compile-time */
-            if constexpr (has_tuple_size_v<T> && has_tuple_size_v<U>) {
-                constexpr auto nm = std::tuple_size_v<T>;
-                constexpr auto nn = std::tuple_size_v<U>;
-                static_assert(nm==nn);
-            }
-            /* defer assertion to runtime */
-            else assert(nm==nn);
-            
-            for (size_t i=0; i<nm; i++) {
-                auto m = at(M,i);
-                auto n = at(N,i);
-                if constexpr (std::is_arithmetic_v<decltype(m)>) {
-                    if (fabs(m-n) > eps)
-                        return false;
-                } else {
-                    auto nmm = size(m);
-                    auto nnn = size(n);
-                    assert (nmm=nnn);
-                    for (size_t j=0; j<nmm; j++) {
-                        auto mm = at(m,j);
-                        auto nn = at(n,j);
-                        if (fabs(mm-nn) > eps)
-                            return false;
-                    }
+            static_assert(
+                (is_arithmetic_v<T> && is_arithmetic_v<U>) ||
+                (is_array1d_v<T> && is_array1d_v<U>) ||
+                (is_array2d_v<T> && is_array2d_v<U>),
+                "unsupported isclose"
+            );
+            if constexpr (is_array2d_v<T> && is_array2d_v<U>)
+            {
+                if constexpr (is_fixed_size_matrix_v<T> && is_fixed_size_matrix_v<U>) {
+                    constexpr auto msize = fixed_matrix_size_v<T>;
+                    constexpr auto nsize = fixed_matrix_size_v<U>;
+                    constexpr auto nrow = get<0>(nsize);
+                    constexpr auto ncol = get<1>(nsize);
+                    constexpr auto mrow = get<0>(msize);
+                    constexpr auto mcol = get<1>(msize);
+                    /* TODO: size assertion */
+                    /* TODO: unify this loop with runtime version */
+                    for (size_t i=0; i<nrow; i++)
+                        for (size_t j=0; j<ncol; j++)
+                            if (fabs(at(M,i,j)-at(N,i,j)) > eps)
+                                return false;
+                    return true;
+                }
+                else {
+                    auto [nrow, ncols] = matrix_size(N);
+                    auto [mrow, mcols] = matrix_size(M);
+                    /* TODO: size assertion */
+                    /* TODO: unify this loop with compile-time version */
+                    for (size_t i=0; i<nrow; i++)
+                        for (size_t j=0; j<ncols; j++)
+                            if (fabs(at(M,i,j)-at(N,i,j)) > eps)
+                                return false;
+                    return true;
                 }
             }
-            return true;
-        }
-    }
+            else if constexpr (is_array1d_v<T> && is_array1d_v<U>)
+            {
+                auto nm = size(M);
+                auto nn = size(N);
+                /* TODO: size assertion */
+                for (size_t i=0; i<nm; i++)
+                    if (fabs(at(M,i)-at(N,i)) > eps)
+                        return false;
+                return true;
+            }
+            else if constexpr (is_arithmetic_v<T> && is_arithmetic_v<U>)
+            {
+                return fabs(M-N) < eps;
+            }
+            /* TODO: remove */
+            else
+            {
+                auto nm = size(M);
+                auto nn = size(N);
+                /* size is known at compile-time, assert at compile-time */
+                if constexpr (has_tuple_size_v<T> && has_tuple_size_v<U>) {
+                    constexpr auto nm = std::tuple_size_v<T>;
+                    constexpr auto nn = std::tuple_size_v<U>;
+                    static_assert(nm==nn);
+                }
+                /* defer assertion to runtime */
+                else assert(nm==nn);
+                
+                for (size_t i=0; i<nm; i++) {
+                    auto m = at(M,i);
+                    auto n = at(N,i);
+                    if constexpr (std::is_arithmetic_v<decltype(m)>) {
+                        if (fabs(m-n) > eps)
+                            return false;
+                    } else {
+                        auto nmm = size(m);
+                        auto nnn = size(n);
+                        assert (nmm=nnn);
+                        for (size_t j=0; j<nmm; j++) {
+                            auto mm = at(m,j);
+                            auto nn = at(n,j);
+                            if (fabs(mm-nn) > eps)
+                                return false;
+                        }
+                    }
+                }
+                return true;
+            }
+        } // constexpr auto isclose
 
+        /**
+         * @brief handles isclose for packed matrix/vector using fold expression.
+         * 
+         * @tparam T tuple
+         * @tparam U tuple
+         * @tparam E=double 
+         * @tparam I index sequence
+         * @param t lhs
+         * @param u rhs
+         * @param eps 
+         * @return constexpr auto 
+         */
+        template <typename T, typename U, typename E=double, size_t...I>
+        constexpr auto isclose(const T& t, const U& u, std::integer_sequence<size_t,I...>, E eps=1e-6)
+        {
+            constexpr auto is_packed_T = traits::is_tuple_v<T>;
+            constexpr auto is_packed_U = traits::is_tuple_v<U>;
+
+            /* unpack */    
+            return (... && isclose(std::get<I>(t),std::get<I>(u),eps));
+        } // constexpr auto isclose
+    } // namespace detail
+
+    /**
+     * @brief check if M is close with N given tolerance. When M and N is packed,
+     * like in tuple, then they must have same tuple size.
+     * 
+     * @tparam T possibly-packed (e.g. tuple) matrix-like or vector-like
+     * @tparam U possibly-packed (e.g. tuple) matrix-like or vector-like
+     * @tparam E=double 
+     * @param t (tuple of) matrix or vector or scalar
+     * @param u (tuple of) matrix or vector or scalar
+     * @param eps 
+     * @return constexpr auto 
+     */
+    template <typename T, typename U, typename E=double>
+    constexpr auto isclose(const T& t, const U& u, E eps=1e-6)
+    {
+        constexpr auto is_packed_T = traits::is_tuple_v<T>;
+        constexpr auto is_packed_U = traits::is_tuple_v<U>;
+
+        /* if T is tuple, then U must be tuple */
+        static_assert (is_packed_T == is_packed_U);
+
+        if constexpr (is_packed_T) {
+            constexpr auto nt = std::tuple_size_v<T>;
+            constexpr auto nu = std::tuple_size_v<U>;
+            static_assert(nt == nu);
+            using index_t = std::make_index_sequence<nt>;
+            return detail::isclose(t,u,index_t{},eps);
+        }
+        else {
+            return detail::isclose(t,u,eps);
+        }
+    } // constexpr auto isclose
+    
+    /**
+     * @brief stringify given array to given stream type.
+     * 
+     * @tparam stream_t stream type, e.g. std::stringstream,
+     * @tparam T array-like, 2d, 1d, or scalar
+     * @param array array to stringify
+     * @return auto stream with type of stream_t
+     */
+    template <typename stream_t, typename T>
+    auto stringify(const T& array)
+    {
+        auto stream = stream_t{};
+        if constexpr (traits::is_array2d_v<T>) {
+            auto [rows, cols] = matrix_size(array);
+            for (size_t i=0; i<rows; i++) {
+                // NOTE: std basic_stringstream cant have operator <<
+                // with another basic_stringsteam lol, call str() for temporary workaround
+                stream << stringify<stream_t>(row(array,i)).str() << "\n";
+            }
+        }
+        else if constexpr (traits::is_array1d_v<T>) {
+            auto n = vector_size(array);
+            for (size_t i=0; i<n; i++)
+                stream << at(array,i) << "\t";
+        }
+        else {
+            stream << array;
+        }
+        return stream;
+    } // auto stringify
+
+    /** @} */ // end group utils
 } // namespace nmtools::helper
 
 #endif // NMTOOLS_UTILITY_HELPER_HPP

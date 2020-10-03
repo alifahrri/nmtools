@@ -5,7 +5,19 @@
 #include "nmtools/meta.hpp"
 #include <array>
 
+/**
+ * @defgroup array 
+ * collections of array functions and structs.
+ * 
+ */
+
 namespace nmtools::array {
+
+    /**
+     * @addtogroup Fixed Fixed Array
+     * @ingroup array
+     * @{
+     */
 
     /**
      * @brief some implementation details for array impl
@@ -79,8 +91,20 @@ namespace nmtools::array {
     template <typename T, size_t N>
     struct fixed_vector
     {
+        /**
+         * @brief underlying storage type of fixed_vector
+         * 
+         */
         using data_type = std::array<T,N>;
+        /**
+         * @brief elemen type of fixed_vector
+         * 
+         */
         using value_type = T;
+        /**
+         * @brief size type of fixed_vector
+         * 
+         */
         using size_type = size_t;
         using reference = value_type&;
         using const_reference = const value_type&;
@@ -122,7 +146,7 @@ namespace nmtools::array {
         {
             return data.size();
         }
-    };
+    }; // struct fixed_vector
 
     /**
      * @brief naive implementation of fixed size matrix.
@@ -172,6 +196,19 @@ namespace nmtools::array {
         }
 
         /**
+         * @brief 
+         * 
+         * @tparam row 
+         * @tparam col 
+         * @return constexpr const_reference 
+         */
+        template <size_type row, size_type col>
+        constexpr const_reference operator()() const
+        {
+            return data[row*Cols+col];
+        }
+
+        /**
          * @brief access row
          * 
          * @param row row index
@@ -212,13 +249,81 @@ namespace nmtools::array {
         {
             return std::make_pair(Rows,Cols);
         }
-    };
+    }; // struct fixed_matrix
     
     
+    /**
+     * @brief helper traits to check if given type is array::fixed_matrix,
+     * not to be confused with nmtools::traits::is_fixed_matrix which is
+     * more generic in concept not to differentiate
+     * specific type (array::fixed_matrix in this case).
+     * 
+     * @tparam T type to check
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct is_fixed_matrix : std::false_type {};
+
+    /**
+     * @brief true case for nmtools::array::is_fixed_matrix
+     * 
+     * @tparam T value type of nmtools::array::fixed_matrix, deduced automatically
+     * @tparam Rows number of row of nmtools::array::fixed_matrix, deduced automatically
+     * @tparam Cols number of column of nmtools::array::fixed_matrix, deduced automatically
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    struct is_fixed_matrix<fixed_matrix<T,Rows,Cols>,void> : std::true_type {};
+
+    /**
+     * @brief make fixed_vector can be used with range-based for loop
+     * 
+     * @tparam T value_type of fixed_vector, deduced automatically
+     * @tparam N size of fixed_vector, deduced automatically
+     * @param v 
+     * @return constexpr auto 
+     */
+    template <typename T, size_t N>
+    constexpr auto begin(fixed_vector<T,N>& v)
+    {
+        return v.data.begin();
+    } // constexpr auto begin
+
+    template <typename T, size_t N>
+    constexpr auto begin(const fixed_vector<T,N>& v)
+    {
+        return v.data.begin();
+    } // constexpr auto begin
+
+    /**
+     * @brief make fixed_vector can be used with range-based for loop
+     * 
+     * @tparam T value_type of fixed_vector, deduced automatically
+     * @tparam N size of fixed_vector, deduced automatically
+     * @param v 
+     * @return constexpr auto 
+     */
+    template <typename T, size_t N>
+    constexpr auto end(fixed_vector<T,N>& v)
+    {
+        return v.data.end();
+    } // constexpr auto end
+
+    template <typename T, size_t N>
+    constexpr auto end(const fixed_vector<T,N>& v)
+    {
+        return v.data.end();
+    } // constexpr auto end
+
+    /** @} */ // end group fixed array
 } // namespace nmtools::array
 
 namespace nmtools
 {
+    /**
+     * @ingroup utility
+     * 
+     */
+
     /**
      * @brief 
      * 
@@ -228,6 +333,7 @@ namespace nmtools
      * @param M 
      * @param r 
      * @return constexpr auto 
+     * @todo dont specialize, use generic + metafunction instead
      */
     template <typename T, size_t Rows, size_t Cols>
     constexpr auto row(const array::fixed_matrix<T,Rows,Cols>& M, size_t r)
@@ -321,10 +427,17 @@ namespace nmtools
     {
         return m.shape();
     }
+
+    /** @} */ // end group utility
 } // namespace nmtools
 
 namespace nmtools::traits
 {
+    /**
+     * @ingroup traits
+     * @{
+     */
+
     /**
      * @brief specialize array traits for fixed_vector
      * 
@@ -344,10 +457,16 @@ namespace nmtools::traits
     template <typename T, size_t Rows, size_t Cols>
     struct is_array2d<array::fixed_matrix<T,Rows,Cols>> : true_type {};
 
+    /** @} */ // end group traits
 } // namespace nmtooclls::traits
 
 namespace nmtools::meta
 {
+    /**
+     * @ingroup meta
+     * @{
+     */
+
     /**
      * @brief specialization of metafunction make_zeros_vector
      * for custom fixed-size vector array::fixed_vector.
@@ -394,6 +513,52 @@ namespace nmtools::meta
         using common_t = std::common_type_t<T,U>;
         using type = array::fixed_matrix<common_t,M,N>;
     };
+
+    /**
+     * @brief specialization of metafunction resize_fixed_vector,
+     * which determine the new type given new size.
+     * 
+     * @tparam T value_type of fixed_vector, which to be resized, automatically deduced
+     * @tparam N current size of fixed_vector, automatically deduced
+     * @tparam new_size desired new size
+     */
+    template <typename T, size_t N, size_t new_size>
+    struct resize_fixed_vector<array::fixed_vector<T,N>,new_size>
+    {
+        using type = array::fixed_vector<T,new_size>;
+    }; // struct resize_fixed_vector
+
+    /**
+     * @brief specialization of metafunction get_column_type,
+     * which determinde the resulting type for column op.
+     * 
+     * @tparam T T value_type of original fixed-size matrix with fixed compile time shape, deduced automatically
+     * @tparam M Rows row size of array::fixed_matrix, deduced automatically
+     * @tparam N Cols column size of array::fixed_matrix, deduced automatically
+     * @see nmtools::column
+     * @see nmtools::blas::row_sum
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    struct get_column_type<array::fixed_matrix<T,Rows,Cols>>
+    {
+        using type = array::fixed_vector<T,Cols>;
+    }; // struct get_column_type
+
+    /**
+     * @brief specialization of metafunction get_row_type for array::fixed_matrix type,
+     * which determine the resulting type for col_sum op.
+     * 
+     * @tparam T value_type of array::fixed_matrix, automatically deduced
+     * @tparam Rows row size of array::fixed_matrix, deduced automatically
+     * @tparam Cols column size of array::fixed_matrix, deduced automatically
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    struct get_row_type<array::fixed_matrix<T,Rows,Cols>>
+    {
+        using type = array::fixed_vector<T,Rows>;
+    }; // struct get_column_type
+
+    /** @} */ // end group meta
 }
 
 #endif // NMTOOLS_ARRAY_FIXED_HPP

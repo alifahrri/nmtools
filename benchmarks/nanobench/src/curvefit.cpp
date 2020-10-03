@@ -1,5 +1,3 @@
-#define ANKERL_NANOBENCH_IMPLEMENT
-
 #include "curvefit.hpp"
 
 #include "xsimd/xsimd.hpp"
