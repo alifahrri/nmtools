@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <cmath>
 #include <cassert>
-    
+
 namespace nmtools::blas {
 
     namespace tag {
@@ -243,8 +243,14 @@ namespace nmtools::blas {
     using std::get;
     using std::size;
     using std::fabs;
+    using std::sqrt;
     using std::tuple_size;
     using std::tuple_size_v;
+
+    /** @defgroup blas
+    * Collections of blas functions.
+    * @{
+    */
     
     /**
      * @brief make zeros array, given size known at compile-time
@@ -633,13 +639,283 @@ namespace nmtools::blas {
             traits::is_array1d_v<Array>,
             "unsupported type of array"
         );
-        using value_type = typename Array::value_type;
+        using value_type = meta::get_vector_value_type_t<Array>;
         value_type m = std::numeric_limits<value_type>::min();
         for (const auto e : a)
             if (e > m)
                 m = e;
         return m;
     } // constexpr auto max(const Array& a)
+
+    namespace detail {
+        /**
+         * @brief implementation of sum for 1D array
+         * 
+         * @param sum input/output sum
+         * @param a array to be summed
+         * @param n number of elements in array a
+         * @return constexpr auto 
+         */
+        constexpr auto sum_impl(auto& sum, const auto& a, auto n)
+        {
+            using idx_t = traits::remove_cvref_t<decltype(n)>;
+            for (idx_t i=0; i<n; i++)
+                sum += at(a,i);
+        } // sum_impl
+        /**
+         * @brief implementation of sum for 2D array
+         * 
+         * @param sum input/output sum
+         * @param a array to be summed
+         * @param rows number of row in array a
+         * @param cols number of column in array a
+         * @return constexpr auto 
+         */
+        constexpr auto sum_impl(auto& sum, const auto& a, auto rows, auto cols)
+        {
+            using rows_t = traits::remove_cvref_t<decltype(rows)>;
+            using cols_t = traits::remove_cvref_t<decltype(cols)>;
+            using index_t = std::common_type_t<rows_t,cols_t>;
+            for (index_t i=0; i<rows; i++)
+                for (index_t j=0; j<cols; j++)
+                    sum += at(a,i,j);
+        } // sum_impl
+    } // namespace detail
+
+    /**
+     * @brief sum-element
+     * 
+     * @tparam Array vector-like
+     * @param a vector
+     * @return constexpr auto 
+     */
+    template <typename Array>
+    constexpr auto sum(const Array& a)
+    {
+        static_assert(
+            traits::is_array1d_v<Array>
+            || traits::is_array2d_v<Array>,
+            "unsupported type of array, "
+            "only support 1D and 2D array for now"
+        );
+        using value_type = meta::get_element_type_t<Array>;
+        static_assert(
+            std::is_arithmetic_v<value_type>,
+            "unsupported element type from Array for operator sum, "
+            "may be specialization of meta::get_element_type required (?)"
+        );
+        auto result = value_type{0};
+        /* dispatch if a is 2D array */
+        if constexpr (traits::is_array2d_v<Array>) {
+            /* TODO: consider to read matrix_size as constexpr whenever possible */
+            auto [rows, cols] = matrix_size(a);
+            detail::sum_impl(result,a,rows,cols);
+        }
+        /* otherwise, dispatch if a is 1D array */
+        else if constexpr (traits::is_array1d_v<Array>) {
+            auto n = vector_size(a);
+            detail::sum_impl(result,a,n);
+        }
+        return result;
+    } // constexpr auto sum(const Array& a)
+
+    namespace detail {
+        /**
+         * @brief implementation of sumsq for 1D array
+         * 
+         * @param sum input/output sum
+         * @param a array to be summed
+         * @param n number of elements in array a
+         * @return constexpr auto 
+         */
+        constexpr auto sumsq_impl(auto& sum, const auto& a, auto n)
+        {
+            using idx_t = traits::remove_cvref_t<decltype(n)>;
+            for (idx_t i=0; i<n; i++)
+                sum += at(a,i)*at(a,i);
+        } // sumsq_impl
+        /**
+         * @brief implementation of sumsq for 2D array
+         * 
+         * @param sum input/output sum
+         * @param a array to be summed
+         * @param rows number of row in array a
+         * @param cols number of column in array a
+         * @return constexpr auto 
+         */
+        constexpr auto sumsq_impl(auto& sum, const auto& a, auto rows, auto cols)
+        {
+            using rows_t = traits::remove_cvref_t<decltype(rows)>;
+            using cols_t = traits::remove_cvref_t<decltype(cols)>;
+            using index_t = std::common_type_t<rows_t,cols_t>;
+            for (index_t i=0; i<rows; i++)
+                for (index_t j=0; j<cols; j++)
+                    sum += at(a,i,j)*at(a,i,j);
+        } // sumsq_impl
+    } // namespace detail
+
+    template <typename Array>
+    constexpr auto sumsq(const Array& a)
+    {
+        static_assert(
+            traits::is_array1d_v<Array>
+            || traits::is_array2d_v<Array>,
+            "unsupported type of array, "
+            "only support 1D and 2D array for now"
+        );
+        using detail::sumsq_impl;
+        using value_type = meta::get_element_type_t<Array>;
+        static_assert(
+            std::is_arithmetic_v<value_type>,
+            "unsupported element type from Array for operator sumsq, "
+            "may be specialization of meta::get_element_type required (?)"
+        );
+        auto result = value_type{0};
+        /* dispatch if a is 2D array */
+        if constexpr (traits::is_array2d_v<Array>) {
+            /* TODO: consider to read matrix_size as constexpr whenever possible */
+            auto [rows, cols] = matrix_size(a);
+            sumsq_impl(result,a,rows,cols);
+        }
+        /* otherwise, dispatch if a is 1D array */
+        else if constexpr (traits::is_array1d_v<Array>) {
+            auto n = vector_size(a);
+            sumsq_impl(result,a,n);
+        }
+        return result;
+    } // constexpr auto sum(const Array& a)
+
+    namespace detail {
+        /**
+         * @brief implementation of row_sum
+         * 
+         * @param sum input/output sum
+         * @param a array to be summed
+         * @param rows number of row in array a
+         * @param cols number of column in array a
+         * @return constexpr auto 
+         */
+        constexpr auto row_sum_impl(auto& sum, const auto& a, auto rows, auto cols)
+        {
+            using rows_t = traits::remove_cvref_t<decltype(rows)>;
+            using cols_t = traits::remove_cvref_t<decltype(cols)>;
+            using index_t = std::common_type_t<rows_t,cols_t>;
+            for (index_t i=0; i<rows; i++)
+                for (index_t j=0; j<cols; j++)
+                    at(sum, j) += at(a,i,j);
+        } // constexpr auto row_sum_impl
+    } // namespace detail
+
+    /**
+     * @brief perform row sum operation, similar to `sum(A,1)` in octave.
+     * 
+     * @tparam Array 
+     * @param a 
+     * @return constexpr auto 
+     * @see nmtools::meta::get_column_type
+     */
+    template <typename Array>
+    constexpr auto row_sum(const Array& a)
+    {
+        static_assert(
+            traits::is_array2d_v<Array>,
+            "unsupported type of array, "
+            "only support 2D array for now"
+        );
+        using detail::row_sum_impl;
+        using sum_t = meta::get_column_type_t<Array>;
+        static_assert(
+            !std::is_same_v<sum_t,void>,
+            "unsupported column type for sum, may be specialization "
+            "of nmtools::meta::get_column_type needed (?)"
+        );
+
+        constexpr auto is_fixed_size = traits::is_fixed_size_vector_v<sum_t>;
+        constexpr auto is_resizeable = traits::is_resizeable_v<sum_t>;
+        static_assert(is_fixed_size || is_resizeable);
+
+        if constexpr (is_fixed_size) {
+            auto sum = sum_t{};
+            constexpr auto shape = matrix_size(a);
+            constexpr auto rows = get<0>(shape);
+            constexpr auto cols = get<1>(shape);
+            row_sum_impl(sum,a,rows,cols);
+            return sum;
+        }
+        else if constexpr (is_resizeable) {
+            auto sum = sum_t{};
+            auto [rows, cols] = matrix_size(a);
+            sum.resize(cols);
+            row_sum_impl(sum,a,rows,cols);
+            return sum;
+        }
+    } // constexpr auto row_sum
+
+    namespace detail {
+        /**
+         * @brief implementation of col_sum
+         * 
+         * @param sum input/output sum
+         * @param a array to be summed
+         * @param rows number of row in array a
+         * @param cols number of column in array a
+         * @return constexpr auto 
+         */
+        constexpr auto col_sum_impl(auto& sum, const auto& a, auto rows, auto cols)
+        {
+            using rows_t = traits::remove_cvref_t<decltype(rows)>;
+            using cols_t = traits::remove_cvref_t<decltype(cols)>;
+            using index_t = std::common_type_t<rows_t,cols_t>;
+            for (index_t j=0; j<cols; j++)
+                for (index_t i=0; i<rows; i++)
+                    at(sum,i) += at(a,i,j);
+        } // constexpr auto col_sum_impl
+    } // namespace detail
+
+    /**
+     * @brief perform column sum operation
+     * 
+     * @tparam Array 
+     * @param a 
+     * @return constexpr auto 
+     * @see nmtools::meta::get_row_type
+     */
+    template <typename Array>
+    constexpr auto col_sum(const Array& a)
+    {
+        static_assert(
+            traits::is_array2d_v<Array>,
+            "unsupported type of array, "
+            "only support 2D array for now"
+        );
+        using detail::col_sum_impl;
+        using sum_t = meta::get_row_type_t<Array>;
+        static_assert(
+            !std::is_same_v<sum_t,void>,
+            "unsupported column type for sum, may be specialization "
+            "of nmtools::meta::get_row_type needed (?)"
+        );
+
+        constexpr auto is_fixed_size = traits::is_fixed_size_vector_v<sum_t>;
+        constexpr auto is_resizeable = traits::is_resizeable_v<sum_t>;
+        static_assert(is_fixed_size || is_resizeable);
+
+        if constexpr (is_fixed_size) {
+            auto sum = sum_t{};
+            constexpr auto shape = matrix_size(a);
+            constexpr auto rows = get<0>(shape);
+            constexpr auto cols = get<1>(shape);
+            col_sum_impl(sum,a,rows,cols);
+            return sum;
+        }
+        else if constexpr (is_resizeable) {
+            auto sum = sum_t{};
+            auto [rows, cols] = matrix_size(a);
+            sum.resize(rows);
+            col_sum_impl(sum,a,rows,cols);
+            return sum;
+        }
+    } // constexpr auto col_sum
 
     /**
      * @brief elementwise absolute value
@@ -734,6 +1010,25 @@ namespace nmtools::blas {
         }
     } // constexpr auto dot(const V1& v1, const V2& v2)
 
+    namespace detail {
+        /**
+         * @brief 
+         * 
+         * @param matrix 
+         * @param v1 
+         * @param v2 
+         * @param m 
+         * @param n 
+         * @return constexpr auto 
+         */
+        constexpr auto outer_impl(auto& matrix, const auto& v1, const auto& v2, auto m, auto n)
+        {
+            for (size_t i=0; i<m; i++)
+                for (size_t j=0; j<n; j++)
+                    at(matrix,i,j) = at(v1,i) * at(v2,j);
+        }
+    } // namespace detail
+
     /**
      * @brief perform outer product computation
      * 
@@ -753,6 +1048,7 @@ namespace nmtools::blas {
             /* TODO: helpful error message here */
         );
 
+        using detail::outer_impl;
         using v1_t = meta::transform_bounded_array_t<V1>;
         using v2_t = meta::transform_bounded_array_t<V2>;
 
@@ -765,14 +1061,6 @@ namespace nmtools::blas {
         );
 
         constexpr auto is_fixed_size_matrix = traits::is_fixed_size_matrix_v<matrix_t>;
-
-        /* define generic lambda for actual implementation, */
-        constexpr auto outer_impl = [](auto& matrix, const auto& v1, const auto& v2, auto m, auto n)
-        {
-            for (size_t i=0; i<m; i++)
-                for (size_t j=0; j<n; j++)
-                    at(matrix,i,j) = at(v1,i) * at(v2,j);
-        };
 
         if constexpr (is_fixed_size_matrix) {
             /* prepare placeholder for the resulting matrix */
@@ -1413,6 +1701,173 @@ namespace nmtools::blas {
 
     } // constexpr auto gaxpy(const Matrix& A, const X& x, const Y& y)
 
+    /**
+     * @brief enum for norm type
+     * 
+     */
+    enum struct norm_t {
+        /**
+         * @brief infinity norm
+         * 
+         */
+        infinity_norm=3,
+        /**
+         * @brief frobenius norm
+         * 
+         */
+        frobenius_norm=4,
+    };
+
+    /**
+     * @brief computer P-norm of vector x
+     * 
+     * @tparam P norm kind: 2, 1, or inf_norm
+     * @tparam Vector vector-like
+     * @param x vector which its norm is to be computed
+     * @return constexpr auto 
+     */
+    template <auto P, typename Vector>
+    constexpr auto vector_norm(const Vector& x)
+    {
+        using norm_type = decltype(P);
+        if constexpr (std::is_same_v<norm_type,norm_t>) {
+            /* NOTE: need to be nested so operator== 
+                will only evaluated when possible (P is norm_t) */
+            if constexpr (P==norm_t::infinity_norm)
+                return max(fabs(x));
+        }
+        else if constexpr (P==2)
+            return sqrt(dot(x,x));
+        else if constexpr (P==1)
+            return sum(fabs(x));
+    } // constexpr auto vector_norm
+    
+    /**
+     * @brief overloaded version of vector_norm, where p is runtime value
+     * 
+     * @tparam Vector vector-like
+     * @tparam size_type type of p
+     * @param x vector which its norm is to be computed
+     * @param p norm kind: 2, 1, or norm_t
+     * @return constexpr auto 
+     */
+    template <typename Vector, typename norm_type>
+    constexpr auto vector_norm(const Vector& x, norm_type p)
+    {
+        if constexpr (std::is_same_v<norm_type,norm_t>) {
+            /* NOTE: need to be nested so operator== 
+                will only evaluated when possible (P is norm_t) */
+            if (p==norm_t::infinity_norm)
+                return max(fabs(x));
+        }
+        else {
+            if (p==2)
+                return sqrt(dot(x,x));
+            else if (p==1)
+                return sum(fabs(x));
+        }
+    } // constexpr auto vector_norm
+
+    template <auto P, typename Matrix>
+    constexpr auto matrix_norm(const Matrix& M)
+    {
+        using norm_type = decltype(P);
+        if constexpr (std::is_same_v<norm_type,norm_t>) {
+            constexpr auto is_inf = P == norm_t::infinity_norm;
+            constexpr auto is_fro = P == norm_t::frobenius_norm;
+            static_assert(is_inf || is_fro);
+            if constexpr (is_inf)
+                return max(col_sum(fabs(M)));
+            else if constexpr (is_fro)
+                return sqrt(sumsq(M));
+        }
+        else {
+            static_assert(P==1, "only support norm-1 for now");
+            return max(row_sum(fabs(M)));
+        }
+    } // constexpr auto matrix_norm
+
+    template <typename Matrix, typename norm_type>
+    constexpr auto matrix_norm(const Matrix& M, norm_type p)
+    {
+        if constexpr (std::is_same_v<norm_type,norm_t>) {
+            auto is_inf = p == norm_t::infinity_norm;
+            auto is_fro = p == norm_t::frobenius_norm;
+            // assert(is_inf || is_fro);
+            if (is_inf)
+                return max(col_sum(fabs(M)));
+            else if (is_fro)
+                return sqrt(sumsq(M));
+        }
+        else {
+            // assert(p==1, "only support norm-1 for now");
+            return max(row_sum(fabs(M)));
+        }
+    } // constexpr auto matrix_norm
+
+    /**
+     * @brief compute matrix/vector p-norm
+     * 
+     * @tparam P norm kind
+     * @tparam Array matrix/vector like
+     * @param x matrix/vector which it norm is to be computed
+     * @return constexpr auto 
+     */
+    template <auto P, typename Array>
+    constexpr auto norm(const Array& x)
+    {
+        static_assert(
+            traits::is_array1d_v<Array>
+            || traits::is_array2d_v<Array>
+            /* TODO: helpful error message here */
+        );
+        if constexpr (traits::is_array1d_v<Array>)
+            return vector_norm<P>(x);
+        else return matrix_norm<P>(x);
+    } // constexpr auto norm
+
+    /**
+     * @brief overloaded version of norm, with p as runtime value
+     * 
+     * @tparam Array 
+     * @tparam size_type 
+     * @param x 
+     * @param p 
+     * @return constexpr auto 
+     */
+    template <typename Array, typename size_type>
+    constexpr auto norm(const Array& x, size_type p)
+    {
+        static_assert(
+            traits::is_array1d_v<Array>
+            || traits::is_array2d_v<Array>
+            /* TODO: helpful error message here */
+        );
+        if constexpr (traits::is_array1d_v<Array>)
+            return vector_norm(x,p);
+        else return matrix_norm(x,p);
+    } // constexpr auto norm
+
+    /** @} */ // end group blas
+
 } // namespace nmtools::blas
+
+namespace std {
+    /**
+     * @ingroup blas
+     * @brief overload to std::to_string for nmtools::blas::norm_t
+     * 
+     * @param norm norm kind
+     * @return std::string "infinity" or "frobenius"
+     * @note defined as inline to avoid linking error
+     */
+    inline std::string to_string(nmtools::blas::norm_t norm) {
+        using nmtools::blas::norm_t;
+        if (norm == norm_t::infinity_norm)
+            return "infinity_norm";
+        else if (norm == norm_t::frobenius_norm)
+            return "frobenius_norm";
+    }
+}
 
 #endif // NMTOOLS_BLAS_BLAS_HPP
