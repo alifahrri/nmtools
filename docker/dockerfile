@@ -24,7 +24,7 @@ RUN bash install_doctest.sh
 
 ## install fmt
 COPY scripts/install_doctest.sh install_fmt.sh
-RUN bash install_doctest.sh
+RUN bash install_fmt.sh
 
 ## install miniconda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
