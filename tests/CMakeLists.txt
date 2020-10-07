@@ -63,7 +63,11 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/blas/saxpy.cpp
     src/doctest/blas/gaxpy.cpp
     ## array utility
-    src/doctest/array/utility.cpp
+    src/doctest/array/utility/at.cpp
+    src/doctest/array/utility/row.cpp
+    src/doctest/array/utility/column.cpp
+    src/doctest/array/utility/slice.cpp
+    src/doctest/array/utility/squeeze.cpp
     ## metafunctions
     src/doctest/meta.cpp
 )

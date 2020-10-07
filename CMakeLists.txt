@@ -22,6 +22,7 @@ set(NMTOOLS_HEADERS
     ${NMTOOLS_INCLUDE_DIR}/nmtools/integration/trapezoidal.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/decomposition.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/elimination.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/orthogonalization.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/ode/euler.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/runge_kutta.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/optimization/unconstrained.hpp
