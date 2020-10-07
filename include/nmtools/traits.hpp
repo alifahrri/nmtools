@@ -752,6 +752,30 @@ namespace nmtools::traits {
 
     template <typename T>
     inline constexpr bool is_dynamic_size_vector_v = is_dynamic_size_vector<T>::value;
+
+    /**
+     * @brief check if given type T is std::integral_constant
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct is_integral_constant : false_type {};
+
+    /**
+     * @brief check if given type T is std::integral_constant
+     * 
+     * @tparam T type to check
+     */
+    template <typename T, auto N>
+    struct is_integral_constant<std::integral_constant<T,N>> : true_type {};
+
+    /**
+     * @brief helper inline variable to check if given type T is std::integral_constant
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_integral_constant_v = is_integral_constant<T>::value;
     
     /** @} */ // end group traits
 
