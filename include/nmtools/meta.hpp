@@ -399,6 +399,61 @@ namespace nmtools::meta
     using resize_fixed_vector_t = typename resize_fixed_vector<T,N>::type;
 
     /**
+     * @brief given fixed matrix T, return new type of fixed matrix with Rows and Cols.
+     * Default implementation define type as void.
+     * 
+     * @tparam T 
+     * @tparam Rows 
+     * @tparam Cols 
+     */
+    template <typename T, auto Rows, auto Cols>
+    struct resize_fixed_matrix
+    {
+        using type = void;
+    };
+
+    /**
+     * @brief specialization of metafunction resize_fixed_matrix for nested std::array
+     * 
+     * @tparam T value type
+     * @tparam M number of row of origin type
+     * @tparam N number of column of origin type
+     * @tparam Rows new desired row size
+     * @tparam Cols new desired column size
+     */
+    template <typename T, auto M, auto N, auto Rows, auto Cols>
+    struct resize_fixed_matrix<std::array<std::array<T,N>,M>,Rows,Cols>
+    {
+        using type = std::array<std::array<T,Cols>,Rows>;
+    };
+
+    /**
+     * @brief specialization of metafunction resize_fixed_matrix for nested raw array
+     * 
+     * @tparam T value type
+     * @tparam M number of row of origin type
+     * @tparam N number of column of origin type
+     * @tparam Rows new desired row size
+     * @tparam Cols new desired column size
+     */
+    template <typename T, auto M, auto N, auto Rows, auto Cols>
+    struct resize_fixed_matrix<T[M][N],Rows,Cols>
+    {
+        using type = std::array<std::array<T,Cols>,Rows>;
+    };
+
+    /**
+     * @brief helper alias template to get the resulting type of metafunction resize_fixed_matrix
+     * 
+     * @tparam T origin type
+     * @tparam Rows new desired row size
+     * @tparam Cols new desired column size
+     * @see nmtools::meta::resize_fixed_matrix
+     */
+    template <typename T, auto Rows, auto Cols>
+    using resize_fixed_matrix_t = typename resize_fixed_matrix<T,Rows,Cols>::type;
+
+    /**
      * @brief metafunction to extract template paramters.
      * Given type T, return its template parameters as tuple,
      * e.g. given T<Params...>, return std::tuple<Params...>{}.
