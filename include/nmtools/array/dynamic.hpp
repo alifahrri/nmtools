@@ -1,10 +1,6 @@
 #ifndef NMTOOLS_ARRAY_DYNAMIC_HPP
 #define NMTOOLS_ARRAY_DYNAMIC_HPP
 
-#include "nmtools/array/utility.hpp"
-#include "nmtools/meta.hpp"
-/* include fixed array for metafunction specialization */
-#include "nmtools/array/fixed.hpp"
 #include <vector>
 #include <initializer_list>
 
@@ -307,6 +303,18 @@ namespace nmtools
 
 namespace nmtools::blas
 {
+    /**
+     * @ingroup blas
+     * 
+     */
+
+    /**
+     * @brief overloaded version of zeros_like for array::dynamic_vector
+     * 
+     * @tparam T element type of dynamic_vector
+     * @param v reference vector
+     * @return auto 
+     */
     template <typename T>
     auto zeros_like(const array::dynamic_vector<T>& v)
     {
@@ -314,6 +322,13 @@ namespace nmtools::blas
         return ret;
     }
 
+    /**
+     * @brief overloaded version of zeros_like for array::dynamic_vector
+     * 
+     * @tparam T element type of dynamic_vector
+     * @param v reference vector
+     * @return auto 
+     */
     template <typename T>
     auto zeros_like(const array::dynamic_matrix<T>& m)
     {
@@ -321,10 +336,19 @@ namespace nmtools::blas
         auto ret = array::dynamic_matrix<T>(rows,cols); 
         return ret;
     }
+
+    /** @} */ // end group blas
 }
+
+#include "nmtools/traits.hpp"
 
 namespace nmtools::traits
 {
+    /**
+     * @ingroup meta
+     * 
+     */
+
     /**
      * @brief specialization of is_array1d traits for dynamic_vector which is true
      * 
@@ -372,11 +396,24 @@ namespace nmtools::traits
      */
     template <typename T>
     struct is_resizeable<array::dynamic_matrix<T>> : true_type {};
+
+    /** @} */ // end group traits
     
 } // namespace nmtools::traits
 
+#include "nmtools/meta.hpp"
+// include fixed array for metafunction specialization
+// note: fixed array also include array/utility,
+// include here so that dynamic vector_size and matrix_size visible
+#include "nmtools/array/fixed.hpp"
+
 namespace nmtools::meta
 {
+    /**
+     * @ingroup meta
+     * 
+     */
+
     /**
      * @brief specialization for metafunction make_outer_matrix,
      * which tells matrix type for outer product,
@@ -385,6 +422,7 @@ namespace nmtools::meta
      * 
      * @tparam T value_type of lhs vector, automatically deduced.
      * @tparam U value_type of rhs vector, automatically deduced.
+     * @see nmtools::blas::outer
      */
     template <typename T, typename U>
     struct make_outer_matrix<array::dynamic_vector<T>,array::dynamic_vector<U>>
@@ -394,11 +432,15 @@ namespace nmtools::meta
     };
 
     /**
-     * @brief 
+     * @brief specialization of metafunction make_outer_matrix,
+     * which tells matrix type for outer product, 
+     * for array::dynamic_vector and array::fixed_vector,
+     * resulting in array::dynamic_matrix type.
      * 
-     * @tparam T 
-     * @tparam U 
-     * @tparam N 
+     * @tparam T element type of dynamic_vector
+     * @tparam U element type of fixed_vector
+     * @tparam N number of element of fixed_vector
+     * @see nmtools::blas::outer
      */
     template <typename T, typename U, size_t N>
     struct make_outer_matrix<array::dynamic_vector<T>,array::fixed_vector<U,N>>
@@ -408,11 +450,15 @@ namespace nmtools::meta
     };
 
     /**
-     * @brief 
+     * @brief specialization of metafunction make_outer_matrix,
+     * which tells matrix type for outer product, 
+     * for array::fixed_vector and array::dynamic_vector,
+     * resulting in array::dynamic_matrix type.
      * 
-     * @tparam T 
-     * @tparam U 
-     * @tparam N 
+     * @tparam T element type of dynamic_vector
+     * @tparam U element type of fixed_vector
+     * @tparam N number of element of fixed_vector
+     * @see nmtools::blas::outer
      */
     template <typename T, typename U, size_t N>
     struct make_outer_matrix<array::fixed_vector<U,N>,array::dynamic_vector<T>>
@@ -421,17 +467,37 @@ namespace nmtools::meta
         using type = array::dynamic_matrix<common_t>;
     };
 
+    /**
+     * @brief specialization of metafunction get_column_type,
+     * which tells vector type for column function,
+     * for array::dynamic_matrix, resulting in array::dynamic_vector type.
+     * 
+     * @tparam T 
+     * @see nmtools::column
+     * @see ntmools::row
+     */
     template <typename T>
     struct get_column_type<array::dynamic_matrix<T>>
     {
         using type = array::dynamic_vector<T>;
     };
 
+    /**
+     * @brief specialization of metafunction get_row_type,
+     * which tells vector type for row function,
+     * for array::dynamic_matrix, resulting in array::dynamic_vector type.
+     * 
+     * @tparam T 
+     * @see nmtools::column
+     * @see ntmools::row
+     */
     template <typename T>
     struct get_row_type<array::dynamic_matrix<T>>
     {
         using type = array::dynamic_vector<T>;
     };
+
+    /** @} */ // end group meta
 } // namespace nmtools::meta
 
 
