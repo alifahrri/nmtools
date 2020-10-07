@@ -623,6 +623,14 @@ inline auto prefix##ff = cast<ffvec_t<N>>(prefix##af);      \
 inline auto prefix##dd = cast<dvec_t<double>>(prefix##ad);  \
 inline auto prefix##df = cast<dvec_t<float>>(prefix##af);   \
 
+/**
+ * @brief helper macro to declare inline scalar variable with type of double and float.
+ * The variable are declared with name of `{prefix}vd`, `{prefix}vf`, `{prefix}fd`, `{prefix}ff`,
+ * for the corresponding types above, respectively.
+ * Those variables are casted from `{prefix}ad` and `{prefix}af` for corresponding double and float type.
+ * Expected to be used for declaring testing data variable.
+ * 
+ */
 #define NMTOOLS_TESTING_DATA_DECLARE_SCALAR(prefix,x) \
 inline auto prefix##ad = cast<double>(x<double>); \
 inline auto prefix##vd = cast<double>(x<double>); \
@@ -633,14 +641,261 @@ inline auto prefix##vf = cast<float>(x<float>); \
 inline auto prefix##ff = cast<float>(x<float>); \
 inline auto prefix##df = cast<float>(x<float>); \
 
-#define NMTOOLS_TESTING_DECLARE_CASE(module, function) \
+#define NMTOOLS_TESTING_DATA_DECLARE_INTEGER(x) \
+inline auto x##ad = x; \
+inline auto x##vd = x; \
+inline auto x##fd = x; \
+inline auto x##dd = x; \
+inline auto x##af = x; \
+inline auto x##vf = x; \
+inline auto x##ff = x; \
+inline auto x##df = x; \
+
+/**
+ * @brief helper macro to declare test data for given function for testing,
+ * simply create namespace under `nmtools::testing::data::{module}::{function}`
+ * 
+ */
+#define NMTOOLS_TESTING_DECLARE_CASE2(module, function) \
 namespace nmtools::testing::data::module::function
 
+/**
+ * @brief helper macro to declare test data for given function for testing,
+ * simply create namespace under `nmtools::testing::data::{module}::{function}`
+ * 
+ */
+#define NMTOOLS_TESTING_DECLARE_CASE1(function) \
+namespace nmtools::testing::data::function
+
+/**
+ * @brief helper macro to overload NMTOOLS_TESTING_DECLARE_CASE macro
+ * 
+ */
+#define NMTOOLS_GET_TESTING_DECLARE_CASE_MACRO(_1,_2,NAME,...) NAME
+#define NMTOOLS_TESTING_DECLARE_CASE(...) NMTOOLS_GET_TESTING_DECLARE_CASE_MACRO(__VA_ARGS__, NMTOOLS_TESTING_DECLARE_CASE2, NMTOOLS_TESTING_DECLARE_CASE1)(__VA_ARGS__)
+
+/**
+ * @brief helper macro to declare actual test data,
+ * simply create new namespace under `{subcase}::args`
+ * 
+ */
 #define NMTOOLS_TESTING_DECLARE_ARGS(subcase)   \
 namespace subcase::args
 
+/**
+ * @brief helper macro to declare expected result of test case,
+ * simply create new namespace under `{subcase}::expect`
+ * 
+ */
 #define NMTOOLS_TESTING_DECLARE_EXPECT(subcase)   \
 namespace subcase::expect
+
+/**
+ * @brief define test case for given func that takes single argument, using std::array as param.
+ * Assuming a variable with name of {prefix}ad has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES
+ * @see NMTOOLS_TESTING_DATA_DECLARE_ARRAY
+ * @see NMTOOLS_TESTING_DECLARE_TPARAM_SUBCASES
+ */
+#define NMTOOLS_TEST_SUBCASE_ARRAY_IMPL(func, result, prefix) \
+NMTOOLS_TEST_SUBCASE( func, result, prefix##ad ); \
+NMTOOLS_TEST_SUBCASE( func, result, prefix##af );
+
+/**
+ * @brief define test case for given func that takes two argument, using std::array as param.
+ * Assuming a variable with name of {prefix}ad has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES2
+ * @see NMTOOLS_TESTING_DATA_DECLARE_ARRAY
+ */
+#define NMTOOLS_TEST_SUBCASE_ARRAY2_IMPL(func, result, xprefix, yprefix) \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##ad, yprefix##ad ); \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##af, yprefix##af );
+
+/**
+ * @brief define test case for given func that takes three argument, using std::array as param.
+ * Assuming a variable with name of {prefix}ad has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES3
+ * @see NMTOOLS_TESTING_DATA_DECLARE_ARRAY
+ */
+#define NMTOOLS_TEST_SUBCASE_ARRAY3_IMPL(func, result, xprefix, yprefix, zprefix) \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##ad, yprefix##ad, zprefix##ad ); \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##af, yprefix##af, zprefix##af );
+
+/*
+ * @brief define test case for given func that takes single argument, using nmtools::array::fixed_* as param.
+ * Assuming a variable with name of {prefix}fd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see NMTOOLS_TESTING_DECLARE_TPARAM_SUBCASES
+ * @see nmtools::array::fixed_vector
+ * @see nmtools::array::fixed_matrix
+ */
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY_IMPL(func, result, prefix) \
+NMTOOLS_TEST_SUBCASE( func, result, prefix##fd ); \
+NMTOOLS_TEST_SUBCASE( func, result, prefix##ff );
+
+/*
+ * @brief define test case for given func that takes two argument, using nmtools::array::fixed_* as param.
+ * Assuming a variable with name of {prefix}fd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES2
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see nmtools::array::fixed_vector
+ * @see nmtools::array::fixed_matrix
+ */
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY2_IMPL(func, result, xprefix, yprefix) \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##fd, yprefix##fd ); \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##ff, yprefix##ff );
+
+/*
+ * @brief define test case for given func that takes three argument, using nmtools::array::fixed_* as param.
+ * Assuming a variable with name of {prefix}fd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES2
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see nmtools::array::fixed_vector
+ * @see nmtools::array::fixed_matrix
+ */
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY3_IMPL(func, result, xprefix, yprefix, zprefix) \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##fd, yprefix##fd, zprefix##fd ); \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##ff, yprefix##ff, zprefix##ff );
+
+/**
+ * @brief define test case for given func that take single argument, using std::vector as param.
+ * Assuming a variable with name of {prefix}vd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_VECTOR_IMPL(func, result, prefix) \
+NMTOOLS_TEST_SUBCASE( func, result, prefix##vd ); \
+NMTOOLS_TEST_SUBCASE( func, result, prefix##vf );
+
+/**
+ * @brief define test case for given func that take two arguments, using std::vector as param.
+ * Assuming a variable with name of {prefix}vd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES2
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_VECTOR2_IMPL(func, result, xprefix, yprefix) \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##vd, yprefix##vd ); \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##vf, yprefix##vf );
+
+/**
+ * @brief define test case for given func that take three arguments, using std::vector as param.
+ * Assuming a variable with name of {prefix}vd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES3
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_VECTOR3_IMPL(func, result, xprefix, yprefix, zprefix) \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##vd, yprefix##vd, zprefix##vd ); \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##vf, yprefix##vf, zprefix##vf );
+
+/**
+ * @brief define test case for given func that take single argument, using nmtools::array::dynamic_* as param.
+ * Assuming a variable with name of {prefix}vd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see nmtools::array::dynamic_vector
+ * @see nmtools::array::dynamic_matrix
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY_IMPL(func, result, prefix) \
+NMTOOLS_TEST_SUBCASE( func, result, prefix##dd ); \
+NMTOOLS_TEST_SUBCASE( func, result, prefix##df );
+
+/**
+ * @brief define test case for given func that take two arguments, using nmtools::array::dynamic_* as param.
+ * Assuming a variable with name of {prefix}vd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES2
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see nmtools::array::dynamic_vector
+ * @see nmtools::array::dynamic_matrix
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY2_IMPL(func, result, xprefix, yprefix) \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##dd, yprefix##dd ); \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df );
+
+/**
+ * @brief define test case for given func that take three arguments, using nmtools::array::dynamic_* as param.
+ * Assuming a variable with name of {prefix}vd has already declared and visible within the scope.
+ * 
+ * @see NMTOOLS_TESTING_DECLARE_SUBCASES3
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see nmtools::array::dynamic_vector
+ * @see nmtools::array::dynamic_matrix
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY3_IMPL(func, result, xprefix, yprefix, zprefix) \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##dd, yprefix##dd, zprefix##dd ); \
+NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
+
+#define NMTOOLS_TEST_SUBCASE_NOOP(...) {}
+
+/**
+ * @brief allow to skip testing with fixed size array
+ * (std::array, nmtools::array::fixed_vector, nmtools::array::fixed_matrix)
+ * 
+ */
+#ifndef NMTOOLS_TEST_SKIP_FIXED_SIZE_ARRAY
+#define NMTOOLS_TEST_SUBCASE_ARRAY NMTOOLS_TEST_SUBCASE_ARRAY_IMPL
+#define NMTOOLS_TEST_SUBCASE_ARRAY2 NMTOOLS_TEST_SUBCASE_ARRAY2_IMPL
+#define NMTOOLS_TEST_SUBCASE_ARRAY3 NMTOOLS_TEST_SUBCASE_ARRAY3_IMPL
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY NMTOOLS_TEST_SUBCASE_FIXED_ARRAY_IMPL
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY2 NMTOOLS_TEST_SUBCASE_FIXED_ARRAY2_IMPL
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY3 NMTOOLS_TEST_SUBCASE_FIXED_ARRAY3_IMPL
+#else // NMTOOLS_TEST_SKIP_FIXED_SIZE_ARRAY
+/**
+ * @brief actually skip testing with std::array
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_ARRAY  NMTOOLS_TEST_SUBCASE_NOOP
+#define NMTOOLS_TEST_SUBCASE_ARRAY2 NMTOOLS_TEST_SUBCASE_NOOP
+#define NMTOOLS_TEST_SUBCASE_ARRAY3 NMTOOLS_TEST_SUBCASE_NOOP
+/**
+ * @brief actually skip testing with nmtools::array::fixed_*
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY  NMTOOLS_TEST_SUBCASE_NOOP
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY2 NMTOOLS_TEST_SUBCASE_NOOP
+#define NMTOOLS_TEST_SUBCASE_FIXED_ARRAY3 NMTOOLS_TEST_SUBCASE_NOOP
+#endif // NMTOOLS_TEST_SKIP_FIXED_SIZE_ARRAY
+
+#ifndef NMTOOLS_TEST_SKIP_DYNAMIC_SIZE_ARRAY
+#define NMTOOLS_TEST_SUBCASE_VECTOR NMTOOLS_TEST_SUBCASE_VECTOR_IMPL
+#define NMTOOLS_TEST_SUBCASE_VECTOR2 NMTOOLS_TEST_SUBCASE_VECTOR2_IMPL
+#define NMTOOLS_TEST_SUBCASE_VECTOR3 NMTOOLS_TEST_SUBCASE_VECTOR3_IMPL
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY_IMPL
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY2 NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY2_IMPL
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY3 NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY3_IMPL
+#else // NMTOOLS_TEST_SKIP_DYNAMIC_SIZE_ARRAY
+/**
+ * @brief actually skip testing with std::vector
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_VECTOR  NMTOOLS_TEST_SUBCASE_NOOP
+#define NMTOOLS_TEST_SUBCASE_VECTOR2 NMTOOLS_TEST_SUBCASE_NOOP
+#define NMTOOLS_TEST_SUBCASE_VECTOR3 NMTOOLS_TEST_SUBCASE_NOOP
+/**
+ * @brief actually skip with nmtools::array::dynamic_*
+ * 
+ */
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY  NMTOOLS_TEST_SUBCASE_NOOP
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY2 NMTOOLS_TEST_SUBCASE_NOOP
+#define NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY3 NMTOOLS_TEST_SUBCASE_NOOP
+#endif // NMTOOLS_TEST_SKIP_DYNAMIC_SIZE_ARRAY
 
 /**
  * @brief declare subcase for testing for function that takes single arguments.
@@ -655,15 +910,11 @@ namespace subcase::expect
  */
 #define NMTOOLS_TESTING_DECLARE_SUBCASES(case_name, func, result, prefix) \
 {   \
-    using namespace nmtools::testing::data::func::case_name; \
-    NMTOOLS_TEST_SUBCASE( func, result, prefix##ad ); \
-    NMTOOLS_TEST_SUBCASE( func, result, prefix##vd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, prefix##fd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, prefix##dd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, prefix##af ); \
-    NMTOOLS_TEST_SUBCASE( func, result, prefix##vf ); \
-    NMTOOLS_TEST_SUBCASE( func, result, prefix##ff ); \
-    NMTOOLS_TEST_SUBCASE( func, result, prefix##df ); \
+    using namespace nmtools::testing::data::func::case_name;    \
+    NMTOOLS_TEST_SUBCASE_ARRAY( func, result, prefix );         \
+    NMTOOLS_TEST_SUBCASE_VECTOR( func, result, prefix );        \
+    NMTOOLS_TEST_SUBCASE_FIXED_ARRAY( func, result, prefix );   \
+    NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY( func, result, prefix ); \
 }   \
 
 
@@ -682,14 +933,73 @@ namespace subcase::expect
 #define NMTOOLS_TESTING_DECLARE_TPARAM_SUBCASES(case_name, func, tparam, result, prefix) \
 {   \
     using namespace nmtools::testing::data::func::case_name;  \
-    NMTOOLS_TEST_SUBCASE( func<tparam>, result, prefix##ad ); \
-    NMTOOLS_TEST_SUBCASE( func<tparam>, result, prefix##vd ); \
-    NMTOOLS_TEST_SUBCASE( func<tparam>, result, prefix##fd ); \
-    NMTOOLS_TEST_SUBCASE( func<tparam>, result, prefix##dd ); \
-    NMTOOLS_TEST_SUBCASE( func<tparam>, result, prefix##af ); \
-    NMTOOLS_TEST_SUBCASE( func<tparam>, result, prefix##vf ); \
-    NMTOOLS_TEST_SUBCASE( func<tparam>, result, prefix##ff ); \
-    NMTOOLS_TEST_SUBCASE( func<tparam>, result, prefix##df ); \
+    NMTOOLS_TEST_SUBCASE_ARRAY( func<tparam>, result, prefix );         \
+    NMTOOLS_TEST_SUBCASE_VECTOR( func<tparam>, result, prefix );        \
+    NMTOOLS_TEST_SUBCASE_FIXED_ARRAY( func<tparam>, result, prefix );   \
+    NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY( func<tparam>, result, prefix ); \
+}   \
+
+/**
+ * @brief declare subcase for testing for functions that takes single argument and two template parameters.
+ * @note that the testing namespace is strictly `nmtools::testing::data::{func}::{case_name}`,
+ * and the arguments suffixes should be matched with NMTOOLS_TESTING_DATA_DECLARE_ARRAY,
+ * NMTOOLS_TESTING_DATA_DECLARE_MAT, and NMTOOLS_TESTING_DATA_DECLARE_VEC macros.
+ * Also note that tparam is not prefixed.
+ * @see NMTOOLS_TESTING_DATA_DECLARE_ARRAY
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see NMTOOLS_TESTING_DATA_DECLARE_VEC
+ * @todo also add multiprecision whenever possible
+ * 
+ */
+#define NMTOOLS_TESTING_DECLARE_TPARAM2_SUBCASES(case_name, func, tparam1, tparam2, result, prefix) \
+{   \
+    using namespace nmtools::testing::data::func::case_name;  \
+    NMTOOLS_TEST_SUBCASE_ARRAY( (func<tparam1,tparam2>), result, prefix );         \
+    NMTOOLS_TEST_SUBCASE_VECTOR( (func<tparam1,tparam2>), result, prefix );        \
+    NMTOOLS_TEST_SUBCASE_FIXED_ARRAY( (func<tparam1,tparam2>), result, prefix );   \
+    NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY( (func<tparam1,tparam2>), result, prefix ); \
+}   \
+
+/**
+ * @brief declare subcase for testing for functions that takes single argument and three template parameters.
+ * @note that the testing namespace is strictly `nmtools::testing::data::{func}::{case_name}`,
+ * and the arguments suffixes should be matched with NMTOOLS_TESTING_DATA_DECLARE_ARRAY,
+ * NMTOOLS_TESTING_DATA_DECLARE_MAT, and NMTOOLS_TESTING_DATA_DECLARE_VEC macros.
+ * Also note that tparam is not prefixed.
+ * @see NMTOOLS_TESTING_DATA_DECLARE_ARRAY
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see NMTOOLS_TESTING_DATA_DECLARE_VEC
+ * @todo also add multiprecision whenever possible
+ * 
+ */
+#define NMTOOLS_TESTING_DECLARE_TPARAM3_SUBCASES(case_name, func, tparam1, tparam2, tparam3, result, prefix) \
+{   \
+    using namespace nmtools::testing::data::func::case_name;  \
+    NMTOOLS_TEST_SUBCASE_ARRAY( (func<tparam1,tparam2,tparam3>), result, prefix );         \
+    NMTOOLS_TEST_SUBCASE_VECTOR( (func<tparam1,tparam2,tparam3>), result, prefix );        \
+    NMTOOLS_TEST_SUBCASE_FIXED_ARRAY( (func<tparam1,tparam2,tparam3>), result, prefix );   \
+    NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY( (func<tparam1,tparam2,tparam3>), result, prefix ); \
+}   \
+
+/**
+ * @brief declare subcase for testing for functions that takes single argument and four template parameters.
+ * @note that the testing namespace is strictly `nmtools::testing::data::{func}::{case_name}`,
+ * and the arguments suffixes should be matched with NMTOOLS_TESTING_DATA_DECLARE_ARRAY,
+ * NMTOOLS_TESTING_DATA_DECLARE_MAT, and NMTOOLS_TESTING_DATA_DECLARE_VEC macros.
+ * Also note that tparam is not prefixed.
+ * @see NMTOOLS_TESTING_DATA_DECLARE_ARRAY
+ * @see NMTOOLS_TESTING_DATA_DECLARE_MAT
+ * @see NMTOOLS_TESTING_DATA_DECLARE_VEC
+ * @todo also add multiprecision whenever possible
+ * 
+ */
+#define NMTOOLS_TESTING_DECLARE_TPARAM4_SUBCASES(case_name, func, tparam1, tparam2, tparam3, tparam4, result, prefix) \
+{   \
+    using namespace nmtools::testing::data::func::case_name;  \
+    NMTOOLS_TEST_SUBCASE_ARRAY( (func<tparam1,tparam2,tparam3,tparam4>), result, prefix );         \
+    NMTOOLS_TEST_SUBCASE_VECTOR( (func<tparam1,tparam2,tparam3,tparam4>), result, prefix );        \
+    NMTOOLS_TEST_SUBCASE_FIXED_ARRAY( (func<tparam1,tparam2,tparam3,tparam4>), result, prefix );   \
+    NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY( (func<tparam1,tparam2,tparam3,tparam4>), result, prefix ); \
 }   \
 
 /**
@@ -737,15 +1047,11 @@ namespace subcase::expect
  */
 #define NMTOOLS_TESTING_DECLARE_SUBCASES2(case_name, func, result, xprefix, yprefix) \
 {   \
-    using namespace nmtools::testing::data::func::case_name; \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##ad, yprefix##ad ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##vd, yprefix##vd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##fd, yprefix##fd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##dd, yprefix##dd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##af, yprefix##af ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##vf, yprefix##vf ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##ff, yprefix##ff ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df ); \
+    using namespace nmtools::testing::data::func::case_name;               \
+    NMTOOLS_TEST_SUBCASE_ARRAY2( func, result, xprefix, yprefix );         \
+    NMTOOLS_TEST_SUBCASE_VECTOR2( func, result, xprefix, yprefix );        \
+    NMTOOLS_TEST_SUBCASE_FIXED_ARRAY2( func, result, xprefix, yprefix );   \
+    NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY2( func, result, xprefix, yprefix ); \
 }   \
 
 /**
@@ -775,14 +1081,10 @@ namespace subcase::expect
 #define NMTOOLS_TESTING_DECLARE_SUBCASES3(case_name, func, result, xprefix, yprefix, zprefix) \
 {   \
     using namespace nmtools::testing::data::func::case_name; \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##ad, yprefix##ad, zprefix##ad ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##vd, yprefix##vd, zprefix##vd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##fd, yprefix##fd, zprefix##fd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##dd, yprefix##dd, zprefix##dd ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##af, yprefix##af, zprefix##af ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##vf, yprefix##vf, zprefix##vf ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##ff, yprefix##ff, zprefix##ff ); \
-    NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df ); \
+    NMTOOLS_TEST_SUBCASE_ARRAY3( func, result, xprefix, yprefix, zprefix );         \
+    NMTOOLS_TEST_SUBCASE_VECTOR3( func, result, xprefix, yprefix, zprefix );        \
+    NMTOOLS_TEST_SUBCASE_FIXED_ARRAY3( func, result, xprefix, yprefix, zprefix );   \
+    NMTOOLS_TEST_SUBCASE_DYNAMIC_ARRAY3( func, result, xprefix, yprefix, zprefix ); \
 }   \
 
 /**
@@ -1222,21 +1524,21 @@ namespace nmtools::testing::data::common_matrix
          * @brief 5x5 magic matrix with std::array storage and double dtype
          * 
          */
-        inline auto mad5x5 = cast(m5x5<double>);
-        inline auto maf5x5 = cast(m5x5<float>);
+        // inline auto mad5x5 = cast(m5x5<double>);
+        // inline auto maf5x5 = cast(m5x5<float>);
         /**
          * @brief 5x5 magic matrix with std::array storage and double dtype
          * 
          */
-        inline auto mvd5x5 = cast<nested_vec_t<double>>(mad5x5);
-        inline auto mvf5x5 = cast<nested_vec_t<float>>(maf5x5);
+        // inline auto mvd5x5 = cast<nested_vec_t<double>>(mad5x5);
+        // inline auto mvf5x5 = cast<nested_vec_t<float>>(maf5x5);
         /**
          * @brief 5x5 magic matrix with array::fixed_matrix as storage
          * 
          */
         /* TODO: find-out how to left-out specifying size of array */
-        inline auto mfd5x5 = cast<fdmat_t<5,5>>(mad5x5);
-        inline auto mff5x5 = cast<ffmat_t<5,5>>(maf5x5);
+        // inline auto mfd5x5 = cast<fdmat_t<5,5>>(mad5x5);
+        // inline auto mff5x5 = cast<ffmat_t<5,5>>(maf5x5);
 
         /**
          * @brief 10x10 magic matrix
@@ -1261,21 +1563,21 @@ namespace nmtools::testing::data::common_matrix
          * @brief 5x5 magic matrix with std::array storage and double dtype
          * 
          */
-        inline auto mad10x10 = cast(m10x10<double>);
-        inline auto maf10x10 = cast(m10x10<float>);
+        // inline auto mad10x10 = cast(m10x10<double>);
+        // inline auto maf10x10 = cast(m10x10<float>);
         /**
          * @brief 5x5 magic matrix with std::array storage and double dtype
          * 
          */
-        inline auto mvd10x10 = cast<nested_vec_t<double>>(mad10x10);
-        inline auto mvf10x10 = cast<nested_vec_t<float>>(maf10x10);
+        // inline auto mvd10x10 = cast<nested_vec_t<double>>(mad10x10);
+        // inline auto mvf10x10 = cast<nested_vec_t<float>>(maf10x10);
         /**
          * @brief 5x5 magic matrix with array::fixed_matrix as storage
          * 
          */
         /* TODO: find-out how to left-out specifying size of array */
-        inline auto mfd10x10 = cast<fdmat_t<10,10>>(mad10x10);
-        inline auto mff10x10 = cast<ffmat_t<10,10>>(maf10x10);
+        // inline auto mfd10x10 = cast<fdmat_t<10,10>>(mad10x10);
+        // inline auto mff10x10 = cast<ffmat_t<10,10>>(maf10x10);
 
         /**
          * @brief 15x15 magic matrix
@@ -1305,21 +1607,21 @@ namespace nmtools::testing::data::common_matrix
          * @brief 5x5 magic matrix with std::array storage and double dtype
          * 
          */
-        inline auto mad15x15 = cast(m15x15<double>);
-        inline auto maf15x15 = cast(m15x15<float>);
+        // inline auto mad15x15 = cast(m15x15<double>);
+        // inline auto maf15x15 = cast(m15x15<float>);
         /**
          * @brief 5x5 magic matrix with std::array storage and double dtype
          * 
          */
-        inline auto mvd15x15 = cast<nested_vec_t<double>>(mad15x15);
-        inline auto mvf15x15 = cast<nested_vec_t<float>>(maf15x15);
+        // inline auto mvd15x15 = cast<nested_vec_t<double>>(mad15x15);
+        // inline auto mvf15x15 = cast<nested_vec_t<float>>(maf15x15);
         /**
          * @brief 5x5 magic matrix with array::fixed_matrix as storage
          * 
          */
         /* TODO: find-out how to left-out specifying size of array */
-        inline auto mfd15x15 = cast<fdmat_t<15,15>>(mad15x15);
-        inline auto mff15x15 = cast<ffmat_t<15,15>>(maf15x15);
+        // inline auto mfd15x15 = cast<fdmat_t<15,15>>(mad15x15);
+        // inline auto mff15x15 = cast<ffmat_t<15,15>>(maf15x15);
 
         template <typename T>
         constexpr T m20x20[20][20] = {
