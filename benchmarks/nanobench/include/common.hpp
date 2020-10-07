@@ -21,15 +21,31 @@ namespace nmtools::bench::nanobench::common
      * @param func function name
      * @return auto string formatted with `func(typename(s)...)`
      */
-    template <typename ...Args>
-    auto make_func_args(std::string func)
+    template <typename Arg, typename ...Args>
+    auto make_func_args(std::string func, const auto&...args)
     {
         std::stringstream ss;
-        constexpr auto n = (sizeof...(Args));
+        constexpr auto n = (sizeof...(args));
+        constexpr auto m = (sizeof...(Args));
         auto typenames = std::array<std::string,n>{
+            {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
+        };
+        auto tparams = std::array<std::string,m>{
             {boost::typeindex::type_id<Args>().pretty_name()...}
         };
-        ss << func << '(';
+        ss << func;
+        ss << '<';
+        ss << boost::typeindex::type_id<Arg>().pretty_name();
+        if constexpr (sizeof...(Args)) {
+            ss << ',';
+            for (size_t i=0; i<m; i++) {
+                ss << tparams[i];
+                if (i!=(m-1))
+                    ss << ",";
+            }
+        }
+        ss << '>';
+        ss << '(';
         for (size_t i=0; i<n; i++) {
             ss << typenames[i];
             if (i!=(n-1))
@@ -87,29 +103,40 @@ namespace nmtools::bench::nanobench::common
      * while only scalar indicate scalar type.
      * 
      * @tparam T deduced via template argument deduction
+     * @tparam Args 
      * @param t 
-     * @return auto 
+     * @param args 
+     * @return std::string 
      */
-    template <typename T>
-    auto format_shape(const T& t)
+    template <typename T, typename...Args>
+    auto format_shape(const T& t, const Args&...args) -> std::string
     {
+        std::string result;
         if constexpr (traits::is_array2d_v<T>) {
             auto [rows,cols] = matrix_size(t);
-            return fmt::format("[{},{}]", rows, cols);
+            result = fmt::format("[{},{}]", rows, cols);
         }
         else if constexpr (traits::is_array1d_v<T>) {
             auto n = vector_size(t);
-            return fmt::format("[{}]", n);
+            result = fmt::format("[{}]", n);
+        }
+        else if constexpr (traits::is_tuple_v<T>) {
+            // TODO: make this lambda variadic
+            auto f = [](auto i, auto j) {
+                return fmt::format("({},{})", format_shape(i), format_shape(j));
+            };
+            result = std::apply(f,t);
+        }
+        else if constexpr (std::is_same_v<T,end_t>) {
+            result = "end";
         }
         else {
-            return fmt::format("{}", t);
+            result = fmt::format("{}", t);
         }
-    } // auto format_shape
-
-    template <typename T, typename...Args>
-    auto format_shape(const T& t, const Args&...args)
-    {
-        return fmt::format("{}, {}", format_shape(t), format_shape(args...));
+        // only dispatch if n args > 0, compiler complains about no function calls otherwise
+        if constexpr (sizeof...(args))
+            result = fmt::format("{}, {}", result, format_shape(args...));
+        return result;
     }
 
     inline void gen(std::string const& typeName, char const* mustacheTemplate,
@@ -197,9 +224,8 @@ auto func(ankerl::nanobench::Bench *bench, const char* name, const Args&...args)
  * Calls boost typeindex to deduce typename(s).
  */
 #define NMTOOLS_BENCH_WRAPPER_TYPEID(ns, func)          \
-template <typename ...Args>                             \
-auto func(ankerl::nanobench::Bench *bench, const Args&...args) {                   \
-    auto name = nmtools::bench::nanobench::common::make_func_args<Args...>(#func); \
+auto func(ankerl::nanobench::Bench *bench, const auto&...args) {                   \
+    auto name = nmtools::bench::nanobench::common::make_func_args(#func,args...);  \
     bench->run(name, [&](){                             \
         auto x = ns::func(args...);                     \
         ankerl::nanobench::doNotOptimizeAway(x);        \
@@ -208,15 +234,26 @@ auto func(ankerl::nanobench::Bench *bench, const Args&...args) {                
     auto ret = ns::func(args...);                       \
     return ret;                                         \
 }                                                       \
-template <auto...Args>                                  \
+template <auto Arg, auto...Args>                                  \
 auto func(ankerl::nanobench::Bench *bench, const auto&...args) {                            \
-    auto name = nmtools::bench::nanobench::common::make_func_args<Args...>(#func,args...);  \
+    auto name = nmtools::bench::nanobench::common::make_func_args<Arg,Args...>(#func,args...);  \
     bench->run(name, [&](){                             \
-        auto x = ns::func<Args...>(args...);            \
+        auto x = ns::func<Arg,Args...>(args...);            \
         ankerl::nanobench::doNotOptimizeAway(x);        \
     });                                                 \
     /* also return result, may be useful for testing */ \
-    auto ret = ns::func<Args...>(args...);              \
+    auto ret = ns::func<Arg,Args...>(args...);              \
+    return ret;                                         \
+}                                                       \
+template <typename Arg, typename...Args>                              \
+auto func(ankerl::nanobench::Bench *bench, const auto&...args) {                            \
+    auto name = nmtools::bench::nanobench::common::make_func_args<Arg,Args...>(#func,args...);  \
+    bench->run(name, [&](){                             \
+        auto x = ns::func<Arg,Args...>(args...);            \
+        ankerl::nanobench::doNotOptimizeAway(x);        \
+    });                                                 \
+    /* also return result, may be useful for testing */ \
+    auto ret = ns::func<Arg,Args...>(args...);              \
     return ret;                                         \
 }                                                       \
 

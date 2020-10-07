@@ -103,7 +103,11 @@ add_executable(
     src/utility.cpp
     # note: test case splitted to multiple files to
     # speed-up compilation when built in parallel
-    ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility.cpp
+    ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/at.cpp
+    ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/row.cpp
+    ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/column.cpp
+    ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/slice.cpp
+    ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/squeeze.cpp
 )
 apply_nmtools(
     TARGET ${PROJECT_NAME}-utility

@@ -1,8 +1,6 @@
 #ifndef NMTOOLS_ARRAY_FIXED_HPP
 #define NMTOOLS_ARRAY_FIXED_HPP
 
-#include "nmtools/array/utility.hpp"
-#include "nmtools/meta.hpp"
 #include <array>
 
 /**
@@ -10,6 +8,66 @@
  * collections of array functions and structs.
  * 
  */
+
+namespace nmtools
+{
+    namespace array
+    {
+        // declare fixed_matrix, defined later
+        template <typename T, size_t Rows, size_t Cols>
+        struct fixed_matrix;
+
+        // declare fixed_vector, defined later
+        template <typename T, size_t N>
+        struct fixed_vector;
+    } // namespace array
+
+    /**
+     * @ingroup utility
+     * 
+     */
+    
+    /**
+     * @brief specialization of dynamic_vector size for fixed_vector.
+     * 
+     * @tparam T 
+     * @tparam N 
+     * @param v 
+     * @return auto 
+     * @note since some functions in "nmtools/array/utility.hpp" depends on vector_size and vector_size
+     * is also definded in that file, this overload should be defined before including the file to make
+     * overload visible
+     * @todo fix include
+     */
+    template <typename T, size_t N>
+    constexpr auto vector_size(const array::fixed_vector<T,N>& v)
+    {
+        return v.size();
+    } // constexpr auto vector_size
+
+    /**
+     * @brief specialization of dynamic_matrix size for fixed_vector.
+     * 
+     * @tparam T 
+     * @tparam Rows 
+     * @tparam Cols 
+     * @param m 
+     * @return auto 
+     * @note since some functions in "nmtools/array/utility.hpp" depends on matrix_size and matrix_size
+     * is also definded in that file, this overload should be defined before including the file to make
+     * overload visible
+     * @todo fix include
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    constexpr auto matrix_size(const array::fixed_matrix<T,Rows,Cols>& m)
+    {
+        return m.shape();
+    } // constexpr auto matrix_size
+
+    /** @} */ // end group utility
+} // namespace nmtools
+
+#include "nmtools/array/utility.hpp" // ::nmtools::detail::make_array
 
 namespace nmtools::array {
 
@@ -320,11 +378,6 @@ namespace nmtools::array {
 namespace nmtools
 {
     /**
-     * @ingroup utility
-     * 
-     */
-
-    /**
      * @brief 
      * 
      * @tparam T 
@@ -398,38 +451,10 @@ namespace nmtools
     template <typename T, size_t N>
     struct fixed_vector_size<array::fixed_vector<T,N>>
         : std::tuple_size<typename array::fixed_vector<T,N>::data_type> {};
-    
-    /**
-     * @brief specialization of dynamic_vector size for fixed_vector.
-     * 
-     * @tparam T 
-     * @tparam N 
-     * @param v 
-     * @return auto 
-     */
-    template <typename T, size_t N>
-    constexpr auto vector_size(const array::fixed_vector<T,N>& v)
-    {
-        return v.size();
-    }
 
-    /**
-     * @brief specialization of dynamic_matrix size for fixed_vector.
-     * 
-     * @tparam T 
-     * @tparam Rows 
-     * @tparam Cols 
-     * @param m 
-     * @return auto 
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    constexpr auto matrix_size(const array::fixed_matrix<T,Rows,Cols>& m)
-    {
-        return m.shape();
-    }
-
-    /** @} */ // end group utility
 } // namespace nmtools
+
+#include "nmtools/traits.hpp"
 
 namespace nmtools::traits
 {
@@ -459,6 +484,8 @@ namespace nmtools::traits
 
     /** @} */ // end group traits
 } // namespace nmtooclls::traits
+
+#include "nmtools/meta.hpp"
 
 namespace nmtools::meta
 {
@@ -557,6 +584,22 @@ namespace nmtools::meta
     {
         using type = array::fixed_vector<T,Rows>;
     }; // struct get_column_type
+
+    /**
+     * @brief specializatoin of metafunction resize_fixed_matrix for array::fixed_matrix type,
+     * which create new type with new size at compile-time.
+     * 
+     * @tparam T element type of array::fixed_matrix
+     * @tparam M number of row of original array::fixed_matrix type
+     * @tparam N number of column of original array::fixed_matrix type
+     * @tparam Rows new desired row for new type
+     * @tparam Cols new desired column for new type
+     */
+    template <typename T, auto M, auto N, auto Rows, auto Cols>
+    struct resize_fixed_matrix<array::fixed_matrix<T,M,N>,Rows,Cols>
+    {
+        using type = array::fixed_matrix<T,Rows,Cols>;
+    };
 
     /** @} */ // end group meta
 }

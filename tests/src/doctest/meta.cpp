@@ -1,5 +1,7 @@
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
+// NOTE: need to include utility for std::array fixed_size specialization
+#include "nmtools/array/utility.hpp"
 
 #include "doctest/doctest.h"
 #include <array>
@@ -29,4 +31,10 @@ TEST_CASE("meta::get_element_type")
     static_assert( traits::is_array2d_v<array_t>);
     static_assert(std::is_same_v<value_t,double>);
     static_assert(std::is_same_v<element_t,double>);
+}
+
+TEST_CASE("traits::is_fixed_size_matrix")
+{
+    using array_t = std::array<std::array<double,5>,2>;
+    static_assert(traits::is_fixed_size_matrix_v<array_t>);
 }
