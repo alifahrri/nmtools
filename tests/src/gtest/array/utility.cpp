@@ -118,9 +118,11 @@ TEST(array, row)
 
 TEST(array, slice)
 {
+    using start_t = decltype(nmt::make_slice_index<1>());
+    using stop_t  = decltype(nmt::make_slice_index<3>());
     {
         auto v = std::array<double,5>{1,2,3,4,5};
-        auto x = nmt::slice<1,3>(v);
+        auto x = nmt::slice<start_t,stop_t>(v);
         auto e = std::array<double,2>{2,3};
         static_assert(std::is_same_v<decltype(x),std::array<double,2>>);
         EXPECT_TRUE(isclose(x,e));
@@ -134,14 +136,14 @@ TEST(array, slice)
     }
     {
         constexpr auto v = std::array<double,5>{1,2,3,4,5};
-        constexpr auto x = nmt::slice<1,3>(v);
+        constexpr auto x = nmt::slice<start_t,stop_t>(v);
         constexpr auto e = std::array<double,2>{2,3};
         static_assert(std::is_same_v<decltype(x),const std::array<double,2>>);
         static_assert(isclose(x,e));
     }
     {
         constexpr double v[5] = {1,2,3,4,5};
-        constexpr auto x = nmt::slice<1,3>(v);
+        constexpr auto x = nmt::slice<start_t,stop_t>(v);
         constexpr auto e = std::array<double,2>{2,3};
         static_assert(std::is_same_v<decltype(x),const std::array<double,2>>);
         static_assert(isclose(x,e));
