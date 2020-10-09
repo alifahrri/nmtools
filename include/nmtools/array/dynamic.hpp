@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_DYNAMIC_HPP
 #define NMTOOLS_ARRAY_DYNAMIC_HPP
 
+#include "nmtools/array/detail.hpp"
 #include <vector>
 #include <initializer_list>
 
@@ -201,6 +202,194 @@ namespace nmtools::array
     };
 
     /**
+     * @brief sample implementation of dynamic n-dimensional array,
+     * trying to mimic numpy ndarray layout @cite NumPy_ndarray_layout
+     * 
+     * @tparam T element type of nd-array
+     * @tparam storage_type template template parameter to store data
+     */
+    template <typename T, template <typename> typename storage_type=std::vector>
+    struct dynamic_ndarray
+    {
+        using data_type = storage_type<T>;
+        using value_type = T;
+        using size_type = size_t;
+        using reference = value_type&;
+        using const_reference = const value_type&;
+        using shape_type = std::vector<size_t>;
+        using stride_type = std::vector<size_t>;
+
+        /**
+         * @brief construct dynamic_ndarray given shape
+         * 
+         * @param shape desired shape of dynamic_ndarray
+         */
+        explicit dynamic_ndarray(std::vector<size_type> shape)
+            : shape_(shape)
+        {
+            strides_ = strides();
+            numel_   = numel();
+            data.resize(numel_);
+        }
+
+        /**
+         * @brief construct dynamic_ndarray from 1D initializer_list
+         * 
+         * @param initializer 
+         */
+        explicit dynamic_ndarray(std::initializer_list<value_type> initializer)
+        {
+            shape_   = shape_type({initializer.size()});
+            strides_ = strides();
+            numel_   = numel();
+            data.resize(numel_);
+            size_t i = 0;
+            // TODO: find best way to copy
+            for (auto v : initializer)
+                data[i++] = v;
+        }
+
+        /**
+         * @brief construct dynamic_ndarray from 1D intializer_list with specified shape
+         * 
+         * @param initializer 
+         * @param shape desired shape
+         */
+        explicit dynamic_ndarray(std::initializer_list<value_type> initializer, std::vector<size_type> shape)
+        {
+            shape_ = shape;
+            strides_ = strides();
+            numel_ = numel();
+            data.resize(numel_);
+            size_t i = 0;
+            // TODO: find best way to copy
+            for (auto v : initializer)
+                data[i++] = v;
+        }
+
+        /**
+         * @brief construct dynamic_ndarray from nested initializer list
+         * 
+         * @param initializer 
+         */
+        explicit dynamic_ndarray(std::initializer_list<std::initializer_list<value_type>> initializer)
+        {
+            shape_   = shape_type({initializer.size(), (initializer.size()?initializer.begin()->size() : 0)});
+            strides_ = strides();
+            numel_   = numel();
+            data.resize(numel_);
+            size_t i = 0;
+            for (const auto &v : initializer)
+                for (const auto &e : v)
+                    data[i++] = e;
+        }
+
+        // ambiguous call
+        // TODO: fix
+        // explicit dynamic_ndarray(std::initializer_list<std::initializer_list<std::initializer_list<value_type>>> initializer)
+        // {
+        //     auto i = initializer.size();
+        //     auto j = (initializer.size() ? initializer.begin()->size() : 0);
+        //     auto k = (j > 0 ? initializer.begin()->begin()->size() : 0);
+        //     shape_ = shape_type({i,j,k});
+        //     strides_ = strides();
+        //     numel_ = numel();
+        //     data.resize(numel_);
+        //     size_t idx = 0;
+        //     for (auto&& c : initializer)
+        //         for (auto&& m : c)
+        //             for (auto&& n : m)
+        //                 data[idx++] = n;
+        // }
+
+        data_type data;
+        shape_type shape_;
+        stride_type strides_;
+        size_type numel_;
+
+        /**
+         * @brief return the number of dimension
+         * 
+         * @return constexpr auto 
+         */
+        constexpr auto dim() const
+        {
+            return shape_.size();
+        } // dim
+
+        /**
+         * @brief return the shape information
+         * 
+         * @return constexpr auto 
+         */
+        constexpr auto shape() const
+        {
+            return shape_;
+        } // shape
+
+        /**
+         * @brief return the number of elements
+         * 
+         * @return constexpr auto 
+         */
+        constexpr auto numel() const
+        {
+            size_t numel_ = 1;
+            for (auto s : shape_)
+                numel_ *= s;
+            return numel_;
+        } // numel
+
+        /**
+         * @brief return the strides information
+         * 
+         * @return constexpr auto 
+         */
+        constexpr auto strides() const
+        {
+            auto stride = std::vector<size_t>{dim()};
+            for (size_t i=0; i<dim(); i++)
+                stride[i] = detail::stride(shape_,i);
+            return stride;
+        } // strides
+
+        /**
+         * @brief mutable access to element
+         * 
+         * @tparam size 
+         * @param n 1st index of element to be accessed
+         * @param ns the rest of indices of element to be accessed
+         * @return constexpr reference 
+         */
+        template <typename ...size>
+        constexpr reference operator()(size_type n, size...ns)
+        {
+            using common_size_t = std::common_type_t<size_type,size...>;
+            auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
+            auto offset = detail::compute_offset(strides_, indices);
+            return data[offset];
+        } // operator()
+
+        /**
+         * @brief immutable access to element
+         * 
+         * @tparam size 
+         * @param n 1st index of element to be accessed
+         * @param ns the rest of indices of element to be accessed
+         * @return constexpr const_reference 
+         */
+        template <typename ...size>
+        constexpr const_reference operator()(size_type n, size...ns) const
+        {
+            using common_size_t = std::common_type_t<size_type,size...>;
+            auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
+            auto offset = detail::compute_offset(strides_, indices);
+            return data[offset];
+        } // operator()
+
+    }; // struct dynamic_ndarray
+
+    /**
      * @brief helper traits to check if given type T is dynamic_matrix
      * 
      * @tparam T 
@@ -299,6 +488,20 @@ namespace nmtools
     {
         return m.shape();
     }
+
+    /**
+     * @brief return the shape of dynamic_ndarray
+     * 
+     * @tparam T element type of dynamic_ndarray
+     * @param a 
+     * @return auto 
+     */
+    template <typename T>
+    auto array_shape(const array::dynamic_ndarray<T>& a)
+    {
+        return a.shape();
+    } // array_shape
+
 } // namespace nmtools
 
 namespace nmtools::blas
@@ -396,6 +599,22 @@ namespace nmtools::traits
      */
     template <typename T>
     struct is_resizeable<array::dynamic_matrix<T>> : true_type {};
+
+    /**
+     * @brief specialization of is_ndarray trait for dynamic_ndarray
+     * 
+     * @tparam T element type of dynamic_ndarray
+     */
+    template <typename T>
+    struct is_ndarray<array::dynamic_ndarray<T>> : true_type {};
+
+    /**
+     * @brief specialization of is_dynamic_ndarray trait for dynamic_ndarray
+     * 
+     * @tparam T element type of dynamic_ndarray
+     */
+    template <typename T>
+    struct is_dynamic_ndarray<array::dynamic_ndarray<T>> : true_type {};
 
     /** @} */ // end group traits
     
