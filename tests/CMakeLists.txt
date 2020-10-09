@@ -68,6 +68,9 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/array/utility/column.cpp
     src/doctest/array/utility/slice.cpp
     src/doctest/array/utility/squeeze.cpp
+    ## ndarray
+    src/doctest/array/fixed/ndarray.cpp
+    src/doctest/array/dynamic/ndarray.cpp
     ## metafunctions
     src/doctest/meta.cpp
 )

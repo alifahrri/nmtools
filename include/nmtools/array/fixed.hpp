@@ -9,65 +9,8 @@
  * 
  */
 
-namespace nmtools
-{
-    namespace array
-    {
-        // declare fixed_matrix, defined later
-        template <typename T, size_t Rows, size_t Cols>
-        struct fixed_matrix;
-
-        // declare fixed_vector, defined later
-        template <typename T, size_t N>
-        struct fixed_vector;
-    } // namespace array
-
-    /**
-     * @ingroup utility
-     * 
-     */
-    
-    /**
-     * @brief specialization of dynamic_vector size for fixed_vector.
-     * 
-     * @tparam T 
-     * @tparam N 
-     * @param v 
-     * @return auto 
-     * @note since some functions in "nmtools/array/utility.hpp" depends on vector_size and vector_size
-     * is also definded in that file, this overload should be defined before including the file to make
-     * overload visible
-     * @todo fix include
-     */
-    template <typename T, size_t N>
-    constexpr auto vector_size(const array::fixed_vector<T,N>& v)
-    {
-        return v.size();
-    } // constexpr auto vector_size
-
-    /**
-     * @brief specialization of dynamic_matrix size for fixed_vector.
-     * 
-     * @tparam T 
-     * @tparam Rows 
-     * @tparam Cols 
-     * @param m 
-     * @return auto 
-     * @note since some functions in "nmtools/array/utility.hpp" depends on matrix_size and matrix_size
-     * is also definded in that file, this overload should be defined before including the file to make
-     * overload visible
-     * @todo fix include
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    constexpr auto matrix_size(const array::fixed_matrix<T,Rows,Cols>& m)
-    {
-        return m.shape();
-    } // constexpr auto matrix_size
-
-    /** @} */ // end group utility
-} // namespace nmtools
-
-#include "nmtools/array/utility.hpp" // ::nmtools::detail::make_array
+#include "nmtools/array/detail.hpp"
+#include "nmtools/array/meta.hpp" // fixed_matrix_size etc.
 
 namespace nmtools::array {
 
@@ -76,69 +19,6 @@ namespace nmtools::array {
      * @ingroup array
      * @{
      */
-
-    /**
-     * @brief some implementation details for array impl
-     * 
-     */
-    namespace detail
-    {
-        using ::nmtools::detail::make_array;
-
-        /**
-         * @brief helper alias template to make array of reference
-         * 
-         * @tparam T 
-         * @tparam N 
-         */
-        template <typename T, size_t N>
-        using array_ref = std::array<std::reference_wrapper<T>,N>;
-
-        /**
-         * @brief helper alias template for make_array_ref
-         * 
-         * @tparam N 
-         */
-        template <size_t N>
-        using size_constant = std::integral_constant<size_t,N>;
-
-        /**
-         * @brief create array of reference from a.
-         * With new_size starting from offset.
-         * 
-         * @tparam T value_type of a
-         * @tparam N size of a
-         * @tparam new_size new size of returning array ref
-         * @param a array to take reference of
-         * @param offset starting index, e.g. a[I+offset]...
-         * @return auto array of reference
-         */
-        template <typename T, size_t N, size_t new_size>
-        constexpr auto make_array_ref(std::array<T,N> &a, size_constant<new_size>, size_t offset=0)
-        {
-            using array_t = array_ref<T,N>;
-            return make_array<array_t>(a, std::make_index_sequence<new_size>{}, offset);
-        }
-
-        /**
-         * @brief create array of reference from a.
-         * With new_size starting from offset.
-         * 
-         * @tparam T value_type of a
-         * @tparam N size of a
-         * @tparam new_size new size of returning array ref
-         * @param a array to take reference of
-         * @param offset starting index, e.g. a[I+offset]...
-         * @return auto array of reference
-         */
-        template <typename T, size_t N, size_t new_size>
-        constexpr auto make_array_ref(const std::array<T,N> &a, size_constant<new_size>, size_t offset=0)
-        {
-            using array_t = array_ref<const T,N>;
-            return make_array(a, std::make_index_sequence<new_size>{}, offset);
-        }
-    } // namespace detail
-    
 
     /**
      * @brief naive implementation of fixed-size vector (as in math vector, not container).
@@ -308,7 +188,116 @@ namespace nmtools::array {
             return std::make_pair(Rows,Cols);
         }
     }; // struct fixed_matrix
-    
+
+    /**
+     * @brief sample implementation of n-dimensional array,
+     * trying to mimic numpy ndarray layout @cite NumPy_ndarray_layout
+     * 
+     * @tparam T element type of fixed_ndarray
+     * @tparam Shape1 the size of 1st axis of fixed_ndarray
+     * @tparam ShapeN the sizes of the rest axes of fixed_ndarray
+     */
+    template <typename T, size_t Shape1, size_t...ShapeN>
+    struct fixed_ndarray
+    {
+        // godbolt : https://godbolt.org/z/xP31vz
+        /**
+         * @brief return the number of dimension
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto dim()
+        {
+            return sizeof...(ShapeN) + 1;
+        }
+        static inline constexpr auto dim_ = dim();
+
+        /**
+         * @brief return the shape information
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto shape()
+        {
+            return std::array<size_t,dim_>{Shape1,ShapeN...};
+        }
+        static inline constexpr auto shape_ = shape();
+
+        /**
+         * @brief return the number of elements
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto numel()
+        {
+            size_t numel_ = 1;
+            for (auto s : shape_)
+                numel_ *= s;
+            return numel_;
+        }
+        static inline constexpr auto numel_ = numel();
+
+        /**
+         * @brief return the strides information
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto strides()
+        {
+            auto stride = std::array<size_t,dim()>{};
+            for (size_t i=0; i<dim(); i++)
+                stride[i] = detail::stride(shape_,i);
+            return stride;
+        }
+        static inline constexpr auto strides_ = strides();
+
+        using data_type = std::array<T,numel_>;
+        using value_type = T;
+        using size_type = size_t;
+        using reference = value_type&;
+        using const_reference = const value_type&;
+
+        data_type data;
+
+        /**
+         * @brief mutable access to element
+         * 
+         * @tparam size 
+         * @param n 1st index of element to be accessed
+         * @param ns the rest of indices of element to be accessed
+         * @return constexpr reference 
+         */
+        template <typename...size>
+        constexpr reference operator()(size_type n, size...ns)
+        {
+            static_assert(sizeof...(ns)==sizeof...(ShapeN),
+                "unsupported number of index"
+            );
+            using common_size_t = std::common_type_t<size_type,size...>;
+            auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
+            auto offset = detail::compute_offset(strides_, indices);
+            return data[offset];
+        } // operator()
+
+        /**
+         * @brief immutable access to element
+         * 
+         * @tparam size 
+         * @param n 1st index of element to be accessed
+         * @param ns the rest of indices of element to be accessed
+         * @return constexpr const_reference 
+         */
+        template <typename...size>
+        constexpr const_reference operator()(size_type n, size...ns) const
+        {
+            static_assert(sizeof...(ns)==sizeof...(ShapeN),
+                "unsupported number of index"
+            );
+            auto indices = std::array<size_type,sizeof...(ns)+1>{n,ns...};
+            auto offset = detail::compute_offset(strides_, indices);
+            return data[offset];
+        } // operator()
+    }; // struct fixed_ndarray
     
     /**
      * @brief helper traits to check if given type is array::fixed_matrix,
@@ -377,6 +366,65 @@ namespace nmtools::array {
 
 namespace nmtools
 {
+    /**
+     * @ingroup utility
+     * 
+     */
+    
+    /**
+     * @brief specialization of dynamic_vector size for fixed_vector.
+     * 
+     * @tparam T 
+     * @tparam N 
+     * @param v 
+     * @return auto 
+     * @note since some functions in "nmtools/array/utility.hpp" depends on vector_size and vector_size
+     * is also definded in that file, this overload should be defined before including the file to make
+     * overload visible
+     * @todo fix include
+     */
+    template <typename T, size_t N>
+    constexpr auto vector_size(const array::fixed_vector<T,N>& v)
+    {
+        return v.size();
+    } // constexpr auto vector_size
+
+    /**
+     * @brief specialization of dynamic_matrix size for fixed_vector.
+     * 
+     * @tparam T 
+     * @tparam Rows 
+     * @tparam Cols 
+     * @param m 
+     * @return auto 
+     * @note since some functions in "nmtools/array/utility.hpp" depends on matrix_size and matrix_size
+     * is also definded in that file, this overload should be defined before including the file to make
+     * overload visible
+     * @todo fix include
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    constexpr auto matrix_size(const array::fixed_matrix<T,Rows,Cols>& m)
+    {
+        return m.shape();
+    } // constexpr auto matrix_size
+
+    /**
+     * @brief return the shape of fixed_ndarray, which is known at compile-time
+     * 
+     * @tparam T element type of fixed_ndarray
+     * @tparam Shape1 the size of element at 1st axis
+     * @tparam ShapeN the sizes of the element for the rest of axes
+     * @param a ndarray
+     * @return constexpr auto 
+     */
+    template <typename T, size_t Shape1, size_t...ShapeN>
+    constexpr auto array_shape(const array::fixed_ndarray<T,Shape1,ShapeN...>& a)
+    {
+        return a.shape();
+    } // array_shape
+
+    /** @} */ // end group utility
+
     /**
      * @brief 
      * 
@@ -481,6 +529,26 @@ namespace nmtools::traits
      */
     template <typename T, size_t Rows, size_t Cols>
     struct is_array2d<array::fixed_matrix<T,Rows,Cols>> : true_type {};
+
+    /**
+     * @brief specialization of is_ndarray traits for fixed_ndarray
+     * 
+     * @tparam T element type of ndarray
+     * @tparam Shape1 size of first axis
+     * @tparam ShapeN sizes of the rest axis
+     */
+    template <typename T, size_t Shape1, size_t...ShapeN>
+    struct is_ndarray<array::fixed_ndarray<T,Shape1,ShapeN...>> : true_type {};
+
+    /**
+     * @brief specialization fo is_fixed_ndarray traits for fixed_ndarray
+     * 
+     * @tparam T element type of ndarray
+     * @tparam Shape1 size of first axis
+     * @tparam ShapeN sizes of the rest axis
+     */
+    template <typename T, size_t Shape1, size_t...ShapeN>
+    struct is_fixed_ndarray<array::fixed_ndarray<T,Shape1,ShapeN...>> : true_type {};
 
     /** @} */ // end group traits
 } // namespace nmtooclls::traits
