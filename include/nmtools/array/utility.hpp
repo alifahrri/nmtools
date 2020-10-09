@@ -1,6 +1,8 @@
 #ifndef NMTOOLS_ARRAY_UTILITY_HPP
 #define NMTOOLS_ARRAY_UTILITY_HPP
 
+#include "nmtools/array/detail.hpp"
+#include "nmtools/array/meta.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 
@@ -16,103 +18,6 @@ namespace nmtools {
     * Collections of utility functions for array-like objects
     * @{
     */
-
-    // TODO: consider to move to meta
-    /**
-     * @brief get fixed-matrix's size at compile time.
-     * well-formed specialization should have `value` and `value_type`.
-     * 
-     * @tparam T 
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct fixed_matrix_size {};
-
-    // TODO: consider to move to meta
-    /**
-     * @brief helper variable template to get fixed-matrix's size
-     * 
-     * @tparam M fixed-matrix
-     */
-    template <typename M>
-    inline constexpr auto fixed_matrix_size_v = fixed_matrix_size<M>::value;
-
-    // TODO: consider to move to meta
-    /**
-     * @brief get fixed-vector's (math vector, not container) size at compile time
-     * 
-     * @tparam V 
-     * @tparam typename=void 
-     */
-    template <typename V, typename=void>
-    struct fixed_vector_size {};
-
-    // TODO: consider to move to meta
-    /**
-     * @brief specializaton of fixed_matrix_size for nested array
-     * 
-     * @tparam T 
-     * @tparam n 
-     * @tparam m 
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    struct fixed_matrix_size<std::array<std::array<T,Cols>,Rows>> 
-    {
-        static inline constexpr auto value = std::make_pair(Rows,Cols);
-        using value_type = decltype(value); // std::pair
-    };
-
-    // TODO: consider to move to meta
-    /**
-     * @brief specializaton of fixed_vector_size for std::array
-     * 
-     * @tparam T 
-     * @tparam N 
-     */
-    template <typename T, size_t N>
-    struct fixed_vector_size<std::array<T,N>> : std::tuple_size<std::array<T,N>> {};
-
-    namespace traits
-    {
-        /* extend traits for fixed_size_matrix & fixed_size_vector */
-
-        /**
-         * @addtogroup traits
-         * @{
-         */
-
-        /**
-         * @brief specialization of is_fixed_size_matrix for true case.
-         * Enabled when fixed_matrix_size<T> is well-formed and has value_type member type.
-         * 
-         * @tparam T type to check
-         */
-        template <typename T>
-        struct is_fixed_size_matrix<T,
-            enable_if_t<has_value_type_v<fixed_matrix_size<T>>>
-        > : std::true_type {};
-
-        /**
-         * @brief specialization of is_fixed_size_vector fo true case.
-         * Enabled when fixed_vector_size is well-formed and has value_type member type.
-         * 
-         * @tparam T type to check
-         */
-        template <typename T>
-        struct is_fixed_size_vector<T,
-            enable_if_t<has_value_type_v<fixed_vector_size<T>>>
-        > : std::true_type {};
-
-        /** @} */ // end group traits
-    }
-
-    /**
-     * @brief helper variable template for fixed_vector_size
-     * 
-     * @tparam V 
-     */
-    template <typename V>
-    inline constexpr auto fixed_vector_size_v = fixed_vector_size<V>::value;
 
     using std::size;
     using std::get;
@@ -379,27 +284,6 @@ namespace nmtools {
         // at operator support single indexing
         return at(M,r);
     } // constexpr auto row(const Matrix, size_type r)
-
-    namespace detail {
-        /**
-
-         * @brief given array-like a, make array of type array_t,
-         * where the element is initialized using elements of array-like a
-         * at indices I... with offset, e.g. {a[I+offset]...}.
-         * 
-         * @tparam array_t desired array_t, asuming aggregate initialization is well-formed
-         * @tparam T array-like
-         * @tparam I integer sequence to take elements of a
-         * @param a array to initialize the resulting array
-         * @param offset index offset
-         * @return constexpr auto 
-         */
-        template <typename array_t, typename T, size_t ...I>
-        constexpr auto make_array(const T &a, std::integer_sequence<size_t, I...>, size_t offset=0)
-        {
-            return array_t{a[I+offset]...};
-        }
-    }
 
     /**
      * @brief specialization of row function for nested raw array.
@@ -912,6 +796,20 @@ namespace nmtools {
 
     namespace detail {
 
+        /**
+         * @brief implementation loop of squeeze when it is actually possible (single dimensional shape detected)
+         * 
+         * @tparam single_dim axis which single dimension is detected
+         * @tparam row_t type of row size
+         * @tparam col_t type of column size
+         * @param squeezed placeholder for result
+         * @param array array to be squeezed
+         * @param rows number of rows
+         * @param cols number of cols
+         * @return std::enable_if_t<single_dim==0||single_dim==1> 
+         * @note this may be simply copy the array elements
+         * @todo support view
+         */
         template <size_t single_dim, typename row_t, typename col_t>
         constexpr auto squeeze_impl(auto &squeezed, const auto& array, row_t rows, col_t cols, index_constant<single_dim>)
             -> std::enable_if_t<single_dim==0||single_dim==1>
@@ -929,6 +827,19 @@ namespace nmtools {
                 }();
         } // squeeze_impl
 
+        /**
+         * @brief implementation loop of squeeze when squeeze is not detected at compile-time.
+         * 
+         * @tparam size_type either simply integer or integral_constant
+         * @tparam row_t type of row size
+         * @tparam col_t type of column size
+         * @param squeezed placeholder for result
+         * @param array array to be squeezed
+         * @param rows number of rows
+         * @param cols number of cols
+         * @param single_dim axis which single dimension is detected
+         * @return constexpr auto 
+         */
         template <typename size_type, typename row_t, typename col_t>
         constexpr auto squeeze_impl(auto &squeezed, const auto& array, row_t rows, col_t cols, size_type single_dim)
         {
@@ -954,6 +865,15 @@ namespace nmtools {
         } // squeeze_impl
     } // namespace detail
 
+    /**
+     * @brief remove single dimensional entries from the shape of an array
+     * 
+     * @tparam Array 2D array
+     * @param a 2D array to be squeezed
+     * @return constexpr auto 
+     * @note when dynamic matrix is passed, the checking is performed at runtime
+     * while the returned result is vector-like
+     */
     template <typename Array>
     constexpr auto squeeze(const Array& a)
     {
