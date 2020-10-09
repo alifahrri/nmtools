@@ -21,6 +21,23 @@ namespace nmtools::traits {
     using std::enable_if_t;
 
     /**
+     * @brief check if given type T is n-dimensional array
+     * 
+     * @tparam T type to check
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_ndarray : false_type {};
+
+    /**
+     * @brief helper variable template to check if T is n-dimensional array
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_ndarray_v = is_ndarray<T>::value;
+
+    /**
      * @brief check if T t{} are:
      * - t[0][0][0] is valid
      * 
@@ -752,6 +769,40 @@ namespace nmtools::traits {
 
     template <typename T>
     inline constexpr bool is_dynamic_size_vector_v = is_dynamic_size_vector<T>::value;
+
+    /**
+     * @brief check if given type T is n-dimensional array that shape is known at compile-time
+     * 
+     * @tparam T type to check
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_fixed_ndarray : false_type {};
+
+    /**
+     * @brief check if given type T is n-dimensional array that shape is only known at runtime
+     * 
+     * @tparam T type to check
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_dynamic_ndarray : false_type {};
+
+    /**
+     * @brief helper variable template to check if given type T is n-dimensional array that shape is known at compile-time
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_fixed_ndarray_v = is_fixed_ndarray<T>::value;
+
+    /**
+     * @brief helper variable templat to check if given type T is n-dimensional array that shape is only known at runtime
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_dynamic_ndarray_v = is_dynamic_ndarray<T>::value;
 
     /**
      * @brief check if given type T is std::integral_constant
