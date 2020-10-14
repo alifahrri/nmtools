@@ -61,6 +61,16 @@ namespace nmtools
     template <typename T, size_t N>
     struct fixed_vector_size<std::array<T,N>> : std::tuple_size<std::array<T,N>> {};
 
+    /**
+     * @brief helper alias template for std::integral_constant<size_t,...>
+     * 
+     * @tparam N 
+     * @see nmtools::slice
+     * @see nmtools::make_slice_index
+     */
+    template <size_t N>
+    using index_constant = std::integral_constant<size_t,N>;
+
     namespace traits
     {
         /* extend traits for fixed_size_matrix & fixed_size_vector */

@@ -362,49 +362,12 @@ namespace nmtools::blas {
     } // auto zeros(size_t n)
 
     /**
-     * @brief create zero matrix/vector 
+     * @brief zeros_like
      * 
-     * @tparam T matrix/vector/arithmetic
-     * @param a example of existing matrix/vector
-     * @return constexpr auto 
+     * @note implementation moved to array utility, provided here as backward-compatibility
+     * @todo remove
      */
-    template <typename T>
-    constexpr auto zeros_like(const T& a)
-    {
-        /** TODO: proper constraints **/
-        static_assert(
-            traits::is_array1d_v<T> ||
-            traits::is_array2d_v<T> ||
-            std::is_arithmetic_v<T>,
-            "unsupported type for zeros_like"
-        );
-        using traits::remove_cvref_t;
-        using meta::transform_bounded_array_t;
-        using return_t = transform_bounded_array_t<remove_cvref_t<T>>;
-        /* TODO: check if return_t can be instantiated this way */
-        auto ret = return_t{};
-        /* ret is aritmethic type (scalr), return casted zero */
-        if constexpr (std::is_arithmetic_v<T>)
-            return static_cast<T>(0);
-        /* ret is conteiner, for each elements call zeros_like */
-        else {
-            /* when T can be resized with 2 arguments, meaning that it is matrix, 
-                then we should resize it that way */
-            if constexpr (traits::is_array2d_v<T> && traits::is_resizeable2d_v<T>)
-            {
-                auto [rows, cols] = matrix_size(a);
-                ret.resize(rows, cols);
-            }
-            /* otherwise, also resize each elements of ret */
-            else if constexpr (traits::is_resizeable_v<T>) {
-                /* TODO: should we use vector_size instead of size? */
-                ret.resize(size(a));
-                for (size_t i=0; i<size(a); i++)
-                    at(ret,i) = zeros_like(at(a,i));
-            }
-            return ret;
-        }
-    } // constexpr auto zeros_like(const T& a)
+    using nmtools::zeros_like;
 
     /**
      * @brief create matrix/vector filled with 1s
@@ -529,71 +492,12 @@ namespace nmtools::blas {
     } // constexpr auto transpose(const Array& a)
 
     /**
-     * @brief clone matrix/vector 
+     * @brief clone
      * 
-     * @tparam Array 
-     * @param a matrix/vector/arithmetic
-     * @return constexpr auto 
+     * @note implementation moved to array utility, provided here as backward-compatibility
+     * @todo remove
      */
-    template <typename Array>
-    constexpr auto clone(const Array& a)
-    {
-        /** TODO: proper constraints **/
-        static_assert(
-            traits::is_array1d_v<Array>
-            || traits::is_array2d_v<Array>
-            || std::is_arithmetic_v<Array>,
-            "unsupported type for clone"
-        );
-        /* ret is aritmethic type (scalr), return as it is */
-        if constexpr (std::is_arithmetic_v<Array>)
-            return a;
-        /* ret is conteiner, for each elements call zeros_like */
-        else {
-            auto ret = zeros_like(a);
-            using return_t = traits::remove_cvref_t<decltype(ret)>;
-            /* array2d implementation */
-            if constexpr (traits::is_array2d_v<return_t>)
-            {
-                /* common implementation loop for both fixed and dynamic */
-                auto clone2d_impl = [](auto &ret, const auto& a, auto rows, auto cols){
-                    for (size_t i=0; i<rows; i++)
-                        for (size_t j=0; j<cols; j++)
-                            at(ret,i,j) = at(a,i,j);
-                };
-                constexpr auto is_fixed_size = traits::is_fixed_size_matrix_v<return_t>;
-                if constexpr (is_fixed_size) {
-                    /* TODO: find-out if reading matrix_size as constexpr is beneficial */
-                    constexpr auto shape = matrix_size(ret);
-                    constexpr auto rows = std::get<0>(shape);
-                    constexpr auto cols = std::get<1>(shape);
-                    clone2d_impl(ret,a,rows,cols);
-                }
-                else {
-                    auto [rows, cols] = matrix_size(ret);
-                    clone2d_impl(ret,a,rows,cols);
-                }
-            }
-            /* array1d implementation */
-            else {
-                /* common implementation loop for 1d fixed and dynamic */
-                auto clone1d_impl = [](auto &ret, const auto& a, auto n){
-                    for (size_t i=0; i<n; i++)
-                        at(ret,i) = at(a,i);
-                };
-                constexpr auto is_fixed_size = traits::is_fixed_size_vector_v<return_t>;
-                if constexpr (is_fixed_size) {
-                    constexpr auto n = vector_size(ret);
-                    clone1d_impl(ret,a,n);
-                }
-                else {
-                    auto n = vector_size(ret);
-                    clone1d_impl(ret,a,n);
-                }
-            }
-            return ret;
-        }
-    } // constexpr auto clone(const Array& a)
+    using nmtools::clone;
 
     /**
      * @brief make identity matrix

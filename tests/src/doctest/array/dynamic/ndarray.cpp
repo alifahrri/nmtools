@@ -3,6 +3,7 @@
 
 using std::vector;
 using nmtools::array_shape;
+using nmtools::array_dim;
 using nmtools::array::dynamic_ndarray;
 
 static_assert( nmtools::traits::is_ndarray_v<dynamic_ndarray<double>>);
@@ -19,6 +20,7 @@ TEST_CASE("dynamic_ndarray[2,3,2]")
     CHECK(ndarray.strides()[0]==6);
     CHECK(ndarray.strides()[1]==2);
     CHECK(ndarray.strides()[2]==1);
+    CHECK(array_dim(ndarray)==3);
     CHECK(array_shape(ndarray)==vector({2ul,3ul,2ul}));
 }
 

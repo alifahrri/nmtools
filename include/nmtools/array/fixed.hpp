@@ -1,6 +1,9 @@
 #ifndef NMTOOLS_ARRAY_FIXED_HPP
 #define NMTOOLS_ARRAY_FIXED_HPP
 
+#include "nmtools/array/detail.hpp"
+#include "nmtools/array/meta.hpp" // fixed_matrix_size etc.
+
 #include <array>
 
 /**
@@ -8,9 +11,6 @@
  * collections of array functions and structs.
  * 
  */
-
-#include "nmtools/array/detail.hpp"
-#include "nmtools/array/meta.hpp" // fixed_matrix_size etc.
 
 namespace nmtools::array {
 
@@ -119,7 +119,7 @@ namespace nmtools::array {
         constexpr reference operator()(size_type row, size_type col)
         {
             return data[row*Cols+col];
-        }
+        } // operator()(size_type,size_type)
 
         /**
          * @brief access element at (row,col)-th index
@@ -131,7 +131,7 @@ namespace nmtools::array {
         constexpr const_reference operator()(size_type row, size_type col) const
         {
             return data[row*Cols+col];
-        }
+        } // operator()(size_type,size_type)
 
         /**
          * @brief 
@@ -144,7 +144,7 @@ namespace nmtools::array {
         constexpr const_reference operator()() const
         {
             return data[row*Cols+col];
-        }
+        } // operator()<size_type,size_type>()
 
         /**
          * @brief access row
@@ -155,7 +155,7 @@ namespace nmtools::array {
         constexpr auto operator()(size_type row)
         {
             return detail::make_array_ref(data,detail::size_constant<Cols>{},row*Cols);
-        }
+        } // operator()(size_type)
 
         /**
          * @brief access row
@@ -166,7 +166,7 @@ namespace nmtools::array {
         constexpr auto operator()(size_type row) const
         {
             return detail::make_array_ref(data,detail::size_constant<Cols>{},row*Cols);
-        }
+        } // operator()(size_type)
 
         /**
          * @brief return the number of rows
@@ -176,7 +176,7 @@ namespace nmtools::array {
         constexpr size_type size() const noexcept
         {
             return Rows;
-        }
+        } // size()
 
         /**
          * @brief return the number of rows
@@ -186,7 +186,10 @@ namespace nmtools::array {
         constexpr shape_type shape() const noexcept
         {
             return std::make_pair(Rows,Cols);
-        }
+        } // shape()
+
+        template <typename matrix_t>
+        constexpr auto operator=(const matrix_t& rhs);
     }; // struct fixed_matrix
 
     /**
@@ -251,10 +254,13 @@ namespace nmtools::array {
         }
         static inline constexpr auto strides_ = strides();
 
-        using data_type = std::array<T,numel_>;
+        // underlying flat storage
+        using data_type  = std::array<T,numel_>;
+        // element/value type
         using value_type = T;
-        using size_type = size_t;
-        using reference = value_type&;
+        // single axis type
+        using size_type  = size_t;
+        using reference  = value_type&;
         using const_reference = const value_type&;
 
         data_type data;
@@ -266,13 +272,13 @@ namespace nmtools::array {
          * @param n 1st index of element to be accessed
          * @param ns the rest of indices of element to be accessed
          * @return constexpr reference 
+         * @note use sfinae instead of static assertion to make sure
+         * expression checking (`traits::has_funcnd_v<...>`) works
          */
         template <typename...size>
-        constexpr reference operator()(size_type n, size...ns)
+        constexpr auto operator()(size_type n, size...ns)
+            -> std::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),reference>
         {
-            static_assert(sizeof...(ns)==sizeof...(ShapeN),
-                "unsupported number of index"
-            );
             using common_size_t = std::common_type_t<size_type,size...>;
             auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
             auto offset = detail::compute_offset(strides_, indices);
@@ -286,17 +292,21 @@ namespace nmtools::array {
          * @param n 1st index of element to be accessed
          * @param ns the rest of indices of element to be accessed
          * @return constexpr const_reference 
+         * @note use sfinae instead of static assertion to make sure
+         * expression checking (`traits::has_funcnd_v<...>`) works
          */
         template <typename...size>
-        constexpr const_reference operator()(size_type n, size...ns) const
+        constexpr auto operator()(size_type n, size...ns) const
+            -> std::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),const_reference>
         {
-            static_assert(sizeof...(ns)==sizeof...(ShapeN),
-                "unsupported number of index"
-            );
-            auto indices = std::array<size_type,sizeof...(ns)+1>{n,ns...};
+            using common_size_t = std::common_type_t<size_type,size...>;
+            auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
             auto offset = detail::compute_offset(strides_, indices);
             return data[offset];
         } // operator()
+
+        template <typename ndarray_t>
+        constexpr auto operator=(const ndarray_t& rhs);
     }; // struct fixed_ndarray
     
     /**
@@ -422,6 +432,20 @@ namespace nmtools
     {
         return a.shape();
     } // array_shape
+
+    /**
+     * @brief return the dimensionality of fixed_ndarray, which is known at compile-time
+     * 
+     * @tparam T 
+     * @tparam Shape 
+     * @param a 
+     * @return constexpr auto 
+     */
+    template <typename T, size_t...Shape>
+    constexpr auto array_dim(const array::fixed_ndarray<T,Shape...>& a)
+    {
+        return a.dim();
+    } // 
 
     /** @} */ // end group utility
 
@@ -669,7 +693,114 @@ namespace nmtools::meta
         using type = array::fixed_matrix<T,Rows,Cols>;
     };
 
+    /**
+     * @brief specialization of metafunction
+     * nmtools::meta::get_ndarray_value_type for array::fixed_ndarray types
+     * 
+     * @tparam T element type of fixed_ndarray
+     * @tparam Shape 
+     */
+    template <typename T, auto...Shape>
+    struct get_ndarray_value_type<array::fixed_ndarray<T,Shape...>>
+    {
+        using type = T;
+    };
+
     /** @} */ // end group meta
-}
+} // namespace nmtools::meta
+
+#include "nmtools/array/utility/clone.hpp" // clone_impl
+
+namespace nmtools::array
+{
+    
+    /**
+     * @brief assignment operator for fixed_matrix from generic matrix type
+     * 
+     * @tparam T element type of fixed_matrix
+     * @tparam Rows compile-time rows of fixed_matrix
+     * @tparam Cols compile-time cols of fixed_matrix
+     * @tparam matrix_t type of matrix to be cloned
+     * @param rhs matrix to be cloned
+     * @return constexpr auto 
+     * @see nmtools::matrix_size
+     * @see nmtools::detail::clone_impl
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    template <typename matrix_t>
+    constexpr auto fixed_matrix<T,Rows,Cols>::operator=(const matrix_t& rhs)
+    {
+        static_assert(
+            traits::is_array2d_v<matrix_t>,
+            "fixed_matrix only support assignment from array2d for now"
+        );
+
+        using ::nmtools::detail::clone_impl;
+
+        if constexpr (traits::is_fixed_size_matrix_v<matrix_t>) {
+            constexpr auto size_ = matrix_size(rhs);
+            constexpr auto rows  = std::get<0>(size_);
+            constexpr auto cols  = std::get<1>(size_);
+
+            static_assert( (rows==Rows) && (cols==Cols),
+                "mismatched type for fixed_matrix assignment"
+            );
+            clone_impl(*this,rhs,rows,cols);
+        }
+        else {
+            auto [rows, cols] = matrix_size(rhs);
+            assert( (rows==Rows) && (cols==Cols)
+                // , "mismatched type for fixed_matrix assignment"
+            );
+            clone_impl(*this,rhs,rows,cols);
+        }
+        return *this;
+    } // operator=
+
+    /**
+     * @brief assignment operator from generic ndarray
+     * 
+     * @tparam T element/value type of fixed_ndarray
+     * @tparam Shape1 
+     * @tparam ShapeN 
+     * @tparam ndarray_t 
+     * @param rhs ndarray to be cloned
+     * @return constexpr auto 
+     * @todo support assignment from generic ndarray and also resizeable ndarray/matrix/vector
+     * @see nmtools::matrix_size
+     * @see nmtools::vector_size
+     * @see nmtools::detail::clone_impl
+     */
+    template <typename T, size_t Shape1, size_t...ShapeN>
+    template <typename ndarray_t>
+    constexpr auto fixed_ndarray<T,Shape1,ShapeN...>::operator=(const ndarray_t& rhs)
+    {
+        static_assert (
+            ( traits::is_fixed_size_matrix_v<ndarray_t> && (dim()==2) )
+            || ( traits::is_fixed_size_vector_v<ndarray_t> && (dim()==1) ),
+            "fixed_ndarray only support assignment from fixed ndarray/matrix/vector for now"
+        );
+
+        using ::nmtools::detail::clone_impl;
+
+        if constexpr (dim()==1) {
+            constexpr auto n = vector_size(rhs);
+            static_assert ( n == shape()[0],
+                "mismatched shape for fixed_ndarray assignment"
+            );
+            clone_impl(*this, rhs, n);
+        }
+        else if constexpr (dim()==2) {
+            constexpr auto size = matrix_size(rhs);
+            constexpr auto rows = std::get<0>(size);
+            constexpr auto cols = std::get<1>(size);
+            static_assert ( (rows == shape()[0]) && (cols == shape()[1]) ,
+                "mismatched shape for fixed_ndarray assignment"
+            );
+            clone_impl(*this, rhs, rows, cols);
+        }
+        return *this;
+    } // operator=
+} // namespace nmtools::array
 
 #endif // NMTOOLS_ARRAY_FIXED_HPP

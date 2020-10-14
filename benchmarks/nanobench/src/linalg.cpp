@@ -1,7 +1,8 @@
-// NOTE: seems like it is required to include these headers first
-// TODO: fix dependency
-#include "nmtools/array/fixed.hpp"
+// @note seems like it is required to include these headers first
+// @note include dynamic first to make specialization of matrix_size/vector_size of dynamic_matrix etc visible!!!
+// @todo fix dependency
 #include "nmtools/array/dynamic.hpp"
+#include "nmtools/array/fixed.hpp"
 
 // TODO: rename to nmtools/bench/linalg.hpp or something
 #include "linalg.hpp"

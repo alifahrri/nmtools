@@ -620,6 +620,198 @@ namespace nmtools::traits {
     template <typename T, typename size_type>
     inline constexpr bool has_at2d_v = has_at2d<T,size_type>::value;
 
+    namespace detail
+    {
+        /**
+         * @brief helper traits to check if given expression
+         * (provided as alias template that takes T and tparams...)
+         * is well-formed (calling expression<T,tparams...> results in a type).
+         * Roughly adapted from https://en.cppreference.com/w/cpp/experimental/is_detected
+         * 
+         * @tparam always_void provided as specialization point (e.g. using void_t for true case)
+         * @tparam expression template template parameter take T and tparams as template arguments
+         * @tparam T the type to be checked
+         * @tparam tparams optional additional type parameters
+         */
+        template <typename always_void, template<typename...> typename expression, typename T, typename...tparams>
+        struct expression_check : false_type {};
+
+        /**
+         * @brief specialization of expression_check traits that check if given expression
+         * (provided as alias template that takes T and tparams...)
+         * is well-formed (calling expression<T,tparams...> results in a type) for true case.
+         * Roughly adapted from https://en.cppreference.com/w/cpp/experimental/is_detected
+         * 
+         * @tparam expression template template parameter take T and tparams as template arguments
+         * @tparam T the type to be checked
+         * @tparam tparams optional additional type parameters
+         */
+        template <template<typename...> typename expression, typename T, typename...tparams>
+        struct expression_check<void_t<expression<T,tparams...>>, expression, T, tparams...> : true_type {};
+    } // namespace detail
+
+    namespace expr
+    {
+        /**
+         * @brief helper alias template to check if given type T has member function `at`
+         * taking size_types as parameters.
+         * 
+         * @tparam T type to check
+         * @tparam size_types arguments to `at`
+         */
+        template <typename T, typename...size_types>
+        using atnd = decltype(declval<T>().at(declval<size_types>()...));
+
+        /**
+         * @brief helper alias template to check if given type T has operator() overload
+         * that takes size_types as arguments.
+         * 
+         * @tparam T type to check
+         * @tparam size_types arguments to `operator()`
+         */
+        template <typename T, typename...size_types>
+        using funcnd = decltype(declval<T>().operator()(declval<size_types>()...));
+
+        /**
+         * @brief helper alias template to check if given type T has operator [] overload
+         * that takes size_types as arguments.
+         * 
+         * @tparam T type to check
+         * @tparam size_types arguments to `operator[]`
+         */
+        template <typename T, typename...size_types>
+        using bracketnd = decltype(declval<T>().operator[](declval<size_types>()...));
+
+        /**
+         * @brief helper alias template to deduce the return value of member function `size` of type `T`
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using size = decltype(declval<T>().size());
+
+        /**
+         * @brief helper alias template to deduce the return value of member function `shape` of type `T`
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using shape = decltype(declval<T>().shape());
+
+        /**
+         * @brief helper alias template to deduce the return value of member function `dim` of type `T`
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using dim = decltype(declval<T>().dim());
+    } // namespace expr
+
+    /**
+     * @brief check if T has member function `at` that takes `size_types...` as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_types arguments to `at`
+     * @see nmtools::traits::expr::has_atnd
+     * @see nmtools::traits::detail::expression_check
+     */
+    template <typename T, typename...size_types>
+    struct has_atnd : detail::expression_check<void,expr::atnd,T,size_types...> {};
+
+    /**
+     * @brief helper variable template to check if T has member function `at` that takes `size_types...` as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_types arguments to `at`
+     * @see nmtools::traits::has_atnd
+     */
+    template <typename T, typename...size_types>
+    inline constexpr bool has_atnd_v = has_atnd<T,size_types...>::value;
+
+    /**
+     * @brief check if type `T` has `operator()` that takes `size_types...` as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_types arguments to `operator()`
+     */
+    template <typename T, typename...size_types>
+    struct has_funcnd : detail::expression_check<void,expr::funcnd,T,size_types...> {};
+
+    /**
+     * @brief helper variable template to check if type `T` has `operator()` that takes `size_types...` as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_types arguments to `operator()`
+     */
+    template <typename T, typename...size_types>
+    inline constexpr bool has_funcnd_v = has_funcnd<T,size_types...>::value;
+
+    /**
+     * @brief check if type `T` has `operator[]` that takes `size_types...` as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_types arguments to `operator[]`
+     */
+    template <typename T, typename...size_types>
+    struct has_bracketnd : detail::expression_check<void,expr::bracketnd,T,size_types...> {};
+
+    /**
+     * @brief helper variable template to check if type `T` has `operator[]` that takes `size_types...` as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_types arguments to `operator[]`
+     */
+    template <typename T, typename...size_types>
+    inline constexpr bool has_bracketnd_v = has_bracketnd<T,size_types...>::value;
+
+    /**
+     * @brief check if type `T` has member function `size`.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct has_size : detail::expression_check<void,expr::size,T> {};
+
+    /**
+     * @brief helper variable template to check if type `T` has member function `size`.
+     * 
+     * @tparam T type to check 
+     */
+    template <typename T>
+    inline constexpr bool has_size_v = has_size<T>::value;
+
+    /**
+     * @brief check if type `T` has member function `shape`.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct has_shape : detail::expression_check<void,expr::shape,T> {};
+
+    /**
+     * @brief helper variable template to check if type `T` has member function `shape`.
+     * 
+     * @tparam T type to check 
+     */
+    template <typename T>
+    inline constexpr bool has_shape_v = has_shape<T>::value;
+
+    /**
+     * @brief check if type `T` has member function `dim`.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct has_dim : detail::expression_check<void,expr::dim,T> {};
+
+    /**
+     * @brief helper variable template to check if type `T` has member function `dim`.
+     * 
+     * @tparam T type to check 
+     */
+    template <typename T>
+    inline constexpr bool has_dim_v = has_dim<T>::value;
+
     /**
      * @brief check if T has square bracket operator ([]) with size_type as arguments.
      * 

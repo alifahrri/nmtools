@@ -1099,6 +1099,27 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
     NMTOOLS_TEST_SUBCASE( func, result, arg1<float>,  arg2<float>, arg3<float> );   \
 }   \
 
+/**
+ * @brief log given type to doctest as message
+ * 
+ * @warn only available for doctest
+ */
+#define LOG_TYPEINFO(type) \
+{ \
+    MESSAGE(std::string(#type) + " = " + boost::typeindex::type_id<type>().pretty_name()); \
+} \
+
+/**
+ * @brief perform static assertion on `expr` and also run assertion at runtime for message and sanity check
+ * 
+ * @warn only available for doctest
+ */
+#define STATIC_CHECK(expr) \
+{ \
+  static_assert(expr); \
+  CHECK_MESSAGE(expr, #expr); \
+} \
+
 namespace nmtools::testing::data::common
 {
     /**

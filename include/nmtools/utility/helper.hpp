@@ -22,6 +22,7 @@ namespace nmtools::helper {
      * @param logger logger pointer to callable
      * @param mapping arguments mapping, to be logged
      * @return auto 
+     * @todo remove
      */
     template <typename Logger>
     auto log(Logger logger, auto mapping) {
@@ -164,8 +165,8 @@ namespace nmtools::helper {
         template <typename T, typename U, typename E=double, size_t...I>
         constexpr auto isclose(const T& t, const U& u, std::integer_sequence<size_t,I...>, E eps=1e-6)
         {
-            constexpr auto is_packed_T = traits::is_tuple_v<T>;
-            constexpr auto is_packed_U = traits::is_tuple_v<U>;
+            constexpr auto is_tuple_T = traits::is_tuple_v<T>;
+            constexpr auto is_tuple_U = traits::is_tuple_v<U>;
 
             /* unpack */    
             return (... && isclose(std::get<I>(t),std::get<I>(u),eps));
@@ -187,20 +188,28 @@ namespace nmtools::helper {
     template <typename T, typename U, typename E=double>
     constexpr auto isclose(const T& t, const U& u, E eps=1e-6)
     {
-        constexpr auto is_packed_T = traits::is_tuple_v<T>;
-        constexpr auto is_packed_U = traits::is_tuple_v<U>;
+        // check if T & U is std::tuple
+        constexpr auto is_tuple_T = traits::is_tuple_v<T>;
+        constexpr auto is_tuple_U = traits::is_tuple_v<U>;
+        // check if tuple_size for T & U is available
+        constexpr auto is_packed_T = traits::has_tuple_size_v<T>;
+        constexpr auto is_packed_U = traits::has_tuple_size_v<U>;
+        // check if T & U is simply array
+        constexpr auto is_array_T = traits::is_array1d_v<T> || traits::is_array2d_v<T>;
+        constexpr auto is_array_U = traits::is_array1d_v<U> || traits::is_array2d_v<U>;
+        // @note that std::array will be array & packed, std::tuple will be tuple & packed, std::pair will be only packed
 
-        /* if T is tuple, then U must be tuple */
-        static_assert (is_packed_T == is_packed_U);
-
-        if constexpr (is_packed_T) {
+        if constexpr (is_packed_T && is_packed_U) {
+            // @note check for packed instead of strictly tuple to allow comparison between std::pair / std::tuple with std::array
             constexpr auto nt = std::tuple_size_v<T>;
             constexpr auto nu = std::tuple_size_v<U>;
-            static_assert(nt == nu);
+            static_assert(nt == nu, "size mismatch for packed type");
             using index_t = std::make_index_sequence<nt>;
+            // call overloaded isclose which takes compile-time indices
             return detail::isclose(t,u,index_t{},eps);
         }
         else {
+            // call overloaded isclose which simply takes array/arithmetic
             return detail::isclose(t,u,eps);
         }
     } // constexpr auto isclose
