@@ -71,6 +71,8 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ## ndarray
     src/doctest/array/fixed/ndarray.cpp
     src/doctest/array/dynamic/ndarray.cpp
+    ## view
+    src/doctest/array/view/ref.cpp
     ## metafunctions
     src/doctest/meta.cpp
 )
@@ -97,6 +99,20 @@ target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+option(ADDRESS_SANITIZER "build with -fsanitize=address" OFF)
+message(STATUS "ADDRESS_SANITIZER ${ADDRESS_SANITIZER}")
+
+# from https://gist.github.com/jlblancoc/44be9d4d466f0a973b1f3808a8e56782
+# TODO: findout if can be used for private target instead
+# TODO: find out if can be used with other compiler
+# TODO: provide option to disable/enable
+if (ADDRESS_SANITIZER)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -fsanitize=leak")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fsanitize=leak")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=address -fsanitize=leak")
+endif (ADDRESS_SANITIZER)
 
 include(CodeCoverage)
 append_coverage_compiler_flags()
