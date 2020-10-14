@@ -928,6 +928,26 @@ namespace nmtools::meta
     using get_vector_value_type_t = typename get_vector_value_type<T>::type;
 
     /**
+     * @brief metafunction to get the value/element type of an ndarray
+     * 
+     * @tparam T type to test
+     * @todo consider use expr to deduce type (e.g. expr::atnd)
+     */
+    template <typename T>
+    struct get_ndarray_value_type
+    {
+        using type = void;
+    };
+
+    /**
+     * @brief helper alias template for get_ndarray_value_type
+     * 
+     * @tparam T type to test
+     */
+    template <typename T>
+    using get_ndarray_value_type_t = typename get_ndarray_value_type<T>::type;
+
+    /**
      * @brief 
      * 
      * @tparam T 
@@ -940,6 +960,7 @@ namespace nmtools::meta
          * @brief helper function to deduce resulting type
          * 
          * @return constexpr auto 
+         * @todo consider use expr to deduce type (e.g. expr::atnd)
          */
         static inline constexpr auto __get_type()
         {
@@ -951,7 +972,9 @@ namespace nmtools::meta
              * 
              * @todo make this fn consteval
              */
-            if constexpr (traits::is_array2d_v<T>)
+            if constexpr (traits::is_ndarray_v<T>)
+                return get_ndarray_value_type_t<T>{};
+            else if constexpr (traits::is_array2d_v<T>)
                 return get_matrix_value_type_t<T>{};
             else if constexpr (traits::is_array1d_v<T>)
                 return get_vector_value_type_t<T>{};
