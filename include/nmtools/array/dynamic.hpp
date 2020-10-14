@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_DYNAMIC_HPP
 
 #include "nmtools/array/detail.hpp"
+#include <cassert>
 #include <vector>
 #include <initializer_list>
 
@@ -262,6 +263,7 @@ namespace nmtools::array
             numel_ = numel();
             data.resize(numel_);
             size_t i = 0;
+            assert (initializer.size() == numel_);
             // TODO: find best way to copy
             for (auto v : initializer)
                 data[i++] = v;
@@ -347,7 +349,8 @@ namespace nmtools::array
          */
         constexpr auto strides() const
         {
-            auto stride = std::vector<size_t>{dim()};
+            auto stride = std::vector<size_t>{};
+            stride.resize(dim());
             for (size_t i=0; i<dim(); i++)
                 stride[i] = detail::stride(shape_,i);
             return stride;
@@ -360,12 +363,16 @@ namespace nmtools::array
          * @param n 1st index of element to be accessed
          * @param ns the rest of indices of element to be accessed
          * @return constexpr reference 
+         * @todo explore more on error handling to make assertion more customizable
          */
-        template <typename ...size>
-        constexpr reference operator()(size_type n, size...ns)
+        template <typename ...size_types>
+        constexpr reference operator()(size_type n, size_types...ns)
         {
-            using common_size_t = std::common_type_t<size_type,size...>;
-            auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
+            using common_size_t = std::common_type_t<size_type,size_types...>;
+            auto indices = std::array<common_size_t,sizeof...(ns)+1>{
+                n, static_cast<common_size_t>(ns)...
+            };
+            assert (dim()==indices.size());
             auto offset = detail::compute_offset(strides_, indices);
             return data[offset];
         } // operator()
@@ -377,12 +384,16 @@ namespace nmtools::array
          * @param n 1st index of element to be accessed
          * @param ns the rest of indices of element to be accessed
          * @return constexpr const_reference 
+         * @todo explore more on error handling to make assertion more customizable
          */
-        template <typename ...size>
-        constexpr const_reference operator()(size_type n, size...ns) const
+        template <typename ...size_types>
+        constexpr const_reference operator()(size_type n, size_types...ns) const
         {
-            using common_size_t = std::common_type_t<size_type,size...>;
-            auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
+            using common_size_t = std::common_type_t<size_type,size_types...>;
+            auto indices = std::array<common_size_t,sizeof...(ns)+1>{
+                n, static_cast<common_size_t>(ns)...
+            };
+            assert (dim()==indices.size());
             auto offset = detail::compute_offset(strides_, indices);
             return data[offset];
         } // operator()
@@ -466,7 +477,7 @@ namespace nmtools
     /**
      * @brief specialization of vector_size for dynamic_vector
      * 
-     * @tparam T element type of dynamic_vector, automatically deduced
+     * @tparam T element type of dynamic_vector, deduced via template argument deduction
      * @param v vector which size is to be checked
      * @return auto 
      */
@@ -479,7 +490,7 @@ namespace nmtools
     /**
      * @brief specialization of matrix_size for dynamic_matrix
      * 
-     * @tparam T element type of dynamic_matrix, automatically deduced
+     * @tparam T element type of dynamic_matrix, deduced via template argument deduction
      * @param m matrix which size is to be checked
      * @return auto 
      */
@@ -492,7 +503,7 @@ namespace nmtools
     /**
      * @brief return the shape of dynamic_ndarray
      * 
-     * @tparam T element type of dynamic_ndarray
+     * @tparam T element type of dynamic_ndarray, deduced via template argument deduction
      * @param a 
      * @return auto 
      */
@@ -501,6 +512,19 @@ namespace nmtools
     {
         return a.shape();
     } // array_shape
+
+    /**
+     * @brief return the dimensionality of dynamic_ndarray
+     * 
+     * @tparam T element type of dynamic_ndarray, deduced via template argument deduction
+     * @param a array in which its dim is to be read
+     * @return auto 
+     */
+    template <typename T>
+    auto array_dim(const array::dynamic_ndarray<T>& a)
+    {
+        return a.dim();
+    } // array_dim
 
 } // namespace nmtools
 
@@ -716,6 +740,17 @@ namespace nmtools::meta
         using type = array::dynamic_vector<T>;
     };
 
+    /**
+     * @brief specialization of metafunction get_ndarray_value_type,
+     * which tells the value/element type of dynamic_ndarray
+     * 
+     * @tparam T element type of dynamic_ndarrray, deduced automatically
+     */
+    template <typename T>
+    struct get_ndarray_value_type<array::dynamic_ndarray<T>>
+    {
+        using type = T;
+    };
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
