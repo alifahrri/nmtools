@@ -121,3 +121,8 @@ setup_target_for_coverage_lcov(
     EXECUTABLE ${PROJECT_NAME}
     EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "${GTEST_INCLUDE_DIRS}/*" "/usr/*"
 )
+setup_target_for_coverage_lcov(
+    NAME ${PROJECT_NAME}-doctest-coverage 
+    EXECUTABLE ${PROJECT_NAME}-doctest
+    EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"
+)
