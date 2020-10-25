@@ -31,11 +31,8 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh &
     bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
 
 ## install armadillo
-RUN	wget http://sourceforge.net/projects/arma/files/armadillo-9.400.3.tar.xz && \
-	tar xf armadillo-9.400.3.tar.xz && rm armadillo-9.400.3.tar.xz && \
-	cd armadillo-9.400.3 && \
-	mkdir build && cd build && \
-	cmake .. && make && make install
+COPY scripts/install_armadillo.sh install_armadillo.sh
+RUN bash install_armadillo.sh
 
 ## install eigen
 RUN wget https://github.com/eigenteam/eigen-git-mirror/archive/3.3.7.tar.gz && \
