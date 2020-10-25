@@ -157,3 +157,158 @@ TEST_CASE("traits" * doctest::skip(true)) // has_bracketnd
     STATIC_CHECK(( !traits::has_bracketnd_v<dndarray_t,size_t,size_t> ));
     STATIC_CHECK(( !traits::has_bracketnd_v<dndarray_t,size_t> ));
 }
+
+TEST_CASE("meta" * doctest::skip(true)) // fixed_array_shape
+{
+    using vector_t   = std::array<double,3>;
+    using array_t    = std::array<std::array<double,3>,5>;
+    using fvector_t  = nmtools::array::fixed_vector<double,3>;
+    using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
+    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
+    using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
+    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
+    LOG_TYPEINFO(array_t);
+    LOG_TYPEINFO(vector_t);
+    LOG_TYPEINFO(fvector_t);
+    LOG_TYPEINFO(fmatrix_t);
+    LOG_TYPEINFO(ndarray_t);
+    LOG_TYPEINFO(dndarray_t);
+    LOG_TYPEINFO(ndarray3_t);
+
+    {
+        constexpr auto shape = nmtools::fixed_array_shape_v<fvector_t>;
+        STATIC_CHECK(( std::get<0>(shape)==3 ));
+    }
+    {
+        constexpr auto shape = nmtools::fixed_array_shape_v<array_t>;
+        STATIC_CHECK(( std::get<0>(shape)==5 ));
+        STATIC_CHECK(( std::get<1>(shape)==3 ));
+    }
+    {
+        constexpr auto shape = nmtools::fixed_array_shape_v<fmatrix_t>;
+        STATIC_CHECK(( std::get<0>(shape)==5 ));
+        STATIC_CHECK(( std::get<1>(shape)==3 ));
+    }
+    {
+        constexpr auto shape = nmtools::fixed_array_shape_v<ndarray_t>;
+        STATIC_CHECK(( std::get<0>(shape)==5 ));
+        STATIC_CHECK(( std::get<1>(shape)==3 ));
+    }
+    {
+        constexpr auto shape = nmtools::fixed_array_shape_v<ndarray3_t>;
+        STATIC_CHECK(( std::get<0>(shape)==5 ));
+        STATIC_CHECK(( std::get<1>(shape)==3 ));
+        STATIC_CHECK(( std::get<2>(shape)==1 ));
+    }
+}
+
+TEST_CASE("meta" * doctest::skip(true)) // fixed_matrix_size
+{
+    using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
+    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
+    LOG_TYPEINFO(fmatrix_t);
+    LOG_TYPEINFO(ndarray_t);
+
+    {
+        constexpr auto shape = nmtools::fixed_matrix_size_v<fmatrix_t>;
+        STATIC_CHECK(( std::get<0>(shape)==5 ));
+        STATIC_CHECK(( std::get<1>(shape)==3 ));
+    }
+    {
+        constexpr auto shape = nmtools::fixed_matrix_size_v<ndarray_t>;
+        STATIC_CHECK(( std::get<0>(shape)==5 ));
+        STATIC_CHECK(( std::get<1>(shape)==3 ));
+    }
+}
+
+TEST_CASE("meta" * doctest::skip(true)) // fixed_vector_size
+{
+    using fvector_t  = nmtools::array::fixed_vector<double,5>;
+    using ndarray_t  = nmtools::array::fixed_ndarray<double,5>;
+    LOG_TYPEINFO(fvector_t);
+    LOG_TYPEINFO(ndarray_t);
+
+    {
+        constexpr auto shape = nmtools::fixed_vector_size_v<fvector_t>;
+        STATIC_CHECK(( shape==5 ));
+    }
+    {
+        constexpr auto shape = nmtools::fixed_vector_size_v<ndarray_t>;
+        STATIC_CHECK(( shape==5 ));
+    }
+}
+
+TEST_CASE("traits" * doctest::skip(true)) // type_list_disjunction
+{
+    using vector_t   = std::array<double,3>;
+    using array_t    = std::array<std::array<double,3>,5>;
+    using fvector_t  = nmtools::array::fixed_vector<double,3>;
+    using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
+    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
+    using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
+    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
+
+    LOG_TYPEINFO(array_t);
+    LOG_TYPEINFO(vector_t);
+    LOG_TYPEINFO(fvector_t);
+    LOG_TYPEINFO(fmatrix_t);
+    LOG_TYPEINFO(ndarray_t);
+    LOG_TYPEINFO(dndarray_t);
+    LOG_TYPEINFO(ndarray3_t);
+
+    {
+        using type_list_t = std::tuple<array_t,fmatrix_t>;
+        LOG_TYPEINFO(type_list_t);
+        STATIC_CHECK(( traits::type_list_disjunction_v<type_list_t,traits::is_array2d> ));   
+    }
+    {
+        using type_list_t = std::tuple<array_t,fvector_t>;
+        LOG_TYPEINFO(type_list_t);
+        STATIC_CHECK(( !traits::type_list_disjunction_v<type_list_t,traits::is_array2d> ));   
+    }
+    {
+        using type_list_t = std::tuple<ndarray_t,ndarray3_t,dndarray_t>;
+        LOG_TYPEINFO(type_list_t);
+        STATIC_CHECK(( traits::type_list_disjunction_v<type_list_t,traits::is_ndarray> ));   
+    }
+}
+
+TEST_CASE("traits" * doctest::skip(true)) // type_list_conjunction
+{
+    using vector_t   = std::array<double,3>;
+    using array_t    = std::array<std::array<double,3>,5>;
+    using fvector_t  = nmtools::array::fixed_vector<double,3>;
+    using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
+    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
+    using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
+    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
+
+    LOG_TYPEINFO(array_t);
+    LOG_TYPEINFO(vector_t);
+    LOG_TYPEINFO(fvector_t);
+    LOG_TYPEINFO(fmatrix_t);
+    LOG_TYPEINFO(ndarray_t);
+    LOG_TYPEINFO(dndarray_t);
+    LOG_TYPEINFO(ndarray3_t);
+
+    {
+        using type_list_t = std::tuple<array_t,fmatrix_t>;
+        LOG_TYPEINFO(type_list_t);
+        STATIC_CHECK(( traits::type_list_conjunction_v<type_list_t,traits::is_array2d> ));   
+    }
+    {
+        using type_list_t = std::tuple<array_t,fvector_t>;
+        LOG_TYPEINFO(type_list_t);
+        STATIC_CHECK(( traits::type_list_conjunction_v<type_list_t,traits::is_array2d> ));   
+    }
+    {
+        using type_list_t = std::tuple<ndarray_t,ndarray3_t,dndarray_t>;
+        LOG_TYPEINFO(type_list_t);
+        STATIC_CHECK(( traits::type_list_conjunction_v<type_list_t,traits::is_ndarray> ));   
+    }
+    {
+        using type_list_t = std::tuple<ndarray_t,ndarray3_t,dndarray_t>;
+        LOG_TYPEINFO(type_list_t);
+        STATIC_CHECK(( !traits::type_list_conjunction_v<type_list_t,traits::is_array2d> ));   
+    }
+}
