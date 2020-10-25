@@ -4,8 +4,10 @@
 #include <type_traits>
 /** @todo use __has_include */
 #include <array>
-#include <vector>
-#include <complex>
+#include <vector> // @todo remove
+#include <complex> // @todo remove
+#include <tuple>
+#include <utility>
 
 namespace nmtools::traits {
 
@@ -1019,7 +1021,123 @@ namespace nmtools::traits {
      */
     template <typename T>
     inline constexpr bool is_integral_constant_v = is_integral_constant<T>::value;
-    
+
+    namespace detail {
+        /**
+         * @brief actual implementation of type_list_disjunction
+         * 
+         * @tparam type_list type list to be checked
+         * @tparam trait template template parameter corresponding to trait to be satisfied
+         * @tparam Is compile time index sequence
+         * @return constexpr auto compile-time boolean indicating that all type in type_list satisfies the trait
+         * @todo make this consteval
+         */
+        template <typename type_list, template <typename> typename trait, size_t ...Is>
+        constexpr auto type_list_disjunction_impl(std::integer_sequence<size_t,Is...>)
+        {
+            // note use declval instead of simply call type_list{}
+            // to make sure even type that do not have default initialization can be checked
+            return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value && ...);
+        } // type_list_disjunction_impl
+
+        /**
+         * @brief actual implementation of type_list_conjunction
+         * 
+         * @tparam type_list type list to be checked
+         * @tparam trait template template parameter corresponding to trait to be satisfied
+         * @tparam Is compile time index sequence
+         * @return constexpr auto compile-time boolean indicating that any type in type_list satisfies the trait
+         * @todo make this consteval
+         */
+        template <typename type_list, template <typename> typename trait, size_t ...Is>
+        constexpr auto type_list_conjunction_impl(std::integer_sequence<size_t,Is...>)
+        {
+            // note use declval instead of simply call type_list{}
+            // to make sure even type that do not have default initialization can be checked
+            return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value || ...);
+        } // type_list_conjunction_impl
+
+        /**
+         * @brief entrypoint to actual implementation of type_list_disjunction
+         * 
+         * @tparam type_list type list to be checked
+         * @tparam trait template template parameter corresponding to trait to be satisfied
+         * @return constexpr auto 
+         * @todo make this consteval
+         */
+        template <typename type_list, template <typename> typename trait>
+        constexpr auto type_list_disjunction_impl()
+        {
+            constexpr auto N = std::tuple_size_v<type_list>;
+            using indices_t = std::make_index_sequence<N>;
+            return type_list_disjunction_impl<type_list,trait>(indices_t{});
+        } // type_list_disjunction_impl
+
+        /**
+         * @brief entrypoint to actual implementation of type_list_conjunction
+         * 
+         * @tparam type_list type list to be checked
+         * @tparam trait template template parameter corresponding to trait to be satisfied
+         * @return constexpr auto 
+         * @todo make this consteval
+         */
+        template <typename type_list, template <typename> typename trait>
+        constexpr auto type_list_conjunction_impl()
+        {
+            constexpr auto N = std::tuple_size_v<type_list>;
+            using indices_t = std::make_index_sequence<N>;
+            return type_list_conjunction_impl<type_list,trait>(indices_t{});
+        } // type_list_conjunction_impl
+    } // namespace detail
+
+    /**
+     * @brief check if all type in type_list satisfy trait
+     * 
+     * @tparam type_list type list to be checked
+     * @tparam trait template template parameter corresponding to trait to be satisfied
+     */
+    template <typename type_list, template <typename> typename trait>
+    struct type_list_disjunction
+    {
+        static_assert (has_tuple_size_v<type_list>,
+            "type_list_disjunction only support types that have tuple_size"
+        );
+        static inline constexpr auto value = detail::type_list_disjunction_impl<type_list,trait>();
+    }; // type_list_disjunction
+
+    /**
+     * @brief helper variable template to check if all type in type_list satisfy trait
+     * 
+     * @tparam type_list type list to be checked
+     * @tparam trait template template parameter corresponding to trait to be satisfied
+     */
+    template <typename type_list, template <typename> typename trait>
+    static constexpr auto type_list_disjunction_v = type_list_disjunction<type_list,trait>::value;
+
+    /**
+     * @brief check if any type in type_list satisfy trait
+     * 
+     * @tparam type_list type list to be checked
+     * @tparam trait template template parameter corresponding to trait to be satisfied
+     */
+    template <typename type_list, template <typename> typename trait>
+    struct type_list_conjunction
+    {
+        static_assert (has_tuple_size_v<type_list>,
+            "type_list_disjunction only support types that have tuple_size"
+        );
+        static inline constexpr auto value = detail::type_list_conjunction_impl<type_list,trait>();
+    }; // type_list_conjunction
+
+    /**
+     * @brief helper variable template to check if any type in type_list satisfy trait
+     * 
+     * @tparam type_list type list to be checked
+     * @tparam trait template template parameter corresponding to trait to be satisfied
+     */
+    template <typename type_list, template <typename> typename trait>
+    static constexpr auto type_list_conjunction_v = type_list_conjunction<type_list,trait>::value;
+
     /** @} */ // end group traits
 
 } // namespace nmtools::traits
