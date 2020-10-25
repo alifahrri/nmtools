@@ -5,6 +5,7 @@
 #include "nmtools/array/meta.hpp" // fixed_matrix_size etc.
 
 #include <array>
+#include <tuple>
 
 /**
  * @defgroup array 
@@ -513,6 +514,32 @@ namespace nmtools
         using value_type = decltype(value);
     };
 
+    /**
+     * @brief specialization of fixed_ndarray for fixed_matrix_size array traits
+     * 
+     * @tparam T element type of fixed_ndarray
+     * @tparam Rows number of elements of 1st axis of fixed_ndarray
+     * @tparam Cols number of elements of 2nd axis of fixed_ndarray
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    struct fixed_matrix_size<array::fixed_ndarray<T,Rows,Cols>>
+    {
+        static inline constexpr auto value = std::make_pair(Rows,Cols);
+        using value_type = decltype(value);
+    };
+
+    /**
+     * @brief specialization of fixed_matrix for fixed_array_shape array traits.
+     * 
+     * @tparam T element type of fixed_matrix
+     * @tparam Rows number of rows of fixed_matrix
+     * @tparam Cols number of cols of fixed_matrix
+     */
+    template <typename T, size_t Rows, size_t Cols>
+    struct fixed_array_shape<array::fixed_matrix<T,Rows,Cols>>
+        : fixed_matrix_size<array::fixed_matrix<T,Rows,Cols>>
+    {};
+
     /* TODO: consider to move to meta */
     /**
      * @brief specialization of fixed_vector for fixed_vector_size array traits.
@@ -524,6 +551,44 @@ namespace nmtools
     struct fixed_vector_size<array::fixed_vector<T,N>>
         : std::tuple_size<typename array::fixed_vector<T,N>::data_type> {};
 
+    /**
+     * @brief specialization of fixed_ndarray fo rfixed_vector_size array traits.
+     * 
+     * @tparam T element type of fixed_ndarray
+     * @tparam N number of elements of fixed_ndarray
+     */
+    template <typename T, size_t N>
+    struct fixed_vector_size<array::fixed_ndarray<T,N>>
+    {
+        static constexpr inline auto value = N;
+    };
+
+    /**
+     * @brief specialization of fixed_vector for fixed_array_shape array traits.
+     * 
+     * @tparam T element type of fixed_vector
+     * @tparam N number of elements of fixed_vector
+     */
+    template <typename T, size_t N>
+    struct fixed_array_shape<array::fixed_vector<T,N>>
+    {
+        static inline constexpr auto value = std::make_tuple(N);
+        using value_type = decltype(value);
+    };
+
+    /**
+     * @brief specialization of fixed_ndarray for fixed_array_shape array traits.
+     * 
+     * @tparam T element type of fixed_vector
+     * @tparam Shape1 number of elements at first axis
+     * @tparam ShapeN number of elements for the rest axes
+     */
+    template <typename T, size_t Shape1, size_t...ShapeN>
+    struct fixed_array_shape<array::fixed_ndarray<T,Shape1,ShapeN...>>
+    {
+        static inline constexpr auto value = std::make_tuple(Shape1,ShapeN...);
+        using value_type = decltype(value);
+    };
 } // namespace nmtools
 
 #include "nmtools/traits.hpp"
