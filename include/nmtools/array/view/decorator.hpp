@@ -63,6 +63,30 @@ namespace nmtools::view
         {
             return at(array, std::get<I>(indices)...);
         } // unpack_at
+
+        /**
+         * @brief dispatch shape retrieval based on array_t traits
+         * 
+         * @tparam array_t non const ref type of array
+         * @param array 
+         * @return constexpr auto 
+         */
+        template <typename array_t>
+        constexpr decltype(auto) shape(const array_t& array)
+        {
+            if constexpr (traits::has_shape_v<array_t>)
+                return array.shape();
+            // @note since is_array2d_v and is_array1d_v may not be mutually exclusive, check for array2d first
+            else if constexpr (traits::is_array2d_v<array_t>)
+                return matrix_size(array);
+            // @note for 1d array, wrap return value in array for generalization
+            else if constexpr (traits::is_array1d_v<array_t> && traits::has_size_v<array_t>)
+                return std::array{array.size()};
+            else if constexpr (traits::is_array1d_v<array_t>)
+                return std::array{vector_size(array)};
+            else
+                return array_shape(array);
+        } // shape
     } // namespace detail
 
     /**
@@ -105,27 +129,52 @@ namespace nmtools::view
          * @see nmtools::matrix_size
          * @see nmtools::array_shape
          */
-        constexpr auto shape() const noexcept
+        constexpr decltype(auto) shape() const noexcept
         {
             using array_t = traits::remove_cvref_t<array_type>;
             if constexpr (traits::has_shape_v<traits::remove_cvref_t<view_type>>)
                 return view_type::shape();
-            else if constexpr (traits::has_shape_v<array_t>)
-                return view_type::array.shape();
-            // @note since is_array2d_v and is_array1d_v may not be mutually exclusive, check for array2d first
-            else if constexpr (traits::is_array2d_v<array_t>)
-                return matrix_size(view_type::array);
-            // @note for 1d array, wrap return value in array for generalization
-            else if constexpr (traits::is_array1d_v<array_t> && traits::has_size_v<array_t>)
-                return std::array{view_type::array.size()};
-            else if constexpr (traits::is_array1d_v<array_t>)
-                return std::array{vector_size(view_type::array)};
-            else
-                return array_shape(view_type::array);
+            else return detail::shape(view_type::array);
         } // shape
 
         /**
          * @brief immutable element acces to the referenced array
+         * 
+         * @tparam size_types size type(s) to array
+         * @param indices 
+         * @return constexpr auto
+         * @todo make error handling configurable, e.g. throw/assert/optional
+         * @note for fixed size, it is necessary to pass Array{} (value initialization) to dim since `this` may not be constant exprression
+         * @see https://en.cppreference.com/w/cpp/language/value_initialization
+         * @see nmtools::at
+         */
+        template <typename...size_types>
+        constexpr decltype(auto) operator()(size_types...indices) const
+        {
+            // @note either using auto& or decltype(auto) for return type
+            // since at(...) return auto&
+
+            auto transformed_indices = view_type::index(indices...);
+            static_assert (traits::has_tuple_size_v<decltype(transformed_indices)>,
+                "return value from view_type::index(...) must have compile time size"
+            );
+
+            using array_t = traits::remove_cvref_t<array_type>;
+            constexpr auto n = sizeof...(size_types);
+
+            // @note needs to initialize array_t since view_type::array may not be constant expression
+            if constexpr (is_fixed_shape_v<array_t>)
+                static_assert (detail::dim(array_t{})==n);
+            else
+                assert (dim()==n);
+            // call at to referred object, not to this
+            // return at(view_type::array, indices...);
+            using indices_sequence_t = std::make_index_sequence<std::tuple_size_v<decltype(transformed_indices)>>;
+            return detail::unpack_at(view_type::array, transformed_indices, indices_sequence_t{});
+        } // operator()
+
+        /**
+         * @brief mutable element acces to the referenced array
          * 
          * @tparam size_types size type(s) to array
          * @param indices 
@@ -180,6 +229,32 @@ namespace nmtools::view
         return decorator_t<view_t,Ts...>{{arrays...}};
     } // make_view
 
+    /**
+     * @brief helper trait to check if type T is view
+     * 
+     * @tparam T type to check
+     * @tparam typename sfinae/customization point
+     */
+    template <typename T, typename=void>
+    struct is_view : std::false_type {};
+
+    /**
+     * @brief true case for helper trait to check if type T is view
+     * 
+     * @tparam view_t template template param corresponding to actual view
+     * @tparam Ts template parameters to actual view
+     */
+    template <template<typename...> typename view_t, typename...Ts>
+    struct is_view<decorator_t<view_t,Ts...>> : std::true_type {};
+
+    /**
+     * @brief helper variable template to check if type T is view
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    static inline constexpr bool is_view_v = is_view<T>::value;
+
     /** @} */ // end group view
 } // namespace nmtools::view
 
@@ -194,6 +269,21 @@ namespace nmtools
     template <template<typename...> typename view_t, typename...Ts>
     struct fixed_array_shape<view::decorator_t<view_t,Ts...>>
         : fixed_array_shape<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+    
+    /**
+     * @brief sfinae-enabled specialization for matrix_size
+     * 
+     * @tparam T view type
+     * @param t view matrix
+     * @return std::enable_if_t<view::is_view_v<T> && traits::is_array2d_v<T>,std::pair<size_t,size_t>> 
+     */
+    template <typename T>
+    constexpr auto matrix_size(const T& t)
+        -> std::enable_if_t<view::is_view_v<T> && traits::is_array2d_v<T>,std::pair<size_t,size_t>>
+    {
+        auto [rows, cols] = t.shape();
+        return {rows,cols};
+    } // matrix_size
 } // namespace nmtools
 
 namespace nmtools::traits
