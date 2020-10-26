@@ -5,5 +5,6 @@
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
 #include "nmtools/array/view/slice.hpp"
+#include "nmtools/array/view/mutable_slice.hpp"
 
 #endif // NMTOOLS_ARRAY_VIEW_HPP
