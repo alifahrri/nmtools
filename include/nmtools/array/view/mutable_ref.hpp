@@ -23,7 +23,13 @@ namespace nmtools::view
     using traits::has_dim_v;
 
     /**
-     * @brief represent constant reference to 1D/2D/ND array.
+     * @addtogroup view
+     * Collections of functions/class for view objects
+     * @{
+     */
+
+    /**
+     * @brief represent mutable reference to 1D/2D/ND array.
      * Inspired from <a href="https://llvm.org/doxygen/classllvm_1_1MutableArrayRef.html">llvm ArrayRef</a>
      * and <a href="https://github.com/tcbrindle/NanoRange/blob/master/include/nanorange/views/ref.hpp">nanorange view ref</a>
      * but specialized for 1D/2D/ND fixed/resizeable array with random access and numpy-like
