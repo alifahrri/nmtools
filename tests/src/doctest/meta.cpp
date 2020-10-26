@@ -31,7 +31,7 @@ TEST_CASE("meta" * doctest::skip(true))
     LOG_TYPEINFO(value_t);
     LOG_TYPEINFO(element_t);
     // @note that nmtools::traits::is_array1d_v and nmtools::traits::is_array2d_v may not mutually exclusive!
-    // static_assert(!traits::is_array1d_v<array_t>);
+    // STATIC_CHECK((!traits::is_array1d_v<array_t>));
     STATIC_CHECK(( traits::is_array2d_v<array_t> ));
     STATIC_CHECK(( std::is_same_v<value_t,double> ));
     STATIC_CHECK(( std::is_same_v<element_t,double> ));
@@ -311,4 +311,36 @@ TEST_CASE("traits" * doctest::skip(true)) // type_list_conjunction
         LOG_TYPEINFO(type_list_t);
         STATIC_CHECK(( !traits::type_list_conjunction_v<type_list_t,traits::is_array2d> ));   
     }
+}
+
+using meta::type_merge_t;
+using meta::type_push_back_t;
+using meta::pop_first_t;
+using meta::pop_last_t;
+using meta::type_reverse_t;
+using meta::make_reversed_index_sequence;
+
+TEST_CASE("meta" * doctest::skip(true))
+{
+    // type_merge test
+    STATIC_CHECK(( std::is_same_v<type_merge_t<std::tuple<int,char>,std::tuple<double>>, std::tuple<int,char,double>> ));
+    STATIC_CHECK(( std::is_same_v<type_merge_t<std::tuple<int,char>,double>, std::tuple<int,char,double>> ));
+    STATIC_CHECK(( std::is_same_v<type_merge_t<int,std::tuple<char,double>>, std::tuple<int,char,double>> ));
+
+    // type_push_back test
+    STATIC_CHECK(( std::is_same_v<type_push_back_t<std::tuple<int,char>,double>, std::tuple<int,char,double>> ));
+
+    // pop_first test
+    STATIC_CHECK(( std::is_same_v<pop_first_t<std::tuple<int,char>>,std::tuple<char>> ));
+    STATIC_CHECK(( std::is_same_v<pop_first_t<std::tuple<int,char,double>>,std::tuple<char,double>> ));
+
+    // pop_last test
+    STATIC_CHECK(( std::is_same_v<pop_last_t<std::tuple<int,char>>,std::tuple<int>> ));
+    STATIC_CHECK(( std::is_same_v<pop_last_t<std::tuple<int,char,double>>,std::tuple<int,char>> ));
+
+    // type_reverse test
+    STATIC_CHECK(( std::is_same_v<type_reverse_t<std::tuple<int,char,double>>,std::tuple<double,char,int>> ));
+
+    // make_reversed_index_sequence test
+    STATIC_CHECK(( std::is_same_v<make_reversed_index_sequence<3>,std::index_sequence<2,1,0>> ));
 }

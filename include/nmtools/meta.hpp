@@ -523,6 +523,217 @@ namespace nmtools::meta
     using pop_first_t = typename pop_first<T>::type;
 
     /**
+     * @brief pop the last element of typelist (tuple) T.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T tuple to be transformed
+     */
+    template <typename T>
+    struct pop_last
+    {
+        template <typename...Ts, size_t...Is>
+        static constexpr auto _make_tuple(std::tuple<Ts...> t, std::integer_sequence<size_t,Is...>)
+        {
+            return std::make_tuple(std::get<Is>(t)...);
+        }
+        
+        template <typename...Ts>
+        static constexpr auto _pop_last(std::tuple<Ts...>)
+        {
+            /* NOTE: implemented as function for easy tparam extract */
+            constexpr auto N = sizeof...(Ts);
+            using indices_t = std::make_index_sequence<N-1>;
+            using tuple_t = std::tuple<Ts...>;
+            using type = decltype(_make_tuple(std::declval<tuple_t>(),indices_t{}));
+            using last_t = std::tuple_element_t<N-1,tuple_t>;
+            return std::make_tuple(last_t{},type{});
+        } // _pop_last
+
+        using pair  = decltype(_pop_last(std::declval<T>()));
+        /* last type from pair */
+        using last = std::tuple_element_t<0,pair>;
+        using type = std::tuple_element_t<1,pair>;
+    }; // pop_last
+
+    /**
+     * @brief helper alias template to pop the last element of typelist (tuple) T.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T tuple to be transformed
+     */
+    template <typename T>
+    using pop_last_t = typename pop_last<T>::type;
+
+    /**
+     * @brief add U to typelist (tuple) T.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T tuple to be added with U
+     * @tparam U type to be added to T
+     */
+    template <typename T, typename U>
+    struct type_push_back
+    {
+        template <typename...Ts>
+        static constexpr auto _type_push_back(std::tuple<Ts...>)
+        {
+            using type = std::tuple<Ts...,U>;
+            return type{};
+        }
+
+        using type = decltype(_type_push_back(std::declval<T>()));
+    }; // push
+
+    /**
+     * @brief helper alias template to add U to typelist (tuple) T.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T tuple to be added with U
+     * @tparam U type to be added to T
+     */
+    template <typename T, typename U>
+    using type_push_back_t = typename type_push_back<T,U>::type;
+
+    /**
+     * @brief merge two type T (possibly tuple) and U (possibly tuple) to single tuple.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T lhs tuple to be merged
+     * @tparam U rhs tuple to be merged
+     */
+    template <typename T, typename U>
+    struct type_merge
+    {
+        template <typename...Ts, typename...Us>
+        static constexpr auto _type_merge(std::tuple<Ts...>, std::tuple<Us...>)
+        {
+            using type_t = std::tuple<Ts...,Us...>;
+            return type_t{};
+        } // _type_merge
+
+        template <typename Ts, typename...Us>
+        static constexpr auto _type_merge(Ts, std::tuple<Us...>)
+        {
+            using type_t = std::tuple<Ts,Us...>;
+            return type_t{};
+        } // _type_merge
+
+        template <typename...Ts, typename Us>
+        static constexpr auto _type_merge(std::tuple<Ts...>, Us)
+        {
+            using type_t = std::tuple<Ts...,Us>;
+            return type_t{};
+        } // _type_merge
+
+        template <typename Ts, typename Us>
+        static constexpr auto _type_merge(Ts, Us)
+        {
+            using type_t = std::tuple<Ts,Us>;
+            return type_t{};
+        } // _type_merge
+
+        using type = decltype(_type_merge(std::declval<T>(),std::declval<U>()));
+    }; // type_merge
+
+    /**
+     * @brief helper alias template to merge two type T (possibly tuple) and U (possibly tuple) to single tuple.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T lhs tuple to be merged
+     * @tparam U rhs tuple to be merged
+     */
+    template <typename T, typename U>
+    using type_merge_t = typename type_merge<T,U>::type;
+
+    /**
+     * @brief reverse the element of typelist (tuple) T.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T tuple to be reversed
+     */
+    template <typename T>
+    struct type_reverse
+    {
+        template <typename Ts>
+        static constexpr auto _reverse_type_list(std::tuple<Ts>)
+        {
+            return Ts{};
+        } // _reverse_type_list
+
+        template <typename...Ts>
+        static constexpr auto _reverse_type_list(std::tuple<Ts...>)
+        {
+            using tuple_t = std::tuple<Ts...>;
+            using pop_last_type = pop_last<tuple_t>;
+            using last_t = typename pop_last_type::last;
+            using type_t = typename pop_last_type::type;
+            using rest_t = decltype(_reverse_type_list(std::declval<type_t>()));
+            using reversed_t= type_merge_t<last_t,rest_t>;
+            return reversed_t{};
+        } // _reverse_type_list
+
+        using type = decltype(_reverse_type_list(std::declval<T>()));
+    };
+
+    /**
+     * @brief helper alias template to reverse the element of typelist (tuple) T.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T tuple to be reversed
+     */
+    template <typename T>
+    using type_reverse_t = typename type_reverse<T>::type;
+
+    /**
+     * @brief create reversed integer sequence.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T an integer type to use for the elements of the sequence
+     * @tparam N number of integer to be created
+     */
+    template <typename T, auto N>
+    struct reversed_integer_sequence
+    {
+        template <auto...Is>
+        static constexpr auto _sequence_to_tuple(std::integer_sequence<T,Is...>)
+        {
+            using tuple_type = std::tuple<std::integral_constant<T,Is>...>;
+            return tuple_type{};
+        } // _sequence_to_tuple
+
+        template <typename...Ts>
+        static constexpr auto _tuple_to_sequence(std::tuple<Ts...>)
+        {
+            using sequence_type = std::integer_sequence<T,static_cast<T>(Ts::value)...>;
+            return sequence_type{};
+        } // _tuple_to_sequence
+
+        using sequence_type = std::make_integer_sequence<T,N>;
+        using sequence_tuple_type = decltype(_sequence_to_tuple(std::declval<sequence_type>()));
+        using reversed_tuple_type = type_reverse_t<sequence_tuple_type>;
+        using type = decltype(_tuple_to_sequence(std::declval<reversed_tuple_type>()));
+    }; // reversed_integer_sequence
+
+    /**
+     * @brief helper alias template to create reversed integer sequence.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T an integer type to use for the elements of the sequence
+     * @tparam N number of integer to be created
+     */
+    template <typename T, T N>
+    using make_reversed_integer_sequence = typename reversed_integer_sequence<T,N>::type;
+
+    /**
+     * @brief helper alias template to create reversed index sequence.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam N number of index to be created
+     */
+    template <size_t N>
+    using make_reversed_index_sequence = make_reversed_integer_sequence<size_t,N>;
+
+    /**
      * @brief metafunction to select resizeable matrix type
      * 
      * @tparam A 
