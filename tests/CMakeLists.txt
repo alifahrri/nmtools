@@ -76,6 +76,7 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/array/view/mutable_ref.cpp
     src/doctest/array/view/slice.cpp
     src/doctest/array/view/mutable_slice.cpp
+    src/doctest/array/view/transpose.cpp
     ## metafunctions
     src/doctest/meta.cpp
 )
