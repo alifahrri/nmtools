@@ -5,6 +5,9 @@
 #include <cstddef> // size_t
 #include <utility> // integer_sequence
 #include <array>
+#include <tuple>
+
+#include "nmtools/traits.hpp"
 
 namespace nmtools::detail
 {
@@ -26,6 +29,69 @@ namespace nmtools::detail
     constexpr auto make_array(const T &a, std::integer_sequence<size_t, I...>, size_t offset=0)
     {
         return array_t{a[I+offset]...};
+    } // make_array
+
+    /**
+     * @brief create array from packed type T.
+     * <a href="https://godbolt.org/z/v39Goh">godbolt demo</a>.
+     * 
+     * @tparam array_t desired array template-template param
+     * @tparam T 
+     * @tparam I 
+     * @param a 
+     * @return constexpr auto 
+     * @note underscore prefix added to avoid ambiguous calls with make_array
+     * @todo remove prefix
+     */
+    template <template <typename,size_t> typename array_t, typename T, size_t ...I>
+    constexpr auto _make_array(const T &a, std::integer_sequence<size_t, I...>)
+    {
+        using common_t = std::common_type_t<decltype(std::get<I>(a))...>;
+        return array_t{static_cast<common_t>(std::get<I>(a))...};
+    } // make_array
+
+    /**
+     * @brief create array from single type or packed type T.
+     * 
+     * @tparam array_t desired array template-template param
+     * @tparam T either simply type or pakced type like tuple/pair.
+     * @param t 
+     * @return constexpr auto 
+     */
+    template <template <typename,size_t> typename array_t, typename T>
+    constexpr auto make_array(T&& t)
+    {
+        // @note traits::remove_cvref_t is required to properly check the traits!
+        if constexpr (traits::has_tuple_size_v<traits::remove_cvref_t<T>>) {
+            using indices_t = std::make_index_sequence<std::tuple_size_v<traits::remove_cvref_t<T>>>;
+            return _make_array<array_t>(std::forward<T>(t), indices_t{});
+        }
+        else {
+            return array_t{std::forward<T>(t)};
+        }
+    } // make_array
+
+    /**
+     * @brief create array.
+     * 
+     * @tparam array_t desired array template-template param
+     * @tparam T first type
+     * @tparam U second type
+     * @tparam Ts rest of the type(s)
+     * @param t 
+     * @param u 
+     * @param ts 
+     * @return constexpr auto 
+     */
+    template <template <typename,size_t> typename array_t, typename T, typename U, typename...Ts>
+    constexpr auto make_array(T&& t, U&& u, Ts&&...ts)
+    {
+        using common_type = std::common_type_t<T,U,Ts...>;
+        return array_t{
+            static_cast<common_type>(std::forward<T>(t)),
+            static_cast<common_type>(std::forward<U>(u)),
+            static_cast<common_type>(std::forward<Ts>(ts))...
+        };
     } // make_array
 }
 
