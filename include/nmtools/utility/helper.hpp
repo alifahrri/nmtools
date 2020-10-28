@@ -102,8 +102,8 @@ namespace nmtools::helper {
             }
             else if constexpr (is_array1d_v<T> && is_array1d_v<U>)
             {
-                auto nm = size(M);
-                auto nn = size(N);
+                auto nm = vector_size(M);
+                auto nn = vector_size(N);
                 /* TODO: size assertion */
                 for (size_t i=0; i<nm; i++)
                     if (fabs(at(M,i)-at(N,i)) > eps)
@@ -113,40 +113,6 @@ namespace nmtools::helper {
             else if constexpr (is_arithmetic_v<T> && is_arithmetic_v<U>)
             {
                 return fabs(M-N) < eps;
-            }
-            /* TODO: remove */
-            else
-            {
-                auto nm = size(M);
-                auto nn = size(N);
-                /* size is known at compile-time, assert at compile-time */
-                if constexpr (has_tuple_size_v<T> && has_tuple_size_v<U>) {
-                    constexpr auto nm = std::tuple_size_v<T>;
-                    constexpr auto nn = std::tuple_size_v<U>;
-                    static_assert(nm==nn);
-                }
-                /* defer assertion to runtime */
-                else assert(nm==nn);
-                
-                for (size_t i=0; i<nm; i++) {
-                    auto m = at(M,i);
-                    auto n = at(N,i);
-                    if constexpr (std::is_arithmetic_v<decltype(m)>) {
-                        if (fabs(m-n) > eps)
-                            return false;
-                    } else {
-                        auto nmm = size(m);
-                        auto nnn = size(n);
-                        assert (nmm=nnn);
-                        for (size_t j=0; j<nmm; j++) {
-                            auto mm = at(m,j);
-                            auto nn = at(n,j);
-                            if (fabs(mm-nn) > eps)
-                                return false;
-                        }
-                    }
-                }
-                return true;
             }
         } // constexpr auto isclose
 
