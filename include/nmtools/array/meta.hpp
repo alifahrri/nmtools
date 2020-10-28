@@ -131,25 +131,35 @@ namespace nmtools
 
         /**
          * @brief specialization of is_fixed_size_matrix for true case.
-         * Enabled when fixed_matrix_size<T> is well-formed and has value_type member type.
+         * 
+         * Enabled when fixed_matrix_size<T> is well-formed and has value_type member type
+         * and the value_type is not void.
          * 
          * @tparam T type to check
+         * @see nmtools::fixed_matrix_size
+         * @note it is recommended to specialize fixed_matrix_size instead of specializing this trait
          */
         template <typename T>
         struct is_fixed_size_matrix<T,
-            enable_if_t<has_value_type_v<fixed_matrix_size<T>>>
-        > : std::true_type {};
+            enable_if_t<has_value_type_v<fixed_matrix_size<T>> 
+                && !std::is_same_v<typename fixed_matrix_size<T>::value_type,void>
+        > > : std::true_type {};
 
         /**
          * @brief specialization of is_fixed_size_vector fo true case.
-         * Enabled when fixed_vector_size is well-formed and has value_type member type.
+         * 
+         * Enabled when fixed_vector_size is well-formed and has value_type member type
+         * and the value_type is not void.
          * 
          * @tparam T type to check
+         * @see nmtools::fixed_vector_size
+         * @note it is recommended to specialize fixed_vector_size instead of specializing this trait
          */
         template <typename T>
         struct is_fixed_size_vector<T,
-            enable_if_t<has_value_type_v<fixed_vector_size<T>>>
-        > : std::true_type {};
+            enable_if_t<has_value_type_v<fixed_vector_size<T>>
+                && !std::is_same_v<typename fixed_vector_size<T>::value_type,void>
+        > > : std::true_type {};
 
         /** @} */ // end group traits
     } // namespace traits
