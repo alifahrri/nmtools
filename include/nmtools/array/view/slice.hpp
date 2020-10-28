@@ -357,7 +357,7 @@ namespace nmtools::view
          * @todo provide a way to make assertion optional
          */
         template <typename...size_types>
-        constexpr auto index(size_types...indices)
+        constexpr auto index(size_types...indices) const
         {
             const auto& start = std::get<0>(offset);
             const auto& stop  = std::get<1>(offset);
@@ -387,5 +387,50 @@ namespace nmtools::view
 
     /** @} */ // end group view
 } // namespace nmtools::view
+
+namespace nmtools
+{
+    /**
+     * @brief specializtion of fixed_vector_size for slice view.
+     * 
+     * @tparam array_t 
+     * @tparam start_t 
+     * @tparam stop_t 
+     */
+    template <typename array_t, typename start_t, typename stop_t>
+    struct fixed_vector_size< view::slice_t<array_t,start_t,stop_t>
+        , std::enable_if_t<
+            // @note use std::conjuction to short circuit
+            // since type_list_conjunction requires tparam to have tuple_size
+            std::conjunction_v<
+                traits::is_fixed_size_vector<traits::remove_cvref_t<array_t>>,
+                traits::has_tuple_size<start_t>,
+                traits::type_list_conjunction<start_t,traits::is_integral_constant>,
+                traits::has_tuple_size<stop_t>,
+                traits::type_list_conjunction<stop_t,traits::is_integral_constant>
+            >
+        >
+    > : fixed_vector_size< traits::remove_cvref_t<array_t> > {};
+
+    /**
+     * @brief specialization of fixed_matrix_size for slice view.
+     * 
+     * @tparam array_t 
+     * @tparam start_t 
+     * @tparam stop_t 
+     */
+    template <typename array_t, typename start_t, typename stop_t>
+    struct fixed_matrix_size< view::slice_t<array_t,start_t,stop_t>
+        , std::enable_if_t<
+            std::conjunction_v<
+                traits::is_fixed_size_matrix<traits::remove_cvref_t<array_t>>,
+                traits::has_tuple_size<start_t>,
+                traits::type_list_conjunction<start_t,traits::is_integral_constant>,
+                traits::has_tuple_size<stop_t>,
+                traits::type_list_conjunction<stop_t,traits::is_integral_constant>
+            >
+        >
+    > : fixed_matrix_size< traits::remove_cvref_t<array_t> > {};
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_SLICE_HPP

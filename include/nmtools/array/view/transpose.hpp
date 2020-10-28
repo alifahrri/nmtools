@@ -250,47 +250,6 @@ namespace nmtools::view
 
 } // namespace nmtools::view
 
-namespace nmtools::traits
-{
-    /**
-     * @brief specialization of is_fixed_size_vector trait for transpose view
-     * 
-     * @tparam array_t 
-     * @tparam axes_t 
-     */
-    template <typename array_t, typename axes_t>
-    struct is_fixed_size_vector<view::decorator_t<view::transpose_t,array_t,axes_t>>
-    {
-        static constexpr auto _check()
-        {
-            using view_t = view::transpose_t<array_t,axes_t>;
-            if constexpr (std::is_same_v<axes_t,view::detail::none_t>)
-                return is_fixed_size_vector_v<array_t>;
-            else return false;
-        }
-        static inline constexpr bool value = _check();
-    };
-
-    /**
-     * @brief specialization of is_fixed_size_matrix trait for transpose view
-     * 
-     * @tparam array_t 
-     * @tparam axes_t 
-     */
-    template <typename array_t, typename axes_t>
-    struct is_fixed_size_matrix<view::decorator_t<view::transpose_t,array_t,axes_t>>
-    {
-        static constexpr auto _check()
-        {
-            using view_t = view::transpose_t<array_t,axes_t>;
-            if constexpr (std::is_same_v<axes_t,view::detail::none_t>)
-                return is_fixed_size_matrix_v<array_t>;
-            else return false;
-        }
-        static inline constexpr bool value = _check();
-    };
-} // namespace nmtools::traits
-
 namespace nmtools
 {
     using view::detail::none_t;
@@ -300,24 +259,34 @@ namespace nmtools
     using std::make_pair;
 
     /**
-     * @brief specialization of fixed_matrix_size trait for transpose view.
+     * @brief specialization of fixed_matrix_size trait for transpose view and the axes_t is none_t.
+     * 
      * Only enable when the axes_type is view::detail::none_t and the referenced
      * array is fixed.
      * 
      * @tparam array_t 
      * @todo extend this for compile-time axes
+     * @note there is specialization of is_fixed_size_matrix that depends on fixed_matrix_size
      */
     template <typename array_t>
-    struct fixed_matrix_size<
-        decorator_t<transpose_t,array_t,none_t>,
-        std::enable_if_t<
-            traits::is_fixed_size_matrix_v<decorator_t<transpose_t,array_t,none_t>
-    >>>
+    struct fixed_matrix_size< transpose_t<array_t,none_t>
+        , std::enable_if_t< traits::is_fixed_size_matrix_v<traits::remove_cvref_t<array_t>> >
+    >
     {
-        static inline constexpr auto src_value = fixed_matrix_size_v<array_t>;
-        static inline constexpr auto value = make_pair(get<0>(src_value),get<1>(src_value));
+        static inline constexpr auto src_value = fixed_matrix_size_v<traits::remove_cvref_t<array_t>>;
+        static inline constexpr auto value = make_pair(get<1>(src_value),get<0>(src_value));
         using value_type = decltype(value); // std::pair
     };
+
+    /**
+     * @brief specialization of fixed_vector_size strait for transpose view and the axes_t is none_t.
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    struct fixed_vector_size< transpose_t<array_t,none_t>
+        , std::enable_if_t< traits::is_fixed_size_vector_v<traits::remove_cvref_t<array_t>> >
+    > : fixed_vector_size<traits::remove_cvref_t<array_t>> {};
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_TRANSPOSE_HPP

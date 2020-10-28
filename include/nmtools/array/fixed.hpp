@@ -15,6 +15,46 @@
 
 namespace nmtools::array {
 
+    namespace detail {
+
+        /**
+         * @brief make nested array given template-template parameter, element type and shape.
+         *
+         * https://godbolt.org/z/7rr88n
+         * 
+         * @tparam array_t template-template parameter in which nested array is to be constructed from, (e.g. std::array)
+         * @tparam T desired element type of nested array
+         * @tparam I size of first axis
+         * @tparam Ns size(s) of the rest axes
+         */
+        template <template<typename,size_t> typename array_t, typename T, size_t I, size_t...Ns>
+        struct make_nested_array
+        {
+            static constexpr auto _make_nested_type()
+            {
+                if constexpr (sizeof...(Ns)==0)
+                    return array_t<T,I>{};
+                else {
+                    using type = typename make_nested_array<array_t,T,Ns...>::type;
+                    return array_t<type,I>{};
+                }
+            } // _make_nested_type()
+
+            using type = decltype(_make_nested_type());
+        };
+
+        /**
+         * @brief helper alias template to make nested array given template-template parameter, element type and shape
+         * 
+         * @tparam array_t template-template parameter in which nested array is to be constructed from, (e.g. std::array)
+         * @tparam T desired element type of nested array
+         * @tparam I size of first axis
+         * @tparam Ns size(s) of the rest axes
+         */
+        template <template<typename,size_t> typename array_t, typename T, size_t I, size_t...Ns>
+        using make_nested_array_t = typename make_nested_array<array_t,T,I,Ns...>::type;
+    } // namespace detail
+
     /**
      * @addtogroup Fixed Fixed Array
      * @ingroup array
@@ -191,6 +231,18 @@ namespace nmtools::array {
 
         template <typename matrix_t>
         constexpr auto operator=(const matrix_t& rhs);
+
+        /**
+         * @brief provides assignment operator from nested std::array
+         * 
+         * @param rhs nested std array to be copied
+         * @return constexpr decltype(auto) 
+         */
+        constexpr decltype(auto) operator=(detail::make_nested_array_t<std::array,T,Rows,Cols>&& rhs)
+        {
+            using nested_t = detail::make_nested_array_t<std::array,T,Rows,Cols>;
+            return this->template operator=<nested_t>(std::forward<nested_t>(rhs));
+        } // operator=
     }; // struct fixed_matrix
 
     /**
@@ -308,6 +360,18 @@ namespace nmtools::array {
 
         template <typename ndarray_t>
         constexpr auto operator=(const ndarray_t& rhs);
+
+        /**
+         * @brief provides assignment operator from nested std::array
+         * 
+         * @param rhs nested std array to be copied
+         * @return constexpr decltype(auto) 
+         */
+        constexpr decltype(auto) operator=(detail::make_nested_array_t<std::array,T,Shape1,ShapeN...>&& rhs)
+        {
+            using nested_t = detail::make_nested_array_t<std::array,T,Shape1,ShapeN...>;
+            return this->template operator=<nested_t>(std::forward<nested_t>(rhs));
+        } // operator=
     }; // struct fixed_ndarray
     
     /**
