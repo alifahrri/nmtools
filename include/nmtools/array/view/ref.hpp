@@ -87,7 +87,7 @@ namespace nmtools::view
          * @return constexpr auto 
          */
         template <typename...size_types>
-        constexpr auto index(size_types...indices)
+        constexpr auto index(size_types...indices) const
         {
             return detail::identity(indices...);
         } // index
@@ -111,5 +111,36 @@ namespace nmtools::view
 
     /** @} */ // end group view
 } // namespace nmtools::view
+
+namespace nmtools
+{
+    /**
+     * @brief specialization of fixed_vector_size for ref view.
+     *
+     * Only enabled when the referenced array is fixed-size.
+     * 
+     * @tparam array_t referenced array type
+     * @note needs to remove-cvref since the referenced array type returned from make_view may be ref
+     * @see nmtools::view::make_view
+     */
+    template <typename array_t>
+    struct fixed_vector_size< view::ref_t<array_t>
+        , std::enable_if_t< traits::is_fixed_size_vector_v< traits::remove_cvref_t<array_t> > >
+    > : fixed_vector_size< traits::remove_cvref_t<array_t> > {};
+
+    /**
+     * @brief specialization of fixed_matrix_size for ref view.
+     *
+     * Only enabled when the referenced array is fixed-size.
+     * 
+     * @tparam array_t referenced array type
+     * @note needs to remove-cvref since the referenced array type returned from make_view may be ref
+     * @see nmtools::view::make_view
+     */
+    template <typename array_t>
+    struct fixed_matrix_size< view::ref_t<array_t>
+        , std::enable_if_t< traits::is_fixed_size_matrix_v< traits::remove_cvref_t<array_t> > >
+    > : fixed_matrix_size< traits::remove_cvref_t<array_t> > {};
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_REF_HPP
