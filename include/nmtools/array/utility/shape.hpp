@@ -30,6 +30,7 @@ namespace nmtools
      * 
      * @tparam T element type of raw array, automatically deduced
      * @tparam N size of raw array, automatically deduced
+     * @todo move to array meta
      */
     template <typename T, size_t N>
     struct fixed_vector_size<T[N]>
@@ -66,7 +67,8 @@ namespace nmtools
      * @return size_t 
      */
     template <typename Vector>
-    constexpr size_t vector_size(const Vector& v)
+    constexpr auto vector_size(const Vector& v)
+        -> std::enable_if_t< std::is_same_v<std::void_t<decltype(size(v))>,void>, size_t >
     {
         static_assert(
             traits::is_array1d_v<Vector>
