@@ -1421,6 +1421,115 @@ namespace nmtools::meta
     template <typename T>
     using get_row_type_t = typename get_row_type<T>::type;
 
+    /**
+     * @brief make nested array given template-template parameter, element type and shape.
+     *
+     * https://godbolt.org/z/Pdha6T
+     * 
+     * @tparam array_t template-template parameter in which nested array is to be constructed from, (e.g. std::array)
+     * @tparam T desired element type of nested array
+     * @tparam I size of first axis
+     * @tparam Ns size(s) of the rest axes
+     */
+    template <template<typename,size_t> typename array_t, typename T, size_t I, size_t...Ns>
+    struct make_nested_fixed_array
+    {
+        static constexpr auto _make_nested_type()
+        {
+            if constexpr (sizeof...(Ns)==0)
+                return array_t<T,I>{};
+            else {
+                using type = typename make_nested_fixed_array<array_t,T,Ns...>::type;
+                return array_t<type,I>{};
+            }
+        } // _make_nested_type()
+
+        using type = decltype(_make_nested_type());
+    };
+
+    /**
+     * @brief metafunction to make nested dynamic array.
+     * 
+     * Create nested array type to N number of depth.
+     * 
+     * @tparam array_t template-template parameters that takes types. (e.g. array_t<typename...>)
+     * @tparam T element type of desired nested dynamic array
+     * @tparam N desired number of depth
+     * @tparam Args additional template parameter to each array_t instantiation. e.g. array_t<T,Args...>
+     */
+    template <template<typename...> typename array_t, typename T, size_t N>
+    struct make_nested_dynamic_array
+    {
+        // @note apparently it is required to make array_t to takes arbitrary nr of params
+        static constexpr auto _make_nested_type()
+        {
+            if constexpr (N==1)
+                return array_t<T>{};
+            else {
+                using type = typename make_nested_dynamic_array<array_t,T,N-1>::type;
+                return array_t<type>{};
+            }
+        } // _make_nested_type()
+
+        using type = decltype(_make_nested_type());
+    };
+    /**
+     * @brief helper alias template to make nested array given template-template parameter, element type and shape
+     * 
+     * @tparam array_t template-template parameter in which nested array is to be constructed from, (e.g. std::array)
+     * @tparam T desired element type of nested array
+     * @tparam I size of first axis
+     * @tparam Ns size(s) of the rest axes
+     */
+    template <template<typename,size_t> typename array_t, typename T, size_t I, size_t...Ns>
+    using make_nested_fixed_array_t = typename make_nested_fixed_array<array_t,T,I,Ns...>::type;
+
+    /**
+     * @brief helper alias template to make nested dynamic array.
+     * 
+     * Create nested array type to N number of depth.
+     * 
+     * @tparam array_t template-template parameters that takes types. (e.g. array_t<typename...>)
+     * @tparam T element type of desired nested dynamic array
+     * @tparam N desired number of depth
+     */
+    template <template<typename...> typename array_t, typename T, size_t N>
+    using make_nested_dynamic_array_t = typename make_nested_dynamic_array<array_t,T,N>::type;
+
+    /**
+     * @brief helper function declaration to get the type of nested array.
+     *
+     * Note that since class template parameter can't be overloaded (https://godbolt.org/z/vrsKn5), we need helper function
+     * to properly calls correct class template given its template parameter, either it is template or type tparams.
+     * <a href="https://godbolt.org/z/qsno5Y">Examples</a>.:
+     * @code{.cpp}
+     * // same name make_nested_array can handle both template and type template-parameter
+     * static_assert( std::is_same_v<decltype(make_nested_array<std::array,double,1,2>()),std::array<std::array<double,2>,1>> );
+     * static_assert( std::is_same_v<decltype(make_nested_array<std::vector,double,2>()),std::vector<std::vector<double>>> );
+     * @endcode
+     * 
+     * @tparam array_t 
+     * @tparam T 
+     * @tparam I 
+     * @tparam Ns 
+     * @return make_nested_fixed_array_t<array_t,T,I,Ns...> 
+     */
+    template <template<typename,size_t> typename array_t, typename T, size_t I, size_t...Ns>
+    constexpr auto make_nested_array()
+        -> make_nested_fixed_array_t<array_t,T,I,Ns...>;
+
+    /**
+     * @brief overloaded version of make_nested_array
+     * 
+     * @tparam array_t 
+     * @tparam T 
+     * @tparam N 
+     * @return make_nested_dynamic_array_t<array_t,T,N,Args...> 
+     */
+    template <template<typename...> typename array_t, typename T, size_t N>
+    constexpr auto make_nested_array()
+        -> make_nested_dynamic_array_t<array_t,T,N>;
+
     /** @} */ // end group meta
 } // namespace nmtools::meta
 

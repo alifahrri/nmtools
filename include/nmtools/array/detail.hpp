@@ -12,6 +12,11 @@
 namespace nmtools::detail
 {
     /**
+     * @addtogroup array
+     * @{
+     */
+
+    /**
      * @brief given array-like a, make array of type array_t,
      * where the element is initialized using elements of array-like a
      * at indices I... with offset, e.g. {a[I+offset]...}.
@@ -93,7 +98,9 @@ namespace nmtools::detail
             static_cast<common_type>(std::forward<Ts>(ts))...
         };
     } // make_array
-}
+    
+    /** @} */ // end group array
+} // namespace nmtools::detail
 
 namespace nmtools::array::detail
 {
@@ -114,6 +121,23 @@ namespace nmtools::array::detail
     } // stride
 
     /**
+     * @brief compute stride for ndarray offset.
+     *
+     * This follows numpy's row-major
+     * <a href="https://numpy.org/doc/stable/reference/arrays.ndarray.html#internal-memory-layout-of-an-ndarray">stride computation</a>.
+     * 
+     * @param shape container of shape, should have value_type member type
+     * @return constexpr auto
+     */
+    constexpr auto compute_strides(const auto& shape)
+    {
+        auto strides_ = shape;
+        for (size_t i=0; i<strides_.size(); i++)
+            strides_[i] = stride(shape, i);
+        return strides_;
+    } // strides
+
+    /**
      * @brief compute offset from given indices and computed strides
      * 
      * @param indices container of indices
@@ -127,6 +151,35 @@ namespace nmtools::array::detail
             offset += strides[i]*indices[i];
         return offset;
     } // compute_offset
+
+    /**
+     * @brief inverse operation of compute_offset
+     * 
+     * @param offset flat indices to be mapped
+     * @param shape desired shape
+     * @param strides computed strides, should be computed from shape
+     * @return constexpr auto 
+     */
+    constexpr auto compute_indices(const auto& offset, const auto& shape, const auto& strides)
+    {
+        auto indices = shape;
+        for (size_t i=0; i<shape.size(); i++)
+            indices[i] = (offset / strides[i]) % shape[i];
+        return indices;
+    } // compute indices
+
+    /**
+     * @brief inverse operation of compute_offset
+     * 
+     * @param offset flat indices to be mapped
+     * @param shape desired shape
+     * @return constexpr auto 
+     */
+    constexpr auto compute_indices(const auto& offset, const auto& shape)
+    {
+        auto strides = compute_strides(shape);
+        return compute_indices(offset, shape, strides);
+    } // compute_indices
 
     using ::nmtools::detail::make_array;
 

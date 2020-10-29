@@ -971,7 +971,7 @@ namespace nmtools::traits {
      * @tparam typename 
      */
     template <typename T, typename=void>
-    struct is_fixed_ndarray : false_type {};
+    struct is_fixed_size_ndarray : false_type {};
 
     /**
      * @brief check if given type T is n-dimensional array that shape is only known at runtime
@@ -988,7 +988,7 @@ namespace nmtools::traits {
      * @tparam T type to check
      */
     template <typename T>
-    inline constexpr bool is_fixed_ndarray_v = is_fixed_ndarray<T>::value;
+    inline constexpr bool is_fixed_size_ndarray_v = is_fixed_size_ndarray<T>::value;
 
     /**
      * @brief helper variable templat to check if given type T is n-dimensional array that shape is only known at runtime
@@ -997,6 +997,27 @@ namespace nmtools::traits {
      */
     template <typename T>
     inline constexpr bool is_dynamic_ndarray_v = is_dynamic_ndarray<T>::value;
+
+    /**
+     * @brief check if given type T is fixed-size array (vector/matrix/ndarray)
+     * 
+     * @tparam T type to check
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_fixed_size_array : std::disjunction<
+        is_fixed_size_vector<T>,
+        is_fixed_size_matrix<T>,
+        is_fixed_size_ndarray<T>
+    > {}; // is_fixed_size_array
+
+    /**
+     * @brief helper variable template to check if given type T is fixed-size array (vector/matrix/ndarray)
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_fixed_size_array_v = is_fixed_size_array<T>::value;
 
     /**
      * @brief check if given type T is std::integral_constant
@@ -1024,7 +1045,7 @@ namespace nmtools::traits {
 
     namespace detail {
         /**
-         * @brief actual implementation of type_list_disjunction
+         * @brief actual implementation of type_list_disjunction (OR)
          * 
          * @tparam type_list type list to be checked
          * @tparam trait template template parameter corresponding to trait to be satisfied
@@ -1037,11 +1058,11 @@ namespace nmtools::traits {
         {
             // note use declval instead of simply call type_list{}
             // to make sure even type that do not have default initialization can be checked
-            return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value && ...);
+            return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value || ...);
         } // type_list_disjunction_impl
 
         /**
-         * @brief actual implementation of type_list_conjunction
+         * @brief actual implementation of type_list_conjunction (AND)
          * 
          * @tparam type_list type list to be checked
          * @tparam trait template template parameter corresponding to trait to be satisfied
@@ -1054,11 +1075,11 @@ namespace nmtools::traits {
         {
             // note use declval instead of simply call type_list{}
             // to make sure even type that do not have default initialization can be checked
-            return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value || ...);
+            return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value && ...);
         } // type_list_conjunction_impl
 
         /**
-         * @brief entrypoint to actual implementation of type_list_disjunction
+         * @brief entrypoint to actual implementation of type_list_disjunction (OR)
          * 
          * @tparam type_list type list to be checked
          * @tparam trait template template parameter corresponding to trait to be satisfied
@@ -1074,7 +1095,7 @@ namespace nmtools::traits {
         } // type_list_disjunction_impl
 
         /**
-         * @brief entrypoint to actual implementation of type_list_conjunction
+         * @brief entrypoint to actual implementation of type_list_conjunction (AND)
          * 
          * @tparam type_list type list to be checked
          * @tparam trait template template parameter corresponding to trait to be satisfied
@@ -1091,7 +1112,7 @@ namespace nmtools::traits {
     } // namespace detail
 
     /**
-     * @brief check if all type in type_list satisfy trait
+     * @brief check if any type in type_list satisfy trait
      * 
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
@@ -1115,7 +1136,7 @@ namespace nmtools::traits {
     static constexpr auto type_list_disjunction_v = type_list_disjunction<type_list,trait>::value;
 
     /**
-     * @brief check if any type in type_list satisfy trait
+     * @brief check if all type in type_list satisfy trait
      * 
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
@@ -1124,7 +1145,7 @@ namespace nmtools::traits {
     struct type_list_conjunction
     {
         static_assert (has_tuple_size_v<type_list>,
-            "type_list_disjunction only support types that have tuple_size"
+            "type_list_conjunction only support types that have tuple_size"
         );
         static inline constexpr auto value = detail::type_list_conjunction_impl<type_list,trait>();
     }; // type_list_conjunction

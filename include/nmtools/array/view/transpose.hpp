@@ -19,7 +19,7 @@ namespace nmtools::view
     using traits::is_ndarray_v;
     using traits::is_fixed_size_vector_v;
     using traits::is_fixed_size_matrix_v;
-    using traits::is_fixed_ndarray_v;
+    using traits::is_fixed_size_ndarray_v;
     using traits::has_shape_v;
     using traits::has_size_v;
     using traits::has_dim_v;

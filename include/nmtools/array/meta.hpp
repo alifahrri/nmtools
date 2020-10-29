@@ -13,6 +13,8 @@ namespace nmtools
      * 
      * @tparam T type to check
      * @tparam typename optional for sfinae
+     * @todo move to meta
+     * @todo provide specialization for is_fixed_size_vector/matrix/ndarray
      */
     template <typename T, typename=void>
     struct fixed_array_shape {};
@@ -23,6 +25,7 @@ namespace nmtools
      * @tparam T value type of std::array
      * @tparam N number of elements of std::array
      * @todo find out a way to generalize nested std::array
+     * @todo remove, prefer specialization of is_fixed_size_vector/matrix/ndarray
      */
     template <typename T, size_t N>
     struct fixed_array_shape<std::array<T,N>>
@@ -38,6 +41,7 @@ namespace nmtools
      * @tparam Rows number of elements for the first axis
      * @tparam Cols number of elements for the second axis
      * @todo find out a way to generalize nested std::array
+     * @todo remove, prefer specialization of is_fixed_size_vector/matrix/ndarray
      */
     template <typename T, size_t Rows, size_t Cols>
     struct fixed_array_shape<std::array<std::array<T,Cols>,Rows>>
@@ -172,46 +176,5 @@ namespace nmtools
     template <typename V>
     inline constexpr auto fixed_vector_size_v = fixed_vector_size<V>::value;
 } // namespace nmtools
-
-namespace nmtools::traits
-{
-    /**
-     * @addtogroup traits
-     * @{
-     */
-
-    /**
-     * @brief return compile-time boolean indicating the referenced array has compile-time shape
-     * 
-     * @tparam array_type
-     * @see nmtools::traits::is_fixed_size_vector
-     * @see nmtools::traits::is_fixed_size_matrix
-     * @see nmtools::traits::is_fixed_ndarray
-     * @todo consider to move to traits
-     */
-    template <typename array_type>
-    struct is_fixed_shape
-    {
-        using array_t = traits::remove_cvref_t<array_type>;
-        static inline constexpr bool value = traits::is_fixed_size_vector_v<array_t> 
-            || traits::is_fixed_size_matrix_v<array_t>
-            || traits::is_fixed_ndarray_v<array_t>;
-    }; // is_fixed_shape
-
-    /**
-     * @brief return compile-time boolean indicating the referenced array has compile-time shape
-     * 
-     * @tparam array_type
-     * @see nmtools::traits::is_fixed_size_vector
-     * @see nmtools::traits::is_fixed_size_matrix
-     * @see nmtools::traits::is_fixed_ndarray
-     * @todo consider to move to traits
-     */
-    template <typename array_type>
-    static inline constexpr bool is_fixed_shape_v = is_fixed_shape<array_type>::value;
-
-    /** @} */ // end group traits
-
-} // nmtools::traits
 
 #endif // NMTOOLS_ARRAY_META_HPP

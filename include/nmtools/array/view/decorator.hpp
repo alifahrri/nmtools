@@ -3,7 +3,7 @@
 
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/meta.hpp" // is_fixed_shape_v
+#include "nmtools/array/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/utility/shape.hpp"
 
@@ -11,7 +11,7 @@
 
 namespace nmtools::view
 {
-    using traits::is_fixed_shape_v;
+    using traits::is_fixed_size_array_v;
 
     /**
      * @addtogroup view
@@ -87,6 +87,14 @@ namespace nmtools::view
             else
                 return array_shape(array);
         } // shape
+
+        template <template<typename,size_t> typename shape_t, typename array_t>
+        constexpr decltype(auto) shape(const array_t& array)
+        {
+            using ::nmtools::detail::make_array;
+            auto shape_ = shape(array);
+            return make_array<shape_t>(shape_);
+        } // shape
     } // namespace detail
 
     /**
@@ -114,11 +122,13 @@ namespace nmtools::view
          * 
          * @return constexpr auto 
          */
-        template <typename=std::enable_if_t<!traits::has_dim_v<traits::remove_cvref_t<view_type>>>>
         constexpr auto dim() const noexcept
         {
             // @note `this` must be constexpr when constexpr return value is desired
-            return detail::dim(view_type::array);
+            if constexpr (traits::has_dim_v<traits::remove_cvref_t<view_type>>)
+                return view_type::dim();
+            else
+                return detail::dim(view_type::array);
         } // dim()
 
         /**
@@ -161,12 +171,15 @@ namespace nmtools::view
 
             using array_t = traits::remove_cvref_t<array_type>;
             constexpr auto n = sizeof...(size_types);
+            assert (dim()==n); // tmp assertion
 
             // @note needs to initialize array_t since view_type::array may not be constant expression
-            if constexpr (is_fixed_shape_v<array_t>)
-                static_assert (detail::dim(array_t{})==n);
-            else
-                assert (dim()==n);
+            // @note flatten_t dim invocation differs from other view types @todo fix
+            // if constexpr (is_fixed_size_array_v<array_t>)
+            //     static_assert (detail::dim(array_t{})==n);
+            // else
+            //     assert (dim()==n);
+
             // call at to referred object, not to this
             // return at(view_type::array, indices...);
             using indices_sequence_t = std::make_index_sequence<std::tuple_size_v<decltype(transformed_indices)>>;
@@ -197,12 +210,15 @@ namespace nmtools::view
 
             using array_t = traits::remove_cvref_t<array_type>;
             constexpr auto n = sizeof...(size_types);
+            assert (dim()==n); // tmp assertion
 
             // @note needs to initialize array_t since view_type::array may not be constant expression
-            if constexpr (is_fixed_shape_v<array_t>)
-                static_assert (detail::dim(array_t{})==n);
-            else
-                assert (dim()==n);
+            // @note flatten_t dim invocation differs from other view types @todo fix
+            // if constexpr (is_fixed_size_array_v<array_t>)
+            //     static_assert (detail::dim(array_t{})==n);
+            // else
+            //     assert (dim()==n);
+
             // call at to referred object, not to this
             // return at(view_type::array, indices...);
             using indices_sequence_t = std::make_index_sequence<std::tuple_size_v<decltype(transformed_indices)>>;
@@ -291,10 +307,11 @@ namespace nmtools
      * @tparam T view type
      * @param t viewed vector
      * @return std::enable_if_t<view::is_view_v<T> && traits::is_array1d_v<T>, size_t> 
+     * @note vector_size has sfinae overload that enabled for is_fixed_size_vector
      */
     template <typename T>
     constexpr auto vector_size(const T& t)
-        -> std::enable_if_t<view::is_view_v<T> && traits::is_array1d_v<T>, size_t>
+        -> std::enable_if_t<view::is_view_v<T> && traits::is_array1d_v<T> && !traits::is_fixed_size_vector_v<T>, size_t>
     {
         auto [n] = t.shape();
         return n;
@@ -304,14 +321,14 @@ namespace nmtools
 namespace nmtools::traits
 {
     /**
-     * @brief specialization of is_fixed_ndarray for view type
+     * @brief specialization of is_fixed_size_ndarray for view type
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
      */
     template <template<typename...> typename view_t, typename...Ts>
-    struct is_fixed_ndarray<view::decorator_t<view_t,Ts...>>
-        : is_fixed_ndarray<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+    struct is_fixed_size_ndarray<view::decorator_t<view_t,Ts...>>
+        : is_fixed_size_ndarray<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief specialization of is_array1d for view type

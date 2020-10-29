@@ -7,5 +7,6 @@
 #include "nmtools/array/view/slice.hpp"
 #include "nmtools/array/view/mutable_slice.hpp"
 #include "nmtools/array/view/transpose.hpp"
+#include "nmtools/array/view/flatten.hpp"
 
 #endif // NMTOOLS_ARRAY_VIEW_HPP

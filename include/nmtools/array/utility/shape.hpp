@@ -68,7 +68,9 @@ namespace nmtools
      */
     template <typename Vector>
     constexpr auto vector_size(const Vector& v)
-        -> std::enable_if_t< std::is_same_v<std::void_t<decltype(size(v))>,void>, size_t >
+        -> std::enable_if_t<
+            std::is_same_v<std::void_t<decltype(size(v))>,void>
+            && !traits::is_fixed_size_vector_v<Vector>, size_t >
     {
         static_assert(
             traits::is_array1d_v<Vector>
@@ -77,6 +79,13 @@ namespace nmtools
 
         return size(v);
     } // size_t vector_size(const Vector& v)
+
+    template <typename Vector>
+    constexpr auto vector_size(const Vector& v)
+        -> std::enable_if_t< traits::is_fixed_size_vector_v<Vector>, size_t>
+    {
+        return fixed_vector_size_v<Vector>;
+    }
 
     /** @} */ // end group utility
 } // namespace nmtools
