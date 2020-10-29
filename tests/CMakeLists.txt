@@ -62,6 +62,8 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/blas/mmmul.cpp
     src/doctest/blas/saxpy.cpp
     src/doctest/blas/gaxpy.cpp
+    ## array detail
+    src/doctest/array/detail.cpp
     ## array utility
     src/doctest/array/utility/at.cpp
     src/doctest/array/utility/row.cpp
@@ -77,6 +79,7 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/array/view/slice.cpp
     src/doctest/array/view/mutable_slice.cpp
     src/doctest/array/view/transpose.cpp
+    src/doctest/array/view/flatten.cpp
     ## metafunctions
     src/doctest/meta.cpp
 )

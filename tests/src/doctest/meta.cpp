@@ -259,16 +259,19 @@ TEST_CASE("traits" * doctest::skip(true)) // type_list_disjunction
     {
         using type_list_t = std::tuple<array_t,fmatrix_t>;
         LOG_TYPEINFO(type_list_t);
+        // any type in type_list_t satisfy is_array2d
         STATIC_CHECK(( traits::type_list_disjunction_v<type_list_t,traits::is_array2d> ));   
     }
     {
         using type_list_t = std::tuple<array_t,fvector_t>;
         LOG_TYPEINFO(type_list_t);
-        STATIC_CHECK(( !traits::type_list_disjunction_v<type_list_t,traits::is_array2d> ));   
+        // any type in type_list_t satisfy is_array2d
+        STATIC_CHECK(( traits::type_list_disjunction_v<type_list_t,traits::is_array2d> ));   
     }
     {
         using type_list_t = std::tuple<ndarray_t,ndarray3_t,dndarray_t>;
         LOG_TYPEINFO(type_list_t);
+        // any type in type_list_t satisfy is_ndarray
         STATIC_CHECK(( traits::type_list_disjunction_v<type_list_t,traits::is_ndarray> ));   
     }
 }
@@ -294,21 +297,25 @@ TEST_CASE("traits" * doctest::skip(true)) // type_list_conjunction
     {
         using type_list_t = std::tuple<array_t,fmatrix_t>;
         LOG_TYPEINFO(type_list_t);
+        // all type in type_list_t satisfy is_array2d
         STATIC_CHECK(( traits::type_list_conjunction_v<type_list_t,traits::is_array2d> ));   
     }
     {
         using type_list_t = std::tuple<array_t,fvector_t>;
         LOG_TYPEINFO(type_list_t);
-        STATIC_CHECK(( traits::type_list_conjunction_v<type_list_t,traits::is_array2d> ));   
+        // all type in type_list_t satisfy is_array2d
+        STATIC_CHECK(( !traits::type_list_conjunction_v<type_list_t,traits::is_array2d> ));   
     }
     {
         using type_list_t = std::tuple<ndarray_t,ndarray3_t,dndarray_t>;
         LOG_TYPEINFO(type_list_t);
+        // all type in type_list_t satisfy is_ndarray
         STATIC_CHECK(( traits::type_list_conjunction_v<type_list_t,traits::is_ndarray> ));   
     }
     {
         using type_list_t = std::tuple<ndarray_t,ndarray3_t,dndarray_t>;
         LOG_TYPEINFO(type_list_t);
+        // all type in type_list_t satisfy is_array2d
         STATIC_CHECK(( !traits::type_list_conjunction_v<type_list_t,traits::is_array2d> ));   
     }
 }
@@ -343,4 +350,25 @@ TEST_CASE("meta" * doctest::skip(true))
 
     // make_reversed_index_sequence test
     STATIC_CHECK(( std::is_same_v<make_reversed_index_sequence<3>,std::index_sequence<2,1,0>> ));
+}
+
+TEST_CASE("meta" * doctest::skip(true))
+{
+    using vector_t   = std::array<double,3>;
+    using array_t    = std::array<std::array<double,3>,5>;
+    using fvector_t  = nmtools::array::fixed_vector<double,3>;
+    using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
+    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
+    using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
+    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
+
+    LOG_TYPEINFO(array_t);
+    LOG_TYPEINFO(vector_t);
+    LOG_TYPEINFO(fvector_t);
+    LOG_TYPEINFO(fmatrix_t);
+    LOG_TYPEINFO(ndarray_t);
+    LOG_TYPEINFO(dndarray_t);
+    LOG_TYPEINFO(ndarray3_t);
+
+    STATIC_CHECK(( traits::is_fixed_size_array_v<array_t> ));
 }
