@@ -17,7 +17,7 @@ namespace nmtools::view
     using traits::is_ndarray_v;
     using traits::is_fixed_size_vector_v;
     using traits::is_fixed_size_matrix_v;
-    using traits::is_fixed_ndarray_v;
+    using traits::is_fixed_size_ndarray_v;
     using traits::has_shape_v;
     using traits::has_size_v;
     using traits::has_dim_v;
@@ -51,7 +51,7 @@ namespace nmtools::view
 
         // array type as required by decorator
         using array_type = Array&;
-        static inline constexpr bool is_fixed_size = is_fixed_size_vector_v<Array> || is_fixed_size_matrix_v<Array> || is_fixed_ndarray_v<Array>;
+        static inline constexpr bool is_fixed_size = is_fixed_size_vector_v<Array> || is_fixed_size_matrix_v<Array> || is_fixed_size_ndarray_v<Array>;
 
         // const reference to actual array type
         array_type array;
