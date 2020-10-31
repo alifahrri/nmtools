@@ -37,6 +37,6 @@ cd $DEST
 tar -zxvf $fmt_file
 
 cd $fmt_dir
-mkdir -p build && cd build && cmake -D CMAKE_INSTALL_PREFIX=/usr/local/ .. && make install
+mkdir -p build && cd build && cmake -D CMAKE_INSTALL_PREFIX=/usr/local/ -D FMT_TEST=OFF .. && make install
 
 cd $CWD
