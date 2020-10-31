@@ -13,6 +13,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -f|--file)
+    FILE="$2"
+    shift # past argument
+    shift # past value
+    ;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later
     shift # past argument
@@ -25,5 +30,9 @@ if [ -z "$IMG" -a "$IMG" != " " ]; then
         IMG="numeric_tools"
 fi
 
+if [ -z "$FILE" -a "$FILE" != " " ]; then
+        FILE="${DIR}/dockerfile"
+fi
+
 ## assuming this script is located in root/scripts & Dockerfile in root/docker
-docker build -t $IMG -f ${DIR}/dockerfile ${DIR}/..
+docker build -t $IMG -f ${FILE} ${DIR}/..
