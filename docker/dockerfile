@@ -60,6 +60,6 @@ COPY nmtools.pc.in nmtools.pc.in
 COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
 RUN mkdir build && cd build \
-    && cmake -DBUILD_EXAMPLES=ON -DBUILD_BENCHMARKS=ON .. && make && make install
+    && cmake -DBUILD_EXAMPLES=ON -DBUILD_BENCHMARKS=ON .. && make -j4 && make install
 
 CMD ["bash","scripts/run_unit_tests.sh"]
