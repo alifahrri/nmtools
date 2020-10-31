@@ -1120,6 +1120,20 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
   CHECK_MESSAGE(expr, #expr); \
 } \
 
+/**
+ * @brief perform static assertion std::is_same on type1 and type1.
+ *
+ * Also run assertion at runtime for message and sanity check.
+ * 
+ * @warn only available for doctest
+ */
+#define STATIC_CHECK_IS_SAME(type1, type2) \
+{ \
+    constexpr auto is_same = std::is_same_v<type1,type2>; \
+    static_assert(is_same); \
+    CHECK_MESSAGE(is_same, std::string(#type1) + "," + std::string(#type2) ); \
+} \
+
 namespace nmtools::testing::data::common
 {
     /**
