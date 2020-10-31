@@ -70,6 +70,13 @@ namespace nmtools
     template <typename T, typename=void>
     struct fixed_matrix_size {};
 
+    template <typename T, size_t Rows, size_t Cols>
+    struct fixed_matrix_size<T[Rows][Cols]>
+    {
+        static constexpr inline auto value = std::make_pair(Rows,Cols);
+        using value_type = decltype(value);
+    }; // fixed_matrix_size
+
     // TODO: consider to move to meta
     /**
      * @brief helper variable template to get fixed-matrix's size
