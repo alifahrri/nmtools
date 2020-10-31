@@ -828,7 +828,7 @@ namespace nmtools::array
         using ::nmtools::detail::clone_impl;
 
         if constexpr (traits::is_fixed_size_matrix_v<matrix_t>) {
-            constexpr auto size_ = matrix_size(rhs);
+            constexpr auto size_ = fixed_matrix_size_v<matrix_t>;
             constexpr auto rows  = std::get<0>(size_);
             constexpr auto cols  = std::get<1>(size_);
 
@@ -874,14 +874,14 @@ namespace nmtools::array
         using ::nmtools::detail::clone_impl;
 
         if constexpr (dim()==1) {
-            constexpr auto n = vector_size(rhs);
+            constexpr auto n = fixed_vector_size_v<ndarray_t>;
             static_assert ( n == shape()[0],
                 "mismatched shape for fixed_ndarray assignment"
             );
             clone_impl(*this, rhs, n);
         }
         else if constexpr (dim()==2) {
-            constexpr auto size = matrix_size(rhs);
+            constexpr auto size = fixed_matrix_size_v<ndarray_t>;
             constexpr auto rows = std::get<0>(size);
             constexpr auto cols = std::get<1>(size);
             static_assert ( (rows == shape()[0]) && (cols == shape()[1]) ,
