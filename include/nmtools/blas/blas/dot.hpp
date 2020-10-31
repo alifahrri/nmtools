@@ -17,6 +17,39 @@
 namespace nmtools::blas
 {
     /**
+     * @brief tag to resolve dot operation
+     * 
+     */
+    struct dot_t;
+} // namespace nmtools::blas
+
+namespace nmtools::meta
+{
+    template <typename lhs_t, typename rhs_t>
+    struct resolve_optype<void,blas::dot_t,lhs_t,rhs_t>
+    {
+        static constexpr auto _get()
+        {
+            if constexpr (std::is_arithmetic_v<lhs_t> && std::is_arithmetic_v<rhs_t>)
+                return std::common_type_t<lhs_t,rhs_t>{};
+            else if constexpr (traits::is_array1d_v<lhs_t> && traits::is_array1d_v<rhs_t>) {
+                using l_t = get_container_value_type_t<lhs_t>;
+                using r_t = get_container_value_type_t<rhs_t>;
+                using type = std::common_type_t<l_t,r_t>;
+                // may be void
+                if constexpr (std::is_same_v<type,void>)
+                    return detail::fail_t{};
+                else return type{};
+            }
+            else return detail::fail_t{};
+        } // _get()
+        using type = traits::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
+    };
+} // namespace nmtools::meta
+
+namespace nmtools::blas
+{
+    /**
      * @ingroup blas
      * @{
      */
@@ -55,13 +88,11 @@ namespace nmtools::blas
             )
             , "unsupported type for dot"
         );
-        using std::remove_cv_t;
-        using std::remove_reference_t;
-        using meta::get_value_type_or_same_t;
 
-        using e1_t = meta::get_vector_value_type_t<V1>;
-        using e2_t = meta::get_vector_value_type_t<V2>;
-        using value_t = std::common_type_t<e1_t,e2_t>;
+        using value_t = meta::resolve_optype_t<dot_t,V1,V2>;
+        static_assert( !std::is_same_v<value_t,void>
+            , "can't resolve return type for dot"
+        );
 
         using detail::dot_impl;
 
