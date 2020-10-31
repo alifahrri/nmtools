@@ -142,6 +142,31 @@ namespace nmtools
          */
         using array1d_slice_indices_t = std::tuple<size_t,size_t>;
 
+        template <typename rows_t, typename cols_t, typename row_stop_t, typename col_stop_t>
+        constexpr auto make_stop_indices(rows_t rows, cols_t cols, const row_stop_t& row_stop_, const col_stop_t& col_stop_)
+        {
+            if constexpr (is_same_v<row_stop_t,end_t> && is_same_v<col_stop_t,end_t>)
+                return std::make_tuple(rows, cols);
+            // only row is end tag, col stop is compile time constant
+            else if constexpr (is_same_v<row_stop_t,end_t> && is_integral_constant_v<col_stop_t>)
+                return std::make_tuple(rows, col_stop_());
+            // only col is end tag, row stop is compile time constant
+            else if constexpr (is_integral_constant_v<row_stop_t> && is_same_v<col_stop_t,end_t>)
+                return std::make_tuple(row_stop_(), cols);
+            // both is compile time constant
+            else if constexpr (is_integral_constant_v<row_stop_t> && is_integral_constant_v<col_stop_t>)
+                return std::make_tuple(row_stop_(), col_stop_());
+            // only row is end tag, col stop is simply integer
+            else if constexpr (is_same_v<row_stop_t,end_t> && is_integral_v<col_stop_t>)
+                return std::make_tuple(rows, col_stop_);
+            // only col is end tag, row stop is simply integer
+            else if constexpr (is_integral_v<row_stop_t> && is_same_v<col_stop_t,end_t>)
+                return std::make_tuple(row_stop_, cols);
+            // both is simpy integer
+            else if constexpr (is_integral_v<row_stop_t> && is_integral_v<col_stop_t>)
+                return std::make_tuple(row_stop_, col_stop_);
+        } // make_stop_indices
+
         /**
          * @brief helper function to unpack slice indices for 2D array
          * in which start & stop may be pair of integral_constant & special tag end_t
@@ -182,35 +207,40 @@ namespace nmtools
             // unpack integral constant type to value
             // use immediately invoked lambda to expose variable to outer scope while actual packing is
             // dispatched based on the type using constexpr if
-            auto istart = [&](){
+            // workaround for error: reference to local binding declared in enclosing function
+            auto istart = [&,row_start_=row_start_,col_start_=col_start_](){
                 if constexpr (is_integral_constant_v<row_start_t> && is_integral_constant_v<col_start_t>)
                     return std::make_tuple(row_start_(), col_start_());
                 else
                     return std::make_tuple(row_start_, col_start_);
             }();
-            auto istop = [&](){
-                // both stop is end tag
-                if constexpr (is_same_v<row_stop_t,end_t> && is_same_v<col_stop_t,end_t>)
-                    return std::make_tuple(rows, cols);
-                // only row is end tag, col stop is compile time constant
-                else if constexpr (is_same_v<row_stop_t,end_t> && is_integral_constant_v<col_stop_t>)
-                    return std::make_tuple(rows, col_stop_());
-                // only col is end tag, row stop is compile time constant
-                else if constexpr (is_integral_constant_v<row_stop_t> && is_same_v<col_stop_t,end_t>)
-                    return std::make_tuple(row_stop_(), cols);
-                // both is compile time constant
-                else if constexpr (is_integral_constant_v<row_stop_t> && is_integral_constant_v<col_stop_t>)
-                    return std::make_tuple(row_stop_(), col_stop_());
-                // only row is end tag, col stop is simply integer
-                else if constexpr (is_same_v<row_stop_t,end_t> && is_integral_v<col_stop_t>)
-                    return std::make_tuple(rows, col_stop_);
-                // only col is end tag, row stop is simply integer
-                else if constexpr (is_integral_v<row_stop_t> && is_same_v<col_stop_t,end_t>)
-                    return std::make_tuple(row_stop_, cols);
-                // both is simpy integer
-                else if constexpr (is_integral_v<row_stop_t> && is_integral_v<col_stop_t>)
-                    return std::make_tuple(row_stop_, col_stop_);
-            }();
+            // workaround for error: reference to local binding declared in enclosing function
+            // but doesnt work on gcc: istop has incomplete type
+            // auto istop = [&,row_start_=row_start_,col_start_=col_start_,row_stop_=row_stop_,col_stop_=col_stop_,rows=rows,cols=cols](){
+            // auto istop = [&](){
+            //     // both stop is end tag
+            //     if constexpr (is_same_v<row_stop_t,end_t> && is_same_v<col_stop_t,end_t>)
+            //         return std::make_tuple(rows, cols);
+            //     // only row is end tag, col stop is compile time constant
+            //     else if constexpr (is_same_v<row_stop_t,end_t> && is_integral_constant_v<col_stop_t>)
+            //         return std::make_tuple(rows, col_stop_());
+            //     // only col is end tag, row stop is compile time constant
+            //     else if constexpr (is_integral_constant_v<row_stop_t> && is_same_v<col_stop_t,end_t>)
+            //         return std::make_tuple(row_stop_(), cols);
+            //     // both is compile time constant
+            //     else if constexpr (is_integral_constant_v<row_stop_t> && is_integral_constant_v<col_stop_t>)
+            //         return std::make_tuple(row_stop_(), col_stop_());
+            //     // only row is end tag, col stop is simply integer
+            //     else if constexpr (is_same_v<row_stop_t,end_t> && is_integral_v<col_stop_t>)
+            //         return std::make_tuple(rows, col_stop_);
+            //     // only col is end tag, row stop is simply integer
+            //     else if constexpr (is_integral_v<row_stop_t> && is_same_v<col_stop_t,end_t>)
+            //         return std::make_tuple(row_stop_, cols);
+            //     // both is simpy integer
+            //     else if constexpr (is_integral_v<row_stop_t> && is_integral_v<col_stop_t>)
+            //         return std::make_tuple(row_stop_, col_stop_);
+            // }();
+            auto istop = make_stop_indices(rows,cols,row_stop_,col_stop_);
             return std::make_tuple(istart, istop);
         } // constexpr auto unpack_slice_indices
 
