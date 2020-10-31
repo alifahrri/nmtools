@@ -45,16 +45,23 @@ apply_nmtools(
 )
 target_link_libraries(${PROJECT_NAME}-fibonacci_search PRIVATE nanobench)
 
-add_executable(
-    ${PROJECT_NAME}-curvefit
-    src/curvefit.cpp
-)
-apply_nmtools(
-    TARGET ${PROJECT_NAME}-curvefit
-    COMPILE_OPTIONS -O3 -march=native
-)
-target_link_libraries(${PROJECT_NAME}-curvefit PRIVATE nanobench)
+# std::experimental::simd only on gcc 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+else ()
+    add_executable(
+        ${PROJECT_NAME}-curvefit
+        src/curvefit.cpp
+    )
+    apply_nmtools(
+        TARGET ${PROJECT_NAME}-curvefit
+        COMPILE_OPTIONS -O3 -march=native
+    )
+    target_link_libraries(${PROJECT_NAME}-curvefit PRIVATE nanobench)
+endif ()
 
+# std::experimental::simd only on gcc 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+else()
 add_executable(
     ${PROJECT_NAME}-linalg
     src/linalg.cpp
@@ -64,6 +71,7 @@ apply_nmtools(
     COMPILE_OPTIONS -O3 -march=native
 )
 target_link_libraries(${PROJECT_NAME}-linalg PRIVATE nanobench)
+endif ()
 
 get_filename_component(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 get_filename_component(NMTOOLS_ROOT_DIR ${PARENT_DIR} DIRECTORY)

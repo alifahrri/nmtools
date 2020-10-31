@@ -42,4 +42,10 @@ function(apply_nmtools)
         )
     endif()
 
+    # workaround for clang since gcc accepts auto parameters while clang doesnt
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        target_compile_features(${apply_nmtools_TARGET} PRIVATE cxx_std_20)
+        target_compile_options(${apply_nmtools_TARGET} PRIVATE -frelaxed-template-template-args)
+    endif()
+
 endfunction()
