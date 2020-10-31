@@ -148,7 +148,13 @@ namespace nmtools {
             // when using fixed array, start and stop must be constexpr
             constexpr auto ct_start = start_t{};
             constexpr auto ct_stop  = stop_t{};
-            constexpr auto indices = unpack_slice_indices(a,ct_start,ct_stop);
+            // workaround for clang (which turns out to be correct)
+            // parameter to unpack_slice_indices must be constexpr,
+            // since we have fixed-size array, the size is embedded to the type itself
+            // assuming fixed-size array are constexpr-ready
+            // @todo pass value to unpack slice indices not the object itself
+            constexpr T a_{};
+            constexpr auto indices = unpack_slice_indices(a_,ct_start,ct_stop);
             constexpr auto start_indices = std::get<0>(indices);
             constexpr auto stop_indices  = std::get<1>(indices);
             constexpr auto row_start = std::get<0>(start_indices);
@@ -173,7 +179,13 @@ namespace nmtools {
             // when using fixed array, start and stop must be constexpr
             constexpr auto ct_start = start_t{};
             constexpr auto ct_stop  = stop_t{};
-            constexpr auto indices = unpack_slice_indices(a,ct_start,ct_stop);
+            // workaround for clang (which turns out to be correct)
+            // parameter to unpack_slice_indices must be constexpr,
+            // since we have fixed-size array, the size is embedded to the type itself
+            // assuming fixed-size array are constexpr-ready
+            // @todo pass value to unpack slice indices not the object itself
+            constexpr T a_{};
+            constexpr auto indices = unpack_slice_indices(a_,ct_start,ct_stop);
             /* TODO: support step */
             constexpr auto start_ = std::get<0>(indices);
             constexpr auto stop_  = std::get<1>(indices);

@@ -66,7 +66,7 @@ namespace nmtools
 
         if constexpr (is_fixed_size) {
             auto sum = sum_t{};
-            constexpr auto shape = matrix_size(a);
+            constexpr auto shape = fixed_matrix_size_v<Array>;
             constexpr auto rows = get<0>(shape);
             constexpr auto cols = get<1>(shape);
             col_sum_impl(sum,a,rows,cols);

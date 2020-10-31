@@ -129,7 +129,7 @@ namespace nmtools
         };
 
         if constexpr (is_fixed_size) {
-            constexpr auto shape = matrix_size(a);
+            constexpr auto shape = fixed_matrix_size_v<Array>;
             constexpr auto rows = std::get<0>(shape);
             constexpr auto cols = std::get<1>(shape);
             // note: use immediately invoked lambda to expose return value to outer scope

@@ -73,7 +73,7 @@ namespace nmtools
         if constexpr (is_fixed_size) {
             // NOTE: move instantiation here to make error message less verbose
             auto col = column_t{};
-            constexpr auto rows = vector_size(col);
+            constexpr auto rows = fixed_vector_size_v<column_t>;
             column_impl(col,M,c,rows);
             return col;
         }
