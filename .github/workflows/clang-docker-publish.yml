@@ -1,4 +1,4 @@
-name: Docker
+name: clang-docker
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
           else
-            docker build . --file docker/dockerfile --tag $IMAGE_NAME
+            docker build . --file docker/clang.dockerfile --tag $IMAGE_NAME
             docker run $IMAGE_NAME
           fi
 
@@ -49,7 +49,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: docker build . --file clang.dockerfile --tag $IMAGE_NAME
 
       - name: Log into GitHub Container Registry
       # TODO: Create a PAT with `read:packages` and `write:packages` scopes and save it as an Actions secret `CR_PAT`
