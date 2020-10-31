@@ -348,42 +348,42 @@ namespace nmtools::traits {
      * @tparam T type to check
      * @tparam void 
      */
-    template <typename T, typename = void>
-    struct is_resizeable : std::false_type {};
+    // template <typename T, typename = void>
+    // struct is_resizeable : std::false_type {};
 
     /**
      * @brief specialization of is_resizeable when T is resizeable using size_t
      * 
      * @tparam T type to check
      */
-    template <typename T>
-    struct is_resizeable<T, 
-        std::void_t<
-            disable_if_has_size_type_t<T>,
-            decltype(std::declval<T>().resize(std::declval<size_t>()))
-        >
-    > : std::true_type {};
+    // template <typename T>
+    // struct is_resizeable<T, 
+    //     std::void_t<
+    //         disable_if_has_size_type_t<T>,
+    //         decltype(std::declval<T>().resize(std::declval<size_t>()))
+    //     >
+    // > : std::true_type {};
 
     /**
      * @brief specialization of is_resizeable when T is resizeable using T::size_type
      * 
      * @tparam T type to check
      */
-    template <typename T>
-    struct is_resizeable<T, 
-        std::void_t<
-            enable_if_has_size_type_t<T>,
-            decltype(std::declval<T>().resize(std::declval<typename T::size_type>()))
-        >
-    > : std::true_type {};
+    // template <typename T>
+    // struct is_resizeable<T, 
+    //     std::void_t<
+    //         enable_if_has_size_type_t<T>,
+    //         decltype(std::declval<T>().resize(std::declval<typename T::size_type>()))
+    //     >
+    // > : std::true_type {};
 
     /**
      * @brief helper variable template to check if T is resizeable
      * 
      * @tparam T type to check
      */
-    template <typename T>
-    static constexpr auto is_resizeable_v = is_resizeable<T>::value;
+    // template <typename T>
+    // static constexpr auto is_resizeable_v = is_resizeable<T>::value;
 
     /**
      * @brief check if T can be resized with 2 arguments, e.g. declval<T>().resize(i,i)
@@ -391,27 +391,27 @@ namespace nmtools::traits {
      * @tparam T type to check
      * @tparam void 
      */
-    template <typename T, typename = void>
-    struct is_resizeable2d : std::false_type {};
+    // template <typename T, typename = void>
+    // struct is_resizeable2d : std::false_type {};
 
-    template <typename T>
-    struct is_resizeable2d<T, 
-        std::void_t<
-            disable_if_has_size_type_t<T>,
-            decltype(declval<T>().resize(declval<size_t>(),declval<size_t>()))
-        >
-    > : true_type {};
+    // template <typename T>
+    // struct is_resizeable2d<T, 
+    //     std::void_t<
+    //         disable_if_has_size_type_t<T>,
+    //         decltype(declval<T>().resize(declval<size_t>(),declval<size_t>()))
+    //     >
+    // > : true_type {};
 
-    template <typename T>
-    struct is_resizeable2d<T, 
-        std::void_t<
-            enable_if_has_size_type_t<T>,
-            decltype(declval<T>().resize(declval<typename T::size_type>(),declval<typename T::size_type>()))
-        >
-    > : true_type {};
+    // template <typename T>
+    // struct is_resizeable2d<T, 
+    //     std::void_t<
+    //         enable_if_has_size_type_t<T>,
+    //         decltype(declval<T>().resize(declval<typename T::size_type>(),declval<typename T::size_type>()))
+    //     >
+    // > : true_type {};
 
-    template <typename T>
-    static constexpr auto is_resizeable2d_v = is_resizeable2d<T>::value;
+    // template <typename T>
+    // static constexpr auto is_resizeable2d_v = is_resizeable2d<T>::value;
 
     /**
      * @brief check if std::tuple_size<T> is valid for T
@@ -685,6 +685,16 @@ namespace nmtools::traits {
         using bracketnd = decltype(declval<T>().operator[](declval<size_types>()...));
 
         /**
+         * @brief helper alias template to check if given type T has member function `resize`
+         * taking size_types as parameters.
+         * 
+         * @tparam T type to check
+         * @tparam size_types parameter(s) to `resize`
+         */
+        template <typename T, typename...size_types>
+        using resizend = decltype(declval<T>().resize(declval<size_types>()...));
+
+        /**
          * @brief helper alias template to deduce the return value of member function `size` of type `T`
          * 
          * @tparam T type to check
@@ -708,6 +718,110 @@ namespace nmtools::traits {
         template <typename T>
         using dim = decltype(declval<T>().dim());
     } // namespace expr
+
+    /**
+     * @brief trait to check if given type T is resizeable with size_types as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_types arguments to `resize`
+     */
+    template <typename T, typename...size_types>
+    struct is_resizeable_nd : detail::expression_check<void,expr::resizend,T,size_types...>{};
+
+    /**
+     * @brief helper variable template to check if given type T is resizeable with size_types as arguments.
+     * 
+     * @tparam T type to check
+     * @tparam size_types arguments to `resize`
+     */
+    template <typename T, typename...size_types>
+    inline constexpr bool is_resizeable_nd_v = is_resizeable_nd<T,size_types...>::value;
+
+    /**
+     * @brief check if given type T is resizeable (1D).
+     *
+     * Default implementation will check if T has size_type,
+     * then calls is_resizeable_nd with size_type as arguments,
+     * otherwise assume size_type is size_t then call is_resizeable_nd.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_resizeable
+    {
+        /**
+         * @brief default implementation for actual checking,
+         * implemented as static member function to avoid clunky sfinae
+         * and allows to easily specialize specific type.
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto _check()
+        {
+            if constexpr (has_size_type_v<T>) {
+                using size_type = typename T::size_type;
+                return is_resizeable_nd_v<T,size_type>;
+            }
+            else {
+                using size_type = size_t;
+                return is_resizeable_nd_v<T,size_type>;
+            }
+        } // _check()
+
+        static constexpr inline bool value = _check();
+    }; // is_resizeable
+
+    /**
+     * @brief helper variable template to check if type T is resizeable
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_resizeable_v = is_resizeable<T>::value;
+
+    /**
+     * @brief check if given type T is resizeable (2D).
+     *
+     * Default implementation will check if T has size_type,
+     * then calls is_resizeable_nd with size_type as arguments,
+     * otherwise assume size_type is size_t then call is_resizeable_nd.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_resizeable2d
+    {
+        /**
+         * @brief default implementation for actual checking,
+         * implemented as static member function to avoid clunky sfinae
+         * and allows to easily specialize specific type.
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto _check()
+        {
+            if constexpr (has_size_type_v<T>) {
+                using size_type = typename T::size_type;
+                return is_resizeable_nd_v<T,size_type,size_type>;
+            }
+            else {
+                using size_type = size_t;
+                return is_resizeable_nd_v<T,size_type,size_type>;
+            }
+        } // _check()
+
+        static constexpr inline bool value = _check();
+    };
+
+    /**
+     * @brief helper variable template to check if type T is resizeable
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool is_resizeable2d_v = is_resizeable2d<T>::value;
 
     /**
      * @brief check if T has member function `at` that takes `size_types...` as arguments.

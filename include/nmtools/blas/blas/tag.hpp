@@ -115,102 +115,31 @@ namespace nmtools::blas
          */
         template <typename T, typename U, typename=void>
         struct get {
-            // invalid
-            using type = void;
-        };
-
-        /**
-         * @brief get vector-vector ops tag
-         * 
-         * @tparam T lhs
-         * @tparam U rhs
-         */
-        template <typename T, typename U>
-        struct get<T,U,void_t<
-            enable_if_vector_t  <T>, enable_if_vector_t  <U>,
-            disable_if_matrix_t <T>, disable_if_matrix_t <U>,
-            disable_if_scalar_t <T>, disable_if_scalar_t <U>
-        >> {
-            using type = vector_vector_t;
-        };
-
-        /**
-         * @brief get matrix-matrix ops tag
-         * 
-         * @tparam T lhs
-         * @tparam U rhs
-         */
-        template <typename T, typename U>
-        struct get<T,U,void_t<
-            /* current impl have matrix-like is subset of vector-like */
-            // disable_if_vector_t <T>, disable_if_vector_t <U>,
-            enable_if_matrix_t  <T>, enable_if_matrix_t  <U>,
-            disable_if_scalar_t <T>, disable_if_scalar_t <U>
-        >> {
-            using type = matrix_matrix_t;
-        };
-
-        /**
-         * @brief get scalar-scalar ops tag
-         * 
-         * @tparam T lhs
-         * @tparam U rhs
-         */
-        template <typename T, typename U>
-        struct get<T,U,void_t<
-            disable_if_vector_t <T>, disable_if_vector_t <U>,
-            disable_if_matrix_t <T>, disable_if_matrix_t <U>,
-            enable_if_scalar_t  <T>, enable_if_scalar_t  <U>
-        >> {
-            using type = scalar_scalar_t;
-        };
-
-        /**
-         * @brief get matrix-vector ops tag
-         * 
-         * @tparam T lhs
-         * @tparam U rhs
-         */
-        template <typename T, typename U>
-        struct get<T,U,void_t<
-            /* current impl have matrix-like is subset of vector-like */
-            /* disable_if_vector_t <T>, */ enable_if_vector_t  <U>,
-            enable_if_matrix_t  <T>, disable_if_matrix_t <U>,
-            disable_if_scalar_t <T>, disable_if_scalar_t <U>
-        >> {
-            using type = matrix_vector_t;
-        };
-
-        /**
-         * @brief get matrix-scalar ops tag
-         * 
-         * @tparam T lhs
-         * @tparam U rhs
-         */
-        template <typename T, typename U>
-        struct get<T,U,void_t<
-            /* current impl have matrix-like is subset of vector-like */
-            /* disable_if_vector_t <T>, */ disable_if_vector_t <U>,
-            enable_if_matrix_t  <T>, disable_if_matrix_t <U>,
-            disable_if_scalar_t <T>, enable_if_scalar_t  <U>
-        >> {
-            using type = matrix_scalar_t;
-        };
-
-        /**
-         * @brief get vector-scalar ops tag
-         * 
-         * @tparam T lhs
-         * @tparam U rhs
-         */
-        template <typename T, typename U>
-        struct get<T,U,void_t<
-            enable_if_vector_t  <T>, disable_if_vector_t <U>,
-            disable_if_matrix_t <T>, disable_if_matrix_t <U>,
-            disable_if_scalar_t <T>, enable_if_scalar_t  <U>
-        >> {
-            using type = vector_scalar_t;
-        }; 
+            /**
+             * @brief default implementation to get the matvec ops tag.
+             *
+             * Implemented as static member function instead of clunky enable_if_t sfinae
+             * for more readability and to make use of constexpr-if.
+             * 
+             * @return constexpr auto 
+             */
+            static constexpr auto _get() {
+                if constexpr (traits::is_array2d_v<T> && traits::is_array2d_v<U>)
+                    return matrix_matrix_t{};
+                else if constexpr (traits::is_array2d_v<T> && traits::is_array1d_v<U>)
+                    return matrix_vector_t{};
+                else if constexpr (traits::is_array2d_v<T> && std::is_arithmetic_v<U>)
+                    return matrix_scalar_t{};
+                else if constexpr (traits::is_array1d_v<T> && traits::is_array1d_v<U>)
+                    return vector_vector_t{};
+                else if constexpr (traits::is_array1d_v<T> && std::is_arithmetic_v<U>)
+                    return vector_scalar_t{};
+                else if constexpr (std::is_arithmetic_v<T> && std::is_arithmetic_v<U>)
+                    return scalar_scalar_t{};
+                else return meta::detail::fail_t{};
+            } // _get()
+            using type = traits::remove_cvref_t<meta::detail::fail_to_void_t<decltype(_get())>>;
+        }; // get
 
         /**
          * @brief helper alias template to get op tag

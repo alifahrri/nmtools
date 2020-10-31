@@ -77,7 +77,7 @@ namespace nmtools::bench::nanobench::common
             {std::to_string(Args)...}
         };
         ss << func;
-        if constexpr (sizeof...(Args)) {
+        if constexpr (static_cast<bool>(sizeof...(Args))) {
             ss << '<';
             for (size_t i=0; i<m; i++) {
                 ss << tparams[i];
@@ -134,7 +134,7 @@ namespace nmtools::bench::nanobench::common
             result = fmt::format("{}", t);
         }
         // only dispatch if n args > 0, compiler complains about no function calls otherwise
-        if constexpr (sizeof...(args))
+        if constexpr (static_cast<bool>(sizeof...(args)))
             result = fmt::format("{}, {}", result, format_shape(args...));
         return result;
     }

@@ -209,7 +209,7 @@ namespace nmtools::array
      * @tparam T element type of nd-array
      * @tparam storage_type template template parameter to store data
      */
-    template <typename T, template <typename> typename storage_type=std::vector>
+    template <typename T, template <typename> typename storage_type=std::vector, template<typename> typename shape_storage_type=std::vector>
     struct dynamic_ndarray
     {
         using data_type = storage_type<T>;
@@ -217,8 +217,8 @@ namespace nmtools::array
         using size_type = size_t;
         using reference = value_type&;
         using const_reference = const value_type&;
-        using shape_type = std::vector<size_t>;
-        using stride_type = std::vector<size_t>;
+        using shape_type = shape_storage_type<size_t>;
+        using stride_type = shape_storage_type<size_t>;
 
         /**
          * @brief construct dynamic_ndarray given shape
@@ -349,7 +349,7 @@ namespace nmtools::array
          */
         constexpr auto strides() const
         {
-            auto stride = std::vector<size_t>{};
+            auto stride = stride_type{};
             stride.resize(dim());
             for (size_t i=0; i<dim(); i++)
                 stride[i] = detail::stride(shape_,i);

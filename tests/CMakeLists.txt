@@ -14,26 +14,56 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 enable_testing()
 find_package(GTest REQUIRED)
+
+# workaround for clang since gcc has constexpr math but clang doesnt
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(GTEST_SOURCE
+        # src/gtest/roots/bracketing.cpp
+        # src/gtest/roots/open.cpp
+        # src/gtest/optimization/unconstrained.cpp
+        # src/gtest/integration/trapezoidal.cpp
+        # src/gtest/differentiation/finite.cpp
+        # src/gtest/taylor/taylor.cpp
+        # src/gtest/curvefit/regression.cpp
+        # src/gtest/curvefit/sinusoid.cpp
+        # src/gtest/curvefit/interpolation.cpp
+        # src/gtest/utility/utility.cpp
+        # src/gtest/ode/euler.cpp
+        # src/gtest/ode/runge_kutta.cpp
+        # src/gtest/linalg/elimination.cpp
+        # src/gtest/linalg/decomposition.cpp
+        # src/gtest/blas/blas.cpp
+        # src/gtest/array/dynamic.cpp
+        # src/gtest/array/fixed.cpp
+        # src/gtest/array/utility.cpp
+        # src/gtest/array/linalg.cpp
+    )
+else()
+    set(GTEST_SOURCE
+        src/gtest/roots/bracketing.cpp
+        src/gtest/roots/open.cpp
+        src/gtest/optimization/unconstrained.cpp
+        src/gtest/integration/trapezoidal.cpp
+        src/gtest/differentiation/finite.cpp
+        src/gtest/taylor/taylor.cpp
+        src/gtest/curvefit/regression.cpp
+        src/gtest/curvefit/sinusoid.cpp
+        src/gtest/curvefit/interpolation.cpp
+        src/gtest/utility/utility.cpp
+        src/gtest/ode/euler.cpp
+        src/gtest/ode/runge_kutta.cpp
+        src/gtest/linalg/elimination.cpp
+        src/gtest/linalg/decomposition.cpp
+        src/gtest/blas/blas.cpp
+        src/gtest/array/dynamic.cpp
+        src/gtest/array/fixed.cpp
+        src/gtest/array/utility.cpp
+        src/gtest/array/linalg.cpp
+    )
+endif()
+
 add_executable(${PROJECT_NAME} src/gtest/tests.cpp 
-    src/gtest/roots/bracketing.cpp
-    src/gtest/roots/open.cpp
-    src/gtest/optimization/unconstrained.cpp
-    src/gtest/integration/trapezoidal.cpp
-    src/gtest/differentiation/finite.cpp
-    src/gtest/taylor/taylor.cpp
-    src/gtest/curvefit/regression.cpp
-    src/gtest/curvefit/sinusoid.cpp
-    src/gtest/curvefit/interpolation.cpp
-    src/gtest/utility/utility.cpp
-    src/gtest/ode/euler.cpp
-    src/gtest/ode/runge_kutta.cpp
-    src/gtest/linalg/elimination.cpp
-    src/gtest/linalg/decomposition.cpp
-    src/gtest/blas/blas.cpp
-    src/gtest/array/dynamic.cpp
-    src/gtest/array/fixed.cpp
-    src/gtest/array/utility.cpp
-    src/gtest/array/linalg.cpp
+    ${GTEST_SOURCE}
 )
 
 ## disable benchmarks
@@ -80,11 +110,20 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/array/view/mutable_slice.cpp
     src/doctest/array/view/transpose.cpp
     src/doctest/array/view/flatten.cpp
-    ## metafunctions
-    src/doctest/meta.cpp
 )
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
+
+add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
+    ## metafunctions
+    src/doctest/meta.cpp
+    src/doctest/meta/get_container_value_type.cpp
+    src/doctest/meta/blas/mmadd.cpp
+    src/doctest/meta/blas/mmmul.cpp
+    src/doctest/meta/blas/dot.cpp
+)
+target_compile_features(${PROJECT_NAME}-doctest-meta PRIVATE cxx_std_17)
+target_link_libraries(${PROJECT_NAME}-doctest-meta PRIVATE doctest::doctest)
 
 apply_nmtools(
     TARGET ${PROJECT_NAME}
@@ -104,6 +143,15 @@ apply_nmtools(
 )
 target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-doctest-meta
+    COMPILE_OPTIONS -g
+)
+target_include_directories(
+    ${PROJECT_NAME}-doctest-meta PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 

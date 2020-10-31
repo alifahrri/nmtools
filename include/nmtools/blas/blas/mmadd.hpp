@@ -17,6 +17,49 @@
 namespace nmtools::blas
 {
     /**
+     * @brief tag to resolve optype
+     * 
+     */
+    struct mmadd_select_resizeable_t;
+} // namespace nmtools::blas
+
+namespace nmtools::meta
+{
+    template <typename m1_t, typename m2_t>
+    struct resolve_optype<void,blas::mmadd_select_resizeable_t,m1_t,m2_t>
+    {
+        /**
+         * @brief helper static fn to select resizeable matrix.
+         *
+         * Implemented as helper function instead of clunky enable_if_t to
+         * utilize constexpr-if.
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto _get()
+        {
+            if constexpr (traits::is_resizeable2d_v<m1_t> && !traits::is_resizeable2d_v<m2_t>)
+                return m1_t{};
+            else if constexpr (!traits::is_resizeable2d_v<m1_t> && traits::is_resizeable2d_v<m2_t>)
+                return m2_t{};
+            else if constexpr (traits::is_resizeable2d_v<m1_t> && traits::is_resizeable2d_v<m2_t>)
+                return m1_t{};
+            else if constexpr (traits::is_resizeable_v<m1_t> && !traits::is_resizeable_v<m2_t>)
+                return m1_t{};
+            else if constexpr (!traits::is_resizeable_v<m1_t> && traits::is_resizeable_v<m2_t>)
+                return m2_t{};
+            else if constexpr (traits::is_resizeable_v<m1_t> && traits::is_resizeable_v<m2_t>)
+                return m1_t{};
+            else if constexpr (!traits::is_resizeable_v<m1_t> && !traits::is_resizeable_v<m2_t>)
+                return detail::fail_t{};
+        } // _get()
+        using type = traits::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
+    };
+} // namespace nmtools::meta
+
+namespace nmtools::blas
+{
+    /**
      * @ingroup blas
      * @{
      */
@@ -71,8 +114,8 @@ namespace nmtools::blas
             both are fixed size matrix, the resulting shape will be known at compile time */
         if constexpr (is_fixed_size_mat_A && is_fixed_size_mat_B) {
             /* deduce row type and element type */
-            constexpr auto shape_a = matrix_size(A);
-            constexpr auto shape_b = matrix_size(B);
+            constexpr auto shape_a = fixed_matrix_size_v<M1>;
+            constexpr auto shape_b = fixed_matrix_size_v<M2>;
             constexpr auto row_a = get<0>(shape_a);
             constexpr auto row_b = get<0>(shape_b);
             constexpr auto col_a = get<1>(shape_a);
@@ -96,13 +139,11 @@ namespace nmtools::blas
             assert (col_a == col_b);
             assert (row_a == row_b);
 
-            /* make sure one of the matrix type is resizeable */
-            static_assert(
-                traits::is_resizeable_v<M1> ||
-                traits::is_resizeable_v<M2>
-            );
             /* select resizeable mat over fixed ones for return type */
-            using return_t = meta::select_resizeable_mat_t<m1_t,m2_t>;
+            using return_t = meta::resolve_optype_t<mmadd_select_resizeable_t,m1_t,m2_t>;
+            static_assert( !std::is_same_v<return_t,void>
+                , "can't resolve return type for mmadd"
+            );
             auto mat = zeros<return_t>(row_a,col_a);
             mmadd_impl(mat,A,B,row_a,col_b);
             return mat;

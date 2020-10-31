@@ -50,7 +50,9 @@ namespace nmtools
 
         if constexpr (is_fixed_size) {
             /* TODO: find-out if reading shape as constexpr here is beneficial */
-            constexpr auto shape = matrix_size(a);
+            // rejected by clang:
+            // constexpr auto shape = matrix_size(a);
+            constexpr auto shape = fixed_matrix_size_v<Array>;
             constexpr auto rows = get<0>(shape);
             constexpr auto cols = get<1>(shape);
             /* make zeros with transposed size */

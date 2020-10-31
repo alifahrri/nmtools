@@ -802,6 +802,32 @@ namespace nmtools::meta
     template <typename A, typename B>
     using select_resizeable_mat_t = typename select_resizeable_mat<A,B>::type;
 
+    /**
+     * @brief metafunction to resolve specific op return type.
+     *
+     * Default implementation has `type` member type aliasing `void`,
+     * may be used at caller site to check and provide context.
+     * 
+     * @tparam always_void 
+     * @tparam op_t operator tag
+     * @tparam tparams 
+     */
+    template <typename always_void, typename op_t, typename...tparams>
+    struct resolve_optype
+    {
+        using type = void;
+    }; // resolve_optype
+
+    /**
+     * @brief helper alias template to get the resulting type of metafunction
+     * resolve_optype.
+     * 
+     * @tparam op_t operator tag
+     * @tparam tparams 
+     */
+    template <typename op_t, typename...tparams>
+    using resolve_optype_t = typename resolve_optype<void,op_t,tparams...>::type;
+
     template <typename A, typename B, typename=void>
     struct select_resizeable_matrix {};
 
@@ -933,38 +959,27 @@ namespace nmtools::meta
     template <typename A, typename B, typename C, typename=void>
     struct select_resizeable
     {
-        using type = C;
-    };
+        /**
+         * @brief default implementation to select resizeable.
+         *
+         * Implemented as static member function instead of clunky sfinae.
+         * Assuming the type(s) has default initializaton.
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto _get()
+        {
+            if constexpr (traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>)
+                return A{};
+            else if constexpr (!traits::is_resizeable_v<A> && traits::is_resizeable_v<B>)
+                return B{};
+            else if constexpr (traits::is_resizeable_v<A> && traits::is_resizeable_v<B>)
+                return A{};
+            else return C{};
+        } // _get()
 
-    /**
-     * @brief specialization of select_resizeable when A is resizeable and B is not
-     * 
-     * @tparam A 
-     * @tparam B 
-     * @tparam C 
-     */
-    template <typename A, typename B, typename C>
-    struct select_resizeable<A,B,C,
-        std::void_t<enable_if_resizeable_t<A>,disable_if_resizeable_t<B>>
-    >
-    {
-        using type = A;
-    };
-
-    /**
-     * @brief specialization of select resizeable when B is resizeable and A is not
-     * 
-     * @tparam A 
-     * @tparam B 
-     * @tparam C 
-     */
-    template <typename A, typename B, typename C>
-    struct select_resizeable<A,B,C,
-        std::void_t<enable_if_resizeable_t<B>,disable_if_resizeable_t<A>>
-    >
-    {
-        using type = B;
-    };
+        using type = decltype(_get());
+    }; // select_resizeable
 
     /**
      * @brief helper alias template for select_resizeable
@@ -980,63 +995,145 @@ namespace nmtools::meta
     template <typename A, typename B, typename C, typename=void>
     struct select_fixed
     {
-        using type = C;
-    };
-
-    template <typename A, typename B, typename C>
-    struct select_fixed<A,B,C,
-        std::void_t<enable_if_fixed_t<A>,disable_if_fixed_t<B>>
-    >
-    {
-        using type = A;
-    };
-
-    template <typename A, typename B, typename C>
-    struct select_fixed<A,B,C,
-        std::void_t<enable_if_fixed_t<B>,disable_if_fixed_t<A>>
-    >
-    {
-        using type = B;
-    };
+        /**
+         * @brief default implementation to select fixed.
+         *
+         * Implemented as static member function instead of clunky sfinae.
+         * Assuming the type(s) has default initializaton.
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto _get()
+        {
+            if constexpr (!traits::is_resizeable_v<A> && traits::is_resizeable_v<B>)
+                return A{};
+            else if constexpr (traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>)
+                return B{};
+            else if constexpr (!traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>)
+                return A{};
+            else return C{};
+        }
+        using type = decltype(_get());
+    }; // select_fixed
 
     template <typename A, typename B, typename C>
     using select_fixed_t = typename select_fixed<A,B,C>::type;
 
+    namespace detail {
+
+        /**
+         * @brief helper tag to indicate checking fail at compile-time
+         * 
+         */
+        struct fail_t {};
+        
+        /**
+         * @brief helper metafunction to transform fail_t to void
+         * 
+         * @tparam T type to transform
+         */
+        template <typename T>
+        struct fail_to_void
+        {
+            using type = T;
+        }; // fail_to_void
+
+        /**
+         * @brief actual case for fail_to_void when T is fail_T
+         * 
+         * @tparam  
+         */
+        template <>
+        struct fail_to_void<fail_t>
+        {
+            using type = void;
+        }; // fail_to_void
+        
+        /**
+         * @brief helper alias template to fail_to_void
+         * 
+         * @tparam T type to transform
+         */
+        template <typename T>
+        using fail_to_void_t = typename fail_to_void<T>::type;
+    } // namespace detail
+
     /**
-     * @brief get the velue type of container T via decltype, has void member type if failed
-     * - using type = decltype(std::declval<T>()[0]); 
+     * @brief get the velue type of container
      * 
      * @tparam T type to check
-     * @tparam typename=void 
+     * @tparam typename=void sfinae point
      */
     template <typename T, typename=void>
-    struct get_container_value_type { using type = void; };
-
-    /**
-     * @brief get the velue type of container T via decltype, has void member type if failed
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    struct get_container_value_type<T,std::void_t<decltype(std::declval<T>()[0])>> 
-    { 
-        /* TODO: consider to use nmtools::at from nmtools/array/utility.hpp for generic case */
-        /* TODO: use std::remove_cvref_t when possible */
-        using type = traits::remove_cvref_t<decltype(std::declval<T>()[0])>;
-    };
-
-    /**
-     * @brief get the velue type of container T via decltype, has void member type if failed
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    struct get_container_value_type<T,std::void_t<decltype(std::declval<T>()(0))>>
-    { 
-        /* TODO: consider to use nmtools::at from nmtools/array/utility.hpp for generic case */
-        /* TODO: use std::remove_cvref_t when possible */
-        using type = traits::remove_cvref_t<decltype(std::declval<T>()(0))>;
-    };
+    struct get_container_value_type
+    {
+        /**
+         * @brief helper function declaration to get the return type of U(i).
+         *
+         * This function is not intended to be called, only to deduce type
+         * without requiring U to be initialized.
+         * 
+         * @tparam U 
+         * @tparam size_type 
+         * @return decltype(std::declval<U>().operator()(std::declval<size_type>())) 
+         */
+        template <typename U, typename size_type>
+        static constexpr auto _func()
+            -> decltype(std::declval<U>().operator()(std::declval<size_type>()));
+        /**
+         * @brief helper function declaration to get the return type of U[i].
+         * 
+         * @tparam U 
+         * @tparam size_type 
+         * @return decltype(std::declval<U>().operator[](std::declval<size_type>())) 
+         */
+        template <typename U, typename size_type>
+        static constexpr auto _bracket()
+            -> decltype(std::declval<U>().operator[](std::declval<size_type>()));
+        /**
+         * @brief helper function declaration to get the return type of U(i).
+         * 
+         * @tparam U 
+         * @tparam size_type 
+         * @return decltype(std::declval<U>().at(std::declval<size_type>())) 
+         */
+        template <typename U, typename size_type>
+        static constexpr auto _at()
+            -> decltype(std::declval<U>().at(std::declval<size_type>()));
+        /**
+         * @brief default implementation to get container value_type.
+         *
+         * Implemented as static member function instead of clunky sfinae.
+         * Assuming the element type(s) has default initializaton.
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto _get()
+        {
+            if constexpr (traits::has_value_type_v<T>) {
+                using type = typename T::value_type;
+                return traits::remove_cvref_t<type>{};
+            }
+            else if constexpr (std::is_array_v<T>) {
+                using type = std::remove_extent_t<T>;
+                return traits::remove_cvref_t<type>{};
+            }
+            else if constexpr (traits::has_funcnd_v<T,size_t>) {
+                using type = decltype(_func<T,size_t>());
+                return traits::remove_cvref_t<type>{};
+            }
+            else if constexpr (traits::has_bracketnd_v<T,size_t>) {
+                using type = decltype(_bracket<T,size_t>());
+                return traits::remove_cvref_t<type>{};
+            }
+            else if constexpr (traits::has_atnd_v<T,size_t>) {
+                using type = decltype(_at<T,size_t>());
+                return traits::remove_cvref_t<type>{};
+            }
+            else return detail::fail_t{};
+        } // _get()
+        using type = traits::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
+    }; // get_container_value_type
 
     /**
      * @brief helper alias template to get the value type of container T

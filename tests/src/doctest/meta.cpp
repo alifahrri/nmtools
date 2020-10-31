@@ -372,3 +372,29 @@ TEST_CASE("meta" * doctest::skip(true))
 
     STATIC_CHECK(( traits::is_fixed_size_array_v<array_t> ));
 }
+
+TEST_CASE("meta" * doctest::skip(true))
+{
+    using vvector_t   = std::vector<double>;
+    using marray_t    = std::array<std::array<double,3>,5>;
+    using fvector_t  = nmtools::array::fixed_vector<double,3>;
+    using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
+    using dvector_t  = nmtools::array::dynamic_vector<double>;
+    using dmatrix_t  = nmtools::array::dynamic_matrix<double>;
+    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
+    using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
+    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
+
+    LOG_TYPEINFO(marray_t);
+    LOG_TYPEINFO(vvector_t);
+    LOG_TYPEINFO(fvector_t);
+    LOG_TYPEINFO(fmatrix_t);
+    LOG_TYPEINFO(ndarray_t);
+    LOG_TYPEINFO(dndarray_t);
+    LOG_TYPEINFO(ndarray3_t);
+
+    STATIC_CHECK((  traits::is_resizeable_v<vvector_t> ));
+    STATIC_CHECK(( !traits::is_resizeable_v<fmatrix_t> ));
+    // STATIC_CHECK((  traits::is_resizeable_v<dmatrix_t> ));
+    STATIC_CHECK((  traits::is_resizeable_nd_v<dmatrix_t,size_t,size_t> ));
+}

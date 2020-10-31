@@ -1,0 +1,23 @@
+some barking compiler madness I encountered from this project:
+
+template-template parameter
+https://stackoverflow.com/questions/49171036/why-clang-fails-to-take-default-template-arguments-of-template-template-paramete
+https://godbolt.org/z/GoEGsb
+
+auto parameter
+https://stackoverflow.com/questions/30665506/auto-not-allowed-in-function-prototype-with-clang
+
+lambda capture
+https://stackoverflow.com/questions/46114214/lambda-implicit-capture-fails-with-variable-declared-from-structured-binding
+https://godbolt.org/z/YK7xTs
+
+gcc<10 constexpr bug
+https://godbolt.org/z/En9oT6
+
+constexpr math
+error: constexpr function never produces a constant expression
+https://godbolt.org/z/dxqq3T
+
+Constexpr if with a non-bool condition
+https://stackoverflow.com/questions/54899466/constexpr-if-with-a-non-bool-condition
+https://godbolt.org/z/zTa9dW
