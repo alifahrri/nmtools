@@ -3,7 +3,7 @@ gcc
 build-essential 
 git
 wget
-python3
+python3-minimal
 tar
 libblas-dev
 liblapack-dev
