@@ -128,7 +128,7 @@ namespace nmtools::ode {
             T sum{}; Ks ks{};
             /* number of 'stages' */
             auto s = std::size(b);
-            if constexpr (traits::is_resizeable_v<Ks>)
+            if constexpr (meta::is_resizeable_v<Ks>)
                 ks.resize(s);
             for (size_t i=0; i<s; i++) {
                 /* compute runge kutta coefficients for this stages */

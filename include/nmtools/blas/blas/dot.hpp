@@ -32,7 +32,7 @@ namespace nmtools::meta
         {
             if constexpr (std::is_arithmetic_v<lhs_t> && std::is_arithmetic_v<rhs_t>)
                 return std::common_type_t<lhs_t,rhs_t>{};
-            else if constexpr (traits::is_array1d_v<lhs_t> && traits::is_array1d_v<rhs_t>) {
+            else if constexpr (meta::is_array1d_v<lhs_t> && meta::is_array1d_v<rhs_t>) {
                 using l_t = get_container_value_type_t<lhs_t>;
                 using r_t = get_container_value_type_t<rhs_t>;
                 using type = std::common_type_t<l_t,r_t>;
@@ -43,7 +43,7 @@ namespace nmtools::meta
             }
             else return detail::fail_t{};
         } // _get()
-        using type = traits::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
+        using type = meta::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
     };
 } // namespace nmtools::meta
 
@@ -78,8 +78,8 @@ namespace nmtools::blas
     {
         static_assert(
             (
-                traits::is_array1d_v<V1>
-                && traits::is_array1d_v<V2>
+                meta::is_array1d_v<V1>
+                && meta::is_array1d_v<V2>
             ) ||
             /* TODO: consider to drop arithmetic mul for this fn */
             (

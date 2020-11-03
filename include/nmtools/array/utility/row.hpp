@@ -36,7 +36,7 @@ namespace nmtools
     constexpr auto row(const Matrix& M, size_t r)
     {
         static_assert(
-            traits::is_array2d_v<Matrix>
+            meta::is_array2d_v<Matrix>
             /* TODO: helpful error message here */
         );
         // assuming possibly nested matrix or its

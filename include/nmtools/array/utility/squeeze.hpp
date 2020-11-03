@@ -21,7 +21,7 @@ namespace nmtools
     * @{
     */
 
-    using traits::remove_cvref_t;
+    using meta::remove_cvref_t;
     using std::common_type_t;
 
     namespace detail {
@@ -79,7 +79,7 @@ namespace nmtools
                 else return -1;
             }();
             using idx_t = remove_cvref_t<common_type_t<row_t,col_t,decltype(numel)>>;
-            if constexpr (traits::is_integral_constant_v<size_type>) {
+            if constexpr (meta::is_integral_constant_v<size_type>) {
                 for (idx_t i=0; i<rows; i++)
                     for (idx_t j=0; j<cols; j++)
                         at(squeezed,i,j) = at(array,i,j);
@@ -108,13 +108,13 @@ namespace nmtools
     constexpr auto squeeze(const Array& a)
     {
         static_assert(
-            traits::is_array2d_v<Array>,
+            meta::is_array2d_v<Array>,
             "squeeze only support 2D array for now"
         );
 
         using detail::squeeze_impl;
 
-        constexpr auto is_fixed_size = traits::is_fixed_size_matrix_v<Array>;
+        constexpr auto is_fixed_size = meta::is_fixed_size_matrix_v<Array>;
 
         using vector_t   = meta::get_column_type_t<Array>;
         static_assert(!std::is_same_v<vector_t,void>,

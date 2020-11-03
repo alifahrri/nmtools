@@ -47,10 +47,10 @@ namespace nmtools::helper {
      */
     namespace detail {
 
-        using traits::is_array1d_v;
-        using traits::is_array2d_v;
-        using traits::has_tuple_size_v;
-        using traits::is_fixed_size_matrix_v;
+        using meta::is_array1d_v;
+        using meta::is_array2d_v;
+        using meta::has_tuple_size_v;
+        using meta::is_fixed_size_matrix_v;
         using std::get;
         using std::is_arithmetic_v;
 
@@ -131,8 +131,8 @@ namespace nmtools::helper {
         template <typename T, typename U, typename E=double, size_t...I>
         constexpr auto isclose(const T& t, const U& u, std::integer_sequence<size_t,I...>, E eps=1e-6)
         {
-            constexpr auto is_tuple_T = traits::is_tuple_v<T>;
-            constexpr auto is_tuple_U = traits::is_tuple_v<U>;
+            constexpr auto is_tuple_T = meta::is_tuple_v<T>;
+            constexpr auto is_tuple_U = meta::is_tuple_v<U>;
 
             /* unpack */    
             return (... && isclose(std::get<I>(t),std::get<I>(u),eps));
@@ -155,14 +155,14 @@ namespace nmtools::helper {
     constexpr auto isclose(const T& t, const U& u, E eps=1e-6)
     {
         // check if T & U is std::tuple
-        constexpr auto is_tuple_T = traits::is_tuple_v<T>;
-        constexpr auto is_tuple_U = traits::is_tuple_v<U>;
+        constexpr auto is_tuple_T = meta::is_tuple_v<T>;
+        constexpr auto is_tuple_U = meta::is_tuple_v<U>;
         // check if tuple_size for T & U is available
-        constexpr auto is_packed_T = traits::has_tuple_size_v<T>;
-        constexpr auto is_packed_U = traits::has_tuple_size_v<U>;
+        constexpr auto is_packed_T = meta::has_tuple_size_v<T>;
+        constexpr auto is_packed_U = meta::has_tuple_size_v<U>;
         // check if T & U is simply array
-        constexpr auto is_array_T = traits::is_array1d_v<T> || traits::is_array2d_v<T>;
-        constexpr auto is_array_U = traits::is_array1d_v<U> || traits::is_array2d_v<U>;
+        constexpr auto is_array_T = meta::is_array1d_v<T> || meta::is_array2d_v<T>;
+        constexpr auto is_array_U = meta::is_array1d_v<U> || meta::is_array2d_v<U>;
         // @note that std::array will be array & packed, std::tuple will be tuple & packed, std::pair will be only packed
 
         if constexpr (is_packed_T && is_packed_U) {
@@ -192,7 +192,7 @@ namespace nmtools::helper {
     auto stringify(const T& array)
     {
         auto stream = stream_t{};
-        if constexpr (traits::is_array2d_v<T>) {
+        if constexpr (meta::is_array2d_v<T>) {
             auto [rows, cols] = matrix_size(array);
             for (size_t i=0; i<rows; i++) {
                 // NOTE: std basic_stringstream cant have operator <<
@@ -200,7 +200,7 @@ namespace nmtools::helper {
                 stream << stringify<stream_t>(row(array,i)).str() << "\n";
             }
         }
-        else if constexpr (traits::is_array1d_v<T>) {
+        else if constexpr (meta::is_array1d_v<T>) {
             auto n = vector_size(array);
             for (size_t i=0; i<n; i++)
                 stream << at(array,i) << "\t";

@@ -66,9 +66,9 @@ namespace nmtools::detail
     template <template <typename,size_t> typename array_t, typename T>
     constexpr auto make_array(T&& t)
     {
-        // @note traits::remove_cvref_t is required to properly check the traits!
-        if constexpr (traits::has_tuple_size_v<traits::remove_cvref_t<T>>) {
-            using indices_t = std::make_index_sequence<std::tuple_size_v<traits::remove_cvref_t<T>>>;
+        // @note meta::remove_cvref_t is required to properly check the traits!
+        if constexpr (meta::has_tuple_size_v<meta::remove_cvref_t<T>>) {
+            using indices_t = std::make_index_sequence<std::tuple_size_v<meta::remove_cvref_t<T>>>;
             return _make_array<array_t>(std::forward<T>(t), indices_t{});
         }
         else {

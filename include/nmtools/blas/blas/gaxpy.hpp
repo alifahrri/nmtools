@@ -41,9 +41,9 @@ namespace nmtools::blas
     constexpr auto gaxpy(const Matrix& A, const X& x, const Y& y)
     {
         static_assert(
-            traits::is_array2d_v<Matrix>
-            && traits::is_array1d_v<X>
-            && traits::is_array1d_v<Y>
+            meta::is_array2d_v<Matrix>
+            && meta::is_array1d_v<X>
+            && meta::is_array1d_v<Y>
             /* TODO: helpful error message */
         );
 
@@ -51,9 +51,9 @@ namespace nmtools::blas
         /* TODO: consider to provide helper function for this check */
         if constexpr (is_assert_v<tag_t>) {
             /* check if all array-like is fixed-size one */
-            constexpr auto is_fixed_A = traits::is_fixed_size_matrix_v<Matrix>;
-            constexpr auto is_fixed_x = traits::is_fixed_size_vector_v<X>;
-            constexpr auto is_fixed_y = traits::is_fixed_size_vector_v<Y>;
+            constexpr auto is_fixed_A = meta::is_fixed_size_matrix_v<Matrix>;
+            constexpr auto is_fixed_x = meta::is_fixed_size_vector_v<X>;
+            constexpr auto is_fixed_y = meta::is_fixed_size_vector_v<Y>;
 
             /* perform size assertion at compile-time if all array-like has fixed size */
             if constexpr (is_fixed_A && is_fixed_x && is_fixed_y) {

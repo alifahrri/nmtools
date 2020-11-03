@@ -41,7 +41,7 @@ namespace nmtools {
         /* TODO: this fn is returning reference,
             find out how to also support return by value
          */
-        using namespace traits;
+        using namespace meta;
 
         static_assert(
             has_at_v<const Array&,size_type>
@@ -68,7 +68,7 @@ namespace nmtools {
         /* TODO: this fn is returning reference,
             find out how to also support return by value
          */
-        using namespace traits;
+        using namespace meta;
         using size_type = decltype(i);
 
         static_assert(
@@ -107,7 +107,7 @@ namespace nmtools {
     template <typename Array, typename size_type>
     constexpr auto& at(Array& a, size_type i)
     {
-        using namespace traits;
+        using namespace meta;
         static_assert(
             has_at_v<Array&,size_type>
             || has_square_bracket_v<Array&,size_type>
@@ -145,11 +145,11 @@ namespace nmtools {
     template <typename Array, typename size_type, typename...size_types>
     constexpr auto& at(const Array& a, size_type i, size_types...indices)
     {
-        if constexpr (traits::has_atnd_v<const Array&,size_type,size_types...>)
+        if constexpr (meta::has_atnd_v<const Array&,size_type,size_types...>)
             return a.at(i,indices...);
-        else if constexpr (traits::has_bracketnd_v<const Array&,size_type,size_types...>)
+        else if constexpr (meta::has_bracketnd_v<const Array&,size_type,size_types...>)
             return a.operator[](i,indices...);
-        else if constexpr (traits::has_funcnd_v<const Array&,size_type,size_types...>)
+        else if constexpr (meta::has_funcnd_v<const Array&,size_type,size_types...>)
             return a(i,indices...);
         else
             return at(at(a,i),indices...);
@@ -161,7 +161,7 @@ namespace nmtools {
         /* TODO: this fn is returning reference,
             find out how to also support return by value
          */
-        using namespace traits;
+        using namespace meta;
         using size_type = std::common_type_t<decltype(i),decltype(j)>;
         constexpr auto shape = fixed_matrix_size_v<Array>;
         constexpr auto rows = get<0>(shape);
@@ -197,11 +197,11 @@ namespace nmtools {
     template <typename Array, typename size_type, typename...size_types>
     constexpr auto& at(Array& a, size_type i, size_types...indices)
     {
-        if constexpr (traits::has_atnd_v<Array&,size_type,size_types...>)
+        if constexpr (meta::has_atnd_v<Array&,size_type,size_types...>)
             return a.at(i,indices...);
-        else if constexpr (traits::has_bracketnd_v<Array&,size_type,size_types...>)
+        else if constexpr (meta::has_bracketnd_v<Array&,size_type,size_types...>)
             return a.operator[](i,indices...);
-        else if constexpr (traits::has_funcnd_v<Array&,size_type,size_types...>)
+        else if constexpr (meta::has_funcnd_v<Array&,size_type,size_types...>)
             return a(i,indices...);
         else
             return at(at(a,i),indices...);

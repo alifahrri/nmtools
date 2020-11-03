@@ -31,9 +31,9 @@ namespace nmtools::linalg {
     using std::is_null_pointer_v;
 
     using meta::get_container_value_type_t;
-    using traits::remove_cvref_t;
-    using traits::is_multiplicative_v;
-    using traits::is_array1d_v;
+    using meta::remove_cvref_t;
+    using meta::is_multiplicative_v;
+    using meta::is_array1d_v;
 
     /* make sure use common tag namespace */
     using ::nmtools::tag::is_tag_enabled_v;
@@ -133,7 +133,7 @@ namespace nmtools::linalg {
             "unsupported type for scales"
         );
         static_assert(
-            traits::is_array2d_v<Matrix>
+            meta::is_array2d_v<Matrix>
             && is_array1d_v<Vector>
             /* TODO: helpful error message here */
         );
@@ -199,7 +199,7 @@ namespace nmtools::linalg {
         /* return mapping to index */
         // else if (std::is_same_v<pivot_tag,tag::pivot_index_map_t>) {
         //     using index_t = std::tuple<size_t,size_t>;
-        //     if constexpr (traits::has_tuple_size_v<Matrix>) {
+        //     if constexpr (meta::has_tuple_size_v<Matrix>) {
                 
         //     } else {
 
@@ -249,8 +249,8 @@ namespace nmtools::linalg {
         );
 
         static_assert(
-            traits::is_array2d_v<Matrix>
-            && traits::is_array1d_v<Vector>
+            meta::is_array2d_v<Matrix>
+            && meta::is_array1d_v<Vector>
             /* TODO: helpful error message here */
         );
 
@@ -295,7 +295,7 @@ namespace nmtools::linalg {
         /* placeholder for result */
         // matrix_t Ae{};
         // vector_t be{};
-        // if constexpr (traits::is_bounded_array_v<Matrix>) {
+        // if constexpr (meta::is_bounded_array_v<Matrix>) {
         //     /* convert from raw array to std::array */
         //     for (size_t i=0; i<n; i++) {
         //         be[i] = b[i];
@@ -382,8 +382,8 @@ namespace nmtools::linalg {
     constexpr auto backward_substitution(const Matrix& A, const Vector& b, Logger logger=Logger{})
     {
         static_assert(
-            traits::is_array2d_v<Matrix>
-            && traits::is_array1d_v<Vector>
+            meta::is_array2d_v<Matrix>
+            && meta::is_array1d_v<Vector>
             /* TODO: helpful error message here */
         );
         // using namespace std::string_literals;
@@ -431,8 +431,8 @@ namespace nmtools::linalg {
     constexpr auto naive_gauss_elimination(const Matrix& A, const Vector& b, Logger logger=Logger{})
     {
         static_assert(
-            traits::is_array2d_v<Matrix>
-            && traits::is_array1d_v<Vector>
+            meta::is_array2d_v<Matrix>
+            && meta::is_array1d_v<Vector>
             /* TODO: helpful error message here */
         );
         auto [Ae,be] = forward_elimination(A,b,logger);
@@ -457,8 +457,8 @@ namespace nmtools::linalg {
     constexpr auto gauss_elimination(const Matrix& A, const Vector& b, Logger logger=Logger{})
     {
         static_assert(
-            traits::is_array2d_v<Matrix>
-            && traits::is_array1d_v<Vector>
+            meta::is_array2d_v<Matrix>
+            && meta::is_array1d_v<Vector>
             /* TODO: helpful error message here */
         );
 

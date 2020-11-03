@@ -34,7 +34,7 @@ namespace nmtools {
     namespace detail {
 
         using std::common_type_t;
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
 
         /**
          * @brief implementation of slice for 1D array,
@@ -104,9 +104,9 @@ namespace nmtools {
      * @param stop stop index
      * @return constexpr auto 
      * @see nmtools::detail::slice_impl
-     * @see nmtools::traits::is_fixed_size_vector_v
+     * @see nmtools::meta::is_fixed_size_vector_v
      * @see nmtools::meta::resize_fixed_vector_t
-     * @see nmtools::traits::is_resizeable_v
+     * @see nmtools::meta::is_resizeable_v
      * @see nmtools::make_slice_index
      * @see nmtools::end_t
      * @note when using fixed array, start and stop should be known at compile-time
@@ -116,30 +116,30 @@ namespace nmtools {
     constexpr auto slice(const T& a, const start_t& start=start_t{}, const stop_t& stop=stop_t{})
     {
         static_assert(
-            traits::is_array1d_v<T>
-            || traits::is_array2d_v<T>,
+            meta::is_array1d_v<T>
+            || meta::is_array2d_v<T>,
             "only support resizeable 1D or 2D array for now"
         );
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
         // note: need to remove_cvref because is_tuple doesnt remove cvref and start_t may be cvref
-        constexpr auto start_is_tuple = traits::is_tuple_v<remove_cvref_t<start_t>>;
-        constexpr auto stop_is_tuple  = traits::is_tuple_v<remove_cvref_t<stop_t>>;
+        constexpr auto start_is_tuple = meta::is_tuple_v<remove_cvref_t<start_t>>;
+        constexpr auto stop_is_tuple  = meta::is_tuple_v<remove_cvref_t<stop_t>>;
         static_assert (start_is_tuple == stop_is_tuple,
             "only support same traits for both start_t & stop_t, "
             "either both is tuple-like or not"
         );
         static_assert (
             // not tuple and 1D array, start stop is simply integer
-            (!start_is_tuple && traits::is_array1d_v<T>)
+            (!start_is_tuple && meta::is_array1d_v<T>)
             // tuple and 2d array, start stop is pair of integer
-            || (start_is_tuple && traits::is_array2d_v<T>),
+            || (start_is_tuple && meta::is_array2d_v<T>),
             "for tuple like index, T should be matrix like"
         );
         using detail::slice_impl;
         using detail::unpack_slice_indices;
         using ::nmtools::matrix_size;
 
-        constexpr auto is_fixed_size = traits::is_fixed_size_matrix_v<T> || traits::is_fixed_size_vector_v<T>;
+        constexpr auto is_fixed_size = meta::is_fixed_size_matrix_v<T> || meta::is_fixed_size_vector_v<T>;
     
         // handle fixed size 2D array, start_t and stop_t must be tuple
         if constexpr (start_is_tuple && stop_is_tuple && is_fixed_size) {
@@ -212,7 +212,7 @@ namespace nmtools {
             auto rows = row_stop - row_start;
             auto cols = col_stop - col_start;
             // TODO: consider to provide helper function for resize
-            if constexpr (traits::is_resizeable2d_v<T>)
+            if constexpr (meta::is_resizeable2d_v<T>)
                 sliced.resize(rows, cols);
             else {
                 sliced.resize(rows);

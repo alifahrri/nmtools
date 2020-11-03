@@ -42,12 +42,12 @@ namespace nmtools::blas
     constexpr auto vvadd(const V1& a, const V2& b)
     {
         static_assert(
-            traits::is_array1d_v<V1>
-            && traits::is_array1d_v<V2>,
+            meta::is_array1d_v<V1>
+            && meta::is_array1d_v<V2>,
             "unsupported type for vvadd"
         );
 
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
         using meta::get_value_type_or_same_t;
         using meta::transform_bounded_array_t;
 
@@ -55,8 +55,8 @@ namespace nmtools::blas
         using v2_t = transform_bounded_array_t<V2>;
 
         /* deduce resulting size of matrix */
-        constexpr auto is_fixed_size_vec_A = traits::is_fixed_size_vector_v<v1_t>;
-        constexpr auto is_fixed_size_vec_B = traits::is_fixed_size_vector_v<v2_t>;
+        constexpr auto is_fixed_size_vec_A = meta::is_fixed_size_vector_v<v1_t>;
+        constexpr auto is_fixed_size_vec_B = meta::is_fixed_size_vector_v<v2_t>;
 
         using e1_t = remove_cvref_t<get_value_type_or_same_t<v1_t>>;
         using e2_t = remove_cvref_t<get_value_type_or_same_t<v2_t>>;
@@ -82,8 +82,8 @@ namespace nmtools::blas
         else {
             /* make sure one of the matrix type is resizeable */
             static_assert(
-                traits::is_resizeable_v<v1_t> ||
-                traits::is_resizeable_v<v2_t>
+                meta::is_resizeable_v<v1_t> ||
+                meta::is_resizeable_v<v2_t>
             );
 
             auto n1 = size(a);

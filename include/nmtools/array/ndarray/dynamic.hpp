@@ -266,7 +266,7 @@ namespace nmtools
 
 #include "nmtools/traits.hpp"
 
-namespace nmtools::traits
+namespace nmtools::meta
 {
     /**
      * @ingroup meta
@@ -291,7 +291,7 @@ namespace nmtools::traits
 
     /** @} */ // end group traits
     
-} // namespace nmtools::traits
+} // namespace nmtools::meta
 
 #include "nmtools/meta.hpp"
 // include fixed array for metafunction specialization
@@ -342,13 +342,13 @@ namespace nmtools::array
     constexpr auto dynamic_ndarray<T,storage_type,shape_storage_type>::operator=(const ndarray_t& rhs)
     {
         static_assert(
-            traits::is_array2d_v<ndarray_t> || traits::is_array1d_v<ndarray_t>,
+            meta::is_array2d_v<ndarray_t> || meta::is_array1d_v<ndarray_t>,
             "dynamic_ndarray only support assignment from array2d for now"
         );
 
         using ::nmtools::detail::clone_impl;
 
-        if constexpr (traits::is_array2d_v<ndarray_t>) {
+        if constexpr (meta::is_array2d_v<ndarray_t>) {
             auto [rows, cols] = matrix_size(rhs);
             assert( (shape_.size()==2) && (rows==shape_[1]) && (cols==shape_[1])
                 // , "mismatched type for dynamic_ndarray assignment"

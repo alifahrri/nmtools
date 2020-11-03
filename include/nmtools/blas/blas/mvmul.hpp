@@ -54,8 +54,8 @@ namespace nmtools::blas
     constexpr auto mvmul(const M& m, const V& v)
     {
         static_assert(
-            traits::is_array2d_v<M>
-            && traits::is_array1d_v<V>,
+            meta::is_array2d_v<M>
+            && meta::is_array1d_v<V>,
             "unsupported type for mvmul"
         );
 
@@ -70,8 +70,8 @@ namespace nmtools::blas
         using detail::mvmul_impl;
 
         /* deduce resulting size of matrix */
-        constexpr auto is_fixed_size_M = traits::is_fixed_size_matrix_v<m_t>;
-        constexpr auto is_fixed_size_V = traits::is_fixed_size_vector_v<v_t>;
+        constexpr auto is_fixed_size_M = meta::is_fixed_size_matrix_v<m_t>;
+        constexpr auto is_fixed_size_V = meta::is_fixed_size_vector_v<v_t>;
 
         /* dispatch compile-time version when both are fixed size,
             the resulting shape will also be known at compile time */
@@ -97,7 +97,7 @@ namespace nmtools::blas
 
             /* make sure one of the matrix type is resizeable */
             static_assert(
-                traits::is_resizeable_v<V>
+                meta::is_resizeable_v<V>
                 /* TODO: helpful error message here */
             );
             auto ret = zeros<return_t>(mrows);

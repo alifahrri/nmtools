@@ -220,7 +220,7 @@ namespace nmtools::blas
 
 #include "nmtools/traits.hpp"
 
-namespace nmtools::traits
+namespace nmtools::meta
 {
     /**
      * @ingroup meta
@@ -253,7 +253,7 @@ namespace nmtools::traits
 
     /** @} */ // end group traits
     
-} // namespace nmtools::traits
+} // namespace nmtools::meta
 
 #include "nmtools/meta.hpp"
 // include fixed array for metafunction specialization
@@ -377,7 +377,7 @@ namespace nmtools::array
     constexpr auto dynamic_matrix<T,storage_type>::operator=(const matrix_t& rhs)
     {
         static_assert(
-            traits::is_array2d_v<matrix_t>,
+            meta::is_array2d_v<matrix_t>,
             "dynamic_matrix only support assignment from array2d for now"
         );
 

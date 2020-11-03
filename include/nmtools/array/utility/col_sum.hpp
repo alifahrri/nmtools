@@ -27,8 +27,8 @@ namespace nmtools
          */
         constexpr auto col_sum_impl(auto& sum, const auto& a, auto rows, auto cols)
         {
-            using rows_t = traits::remove_cvref_t<decltype(rows)>;
-            using cols_t = traits::remove_cvref_t<decltype(cols)>;
+            using rows_t = meta::remove_cvref_t<decltype(rows)>;
+            using cols_t = meta::remove_cvref_t<decltype(cols)>;
             using index_t = std::common_type_t<rows_t,cols_t>;
             for (index_t j=0; j<cols; j++)
                 for (index_t i=0; i<rows; i++)
@@ -48,7 +48,7 @@ namespace nmtools
     constexpr auto col_sum(const Array& a)
     {
         static_assert(
-            traits::is_array2d_v<Array>,
+            meta::is_array2d_v<Array>,
             "unsupported type of array, "
             "only support 2D array for now"
         );
@@ -60,8 +60,8 @@ namespace nmtools
             "of nmtools::meta::get_row_type needed (?)"
         );
 
-        constexpr auto is_fixed_size = traits::is_fixed_size_vector_v<sum_t>;
-        constexpr auto is_resizeable = traits::is_resizeable_v<sum_t>;
+        constexpr auto is_fixed_size = meta::is_fixed_size_vector_v<sum_t>;
+        constexpr auto is_resizeable = meta::is_resizeable_v<sum_t>;
         static_assert(is_fixed_size || is_resizeable);
 
         if constexpr (is_fixed_size) {

@@ -19,7 +19,7 @@ namespace nmtools
     using std::size;
     using std::get;
     using std::common_type_t;
-    using traits::remove_cvref_t;
+    using meta::remove_cvref_t;
 
     /**
      * @brief special tag to represent end index, used for slicing.
@@ -126,11 +126,11 @@ namespace nmtools
     namespace detail {
         using std::is_same_v;
         using std::is_integral_v;
-        using traits::is_array2d_v;
-        using traits::is_array1d_v;
-        using traits::is_fixed_size_matrix_v;
-        using traits::is_fixed_size_vector_v;
-        using traits::is_integral_constant_v;
+        using meta::is_array2d_v;
+        using meta::is_array1d_v;
+        using meta::is_fixed_size_matrix_v;
+        using meta::is_fixed_size_vector_v;
+        using meta::is_integral_constant_v;
         /**
          * @brief return type for unpack_slice_indices for 2D array
          * 
@@ -195,7 +195,7 @@ namespace nmtools
             // make sure valid type, strictly integral_constant for start
             // while stop is possibly contains end_t
             static_assert (
-                traits::is_array2d_v<Array>
+                meta::is_array2d_v<Array>
                 && (is_integral_constant_v<row_start_t> || is_integral_v<row_start_t>)
                 && (is_integral_constant_v<col_start_t> || is_integral_v<col_start_t>)
                 && valid_row_stop && valid_col_stop,

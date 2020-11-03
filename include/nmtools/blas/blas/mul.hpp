@@ -34,7 +34,7 @@ namespace nmtools::blas
     template <typename A, typename B>
     constexpr auto mul(const A& lhs, const B& rhs)
     {
-        using traits::is_multiplicative_v;
+        using meta::is_multiplicative_v;
 
         /* get operation tag */
         using op_t = tag::get_t<A,B>;

@@ -22,7 +22,7 @@ namespace nmtools::linalg
     constexpr auto lu_decomposition(const Matrix& A)
     {
         static_assert(
-            traits::is_array2d_v<Matrix>,
+            meta::is_array2d_v<Matrix>,
             "unsupported type for Matrix"
         );
 
@@ -66,11 +66,11 @@ namespace nmtools::linalg
     constexpr auto substitution(const Matrix &L, const Vector& b)
     {
         static_assert(
-            traits::is_array2d_v<Matrix>,
+            meta::is_array2d_v<Matrix>,
             "unsupported type for Matrix L"
         );
         static_assert(
-            traits::is_array1d_v<Vector>,
+            meta::is_array1d_v<Vector>,
             "unsupported type for Vector b"
         );
 
@@ -104,7 +104,7 @@ namespace nmtools::linalg
     constexpr auto inverse(const Matrix& A)
     {
         static_assert(
-            traits::is_array2d_v<Matrix>,
+            meta::is_array2d_v<Matrix>,
             "unsupported type of Matrix A"
         );
         
@@ -154,10 +154,10 @@ namespace nmtools::linalg
     constexpr auto cholesky_decomposition(const Matrix& A)
     {
         static_assert(
-            traits::is_array2d_v<Matrix>,
+            meta::is_array2d_v<Matrix>,
             "unsupported type of Matrix A"
         );
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
         using value_t = meta::get_matrix_value_type_t<Matrix>;
 
         /* TODO: check if matrix A is symmetric */

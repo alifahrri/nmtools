@@ -14,15 +14,15 @@
 
 namespace nmtools::view
 {
-    using traits::is_array1d_v;
-    using traits::is_array2d_v;
-    using traits::is_ndarray_v;
-    using traits::is_fixed_size_vector_v;
-    using traits::is_fixed_size_matrix_v;
-    using traits::is_fixed_size_ndarray_v;
-    using traits::has_shape_v;
-    using traits::has_size_v;
-    using traits::has_dim_v;
+    using meta::is_array1d_v;
+    using meta::is_array2d_v;
+    using meta::is_ndarray_v;
+    using meta::is_fixed_size_vector_v;
+    using meta::is_fixed_size_matrix_v;
+    using meta::is_fixed_size_ndarray_v;
+    using meta::has_shape_v;
+    using meta::has_size_v;
+    using meta::has_dim_v;
 
     /**
      * @addtogroup view
@@ -63,7 +63,7 @@ namespace nmtools::view
         template <typename indices_t>
         constexpr auto reverse(const indices_t& indices)
         {
-            static_assert (traits::has_tuple_size_v<indices_t>,
+            static_assert (meta::has_tuple_size_v<indices_t>,
                 "reverse indices only support type with tuple_size for now"
             );
             constexpr auto N = std::tuple_size_v<indices_t>;
@@ -126,7 +126,7 @@ namespace nmtools::view
         {
             using std::size;
             using ::nmtools::detail::make_array;
-            using array_t = traits::remove_cvref_t<array_type>;
+            using array_t = meta::remove_cvref_t<array_type>;
 
             // 2D array
             if constexpr (is_array2d_v<array_t>) {
@@ -135,9 +135,9 @@ namespace nmtools::view
                 // convert to array for such condition
                 auto shape_ = [&](){
                     auto shape_ = detail::shape(array);
-                    using shape_t = traits::remove_cvref_t<decltype(shape_)>;
+                    using shape_t = meta::remove_cvref_t<decltype(shape_)>;
                     // convert to std::array to make at available
-                    if constexpr (traits::has_tuple_size_v<shape_t>)
+                    if constexpr (meta::has_tuple_size_v<shape_t>)
                         return make_array<std::array>(shape_);
                     else return shape_;
                 }();
@@ -151,7 +151,7 @@ namespace nmtools::view
                         new_shape.at(i) = shape_.at(n-1-i);
                 }
                 // when axes_type is tuple size() is unavailable, use template_for to extract
-                else if constexpr (traits::has_tuple_size_v<axes_type>) {
+                else if constexpr (meta::has_tuple_size_v<axes_type>) {
                     constexpr auto N = std::tuple_size_v<axes_type>;
                     detail::template_for<N>([&](auto index_constant){
                         // extract compile-time index
@@ -198,7 +198,7 @@ namespace nmtools::view
                 if constexpr (std::is_same_v<axes_t,detail::none_t>)
                     return detail::reverse(indices_);
                 // for fixed size axes, checking can be done at compile-time
-                else if constexpr (traits::has_tuple_size_v<axes_type>) {
+                else if constexpr (meta::has_tuple_size_v<axes_type>) {
                     constexpr auto N = std::tuple_size_v<axes_type>;
                     static_assert (N==sizeof...(size_types),
                         "mismatched dimension between axes and indices"
@@ -270,10 +270,10 @@ namespace nmtools
      */
     template <typename array_t>
     struct fixed_matrix_size< transpose_t<array_t,none_t>
-        , std::enable_if_t< traits::is_fixed_size_matrix_v<traits::remove_cvref_t<array_t>> >
+        , std::enable_if_t< meta::is_fixed_size_matrix_v<meta::remove_cvref_t<array_t>> >
     >
     {
-        static inline constexpr auto src_value = fixed_matrix_size_v<traits::remove_cvref_t<array_t>>;
+        static inline constexpr auto src_value = fixed_matrix_size_v<meta::remove_cvref_t<array_t>>;
         static inline constexpr auto value = make_pair(get<1>(src_value),get<0>(src_value));
         using value_type = decltype(value); // std::pair
     };
@@ -285,8 +285,8 @@ namespace nmtools
      */
     template <typename array_t>
     struct fixed_vector_size< transpose_t<array_t,none_t>
-        , std::enable_if_t< traits::is_fixed_size_vector_v<traits::remove_cvref_t<array_t>> >
-    > : fixed_vector_size<traits::remove_cvref_t<array_t>> {};
+        , std::enable_if_t< meta::is_fixed_size_vector_v<meta::remove_cvref_t<array_t>> >
+    > : fixed_vector_size<meta::remove_cvref_t<array_t>> {};
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_TRANSPOSE_HPP

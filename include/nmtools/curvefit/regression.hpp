@@ -88,8 +88,8 @@ namespace nmtools::curvefit
     constexpr auto linear_regression(const X& x, const Y& y)
     {
         using meta::get_container_value_type_t;
-        using traits::remove_cvref_t;
-        using traits::is_array1d_v;
+        using meta::remove_cvref_t;
+        using meta::is_array1d_v;
         using std::common_type_t;
 
         static_assert(
@@ -162,13 +162,13 @@ namespace nmtools::curvefit
     constexpr auto make_linear_least_square_fn(const A& a)
     {
         using linalg::detail::make_array;
-        static_assert(traits::is_array1d_v<A>);
+        static_assert(meta::is_array1d_v<A>);
         auto f = [=](auto...xs) {
             /* the size of vector a is known at compile time,
                 dispatch compile-time version that will assert 
                 number of parameter with tnumber of coefficients 
             */
-            if constexpr (traits::has_tuple_size_v<A>) {
+            if constexpr (meta::has_tuple_size_v<A>) {
                 using std::tuple_size_v;
                 constexpr auto na = tuple_size_v<A>;
                 static_assert(sizeof...(xs) == na-1);
@@ -215,7 +215,7 @@ namespace nmtools::curvefit
     constexpr auto least_square_regression(const Y& y, const X& x, const Vector& ...xs)
     {
         using namespace linalg;
-        using traits::is_array1d_v;
+        using meta::is_array1d_v;
         using linalg::detail::make_array;
         
         static_assert(

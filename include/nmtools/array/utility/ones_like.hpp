@@ -35,12 +35,12 @@ namespace nmtools
     {
         /** TODO: proper constraints **/
         static_assert(
-            traits::is_array1d_v<T> ||
-            traits::is_array2d_v<T> ||
+            meta::is_array1d_v<T> ||
+            meta::is_array2d_v<T> ||
             std::is_arithmetic_v<T>,
             "unsupported type for zeros_like"
         );
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
         using meta::transform_bounded_array_t;
         using return_t = transform_bounded_array_t<remove_cvref_t<T>>;
         auto ret = return_t{};
@@ -50,9 +50,9 @@ namespace nmtools
         /* ret is conteiner, for each elements call zeros_like */
         else {
             auto ret = zeros_like(a);
-            using return_t = traits::remove_cvref_t<decltype(ret)>;
+            using return_t = meta::remove_cvref_t<decltype(ret)>;
             /* array2d implementation */
-            if constexpr (traits::is_array2d_v<return_t>)
+            if constexpr (meta::is_array2d_v<return_t>)
             {
                 /* common implementation loop for both fixed and dynamic */
                 auto ones_like2d_impl = [](auto &ret, auto rows, auto cols){
@@ -60,7 +60,7 @@ namespace nmtools
                         for (size_t j=0; j<cols; j++)
                             at(ret,i,j) = 1;
                 };
-                constexpr auto is_fixed_size = traits::is_fixed_size_matrix_v<return_t>;
+                constexpr auto is_fixed_size = meta::is_fixed_size_matrix_v<return_t>;
                 if constexpr (is_fixed_size) {
                     /* TODO: find-out if reading matrix_size as constexpr is beneficial */
                     constexpr auto shape = matrix_size(ret);
@@ -80,7 +80,7 @@ namespace nmtools
                     for (size_t i=0; i<n; i++)
                         at(ret,i) = 1;
                 };
-                constexpr auto is_fixed_size = traits::is_fixed_size_vector_v<return_t>;
+                constexpr auto is_fixed_size = meta::is_fixed_size_vector_v<return_t>;
                 if constexpr (is_fixed_size) {
                     constexpr auto n = vector_size(ret);
                     ones_like1d_impl(ret,n);

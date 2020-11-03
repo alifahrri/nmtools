@@ -42,8 +42,8 @@ namespace nmtools
     {
         /** TODO: proper constraints **/
         static_assert(
-            traits::is_array1d_v<Array>
-            || traits::is_array2d_v<Array>
+            meta::is_array1d_v<Array>
+            || meta::is_array2d_v<Array>
             || std::is_arithmetic_v<Array>,
             "unsupported type for clone"
         );
@@ -54,11 +54,11 @@ namespace nmtools
         /* ret is conteiner, for each elements call zeros_like */
         else {
             auto ret = zeros_like(a);
-            using return_t = traits::remove_cvref_t<decltype(ret)>;
+            using return_t = meta::remove_cvref_t<decltype(ret)>;
             /* array2d implementation */
-            if constexpr (traits::is_array2d_v<return_t>)
+            if constexpr (meta::is_array2d_v<return_t>)
             {
-                constexpr auto is_fixed_size = traits::is_fixed_size_matrix_v<return_t>;
+                constexpr auto is_fixed_size = meta::is_fixed_size_matrix_v<return_t>;
                 if constexpr (is_fixed_size) {
                     /* TODO: find-out if reading matrix_size as constexpr is beneficial */
                     constexpr auto shape = matrix_size(ret);
@@ -73,7 +73,7 @@ namespace nmtools
             }
             /* array1d implementation */
             else {
-                constexpr auto is_fixed_size = traits::is_fixed_size_vector_v<return_t>;
+                constexpr auto is_fixed_size = meta::is_fixed_size_vector_v<return_t>;
                 if constexpr (is_fixed_size) {
                     constexpr auto n = vector_size(ret);
                     clone_impl(ret,a,n);

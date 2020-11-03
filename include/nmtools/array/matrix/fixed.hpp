@@ -142,7 +142,7 @@ namespace nmtools::array {
     
     /**
      * @brief helper traits to check if given type is array::fixed_matrix,
-     * not to be confused with nmtools::traits::is_fixed_matrix which is
+     * not to be confused with nmtools::meta::is_fixed_matrix which is
      * more generic in concept not to differentiate
      * specific type (array::fixed_matrix in this case).
      * 
@@ -243,7 +243,7 @@ namespace nmtools
 
 #include "nmtools/traits.hpp"
 
-namespace nmtools::traits
+namespace nmtools::meta
 {
     /**
      * @ingroup traits
@@ -377,13 +377,13 @@ namespace nmtools::array
     constexpr auto fixed_matrix<T,Rows,Cols>::operator=(const matrix_t& rhs)
     {
         static_assert(
-            traits::is_array2d_v<matrix_t>,
+            meta::is_array2d_v<matrix_t>,
             "fixed_matrix only support assignment from array2d for now"
         );
 
         using ::nmtools::detail::clone_impl;
 
-        if constexpr (traits::is_fixed_size_matrix_v<matrix_t>) {
+        if constexpr (meta::is_fixed_size_matrix_v<matrix_t>) {
             constexpr auto size_ = fixed_matrix_size_v<matrix_t>;
             constexpr auto rows  = std::get<0>(size_);
             constexpr auto cols  = std::get<1>(size_);
