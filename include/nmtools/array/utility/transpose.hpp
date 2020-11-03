@@ -52,7 +52,7 @@ namespace nmtools
             /* TODO: find-out if reading shape as constexpr here is beneficial */
             // rejected by clang:
             // constexpr auto shape = matrix_size(a);
-            constexpr auto shape = fixed_matrix_size_v<Array>;
+            constexpr auto shape = meta::fixed_matrix_size_v<Array>;
             constexpr auto rows = get<0>(shape);
             constexpr auto cols = get<1>(shape);
             /* make zeros with transposed size */

@@ -58,13 +58,13 @@ namespace nmtools::blas
             /* perform size assertion at compile-time if all array-like has fixed size */
             if constexpr (is_fixed_A && is_fixed_x && is_fixed_y) {
                 /* get pair first, then unpack row & col */
-                constexpr auto nA = fixed_matrix_size_v<Matrix>;
+                constexpr auto nA = meta::fixed_matrix_size_v<Matrix>;
                 /* assuming col-major */
                 constexpr auto row_A = get<0>(nA);
                 constexpr auto col_A = get<1>(nA);
                 /* vector size */
-                constexpr auto nx = fixed_vector_size_v<X>;
-                constexpr auto ny = fixed_vector_size_v<Y>;
+                constexpr auto nx = meta::fixed_vector_size_v<X>;
+                constexpr auto ny = meta::fixed_vector_size_v<Y>;
                 static_assert(
                     (nx == col_A)
                     && (ny == row_A)

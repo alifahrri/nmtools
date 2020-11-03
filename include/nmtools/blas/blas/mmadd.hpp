@@ -114,8 +114,8 @@ namespace nmtools::blas
             both are fixed size matrix, the resulting shape will be known at compile time */
         if constexpr (is_fixed_size_mat_A && is_fixed_size_mat_B) {
             /* deduce row type and element type */
-            constexpr auto shape_a = fixed_matrix_size_v<M1>;
-            constexpr auto shape_b = fixed_matrix_size_v<M2>;
+            constexpr auto shape_a = meta::fixed_matrix_size_v<M1>;
+            constexpr auto shape_b = meta::fixed_matrix_size_v<M2>;
             constexpr auto row_a = get<0>(shape_a);
             constexpr auto row_b = get<0>(shape_b);
             constexpr auto col_a = get<1>(shape_a);

@@ -104,7 +104,7 @@ namespace nmtools::view
 namespace nmtools
 {
     /**
-     * @brief specializaton of fixed_vector_size for mutable_ref view.
+     * @brief specializaton of meta::fixed_vector_size for mutable_ref view.
      *
      * Only enabled when the referenced array if fixed-size.
      * 
@@ -113,12 +113,12 @@ namespace nmtools
      * @see nmtools::view::make_view
      */
     template <typename array_t>
-    struct fixed_vector_size< view::mutable_ref_t<array_t>
+    struct meta::fixed_vector_size< view::mutable_ref_t<array_t>
         , std::enable_if_t< meta::is_fixed_size_vector_v<meta::remove_cvref_t<array_t>> >
-    > : fixed_vector_size< meta::remove_cvref_t<array_t> > {};
+    > : meta::fixed_vector_size< meta::remove_cvref_t<array_t> > {};
 
     /**
-     * @brief specialization fo fixed_matrix_size for mutable_ref view.
+     * @brief specialization fo meta::fixed_matrix_size for mutable_ref view.
      * 
      *
      * Only enabled when the referenced array is fixed-size.
@@ -128,9 +128,9 @@ namespace nmtools
      * @see nmtools::view::make_view
      */
     template <typename array_t>
-    struct fixed_matrix_size< view::mutable_ref_t<array_t>
+    struct meta::fixed_matrix_size< view::mutable_ref_t<array_t>
         , std::enable_if_t< meta::is_fixed_size_matrix_v<meta::remove_cvref_t<array_t>> >
-    > : fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
+    > : meta::fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
 } // namespace nmtool
 
 #endif // NMTOOLS_ARRAY_VIEW_MUTABLE_REF_HPP

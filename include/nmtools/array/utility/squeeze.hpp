@@ -41,7 +41,7 @@ namespace nmtools
          * @todo support view
          */
         template <size_t single_dim, typename row_t, typename col_t>
-        constexpr auto squeeze_impl(auto &squeezed, const auto& array, row_t rows, col_t cols, index_constant<single_dim>)
+        constexpr auto squeeze_impl(auto &squeezed, const auto& array, row_t rows, col_t cols, meta::index_constant<single_dim>)
             -> std::enable_if_t<single_dim==0||single_dim==1>
         {
             using idx_t = remove_cvref_t<common_type_t<row_t,col_t>>;
@@ -129,13 +129,13 @@ namespace nmtools
         };
 
         if constexpr (is_fixed_size) {
-            constexpr auto shape = fixed_matrix_size_v<Array>;
+            constexpr auto shape = meta::fixed_matrix_size_v<Array>;
             constexpr auto rows = std::get<0>(shape);
             constexpr auto cols = std::get<1>(shape);
             // note: use immediately invoked lambda to expose return value to outer scope
             // instead of directly use constexpr if that define new scope
             constexpr auto single_dim_axis = get_single_dim_axis(rows, cols);
-            using single_dim_axis_t = index_constant<single_dim_axis>;
+            using single_dim_axis_t = meta::index_constant<single_dim_axis>;
             if constexpr ((single_dim_axis==0)||(single_dim_axis==1)) {
                 constexpr auto new_size = std::max(rows,cols);
                 using squeezed_t = meta::resize_fixed_vector_t<vector_t,new_size>;

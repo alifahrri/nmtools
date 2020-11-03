@@ -78,7 +78,7 @@ namespace nmtools {
         );
         static_assert(
             is_fixed_size_vector_v<Array>
-            && (i<fixed_vector_size_v<Array>)
+            && (i<meta::fixed_vector_size_v<Array>)
         );
 
         if constexpr (has_square_bracket_v<const Array&,size_type>)
@@ -163,7 +163,7 @@ namespace nmtools {
          */
         using namespace meta;
         using size_type = std::common_type_t<decltype(i),decltype(j)>;
-        constexpr auto shape = fixed_matrix_size_v<Array>;
+        constexpr auto shape = meta::fixed_matrix_size_v<Array>;
         constexpr auto rows = get<0>(shape);
         constexpr auto cols = get<1>(shape);
         static_assert(

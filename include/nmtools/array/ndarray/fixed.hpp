@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
-#include "nmtools/array/meta.hpp" // fixed_matrix_size etc.
+#include "nmtools/array/meta.hpp" // meta::fixed_matrix_size etc.
 
 #include <array>
 #include <tuple>
@@ -202,40 +202,40 @@ namespace nmtools
     /** @} */ // end group utility
 
     /**
-     * @brief specialization of fixed_ndarray for fixed_matrix_size array traits
+     * @brief specialization of fixed_ndarray for meta::fixed_matrix_size array traits
      * 
      * @tparam T element type of fixed_ndarray
      * @tparam Rows number of elements of 1st axis of fixed_ndarray
      * @tparam Cols number of elements of 2nd axis of fixed_ndarray
      */
     template <typename T, size_t Rows, size_t Cols>
-    struct fixed_matrix_size<array::fixed_ndarray<T,Rows,Cols>>
+    struct meta::fixed_matrix_size<array::fixed_ndarray<T,Rows,Cols>>
     {
         static inline constexpr auto value = std::make_pair(Rows,Cols);
         using value_type = decltype(value);
     };
 
     /**
-     * @brief specialization of fixed_ndarray fo rfixed_vector_size array traits.
+     * @brief specialization of fixed_ndarray fo rmeta::fixed_vector_size array traits.
      * 
      * @tparam T element type of fixed_ndarray
      * @tparam N number of elements of fixed_ndarray
      */
     template <typename T, size_t N>
-    struct fixed_vector_size<array::fixed_ndarray<T,N>>
+    struct meta::fixed_vector_size<array::fixed_ndarray<T,N>>
     {
         static constexpr inline auto value = N;
     };
 
     /**
-     * @brief specialization of fixed_ndarray for fixed_array_shape array traits.
+     * @brief specialization of fixed_ndarray for meta::fixed_array_shape array traits.
      * 
      * @tparam T element type of fixed_vector
      * @tparam Shape1 number of elements at first axis
      * @tparam ShapeN number of elements for the rest axes
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
-    struct fixed_array_shape<array::fixed_ndarray<T,Shape1,ShapeN...>>
+    struct meta::fixed_array_shape<array::fixed_ndarray<T,Shape1,ShapeN...>>
     {
         static inline constexpr auto value = std::make_tuple(Shape1,ShapeN...);
         using value_type = decltype(value);
@@ -321,7 +321,7 @@ namespace nmtools::array
         using ::nmtools::detail::clone_impl;
 
         auto flat_rhs = view::flatten(std::forward<ndarray_t>(rhs));
-        constexpr auto n_rhs = fixed_vector_size_v<decltype(flat_rhs)>;
+        constexpr auto n_rhs = meta::fixed_vector_size_v<decltype(flat_rhs)>;
         static_assert (numel_==n_rhs
             , "mismatched shape for fixed_ndarray assignment"
         );

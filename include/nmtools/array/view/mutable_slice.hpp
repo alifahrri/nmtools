@@ -127,14 +127,14 @@ namespace nmtools::view
 namespace nmtools
 {
     /**
-     * @brief specializtion of fixed_vector_size for slice view.
+     * @brief specializtion of meta::fixed_vector_size for slice view.
      * 
      * @tparam array_t 
      * @tparam start_t 
      * @tparam stop_t 
      */
     template <typename array_t, typename start_t, typename stop_t>
-    struct fixed_vector_size< view::mutable_slice_t<array_t,start_t,stop_t>
+    struct meta::fixed_vector_size< view::mutable_slice_t<array_t,start_t,stop_t>
         , std::enable_if_t<
             // @note use std::conjuction to short circuit
             // since type_list_conjunction requires tparam to have tuple_size
@@ -146,17 +146,17 @@ namespace nmtools
                 meta::type_list_conjunction<stop_t,meta::is_integral_constant>
             >
         >
-    > : fixed_vector_size< meta::remove_cvref_t<array_t> > {};
+    > : meta::fixed_vector_size< meta::remove_cvref_t<array_t> > {};
 
     /**
-     * @brief specialization of fixed_matrix_size for slice view.
+     * @brief specialization of meta::fixed_matrix_size for slice view.
      * 
      * @tparam array_t 
      * @tparam start_t 
      * @tparam stop_t 
      */
     template <typename array_t, typename start_t, typename stop_t>
-    struct fixed_matrix_size< view::mutable_slice_t<array_t,start_t,stop_t>
+    struct meta::fixed_matrix_size< view::mutable_slice_t<array_t,start_t,stop_t>
         , std::enable_if_t<
             std::conjunction_v<
                 meta::is_fixed_size_matrix<meta::remove_cvref_t<array_t>>,
@@ -166,7 +166,7 @@ namespace nmtools
                 meta::type_list_conjunction<stop_t,meta::is_integral_constant>
             >
         >
-    > : fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
+    > : meta::fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_MUTABLE_SLICE_HPP

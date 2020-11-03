@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
-#include "nmtools/array/meta.hpp" // fixed_matrix_size etc.
+#include "nmtools/array/meta.hpp" // meta::fixed_matrix_size etc.
 
 #include <array>
 #include <tuple>
@@ -214,29 +214,29 @@ namespace nmtools
 
     /* TODO: consider to move to meta */
     /**
-     * @brief specialization of fixed_matrix for fixed_matrix_size array traits.
+     * @brief specialization of fixed_matrix for meta::fixed_matrix_size array traits.
      * 
      * @tparam T 
      * @tparam Rows 
      * @tparam Cols 
      */
     template <typename T, size_t Rows, size_t Cols>
-    struct fixed_matrix_size<array::fixed_matrix<T,Rows,Cols>>
+    struct meta::fixed_matrix_size<array::fixed_matrix<T,Rows,Cols>>
     {
         static inline constexpr auto value = std::make_pair(Rows,Cols);
         using value_type = decltype(value);
     };
 
     /**
-     * @brief specialization of fixed_matrix for fixed_array_shape array traits.
+     * @brief specialization of fixed_matrix for meta::fixed_array_shape array traits.
      * 
      * @tparam T element type of fixed_matrix
      * @tparam Rows number of rows of fixed_matrix
      * @tparam Cols number of cols of fixed_matrix
      */
     template <typename T, size_t Rows, size_t Cols>
-    struct fixed_array_shape<array::fixed_matrix<T,Rows,Cols>>
-        : fixed_matrix_size<array::fixed_matrix<T,Rows,Cols>>
+    struct meta::fixed_array_shape<array::fixed_matrix<T,Rows,Cols>>
+        : meta::fixed_matrix_size<array::fixed_matrix<T,Rows,Cols>>
     {};
 
 } // namespace nmtools
@@ -384,7 +384,7 @@ namespace nmtools::array
         using ::nmtools::detail::clone_impl;
 
         if constexpr (meta::is_fixed_size_matrix_v<matrix_t>) {
-            constexpr auto size_ = fixed_matrix_size_v<matrix_t>;
+            constexpr auto size_ = meta::fixed_matrix_size_v<matrix_t>;
             constexpr auto rows  = std::get<0>(size_);
             constexpr auto cols  = std::get<1>(size_);
 

@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
-#include "nmtools/array/meta.hpp" // fixed_matrix_size etc.
+#include "nmtools/array/meta.hpp" // meta::fixed_matrix_size etc.
 
 #include <array>
 #include <tuple>
@@ -190,23 +190,23 @@ namespace nmtools
 
     /* TODO: consider to move to meta */
     /**
-     * @brief specialization of fixed_vector for fixed_vector_size array traits.
+     * @brief specialization of fixed_vector for meta::fixed_vector_size array traits.
      * 
      * @tparam T 
      * @tparam N 
      */
     template <typename T, size_t N>
-    struct fixed_vector_size<array::fixed_vector<T,N>>
+    struct meta::fixed_vector_size<array::fixed_vector<T,N>>
         : std::tuple_size<typename array::fixed_vector<T,N>::data_type> {};
 
     /**
-     * @brief specialization of fixed_vector for fixed_array_shape array traits.
+     * @brief specialization of fixed_vector for meta::fixed_array_shape array traits.
      * 
      * @tparam T element type of fixed_vector
      * @tparam N number of elements of fixed_vector
      */
     template <typename T, size_t N>
-    struct fixed_array_shape<array::fixed_vector<T,N>>
+    struct meta::fixed_array_shape<array::fixed_vector<T,N>>
     {
         static inline constexpr auto value = std::make_tuple(N);
         using value_type = decltype(value);

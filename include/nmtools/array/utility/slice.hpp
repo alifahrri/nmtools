@@ -97,8 +97,8 @@ namespace nmtools {
      * e.g. `v[start:stop]` in python.
      * 
      * @tparam T vector-like & resizeable
-     * @tparam start_t start type of start index, can be integer, index_constant, or pair-like of integer/index_constant
-     * @tparam stop_t stop type of stop index, can be integer, index_constant, or pair-like of integer/index_constant/end_t
+     * @tparam start_t start type of start index, can be integer, meta::index_constant, or pair-like of integer/meta::index_constant
+     * @tparam stop_t stop type of stop index, can be integer, meta::index_constant, or pair-like of integer/meta::index_constant/end_t
      * @param a
      * @param start start index
      * @param stop stop index

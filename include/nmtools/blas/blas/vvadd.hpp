@@ -66,8 +66,8 @@ namespace nmtools::blas
 
         /* dispatch compile time ver. */
         if constexpr (is_fixed_size_vec_A && is_fixed_size_vec_B) {
-            constexpr auto n1 = fixed_vector_size_v<v1_t>;
-            constexpr auto n2 = fixed_vector_size_v<v2_t>;
+            constexpr auto n1 = meta::fixed_vector_size_v<v1_t>;
+            constexpr auto n2 = meta::fixed_vector_size_v<v2_t>;
             constexpr auto n  = n1;
 
             static_assert (n1==n2);

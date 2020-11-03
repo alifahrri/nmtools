@@ -32,7 +32,7 @@ namespace nmtools
      * @todo move to array meta
      */
     template <typename T, size_t N>
-    struct fixed_vector_size<T[N]>
+    struct meta::fixed_vector_size<T[N]>
     {
         static inline constexpr auto value = N;
     };
@@ -83,7 +83,7 @@ namespace nmtools
     constexpr auto vector_size(const Vector& v)
         -> std::enable_if_t< meta::is_fixed_size_vector_v<Vector>, size_t>
     {
-        return fixed_vector_size_v<Vector>;
+        return meta::fixed_vector_size_v<Vector>;
     }
 
     /** @} */ // end group utility

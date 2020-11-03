@@ -111,15 +111,15 @@ namespace nmtools::meta
 namespace nmtools
 {
     template <typename array_t>
-    struct fixed_vector_size< view::flatten_t<array_t>
+    struct meta::fixed_vector_size< view::flatten_t<array_t>
         , std::enable_if_t<
             meta::is_fixed_size_array_v<meta::remove_cvref_t<array_t>>
         >
     > {
         static constexpr auto _get()
         {
-            constexpr auto shape_ = fixed_array_shape_v<meta::remove_cvref_t<array_t>>;
-            constexpr auto shape  = detail::make_array<std::array>(shape_);
+            constexpr auto shape_ = meta::fixed_array_shape_v<meta::remove_cvref_t<array_t>>;
+            constexpr auto shape  = ::nmtools::detail::make_array<std::array>(shape_);
             // compute product
             auto identity = 1;
             for (size_t i=0; i<shape.size(); i++)

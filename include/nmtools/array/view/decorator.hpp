@@ -277,14 +277,14 @@ namespace nmtools::view
 namespace nmtools
 {
     /**
-     * @brief specialization of fixed_array_shape for view decorator
+     * @brief specialization of meta::fixed_array_shape for view decorator
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
      */
     template <template<typename...> typename view_t, typename...Ts>
-    struct fixed_array_shape<view::decorator_t<view_t,Ts...>>
-        : fixed_array_shape<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+    struct meta::fixed_array_shape<view::decorator_t<view_t,Ts...>>
+        : meta::fixed_array_shape<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief sfinae-enabled specialization for matrix_size
@@ -413,20 +413,20 @@ namespace nmtools
     } // namespace detail
 
     /**
-     * @brief specialization of fixed_matrix_size for view type (view::decorator_t<...>).
+     * @brief specialization of meta::fixed_matrix_size for view type (view::decorator_t<...>).
      * 
      * Metafunction to get the size of matrix at compile-time. This specialization also
      * serves as entry point for checking the underlying view type (view_t<Ts...>) if that
-     * underlying view is_fixed_size_matrix then calls fixed_matrix_size_v for that underlying view,
+     * underlying view is_fixed_size_matrix then calls meta::fixed_matrix_size_v for that underlying view,
      * otherwise this should fail. Note that meta::is_fixed_size_matrix has specialization
-     * for type(s) that its specialization of fixed_matrix_size has value, value_type, and the value_type
+     * for type(s) that its specialization of meta::fixed_matrix_size has value, value_type, and the value_type
      * is not void.
      * 
      * @tparam view_t template-template parameter corresponding to the underlying view type
      * @tparam Ts template parameters to underlying type
      */
     template <template<typename...> typename view_t, typename...Ts>
-    struct fixed_matrix_size<view::decorator_t<view_t,Ts...>>
+    struct meta::fixed_matrix_size<view::decorator_t<view_t,Ts...>>
     {
         /**
          * @brief helper function to deduce the value of the matrix
@@ -436,17 +436,17 @@ namespace nmtools
         static constexpr auto _get()
         {
             if constexpr (meta::is_fixed_size_matrix_v<view_t<Ts...>>)
-                return fixed_matrix_size_v<view_t<Ts...>>;
+                return meta::fixed_matrix_size_v<view_t<Ts...>>;
             else return detail::fail_t{};
         } // _get()
     
         static inline constexpr auto value = _get();
         // @note that remove_cvref_t here is necessary since decltype(value) may be const
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
-    }; // fixed_matrix_size
+    }; // meta::fixed_matrix_size
 
     template <template<typename...> typename view_t, typename...Ts>
-    struct fixed_vector_size<view::decorator_t<view_t,Ts...>>
+    struct meta::fixed_vector_size<view::decorator_t<view_t,Ts...>>
     {
         /**
          * @brief helper function to deduce the value of the matrix
@@ -456,14 +456,14 @@ namespace nmtools
         static constexpr auto _get()
         {
             if constexpr (meta::is_fixed_size_vector_v<view_t<Ts...>>)
-                return fixed_vector_size_v<view_t<Ts...>>;
+                return meta::fixed_vector_size_v<view_t<Ts...>>;
             else return detail::fail_t{};
         } // _get()
 
         static inline constexpr auto value = _get();
         // @note that remove_cvref_t here is necessary since decltype(value) may be const
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
-    }; // fixed_vector_size
+    }; // meta::fixed_vector_size
 } // namespace nmtools
 
 namespace nmtools::meta
