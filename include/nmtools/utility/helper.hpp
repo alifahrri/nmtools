@@ -74,8 +74,8 @@ namespace nmtools::helper {
             if constexpr (is_array2d_v<T> && is_array2d_v<U>)
             {
                 if constexpr (is_fixed_size_matrix_v<T> && is_fixed_size_matrix_v<U>) {
-                    constexpr auto msize = fixed_matrix_size_v<T>;
-                    constexpr auto nsize = fixed_matrix_size_v<U>;
+                    constexpr auto msize = meta::fixed_matrix_size_v<T>;
+                    constexpr auto nsize = meta::fixed_matrix_size_v<U>;
                     constexpr auto nrow = get<0>(nsize);
                     constexpr auto ncol = get<1>(nsize);
                     constexpr auto mrow = get<0>(msize);
