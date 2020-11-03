@@ -57,7 +57,7 @@ TEST_CASE("mutable_slice(std::array)"*doctest::test_suite("view::mutable_slice")
         CHECK( isclose(array,expected) );
     }
 
-    // @todo make sure is_fixed_size, fixed_vector_size, fixed_array_shape is preserved
+    // @todo make sure is_fixed_size, meta::fixed_vector_size, meta::fixed_array_shape is preserved
 }
 
 /**
@@ -89,7 +89,7 @@ TEST_CASE("make_view<mutable_slice_t>(std::array)"*doctest::test_suite("view::mu
         CHECK( isclose(array,expected) );
     }
 
-    // @todo make sure is_fixed_size, fixed_vector_size, fixed_array_shape is preserved
+    // @todo make sure is_fixed_size, meta::fixed_vector_size, meta::fixed_array_shape is preserved
 }
 
 /**
@@ -168,7 +168,7 @@ TEST_CASE("mutable_slice(std::vector)"*doctest::test_suite("view::mutable_slice"
         CHECK( isclose(array,expected) );
     }
 
-    // @todo make sure is_fixed_size, fixed_vector_size, fixed_array_shape is preserved
+    // @todo make sure is_fixed_size, meta::fixed_vector_size, meta::fixed_array_shape is preserved
 }
 
 /**
@@ -249,7 +249,7 @@ TEST_CASE("mutable_slice(fixed_vector)"*doctest::test_suite("view::mutable_slice
         CHECK( isclose(array,expected) );
     }
 
-    // @todo make sure is_fixed_size, fixed_vector_size, fixed_array_shape is preserved
+    // @todo make sure is_fixed_size, meta::fixed_vector_size, meta::fixed_array_shape is preserved
 }
 
 /**

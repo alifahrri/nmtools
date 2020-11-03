@@ -158,7 +158,7 @@ TEST_CASE("traits" * doctest::skip(true)) // has_bracketnd
     STATIC_CHECK(( !meta::has_bracketnd_v<dndarray_t,size_t> ));
 }
 
-TEST_CASE("meta" * doctest::skip(true)) // fixed_array_shape
+TEST_CASE("meta" * doctest::skip(true)) // meta::fixed_array_shape
 {
     using vector_t   = std::array<double,3>;
     using array_t    = std::array<std::array<double,3>,5>;
@@ -176,33 +176,33 @@ TEST_CASE("meta" * doctest::skip(true)) // fixed_array_shape
     LOG_TYPEINFO(ndarray3_t);
 
     {
-        constexpr auto shape = nmtools::fixed_array_shape_v<fvector_t>;
+        constexpr auto shape = nmtools::meta::fixed_array_shape_v<fvector_t>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
     }
     {
-        constexpr auto shape = nmtools::fixed_array_shape_v<array_t>;
+        constexpr auto shape = nmtools::meta::fixed_array_shape_v<array_t>;
         STATIC_CHECK(( std::get<0>(shape)==5 ));
         STATIC_CHECK(( std::get<1>(shape)==3 ));
     }
     {
-        constexpr auto shape = nmtools::fixed_array_shape_v<fmatrix_t>;
+        constexpr auto shape = nmtools::meta::fixed_array_shape_v<fmatrix_t>;
         STATIC_CHECK(( std::get<0>(shape)==5 ));
         STATIC_CHECK(( std::get<1>(shape)==3 ));
     }
     {
-        constexpr auto shape = nmtools::fixed_array_shape_v<ndarray_t>;
+        constexpr auto shape = nmtools::meta::fixed_array_shape_v<ndarray_t>;
         STATIC_CHECK(( std::get<0>(shape)==5 ));
         STATIC_CHECK(( std::get<1>(shape)==3 ));
     }
     {
-        constexpr auto shape = nmtools::fixed_array_shape_v<ndarray3_t>;
+        constexpr auto shape = nmtools::meta::fixed_array_shape_v<ndarray3_t>;
         STATIC_CHECK(( std::get<0>(shape)==5 ));
         STATIC_CHECK(( std::get<1>(shape)==3 ));
         STATIC_CHECK(( std::get<2>(shape)==1 ));
     }
 }
 
-TEST_CASE("meta" * doctest::skip(true)) // fixed_matrix_size
+TEST_CASE("meta" * doctest::skip(true)) // meta::fixed_matrix_size
 {
     using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
     using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
@@ -210,18 +210,18 @@ TEST_CASE("meta" * doctest::skip(true)) // fixed_matrix_size
     LOG_TYPEINFO(ndarray_t);
 
     {
-        constexpr auto shape = nmtools::fixed_matrix_size_v<fmatrix_t>;
+        constexpr auto shape = nmtools::meta::fixed_matrix_size_v<fmatrix_t>;
         STATIC_CHECK(( std::get<0>(shape)==5 ));
         STATIC_CHECK(( std::get<1>(shape)==3 ));
     }
     {
-        constexpr auto shape = nmtools::fixed_matrix_size_v<ndarray_t>;
+        constexpr auto shape = nmtools::meta::fixed_matrix_size_v<ndarray_t>;
         STATIC_CHECK(( std::get<0>(shape)==5 ));
         STATIC_CHECK(( std::get<1>(shape)==3 ));
     }
 }
 
-TEST_CASE("meta" * doctest::skip(true)) // fixed_vector_size
+TEST_CASE("meta" * doctest::skip(true)) // meta::fixed_vector_size
 {
     using fvector_t  = nmtools::array::fixed_vector<double,5>;
     using ndarray_t  = nmtools::array::fixed_ndarray<double,5>;
@@ -229,11 +229,11 @@ TEST_CASE("meta" * doctest::skip(true)) // fixed_vector_size
     LOG_TYPEINFO(ndarray_t);
 
     {
-        constexpr auto shape = nmtools::fixed_vector_size_v<fvector_t>;
+        constexpr auto shape = nmtools::meta::fixed_vector_size_v<fvector_t>;
         STATIC_CHECK(( shape==5 ));
     }
     {
-        constexpr auto shape = nmtools::fixed_vector_size_v<ndarray_t>;
+        constexpr auto shape = nmtools::meta::fixed_vector_size_v<ndarray_t>;
         STATIC_CHECK(( shape==5 ));
     }
 }
