@@ -266,10 +266,10 @@ TEST_CASE("ref(fixed_matrix)" * doctest::test_suite("view::ref")) // ref with fi
     CHECK( array_ref.dim()==2 );
     CHECK( isclose(array_ref.shape(), std::array{2,3}) );
 
-    array = {{
+    array = {
         {1.,2.,3.},
         {3.,4.,5.},
-    }};
+    };
 
     {
         auto expected = std::array{

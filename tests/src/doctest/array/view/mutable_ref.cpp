@@ -219,11 +219,10 @@ TEST_CASE("mutable_ref(fixed_matrix)"*doctest::test_suite("view::mutable_ref")) 
     auto array_ref = view::mutable_ref(array);
     STATIC_CHECK(( nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
-    // @note need extra braces since std::array requires so
-    array = {{
+    array = {
         {1.,2.,3.},
         {3.,4.,5.},
-    }};
+    };
 
     CHECK( array_ref.dim()==2 );
     CHECK( isclose(array_ref.shape(), std::array{2,3}) );

@@ -58,13 +58,18 @@ TEST_CASE("fixed_ndarray[2,3]")
     CHECK(ndarray.strides()[0]==3);
     CHECK(ndarray.strides()[1]==1);
     CHECK(array_shape(ndarray)==std::array{2ul,3ul});
+    ndarray  = {
+        {1,2,3},
+        {4,5,6},
+    };
 }
 
 TEST_CASE("fixed_ndarray[3]")
 {
-    constexpr auto ndarray = fixed_ndarray<double,3>{};
+    auto ndarray = fixed_ndarray<double,3>{};
     CHECK(ndarray.dim()==1);
     CHECK(ndarray.shape()[0]==3);
     CHECK(ndarray.strides()[0]==1);
     static_assert(isclose(array_shape(ndarray),std::array{3ul}));
+    ndarray = {1,2,3};
 }

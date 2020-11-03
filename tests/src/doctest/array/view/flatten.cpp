@@ -230,10 +230,10 @@ TEST_CASE("flatten(fixed_matrix)" * doctest::test_suite("view::flatten"))
     // @note that isclose can also handle comparison between pair/tuple with array
     CHECK( isclose(array_ref.shape(),std::array{6}) );
 
-    array = {{
+    array = {
         {1.,2.,3.},
         {3.,4.,5.},
-    }};
+    };
 
     {
         auto expected = std::array{1.,2.,3.,3.,4.,5.};
