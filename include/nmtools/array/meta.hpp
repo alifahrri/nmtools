@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_META_HPP
 
 #include "nmtools/traits.hpp"
+#include "nmtools/meta.hpp"
 #include <type_traits>
 #include <tuple>
 
@@ -47,6 +48,36 @@ namespace nmtools
     struct fixed_array_shape<std::array<std::array<T,Cols>,Rows>>
     {
         static inline constexpr auto value = std::make_tuple(Rows,Cols);
+        using value_type = decltype(value);
+    };
+
+    template <typename F, size_t...Is>
+    constexpr auto template_for(F&& f, std::index_sequence<Is...>)
+    {
+        (f(std::integral_constant<size_t,Is>{}),...);
+    } // template_for
+
+    template <size_t N, typename F>
+    constexpr auto template_for(F&& f)
+    {
+        using index_t = std::make_index_sequence<N>;
+        template_for(f,index_t{});
+    } // template_for
+
+    template <typename T>
+    struct fixed_array_shape<T,std::enable_if_t<std::is_array_v<T>>>
+    {
+        static constexpr auto _get() {
+            constexpr auto rank = std::rank_v<T>;
+            auto shape = std::array<size_t,rank>{};
+            template_for<rank>([&](auto index) {
+                constexpr auto i = decltype(index)::value;
+                constexpr auto n = std::extent_v<T,i>;
+                shape[i] = n;
+            });
+            return shape;
+        }
+        static inline constexpr auto value = _get();
         using value_type = decltype(value);
     };
 
