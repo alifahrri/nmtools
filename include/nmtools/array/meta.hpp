@@ -162,7 +162,7 @@ namespace nmtools
     template <size_t N>
     using index_constant = std::integral_constant<size_t,N>;
 
-    namespace traits
+    namespace meta
     {
         /* extend traits for fixed_size_matrix & fixed_size_vector */
 
@@ -170,6 +170,20 @@ namespace nmtools
          * @addtogroup traits
          * @{
          */
+
+        /**
+         * @brief specializtion of is_fixed_size_ndarray when fixed_array_shape
+         * yields valid value.
+         * 
+         * @tparam T type to check
+         * @todo consider to move to primary template instead of specialize + sfinae
+         */
+        template <typename T>
+        struct is_fixed_size_ndarray<T
+            , enable_if_t<has_value_type_v<fixed_array_shape<T>>
+                && !std::is_same_v<typename fixed_array_shape<T>::value_type,void>
+            >
+        > : std::true_type {};
 
         /**
          * @brief specialization of is_fixed_size_matrix for true case.
@@ -204,7 +218,7 @@ namespace nmtools
         > > : std::true_type {};
 
         /** @} */ // end group traits
-    } // namespace traits
+    } // namespace meta
 
     /**
      * @brief helper variable template for fixed_vector_size

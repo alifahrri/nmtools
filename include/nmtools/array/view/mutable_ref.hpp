@@ -12,15 +12,15 @@
 
 namespace nmtools::view
 {
-    using traits::is_array1d_v;
-    using traits::is_array2d_v;
-    using traits::is_ndarray_v;
-    using traits::is_fixed_size_vector_v;
-    using traits::is_fixed_size_matrix_v;
-    using traits::is_fixed_size_ndarray_v;
-    using traits::has_shape_v;
-    using traits::has_size_v;
-    using traits::has_dim_v;
+    using meta::is_array1d_v;
+    using meta::is_array2d_v;
+    using meta::is_ndarray_v;
+    using meta::is_fixed_size_vector_v;
+    using meta::is_fixed_size_matrix_v;
+    using meta::is_fixed_size_ndarray_v;
+    using meta::has_shape_v;
+    using meta::has_size_v;
+    using meta::has_dim_v;
 
     /**
      * @addtogroup view
@@ -114,8 +114,8 @@ namespace nmtools
      */
     template <typename array_t>
     struct fixed_vector_size< view::mutable_ref_t<array_t>
-        , std::enable_if_t< traits::is_fixed_size_vector_v<traits::remove_cvref_t<array_t>> >
-    > : fixed_vector_size< traits::remove_cvref_t<array_t> > {};
+        , std::enable_if_t< meta::is_fixed_size_vector_v<meta::remove_cvref_t<array_t>> >
+    > : fixed_vector_size< meta::remove_cvref_t<array_t> > {};
 
     /**
      * @brief specialization fo fixed_matrix_size for mutable_ref view.
@@ -129,8 +129,8 @@ namespace nmtools
      */
     template <typename array_t>
     struct fixed_matrix_size< view::mutable_ref_t<array_t>
-        , std::enable_if_t< traits::is_fixed_size_matrix_v<traits::remove_cvref_t<array_t>> >
-    > : fixed_matrix_size< traits::remove_cvref_t<array_t> > {};
+        , std::enable_if_t< meta::is_fixed_size_matrix_v<meta::remove_cvref_t<array_t>> >
+    > : fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
 } // namespace nmtool
 
 #endif // NMTOOLS_ARRAY_VIEW_MUTABLE_REF_HPP

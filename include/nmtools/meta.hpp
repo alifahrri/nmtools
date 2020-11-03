@@ -14,7 +14,7 @@ namespace nmtools::meta
     namespace detail {
 
         template <typename T, typename R=void>
-        using enable_if_tuple_t = std::enable_if_t<traits::is_tuple_v<T>,R>;
+        using enable_if_tuple_t = std::enable_if_t<meta::is_tuple_v<T>,R>;
 
         /**
          * @brief find type T in tuple Tuple, return tuple element index
@@ -205,7 +205,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
-    struct get_value_type_or_same<T,std::enable_if_t<traits::has_value_type_v<T>>>
+    struct get_value_type_or_same<T,std::enable_if_t<meta::has_value_type_v<T>>>
     {
         using type = typename T::value_type;
     };
@@ -754,7 +754,7 @@ namespace nmtools::meta
      */
     template <typename A, typename B>
     struct select_resizeable_mat<A,B,
-        std::enable_if_t<traits::is_resizeable_v<A> && traits::is_resizeable_v<B> >
+        std::enable_if_t<meta::is_resizeable_v<A> && meta::is_resizeable_v<B> >
     >
     {
         using type = A;
@@ -770,7 +770,7 @@ namespace nmtools::meta
      */
     template <typename A, typename B>
     struct select_resizeable_mat<A,B,
-        std::enable_if_t<traits::is_resizeable_v<A> && !traits::is_resizeable_v<B> >
+        std::enable_if_t<meta::is_resizeable_v<A> && !meta::is_resizeable_v<B> >
     >
     {
         using type = A;
@@ -786,7 +786,7 @@ namespace nmtools::meta
      */
     template <typename A, typename B>
     struct select_resizeable_mat<A,B,
-        std::enable_if_t<traits::is_resizeable_v<B> && !traits::is_resizeable_v<A> >
+        std::enable_if_t<meta::is_resizeable_v<B> && !meta::is_resizeable_v<A> >
     >
     {
         using type = B;
@@ -835,8 +835,8 @@ namespace nmtools::meta
     struct select_resizeable_matrix<A,B,
         std::enable_if_t<
             /* BOTH A and B should be array2d */
-            traits::is_array2d_v<A> && traits::is_array2d_v<B> &&
-            traits::is_resizeable_v<A> && traits::is_resizeable_v<B>
+            meta::is_array2d_v<A> && meta::is_array2d_v<B> &&
+            meta::is_resizeable_v<A> && meta::is_resizeable_v<B>
         >
     >{
         /* when both A and B is resizeable, select A */
@@ -847,8 +847,8 @@ namespace nmtools::meta
     struct select_resizeable_matrix<A,B,
         std::enable_if_t<
             /* BOTH A and B should be array2d */
-            traits::is_array2d_v<A> && traits::is_array2d_v<B> &&
-            !traits::is_resizeable_v<A> && traits::is_resizeable_v<B>
+            meta::is_array2d_v<A> && meta::is_array2d_v<B> &&
+            !meta::is_resizeable_v<A> && meta::is_resizeable_v<B>
         >
     >{
         using type = B;
@@ -858,8 +858,8 @@ namespace nmtools::meta
     struct select_resizeable_matrix<A,B,
         std::enable_if_t<
             /* BOTH A and B should be array2d */
-            traits::is_array2d_v<A> && traits::is_array2d_v<B> &&
-            traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>
+            meta::is_array2d_v<A> && meta::is_array2d_v<B> &&
+            meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>
         >
     >{
         using type = A;
@@ -877,8 +877,8 @@ namespace nmtools::meta
     struct select_resizeable_vector<A,B,
         std::enable_if_t<
             /* BOTH A and B should be array1d */
-            traits::is_array1d_v<A> && traits::is_array1d_v<B> &&
-            traits::is_resizeable_v<A> && traits::is_resizeable_v<B>
+            meta::is_array1d_v<A> && meta::is_array1d_v<B> &&
+            meta::is_resizeable_v<A> && meta::is_resizeable_v<B>
         >
     >{
         /* when both A and B is resizeable, select A */
@@ -889,8 +889,8 @@ namespace nmtools::meta
     struct select_resizeable_vector<A,B,
         std::enable_if_t<
             /* BOTH A and B should be array1d */
-            traits::is_array1d_v<A> && traits::is_array1d_v<B> &&
-            !traits::is_resizeable_v<A> && traits::is_resizeable_v<B>
+            meta::is_array1d_v<A> && meta::is_array1d_v<B> &&
+            !meta::is_resizeable_v<A> && meta::is_resizeable_v<B>
         >
     >{
         using type = B;
@@ -900,8 +900,8 @@ namespace nmtools::meta
     struct select_resizeable_vector<A,B,
         std::enable_if_t<
             /* BOTH A and B should be array1d */
-            traits::is_array1d_v<A> && traits::is_array1d_v<B> &&
-            traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>
+            meta::is_array1d_v<A> && meta::is_array1d_v<B> &&
+            meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>
         >
     >{
         using type = A;
@@ -917,7 +917,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
-    using enable_if_resizeable_t = std::enable_if_t<traits::is_resizeable_v<T>>;
+    using enable_if_resizeable_t = std::enable_if_t<meta::is_resizeable_v<T>>;
 
     /**
      * @brief helper alias template to add specialization
@@ -926,7 +926,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
-    using enable_if_fixed_t = std::enable_if_t<traits::has_tuple_size_v<T>>;
+    using enable_if_fixed_t = std::enable_if_t<meta::has_tuple_size_v<T>>;
 
     /**
      * @brief helper alias template to remove specialization
@@ -935,7 +935,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
-    using disable_if_resizeable_t = std::enable_if_t<!traits::is_resizeable_v<T>>;
+    using disable_if_resizeable_t = std::enable_if_t<!meta::is_resizeable_v<T>>;
 
     /**
      * @brief helper alias template to remove specialization
@@ -944,7 +944,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
-    using disable_if_fixed_t = std::enable_if_t<!traits::has_tuple_size_v<T>>;
+    using disable_if_fixed_t = std::enable_if_t<!meta::has_tuple_size_v<T>>;
 
     /**
      * @brief given type A, B, C, select A (has type = A) 
@@ -969,11 +969,11 @@ namespace nmtools::meta
          */
         static constexpr auto _get()
         {
-            if constexpr (traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>)
+            if constexpr (meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>)
                 return A{};
-            else if constexpr (!traits::is_resizeable_v<A> && traits::is_resizeable_v<B>)
+            else if constexpr (!meta::is_resizeable_v<A> && meta::is_resizeable_v<B>)
                 return B{};
-            else if constexpr (traits::is_resizeable_v<A> && traits::is_resizeable_v<B>)
+            else if constexpr (meta::is_resizeable_v<A> && meta::is_resizeable_v<B>)
                 return A{};
             else return C{};
         } // _get()
@@ -1005,11 +1005,11 @@ namespace nmtools::meta
          */
         static constexpr auto _get()
         {
-            if constexpr (!traits::is_resizeable_v<A> && traits::is_resizeable_v<B>)
+            if constexpr (!meta::is_resizeable_v<A> && meta::is_resizeable_v<B>)
                 return A{};
-            else if constexpr (traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>)
+            else if constexpr (meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>)
                 return B{};
-            else if constexpr (!traits::is_resizeable_v<A> && !traits::is_resizeable_v<B>)
+            else if constexpr (!meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>)
                 return A{};
             else return C{};
         }
@@ -1110,29 +1110,29 @@ namespace nmtools::meta
          */
         static constexpr auto _get()
         {
-            if constexpr (traits::has_value_type_v<T>) {
+            if constexpr (meta::has_value_type_v<T>) {
                 using type = typename T::value_type;
-                return traits::remove_cvref_t<type>{};
+                return meta::remove_cvref_t<type>{};
             }
             else if constexpr (std::is_array_v<T>) {
                 using type = std::remove_all_extents_t<T>;
-                return traits::remove_cvref_t<type>{};
+                return meta::remove_cvref_t<type>{};
             }
-            else if constexpr (traits::has_funcnd_v<T,size_t>) {
+            else if constexpr (meta::has_funcnd_v<T,size_t>) {
                 using type = decltype(_func<T,size_t>());
-                return traits::remove_cvref_t<type>{};
+                return meta::remove_cvref_t<type>{};
             }
-            else if constexpr (traits::has_bracketnd_v<T,size_t>) {
+            else if constexpr (meta::has_bracketnd_v<T,size_t>) {
                 using type = decltype(_bracket<T,size_t>());
-                return traits::remove_cvref_t<type>{};
+                return meta::remove_cvref_t<type>{};
             }
-            else if constexpr (traits::has_atnd_v<T,size_t>) {
+            else if constexpr (meta::has_atnd_v<T,size_t>) {
                 using type = decltype(_at<T,size_t>());
-                return traits::remove_cvref_t<type>{};
+                return meta::remove_cvref_t<type>{};
             }
             else return detail::fail_t{};
         } // _get()
-        using type = traits::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
+        using type = meta::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
     }; // get_container_value_type
 
     /**
@@ -1151,7 +1151,7 @@ namespace nmtools::meta
      * @tparam T type to test
      */
     template <typename T>
-    using enable_if_has_value_type = std::enable_if<traits::has_value_type_v<T>>;
+    using enable_if_has_value_type = std::enable_if<meta::has_value_type_v<T>>;
 
     /**
      * @brief helper alias template for enable_if_has_value_type.
@@ -1168,7 +1168,7 @@ namespace nmtools::meta
      * @tparam T type to test
      */
     template <typename T>
-    using disable_if_nested_array2d = std::enable_if<!traits::is_nested_array2d_v<T>>;
+    using disable_if_nested_array2d = std::enable_if<!meta::is_nested_array2d_v<T>>;
 
     /**
      * @brief 
@@ -1193,7 +1193,7 @@ namespace nmtools::meta
         /* assuming nested vector */
         /* TODO: consider to use nmtools::at from nmtools/array/utility.hpp for generic case */
         /* TODO: use std::remove_cvref_t when possible */
-        using type = traits::remove_cvref_t<decltype(std::declval<T>()[0][0])>;
+        using type = meta::remove_cvref_t<decltype(std::declval<T>()[0][0])>;
     };
 
     /**
@@ -1282,11 +1282,11 @@ namespace nmtools::meta
              */
             if constexpr (std::is_array_v<T>)
                 return std::remove_all_extents_t<T>{};
-            else if constexpr (traits::is_ndarray_v<T>)
+            else if constexpr (meta::is_ndarray_v<T>)
                 return get_ndarray_value_type_t<T>{};
-            else if constexpr (traits::is_array2d_v<T>)
+            else if constexpr (meta::is_array2d_v<T>)
                 return get_matrix_value_type_t<T>{};
-            else if constexpr (traits::is_array1d_v<T>)
+            else if constexpr (meta::is_array1d_v<T>)
                 return get_vector_value_type_t<T>{};
             else if constexpr (std::is_arithmetic_v<T>)
                 return T{};
@@ -1315,7 +1315,7 @@ namespace nmtools::meta
     template <typename T, size_t N, typename=void>
     struct make_zeros_vector
     {
-        using value_t   = traits::remove_cvref_t<typename T::value_type>;
+        using value_t   = meta::remove_cvref_t<typename T::value_type>;
         using new_size  = std::integral_constant<size_t,N>;
         using new_array = replace_template_parameter<T,value_t,new_size>;
 
@@ -1347,8 +1347,8 @@ namespace nmtools::meta
     {
         /* NOTE: assuming nested array */
         using row_t = T;
-        using col_t = traits::remove_cvref_t<typename row_t::value_type>;
-        using element_t = traits::remove_cvref_t<typename col_t::value_type>;
+        using col_t = meta::remove_cvref_t<typename row_t::value_type>;
+        using element_t = meta::remove_cvref_t<typename col_t::value_type>;
         using new_col_size = std::integral_constant<size_t,Cols>;
         using new_row_size = std::integral_constant<size_t,Rows>;
         using new_col_t = replace_template_parameter<col_t,element_t,new_col_size>;
@@ -1383,13 +1383,13 @@ namespace nmtools::meta
         /* TODO: assert if V1 and v2 is vector-like */
         
         /* default implementation will try to replace value_type (and value_type only) of V1 with V2 */
-        using col_t = traits::remove_cvref_t<V2>;
+        using col_t = meta::remove_cvref_t<V2>;
         using col_tparam = extract_template_parameters_t<col_t>;
-        using col_value_type = traits::remove_cvref_t<typename pop_first<col_tparam>::first>;
+        using col_value_type = meta::remove_cvref_t<typename pop_first<col_tparam>::first>;
 
-        using row_t = traits::remove_cvref_t<V1>;
+        using row_t = meta::remove_cvref_t<V1>;
         using row_tparam = extract_template_parameters_t<row_t>;
-        using row_value_type = traits::remove_cvref_t<typename pop_first<row_tparam>::first>;
+        using row_value_type = meta::remove_cvref_t<typename pop_first<row_tparam>::first>;
 
         /* TODO: tell matrix_t to use common_t! */
         using common_t = std::common_type_t<col_value_type,row_value_type>;
@@ -1442,7 +1442,7 @@ namespace nmtools::meta
      * @tparam T matrix type
      */
     template <typename T>
-    struct get_column_type<T,std::enable_if_t<traits::is_nested_array2d_v<T> && traits::has_value_type_v<T>>>
+    struct get_column_type<T,std::enable_if_t<meta::is_nested_array2d_v<T> && meta::has_value_type_v<T>>>
     {
         using type = typename T::value_type;
     };
@@ -1457,7 +1457,7 @@ namespace nmtools::meta
     template <typename T, size_t M, size_t N>
     struct get_column_type<T[M][N],void>
     {
-        using value_t = traits::remove_cvref_t<T>;
+        using value_t = meta::remove_cvref_t<T>;
         using type    = std::array<value_t,N>;
     };
 
@@ -1488,7 +1488,7 @@ namespace nmtools::meta
      * @tparam T 
      */
     template <typename T>
-    struct get_row_type<T,std::enable_if_t<traits::is_nested_array2d_v<T> && traits::has_value_type_v<T> && traits::is_dynamic_size_matrix_v<T>>>
+    struct get_row_type<T,std::enable_if_t<meta::is_nested_array2d_v<T> && meta::has_value_type_v<T> && meta::is_dynamic_size_matrix_v<T>>>
     {
         using col_type = typename T::value_type;
         using value_type = typename col_type::value_type;

@@ -26,7 +26,7 @@ namespace nmtools
     template <typename Array>
     constexpr auto identity(const Array& a)
     {
-        using traits::is_array2d_v;
+        using meta::is_array2d_v;
 
         static_assert(
             is_array2d_v<Array>,

@@ -27,19 +27,19 @@ namespace nmtools
     constexpr auto transpose(const Array& a)
     {
         static_assert(
-            traits::is_array2d_v<Array>,
+            meta::is_array2d_v<Array>,
             "transpose only support 2D array for now"
         );
 
         using meta::get_container_value_type_t;
-        using traits::has_tuple_size_v;
+        using meta::has_tuple_size_v;
 
         using std::get;
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
         using meta::transform_bounded_array_t;
         using return_t = transform_bounded_array_t<remove_cvref_t<Array>>;
 
-        constexpr auto is_fixed_size = traits::is_fixed_size_matrix_v<return_t>;
+        constexpr auto is_fixed_size = meta::is_fixed_size_matrix_v<return_t>;
 
         /* common loop implementation for both fixed and dynamic */
         auto transpose_impl = [](auto &transposed, const auto& a, auto rows, auto cols) {

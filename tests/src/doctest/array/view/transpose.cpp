@@ -37,7 +37,7 @@ TEST_CASE("transpose(std::array)"*doctest::test_suite("view::transpose"))
     auto array_ref = view::transpose(array);
 
     // LOG_TYPEINFO( decltype(array_ref) );
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
 
@@ -64,7 +64,7 @@ TEST_CASE("transpose(std::array)"*doctest::test_suite("view::transpose"))
         // view should have fixed_array_shape if its underlying array have too
         constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     }
 }
 
@@ -84,7 +84,7 @@ TEST_CASE("make_view<transpose_t>(std::array)"*doctest::test_suite("view::transp
     // ```
     // LOG_TYPEINFO( decltype(array_ref) );
 
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
 
@@ -108,13 +108,13 @@ TEST_CASE("make_view<transpose_t>(std::array)"*doctest::test_suite("view::transp
         // view::decorator_t should have fixed_array_shape if its underlying view have too
         constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_vector_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
-static_assert( nmtools::traits::has_tuple_size_v<std::pair<size_t,size_t>> );
+static_assert( nmtools::meta::has_tuple_size_v<std::pair<size_t,size_t>> );
 
 /**
  * @test test case for const transpose view to 2D std::array
@@ -131,7 +131,7 @@ TEST_CASE("transpose(std::array[2])"*doctest::test_suite("view::transpose")) // 
         using shape_t = decltype(view::detail::shape(array_ref.array));
         using array_t = decltype(nmtools::detail::make_array<std::array>(std::declval<shape_t>()));
         // LOG_TYPEINFO(array_t);
-        STATIC_CHECK(( nmtools::traits::has_tuple_size_v<shape_t> ));
+        STATIC_CHECK(( nmtools::meta::has_tuple_size_v<shape_t> ));
         STATIC_CHECK(( std::is_same_v<array_t,std::array<size_t,2>> ));
     }
 
@@ -143,7 +143,7 @@ TEST_CASE("transpose(std::array[2])"*doctest::test_suite("view::transpose")) // 
     STATIC_CHECK(( std::is_same_v<decltype(shape),std::array<size_t,2>> ));
     // @note since the transpose doesnt specify axes (that is none_t),
     // the view should be also fixed size
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( isclose(shape,std::array{3,2}) );
     CHECK( isclose(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
@@ -168,7 +168,7 @@ TEST_CASE("transpose(std::array[2])"*doctest::test_suite("view::transpose")) // 
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -185,7 +185,7 @@ TEST_CASE("transpose(std::array[2],tuple{0,1})"*doctest::test_suite("view::trans
     };
     auto array_ref = view::transpose(array,std::tuple{0,1});
     // @note even if the underlying array is fixed, but the axes are not compile-time value
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
 
@@ -215,7 +215,7 @@ TEST_CASE("transpose(std::array[2],tuple{0,1})"*doctest::test_suite("view::trans
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -232,7 +232,7 @@ TEST_CASE("transpose(std::array[2],tuple{1,0})"*doctest::test_suite("view::trans
     };
     auto array_ref = view::transpose(array,std::tuple{1,0});
     // @note even if the underlying array is fixed, but the axes are not compile-time value
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
     CHECK(array_ref.dim()==2);
 
     // @note that isclose can also handle comparison between pair/tuple with array
@@ -260,7 +260,7 @@ TEST_CASE("transpose(std::array[2],tuple{1,0})"*doctest::test_suite("view::trans
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -274,7 +274,7 @@ TEST_CASE("transpose(std::vector)"*doctest::test_suite("view::transpose"))
     auto array = std::vector{1.,2.,3.};
     auto array_ref = view::transpose(array);
 
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
 
@@ -310,7 +310,7 @@ TEST_CASE("transpose(std::vector[2])"*doctest::test_suite("view::transpose")) //
     auto array_ref = view::transpose(array);
 
     // @note since the referenced array is not fixed-size, the the view itself is not either
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
 
@@ -338,7 +338,7 @@ TEST_CASE("transpose(std::vector[2])"*doctest::test_suite("view::transpose")) //
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -353,7 +353,7 @@ TEST_CASE("transpose(fixed_vector)"*doctest::test_suite("view::transpose"))
     auto array_ref = view::transpose(array);
 
     // LOG_TYPEINFO( decltype(array_ref) );
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
 
@@ -380,7 +380,7 @@ TEST_CASE("transpose(fixed_vector)"*doctest::test_suite("view::transpose"))
         // view should have fixed_array_shape if its underlying array have too
         constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     }
 }
 
@@ -396,7 +396,7 @@ TEST_CASE("transpose(fixed_matrix)"*doctest::test_suite("view::transpose")) // r
         std::array{3.,4.,5.},
     };
     // @note since the referenced array is fixed-size and axes_t of array_ref is none_t, the view is also fixed-size
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
     CHECK(array_ref.dim()==2);
 
     // @note that isclose can also handle comparison between pair/tuple with array
@@ -424,7 +424,7 @@ TEST_CASE("transpose(fixed_matrix)"*doctest::test_suite("view::transpose")) // r
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -442,7 +442,7 @@ TEST_CASE("transpose(fixed_matrix,tuple{1,0})"*doctest::test_suite("view::transp
         std::array{3.,4.,5.},
     };
     // @note even if the referenced array is fixed-size, when the axes value is only known at runtime, then the view is not fixed-size
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
     CHECK(array_ref.dim()==2);
 
     // @note that isclose can also handle comparison between pair/tuple with array
@@ -470,7 +470,7 @@ TEST_CASE("transpose(fixed_matrix,tuple{1,0})"*doctest::test_suite("view::transp
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -484,7 +484,7 @@ TEST_CASE("transpose(dynamic_vector)"*doctest::test_suite("view::transpose"))
     auto array = dynamic_vector{1.,2.,3.};
     auto array_ref = view::transpose(array);
 
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
 
@@ -520,7 +520,7 @@ TEST_CASE("transpose(dynamic_matrix)"*doctest::test_suite("view::transpose")) //
     auto array_ref = view::transpose(array);
 
     // @note since the referenced array is not fixed-size, the the view itself is not either
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
 
@@ -548,7 +548,7 @@ TEST_CASE("transpose(dynamic_matrix)"*doctest::test_suite("view::transpose")) //
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }

@@ -41,8 +41,8 @@ namespace nmtools::blas
     {
         static_assert(
             std::is_arithmetic_v<Scalar>
-            && traits::is_array1d_v<X>
-            && traits::is_array1d_v<Y>
+            && meta::is_array1d_v<X>
+            && meta::is_array1d_v<Y>
             /* TODO: helpful error message */
         );
 
@@ -50,8 +50,8 @@ namespace nmtools::blas
         /* TODO: consider to provide helper function for this check */
         if constexpr (is_assert_v<tag_t>) {
             /* check if both x and y is fixed size */
-            constexpr auto is_fixed_size_vec_x = traits::is_fixed_size_vector_v<X>;
-            constexpr auto is_fixed_size_vec_y = traits::is_fixed_size_vector_v<Y>;
+            constexpr auto is_fixed_size_vec_x = meta::is_fixed_size_vector_v<X>;
+            constexpr auto is_fixed_size_vec_y = meta::is_fixed_size_vector_v<Y>;
 
             /* when both vector is fixed size, perform size assertion at compile time */
             if constexpr (is_fixed_size_vec_x && is_fixed_size_vec_y) {

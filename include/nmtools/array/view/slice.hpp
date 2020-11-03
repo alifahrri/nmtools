@@ -13,15 +13,15 @@
 
 namespace nmtools::view
 {
-    using traits::is_array1d_v;
-    using traits::is_array2d_v;
-    using traits::is_ndarray_v;
-    using traits::is_fixed_size_vector_v;
-    using traits::is_fixed_size_matrix_v;
-    using traits::is_fixed_size_ndarray_v;
-    using traits::has_shape_v;
-    using traits::has_size_v;
-    using traits::has_dim_v;
+    using meta::is_array1d_v;
+    using meta::is_array2d_v;
+    using meta::is_ndarray_v;
+    using meta::is_fixed_size_vector_v;
+    using meta::is_fixed_size_matrix_v;
+    using meta::is_fixed_size_ndarray_v;
+    using meta::has_shape_v;
+    using meta::has_size_v;
+    using meta::has_dim_v;
 
     /**
      * @addtogroup view
@@ -47,16 +47,16 @@ namespace nmtools::view
         template <typename start_t, typename stop_t, typename T>
         constexpr auto offset(const T& a, const start_t& start=start_t{}, const stop_t& stop=stop_t{})
         {
-            constexpr auto is_array1d = traits::is_array1d_v<T>;
-            constexpr auto is_array2d = traits::is_array2d_v<T>;
+            constexpr auto is_array1d = meta::is_array1d_v<T>;
+            constexpr auto is_array2d = meta::is_array2d_v<T>;
             static_assert(
                 is_array1d || is_array2d,
                 "only support 1D or 2D array for now"
             );
-            using traits::remove_cvref_t;
+            using meta::remove_cvref_t;
             // note: need to remove_cvref because is_tuple doesnt remove cvref and start_t may be cvref
-            constexpr auto start_is_tuple = traits::is_tuple_v<remove_cvref_t<start_t>>;
-            constexpr auto stop_is_tuple  = traits::is_tuple_v<remove_cvref_t<stop_t>>;
+            constexpr auto start_is_tuple = meta::is_tuple_v<remove_cvref_t<start_t>>;
+            constexpr auto stop_is_tuple  = meta::is_tuple_v<remove_cvref_t<stop_t>>;
             static_assert (start_is_tuple == stop_is_tuple,
                 "only support same traits for both start_t & stop_t, "
                 "either both is tuple-like or not"
@@ -72,15 +72,15 @@ namespace nmtools::view
             using ::nmtools::detail::unpack_slice_indices;
             using ::nmtools::matrix_size;
 
-            constexpr auto is_fixed_size = traits::is_fixed_size_matrix_v<T> || traits::is_fixed_size_vector_v<T>;
+            constexpr auto is_fixed_size = meta::is_fixed_size_matrix_v<T> || meta::is_fixed_size_vector_v<T>;
 
             // handle fixed size 2D array, start_t and stop_t must be tuple
             if constexpr (start_is_tuple && stop_is_tuple) {
                 // @todo check if elements of start & stop is compile-time constant
-                // constexpr auto any_start_is_ct = traits::type_list_conjunction_v<start_t,traits::is_integral_constant>;
-                // constexpr auto all_start_is_ct = traits::type_list_disjunction_v<start_t,traits::is_integral_constant>;
-                // constexpr auto any_stop_is_ct  = traits::type_list_conjunction_v<stop_t,traits::is_integral_constant>;
-                // constexpr auto all_stop_is_ct  = traits::type_list_disjunction_v<stop_t,traits::is_integral_constant>;
+                // constexpr auto any_start_is_ct = meta::type_list_conjunction_v<start_t,meta::is_integral_constant>;
+                // constexpr auto all_start_is_ct = meta::type_list_disjunction_v<start_t,meta::is_integral_constant>;
+                // constexpr auto any_stop_is_ct  = meta::type_list_conjunction_v<stop_t,meta::is_integral_constant>;
+                // constexpr auto all_stop_is_ct  = meta::type_list_disjunction_v<stop_t,meta::is_integral_constant>;
                 /* @todo pack as type */
                 return unpack_slice_indices(a,start,stop);
             }
@@ -269,7 +269,7 @@ namespace nmtools::view
         {
             using std::tuple_size_v;
 
-            static_assert (traits::has_tuple_size_v<start_t> && traits::has_tuple_size_v<stop_t>,
+            static_assert (meta::has_tuple_size_v<start_t> && meta::has_tuple_size_v<stop_t>,
                 "slice only support both start & stop to be the packed type(s)"
             );
             static_assert (sizeof...(indices)>0 && sizeof...(indices)<3,
@@ -297,7 +297,7 @@ namespace nmtools::view
          * @tparam stop_t 
          */
         template <typename array_t, typename start_t, typename stop_t>
-        using get_offset_type_t = traits::remove_cvref_t<decltype(offset(std::declval<array_t>(),std::declval<start_t>(),std::declval<stop_t>()))>;
+        using get_offset_type_t = meta::remove_cvref_t<decltype(offset(std::declval<array_t>(),std::declval<start_t>(),std::declval<stop_t>()))>;
     } // detail
 
     /**
@@ -403,14 +403,14 @@ namespace nmtools
             // @note use std::conjuction to short circuit
             // since type_list_conjunction requires tparam to have tuple_size
             std::conjunction_v<
-                traits::is_fixed_size_vector<traits::remove_cvref_t<array_t>>,
-                traits::has_tuple_size<start_t>,
-                traits::type_list_conjunction<start_t,traits::is_integral_constant>,
-                traits::has_tuple_size<stop_t>,
-                traits::type_list_conjunction<stop_t,traits::is_integral_constant>
+                meta::is_fixed_size_vector<meta::remove_cvref_t<array_t>>,
+                meta::has_tuple_size<start_t>,
+                meta::type_list_conjunction<start_t,meta::is_integral_constant>,
+                meta::has_tuple_size<stop_t>,
+                meta::type_list_conjunction<stop_t,meta::is_integral_constant>
             >
         >
-    > : fixed_vector_size< traits::remove_cvref_t<array_t> > {};
+    > : fixed_vector_size< meta::remove_cvref_t<array_t> > {};
 
     /**
      * @brief specialization of fixed_matrix_size for slice view.
@@ -423,14 +423,14 @@ namespace nmtools
     struct fixed_matrix_size< view::slice_t<array_t,start_t,stop_t>
         , std::enable_if_t<
             std::conjunction_v<
-                traits::is_fixed_size_matrix<traits::remove_cvref_t<array_t>>,
-                traits::has_tuple_size<start_t>,
-                traits::type_list_conjunction<start_t,traits::is_integral_constant>,
-                traits::has_tuple_size<stop_t>,
-                traits::type_list_conjunction<stop_t,traits::is_integral_constant>
+                meta::is_fixed_size_matrix<meta::remove_cvref_t<array_t>>,
+                meta::has_tuple_size<start_t>,
+                meta::type_list_conjunction<start_t,meta::is_integral_constant>,
+                meta::has_tuple_size<stop_t>,
+                meta::type_list_conjunction<stop_t,meta::is_integral_constant>
             >
         >
-    > : fixed_matrix_size< traits::remove_cvref_t<array_t> > {};
+    > : fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_SLICE_HPP

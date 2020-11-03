@@ -26,8 +26,8 @@ namespace nmtools
     template <typename Array, typename=std::enable_if_t<!std::is_arithmetic_v<Array>>>
     constexpr auto fabs(const Array& a)
     {
-        using traits::is_array1d_v;
-        using traits::is_array2d_v;
+        using meta::is_array1d_v;
+        using meta::is_array2d_v;
         using std::is_arithmetic_v;
 
         static_assert(

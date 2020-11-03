@@ -86,7 +86,7 @@ namespace nmtools::curvefit
         constexpr auto decrement_array_size()
         {
             using std::tuple_size_v;
-            static_assert(traits::has_tuple_size_v<T>);
+            static_assert(meta::has_tuple_size_v<T>);
             constexpr auto size = tuple_size_v<T>;
             return size - 1;
         }
@@ -102,7 +102,7 @@ namespace nmtools::curvefit
         constexpr auto increment_array_size()
         {
             using std::tuple_size_v;
-            static_assert(traits::has_tuple_size_v<T>);
+            static_assert(meta::has_tuple_size_v<T>);
             constexpr auto size = tuple_size_v<T>;
             return size + 1;
         }
@@ -125,9 +125,9 @@ namespace nmtools::curvefit
          * @tparam T fixed array which its size to be decremented
          */
         template <typename T>
-        struct decrement_size_if_fixed<T,std::enable_if_t<traits::has_tuple_size_v<T>>>
+        struct decrement_size_if_fixed<T,std::enable_if_t<meta::has_tuple_size_v<T>>>
         {
-            using element_t = traits::remove_cvref_t<typename T::value_type>;
+            using element_t = meta::remove_cvref_t<typename T::value_type>;
             /* currently we need to pack value as type */
             using new_size_t = std::integral_constant<size_t,decrement_array_size<T>()>;
             using type = update_size_if_fixed_t<T,element_t,new_size_t>;
@@ -159,9 +159,9 @@ namespace nmtools::curvefit
          * @tparam T type which size to be incremented
          */
         template <typename T>
-        struct increment_if_fixed<T,std::enable_if_t<traits::has_tuple_size_v<T>>>
+        struct increment_if_fixed<T,std::enable_if_t<meta::has_tuple_size_v<T>>>
         {
-            using element_t = traits::remove_cvref_t<typename T::value_type>;
+            using element_t = meta::remove_cvref_t<typename T::value_type>;
             /* currently we need to pack value as type */
             using new_size_t = std::integral_constant<size_t,increment_array_size<T>()>;
             using type = update_size_if_fixed_t<T,element_t,new_size_t>;
@@ -188,8 +188,8 @@ namespace nmtools::curvefit
         constexpr auto make_tridiagonal(const X& x, const Y& y)
         {
             static_assert(
-                traits::is_array1d_v<X> &&
-                traits::is_array1d_v<Y>,
+                meta::is_array1d_v<X> &&
+                meta::is_array1d_v<Y>,
                 "unsupported type of x & y for make_tridiagonal"
             );
 
@@ -202,7 +202,7 @@ namespace nmtools::curvefit
             constexpr auto size_assert = tag::is_tag_enabled_v<tag::size_assert_t,tag_t>;
             if constexpr (size_assert) {
                 /* validate assumption (nx==ny) */
-                if constexpr (traits::has_tuple_size_v<X> && traits::has_tuple_size_v<Y>)
+                if constexpr (meta::has_tuple_size_v<X> && meta::has_tuple_size_v<Y>)
                     static_assert(tuple_size_v<X> == tuple_size_v<Y>);
                 else
                     assert(nx == ny);
@@ -220,7 +220,7 @@ namespace nmtools::curvefit
             return_t e{}, f{}, g{}, r{};
 
             /* deal with possibly runtime container */
-            if constexpr (traits::is_resizeable_v<return_t>) {
+            if constexpr (meta::is_resizeable_v<return_t>) {
                 e.resize(n-1);
                 f.resize(n-1);
                 g.resize(n-1);
@@ -271,9 +271,9 @@ namespace nmtools::curvefit
         constexpr auto make_linear_spline_fn(const X& x, const Y& y, const M& m)
         {
             static_assert(
-                traits::is_array1d_v<X> &&
-                traits::is_array1d_v<Y> &&
-                traits::is_array1d_v<M>,
+                meta::is_array1d_v<X> &&
+                meta::is_array1d_v<Y> &&
+                meta::is_array1d_v<M>,
                 "unsupported type of x, y, or m for make_linear_spline_fn"
             );
 
@@ -281,9 +281,9 @@ namespace nmtools::curvefit
             constexpr auto size_assert = tag::is_tag_enabled_v<tag::size_assert_t,tag_t>;
             if constexpr (size_assert) {
                 if constexpr (
-                    traits::has_tuple_size_v<X> &&
-                    traits::has_tuple_size_v<Y> &&
-                    traits::has_tuple_size_v<M>
+                    meta::has_tuple_size_v<X> &&
+                    meta::has_tuple_size_v<Y> &&
+                    meta::has_tuple_size_v<M>
                 ) /* checking can be performed at compile-time */
                 {
                     constexpr auto nx = tuple_size_v<X>;
@@ -303,7 +303,7 @@ namespace nmtools::curvefit
             /* construct lambda to be returned */   
             auto f = [=](auto t){
                 /* get type of t */
-                using value_t = traits::remove_cvref_t<decltype(t)>;
+                using value_t = meta::remove_cvref_t<decltype(t)>;
                 auto n = size(x);
                 value_t fx{};
                 auto in_range = t >= x[0] && t <= x[n-1];
@@ -335,13 +335,13 @@ namespace nmtools::curvefit
         constexpr auto make_cubic_spline_fn(const X& x, const Y& y, const D& d2x)
         {
             static_assert(
-                traits::is_array1d_v<X> &&
-                traits::is_array1d_v<Y> &&
-                traits::is_array1d_v<D>,
+                meta::is_array1d_v<X> &&
+                meta::is_array1d_v<Y> &&
+                meta::is_array1d_v<D>,
                 "unsupported type x, y, or d2x for make_cubic_spline_fn"
             );
 
-            using traits::remove_cvref_t;
+            using meta::remove_cvref_t;
             using meta::get_container_value_type_t;
 
 
@@ -356,9 +356,9 @@ namespace nmtools::curvefit
             constexpr auto size_assert = tag::is_tag_enabled_v<tag::size_assert_t,tag_t>;
             if constexpr (size_assert) {
                 if constexpr (
-                    traits::has_tuple_size_v<X> &&
-                    traits::has_tuple_size_v<Y> &&
-                    traits::has_tuple_size_v<D>
+                    meta::has_tuple_size_v<X> &&
+                    meta::has_tuple_size_v<Y> &&
+                    meta::has_tuple_size_v<D>
                 ) /* checking can be performed at compile-time */
                 {
                     constexpr auto nx = tuple_size_v<X>;
@@ -380,7 +380,7 @@ namespace nmtools::curvefit
 
             /* placeholder for padded 2nd derivative, with d2x[0] = 0 */
             d2x_t d2x_pad{};
-            if constexpr (traits::is_resizeable_v<d2x_t>)
+            if constexpr (meta::is_resizeable_v<d2x_t>)
                 d2x_pad.resize(nx);
             for (size_t i=1; i<nx; i++)
                 d2x_pad[i] = d2x[i-1];
@@ -388,7 +388,7 @@ namespace nmtools::curvefit
             /* create callable */
             auto f = [=,n=nx,z=d2x_pad](auto t){
                 /* get type of t */
-                using t_t = traits::remove_cvref_t<decltype(t)>;
+                using t_t = meta::remove_cvref_t<decltype(t)>;
                 /* use common type between values */
                 using common_t = std::common_type_t<x_t,y_t,t_t,d_t>;
                 constexpr auto six = static_cast<common_t>(6);
@@ -427,8 +427,8 @@ namespace nmtools::curvefit
     constexpr auto compute_slopes(const X&x, const Y& y)
     {
         static_assert(
-            traits::is_array1d_v<X> &&
-            traits::is_array1d_v<Y>,
+            meta::is_array1d_v<X> &&
+            meta::is_array1d_v<Y>,
             "unsupported type for x & y"
         );
 
@@ -448,8 +448,8 @@ namespace nmtools::curvefit
         if constexpr (size_assert)
         {
             if constexpr (
-                traits::has_tuple_size_v<X> &&
-                traits::has_tuple_size_v<Y>
+                meta::has_tuple_size_v<X> &&
+                meta::has_tuple_size_v<Y>
             ) /* checking can be done at compile-time */
             {
                 using std::tuple_size_v;
@@ -460,7 +460,7 @@ namespace nmtools::curvefit
                 assert (nx == ny);
         }
 
-        if constexpr (traits::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizeable_v<return_t>)
             m.resize(nx-1);
         
         for (size_t i=0; i<(nx-1); i++)
@@ -504,8 +504,8 @@ namespace nmtools::curvefit
     constexpr auto linear_spline(const X& x, const Y& y)
     {
         static_assert(
-            traits::is_array1d_v<X> &&
-            traits::is_array1d_v<Y>,
+            meta::is_array1d_v<X> &&
+            meta::is_array1d_v<Y>,
             "unsupported type for x & y"
         );
         auto m = compute_slopes<tag_t>(x,y);

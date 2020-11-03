@@ -106,7 +106,7 @@ namespace nmtools::array {
          * @param ns the rest of indices of element to be accessed
          * @return constexpr reference 
          * @note use sfinae instead of static assertion to make sure
-         * expression checking (`traits::has_funcnd_v<...>`) works
+         * expression checking (`meta::has_funcnd_v<...>`) works
          */
         template <typename...size>
         constexpr auto operator()(size_type n, size...ns)
@@ -126,7 +126,7 @@ namespace nmtools::array {
          * @param ns the rest of indices of element to be accessed
          * @return constexpr const_reference 
          * @note use sfinae instead of static assertion to make sure
-         * expression checking (`traits::has_funcnd_v<...>`) works
+         * expression checking (`meta::has_funcnd_v<...>`) works
          */
         template <typename...size>
         constexpr auto operator()(size_type n, size...ns) const
@@ -244,7 +244,7 @@ namespace nmtools
 
 #include "nmtools/traits.hpp"
 
-namespace nmtools::traits
+namespace nmtools::meta
 {
     /**
      * @ingroup traits
@@ -260,16 +260,6 @@ namespace nmtools::traits
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
     struct is_ndarray<array::fixed_ndarray<T,Shape1,ShapeN...>> : true_type {};
-
-    /**
-     * @brief specialization fo is_fixed_size_ndarray traits for fixed_ndarray
-     * 
-     * @tparam T element type of ndarray
-     * @tparam Shape1 size of first axis
-     * @tparam ShapeN sizes of the rest axis
-     */
-    template <typename T, size_t Shape1, size_t...ShapeN>
-    struct is_fixed_size_ndarray<array::fixed_ndarray<T,Shape1,ShapeN...>> : true_type {};
 
     /** @} */ // end group traits
 } // namespace nmtooclls::traits
@@ -323,8 +313,8 @@ namespace nmtools::array
     constexpr decltype(auto) fixed_ndarray<T,Shape1,ShapeN...>::operator=(ndarray_t&& rhs)
     {
         // static_assert (
-        //     ( traits::is_fixed_size_matrix_v<ndarray_t> && (dim()==2) )
-        //     || ( traits::is_fixed_size_vector_v<ndarray_t> && (dim()==1) ),
+        //     ( meta::is_fixed_size_matrix_v<ndarray_t> && (dim()==2) )
+        //     || ( meta::is_fixed_size_vector_v<ndarray_t> && (dim()==1) ),
         //     "fixed_ndarray only support assignment from fixed ndarray/matrix/vector for now"
         // );
 

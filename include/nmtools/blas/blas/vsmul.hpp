@@ -34,7 +34,7 @@ namespace nmtools::blas
     constexpr auto vsmul(const V& v, const S& s)
     {
         static_assert(
-            traits::is_array1d_v<V>
+            meta::is_array1d_v<V>
             && std::is_arithmetic_v<S>
             /* TODO: helpful error message here */
         );

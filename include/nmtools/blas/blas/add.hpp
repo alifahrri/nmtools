@@ -31,7 +31,7 @@ namespace nmtools::blas
     template <typename A, typename B>
     constexpr auto add(const A& lhs, const B& rhs)
     {
-        using traits::is_additive_v;
+        using meta::is_additive_v;
 
         /* get operation tag */
         using op_t = tag::get_t<A,B>;

@@ -9,7 +9,7 @@
 #include <tuple>
 #include <utility>
 
-namespace nmtools::traits {
+namespace nmtools::meta {
 
     /** @defgroup traits
     * Collections of type traits used accross the library
@@ -828,8 +828,8 @@ namespace nmtools::traits {
      * 
      * @tparam T type to check
      * @tparam size_types arguments to `at`
-     * @see nmtools::traits::expr::has_atnd
-     * @see nmtools::traits::detail::expression_check
+     * @see nmtools::meta::expr::has_atnd
+     * @see nmtools::meta::detail::expression_check
      */
     template <typename T, typename...size_types>
     struct has_atnd : detail::expression_check<void,expr::atnd,T,size_types...> {};
@@ -839,7 +839,7 @@ namespace nmtools::traits {
      * 
      * @tparam T type to check
      * @tparam size_types arguments to `at`
-     * @see nmtools::traits::has_atnd
+     * @see nmtools::meta::has_atnd
      */
     template <typename T, typename...size_types>
     inline constexpr bool has_atnd_v = has_atnd<T,size_types...>::value;
@@ -1275,5 +1275,5 @@ namespace nmtools::traits {
 
     /** @} */ // end group traits
 
-} // namespace nmtools::traits
+} // namespace nmtools::meta
 #endif // NMTOOLS_TRAITS_HPP

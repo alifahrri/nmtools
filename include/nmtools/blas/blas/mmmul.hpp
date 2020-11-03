@@ -30,22 +30,22 @@ namespace nmtools::meta
     {
         static constexpr auto _get()
         {
-            if constexpr (traits::is_resizeable2d_v<m1_t> && !traits::is_resizeable2d_v<m2_t>)
+            if constexpr (meta::is_resizeable2d_v<m1_t> && !meta::is_resizeable2d_v<m2_t>)
                 return m1_t{};
-            else if constexpr (!traits::is_resizeable2d_v<m1_t> && traits::is_resizeable2d_v<m2_t>)
+            else if constexpr (!meta::is_resizeable2d_v<m1_t> && meta::is_resizeable2d_v<m2_t>)
                 return m2_t{};
-            else if constexpr (traits::is_resizeable2d_v<m1_t> && traits::is_resizeable2d_v<m2_t>)
+            else if constexpr (meta::is_resizeable2d_v<m1_t> && meta::is_resizeable2d_v<m2_t>)
                 return m1_t{};
-            else if constexpr (traits::is_resizeable_v<m1_t> && !traits::is_resizeable_v<m2_t>)
+            else if constexpr (meta::is_resizeable_v<m1_t> && !meta::is_resizeable_v<m2_t>)
                 return m1_t{};
-            else if constexpr (!traits::is_resizeable_v<m1_t> && traits::is_resizeable_v<m2_t>)
+            else if constexpr (!meta::is_resizeable_v<m1_t> && meta::is_resizeable_v<m2_t>)
                 return m2_t{};
-            else if constexpr (traits::is_resizeable_v<m1_t> && traits::is_resizeable_v<m2_t>)
+            else if constexpr (meta::is_resizeable_v<m1_t> && meta::is_resizeable_v<m2_t>)
                 return m1_t{};
-            else if constexpr (!traits::is_resizeable_v<m1_t> && !traits::is_resizeable_v<m2_t>)
+            else if constexpr (!meta::is_resizeable_v<m1_t> && !meta::is_resizeable_v<m2_t>)
                 return detail::fail_t{};
         } // _get()
-        using type = traits::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
+        using type = meta::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
     };
 } // namespace nmtools::meta
 
@@ -84,8 +84,8 @@ namespace nmtools::blas
     constexpr auto mmmul(const M1& A, const M2& B)
     {
         static_assert(
-            traits::is_matrix_like_v<M1> &&
-            traits::is_matrix_like_v<M2>,
+            meta::is_matrix_like_v<M1> &&
+            meta::is_matrix_like_v<M2>,
             "unsupported type M1 & M2 of A & B for mmmul"
         );
 
@@ -98,8 +98,8 @@ namespace nmtools::blas
 
         using detail::mmmul_impl;
 
-        constexpr auto is_fixed_size_mat_A = traits::is_fixed_size_matrix_v<m1_t>;
-        constexpr auto is_fixed_size_mat_B = traits::is_fixed_size_matrix_v<m2_t>;
+        constexpr auto is_fixed_size_mat_A = meta::is_fixed_size_matrix_v<m1_t>;
+        constexpr auto is_fixed_size_mat_B = meta::is_fixed_size_matrix_v<m2_t>;
 
         /* dispatch compile-time version 
             both are fixed size matrix, the resulting shape will be known at compile time */

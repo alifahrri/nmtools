@@ -53,8 +53,8 @@ namespace nmtools::blas
     constexpr auto outer(const V1& v1, const V2& v2)
     {
         static_assert(
-            traits::is_array1d_v<V1>
-            && traits::is_array1d_v<V2>
+            meta::is_array1d_v<V1>
+            && meta::is_array1d_v<V2>
             /* TODO: helpful error message here */
         );
 
@@ -66,11 +66,11 @@ namespace nmtools::blas
         using matrix_t = meta::make_outer_matrix_t<v1_t,v2_t>;
 
         static_assert(
-            traits::is_array2d_v<matrix_t>
+            meta::is_array2d_v<matrix_t>
             /* TODO: helpful error message here */
         );
 
-        constexpr auto is_fixed_size_matrix = traits::is_fixed_size_matrix_v<matrix_t>;
+        constexpr auto is_fixed_size_matrix = meta::is_fixed_size_matrix_v<matrix_t>;
 
         if constexpr (is_fixed_size_matrix) {
             /* prepare placeholder for the resulting matrix */

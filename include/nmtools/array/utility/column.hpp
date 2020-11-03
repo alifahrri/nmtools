@@ -58,7 +58,7 @@ namespace nmtools
     constexpr auto column(const T& M, size_t c)
     {
         static_assert(
-            traits::is_array2d_v<T>
+            meta::is_array2d_v<T>
             /* TODO: helpful error message here */
         );
         using detail::column_impl;
@@ -68,8 +68,8 @@ namespace nmtools
             "unsupported column type, may be specialization "
             "of nmtools::meta::get_column_type needed (?)"
         );
-        constexpr auto is_fixed_size = traits::is_fixed_size_vector_v<column_t>;
-        constexpr auto is_resizeable = traits::is_resizeable_v<column_t>;
+        constexpr auto is_fixed_size = meta::is_fixed_size_vector_v<column_t>;
+        constexpr auto is_resizeable = meta::is_resizeable_v<column_t>;
         if constexpr (is_fixed_size) {
             // NOTE: move instantiation here to make error message less verbose
             auto col = column_t{};

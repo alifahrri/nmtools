@@ -133,11 +133,11 @@ namespace nmtools::blas
     constexpr auto norm(const Array& x)
     {
         static_assert(
-            traits::is_array1d_v<Array>
-            || traits::is_array2d_v<Array>
+            meta::is_array1d_v<Array>
+            || meta::is_array2d_v<Array>
             /* TODO: helpful error message here */
         );
-        if constexpr (traits::is_array1d_v<Array>)
+        if constexpr (meta::is_array1d_v<Array>)
             return vector_norm<P>(x);
         else return matrix_norm<P>(x);
     } // constexpr auto norm
@@ -155,11 +155,11 @@ namespace nmtools::blas
     constexpr auto norm(const Array& x, size_type p)
     {
         static_assert(
-            traits::is_array1d_v<Array>
-            || traits::is_array2d_v<Array>
+            meta::is_array1d_v<Array>
+            || meta::is_array2d_v<Array>
             /* TODO: helpful error message here */
         );
-        if constexpr (traits::is_array1d_v<Array>)
+        if constexpr (meta::is_array1d_v<Array>)
             return vector_norm(x,p);
         else return matrix_norm(x,p);
     } // constexpr auto norm

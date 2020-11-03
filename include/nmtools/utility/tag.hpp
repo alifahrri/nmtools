@@ -52,7 +52,7 @@ namespace nmtools::tag
     template <typename ...Args>
     inline constexpr bool is_assert_v<tuple<Args...>> = type_in_tuple<is_base_of>(assert_t{},tuple<Args...>{});
 
-    using traits::is_tuple_v;
+    using meta::is_tuple_v;
 
     /**
      * @brief check if given tag is present in T

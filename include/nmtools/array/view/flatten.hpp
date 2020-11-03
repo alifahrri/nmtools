@@ -73,7 +73,7 @@ namespace nmtools::view
     /** @} */ // end group view
 } // namespace nmtools::view
 
-namespace nmtools::traits
+namespace nmtools::meta
 {
     /**
      * @brief flatten view is 1D
@@ -106,19 +106,19 @@ namespace nmtools::traits
      */
     template <typename array_t>
     struct is_ndarray<view::decorator_t<view::flatten_t,array_t>> : std::false_type {};
-} // namespace nmtools::traits
+} // namespace nmtools::meta
 
 namespace nmtools
 {
     template <typename array_t>
     struct fixed_vector_size< view::flatten_t<array_t>
         , std::enable_if_t<
-            traits::is_fixed_size_array_v<traits::remove_cvref_t<array_t>>
+            meta::is_fixed_size_array_v<meta::remove_cvref_t<array_t>>
         >
     > {
         static constexpr auto _get()
         {
-            constexpr auto shape_ = fixed_array_shape_v<traits::remove_cvref_t<array_t>>;
+            constexpr auto shape_ = fixed_array_shape_v<meta::remove_cvref_t<array_t>>;
             constexpr auto shape  = detail::make_array<std::array>(shape_);
             // compute product
             auto identity = 1;

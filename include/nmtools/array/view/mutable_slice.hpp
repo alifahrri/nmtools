@@ -8,15 +8,15 @@
 
 namespace nmtools::view
 {
-    using traits::is_array1d_v;
-    using traits::is_array2d_v;
-    using traits::is_ndarray_v;
-    using traits::is_fixed_size_vector_v;
-    using traits::is_fixed_size_matrix_v;
-    using traits::is_fixed_size_ndarray_v;
-    using traits::has_shape_v;
-    using traits::has_size_v;
-    using traits::has_dim_v;
+    using meta::is_array1d_v;
+    using meta::is_array2d_v;
+    using meta::is_ndarray_v;
+    using meta::is_fixed_size_vector_v;
+    using meta::is_fixed_size_matrix_v;
+    using meta::is_fixed_size_ndarray_v;
+    using meta::has_shape_v;
+    using meta::has_size_v;
+    using meta::has_dim_v;
 
     /**
      * @addtogroup view
@@ -139,14 +139,14 @@ namespace nmtools
             // @note use std::conjuction to short circuit
             // since type_list_conjunction requires tparam to have tuple_size
             std::conjunction_v<
-                traits::is_fixed_size_vector<traits::remove_cvref_t<array_t>>,
-                traits::has_tuple_size<start_t>,
-                traits::type_list_conjunction<start_t,traits::is_integral_constant>,
-                traits::has_tuple_size<stop_t>,
-                traits::type_list_conjunction<stop_t,traits::is_integral_constant>
+                meta::is_fixed_size_vector<meta::remove_cvref_t<array_t>>,
+                meta::has_tuple_size<start_t>,
+                meta::type_list_conjunction<start_t,meta::is_integral_constant>,
+                meta::has_tuple_size<stop_t>,
+                meta::type_list_conjunction<stop_t,meta::is_integral_constant>
             >
         >
-    > : fixed_vector_size< traits::remove_cvref_t<array_t> > {};
+    > : fixed_vector_size< meta::remove_cvref_t<array_t> > {};
 
     /**
      * @brief specialization of fixed_matrix_size for slice view.
@@ -159,14 +159,14 @@ namespace nmtools
     struct fixed_matrix_size< view::mutable_slice_t<array_t,start_t,stop_t>
         , std::enable_if_t<
             std::conjunction_v<
-                traits::is_fixed_size_matrix<traits::remove_cvref_t<array_t>>,
-                traits::has_tuple_size<start_t>,
-                traits::type_list_conjunction<start_t,traits::is_integral_constant>,
-                traits::has_tuple_size<stop_t>,
-                traits::type_list_conjunction<stop_t,traits::is_integral_constant>
+                meta::is_fixed_size_matrix<meta::remove_cvref_t<array_t>>,
+                meta::has_tuple_size<start_t>,
+                meta::type_list_conjunction<start_t,meta::is_integral_constant>,
+                meta::has_tuple_size<stop_t>,
+                meta::type_list_conjunction<stop_t,meta::is_integral_constant>
             >
         >
-    > : fixed_matrix_size< traits::remove_cvref_t<array_t> > {};
+    > : fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_MUTABLE_SLICE_HPP

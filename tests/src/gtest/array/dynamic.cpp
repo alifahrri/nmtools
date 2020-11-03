@@ -12,7 +12,7 @@ using nmt::array::fixed_vector;
 
 TEST(array, traits)
 {
-    using namespace nmt::traits;
+    using namespace nmt::meta;
     static_assert( is_array1d_v<dynamic_vector<double>>);
     static_assert(!is_array2d_v<dynamic_vector<double>>);
     static_assert(!is_array1d_v<dynamic_matrix<double>>);

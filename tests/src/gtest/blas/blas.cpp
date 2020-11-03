@@ -262,7 +262,7 @@ TEST(blas, identity)
             vector<double>{0, 1, 0 },
             vector<double>{0, 0, 1 },
         };
-        static_assert(nmt::traits::is_resizeable_v<decltype(mv)>);
+        static_assert(nmt::meta::is_resizeable_v<decltype(mv)>);
         auto z = nla::identity(mv);
         EXPECT_TRUE(isclose(z,i));
         static_assert(std::is_same_v<decltype(i),decltype(z)>);
@@ -469,8 +469,8 @@ TEST(blas, mmmul)
             {1,3,5},
             {2,4,6}
         }};
-        static_assert(nmt::traits::is_array2d_v<BType>);
-        static_assert(nmt::traits::is_array2d_v<AType>);
+        static_assert(nmt::meta::is_array2d_v<BType>);
+        static_assert(nmt::meta::is_array2d_v<AType>);
         auto C = nla::mmmul(A,B);
         auto expected = return_t{{
             {1+4,    3+8,  5+12},

@@ -216,7 +216,7 @@ namespace nmtools
 
 #include "nmtools/traits.hpp"
 
-namespace nmtools::traits
+namespace nmtools::meta
 {
     /**
      * @ingroup traits

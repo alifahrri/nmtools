@@ -53,8 +53,8 @@ namespace nmtools::blas
          */
         struct scalar_scalar_t {};
 
-        using traits::is_array1d_v;
-        using traits::is_array2d_v;
+        using meta::is_array1d_v;
+        using meta::is_array2d_v;
         using std::enable_if_t;
         using std::void_t;
 
@@ -124,21 +124,21 @@ namespace nmtools::blas
              * @return constexpr auto 
              */
             static constexpr auto _get() {
-                if constexpr (traits::is_array2d_v<T> && traits::is_array2d_v<U>)
+                if constexpr (meta::is_array2d_v<T> && meta::is_array2d_v<U>)
                     return matrix_matrix_t{};
-                else if constexpr (traits::is_array2d_v<T> && traits::is_array1d_v<U>)
+                else if constexpr (meta::is_array2d_v<T> && meta::is_array1d_v<U>)
                     return matrix_vector_t{};
-                else if constexpr (traits::is_array2d_v<T> && std::is_arithmetic_v<U>)
+                else if constexpr (meta::is_array2d_v<T> && std::is_arithmetic_v<U>)
                     return matrix_scalar_t{};
-                else if constexpr (traits::is_array1d_v<T> && traits::is_array1d_v<U>)
+                else if constexpr (meta::is_array1d_v<T> && meta::is_array1d_v<U>)
                     return vector_vector_t{};
-                else if constexpr (traits::is_array1d_v<T> && std::is_arithmetic_v<U>)
+                else if constexpr (meta::is_array1d_v<T> && std::is_arithmetic_v<U>)
                     return vector_scalar_t{};
                 else if constexpr (std::is_arithmetic_v<T> && std::is_arithmetic_v<U>)
                     return scalar_scalar_t{};
                 else return meta::detail::fail_t{};
             } // _get()
-            using type = traits::remove_cvref_t<meta::detail::fail_to_void_t<decltype(_get())>>;
+            using type = meta::remove_cvref_t<meta::detail::fail_to_void_t<decltype(_get())>>;
         }; // get
 
         /**

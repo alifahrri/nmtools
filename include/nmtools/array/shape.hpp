@@ -46,10 +46,10 @@ namespace nmtools
      * @return std::pair<size_t,size_t> row-col pair
      */
     template <typename Matrix>
-    constexpr auto matrix_size(const Matrix& M) -> std::enable_if_t<traits::is_nested_array2d_v<Matrix>,std::pair<size_t,size_t>>
+    constexpr auto matrix_size(const Matrix& M) -> std::enable_if_t<meta::is_nested_array2d_v<Matrix>,std::pair<size_t,size_t>>
     {
         static_assert(
-            traits::is_array2d_v<Matrix>
+            meta::is_array2d_v<Matrix>
             /* TODO: meaningful error message */
         );
         /* TODO: check all size for each rows. 
@@ -69,10 +69,10 @@ namespace nmtools
     constexpr auto vector_size(const Vector& v)
         -> std::enable_if_t<
             std::is_same_v<std::void_t<decltype(size(v))>,void>
-            && !traits::is_fixed_size_vector_v<Vector>, size_t >
+            && !meta::is_fixed_size_vector_v<Vector>, size_t >
     {
         static_assert(
-            traits::is_array1d_v<Vector>
+            meta::is_array1d_v<Vector>
             /* TODO: meaningful error message */
         );
 
@@ -81,7 +81,7 @@ namespace nmtools
 
     template <typename Vector>
     constexpr auto vector_size(const Vector& v)
-        -> std::enable_if_t< traits::is_fixed_size_vector_v<Vector>, size_t>
+        -> std::enable_if_t< meta::is_fixed_size_vector_v<Vector>, size_t>
     {
         return fixed_vector_size_v<Vector>;
     }

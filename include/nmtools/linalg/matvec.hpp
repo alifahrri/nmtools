@@ -47,8 +47,8 @@ namespace nmtools::linalg {
          */
         struct scalar_scalar_t {};
 
-        using traits::is_array1d_v;
-        using traits::is_array2d_v;
+        using meta::is_array1d_v;
+        using meta::is_array2d_v;
         using std::enable_if_t;
         using std::void_t;
 
@@ -231,10 +231,10 @@ namespace nmtools::linalg {
     constexpr auto zeros()
     {
         static_assert(
-            traits::is_array1d_v<Array> && traits::has_value_type_v<Array>,
+            meta::is_array1d_v<Array> && meta::has_value_type_v<Array>,
             "unsupported type Array for zeros<size_t>"
         );
-        using value_t   = traits::remove_cvref_t<typename Array::value_type>;
+        using value_t   = meta::remove_cvref_t<typename Array::value_type>;
         using new_size  = std::integral_constant<size_t,N>;
         using new_array = meta::replace_template_parameter<Array,value_t,new_size>;
         using return_t  = typename new_array::type;
@@ -255,10 +255,10 @@ namespace nmtools::linalg {
     auto zeros(size_t m, size_t n)
     {
         static_assert(
-            traits::is_array2d_v<Array> && traits::is_resizeable_v<Array>,
+            meta::is_array2d_v<Array> && meta::is_resizeable_v<Array>,
             "unsupported type Array for zeros(size_t,size_t)"
         );
-        using value_t = traits::remove_cvref_t<typename Array::value_type>;
+        using value_t = meta::remove_cvref_t<typename Array::value_type>;
         auto z = Array{};
         /* TODO: check if this expr is well-formed first! */
         z.resize(m, value_t(m));
@@ -277,12 +277,12 @@ namespace nmtools::linalg {
     constexpr auto zeros()
     {
         static_assert(
-            traits::is_array2d_v<Array> && traits::has_tuple_size_v<Array>,
+            meta::is_array2d_v<Array> && meta::has_tuple_size_v<Array>,
             "unsupported type Array for zeros<size_t,size_t>()"
         );
         using row_t = Array;
-        using col_t = traits::remove_cvref_t<typename row_t::value_type>;
-        using element_t = traits::remove_cvref_t<typename col_t::value_type>;
+        using col_t = meta::remove_cvref_t<typename row_t::value_type>;
+        using element_t = meta::remove_cvref_t<typename col_t::value_type>;
         using new_col_size = std::integral_constant<size_t,N>;
         using new_row_size = std::integral_constant<size_t,M>;
         using new_col_t = meta::replace_template_parameter<col_t,element_t,new_col_size>;
@@ -304,7 +304,7 @@ namespace nmtools::linalg {
     auto zeros(size_t n)
     {
         static_assert(
-            traits::is_array1d_v<Array> && traits::is_resizeable_v<Array>,
+            meta::is_array1d_v<Array> && meta::is_resizeable_v<Array>,
             "unsupported type Array for zeros(size_t)"
         );
         auto z = Array{};
@@ -324,12 +324,12 @@ namespace nmtools::linalg {
     {
         /** TODO: proper constraints **/
         static_assert(
-            traits::is_array1d_v<T> ||
-            traits::is_array2d_v<T> ||
+            meta::is_array1d_v<T> ||
+            meta::is_array2d_v<T> ||
             std::is_arithmetic_v<T>,
             "unsupported type for zeros_like"
         );
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
         using meta::transform_bounded_array_t;
         using return_t = transform_bounded_array_t<remove_cvref_t<T>>;
         auto ret = return_t{};
@@ -338,7 +338,7 @@ namespace nmtools::linalg {
             return static_cast<T>(0);
         /* ret is conteiner, for each elements call zeros_like */
         else {
-            if constexpr (traits::is_resizeable_v<T>)
+            if constexpr (meta::is_resizeable_v<T>)
                 ret.resize(size(a));
             for (size_t i=0; i<size(a); i++)
                 ret[i] = zeros_like(a[i]);
@@ -358,12 +358,12 @@ namespace nmtools::linalg {
     {
         /** TODO: proper constraints **/
         static_assert(
-            traits::is_array1d_v<T> ||
-            traits::is_array2d_v<T> ||
+            meta::is_array1d_v<T> ||
+            meta::is_array2d_v<T> ||
             std::is_arithmetic_v<T>,
             "unsupported type for zeros_like"
         );
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
         using meta::transform_bounded_array_t;
         using return_t = transform_bounded_array_t<remove_cvref_t<T>>;
         auto ret = return_t{};
@@ -372,7 +372,7 @@ namespace nmtools::linalg {
             return static_cast<T>(1);
         /* ret is conteiner, for each elements call zeros_like */
         else {
-            if constexpr (traits::is_resizeable_v<T>)
+            if constexpr (meta::is_resizeable_v<T>)
                 ret.resize(size(a));
             for (size_t i=0; i<size(a); i++)
                 ret[i] = ones_like(a[i]);
@@ -447,8 +447,8 @@ namespace nmtools::linalg {
         {
             static_assert(
                 (
-                    traits::is_array1d_v<V1>
-                    && traits::is_array1d_v<V2>
+                    meta::is_array1d_v<V1>
+                    && meta::is_array1d_v<V2>
                 ) ||
                 (
                     std::is_arithmetic_v<V1>
@@ -492,17 +492,17 @@ namespace nmtools::linalg {
         constexpr auto mvmul(const M& m, const V& v)
         {
             static_assert(
-                traits::is_array2d_v<M> &&
-                traits::is_array1d_v<V> &&
-                traits::has_value_type_v<M> && 
-                traits::has_value_type_v<V>,
+                meta::is_array2d_v<M> &&
+                meta::is_array1d_v<V> &&
+                meta::has_value_type_v<M> && 
+                meta::has_value_type_v<V>,
                 "unsupported type for mvmul"
             );
 
             /* deduce resulting size of matrix */
             /* TODO: consider to provide traits to check if type has fixed size mat traits */
-            constexpr auto is_fixed_size_M = traits::has_tuple_size_v<M>;
-            constexpr auto is_fixed_size_V = traits::has_tuple_size_v<V>;
+            constexpr auto is_fixed_size_M = meta::has_tuple_size_v<M>;
+            constexpr auto is_fixed_size_V = meta::has_tuple_size_v<V>;
 
             /* get row type of matrix M, element type of M & v, and common type */
             using row_t = typename M::value_type;
@@ -538,8 +538,8 @@ namespace nmtools::linalg {
 
                 /* make sure one of the matrix type is resizeable */
                 static_assert(
-                    traits::is_resizeable_v<M> ||
-                    traits::is_resizeable_v<V>
+                    meta::is_resizeable_v<M> ||
+                    meta::is_resizeable_v<V>
                 );
                 /* select resizeable mat over fixed ones for return type */
                 using return_t = meta::select_resizeable_mat_t<M,V>;
@@ -564,15 +564,15 @@ namespace nmtools::linalg {
         constexpr auto mmmul(const M1& A, const M2& B)
         {
             static_assert(
-                traits::is_matrix_like_v<M1> &&
-                traits::is_matrix_like_v<M2>,
+                meta::is_matrix_like_v<M1> &&
+                meta::is_matrix_like_v<M2>,
                 "unsupported type M1 & M2 of A & B for mmmul"
             );
 
             /* deduce resulting size of matrix */
             /* TODO: consider to provide traits to check if type has fixed size mat traits */
-            constexpr auto is_fixed_size_mat_A = traits::has_tuple_size_v<M1>;
-            constexpr auto is_fixed_size_mat_B = traits::has_tuple_size_v<M2>;
+            constexpr auto is_fixed_size_mat_A = meta::has_tuple_size_v<M1>;
+            constexpr auto is_fixed_size_mat_B = meta::has_tuple_size_v<M2>;
 
             /* deduce row type and element type */
             /* TODO: check if this expr is well-formed first! */
@@ -623,8 +623,8 @@ namespace nmtools::linalg {
 
                 /* make sure one of the matrix type is resizeable */
                 static_assert(
-                    traits::is_resizeable_v<M1> ||
-                    traits::is_resizeable_v<M2>
+                    meta::is_resizeable_v<M1> ||
+                    meta::is_resizeable_v<M2>
                 );
                 /* select resizeable mat over fixed ones for return type */
                 using return_t = meta::select_resizeable_mat_t<M1,M2>;
@@ -658,15 +658,15 @@ namespace nmtools::linalg {
         constexpr auto vvadd(const V1& a, const V2& b)
         {
             static_assert(
-                traits::is_array1d_v<V1>
-                && traits::is_array1d_v<V2>,
+                meta::is_array1d_v<V1>
+                && meta::is_array1d_v<V2>,
                 "unsupported type for vvadd"
             );
 
             /* deduce resulting size of matrix */
             /* TODO: consider to provide traits to check if type has fixed size mat traits */
-            constexpr auto is_fixed_size_vec_A = traits::has_tuple_size_v<V1>;
-            constexpr auto is_fixed_size_vec_B = traits::has_tuple_size_v<V2>;
+            constexpr auto is_fixed_size_vec_A = meta::has_tuple_size_v<V1>;
+            constexpr auto is_fixed_size_vec_B = meta::has_tuple_size_v<V2>;
 
             using std::remove_cv_t;
             using std::remove_reference_t;
@@ -693,8 +693,8 @@ namespace nmtools::linalg {
             else {
                 /* make sure one of the matrix type is resizeable */
                 static_assert(
-                    traits::is_resizeable_v<V1> ||
-                    traits::is_resizeable_v<V2>
+                    meta::is_resizeable_v<V1> ||
+                    meta::is_resizeable_v<V2>
                 );
 
                 auto n1 = size(a);
@@ -726,15 +726,15 @@ namespace nmtools::linalg {
         constexpr auto mmadd(const M1& A, const M2& B)
         {
             static_assert(
-                traits::is_matrix_like_v<M1> &&
-                traits::is_matrix_like_v<M2>,
+                meta::is_matrix_like_v<M1> &&
+                meta::is_matrix_like_v<M2>,
                 "unsupported type M1 & M2 of A & B for mmadd"
             );
 
             /* deduce resulting size of matrix */
             /* TODO: consider to provide traits to check if type has fixed size mat traits */
-            constexpr auto is_fixed_size_mat_A = traits::has_tuple_size_v<M1>;
-            constexpr auto is_fixed_size_mat_B = traits::has_tuple_size_v<M2>;
+            constexpr auto is_fixed_size_mat_A = meta::has_tuple_size_v<M1>;
+            constexpr auto is_fixed_size_mat_B = meta::has_tuple_size_v<M2>;
 
             /* deduce row type and element type */
             /* TODO: check if this expr is well-formed first! */
@@ -780,8 +780,8 @@ namespace nmtools::linalg {
 
                 /* make sure one of the matrix type is resizeable */
                 static_assert(
-                    traits::is_resizeable_v<M1> ||
-                    traits::is_resizeable_v<M2>
+                    meta::is_resizeable_v<M1> ||
+                    meta::is_resizeable_v<M2>
                 );
                 /* select resizeable mat over fixed ones for return type */
                 using return_t = meta::select_resizeable_mat_t<M1,M2>;
@@ -818,11 +818,11 @@ namespace nmtools::linalg {
     template <typename Array>
     constexpr auto transpose(const Array& a)
     {
-        using traits::get_container_value_type_t;
-        using traits::remove_cvref_t;
-        using traits::has_tuple_size_v;
+        using meta::get_container_value_type_t;
+        using meta::remove_cvref_t;
+        using meta::has_tuple_size_v;
         static_assert(
-            traits::is_array2d_v<Array>,
+            meta::is_array2d_v<Array>,
             "transpose only support 2D array for now"
         );
         using row_element_t = remove_cvref_t<get_container_value_type_t<Array>>;
@@ -865,12 +865,12 @@ namespace nmtools::linalg {
     {
         /** TODO: proper constraints **/
         static_assert(
-            traits::is_array1d_v<Array> ||
-            traits::is_array2d_v<Array> ||
+            meta::is_array1d_v<Array> ||
+            meta::is_array2d_v<Array> ||
             std::is_arithmetic_v<Array>,
             "unsupported type for zeros_like"
         );
-        using traits::remove_cvref_t;
+        using meta::remove_cvref_t;
         using meta::transform_bounded_array_t;
         using return_t = transform_bounded_array_t<remove_cvref_t<Array>>;
         auto ret = return_t{};
@@ -879,7 +879,7 @@ namespace nmtools::linalg {
             return a;
         /* ret is conteiner, for each elements call zeros_like */
         else {
-            if constexpr (traits::is_resizeable_v<Array>) {
+            if constexpr (meta::is_resizeable_v<Array>) {
                 ret.resize(size(a));
             }
             for (size_t i=0; i<size(a); i++)
@@ -898,10 +898,10 @@ namespace nmtools::linalg {
     template <typename Array>
     constexpr auto identity(const Array& a)
     {
-        using traits::remove_cvref_t;
-        using traits::get_container_value_type_t;
-        using traits::is_resizeable_v;
-        using traits::is_array2d_v;
+        using meta::remove_cvref_t;
+        using meta::get_container_value_type_t;
+        using meta::is_resizeable_v;
+        using meta::is_array2d_v;
 
         static_assert(
             is_array2d_v<Array>,
@@ -940,7 +940,7 @@ namespace nmtools::linalg {
     {
         /* only support 1d array for now */
         static_assert(
-            traits::is_array1d_v<Array>,
+            meta::is_array1d_v<Array>,
             "unsupported type of array"
         );
         using value_type = typename Array::value_type;
@@ -961,8 +961,8 @@ namespace nmtools::linalg {
     template <typename Array>
     constexpr auto fabs(const Array& a)
     {
-        using traits::is_array1d_v;
-        using traits::is_array2d_v;
+        using meta::is_array1d_v;
+        using meta::is_array2d_v;
         using std::is_arithmetic_v;
 
         static_assert(
@@ -998,7 +998,7 @@ namespace nmtools::linalg {
     template <typename A, typename B>
     constexpr auto mul(const A& lhs, const B& rhs)
     {
-        using traits::is_multiplicative_v;
+        using meta::is_multiplicative_v;
 
         /* get operation tag */
         using op_t = tag::get_t<A,B>;
@@ -1048,7 +1048,7 @@ namespace nmtools::linalg {
     template <typename A, typename B>
     constexpr auto add(const A& lhs, const B& rhs)
     {
-        using traits::is_additive_v;
+        using meta::is_additive_v;
 
         /* get operation tag */
         using op_t = tag::get_t<A,B>;

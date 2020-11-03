@@ -101,7 +101,7 @@ namespace nmtools::testing
         /**
          * @brief handle cast for nmtools::array::fixed_matrix,
          * note that this check use traits from nmtools::array namespace,
-         * not nmtools::traits one's
+         * not nmtools::meta one's
          * 
          */
         if constexpr (array::is_fixed_matrix<T>::value) {

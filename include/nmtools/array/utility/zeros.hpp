@@ -33,7 +33,7 @@ namespace nmtools
     constexpr auto zeros()
     {
         static_assert(
-            traits::is_array1d_v<Array> && traits::has_value_type_v<Array>,
+            meta::is_array1d_v<Array> && meta::has_value_type_v<Array>,
             "unsupported type Array for zeros<size_t>"
         );
         /* deduce type using helper metafunction 
@@ -60,10 +60,10 @@ namespace nmtools
     {
         static_assert(
             /* TODO: consider to use is_matrix_like instead of is_array2d */
-            traits::is_array2d_v<Array> &&
+            meta::is_array2d_v<Array> &&
             (
-                traits::is_resizeable_v<Array>
-                || traits::is_resizeable2d_v<Array>
+                meta::is_resizeable_v<Array>
+                || meta::is_resizeable2d_v<Array>
             ),
             "unsupported type Array for zeros(size_t,size_t)"
         );
@@ -71,18 +71,18 @@ namespace nmtools
         auto z = Array{};
         /* TODO: consider to provide free function resize */
         /* can directly resize with m, n as arguments */
-        if constexpr (traits::is_resizeable2d_v<Array>)
+        if constexpr (meta::is_resizeable2d_v<Array>)
             z.resize(m,n);
         /* doesnt have resize 2d, let's resize each elements */
         else {
             z.resize(m);
-            if constexpr (traits::is_resizeable_v<traits::remove_cvref_t<decltype(at(z,0))>>)
+            if constexpr (meta::is_resizeable_v<meta::remove_cvref_t<decltype(at(z,0))>>)
                 for (size_t i=0; i<size(z); i++)
                     at(z,i).resize(n);
             else {
                 /* assuming at(z,0) has fixed size n */
                 /* TODO: make assertion optional (?) */
-                constexpr auto N = fixed_vector_size_v<traits::remove_cvref_t<decltype(at(z,0))>>;
+                constexpr auto N = fixed_vector_size_v<meta::remove_cvref_t<decltype(at(z,0))>>;
                 assert (N==n);
             }
         }
@@ -101,8 +101,8 @@ namespace nmtools
     constexpr auto zeros()
     {
         static_assert(
-            traits::is_array2d_v<Array>
-            && traits::is_fixed_size_matrix_v<Array>,
+            meta::is_array2d_v<Array>
+            && meta::is_fixed_size_matrix_v<Array>,
             "unsupported type Array for zeros<size_t,size_t>()"
         );        
         using return_t = meta::make_zeros_matrix_t<Array,M,N>;
@@ -122,8 +122,8 @@ namespace nmtools
     auto zeros(size_t n)
     {
         static_assert(
-            traits::is_array1d_v<Array>
-            && traits::is_resizeable_v<Array>,
+            meta::is_array1d_v<Array>
+            && meta::is_resizeable_v<Array>,
             "unsupported type Array for zeros(size_t)"
         );
         auto z = Array{};

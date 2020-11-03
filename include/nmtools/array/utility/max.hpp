@@ -24,7 +24,7 @@ namespace nmtools
     {
         /* only support 1d array for now */
         static_assert(
-            traits::is_array1d_v<Array>,
+            meta::is_array1d_v<Array>,
             "unsupported type of array"
         );
         using value_type = meta::get_vector_value_type_t<Array>;

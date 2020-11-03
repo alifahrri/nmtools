@@ -179,7 +179,7 @@ namespace nmtools::blas
 
 #include "nmtools/traits.hpp"
 
-namespace nmtools::traits
+namespace nmtools::meta
 {
     /**
      * @ingroup meta
@@ -212,7 +212,7 @@ namespace nmtools::traits
 
     /** @} */ // end group traits
     
-} // namespace nmtools::traits
+} // namespace nmtools::meta
 
 
 #endif // NMTOOLS_ARRAY_VECTOR_DYNAMIC_HPP

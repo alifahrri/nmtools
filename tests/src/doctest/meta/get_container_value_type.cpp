@@ -11,7 +11,7 @@
 #include <array>
 
 namespace meta = nmtools::meta;
-namespace traits = nmtools::traits;
+namespace meta = nmtools::meta;
 
 TEST_CASE("get_container_value_type_t" * doctest::test_suite("meta"))
 {

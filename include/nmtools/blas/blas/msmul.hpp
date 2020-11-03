@@ -51,7 +51,7 @@ namespace nmtools::blas
     constexpr auto msmul(const M& m, const S& s)
     {
         static_assert(
-            traits::is_array2d_v<M>
+            meta::is_array2d_v<M>
             && std::is_arithmetic_v<S>
             /* TODO: helpful error message here */
         );

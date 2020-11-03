@@ -6,9 +6,9 @@ using nmtools::array_shape;
 using nmtools::array_dim;
 using nmtools::array::dynamic_ndarray;
 
-static_assert( nmtools::traits::is_ndarray_v<dynamic_ndarray<double>>);
-static_assert( nmtools::traits::is_dynamic_ndarray_v<dynamic_ndarray<double>>);
-static_assert(!nmtools::traits::is_fixed_size_ndarray_v<dynamic_ndarray<double>>);
+static_assert( nmtools::meta::is_ndarray_v<dynamic_ndarray<double>>);
+static_assert( nmtools::meta::is_dynamic_ndarray_v<dynamic_ndarray<double>>);
+static_assert(!nmtools::meta::is_fixed_size_ndarray_v<dynamic_ndarray<double>>);
 
 TEST_CASE("dynamic_ndarray[2,3,2]")
 {

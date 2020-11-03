@@ -13,8 +13,8 @@ TEST(traits, is_callable) {
     namespace nm = nmtools;
     auto f1 = [](double) {};
     auto f2 = [](double,double) {};
-    static_assert( nm::traits::is_callable<decltype(f1),double>::value);
-    static_assert(!nm::traits::is_callable<decltype(f1),double,double>::value);
-    static_assert( nm::traits::is_callable<decltype(f2),double,double>::value);
-    static_assert(!nm::traits::is_callable<decltype(f2),double>::value);
+    static_assert( nm::meta::is_callable<decltype(f1),double>::value);
+    static_assert(!nm::meta::is_callable<decltype(f1),double,double>::value);
+    static_assert( nm::meta::is_callable<decltype(f2),double,double>::value);
+    static_assert(!nm::meta::is_callable<decltype(f2),double>::value);
 }

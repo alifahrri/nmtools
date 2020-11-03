@@ -278,10 +278,10 @@ namespace nmtools {
             /* make sure alpha_t, beta_t, tau_t have common type */
             using common_t = std::common_type_t<alpha_t,rho_t,c_t>;
             static_assert(
-                traits::is_callable_v<F,X>              // F(X)
-                && traits::is_callable_v<DF,X>          // DF(X)
-                && (traits::is_array1d_v<X> || std::is_arithmetic_v<X>)
-                && (traits::is_array1d_v<D> || std::is_arithmetic_v<D>)
+                meta::is_callable_v<F,X>              // F(X)
+                && meta::is_callable_v<DF,X>          // DF(X)
+                && (meta::is_array1d_v<X> || std::is_arithmetic_v<X>)
+                && (meta::is_array1d_v<D> || std::is_arithmetic_v<D>)
                 /* TODO: check if add(...), mul(...) (see ops below) are well-formed */
                 , "unsupported type(s) for backtracking_armijo_line_search"
             );

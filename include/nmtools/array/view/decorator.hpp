@@ -11,7 +11,7 @@
 
 namespace nmtools::view
 {
-    using traits::is_fixed_size_array_v;
+    using meta::is_fixed_size_array_v;
 
     /**
      * @addtogroup view
@@ -28,21 +28,21 @@ namespace nmtools::view
          * @param array 
          * @return constexpr auto 
          * @note marked as static fn here to properly handle fixed_size array
-         * @see nmtools::traits::has_dim
-         * @see nmtools::traits::is_array2d
-         * @see nmtools::traits::is_array1d
+         * @see nmtools::meta::has_dim
+         * @see nmtools::meta::is_array2d
+         * @see nmtools::meta::is_array1d
          * @see nmtools::array_dim
          */
         template <typename array_t>
         constexpr auto dim(const array_t& array)
         {
             // @note somehow array cant be universal ref
-            if constexpr (traits::has_dim_v<array_t>)
+            if constexpr (meta::has_dim_v<array_t>)
                 return array.dim();
             // @note since is_array2d_v and is_array1d_v may not be mutually exclusive prefer array2d first
-            else if constexpr (traits::is_array2d_v<array_t>)
+            else if constexpr (meta::is_array2d_v<array_t>)
                 return 2;
-            else if constexpr (traits::is_array1d_v<array_t>)
+            else if constexpr (meta::is_array1d_v<array_t>)
                 return 1;
             else
                 return array_dim(array);
@@ -74,15 +74,15 @@ namespace nmtools::view
         template <typename array_t>
         constexpr decltype(auto) shape(const array_t& array)
         {
-            if constexpr (traits::has_shape_v<array_t>)
+            if constexpr (meta::has_shape_v<array_t>)
                 return array.shape();
             // @note since is_array2d_v and is_array1d_v may not be mutually exclusive, check for array2d first
-            else if constexpr (traits::is_array2d_v<array_t>)
+            else if constexpr (meta::is_array2d_v<array_t>)
                 return matrix_size(array);
             // @note for 1d array, wrap return value in array for generalization
-            else if constexpr (traits::is_array1d_v<array_t> && traits::has_size_v<array_t>)
+            else if constexpr (meta::is_array1d_v<array_t> && meta::has_size_v<array_t>)
                 return std::array{array.size()};
-            else if constexpr (traits::is_array1d_v<array_t>)
+            else if constexpr (meta::is_array1d_v<array_t>)
                 return std::array{vector_size(array)};
             else
                 return array_shape(array);
@@ -125,7 +125,7 @@ namespace nmtools::view
         constexpr auto dim() const noexcept
         {
             // @note `this` must be constexpr when constexpr return value is desired
-            if constexpr (traits::has_dim_v<traits::remove_cvref_t<view_type>>)
+            if constexpr (meta::has_dim_v<meta::remove_cvref_t<view_type>>)
                 return view_type::dim();
             else
                 return detail::dim(view_type::array);
@@ -141,8 +141,8 @@ namespace nmtools::view
          */
         constexpr decltype(auto) shape() const noexcept
         {
-            using array_t = traits::remove_cvref_t<array_type>;
-            if constexpr (traits::has_shape_v<traits::remove_cvref_t<view_type>>)
+            using array_t = meta::remove_cvref_t<array_type>;
+            if constexpr (meta::has_shape_v<meta::remove_cvref_t<view_type>>)
                 return view_type::shape();
             else return detail::shape(view_type::array);
         } // shape
@@ -165,11 +165,11 @@ namespace nmtools::view
             // since at(...) return auto&
 
             auto transformed_indices = view_type::index(indices...);
-            static_assert (traits::has_tuple_size_v<decltype(transformed_indices)>,
+            static_assert (meta::has_tuple_size_v<decltype(transformed_indices)>,
                 "return value from view_type::index(...) must have compile time size"
             );
 
-            using array_t = traits::remove_cvref_t<array_type>;
+            using array_t = meta::remove_cvref_t<array_type>;
             constexpr auto n = sizeof...(size_types);
             assert (dim()==n); // tmp assertion
 
@@ -204,11 +204,11 @@ namespace nmtools::view
             // since at(...) return auto&
 
             auto transformed_indices = view_type::index(indices...);
-            static_assert (traits::has_tuple_size_v<decltype(transformed_indices)>,
+            static_assert (meta::has_tuple_size_v<decltype(transformed_indices)>,
                 "return value from view_type::index(...) must have compile time size"
             );
 
-            using array_t = traits::remove_cvref_t<array_type>;
+            using array_t = meta::remove_cvref_t<array_type>;
             constexpr auto n = sizeof...(size_types);
             assert (dim()==n); // tmp assertion
 
@@ -284,18 +284,18 @@ namespace nmtools
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct fixed_array_shape<view::decorator_t<view_t,Ts...>>
-        : fixed_array_shape<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : fixed_array_shape<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief sfinae-enabled specialization for matrix_size
      * 
      * @tparam T view type
      * @param t view matrix
-     * @return std::enable_if_t<view::is_view_v<T> && traits::is_array2d_v<T>,std::pair<size_t,size_t>> 
+     * @return std::enable_if_t<view::is_view_v<T> && meta::is_array2d_v<T>,std::pair<size_t,size_t>> 
      */
     template <typename T>
     constexpr auto matrix_size(const T& t)
-        -> std::enable_if_t<view::is_view_v<T> && traits::is_array2d_v<T>,std::pair<size_t,size_t>>
+        -> std::enable_if_t<view::is_view_v<T> && meta::is_array2d_v<T>,std::pair<size_t,size_t>>
     {
         auto [rows, cols] = t.shape();
         return {rows,cols};
@@ -306,19 +306,19 @@ namespace nmtools
      * 
      * @tparam T view type
      * @param t viewed vector
-     * @return std::enable_if_t<view::is_view_v<T> && traits::is_array1d_v<T>, size_t> 
+     * @return std::enable_if_t<view::is_view_v<T> && meta::is_array1d_v<T>, size_t> 
      * @note vector_size has sfinae overload that enabled for is_fixed_size_vector
      */
     template <typename T>
     constexpr auto vector_size(const T& t)
-        -> std::enable_if_t<view::is_view_v<T> && traits::is_array1d_v<T> && !traits::is_fixed_size_vector_v<T>, size_t>
+        -> std::enable_if_t<view::is_view_v<T> && meta::is_array1d_v<T> && !meta::is_fixed_size_vector_v<T>, size_t>
     {
         auto [n] = t.shape();
         return n;
     } // vector_size
 } // namespace nmtools
 
-namespace nmtools::traits
+namespace nmtools::meta
 {
     /**
      * @brief specialization of is_fixed_size_ndarray for view type
@@ -328,7 +328,7 @@ namespace nmtools::traits
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct is_fixed_size_ndarray<view::decorator_t<view_t,Ts...>>
-        : is_fixed_size_ndarray<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : is_fixed_size_ndarray<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief specialization of is_array1d for view type
@@ -338,7 +338,7 @@ namespace nmtools::traits
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct is_array1d<view::decorator_t<view_t,Ts...>>
-        : is_array1d<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : is_array1d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief specialization of is_array2d for view type
@@ -348,7 +348,7 @@ namespace nmtools::traits
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct is_array2d<view::decorator_t<view_t,Ts...>>
-        : is_array2d<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : is_array2d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief specialization of is_array3d for view type
@@ -358,7 +358,7 @@ namespace nmtools::traits
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct is_array3d<view::decorator_t<view_t,Ts...>>
-        : is_array3d<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : is_array3d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief specialization of is_ndarray for view type
@@ -368,8 +368,8 @@ namespace nmtools::traits
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct is_ndarray<view::decorator_t<view_t,Ts...>>
-        : is_ndarray<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
-} // namespace nmtools::traits
+        : is_ndarray<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+} // namespace nmtools::meta
 
 namespace nmtools
 {
@@ -418,7 +418,7 @@ namespace nmtools
      * Metafunction to get the size of matrix at compile-time. This specialization also
      * serves as entry point for checking the underlying view type (view_t<Ts...>) if that
      * underlying view is_fixed_size_matrix then calls fixed_matrix_size_v for that underlying view,
-     * otherwise this should fail. Note that traits::is_fixed_size_matrix has specialization
+     * otherwise this should fail. Note that meta::is_fixed_size_matrix has specialization
      * for type(s) that its specialization of fixed_matrix_size has value, value_type, and the value_type
      * is not void.
      * 
@@ -435,14 +435,14 @@ namespace nmtools
          */
         static constexpr auto _get()
         {
-            if constexpr (traits::is_fixed_size_matrix_v<view_t<Ts...>>)
+            if constexpr (meta::is_fixed_size_matrix_v<view_t<Ts...>>)
                 return fixed_matrix_size_v<view_t<Ts...>>;
             else return detail::fail_t{};
         } // _get()
     
         static inline constexpr auto value = _get();
         // @note that remove_cvref_t here is necessary since decltype(value) may be const
-        using value_type = detail::fail_to_void_t<traits::remove_cvref_t<decltype(value)>>;
+        using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     }; // fixed_matrix_size
 
     template <template<typename...> typename view_t, typename...Ts>
@@ -455,14 +455,14 @@ namespace nmtools
          */
         static constexpr auto _get()
         {
-            if constexpr (traits::is_fixed_size_vector_v<view_t<Ts...>>)
+            if constexpr (meta::is_fixed_size_vector_v<view_t<Ts...>>)
                 return fixed_vector_size_v<view_t<Ts...>>;
             else return detail::fail_t{};
         } // _get()
 
         static inline constexpr auto value = _get();
         // @note that remove_cvref_t here is necessary since decltype(value) may be const
-        using value_type = detail::fail_to_void_t<traits::remove_cvref_t<decltype(value)>>;
+        using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     }; // fixed_vector_size
 } // namespace nmtools
 
@@ -476,7 +476,7 @@ namespace nmtools::meta
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct get_vector_value_type<view::decorator_t<view_t,Ts...>>
-        : get_vector_value_type<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : get_vector_value_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief specialization of metafunction get_matrix_value_type for view type
@@ -486,7 +486,7 @@ namespace nmtools::meta
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct get_matrix_value_type<view::decorator_t<view_t,Ts...>>
-        : get_matrix_value_type<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : get_matrix_value_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
 
     /**
      * @brief specialization of metafunction get_ndarray_value_type for view type
@@ -496,7 +496,7 @@ namespace nmtools::meta
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct get_ndarray_value_type<view::decorator_t<view_t,Ts...>>
-        : get_ndarray_value_type<traits::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : get_ndarray_value_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_DECORATOR_HPP

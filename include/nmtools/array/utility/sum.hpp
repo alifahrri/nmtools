@@ -26,7 +26,7 @@ namespace nmtools
          */
         constexpr auto sum_impl(auto& sum, const auto& a, auto n)
         {
-            using idx_t = traits::remove_cvref_t<decltype(n)>;
+            using idx_t = meta::remove_cvref_t<decltype(n)>;
             for (idx_t i=0; i<n; i++)
                 sum += at(a,i);
         } // sum_impl
@@ -41,8 +41,8 @@ namespace nmtools
          */
         constexpr auto sum_impl(auto& sum, const auto& a, auto rows, auto cols)
         {
-            using rows_t = traits::remove_cvref_t<decltype(rows)>;
-            using cols_t = traits::remove_cvref_t<decltype(cols)>;
+            using rows_t = meta::remove_cvref_t<decltype(rows)>;
+            using cols_t = meta::remove_cvref_t<decltype(cols)>;
             using index_t = std::common_type_t<rows_t,cols_t>;
             for (index_t i=0; i<rows; i++)
                 for (index_t j=0; j<cols; j++)
@@ -61,8 +61,8 @@ namespace nmtools
     constexpr auto sum(const Array& a)
     {
         static_assert(
-            traits::is_array1d_v<Array>
-            || traits::is_array2d_v<Array>,
+            meta::is_array1d_v<Array>
+            || meta::is_array2d_v<Array>,
             "unsupported type of array, "
             "only support 1D and 2D array for now"
         );
@@ -74,13 +74,13 @@ namespace nmtools
         );
         auto result = value_type{0};
         /* dispatch if a is 2D array */
-        if constexpr (traits::is_array2d_v<Array>) {
+        if constexpr (meta::is_array2d_v<Array>) {
             /* TODO: consider to read matrix_size as constexpr whenever possible */
             auto [rows, cols] = matrix_size(a);
             detail::sum_impl(result,a,rows,cols);
         }
         /* otherwise, dispatch if a is 1D array */
-        else if constexpr (traits::is_array1d_v<Array>) {
+        else if constexpr (meta::is_array1d_v<Array>) {
             auto n = vector_size(a);
             detail::sum_impl(result,a,n);
         }
