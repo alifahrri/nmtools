@@ -76,10 +76,10 @@ namespace nmtools::blas
         /* dispatch compile-time version when both are fixed size,
             the resulting shape will also be known at compile time */
         if constexpr (is_fixed_size_M && is_fixed_size_V) {
-            constexpr auto shape = fixed_matrix_size_v<m_t>;
+            constexpr auto shape = meta::fixed_matrix_size_v<m_t>;
             constexpr auto mrows = get<0>(shape);
             constexpr auto mcols = get<1>(shape);
-            constexpr auto vrows = fixed_vector_size_v<v_t>;
+            constexpr auto vrows = meta::fixed_vector_size_v<v_t>;
             static_assert(mcols==vrows);
 
             /* prepare placeholder for the resulting matrix */

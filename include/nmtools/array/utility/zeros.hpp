@@ -82,7 +82,7 @@ namespace nmtools
             else {
                 /* assuming at(z,0) has fixed size n */
                 /* TODO: make assertion optional (?) */
-                constexpr auto N = fixed_vector_size_v<meta::remove_cvref_t<decltype(at(z,0))>>;
+                constexpr auto N = meta::fixed_vector_size_v<meta::remove_cvref_t<decltype(at(z,0))>>;
                 assert (N==n);
             }
         }

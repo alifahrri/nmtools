@@ -54,8 +54,8 @@ TEST_CASE("flatten(std::array)" * doctest::test_suite("view::flatten"))
     }
 
     // {
-    //     // view should have fixed_array_shape if its underlying array have too
-    //     constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
+    //     // view should have meta::fixed_array_shape if its underlying array have too
+    //     constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
     //     STATIC_CHECK(( std::get<0>(shape)==3 ));
     //     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // }
@@ -90,8 +90,8 @@ TEST_CASE("make_view<flatten_t>(std::array)" * doctest::test_suite("view::flatte
     }
 
     // {
-    //     // view should have fixed_array_shape if its underlying array have too
-    //     constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
+    //     // view should have meta::fixed_array_shape if its underlying array have too
+    //     constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
     //     STATIC_CHECK(( std::get<0>(shape)==3 ));
     //     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // }
@@ -151,8 +151,8 @@ TEST_CASE("flatten(std::vector)" * doctest::test_suite("view::flatten"))
     }
 
     // {
-    //     // view should have fixed_array_shape if its underlying array have too
-    //     constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
+    //     // view should have meta::fixed_array_shape if its underlying array have too
+    //     constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
     //     STATIC_CHECK(( std::get<0>(shape)==3 ));
     //     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // }
@@ -212,8 +212,8 @@ TEST_CASE("flatten(fixed_vector)" * doctest::test_suite("view::flatten"))
     }
 
     // {
-    //     // view should have fixed_array_shape if its underlying array have too
-    //     constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
+    //     // view should have meta::fixed_array_shape if its underlying array have too
+    //     constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
     //     STATIC_CHECK(( std::get<0>(shape)==3 ));
     //     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // }
@@ -275,8 +275,8 @@ TEST_CASE("flatten(dynamic_vector)" * doctest::test_suite("view::flatten"))
     }
 
     // {
-    //     // view should have fixed_array_shape if its underlying array have too
-    //     constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
+    //     // view should have meta::fixed_array_shape if its underlying array have too
+    //     constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
     //     STATIC_CHECK(( std::get<0>(shape)==3 ));
     //     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // }

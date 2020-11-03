@@ -104,11 +104,11 @@ namespace nmtools::blas
         /* dispatch compile-time version 
             both are fixed size matrix, the resulting shape will be known at compile time */
         if constexpr (is_fixed_size_mat_A && is_fixed_size_mat_B) {
-            constexpr auto ashape = fixed_matrix_size_v<m1_t>;
+            constexpr auto ashape = meta::fixed_matrix_size_v<m1_t>;
             constexpr auto row_a = get<0>(ashape);
             constexpr auto col_a = get<1>(ashape);
 
-            constexpr auto bshape = fixed_matrix_size_v<m2_t>;
+            constexpr auto bshape = meta::fixed_matrix_size_v<m2_t>;
             constexpr auto row_b = get<0>(bshape);
             constexpr auto col_b = get<1>(bshape);
 

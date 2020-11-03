@@ -55,8 +55,8 @@ namespace nmtools::blas
 
             /* when both vector is fixed size, perform size assertion at compile time */
             if constexpr (is_fixed_size_vec_x && is_fixed_size_vec_y) {
-                constexpr auto nx = fixed_vector_size_v<X>;
-                constexpr auto ny = fixed_vector_size_v<Y>;
+                constexpr auto nx = meta::fixed_vector_size_v<X>;
+                constexpr auto ny = meta::fixed_vector_size_v<Y>;
                 static_assert(
                     nx==ny
                     /* TODO: helpful error message */
