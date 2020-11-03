@@ -1115,7 +1115,7 @@ namespace nmtools::meta
                 return traits::remove_cvref_t<type>{};
             }
             else if constexpr (std::is_array_v<T>) {
-                using type = std::remove_extent_t<T>;
+                using type = std::remove_all_extents_t<T>;
                 return traits::remove_cvref_t<type>{};
             }
             else if constexpr (traits::has_funcnd_v<T,size_t>) {
@@ -1280,7 +1280,9 @@ namespace nmtools::meta
              * 
              * @todo make this fn consteval
              */
-            if constexpr (traits::is_ndarray_v<T>)
+            if constexpr (std::is_array_v<T>)
+                return std::remove_all_extents_t<T>{};
+            else if constexpr (traits::is_ndarray_v<T>)
                 return get_ndarray_value_type_t<T>{};
             else if constexpr (traits::is_array2d_v<T>)
                 return get_matrix_value_type_t<T>{};
@@ -1519,6 +1521,33 @@ namespace nmtools::meta
     using get_row_type_t = typename get_row_type<T>::type;
 
     /**
+     * @brief make nested raw array from element type T, first axis size N, and the rest of axis size Ns...
+     *
+     * For example make_nested_raw_array<double,3,4,5> is creating double[3][4][5].
+     * 
+     * @tparam T desired element type
+     * @tparam N size of the first axis
+     * @tparam Ns size(s) of the rest axes
+     */
+    template <typename T, size_t N, size_t...Ns>
+    struct make_nested_raw_array
+    {
+        template <typename T_, size_t N_, size_t...Ns_>
+        struct _make_type
+        {
+            using nested_type = typename _make_type<T_,Ns_...>::type;
+            using type = nested_type[N_];
+        }; // _make_type
+        template <typename T_, size_t N_>
+        struct _make_type<T_,N_>
+        {
+            using type = T_[N_];
+        }; // _make_type
+
+        using type = typename _make_type<T,N,Ns...>::type;
+    }; // make_nested_raw_array
+
+    /**
      * @brief make nested array given template-template parameter, element type and shape.
      *
      * https://godbolt.org/z/Pdha6T
@@ -1570,6 +1599,17 @@ namespace nmtools::meta
 
         using type = decltype(_make_nested_type());
     };
+
+    /**
+     * @brief helper alias template to get the type of nested raw array.
+     * 
+     * @tparam T desired element type
+     * @tparam N size of the first axis
+     * @tparam Ns size(s) of the rest axes
+     */
+    template <typename T, size_t N, size_t...Ns>
+    using make_nested_raw_array_t = typename make_nested_raw_array<T,N,Ns...>::type;
+
     /**
      * @brief helper alias template to make nested array given template-template parameter, element type and shape
      * 
@@ -1592,6 +1632,18 @@ namespace nmtools::meta
      */
     template <template<typename...> typename array_t, typename T, size_t N>
     using make_nested_dynamic_array_t = typename make_nested_dynamic_array<array_t,T,N>::type;
+
+    /**
+     * @brief helper function declaration to get the type of nested array.
+     * 
+     * @tparam T desired element type
+     * @tparam N size of first axis
+     * @tparam Ns size of the rest of axes
+     * @return make_nested_raw_array_t<T,N,Ns...> 
+     */
+    template <typename T, size_t N, size_t...Ns>
+    constexpr auto make_nested_array()
+        -> make_nested_raw_array_t<T,N,Ns...>;
 
     /**
      * @brief helper function declaration to get the type of nested array.
