@@ -112,15 +112,15 @@ namespace nmtools::bench::nanobench::common
     auto format_shape(const T& t, const Args&...args) -> std::string
     {
         std::string result;
-        if constexpr (traits::is_array2d_v<T>) {
+        if constexpr (meta::is_array2d_v<T>) {
             auto [rows,cols] = matrix_size(t);
             result = fmt::format("[{},{}]", rows, cols);
         }
-        else if constexpr (traits::is_array1d_v<T>) {
+        else if constexpr (meta::is_array1d_v<T>) {
             auto n = vector_size(t);
             result = fmt::format("[{}]", n);
         }
-        else if constexpr (traits::is_tuple_v<T>) {
+        else if constexpr (meta::is_tuple_v<T>) {
             // TODO: make this lambda variadic
             auto f = [](auto i, auto j) {
                 return fmt::format("({},{})", format_shape(i), format_shape(j));
