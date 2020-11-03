@@ -7,7 +7,6 @@
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/utility/shape.hpp"
 
 /* TODO: should we include array and std::array specialization here? */
 #include <array>

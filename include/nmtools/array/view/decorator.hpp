@@ -5,7 +5,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/utility/shape.hpp"
+#include "nmtools/array/shape.hpp"
 
 #include <cassert>
 

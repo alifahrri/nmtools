@@ -2,7 +2,6 @@
 #define NMTOOLS_ARRAY_UTILITY_HPP
 
 #include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/utility/shape.hpp"
 #include "nmtools/array/utility/squeeze.hpp"
 #include "nmtools/array/utility/row.hpp"
 #include "nmtools/array/utility/column.hpp"

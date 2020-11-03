@@ -6,7 +6,7 @@
 /* common array (as in matrix/vector) utility */
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/utility/zeros.hpp"
-#include "nmtools/array/utility/shape.hpp"
+#include "nmtools/array/shape.hpp"
 
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"

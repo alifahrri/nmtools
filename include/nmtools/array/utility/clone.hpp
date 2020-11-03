@@ -5,7 +5,7 @@
 #include "nmtools/utility/tag.hpp"
 
 #include "nmtools/array/utility/at.hpp"         // at
-#include "nmtools/array/utility/shape.hpp"      // vector_size, matrix_size
+#include "nmtools/array/shape.hpp"      // vector_size, matrix_size
 #include "nmtools/array/utility/zeros_like.hpp" // zeros_like
 
 #include "nmtools/traits.hpp"
