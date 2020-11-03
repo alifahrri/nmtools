@@ -36,8 +36,8 @@ TEST_CASE("mutable_slice(std::array)"*doctest::test_suite("view::mutable_slice")
     auto array = std::array{1.,2.,3.};
     auto array_ref = view::mutable_slice(array,0,1);
     // @note even if the referenced array is fixed-size (std::array), the slice args are not!
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
@@ -69,8 +69,8 @@ TEST_CASE("make_view<mutable_slice_t>(std::array)"*doctest::test_suite("view::mu
     auto array = std::array{1.,2.,3.};
     auto array_ref = view::make_view<mutable_slice_t>(array,0,1);
     // @note even if the referenced array is fixed-size (std::array), the slice args are not!
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
@@ -104,8 +104,8 @@ TEST_CASE("mutable_slice(std::array[2])"*doctest::test_suite("view::mutable_slic
     // @note only support tuple for now, cant be pair
     auto array_ref = view::mutable_slice(array, std::tuple{0,1}, std::tuple{1,2});
     // @note even if the referenced array is fixed-size (std::array), the slice args are not!
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
     // @note that isclose can also handle comparison between pair/tuple with array
@@ -135,7 +135,7 @@ TEST_CASE("mutable_slice(std::array[2])"*doctest::test_suite("view::mutable_slic
     // CHECK( array_ref(1,0)==7 );
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -148,8 +148,8 @@ TEST_CASE("mutable_slice(std::vector)"*doctest::test_suite("view::mutable_slice"
 {
     auto array = std::vector{1.,2.,3.};
     auto array_ref = view::mutable_slice(array,0,1);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
@@ -182,8 +182,8 @@ TEST_CASE("mutable_slice(std::vector[2])"*doctest::test_suite("view::mutable_sli
     };
     // @note only support tuple for now, cant be pair
     auto array_ref = view::mutable_slice(array, std::tuple{0,1}, std::tuple{1,2});
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
     // @note that isclose can also handle comparison between pair/tuple with array
@@ -213,7 +213,7 @@ TEST_CASE("mutable_slice(std::vector[2])"*doctest::test_suite("view::mutable_sli
     // CHECK( array_ref(1,0)==7 );
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -229,8 +229,8 @@ TEST_CASE("mutable_slice(fixed_vector)"*doctest::test_suite("view::mutable_slice
     auto array = fixed_vector<double,3>{1.,2.,3.};
     auto array_ref = view::mutable_slice(array,1,nm::end_t{});
     // @note even if the referenced array is fixed-size (fixed_vector), the slice args are not!
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
@@ -260,8 +260,8 @@ TEST_CASE("mutable_slice(fixed_matrix)"*doctest::test_suite("view::mutable_slice
     auto array = fixed_matrix<double,3,2>{};
     auto array_ref = view::mutable_slice(array,std::tuple{1,0},std::tuple{nm::end_t{},nm::end_t{}});
     // @note even if the referenced array is fixed-size (fixed_matrix), the slice args are not!
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
 
     array = std::array{
         std::array{1.,2.},
@@ -291,7 +291,7 @@ TEST_CASE("mutable_slice(fixed_matrix)"*doctest::test_suite("view::mutable_slice
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }

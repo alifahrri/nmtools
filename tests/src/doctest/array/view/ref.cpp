@@ -41,9 +41,9 @@ TEST_CASE("ref(std::array)" * doctest::test_suite("view::ref")) // ref with 1D s
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isclose(array_ref.shape(),std::array{3}) );
-    STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // LOG_TYPEINFO( decltype(array_ref) );
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     {
         auto expected = std::array{1.,2.,3.};
@@ -63,7 +63,7 @@ TEST_CASE("ref(std::array)" * doctest::test_suite("view::ref")) // ref with 1D s
         // view should have fixed_array_shape if its underlying array have too
         constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     }
 }
 
@@ -76,7 +76,7 @@ TEST_CASE("make_view<ref_t>(std::array)" * doctest::test_suite("view::ref")) // 
     using view::ref_t;
     auto array = std::array{1.,2.,3.};
     auto array_ref = view::make_view<ref_t>(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
@@ -99,7 +99,7 @@ TEST_CASE("make_view<ref_t>(std::array)" * doctest::test_suite("view::ref")) // 
         // view::decorator_t should have fixed_array_shape if its underlying view have too
         constexpr auto shape = nmtools::fixed_array_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_vector_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -116,7 +116,7 @@ TEST_CASE("ref(std::array<std::array>)" * doctest::test_suite("view::ref")) // r
         std::array{3.,4.,5.},
     };
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
     // @note that isclose can also handle comparison between pair/tuple with array
@@ -140,7 +140,7 @@ TEST_CASE("ref(std::array<std::array>)" * doctest::test_suite("view::ref")) // r
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -154,7 +154,7 @@ TEST_CASE("ref(std::vector)" * doctest::test_suite("view::ref")) // ref with 1D 
 {
     auto array = std::vector{1.,2.,3.};
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     CHECK( isclose(array_ref.shape(),std::array{3}) );
@@ -173,7 +173,7 @@ TEST_CASE("ref(std::vector)" * doctest::test_suite("view::ref")) // ref with 1D 
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_vector_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -190,7 +190,7 @@ TEST_CASE("ref(std::vector<std::vector>)" * doctest::test_suite("view::ref")) //
         std::vector{3.,4.,5.},
     };
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
     CHECK( isclose(array_ref.shape(),std::array{2,3}) );
@@ -213,7 +213,7 @@ TEST_CASE("ref(std::vector<std::vector>)" * doctest::test_suite("view::ref")) //
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -227,7 +227,7 @@ TEST_CASE("ref(fixed_vector)" * doctest::test_suite("view::ref")) // ref with fi
 {
     auto array = fixed_vector<double,3>{1.,2.,3.};
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     CHECK( isclose(array_ref.shape(),std::array{3}) );
@@ -247,7 +247,7 @@ TEST_CASE("ref(fixed_vector)" * doctest::test_suite("view::ref")) // ref with fi
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_vector_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -261,7 +261,7 @@ TEST_CASE("ref(fixed_matrix)" * doctest::test_suite("view::ref")) // ref with fi
 {
     auto array = fixed_matrix<double,2,3>{};
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
     CHECK( isclose(array_ref.shape(), std::array{2,3}) );
@@ -289,7 +289,7 @@ TEST_CASE("ref(fixed_matrix)" * doctest::test_suite("view::ref")) // ref with fi
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -303,7 +303,7 @@ TEST_CASE("ref(dynamic_vector)" * doctest::test_suite("view::ref")) // ref with 
 {
     auto array = dynamic_vector{1.,2.,3.};
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     CHECK( isclose(array_ref.shape(),std::array{3}) );
@@ -322,7 +322,7 @@ TEST_CASE("ref(dynamic_vector)" * doctest::test_suite("view::ref")) // ref with 
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array1d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_vector_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -339,7 +339,7 @@ TEST_CASE("ref(dynamic_matrix)" * doctest::test_suite("view::ref")) // ref with 
         {3.,4.,5.},
     };
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
     CHECK( isclose(array_ref.shape(), std::array{2,3}) );
@@ -362,7 +362,7 @@ TEST_CASE("ref(dynamic_matrix)" * doctest::test_suite("view::ref")) // ref with 
     }
 
     {
-        STATIC_CHECK(( nmtools::traits::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -382,7 +382,7 @@ TEST_CASE("ref(fixed_ndarray[1])" * doctest::test_suite("view::ref")) // ref wit
     array = std::array{1.,2.,3.};
 
     {
-        STATIC_CHECK(( nmtools::traits::is_ndarray_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_ndarray_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -416,7 +416,7 @@ TEST_CASE("ref(fixed_ndarray[2])" * doctest::test_suite("view::ref")) // ref wit
     CHECK( array_ref(1,0)==7 );
 
     {
-        STATIC_CHECK(( nmtools::traits::is_ndarray_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_ndarray_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
@@ -439,7 +439,7 @@ TEST_CASE("ref(fixed_ndarray[3])" * doctest::test_suite("view::ref")) // ref wit
     CHECK( array_ref(0,1,0)==6 );
 
     {
-        STATIC_CHECK(( nmtools::traits::is_ndarray_v<decltype(array_ref)> ));
+        STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_ndarray_value_type_t<decltype(array_ref)>> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }

@@ -35,7 +35,7 @@ TEST_CASE("mutable_ref(std::array)" * doctest::test_suite("view::mutable_ref")) 
 {
     auto array = std::array{1.,2.,3.};
     auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
@@ -68,7 +68,7 @@ TEST_CASE("make_view<mutable_ref_t>(std::array)"*doctest::test_suite("view::muta
     using view::mutable_ref_t;
     auto array = std::array{1.,2.,3.};
     auto array_ref = view::make_view<mutable_ref_t>(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
@@ -103,7 +103,7 @@ TEST_CASE("mutable_ref(std::array[2])"*doctest::test_suite("view::mutable_ref"))
         std::array{3.,4.,5.},
     };
     auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
     // @note that isclose can also handle comparison between pair/tuple with array
@@ -135,7 +135,7 @@ TEST_CASE("mutable_ref(std::vector[1])"*doctest::test_suite("view::mutable_ref")
 {
     auto array = std::vector{1.,2.,3.};
     auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     CHECK( isclose(array_ref.shape(),std::array{3}) );
@@ -162,7 +162,7 @@ TEST_CASE("mutable_ref(std::vector[2])"*doctest::test_suite("view::mutable_ref")
         std::vector{3.,4.,5.},
     };
     auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
     CHECK( isclose(array_ref.shape(),std::array{2,3}) );
@@ -193,7 +193,7 @@ TEST_CASE("mutable_ref(fixed_vector)"*doctest::test_suite("view::mutable_ref")) 
 {
     auto array = fixed_vector<double,3>{1.,2.,3.};
     auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     CHECK( isclose(array_ref.shape(),std::array{3}) );
@@ -217,7 +217,7 @@ TEST_CASE("mutable_ref(fixed_matrix)"*doctest::test_suite("view::mutable_ref")) 
 {
     auto array = fixed_matrix<double,2,3>{};
     auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     array = {
         {1.,2.,3.},
@@ -253,7 +253,7 @@ TEST_CASE("mutable_ref(dynamic_vector)"*doctest::test_suite("view::mutable_ref")
 {
     auto array = dynamic_vector{1.,2.,3.};
     auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     CHECK( isclose(array_ref.shape(),std::array{3}) );
@@ -281,7 +281,7 @@ TEST_CASE("mutable_ref(dynamic_matrix)"*doctest::test_suite("view::mutable_ref")
         {3.,4.,5.},
     };
     auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( !nmtools::traits::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
     CHECK( isclose(array_ref.shape(), std::array{2,3}) );

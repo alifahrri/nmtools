@@ -13,7 +13,7 @@
 
 namespace blas = nmtools::blas;
 namespace meta = nmtools::meta;
-namespace traits = nmtools::traits;
+namespace meta = nmtools::meta;
 
 TEST_CASE("mmmul_select_resizeable_t" * doctest::test_suite("blas::mmadd"))
 {

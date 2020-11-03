@@ -7,17 +7,17 @@ using nmtools::helper::isclose;
 using nmtools::array_shape;
 using nmtools::array::fixed_ndarray;
 
-static_assert( nmtools::traits::is_ndarray_v<fixed_ndarray<double,1>>);
-static_assert(!nmtools::traits::is_dynamic_ndarray_v<fixed_ndarray<double,1>>);
-static_assert( nmtools::traits::is_fixed_size_ndarray_v<fixed_ndarray<double,1>>);
+static_assert( nmtools::meta::is_ndarray_v<fixed_ndarray<double,1>>);
+static_assert(!nmtools::meta::is_dynamic_ndarray_v<fixed_ndarray<double,1>>);
+static_assert( nmtools::meta::is_fixed_size_ndarray_v<fixed_ndarray<double,1>>);
 
-static_assert( nmtools::traits::is_ndarray_v<fixed_ndarray<double,2,3>>);
-static_assert(!nmtools::traits::is_dynamic_ndarray_v<fixed_ndarray<double,2,3>>);
-static_assert( nmtools::traits::is_fixed_size_ndarray_v<fixed_ndarray<double,2,3>>);
+static_assert( nmtools::meta::is_ndarray_v<fixed_ndarray<double,2,3>>);
+static_assert(!nmtools::meta::is_dynamic_ndarray_v<fixed_ndarray<double,2,3>>);
+static_assert( nmtools::meta::is_fixed_size_ndarray_v<fixed_ndarray<double,2,3>>);
 
-static_assert( nmtools::traits::is_ndarray_v<fixed_ndarray<double,1,3,2>>);
-static_assert(!nmtools::traits::is_dynamic_ndarray_v<fixed_ndarray<double,1,3,2>>);
-static_assert( nmtools::traits::is_fixed_size_ndarray_v<fixed_ndarray<double,1,3,2>>);
+static_assert( nmtools::meta::is_ndarray_v<fixed_ndarray<double,1,3,2>>);
+static_assert(!nmtools::meta::is_dynamic_ndarray_v<fixed_ndarray<double,1,3,2>>);
+static_assert( nmtools::meta::is_fixed_size_ndarray_v<fixed_ndarray<double,1,3,2>>);
 
 TEST_CASE("fixed_ndarray[2,3,2]")
 {
