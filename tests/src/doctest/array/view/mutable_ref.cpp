@@ -53,8 +53,8 @@ TEST_CASE("mutable_ref(std::array)" * doctest::test_suite("view::mutable_ref")) 
     }
 
     {
-        // view should have meta::fixed_array_shape if its underlying array have too
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
+        // view should have meta::fixed_ndarray_shape if its underlying array have too
+        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
     }
 }
@@ -86,8 +86,8 @@ TEST_CASE("make_view<mutable_ref_t>(std::array)"*doctest::test_suite("view::muta
     }
 
     {
-        // view should have meta::fixed_array_shape if its underlying array have too
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
+        // view should have meta::fixed_ndarray_shape if its underlying array have too
+        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
     }
 }
