@@ -5,6 +5,10 @@ WORKDIR /opt/
 ## install sytem requirements
 COPY requirements-apt.txt requirements.txt
 RUN apt update && xargs apt install -y < requirements.txt
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 10000 && \
+	update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 10000 && \
+	update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-8 10000
+RUN pip3 install -U gcovr
 
 ## install gtest
 COPY scripts/install_gtest.sh install_gtest.sh

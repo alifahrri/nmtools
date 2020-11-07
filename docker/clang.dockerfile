@@ -13,6 +13,6 @@ COPY nmtools.pc.in nmtools.pc.in
 COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
 RUN mkdir build && cd build \
-    && CC=clang CXX=clang++ cmake -DBUILD_BENCHMARKS=OFF .. && make -j4 VERBOSE=1 && make install
+    && CC=clang CXX=clang++ cmake -DBUILD_BENCHMARKS=OFF -DCODE_COVERAGE=ON .. && make -j4 VERBOSE=1 && make install
 
 CMD ["bash","scripts/run_unit_tests.sh"]
