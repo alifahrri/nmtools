@@ -169,15 +169,19 @@ if (ADDRESS_SANITIZER)
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=address -fsanitize=leak")
 endif (ADDRESS_SANITIZER)
 
-include(CodeCoverage)
-append_coverage_compiler_flags()
-setup_target_for_coverage_gcovr_html(
-    NAME ${PROJECT_NAME}-coverage 
-    EXECUTABLE ${PROJECT_NAME}
-    EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "${GTEST_INCLUDE_DIRS}/*" "/usr/*"
-)
-setup_target_for_coverage_gcovr_html(
-    NAME ${PROJECT_NAME}-doctest-coverage 
-    EXECUTABLE ${PROJECT_NAME}-doctest
-    EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"
-)
+option(CODE_COVERAGE "build with code coverage reporting" OFF)
+message(STATUS "CODE_COVERAGE ${CODE_COVERAGE}")
+if (CODE_COVERAGE)
+    include(CodeCoverage)
+    append_coverage_compiler_flags()
+    setup_target_for_coverage_gcovr_html(
+        NAME ${PROJECT_NAME}-coverage 
+        EXECUTABLE ${PROJECT_NAME}
+        EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "${GTEST_INCLUDE_DIRS}/*" "/usr/*"
+    )
+    setup_target_for_coverage_gcovr_html(
+        NAME ${PROJECT_NAME}-doctest-coverage 
+        EXECUTABLE ${PROJECT_NAME}-doctest
+        EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"
+    )
+endif (CODE_COVERAGE)
