@@ -10,8 +10,8 @@ make numeric-tests-doctest-coverage
 
 cd $DIR/..
 if [[ ! -z ${CODECOV_TOKEN} ]]; then
-    bash <(curl -s https://codecov.io/bash) -f build/tests/numeric-tests-coverage.info || echo "Codecov did not collect coverage reports"
-    bash <(curl -s https://codecov.io/bash) -f build/tests/numeric-tests-doctest-coverage.info || echo "Codecov did not collect coverage reports"
+    bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+    bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
 fi
 
 cd $CWD
