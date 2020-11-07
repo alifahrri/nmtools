@@ -117,6 +117,10 @@ target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
     src/doctest/meta.cpp
+    src/doctest/meta/traits/ndarray.cpp
+    src/doctest/meta/traits/has_square_bracket.cpp
+    src/doctest/meta/transform/get_element_type.cpp
+    src/doctest/meta/transform/remove_nested_array_extents.cpp
     src/doctest/meta/get_container_value_type.cpp
     src/doctest/meta/blas/mmadd.cpp
     src/doctest/meta/blas/mmmul.cpp

@@ -13,30 +13,6 @@
 namespace meta = nmtools::meta;
 namespace meta = nmtools::meta;
 
-/**
- * @test compile-time tests
- * @note that meta::get_element_type call/use the following traits/metafunctions:
- * - nmtools::meta::is_array1d_v
- * - nmtools::meta::is_array2d_v
- * - nmtools::meta::get_matrix_value_type_t
- * - nmtools::meta::get_vector_value_type_t
- * 
- */
-TEST_CASE("meta" * doctest::skip(true))
-{
-    using array_t = std::array<std::array<double,5>,2>;
-    using value_t = meta::get_matrix_value_type_t<array_t>;
-    using element_t = meta::get_element_type_t<array_t>;
-    LOG_TYPEINFO(array_t);
-    LOG_TYPEINFO(value_t);
-    LOG_TYPEINFO(element_t);
-    // @note that nmtools::meta::is_array1d_v and nmtools::meta::is_array2d_v may not mutually exclusive!
-    // STATIC_CHECK((!meta::is_array1d_v<array_t>));
-    STATIC_CHECK(( meta::is_array2d_v<array_t> ));
-    STATIC_CHECK(( std::is_same_v<value_t,double> ));
-    STATIC_CHECK(( std::is_same_v<element_t,double> ));
-}
-
 TEST_CASE("traits" * doctest::skip(true))
 {
     // @note since fail on static assert means compilation error,
@@ -59,22 +35,6 @@ TEST_CASE("traits" * doctest::skip(true)) // has_atnd
     STATIC_CHECK(( !meta::has_atnd_v<vector_t,size_t,size_t> ));
     STATIC_CHECK(( meta::has_atnd_v<vector_t,size_t> ));
     STATIC_CHECK(( meta::has_atnd_v<array_t,size_t> ));
-}
-
-TEST_CASE("traits" * doctest::skip(true)) // is_ndarray
-{
-    using vector_t   = std::array<double,3>;
-    using array_t    = std::array<std::array<double,5>,3>;
-    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
-    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
-    LOG_TYPEINFO(array_t);
-    LOG_TYPEINFO(vector_t);
-    LOG_TYPEINFO(ndarray_t);
-    LOG_TYPEINFO(dndarray_t);
-    STATIC_CHECK(( !meta::is_ndarray_v<vector_t> ));
-    STATIC_CHECK(( !meta::is_ndarray_v<array_t> ));
-    STATIC_CHECK(( meta::is_ndarray_v<ndarray_t> ));
-    STATIC_CHECK(( meta::is_ndarray_v<dndarray_t> ));
 }
 
 TEST_CASE("meta" * doctest::skip(true)) // get_ndarray_value_type
@@ -156,50 +116,6 @@ TEST_CASE("traits" * doctest::skip(true)) // has_bracketnd
     STATIC_CHECK(( !meta::has_bracketnd_v<dndarray_t,size_t,size_t,size_t> ));
     STATIC_CHECK(( !meta::has_bracketnd_v<dndarray_t,size_t,size_t> ));
     STATIC_CHECK(( !meta::has_bracketnd_v<dndarray_t,size_t> ));
-}
-
-TEST_CASE("meta" * doctest::skip(true)) // meta::fixed_array_shape
-{
-    using vector_t   = std::array<double,3>;
-    using array_t    = std::array<std::array<double,3>,5>;
-    using fvector_t  = nmtools::array::fixed_vector<double,3>;
-    using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
-    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
-    using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
-    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
-    LOG_TYPEINFO(array_t);
-    LOG_TYPEINFO(vector_t);
-    LOG_TYPEINFO(fvector_t);
-    LOG_TYPEINFO(fmatrix_t);
-    LOG_TYPEINFO(ndarray_t);
-    LOG_TYPEINFO(dndarray_t);
-    LOG_TYPEINFO(ndarray3_t);
-
-    {
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<fvector_t>;
-        STATIC_CHECK(( std::get<0>(shape)==3 ));
-    }
-    {
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<array_t>;
-        STATIC_CHECK(( std::get<0>(shape)==5 ));
-        STATIC_CHECK(( std::get<1>(shape)==3 ));
-    }
-    {
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<fmatrix_t>;
-        STATIC_CHECK(( std::get<0>(shape)==5 ));
-        STATIC_CHECK(( std::get<1>(shape)==3 ));
-    }
-    {
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<ndarray_t>;
-        STATIC_CHECK(( std::get<0>(shape)==5 ));
-        STATIC_CHECK(( std::get<1>(shape)==3 ));
-    }
-    {
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<ndarray3_t>;
-        STATIC_CHECK(( std::get<0>(shape)==5 ));
-        STATIC_CHECK(( std::get<1>(shape)==3 ));
-        STATIC_CHECK(( std::get<2>(shape)==1 ));
-    }
 }
 
 TEST_CASE("meta" * doctest::skip(true)) // meta::fixed_matrix_size
@@ -350,27 +266,6 @@ TEST_CASE("meta" * doctest::skip(true))
 
     // make_reversed_index_sequence test
     STATIC_CHECK(( std::is_same_v<make_reversed_index_sequence<3>,std::index_sequence<2,1,0>> ));
-}
-
-TEST_CASE("meta" * doctest::skip(true))
-{
-    using vector_t   = std::array<double,3>;
-    using array_t    = std::array<std::array<double,3>,5>;
-    using fvector_t  = nmtools::array::fixed_vector<double,3>;
-    using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
-    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
-    using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
-    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
-
-    LOG_TYPEINFO(array_t);
-    LOG_TYPEINFO(vector_t);
-    LOG_TYPEINFO(fvector_t);
-    LOG_TYPEINFO(fmatrix_t);
-    LOG_TYPEINFO(ndarray_t);
-    LOG_TYPEINFO(dndarray_t);
-    LOG_TYPEINFO(ndarray3_t);
-
-    STATIC_CHECK(( meta::is_fixed_size_array_v<array_t> ));
 }
 
 TEST_CASE("meta" * doctest::skip(true))
