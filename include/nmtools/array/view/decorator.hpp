@@ -11,7 +11,7 @@
 
 namespace nmtools::view
 {
-    using meta::is_fixed_size_array_v;
+    using meta::is_fixed_size_ndarray_v;
 
     /**
      * @addtogroup view
@@ -175,7 +175,7 @@ namespace nmtools::view
 
             // @note needs to initialize array_t since view_type::array may not be constant expression
             // @note flatten_t dim invocation differs from other view types @todo fix
-            // if constexpr (is_fixed_size_array_v<array_t>)
+            // if constexpr (meta::is_fixed_size_ndarray_v<array_t>)
             //     static_assert (detail::dim(array_t{})==n);
             // else
             //     assert (dim()==n);
@@ -214,7 +214,7 @@ namespace nmtools::view
 
             // @note needs to initialize array_t since view_type::array may not be constant expression
             // @note flatten_t dim invocation differs from other view types @todo fix
-            // if constexpr (is_fixed_size_array_v<array_t>)
+            // if constexpr (meta::is_fixed_size_ndarray_v<array_t>)
             //     static_assert (detail::dim(array_t{})==n);
             // else
             //     assert (dim()==n);
@@ -277,14 +277,14 @@ namespace nmtools::view
 namespace nmtools
 {
     /**
-     * @brief specialization of meta::fixed_array_shape for view decorator
+     * @brief specialization of meta::fixed_ndarray_shape for view decorator
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
      */
     template <template<typename...> typename view_t, typename...Ts>
-    struct meta::fixed_array_shape<view::decorator_t<view_t,Ts...>>
-        : meta::fixed_array_shape<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+    struct meta::fixed_ndarray_shape<view::decorator_t<view_t,Ts...>>
+        : meta::fixed_ndarray_shape<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
      * @brief sfinae-enabled specialization for matrix_size

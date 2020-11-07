@@ -228,41 +228,19 @@ namespace nmtools
     };
 
     /**
-     * @brief specialization of fixed_ndarray for meta::fixed_array_shape array traits.
+     * @brief specialization of fixed_ndarray for meta::fixed_ndarray_shape array traits.
      * 
      * @tparam T element type of fixed_vector
      * @tparam Shape1 number of elements at first axis
      * @tparam ShapeN number of elements for the rest axes
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
-    struct meta::fixed_array_shape<array::fixed_ndarray<T,Shape1,ShapeN...>>
+    struct meta::fixed_ndarray_shape<array::fixed_ndarray<T,Shape1,ShapeN...>>
     {
         static inline constexpr auto value = std::make_tuple(Shape1,ShapeN...);
         using value_type = decltype(value);
     };
 } // namespace nmtools
-
-#include "nmtools/traits.hpp"
-
-namespace nmtools::meta
-{
-    /**
-     * @ingroup traits
-     * @{
-     */
-
-    /**
-     * @brief specialization of is_ndarray traits for fixed_ndarray
-     * 
-     * @tparam T element type of ndarray
-     * @tparam Shape1 size of first axis
-     * @tparam ShapeN sizes of the rest axis
-     */
-    template <typename T, size_t Shape1, size_t...ShapeN>
-    struct is_ndarray<array::fixed_ndarray<T,Shape1,ShapeN...>> : true_type {};
-
-    /** @} */ // end group traits
-} // namespace nmtooclls::traits
 
 #include "nmtools/meta.hpp"
 

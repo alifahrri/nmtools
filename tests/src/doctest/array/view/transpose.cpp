@@ -61,8 +61,8 @@ TEST_CASE("transpose(std::array)"*doctest::test_suite("view::transpose"))
     }
 
     {
-        // view should have meta::fixed_array_shape if its underlying array have too
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
+        // view should have meta::fixed_ndarray_shape if its underlying array have too
+        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
         STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     }
@@ -105,8 +105,8 @@ TEST_CASE("make_view<transpose_t>(std::array)"*doctest::test_suite("view::transp
     }
 
     {
-        // view::decorator_t should have meta::fixed_array_shape if its underlying view have too
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
+        // view::decorator_t should have meta::fixed_ndarray_shape if its underlying view have too
+        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
         STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_vector_value_type_t<decltype(array_ref)>> ));
@@ -377,8 +377,8 @@ TEST_CASE("transpose(fixed_vector)"*doctest::test_suite("view::transpose"))
     }
 
     {
-        // view should have meta::fixed_array_shape if its underlying array have too
-        constexpr auto shape = nmtools::meta::fixed_array_shape_v<decltype(array_ref)>;
+        // view should have meta::fixed_ndarray_shape if its underlying array have too
+        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
         STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     }

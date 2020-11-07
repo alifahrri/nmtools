@@ -1,7 +1,9 @@
 #ifndef NMTOOLS_META_TRANSFORM_HPP
 #define NMTOOLS_META_TRANSFORM_HPP
 
-#include "nmtools/traits.hpp"
+#include "nmtools/meta/detail.hpp"
+#include "nmtools/meta/traits.hpp"
+#include "nmtools/meta/array.hpp"
 #include <type_traits>
 #include <cassert>
 #include <iterator>
@@ -1019,45 +1021,6 @@ namespace nmtools::meta
     template <typename A, typename B, typename C>
     using select_fixed_t = typename select_fixed<A,B,C>::type;
 
-    namespace detail {
-
-        /**
-         * @brief helper tag to indicate checking fail at compile-time
-         * 
-         */
-        struct fail_t {};
-        
-        /**
-         * @brief helper metafunction to transform fail_t to void
-         * 
-         * @tparam T type to transform
-         */
-        template <typename T>
-        struct fail_to_void
-        {
-            using type = T;
-        }; // fail_to_void
-
-        /**
-         * @brief actual case for fail_to_void when T is fail_T
-         * 
-         * @tparam  
-         */
-        template <>
-        struct fail_to_void<fail_t>
-        {
-            using type = void;
-        }; // fail_to_void
-        
-        /**
-         * @brief helper alias template to fail_to_void
-         * 
-         * @tparam T type to transform
-         */
-        template <typename T>
-        using fail_to_void_t = typename fail_to_void<T>::type;
-    } // namespace detail
-
     /**
      * @brief get the velue type of container
      * 
@@ -1270,7 +1233,7 @@ namespace nmtools::meta
          * @return constexpr auto 
          * @todo consider use expr to deduce type (e.g. expr::atnd)
          */
-        static inline constexpr auto __get_type()
+        static inline constexpr auto _get()
         {
             /**
              * @note since is_array1d_v and is_array2d_v may not be mutually exclusive,
@@ -1279,26 +1242,40 @@ namespace nmtools::meta
              * to deduce the resulting element type.
              * 
              * @todo make this fn consteval
+             * @note using detail::void_to_fail_t since void can't be instantiated, reversed back to void at the caller site.
              */
-            if constexpr (std::is_array_v<T>)
-                return std::remove_all_extents_t<T>{};
-            else if constexpr (meta::is_ndarray_v<T>)
-                return get_ndarray_value_type_t<T>{};
-            else if constexpr (meta::is_array2d_v<T>)
-                return get_matrix_value_type_t<T>{};
-            else if constexpr (meta::is_array1d_v<T>)
-                return get_vector_value_type_t<T>{};
+            if constexpr (std::is_array_v<T>) {
+                using type = std::remove_all_extents_t<T>;
+                return detail::void_to_fail_t<type>{};
+            }
+            else if constexpr (meta::nested_array_dim_v<T> > 0) {
+                using type = remove_all_nested_array_dim_t<T>;
+                return detail::void_to_fail_t<type>{};
+            }
+            else if constexpr (meta::is_array2d_v<T>) {
+                using type = get_matrix_value_type_t<T>;
+                return detail::void_to_fail_t<type>{};
+            }
+            else if constexpr (meta::is_array1d_v<T>) {
+                using type = get_vector_value_type_t<T>;
+                return detail::void_to_fail_t<type>{};
+            }
+            // ndarray is more generic
+            else if constexpr (meta::is_ndarray_v<T>) {
+                using type = get_ndarray_value_type_t<T>;
+                return detail::void_to_fail_t<type>{};
+            }
             else if constexpr (std::is_arithmetic_v<T>)
                 return T{};
-            else return;
+            else return detail::fail_t{};
         }
-        using type = decltype(__get_type());
-    };
+        using type = detail::fail_to_void_t<decltype(_get())>;
+    }; // get_element_type
 
     /**
-     * @brief 
+     * @brief helper alias tempate for get_element_type
      * 
-     * @tparam T 
+     * @tparam T type to transform
      */
     template <typename T>
     using get_element_type_t = typename get_element_type<T>::type;

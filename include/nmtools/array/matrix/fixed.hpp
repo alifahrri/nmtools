@@ -228,14 +228,14 @@ namespace nmtools
     };
 
     /**
-     * @brief specialization of fixed_matrix for meta::fixed_array_shape array traits.
+     * @brief specialization of fixed_matrix for meta::fixed_ndarray_shape array traits.
      * 
      * @tparam T element type of fixed_matrix
      * @tparam Rows number of rows of fixed_matrix
      * @tparam Cols number of cols of fixed_matrix
      */
     template <typename T, size_t Rows, size_t Cols>
-    struct meta::fixed_array_shape<array::fixed_matrix<T,Rows,Cols>>
+    struct meta::fixed_ndarray_shape<array::fixed_matrix<T,Rows,Cols>>
         : meta::fixed_matrix_size<array::fixed_matrix<T,Rows,Cols>>
     {};
 

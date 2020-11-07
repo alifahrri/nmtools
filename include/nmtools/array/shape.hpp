@@ -25,19 +25,6 @@ namespace nmtools
     using std::get;
 
     /**
-     * @brief specialization of fixed_vector size for raw arary
-     * 
-     * @tparam T element type of raw array, automatically deduced
-     * @tparam N size of raw array, automatically deduced
-     * @todo move to array meta
-     */
-    template <typename T, size_t N>
-    struct meta::fixed_vector_size<T[N]>
-    {
-        static inline constexpr auto value = N;
-    };
-
-    /**
      * @brief generic function to get size of dynamic-matrix, assuming nested vector.
      * May be specialized for custom dynamic-matrix type.
      * 

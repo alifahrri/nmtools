@@ -200,13 +200,13 @@ namespace nmtools
         : std::tuple_size<typename array::fixed_vector<T,N>::data_type> {};
 
     /**
-     * @brief specialization of fixed_vector for meta::fixed_array_shape array traits.
+     * @brief specialization of fixed_vector for meta::fixed_ndarray_shape array traits.
      * 
      * @tparam T element type of fixed_vector
      * @tparam N number of elements of fixed_vector
      */
     template <typename T, size_t N>
-    struct meta::fixed_array_shape<array::fixed_vector<T,N>>
+    struct meta::fixed_ndarray_shape<array::fixed_vector<T,N>>
     {
         static inline constexpr auto value = std::make_tuple(N);
         using value_type = decltype(value);

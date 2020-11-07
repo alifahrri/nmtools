@@ -21,3 +21,6 @@ https://godbolt.org/z/dxqq3T
 Constexpr if with a non-bool condition
 https://stackoverflow.com/questions/54899466/constexpr-if-with-a-non-bool-condition
 https://godbolt.org/z/zTa9dW
+
+gcc 7 internal compiler error: in tsubst, at cp/pt.c:13602 (works fine on gcc 8)
+https://godbolt.org/z/7r7ToM
