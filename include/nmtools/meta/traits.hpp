@@ -23,23 +23,6 @@ namespace nmtools::meta {
     using std::enable_if_t;
 
     /**
-     * @brief check if given type T is n-dimensional array
-     * 
-     * @tparam T type to check
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct is_ndarray : false_type {};
-
-    /**
-     * @brief helper variable template to check if T is n-dimensional array
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool is_ndarray_v = is_ndarray<T>::value;
-
-    /**
      * @brief check if T t{} are:
      * - t[0][0][0] is valid
      * 
@@ -527,38 +510,6 @@ namespace nmtools::meta {
     inline constexpr bool has_at_v = has_at<T,size_type>::value;
 
     /**
-     * @brief check if T has square bracket operator ([]) with size_type as arguments.
-     * 
-     * @tparam T type to check
-     * @tparam size_type argument type
-     * @tparam typename=void 
-     */
-    template <typename T, typename size_type, typename=void>
-    struct has_square_bracket : false_type {};
-
-    /**
-     * @brief specialization of has_square_bracket for true case.
-     * Enabled if T has square bracket operator with size_type as argument,
-     * e.g. declval<T>()[i], with i of type size_type, is well-formed.
-     * 
-     * @tparam T 
-     * @tparam size_type 
-     */
-    template <typename T, typename size_type>
-    struct has_square_bracket<T,size_type,
-        void_t<decltype(declval<T>()[declval<size_type>()])>
-    > : true_type {};
-
-    /**
-     * @brief helper variable template for has_square_bracket
-     * 
-     * @tparam T type to check
-     * @tparam size_type argument type
-     */
-    template <typename T, typename size_type>
-    inline constexpr bool has_square_bracket_v = has_square_bracket<T,size_type>::value;
-
-    /**
      * @brief check if T has bracket operator (()) with size_type as argument
      * 
      * @tparam T type to check
@@ -717,7 +668,94 @@ namespace nmtools::meta {
          */
         template <typename T>
         using dim = decltype(declval<T>().dim());
+
+        /**
+         * @brief helper alias template to deduce the return value from index subscript `[]`.
+         *
+         * @note not to be confused with bracketnd that deduce from `operator[]` that takes variadic
+         * types as arguments.
+         * 
+         * @tparam T type to check
+         * @tparam size_type argument type to index subscript `[]`
+         */
+        template <typename T, typename size_type>
+        using square_bracket = decltype(std::declval<T>()[std::declval<size_type>()]);
     } // namespace expr
+
+    /**
+     * @brief check if type T can be indexed.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type to indexing subscript
+     * @tparam typename customizaiton point
+     * @see expr::square_bracket
+     */
+    template <typename T, typename size_type, typename=void>
+    struct has_square_bracket
+    {
+        /**
+         * @brief check using expression checker
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto _check()
+        {
+            using expression = detail::expression_check<void,expr::square_bracket,T,size_type>;
+            if constexpr (expression::value)
+                return true;
+            else return false;
+        } // _check()
+        static constexpr auto value = _check();
+    }; // has_square_bracket
+
+    /**
+     * @brief helper variable template for has_square_bracket
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type to indexing subscript
+     */
+    template <typename T, typename size_type>
+    inline constexpr bool has_square_bracket_v = has_square_bracket<T,size_type>::value;
+
+    /**
+     * @brief get the number of dimension of (possibly) nested array.
+     *
+     * By default, check using expr::square_bracket.
+     * 
+     * @tparam T type to check
+     * @tparam typename
+     */
+    template <typename T, typename=void>
+    struct nested_array_dim
+    {
+        static constexpr auto value = 0;
+    }; // nested_array_dim
+
+    /**
+     * @brief specialization of nested_array_dim
+     *
+     * Sepcialized when T square bracket expression with size_t is well-formed,
+     * checked using has_square_bracket. Recursively instantiate nested_array_dim
+     * with decreasing dimension.
+     * 
+     * @tparam T type to check
+     * @see expr::square_bracket
+     * @see has_square_bracket
+     */
+    template <typename T>
+    struct nested_array_dim<T,std::enable_if_t<has_square_bracket_v<T,size_t>>>
+    {
+        using value_type = std::remove_reference_t<expr::square_bracket<T,size_t>>;
+        static constexpr auto value = 1 + nested_array_dim<value_type>::value;
+    }; // nested_array_dim
+
+    /**
+     * @brief helper variable template for nested_array_dim.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr auto nested_array_dim_v = nested_array_dim<T>::value;
 
     /**
      * @brief trait to check if given type T is resizeable with size_types as arguments.
@@ -1022,116 +1060,6 @@ namespace nmtools::meta {
      */
     template <typename T>
     inline constexpr bool is_nested_array2d_v = is_nested_array2d<T>::value;
-
-    /**
-     * @brief traits to check if type T is fixed-size matrix
-     * 
-     * @tparam T type to check
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct is_fixed_size_matrix : std::false_type {};
-
-    /**
-     * @brief helper variable template for is_fixed_size_matrix
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool is_fixed_size_matrix_v = is_fixed_size_matrix<T>::value;
-
-    /**
-     * @brief trait to check if type T is fixed-size vector (as in math vector, not container ones).
-     * 
-     * @tparam T type to check
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct is_fixed_size_vector : false_type {};
-
-    /**
-     * @brief specializaton fo is_fixed_size_vector for raw array type.
-     * 
-     * @tparam T element type of raw array, automatically deduced
-     * @tparam N size of raw array, automatically deduced
-     */
-    template <typename T, size_t N>
-    struct is_fixed_size_vector<T[N]> : true_type {};
-
-    /**
-     * @brief helper variable template for is_fixed_size_vector.
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool is_fixed_size_vector_v = is_fixed_size_vector<T>::value;
-
-    template <typename T>
-    struct is_dynamic_size_matrix : std::negation<is_fixed_size_matrix<T>> {};
-
-    template <typename T>
-    inline constexpr bool is_dynamic_size_matrix_v = is_dynamic_size_matrix<T>::value;
-
-    template <typename T>
-    struct is_dynamic_size_vector : std::negation<is_fixed_size_vector<T>> {};
-
-    template <typename T>
-    inline constexpr bool is_dynamic_size_vector_v = is_dynamic_size_vector<T>::value;
-
-    /**
-     * @brief check if given type T is n-dimensional array that shape is known at compile-time
-     * 
-     * @tparam T type to check
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct is_fixed_size_ndarray : false_type {};
-
-    /**
-     * @brief check if given type T is n-dimensional array that shape is only known at runtime
-     * 
-     * @tparam T type to check
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct is_dynamic_ndarray : false_type {};
-
-    /**
-     * @brief helper variable template to check if given type T is n-dimensional array that shape is known at compile-time
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool is_fixed_size_ndarray_v = is_fixed_size_ndarray<T>::value;
-
-    /**
-     * @brief helper variable templat to check if given type T is n-dimensional array that shape is only known at runtime
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool is_dynamic_ndarray_v = is_dynamic_ndarray<T>::value;
-
-    /**
-     * @brief check if given type T is fixed-size array (vector/matrix/ndarray)
-     * 
-     * @tparam T type to check
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct is_fixed_size_array : std::disjunction<
-        is_fixed_size_vector<T>,
-        is_fixed_size_matrix<T>,
-        is_fixed_size_ndarray<T>
-    > {}; // is_fixed_size_array
-
-    /**
-     * @brief helper variable template to check if given type T is fixed-size array (vector/matrix/ndarray)
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool is_fixed_size_array_v = is_fixed_size_array<T>::value;
 
     /**
      * @brief check if given type T is std::integral_constant
