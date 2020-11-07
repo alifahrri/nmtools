@@ -1,12 +1,13 @@
 cmake 
-gcc 
+gcc-8
+g++-8
 build-essential 
 git
 wget
 python3-minimal
+python3-pip
 tar
 libblas-dev
 liblapack-dev
-lcov
 curl
 libboost-dev
