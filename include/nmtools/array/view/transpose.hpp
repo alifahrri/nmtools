@@ -134,7 +134,7 @@ namespace nmtools::view
                 // note that the type may be tuple/pair that doesnt have at
                 // convert to array for such condition
                 auto shape_ = [&](){
-                    auto shape_ = detail::shape(array);
+                    auto shape_ = ::nmtools::shape(array);
                     using shape_t = meta::remove_cvref_t<decltype(shape_)>;
                     // convert to std::array to make at available
                     if constexpr (meta::has_tuple_size_v<shape_t>)
@@ -174,7 +174,7 @@ namespace nmtools::view
             } // 2D array
             // 1D array
             else if constexpr (is_array1d_v<array_t>)
-                return detail::shape(array); // 1D array has no effect for transpose
+                return ::nmtools::shape(array); // 1D array has no effect for transpose
         } // shape
         
         /**

@@ -352,6 +352,21 @@ namespace nmtools::meta
         using type = array::dynamic_vector<T>;
     };
 
+    /**
+     * @brief specialization of fixed_dim metafunction for dynamic_vector.
+     *
+     * Tells the compiler that dynamic_vector has fixed-dimension of 2.
+     * 
+     * @tparam T element type of dynamic_matrix, automatically deduced
+     * @tparam storage_type, template-template parameter corresponding to the storage type of dynamic_matrix, automatically deduced
+     */
+    template <typename T, template <typename> typename storage_type>
+    struct fixed_dim<array::dynamic_matrix<T,storage_type>>
+    {
+        static constexpr auto value = 2;
+        using value_type = decltype(value);
+    }; // fixed_dim
+
     /** @} */ // end group meta
 } // namespace nmtools::meta
 

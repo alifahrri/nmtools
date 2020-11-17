@@ -4,8 +4,8 @@
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/utility/apply_at.hpp"
 
 #include <cassert>
 
@@ -18,84 +18,6 @@ namespace nmtools::view
      * Collections of functions/class for view objects
      * @{
      */
-
-    namespace detail
-    {
-        /**
-         * @brief return the dimensionality of the referred array
-         * 
-         * @tparam array_t the type of array
-         * @param array 
-         * @return constexpr auto 
-         * @note marked as static fn here to properly handle fixed_size array
-         * @see nmtools::meta::has_dim
-         * @see nmtools::meta::is_array2d
-         * @see nmtools::meta::is_array1d
-         * @see nmtools::array_dim
-         */
-        template <typename array_t>
-        constexpr auto dim(const array_t& array)
-        {
-            // @note somehow array cant be universal ref
-            if constexpr (meta::has_dim_v<array_t>)
-                return array.dim();
-            // @note since is_array2d_v and is_array1d_v may not be mutually exclusive prefer array2d first
-            else if constexpr (meta::is_array2d_v<array_t>)
-                return 2;
-            else if constexpr (meta::is_array1d_v<array_t>)
-                return 1;
-            else
-                return array_dim(array);
-        } // dim()
-
-        /**
-         * @brief call at given packed indices
-         * 
-         * @tparam array_t array type to be accessed
-         * @tparam indices_t packed indices type
-         * @tparam I compile-time index sequence to access indices
-         * @param array array to be accessed
-         * @param indices packed indices
-         * @return constexpr decltype(auto) 
-         */
-        template <typename array_t, typename indices_t, size_t...I>
-        constexpr decltype(auto) unpack_at(array_t&& array, const indices_t& indices, std::index_sequence<I...>)
-        {
-            return at(array, std::get<I>(indices)...);
-        } // unpack_at
-
-        /**
-         * @brief dispatch shape retrieval based on array_t traits
-         * 
-         * @tparam array_t non const ref type of array
-         * @param array 
-         * @return constexpr auto 
-         */
-        template <typename array_t>
-        constexpr decltype(auto) shape(const array_t& array)
-        {
-            if constexpr (meta::has_shape_v<array_t>)
-                return array.shape();
-            // @note since is_array2d_v and is_array1d_v may not be mutually exclusive, check for array2d first
-            else if constexpr (meta::is_array2d_v<array_t>)
-                return matrix_size(array);
-            // @note for 1d array, wrap return value in array for generalization
-            else if constexpr (meta::is_array1d_v<array_t> && meta::has_size_v<array_t>)
-                return std::array{array.size()};
-            else if constexpr (meta::is_array1d_v<array_t>)
-                return std::array{vector_size(array)};
-            else
-                return array_shape(array);
-        } // shape
-
-        template <template<typename,size_t> typename shape_t, typename array_t>
-        constexpr decltype(auto) shape(const array_t& array)
-        {
-            using ::nmtools::detail::make_array;
-            auto shape_ = shape(array);
-            return make_array<shape_t>(shape_);
-        } // shape
-    } // namespace detail
 
     /**
      * @brief provide generic common implementation for view objects. 
@@ -127,8 +49,9 @@ namespace nmtools::view
             // @note `this` must be constexpr when constexpr return value is desired
             if constexpr (meta::has_dim_v<meta::remove_cvref_t<view_type>>)
                 return view_type::dim();
+            // @note may be recursive
             else
-                return detail::dim(view_type::array);
+                return ::nmtools::dim(view_type::array);
         } // dim()
 
         /**
@@ -137,14 +60,14 @@ namespace nmtools::view
          * @return constexpr auto 
          * @see nmtools::vector_size
          * @see nmtools::matrix_size
-         * @see nmtools::array_shape
+         * @see nmtools::shape
          */
         constexpr decltype(auto) shape() const noexcept
         {
             using array_t = meta::remove_cvref_t<array_type>;
             if constexpr (meta::has_shape_v<meta::remove_cvref_t<view_type>>)
                 return view_type::shape();
-            else return detail::shape(view_type::array);
+            else return ::nmtools::shape(view_type::array);
         } // shape
 
         /**
@@ -181,9 +104,7 @@ namespace nmtools::view
             //     assert (dim()==n);
 
             // call at to referred object, not to this
-            // return at(view_type::array, indices...);
-            using indices_sequence_t = std::make_index_sequence<std::tuple_size_v<decltype(transformed_indices)>>;
-            return detail::unpack_at(view_type::array, transformed_indices, indices_sequence_t{});
+            return apply_at(view_type::array, transformed_indices);
         } // operator()
 
         /**
@@ -220,9 +141,7 @@ namespace nmtools::view
             //     assert (dim()==n);
 
             // call at to referred object, not to this
-            // return at(view_type::array, indices...);
-            using indices_sequence_t = std::make_index_sequence<std::tuple_size_v<decltype(transformed_indices)>>;
-            return detail::unpack_at(view_type::array, transformed_indices, indices_sequence_t{});
+            return apply_at(view_type::array, transformed_indices);
         } // operator()
 
     }; // decorator_t

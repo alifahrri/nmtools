@@ -180,10 +180,10 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
-    constexpr auto array_shape(const array::fixed_ndarray<T,Shape1,ShapeN...>& a)
+    constexpr auto shape(const array::fixed_ndarray<T,Shape1,ShapeN...>& a)
     {
         return a.shape();
-    } // array_shape
+    } // shape
 
     /**
      * @brief return the dimensionality of fixed_ndarray, which is known at compile-time
@@ -194,7 +194,7 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename T, size_t...Shape>
-    constexpr auto array_dim(const array::fixed_ndarray<T,Shape...>& a)
+    constexpr auto dim(const array::fixed_ndarray<T,Shape...>& a)
     {
         return a.dim();
     } // 
@@ -268,7 +268,7 @@ namespace nmtools::meta
 } // namespace nmtools::meta
 
 #include "nmtools/array/utility/clone.hpp" // clone_impl
-#include "nmtools/array/view/flatten.hpp"
+#include "nmtools/array/view/flatten.hpp" // view::flatten
 
 namespace nmtools::array
 {
@@ -290,11 +290,10 @@ namespace nmtools::array
     template <typename ndarray_t>
     constexpr decltype(auto) fixed_ndarray<T,Shape1,ShapeN...>::operator=(ndarray_t&& rhs)
     {
-        // static_assert (
-        //     ( meta::is_fixed_size_matrix_v<ndarray_t> && (dim()==2) )
-        //     || ( meta::is_fixed_size_vector_v<ndarray_t> && (dim()==1) ),
-        //     "fixed_ndarray only support assignment from fixed ndarray/matrix/vector for now"
-        // );
+        using meta::fixed_ndarray_dim_v;
+        static_assert (fixed_ndarray_dim_v<ndarray_t> == fixed_ndarray_dim_v<this_type>
+            , "unsupported shape for assignment"
+        );
 
         using ::nmtools::detail::clone_impl;
 

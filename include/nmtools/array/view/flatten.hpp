@@ -42,7 +42,7 @@ namespace nmtools::view
         constexpr auto shape() const noexcept
         {
             // assuming fixed dim array
-            auto shape_ = detail::shape<std::array>(array);
+            auto shape_ = ::nmtools::shape<std::array>(array);
             // compute product
             auto identity = 1;
             for (size_t i=0; i<shape_.size(); i++)
@@ -56,7 +56,7 @@ namespace nmtools::view
         {
             using ::nmtools::array::detail::compute_indices;
             // assuming fixed dim array
-            auto shape_  = detail::shape<std::array>(array);
+            auto shape_ = ::nmtools::shape<std::array>(array);
             auto indices = compute_indices(i,shape_);
             return indices;
         } // index
