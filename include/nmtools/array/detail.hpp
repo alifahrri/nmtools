@@ -98,6 +98,36 @@ namespace nmtools::detail
             static_cast<common_type>(std::forward<Ts>(ts))...
         };
     } // make_array
+
+    /**
+     * @brief create tuple from array
+     * 
+     * @tparam array_t array type, `std::get<Is>(array)` must be well-formed
+     * @tparam Is index sequence
+     * @param array array to be converted
+     * @return constexpr decltype(auto) 
+     */
+    template <typename array_t, size_t...Is>
+    constexpr decltype(auto) as_tuple(array_t&& array, std::index_sequence<Is...>)
+    {
+        return std::tuple{std::get<Is>(std::forward<array_t>(array))...};
+    } // as_tuple
+
+    /**
+     * @brief create tuple from array
+     * 
+     * @tparam array_t tempate template parameter for corresponding array
+     * @tparam T value type of the array
+     * @tparam N size of the array
+     * @param array array to be converted
+     * @return constexpr auto 
+     */
+    template <template <typename,size_t> typename array_t, typename T, size_t N>
+    constexpr auto as_tuple(array_t<T,N>&& array)
+    {
+        using indices_t = std::make_index_sequence<N>;
+        return as_tuple(std::forward<array_t<T,N>>(array), indices_t{});
+    } // as_tuple
     
     /** @} */ // end group array
 } // namespace nmtools::detail
@@ -140,6 +170,8 @@ namespace nmtools::array::detail
     /**
      * @brief compute offset from given indices and computed strides
      * 
+     * Indices to offset (flat index).
+     * 
      * @param indices container of indices
      * @param strides container of strides
      * @return constexpr auto 
@@ -170,6 +202,8 @@ namespace nmtools::array::detail
 
     /**
      * @brief inverse operation of compute_offset
+     * 
+     * Offset (flat index) to indices.
      * 
      * @param offset flat indices to be mapped
      * @param shape desired shape
