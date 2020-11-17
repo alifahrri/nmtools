@@ -19,6 +19,7 @@
 #include <boost/type_index.hpp>
 #include <array>
 
+namespace nm   = nmtools;
 namespace meta = nmtools::meta;
 
 TEST_CASE("is_fixed_size_ndarray_v" * doctest::test_suite("array"))
@@ -392,5 +393,133 @@ TEST_CASE("is_ndarray_v" * doctest::test_suite("array"))
         using arg_t = std::vector<double>;
         LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = std::tuple<double,int>;
+        LOG_TYPEINFO( arg_t );
+        STATIC_CHECK( !meta::is_ndarray_v<arg_t> );
+    }
+}
+
+TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("array"))
+{
+    {
+        using arg_t = double;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( !meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = double[1];
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = double[1][1];
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = double[1][1][1];
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = double[1][1][1][1];
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = std::array<double,2>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = std::array<std::array<double,3>,2>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = std::array<std::array<std::array<double,1>,3>,2>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = std::vector<double>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = std::vector<std::vector<double>>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+    {
+        using arg_t = std::vector<std::vector<std::vector<double>>>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+    }
+}
+
+TEST_CASE("fixed_dim" * doctest::test_suite("array"))
+{
+    {
+        using arg_t = double[1];
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1 );
+    }
+    {
+        using arg_t = double[1][1];
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2 );
+    }
+    {
+        using arg_t = double[1][1][1];
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3 );
+    }
+    {
+        using arg_t = std::array<double,2>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1);
+    }
+    {
+        using arg_t = std::array<std::array<double,3>,2>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2);
+    }
+    {
+        using arg_t = std::array<std::array<std::array<double,1>,3>,2>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3);
+    }
+    {
+        using arg_t = std::vector<double>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1);
+    }
+    {
+        using arg_t = std::vector<std::vector<double>>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2);
+    }
+    {
+        using arg_t = std::vector<std::vector<std::vector<double>>>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3);
+    }
+    {
+        using arg_t = nm::array::fixed_ndarray<double,1>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1);
+    }
+    {
+        using arg_t = nm::array::fixed_ndarray<double,1,2>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2);
+    }
+    {
+        using arg_t = nm::array::fixed_ndarray<double,2,3,1>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3);
     }
 }

@@ -4,7 +4,7 @@
 #include <array>
 
 using nmtools::helper::isclose;
-using nmtools::array_shape;
+using nmtools::shape;
 using nmtools::array::fixed_matrix;
 
 TEST_CASE("fixed_matrix" * doctest::test_suite("array::fixed_matrix"))

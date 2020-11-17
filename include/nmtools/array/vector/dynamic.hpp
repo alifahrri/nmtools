@@ -210,6 +210,21 @@ namespace nmtools::meta
     template <typename T>
     struct is_resizeable<array::dynamic_vector<T>> : true_type {};
 
+    /**
+     * @brief specialization of fixed_dim metafunction for dynamic_vector.
+     *
+     * Tells the compiler that dynamic_vector has fixed-dimension of 1.
+     * 
+     * @tparam T element type of dynamic_vector, automatically deduced
+     * @tparam storage_type, template-template parameter corresponding to the storage type of dynamic_vector, automatically deduced
+     */
+    template <typename T, template <typename> typename storage_type>
+    struct fixed_dim<array::dynamic_vector<T,storage_type>>
+    {
+        static constexpr auto value = 1;
+        using value_type = decltype(value);
+    }; // fixed_dim
+
     /** @} */ // end group traits
     
 } // namespace nmtools::meta

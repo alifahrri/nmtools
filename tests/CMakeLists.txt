@@ -94,8 +94,15 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/blas/gaxpy.cpp
     ## array detail
     src/doctest/array/detail.cpp
+    src/doctest/array/shape.cpp
+    src/doctest/array/index.cpp
+    ## utility function
+    src/doctest/utils/isequal.cpp
+    src/doctest/utils/isclose.cpp
+    src/doctest/utils/to_string.cpp
     ## array utility
     src/doctest/array/utility/at.cpp
+    src/doctest/array/utility/apply_at.cpp
     src/doctest/array/utility/row.cpp
     src/doctest/array/utility/column.cpp
     src/doctest/array/utility/slice.cpp

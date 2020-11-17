@@ -718,46 +718,6 @@ namespace nmtools::meta {
     inline constexpr bool has_square_bracket_v = has_square_bracket<T,size_type>::value;
 
     /**
-     * @brief get the number of dimension of (possibly) nested array.
-     *
-     * By default, check using expr::square_bracket.
-     * 
-     * @tparam T type to check
-     * @tparam typename
-     */
-    template <typename T, typename=void>
-    struct nested_array_dim
-    {
-        static constexpr auto value = 0;
-    }; // nested_array_dim
-
-    /**
-     * @brief specialization of nested_array_dim
-     *
-     * Sepcialized when T square bracket expression with size_t is well-formed,
-     * checked using has_square_bracket. Recursively instantiate nested_array_dim
-     * with decreasing dimension.
-     * 
-     * @tparam T type to check
-     * @see expr::square_bracket
-     * @see has_square_bracket
-     */
-    template <typename T>
-    struct nested_array_dim<T,std::enable_if_t<has_square_bracket_v<T,size_t>>>
-    {
-        using value_type = std::remove_reference_t<expr::square_bracket<T,size_t>>;
-        static constexpr auto value = 1 + nested_array_dim<value_type>::value;
-    }; // nested_array_dim
-
-    /**
-     * @brief helper variable template for nested_array_dim.
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr auto nested_array_dim_v = nested_array_dim<T>::value;
-
-    /**
      * @brief trait to check if given type T is resizeable with size_types as arguments.
      * 
      * @tparam T type to check

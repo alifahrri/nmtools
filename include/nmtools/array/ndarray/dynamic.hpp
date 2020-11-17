@@ -244,10 +244,10 @@ namespace nmtools
      * @return auto 
      */
     template <typename T>
-    auto array_shape(const array::dynamic_ndarray<T>& a)
+    auto shape(const array::dynamic_ndarray<T>& a)
     {
         return a.shape();
-    } // array_shape
+    } // shape
 
     /**
      * @brief return the dimensionality of dynamic_ndarray
@@ -257,10 +257,10 @@ namespace nmtools
      * @return auto 
      */
     template <typename T>
-    auto array_dim(const array::dynamic_ndarray<T>& a)
+    auto dim(const array::dynamic_ndarray<T>& a)
     {
         return a.dim();
-    } // array_dim
+    } // dim
 
 } // namespace nmtools
 

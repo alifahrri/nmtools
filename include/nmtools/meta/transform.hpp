@@ -1265,6 +1265,8 @@ namespace nmtools::meta
                 using type = get_ndarray_value_type_t<T>;
                 return detail::void_to_fail_t<type>{};
             }
+            else if constexpr (meta::is_integral_constant_v<T>)
+                return typename T::value_type{};
             else if constexpr (std::is_arithmetic_v<T>)
                 return T{};
             else return detail::fail_t{};

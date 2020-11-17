@@ -27,13 +27,13 @@ namespace nmtools::meta
     }; // nested_array_size
 
     /**
-     * @brief specialization of nested_array_size for type that has tuple_size.
+     * @brief specialization of nested_array_size for type that has tuple_size and value_type.
      * 
      * @tparam T type tot check
      */
     template <typename T>
     struct nested_array_size<T
-        , std::enable_if_t<has_tuple_size_v<T>>
+        , std::enable_if_t<has_tuple_size_v<T> && has_value_type_v<T>>
     > {
         static constexpr auto value = std::tuple_size_v<T>;
     }; // nested_array_size
@@ -46,6 +46,46 @@ namespace nmtools::meta
      */
     template <typename T>
     inline constexpr auto nested_array_size_v = nested_array_size<T>::value;
+
+    /**
+     * @brief get the number of dimension of (possibly) nested array.
+     *
+     * By default, check using expr::square_bracket.
+     * 
+     * @tparam T type to check
+     * @tparam typename
+     */
+    template <typename T, typename=void>
+    struct nested_array_dim
+    {
+        static constexpr auto value = 0;
+    }; // nested_array_dim
+
+    /**
+     * @brief specialization of nested_array_dim
+     *
+     * Sepcialized when T square bracket expression with size_t is well-formed,
+     * checked using has_square_bracket. Recursively instantiate nested_array_dim
+     * with decreasing dimension.
+     * 
+     * @tparam T type to check
+     * @see expr::square_bracket
+     * @see has_square_bracket
+     */
+    template <typename T>
+    struct nested_array_dim<T,std::enable_if_t<has_square_bracket_v<T,size_t>>>
+    {
+        using value_type = std::remove_reference_t<expr::square_bracket<T,size_t>>;
+        static constexpr auto value = 1 + nested_array_dim<value_type>::value;
+    }; // nested_array_dim
+
+    /**
+     * @brief helper variable template for nested_array_dim.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr auto nested_array_dim_v = nested_array_dim<T>::value;
 
     namespace detail
     {
@@ -460,6 +500,7 @@ namespace nmtools::meta
      * @tparam typename customization poit
      * @see is_fixed_size_ndarray
      * @see fixed_ndarray_shape
+     * @note not to be confused with fixed_dim, in which *may* return the number of dimension for runtime array
      */
     template <typename T, typename=void>
     struct fixed_ndarray_dim
@@ -486,6 +527,43 @@ namespace nmtools::meta
     inline static constexpr auto fixed_ndarray_dim_v = fixed_ndarray_dim<T>::value;
 
     /**
+     * @brief check if type T has fixed-dimension
+     * 
+     * @tparam T type to check
+     * @tparam typename 
+     * @see fixed_ndarray_dim
+     * @see nested_array_dim_v
+     * @note not to be confused with fixed_ndarray_dim, in which *only* return the number of dimension for fixed-size array
+     */
+    template <typename T, typename=void>
+    struct fixed_dim
+    {
+        static constexpr auto _get() {
+            // for fixed-size ndarray, read dimension from fixed_ndarray_dim,
+            // which simply count the number of shape
+            using dim_t = fixed_ndarray_dim<T>;
+            using value_type = typename dim_t::value_type;
+            if constexpr (!std::is_same_v<value_type,void>)
+                return dim_t::value;
+            // for nested array, while the shape may only known at runtime,
+            // the dimension can be known at compilet time
+            else if constexpr (nested_array_dim_v<T> > 0)
+                return nested_array_dim_v<T>;
+            else return detail::fail_t{};
+        } // _get()
+        static constexpr auto value = _get();
+        using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
+    }; // fixed_dim
+
+    /**
+     * @brief helper variable template for fixed_dim
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline static constexpr auto fixed_dim_v = fixed_dim<T>::value;
+
+    /**
      * @brief check if type T is fixed-dimension ndarray
      *
      * Default implementation checks if fixed_ndarray_dim<T>
@@ -493,14 +571,16 @@ namespace nmtools::meta
      * 
      * @tparam T type to check
      * @tparam typename customization point
-     * @see fixed_ndarray_dim
+     * @see fixed_dim
      */
     template <typename T, typename=void>
     struct is_fixed_dim_ndarray
     {
         static constexpr auto _check()
         {
-            using dim_t = fixed_ndarray_dim<T>;
+            // for fixed-size ndarray, read dimension from fixed_dim,
+            // which simply count the number of shape
+            using dim_t = fixed_dim<T>;
             using value_type = typename dim_t::value_type;
             if constexpr (!std::is_same_v<value_type,void>)
                 return true;
@@ -508,6 +588,14 @@ namespace nmtools::meta
         } // _check()
         static constexpr auto value = _check();
     }; // is_fixed_dim_ndarray
+
+    /**
+     * @brief helper variable template for is_fixed_dim_ndarray
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr auto is_fixed_dim_ndarray_v = is_fixed_dim_ndarray<T>::value;
 
     /**
      * @brief check if given type T is n-dimensional array

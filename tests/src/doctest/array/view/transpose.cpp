@@ -19,6 +19,10 @@
 #include <array>
 #include <vector>
 
+// defer static assertion to runtime
+#undef NMTOOLS_STATIC_ASSERT
+#define NMTOOLS_STATIC_ASSERT NMTOOLS_DEFERRED_STATIC_ASSERT
+
 namespace view = nmtools::view;
 using nmtools::helper::isclose;
 using nmtools::array::fixed_vector;
@@ -128,7 +132,7 @@ TEST_CASE("transpose(std::array[2])"*doctest::test_suite("view::transpose")) // 
     auto array_ref = view::transpose(array);
 
     {
-        using shape_t = decltype(view::detail::shape(array_ref.array));
+        using shape_t = decltype(nmtools::shape(array_ref.array));
         using array_t = decltype(nmtools::detail::make_array<std::array>(std::declval<shape_t>()));
         // LOG_TYPEINFO(array_t);
         STATIC_CHECK(( nmtools::meta::has_tuple_size_v<shape_t> ));
@@ -357,7 +361,8 @@ TEST_CASE("transpose(fixed_vector)"*doctest::test_suite("view::transpose"))
 
     CHECK( array_ref.dim()==1 );
 
-    STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
+    using expected_t = std::tuple<size_t>;
+    STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isclose(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
@@ -488,7 +493,8 @@ TEST_CASE("transpose(dynamic_vector)"*doctest::test_suite("view::transpose"))
 
     CHECK( array_ref.dim()==1 );
 
-    STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
+    using expected_t = std::tuple<size_t>;
+    STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isclose(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
