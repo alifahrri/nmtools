@@ -4,7 +4,7 @@
 #include <array>
 
 using nmtools::helper::isclose;
-using nmtools::array_shape;
+using nmtools::shape;
 using nmtools::array::fixed_ndarray;
 
 static_assert( nmtools::meta::is_ndarray_v<fixed_ndarray<double,1>>);
@@ -31,7 +31,19 @@ TEST_CASE("fixed_ndarray[2,3,2]")
     CHECK(ndarray.strides()[0]==6);
     CHECK(ndarray.strides()[1]==2);
     CHECK(ndarray.strides()[2]==1);
-    CHECK(array_shape(ndarray)==std::array{2ul,3ul,2ul});
+    CHECK(shape(ndarray)==std::array{2ul,3ul,2ul});
+    // ndarray = {
+    //     {
+    //         {0,1},
+    //         {2,3},
+    //         {4,5},
+    //     },
+    //     {
+    //         {6,7},
+    //         {8,9},
+    //         {10,11},
+    //     },
+    // };
 }
 
 TEST_CASE("fixed_ndarray[2,3,1]")
@@ -44,7 +56,7 @@ TEST_CASE("fixed_ndarray[2,3,1]")
     CHECK(ndarray.strides()[0]==3);
     CHECK(ndarray.strides()[1]==1);
     constexpr auto expected_shape = std::array{2ul,3ul,1ul};
-    static_assert(isclose(array_shape(ndarray),expected_shape));
+    static_assert(isclose(shape(ndarray),expected_shape));
 }
 
 TEST_CASE("fixed_ndarray[2,3]")
@@ -57,7 +69,7 @@ TEST_CASE("fixed_ndarray[2,3]")
     CHECK(ndarray(0,1)==1);
     CHECK(ndarray.strides()[0]==3);
     CHECK(ndarray.strides()[1]==1);
-    CHECK(array_shape(ndarray)==std::array{2ul,3ul});
+    CHECK(shape(ndarray)==std::array{2ul,3ul});
     ndarray  = {
         {1,2,3},
         {4,5,6},
@@ -70,6 +82,6 @@ TEST_CASE("fixed_ndarray[3]")
     CHECK(ndarray.dim()==1);
     CHECK(ndarray.shape()[0]==3);
     CHECK(ndarray.strides()[0]==1);
-    static_assert(isclose(array_shape(ndarray),std::array{3ul}));
+    static_assert(isclose(shape(ndarray),std::array{3ul}));
     ndarray = {1,2,3};
 }

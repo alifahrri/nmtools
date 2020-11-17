@@ -4,7 +4,7 @@
 #include <array>
 
 using nmtools::helper::isclose;
-using nmtools::array_shape;
+using nmtools::shape;
 using nmtools::array::dynamic_matrix;
 
 TEST_CASE("dynamic_matrix" * doctest::test_suite("array::dynamic_matrix"))
