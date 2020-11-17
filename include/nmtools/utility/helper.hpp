@@ -61,11 +61,15 @@ namespace nmtools::helper {
         * @param N matrix-like or vector-like
         * @param eps tolerance
         * @return constexpr auto 
+        * @todo remove
         */
         template <typename T, typename U, typename E=double>
         constexpr auto isclose(const T& M, const U& N, E eps=1e-6)
         {
             static_assert(
+                (meta::is_integral_constant_v<T> && meta::is_integral_constant_v<U>) ||
+                (meta::is_integral_constant_v<T> && is_arithmetic_v<U>) ||
+                (is_arithmetic_v<T> && meta::is_integral_constant_v<U>) ||
                 (is_arithmetic_v<T> && is_arithmetic_v<U>) ||
                 (is_array1d_v<T> && is_array1d_v<U>) ||
                 (is_array2d_v<T> && is_array2d_v<U>),
@@ -110,7 +114,11 @@ namespace nmtools::helper {
                         return false;
                 return true;
             }
-            else if constexpr (is_arithmetic_v<T> && is_arithmetic_v<U>)
+            else if constexpr (
+                (meta::is_integral_constant_v<T> && meta::is_integral_constant_v<U>) ||
+                (meta::is_integral_constant_v<T> && is_arithmetic_v<U>) ||
+                (is_arithmetic_v<T> && meta::is_integral_constant_v<U>) ||
+                (is_arithmetic_v<T> && is_arithmetic_v<U>))
             {
                 return fabs(M-N) < eps;
             }
@@ -127,6 +135,7 @@ namespace nmtools::helper {
          * @param u rhs
          * @param eps 
          * @return constexpr auto 
+         * @todo remove
          */
         template <typename T, typename U, typename E=double, size_t...I>
         constexpr auto isclose(const T& t, const U& u, std::integer_sequence<size_t,I...>, E eps=1e-6)
@@ -150,6 +159,7 @@ namespace nmtools::helper {
      * @param u (tuple of) matrix or vector or scalar
      * @param eps 
      * @return constexpr auto 
+     * @todo remove
      */
     template <typename T, typename U, typename E=double>
     constexpr auto isclose(const T& t, const U& u, E eps=1e-6)
@@ -187,6 +197,7 @@ namespace nmtools::helper {
      * @tparam T array-like, 2d, 1d, or scalar
      * @param array array to stringify
      * @return auto stream with type of stream_t
+     * @todo remove
      */
     template <typename stream_t, typename T>
     auto stringify(const T& array)
@@ -205,6 +216,21 @@ namespace nmtools::helper {
             for (size_t i=0; i<n; i++)
                 stream << at(array,i) << "\t";
         }
+        else if constexpr (meta::has_tuple_size_v<T>) {
+            constexpr auto N = std::tuple_size_v<T>;
+            stream << "{ ";
+            meta::template_for<N>([&](auto index){
+                constexpr auto i = decltype(index)::value;
+                // NOTE: std basic_stringstream cant have operator <<
+                // with another basic_stringsteam lol, call str() for temporary workaround
+                stream << stringify<stream_t>(std::get<i>(array)).str();
+                if constexpr (i<(N-1)) 
+                    stream << "\t";
+            });
+            stream << " }";
+        }
+        else if constexpr (meta::is_integral_constant_v<T>)
+            stream << T::value;
         else {
             stream << array;
         }
