@@ -1110,13 +1110,33 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
 } \
 
 /**
+ * @brief no operation used for static asssertion
+ *
+ * @see DEFER_STATIC_CHECK
+ * @see STATIC_CHECK
+ * @see STATIC_CHECK_IS_SAME
+ */
+#define NMTOOLS_DEFERRED_STATIC_ASSERT {}
+
+#ifndef DEFER_STATIC_CHECK
+#define NMTOOLS_STATIC_ASSERT static_assert
+#else
+#define NMTOOLS_STATIC_ASSERT NMTOOLS_DEFERRED_STATIC_ASSERT
+#endif
+
+/**
  * @brief perform static assertion on `expr` and also run assertion at runtime for message and sanity check
+ *
+ * Compile-time assertion can be deferred to runtime
+ * by defining DEFER_STATIC_CHECK before include, or redefine NMTOOLS_STATIC_ASSERT.
  * 
  * @warn only available for doctest
+ * @see DEFER_STATIC_CHECK
+ * @see NMTOOLS_DEFERRED_STATIC_ASSERT
  */
 #define STATIC_CHECK(expr) \
 { \
-  static_assert(expr); \
+  NMTOOLS_STATIC_ASSERT(expr); \
   CHECK_MESSAGE(expr, #expr); \
 } \
 
@@ -1124,14 +1144,18 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
  * @brief perform static assertion std::is_same on type1 and type1.
  *
  * Also run assertion at runtime for message and sanity check.
+ * * Compile-time assertion can be deferred to runtime
+ * by defining DEFER_STATIC_CHECK before include, or redefine NMTOOLS_STATIC_ASSERT.
  * 
  * @warn only available for doctest
+ * @see DEFER_STATIC_CHECK
+ * @see NMTOOLS_DEFERRED_STATIC_ASSERT
  */
 #define STATIC_CHECK_IS_SAME(type1, type2) \
 { \
     constexpr auto is_same = std::is_same_v<type1,type2>; \
-    static_assert(is_same); \
-    CHECK_MESSAGE(is_same, std::string(#type1) + "," + std::string(#type2) ); \
+    NMTOOLS_STATIC_ASSERT(is_same); \
+    CHECK_MESSAGE(is_same, std::string(#type1) + " (" + boost::typeindex::type_id<type1>().pretty_name() + ")" + ", " + std::string(#type2) + " (" + boost::typeindex::type_id<type2>().pretty_name() + ")" ); \
 } \
 
 namespace nmtools::testing::data::common
