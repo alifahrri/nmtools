@@ -225,6 +225,7 @@ namespace nmtools
     struct meta::fixed_vector_size<array::fixed_ndarray<T,N>>
     {
         static constexpr inline auto value = N;
+        using value_type = decltype(value);
     };
 
     /**

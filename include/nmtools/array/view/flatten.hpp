@@ -98,14 +98,6 @@ namespace nmtools::meta
      */
     template <typename array_t>
     struct is_array3d<view::decorator_t<view::flatten_t,array_t>> : std::false_type {};
-
-    /**
-     * @brief flatten view is 1D
-     * 
-     * @tparam array_t 
-     */
-    template <typename array_t>
-    struct is_ndarray<view::decorator_t<view::flatten_t,array_t>> : std::false_type {};
 } // namespace nmtools::meta
 
 namespace nmtools
@@ -127,6 +119,24 @@ namespace nmtools
             // flattened array is strictly 1D
             return identity;
         } // get
+
+        static constexpr auto value = _get();
+        using value_type = decltype(_get());
+    };
+
+    template <typename array_t>
+    struct meta::fixed_ndarray_shape< view::flatten_t<array_t>
+        , std::enable_if_t<
+            meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>>
+        > 
+    >
+    {
+        static constexpr auto _get()
+        {
+            constexpr auto N = meta::fixed_vector_size_v<view::flatten_t<array_t>>;
+            // pack integer as tuple
+            return std::tuple{N};
+        } // _get()
 
         static constexpr auto value = _get();
         using value_type = decltype(_get());

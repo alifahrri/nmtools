@@ -1,9 +1,10 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 #include "testing/doctest.hpp"
 #include <array>
 
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
 using nmtools::shape;
 using nmtools::array::dynamic_matrix;
 

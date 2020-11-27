@@ -12,6 +12,8 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/view.hpp"
 #include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/isequal.hpp"
 #include "testing/testing.hpp"
 
 #include "doctest/doctest.h"
@@ -20,7 +22,8 @@
 #include <vector>
 
 namespace view = nmtools::view;
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
+using nmtools::utils::isequal;
 using nmtools::array::fixed_vector;
 using nmtools::array::fixed_matrix;
 using nmtools::array::fixed_ndarray;
@@ -41,7 +44,8 @@ TEST_CASE("slice(std::array)"*doctest::test_suite("view::slice")) // slice with 
 
     {
         auto offset = view::detail::offset(array,0,2);
-        STATIC_CHECK(( std::is_same_v<decltype(offset),std::tuple<std::tuple<size_t>,std::tuple<size_t>>> ));
+        using expected_t = std::tuple<std::tuple<size_t>,std::tuple<size_t>>;
+        STATIC_CHECK_IS_SAME( decltype(offset), expected_t );
         auto start = std::get<0>(offset);
         auto stop  = std::get<1>(offset);
         CHECK( std::get<0>(start)==0 );
@@ -51,18 +55,18 @@ TEST_CASE("slice(std::array)"*doctest::test_suite("view::slice")) // slice with 
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
     // single dimension, known at compile time
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::tuple<size_t>> ));
+    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
     // the shape (of slice view) may be runtime value
     CHECK( std::get<0>(shape)==1 );
     // CHECK( isclose(array_ref.shape(),std::array{1}) );
 
     {
-        auto expected = std::array{1.,2.};
+        auto expected = std::array{1.};
         CHECK( isclose(array_ref,expected) );
     }
     {
         array[0] = 3;
-        auto expected = std::array{3.,2.};
+        auto expected = std::array{3.};
         CHECK( isclose(array_ref,expected) );
     }
     // @note should be compile-error: assignment of read-only location
@@ -83,7 +87,8 @@ TEST_CASE("make_view<slice_t>(std::array)"*doctest::test_suite("view::slice")) /
 
     {
         auto offset = view::detail::offset(array,0,2);
-        STATIC_CHECK(( std::is_same_v<decltype(offset),std::tuple<std::tuple<size_t>,std::tuple<size_t>>> ));
+        using expected_t = std::tuple<std::tuple<size_t>,std::tuple<size_t>>;
+        STATIC_CHECK_IS_SAME( decltype(offset), expected_t );
         auto start = std::get<0>(offset);
         auto stop  = std::get<1>(offset);
         CHECK( std::get<0>(start)==0 );
@@ -93,17 +98,17 @@ TEST_CASE("make_view<slice_t>(std::array)"*doctest::test_suite("view::slice")) /
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
     // single dimension, known at compile time
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::tuple<size_t>> ));
+    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
     // the shape (of slice view) may be runtime value
     CHECK( std::get<0>(shape)==1 );
     // CHECK( isclose(array_ref.shape(),std::array{1}) );
     {
-        auto expected = std::array{1.,2.};
+        auto expected = std::array{1.};
         CHECK( isclose(array_ref,expected) );
     }
     {
         array[0] = 3;
-        auto expected = std::array{3.,2.};
+        auto expected = std::array{3.};
         CHECK( isclose(array_ref,expected) );
     }
     // @note should be compile-error: assignment of read-only location
@@ -126,8 +131,7 @@ TEST_CASE("slice(std::array[2])"*doctest::test_suite("view::slice"))
     STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{1,1}) );
+    CHECK( isequal(array_ref.shape(),std::array{1,1}) );
 
     {
         // @note somehow this deduced to std::array<double, 1ul>
@@ -169,17 +173,17 @@ TEST_CASE("slice(std::vector)"*doctest::test_suite("view::slice")) // slice with
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
     // single dimension, known at compile time
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::tuple<size_t>> ));
+    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
     // the shape (of slice view) may be runtime value
     CHECK( std::get<0>(shape)==1 );
     // CHECK( isclose(array_ref.shape(),std::array{1}) );
     {
-        auto expected = std::array{1.,2.};
+        auto expected = std::array{1.};
         CHECK( isclose(array_ref,expected) );
     }
     {
         array[0] = 3;
-        auto expected = std::array{3.,2.};
+        auto expected = std::array{3.};
         CHECK( isclose(array_ref,expected) );
     }
     // @note should be compile-error: assignment of read-only location
@@ -201,8 +205,7 @@ TEST_CASE("slice(std::vector[2])"*doctest::test_suite("view::slice"))
     STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{1,1}) );
+    CHECK( isequal(array_ref.shape(),std::array{1,1}) );
 
     {
         // @note somehow this deduced to std::array<double, 1ul>
@@ -247,7 +250,7 @@ TEST_CASE("slice(fixed_vector)"*doctest::test_suite("view::slice")) // slice wit
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
     // single dimension, known at compile time
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::tuple<size_t>> ));
+    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
     // the shape (of slice view) may be runtime value
     CHECK( std::get<0>(shape)==2 );
     // CHECK( isclose(array_ref.shape(),std::array{1}) );
@@ -283,7 +286,7 @@ TEST_CASE("slice(fixed_matrix)"*doctest::test_suite("view::ref")) // slice with 
     };
 
     CHECK( array_ref.dim()==2 );
-    CHECK( isclose(array_ref.shape(),std::array{2,2}) );
+    CHECK( isequal(array_ref.shape(),std::array{2,2}) );
 
     {
         auto expected = std::array{

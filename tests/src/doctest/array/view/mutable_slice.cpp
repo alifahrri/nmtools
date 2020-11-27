@@ -12,6 +12,8 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/view.hpp"
 #include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/isequal.hpp"
 #include "testing/testing.hpp"
 
 #include "doctest/doctest.h"
@@ -20,7 +22,8 @@
 #include <vector>
 
 namespace view = nmtools::view;
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
+using nmtools::utils::isequal;
 using nmtools::array::fixed_vector;
 using nmtools::array::fixed_matrix;
 using nmtools::array::fixed_ndarray;
@@ -42,13 +45,13 @@ TEST_CASE("mutable_slice(std::array)"*doctest::test_suite("view::mutable_slice")
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
     // single dimension, known at compile time
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::tuple<size_t>> ));
+    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
     // the shape (of mutable_slice view) may be runtime value
     CHECK( std::get<0>(shape)==1 );
     // CHECK( isclose(array_ref.shape(),std::array{1}) );
 
     {
-        auto expected = std::array{1.,2.};
+        auto expected = std::array{1.};
         CHECK( isclose(array_ref,expected) );
     }
     {
@@ -75,12 +78,12 @@ TEST_CASE("make_view<mutable_slice_t>(std::array)"*doctest::test_suite("view::mu
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
     // single dimension, known at compile time
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::tuple<size_t>> ));
+    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
     // the shape (of mutable_slice view) may be runtime value
     CHECK( std::get<0>(shape)==1 );
     // CHECK( isclose(array_ref.shape(),std::array{1}) );
     {
-        auto expected = std::array{1.,2.};
+        auto expected = std::array{1.};
         CHECK( isclose(array_ref,expected) );
     }
     {
@@ -108,8 +111,8 @@ TEST_CASE("mutable_slice(std::array[2])"*doctest::test_suite("view::mutable_slic
     STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{1,1}) );
+    // @note that isequal can also handle comparison between pair/tuple with array
+    CHECK( isequal(array_ref.shape(),std::array{1,1}) );
 
     {
         // @note somehow this deduced to std::array<double, 1ul>
@@ -154,12 +157,12 @@ TEST_CASE("mutable_slice(std::vector)"*doctest::test_suite("view::mutable_slice"
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
     // single dimension, known at compile time
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::tuple<size_t>> ));
+    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
     // the shape (of mutable_slice view) may be runtime value
     CHECK( std::get<0>(shape)==1 );
     // CHECK( isclose(array_ref.shape(),std::array{1}) );
     {
-        auto expected = std::array{1.,2.};
+        auto expected = std::array{1.};
         CHECK( isclose(array_ref,expected) );
     }
     {
@@ -186,8 +189,8 @@ TEST_CASE("mutable_slice(std::vector[2])"*doctest::test_suite("view::mutable_sli
     STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
 
     CHECK(array_ref.dim()==2);
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{1,1}) );
+    // @note that isequal can also handle comparison between pair/tuple with array
+    CHECK( isequal(array_ref.shape(),std::array{1,1}) );
 
     {
         // @note somehow this deduced to std::array<double, 1ul>
@@ -235,7 +238,7 @@ TEST_CASE("mutable_slice(fixed_vector)"*doctest::test_suite("view::mutable_slice
     CHECK( array_ref.dim()==1 );
     auto shape = array_ref.shape();
     // single dimension, known at compile time
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::tuple<size_t>> ));
+    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
     // the shape (of mutable_slice view) may be runtime value
     CHECK( std::get<0>(shape)==2 );
     // CHECK( isclose(array_ref.shape(),std::array{1}) );
@@ -270,7 +273,7 @@ TEST_CASE("mutable_slice(fixed_matrix)"*doctest::test_suite("view::mutable_slice
     };
 
     CHECK( array_ref.dim()==2 );
-    CHECK( isclose(array_ref.shape(),std::array{2,2}) );
+    CHECK( isequal(array_ref.shape(),std::array{2,2}) );
     
     {
         auto expected = std::array{

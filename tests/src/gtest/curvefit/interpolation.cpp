@@ -1,12 +1,12 @@
 #include "nmtools/curvefit.hpp"
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 #include <gtest/gtest.h>
 
 namespace nmt = nmtools;
 namespace cvt = nmtools::curvefit;
 using std::array;
 using std::vector;
-using nmt::helper::isclose;
+using nmt::utils::isclose;
 
 TEST(curvefit, compute_slopes)
 {

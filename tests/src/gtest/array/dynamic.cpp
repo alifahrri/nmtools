@@ -1,11 +1,11 @@
 #include "nmtools/array/dynamic.hpp"
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 #include "nmtools/blas/blas.hpp"
 #include <gtest/gtest.h>
 #include <array>
 
 namespace nmt = nmtools;
-using nmt::helper::isclose;
+using nmt::utils::isclose;
 using nmt::array::dynamic_vector;
 using nmt::array::dynamic_matrix;
 using nmt::array::fixed_vector;

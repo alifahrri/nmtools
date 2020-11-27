@@ -68,8 +68,8 @@ NMTOOLS_TESTING_DECLARE_CASE(slice)
         inline constexpr size_t end = 6;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3) {
-        inline constexpr auto x = std::array<double,4>{4,5,6};
-        inline constexpr auto res = std::array<double,4>{4,5,6};
+        inline constexpr auto x = std::array<double,3>{4,5,6};
+        inline constexpr auto res = std::array<double,3>{4,5,6};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4) {

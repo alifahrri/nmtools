@@ -55,7 +55,7 @@ namespace nmtools::utils
         }
         else if constexpr (meta::is_ndarray_v<T>) {
             using std::to_string;
-            using detail::make_array;
+            using ::nmtools::detail::make_array;
             // @todo support dynamic ndarray with dynamic dimension
             auto s = make_array<std::array>(shape(array));
             auto indices = indices_pack(s);

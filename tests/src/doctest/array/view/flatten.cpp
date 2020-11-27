@@ -12,13 +12,16 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/view.hpp"
 #include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/isequal.hpp"
 #include "testing/doctest.hpp"
 
 #include <array>
 #include <vector>
 
 namespace view = nmtools::view;
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
+using nmtools::utils::isequal;
 using nmtools::array::fixed_vector;
 using nmtools::array::fixed_matrix;
 using nmtools::array::fixed_ndarray;
@@ -33,9 +36,15 @@ TEST_CASE("flatten(double[N])" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+    {
+        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
+        STATIC_CHECK( isequal(shape, std::array{3}) );
+    }
     // LOG_TYPEINFO( decltype(array_ref) );
     STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
@@ -73,7 +82,13 @@ TEST_CASE("flatten(double[2][3])" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{6}) );
+    CHECK( isequal(array_ref.shape(),std::array{6}) );
+    STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+    {
+        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
+        STATIC_CHECK( isequal(shape, std::array{6}) );
+    }
 
     {
         auto expected = std::array{1.,2.,3.,3.,4.,5.};
@@ -162,7 +177,7 @@ TEST_CASE("make_view<flatten_t>(std::array)" * doctest::test_suite("view::flatte
     
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // LOG_TYPEINFO( decltype(array_ref) );
@@ -202,7 +217,7 @@ TEST_CASE("flatten(std::array[2])" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{6}) );
+    CHECK( isequal(array_ref.shape(),std::array{6}) );
 
     {
         auto expected = std::array{1.,2.,3.,3.,4.,5.};
@@ -223,7 +238,7 @@ TEST_CASE("flatten(std::vector)" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // LOG_TYPEINFO( decltype(array_ref) );
@@ -263,7 +278,7 @@ TEST_CASE("flatten(std::array[2])" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{6}) );
+    CHECK( isequal(array_ref.shape(),std::array{6}) );
 
     {
         auto expected = std::array{1.,2.,3.,3.,4.,5.};
@@ -284,7 +299,7 @@ TEST_CASE("flatten(fixed_vector)" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // LOG_TYPEINFO( decltype(array_ref) );
@@ -321,7 +336,7 @@ TEST_CASE("flatten(fixed_matrix)" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{6}) );
+    CHECK( isequal(array_ref.shape(),std::array{6}) );
 
     array = {
         {1.,2.,3.},
@@ -347,7 +362,7 @@ TEST_CASE("flatten(dynamic_vector)" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     // LOG_TYPEINFO( decltype(array_ref) );
@@ -387,7 +402,7 @@ TEST_CASE("flatten(dynamic_matrix)" * doctest::test_suite("view::flatten"))
 
     CHECK( array_ref.dim()==1 );
     // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{6}) );
+    CHECK( isequal(array_ref.shape(),std::array{6}) );
 
     {
         auto expected = std::array{1.,2.,3.,3.,4.,5.};
@@ -406,7 +421,7 @@ TEST_CASE("flatten(fixed_ndarray[1])" * doctest::test_suite("view::flatten"))
     auto array = fixed_ndarray<double,3>{1.,2.,3.};
     auto array_ref = view::flatten(array);
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 
     {
         auto expected = std::array{1.,2.,3.};
@@ -455,7 +470,7 @@ TEST_CASE("flatten(fixed_ndarray[3])" * doctest::test_suite("view::flatten"))
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{3*2*3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3*2*3}) );
 
     nmtools::at(array,0,0,0) = 6;
     CHECK( array_ref(0)==6 );
@@ -475,7 +490,7 @@ TEST_CASE("flatten(fixed_ndarary[4])" * doctest::test_suite("view::flatten"))
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{2*3*4*1}) );
+    CHECK( isequal(array_ref.shape(),std::array{2*3*4*1}) );
 
     nmtools::at(array,0,0,0,0) = 6;
     CHECK( array_ref(0)==6 );
@@ -525,7 +540,7 @@ TEST_CASE("flatten(fixed_ndarary[5])" * doctest::test_suite("view::flatten"))
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{2*3*4*1*2}) );
+    CHECK( isequal(array_ref.shape(),std::array{2*3*4*1*2}) );
 
     nmtools::at(array,0,0,0,0,0) = 7;
     CHECK( array_ref(0)==7 );
