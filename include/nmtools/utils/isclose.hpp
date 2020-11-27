@@ -48,11 +48,12 @@ namespace nmtools::utils
                 , "unsupported isclose; only support arithmetic element type or ndarray"
             );
             if constexpr (std::is_arithmetic_v<T>) {
-                using common_t = std::common_type_t<T,U>;
-                return fabs(t-u) < static_cast<common_t>(eps);
+                using common_t = std::common_type_t<T,U,E>;
+                return fabs(static_cast<common_t>(t)-static_cast<common_t>(u))
+                    < static_cast<common_t>(eps);
             }
             else {
-                bool equal = true;
+                bool close = true;
                 // @todo: static assert whenever possible
                 assert (dim(t)==dim(u)
                     // , "dimension mismatch for isclose"
@@ -66,8 +67,8 @@ namespace nmtools::utils
                     // , "size mismatch for isclose"
                 );
                 for (size_t i = 0; i<t_indices.size(); i++)
-                    equal = equal && (apply_at(t, t_indices[i]) == apply_at(u, u_indices[i]));
-                return equal;
+                    close = close && isclose(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
+                return close;
             }
         } // isclose
     } // namespace detail
