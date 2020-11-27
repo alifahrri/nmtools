@@ -1,5 +1,5 @@
 #include "nmtools/blas/blas.hpp"
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 #include <gtest/gtest.h>
 #include <array>
 #include <vector>
@@ -10,7 +10,7 @@ namespace nla = nmt::blas;
 using std::array;
 using std::vector;
 
-using nmt::helper::isclose;
+using nmt::utils::isclose;
 
 TEST(blas, zeros_like)
 {

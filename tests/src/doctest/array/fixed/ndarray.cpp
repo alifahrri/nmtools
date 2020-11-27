@@ -1,9 +1,12 @@
 #include "doctest/doctest.h"
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/isequal.hpp"
 #include <array>
 
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
+using nmtools::utils::isequal;
 using nmtools::shape;
 using nmtools::array::fixed_ndarray;
 
@@ -31,7 +34,7 @@ TEST_CASE("fixed_ndarray[2,3,2]")
     CHECK(ndarray.strides()[0]==6);
     CHECK(ndarray.strides()[1]==2);
     CHECK(ndarray.strides()[2]==1);
-    CHECK(shape(ndarray)==std::array{2ul,3ul,2ul});
+    CHECK(isequal(shape(ndarray),std::array{2ul,3ul,2ul}));
     // ndarray = {
     //     {
     //         {0,1},
@@ -56,7 +59,7 @@ TEST_CASE("fixed_ndarray[2,3,1]")
     CHECK(ndarray.strides()[0]==3);
     CHECK(ndarray.strides()[1]==1);
     constexpr auto expected_shape = std::array{2ul,3ul,1ul};
-    static_assert(isclose(shape(ndarray),expected_shape));
+    static_assert(isequal(shape(ndarray),expected_shape));
 }
 
 TEST_CASE("fixed_ndarray[2,3]")
@@ -69,7 +72,7 @@ TEST_CASE("fixed_ndarray[2,3]")
     CHECK(ndarray(0,1)==1);
     CHECK(ndarray.strides()[0]==3);
     CHECK(ndarray.strides()[1]==1);
-    CHECK(shape(ndarray)==std::array{2ul,3ul});
+    CHECK(isequal(shape(ndarray),std::array{2ul,3ul}));
     ndarray  = {
         {1,2,3},
         {4,5,6},
@@ -82,6 +85,6 @@ TEST_CASE("fixed_ndarray[3]")
     CHECK(ndarray.dim()==1);
     CHECK(ndarray.shape()[0]==3);
     CHECK(ndarray.strides()[0]==1);
-    static_assert(isclose(shape(ndarray),std::array{3ul}));
+    static_assert(isequal(shape(ndarray),std::array{3ul}));
     ndarray = {1,2,3};
 }

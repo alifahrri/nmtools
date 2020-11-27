@@ -1,11 +1,11 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/blas/blas.hpp"
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 #include <gtest/gtest.h>
 #include <array>
 
 namespace nmt = nmtools;
-using nmt::helper::isclose;
+using nmt::utils::isclose;
 using nmt::array::fixed_vector;
 using nmt::array::fixed_matrix;
 

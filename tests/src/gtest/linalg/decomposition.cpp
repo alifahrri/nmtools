@@ -1,5 +1,5 @@
 #include "nmtools/linalg.hpp"
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 #include <gtest/gtest.h>
 #include <cmath>
 #include <array>
@@ -10,7 +10,7 @@ namespace nla = nmt::linalg;
 
 using std::array;
 using std::vector;
-using nmt::helper::isclose;
+using nmt::utils::isclose;
 
 template <size_t n, size_t m, typename T>
 using mat_t = array<array<T,n>,m>;
@@ -53,36 +53,36 @@ TEST(linalg, lu_decomposition)
     /* test for matrix with array container at runtime */
     {
         auto [L,U] = nla::lu_decomposition(A);
-        EXPECT_TRUE(nmt::helper::isclose(L,expected_L,1e-5));
-        EXPECT_TRUE(nmt::helper::isclose(U,expected_U,5e-5));
+        EXPECT_TRUE(nmt::utils::isclose(L,expected_L,1e-5));
+        EXPECT_TRUE(nmt::utils::isclose(U,expected_U,5e-5));
     }
     /* test for matrix with vector container at runtime */
     {
         auto [L,U] = nla::lu_decomposition(vA);
-        EXPECT_TRUE(nmt::helper::isclose(L,expected_L,1e-5));
-        EXPECT_TRUE(nmt::helper::isclose(U,expected_U,5e-5));
+        EXPECT_TRUE(nmt::utils::isclose(L,expected_L,1e-5));
+        EXPECT_TRUE(nmt::utils::isclose(U,expected_U,5e-5));
     }
     /* test for matrix with raw array at runtime */
     {
         auto [L,U] = nla::lu_decomposition(rA);
-        EXPECT_TRUE(nmt::helper::isclose(L,expected_L,1e-5));
-        EXPECT_TRUE(nmt::helper::isclose(U,expected_U,5e-5));
+        EXPECT_TRUE(nmt::utils::isclose(L,expected_L,1e-5));
+        EXPECT_TRUE(nmt::utils::isclose(U,expected_U,5e-5));
     }
     /* test for matrix with array container at compile-time */
     {
         constexpr auto LU = nla::lu_decomposition(A);
         constexpr auto L = std::get<0>(LU);
         constexpr auto U = std::get<1>(LU);
-        static_assert(nmt::helper::isclose(L,expected_L,1e-5));
-        static_assert(nmt::helper::isclose(U,expected_U,5e-5));
+        static_assert(nmt::utils::isclose(L,expected_L,1e-5));
+        static_assert(nmt::utils::isclose(U,expected_U,5e-5));
     }
     /* test for matrix with raw array at compile-time */
     {
         constexpr auto LU = nla::lu_decomposition(rA);
         constexpr auto L = std::get<0>(LU);
         constexpr auto U = std::get<1>(LU);
-        static_assert(nmt::helper::isclose(L,expected_L,1e-5));
-        static_assert(nmt::helper::isclose(U,expected_U,5e-5));
+        static_assert(nmt::utils::isclose(L,expected_L,1e-5));
+        static_assert(nmt::utils::isclose(U,expected_U,5e-5));
     }
 }
 
@@ -108,27 +108,27 @@ TEST(linalg, substitution)
     /* test with array container at runtime */
     {
         auto d = nla::substitution(L,b);
-        EXPECT_TRUE(nmt::helper::isclose(d,expected_d,1e-2));
+        EXPECT_TRUE(nmt::utils::isclose(d,expected_d,1e-2));
     }
     /* test with vector container at runtime */
     {
         auto d = nla::substitution(vL,b);
-        EXPECT_TRUE(nmt::helper::isclose(d,expected_d,1e-2));
+        EXPECT_TRUE(nmt::utils::isclose(d,expected_d,1e-2));
     }
     /* test with raw array at runtime */
     {
         auto d = nla::substitution(rL,b);
-        EXPECT_TRUE(nmt::helper::isclose(d,expected_d,1e-2));
+        EXPECT_TRUE(nmt::utils::isclose(d,expected_d,1e-2));
     }
     /* test with array container at compile time */
     {
         constexpr auto d = nla::substitution(L,b);
-        static_assert(nmt::helper::isclose(d,expected_d,1e-2));
+        static_assert(nmt::utils::isclose(d,expected_d,1e-2));
     }
     /* test with raw array at compile time */
     {
         constexpr auto d = nla::substitution(rL,b);
-        static_assert(nmt::helper::isclose(d,expected_d,1e-2));
+        static_assert(nmt::utils::isclose(d,expected_d,1e-2));
     }
 }
 

@@ -1,5 +1,5 @@
 #include "nmtools/optimization.hpp"
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 
 #include <gtest/gtest.h>
 #include <cmath>
@@ -205,7 +205,7 @@ namespace opt = nmtools::optimization;
 using std::array;
 using std::vector;
 using std::get;
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
 
 TEST(optimization, backtracking_line_search) 
 {

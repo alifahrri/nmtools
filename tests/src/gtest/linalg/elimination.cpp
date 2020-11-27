@@ -1,5 +1,5 @@
 #include "nmtools/linalg.hpp"
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 #include <gtest/gtest.h>
 #include <cmath>
 #include <array>
@@ -7,7 +7,7 @@
 namespace nmt = nmtools;
 namespace nla = nmt::linalg;
 
-using nmt::helper::isclose;
+using nmt::utils::isclose;
 
 using std::array;
 template <size_t n, size_t m, typename T>
@@ -35,15 +35,15 @@ TEST(linalg, forward_elimination)
     constexpr auto b = vec3_t{7.85, -19.3, 71.4};
     {
         auto [Ae, be] = nla::forward_elimination(A,b);
-        EXPECT_TRUE(nmt::helper::isclose(Ae,expected_A,5e-5));
-        EXPECT_TRUE(nmt::helper::isclose(be,expected_b,5e-5));
+        EXPECT_TRUE(nmt::utils::isclose(Ae,expected_A,5e-5));
+        EXPECT_TRUE(nmt::utils::isclose(be,expected_b,5e-5));
     }
     {
         constexpr auto tuple = nla::forward_elimination(A,b);
         constexpr auto Ae = std::get<0>(tuple);
         constexpr auto be = std::get<1>(tuple);
-        static_assert(nmt::helper::isclose(Ae,expected_A,5e-5));
-        static_assert(nmt::helper::isclose(be,expected_b,5e-5));
+        static_assert(nmt::utils::isclose(Ae,expected_A,5e-5));
+        static_assert(nmt::utils::isclose(be,expected_b,5e-5));
     }
 }
 
@@ -58,11 +58,11 @@ TEST(linalg, backward_substitution)
     constexpr auto expected_x = vec3_t{ 3., -2.5, 7.};
     {
         auto x = nla::backward_substitution(A,b);
-        EXPECT_TRUE(nmt::helper::isclose(x,expected_x,1e-3));
+        EXPECT_TRUE(nmt::utils::isclose(x,expected_x,1e-3));
     }
     {
         constexpr auto x = nla::backward_substitution(A,b);
-        static_assert(nmt::helper::isclose(x,expected_x,1e-3));
+        static_assert(nmt::utils::isclose(x,expected_x,1e-3));
     }
 }
 
@@ -77,11 +77,11 @@ TEST(linalg, naive_gauss_elimination)
     constexpr auto expected_x = vec3_t{ 3., -2.5, 7.};
     {
         auto x = nla::naive_gauss_elimination(A,b);
-        EXPECT_TRUE(nmt::helper::isclose(x,expected_x,1e-3));
+        EXPECT_TRUE(nmt::utils::isclose(x,expected_x,1e-3));
     }
     {
         constexpr auto x = nla::naive_gauss_elimination(A,b);
-        static_assert(nmt::helper::isclose(x,expected_x,1e-3));
+        static_assert(nmt::utils::isclose(x,expected_x,1e-3));
     }
 }
 
@@ -109,16 +109,16 @@ TEST(linalg, partial_pivot)
     {
         using pivot_t = nla::elimination_tag::pivot_inplace_t;
         auto [Ap,bp] = nla::partial_pivot<pivot_t>(A,b,row);
-        EXPECT_TRUE(nmt::helper::isclose(Ap,expected_A));
-        EXPECT_TRUE(nmt::helper::isclose(bp,expected_b));
+        EXPECT_TRUE(nmt::utils::isclose(Ap,expected_A));
+        EXPECT_TRUE(nmt::utils::isclose(bp,expected_b));
     }
     {
         using pivot_t = nla::elimination_tag::pivot_inplace_t;
         constexpr auto tuple = nla::partial_pivot<pivot_t>(A,b,row);
         constexpr auto Ap = std::get<0>(tuple);
         constexpr auto bp = std::get<1>(tuple);
-        static_assert(nmt::helper::isclose(Ap,expected_A));
-        static_assert(nmt::helper::isclose(bp,expected_b));
+        static_assert(nmt::utils::isclose(Ap,expected_A));
+        static_assert(nmt::utils::isclose(bp,expected_b));
     }
 }
 
@@ -132,11 +132,11 @@ TEST(linalg, gauss_elimination)
     constexpr auto expected_x = vec2_t{ 1.0, 1.0 };
     {
         auto x = nla::gauss_elimination(A,b);
-        EXPECT_TRUE(nmt::helper::isclose(x,expected_x));
+        EXPECT_TRUE(nmt::utils::isclose(x,expected_x));
     }
     {
         constexpr auto x = nla::gauss_elimination(A,b);
-        static_assert(nmt::helper::isclose(x,expected_x));
+        static_assert(nmt::utils::isclose(x,expected_x));
     }
 }
 

@@ -13,13 +13,16 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/isequal.hpp"
 #include "testing/testing.hpp"
 
 #include <array>
 #include <vector>
 
 namespace view = nmtools::view;
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
+using nmtools::utils::isequal;
 using nmtools::array::fixed_vector;
 using nmtools::array::fixed_matrix;
 using nmtools::array::fixed_ndarray;
@@ -72,7 +75,7 @@ TEST_CASE("make_view<mutable_ref_t>(std::array)"*doctest::test_suite("view::muta
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
     
     {
         auto expected = std::array{1.,2.,3.};
@@ -107,7 +110,7 @@ TEST_CASE("mutable_ref(std::array[2])"*doctest::test_suite("view::mutable_ref"))
 
     CHECK(array_ref.dim()==2);
     // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{2,3}) );
+    CHECK( isequal(array_ref.shape(),std::array{2,3}) );
 
     {
         auto expected = std::array{
@@ -138,7 +141,7 @@ TEST_CASE("mutable_ref(std::vector[1])"*doctest::test_suite("view::mutable_ref")
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
     {
         auto expected = std::array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );
@@ -165,7 +168,7 @@ TEST_CASE("mutable_ref(std::vector[2])"*doctest::test_suite("view::mutable_ref")
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
-    CHECK( isclose(array_ref.shape(),std::array{2,3}) );
+    CHECK( isequal(array_ref.shape(),std::array{2,3}) );
 
     {
         auto expected = std::array{
@@ -196,7 +199,7 @@ TEST_CASE("mutable_ref(fixed_vector)"*doctest::test_suite("view::mutable_ref")) 
     STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 
     {
         auto expected = std::array{1.,2.,3.};
@@ -225,7 +228,7 @@ TEST_CASE("mutable_ref(fixed_matrix)"*doctest::test_suite("view::mutable_ref")) 
     };
 
     CHECK( array_ref.dim()==2 );
-    CHECK( isclose(array_ref.shape(), std::array{2,3}) );
+    CHECK( isequal(array_ref.shape(), std::array{2,3}) );
 
     {
         auto expected = std::array{
@@ -256,7 +259,7 @@ TEST_CASE("mutable_ref(dynamic_vector)"*doctest::test_suite("view::mutable_ref")
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::at(array_ref,0)==1 );
 
     {
@@ -284,7 +287,7 @@ TEST_CASE("mutable_ref(dynamic_matrix)"*doctest::test_suite("view::mutable_ref")
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
-    CHECK( isclose(array_ref.shape(), std::array{2,3}) );
+    CHECK( isequal(array_ref.shape(), std::array{2,3}) );
 
     {
         auto expected = std::array{
@@ -313,7 +316,7 @@ TEST_CASE("mutable_ref(fixed_ndarray[1])" * doctest::test_suite("view::mutable_r
     auto array = fixed_ndarray<double,3>{1.,2.,3.};
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 
     array = std::array{1.,2.,3.};
 }
@@ -334,7 +337,7 @@ TEST_CASE("mutable_ref(fixed_ndarray[2])" * doctest::test_suite("view::mutable_r
     };
 
     CHECK( array_ref.dim()==2 );
-    CHECK( isclose(array_ref.shape(),std::array{3,2}) );
+    CHECK( isequal(array_ref.shape(),std::array{3,2}) );
 
     CHECK( array_ref(0,1)==2 );
     CHECK( array_ref(1,0)==3 );
@@ -355,7 +358,7 @@ TEST_CASE("mutable_ref(fixed_ndarray[3])"*doctest::test_suite("view::mutable_ref
     auto array = fixed_ndarray<double,3,2,4>{};
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==3 );
-    CHECK( isclose(array_ref.shape(),std::array{3,2,4}) );
+    CHECK( isequal(array_ref.shape(),std::array{3,2,4}) );
 
     // @todo provide constructor/assignment op from 3D array
 
@@ -372,7 +375,7 @@ TEST_CASE("mutable_ref(fixed_ndarray[4])"*doctest::test_suite("view::mutable_ref
     auto array = fixed_ndarray<double,3,2,4,1>{};
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==4 );
-    CHECK( isclose(array_ref.shape(),std::array{3,2,4,1}) );
+    CHECK( isequal(array_ref.shape(),std::array{3,2,4,1}) );
 
     // @todo provide constructor/assignment op from 4D array
 
@@ -389,7 +392,7 @@ TEST_CASE("mutable_ref(dynamic_ndarray[1])"*doctest::test_suite("view::mutable_r
     auto array = dynamic_ndarray({1.,2.,3.});
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==1 );
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
 }
 
 /**
@@ -404,7 +407,7 @@ TEST_CASE("mutable_ref(dynamic_ndarray[2])"*doctest::test_suite("view::mutable_r
     });
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==2 );
-    CHECK( isclose(array_ref.shape(),std::array{2,3}) );
+    CHECK( isequal(array_ref.shape(),std::array{2,3}) );
 }
 
 /**
@@ -417,7 +420,7 @@ TEST_CASE("mutable_ref(dynamic_ndarray[3]"*doctest::test_suite("view::mutable_re
     auto array = dynamic_ndarray({1.,2.,3.},{1,3,1});
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==3 );
-    CHECK( isclose(array_ref.shape(),std::array{1,3,1}) );
+    CHECK( isequal(array_ref.shape(),std::array{1,3,1}) );
 
     // @todo provide constructor/assignment op from 3D array
 }
@@ -432,7 +435,7 @@ TEST_CASE("mutable_ref(dynamic_ndarray[3])"*doctest::test_suite("view::mutable_r
     auto array = dynamic_ndarray({1.,2.,3.,4.},{1,2,2,1});
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==4 );
-    CHECK( isclose(array_ref.shape(),std::array{1,2,2,1}) );
+    CHECK( isequal(array_ref.shape(),std::array{1,2,2,1}) );
 
     // @todo provide constructor/assignment op from 3D array
 

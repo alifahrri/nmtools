@@ -12,6 +12,8 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/view.hpp"
 #include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/isequal.hpp"
 #include "testing/testing.hpp"
 
 #include "doctest/doctest.h"
@@ -24,7 +26,8 @@
 #define NMTOOLS_STATIC_ASSERT NMTOOLS_DEFERRED_STATIC_ASSERT
 
 namespace view = nmtools::view;
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
+using nmtools::utils::isequal;
 using nmtools::array::fixed_vector;
 using nmtools::array::fixed_matrix;
 using nmtools::array::fixed_ndarray;
@@ -46,8 +49,7 @@ TEST_CASE("transpose(std::array)"*doctest::test_suite("view::transpose"))
     CHECK( array_ref.dim()==1 );
 
     STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
-    // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
 
     {
@@ -94,7 +96,7 @@ TEST_CASE("make_view<transpose_t>(std::array)"*doctest::test_suite("view::transp
 
     STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
     
     {
@@ -144,13 +146,14 @@ TEST_CASE("transpose(std::array[2])"*doctest::test_suite("view::transpose")) // 
     auto shape = array_ref.shape();
 
     // LOG_TYPEINFO(decltype(shape));
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::array<size_t,2>> ));
+    using expected_t = std::array<size_t,2>;
+    STATIC_CHECK_IS_SAME( decltype(shape), expected_t );
     // @note since the transpose doesnt specify axes (that is none_t),
     // the view should be also fixed size
     STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
-    CHECK( isclose(shape,std::array{3,2}) );
-    CHECK( isclose(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
+    CHECK( isequal(shape,std::array{3,2}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
     {
         auto expected = std::array{
@@ -196,9 +199,10 @@ TEST_CASE("transpose(std::array[2],tuple{0,1})"*doctest::test_suite("view::trans
     auto shape = array_ref.shape();
 
     // LOG_TYPEINFO(decltype(shape));
-    STATIC_CHECK(( std::is_same_v<decltype(shape),std::array<size_t,2>> ));
-    CHECK( isclose(shape,std::array{2,3}) );
-    CHECK( isclose(nmtools::matrix_size(array_ref),std::tuple{2,3}) );
+    using expected_t = std::array<size_t,2>;
+    STATIC_CHECK_IS_SAME( decltype(shape), expected_t );
+    CHECK( isequal(shape,std::array{2,3}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{2,3}) );
 
     {
         auto expected = std::array{
@@ -239,9 +243,8 @@ TEST_CASE("transpose(std::array[2],tuple{1,0})"*doctest::test_suite("view::trans
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
     CHECK(array_ref.dim()==2);
 
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{3,2}) );
-    CHECK( isclose(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
+    CHECK( isequal(array_ref.shape(),std::array{3,2}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
     {
         auto expected = std::array{
@@ -249,7 +252,7 @@ TEST_CASE("transpose(std::array[2],tuple{1,0})"*doctest::test_suite("view::trans
             std::array{2.,4.},
             std::array{3.,5.},
         };
-        CHECK( nmtools::helper::isclose(array_ref,expected) );
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
     
     {
@@ -260,7 +263,7 @@ TEST_CASE("transpose(std::array[2],tuple{1,0})"*doctest::test_suite("view::trans
             std::array{6.,4.},
             std::array{3.,5.},
         };
-        CHECK( nmtools::helper::isclose(array_ref,expected) );
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
 
     {
@@ -282,9 +285,10 @@ TEST_CASE("transpose(std::vector)"*doctest::test_suite("view::transpose"))
 
     CHECK( array_ref.dim()==1 );
 
-    STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
+    using expected_t = std::array<size_t,1>;
+    STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
 
     {
@@ -319,8 +323,8 @@ TEST_CASE("transpose(std::vector[2])"*doctest::test_suite("view::transpose")) //
     CHECK(array_ref.dim()==2);
 
     auto shape = array_ref.shape();
-    CHECK( isclose(shape,std::array{3,2}) );
-    CHECK( isclose(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
+    CHECK( isequal(shape,std::array{3,2}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
     {
         auto expected = std::array{
@@ -364,7 +368,7 @@ TEST_CASE("transpose(fixed_vector)"*doctest::test_suite("view::transpose"))
     using expected_t = std::tuple<size_t>;
     STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
 
     {
@@ -404,9 +408,8 @@ TEST_CASE("transpose(fixed_matrix)"*doctest::test_suite("view::transpose")) // r
     STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
     CHECK(array_ref.dim()==2);
 
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{3,2}) );
-    CHECK( isclose(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
+    CHECK( isequal(array_ref.shape(),std::array{3,2}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
     {
         auto expected = std::array{
@@ -414,7 +417,7 @@ TEST_CASE("transpose(fixed_matrix)"*doctest::test_suite("view::transpose")) // r
             std::array{2.,4.},
             std::array{3.,5.},
         };
-        CHECK( nmtools::helper::isclose(array_ref,expected) );
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
     
     {
@@ -425,7 +428,7 @@ TEST_CASE("transpose(fixed_matrix)"*doctest::test_suite("view::transpose")) // r
             std::array{6.,4.},
             std::array{3.,5.},
         };
-        CHECK( nmtools::helper::isclose(array_ref,expected) );
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
 
     {
@@ -450,9 +453,8 @@ TEST_CASE("transpose(fixed_matrix,tuple{1,0})"*doctest::test_suite("view::transp
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
     CHECK(array_ref.dim()==2);
 
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),std::array{3,2}) );
-    CHECK( isclose(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
+    CHECK( isequal(array_ref.shape(),std::array{3,2}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
     {
         auto expected = std::array{
@@ -460,7 +462,7 @@ TEST_CASE("transpose(fixed_matrix,tuple{1,0})"*doctest::test_suite("view::transp
             std::array{2.,4.},
             std::array{3.,5.},
         };
-        CHECK( nmtools::helper::isclose(array_ref,expected) );
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
     
     {
@@ -471,7 +473,7 @@ TEST_CASE("transpose(fixed_matrix,tuple{1,0})"*doctest::test_suite("view::transp
             std::array{6.,4.},
             std::array{3.,5.},
         };
-        CHECK( nmtools::helper::isclose(array_ref,expected) );
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
 
     {
@@ -496,7 +498,7 @@ TEST_CASE("transpose(dynamic_vector)"*doctest::test_suite("view::transpose"))
     using expected_t = std::tuple<size_t>;
     STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
 
     {
@@ -531,8 +533,8 @@ TEST_CASE("transpose(dynamic_matrix)"*doctest::test_suite("view::transpose")) //
     CHECK(array_ref.dim()==2);
 
     auto shape = array_ref.shape();
-    CHECK( isclose(shape,std::array{3,2}) );
-    CHECK( isclose(nmtools::matrix_size(array_ref),std::tuple{3,2}));
+    CHECK( isequal(shape,std::array{3,2}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}));
 
     {
         auto expected = std::array{

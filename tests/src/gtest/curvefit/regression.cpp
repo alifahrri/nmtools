@@ -1,5 +1,5 @@
 #include "nmtools/curvefit.hpp"
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
 #include <gtest/gtest.h>
 #include <tuple>
 #include <array>
@@ -7,7 +7,7 @@
 
 namespace nmt = nmtools;
 namespace cvt = nmt::curvefit;
-using nmt::helper::isclose;
+using nmt::utils::isclose;
 
 TEST(curvefit, linear_regression)
 {
