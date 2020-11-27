@@ -149,10 +149,12 @@ namespace nmtools
          * 
          * @param shape original array shape
          */
-        indices_pack_t(shape_type shape)
-            : shape(shape)
+        constexpr indices_pack_t(shape_type shape)
+            : shape(shape), stride(array::detail::compute_strides(shape))
         {
-            stride = array::detail::compute_strides(shape);
+            // @note: this prevents indices_pack_t to be used in constexpr
+            // gcc error: must be initialized by mem-initializer
+            // stride = array::detail::compute_strides(shape);
         }
 
         /**
@@ -160,7 +162,7 @@ namespace nmtools
          * 
          * @return auto 
          */
-        auto size() const noexcept
+        constexpr decltype(auto) size() const noexcept
         {
             // compute product
             auto identity = static_cast<T>(1);
@@ -177,7 +179,7 @@ namespace nmtools
          * @param i flat index
          * @return auto 
          */
-        inline decltype(auto) operator[](size_t i)
+        constexpr inline decltype(auto) operator[](size_t i)
         {
             using array::detail::compute_indices;
             using detail::as_tuple;
@@ -209,10 +211,10 @@ namespace nmtools
      * @param shape original array shape
      * @return constexpr auto 
      */
-    template <typename...size_types>
-    constexpr auto indices_pack(std::tuple<size_types...> shape)
+    template <template<typename...>typename type_list, typename...size_types>
+    constexpr auto indices_pack(type_list<size_types...> shape)
     {
-        using tuple_type = std::tuple<size_types...>;
+        using tuple_type = type_list<size_types...>;
         using common_type = common_type_t<size_types...>;
         auto shape_ = detail::make_array<std::array>(shape);
         return indices_pack(shape_);
