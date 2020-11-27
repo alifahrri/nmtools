@@ -196,16 +196,6 @@ namespace nmtools::view
 namespace nmtools
 {
     /**
-     * @brief specialization of meta::fixed_ndarray_shape for view decorator
-     * 
-     * @tparam view_t template template parameter corresponding to the underlying view
-     * @tparam Ts template parameter(s) to the underlying view
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct meta::fixed_ndarray_shape<view::decorator_t<view_t,Ts...>>
-        : meta::fixed_ndarray_shape<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
-    
-    /**
      * @brief sfinae-enabled specialization for matrix_size
      * 
      * @tparam T view type
@@ -240,16 +230,6 @@ namespace nmtools
 namespace nmtools::meta
 {
     /**
-     * @brief specialization of is_fixed_size_ndarray for view type
-     * 
-     * @tparam view_t template template parameter corresponding to the underlying view
-     * @tparam Ts template parameter(s) to the underlying view
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct is_fixed_size_ndarray<view::decorator_t<view_t,Ts...>>
-        : is_fixed_size_ndarray<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
-    
-    /**
      * @brief specialization of is_array1d for view type
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
@@ -278,16 +258,6 @@ namespace nmtools::meta
     template <template<typename...> typename view_t, typename...Ts>
     struct is_array3d<view::decorator_t<view_t,Ts...>>
         : is_array3d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
-    
-    /**
-     * @brief specialization of is_ndarray for view type
-     * 
-     * @tparam view_t template template parameter corresponding to the underlying view
-     * @tparam Ts template parameter(s) to the underlying view
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct is_ndarray<view::decorator_t<view_t,Ts...>>
-        : is_ndarray<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
 } // namespace nmtools::meta
 
 namespace nmtools
@@ -330,6 +300,26 @@ namespace nmtools
         template <typename T>
         using fail_to_void_t = typename fail_to_void<T>::type;
     } // namespace detail
+
+    template <template<typename...> typename view_t, typename...Ts>
+    struct meta::fixed_ndarray_shape<view::decorator_t<view_t,Ts...>>
+    {
+        /**
+         * @brief helper function to deduce the value of the matrix
+         * 
+         * @return constexpr auto 
+         */
+        static constexpr auto _get()
+        {
+            if constexpr (meta::is_fixed_size_ndarray_v<view_t<Ts...>>)
+                return meta::fixed_ndarray_shape_v<view_t<Ts...>>;
+            else return detail::fail_t{};
+        } // _get()
+    
+        static inline constexpr auto value = _get();
+        // @note that remove_cvref_t here is necessary since decltype(value) may be const
+        using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
+    }; // meta::fixed_ndarray_shape
 
     /**
      * @brief specialization of meta::fixed_matrix_size for view type (view::decorator_t<...>).
