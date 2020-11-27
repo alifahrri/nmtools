@@ -6,6 +6,9 @@
 #undef NMTOOLS_ASSERT_CLOSE
 #define NMTOOLS_ASSERT_CLOSE NMTOOLS_ASSERT_CLOSE_DOCTEST
 
+#undef NMTOOLS_ASSERT_EQUAL
+#define NMTOOLS_ASSERT_EQUAL NMTOOLS_ASSERT_EQUAL_DOCTEST
+
 #if __has_include("doctest/doctest.h")
     #include "doctest/doctest.h"
 #else

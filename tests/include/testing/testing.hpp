@@ -1,7 +1,9 @@
 #ifndef NMTOOLS_TESTING_HPP
 #define NMTOOLS_TESTING_HPP
 
-#include "nmtools/utility/helper.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utils/to_string.hpp"
 /** @todo use __has_include */
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
@@ -346,7 +348,8 @@ namespace nmtools::testing
     /** @} */ // end groupt testing
 } // nmtools::testing
 
-using nmtools::helper::isclose;
+using nmtools::utils::isclose;
+using nmtools::utils::isequal;
 
 /**
  * @ingroup testing
@@ -368,7 +371,7 @@ auto var_name = nmtools::testing::cast<T>(var<value_type_##var_name>);
  * 
  */
 #define STRINGIFY(array) \
-nmtools::helper::stringify<std::stringstream>(array).str()
+nmtools::utils::to_string(array)
 
 #define NMTOOLS_TESTING_OUTPUT_PRECISION 1e-6
 
@@ -378,6 +381,17 @@ nmtools::helper::stringify<std::stringstream>(array).str()
  */
 #define NMTOOLS_ASSERT_CLOSE_GTEST(result,expect) \
 EXPECT_TRUE(isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION)) \
+        <<   "Actual  :\n" \
+        << STRINGIFY(result) \
+        << "\nExpected:\n" \
+        << STRINGIFY(expect) \
+
+/**
+ * @brief implementation of gtest assert macro
+ * 
+ */
+#define NMTOOLS_ASSERT_EQUAL_GTEST(result,expect) \
+EXPECT_TRUE(isequal(result,expect)) \
         <<   "Actual  :\n" \
         << STRINGIFY(result) \
         << "\nExpected:\n" \
@@ -396,6 +410,19 @@ EXPECT_TRUE(isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION)) \
  */
 #define NMTOOLS_ASSERT_CLOSE_DOCTEST(result,expect) \
 CHECK_MESSAGE(isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION), \
+    (   \
+        std::string{} \
+        + "\n\tActual  : " + STRINGIFY(result) \
+        + "\n\tExpected: " + STRINGIFY(expect) \
+    )   \
+);
+
+/**
+ * @brief implementation of doctest assert macro with message
+ * 
+ */
+#define NMTOOLS_ASSERT_EQUAL_DOCTEST(result,expect) \
+CHECK_MESSAGE(isequal(result,expect), \
     (   \
         std::string{} \
         + "\n\tActual  : " + STRINGIFY(result) \
@@ -462,6 +489,42 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
 } \
 
 /**
+ * @brief check if return value of `func(arg)` is close with `expect`.
+ * May log information about typeinfo of `func(arg)`.
+ * Requires a macro function `NMTOOLS_ASSERT_CLOSE`
+ * that takes two arguments to be defined.
+ * 
+ */
+#define NMTOOLS_TESTING_ISEQUAL_TEST(func, expect, ...) \
+{  \
+    auto result = func(__VA_ARGS__); \
+    NMTOOLS_TESTING_LOG_TYPEINFO(func,__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL(result,expect); \
+    /* TODO: check return type! */ \
+} \
+
+#define NMTOOLS_TESTING_TYPECHECK_ISEQUAL_TEST(func, expect, type, ...) \
+{  \
+    auto result = func(__VA_ARGS__); \
+    static_assert(std::is_same_v<decltype(result),type>); \
+    NMTOOLS_TESTING_LOG_TYPEINFO(func,__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL(result,expect); \
+    /* TODO: check return type! */ \
+} \
+
+/**
+ * @brief check if return value of `func(arg)` is close with `expect` at compile-time.
+ * Requires `func`, `arg`, and `expect` to be constexpr.
+ * 
+ */
+#define NMTOOLS_TESTING_CONSTEXPR_ISEQUAL_TEST(func, expect, ...) \
+{ \
+    constexpr auto result = func(__VA_ARGS__); \
+    static_assert(isequal(result,expect)); \
+    /* TODO: check return type! */ \
+} \
+
+/**
  * @brief check if return type of `func`, given casted `arg` to type T, is close with `expect`.
  * Requires `arg` to be class template. Type cast is done by `NMTOOLS_TESTING_VAR_CAST` macro.
  * Requires a macro function `NMTOOLS_ASSERT_CLOSE` that takes two arguments to be defined.
@@ -496,6 +559,8 @@ nmtools::testing::make_func_args(#func,NMTOOLS_TESTING_RESULT_TYPE(func,__VA_ARG
         NMTOOLS_TESTING_ISCLOSE_TEST(func, expect, __VA_ARGS__); \
     }   \
 }   \
+
+// @todo add subcase for isequal
 
 /**
  * @brief like `NMTOOLS_TESTING_DOCTEST_SUBCASE` but at compile-time
