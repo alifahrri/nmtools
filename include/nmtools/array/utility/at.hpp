@@ -33,10 +33,10 @@ namespace nmtools {
      * @tparam size_type 
      * @param a 
      * @param i 
-     * @return constexpr auto& 
+     * @return constexpr decltype(auto) 
      */
     template <typename Array, typename size_type>
-    constexpr auto& at(const Array& a, size_type i)
+    constexpr decltype(auto) at(const Array& a, size_type i)
     {
         /* TODO: this fn is returning reference,
             find out how to also support return by value
@@ -63,7 +63,7 @@ namespace nmtools {
     }
 
     template <auto i, typename Array>
-    constexpr auto& at(const Array& a)
+    constexpr decltype(auto) at(const Array& a)
     {
         /* TODO: this fn is returning reference,
             find out how to also support return by value
@@ -102,10 +102,10 @@ namespace nmtools {
      * @tparam size_type 
      * @param a 
      * @param i 
-     * @return constexpr auto& 
+     * @return constexpr decltype(auto) 
      */
     template <typename Array, typename size_type>
-    constexpr auto& at(Array& a, size_type i)
+    constexpr decltype(auto) at(Array& a, size_type i)
     {
         using namespace meta;
         static_assert(
@@ -125,7 +125,7 @@ namespace nmtools {
             /* compile errror */
             static_assert(has_bracket_v<Array&,size_type>);
         }
-    } // constexpr auto& at
+    } // constexpr decltype(auto) at
 
     /**
      * @brief access element at (i,j) index.
@@ -140,10 +140,10 @@ namespace nmtools {
      * @param a 
      * @param i 
      * @param j 
-     * @return constexpr auto& 
+     * @return constexpr decltype(auto) 
      */
     template <typename Array, typename size_type, typename...size_types>
-    constexpr auto& at(const Array& a, size_type i, size_types...indices)
+    constexpr decltype(auto) at(const Array& a, size_type i, size_types...indices)
     {
         if constexpr (meta::has_atnd_v<const Array&,size_type,size_types...>)
             return a.at(i,indices...);
@@ -156,7 +156,7 @@ namespace nmtools {
     } // at(a,...)
 
     template <auto i, auto j, typename Array>
-    constexpr auto& at(const Array& a)
+    constexpr decltype(auto) at(const Array& a)
     {
         /* TODO: this fn is returning reference,
             find out how to also support return by value
@@ -177,7 +177,7 @@ namespace nmtools {
         else {
             return at<j>(at<i>(a));
         }
-    } // constexpr auto& at(const Array& a, size_type i, size_type j)
+    } // constexpr decltype(auto) at(const Array& a, size_type i, size_type j)
 
     /**
      * @brief access element at (i,j) index.
@@ -192,10 +192,10 @@ namespace nmtools {
      * @param a 
      * @param i 
      * @param j 
-     * @return constexpr auto& 
+     * @return constexpr decltype(auto) 
      */
     template <typename Array, typename size_type, typename...size_types>
-    constexpr auto& at(Array& a, size_type i, size_types...indices)
+    constexpr decltype(auto) at(Array& a, size_type i, size_types...indices)
     {
         if constexpr (meta::has_atnd_v<Array&,size_type,size_types...>)
             return a.at(i,indices...);
