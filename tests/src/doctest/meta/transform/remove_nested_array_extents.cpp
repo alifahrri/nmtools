@@ -9,6 +9,8 @@
 #include "doctest/doctest.h"
 #include <boost/type_index.hpp>
 #include <array>
+#include <vector>
+#include <initializer_list>
 
 namespace meta = nmtools::meta;
 
@@ -135,6 +137,78 @@ TEST_CASE("remove_nested_array_dim_t" * doctest::test_suite("transform"))
         using arg_t = std::vector<std::vector<double>>;
         using result_t = meta::remove_nested_array_dim_t<arg_t,1>;
         using expected_t = std::vector<double>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        LOG_TYPEINFO(expected_t);
+        STATIC_CHECK_IS_SAME(result_t, expected_t);
+    }
+    {
+        using arg_t = std::initializer_list<double>;
+        using result_t = meta::remove_nested_array_dim_t<arg_t,1>;
+        using expected_t = double;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        LOG_TYPEINFO(expected_t);
+        STATIC_CHECK_IS_SAME(result_t, expected_t);
+    }
+    {
+        using arg_t = std::initializer_list<double>;
+        using result_t = meta::remove_nested_array_dim_t<arg_t,2>;
+        using expected_t = double;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        LOG_TYPEINFO(expected_t);
+        STATIC_CHECK_IS_SAME(result_t, expected_t);
+    }
+    {
+        using arg_t = std::initializer_list<std::initializer_list<double>>;
+        using result_t = meta::remove_nested_array_dim_t<arg_t,2>;
+        using expected_t = double;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        LOG_TYPEINFO(expected_t);
+        STATIC_CHECK_IS_SAME(result_t, expected_t);
+    }
+    {
+        using arg_t = std::initializer_list<std::initializer_list<double>>;
+        using result_t = meta::remove_nested_array_dim_t<arg_t,1>;
+        using expected_t = std::initializer_list<double>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        LOG_TYPEINFO(expected_t);
+        STATIC_CHECK_IS_SAME(result_t, expected_t);
+    }
+    {
+        using arg_t = std::initializer_list<std::initializer_list<std::initializer_list<double>>>;
+        using result_t = meta::remove_nested_array_dim_t<arg_t,3>;
+        using expected_t = double;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        LOG_TYPEINFO(expected_t);
+        STATIC_CHECK_IS_SAME(result_t, expected_t);
+    }
+    {
+        using arg_t = std::initializer_list<std::initializer_list<std::initializer_list<double>>>;
+        using result_t = meta::remove_nested_array_dim_t<arg_t,2>;
+        using expected_t = std::initializer_list<double>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        LOG_TYPEINFO(expected_t);
+        STATIC_CHECK_IS_SAME(result_t, expected_t);
+    }
+    {
+        using arg_t = std::initializer_list<std::initializer_list<std::initializer_list<double>>>;
+        using result_t = meta::remove_nested_array_dim_t<arg_t,1>;
+        using expected_t = std::initializer_list<std::initializer_list<double>>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        LOG_TYPEINFO(expected_t);
+        STATIC_CHECK_IS_SAME(result_t, expected_t);
+    }
+    {
+        using arg_t = std::initializer_list<std::initializer_list<std::initializer_list<double>>>;
+        using result_t = meta::remove_nested_array_dim_t<arg_t,0>;
+        using expected_t = std::initializer_list<std::initializer_list<std::initializer_list<double>>>;
         LOG_TYPEINFO(arg_t);
         LOG_TYPEINFO(result_t);
         LOG_TYPEINFO(expected_t);

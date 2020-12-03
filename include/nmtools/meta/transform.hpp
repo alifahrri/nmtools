@@ -1267,6 +1267,13 @@ namespace nmtools::meta
             }
             else if constexpr (meta::is_integral_constant_v<T>)
                 return typename T::value_type{};
+            else if constexpr (meta::has_value_type_v<T>) {
+                using type = typename T::value_type;
+                if constexpr (std::is_arithmetic_v<type>)
+                    return type{};
+                else
+                    return typename get_element_type<type>::type{};
+            }
             else if constexpr (std::is_arithmetic_v<T>)
                 return T{};
             else return detail::fail_t{};

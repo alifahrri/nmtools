@@ -1,8 +1,5 @@
-#include "doctest/doctest.h"
 #include "nmtools/array/fixed.hpp"
-#include "nmtools/utility/helper.hpp"
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "testing/doctest.hpp"
 #include <array>
 
 using nmtools::utils::isclose;
@@ -26,38 +23,62 @@ TEST_CASE("fixed_ndarray[2,3,2]")
 {
     auto ndarray = fixed_ndarray<double,2,3,2>{};
     CHECK(ndarray.dim()==3);
-    CHECK(ndarray.shape()[0]==2);
-    CHECK(ndarray.shape()[1]==3);
-    CHECK(ndarray.shape()[2]==2);
-    ndarray(0,1,1) = 1;
-    CHECK(ndarray(0,1,1)==1);
-    CHECK(ndarray.strides()[0]==6);
-    CHECK(ndarray.strides()[1]==2);
-    CHECK(ndarray.strides()[2]==1);
-    CHECK(isequal(shape(ndarray),std::array{2ul,3ul,2ul}));
-    // ndarray = {
-    //     {
-    //         {0,1},
-    //         {2,3},
-    //         {4,5},
-    //     },
-    //     {
-    //         {6,7},
-    //         {8,9},
-    //         {10,11},
-    //     },
-    // };
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (std::array{2,3,2}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{6,2,1}) );
+    {
+        ndarray = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            },
+        };
+        double expected[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            },
+        };
+        NMTOOLS_ASSERT_CLOSE( ndarray, expected );
+    }
+    // @note should fail
+    {
+        // ndarray = {
+        //     {
+        //         {{0},{1}},
+        //         {{2},{3}},
+        //         {{4},{5}},
+        //     },
+        //     {
+        //         {{6},{7}},
+        //         {{8},{9}},
+        //         {{10},{11}},
+        //     },
+        // };
+        // no matching calls
+        // ndarray = 1;
+        // static assertion failed: unsupported dim for fixed_ndarray assignment
+        // ndarray = std::array{1,2,3,4};
+    }
 }
 
 TEST_CASE("fixed_ndarray[2,3,1]")
 {
     constexpr auto ndarray = fixed_ndarray<double,2,3,1>{};
     CHECK(ndarray.dim()==3);
-    CHECK(ndarray.shape()[0]==2);
-    CHECK(ndarray.shape()[1]==3);
-    CHECK(ndarray.shape()[2]==1);
-    CHECK(ndarray.strides()[0]==3);
-    CHECK(ndarray.strides()[1]==1);
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (std::array{2,3,1}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{3,1,1}) );
     constexpr auto expected_shape = std::array{2ul,3ul,1ul};
     static_assert(isequal(shape(ndarray),expected_shape));
 }
@@ -66,25 +87,30 @@ TEST_CASE("fixed_ndarray[2,3]")
 {
     auto ndarray = fixed_ndarray<double,2,3>{};
     CHECK(ndarray.dim()==2);
-    CHECK(ndarray.shape()[0]==2);
-    CHECK(ndarray.shape()[1]==3);
-    ndarray(0,1) = 1;
-    CHECK(ndarray(0,1)==1);
-    CHECK(ndarray.strides()[0]==3);
-    CHECK(ndarray.strides()[1]==1);
-    CHECK(isequal(shape(ndarray),std::array{2ul,3ul}));
-    ndarray  = {
-        {1,2,3},
-        {4,5,6},
-    };
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   (std::array{2,3}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{3,1}) );
+    {
+        ndarray = {
+            {1,2,3},
+            {4,5,6},
+        };
+        double expected[2][3] = {
+            {1,2,3},
+            {4,5,6},
+        };
+        NMTOOLS_ASSERT_CLOSE( ndarray, expected );
+    }
 }
 
 TEST_CASE("fixed_ndarray[3]")
 {
     auto ndarray = fixed_ndarray<double,3>{};
     CHECK(ndarray.dim()==1);
-    CHECK(ndarray.shape()[0]==3);
-    CHECK(ndarray.strides()[0]==1);
-    static_assert(isequal(shape(ndarray),std::array{3ul}));
-    ndarray = {1,2,3};
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   std::array{3} );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), std::array{1} );
+    {
+        ndarray = {1,2,3};
+        double expected[3] = {1,2,3};
+        NMTOOLS_ASSERT_CLOSE( ndarray, expected );
+    }
 }

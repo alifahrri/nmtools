@@ -87,24 +87,29 @@ namespace nmtools::view
             // @note either using auto& or decltype(auto) for return type
             // since at(...) return auto&
 
-            auto transformed_indices = view_type::index(indices...);
-            static_assert (meta::has_tuple_size_v<decltype(transformed_indices)>,
-                "return value from view_type::index(...) must have compile time size"
-            );
+            using meta::has_funcnd_v;
+            if constexpr (has_funcnd_v<view_type,size_types...>)
+                return view_type::operator()(indices...);
+            else {
+                auto transformed_indices = view_type::index(indices...);
+                static_assert (meta::has_tuple_size_v<decltype(transformed_indices)>,
+                    "return value from view_type::index(...) must have compile time size"
+                );
 
-            using array_t = meta::remove_cvref_t<array_type>;
-            constexpr auto n = sizeof...(size_types);
-            assert (dim()==n); // tmp assertion
+                using array_t = meta::remove_cvref_t<array_type>;
+                constexpr auto n = sizeof...(size_types);
+                assert (dim()==n); // tmp assertion
 
-            // @note needs to initialize array_t since view_type::array may not be constant expression
-            // @note flatten_t dim invocation differs from other view types @todo fix
-            // if constexpr (meta::is_fixed_size_ndarray_v<array_t>)
-            //     static_assert (detail::dim(array_t{})==n);
-            // else
-            //     assert (dim()==n);
+                // @note needs to initialize array_t since view_type::array may not be constant expression
+                // @note flatten_t dim invocation differs from other view types @todo fix
+                // if constexpr (meta::is_fixed_size_ndarray_v<array_t>)
+                //     static_assert (detail::dim(array_t{})==n);
+                // else
+                //     assert (dim()==n);
 
-            // call at to referred object, not to this
-            return apply_at(view_type::array, transformed_indices);
+                // call at to referred object, not to this
+                return apply_at(view_type::array, transformed_indices);
+            }
         } // operator()
 
         /**
@@ -124,24 +129,29 @@ namespace nmtools::view
             // @note either using auto& or decltype(auto) for return type
             // since at(...) return auto&
 
-            auto transformed_indices = view_type::index(indices...);
-            static_assert (meta::has_tuple_size_v<decltype(transformed_indices)>,
-                "return value from view_type::index(...) must have compile time size"
-            );
+            using meta::has_funcnd_v;
+            if constexpr (has_funcnd_v<view_type,size_types...>)
+                return view_type::operator()(indices...);
+            else {
+                auto transformed_indices = view_type::index(indices...);
+                static_assert (meta::has_tuple_size_v<decltype(transformed_indices)>,
+                    "return value from view_type::index(...) must have compile time size"
+                );
 
-            using array_t = meta::remove_cvref_t<array_type>;
-            constexpr auto n = sizeof...(size_types);
-            assert (dim()==n); // tmp assertion
+                using array_t = meta::remove_cvref_t<array_type>;
+                constexpr auto n = sizeof...(size_types);
+                assert (dim()==n); // tmp assertion
 
-            // @note needs to initialize array_t since view_type::array may not be constant expression
-            // @note flatten_t dim invocation differs from other view types @todo fix
-            // if constexpr (meta::is_fixed_size_ndarray_v<array_t>)
-            //     static_assert (detail::dim(array_t{})==n);
-            // else
-            //     assert (dim()==n);
+                // @note needs to initialize array_t since view_type::array may not be constant expression
+                // @note flatten_t dim invocation differs from other view types @todo fix
+                // if constexpr (meta::is_fixed_size_ndarray_v<array_t>)
+                //     static_assert (detail::dim(array_t{})==n);
+                // else
+                //     assert (dim()==n);
 
-            // call at to referred object, not to this
-            return apply_at(view_type::array, transformed_indices);
+                // call at to referred object, not to this
+                return apply_at(view_type::array, transformed_indices);
+            }
         } // operator()
 
     }; // decorator_t
@@ -190,6 +200,81 @@ namespace nmtools::view
     template <typename T>
     static inline constexpr bool is_view_v = is_view<T>::value;
 
+    /**
+     * @brief get array_type
+     * 
+     * @tparam T type to transform
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct get_array_type
+    {
+        using type = void;
+    }; // get_array_type
+
+    /**
+     * @brief specialization of get_array_type for view_type
+     * 
+     * @tparam view_t 
+     * @tparam Ts 
+     */
+    template <template<typename...> typename view_t, typename...Ts>
+    struct get_array_type<decorator_t<view_t,Ts...>>
+    {
+        using view_type = decorator_t<view_t,Ts...>;
+        using type = typename view_type::array_type;
+    }; // get_array_type
+
+    /**
+     * @brief helper alias template for get_array_type
+     * 
+     * @tparam T type to transform
+     * @see get_array_type
+     */
+    template <typename T>
+    using get_array_type_t = typename get_array_type<T>::type;
+
+    /**
+     * @brief get array_type of possibly nested view
+     *
+     * For non view type, default implementations define `type` as `void`.
+     * The caller site may check if the returned type is void to perform
+     * specific handling/assert.
+     * 
+     * @tparam T type to transform
+     * @tparam typename customization point, e.g. using enable_if_t or void_t
+     */
+    template <typename T, typename=void>
+    struct get_underlying_array_type
+    {
+        using type = void;
+    }; // get_underlying_array_type
+
+    /**
+     * @brief specialization of get_underlying_array_type for view type.
+     * 
+     * @tparam view_t 
+     * @tparam Ts 
+     */
+    template <template<typename...> typename view_t, typename...Ts>
+    struct get_underlying_array_type<decorator_t<view_t,Ts...>>
+    {
+        using view_type = decorator_t<view_t,Ts...>;
+        using array_type = get_array_type_t<view_type>;
+        // need to remove cvref from array_type since is_view doesnt aware of it
+        using type = std::conditional_t<is_view_v<meta::remove_cvref_t<array_type>>,
+            typename get_underlying_array_type<meta::remove_cvref_t<array_type>>::type, array_type>;
+    }; // get_underlying_array_type
+
+    /**
+     * @brief helper alias template for get_underlying_array_type
+     * 
+     * @tparam T type to transform
+     * @see get_underlying_array_type
+     */
+    template <typename T>
+    using get_underlying_array_type_t = typename get_underlying_array_type<T>::type;
+
     /** @} */ // end group view
 } // namespace nmtools::view
 
@@ -229,6 +314,18 @@ namespace nmtools
 
 namespace nmtools::meta
 {
+    // make is_view available from namespace meta
+    using view::is_view;
+    using view::is_view_v;
+
+    // make get_array_type available from namespace meta
+    using view::get_array_type;
+    using view::get_array_type_t;
+
+    // make get_underlying_array_type available from namespace meta
+    using view::get_underlying_array_type;
+    using view::get_underlying_array_type_t;
+
     /**
      * @brief specialization of is_array1d for view type
      * 
@@ -236,7 +333,7 @@ namespace nmtools::meta
      * @tparam Ts template parameter(s) to the underlying view
      */
     template <template<typename...> typename view_t, typename...Ts>
-    struct is_array1d<view::decorator_t<view_t,Ts...>>
+    struct is_array1d<view::decorator_t<view_t,Ts...>,void>
         : is_array1d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
     /**
@@ -262,44 +359,6 @@ namespace nmtools::meta
 
 namespace nmtools
 {
-    namespace detail {
-
-        /**
-         * @brief helper tag to indicate checking fail at compile-time
-         * 
-         */
-        struct fail_t {};
-        
-        /**
-         * @brief helper metafunction to transform fail_t to void
-         * 
-         * @tparam T type to transform
-         */
-        template <typename T>
-        struct fail_to_void
-        {
-            using type = T;
-        }; // fail_to_void
-
-        /**
-         * @brief actual case for fail_to_void when T is fail_T
-         * 
-         * @tparam  
-         */
-        template <>
-        struct fail_to_void<fail_t>
-        {
-            using type = void;
-        }; // fail_to_void
-        
-        /**
-         * @brief helper alias template to fail_to_void
-         * 
-         * @tparam T type to transform
-         */
-        template <typename T>
-        using fail_to_void_t = typename fail_to_void<T>::type;
-    } // namespace detail
 
     template <template<typename...> typename view_t, typename...Ts>
     struct meta::fixed_ndarray_shape<view::decorator_t<view_t,Ts...>>
@@ -382,6 +441,7 @@ namespace nmtools::meta
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
+     * @todo remove
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct get_vector_value_type<view::decorator_t<view_t,Ts...>>
@@ -392,6 +452,7 @@ namespace nmtools::meta
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
+     * @todo remove
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct get_matrix_value_type<view::decorator_t<view_t,Ts...>>
@@ -402,10 +463,21 @@ namespace nmtools::meta
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
+     * @todo remove
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct get_ndarray_value_type<view::decorator_t<view_t,Ts...>>
         : get_ndarray_value_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+    
+    /**
+     * @brief specialization of metafunction get_element_type for view type
+     * 
+     * @tparam view_t template template parameter corresponding to the underlying view
+     * @tparam Ts template parameter(s) to the underlying view
+     */
+    template <template<typename...> typename view_t, typename...Ts>
+    struct get_element_type<view::decorator_t<view_t,Ts...>>
+        : get_element_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_DECORATOR_HPP

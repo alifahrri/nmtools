@@ -2,6 +2,9 @@
 #define NMTOOLS_ARRAY_NDARRAY_DYNAMIC_HPP
 
 #include "nmtools/array/detail.hpp"
+#include "nmtools/array/view/ref.hpp"
+#include "nmtools/array/view/ref/initializer_list.hpp"
+#include "nmtools/array/shape.hpp"
 #include <cassert>
 #include <vector>
 #include <initializer_list>
@@ -39,7 +42,7 @@ namespace nmtools::array
          * 
          * @param shape desired shape of dynamic_ndarray
          */
-        explicit dynamic_ndarray(std::vector<size_type> shape)
+        explicit dynamic_ndarray(shape_type shape)
             : shape_(shape)
         {
             strides_ = strides();
@@ -70,7 +73,7 @@ namespace nmtools::array
          * @param initializer 
          * @param shape desired shape
          */
-        explicit dynamic_ndarray(std::initializer_list<value_type> initializer, std::vector<size_type> shape)
+        explicit dynamic_ndarray(std::initializer_list<value_type> initializer, shape_type shape)
         {
             shape_ = shape;
             strides_ = strides();
@@ -212,21 +215,42 @@ namespace nmtools::array
             return data[offset];
         } // operator()
 
-        template <typename ndarray_t>
+        /**
+         * @brief element access to support packed indices
+         * 
+         * @param i packed indices with same type as shape_type
+         * @return const_reference 
+         */
+        const_reference at(shape_type i) const
+        {
+            auto offset = detail::compute_offset(strides_, i);
+            return data[offset];
+        } // at
+
+        template <typename ndarray_t, typename=std::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         constexpr auto operator=(const ndarray_t& rhs);
 
-        /**
-         * @brief provides assignment operator from nested std::array
-         * 
-         * @param rhs nested std array to be copied
-         * @return constexpr decltype(auto) 
-         */
-        template <size_t Shape1, size_t...ShapeN>
-        constexpr decltype(auto) operator=(meta::make_nested_raw_array_t<T,Shape1,ShapeN...>&& rhs)
-        {
-            using nested_t = meta::make_nested_raw_array_t<T,Shape1,ShapeN...>;
-            return this->template operator=<nested_t>(std::forward<nested_t>(rhs));
-        } // operator=
+        #define NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(N) \
+        constexpr decltype(auto) operator=(meta::make_nested_dynamic_array_t<std::initializer_list,value_type,N>&& rhs) \
+        {   \
+            auto rhs_view = view::ref(rhs); \
+            using nested_t = decltype(rhs_view);  \
+            return this->template operator=<nested_t>(rhs_view);         \
+        } // operator=  \
+        
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(1)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(2)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(3)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(4)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(5)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(6)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(7)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(8)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(9)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(10)
+        NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(11)
+
+        #undef NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT
 
     }; // struct dynamic_ndarray
 
@@ -321,6 +345,8 @@ namespace nmtools::meta
 } // namespace nmtools::meta
 
 #include "nmtools/array/utility/clone.hpp" // clone_impl
+#include "nmtools/array/shape.hpp"
+#include "nmtools/utils/isequal.hpp"
 
 namespace nmtools::array
 {
@@ -329,8 +355,6 @@ namespace nmtools::array
      * @brief assignment operator for dynamic_ndarray from generic matrix type
      * 
      * @tparam T element type of dynamic_ndarray
-     * @tparam Rows compile-time rows of dynamic_ndarray
-     * @tparam Cols compile-time cols of dynamic_ndarray
      * @tparam ndarray_t type of matrix to be cloned
      * @param rhs matrix to be cloned
      * @return constexpr auto 
@@ -338,30 +362,23 @@ namespace nmtools::array
      * @see nmtools::detail::clone_impl
      */
     template <typename T, template <typename> typename storage_type, template<typename> typename shape_storage_type>
-    template <typename ndarray_t>
+    template <typename ndarray_t, typename>
     constexpr auto dynamic_ndarray<T,storage_type,shape_storage_type>::operator=(const ndarray_t& rhs)
     {
-        static_assert(
-            meta::is_array2d_v<ndarray_t> || meta::is_array1d_v<ndarray_t>,
-            "dynamic_ndarray only support assignment from array2d for now"
+        using nmtools::dim;
+        using nmtools::shape;
+        using nmtools::utils::isequal;
+
+        assert (dim(rhs)==dim(*this)
+            // , mismatched dimension for dynamic_ndarray assignment
+        );
+        assert (isequal(shape(rhs),shape(*this))
+            // , mismatched shape for dynamic_ndarray assignment
         );
 
         using ::nmtools::detail::clone_impl;
-
-        if constexpr (meta::is_array2d_v<ndarray_t>) {
-            auto [rows, cols] = matrix_size(rhs);
-            assert( (shape_.size()==2) && (rows==shape_[1]) && (cols==shape_[1])
-                // , "mismatched type for dynamic_ndarray assignment"
-            );
-            clone_impl(*this,rhs,rows,cols);
-        }
-        else {
-            auto n = vector_size(rhs);
-            assert( (shape_.size()==1) && (n==numel_)
-                // , "mismatched type for dynamic_ndarray assignment"
-            );
-            clone_impl(*this,rhs,n);
-        }
+        auto flat_rhs = view::flatten(rhs);
+        clone_impl(this->data, flat_rhs, numel_);
 
         return *this;
     } // operator=

@@ -56,12 +56,25 @@ namespace nmtools::utils
         else if constexpr (meta::is_ndarray_v<T>) {
             using std::to_string;
             using ::nmtools::detail::make_array;
-            // @todo support dynamic ndarray with dynamic dimension
-            auto s = make_array<std::array>(shape(array));
+            auto s = [&](){
+                auto shape_ = shape(array);
+                using shape_t = decltype(shape_);
+                if constexpr (meta::is_specialization_v<shape_t,std::tuple>
+                    || meta::is_specialization_v<shape_t,std::pair>)
+                    return make_array<std::array>(shape_);
+                else return shape_;
+            }();
             auto indices = indices_pack(s);
             
             for (int i=0; i<indices.size(); i++) {
-                auto idx = make_array<std::array>(indices[i]);
+                auto idx = [&](){
+                    auto idx = indices[i];
+                    using idx_t = decltype(idx);
+                    if constexpr (meta::is_specialization_v<idx_t,std::tuple>
+                        || meta::is_specialization_v<idx_t,std::pair>)
+                        return make_array<std::array>(idx);
+                    else return idx;
+                }();
                 auto a = apply_at(array, idx);
 
                 // check if we should print open bracket

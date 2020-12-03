@@ -37,6 +37,7 @@ namespace nmt = nmtools::bench::nanobench;
 #endif
 
 using std::tuple;
+using std::vector;
 
 TEST_CASE("apply_at(double[]...)" * doctest::test_suite("utility"))
 {
@@ -202,6 +203,63 @@ TEST_CASE("apply_at(fixed_vector<>)" * doctest::test_suite("utility"))
     }
 }
 
+TEST_CASE("apply_at(dynamic_vector<>)" * doctest::test_suite("utility"))
+{
+    using nm::array::dynamic_vector;
+    {
+        // @todo support CTAD
+        auto a = dynamic_vector<double>{1,2,3,4,5,6};
+        {
+            auto indices = tuple{1};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 2);
+        }
+        {
+            auto indices = tuple{2};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 3);
+        }
+    }
+}
+
+TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
+{
+    using nm::array::dynamic_ndarray;
+    {
+        // @todo support CTAD
+        auto a = dynamic_ndarray<double>{1,2,3,4,5,6};
+        {
+            auto indices = tuple{1};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 2);
+        }
+        {
+            auto indices = tuple{2};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 3);
+        }
+    }
+}
+
+TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
+{
+    using nm::array::dynamic_ndarray;
+    {
+        // @todo support CTAD
+        auto a = dynamic_ndarray<double>{1,2,3,4,5,6};
+        {
+            auto indices = vector{1ul};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 2);
+        }
+        {
+            auto indices = vector{2ul};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 3);
+        }
+    }
+}
+
 TEST_CASE("apply_at(fixed_matrix<>)" * doctest::test_suite("utility"))
 {
     using nm::array::fixed_matrix;
@@ -227,27 +285,75 @@ TEST_CASE("apply_at(fixed_matrix<>)" * doctest::test_suite("utility"))
     }
 }
 
+TEST_CASE("apply_at(dynamic_matrix<>)" * doctest::test_suite("utility"))
+{
+    using nm::array::dynamic_matrix;
+    {
+        // @todo support CTAD
+        auto a = dynamic_matrix<double>{ {1,2}, {3,4}, {5,6} };
+        {
+            auto indices = tuple{0,1};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 2);
+        }
+        {
+            auto indices = tuple{1,0};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 3);
+        }
+        {
+            auto indices = tuple{2,1};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 6);
+        }
+    }
+}
+
+TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
+{
+    using nm::array::dynamic_ndarray;
+    {
+        // @todo support CTAD
+        auto a = dynamic_ndarray<double>{ {1,2}, {3,4}, {5,6} };
+        {
+            auto indices = vector{0ul,1ul};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 2);
+        }
+        {
+            auto indices = vector{1ul,0ul};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 3);
+        }
+        {
+            auto indices = vector{2ul,1ul};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 6);
+        }
+    }
+}
+
 TEST_CASE("apply_at(fixed_ndarray<>)" * doctest::test_suite("utility"))
 {
     using nm::array::fixed_ndarray;
     {
         // @todo support CTAD
-        // auto a = fixed_ndarray<double,3,2,1>{};
-        // a = { {{1},{2}}, {{3},{4}}, {{5},{6}} };
-        // {
-        //     auto indices = tuple{0,1,0};
-        //     auto res = nm::apply_at(a, indices);
-        //     NMTOOLS_ASSERT_CLOSE(res, 2);
-        // }
-        // {
-        //     auto indices = tuple{1,0,0};
-        //     auto res = nm::apply_at(a, indices);
-        //     NMTOOLS_ASSERT_CLOSE(res, 3);
-        // }
-        // {
-        //     auto indices = tuple{2,1,0};
-        //     auto res = nm::apply_at(a, indices);
-        //     NMTOOLS_ASSERT_CLOSE(res, 6);
-        // }
+        auto a = fixed_ndarray<double,3,2,1>{};
+        a = { {{1},{2}}, {{3},{4}}, {{5},{6}} };
+        {
+            auto indices = tuple{0,1,0};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 2);
+        }
+        {
+            auto indices = tuple{1,0,0};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 3);
+        }
+        {
+            auto indices = tuple{2,1,0};
+            auto res = nm::apply_at(a, indices);
+            NMTOOLS_ASSERT_CLOSE(res, 6);
+        }
     }
 }

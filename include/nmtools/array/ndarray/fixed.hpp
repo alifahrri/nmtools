@@ -144,7 +144,7 @@ namespace nmtools::array {
         //     return *this;
         // }
 
-        template <typename ndarray_t>
+        template <typename ndarray_t, typename=std::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         constexpr decltype(auto) operator=(ndarray_t&& rhs);
 
         /**
@@ -270,6 +270,8 @@ namespace nmtools::meta
 
 #include "nmtools/array/utility/clone.hpp" // clone_impl
 #include "nmtools/array/view/flatten.hpp" // view::flatten
+#include "nmtools/utils/isequal.hpp"
+#include "nmtools/array/shape.hpp"
 
 namespace nmtools::array
 {
@@ -288,13 +290,27 @@ namespace nmtools::array
      * @see nmtools::detail::clone_impl
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
-    template <typename ndarray_t>
+    template <typename ndarray_t, typename>
     constexpr decltype(auto) fixed_ndarray<T,Shape1,ShapeN...>::operator=(ndarray_t&& rhs)
     {
+        using utils::isequal;
         using meta::fixed_ndarray_dim_v;
-        static_assert (fixed_ndarray_dim_v<ndarray_t> == fixed_ndarray_dim_v<this_type>
-            , "unsupported shape for assignment"
-        );
+        using meta::fixed_ndarray_shape_v;
+
+        if constexpr (meta::is_fixed_dim_ndarray_v<ndarray_t>)
+            static_assert (fixed_ndarray_dim_v<ndarray_t> == fixed_ndarray_dim_v<this_type>
+                , "unsupported dim for fixed_ndarray assignment"
+            );
+        
+        constexpr auto this_shape = fixed_ndarray_shape_v<this_type>;
+        if constexpr (meta::is_fixed_size_ndarray_v<ndarray_t>)
+            static_assert( isequal(fixed_ndarray_shape_v<ndarray_t>, this_shape)
+                , "unsupported shape for for fixed_ndarray assignment"
+            );
+        else
+            assert( isequal(shape(rhs),this_shape)
+                // , "unsupported shape for for fixed_ndarray assignment"
+            );
 
         using ::nmtools::detail::clone_impl;
 

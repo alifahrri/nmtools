@@ -523,3 +523,12 @@ TEST_CASE("fixed_dim" * doctest::test_suite("array"))
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3);
     }
 }
+
+TEST_CASE("is_array1d_v" * doctest::test_suite("array"))
+{
+    {
+        using arg_t = std::initializer_list<double>;
+        LOG_TYPEINFO(arg_t);
+        STATIC_CHECK( !meta::is_array1d_v<arg_t> );
+    }
+}
