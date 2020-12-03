@@ -88,10 +88,11 @@ namespace nmtools::array {
          * @param row row index
          * @return constexpr auto array of reference
          */
-        constexpr auto operator()(size_type row)
-        {
-            return detail::make_array_ref(data,detail::size_constant<Cols>{},row*Cols);
-        } // operator()(size_type)
+        // @todo fix make_array_ref
+        // constexpr auto operator()(size_type row)
+        // {
+        //     return detail::make_array_ref(data,detail::size_constant<Cols>{},row*Cols);
+        // } // operator()(size_type)
 
         /**
          * @brief access row
@@ -99,10 +100,11 @@ namespace nmtools::array {
          * @param row row index
          * @return constexpr auto array of reference
          */
-        constexpr auto operator()(size_type row) const
-        {
-            return detail::make_array_ref(data,detail::size_constant<Cols>{},row*Cols);
-        } // operator()(size_type)
+        // @todo fix make_array_ref
+        // constexpr auto operator()(size_type row) const
+        // {
+        //     return detail::make_array_ref(data,detail::size_constant<Cols>{},row*Cols);
+        // } // operator()(size_type)
 
         /**
          * @brief return the number of rows
