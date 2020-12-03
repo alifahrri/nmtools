@@ -10,7 +10,11 @@ using std::vector;
 using std::array;
 using std::tuple;
 using nmtools::array::fixed_ndarray;
+using nmtools::array::fixed_vector;
+using nmtools::array::fixed_matrix;
 using nmtools::array::dynamic_ndarray;
+using nmtools::array::dynamic_vector;
+using nmtools::array::dynamic_matrix;
 using nmtools::utils::isequal;
 
 /**
@@ -73,6 +77,66 @@ TEST_CASE("isequal(int[],int[])" * doctest::test_suite("utils"))
     {
         int lhs[5] = {1, 2, 3, 4, 5};
         int rhs[5] = {1, 2, 3, 4, 1};
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isequal(fixed_vector,fixed_vector)" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = fixed_vector<int,5>{1, 2, 3, 4, 5};
+        auto rhs = fixed_vector<int,5>{1, 2, 3, 4, 5};
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = fixed_vector<int,5>{1, 2, 3, 4, 5};
+        auto rhs = fixed_vector<int,5>{1, 2, 3, 4, 1};
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isequal(dynamic_vector,dynamic_vector)" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = dynamic_vector{1, 2, 3, 4, 5};
+        auto rhs = dynamic_vector{1, 2, 3, 4, 5};
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = dynamic_vector{1, 2, 3, 4, 5};
+        auto rhs = dynamic_vector{1, 2, 3, 4, 1};
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isequal(fixed_ndarray,fixed_ndarray)" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = fixed_ndarray<int,5>{};
+        auto rhs = fixed_ndarray<int,5>{};
+        lhs = {1, 2, 3, 4, 5};
+        rhs = {1, 2, 3, 4, 5};
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = fixed_ndarray<int,5>{};
+        auto rhs = fixed_ndarray<int,5>{};
+        lhs = {1, 2, 3, 4, 5};
+        rhs = {1, 2, 3, 4, 1};
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isequal(dynamic_ndarray,dynamic_ndarray)" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = dynamic_ndarray{1, 2, 3, 4, 5};
+        auto rhs = dynamic_ndarray{1, 2, 3, 4, 5};
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = dynamic_ndarray{1, 2, 3, 4, 5};
+        auto rhs = dynamic_ndarray{1, 2, 3, 4, 1};
         CHECK( !isequal(lhs,rhs) );
     }
 }
@@ -236,6 +300,92 @@ TEST_CASE("isequal(array[2],tuple[2])" * doctest::test_suite("utils"))
     }
 }
 
+TEST_CASE("isequal(fixed_ndarray[2],fixed_ndarray[2])" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = fixed_ndarray<int,2,3>{};
+        auto rhs = fixed_ndarray<int,2,3>{};
+        lhs = {
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        rhs = {
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = fixed_ndarray<int,2,3>{};
+        auto rhs = fixed_ndarray<int,2,3>{};
+        lhs = {
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        rhs = {
+            {1, 2, 3},
+            {4, 1, 6}
+        };
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isequal(fixed_matrix,fixed_matrix)" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = fixed_matrix<int,2,3>{};
+        auto rhs = fixed_matrix<int,2,3>{};
+        lhs = {
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        rhs = {
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = fixed_matrix<int,2,3>{};
+        auto rhs = fixed_matrix<int,2,3>{};
+        lhs = {
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        rhs = {
+            {1, 2, 3},
+            {4, 1, 6}
+        };
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isequal(dynamic_matrix,dynamic_matrix)" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = dynamic_matrix{
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        auto rhs = dynamic_matrix{
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = dynamic_matrix{
+            {1, 2, 3},
+            {4, 5, 6}
+        };
+        auto rhs = dynamic_matrix{
+            {1, 2, 3},
+            {4, 1, 6}
+        };
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
 /**
  * @brief isequal(array[3],array[3])
  * 
@@ -377,6 +527,60 @@ TEST_CASE("isequal(int[][][],int[][][])" * doctest::test_suite("utils"))
             }
         };
         int rhs[2][2][3] = {
+            {
+                {1, 2, 3},
+                {4, 5, 6}
+            },
+            {
+                { 7,  8,  9},
+                {10, 11, 13},
+            }
+        };
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isequal(fixed_ndarray[3],fixed_ndarray[3])" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = fixed_ndarray<int,2,2,3>{};
+        auto rhs = fixed_ndarray<int,2,2,3>{};
+        lhs = {
+            {
+                {1, 2, 3},
+                {4, 5, 6},
+            },
+            {
+                { 7,  8,  9},
+                {10, 11, 12},
+            }
+        };
+        rhs = {
+            {
+                {1, 2, 3},
+                {4, 5, 6}
+            },
+            {
+                { 7,  8,  9},
+                {10, 11, 12},
+            }
+        };
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = fixed_ndarray<int,2,2,3>{};
+        auto rhs = fixed_ndarray<int,2,2,3>{};
+        lhs = {
+            {
+                {1, 2, 3},
+                {4, 5, 6},
+            },
+            {
+                {7,   8,  9},
+                {10, 11, 12},
+            }
+        };
+        rhs = {
             {
                 {1, 2, 3},
                 {4, 5, 6}
@@ -663,6 +867,108 @@ TEST_CASE("isequal(int[][][][],int[][][][])" * doctest::test_suite("utils"))
             },
         };
         int rhs[2][2][2][3] = {
+            {
+                {
+                    {1, 2, 3},
+                    {4, 5, 6},
+                },
+                {
+                    {7, 8, 9},
+                    {9, 8, 7},
+                },
+            },
+            {
+                {
+                    { 8,  9, 10},
+                    {11, 12, 13},
+                },
+                {
+                    {14, 15, 16},
+                    {18, 18, 19},
+                },
+            },
+        };
+        CHECK( !isequal(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isequal(fixed_ndarray[4],fixed_ndarray[4])" * doctest::test_suite("utils"))
+{
+    {
+        auto lhs = fixed_ndarray<int,2,2,2,3>{};
+        auto rhs = fixed_ndarray<int,2,2,2,3>{};
+        lhs = {
+            {
+                {
+                    {1, 2, 3},
+                    {4, 5, 6},
+                },
+                {
+                    {7, 8, 9},
+                    {9, 8, 7},
+                },
+            },
+            {
+                {
+                    { 8,  9, 10},
+                    {11, 12, 13},
+                },
+                {
+                    {14, 15, 16},
+                    {17, 18, 19},
+                },
+            },
+        };
+        rhs = {
+            {
+                {
+                    {1, 2, 3},
+                    {4, 5, 6},
+                },
+                {
+                    {7, 8, 9},
+                    {9, 8, 7},
+                },
+            },
+            {
+                {
+                    { 8,  9, 10},
+                    {11, 12, 13},
+                },
+                {
+                    {14, 15, 16},
+                    {17, 18, 19},
+                },
+            },
+        };
+        CHECK( isequal(lhs,rhs) );
+    }
+    {
+        auto lhs = fixed_ndarray<int,2,2,2,3>{};
+        auto rhs = fixed_ndarray<int,2,2,2,3>{};
+        lhs = {
+            {
+                {
+                    {1, 2, 3},
+                    {4, 5, 6},
+                },
+                {
+                    {7, 8, 9},
+                    {9, 8, 7},
+                },
+            },
+            {
+                {
+                    { 8,  9, 10},
+                    {11, 12, 13},
+                },
+                {
+                    {14, 15, 16},
+                    {17, 18, 19},
+                },
+            },
+        };
+        rhs = {
             {
                 {
                     {1, 2, 3},
