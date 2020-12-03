@@ -225,6 +225,128 @@ namespace nmtools::meta
 namespace nmtools::meta
 {
     /**
+     * @brief check if T t{} are:
+     * - t[0][0][0] is valid
+     * 
+     * @tparam T 
+     * @tparam void 
+     */
+    template <typename T, typename=void>
+    struct is_array3d
+    {
+        static constexpr inline auto _check()
+        {
+            if constexpr (has_atnd_v<T,size_t,size_t,size_t>)
+                return true;
+            else if constexpr (has_funcnd_v<T,size_t,size_t,size_t>)
+                return true;
+            else if constexpr (has_bracketnd_v<T,size_t,size_t,size_t>)
+                return true;
+            else if constexpr (std::is_array_v<T> && std::rank_v<T> == 3)
+                return true;
+            else if constexpr (nested_array_dim_v<T> == 3)
+                return true;
+            else return false;
+        } // _check
+        static constexpr inline auto value = _check();
+    }; // is_array3d
+
+    template <typename T>
+    inline constexpr bool is_array3d_v = is_array3d<T>::value;
+
+    /**
+     * @brief check if T t{} are:
+     * - t[0][0] is valid
+     * 
+     * @tparam T 
+     * @tparam void 
+     */
+    template <typename T, typename=void>
+    struct is_array2d
+    {
+        static constexpr inline auto _check()
+        {
+            if constexpr (has_atnd_v<T,size_t,size_t>)
+                return true;
+            else if constexpr (has_funcnd_v<T,size_t,size_t>)
+                return true;
+            else if constexpr (has_bracketnd_v<T,size_t,size_t>)
+                return true;
+            else if constexpr (std::is_array_v<T> && std::rank_v<T> == 2)
+                return true;
+            else if constexpr (nested_array_dim_v<T> == 2)
+                return true;
+            else return false;
+        } // _check
+        static constexpr inline auto value = _check();
+    }; // is_array2d
+
+    template <typename T>
+    inline constexpr bool is_array2d_v = is_array2d<T>::value;
+
+    /**
+     * @brief check if T t{} are:
+     * - t[0] is valid
+     * 
+     * @tparam T 
+     * @tparam void 
+     */
+    template <typename T, typename=void>
+    struct is_array1d
+    {
+        static constexpr inline auto _check()
+        {
+            if constexpr (has_atnd_v<T,size_t>)
+                return true;
+            else if constexpr (has_funcnd_v<T,size_t>)
+                return true;
+            else if constexpr (has_square_bracket_v<T,size_t>)
+                return true;
+            else if constexpr (std::is_array_v<T> && std::rank_v<T> == 1)
+                return true;
+            else if constexpr (nested_array_dim_v<T> == 1)
+                return true;
+            else return false;
+        } // _check
+        static constexpr inline auto value = _check();
+    }; // is_array1d
+
+    /**
+     * @brief helper variable template to check if T is 1d array-like
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    inline constexpr bool is_array1d_v = is_array1d<T>::value;
+
+    /**
+     * @brief check if T is vector-like, (in math terms, not container terms)
+     * 
+     * @tparam T 
+     * @todo remove
+     */
+    template <typename T>
+    struct is_vector_like : is_array1d<T> {};
+
+    template <typename T>
+    inline constexpr bool is_vector_like_v = is_vector_like<T>::value;
+
+    /**
+     * @brief check if T is matrix-like
+     * 
+     * @tparam T 
+     * @todo remove
+     */
+    template <typename T>
+    struct is_matrix_like : is_array2d<T> {};
+
+    template <typename T>
+    inline constexpr bool is_matrix_like_v = is_matrix_like<T>::value;
+} // namespace nmtools::meta
+
+namespace nmtools::meta
+{
+    /**
      * @addtogroup traits
      * @{
      */
@@ -613,9 +735,20 @@ namespace nmtools::meta
     {
         static constexpr auto _check()
         {
-            return is_fixed_size_ndarray_v<T>
-                || is_array1d_v<T>
-                || is_array2d_v<T>;
+            // @note this will try to instantiate all the following traits
+            // this is troublesome if any of the following traits is not well-formed for some T
+            // return is_fixed_size_ndarray_v<T>
+            //     || is_array1d_v<T>
+            //     || is_array2d_v<T>;
+
+            // use short circuit instead
+            if constexpr (is_fixed_size_ndarray_v<T>)
+                return true;
+            else if constexpr (is_array2d_v<T>)
+                return true;
+            else if constexpr (is_array1d_v<T>)
+                return true;
+            else return false;
         } // _check()
         static constexpr auto value = _check();
     }; // is_ndarray

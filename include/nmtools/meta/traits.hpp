@@ -23,87 +23,6 @@ namespace nmtools::meta {
     using std::enable_if_t;
 
     /**
-     * @brief check if T t{} are:
-     * - t[0][0][0] is valid
-     * 
-     * @tparam T 
-     * @tparam void 
-     */
-    template <typename T, typename = void>
-    struct is_array3d : false_type {};
-
-    template <typename T>
-    struct is_array3d<T, 
-        void_t<decltype(declval<T>()[0][0][0])>
-    > : true_type {};
-
-    template <typename T>
-    inline constexpr bool is_array3d_v = is_array3d<T>::value;
-
-    /**
-     * @brief check if T t{} are:
-     * - t[0][0] is valid
-     * 
-     * @tparam T 
-     * @tparam void 
-     */
-    template <typename T, typename = void>
-    struct is_array2d : false_type {};
-
-    template <typename T>
-    struct is_array2d<T, 
-        void_t<decltype(declval<T>()[0][0])> 
-    > : true_type {};
-
-    template <typename T>
-    inline constexpr bool is_array2d_v = is_array2d<T>::value;
-
-    /**
-     * @brief check if T t{} are:
-     * - t[0] is valid
-     * 
-     * @tparam T 
-     * @tparam void 
-     */
-    template <typename T, typename = void>
-    struct is_array1d : false_type {};
-
-    template <typename T>
-    struct is_array1d<T, 
-        void_t<decltype(declval<T>()[0])>
-    > : true_type {};
-
-    /**
-     * @brief helper variable template to check if T is 1d array-like
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    inline constexpr bool is_array1d_v = is_array1d<T>::value;
-
-    /**
-     * @brief check if T is vector-like, (in math terms, not container terms)
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    struct is_vector_like : is_array1d<T> {};
-
-    template <typename T>
-    inline constexpr bool is_vector_like_v = is_vector_like<T>::value;
-
-    /**
-     * @brief check if T is matrix-like
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    struct is_matrix_like : is_array2d<T> {};
-
-    template <typename T>
-    inline constexpr bool is_matrix_like_v = is_matrix_like<T>::value;
-
-    /**
      * @brief check if T() * U() is valid
      * 
      * @tparam T 
@@ -1160,6 +1079,27 @@ namespace nmtools::meta {
      */
     template <typename type_list, template <typename> typename trait>
     static constexpr auto type_list_conjunction_v = type_list_conjunction<type_list,trait>::value;
+
+    /**
+     * @brief check if given type T is specialization of template-template param primary_template
+     * 
+     * @tparam T type to check
+     * @tparam primary_template primary template
+     */
+    template <typename T, template <typename...> typename primary_template>
+    struct is_specialization : std::false_type {};
+
+    template <template <typename...> typename primary_template, typename... Args>
+    struct is_specialization<primary_template<Args...>, primary_template> : std::true_type {};
+
+    /**
+     * @brief helper alias template for is_specialization
+     * 
+     * @tparam T type to check
+     * @tparam primary_template primary template 
+     */
+    template <typename T, template <typename...> typename primary_template>
+    inline constexpr auto is_specialization_v = is_specialization<T,primary_template>::value;
 
     /** @} */ // end group traits
 
