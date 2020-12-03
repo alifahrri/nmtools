@@ -224,7 +224,10 @@ namespace nmtools
         static_assert (meta::is_fixed_dim_ndarray_v<array_t> || meta::has_dim_v<array_t>
             , "unsupported dim; only support fixed-dim array or array has .dim()"
         );
-        if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
+        // prefer for explicit call to dim() first
+        if constexpr (meta::has_dim_v<array_t>)
+            return array.dim();
+        else if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
             // @todo whenever the dim is constant return it as compile-time constant
             // @note not possible at this point, need to refactor indices & strides computation to support compile-time constant
             // return meta::index_constant<meta::fixed_ndarray_dim_v<array_t>>{};
@@ -242,7 +245,6 @@ namespace nmtools
             // return meta::index_constant<1>{};
             return 1;
         }
-        else return array.dim();
     } // dim
 
     /** @} */ // end group utility
