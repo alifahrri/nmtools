@@ -124,22 +124,18 @@ namespace nmtools
     } // make_slice_index
 
     /**
-     * @brief indices transformer
+     * @brief indices_pack to support dynamic dimension
      * 
-     * Adapter from N-dimensional indices to packed 1-D indices,
-     * can be used to transform nested N loop to 1 flat loop.
-     * Only support fixed-dimensional array for now.
-     * 
-     * @tparam array_t compile-time array type to represent shape_type and stride_type
-     * @tparam T
-     * @tparam N number of dimension
-     * @see nmtools::apply_at
+     * @tparam shape_t 
+     * @tparam typename 
+     * @todo remove, unify with fixed-dim version
      */
-    template <template<typename,size_t> typename array_t, typename T, size_t N>
+    template <typename shape_t, typename=void>
     struct indices_pack_t
     {
-        using shape_type = array_t<T,N>;
-        using stride_type = array_t<T,N>;
+        using shape_type = shape_t;
+        using stride_type = shape_t;
+        using size_type = typename shape_type::value_type;
 
         shape_type shape;
         stride_type stride;
@@ -165,7 +161,70 @@ namespace nmtools
         constexpr decltype(auto) size() const noexcept
         {
             // compute product
-            auto identity = static_cast<T>(1);
+            auto identity = static_cast<size_type>(1);
+            for (const auto s : shape)
+                identity *= s;
+            return identity;
+        } // size
+
+        /**
+         * @brief get the packed indices from flat indices
+         * 
+         * @param i flat index
+         * @return auto 
+         */
+        constexpr inline decltype(auto) operator[](size_t i)
+        {
+            using array::detail::compute_indices;
+            // map offset (flat index) back to indices
+            return compute_indices(i,shape,stride);
+        } // operator[]
+    }; // indices_pack_t
+
+    /**
+     * @brief indices transformer
+     * 
+     * Adapter from N-dimensional indices to packed 1-D indices,
+     * can be used to transform nested N loop to 1 flat loop.
+     * Only support fixed-dimensional array for now.
+     * 
+     * @tparam array_t compile-time array type to represent shape_type and stride_type
+     * @tparam T
+     * @tparam N number of dimension
+     * @see nmtools::apply_at
+     */
+    template <template<typename,size_t> typename array_t, typename T, size_t N>
+    struct indices_pack_t<array_t<T,N>>
+    {
+        using shape_type = array_t<T,N>;
+        using stride_type = array_t<T,N>;
+        using size_type = typename shape_type::value_type;
+
+        shape_type shape;
+        stride_type stride;
+
+        /**
+         * @brief Construct a new indices pack t object
+         * 
+         * @param shape original array shape
+         */
+        constexpr indices_pack_t(shape_type shape)
+            : shape(shape), stride(array::detail::compute_strides(shape))
+        {
+            // @note: this prevents indices_pack_t to be used in constexpr
+            // gcc error: must be initialized by mem-initializer
+            // stride = array::detail::compute_strides(shape);
+        }
+
+        /**
+         * @brief return the number of element
+         * 
+         * @return auto 
+         */
+        constexpr decltype(auto) size() const noexcept
+        {
+            // compute product
+            auto identity = static_cast<size_type>(1);
             meta::template_for<N>([&](auto index){
                 constexpr auto i = decltype(index)::value;
                 identity *= std::get<i>(shape);
@@ -197,27 +256,14 @@ namespace nmtools
      * @return constexpr auto indices transformer
      * @see indices_pack_t
      */
-    template <typename T, size_t N>
-    constexpr auto indices_pack(std::array<T,N> shape)
+    template <typename shape_t>
+    constexpr auto indices_pack(shape_t shape)
     {
-        // tparam deduced via CTAD
-        return indices_pack_t(shape);
-    } // indices_pack
-
-    /**
-     * @brief make indices_pack from tuple representing shape
-     * 
-     * @tparam size_types 
-     * @param shape original array shape
-     * @return constexpr auto 
-     */
-    template <template<typename...>typename type_list, typename...size_types>
-    constexpr auto indices_pack(type_list<size_types...> shape)
-    {
-        using tuple_type = type_list<size_types...>;
-        using common_type = common_type_t<size_types...>;
-        auto shape_ = detail::make_array<std::array>(shape);
-        return indices_pack(shape_);
+        if constexpr (meta::is_specialization_v<shape_t,std::tuple> || meta::is_specialization_v<shape_t,std::pair>) {
+            auto shape_ = detail::make_array<std::array>(shape);
+            return indices_pack_t(shape_);
+        }
+        else return indices_pack_t(shape);
     } // indices_pack
 
     namespace detail {
