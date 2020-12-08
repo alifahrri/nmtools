@@ -21,7 +21,19 @@ static_assert( nmtools::meta::is_fixed_size_ndarray_v<fixed_ndarray<double,1,3,2
 
 TEST_CASE("fixed_ndarray[2,3,2]")
 {
-    auto ndarray = fixed_ndarray<double,2,3,2>{};
+    // @note that the first angle bracket are for aggregate initialization
+    auto ndarray = fixed_ndarray{{
+        {
+            {0,1},
+            {2,3},
+            {4,5},
+        },
+        {
+            {6,7},
+            {8,9},
+            {10,11},
+        },
+    }};
     CHECK(ndarray.dim()==3);
     NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (std::array{2,3,2}) );
     NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{6,2,1}) );
@@ -75,7 +87,12 @@ TEST_CASE("fixed_ndarray[2,3,2]")
 
 TEST_CASE("fixed_ndarray[2,3,1]")
 {
-    constexpr auto ndarray = fixed_ndarray<double,2,3,1>{};
+    constexpr auto ndarray = fixed_ndarray{
+        {
+            {{1.},{2.},{3.}},
+            {{4.},{5.},{6.}}
+        }
+    };
     CHECK(ndarray.dim()==3);
     NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (std::array{2,3,1}) );
     NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{3,1,1}) );
@@ -85,7 +102,12 @@ TEST_CASE("fixed_ndarray[2,3,1]")
 
 TEST_CASE("fixed_ndarray[2,3]")
 {
-    auto ndarray = fixed_ndarray<double,2,3>{};
+    auto ndarray = fixed_ndarray{
+        {
+            {1.,2.,3.},
+            {4.,5.,6.}
+        }
+    };
     CHECK(ndarray.dim()==2);
     NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   (std::array{2,3}) );
     NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{3,1}) );
@@ -104,7 +126,7 @@ TEST_CASE("fixed_ndarray[2,3]")
 
 TEST_CASE("fixed_ndarray[3]")
 {
-    auto ndarray = fixed_ndarray<double,3>{};
+    auto ndarray = fixed_ndarray{{1.,2.,3.}};
     CHECK(ndarray.dim()==1);
     NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   std::array{3} );
     NMTOOLS_ASSERT_EQUAL( ndarray.strides(), std::array{1} );

@@ -357,7 +357,7 @@ TEST_CASE("transpose(std::vector[2])"*doctest::test_suite("view::transpose")) //
  */
 TEST_CASE("transpose(fixed_vector)"*doctest::test_suite("view::transpose"))
 {
-    auto array = fixed_vector<double,3>{1.,2.,3.};
+    auto array = fixed_vector({1.,2.,3.});
     auto array_ref = view::transpose(array);
 
     // LOG_TYPEINFO( decltype(array_ref) );

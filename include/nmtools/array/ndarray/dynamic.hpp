@@ -3,8 +3,11 @@
 
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/view/ref.hpp"
+#include "nmtools/array/view/flatten.hpp"
+#include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/view/ref/initializer_list.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/utility/clone.hpp"
 #include <cassert>
 #include <vector>
 #include <initializer_list>
@@ -37,89 +40,84 @@ namespace nmtools::array
         using shape_type = shape_storage_type<size_t>;
         using stride_type = shape_storage_type<size_t>;
 
-        /**
-         * @brief construct dynamic_ndarray given shape
-         * 
-         * @param shape desired shape of dynamic_ndarray
-         */
-        explicit dynamic_ndarray(shape_type shape)
-            : shape_(shape)
+        template <typename array_t>
+        auto init(array_t&& array)
         {
+            using ::nmtools::detail::clone_impl;
+            auto array_ref = view::ref(array);
+            auto array_shape = ::nmtools::shape(array_ref);
+            for (const auto& s : array_shape)
+                shape_.push_back(s);
             strides_ = strides();
             numel_   = numel();
             data.resize(numel_);
+            auto array_view = view::flatten(array_ref);
+            clone_impl(data, array_view, numel_);
         }
 
-        /**
-         * @brief construct dynamic_ndarray from 1D initializer_list
-         * 
-         * @param initializer 
-         */
-        explicit dynamic_ndarray(std::initializer_list<value_type> initializer)
-        {
-            shape_   = shape_type({initializer.size()});
-            strides_ = strides();
-            numel_   = numel();
-            data.resize(numel_);
-            size_t i = 0;
-            // TODO: find best way to copy
-            for (auto v : initializer)
-                data[i++] = v;
-        }
+        dynamic_ndarray() {}
 
-        /**
-         * @brief construct dynamic_ndarray from 1D intializer_list with specified shape
-         * 
-         * @param initializer 
-         * @param shape desired shape
-         */
-        explicit dynamic_ndarray(std::initializer_list<value_type> initializer, shape_type shape)
-        {
-            shape_ = shape;
-            strides_ = strides();
-            numel_ = numel();
-            data.resize(numel_);
-            size_t i = 0;
-            assert (initializer.size() == numel_);
-            // TODO: find best way to copy
-            for (auto v : initializer)
-                data[i++] = v;
-        }
+        // explicit dynamic_ndarray(const shape_type& shape) { resize(shape); }
 
-        /**
-         * @brief construct dynamic_ndarray from nested initializer list
-         * 
-         * @param initializer 
-         */
-        explicit dynamic_ndarray(std::initializer_list<std::initializer_list<value_type>> initializer)
-        {
-            shape_   = shape_type({initializer.size(), (initializer.size()?initializer.begin()->size() : 0)});
-            strides_ = strides();
-            numel_   = numel();
-            data.resize(numel_);
-            size_t i = 0;
-            for (const auto &v : initializer)
-                for (const auto &e : v)
-                    data[i++] = e;
-        }
+        // @note explicit required here, somehow related to operator=
+        template <typename array_t, typename=std::enable_if_t<meta::is_ndarray_v<array_t>>>
+        explicit dynamic_ndarray(array_t&& a) { init(a); }
 
-        // ambiguous call
-        // TODO: fix
-        // explicit dynamic_ndarray(std::initializer_list<std::initializer_list<std::initializer_list<value_type>>> initializer)
-        // {
-        //     auto i = initializer.size();
-        //     auto j = (initializer.size() ? initializer.begin()->size() : 0);
-        //     auto k = (j > 0 ? initializer.begin()->begin()->size() : 0);
-        //     shape_ = shape_type({i,j,k});
-        //     strides_ = strides();
-        //     numel_ = numel();
-        //     data.resize(numel_);
-        //     size_t idx = 0;
-        //     for (auto&& c : initializer)
-        //         for (auto&& m : c)
-        //             for (auto&& n : m)
-        //                 data[idx++] = n;
-        // }
+        #define NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(N) \
+        explicit dynamic_ndarray(meta::make_nested_dynamic_array_t<std::initializer_list,T,N>&& a) { init(a); }
+
+        // doesn work
+        #if 0
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(1)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(2)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(3)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(4)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(5)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(6)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(7)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(8)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(9)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(10)
+        NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(11)
+        #endif
+
+        #undef NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR
+
+        #if 1
+        // note that the following is taking rvalue
+        template <size_t N>
+        explicit dynamic_ndarray(T (&&a)[N]) { init(a); }
+        // @note 2D
+        template <size_t Rows, size_t Cols>
+        explicit dynamic_ndarray(T (&&a)[Rows][Cols]) { init(a); }
+        // @note 3D
+        template <size_t Shape1, size_t Shape2, size_t Shape3>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3]) { init(a); }
+        // @note 4D
+        template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4]) { init(a); }
+        // @note 5D
+        template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5]) { init(a); }
+        // @note 6D
+        template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6]) { init(a); }
+        // @note 7D
+        template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7]) { init(a); }
+        // @note 8D
+        template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8]) { init(a); }
+        // @note 9D
+        template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9]) { init(a); }
+        // @note 10D
+        template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9, size_t Shape10>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10]) { init(a); }
+        // @note 11D
+        template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9, size_t Shape10, size_t Shape11>
+        explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10][Shape11]) { init(a); }
+        #endif
 
         data_type data;
         shape_type shape_;
@@ -172,6 +170,27 @@ namespace nmtools::array
                 stride[i] = detail::stride(shape_,i);
             return stride;
         } // strides
+
+        template <typename...size_types>
+        auto resize(size_types...shape) -> std::enable_if_t<(std::is_integral_v<size_types> &&...)>
+        {
+            shape_.resize(sizeof...(shape));
+            meta::template_for<sizeof...(shape)>([&](auto index){
+                constexpr auto i = decltype(index)::value;
+                shape_.at(i) = std::get<i>(std::tuple{shape...});
+            });
+            strides_ = strides();
+            numel_   = numel();
+            data.resize(numel_);
+        }
+
+        auto resize(const shape_type& shape)
+        {
+            shape_ = shape;
+            strides_ = strides();
+            numel_   = numel();
+            data.resize(numel_);
+        }
 
         /**
          * @brief mutable access to element

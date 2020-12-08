@@ -91,4 +91,18 @@ TEST_CASE("get_element_type_t" * doctest::test_suite("meta"))
         LOG_TYPEINFO(result_t);
         STATIC_CHECK_IS_SAME( result_t, double );
     }
+    {
+        using arg_t = std::initializer_list<double>;
+        using result_t = meta::get_element_type_t<arg_t>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        STATIC_CHECK_IS_SAME( result_t, double );
+    }
+    {
+        using arg_t = std::initializer_list<std::initializer_list<double>>;
+        using result_t = meta::get_element_type_t<arg_t>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        STATIC_CHECK_IS_SAME( result_t, double );
+    }
 }

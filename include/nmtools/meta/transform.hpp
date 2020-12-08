@@ -150,7 +150,7 @@ namespace nmtools::meta
      * 
      * @tparam T 
      */
-    template <typename T>
+    template <typename T, typename=void>
     struct transform_bounded_array 
     {
         using type = T;
@@ -165,20 +165,8 @@ namespace nmtools::meta
     template <typename T, std::size_t N>
     struct transform_bounded_array<T[N]>
     {
-        using type = std::array<T,N>;
-    };
-
-    /**
-     * @brief overloaded version of transform_bounded_array for T[N][M]
-     * 
-     * @tparam T element type
-     * @tparam N number of first indices
-     * @tparam M number of last indices
-     */
-    template <typename T, std::size_t N, std::size_t M>
-    struct transform_bounded_array<T[N][M]>
-    {
-        using type = std::array<std::array<T,M>,N>;
+        using value_type = typename transform_bounded_array<remove_cvref_t<T>>::type;
+        using type = std::array<remove_cvref_t<value_type>,N>;
     };
 
     /**

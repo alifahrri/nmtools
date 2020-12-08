@@ -45,6 +45,14 @@ namespace nmtools::array {
          */
         data_type data;
 
+        constexpr fixed_matrix () : data({}) {}
+
+        constexpr fixed_matrix (T (&&a)[Rows][Cols])
+        {
+            using nested_t = meta::make_nested_raw_array_t<T,Rows,Cols>;
+            this->template operator=<nested_t>(std::forward<nested_t>(a));
+        }
+
         /**
          * @brief access element at (row,col)-th index
          * 

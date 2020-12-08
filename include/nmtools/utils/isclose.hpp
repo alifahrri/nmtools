@@ -14,6 +14,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/index.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 
 #include <type_traits>
@@ -42,6 +43,7 @@ namespace nmtools::utils
         template <typename T, typename U, typename E=double>
         constexpr auto isclose(const T& t, const U& u, E eps=static_cast<E>(1e-6))
         {
+            using ::nmtools::indices_pack;
             static_assert(
                 (std::is_arithmetic_v<T> && std::is_arithmetic_v<U>) ||
                 (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)

@@ -84,13 +84,13 @@ TEST_CASE("isequal(int[],int[])" * doctest::test_suite("utils"))
 TEST_CASE("isequal(fixed_vector,fixed_vector)" * doctest::test_suite("utils"))
 {
     {
-        auto lhs = fixed_vector<int,5>{1, 2, 3, 4, 5};
-        auto rhs = fixed_vector<int,5>{1, 2, 3, 4, 5};
+        auto lhs = fixed_vector({1, 2, 3, 4, 5});
+        auto rhs = fixed_vector({1, 2, 3, 4, 5});
         CHECK( isequal(lhs,rhs) );
     }
     {
-        auto lhs = fixed_vector<int,5>{1, 2, 3, 4, 5};
-        auto rhs = fixed_vector<int,5>{1, 2, 3, 4, 1};
+        auto lhs = fixed_vector({1, 2, 3, 4, 5});
+        auto rhs = fixed_vector({1, 2, 3, 4, 1});
         CHECK( !isequal(lhs,rhs) );
     }
 }
@@ -130,13 +130,13 @@ TEST_CASE("isequal(fixed_ndarray,fixed_ndarray)" * doctest::test_suite("utils"))
 TEST_CASE("isequal(dynamic_ndarray,dynamic_ndarray)" * doctest::test_suite("utils"))
 {
     {
-        auto lhs = dynamic_ndarray{1, 2, 3, 4, 5};
-        auto rhs = dynamic_ndarray{1, 2, 3, 4, 5};
+        auto lhs = dynamic_ndarray<int>({1, 2, 3, 4, 5});
+        auto rhs = dynamic_ndarray<int>({1, 2, 3, 4, 5});
         CHECK( isequal(lhs,rhs) );
     }
     {
-        auto lhs = dynamic_ndarray{1, 2, 3, 4, 5};
-        auto rhs = dynamic_ndarray{1, 2, 3, 4, 1};
+        auto lhs = dynamic_ndarray<int>({1, 2, 3, 4, 5});
+        auto rhs = dynamic_ndarray<int>({1, 2, 3, 4, 1});
         CHECK( !isequal(lhs,rhs) );
     }
 }

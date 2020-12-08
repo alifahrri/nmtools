@@ -225,7 +225,7 @@ TEST_CASE("ref(std::vector<std::vector>)" * doctest::test_suite("view::ref")) //
  */
 TEST_CASE("ref(fixed_vector)" * doctest::test_suite("view::ref")) // ref with fixed_vector
 {
-    auto array = fixed_vector<double,3>{1.,2.,3.};
+    auto array = fixed_vector({1.,2.,3.});
     auto array_ref = view::ref(array);
     STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
@@ -259,17 +259,15 @@ TEST_CASE("ref(fixed_vector)" * doctest::test_suite("view::ref")) // ref with fi
  */
 TEST_CASE("ref(fixed_matrix)" * doctest::test_suite("view::ref")) // ref with fixed_matrix
 {
-    auto array = fixed_matrix<double,2,3>{};
+    auto array = fixed_matrix({
+        {1.,2.,3.},
+        {3.,4.,5.},
+    });
     auto array_ref = view::ref(array);
     STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
     CHECK( isequal(array_ref.shape(), std::array{2,3}) );
-
-    array = {
-        {1.,2.,3.},
-        {3.,4.,5.},
-    };
 
     {
         auto expected = std::array{
@@ -374,7 +372,7 @@ TEST_CASE("ref(dynamic_matrix)" * doctest::test_suite("view::ref")) // ref with 
  */
 TEST_CASE("ref(fixed_ndarray[1])" * doctest::test_suite("view::ref")) // ref with 1D fixed_ndarray
 {
-    auto array = fixed_ndarray<double,3>{1.,2.,3.};
+    auto array = fixed_ndarray({1.,2.,3.});
     auto array_ref = view::ref(array);
     CHECK( array_ref.dim()==1 );
     CHECK( isequal(array_ref.shape(),std::array{3}) );
@@ -394,14 +392,12 @@ TEST_CASE("ref(fixed_ndarray[1])" * doctest::test_suite("view::ref")) // ref wit
  */
 TEST_CASE("ref(fixed_ndarray[2])" * doctest::test_suite("view::ref")) // ref with 2D fixed_ndarray
 {
-    auto array = fixed_ndarray<double,3,2>{};
+    auto array = fixed_ndarray{{
+        {1.,2.},
+        {3.,4.},
+        {4.,5.},
+    }};
     auto array_ref = view::ref(array);
-
-    array = std::array{
-        std::array{1.,2.},
-        std::array{3.,4.},
-        std::array{4.,5.},
-    };
 
     CHECK( array_ref.dim()==2 );
     CHECK( isequal(array_ref.shape(),std::array{3,2}) );
@@ -428,7 +424,20 @@ TEST_CASE("ref(fixed_ndarray[2])" * doctest::test_suite("view::ref")) // ref wit
  */
 TEST_CASE("ref(fixed_ndarray[3])" * doctest::test_suite("view::ref")) // ref with 3D fixed_ndarray
 {
-    auto array = fixed_ndarray<double,3,2,4>{};
+    auto array = fixed_ndarray{{
+        {
+            {1.,2.,3.,4.},
+            {5.,6.,7.,8.}
+        },
+        {
+            {9., 10.,11.,12.},
+            {13.,14.,15.,16.}
+        },
+        {
+            {17.,18.,19.,20.},
+            {21.,22.,23.,24.},
+        }
+    }};
     auto array_ref = view::ref(array);
     CHECK( array_ref.dim()==3 );
     CHECK( isequal(array_ref.shape(),std::array{3,2,4}) );
@@ -496,7 +505,11 @@ TEST_CASE("ref(dynamic_ndarray[2])" * doctest::test_suite("view::ref")) // ref w
 TEST_CASE("ref(dynamic_ndarray[3])" * doctest::test_suite("view::ref")) // ref with 3D dynamic_ndarray
 {
     // @note initialize 3D ndarray from flat storage with specified shape
-    auto array = dynamic_ndarray({1.,2.,3.},{1,3,1});
+    // auto array = dynamic_ndarray({1.,2.,3.},{1,3,1});
+    auto array = dynamic_ndarray<double>();
+    double a[1][3][1] = {{{1.},{2.},{1.}}};
+    array.resize({1,3,1});
+    array = std::move(a);
     auto array_ref = view::ref(array);
     CHECK( array_ref.dim()==3 );
     CHECK( isequal(array_ref.shape(),std::array{1,3,1}) );
@@ -511,7 +524,21 @@ TEST_CASE("ref(dynamic_ndarray[3])" * doctest::test_suite("view::ref")) // ref w
 TEST_CASE("ref(dynamic_ndarray[4])" * doctest::test_suite("view::ref")) // ref with 4D dynamic_ndarray
 {
     // @note initialize 3D ndarray from flat storage with specified shape
-    auto array = dynamic_ndarray({1.,2.,3.,4.},{1,2,2,1});
+    auto array = dynamic_ndarray<double>();
+    double a[1][2][2][1] = {
+        {
+            {
+                {1.},
+                {2.}
+            },
+            {
+                {3.},
+                {4.}
+            }
+        }
+    };
+    array.resize({1,2,2,1});
+    array = std::move(a);
     auto array_ref = view::ref(array);
     CHECK( array_ref.dim()==4 );
     CHECK( isequal(array_ref.shape(),std::array{1,2,2,1}) );

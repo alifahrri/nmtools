@@ -16,7 +16,9 @@ static_assert(!nmtools::meta::is_fixed_size_ndarray_v<dynamic_ndarray<double>>);
 
 TEST_CASE("dynamic_ndarray[2,3,2]")
 {
-    auto ndarray = dynamic_ndarray<double>(vector({2ul,3ul,2ul}));
+    auto shape_ = vector{2ul,3ul,2ul};
+    auto ndarray = dynamic_ndarray<double>();
+    ndarray.resize(shape_);
     CHECK(ndarray.dim()==3);
     NMTOOLS_ASSERT_EQUAL( ndarray.shape(),(std::array{2,3,2}) );
     NMTOOLS_ASSERT_EQUAL( ndarray.strides(),(std::array{6,2,1}) );
@@ -53,7 +55,8 @@ TEST_CASE("dynamic_ndarray[2,3,2]")
 
 TEST_CASE("dynamic_ndarray[2,3,1]")
 {
-    auto ndarray = dynamic_ndarray<double>(vector({2ul,3ul,1ul}));
+    auto ndarray = dynamic_ndarray<double>();
+    ndarray.resize({2ul,3ul,1ul});
     CHECK( ndarray.dim()==3 );
     NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   (vector{2,3,1}) );
     NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (vector{3,1,1}) );
@@ -62,7 +65,8 @@ TEST_CASE("dynamic_ndarray[2,3,1]")
 
 TEST_CASE("dynamic_ndarray[2]")
 {
-    auto ndarray = dynamic_ndarray<double>(vector({2ul,3ul}));
+    auto ndarray = dynamic_ndarray<double>();
+    ndarray.resize({2ul,3ul});
     CHECK( ndarray.dim()==2 );
     NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   (vector{2,3}) );
     NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (vector{3,1}) );
@@ -92,7 +96,14 @@ TEST_CASE("dynamic_ndarray[3,3]")
 
 TEST_CASE("dynamic_ndarray[1,3,1]")
 {
-    auto ndarray = dynamic_ndarray({1.,2.,3.},{1,3,1});
+    // error: ambiuous call 
+    // candidate: dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3]) { init(a); }
+    // candidate: dynamic_ndarray(T (&&a)[Rows][Cols]) { init(a); }
+    // note: adding extra brace make non-ambiguous, but causes gcc error dynamic_ndarray(T (&&a)[Rows][Cols]) { init(a); } while clang only gives warning
+    // auto ndarray = dynamic_ndarray<double>({{{1.},{2.},{3.}}});
+    double a[1][3][1] = {{{1.},{2.},{3.}}};
+    auto ndarray = dynamic_ndarray(std::move(a));
+    // auto ndarray = dynamic_ndarray<double>(a);
     CHECK(ndarray.dim()==3);
     NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (vector{1,3,1}) );
     NMTOOLS_ASSERT_EQUAL( shape(ndarray),  (vector{1,3,1}) );
