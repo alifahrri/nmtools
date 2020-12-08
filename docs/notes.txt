@@ -28,3 +28,7 @@ https://godbolt.org/z/7r7ToM
 initializer list ctad
 https://godbolt.org/z/bT6K7a
 https://stackoverflow.com/questions/55205176/is-stdinitializer-listx-y-z-ctad-valid
+
+braces around scalar initializer for type
+https://godbolt.org/z/r9de57
+http://clang-developers.42468.n3.nabble.com/braces-around-scalar-initializer-warning-should-be-error-td4063311.html
