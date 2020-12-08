@@ -60,6 +60,7 @@ namespace nmtools::array {
          * @brief return the number of elements
          * 
          * @return constexpr auto 
+         * @todo remove
          */
         static constexpr auto numel()
         {
@@ -74,6 +75,7 @@ namespace nmtools::array {
          * @brief return the strides information
          * 
          * @return constexpr auto 
+         * @todo remove
          */
         static constexpr auto strides()
         {
@@ -84,11 +86,9 @@ namespace nmtools::array {
         }
         static inline constexpr auto strides_ = strides();
 
-        // constexpr fixed_ndarray() {}
-
         using this_type  = fixed_ndarray<T,Shape1,ShapeN...>;
         // underlying flat storage
-        using data_type  = std::array<T,numel_>;
+        using data_type = meta::make_nested_raw_array_t<T,Shape1,ShapeN...>;
         // element/value type
         using value_type = T;
         // single axis type
@@ -113,9 +113,7 @@ namespace nmtools::array {
             -> std::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),reference>
         {
             using common_size_t = std::common_type_t<size_type,size...>;
-            auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
-            auto offset = detail::compute_offset(strides_, indices);
-            return data[offset];
+            return at(data, n, ns...);
         } // operator()
 
         /**
@@ -133,9 +131,7 @@ namespace nmtools::array {
             -> std::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),const_reference>
         {
             using common_size_t = std::common_type_t<size_type,size...>;
-            auto indices = std::array<common_size_t,sizeof...(ns)+1>{n,static_cast<common_size_t>(ns)...};
-            auto offset = detail::compute_offset(strides_, indices);
-            return data[offset];
+            return at(data, n, ns...);
         } // operator()
 
         // constexpr decltype(auto) operator=(this_type&& other)
@@ -159,6 +155,41 @@ namespace nmtools::array {
             return this->template operator=<nested_t>(std::forward<nested_t>(rhs));
         }
     }; // struct fixed_ndarray
+
+    // provide user-defined ctad
+    // @note 1D
+    template <typename T, size_t N>
+    fixed_ndarray(T (&&a)[N]) -> fixed_ndarray<T,N>;
+    // @note 2D
+    template <typename T, size_t Rows, size_t Cols>
+    fixed_ndarray(T (&&a)[Rows][Cols]) -> fixed_ndarray<T,Rows,Cols>;
+    // @note 3D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3]) -> fixed_ndarray<T,Shape1,Shape2,Shape3>;
+    // @note 4D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4>;
+    // @note 5D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4,Shape5>;
+    // @note 6D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4,Shape5,Shape6>;
+    // @note 7D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4,Shape5,Shape6,Shape7>;
+    // @note 8D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4,Shape5,Shape6,Shape7,Shape8>;
+    // @note 9D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4,Shape5,Shape6,Shape7,Shape8,Shape9>;
+    // @note 10D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9, size_t Shape10>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4,Shape5,Shape6,Shape7,Shape8,Shape9,Shape10>;
+    // @note 11D
+    template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9, size_t Shape10, size_t Shape11>
+    fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10][Shape11]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4,Shape5,Shape6,Shape7,Shape8,Shape9,Shape10,Shape11>;
 
     /** @} */ // end group fixed array
 } // namespace nmtools::array
@@ -270,6 +301,7 @@ namespace nmtools::meta
 
 #include "nmtools/array/utility/clone.hpp" // clone_impl
 #include "nmtools/array/view/flatten.hpp" // view::flatten
+#include "nmtools/array/view/mutable_flatten.hpp" // view::mutable_flatten
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/shape.hpp"
 
@@ -314,12 +346,13 @@ namespace nmtools::array
 
         using ::nmtools::detail::clone_impl;
 
-        auto flat_rhs = view::flatten(std::forward<ndarray_t>(rhs));
+        auto flat_rhs  = view::flatten(std::forward<ndarray_t>(rhs));
+        auto flat_data = view::mutable_flatten(this->data);
         constexpr auto n_rhs = meta::fixed_vector_size_v<decltype(flat_rhs)>;
         static_assert (numel_==n_rhs
             , "mismatched shape for fixed_ndarray assignment"
         );
-        clone_impl(this->data, flat_rhs, numel_);
+        clone_impl(flat_data, flat_rhs, numel_);
 
         return *this;
     } // operator=
