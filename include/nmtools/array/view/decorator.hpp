@@ -92,12 +92,10 @@ namespace nmtools::view
                 return view_type::operator()(indices...);
             else {
                 auto transformed_indices = view_type::index(indices...);
-                static_assert (meta::has_tuple_size_v<decltype(transformed_indices)>,
-                    "return value from view_type::index(...) must have compile time size"
-                );
 
                 using array_t = meta::remove_cvref_t<array_type>;
                 constexpr auto n = sizeof...(size_types);
+                // @todo static_assert whenever possible
                 assert (dim()==n); // tmp assertion
 
                 // @note needs to initialize array_t since view_type::array may not be constant expression
@@ -134,12 +132,10 @@ namespace nmtools::view
                 return view_type::operator()(indices...);
             else {
                 auto transformed_indices = view_type::index(indices...);
-                static_assert (meta::has_tuple_size_v<decltype(transformed_indices)>,
-                    "return value from view_type::index(...) must have compile time size"
-                );
 
                 using array_t = meta::remove_cvref_t<array_type>;
                 constexpr auto n = sizeof...(size_types);
+                // @todo static_assert whenever possible
                 assert (dim()==n); // tmp assertion
 
                 // @note needs to initialize array_t since view_type::array may not be constant expression
