@@ -246,6 +246,12 @@ namespace nmtools::array
             return data[offset];
         } // at
 
+        reference at(shape_type i)
+        {
+            auto offset = detail::compute_offset(strides_, i);
+            return data[offset];
+        } // at
+
         template <typename ndarray_t, typename=std::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         constexpr auto operator=(const ndarray_t& rhs);
 
