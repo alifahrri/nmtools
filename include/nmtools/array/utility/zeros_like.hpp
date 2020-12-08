@@ -32,19 +32,22 @@ namespace nmtools
         } // resize
 
         template <typename array_t, typename shape_t, size_t...Is>
-        auto apply_resize(array_t& array, shape_t& shape, std::index_sequence<Is...>) -> array_t&
+        auto apply_resize(array_t& array, const shape_t& shape, std::index_sequence<Is...>) -> array_t&
         {
             return resize(array, std::get<Is>(shape)...);
         } // apply_resize
 
         template <typename array_t, typename shape_t>
-        auto apply_resize(array_t& array, shape_t& shape) -> array_t&
+        auto apply_resize(array_t& array, const shape_t& shape) -> array_t&
         {
             if constexpr (meta::has_tuple_size_v<shape_t>) {
                 constexpr auto n = std::tuple_size_v<shape_t>;
                 return apply_resize(array,shape,std::make_index_sequence<n>{});
             }
-            else return array.resize(shape);
+            else {
+                array.resize(shape);
+                return array;
+            }
         } // apply_resize
     } // namespace detail
 
