@@ -42,11 +42,20 @@ namespace nmtools::view
         constexpr auto shape() const noexcept
         {
             // assuming fixed dim array
-            auto shape_ = ::nmtools::shape<std::array>(array);
+            auto shape_ = ::nmtools::shape(array);
             // compute product
             auto identity = 1;
-            for (size_t i=0; i<shape_.size(); i++)
-                identity *= shape_[i];
+            if constexpr (meta::is_specialization_v<decltype(shape_),std::tuple> || meta::is_specialization_v<decltype(shape_),std::pair>)
+            {
+                constexpr auto n = std::tuple_size_v<decltype(shape_)>;
+                meta::template_for<n>([&](auto index){
+                    constexpr auto i = decltype(index)::value;
+                    identity *= std::get<i>(shape_);
+                });
+            }
+            else
+                for (size_t i=0; i<shape_.size(); i++)
+                    identity *= shape_[i];
             // flattened array is strictly 1D
             return std::tuple{identity};
         } // shape
@@ -55,8 +64,7 @@ namespace nmtools::view
         constexpr auto index(size_type i) const
         {
             using ::nmtools::array::detail::compute_indices;
-            // assuming fixed dim array
-            auto shape_ = ::nmtools::shape<std::array>(array);
+            auto shape_ = ::nmtools::shape(array);
             auto indices = compute_indices(i,shape_);
             return indices;
         } // index

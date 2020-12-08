@@ -34,6 +34,14 @@ namespace nmtools
         } // clone_impl
     } // namespace detail
 
+    struct clone_t {};
+
+    template <typename array_t>
+    struct meta::resolve_optype<void,clone_t,array_t>
+    {
+        using type = meta::transform_bounded_array_t<array_t>;
+    }; // resolve_optype
+
     /**
      * @brief clone matrix/vector 
      * 
@@ -57,8 +65,12 @@ namespace nmtools
             return a;
         /* ret is conteiner, for each elements call zeros_like */
         else {
-            auto ret = zeros_like(a);
-            using return_t = meta::remove_cvref_t<decltype(ret)>;
+            using return_t = meta::resolve_optype_t<clone_t,Array>;
+            auto ret = return_t{};
+            if constexpr (meta::is_resizeable_v<return_t>) {
+                auto shape = ::nmtools::shape(a);
+                ret = detail::apply_resize(ret, shape);
+            }
             auto ret_view = view::mutable_flatten(ret);
             auto arr_view = view::flatten(a);
             auto n = vector_size(arr_view);

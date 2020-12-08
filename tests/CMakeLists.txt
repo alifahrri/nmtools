@@ -103,6 +103,8 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ## array utility
     src/doctest/array/utility/at.cpp
     src/doctest/array/utility/apply_at.cpp
+    src/doctest/array/utility/cast.cpp
+    src/doctest/array/utility/clone.cpp
     src/doctest/array/utility/row.cpp
     src/doctest/array/utility/column.cpp
     src/doctest/array/utility/slice.cpp
