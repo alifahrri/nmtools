@@ -134,6 +134,22 @@ namespace nmtools::detail
 
 namespace nmtools::array::detail
 {
+
+    template <typename T, typename=void>
+    struct tuple_common_type
+    {
+        using type = T;
+    }; // tuple_common_type
+
+    template <template<typename...> typename typelist, typename...Ts>
+    struct tuple_common_type<typelist<Ts...>>
+    {
+        using type = std::common_type_t<Ts...>;
+    };
+
+    template <typename T>
+    using tuple_common_type_t = typename tuple_common_type<T>::type;
+
     /**
      * @brief compute stride for ndarray offset
      * 
@@ -141,13 +157,32 @@ namespace nmtools::array::detail
      * @param k k-th stride to compute
      * @return constexpr auto
      */
-    constexpr auto stride(const auto& shape, auto k)
+    template <typename array_t, typename size_type>
+    constexpr auto stride(const array_t& shape, size_type k)
     {
-        using value_type = typename std::decay_t<decltype(shape)>::value_type;
-        auto p = value_type{1};
-        for (auto j=k+1; j<shape.size(); j++)
-            p *= shape[j];
-        return p;
+        if constexpr (meta::is_specialization_v<array_t,std::tuple> || meta::is_specialization_v<array_t,std::pair>)
+        {
+            using value_type = tuple_common_type_t<array_t>;
+            static_assert( meta::is_integral_constant_v<size_type>
+                , "unsupported size_type for stride. for tuple type, k must be integral constant"
+            );
+            constexpr auto n = std::tuple_size_v<array_t>;
+            auto p = value_type{1};
+            meta::template_for<n>([&](auto index){
+                constexpr auto i = decltype(index)::value;
+                if constexpr (i>=k+1)
+                    p *= std::get<i>(shape);
+            });
+            return p;
+        }
+        else
+        {
+            using value_type = typename std::decay_t<decltype(shape)>::value_type;
+            auto p = value_type{1};
+            for (auto j=k+1; j<shape.size(); j++)
+                p *= shape[j];
+            return p;
+        }
     } // stride
 
     /**
@@ -159,11 +194,22 @@ namespace nmtools::array::detail
      * @param shape container of shape, should have value_type member type
      * @return constexpr auto
      */
-    constexpr auto compute_strides(const auto& shape)
+    template <typename array_t>
+    constexpr auto compute_strides(const array_t& shape)
     {
         auto strides_ = shape;
-        for (size_t i=0; i<strides_.size(); i++)
-            strides_[i] = stride(shape, i);
+        if constexpr (meta::is_specialization_v<array_t,std::tuple> || meta::is_specialization_v<array_t,std::pair>)
+        {
+            constexpr auto n = std::tuple_size_v<array_t>;
+            meta::template_for<n>([&](auto index){
+                constexpr auto i = decltype(index)::value;
+                auto k = std::integral_constant<size_t,i>{};
+                std::get<i>(strides_) = stride(shape, k);
+            });
+        }
+        else
+            for (size_t i=0; i<strides_.size(); i++)
+                strides_[i] = stride(shape, i);
         return strides_;
     } // strides
 
@@ -176,11 +222,27 @@ namespace nmtools::array::detail
      * @param strides container of strides
      * @return constexpr auto 
      */
-    constexpr auto compute_offset(const auto& indices, const auto& strides)
+    template <typename indices_t, typename strides_t>
+    constexpr auto compute_offset(const indices_t& indices, const strides_t& strides)
     {
+        constexpr auto indices_is_tuple_or_pair = meta::is_specialization_v<indices_t,std::tuple> || meta::is_specialization_v<indices_t,std::pair>;
+        constexpr auto strides_is_tuple_or_pair = meta::is_specialization_v<strides_t,std::tuple> || meta::is_specialization_v<strides_t,std::pair>;
         size_t offset = 0;
-        for (size_t i=0; i<strides.size(); i++)
-            offset += strides[i]*indices[i];
+        if constexpr (indices_is_tuple_or_pair && strides_is_tuple_or_pair)
+        {
+            constexpr auto n = std::tuple_size_v<indices_t>;
+            constexpr auto m = std::tuple_size_v<strides_t>;
+            static_assert (m==n
+                , "unsupported compute_offset, mismatched shape for indices and strides"
+            );
+            meta::template_for<n>([&](auto index){
+                constexpr auto i = decltype(index)::value;
+                offset += std::get<i>(strides) * std::get<i>(indices);
+            });
+        }
+        else
+            for (size_t i=0; i<strides.size(); i++)
+                offset += strides[i]*indices[i];
         return offset;
     } // compute_offset
 
@@ -192,11 +254,27 @@ namespace nmtools::array::detail
      * @param strides computed strides, should be computed from shape
      * @return constexpr auto 
      */
-    constexpr auto compute_indices(const auto& offset, const auto& shape, const auto& strides)
+    template <typename offset_t, typename shape_t, typename strides_t>
+    constexpr auto compute_indices(const offset_t& offset, const shape_t& shape, const strides_t& strides)
     {
+        constexpr auto shape_is_tuple_or_pair = meta::is_specialization_v<shape_t,std::tuple> || meta::is_specialization_v<shape_t,std::pair>;
+        constexpr auto strides_is_tuple_or_pair = meta::is_specialization_v<strides_t,std::tuple> || meta::is_specialization_v<strides_t,std::pair>;
         auto indices = shape;
-        for (size_t i=0; i<shape.size(); i++)
-            indices[i] = (offset / strides[i]) % shape[i];
+        if constexpr (shape_is_tuple_or_pair && strides_is_tuple_or_pair)
+        {
+            constexpr auto n = std::tuple_size_v<shape_t>;
+            constexpr auto m = std::tuple_size_v<strides_t>;
+            static_assert (m==n
+                , "unsupported compute_indices, mismatched shape for shape and strides"
+            );
+            meta::template_for<n>([&](auto index){
+                constexpr auto i = decltype(index)::value;
+                std::get<i>(indices) = (offset / std::get<i>(strides)) % std::get<i>(shape);
+            });
+        }
+        else
+            for (size_t i=0; i<shape.size(); i++)
+                indices[i] = (offset / strides[i]) % shape[i];
         return indices;
     } // compute indices
 
@@ -209,7 +287,8 @@ namespace nmtools::array::detail
      * @param shape desired shape
      * @return constexpr auto 
      */
-    constexpr auto compute_indices(const auto& offset, const auto& shape)
+    template <typename offset_t, typename shape_t>
+    constexpr auto compute_indices(const offset_t& offset, const shape_t& shape)
     {
         auto strides = compute_strides(shape);
         return compute_indices(offset, shape, strides);
