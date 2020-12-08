@@ -7,6 +7,8 @@
 #include "nmtools/array/utility/at.hpp"         // at
 #include "nmtools/array/shape.hpp"      // vector_size, matrix_size
 #include "nmtools/array/utility/zeros_like.hpp" // zeros_like
+#include "nmtools/array/view/flatten.hpp"
+#include "nmtools/array/view/mutable_flatten.hpp"
 
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
@@ -18,13 +20,15 @@ namespace nmtools
 {
     namespace detail
     {
-        constexpr auto clone_impl(auto &ret, const auto& a, auto rows, auto cols){
+        template <typename return_t, typename array_t, typename size_type>
+        constexpr auto clone_impl(return_t &ret, const array_t& a, size_type rows, size_type cols){
             for (size_t i=0; i<rows; i++)
                 for (size_t j=0; j<cols; j++)
                     at(ret,i,j) = at(a,i,j);
         } // clone_impl
 
-        constexpr auto clone_impl(auto &ret, const auto& a, auto n){
+        template <typename return_t, typename array_t, typename size_type>
+        constexpr auto clone_impl(return_t &ret, const array_t& a, size_type n) {
             for (size_t i=0; i<n; i++)
                 at(ret,i) = at(a,i);
         } // clone_impl
@@ -55,34 +59,10 @@ namespace nmtools
         else {
             auto ret = zeros_like(a);
             using return_t = meta::remove_cvref_t<decltype(ret)>;
-            /* array2d implementation */
-            if constexpr (meta::is_array2d_v<return_t>)
-            {
-                constexpr auto is_fixed_size = meta::is_fixed_size_matrix_v<return_t>;
-                if constexpr (is_fixed_size) {
-                    /* TODO: find-out if reading matrix_size as constexpr is beneficial */
-                    constexpr auto shape = matrix_size(ret);
-                    constexpr auto rows = std::get<0>(shape);
-                    constexpr auto cols = std::get<1>(shape);
-                    clone_impl(ret,a,rows,cols);
-                }
-                else {
-                    auto [rows, cols] = matrix_size(ret);
-                    clone_impl(ret,a,rows,cols);
-                }
-            }
-            /* array1d implementation */
-            else {
-                constexpr auto is_fixed_size = meta::is_fixed_size_vector_v<return_t>;
-                if constexpr (is_fixed_size) {
-                    constexpr auto n = vector_size(ret);
-                    clone_impl(ret,a,n);
-                }
-                else {
-                    auto n = vector_size(ret);
-                    clone_impl(ret,a,n);
-                }
-            }
+            auto ret_view = view::mutable_flatten(ret);
+            auto arr_view = view::flatten(a);
+            auto n = vector_size(arr_view);
+            clone_impl(ret_view,arr_view,n);
             return ret;
         }
     } // constexpr auto clone(const Array& a)
