@@ -59,7 +59,12 @@ namespace nmtools::testing
     constexpr auto cast(const std::array<U,N>& array, std::integer_sequence<size_t,I...>)
     {
         using common_t = std::common_type_t<typename T::value_type,U>;
-        return T{array[I]...};
+        if constexpr (::nmtools::array::is_fixed_vector_v<T>) {
+            T ret;
+            ret = array;
+            return ret;
+        }
+        else return T{array[I]...};
     } // constexpr auto cast
 
     /**
