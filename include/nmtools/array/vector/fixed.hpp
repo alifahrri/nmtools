@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/meta.hpp" // meta::fixed_matrix_size etc.
+#include "nmtools/array/utility/at.hpp"
 
 #include <array>
 #include <tuple>
@@ -35,7 +36,7 @@ namespace nmtools::array {
          * @brief underlying storage type of fixed_vector
          * 
          */
-        using data_type = std::array<T,N>;
+        using data_type = T[N];
         /**
          * @brief elemen type of fixed_vector
          * 
@@ -54,6 +55,14 @@ namespace nmtools::array {
          * 
          */
         data_type data;
+
+        constexpr fixed_vector() : data() {}
+
+        explicit constexpr fixed_vector(T (&&a)[N])
+        {
+            for (size_t i=0; i<N; i++)
+                data[i] = at(a, i);
+        }
 
         /**
          * @brief access element at i-th index
@@ -84,8 +93,21 @@ namespace nmtools::array {
          */
         constexpr size_type size() const noexcept
         {
-            return data.size();
+            return N;
         }
+
+        template <typename array_t, typename=std::enable_if_t<meta::is_array1d_v<array_t>>>
+        decltype(auto) operator=(const array_t& array)
+        {
+            if constexpr (meta::is_fixed_size_vector_v<array_t>)
+                static_assert (meta::fixed_vector_size_v<array_t> == N, "size mismatch for operator= for fixed_vector");
+            else assert ( vector_size(array) == N
+                // , "size mismatch for operator= for fixed_vector"
+            );
+            for (size_t i=0; i<N; i++)
+                data[i] = at(array, i);
+            return *this;
+        } // operator=
     }; // struct fixed_vector
 
     /**
@@ -99,13 +121,13 @@ namespace nmtools::array {
     template <typename T, size_t N>
     constexpr auto begin(fixed_vector<T,N>& v)
     {
-        return v.data.begin();
+        return v.data;
     } // constexpr auto begin
 
     template <typename T, size_t N>
     constexpr auto begin(const fixed_vector<T,N>& v)
     {
-        return v.data.begin();
+        return v.data;
     } // constexpr auto begin
 
     /**
@@ -119,14 +141,23 @@ namespace nmtools::array {
     template <typename T, size_t N>
     constexpr auto end(fixed_vector<T,N>& v)
     {
-        return v.data.end();
+        return v.data + N;
     } // constexpr auto end
 
     template <typename T, size_t N>
     constexpr auto end(const fixed_vector<T,N>& v)
     {
-        return v.data.end();
+        return v.data + N;
     } // constexpr auto end
+
+    template <typename T, typename=void>
+    struct is_fixed_vector : std::false_type {};
+
+    template <typename T, size_t N>
+    struct is_fixed_vector<fixed_vector<T,N>> : std::true_type {};
+
+    template <typename T>
+    inline constexpr auto is_fixed_vector_v = is_fixed_vector<T>::value;
 
     /** @} */ // end group fixed array
 } // namespace nmtools::array
@@ -197,7 +228,7 @@ namespace nmtools
      */
     template <typename T, size_t N>
     struct meta::fixed_vector_size<array::fixed_vector<T,N>>
-        : std::tuple_size<typename array::fixed_vector<T,N>::data_type> {};
+        : std::integral_constant<size_t,N> {};
 
     /**
      * @brief specialization of fixed_vector for meta::fixed_ndarray_shape array traits.
