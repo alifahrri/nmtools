@@ -502,13 +502,13 @@ namespace nmtools::bench::data
          * 
          */
         template <typename T>
-        auto M2x2 = fixed_matrix<T,2,2>{
-            2e+0, 1e+5,
-            1e+0, 1e+0,
-        };
+        auto M2x2 = fixed_matrix<T,2,2>({
+            {2e+0, 1e+5},
+            {1e+0, 1e+0},
+        });
         auto Md2x2 = M2x2<double>;
         auto Mf2x2 = M2x2<float>;
-        template <typename T> auto v2 = fixed_vector<T,2>{1e+5 + 2, 2e+0};
+        template <typename T> auto v2 = fixed_vector<T,2>({1e+5 + 2, 2e+0});
         auto vd2 = v2<double>;
         auto vf2 = v2<float>;
         /**
@@ -517,14 +517,14 @@ namespace nmtools::bench::data
          * 
          */
         template <typename T>
-        auto M3x3 = fixed_matrix<T,3,3>{
-            3.0, -0.1, -0.2,
-            0.1,  7.0, -0.3,
-            0.3, -0.2, 10.0,
-        };
+        auto M3x3 = fixed_matrix<T,3,3>({
+            {3.0, -0.1, -0.2},
+            {0.1,  7.0, -0.3},
+            {0.3, -0.2, 10.0},
+        });
         auto Md3x3 = M3x3<double>;
         auto Mf3x3 = M3x3<float>;
-        template <typename T> auto v3 = fixed_vector<T,3>{7.85, -19.3, 71.4};
+        template <typename T> auto v3 = fixed_vector<T,3>({7.85, -19.3, 71.4});
         auto vd3 = v3<double>;
         auto vf3 = v3<float>;
         /**
@@ -534,14 +534,14 @@ namespace nmtools::bench::data
          * 
          */
         template <typename T>
-        auto M3x3_upper = fixed_matrix<T,3,3>{
-            3., -0.1, -0.2,
-            0.0, 7.00333, -0.29333,
-            0.0, 0.0, 10.0120
-        };
+        auto M3x3_upper = fixed_matrix<T,3,3>({
+            {3., -0.1, -0.2},
+            {0.0, 7.00333, -0.29333},
+            {0.0, 0.0, 10.0120}
+        });
         auto Md3x3_upper = M3x3_upper<double>;
         auto Mf3x3_upper = M3x3_upper<float>;
-        template <typename T> auto v3_upper = fixed_vector<T,3>{7.85, -19.5617, 70.0843};
+        template <typename T> auto v3_upper = fixed_vector<T,3>({7.85, -19.5617, 70.0843});
         auto vd3_upper = v3_upper<double>;
         auto vf3_upper = v3_upper<float>;
         /**
@@ -551,11 +551,11 @@ namespace nmtools::bench::data
          * 
          */
         template <typename T>
-        auto M3x3_symm = fixed_matrix<T,3,3>{
-             6,  15,  55,
-            15,  55, 225,
-            55, 225, 979,
-        };
+        auto M3x3_symm = fixed_matrix<T,3,3>({
+             {6,  15,  55},
+            {15,  55, 225},
+            {55, 225, 979},
+        });
         auto Md3x3_symm = M3x3_symm<double>;
         auto Mf3x3_symm = M3x3_symm<float>;
         /**
@@ -565,12 +565,12 @@ namespace nmtools::bench::data
          * 
          */
         template <typename T>
-        auto M4x4_symm = fixed_matrix<T,4,4>{
-             1,  4,  9, 16,
-             4,  9, 16, 25,
-             9, 16, 25, 36,
-            16, 25, 36, 49,
-        };
+        auto M4x4_symm = fixed_matrix<T,4,4>({
+             {1,  4,  9, 16},
+             {4,  9, 16, 25},
+             {9, 16, 25, 36},
+            {16, 25, 36, 49},
+        });
         auto Md4x4_symm = M4x4_symm<double>;
         auto Mf4x4_symm = M4x4_symm<float>;
         /**
@@ -580,13 +580,13 @@ namespace nmtools::bench::data
          * 
          */
         template <typename T>
-        auto M5x5_symm = fixed_matrix<T,5,5>{
-             1,  4,  9, 16, 25,
-             4,  9, 16, 25, 36,
-             9, 16, 25, 36, 49,
-            16, 25, 36, 49, 64,
-            25, 36, 49, 64, 81,
-        };
+        auto M5x5_symm = fixed_matrix<T,5,5>({
+             {1,  4,  9, 16, 25},
+             {4,  9, 16, 25, 36},
+             {9, 16, 25, 36, 49},
+            {16, 25, 36, 49, 64},
+            {25, 36, 49, 64, 81},
+        });
         auto Md5x5_symm = M5x5_symm<double>;
         auto Mf5x5_symm = M5x5_symm<float>;
         /**
@@ -594,10 +594,10 @@ namespace nmtools::bench::data
          * std::array of double, for tridiagonal systems
          * 
          */
-        template <typename T> auto v4_e = fixed_vector<T,4>{0, -1, -1, -1};
-        template <typename T> auto v4_f = fixed_vector<T,4>{2.04, 2.04, 2.04, 2.04};
-        template <typename T> auto v4_g = fixed_vector<T,4>{-1, -1, -1, 0};
-        template <typename T> auto v4_b = fixed_vector<T,4>{40.8, 0.8, 0.8, 200.8};
+        template <typename T> auto v4_e = fixed_vector<T,4>({0, -1, -1, -1});
+        template <typename T> auto v4_f = fixed_vector<T,4>({2.04, 2.04, 2.04, 2.04});
+        template <typename T> auto v4_g = fixed_vector<T,4>({-1, -1, -1, 0});
+        template <typename T> auto v4_b = fixed_vector<T,4>({40.8, 0.8, 0.8, 200.8});
         auto vd4_e = v4_e<double>;
         auto vd4_f = v4_f<double>;
         auto vd4_g = v4_g<double>;
