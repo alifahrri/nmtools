@@ -241,7 +241,7 @@ namespace nm = nmtools;
  */
 TEST_CASE("slice(fixed_vector)"*doctest::test_suite("view::slice")) // slice with 1D std::vector
 {
-    auto array = fixed_vector<double,3>{1.,2.,3.};
+    auto array = fixed_vector({1.,2.,3.});
     auto array_ref = view::slice(array,1,nm::end_t{});
     // @note even if the referenced array is fixed-size (fixed_vector), the slice args are not!
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));

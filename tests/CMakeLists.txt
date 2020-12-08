@@ -107,7 +107,10 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/array/utility/column.cpp
     src/doctest/array/utility/slice.cpp
     src/doctest/array/utility/squeeze.cpp
+    src/doctest/array/utility/zeros_like.cpp
     ## ndarray
+    src/doctest/array/fixed/matrix.cpp
+    src/doctest/array/dynamic/matrix.cpp
     src/doctest/array/fixed/ndarray.cpp
     src/doctest/array/dynamic/ndarray.cpp
     ## view
@@ -118,6 +121,7 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/array/view/mutable_slice.cpp
     src/doctest/array/view/transpose.cpp
     src/doctest/array/view/flatten.cpp
+    src/doctest/array/view/mutable_flatten.cpp
 )
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
