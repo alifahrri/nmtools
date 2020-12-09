@@ -258,8 +258,6 @@ namespace nmtools
 
 } // namespace nmtools
 
-#include "nmtools/traits.hpp"
-
 namespace nmtools::meta
 {
     /**
@@ -278,8 +276,6 @@ namespace nmtools::meta
 
     /** @} */ // end group traits
 } // namespace nmtooclls::traits
-
-#include "nmtools/meta.hpp"
 
 namespace nmtools::meta
 {

@@ -177,7 +177,7 @@ namespace nmtools::blas
     /** @} */ // end group blas
 }
 
-#include "nmtools/traits.hpp"
+#include "nmtools/meta.hpp"
 
 namespace nmtools::meta
 {

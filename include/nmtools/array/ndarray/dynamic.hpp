@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_NDARRAY_DYNAMIC_HPP
 #define NMTOOLS_ARRAY_NDARRAY_DYNAMIC_HPP
 
+#include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/flatten.hpp"
@@ -313,8 +314,6 @@ namespace nmtools
 
 } // namespace nmtools
 
-#include "nmtools/traits.hpp"
-
 namespace nmtools::meta
 {
     /**
@@ -356,7 +355,6 @@ namespace nmtools::meta
     
 } // namespace nmtools::meta
 
-#include "nmtools/meta.hpp"
 // include fixed array for metafunction specialization
 // note: fixed array also include array/utility,
 // include here so that dynamic vector_size and matrix_size visible
