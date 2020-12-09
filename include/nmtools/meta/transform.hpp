@@ -219,6 +219,7 @@ namespace nmtools::meta
     template <typename T, typename...>
     struct replace_template_parameter 
     {
+        using origin_tparams = void;
         /**
          * @brief define resulting type as void, so that
          * replace_template_parameter_t still well-formed
@@ -238,6 +239,7 @@ namespace nmtools::meta
     template <template<typename...> typename T, typename ...Subs, typename ...Origin>
     struct replace_template_parameter<T<Origin...>,Subs...>
     {
+        using origin_tparams = std::tuple<Origin...>;
         /**
          * @brief this assumes that the number of given substitute type, sizeof...(Subs),
          * is sufficient to instantiate T<Subs...>. Consider a case where this requirement
@@ -261,6 +263,7 @@ namespace nmtools::meta
     template <typename value_t, auto N, typename subs_value_t, auto subs_N, typename size_type>
     struct replace_template_parameter<std::array<value_t,N>,subs_value_t,std::integral_constant<size_type,subs_N>>
     {
+        using origin_tparams = std::tuple<value_t>;
         using type = std::array<subs_value_t,subs_N>;
     };
 
@@ -1276,6 +1279,78 @@ namespace nmtools::meta
      */
     template <typename T>
     using get_element_type_t = typename get_element_type<T>::type;
+
+    namespace detail
+    {
+        /**
+         * @brief helper metafunction for replace_element_type
+         *
+         * return void type if no specialization exists
+         * 
+         * @tparam T type in which its element type to be replaced
+         * @tparam U substitute to elemen type  of T
+         * @tparam typename 
+         */
+        template <typename T, typename U, typename=void>
+        struct replace_element_type_helper
+        {
+            using type = void;
+        };
+
+        template <template<typename...>typename TT, typename T, typename U>
+        struct replace_element_type_helper<TT<T>,U,std::enable_if_t< has_value_type_v<TT<T>> && std::is_arithmetic_v<U> > >
+        {
+            using array_t = TT<T>;
+            using value_type = remove_cvref_t<typename array_t::value_type>;
+            using type = std::conditional_t<
+                std::is_arithmetic_v<value_type>,
+                replace_template_parameter_t<array_t,U>,
+                replace_template_parameter_t<array_t,typename replace_element_type_helper<value_type,U>::type>
+            >;
+        };
+
+        template <typename T, size_t N, typename U>
+        struct replace_element_type_helper<std::array<T,N>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+        {
+            using array_t = std::array<T,N>;
+            using value_type = remove_cvref_t<typename array_t::value_type>;
+            using size_type = std::integral_constant<size_t,N>;
+            using type = std::conditional_t<
+                std::is_arithmetic_v<value_type>,
+                replace_template_parameter_t<array_t,U,size_type>,
+                replace_template_parameter_t<array_t, typename replace_element_type_helper<value_type,U>::type, size_type>
+            >;
+        };
+    } // namespace detail
+
+    /**
+     * @brief given type T, try to replace the element type of T with U.
+     *
+     * The default implementation if no specialization of type T exists is defined
+     * by helper metafunction detail::relace_element_type_helper. This helper can handles
+     * nested std::vector and std::array. By deferring implementation to helper class,
+     * this metafunction doesnt need to provide specialization hence it will be easier
+     * to specialize on custom types.
+     * 
+     * @tparam T type in which its element type to be replaced
+     * @tparam U substitute to elemen type  of T
+     * @tparam typename sfinae point
+     * @see detail::replace_element_type_helper
+     */
+    template <typename T, typename U, typename=void>
+    struct replace_element_type
+    {
+        using type = typename detail::replace_element_type_helper<T,U>::type;
+    }; // replace_element_type
+
+    /**
+     * @brief helper alias template for replace element type
+     * 
+     * @tparam T type in which its element type to be replaced
+     * @tparam U substitute to elemen type  of T
+     */
+    template <typename T, typename U>
+    using replace_element_type_t = typename replace_element_type<T,U>::type;
 
     /**
      * @brief metafunction to make vector with new size N from original type T

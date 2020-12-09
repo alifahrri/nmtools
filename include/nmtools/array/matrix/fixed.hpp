@@ -249,6 +249,20 @@ namespace nmtools
         : meta::fixed_matrix_size<array::fixed_matrix<T,Rows,Cols>>
     {};
 
+    /**
+     * @brief specialize replace_element_tyep for array::fixed_matrix
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam Rows 
+     * @tparam Cols 
+     */
+    template <typename T, typename U, size_t Rows, size_t Cols>
+    struct meta::replace_element_type<array::fixed_matrix<T,Rows,Cols>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        using type = array::fixed_matrix<U,Rows,Cols>;
+    };
+
 } // namespace nmtools
 
 #include "nmtools/traits.hpp"

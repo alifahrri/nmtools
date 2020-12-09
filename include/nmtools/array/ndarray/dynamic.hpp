@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_NDARRAY_DYNAMIC_HPP
 #define NMTOOLS_ARRAY_NDARRAY_DYNAMIC_HPP
 
+#include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/flatten.hpp"
@@ -313,8 +314,6 @@ namespace nmtools
 
 } // namespace nmtools
 
-#include "nmtools/traits.hpp"
-
 namespace nmtools::meta
 {
     /**
@@ -338,11 +337,24 @@ namespace nmtools::meta
     template <typename T>
     struct is_dynamic_ndarray<array::dynamic_ndarray<T>> : true_type {};
 
+    /**
+     * @brief specialize replace_element_type for array::dynamic_ndarray
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam storage_type 
+     * @tparam shape_storage_type 
+     */
+    template <typename T, typename U, template <typename> typename storage_type, template<typename> typename shape_storage_type>
+    struct replace_element_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        using type = array::dynamic_ndarray<U,storage_type,shape_storage_type>;
+    }; // replace_element_type
+
     /** @} */ // end group traits
     
 } // namespace nmtools::meta
 
-#include "nmtools/meta.hpp"
 // include fixed array for metafunction specialization
 // note: fixed array also include array/utility,
 // include here so that dynamic vector_size and matrix_size visible

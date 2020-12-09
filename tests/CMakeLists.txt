@@ -134,6 +134,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/traits/ndarray.cpp
     src/doctest/meta/traits/has_square_bracket.cpp
     src/doctest/meta/transform/get_element_type.cpp
+    src/doctest/meta/transform/replace_element_type.cpp
     src/doctest/meta/transform/nested_array_dim.cpp
     src/doctest/meta/transform/remove_nested_array_extents.cpp
     src/doctest/meta/get_container_value_type.cpp
