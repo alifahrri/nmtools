@@ -20,8 +20,8 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, col_sum)
             {1, 2, 3, 4,  5},
             {6, 7, 8, 9, 10}
         };
-        inline auto xad = cast(x<double>);
-        inline auto xaf = cast(x<float>);
+        inline auto xad = cast<double>(x<double>);
+        inline auto xaf = cast<double>(x<float>);
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,2,5);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1) {

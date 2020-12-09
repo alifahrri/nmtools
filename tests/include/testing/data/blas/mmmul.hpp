@@ -28,7 +28,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,mmmul)
          * @brief any matrix multiplied with zeros matrix results in zeros matrix
          * 
          */
-        constexpr inline auto x = cast(z5x5<double>);
+        constexpr inline auto x = cast<double>(z5x5<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2) {
@@ -44,7 +44,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,mmmul)
          * @brief any matrix multiplied with zeros matrix results in zeros matrix
          * 
          */
-        constexpr inline auto x = cast(z10x10<double>);
+        constexpr inline auto x = cast<double>(z10x10<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3) {
@@ -60,7 +60,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,mmmul)
          * @brief any matrix multiplied with zeros matrix results in zeros matrix
          * 
          */
-        constexpr inline auto x = cast(z15x15<double>);
+        constexpr inline auto x = cast<double>(z15x15<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4) {
@@ -76,7 +76,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,mmmul)
          * @brief any matrix multiplied with zeros matrix results in zeros matrix
          * 
          */
-        constexpr inline auto x = cast(z20x20<double>);
+        constexpr inline auto x = cast<double>(z20x20<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5) {
@@ -92,7 +92,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,mmmul)
          * @brief any matrix multiplied with zeros matrix results in zeros matrix
          * 
          */
-        constexpr inline auto x = cast(z25x25<double>);
+        constexpr inline auto x = cast<double>(z25x25<double>);
     }
 } // namespace nmtools::testing::data::blas::mmmul
 
