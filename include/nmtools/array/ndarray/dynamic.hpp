@@ -338,6 +338,20 @@ namespace nmtools::meta
     template <typename T>
     struct is_dynamic_ndarray<array::dynamic_ndarray<T>> : true_type {};
 
+    /**
+     * @brief specialize replace_element_type for array::dynamic_ndarray
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam storage_type 
+     * @tparam shape_storage_type 
+     */
+    template <typename T, typename U, template <typename> typename storage_type, template<typename> typename shape_storage_type>
+    struct replace_element_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        using type = array::dynamic_ndarray<U,storage_type,shape_storage_type>;
+    }; // replace_element_type
+
     /** @} */ // end group traits
     
 } // namespace nmtools::meta

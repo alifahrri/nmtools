@@ -367,6 +367,19 @@ namespace nmtools::meta
         using value_type = decltype(value);
     }; // fixed_dim
 
+    /**
+     * @brief specialize replace_element_type for array::dynamic_matrix type
+     * 
+     * @tparam T 
+     * @tparam storage_type 
+     * @tparam U 
+     */
+    template <typename T, template <typename> typename storage_type, typename U>
+    struct replace_element_type<array::dynamic_matrix<T,storage_type>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        using type = array::dynamic_matrix<U,storage_type>;
+    };
+
     /** @} */ // end group meta
 } // namespace nmtools::meta
 

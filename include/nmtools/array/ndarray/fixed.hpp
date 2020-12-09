@@ -272,6 +272,20 @@ namespace nmtools
         static inline constexpr auto value = std::make_tuple(Shape1,ShapeN...);
         using value_type = decltype(value);
     };
+
+    /**
+     * @brief specialize replace_element_type for array::fixed_ndarray
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam Shape1 
+     * @tparam ShapeN 
+     */
+    template <typename T, typename U, size_t Shape1, size_t...ShapeN>
+    struct meta::replace_element_type<array::fixed_ndarray<T,Shape1,ShapeN...>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        using type = array::fixed_ndarray<U,Shape1,ShapeN...>;
+    }; // replace_element_type
 } // namespace nmtools
 
 #include "nmtools/meta.hpp"

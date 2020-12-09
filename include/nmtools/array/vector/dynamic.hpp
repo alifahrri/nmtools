@@ -225,6 +225,19 @@ namespace nmtools::meta
         using value_type = decltype(value);
     }; // fixed_dim
 
+    /**
+     * @brief specialize replace_element_type for array::dynamic_vector
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam storage_type 
+     */
+    template <typename T, typename U, template <typename> typename storage_type>
+    struct replace_element_type<array::dynamic_vector<T,storage_type>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        using type = array::dynamic_vector<U,storage_type>;
+    };
+
     /** @} */ // end group traits
     
 } // namespace nmtools::meta

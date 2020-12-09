@@ -243,6 +243,19 @@ namespace nmtools
         using value_type = decltype(value);
     };
 
+    /**
+     * @brief specialize replace_element_type for array::fixed_vector
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam N 
+     */
+    template <typename T, typename U, size_t N>
+    struct meta::replace_element_type<array::fixed_vector<T,N>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        using type = array::fixed_vector<U,N>;
+    };
+
 } // namespace nmtools
 
 #include "nmtools/traits.hpp"
