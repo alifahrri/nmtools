@@ -32,3 +32,6 @@ https://stackoverflow.com/questions/55205176/is-stdinitializer-listx-y-z-ctad-va
 braces around scalar initializer for type
 https://godbolt.org/z/r9de57
 http://clang-developers.42468.n3.nabble.com/braces-around-scalar-initializer-warning-should-be-error-td4063311.html
+
+gcc error 8: mismatched types for 'double' and 'int' when initializing array (fixed on gcc 9)
+https://godbolt.org/z/asrh7q
