@@ -56,30 +56,41 @@ namespace nmtools
     template <typename dst_t, typename src_t>
     constexpr auto cast(const src_t& array)
     {
-        static_assert (meta::is_ndarray_v<src_t>);
-        static_assert (meta::is_ndarray_v<dst_t> || std::is_arithmetic_v<dst_t>);
+        static_assert (meta::is_ndarray_v<src_t> || std::is_arithmetic_v<src_t>
+            , "unsupported cast, expects source type to be ndarray or arithmetic"
+        );
+        static_assert (meta::is_ndarray_v<dst_t> || std::is_arithmetic_v<dst_t>
+            , "unsupported cast, expects destination type to be ndarray or arithmetic"
+        );
+        static_assert ((std::is_arithmetic_v<src_t> == std::is_arithmetic_v<dst_t>) || (meta::is_ndarray_v<src_t>)
+            , "unsupported cast, expects destination type to be arithmetic when source type is arithmetic"
+        );
 
-        using detail::cast_impl;
-        using return_t = meta::resolve_optype_t<cast_t,dst_t,src_t>;
+        if constexpr (std::is_arithmetic_v<src_t> && std::is_arithmetic_v<dst_t>)
+            return static_cast<dst_t>(array);
+        else {
+            using detail::cast_impl;
+            using return_t = meta::resolve_optype_t<cast_t,dst_t,src_t>;
 
-        auto ret = return_t{};
-        if constexpr (meta::is_resizeable_v<return_t>) {
-            auto shape = ::nmtools::shape(array);
-            ret = detail::apply_resize(ret, shape);
+            auto ret = return_t{};
+            if constexpr (meta::is_resizeable_v<return_t>) {
+                auto shape = ::nmtools::shape(array);
+                ret = detail::apply_resize(ret, shape);
+            }
+            else if constexpr (meta::is_fixed_size_ndarray_v<return_t> && meta::is_fixed_size_ndarray_v<src_t>) {
+                constexpr auto src_shape = meta::fixed_ndarray_shape_v<src_t>;
+                constexpr auto dst_shape = meta::fixed_ndarray_shape_v<return_t>;
+                static_assert (utils::isequal(src_shape,dst_shape)
+                    , "unsupported cast, mismatched shape for cast"
+                );
+            }
+            using element_t = meta::get_element_type_t<return_t>;
+            auto ret_view = view::mutable_flatten(ret);
+            auto arr_view = view::flatten(array);
+            auto n = vector_size(arr_view);
+            cast_impl<element_t>(ret_view,arr_view,n);
+            return ret;
         }
-        else if constexpr (meta::is_fixed_size_ndarray_v<return_t> && meta::is_fixed_size_ndarray_v<src_t>) {
-            constexpr auto src_shape = meta::fixed_ndarray_shape_v<src_t>;
-            constexpr auto dst_shape = meta::fixed_ndarray_shape_v<return_t>;
-            static_assert (utils::isequal(src_shape,dst_shape)
-                , "mismatched shape for cast"
-            );
-        }
-        using element_t = meta::get_element_type_t<return_t>;
-        auto ret_view = view::mutable_flatten(ret);
-        auto arr_view = view::flatten(array);
-        auto n = vector_size(arr_view);
-        cast_impl<element_t>(ret_view,arr_view,n);
-        return ret;
     } // cast
 } // namespace nmtools
 
