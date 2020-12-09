@@ -29,6 +29,7 @@ fi
 ## assuming this script is located in root/scripts & build directory in root/scripts
 $BUILD_DIR/tests/numeric-tests
 $BUILD_DIR/tests/numeric-tests-doctest
+$BUILD_DIR/tests/numeric-tests-doctest-meta
 
 gcovr -r $DIR/../include/ $BUILD_DIR --html-details=build/nmtools-coverage.html && \
     rm -rf "*.cpp.gcov"
