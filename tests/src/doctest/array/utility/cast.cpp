@@ -122,7 +122,7 @@ TEST_CASE("cast<float>(dynamic_ndarray)" * doctest::test_suite("cast"))
     using src_t = na::dynamic_ndarray<double>;
     using dst_t = float;
     using expected_t = na::dynamic_ndarray<dst_t>;
-    auto src = src_t({1,2,3,4,5});
+    auto src = src_t({1.,2.,3.,4.,5.});
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
     NMTOOLS_ASSERT_CLOSE( res, src );
@@ -275,8 +275,8 @@ TEST_CASE("cast<float>(dynamic_ndarray[2])" * doctest::test_suite("cast"))
     using dst_t = float;
     using expected_t = na::dynamic_ndarray<dst_t>;
     auto src = src_t({
-        {1,2,3},
-        {4,5,6},
+        {1.,2.,3.},
+        {4.,5.,6.},
     });
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
@@ -407,10 +407,10 @@ TEST_CASE("cast<float>(dynamic_ndarray[3])" * doctest::test_suite("cast"))
     using expected_t = na::dynamic_ndarray<dst_t>;
     auto src = src_t({
         {
-            {1,2,3}
+            {1.,2.,3.}
         },
         {
-            {4,5,6}
+            {4.,5.,6.}
         },
     });
     auto res = nm::cast<dst_t>(src);
