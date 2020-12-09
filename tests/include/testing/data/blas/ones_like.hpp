@@ -21,7 +21,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, ones_like)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,5,5);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1) {
-        constexpr inline auto x = cast(o5x5<double>);
+        constexpr inline auto x = cast<double>(o5x5<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2) {
@@ -30,7 +30,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, ones_like)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,10,10);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2) {
-        constexpr inline auto x = cast(o10x10<double>);
+        constexpr inline auto x = cast<double>(o10x10<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3) {
@@ -39,7 +39,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, ones_like)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,15,15);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3) {
-        constexpr inline auto x = cast(o15x15<double>);
+        constexpr inline auto x = cast<double>(o15x15<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4) {
@@ -48,7 +48,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, ones_like)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,20,20);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4) {
-        constexpr inline auto x = cast(o20x20<double>);
+        constexpr inline auto x = cast<double>(o20x20<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5) {
@@ -57,7 +57,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, ones_like)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,25,25);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5) {
-        constexpr inline auto x = cast(o25x25<double>);
+        constexpr inline auto x = cast<double>(o25x25<double>);
     }
 }
 

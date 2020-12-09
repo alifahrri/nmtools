@@ -46,7 +46,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, mvmul)
          * @brief identity matrix multiplied with any vector returns the vector itself;
          * 
          */
-        constexpr auto x = cast(v3<double>);
+        constexpr auto x = cast<double>(v3<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2) {
@@ -63,7 +63,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, mvmul)
          * @brief identity matrix multiplied with any vector returns the vector itself;
          * 
          */
-        constexpr auto x = cast(v5<double>);
+        constexpr auto x = cast<double>(v5<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3) {
@@ -80,7 +80,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, mvmul)
          * @brief identity matrix multiplied with any vector returns the vector itself;
          * 
          */
-        constexpr auto x = cast(v10<double>);
+        constexpr auto x = cast<double>(v10<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4) {
@@ -97,7 +97,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, mvmul)
          * @brief identity matrix multiplied with any vector returns the vector itself;
          * 
          */
-        constexpr auto x = cast(v15<double>);
+        constexpr auto x = cast<double>(v15<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5) {
@@ -114,7 +114,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, mvmul)
          * @brief identity matrix multiplied with any vector returns the vector itself;
          * 
          */
-        constexpr auto x = cast(v20<double>);
+        constexpr auto x = cast<double>(v20<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6) {
@@ -131,7 +131,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas, mvmul)
          * @brief identity matrix multiplied with any vector returns the vector itself;
          * 
          */
-        constexpr auto x = cast(v25<double>);
+        constexpr auto x = cast<double>(v25<double>);
     }
 }
 

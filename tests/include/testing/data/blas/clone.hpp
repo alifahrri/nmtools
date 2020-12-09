@@ -23,7 +23,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,clone)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,5,5);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1) {
-        constexpr inline auto res = cast(magic::m5x5<double>);
+        constexpr inline auto res = cast<double>(magic::m5x5<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2) {
@@ -33,7 +33,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,clone)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,10,10);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2) {
-        constexpr inline auto res = cast(magic::m10x10<double>);
+        constexpr inline auto res = cast<double>(magic::m10x10<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3) {
@@ -43,7 +43,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,clone)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,15,15);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3) {
-        constexpr inline auto res = cast(magic::m15x15<double>);
+        constexpr inline auto res = cast<double>(magic::m15x15<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4) {
@@ -53,7 +53,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,clone)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,20,20);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4) {
-        constexpr inline auto res = cast(magic::m20x20<double>);
+        constexpr inline auto res = cast<double>(magic::m20x20<double>);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5) {
@@ -63,7 +63,7 @@ NMTOOLS_TESTING_DECLARE_CASE(blas,clone)
         NMTOOLS_TESTING_DATA_DECLARE_MAT(x,25,25);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5) {
-        constexpr inline auto res = cast(magic::m25x25<double>);
+        constexpr inline auto res = cast<double>(magic::m25x25<double>);
     }
 }
 
