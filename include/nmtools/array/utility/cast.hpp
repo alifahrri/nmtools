@@ -22,6 +22,30 @@ namespace nmtools
     } // namespace detail
 
     /**
+     * @brief tag to resolve return type of cast op
+     * 
+     */
+    struct cast_t {};
+    
+    /**
+     * @brief specialization for cast_t tag
+     * 
+     * @tparam dst_t destination type
+     * @tparam src_t source type
+     */
+    template <typename dst_t, typename src_t>
+    struct meta::resolve_optype<void,cast_t,dst_t,src_t>
+    {
+        using source_t = meta::transform_bounded_array_t<src_t>;
+        using array_type = std::conditional_t<
+            std::is_arithmetic_v<dst_t>,
+            meta::replace_element_type_t<source_t,dst_t>,
+            dst_t
+        >;
+        using type = meta::transform_bounded_array_t<array_type>;
+    }; // resolve_optype
+
+    /**
      * @brief cast array of type srt_t to array of type dst_t
      * 
      * @tparam dst_t destination type
@@ -33,23 +57,24 @@ namespace nmtools
     constexpr auto cast(const src_t& array)
     {
         static_assert (meta::is_ndarray_v<src_t>);
-        static_assert (meta::is_ndarray_v<dst_t>);
+        static_assert (meta::is_ndarray_v<dst_t> || std::is_arithmetic_v<dst_t>);
 
         using detail::cast_impl;
+        using return_t = meta::resolve_optype_t<cast_t,dst_t,src_t>;
 
-        auto ret = dst_t{};
-        if constexpr (meta::is_resizeable_v<dst_t>) {
+        auto ret = return_t{};
+        if constexpr (meta::is_resizeable_v<return_t>) {
             auto shape = ::nmtools::shape(array);
             ret = detail::apply_resize(ret, shape);
         }
-        else if constexpr (meta::is_fixed_size_ndarray_v<dst_t> && meta::is_fixed_size_ndarray_v<src_t>) {
+        else if constexpr (meta::is_fixed_size_ndarray_v<return_t> && meta::is_fixed_size_ndarray_v<src_t>) {
             constexpr auto src_shape = meta::fixed_ndarray_shape_v<src_t>;
-            constexpr auto dst_shape = meta::fixed_ndarray_shape_v<dst_t>;
+            constexpr auto dst_shape = meta::fixed_ndarray_shape_v<return_t>;
             static_assert (utils::isequal(src_shape,dst_shape)
                 , "mismatched shape for cast"
             );
         }
-        using element_t = meta::get_element_type_t<dst_t>;
+        using element_t = meta::get_element_type_t<return_t>;
         auto ret_view = view::mutable_flatten(ret);
         auto arr_view = view::flatten(array);
         auto n = vector_size(arr_view);
