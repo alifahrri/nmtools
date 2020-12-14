@@ -277,15 +277,16 @@ namespace nmtools::view
 namespace nmtools
 {
     /**
-     * @brief sfinae-enabled specialization for matrix_size
+     * @brief sfinae-enabled matrix_size specialization for view type
      * 
-     * @tparam T view type
-     * @param t view matrix
-     * @return std::enable_if_t<view::is_view_v<T> && meta::is_array2d_v<T>,std::pair<size_t,size_t>> 
+     * @tparam view_t underlying view class template
+     * @tparam Ts arguments to view_t
+     * @param t 
+     * @return std::enable_if_t<meta::is_array2d_v<view::decorator_t<view_t,Ts...>>,std::pair<size_t,size_t>> 
      */
-    template <typename T>
-    constexpr auto matrix_size(const T& t)
-        -> std::enable_if_t<view::is_view_v<T> && meta::is_array2d_v<T>,std::pair<size_t,size_t>>
+    template <template<typename...> typename view_t, typename...Ts>
+    constexpr auto matrix_size(const view::decorator_t<view_t,Ts...>& t)
+        -> std::enable_if_t<meta::is_array2d_v<view::decorator_t<view_t,Ts...>>,std::pair<size_t,size_t>>
     {
         auto [rows, cols] = t.shape();
         return {rows,cols};
