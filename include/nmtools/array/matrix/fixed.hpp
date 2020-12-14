@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/meta.hpp" // meta::fixed_matrix_size etc.
+#include "nmtools/array/ndarray/fixed.hpp"
 
 #include <array>
 #include <tuple>
@@ -32,7 +33,7 @@ namespace nmtools::array {
     template <typename T, size_t Rows, size_t Cols>
     struct fixed_matrix
     {
-        using data_type = std::array<T,Rows*Cols>;
+        using data_type = meta::make_nested_raw_array_t<T,Rows,Cols>;
         using value_type = T;
         using size_type = size_t;
         using reference = value_type&;
@@ -45,14 +46,6 @@ namespace nmtools::array {
          */
         data_type data;
 
-        constexpr fixed_matrix () : data({}) {}
-
-        constexpr fixed_matrix (T (&&a)[Rows][Cols])
-        {
-            using nested_t = meta::make_nested_raw_array_t<T,Rows,Cols>;
-            this->template operator=<nested_t>(std::forward<nested_t>(a));
-        }
-
         /**
          * @brief access element at (row,col)-th index
          * 
@@ -62,7 +55,7 @@ namespace nmtools::array {
          */
         constexpr reference operator()(size_type row, size_type col)
         {
-            return data[row*Cols+col];
+            return data[row][col];
         } // operator()(size_type,size_type)
 
         /**
@@ -74,7 +67,7 @@ namespace nmtools::array {
          */
         constexpr const_reference operator()(size_type row, size_type col) const
         {
-            return data[row*Cols+col];
+            return data[row][col];
         } // operator()(size_type,size_type)
 
         /**
@@ -87,7 +80,8 @@ namespace nmtools::array {
         template <size_type row, size_type col>
         constexpr const_reference operator()() const
         {
-            return data[row*Cols+col];
+            static_assert ((row < Rows) && (col < Cols), "out of bound access to fixed_matrix");
+            return data[row][col];
         } // operator()<size_type,size_type>()
 
         /**
@@ -149,6 +143,9 @@ namespace nmtools::array {
             return this->template operator=<nested_t>(std::forward<nested_t>(rhs));
         } // operator=
     }; // struct fixed_matrix
+
+    template <typename T, size_t Rows, size_t Cols>
+    fixed_matrix(T (&&)[Rows][Cols]) -> fixed_matrix<T,Rows,Cols>;
     
     /**
      * @brief helper traits to check if given type is array::fixed_matrix,
@@ -202,25 +199,6 @@ namespace nmtools
     } // constexpr auto matrix_size
 
     /** @} */ // end group utility
-
-    /**
-     * @brief 
-     * 
-     * @tparam T 
-     * @tparam Rows 
-     * @tparam Cols 
-     * @param M 
-     * @param r 
-     * @return constexpr auto 
-     * @todo dont specialize, use generic + metafunction instead
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    constexpr auto row(const array::fixed_matrix<T,Rows,Cols>& M, size_t r)
-    {
-        using array_t = std::array<T,Cols>;
-        using indices_t = std::make_index_sequence<Cols>;
-        return array::detail::make_array<array_t>(M.data, indices_t{}, r*Cols);
-    } // constexpr auto row
 
     /* TODO: consider to move to meta */
     /**
@@ -379,7 +357,16 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
-#include "nmtools/array/utility/clone.hpp" // clone_impl
+#include "nmtools/array/utility/row.hpp" // clone_impl
+
+namespace nmtools
+{
+    template <typename T, size_t Rows, size_t Cols>
+    struct meta::resolve_optype<void,row_t,array::fixed_matrix<T,Rows,Cols>>
+    {
+        using type = array::fixed_vector<T,Cols>;
+    }; // resolve_optype
+} // namespace nmtools
 
 namespace nmtools::array
 {
