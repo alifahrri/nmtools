@@ -17,12 +17,12 @@ using mat2x2_t = std::array<vec2_t,2>;
 
 TEST(fixed_array_linalg, forward_elimination)
 {
-    auto A = fixed_matrix<double,3,3>({
+    auto A = fixed_matrix<double,3,3>{{
         {3., -0.1, -0.2},
         {0.1, 7, -0.3},
         {0.3, -0.2, 10}
-    });
-    auto b = fixed_vector<double,3>({7.85, -19.3, 71.4});
+    }};
+    auto b = fixed_vector<double,3>{{7.85, -19.3, 71.4}};
     auto expected_A = mat3x3_t{
         vec3_t{3., -0.1, -0.2},
         vec3_t{0.0, 7.00333, -0.29333},
@@ -39,12 +39,12 @@ TEST(fixed_array_linalg, forward_elimination)
 
 TEST(fixed_array_linalg, backward_substitution)
 {
-    auto A = fixed_matrix<double,3,3>({
+    auto A = fixed_matrix<double,3,3>{{
         {3., -0.1, -0.2},
         {0.0, 7.00333, -0.29333},
         {0.0, 0.0, 10.0120}
-    });
-    auto b = fixed_vector<double,3>({ 7.85, -19.5617, 70.0843 });
+    }};
+    auto b = fixed_vector<double,3>{{ 7.85, -19.5617, 70.0843 }};
     auto expected_x = vec3_t{ 3., -2.5, 7.};
     {
         auto x = nmt::linalg::backward_substitution(A,b);
@@ -54,12 +54,12 @@ TEST(fixed_array_linalg, backward_substitution)
 
 TEST(fixed_array_linalg, naive_gauss_elimination)
 {
-    auto A = fixed_matrix<double,3,3>({
+    auto A = fixed_matrix<double,3,3>{{
         {3., -0.1, -0.2},
         {0.1, 7, -0.3},
         {0.3, -0.2, 10}
-    });
-    auto b = fixed_vector<double,3>({7.85, -19.3, 71.4});
+    }};
+    auto b = fixed_vector<double,3>{{7.85, -19.3, 71.4}};
     auto expected_x = vec3_t{ 3., -2.5, 7.};
     {
         auto x = nmt::linalg::naive_gauss_elimination(A,b);
@@ -69,11 +69,11 @@ TEST(fixed_array_linalg, naive_gauss_elimination)
 
 TEST(fixed_array_linalg, partial_pivot)
 {
-    auto A = fixed_matrix<double,2,2>({
+    auto A = fixed_matrix<double,2,2>{{
         {3e-3, 3e+0},
         {1e+0, 1e+0},
-    });
-    auto b = fixed_vector<double,2>({ 2.0001, 1.0000 });
+    }};
+    auto b = fixed_vector<double,2>{{ 2.0001, 1.0000 }};
     auto row = int{0};
     auto expected_A = mat2x2_t{{
         {1e+0, 1e+0},
@@ -94,10 +94,10 @@ TEST(fixed_array_linalg, partial_pivot)
 
 TEST(fixed_array_linalg, gauss_elimination)
 {
-    auto A = fixed_matrix<double,2,2>({
+    auto A = fixed_matrix<double,2,2>{{
         {2e+0, 1e+5},
         {1e+0, 1e+0},
-    });
+    }};
     auto b = fixed_vector<double,2>({ 1e+5 + 2, 2e+0 });
     auto expected_x = vec2_t{ 1.0, 1.0 };
     {
@@ -108,9 +108,9 @@ TEST(fixed_array_linalg, gauss_elimination)
 
 TEST(fixed_array_linalg, tridiagonal_decomposition)
 {
-    auto e = fixed_vector<double,4>({0, -1, -1, -1});
-    auto f = fixed_vector<double,4>({2.04, 2.04, 2.04, 2.04});
-    auto g = fixed_vector<double,4>({-1, -1, -1, 0});
+    auto e = fixed_vector<double,4>{{0, -1, -1, -1}};
+    auto f = fixed_vector<double,4>{{2.04, 2.04, 2.04, 2.04}};
+    auto g = fixed_vector<double,4>{{-1, -1, -1, 0}};
     auto expected_l = std::array<double,4>{0, -0.4901, -0.6452, -0.7169};
     auto expected_u = std::array<double,4>{2.04, 1.5498, 1.3947, 1.3230};
     {
@@ -125,8 +125,8 @@ TEST(fixed_array_linalg, tridiagonal_decomposition)
 
 TEST(fixed_array_linalg, tridiagonal_substitution)
 {
-    auto e = fixed_vector<double,4>({0, -0.49, -0.645, -0.717});
-    auto r = fixed_vector<double,4>({40.8, 0.8, 0.8, 200.8});
+    auto e = fixed_vector<double,4>{{0, -0.49, -0.645, -0.717}};
+    auto r = fixed_vector<double,4>{{40.8, 0.8, 0.8, 200.8}};
     auto expected_d = std::array<double,4>{40.8, 20.792, 14.210, 210.989};
     /* test with array container at runtime */
     {
@@ -139,9 +139,9 @@ TEST(fixed_array_linalg, tridiagonal_substitution)
 
 TEST(fixed_array_linalg, tridiagonal_backward)
 {
-    auto u = fixed_vector<double,4>({2.04, 1.550, 1.395, 1.323});
-    auto d = fixed_vector<double,4>({40.8, 20.792, 14.210, 210.989});
-    auto g = fixed_vector<double,4>({-1, -1, -1, 0});
+    auto u = fixed_vector<double,4>{{2.04, 1.550, 1.395, 1.323}};
+    auto d = fixed_vector<double,4>{{40.8, 20.792, 14.210, 210.989}};
+    auto g = fixed_vector<double,4>{{-1, -1, -1, 0}};
     auto expected_x = std::array<double,4>{65.9517, 93.7415, 124.507, 159.478};
     /* test with array container at runtime */
     {
@@ -154,10 +154,10 @@ TEST(fixed_array_linalg, tridiagonal_backward)
 
 TEST(fixed_array_linalg, tridiagonal_elimination)
 {
-    auto e = fixed_vector<double,4>({0, -1, -1, -1});
-    auto f = fixed_vector<double,4>({2.04, 2.04, 2.04, 2.04});
-    auto g = fixed_vector<double,4>({-1, -1, -1, 0});
-    auto b = fixed_vector<double,4>({40.8, 0.8, 0.8, 200.8});
+    auto e = fixed_vector<double,4>{{0, -1, -1, -1}};
+    auto f = fixed_vector<double,4>{{2.04, 2.04, 2.04, 2.04}};
+    auto g = fixed_vector<double,4>{{-1, -1, -1, 0}};
+    auto b = fixed_vector<double,4>{{40.8, 0.8, 0.8, 200.8}};
     auto expected_x = std::array<double,4>{65.9698, 93.7778, 124.538, 159.480};
     /* test with array container at runtime */
     {
@@ -170,11 +170,11 @@ TEST(fixed_array_linalg, tridiagonal_elimination)
 
 TEST(fixed_array_linalg, lu_decomposition)
 {
-    auto A = fixed_matrix<double,3,3>({
+    auto A = fixed_matrix<double,3,3>{{
         {3., -0.1, -0.2},
         {0.1, 7, -0.3},
         {0.3, -0.2, 10},
-    });
+    }};
     auto expected_U = mat3x3_t{{
         {3., -0.1, -0.2},
         {0.0, 7.00333, -0.29333},
@@ -195,11 +195,11 @@ TEST(fixed_array_linalg, lu_decomposition)
 
 TEST(fixed_array_linalg, substitution)
 {
-    auto L = fixed_matrix<double,3,3>({
+    auto L = fixed_matrix<double,3,3>{{
         {1., 0., 0.},
         {0.033333, 1.0, 0.},
         {0.1, -0.02713, 1.0,}
-    });
+    }};
     auto b = vec3_t{7.85, -19.3, 71.4};
     auto expected_d = vec3_t{ 7.85, -19.5617, 70.0843 };
     /* test with array container at runtime */
@@ -211,11 +211,11 @@ TEST(fixed_array_linalg, substitution)
 
 TEST(fixed_array_linalg, inverse)
 {
-    auto A = fixed_matrix<double,3,3>({
+    auto A = fixed_matrix<double,3,3>{{
         {3., -0.1, -0.2},
         {0.1, 7, -0.3},
         {0.3, -0.2, 10},
-    });
+    }};
     auto inverse_A = mat3x3_t{{
         { 0.33249, 0.004944, 0.006798},
         {-0.00518, 0.142903, 0.004183},
@@ -229,11 +229,11 @@ TEST(fixed_array_linalg, inverse)
 
 TEST(fixed_array_linalg, cholesky_decomposition)
 {
-    auto A = fixed_matrix<double,3,3>({
+    auto A = fixed_matrix<double,3,3>{{
          {6,  15,  55},
         {15,  55, 225},
         {55, 225, 979},
-    });
+    }};
     auto expected_L = mat3x3_t{{
         {2.44949, 0      , 0},
         {6.12372, 4.1833 , 0},
