@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/meta.hpp" // meta::fixed_matrix_size etc.
+#include "nmtools/array/utility/at.hpp"
 
 #include <array>
 #include <tuple>
