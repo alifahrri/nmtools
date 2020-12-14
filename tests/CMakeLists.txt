@@ -71,8 +71,24 @@ add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
 ## may use scripts/install_doctest.sh to install
 find_package(doctest REQUIRED)
 
-add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp 
-    ## blas module
+option(TEST_ALL             "test all modules"              ON)
+option(TEST_BLAS            "test blas modules"             OFF)
+option(TEST_ARRAY_DETAIL    "test array detail modules"     OFF)
+option(TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
+option(TEST_UTILS           "test utils modules"            OFF)
+option(TEST_NDARRAY         "test ndarray modules"          OFF)
+option(TEST_ARRAY_VIEW      "test array view modules"       OFF)
+
+if (TEST_ALL)
+    SET(TEST_BLAS           ON CACHE BOOL "test blas modules"           FORCE)
+    SET(TEST_ARRAY_DETAIL   ON CACHE BOOL "test array detail modules"   FORCE)
+    SET(TEST_ARRAY_UTILITY  ON CACHE BOOL "test array utility modules"  FORCE)
+    SET(TEST_UTILS          ON CACHE BOOL "test utils modules"          FORCE)
+    SET(TEST_NDARRAY        ON CACHE BOOL "test ndarray modules"        FORCE)
+    SET(TEST_ARRAY_VIEW     ON CACHE BOOL "test array view modules"     FORCE)
+endif (TEST_ALL)
+
+set(BLAS_TEST_SOURCES
     src/doctest/blas/clone.cpp
     src/doctest/blas/ones_like.cpp
     src/doctest/blas/zeros_like.cpp
@@ -92,15 +108,30 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/blas/mmmul.cpp
     src/doctest/blas/saxpy.cpp
     src/doctest/blas/gaxpy.cpp
-    ## array detail
+)
+if (NOT TEST_BLAS)
+    set(BLAS_TEST_SOURCES "")
+endif ()
+
+set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/detail.cpp
     src/doctest/array/shape.cpp
     src/doctest/array/index.cpp
-    ## utility function
+)
+if (NOT TEST_ARRAY_DETAIL)
+    set(ARRAY_DETAIL_TEST_SOURCES "")
+endif ()
+
+set(UTILS_TEST_SOURCES
     src/doctest/utils/isequal.cpp
     src/doctest/utils/isclose.cpp
     src/doctest/utils/to_string.cpp
-    ## array utility
+)
+if (NOT TEST_UTILS)
+    set(UTILS_TEST_SOURCES "")
+endif ()
+
+set(ARRAY_UTILITY_TEST_SOURCES
     src/doctest/array/utility/at.cpp
     src/doctest/array/utility/apply_at.cpp
     src/doctest/array/utility/cast.cpp
@@ -110,12 +141,23 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/array/utility/slice.cpp
     src/doctest/array/utility/squeeze.cpp
     src/doctest/array/utility/zeros_like.cpp
-    ## ndarray
+)
+if (NOT TEST_ARRAY_UTILITY)
+    set (ARRAY_UTILITY_TEST_SOURCES "")
+endif ()
+
+set(NDARRAY_TEST_SOURCES
+    src/doctest/array/fixed/vector.cpp
     src/doctest/array/fixed/matrix.cpp
     src/doctest/array/dynamic/matrix.cpp
     src/doctest/array/fixed/ndarray.cpp
     src/doctest/array/dynamic/ndarray.cpp
-    ## view
+)
+if (NOT TEST_NDARRAY)
+    set(NDARRAY_TEST_SOURCES "")
+endif ()
+
+set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/ref.cpp
     src/doctest/array/view/ref/initializer_list.cpp
     src/doctest/array/view/mutable_ref.cpp
@@ -124,6 +166,25 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     src/doctest/array/view/transpose.cpp
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/mutable_flatten.cpp
+)
+
+if (NOT TEST_ARRAY_VIEW)
+    set (ARRAY_VIEW_TEST_SOURCES "")
+endif ()
+
+add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp 
+    ## blas module
+    ${BLAS_TEST_SOURCES}
+    ## array detail
+    ${ARRAY_DETAIL_TEST_SOURCES}
+    ## utility function
+    ${UTILS_TEST_SOURCES}
+    ## array utility
+    ${ARRAY_UTILITY_TEST_SOURCES}
+    ## ndarray
+    ${NDARRAY_TEST_SOURCES}
+    ## view
+    ${ARRAY_VIEW_TEST_SOURCES}
 )
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
@@ -141,6 +202,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/blas/mmadd.cpp
     src/doctest/meta/blas/mmmul.cpp
     src/doctest/meta/blas/dot.cpp
+    src/doctest/meta/blas/row.cpp
 )
 target_compile_features(${PROJECT_NAME}-doctest-meta PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME}-doctest-meta PRIVATE doctest::doctest)

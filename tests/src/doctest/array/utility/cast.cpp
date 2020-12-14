@@ -196,10 +196,16 @@ TEST_CASE("cast<float>(fixed_matrix)" * doctest::test_suite("cast"))
     using src_t = na::fixed_matrix<double,2,3>;
     using dst_t = float;
     using expected_t = na::fixed_matrix<dst_t,2,3>;
-    auto src = src_t({
+    // @todo allow this
+    // auto src = src_t{{
+    //     {1,2,3},
+    //     {4,5,6},
+    // }};
+    auto src = src_t{};
+    src = {
         {1,2,3},
         {4,5,6},
-    });
+    };
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
     NMTOOLS_ASSERT_CLOSE( res, src );

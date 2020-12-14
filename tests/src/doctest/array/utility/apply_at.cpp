@@ -261,11 +261,18 @@ TEST_CASE("apply_at(fixed_matrix<>)" * doctest::test_suite("utility"))
     using nm::array::fixed_matrix;
     {
         // fixed_matrix<double,3,2>
-        auto a = fixed_matrix({
+        // @todo allow this
+        // auto a = fixed_matrix<double,3,2>{{
+        //     {1,2},
+        //     {3,4},
+        //     {5,6}
+        // }};
+        auto a = fixed_matrix<double,3,2>{};
+        a = {
             {1,2},
             {3,4},
             {5,6}
-        });
+        };
         {
             auto indices = tuple{0,1};
             auto res = nm::apply_at(a, indices);

@@ -329,10 +329,10 @@ TEST_CASE("flatten(fixed_vector)" * doctest::test_suite("view::flatten"))
 
 TEST_CASE("flatten(fixed_matrix)" * doctest::test_suite("view::flatten"))
 {
-    auto array = fixed_matrix({
+    auto array = fixed_matrix{{
         {1.,2.,3.},
         {3.,4.,5.},
-    });
+    }};
     auto array_ref = view::flatten(array);
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));

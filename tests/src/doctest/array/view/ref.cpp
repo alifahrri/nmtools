@@ -259,10 +259,10 @@ TEST_CASE("ref(fixed_vector)" * doctest::test_suite("view::ref")) // ref with fi
  */
 TEST_CASE("ref(fixed_matrix)" * doctest::test_suite("view::ref")) // ref with fixed_matrix
 {
-    auto array = fixed_matrix({
+    auto array = fixed_matrix{{
         {1.,2.,3.},
         {3.,4.,5.},
-    });
+    }};
     auto array_ref = view::ref(array);
     STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
