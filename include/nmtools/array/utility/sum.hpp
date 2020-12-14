@@ -24,7 +24,8 @@ namespace nmtools
          * @param n number of elements in array a
          * @return constexpr auto 
          */
-        constexpr auto sum_impl(auto& sum, const auto& a, auto n)
+        template <typename return_t, typename array_t, typename size_type>
+        constexpr auto sum_impl(return_t& sum, const array_t& a, size_type n)
         {
             using idx_t = meta::remove_cvref_t<decltype(n)>;
             for (idx_t i=0; i<n; i++)
@@ -39,10 +40,9 @@ namespace nmtools
          * @param cols number of column in array a
          * @return constexpr auto 
          */
-        constexpr auto sum_impl(auto& sum, const auto& a, auto rows, auto cols)
+        template <typename return_t, typename array_t, typename rows_t, typename cols_t>
+        constexpr auto sum_impl(return_t& sum, const array_t& a, rows_t rows, cols_t cols)
         {
-            using rows_t = meta::remove_cvref_t<decltype(rows)>;
-            using cols_t = meta::remove_cvref_t<decltype(cols)>;
             using index_t = std::common_type_t<rows_t,cols_t>;
             for (index_t i=0; i<rows; i++)
                 for (index_t j=0; j<cols; j++)

@@ -25,13 +25,24 @@ include_directories(
 
 add_library(nanobench src/nanobench.cpp)
 
+## add -fconcepts to suppress warnings for auto params
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(BENCHMARK_COMPILE_OPTIONS
+        -O3 -march=native -fconcepts
+    )
+else ()
+    set(BENCHMARK_COMPILE_OPTIONS
+        -O3 -march=native
+    )
+endif ()
+
 add_executable(
     ${PROJECT_NAME}-ode
     src/ode.cpp
 )
 apply_nmtools(
     TARGET ${PROJECT_NAME}-ode
-    COMPILE_OPTIONS -O3 -march=native
+    COMPILE_OPTIONS ${BENCHMARK_COMPILE_OPTIONS}
 )
 target_link_libraries(${PROJECT_NAME}-ode PRIVATE nanobench)
 
@@ -41,7 +52,7 @@ add_executable(
 )
 apply_nmtools(
     TARGET ${PROJECT_NAME}-fibonacci_search
-    COMPILE_OPTIONS -O3 -march=native
+    COMPILE_OPTIONS ${BENCHMARK_COMPILE_OPTIONS}
 )
 target_link_libraries(${PROJECT_NAME}-fibonacci_search PRIVATE nanobench)
 
@@ -54,7 +65,7 @@ else ()
     )
     apply_nmtools(
         TARGET ${PROJECT_NAME}-curvefit
-        COMPILE_OPTIONS -O3 -march=native
+        COMPILE_OPTIONS ${BENCHMARK_COMPILE_OPTIONS}
     )
     target_link_libraries(${PROJECT_NAME}-curvefit PRIVATE nanobench)
 endif ()
@@ -68,7 +79,7 @@ add_executable(
 )
 apply_nmtools(
     TARGET ${PROJECT_NAME}-linalg
-    COMPILE_OPTIONS -O3 -march=native
+    COMPILE_OPTIONS ${BENCHMARK_COMPILE_OPTIONS}
 )
 target_link_libraries(${PROJECT_NAME}-linalg PRIVATE nanobench)
 endif ()
@@ -102,7 +113,7 @@ add_executable(
 )
 apply_nmtools(
     TARGET ${PROJECT_NAME}-blas
-    COMPILE_OPTIONS -O3 -march=native
+    COMPILE_OPTIONS ${BENCHMARK_COMPILE_OPTIONS}
 )
 target_link_libraries(${PROJECT_NAME}-blas PRIVATE nanobench fmt::fmt)
 
@@ -119,7 +130,7 @@ add_executable(
 )
 apply_nmtools(
     TARGET ${PROJECT_NAME}-utility
-    COMPILE_OPTIONS -O3 -march=native
+    COMPILE_OPTIONS ${BENCHMARK_COMPILE_OPTIONS}
 )
 target_link_libraries(${PROJECT_NAME}-utility PRIVATE nanobench fmt::fmt)
 
@@ -129,6 +140,6 @@ add_executable(
 )
 apply_nmtools(
     TARGET ${PROJECT_NAME}
-    COMPILE_OPTIONS -O3 -march=native
+    COMPILE_OPTIONS ${BENCHMARK_COMPILE_OPTIONS}
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE nanobench)

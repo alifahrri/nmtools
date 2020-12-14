@@ -56,7 +56,8 @@ namespace nmtools::blas
     
     namespace detail
     {
-        constexpr auto dot_impl(auto& ret, const auto& v1, const auto& v2, auto n)
+        template <typename return_t, typename a_t, typename b_t, typename size_type>
+        constexpr auto dot_impl(return_t& ret, const a_t& v1, const b_t& v2, size_type n)
         {
             for (size_t i = 0; i < n; i++)
                 ret += at(v1,i) * at(v2,i);

@@ -40,8 +40,8 @@ namespace nmtools
          * @note this may be simply copy the array elements
          * @todo support view
          */
-        template <size_t single_dim, typename row_t, typename col_t>
-        constexpr auto squeeze_impl(auto &squeezed, const auto& array, row_t rows, col_t cols, meta::index_constant<single_dim>)
+        template <size_t single_dim, typename return_t, typename array_t, typename row_t, typename col_t>
+        constexpr auto squeeze_impl(return_t &squeezed, const array_t& array, row_t rows, col_t cols, meta::index_constant<single_dim>)
             -> std::enable_if_t<single_dim==0||single_dim==1>
         {
             using idx_t = remove_cvref_t<common_type_t<row_t,col_t>>;
@@ -70,8 +70,8 @@ namespace nmtools
          * @param single_dim axis which single dimension is detected
          * @return constexpr auto 
          */
-        template <typename size_type, typename row_t, typename col_t>
-        constexpr auto squeeze_impl(auto &squeezed, const auto& array, row_t rows, col_t cols, size_type single_dim)
+        template <typename size_type, typename return_t, typename array_t, typename row_t, typename col_t>
+        constexpr auto squeeze_impl(return_t &squeezed, const array_t& array, row_t rows, col_t cols, size_type single_dim)
         {
             auto numel = [&]()->int{
                 if (single_dim==0) return cols;

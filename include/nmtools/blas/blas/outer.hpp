@@ -31,7 +31,8 @@ namespace nmtools::blas
          * @param n 
          * @return constexpr auto 
          */
-        constexpr auto outer_impl(auto& matrix, const auto& v1, const auto& v2, auto m, auto n)
+        template <typename return_t, typename a_t, typename b_t, typename rows_t, typename cols_t>
+        constexpr auto outer_impl(return_t& matrix, const a_t& v1, const b_t& v2, rows_t m, cols_t n)
         {
             for (size_t i=0; i<m; i++)
                 for (size_t j=0; j<n; j++)

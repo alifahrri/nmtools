@@ -323,8 +323,8 @@ namespace nmtools
          * @see array2d_slice_indices_t
          * @see slice
          */
-        template <typename Array>
-        constexpr auto unpack_slice_indices(const Array& a, auto start, auto stop)
+        template <typename Array, typename start_t, typename stop_t>
+        constexpr auto unpack_slice_indices(const Array& a, start_t start, stop_t stop)
             -> std::enable_if_t<is_array2d_v<Array>, array2d_slice_indices_t>
         {
             // unpack start & stop
@@ -398,12 +398,10 @@ namespace nmtools
          * @param stop compile-time stop index
          * @return std::enable_if_t<!is_array2d_v<Array> && is_array1d_v<Array>,array1d_slice_indices_t> 
          */
-        template <typename Array>
-        constexpr auto unpack_slice_indices(const Array& a, auto start, auto stop)
+        template <typename Array, typename start_t, typename stop_t>
+        constexpr auto unpack_slice_indices(const Array& a, start_t start, stop_t stop)
             -> std::enable_if_t<!is_array2d_v<Array> && is_array1d_v<Array>,array1d_slice_indices_t>
         {
-            using start_t = decltype(start);
-            using stop_t  = decltype(stop);
             auto n = vector_size(a);
             if constexpr (is_integral_constant_v<start_t> && is_same_v<stop_t,end_t>)
                 return std::make_tuple(start(),n);

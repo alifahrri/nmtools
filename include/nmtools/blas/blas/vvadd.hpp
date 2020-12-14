@@ -22,7 +22,8 @@ namespace nmtools::blas
 
     namespace detail
     {
-        constexpr auto vvadd_impl(auto& ret, const auto& a, const auto& b, auto n)
+        template <typename return_t, typename a_t, typename b_t, typename size_type>
+        constexpr auto vvadd_impl(return_t& ret, const a_t& a, const b_t& b, size_type n)
         {
             for (size_t i=0; i<n; i++)
                 at(ret,i) = at(a,i) + at(b,i);

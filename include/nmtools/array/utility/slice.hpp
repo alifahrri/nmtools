@@ -47,11 +47,10 @@ namespace nmtools {
          * @return constexpr auto 
          * @see nmtools::slice
          */
-        constexpr auto slice_impl(auto &x, const auto& v, auto start, auto stop)
+        template <typename return_t, typename array_t, typename start_t, typename stop_t>
+        constexpr auto slice_impl(return_t &x, const array_t& v, start_t start, stop_t stop)
         {
             /* TODO: support step */
-            using start_t = decltype(start);
-            using stop_t  = decltype(stop);
             using idx_t   = remove_cvref_t<common_type_t<start_t,stop_t>>;
             auto n = stop - start;
             auto step = idx_t{1};
@@ -72,13 +71,10 @@ namespace nmtools {
          * @return constexpr auto 
          * @see nmtools::slice
          */
-        constexpr auto slice_impl(auto &x, const auto& m, auto row_start, auto col_start, auto row_stop, auto col_stop)
+        template <typename return_t, typename array_t, typename row_start_t, typename col_start_t, typename row_stop_t, typename col_stop_t>
+        constexpr auto slice_impl(return_t &x, const array_t& m, row_start_t row_start, col_start_t col_start, row_stop_t row_stop, col_stop_t col_stop)
         {
             /* TODO: support step */
-            using row_start_t = decltype(row_start);
-            using row_stop_t  = decltype(row_stop);
-            using col_start_t = decltype(col_start);
-            using col_stop_t  = decltype(col_stop);
             using _idx_t  = common_type_t<row_start_t,row_stop_t,col_start_t,col_stop_t>;
             using idx_t   = remove_cvref_t<_idx_t>;
             auto rows = row_stop - row_start;

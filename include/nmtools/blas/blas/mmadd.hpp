@@ -66,7 +66,8 @@ namespace nmtools::blas
     
     namespace detail
     {
-        constexpr auto mmadd_impl(auto &mat, const auto& A, const auto &B, auto row_a, auto row_b){
+        template <typename return_t, typename a_t, typename b_t, typename row_a_t, typename row_b_t>
+        constexpr auto mmadd_impl(return_t &mat, const a_t& A, const b_t &B, row_a_t row_a, row_b_t row_b){
             for (int i=0; i<row_a; i++)
                 for (int j=0; j<row_b; j++)
                     at(mat,i,j) = at(A,i,j) + at(B,i,j);
