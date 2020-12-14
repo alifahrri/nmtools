@@ -56,14 +56,6 @@ namespace nmtools::array {
          */
         data_type data;
 
-        constexpr fixed_vector() : data() {}
-
-        explicit constexpr fixed_vector(T (&&a)[N])
-        {
-            for (size_t i=0; i<N; i++)
-                data[i] = at(a, i);
-        }
-
         /**
          * @brief access element at i-th index
          * 
@@ -109,6 +101,9 @@ namespace nmtools::array {
             return *this;
         } // operator=
     }; // struct fixed_vector
+
+    template <typename T, size_t N>
+    fixed_vector(T(&&a)[N]) -> fixed_vector<T,N>;
 
     /**
      * @brief make fixed_vector can be used with range-based for loop
