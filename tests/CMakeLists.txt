@@ -66,6 +66,12 @@ add_executable(${PROJECT_NAME} src/gtest/tests.cpp
     ${GTEST_SOURCE}
 )
 
+## defer static check to runtime for clang
+## since constexpr math not supported
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_definitions(-DDEFER_STATIC_CHECK)
+endif ()
+
 ## disable benchmarks
 add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
 ## may use scripts/install_doctest.sh to install
