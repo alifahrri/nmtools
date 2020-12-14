@@ -31,10 +31,16 @@ namespace nmtools
      * 
      * @tparam Matrix matrix-like
      * @param M matrix to check
-     * @return std::pair<size_t,size_t> row-col pair
+     * @return std::enable_if_t<meta::is_nested_array2d_v<Matrix> || meta::is_fixed_size_matrix_v<Matrix>,std::pair<size_t,size_t>> 
+     * @todo remove, prefer shape
      */
     template <typename Matrix>
-    constexpr auto matrix_size(const Matrix& M) -> std::enable_if_t<meta::is_nested_array2d_v<Matrix>,std::pair<size_t,size_t>>
+    constexpr auto matrix_size(const Matrix& M) 
+        -> std::enable_if_t<
+            meta::is_nested_array2d_v<Matrix>
+            || meta::is_fixed_size_matrix_v<Matrix>
+            || meta::has_shape_v<Matrix>
+            , std::pair<size_t,size_t> >
     {
         static_assert(
             meta::is_array2d_v<Matrix>
@@ -42,7 +48,17 @@ namespace nmtools
         );
         /* TODO: check all size for each rows. 
         Nested vector container may have different size at axis 0 */
-        return std::make_pair(size(M), size(at(M,0)));
+        if constexpr (meta::is_fixed_size_matrix_v<Matrix>)
+        {
+            auto [rows, cols] = meta::fixed_matrix_size_v<Matrix>;
+            return {rows, cols};
+        }
+        else if constexpr (meta::has_shape_v<Matrix>)
+        {
+            auto [rows, cols] = M.shape();
+            return {rows, cols};
+        }
+        else return std::pair{size(M), size(at(M,0))};
     } // std::pair<size_t,size_t> matrix_size(const Matrix& M)
 
     /**
@@ -52,6 +68,7 @@ namespace nmtools
      * @tparam Vector vector-like
      * @param v vector to check
      * @return size_t 
+     * @todo remove, prefer shape
      */
     template <typename Vector>
     constexpr auto vector_size(const Vector& v)
