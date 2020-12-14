@@ -58,8 +58,8 @@ namespace nmtools::blas
 
     namespace detail
     {
-        template <typename common_t>
-        constexpr auto mmmul_impl(auto& mat, const auto& A, const auto &B, auto row_a, auto col_a, auto col_b) {
+        template <typename common_t, typename return_t, typename a_t, typename b_t, typename row_a_t, typename col_a_t, typename col_b_t>
+        constexpr auto mmmul_impl(return_t& mat, const a_t& A, const b_t &B, row_a_t row_a, col_a_t col_a, col_b_t col_b) {
             for (int i=0; i<row_a; i++) {
                 for (int j=0; j<col_b; j++) {
                     auto sum = static_cast<common_t>(0);

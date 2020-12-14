@@ -18,8 +18,8 @@ namespace nmtools::blas
 {
     namespace detail
     {
-        template <typename common_t>
-        constexpr auto mvmul_impl(auto& ret, const auto& m, const auto& v, auto mrows, auto mcols)
+        template <typename common_t, typename return_t, typename matrix_t, typename vector_t, typename rows_t, typename cols_t>
+        constexpr auto mvmul_impl(return_t& ret, const matrix_t& m, const vector_t& v, rows_t mrows, cols_t mcols)
         {
             for (size_t i=0; i<mrows; i++)
             {

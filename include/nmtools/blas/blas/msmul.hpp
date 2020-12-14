@@ -23,7 +23,8 @@ namespace nmtools::blas
 
     namespace detail
     {
-        constexpr auto msmul_impl(auto& ret, const auto& m, const auto& s, auto rows, auto cols)
+        template <typename return_t, typename array_t, typename scalar_t, typename rows_t, typename cols_t>
+        constexpr auto msmul_impl(return_t& ret, const array_t& m, const scalar_t& s, rows_t rows, cols_t cols)
         {
             for (size_t i=0; i<rows; i++) {
                 /* NOTE: cant use vsmul for now since

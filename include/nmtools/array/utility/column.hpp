@@ -40,7 +40,8 @@ namespace nmtools
          * @param rows 
          * @return constexpr auto 
          */
-        constexpr auto column_impl(auto &col, const auto& M, size_t c, size_t rows)
+        template <typename return_t, typename matrix_t, typename col_t, typename rows_t> 
+        constexpr auto column_impl(return_t &col, const matrix_t& M, col_t c, rows_t rows)
         {
             for (size_t i=0; i<rows; i++)
                 at(col,i) = at(M,i,c);
