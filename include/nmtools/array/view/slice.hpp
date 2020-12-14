@@ -331,10 +331,8 @@ namespace nmtools::view
          * 
          */
         constexpr slice_t(array_type array, start_t start, stop_t stop)
-            : array(array), start(start), stop(stop)
-        {
-            offset = detail::offset(array,start,stop);
-        } // slice_t
+            : array(array), start(start), stop(stop), offset(detail::offset(array,start,stop))
+        {} // slice_t
 
         /**
          * @brief return the shape of dst (sliced) array

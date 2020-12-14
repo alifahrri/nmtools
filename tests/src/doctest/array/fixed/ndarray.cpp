@@ -85,6 +85,60 @@ TEST_CASE("fixed_ndarray[2,3,2]")
     }
 }
 
+TEST_CASE("fixed_ndarray[2,3,2]")
+{
+    // @note that the first angle bracket are for aggregate initialization
+    constexpr auto ndarray = fixed_ndarray{{
+        {
+            {0,1},
+            {2,3},
+            {4,5},
+        },
+        {
+            {6,7},
+            {8,9},
+            {10,11},
+        },
+    }};
+    CHECK(ndarray.dim()==3);
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (std::array{2,3,2}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{6,2,1}) );
+    {
+        constexpr double expected[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            },
+        };
+        STATIC_CHECK( isclose(ndarray, expected) );
+    }
+    // @note should fail
+    {
+        // ndarray = {
+        //     {
+        //         {{0},{1}},
+        //         {{2},{3}},
+        //         {{4},{5}},
+        //     },
+        //     {
+        //         {{6},{7}},
+        //         {{8},{9}},
+        //         {{10},{11}},
+        //     },
+        // };
+        // no matching calls
+        // ndarray = 1;
+        // static assertion failed: unsupported dim for fixed_ndarray assignment
+        // ndarray = std::array{1,2,3,4};
+    }
+}
+
 TEST_CASE("fixed_ndarray[2,3,1]")
 {
     constexpr auto ndarray = fixed_ndarray{

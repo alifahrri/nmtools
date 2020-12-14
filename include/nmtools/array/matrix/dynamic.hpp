@@ -96,6 +96,7 @@ namespace nmtools::array
          * @brief return the number of rows
          * 
          * @return constexpr size_type 
+         * @todo remove
          */
         constexpr size_type size() const noexcept
         {
@@ -167,17 +168,6 @@ namespace nmtools::array
 
 namespace nmtools
 {
-    template <typename T>
-    auto row(const array::dynamic_matrix<T>& M, size_t r)
-    {
-        using return_t = std::vector<T>;
-        auto [rows, cols] = M.shape();
-        auto ret = return_t(cols);
-        for (size_t i=0; i<cols; i++)
-            ret[i] = M(r,i);
-        return ret;
-    }
-
     /**
      * @brief specialization of matrix_size for dynamic_matrix
      * 
@@ -261,6 +251,16 @@ namespace nmtools::meta
 // include here so that dynamic vector_size and matrix_size visible
 #include "nmtools/array/matrix/fixed.hpp"
 #include "nmtools/array/vector/dynamic.hpp"
+#include "nmtools/array/utility/row.hpp" // clone_impl
+
+namespace nmtools
+{
+    template <typename T>
+    struct meta::resolve_optype<void,row_t,array::dynamic_matrix<T>>
+    {
+        using type = array::dynamic_vector<T>;
+    }; // resolve_optype
+} // namespace nmtools
 
 namespace nmtools::meta
 {

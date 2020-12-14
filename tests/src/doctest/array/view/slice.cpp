@@ -21,6 +21,7 @@
 #include <array>
 #include <vector>
 
+namespace nm = nmtools;
 namespace view = nmtools::view;
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
@@ -234,8 +235,6 @@ TEST_CASE("slice(std::vector[2])"*doctest::test_suite("view::slice"))
     }
 }
 
-namespace nm = nmtools;
-
 /**
  * @test test case for const slice view to fixed_vector
  */
@@ -302,6 +301,39 @@ TEST_CASE("slice(fixed_matrix)"*doctest::test_suite("view::ref")) // slice with 
             std::array{7.,4.},
             std::array{4.,5.},
         };
+        CHECK( isclose(array_ref,expected) );
+    }
+
+    {
+        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+}
+
+TEST_CASE("slice(std::array[2])"*doctest::test_suite("view::slice"))
+{
+    auto array = std::array{
+        std::array{1.,2.,3.},
+        std::array{3.,4.,5.},
+    };
+    // @note only support tuple for now, cant be pair
+    auto array_ref = view::slice(array, std::tuple{1,0}, std::tuple{nm::end,nm::end});
+    // @note even if the referenced array is fixed-size (std::array), the slice args are not!
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+
+    CHECK( array_ref.dim()==2 );
+    CHECK( isequal(array_ref.shape(),std::array{1,3}) );
+    CHECK( isequal(nm::shape(array_ref),std::array{1,3}));
+
+    {
+        double expected[1][3] = {{3.,4.,5.}};
+        CHECK( isclose(array_ref,expected) );
+    }
+    {
+        nmtools::at(array,0,1) = 6;
+        double expected[1][3] = {{3.,4.,5.}};
         CHECK( isclose(array_ref,expected) );
     }
 
