@@ -599,7 +599,31 @@ namespace nmtools::meta {
          */
         template <typename T, typename size_type>
         using square_bracket = decltype(std::declval<T>()[std::declval<size_type>()]);
+
+        /**
+         * @brief helper alias template to check if T has member type 'type'
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using type = typename T::type;
     } // namespace expr
+
+    /**
+     * @brief check if type T has member type 'type'
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct has_type : detail::expression_check<void,expr::type,T> {};
+
+    /**
+     * @brief helper variable template to check if type T has member type 'type'
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    inline constexpr bool has_type_v = has_type<T>::value;
 
     /**
      * @brief check if type T can be indexed.
