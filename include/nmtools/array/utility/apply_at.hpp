@@ -12,6 +12,7 @@
 #ifndef NMTOOLS_ARRAY_UTILITY_APPLY_AT_HPP
 #define NMTOOLS_ARRAY_UTILITY_APPLY_AT_HPP
 
+#include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 
 #include <utility>
@@ -50,16 +51,12 @@ namespace nmtools
     template <typename array_t, typename indices_t>
     constexpr decltype(auto) apply_at(array_t&& array, const indices_t& indices)
     {
-        static_assert (meta::has_tuple_size_v<indices_t> || meta::has_atnd_v<array_t,indices_t>
-            , "unsupported indices for apply_at, expects tuple_size_v<indices_t> or array.at(indices) is well-formed"
-        );
         if constexpr (meta::has_tuple_size_v<indices_t>) {
             constexpr auto N = std::tuple_size_v<indices_t>;
             using sequence_t = std::make_index_sequence<N>;
             return detail::apply_at_impl(std::forward<array_t>(array),indices,sequence_t{});
         }
-        // else return at(array, indices);
-        else return array.at(indices);
+        else return at(std::forward<array_t>(array), indices);
     } // apply_at
 } // namespace nmtools
 

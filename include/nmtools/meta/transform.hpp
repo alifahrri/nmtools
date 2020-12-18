@@ -668,6 +668,12 @@ namespace nmtools::meta
         using type = decltype(_reverse_type_list(std::declval<T>()));
     };
 
+    template <typename T>
+    struct type_reverse<std::tuple<T>>
+    {
+        using type = std::tuple<T>;
+    }; // type_reverse
+
     /**
      * @brief helper alias template to reverse the element of typelist (tuple) T.
      * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
@@ -687,24 +693,24 @@ namespace nmtools::meta
     template <typename T, auto N>
     struct reversed_integer_sequence
     {
+        template <typename U> struct sequence_to_tuple {};
         template <auto...Is>
-        static constexpr auto _sequence_to_tuple(std::integer_sequence<T,Is...>)
+        struct sequence_to_tuple<std::integer_sequence<T,Is...>>
         {
-            using tuple_type = std::tuple<std::integral_constant<T,Is>...>;
-            return tuple_type{};
-        } // _sequence_to_tuple
+            using type = std::tuple<std::integral_constant<T,Is>...>;
+        }; // sequence_to_tuple
 
+        template <typename U> struct tuple_to_sequence {};
         template <typename...Ts>
-        static constexpr auto _tuple_to_sequence(std::tuple<Ts...>)
+        struct tuple_to_sequence<std::tuple<Ts...>>
         {
-            using sequence_type = std::integer_sequence<T,static_cast<T>(Ts::value)...>;
-            return sequence_type{};
-        } // _tuple_to_sequence
+            using type = std::integer_sequence<T,static_cast<T>(Ts::value)...>;
+        }; // tuple_to_sequence
 
         using sequence_type = std::make_integer_sequence<T,N>;
-        using sequence_tuple_type = decltype(_sequence_to_tuple(std::declval<sequence_type>()));
+        using sequence_tuple_type = typename sequence_to_tuple<sequence_type>::type;
         using reversed_tuple_type = type_reverse_t<sequence_tuple_type>;
-        using type = decltype(_tuple_to_sequence(std::declval<reversed_tuple_type>()));
+        using type = typename tuple_to_sequence<reversed_tuple_type>::type;
     }; // reversed_integer_sequence
 
     /**
@@ -1727,6 +1733,64 @@ namespace nmtools::meta
     template <template<typename...> typename array_t, typename T, size_t N>
     constexpr auto make_nested_array()
         -> make_nested_dynamic_array_t<array_t,T,N>;
+
+    namespace detail
+    {
+        /**
+         * @brief helper metafunction for meta::apply
+         * 
+         * @tparam TT template template parameter
+         * @tparam T type list
+         */
+        template <template<typename...>typename TT, typename T>
+        struct apply_helper
+        {
+            using type = void;
+        }; // apply_helper
+
+        template <template<typename...>typename TT, template<typename...>typename type_list, typename...Ts>
+        struct apply_helper<TT,type_list<Ts...>>
+        {
+            static constexpr auto _get()
+            {
+                using meta_fn_type = TT<Ts...>;
+                if constexpr (meta::has_type_v<meta_fn_type>)
+                    // assumning type from meta_fn_type is default constructible
+                    return typename meta_fn_type::type{};
+                else detail::fail_t{};
+            } // _get()
+
+            // @note this wont work
+            // using type = std::conditional_t<
+            //     meta::has_type_v<meta_fn_type>,
+            //     typename meta_fn_type::type, void
+            // >;
+
+            using type = detail::fail_to_void_t<decltype(_get())>;
+        }; // apply_helper
+    } // namespace detail
+
+    /**
+     * @brief apply template template parameter T on type list T
+     * 
+     * @tparam TT template template parameter
+     * @tparam T type list
+     */
+    template <template<typename...>typename TT, typename T>
+    struct apply
+    {
+        // @note use helper metafunction so specialization is not necessary
+        using type = typename detail::apply_helper<TT,T>::type;
+    }; // apply_traits_helper
+
+    /**
+     * @brief helper alias template for apply
+     * 
+     * @tparam TT template template parameter
+     * @tparam T type list
+     */
+    template <template<typename...>typename TT, typename T>
+    using apply_t = typename apply<TT,T>::type;
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

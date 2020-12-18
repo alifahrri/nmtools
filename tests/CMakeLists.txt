@@ -199,7 +199,9 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     ## metafunctions
     src/doctest/meta.cpp
     src/doctest/meta/traits/ndarray.cpp
+    src/doctest/meta/traits/has_type.cpp
     src/doctest/meta/traits/has_square_bracket.cpp
+    src/doctest/meta/transform/apply.cpp
     src/doctest/meta/transform/get_element_type.cpp
     src/doctest/meta/transform/replace_element_type.cpp
     src/doctest/meta/transform/nested_array_dim.cpp

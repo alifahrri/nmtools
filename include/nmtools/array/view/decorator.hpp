@@ -87,6 +87,7 @@ namespace nmtools::view
             // @note either using auto& or decltype(auto) for return type
             // since at(...) return auto&
 
+            using common_t = std::common_type_t<size_types...>;
             using meta::has_funcnd_v;
             if constexpr (has_funcnd_v<view_type,size_types...>)
                 return view_type::operator()(indices...);
@@ -95,8 +96,12 @@ namespace nmtools::view
 
                 using array_t = meta::remove_cvref_t<array_type>;
                 constexpr auto n = sizeof...(size_types);
-                // @todo static_assert whenever possible
-                assert (dim()==n); // tmp assertion
+                // only perform assert if integral type is passed
+                // otherwise assume indices is packed and pass to apply_at
+                // to allow access from packed indices
+                if constexpr (std::is_integral_v<common_t>)
+                    // @todo static_assert whenever possible
+                    assert (dim()==n); // tmp assertion
 
                 // @note needs to initialize array_t since view_type::array may not be constant expression
                 // @note flatten_t dim invocation differs from other view types @todo fix
@@ -127,6 +132,7 @@ namespace nmtools::view
             // @note either using auto& or decltype(auto) for return type
             // since at(...) return auto&
 
+            using common_t = std::common_type_t<size_types...>;
             using meta::has_funcnd_v;
             if constexpr (has_funcnd_v<view_type,size_types...>)
                 return view_type::operator()(indices...);
@@ -135,8 +141,12 @@ namespace nmtools::view
 
                 using array_t = meta::remove_cvref_t<array_type>;
                 constexpr auto n = sizeof...(size_types);
-                // @todo static_assert whenever possible
-                assert (dim()==n); // tmp assertion
+                // only perform assert if integral type is passed
+                // otherwise assume indices is packed and pass to apply_at
+                // to allow access from packed indices
+                if constexpr (std::is_integral_v<common_t>)
+                    // @todo static_assert whenever possible
+                    assert (dim()==n); // tmp assertion
 
                 // @note needs to initialize array_t since view_type::array may not be constant expression
                 // @note flatten_t dim invocation differs from other view types @todo fix

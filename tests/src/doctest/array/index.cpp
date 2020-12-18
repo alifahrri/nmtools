@@ -392,3 +392,316 @@ TEST_CASE("indices_pack({3,2,3,1})" * doctest::test_suite("index"))
         CHECK(( isequal(i,tuple{1,2,0,2,0}) ));
     }
 }
+
+using std::array;
+using std::vector;
+using std::tuple;
+
+TEST_CASE("reverse" * doctest::test_suite("index"))
+{
+    {
+        auto indices  = tuple{1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,tuple{1}) );
+    }
+    {
+        auto indices  = tuple{0,1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,tuple{1,0}) );
+    }
+    {
+        auto indices  = tuple{2,0,1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,tuple{1,0,2}) );
+    }
+    {
+        auto indices  = array{1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,array{1}) );
+    }
+    {
+        auto indices  = array{0,1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,array{1,0}) );
+    }
+    {
+        auto indices  = array{2,0,1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,array{1,0,2}) );
+    }
+    {
+        auto indices  = vector{1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,array{1}) );
+    }
+    {
+        auto indices  = vector{0,1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,array{1,0}) );
+    }
+    {
+        auto indices  = vector{2,0,1};
+        auto reversed = nm::detail::reverse(indices);
+        CHECK( isequal(reversed,array{1,0,2}) );
+    }
+}
+
+TEST_CASE("gather" * doctest::test_suite("index"))
+{
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = array{0,1,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = array{1,0,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = array{1,2,0};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,3,1};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = vector{0,1,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = vector{1,0,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = vector{1,2,0};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,3,1};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = tuple{0,1,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = tuple{1,0,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = tuple{1,2,0};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,3,1};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = array{1,2,3};
+        auto order    = array{0,1,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = array{1,2,3};
+        auto order    = array{1,0,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = array{1,2,3};
+        auto order    = array{1,2,0};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,3,1};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{0,1,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{1,0,2};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{1,2,0};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,3,1};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{2,1,0};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{3,2,1};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = vector{2,0,1};
+        auto order    = vector{2,0,1};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{1,2,0};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{2,0,1};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{3,1,2};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+}
+
+TEST_CASE("scatter" * doctest::test_suite("index"))
+{
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = array{0,1,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = array{1,0,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = array{1,2,0};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{3,1,2};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = vector{0,1,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = vector{1,0,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = vector{1,2,0};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{3,1,2};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = tuple{0,1,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = tuple{1,0,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = tuple{1,2,0};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{3,1,2};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = array{1,2,3};
+        auto order    = array{0,1,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = array{1,2,3};
+        auto order    = array{1,0,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = array{1,2,3};
+        auto order    = array{1,2,0};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{3,1,2};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{0,1,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{1,0,2};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{1,2,0};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{3,1,2};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{1,2,0};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{3,1,2};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = vector{2,0,1};
+        auto order    = vector{2,0,1};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{0,1,2};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+    {
+        auto indices  = vector{1,2,3};
+        auto order    = vector{2,0,1};
+        auto scattered = nm::detail::scatter(indices, order);
+        auto expected = array{2,3,1};
+        NMTOOLS_ASSERT_EQUAL( scattered, expected );
+    }
+}
