@@ -16,7 +16,7 @@
 #include "nmtools/utils/isequal.hpp"
 #include "testing/testing.hpp"
 
-#include "doctest/doctest.h"
+#include "testing/doctest.hpp"
 
 #include <array>
 #include <vector>
@@ -516,6 +516,33 @@ TEST_CASE("transpose(dynamic_vector)"*doctest::test_suite("view::transpose"))
     }
 }
 
+TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose"))
+{
+    auto array = dynamic_ndarray({1.,2.,3.});
+    auto array_ref = view::transpose(array);
+
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
+
+    CHECK( array_ref.dim()==1 );
+
+    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (std::array{3}) );
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), std::array{3} );
+
+    {
+        auto expected = std::array{1.,2.,3.};
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+    }
+
+    // @note should be compile-error: assignment of read-only location
+    // array_ref(0) = 3; 
+
+    {
+        nmtools::at(array,0) = 3;
+        auto expected = std::array{3.,2.,3.};
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+    }
+}
+
 /**
  * @test test case for const transpose view to dynamic_matrix
  */
@@ -558,6 +585,797 @@ TEST_CASE("transpose(dynamic_matrix)"*doctest::test_suite("view::transpose")) //
     {
         STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+}
+
+TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    double expected[3][2] = {
+        {1.,3.},
+        {2.,4.},
+        {3.,5.},
+    };
+    double expected2[3][2] = {
+        {1.,10.},
+        {2.,4.},
+        {3.,5.},
+    };
+
+    // test without axes as parameter
+    {
+        auto array = dynamic_ndarray({
+            {1.,2.,3.},
+            {3.,4.,5.},
+        });
+        auto array_ref = view::transpose(array);
+
+        // @note since the referenced array is not fixed-size, the the view itself is not either
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+
+        CHECK(array_ref.dim()==2);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+
+    // test with axes as parameter
+    {
+        auto array = dynamic_ndarray({
+            {1.,2.,3.},
+            {3.,4.,5.},
+        });
+        auto array_ref = view::transpose(array, std::array{1,0});
+
+        // @note since the referenced array is not fixed-size, the the view itself is not either
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+
+        CHECK(array_ref.dim()==2);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+}
+
+TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    double expected[3][2][2] = {
+        {
+            {1.,5.},
+            {3.,7.},
+        },
+        {
+            {2.,6.},
+            {4.,8.},
+        },
+        {
+            {3.,7.},
+            {5.,9.},
+        },
+    };
+    double expected2[3][2][2] = {
+        {
+            {1.,10.},
+            {3.,7.},
+        },
+        {
+            {2.,6.},
+            {4.,8.},
+        },
+        {
+            {3.,7.},
+            {5.,9.},
+        },
+    };
+
+    {
+        auto array = dynamic_ndarray({
+            {
+                {1.,2.,3.},
+                {3.,4.,5.}
+            },
+            {
+                {5.,6.,7.},
+                {7.,8.,9.}
+            },
+        });
+        auto array_ref = view::transpose(array);
+
+        // @note since the referenced array is not fixed-size, the the view itself is not either
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+
+        CHECK(array_ref.dim()==3);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+    {
+        auto array = dynamic_ndarray({
+            {
+                {1.,2.,3.},
+                {3.,4.,5.}
+            },
+            {
+                {5.,6.,7.},
+                {7.,8.,9.}
+            },
+        });
+        auto array_ref = view::transpose(array,std::array{2,1,0});
+
+        // @note since the referenced array is not fixed-size, the the view itself is not either
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+
+        CHECK(array_ref.dim()==3);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+
+        // check index mapping
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,0,0})), (std::array{0,0,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,0,1})), (std::array{1,0,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,1,0})), (std::array{0,1,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,1,1})), (std::array{1,1,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,0,0})), (std::array{0,0,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,0,1})), (std::array{1,0,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,1,0})), (std::array{0,1,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,1,1})), (std::array{1,1,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,0,1})), (std::array{1,0,2}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,1,0})), (std::array{0,1,2}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,1,1})), (std::array{1,1,2}) );
+    }
+    {
+        auto array = dynamic_ndarray({
+            {
+                {1.,2.,3.},
+                {3.,4.,5.}
+            },
+        });
+        auto array_ref = view::transpose(array,std::array{2,0,1});
+
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+
+        CHECK(array_ref.dim()==3);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,1,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,1,2}) );
+
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,0,0})), (std::array{0,0,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,0,1})), (std::array{0,1,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,0,0})), (std::array{0,0,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,0,1})), (std::array{0,1,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,0,0})), (std::array{0,0,2}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,0,1})), (std::array{0,1,2}) );
+    }
+    {
+        auto array = dynamic_ndarray({
+            {
+                {1.,2.,3.},
+                {3.,4.,5.}
+            },
+            {
+                {5.,6.,7.},
+                {7.,8.,9.}
+            },
+        });
+        auto array_ref = view::transpose(array,std::array{2,0,1});
+
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+
+        CHECK(array_ref.dim()==3);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,2}) );
+
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,0,0})), (std::array{0,0,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,0,1})), (std::array{0,1,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,1,0})), (std::array{1,0,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,1,1})), (std::array{1,1,0}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,0,0})), (std::array{0,0,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,0,1})), (std::array{0,1,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,1,0})), (std::array{1,0,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{1,1,1})), (std::array{1,1,1}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,0,0})), (std::array{0,0,2}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,0,1})), (std::array{0,1,2}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,1,0})), (std::array{1,0,2}) );
+        NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{2,1,1})), (std::array{1,1,2}) );
+
+        double expected[3][2][2] = {
+            {
+                {1.,3.},
+                {5.,7.},
+            },
+            {
+                {2.,4.},
+                {6.,8.},
+            },
+            {
+                {3.,5.},
+                {7.,9.},
+            },
+        };
+        double expected2[3][2][2] = {
+            {
+                {1.,3.},
+                {10.,7.},
+            },
+            {
+                {2.,4.},
+                {6.,8.},
+            },
+            {
+                {3.,5.},
+                {7.,9.},
+            },
+        };
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+    }
+}
+
+TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    double expected[3][1][2][2] = {
+        {
+            {
+                {1.,5.},
+                {3.,7.},
+            }
+        },
+        {
+            {
+                {2.,6.},
+                {4.,8.},
+            }
+        },
+        {
+            {
+                {3.,7.},
+                {5.,9.},
+            }
+        },
+    };
+
+    double expected2[3][1][2][2] = {
+        {
+            {
+                {1.,10.},
+                {3.,7.},
+            }
+        },
+        {
+            {
+                {2.,6.},
+                {4.,8.},
+            }
+        },
+        {
+            {
+                {3.,7.},
+                {5.,9.},
+            }
+        },
+    };
+
+    double expected3[3][2][1][2] = {
+        {
+            {
+                {1.,5.},
+            },
+            {
+                {3.,7.},
+            }
+        },
+        {
+            {
+                {2.,6.},
+            },
+            {
+                {4.,8.},
+            }
+        },
+        {
+            {
+                {3.,7.},
+            },
+            {
+                {5.,9.},
+            }
+        },
+    };
+
+    double expected4[3][2][1][2] = {
+        {
+            {
+                {1.,10.},
+            },
+            {
+                {3.,7.},
+            }
+        },
+        {
+            {
+                {2.,6.},
+            },
+            {
+                {4.,8.},
+            }
+        },
+        {
+            {
+                {3.,7.},
+            },
+            {
+                {5.,9.},
+            }
+        },
+    };
+
+    auto array = dynamic_ndarray({
+        {
+            {
+                {1.,2.,3.},
+            },
+            {
+                {3.,4.,5.}
+            }
+        },
+        {
+            {
+                {5.,6.,7.},
+            },
+            {
+                {7.,8.,9.}
+            }
+        },
+    });
+    {
+        auto array_ref = view::transpose(array);
+
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        CHECK(array_ref.dim()==4);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,1,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,1,2,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+    {
+        auto array_ref = view::transpose(array,std::array{3,2,1,0});
+
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        CHECK(array_ref.dim()==4);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,1,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,1,2,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        nmtools::at(array,1,0,0,0) = 5;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+    {
+        auto array_ref = view::transpose(array,std::array{3,1,2,0});
+
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        CHECK(array_ref.dim()==4);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,1,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,1,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected3 );
+        nmtools::at(array,1,0,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected4 );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+}
+
+TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose"))
+{
+    auto array = fixed_ndarray{{1.,2.,3.}};
+    auto array_ref = view::transpose(array);
+
+    CHECK( array_ref.dim()==1 );
+
+    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (std::array{3}) );
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), std::array{3} );
+
+    {
+        auto expected = std::array{1.,2.,3.};
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+    }
+
+    // @note should be compile-error: assignment of read-only location
+    // array_ref(0) = 3; 
+
+    {
+        nmtools::at(array,0) = 3;
+        auto expected = std::array{3.,2.,3.};
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+    }
+}
+
+TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    auto array = fixed_ndarray{{
+        {1.,2.,3.},
+        {3.,4.,5.},
+    }};
+    auto array_ref = view::transpose(array);
+
+    CHECK(array_ref.dim()==2);
+
+    auto shape = array_ref.shape();
+    NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2}) );
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2}) );
+
+    {
+        auto expected = std::array{
+            std::array{1.,3.},
+            std::array{2.,4.},
+            std::array{3.,5.},
+        };
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+    }
+
+    {
+        nmtools::at(array,1,0) = 10;
+        auto expected = std::array{
+            std::array{1.,10.},
+            std::array{2.,4.},
+            std::array{3.,5.},
+        };
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+    }
+
+    {
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+}
+
+TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    double expected[3][2][2] = {
+        {
+            {1.,5.},
+            {3.,7.},
+        },
+        {
+            {2.,6.},
+            {4.,8.},
+        },
+        {
+            {3.,7.},
+            {5.,9.},
+        },
+    };
+    double expected2[3][2][2] = {
+        {
+            {1.,10.},
+            {3.,7.},
+        },
+        {
+            {2.,6.},
+            {4.,8.},
+        },
+        {
+            {3.,7.},
+            {5.,9.},
+        },
+    };
+    auto array = fixed_ndarray{{
+        {
+            {1.,2.,3.},
+            {3.,4.,5.}
+        },
+        {
+            {5.,6.,7.},
+            {7.,8.,9.}
+        },
+    }};
+    {
+        auto array_ref = view::transpose(array);
+
+        CHECK(array_ref.dim()==3);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,2}) );
+
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+    {
+        auto array_ref = view::transpose(array,std::array{2,1,0});
+
+        CHECK(array_ref.dim()==3);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,2}) );
+
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        nmtools::at(array,1,0,0) = 5;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+    {
+        auto array = fixed_ndarray{{
+            {
+                {1.,2.,3.},
+                {3.,4.,5.}
+            },
+        }};
+        auto array_ref = view::transpose(array,std::array{2,0,1});
+
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+
+        CHECK(array_ref.dim()==3);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,1,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,1,2}) );
+    }
+    {
+        auto array = fixed_ndarray{{
+            {
+                {1.,2.,3.},
+                {3.,4.,5.}
+            },
+            {
+                {5.,6.,7.},
+                {7.,8.,9.}
+            },
+        }};
+        auto array_ref = view::transpose(array,std::array{2,0,1});
+
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+
+        CHECK(array_ref.dim()==3);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,2}) );
+
+        double expected[3][2][2] = {
+            {
+                {1.,3.},
+                {5.,7.},
+            },
+            {
+                {2.,4.},
+                {6.,8.},
+            },
+            {
+                {3.,5.},
+                {7.,9.},
+            },
+        };
+        double expected2[3][2][2] = {
+            {
+                {1.,3.},
+                {10.,7.},
+            },
+            {
+                {2.,4.},
+                {6.,8.},
+            },
+            {
+                {3.,5.},
+                {7.,9.},
+            },
+        };
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+    }
+}
+
+TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    double expected[3][1][2][2] = {
+        {
+            {
+                {1.,5.},
+                {3.,7.},
+            }
+        },
+        {
+            {
+                {2.,6.},
+                {4.,8.},
+            }
+        },
+        {
+            {
+                {3.,7.},
+                {5.,9.},
+            }
+        },
+    };
+
+    double expected2[3][1][2][2] = {
+        {
+            {
+                {1.,10.},
+                {3.,7.},
+            }
+        },
+        {
+            {
+                {2.,6.},
+                {4.,8.},
+            }
+        },
+        {
+            {
+                {3.,7.},
+                {5.,9.},
+            }
+        },
+    };
+
+    double expected3[3][2][1][2] = {
+        {
+            {
+                {1.,5.},
+            },
+            {
+                {3.,7.},
+            }
+        },
+        {
+            {
+                {2.,6.},
+            },
+            {
+                {4.,8.},
+            }
+        },
+        {
+            {
+                {3.,7.},
+            },
+            {
+                {5.,9.},
+            }
+        },
+    };
+
+    double expected4[3][2][1][2] = {
+        {
+            {
+                {1.,10.},
+            },
+            {
+                {3.,7.},
+            }
+        },
+        {
+            {
+                {2.,6.},
+            },
+            {
+                {4.,8.},
+            }
+        },
+        {
+            {
+                {3.,7.},
+            },
+            {
+                {5.,9.},
+            }
+        },
+    };
+
+    auto array = fixed_ndarray{{
+        {
+            {
+                {1.,2.,3.},
+            },
+            {
+                {3.,4.,5.}
+            }
+        },
+        {
+            {
+                {5.,6.,7.},
+            },
+            {
+                {7.,8.,9.}
+            }
+        },
+    }};
+    {
+        auto array_ref = view::transpose(array);
+
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        CHECK(array_ref.dim()==4);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,1,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,1,2,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        nmtools::at(array,1,0,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+    {
+        auto array_ref = view::transpose(array,std::array{3,2,1,0});
+
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        CHECK(array_ref.dim()==4);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,1,2,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,1,2,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
+        nmtools::at(array,1,0,0,0) = 5;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+    }
+    {
+        auto array_ref = view::transpose(array,std::array{3,1,2,0});
+
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        CHECK(array_ref.dim()==4);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,1,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,1,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected3 );
+        nmtools::at(array,1,0,0,0) = 10;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected4 );
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 }
