@@ -84,6 +84,7 @@ option(TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
 option(TEST_UTILS           "test utils modules"            OFF)
 option(TEST_NDARRAY         "test ndarray modules"          OFF)
 option(TEST_ARRAY_VIEW      "test array view modules"       OFF)
+option(TEST_MISC            "test other modules"            OFF)
 
 if (TEST_ALL)
     SET(TEST_BLAS           ON CACHE BOOL "test blas modules"           FORCE)
@@ -92,6 +93,7 @@ if (TEST_ALL)
     SET(TEST_UTILS          ON CACHE BOOL "test utils modules"          FORCE)
     SET(TEST_NDARRAY        ON CACHE BOOL "test ndarray modules"        FORCE)
     SET(TEST_ARRAY_VIEW     ON CACHE BOOL "test array view modules"     FORCE)
+    SET(TEST_MISC           ON CACHE BOOL "test other modules"          FORCE)
 endif (TEST_ALL)
 
 set(BLAS_TEST_SOURCES
@@ -173,10 +175,16 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/mutable_flatten.cpp
 )
-
 if (NOT TEST_ARRAY_VIEW)
     set (ARRAY_VIEW_TEST_SOURCES "")
 endif ()
+
+set(MISC_TEST_SOURCES
+    src/doctest/misc/constants.cpp
+)
+if (NOT TEST_MISC)
+    set (MISC_TEST_SOURCES "")
+endif()
 
 add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp 
     ## blas module
@@ -191,6 +199,8 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ${NDARRAY_TEST_SOURCES}
     ## view
     ${ARRAY_VIEW_TEST_SOURCES}
+    ## misc
+    ${MISC_TEST_SOURCES}
 )
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
