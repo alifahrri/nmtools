@@ -35,3 +35,7 @@ http://clang-developers.42468.n3.nabble.com/braces-around-scalar-initializer-war
 
 gcc error 8: mismatched types for 'double' and 'int' when initializing array (fixed on gcc 9)
 https://godbolt.org/z/asrh7q
+
+clang and gcc disagree on if constexpr inside lambda
+https://godbolt.org/z/8qc13s
+https://stackoverflow.com/questions/59647445/if-constexpr-with-static-assert-in-lambda-which-compiler-is-correct
