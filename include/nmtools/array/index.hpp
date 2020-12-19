@@ -469,9 +469,13 @@ namespace nmtools
                 auto idx    = at(indices,i);
                 // store value to return
                 if constexpr (meta::is_integral_constant_v<decltype(i)>)
-                    meta::template_for<tuple_size_v<vector_t>>([&](auto j){
+                    meta::template_for<tuple_size_v<meta::remove_cvref_t<decltype(vec)>>>([&](auto j){
                         if (idx==j) at(ret,j) = value;
                     });
+                    // clang and gcc disagree on this
+                    // meta::template_for<tuple_size_v<vector_t>>([&](auto j){
+                    //     if (idx==j) at(ret,j) = value;
+                    // });
                 else at(ret,idx) = value;
             }; // scatter_impl
 
