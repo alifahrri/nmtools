@@ -319,6 +319,51 @@ namespace nmtools
         } // reverse
 
         /**
+         * @brief access tuple with runtime value
+         *
+         * Also works with std::array or std::vector.
+         * 
+         * @tparam vector_t 
+         * @tparam idx_t 
+         * @param vec 
+         * @param idx 
+         * @return constexpr auto 
+         */
+        template <typename vector_t, typename idx_t>
+        constexpr auto tuple_at(const vector_t& vec, idx_t idx)
+        {
+            // std::array type has value_type
+            using element_t = meta::get_element_type_t<vector_t>;
+            using common_t = std::conditional_t<
+                std::is_void_v<element_t>,
+                meta::apply_t<std::common_type,vector_t>,
+                element_t
+            >;
+            static_assert( std::is_arithmetic_v<common_t>
+                , "unsupported tuple_at"
+            );
+            auto value = common_t{};
+
+            if constexpr (meta::has_at_v<vector_t,idx_t>)
+                value = at(vec,idx);
+            // @note to check to N since n may be > i
+            // @note integral constant is cast-able to its value_type (int,size_t,...)
+            else
+                meta::template_for<std::tuple_size_v<vector_t>>([&](auto j){
+                    if (idx==j) value = static_cast<common_t>(at(vec,j));
+                });
+            return value;
+        } // tuple_at
+
+        template <typename vector_t>
+        constexpr auto size(const vector_t& vec)
+        {
+            if constexpr (meta::has_tuple_size_v<vector_t>)
+                return std::tuple_size_v<vector_t>;
+            else return vec.size();
+        } // size
+
+        /**
          * @brief perform gather op
          *
          * perform the following op: `ret[i] = vec[idx[i]]`, reverse of scatter
@@ -338,28 +383,15 @@ namespace nmtools
             constexpr auto order_is_tuple = meta::is_specialization_v<indices_t,std::tuple> 
                 || meta::is_specialization_v<indices_t,std::tuple>;
             // get the size of vec
-            auto n = [&](){
-                if constexpr (meta::has_tuple_size_v<vector_t>)
-                    return std::tuple_size_v<vector_t>;
-                else return vec.size();
-            }();
+            auto n = detail::size(vec);
             // get the size of indices
-            auto m = [&](){
-                if constexpr (meta::has_tuple_size_v<indices_t>)
-                    return std::tuple_size_v<indices_t>;
-                else return indices.size();
-            }();
+            auto m = detail::size(indices);
             // @todo static assert whenever possible
             assert (n == m
                 // , "unsupported permute, mismatched dimension between vec and indices"
             );
 
-            // assume return type is same
-            auto ret = vector_t{};
-
-            if constexpr (meta::is_resizeable_v<vector_t>)
-                ret.resize(vec.size()); // assuming indicesh has size
-
+            using std::tuple_size_v;
             // std::array type has value_type
             using element_t = meta::get_element_type_t<vector_t>;
             using common_t = std::conditional_t<
@@ -368,43 +400,25 @@ namespace nmtools
                 element_t
             >;
 
+            // assume return type is same
+            auto ret = vector_t{};
+            if constexpr (meta::is_resizeable_v<vector_t>)
+                ret.resize(vec.size()); // assuming indicesh has size
+            
+            auto gather_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
+                auto idx   = at(indices,i);
+                auto value = tuple_at(vec,idx);
+                at(ret,i)  = value;
+            }; // gather_impl
+
             // handle tuple if it has common_type
-            if constexpr (meta::has_tuple_size_v<vector_t> && !std::is_void_v<common_t>) {
-                constexpr auto N = std::tuple_size_v<vector_t>;
-                meta::template_for<N>([&](auto index){
-                    constexpr auto i = decltype(index)::value;
-                    // get index (idx = indices.at(i))
-                    // @todo make at support compile-time index
-                    auto idx = [&](){
-                        if constexpr (meta::has_tuple_size_v<indices_t>)
-                            return std::get<i>(indices);
-                        else return indices.at(i);
-                    }();
-                    // get value using iile
-                    // note that n is runtime value while tuple access must be at compile time
-                    // access tuple element at runtime by assuming the elements of tuple has common type
-                    auto v = [&](){
-                        // access tuple element at runtime
-                        auto value = common_t{};
-                        // @note to check to N since n may be > i
-                        meta::template_for<N>([&](auto index){
-                            constexpr auto ii = decltype(index)::value;
-                            if (idx==ii)
-                                value = static_cast<common_t>(std::get<ii>(vec));
-                        });
-                        return value;
-                    }();
-                    // store value to return
-                    std::get<i>(ret) = v;
+            if constexpr (meta::has_tuple_size_v<vector_t> && !std::is_void_v<common_t>)
+                meta::template_for<tuple_size_v<vector_t>>([&](auto i){
+                    gather_impl(ret, vec, indices, i);
                 });
-            }
-            else {
-                for (size_t i=0; i<m; i++) {
-                    auto idx = indices.at(i);
-                    auto v = vec.at(idx);
-                    ret.at(i) = v;
-                }
-            }
+            else
+                for (size_t i=0; i<m; i++)
+                    gather_impl(ret, vec, indices, i);
             return ret;
         } // gather
 
@@ -427,29 +441,16 @@ namespace nmtools
                 || meta::is_specialization_v<vector_t,std::tuple>;
             constexpr auto order_is_tuple = meta::is_specialization_v<indices_t,std::tuple> 
                 || meta::is_specialization_v<indices_t,std::tuple>;
-            // get the size of vec
-            auto n = [&](){
-                if constexpr (meta::has_tuple_size_v<vector_t>)
-                    return std::tuple_size_v<vector_t>;
-                else return vec.size();
-            }();
+            // get the size of vec, add namespace to avoid ambiguous call
+            auto n = detail::size(vec);
             // get the size of indices
-            auto m = [&](){
-                if constexpr (meta::has_tuple_size_v<indices_t>)
-                    return std::tuple_size_v<indices_t>;
-                else return indices.size();
-            }();
+            auto m = detail::size(indices);
             // @todo static assert whenever possible
             assert (n == m
                 // , "unsupported permute, mismatched dimension between vec and indices"
             );
 
-            // assume return type is same
-            auto ret = vector_t{};
-
-            if constexpr (meta::is_resizeable_v<vector_t>)
-                ret.resize(vec.size()); // assuming indicesh has size
-
+            using std::tuple_size_v;
             // std::array type has value_type
             using element_t = meta::get_element_type_t<vector_t>;
             using common_t = std::conditional_t<
@@ -458,34 +459,34 @@ namespace nmtools
                 element_t
             >;
 
-            // handle tuple if it has common_type
-            if constexpr (meta::has_tuple_size_v<vector_t> && !std::is_void_v<common_t>) {
-                constexpr auto N = std::tuple_size_v<vector_t>;
-                meta::template_for<N>([&](auto index){
-                    constexpr auto i = decltype(index)::value;
-                    // get index (idx = indices.at(i))
-                    // @todo make at support compile-time index
-                    auto idx = [&](){
-                        if constexpr (meta::has_tuple_size_v<indices_t>)
-                            return std::get<i>(indices);
-                        else return indices.at(i);
-                    }();
-                    auto v = std::get<i>(vec);
-                    // store value to return
-                    meta::template_for<N>([&](auto index){
-                        constexpr auto j = decltype(index)::value;
-                        if (idx==j)
-                            std::get<j>(ret) = v;
+            // assume return type is same
+            auto ret = vector_t{};
+            if constexpr (meta::is_resizeable_v<vector_t>)
+                ret.resize(vec.size()); // assuming indices has size
+
+            auto scatter_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
+                auto value  = at(vec,i);
+                auto idx    = at(indices,i);
+                // store value to return
+                if constexpr (meta::is_integral_constant_v<decltype(i)>)
+                    meta::template_for<tuple_size_v<meta::remove_cvref_t<decltype(vec)>>>([&](auto j){
+                        if (idx==j) at(ret,j) = value;
                     });
+                    // clang and gcc disagree on this
+                    // meta::template_for<tuple_size_v<vector_t>>([&](auto j){
+                    //     if (idx==j) at(ret,j) = value;
+                    // });
+                else at(ret,idx) = value;
+            }; // scatter_impl
+
+            // handle tuple if it has common_type
+            if constexpr (meta::has_tuple_size_v<vector_t> && !std::is_void_v<common_t>)
+                meta::template_for<tuple_size_v<vector_t>>([&](auto i){
+                    scatter_impl(ret, vec, indices, i);
                 });
-            }
-            else {
-                for (size_t i=0; i<m; i++) {
-                    auto v = vec.at(i);
-                    auto idx = indices.at(i);
-                    ret.at(idx) = v;
-                }
-            }
+            else
+                for (size_t i=0; i<m; i++)
+                    scatter_impl(ret, vec, indices, i);
             return ret;
         } // scatter
 

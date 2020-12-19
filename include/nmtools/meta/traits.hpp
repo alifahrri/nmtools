@@ -607,7 +607,28 @@ namespace nmtools::meta {
          */
         template <typename T>
         using type = typename T::type;
+
+        template <typename T, typename Is, typename=void>
+        struct template_get_helper {};
+
+        using std::get;
+
+        template <typename T, auto...Is>
+        struct template_get_helper<T,std::index_sequence<Is...>,
+            std::void_t<decltype(get<Is...>(std::declval<T>()))>>
+        {
+            using type = decltype(get<Is...>(std::declval<T>()));
+        }; // template_get_helper
+
+        template <typename T, typename Is>
+        using template_get = typename template_get_helper<T,Is>::type;
     } // namespace expr
+
+    template <typename T, auto...Is>
+    struct has_template_get : detail::expression_check<void,expr::template_get,T,std::index_sequence<Is...>> {};
+
+    template <typename T, auto...Is>
+    inline constexpr bool has_template_get_v = has_template_get<T,Is...>::value;
 
     /**
      * @brief check if type T has member type 'type'

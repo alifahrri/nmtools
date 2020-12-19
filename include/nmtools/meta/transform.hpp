@@ -335,6 +335,218 @@ namespace nmtools::meta
     template <typename T, typename...Args>
     using replace_tparam_t = typename replace_template_parameter<T,Args...>::type;
 
+    /**
+     * @brief merge two type T (possibly tuple) and U (possibly tuple) to single tuple.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T lhs tuple to be merged
+     * @tparam U rhs tuple to be merged
+     */
+    template <typename T, typename U>
+    struct merge
+    {
+        template <typename...Ts, typename...Us>
+        static constexpr auto _merge(std::tuple<Ts...>, std::tuple<Us...>)
+        {
+            using type_t = std::tuple<Ts...,Us...>;
+            return type_t{};
+        } // _merge
+
+        template <typename Ts, typename...Us>
+        static constexpr auto _merge(Ts, std::tuple<Us...>)
+        {
+            using type_t = std::tuple<Ts,Us...>;
+            return type_t{};
+        } // _merge
+
+        template <typename...Ts, typename Us>
+        static constexpr auto _merge(std::tuple<Ts...>, Us)
+        {
+            using type_t = std::tuple<Ts...,Us>;
+            return type_t{};
+        } // _merge
+
+        template <typename Ts, typename Us>
+        static constexpr auto _merge(Ts, Us)
+        {
+            using type_t = std::tuple<Ts,Us>;
+            return type_t{};
+        } // _merge
+
+        using type = decltype(_merge(std::declval<T>(),std::declval<U>()));
+    }; // merge
+
+    /**
+     * @brief helper alias template to merge two type T (possibly tuple) and U (possibly tuple) to single tuple.
+     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
+     * 
+     * @tparam T lhs tuple to be merged
+     * @tparam U rhs tuple to be merged
+     */
+    template <typename T, typename U>
+    using merge_t = typename merge<T,U>::type;
+
+    /**
+     * @brief helper alias template to get public member type `first` from type T
+     * 
+     * @tparam T type to transform
+     */
+    template <typename T>
+    using first_t = typename T::first;
+
+    /**
+     * @brief helper alias template to get public member type `second` from type T
+     * 
+     * @tparam T type to transform
+     */
+    template <typename T>
+    using second_t = typename T::second;
+
+    /**
+     * @brief helper alias template to get public member type `type` from type T
+     * 
+     * @tparam T type to transform
+     */
+    template <typename T>
+    using type_t = typename T::type;
+
+    namespace detail
+    {
+        template <typename T, auto I, typename=void>
+        struct split_at_helper
+        {
+            using first  = void;
+            using second = void;
+            using type = T;
+        }; // split_at_helper
+
+        template <template<typename...>typename TT, typename T, typename...Ts>
+        struct split_at_helper<TT<T,Ts...>,1>
+        {
+            using first  = TT<T>;
+            using second = TT<Ts...>;
+            using type   = std::pair<first,second>;
+        }; // split_at_helper
+
+        template <template<typename...>typename TT, typename T, typename...Ts, auto I>
+        struct split_at_helper<TT<T,Ts...>,I,std::enable_if_t<(I>1)>>
+        {
+            using rest   = split_at_helper<TT<Ts...>,I-1>;
+            using first  = merge_t<TT<T>,first_t<rest>>;
+            using second = second_t<rest>;
+            using type   = std::pair<first,second>;
+        }; // split_at_helper
+    } // namespace detail
+
+    /**
+     * @brief metafunction to split type list at index I
+     *
+     * Resulting in member type `first`, `second` and `type`.
+     * Where `first` holds the type from 0 until I,
+     * `second` hold the type from I until the end,
+     * and `type` is `pair<first,second>`.
+     * On failed specialization, `first` and `second` are `void`
+     * and `type` is equal to T.
+     * 
+     * @tparam T type to transform
+     * @tparam I index for splitting type
+     * @tparam typename 
+     */
+    template <typename T, auto I, typename=void>
+    struct split_at
+    {
+        using split_type = detail::split_at_helper<T,I>;
+        using first      = first_t<split_type>;
+        using second     = second_t<split_type>;
+        using type       = type_t<split_type>;
+    }; // split_at
+
+    /**
+     * @brief helper alias template for split_at
+     * 
+     * @tparam T type to transform
+     * @tparam I index for splitting type
+     */
+    template <typename T, auto I>
+    using split_at_t = type_t<split_at<T,I>>;
+
+    namespace detail
+    {
+        template <typename T, typename U, auto I, typename=void>
+        struct replace_at_helper
+        {
+            using type = void;
+        }; // replace_at_helper
+
+        template <template<typename...>typename TT, typename T, typename U, typename...Ts>
+        struct replace_at_helper<TT<T,Ts...>,U,0>
+        {
+            using type = TT<U,Ts...>;
+        }; // replace_at_helper
+
+        template <template<typename...>typename TT, typename U, typename...Ts, auto I>
+        struct replace_at_helper<TT<Ts...>,U,I>
+        {
+            using type_list  = TT<Ts...>;
+            // split at can results on same type
+            using split_type = split_at<type_list,I>;
+
+            // @note cant work since need to 
+            // check for first and second type to be not void
+
+            // using first    = first_t<split_type>;
+            // using second   = second_t<split_type>;
+            // using replaced = type_t<replace_at_helper<second,U,0>>;
+            // using type     = merge_t<first,replaced>;
+
+            template <typename split_type>
+            static constexpr auto get_type()
+            {
+                // first and second can be void
+                using first    = first_t<split_type>;
+                using second   = second_t<split_type>;
+                // assuming replaced type is default constructible
+                if constexpr (!std::is_void_v<first>) {
+                    using replaced = type_t<replace_at_helper<second,U,0>>;
+                    using type = merge_t<first,replaced>;
+                    return type{};
+                }
+                else {
+                    using replaced = replace_at_helper<type_t<split_type>,U,0>;
+                    return type_t<replaced>{};
+                }
+            } // get_type
+            using type = decltype(get_type<split_type>());
+        }; // replace_at_helper
+    } // namespace detail
+
+    /**
+     * @brief metafunction to replace the type of type-list T at index I with U.
+     *
+     * On failed specialization (default case) member type `type` is defined as `void`,
+     * otherwise it hold the replaced type-list.
+     * 
+     * @tparam T type-list to replace
+     * @tparam U replacement type
+     * @tparam I replacement index
+     * @tparam typename 
+     */
+    template <typename T, typename U, auto I, typename=void>
+    struct replace_at
+    {
+        using type = typename detail::replace_at_helper<T,U,I>::type;
+    }; // replace_at
+
+    /**
+     * @brief helper alias template for replace_at
+     * 
+     * @tparam T type-list to replace
+     * @tparam U replacement type
+     * @tparam I replacement index
+     */
+    template <typename T, typename U, auto I>
+    using replace_at_t = typename replace_at<T,U,I>::type;
+
     /*
     TODO: consider to provide specialization for replace_template_parameter, that accepts
         - T<typename,auto..>, 
@@ -588,57 +800,6 @@ namespace nmtools::meta
     using type_push_back_t = typename type_push_back<T,U>::type;
 
     /**
-     * @brief merge two type T (possibly tuple) and U (possibly tuple) to single tuple.
-     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
-     * 
-     * @tparam T lhs tuple to be merged
-     * @tparam U rhs tuple to be merged
-     */
-    template <typename T, typename U>
-    struct type_merge
-    {
-        template <typename...Ts, typename...Us>
-        static constexpr auto _type_merge(std::tuple<Ts...>, std::tuple<Us...>)
-        {
-            using type_t = std::tuple<Ts...,Us...>;
-            return type_t{};
-        } // _type_merge
-
-        template <typename Ts, typename...Us>
-        static constexpr auto _type_merge(Ts, std::tuple<Us...>)
-        {
-            using type_t = std::tuple<Ts,Us...>;
-            return type_t{};
-        } // _type_merge
-
-        template <typename...Ts, typename Us>
-        static constexpr auto _type_merge(std::tuple<Ts...>, Us)
-        {
-            using type_t = std::tuple<Ts...,Us>;
-            return type_t{};
-        } // _type_merge
-
-        template <typename Ts, typename Us>
-        static constexpr auto _type_merge(Ts, Us)
-        {
-            using type_t = std::tuple<Ts,Us>;
-            return type_t{};
-        } // _type_merge
-
-        using type = decltype(_type_merge(std::declval<T>(),std::declval<U>()));
-    }; // type_merge
-
-    /**
-     * @brief helper alias template to merge two type T (possibly tuple) and U (possibly tuple) to single tuple.
-     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
-     * 
-     * @tparam T lhs tuple to be merged
-     * @tparam U rhs tuple to be merged
-     */
-    template <typename T, typename U>
-    using type_merge_t = typename type_merge<T,U>::type;
-
-    /**
      * @brief reverse the element of typelist (tuple) T.
      * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
      * 
@@ -661,7 +822,7 @@ namespace nmtools::meta
             using last_t = typename pop_last_type::last;
             using type_t = typename pop_last_type::type;
             using rest_t = decltype(_reverse_type_list(std::declval<type_t>()));
-            using reversed_t= type_merge_t<last_t,rest_t>;
+            using reversed_t= merge_t<last_t,rest_t>;
             return reversed_t{};
         } // _reverse_type_list
 
@@ -1791,6 +1952,238 @@ namespace nmtools::meta
      */
     template <template<typename...>typename TT, typename T>
     using apply_t = typename apply<TT,T>::type;
+
+    namespace detail
+    {
+        template <typename T, typename U, typename=void>
+        struct gather_helper
+        {
+            using type = void;
+        }; // gather_helper
+
+        using std::tuple_element_t;
+        using std::integer_sequence;
+
+        template <template<typename...>typename TT, typename T, typename...Ts, typename int_t, auto I, auto...Is>
+        struct gather_helper<TT<T,Ts...>,integer_sequence<int_t,I,Is...>
+            , std::enable_if_t<(sizeof...(Ts)>0)&&(sizeof...(Is)>0)>
+        >
+        {
+            // ret[i] = vec[idx[i]]
+            using type_list = TT<T,Ts...>;
+            using type_i = tuple_element_t<I,type_list>;
+            using rest_t = type_t<gather_helper<TT<T,Ts...>,integer_sequence<int_t,Is...>>>;
+            using type   = merge_t<TT<type_i>,rest_t>;
+        }; // gather_helper
+
+        template <template<typename...>typename TT, typename T, typename...Ts, typename int_t, auto I>
+        struct gather_helper<TT<T,Ts...>,integer_sequence<int_t,I>>
+        {
+            using type_list = TT<T,Ts...>;
+            using type_i = tuple_element_t<I,type_list>;
+            using type = TT<type_i>;
+        }; // gather_helper
+
+        template <typename T, typename U, typename=void>
+        struct scatter_helper
+        {
+            using type = void;
+        }; // scatter_helper
+
+        template <template<typename...>typename TT, typename T, typename T1, typename...Ts, typename int_t, auto I, auto I1, auto...Is>
+        struct scatter_helper<TT<T,T1,Ts...>,integer_sequence<int_t,I,I1,Is...>
+            , std::enable_if_t<(sizeof...(Ts)>0)&&(sizeof...(Is)>0)>
+        >
+        {
+            // ret[indices[i]] = type_list[i]
+            // indices[i] = I;
+
+            // example:
+            // type_list = <int,size_t,double>;
+            // indices = <2,1,0>
+            // i = 0; (Ts=1 - Is=1)
+            // type_list[i] = int
+            // rest_t = scatter(<int,size_t,double>,<1,0>)
+            // i = 1; (Ts=1 - Is=0)
+            // rest_t = <double,size_t,double>
+            // type = replace(<double,size_t,double>,int,2)
+            // type = <double,size_t,int>
+
+            static constexpr auto i = sizeof...(Ts) - sizeof...(Is);
+            using type_list   = TT<T,T1,Ts...>;
+            using type_list_i = tuple_element_t<i,type_list>;
+            
+            using rest_indices = integer_sequence<int_t,I1,Is...>;
+            using rest_t = type_t<scatter_helper<type_list,rest_indices>>;
+
+            using type = replace_at_t<rest_t,type_list_i,I>;
+        }; // scatter_helper
+
+        template <template<typename...>typename TT, typename T, typename T1, typename...Ts, typename int_t, auto I0, auto I1>
+        struct scatter_helper<TT<T,T1,Ts...>,integer_sequence<int_t,I0,I1>
+            // , std::enable_if_t<(sizeof...(Ts)>0)>
+        >
+        {
+            // ret[indices[i]] = type_list[i]
+            static constexpr auto i = sizeof...(Ts);
+            using type_list = TT<T,T1,Ts...>;
+            using type_0 = tuple_element_t<i,type_list>;
+            using type_1 = tuple_element_t<i+1,type_list>;
+            using type = replace_at_t<
+                replace_at_t<type_list,type_1,I1>,
+                type_0, I0
+            >;
+        }; // scatter_helper
+
+        // template <template<typename...>typename TT, typename T, typename T1, typename int_t, auto I0, auto I1>
+        // struct scatter_helper<TT<T,T1>,integer_sequence<int_t,I0,I1>>
+        // {
+        //     // ret[indices[i]] = type_list[i]
+        //     using type_list = TT<T,T1>;
+        //     using type_0 = tuple_element_t<I0,type_list>;
+        //     using type_1 = tuple_element_t<I1,type_list>;
+        //     using type = TT<type_0,type_1>;
+        // }; // scatter_helper
+    } // namespace detail
+
+    /**
+     * @brief metafunction to perform gather op `ret[i] = vec[idx[i]]` on type-list
+     * 
+     * @tparam T type-list
+     * @tparam U integer_sequence represents the gather indices
+     */
+    template <typename T, typename U>
+    struct gather
+    {
+        using type = type_t<detail::gather_helper<T,U>>;
+    }; // gather
+
+    /**
+     * @brief helper alias template for gather
+     * 
+     * @tparam T type-list
+     * @tparam U integer_sequence represents the gather indices
+     */
+    template <typename T, typename U>
+    using gather_t = type_t<gather<T,U>>;
+
+    /**
+     * @brief metafunction to perform scatter op `ret[idx[i]] = vec[i]` on type-list
+     * 
+     * @tparam T type-list
+     * @tparam U integer_sequence respresenting scatter indices
+     */
+    template <typename T, typename U>
+    struct scatter
+    {
+        using type = type_t<detail::scatter_helper<T,U>>;
+    }; // scatter
+
+    /**
+     * @brief helper alias template for scatter
+     * 
+     * @tparam T type-list
+     * @tparam U integer_sequence respresenting scatter indices
+     */
+    template <typename T, typename U>
+    using scatter_t = type_t<scatter<T,U>>;
+
+    /**
+     * @brief helper alias template to construct (tuple of) integral_constant
+     * 
+     * @tparam I first constant
+     * @tparam Is optional constant
+     */
+    template <auto I, auto...Is>
+    using constant_t = std::conditional_t<
+        (sizeof...(Is) > 0),
+        std::tuple<
+            std::integral_constant<decltype(I),I>,
+            std::integral_constant<decltype(Is),Is>...
+        >,
+        std::integral_constant<decltype(I),I>
+    >;
+
+    /**
+     * @brief helper alias template for constant_t
+     * 
+     * @tparam I first constant
+     * @tparam Is optional constant
+     */
+    template <auto I, auto...Is>
+    using ct = constant_t<I,Is...>;
+
+    /**
+     * @brief helper alias template to construct integer_sequence
+     * 
+     * @tparam I 
+     * @tparam Is 
+     */
+    template <auto I, auto...Is>
+    using sequence_t = std::integer_sequence<decltype(I),I,Is...>;
+
+    /**
+     * @brief metafunction to transform (tuple of) integral constant to integer sequence
+     * 
+     * @tparam T type to transform
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct constant_to_sequence
+    {
+        using type = void;
+    }; // constant_to_sequence
+
+    template <typename T, auto I>
+    struct constant_to_sequence<std::integral_constant<T,I>>
+    {
+        using type = sequence_t<I>;
+    }; // constant_to_sequence
+
+    template <auto I, auto...Is>
+    struct constant_to_sequence<
+        std::tuple<
+            std::integral_constant<decltype(I),I>,
+            std::integral_constant<decltype(Is),Is>...
+        >
+    >
+    {
+        using type = sequence_t<I,Is...>;
+    }; // constant_to_sequence
+
+    /**
+     * @brief helper alias template for constant_to_sequence
+     * 
+     * @tparam T type to transform
+     */
+    template <typename T>
+    using constant_to_sequence_t = type_t<constant_to_sequence<T>>;
+
+    /**
+     * @brief metafunction to transform integer sequence to (tuple of) integeral constant
+     * 
+     * @tparam T type to transform
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct sequence_to_constant
+    {
+        using type = void;
+    }; // sequence_to_constant
+
+    template <typename T, auto I, auto...Is>
+    struct sequence_to_constant<std::integer_sequence<T,I,Is...>>
+    {
+        using type = constant_t<I,Is...>;
+    }; // sequence_to_constant
+
+    /**
+     * @brief helper alias template for sequence_to_constant
+     * 
+     * @tparam T type to transform
+     */
+    template <typename T>
+    using sequence_to_constant_t = type_t<sequence_to_constant<T>>;
 
     /** @} */ // end group meta
 } // namespace nmtools::meta
