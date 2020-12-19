@@ -209,13 +209,21 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     ## metafunctions
     src/doctest/meta.cpp
     src/doctest/meta/traits/ndarray.cpp
+    src/doctest/meta/traits/has_template_get.cpp
     src/doctest/meta/traits/has_type.cpp
     src/doctest/meta/traits/has_square_bracket.cpp
     src/doctest/meta/transform/apply.cpp
+    src/doctest/meta/transform/constant.cpp
+    src/doctest/meta/transform/constant_to_sequence.cpp
+    src/doctest/meta/transform/gather.cpp
     src/doctest/meta/transform/get_element_type.cpp
     src/doctest/meta/transform/replace_element_type.cpp
     src/doctest/meta/transform/nested_array_dim.cpp
     src/doctest/meta/transform/remove_nested_array_extents.cpp
+    src/doctest/meta/transform/replace_at.cpp
+    src/doctest/meta/transform/sequence.cpp
+    src/doctest/meta/transform/split_at.cpp
+    src/doctest/meta/transform/scatter.cpp
     src/doctest/meta/get_container_value_type.cpp
     src/doctest/meta/blas/mmadd.cpp
     src/doctest/meta/blas/mmmul.cpp

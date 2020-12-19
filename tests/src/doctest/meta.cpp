@@ -236,7 +236,7 @@ TEST_CASE("traits" * doctest::skip(true)) // type_list_conjunction
     }
 }
 
-using meta::type_merge_t;
+using meta::merge_t;
 using meta::type_push_back_t;
 using meta::pop_first_t;
 using meta::pop_last_t;
@@ -245,10 +245,10 @@ using meta::make_reversed_index_sequence;
 
 TEST_CASE("meta" * doctest::skip(true))
 {
-    // type_merge test
-    STATIC_CHECK(( std::is_same_v<type_merge_t<std::tuple<int,char>,std::tuple<double>>, std::tuple<int,char,double>> ));
-    STATIC_CHECK(( std::is_same_v<type_merge_t<std::tuple<int,char>,double>, std::tuple<int,char,double>> ));
-    STATIC_CHECK(( std::is_same_v<type_merge_t<int,std::tuple<char,double>>, std::tuple<int,char,double>> ));
+    // merge test
+    STATIC_CHECK(( std::is_same_v<merge_t<std::tuple<int,char>,std::tuple<double>>, std::tuple<int,char,double>> ));
+    STATIC_CHECK(( std::is_same_v<merge_t<std::tuple<int,char>,double>, std::tuple<int,char,double>> ));
+    STATIC_CHECK(( std::is_same_v<merge_t<int,std::tuple<char,double>>, std::tuple<int,char,double>> ));
 
     // type_push_back test
     STATIC_CHECK(( std::is_same_v<type_push_back_t<std::tuple<int,char>,double>, std::tuple<int,char,double>> ));
