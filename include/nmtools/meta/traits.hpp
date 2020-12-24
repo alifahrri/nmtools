@@ -9,6 +9,8 @@
 #include <tuple>
 #include <utility>
 
+#include "nmtools/meta/detail.hpp"
+
 namespace nmtools::meta {
 
     /** @defgroup traits
@@ -429,38 +431,6 @@ namespace nmtools::meta {
     inline constexpr bool has_at_v = has_at<T,size_type>::value;
 
     /**
-     * @brief check if T has bracket operator (()) with size_type as argument
-     * 
-     * @tparam T type to check
-     * @tparam size_type argument type
-     * @tparam typename=void 
-     */
-    template <typename T, typename size_type, typename=void>
-    struct has_bracket : false_type {};
-
-    /**
-     * @brief specialization of has_bracket for true case.
-     * Enabled if T has bracket operator with size_type as argument,
-     * e.g. declval<T>()(i), with i of type size_type, is well-formed.
-     * 
-     * @tparam T type to check
-     * @tparam size_type argument type
-     */
-    template <typename T, typename size_type>
-    struct has_bracket<T,size_type,
-        void_t<decltype(declval<T>()(declval<size_type>()))>
-    > : true_type {};
-
-    /**
-     * @brief helper variable template for has_bracket.
-     * 
-     * @tparam T type to check
-     * @tparam size_type argument type
-     */
-    template <typename T, typename size_type>
-    inline constexpr bool has_bracket_v = has_bracket<T,size_type>::value;
-
-    /**
      * @brief check if type T has operator at with size_type as single argument.
      * 
      * @tparam T type to check.
@@ -825,6 +795,25 @@ namespace nmtools::meta {
     inline constexpr bool has_funcnd_v = has_funcnd<T,size_types...>::value;
 
     /**
+     * @brief check if T has bracket operator (()) with size_type as argument
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     * @tparam typename=void 
+     */
+    template <typename T, typename size_type, typename=void>
+    struct has_bracket : has_funcnd<T,size_type> {};
+
+    /**
+     * @brief helper variable template for has_bracket.
+     * 
+     * @tparam T type to check
+     * @tparam size_type argument type
+     */
+    template <typename T, typename size_type>
+    inline constexpr bool has_bracket_v = has_bracket<T,size_type>::value;
+
+    /**
      * @brief check if type `T` has `operator[]` that takes `size_types...` as arguments.
      * 
      * @tparam T type to check
@@ -1011,7 +1000,7 @@ namespace nmtools::meta {
 
     namespace detail {
         /**
-         * @brief actual implementation of type_list_disjunction (OR)
+         * @brief actual implementation of apply_disjunction (OR)
          * 
          * @tparam type_list type list to be checked
          * @tparam trait template template parameter corresponding to trait to be satisfied
@@ -1020,15 +1009,15 @@ namespace nmtools::meta {
          * @todo make this consteval
          */
         template <typename type_list, template <typename> typename trait, size_t ...Is>
-        constexpr auto type_list_disjunction_impl(std::integer_sequence<size_t,Is...>)
+        constexpr auto apply_disjunction_impl(std::integer_sequence<size_t,Is...>)
         {
             // note use declval instead of simply call type_list{}
             // to make sure even type that do not have default initialization can be checked
             return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value || ...);
-        } // type_list_disjunction_impl
+        } // apply_disjunction_impl
 
         /**
-         * @brief actual implementation of type_list_conjunction (AND)
+         * @brief actual implementation of apply_conjunction (AND)
          * 
          * @tparam type_list type list to be checked
          * @tparam trait template template parameter corresponding to trait to be satisfied
@@ -1037,44 +1026,74 @@ namespace nmtools::meta {
          * @todo make this consteval
          */
         template <typename type_list, template <typename> typename trait, size_t ...Is>
-        constexpr auto type_list_conjunction_impl(std::integer_sequence<size_t,Is...>)
+        constexpr auto apply_conjunction_impl(std::integer_sequence<size_t,Is...>)
         {
             // note use declval instead of simply call type_list{}
             // to make sure even type that do not have default initialization can be checked
             return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value && ...);
-        } // type_list_conjunction_impl
+        } // apply_conjunction_impl
 
         /**
-         * @brief entrypoint to actual implementation of type_list_disjunction (OR)
+         * @brief entrypoint to actual implementation of apply_disjunction (OR)
          * 
          * @tparam type_list type list to be checked
          * @tparam trait template template parameter corresponding to trait to be satisfied
-         * @return constexpr auto 
+         * @return std::enable_if_t<has_tuple_size_v<type_list>,bool> 
          * @todo make this consteval
          */
         template <typename type_list, template <typename> typename trait>
-        constexpr auto type_list_disjunction_impl()
+        constexpr auto apply_disjunction_impl()
+            -> std::enable_if_t<has_tuple_size_v<type_list>,bool>
         {
             constexpr auto N = std::tuple_size_v<type_list>;
             using indices_t = std::make_index_sequence<N>;
-            return type_list_disjunction_impl<type_list,trait>(indices_t{});
-        } // type_list_disjunction_impl
+            return apply_disjunction_impl<type_list,trait>(indices_t{});
+        } // apply_disjunction_impl
 
         /**
-         * @brief entrypoint to actual implementation of type_list_conjunction (AND)
+         * @brief entrypoint to actual implementation of apply_conjunction (AND)
          * 
          * @tparam type_list type list to be checked
          * @tparam trait template template parameter corresponding to trait to be satisfied
-         * @return constexpr auto 
+         * @return std::enable_if_t<has_tuple_size_v<type_list>,bool> 
          * @todo make this consteval
          */
         template <typename type_list, template <typename> typename trait>
-        constexpr auto type_list_conjunction_impl()
+        constexpr auto apply_conjunction_impl()
+            -> std::enable_if_t<has_tuple_size_v<type_list>,bool>
         {
             constexpr auto N = std::tuple_size_v<type_list>;
             using indices_t = std::make_index_sequence<N>;
-            return type_list_conjunction_impl<type_list,trait>(indices_t{});
-        } // type_list_conjunction_impl
+            return apply_conjunction_impl<type_list,trait>(indices_t{});
+        } // apply_conjunction_impl
+
+        /**
+         * @brief overload when type_list doesnt have tuple_size
+         * 
+         * @tparam type_list 
+         * @tparam trait 
+         * @return std::enable_if_t<!has_tuple_size_v<type_list>,detail::fail_t> 
+         */
+        template <typename type_list, template <typename> typename trait>
+        constexpr auto apply_disjunction_impl()
+            -> std::enable_if_t<!has_tuple_size_v<type_list>,detail::fail_t>
+        {
+            return detail::fail_t{};
+        } // apply_disjunction_impl
+
+        /**
+         * @brief overload when type_list doesnt have tuple_size
+         * 
+         * @tparam type_list 
+         * @tparam trait 
+         * @return std::enable_if_t<!has_tuple_size_v<type_list>,detail::fail_t> 
+         */
+        template <typename type_list, template <typename> typename trait>
+        constexpr auto apply_conjunction_impl()
+            -> std::enable_if_t<!has_tuple_size_v<type_list>,detail::fail_t>
+        {
+            return detail::fail_t{};
+        } // apply_conjunction_impl
     } // namespace detail
 
     /**
@@ -1084,13 +1103,13 @@ namespace nmtools::meta {
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
     template <typename type_list, template <typename> typename trait>
-    struct type_list_disjunction
+    struct apply_disjunction
     {
-        static_assert (has_tuple_size_v<type_list>,
-            "type_list_disjunction only support types that have tuple_size"
-        );
-        static inline constexpr auto value = detail::type_list_disjunction_impl<type_list,trait>();
-    }; // type_list_disjunction
+        static inline constexpr auto impl_value = detail::apply_disjunction_impl<type_list,trait>();
+        using value_type = decltype(impl_value);
+        // make false on fail (value_type==fail_t)
+        static inline constexpr auto value = detail::fail_to_false(impl_value);
+    }; // apply_disjunction
 
     /**
      * @brief helper variable template to check if all type in type_list satisfy trait
@@ -1099,7 +1118,7 @@ namespace nmtools::meta {
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
     template <typename type_list, template <typename> typename trait>
-    static constexpr auto type_list_disjunction_v = type_list_disjunction<type_list,trait>::value;
+    static constexpr auto apply_disjunction_v = apply_disjunction<type_list,trait>::value;
 
     /**
      * @brief check if all type in type_list satisfy trait
@@ -1108,13 +1127,13 @@ namespace nmtools::meta {
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
     template <typename type_list, template <typename> typename trait>
-    struct type_list_conjunction
+    struct apply_conjunction
     {
-        static_assert (has_tuple_size_v<type_list>,
-            "type_list_conjunction only support types that have tuple_size"
-        );
-        static inline constexpr auto value = detail::type_list_conjunction_impl<type_list,trait>();
-    }; // type_list_conjunction
+        static inline constexpr auto impl_value = detail::apply_conjunction_impl<type_list,trait>();
+        using value_type = decltype(impl_value);
+        // make false on fail (value_type==fail_t)
+        static inline constexpr auto value = detail::fail_to_false(impl_value);
+    }; // apply_conjunction
 
     /**
      * @brief helper variable template to check if any type in type_list satisfy trait
@@ -1123,7 +1142,7 @@ namespace nmtools::meta {
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
     template <typename type_list, template <typename> typename trait>
-    static constexpr auto type_list_conjunction_v = type_list_conjunction<type_list,trait>::value;
+    static constexpr auto apply_conjunction_v = apply_conjunction<type_list,trait>::value;
 
     /**
      * @brief check if given type T is specialization of template-template param primary_template

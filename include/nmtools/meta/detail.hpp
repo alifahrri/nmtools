@@ -77,6 +77,27 @@ namespace nmtools::meta
          */
         template <typename T>
         using void_to_fail_t = typename void_to_fail<T>::type;
+
+        /**
+         * @brief helper function to map fail_t to bool as false
+         * 
+         * @param v 
+         * @return constexpr auto 
+         */
+        constexpr auto fail_to_false(bool v)
+        {
+            return v;
+        } // fail_to_false
+
+        /**
+         * @brief helper function to map fail_t to bool as false
+         * 
+         * @return constexpr auto 
+         */
+        constexpr auto fail_to_false(fail_t)
+        {
+            return false;
+        } // fail_to_false
     } // namespace detail
 } // namespace nmtools::meta
 

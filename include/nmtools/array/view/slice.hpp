@@ -77,10 +77,10 @@ namespace nmtools::view
             // handle fixed size 2D array, start_t and stop_t must be tuple
             if constexpr (start_is_tuple && stop_is_tuple) {
                 // @todo check if elements of start & stop is compile-time constant
-                // constexpr auto any_start_is_ct = meta::type_list_conjunction_v<start_t,meta::is_integral_constant>;
-                // constexpr auto all_start_is_ct = meta::type_list_disjunction_v<start_t,meta::is_integral_constant>;
-                // constexpr auto any_stop_is_ct  = meta::type_list_conjunction_v<stop_t,meta::is_integral_constant>;
-                // constexpr auto all_stop_is_ct  = meta::type_list_disjunction_v<stop_t,meta::is_integral_constant>;
+                // constexpr auto any_start_is_ct = meta::apply_conjunction_v<start_t,meta::is_integral_constant>;
+                // constexpr auto all_start_is_ct = meta::apply_disjunction_v<start_t,meta::is_integral_constant>;
+                // constexpr auto any_stop_is_ct  = meta::apply_conjunction_v<stop_t,meta::is_integral_constant>;
+                // constexpr auto all_stop_is_ct  = meta::apply_disjunction_v<stop_t,meta::is_integral_constant>;
                 /* @todo pack as type */
                 return unpack_slice_indices(a,start,stop);
             }
@@ -399,13 +399,13 @@ namespace nmtools
     struct meta::fixed_vector_size< view::slice_t<array_t,start_t,stop_t>
         , std::enable_if_t<
             // @note use std::conjuction to short circuit
-            // since type_list_conjunction requires tparam to have tuple_size
+            // since apply_conjunction requires tparam to have tuple_size
             std::conjunction_v<
                 meta::is_fixed_size_vector<meta::remove_cvref_t<array_t>>,
                 meta::has_tuple_size<start_t>,
-                meta::type_list_conjunction<start_t,meta::is_integral_constant>,
+                meta::apply_conjunction<start_t,meta::is_integral_constant>,
                 meta::has_tuple_size<stop_t>,
-                meta::type_list_conjunction<stop_t,meta::is_integral_constant>
+                meta::apply_conjunction<stop_t,meta::is_integral_constant>
             >
         >
     > : meta::fixed_vector_size< meta::remove_cvref_t<array_t> > {};
@@ -423,9 +423,9 @@ namespace nmtools
             std::conjunction_v<
                 meta::is_fixed_size_matrix<meta::remove_cvref_t<array_t>>,
                 meta::has_tuple_size<start_t>,
-                meta::type_list_conjunction<start_t,meta::is_integral_constant>,
+                meta::apply_conjunction<start_t,meta::is_integral_constant>,
                 meta::has_tuple_size<stop_t>,
-                meta::type_list_conjunction<stop_t,meta::is_integral_constant>
+                meta::apply_conjunction<stop_t,meta::is_integral_constant>
             >
         >
     > : meta::fixed_matrix_size< meta::remove_cvref_t<array_t> > {};

@@ -14,6 +14,7 @@
 #include "nmtools/utility/helper.hpp"
 #include "nmtools/utils/isclose.hpp"
 #include "nmtools/utils/isequal.hpp"
+#include "nmtools/constants.hpp"
 #include "testing/testing.hpp"
 
 #include "testing/doctest.hpp"
@@ -26,6 +27,7 @@
 #define NMTOOLS_STATIC_ASSERT NMTOOLS_DEFERRED_STATIC_ASSERT
 
 namespace view = nmtools::view;
+using namespace nmtools::literals;
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
 using nmtools::array::fixed_vector;
@@ -45,10 +47,10 @@ TEST_CASE("transpose(std::array)"*doctest::test_suite("view::transpose"))
 
     // LOG_TYPEINFO( decltype(array_ref) );
     STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
 
     CHECK( array_ref.dim()==1 );
-
-    STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
     CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
 
@@ -64,13 +66,6 @@ TEST_CASE("transpose(std::array)"*doctest::test_suite("view::transpose"))
         array[0] = 3;
         auto expected = std::array{3.,2.,3.};
         CHECK( isclose(array_ref,expected) );
-    }
-
-    {
-        // view should have meta::fixed_ndarray_shape if its underlying array have too
-        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     }
 }
 
@@ -91,10 +86,13 @@ TEST_CASE("make_view<transpose_t>(std::array)"*doctest::test_suite("view::transp
     // LOG_TYPEINFO( decltype(array_ref) );
 
     STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
+    STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_vector_value_type_t<decltype(array_ref)>> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
+    STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
 
     CHECK( array_ref.dim()==1 );
 
-    STATIC_CHECK(( std::is_same_v<decltype(array_ref.shape()),std::array<size_t,1>> ));
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
@@ -108,15 +106,6 @@ TEST_CASE("make_view<transpose_t>(std::array)"*doctest::test_suite("view::transp
         array[0] = 3;
         auto expected = std::array{3.,2.,3.};
         CHECK( isclose(array_ref,expected) );
-    }
-
-    {
-        // view::decorator_t should have meta::fixed_ndarray_shape if its underlying view have too
-        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_vector_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
@@ -141,17 +130,18 @@ TEST_CASE("transpose(std::array[2])"*doctest::test_suite("view::transpose")) // 
         STATIC_CHECK(( std::is_same_v<array_t,std::array<size_t,2>> ));
     }
 
-    CHECK(array_ref.dim()==2);
-
-    auto shape = array_ref.shape();
-
     // LOG_TYPEINFO(decltype(shape));
     using expected_t = std::array<size_t,2>;
-    STATIC_CHECK_IS_SAME( decltype(shape), expected_t );
+    STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
     // @note since the transpose doesnt specify axes (that is none_t),
     // the view should be also fixed size
     STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
 
+    CHECK(array_ref.dim()==2);
+    auto shape = array_ref.shape();
     CHECK( isequal(shape,std::array{3,2}) );
     CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
@@ -173,12 +163,6 @@ TEST_CASE("transpose(std::array[2])"*doctest::test_suite("view::transpose")) // 
         };
         CHECK( isclose(array_ref,expected) );
     }
-
-    {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
-    }
 }
 
 /**
@@ -191,16 +175,18 @@ TEST_CASE("transpose(std::array[2],tuple{0,1})"*doctest::test_suite("view::trans
         std::array{3.,4.,5.},
     };
     auto array_ref = view::transpose(array,std::tuple{0,1});
+
     // @note even if the underlying array is fixed, but the axes are not compile-time value
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-
-    CHECK(array_ref.dim()==2);
-
-    auto shape = array_ref.shape();
-
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
     // LOG_TYPEINFO(decltype(shape));
     using expected_t = std::array<size_t,2>;
-    STATIC_CHECK_IS_SAME( decltype(shape), expected_t );
+    STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
+
+    CHECK(array_ref.dim()==2);
+    auto shape = array_ref.shape();
     CHECK( isequal(shape,std::array{2,3}) );
     CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{2,3}) );
 
@@ -221,11 +207,45 @@ TEST_CASE("transpose(std::array[2],tuple{0,1})"*doctest::test_suite("view::trans
         };
         CHECK( isclose(expected,array_ref) );
     }
+}
+
+TEST_CASE("transpose(std::array[2],tuple{0_ct,1_ct})"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    auto array = std::array{
+        std::array{1.,2.,3.},
+        std::array{3.,4.,5.},
+    };
+    auto array_ref = view::transpose(array,std::tuple{0_ct,1_ct});
+
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
+    // LOG_TYPEINFO(decltype(shape));
+    using expected_t = std::array<size_t,2>;
+    STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
+
+    CHECK(array_ref.dim()==2);
+    auto shape = array_ref.shape();
+    CHECK( isequal(shape,std::array{2,3}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{2,3}) );
 
     {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        auto expected = std::array{
+            std::array{1.,2.,3.},
+            std::array{3.,4.,5.},
+        };
+        CHECK( isclose(expected,array_ref) );
+    }
+
+    {
+        nmtools::at(array,0,1) = 6;
+        nmtools::at(array,1,0) = 7;
+        auto expected = std::array{
+            std::array{1.,6.,3.},
+            std::array{7.,4.,5.},
+        };
+        CHECK( isclose(expected,array_ref) );
     }
 }
 
@@ -241,8 +261,11 @@ TEST_CASE("transpose(std::array[2],tuple{1,0})"*doctest::test_suite("view::trans
     auto array_ref = view::transpose(array,std::tuple{1,0});
     // @note even if the underlying array is fixed, but the axes are not compile-time value
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-    CHECK(array_ref.dim()==2);
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
 
+    CHECK(array_ref.dim()==2);
     CHECK( isequal(array_ref.shape(),std::array{3,2}) );
     CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
@@ -265,11 +288,43 @@ TEST_CASE("transpose(std::array[2],tuple{1,0})"*doctest::test_suite("view::trans
         };
         CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
+}
+
+TEST_CASE("transpose(std::array[2],tuple{1_ct,0_ct})"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    auto array = std::array{
+        std::array{1.,2.,3.},
+        std::array{3.,4.,5.},
+    };
+    auto array_ref = view::transpose(array,std::tuple{1_ct,0_ct});
+
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
+
+    CHECK(array_ref.dim()==2);
+    CHECK( isequal(array_ref.shape(),std::array{3,2}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
     {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        auto expected = std::array{
+            std::array{1.,3.},
+            std::array{2.,4.},
+            std::array{3.,5.},
+        };
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
+    }
+    
+    {
+        nmtools::at(array,0,1) = 6;
+        nmtools::at(array,1,0) = 7;
+        auto expected = std::array{
+            std::array{1.,7.},
+            std::array{6.,4.},
+            std::array{3.,5.},
+        };
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
 }
 
@@ -282,11 +337,10 @@ TEST_CASE("transpose(std::vector)"*doctest::test_suite("view::transpose"))
     auto array_ref = view::transpose(array);
 
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-
     using expected_t = std::array<size_t,1>;
     STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
+
+    CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
@@ -319,6 +373,9 @@ TEST_CASE("transpose(std::vector[2])"*doctest::test_suite("view::transpose")) //
 
     // @note since the referenced array is not fixed-size, the the view itself is not either
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
 
     CHECK(array_ref.dim()==2);
 
@@ -344,12 +401,6 @@ TEST_CASE("transpose(std::vector[2])"*doctest::test_suite("view::transpose")) //
         };
         CHECK( isclose(array_ref,expected) );
     }
-
-    {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
-    }
 }
 
 /**
@@ -362,11 +413,11 @@ TEST_CASE("transpose(fixed_vector)"*doctest::test_suite("view::transpose"))
 
     // LOG_TYPEINFO( decltype(array_ref) );
     STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-
+    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     using expected_t = std::tuple<size_t>;
     STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
+
+    CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
@@ -384,13 +435,6 @@ TEST_CASE("transpose(fixed_vector)"*doctest::test_suite("view::transpose"))
         auto expected = std::array{3.,2.,3.};
         CHECK( isclose(array_ref,expected) );
     }
-
-    {
-        // view should have meta::fixed_ndarray_shape if its underlying array have too
-        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    }
 }
 
 /**
@@ -406,6 +450,10 @@ TEST_CASE("transpose(fixed_matrix)"*doctest::test_suite("view::transpose")) // r
     };
     // @note since the referenced array is fixed-size and axes_t of array_ref is none_t, the view is also fixed-size
     STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
+
     CHECK(array_ref.dim()==2);
 
     CHECK( isequal(array_ref.shape(),std::array{3,2}) );
@@ -429,12 +477,6 @@ TEST_CASE("transpose(fixed_matrix)"*doctest::test_suite("view::transpose")) // r
             std::array{3.,5.},
         };
         CHECK( nmtools::utils::isclose(array_ref,expected) );
-    }
-
-    {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
@@ -451,6 +493,10 @@ TEST_CASE("transpose(fixed_matrix,tuple{1,0})"*doctest::test_suite("view::transp
     };
     // @note even if the referenced array is fixed-size, when the axes value is only known at runtime, then the view is not fixed-size
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
+
     CHECK(array_ref.dim()==2);
 
     CHECK( isequal(array_ref.shape(),std::array{3,2}) );
@@ -475,11 +521,45 @@ TEST_CASE("transpose(fixed_matrix,tuple{1,0})"*doctest::test_suite("view::transp
         };
         CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
+}
+
+TEST_CASE("transpose(fixed_matrix,tuple{1_ct,0_ct})"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
+{
+    auto array = fixed_matrix<double,2,3>{};
+    auto array_ref = view::transpose(array,std::tuple{1_ct,0_ct});
+    array = std::array{
+        std::array{1.,2.,3.},
+        std::array{3.,4.,5.},
+    };
+    // @note even if the referenced array is fixed-size, when the axes value is only known at runtime, then the view is not fixed-size
+    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
+
+    CHECK(array_ref.dim()==2);
+
+    CHECK( isequal(array_ref.shape(),std::array{3,2}) );
+    CHECK( isequal(nmtools::matrix_size(array_ref),std::tuple{3,2}) );
 
     {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        auto expected = std::array{
+            std::array{1.,3.},
+            std::array{2.,4.},
+            std::array{3.,5.},
+        };
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
+    }
+    
+    {
+        nmtools::at(array,0,1) = 6;
+        nmtools::at(array,1,0) = 7;
+        auto expected = std::array{
+            std::array{1.,7.},
+            std::array{6.,4.},
+            std::array{3.,5.},
+        };
+        CHECK( nmtools::utils::isclose(array_ref,expected) );
     }
 }
 
@@ -492,12 +572,12 @@ TEST_CASE("transpose(dynamic_vector)"*doctest::test_suite("view::transpose"))
     auto array_ref = view::transpose(array);
 
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
     using expected_t = std::tuple<size_t>;
     STATIC_CHECK_IS_SAME( decltype(array_ref.shape()), expected_t );
-    // @todo provide isequal for integer type and use isequal instead of isclose
+
+    CHECK( array_ref.dim()==1 );
     CHECK( isequal(array_ref.shape(),std::array{3}) );
     CHECK( nmtools::vector_size(array_ref)==3 );
 
@@ -522,6 +602,7 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose"))
     auto array_ref = view::transpose(array);
 
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
 
@@ -556,6 +637,10 @@ TEST_CASE("transpose(dynamic_matrix)"*doctest::test_suite("view::transpose")) //
 
     // @note since the referenced array is not fixed-size, the the view itself is not either
     STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+    STATIC_CHECK(( !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_matrix_value_type_t<decltype(array_ref)> );
+    STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
 
     CHECK(array_ref.dim()==2);
 
@@ -580,12 +665,6 @@ TEST_CASE("transpose(dynamic_matrix)"*doctest::test_suite("view::transpose")) //
             std::array{3.,5.},
         };
         CHECK( isclose(array_ref,expected) );
-    }
-
-    {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
@@ -612,6 +691,7 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
 
         // @note since the referenced array is not fixed-size, the the view itself is not either
         STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
 
         CHECK(array_ref.dim()==2);
 
@@ -622,7 +702,6 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
         nmtools::at(array,1,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 
     // test with axes as parameter
@@ -635,6 +714,7 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
 
         // @note since the referenced array is not fixed-size, the the view itself is not either
         STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
 
         CHECK(array_ref.dim()==2);
 
@@ -645,7 +725,6 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
         nmtools::at(array,1,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
@@ -692,9 +771,12 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
             },
         });
         auto array_ref = view::transpose(array);
+        using array_ref_t = decltype(array_ref);
 
         // @note since the referenced array is not fixed-size, the the view itself is not either
-        STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<array_ref_t> ));
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<array_ref_t> );
 
         CHECK(array_ref.dim()==3);
 
@@ -705,7 +787,6 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
         nmtools::at(array,1,0,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
     {
         auto array = dynamic_ndarray({
@@ -719,9 +800,12 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
             },
         });
         auto array_ref = view::transpose(array,std::array{2,1,0});
+        using array_ref_t = decltype(array_ref);
 
         // @note since the referenced array is not fixed-size, the the view itself is not either
-        STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<array_ref_t> ));
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<array_ref_t> );
 
         CHECK(array_ref.dim()==3);
 
@@ -732,7 +816,6 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
         nmtools::at(array,1,0,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
 
         // check index mapping
         NMTOOLS_ASSERT_EQUAL( (array_ref.index(std::array{0,0,0})), (std::array{0,0,0}) );
@@ -755,8 +838,10 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
             },
         });
         auto array_ref = view::transpose(array,std::array{2,0,1});
+        using array_ref_t = decltype(array_ref);
 
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<array_ref_t> );
 
         CHECK(array_ref.dim()==3);
 
@@ -783,8 +868,10 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
             },
         });
         auto array_ref = view::transpose(array,std::array{2,0,1});
+        using array_ref_t = decltype(array_ref);
 
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<array_ref_t> );
 
         CHECK(array_ref.dim()==3);
 
@@ -958,8 +1045,11 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
     });
     {
         auto array_ref = view::transpose(array);
+        using array_ref_t = decltype(array_ref);
 
-        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, array_ref_t );
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<array_ref_t> );
 
         CHECK(array_ref.dim()==4);
 
@@ -970,12 +1060,14 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
         nmtools::at(array,1,0,0,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
     {
         auto array_ref = view::transpose(array,std::array{3,2,1,0});
+        using array_ref_t = decltype(array_ref);
 
-        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, array_ref_t );
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<array_ref_t> );
 
         CHECK(array_ref.dim()==4);
 
@@ -986,12 +1078,14 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
         nmtools::at(array,1,0,0,0) = 5;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
     {
         auto array_ref = view::transpose(array,std::array{3,1,2,0});
+        using array_ref_t = decltype(array_ref);
 
-        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, array_ref_t );
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<array_ref_t> );
 
         CHECK(array_ref.dim()==4);
 
@@ -1002,7 +1096,6 @@ TEST_CASE("transpose(dynamic_ndarray)"*doctest::test_suite("view::transpose")) /
         NMTOOLS_ASSERT_CLOSE( array_ref, expected3 );
         nmtools::at(array,1,0,0,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected4 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
@@ -1010,6 +1103,8 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose"))
 {
     auto array = fixed_ndarray{{1.,2.,3.}};
     auto array_ref = view::transpose(array);
+
+    STATIC_CHECK((  nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
 
@@ -1033,39 +1128,116 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose"))
 
 TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // ref with 2D std::arra)y
 {
-    auto array = fixed_ndarray{{
-        {1.,2.,3.},
-        {3.,4.,5.},
-    }};
-    auto array_ref = view::transpose(array);
-
-    CHECK(array_ref.dim()==2);
-
-    auto shape = array_ref.shape();
-    NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2}) );
-    NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2}) );
-
     {
-        auto expected = std::array{
-            std::array{1.,3.},
-            std::array{2.,4.},
-            std::array{3.,5.},
-        };
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        auto array = fixed_ndarray{{
+            {1.,2.,3.},
+            {3.,4.,5.},
+        }};
+        auto array_ref = view::transpose(array);
+        using array_ref_t = decltype(array_ref);
+    
+        STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, array_ref_t );
+        STATIC_CHECK_IS_SAME( nmtools::meta::get_element_type_t<array_ref_t>, double );
+
+        CHECK(array_ref.dim()==2);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2}) );
+
+        {
+            auto expected = std::array{
+                std::array{1.,3.},
+                std::array{2.,4.},
+                std::array{3.,5.},
+            };
+            NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        }
+
+        {
+            nmtools::at(array,1,0) = 10;
+            auto expected = std::array{
+                std::array{1.,10.},
+                std::array{2.,4.},
+                std::array{3.,5.},
+            };
+            NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        }
     }
-
     {
-        nmtools::at(array,1,0) = 10;
-        auto expected = std::array{
-            std::array{1.,10.},
-            std::array{2.,4.},
-            std::array{3.,5.},
-        };
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        auto array = fixed_ndarray{{
+            {1.,2.,3.},
+            {3.,4.,5.},
+        }};
+        auto array_ref = view::transpose(array,std::array{1,0});
+        using array_ref_t = decltype(array_ref);
+    
+        STATIC_CHECK(( !nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, array_ref_t );
+        STATIC_CHECK_IS_SAME( nmtools::meta::get_element_type_t<array_ref_t>, double );
+
+        CHECK(array_ref.dim()==2);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2}) );
+
+        {
+            auto expected = std::array{
+                std::array{1.,3.},
+                std::array{2.,4.},
+                std::array{3.,5.},
+            };
+            NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        }
+
+        {
+            nmtools::at(array,1,0) = 10;
+            auto expected = std::array{
+                std::array{1.,10.},
+                std::array{2.,4.},
+                std::array{3.,5.},
+            };
+            NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        }
     }
-
     {
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        auto array = fixed_ndarray{{
+            {1.,2.,3.},
+            {3.,4.,5.},
+        }};
+        auto array_ref = view::transpose(array,std::tuple{1_ct,0_ct});
+        using array_ref_t = decltype(array_ref);
+    
+        STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<array_ref_t> ));
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, array_ref_t );
+        STATIC_CHECK_IS_SAME( nmtools::meta::get_element_type_t<array_ref_t>, double );
+
+        CHECK(array_ref.dim()==2);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2}) );
+
+        {
+            auto expected = std::array{
+                std::array{1.,3.},
+                std::array{2.,4.},
+                std::array{3.,5.},
+            };
+            NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        }
+
+        {
+            nmtools::at(array,1,0) = 10;
+            auto expected = std::array{
+                std::array{1.,10.},
+                std::array{2.,4.},
+                std::array{3.,5.},
+            };
+            NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        }
     }
 }
 
@@ -1118,12 +1290,13 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // 
         NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,2}) );
         NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,2}) );
 
+        STATIC_CHECK((  nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
         STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
 
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
         nmtools::at(array,1,0,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
     }
     {
         auto array_ref = view::transpose(array,std::array{2,1,0});
@@ -1134,12 +1307,13 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // 
         NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,2}) );
         NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,2}) );
 
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
         STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
 
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
         nmtools::at(array,1,0,0) = 5;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
     }
     {
         auto array = fixed_ndarray{{
@@ -1150,7 +1324,8 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // 
         }};
         auto array_ref = view::transpose(array,std::array{2,0,1});
 
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
 
         CHECK(array_ref.dim()==3);
 
@@ -1171,7 +1346,8 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // 
         }};
         auto array_ref = view::transpose(array,std::array{2,0,1});
 
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
 
         CHECK(array_ref.dim()==3);
 
@@ -1333,6 +1509,7 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // 
     {
         auto array_ref = view::transpose(array);
 
+        STATIC_CHECK((  nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
         STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
 
         CHECK(array_ref.dim()==4);
@@ -1344,11 +1521,12 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // 
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
         nmtools::at(array,1,0,0,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
     }
     {
         auto array_ref = view::transpose(array,std::array{3,2,1,0});
 
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
         STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
 
         CHECK(array_ref.dim()==4);
@@ -1360,11 +1538,12 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // 
         NMTOOLS_ASSERT_CLOSE( array_ref, expected2 );
         nmtools::at(array,1,0,0,0) = 5;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
     }
     {
         auto array_ref = view::transpose(array,std::array{3,1,2,0});
 
+        STATIC_CHECK((  !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
         STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
 
         CHECK(array_ref.dim()==4);
@@ -1376,6 +1555,23 @@ TEST_CASE("transpose(fixed_ndarray)"*doctest::test_suite("view::transpose")) // 
         NMTOOLS_ASSERT_CLOSE( array_ref, expected3 );
         nmtools::at(array,1,0,0,0) = 10;
         NMTOOLS_ASSERT_CLOSE( array_ref, expected4 );
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
+    }
+    {
+        auto array_ref = view::transpose(array,std::tuple{3_ct,1_ct,2_ct,0_ct});
+
+        STATIC_CHECK((  nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+        STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(array_ref) );
+
+        CHECK(array_ref.dim()==4);
+
+        auto shape = array_ref.shape();
+        NMTOOLS_ASSERT_EQUAL( shape, (std::array{3,2,1,2}) );
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), (std::array{3,2,1,2}) );
+
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected4 );
+        nmtools::at(array,1,0,0,0) = 5;
+        NMTOOLS_ASSERT_CLOSE( array_ref, expected3 );
+        STATIC_CHECK_IS_SAME( double, nmtools::meta::get_element_type_t<decltype(array_ref)> );
     }
 }

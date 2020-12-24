@@ -11,12 +11,14 @@
 
 #include "nmtools/array/detail.hpp"
 #include "nmtools/utils/isequal.hpp"
+#include "nmtools/constants.hpp"
 #include "testing/doctest.hpp"
 #include <array>
 #include <tuple>
 #include <vector>
 
 namespace nm = nmtools;
+using namespace nm::literals;
 using nmtools::utils::isequal;
 using std::tuple;
 using std::vector;
@@ -499,6 +501,13 @@ TEST_CASE("gather" * doctest::test_suite("index"))
     }
     {
         auto indices  = tuple{1,2,3};
+        auto order    = tuple{0_ct,1_ct,2_ct};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{1,2,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
         auto order    = tuple{1,0,2};
         auto gatherd = nm::detail::gather(indices, order);
         auto expected = array{2,1,3};
@@ -506,7 +515,21 @@ TEST_CASE("gather" * doctest::test_suite("index"))
     }
     {
         auto indices  = tuple{1,2,3};
+        auto order    = tuple{1_ct,0_ct,2_ct};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,1,3};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
         auto order    = tuple{1,2,0};
+        auto gatherd = nm::detail::gather(indices, order);
+        auto expected = array{2,3,1};
+        NMTOOLS_ASSERT_EQUAL( gatherd, expected );
+    }
+    {
+        auto indices  = tuple{1,2,3};
+        auto order    = tuple{1_ct,2_ct,0_ct};
         auto gatherd = nm::detail::gather(indices, order);
         auto expected = array{2,3,1};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
