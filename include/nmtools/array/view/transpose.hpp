@@ -169,6 +169,25 @@ namespace nmtools
     };
 
     /**
+     * @brief specialization of meta::fixed_matrix_size for transpose view and the axes_t is is integral_constant
+     * 
+     * @tparam array_t 
+     * @tparam indices_t 
+     */
+    template <typename array_t, typename indices_t>
+    struct meta::fixed_matrix_size< transpose_t<array_t, indices_t>
+        , std::enable_if_t<
+            meta::has_tuple_size_v<indices_t>
+            && meta::apply_conjunction_v<indices_t,meta::is_integral_constant>
+        >
+    >
+    {
+        static inline constexpr auto src_value = meta::fixed_matrix_size_v<meta::remove_cvref_t<array_t>>;
+        static inline constexpr auto value = ::nmtools::detail::gather(src_value,indices_t{});
+        using value_type = decltype(value);
+    }; // fixed_ndarray_shape
+
+    /**
      * @brief specialization of meta::fixed_vector_size strait for transpose view and the axes_t is none_t.
      * 
      * @tparam array_t 
@@ -191,7 +210,26 @@ namespace nmtools
         static inline constexpr auto src_value = meta::fixed_ndarray_shape_v<meta::remove_cvref_t<array_t>>;
         static inline constexpr auto value = ::nmtools::detail::reverse(src_value);
         using value_type = decltype(value);
-    };
+    }; // fixed_ndarray_shape
+
+    /**
+     * @brief specialization of meta::fixed_ndarray_shape for transpose view and integer_constant axes
+     * 
+     * @tparam array_t 
+     * @tparam indices_t 
+     */
+    template <typename array_t, typename indices_t>
+    struct meta::fixed_ndarray_shape< transpose_t<array_t, indices_t>
+        , std::enable_if_t<
+            meta::has_tuple_size_v<indices_t>
+            && meta::apply_conjunction_v<indices_t,meta::is_integral_constant>
+        >
+    >
+    {
+        static inline constexpr auto src_value = meta::fixed_ndarray_shape_v<meta::remove_cvref_t<array_t>>;
+        static inline constexpr auto value = ::nmtools::detail::gather(src_value,indices_t{});
+        using value_type = decltype(value);
+    }; // fixed_ndarray_shape
 
     /**
      * @brief specialization of meta::is_ndarray for transpose view and arbitray axes
