@@ -137,13 +137,13 @@ namespace nmtools
     struct meta::fixed_vector_size< view::mutable_slice_t<array_t,start_t,stop_t>
         , std::enable_if_t<
             // @note use std::conjuction to short circuit
-            // since type_list_conjunction requires tparam to have tuple_size
+            // since apply_conjunction requires tparam to have tuple_size
             std::conjunction_v<
                 meta::is_fixed_size_vector<meta::remove_cvref_t<array_t>>,
                 meta::has_tuple_size<start_t>,
-                meta::type_list_conjunction<start_t,meta::is_integral_constant>,
+                meta::apply_conjunction<start_t,meta::is_integral_constant>,
                 meta::has_tuple_size<stop_t>,
-                meta::type_list_conjunction<stop_t,meta::is_integral_constant>
+                meta::apply_conjunction<stop_t,meta::is_integral_constant>
             >
         >
     > : meta::fixed_vector_size< meta::remove_cvref_t<array_t> > {};
@@ -161,9 +161,9 @@ namespace nmtools
             std::conjunction_v<
                 meta::is_fixed_size_matrix<meta::remove_cvref_t<array_t>>,
                 meta::has_tuple_size<start_t>,
-                meta::type_list_conjunction<start_t,meta::is_integral_constant>,
+                meta::apply_conjunction<start_t,meta::is_integral_constant>,
                 meta::has_tuple_size<stop_t>,
-                meta::type_list_conjunction<stop_t,meta::is_integral_constant>
+                meta::apply_conjunction<stop_t,meta::is_integral_constant>
             >
         >
     > : meta::fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
