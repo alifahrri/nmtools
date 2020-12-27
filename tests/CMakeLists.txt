@@ -122,9 +122,14 @@ if (NOT TEST_BLAS)
 endif ()
 
 set(ARRAY_DETAIL_TEST_SOURCES
-    src/doctest/array/detail.cpp
     src/doctest/array/shape.cpp
-    src/doctest/array/index.cpp
+    src/doctest/array/index/compute_indices.cpp
+    src/doctest/array/index/compute_offset.cpp
+    src/doctest/array/index/compute_strides.cpp
+    src/doctest/array/index/gather.cpp
+    src/doctest/array/index/indices_pack.cpp
+    src/doctest/array/index/reverse.cpp
+    src/doctest/array/index/scatter.cpp
 )
 if (NOT TEST_ARRAY_DETAIL)
     set(ARRAY_DETAIL_TEST_SOURCES "")
@@ -209,6 +214,8 @@ target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
     src/doctest/meta.cpp
+    src/doctest/meta/traits/apply_conjunction.cpp
+    src/doctest/meta/traits/apply_disjunction.cpp
     src/doctest/meta/traits/compose_logical_and.cpp
     src/doctest/meta/traits/compose_logical_or.cpp
     src/doctest/meta/traits/ndarray.cpp

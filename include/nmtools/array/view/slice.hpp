@@ -403,9 +403,9 @@ namespace nmtools
             std::conjunction_v<
                 meta::is_fixed_size_vector<meta::remove_cvref_t<array_t>>,
                 meta::has_tuple_size<start_t>,
-                meta::apply_conjunction<start_t,meta::is_integral_constant>,
+                meta::apply_conjunction<meta::is_integral_constant,start_t>,
                 meta::has_tuple_size<stop_t>,
-                meta::apply_conjunction<stop_t,meta::is_integral_constant>
+                meta::apply_conjunction<meta::is_integral_constant,stop_t>
             >
         >
     > : meta::fixed_vector_size< meta::remove_cvref_t<array_t> > {};
@@ -423,9 +423,9 @@ namespace nmtools
             std::conjunction_v<
                 meta::is_fixed_size_matrix<meta::remove_cvref_t<array_t>>,
                 meta::has_tuple_size<start_t>,
-                meta::apply_conjunction<start_t,meta::is_integral_constant>,
+                meta::apply_conjunction<meta::is_integral_constant,start_t>,
                 meta::has_tuple_size<stop_t>,
-                meta::apply_conjunction<stop_t,meta::is_integral_constant>
+                meta::apply_conjunction<meta::is_integral_constant,stop_t>
             >
         >
     > : meta::fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
