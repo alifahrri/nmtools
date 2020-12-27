@@ -9,7 +9,7 @@
 #include <tuple>
 #include <utility>
 
-#include "nmtools/meta/detail.hpp"
+#include "nmtools/meta/common.hpp"
 
 namespace nmtools::meta {
 
