@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_META_ARRAY_HPP
 #define NMTOOLS_META_ARRAY_HPP
 
-#include "nmtools/meta/detail.hpp"
+#include "nmtools/meta/common.hpp"
 #include "nmtools/meta/traits.hpp"
 
 #include <type_traits>

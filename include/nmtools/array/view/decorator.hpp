@@ -338,6 +338,7 @@ namespace nmtools::meta
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
+     * @note for specific view that may requires to specialize this, it is possible to do so by specialize "view_t" for the desired view
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct is_array1d<view::decorator_t<view_t,Ts...>,void>
@@ -348,6 +349,7 @@ namespace nmtools::meta
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
+     * @note for specific view that may requires to specialize this, it is possible to do so by specialize "view_t" for the desired view
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct is_array2d<view::decorator_t<view_t,Ts...>>
@@ -358,6 +360,7 @@ namespace nmtools::meta
      * 
      * @tparam view_t template template parameter corresponding to the underlying view
      * @tparam Ts template parameter(s) to the underlying view
+     * @note for specific view that may requires to specialize this, it is possible to do so by specialize "view_t" for the desired view
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct is_array3d<view::decorator_t<view_t,Ts...>>

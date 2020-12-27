@@ -9,7 +9,7 @@
 #include <tuple>
 #include <utility>
 
-#include "nmtools/meta/detail.hpp"
+#include "nmtools/meta/common.hpp"
 
 namespace nmtools::meta {
 
@@ -1143,6 +1143,115 @@ namespace nmtools::meta {
      */
     template <typename type_list, template <typename> typename trait>
     static constexpr auto apply_conjunction_v = apply_conjunction<type_list,trait>::value;
+
+    /**
+     * @brief alias for appply_disjunction
+     * 
+     * @tparam type_list type list to be checked
+     * @tparam trait template template parameter corresponding to trait to be satisfied
+     */
+    template <typename type_list, template <typename> typename trait>
+    struct apply_logical_or : apply_disjunction<type_list, trait> {};
+
+    /**
+     * @brief alias for apply_conjunction
+     * 
+     * @tparam type_list type list to be checked
+     * @tparam trait template template parameter corresponding to trait to be satisfied
+     */
+    template <typename type_list, template <typename> typename trait>
+    struct apply_logical_and : apply_conjunction<type_list, trait> {};
+
+    /**
+     * @brief helper variable template for apply_logical_or
+     * 
+     * @tparam type_list type list to be checked
+     * @tparam trait template template parameter corresponding to trait to be satisfied
+     */
+    template <typename type_list, template <typename> typename trait>
+    static inline constexpr auto apply_logical_or_v = apply_logical_or<type_list,trait>::value;
+
+    /**
+     * @brief helper variable template for apply_logical_and
+     * 
+     * @tparam type_list type list to be checked
+     * @tparam trait template template parameter corresponding to trait to be satisfied
+     */
+    template <typename type_list, template <typename> typename trait>
+    static inline constexpr auto apply_logical_and_v = apply_logical_and<type_list,trait>::value;
+
+    /**
+     * @brief alias for std::conjuction
+     * 
+     * @tparam Ts types that has value static constexpr member variable
+     */
+    template <typename...Ts>
+    struct logical_and : std::conjunction<Ts...> {};
+
+    template <typename...Ts>
+    static constexpr inline auto logical_and_v = logical_and<Ts...>::value;
+
+    /**
+     * @brief alias for std::disjunction
+     * 
+     * @tparam Ts types that has value static constexpr member variable
+     */
+    template <typename...Ts>
+    struct logical_or : std::disjunction<Ts...> {};
+
+    template <typename...Ts>
+    static constexpr inline auto logical_or_v = logical_or<Ts...>::value;
+
+    namespace detail
+    {
+        template <typename always_void, template<typename...>typename predicate, typename T, template<typename> typename trait, template<typename> typename...traits>
+        struct compose_trait_helper
+        {
+            static constexpr auto value = predicate<trait<T>,traits<T>...>::value;
+        };
+    } // namespace detail
+
+    /**
+     * @brief given type T and variadic traits, perform logical_and on trait<T> for each trait in traits
+     * 
+     * @tparam T type to check
+     * @tparam traits template template parameter resulting static constexpr member variable value
+     */
+    template <typename T, template<typename> typename...traits>
+    struct compose_logical_and
+    {
+        static constexpr auto value = detail::compose_trait_helper<void,logical_and,T,traits...>::value;
+    }; // compose_logical_and
+
+    /**
+     * @brief given type T and variadic traits, perform logical_or on trait<T> for each trait in traits
+     * 
+     * @tparam T type to check
+     * @tparam traits template template parameter resulting static constexpr member variable value
+     */
+    template <typename T, template<typename> typename...traits>
+    struct compose_logical_or
+    {
+        static constexpr auto value = detail::compose_trait_helper<void,logical_or,T,traits...>::value;
+    }; // compose_logical_or
+
+    /**
+     * @brief alias variable template for compose_logical_and
+     * 
+     * @tparam T type to check
+     * @tparam traits template template parameter resulting static constexpr member variable value
+     */
+    template <typename T, template<typename> typename...traits>
+    static inline constexpr auto compose_logical_and_v = compose_logical_and<T,traits...>::value;
+
+    /**
+     * @brief alias variable template for compose_logical_or
+     * 
+     * @tparam T type to check
+     * @tparam traits template template parameter resulting static constexpr member variable value
+     */
+    template <typename T, template<typename> typename...traits>
+    static inline constexpr auto compose_logical_or_v = compose_logical_or<T,traits...>::value;
 
     /**
      * @brief check if given type T is specialization of template-template param primary_template

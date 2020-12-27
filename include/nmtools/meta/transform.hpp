@@ -1,9 +1,11 @@
 #ifndef NMTOOLS_META_TRANSFORM_HPP
 #define NMTOOLS_META_TRANSFORM_HPP
 
-#include "nmtools/meta/detail.hpp"
+#include "nmtools/meta/common.hpp"
 #include "nmtools/meta/traits.hpp"
 #include "nmtools/meta/array.hpp"
+#include "nmtools/meta/arithmetic.hpp"
+
 #include <type_traits>
 #include <cassert>
 #include <iterator>
@@ -335,6 +337,34 @@ namespace nmtools::meta
     template <typename T, typename...Args>
     using replace_tparam_t = typename replace_template_parameter<T,Args...>::type;
 
+    namespace detail
+    {
+        template <typename T, typename U, typename=void>
+        struct merge_helper
+        {
+            using type = std::tuple<T,U>;
+        }; // merge_helper
+
+        template <template<typename...>typename TT, typename...Ts, template<typename...>typename TU, typename...Us>
+        struct merge_helper<TT<Ts...>,TU<Us...>>
+        {
+            using type = TT<Ts...,Us...>;
+        }; // merge_helper
+
+        template <template<typename...>typename TT, typename...Ts, typename U>
+        struct merge_helper<TT<Ts...>,U>
+        {
+            using type = TT<Ts...,U>;
+        }; // merge_helper
+
+        template <typename T, template<typename...>typename TU, typename...Us>
+        struct merge_helper<T,TU<Us...>>
+        {
+            using type = TU<T,Us...>;
+        }; // merge_helper
+
+    } // namespace detail
+
     /**
      * @brief merge two type T (possibly tuple) and U (possibly tuple) to single tuple.
      * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
@@ -345,35 +375,7 @@ namespace nmtools::meta
     template <typename T, typename U>
     struct merge
     {
-        template <typename...Ts, typename...Us>
-        static constexpr auto _merge(std::tuple<Ts...>, std::tuple<Us...>)
-        {
-            using type_t = std::tuple<Ts...,Us...>;
-            return type_t{};
-        } // _merge
-
-        template <typename Ts, typename...Us>
-        static constexpr auto _merge(Ts, std::tuple<Us...>)
-        {
-            using type_t = std::tuple<Ts,Us...>;
-            return type_t{};
-        } // _merge
-
-        template <typename...Ts, typename Us>
-        static constexpr auto _merge(std::tuple<Ts...>, Us)
-        {
-            using type_t = std::tuple<Ts...,Us>;
-            return type_t{};
-        } // _merge
-
-        template <typename Ts, typename Us>
-        static constexpr auto _merge(Ts, Us)
-        {
-            using type_t = std::tuple<Ts,Us>;
-            return type_t{};
-        } // _merge
-
-        using type = decltype(_merge(std::declval<T>(),std::declval<U>()));
+        using type = type_t<detail::merge_helper<T,U>>;
     }; // merge
 
     /**
@@ -401,14 +403,6 @@ namespace nmtools::meta
      */
     template <typename T>
     using second_t = typename T::second;
-
-    /**
-     * @brief helper alias template to get public member type `type` from type T
-     * 
-     * @tparam T type to transform
-     */
-    template <typename T>
-    using type_t = typename T::type;
 
     namespace detail
     {
@@ -2088,6 +2082,109 @@ namespace nmtools::meta
     template <typename T, typename U>
     using scatter_t = type_t<scatter<T,U>>;
 
+    namespace detail
+    {
+        template <template<typename,typename...> typename Op, typename T, typename=void>
+        struct apply_reduce_helper
+        {
+            using type = void;
+        }; // apply_reduce_helper
+
+        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U, typename V, typename...Ts>
+        struct apply_reduce_helper<Op,TT<T,U,V,Ts...>>
+        {
+            using tmp_type = type_t<Op<T,U>>;
+            using type = type_t<apply_reduce_helper<Op,TT<tmp_type,V,Ts...>>>;
+        }; //  apply_reduce_helper
+
+        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U>
+        struct apply_reduce_helper<Op,TT<T,U>>
+        {
+            using type = type_t<Op<T,U>>;
+        }; // apply_reduce_helper
+    }  // namespace detail
+
+    template <template<typename,typename...>typename Op, typename T, typename=void>
+    struct apply_reduce
+    {
+        using type = type_t<detail::apply_reduce_helper<Op,T>>;
+    }; // reduce
+
+    template <template<typename,typename...>typename Op, typename T>
+    using apply_reduce_t = type_t<apply_reduce<Op,T>>;
+
+    template <typename T>
+    using apply_prod = apply_reduce<mul,T>;
+
+    template <typename T>
+    using apply_prod_t = type_t<apply_prod<T>>;
+
+    template <typename T>
+    using apply_sum = apply_reduce<add,T>;
+
+    template <typename T>
+    using apply_sum_t = type_t<apply_sum<T>>;
+
+    namespace detail
+    {
+        template <template<typename,typename...> typename Op, typename T, typename=void>
+        struct apply_accumulate_helper
+        {
+            using type = void;
+        }; // apply_accumulate_helper
+
+        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T>
+        struct apply_accumulate_helper<Op,TT<T>>
+        {
+            using type = TT<T>;
+        }; // apply_accumulate_helper
+
+        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U>
+        struct apply_accumulate_helper<Op,TT<T,U>>
+        {
+            using type_list    = TT<T,U>;
+            using reduced_type = apply_reduce_t<Op,type_list>;
+            using type = TT<T,reduced_type>;
+        }; // apply_accumulate_helper
+
+        // @note this specialization behaves differently on clang & gcc (8.3)
+        // example case:
+        // using arg_t = std::tuple<meta::ct<1>,meta::ct<3>,meta::ct<7>>;
+        // using result_t = meta::apply_accumulate_t<meta::add,arg_t>;
+        // using expected_t = std::tuple<meta::ct<1>,meta::ct<4>,meta::ct<11>>;
+        // clang correctly produce expected type, while gcc results void for second type of expected type
+        // must be something to do when recursively call the metafunction, 
+        // somehow gcc cant find specialization for struct apply_accumulate_helper<Op,TT<T,U>>
+        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U, typename...Ts>
+        struct apply_accumulate_helper<Op,TT<T,U,Ts...>,std::enable_if_t<(sizeof...(Ts)>0)>>
+        {
+            static constexpr auto numel = 2 + sizeof...(Ts);
+            using type_list  = TT<T,U,Ts...>;
+            using split_type = split_at<type_list,numel-1>;
+            using first_type = first_t<split_type>;
+
+            using fst = type_t<apply_accumulate_helper<Op,first_type>>;
+            using snd = apply_reduce_t<Op,type_list>;
+
+            using type = merge_t<fst,snd>;
+        }; // apply_accumulate_helper
+    } // namespace detail
+
+    template <template<typename,typename...> typename Op, typename T>
+    struct apply_accumulate
+    {
+        using type = type_t<detail::apply_accumulate_helper<Op,T>>;
+    }; // apply_accumulate
+
+    template <template<typename,typename...> typename Op, typename T>
+    using apply_accumulate_t = type_t<apply_accumulate<Op,T>>;
+
+    template <typename T>
+    using apply_cumprod = apply_accumulate<mul,T>;
+
+    template <typename T>
+    using apply_cumprod_t = type_t<apply_cumprod<T>>;
+
     /**
      * @brief helper alias template to construct (tuple of) integral_constant
      * 
@@ -2123,6 +2220,50 @@ namespace nmtools::meta
     using sequence_t = std::integer_sequence<decltype(I),I,Is...>;
 
     /**
+     * @brief convert compile time type constant to value.
+     *
+     * Default behaviour results in meta::detail::fail_t{}
+     * unless specialization for type T provided
+     * 
+     * @tparam T type to convert
+     * @tparam typename sfinae point
+     */
+    template <typename T, typename=void>
+    struct constant_to_value
+    {
+        static constexpr auto value = detail::fail_t{};
+    }; // constant_to_value
+
+    /**
+     * @brief specialization of integral_constant for constant_to_value
+     * 
+     * @tparam T 
+     * @tparam I 
+     */
+    template <typename T, auto I>
+    struct constant_to_value<std::integral_constant<T,I>>
+    {
+        static constexpr auto value = I;
+    }; // constant_to_value
+
+    /**
+     * @brief specialization of tuple of integral_constant for constant_to_value
+     * 
+     * @tparam I 
+     * @tparam Is 
+     */
+    template <auto I, auto...Is>
+    struct constant_to_value<
+        std::tuple<
+            std::integral_constant<decltype(I),I>,
+            std::integral_constant<decltype(Is),Is>...
+        >
+    >
+    {
+        static constexpr auto value = std::tuple{I,Is...};
+    }; // constant_to_value
+
+    /**
      * @brief metafunction to transform (tuple of) integral constant to integer sequence
      * 
      * @tparam T type to transform
@@ -2131,12 +2272,14 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct constant_to_sequence
     {
+        static constexpr auto value = detail::fail_t{};
         using type = void;
     }; // constant_to_sequence
 
     template <typename T, auto I>
     struct constant_to_sequence<std::integral_constant<T,I>>
     {
+        static constexpr auto value = I;
         using type = sequence_t<I>;
     }; // constant_to_sequence
 
@@ -2148,6 +2291,7 @@ namespace nmtools::meta
         >
     >
     {
+        static constexpr auto value = std::tuple{I,Is...};
         using type = sequence_t<I,Is...>;
     }; // constant_to_sequence
 
@@ -2168,12 +2312,14 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct sequence_to_constant
     {
+        static constexpr auto value = detail::fail_t{};
         using type = void;
     }; // sequence_to_constant
 
     template <typename T, auto I, auto...Is>
     struct sequence_to_constant<std::integer_sequence<T,I,Is...>>
     {
+        static constexpr auto value = std::tuple{I,Is...};
         using type = constant_t<I,Is...>;
     }; // sequence_to_constant
 
