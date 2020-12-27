@@ -44,4 +44,17 @@ TEST_CASE("split_at" * doctest::test_suite("meta"))
         using expected_t = std::pair<std::tuple<int,double,size_t>,std::tuple<int,size_t,double>>;
         STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
+    {
+        using arg_t = std::tuple<meta::ct<1>,meta::ct<3>,meta::ct<7>>;
+        using split_type = meta::split_at<arg_t,2>;
+        using fst = meta::first_t<split_type>;
+        using snd = meta::second_t<split_type>;
+        using result_t   = meta::type_t<split_type>;
+        using first_t    = std::tuple<meta::ct<1>,meta::ct<3>>;
+        using second_t   = std::tuple<meta::ct<7>>;
+        using expected_t = std::pair<first_t,second_t>;
+        STATIC_CHECK_IS_SAME( result_t, expected_t );
+        STATIC_CHECK_IS_SAME( fst, first_t );
+        STATIC_CHECK_IS_SAME( snd, second_t );
+    }
 }

@@ -983,6 +983,20 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
     CHECK_MESSAGE(is_same, std::string(#type1) + " (" + boost::typeindex::type_id<type1>().pretty_name() + ")" + ", " + std::string(#type2) + " (" + boost::typeindex::type_id<type2>().pretty_name() + ")" ); \
 } \
 
+#define STATIC_CHECK_TRAIT_FALSE(trait, type) \
+{ \
+    constexpr auto value = !trait<type>::value; \
+    NMTOOLS_STATIC_ASSERT(value); \
+    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + boost::typeindex::type_id<type>().pretty_name() + "); false;" ); \
+} \
+
+#define STATIC_CHECK_TRAIT_TRUE(trait, type) \
+{ \
+    constexpr auto value = trait<type>::value; \
+    NMTOOLS_STATIC_ASSERT(value); \
+    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + boost::typeindex::type_id<type>().pretty_name() + "); true;" ); \
+} \
+
 /**
  * @brief perform static assertion given trait and type
  *
@@ -995,12 +1009,7 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
  * @see DEFER_STATIC_CHECK
  * @see NMTOOLS_DEFERRED_STATIC_ASSERT
  */
-#define STATIC_CHECK_TRAIT(trait, type) \
-{ \
-    constexpr auto value = trait<type>::value; \
-    NMTOOLS_STATIC_ASSERT(value); \
-    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + boost::typeindex::type_id<type>().pretty_name() + ")" ); \
-} \
+#define STATIC_CHECK_TRAIT STATIC_CHECK_TRAIT_TRUE
 
 namespace nmtools::testing::data::common
 {

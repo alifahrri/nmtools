@@ -166,14 +166,15 @@ if (NOT TEST_NDARRAY)
 endif ()
 
 set(ARRAY_VIEW_TEST_SOURCES
-    src/doctest/array/view/ref.cpp
-    src/doctest/array/view/ref/initializer_list.cpp
-    src/doctest/array/view/mutable_ref.cpp
-    src/doctest/array/view/slice.cpp
-    src/doctest/array/view/mutable_slice.cpp
-    src/doctest/array/view/transpose.cpp
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/mutable_flatten.cpp
+    src/doctest/array/view/mutable_ref.cpp
+    src/doctest/array/view/mutable_slice.cpp
+    src/doctest/array/view/ref.cpp
+    src/doctest/array/view/ref/initializer_list.cpp
+    src/doctest/array/view/reshape.cpp
+    src/doctest/array/view/slice.cpp
+    src/doctest/array/view/transpose.cpp
 )
 if (NOT TEST_ARRAY_VIEW)
     set (ARRAY_VIEW_TEST_SOURCES "")
@@ -208,10 +209,13 @@ target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
     src/doctest/meta.cpp
+    src/doctest/meta/traits/compose_logical_and.cpp
+    src/doctest/meta/traits/compose_logical_or.cpp
     src/doctest/meta/traits/ndarray.cpp
     src/doctest/meta/traits/has_template_get.cpp
     src/doctest/meta/traits/has_type.cpp
     src/doctest/meta/traits/has_square_bracket.cpp
+    src/doctest/meta/transform/accumulate.cpp
     src/doctest/meta/transform/apply.cpp
     src/doctest/meta/transform/constant.cpp
     src/doctest/meta/transform/constant_to_sequence.cpp
@@ -219,6 +223,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/get_element_type.cpp
     src/doctest/meta/transform/replace_element_type.cpp
     src/doctest/meta/transform/nested_array_dim.cpp
+    src/doctest/meta/transform/reduce.cpp
     src/doctest/meta/transform/remove_nested_array_extents.cpp
     src/doctest/meta/transform/replace_at.cpp
     src/doctest/meta/transform/sequence.cpp
