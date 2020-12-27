@@ -1,7 +1,6 @@
 #ifndef NMTOOLS_ARRAY_UTILITY_AT_HPP
 #define NMTOOLS_ARRAY_UTILITY_AT_HPP
 
-#include "nmtools/array/detail.hpp"
 #include "nmtools/array/meta.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
