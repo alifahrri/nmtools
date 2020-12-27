@@ -999,101 +999,53 @@ namespace nmtools::meta {
     inline constexpr bool is_integral_constant_v = is_integral_constant<T>::value;
 
     namespace detail {
-        /**
-         * @brief actual implementation of apply_disjunction (OR)
-         * 
-         * @tparam type_list type list to be checked
-         * @tparam trait template template parameter corresponding to trait to be satisfied
-         * @tparam Is compile time index sequence
-         * @return constexpr auto compile-time boolean indicating that all type in type_list satisfies the trait
-         * @todo make this consteval
-         */
-        template <typename type_list, template <typename> typename trait, size_t ...Is>
-        constexpr auto apply_disjunction_impl(std::integer_sequence<size_t,Is...>)
+        template <template <typename> typename trait, typename type_list, typename=void>
+        struct apply_disjunction_helper
         {
-            // note use declval instead of simply call type_list{}
-            // to make sure even type that do not have default initialization can be checked
-            return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value || ...);
-        } // apply_disjunction_impl
+            static constexpr auto value = fail_t{};
+        }; // apply_disjunction_helper
 
-        /**
-         * @brief actual implementation of apply_conjunction (AND)
-         * 
-         * @tparam type_list type list to be checked
-         * @tparam trait template template parameter corresponding to trait to be satisfied
-         * @tparam Is compile time index sequence
-         * @return constexpr auto compile-time boolean indicating that any type in type_list satisfies the trait
-         * @todo make this consteval
-         */
-        template <typename type_list, template <typename> typename trait, size_t ...Is>
-        constexpr auto apply_conjunction_impl(std::integer_sequence<size_t,Is...>)
+        template <template <typename> typename trait, typename T, typename...Ts>
+        struct apply_disjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)==0)>>
         {
-            // note use declval instead of simply call type_list{}
-            // to make sure even type that do not have default initialization can be checked
-            return (trait<remove_cvref_t<decltype(std::get<Is>(std::declval<type_list>()))>>::value && ...);
-        } // apply_conjunction_impl
+            static constexpr auto value = trait<T>::value;
+        }; // apply_disjunction_helper
 
-        /**
-         * @brief entrypoint to actual implementation of apply_disjunction (OR)
-         * 
-         * @tparam type_list type list to be checked
-         * @tparam trait template template parameter corresponding to trait to be satisfied
-         * @return std::enable_if_t<has_tuple_size_v<type_list>,bool> 
-         * @todo make this consteval
-         */
-        template <typename type_list, template <typename> typename trait>
-        constexpr auto apply_disjunction_impl()
-            -> std::enable_if_t<has_tuple_size_v<type_list>,bool>
+        template <template <typename> typename trait, typename T, typename U>
+        struct apply_disjunction_helper<trait,std::pair<T,U>>
         {
-            constexpr auto N = std::tuple_size_v<type_list>;
-            using indices_t = std::make_index_sequence<N>;
-            return apply_disjunction_impl<type_list,trait>(indices_t{});
-        } // apply_disjunction_impl
+            static constexpr auto value = trait<T>::value || trait<U>::value;
+        }; // apply_disjunction_helper
 
-        /**
-         * @brief entrypoint to actual implementation of apply_conjunction (AND)
-         * 
-         * @tparam type_list type list to be checked
-         * @tparam trait template template parameter corresponding to trait to be satisfied
-         * @return std::enable_if_t<has_tuple_size_v<type_list>,bool> 
-         * @todo make this consteval
-         */
-        template <typename type_list, template <typename> typename trait>
-        constexpr auto apply_conjunction_impl()
-            -> std::enable_if_t<has_tuple_size_v<type_list>,bool>
+        template <template <typename> typename trait, typename T, typename...Ts>
+        struct apply_disjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)>0)>>
         {
-            constexpr auto N = std::tuple_size_v<type_list>;
-            using indices_t = std::make_index_sequence<N>;
-            return apply_conjunction_impl<type_list,trait>(indices_t{});
-        } // apply_conjunction_impl
+            static constexpr auto value = trait<T>::value || apply_disjunction_helper<trait,std::tuple<Ts...>>::value;
+        }; // apply_disjunction_helper
 
-        /**
-         * @brief overload when type_list doesnt have tuple_size
-         * 
-         * @tparam type_list 
-         * @tparam trait 
-         * @return std::enable_if_t<!has_tuple_size_v<type_list>,detail::fail_t> 
-         */
-        template <typename type_list, template <typename> typename trait>
-        constexpr auto apply_disjunction_impl()
-            -> std::enable_if_t<!has_tuple_size_v<type_list>,detail::fail_t>
+        template <template <typename> typename trait, typename type_list, typename=void>
+        struct apply_conjunction_helper
         {
-            return detail::fail_t{};
-        } // apply_disjunction_impl
+            static constexpr auto value = fail_t{};
+        }; // apply_conjunction_helper
 
-        /**
-         * @brief overload when type_list doesnt have tuple_size
-         * 
-         * @tparam type_list 
-         * @tparam trait 
-         * @return std::enable_if_t<!has_tuple_size_v<type_list>,detail::fail_t> 
-         */
-        template <typename type_list, template <typename> typename trait>
-        constexpr auto apply_conjunction_impl()
-            -> std::enable_if_t<!has_tuple_size_v<type_list>,detail::fail_t>
+        template <template <typename> typename trait, typename T, typename...Ts>
+        struct apply_conjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)==0)>>
         {
-            return detail::fail_t{};
-        } // apply_conjunction_impl
+            static constexpr auto value = trait<T>::value;
+        }; // apply_conjunction_helper
+
+        template <template <typename> typename trait, typename T, typename U>
+        struct apply_conjunction_helper<trait,std::pair<T,U>,void>
+        {
+            static constexpr auto value = trait<T>::value && trait<U>::value;
+        }; // apply_conjunction_helper
+
+        template <template <typename> typename trait, typename T, typename...Ts>
+        struct apply_conjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)>0)>>
+        {
+            static constexpr auto value = trait<T>::value && apply_conjunction_helper<trait,std::tuple<Ts...>>::value;
+        }; // apply_conjunction_helper
     } // namespace detail
 
     /**
@@ -1102,10 +1054,10 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <typename type_list, template <typename> typename trait>
+    template <template <typename> typename trait, typename type_list>
     struct apply_disjunction
     {
-        static inline constexpr auto impl_value = detail::apply_disjunction_impl<type_list,trait>();
+        static inline constexpr auto impl_value = detail::apply_disjunction_helper<trait,type_list>::value;
         using value_type = decltype(impl_value);
         // make false on fail (value_type==fail_t)
         static inline constexpr auto value = detail::fail_to_false(impl_value);
@@ -1117,8 +1069,8 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <typename type_list, template <typename> typename trait>
-    static constexpr auto apply_disjunction_v = apply_disjunction<type_list,trait>::value;
+    template <template <typename> typename trait, typename type_list>
+    static constexpr auto apply_disjunction_v = apply_disjunction<trait,type_list>::value;
 
     /**
      * @brief check if all type in type_list satisfy trait
@@ -1126,10 +1078,10 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <typename type_list, template <typename> typename trait>
+    template <template <typename> typename trait, typename type_list>
     struct apply_conjunction
     {
-        static inline constexpr auto impl_value = detail::apply_conjunction_impl<type_list,trait>();
+        static inline constexpr auto impl_value = detail::apply_conjunction_helper<trait,type_list>::value;
         using value_type = decltype(impl_value);
         // make false on fail (value_type==fail_t)
         static inline constexpr auto value = detail::fail_to_false(impl_value);
@@ -1141,8 +1093,8 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <typename type_list, template <typename> typename trait>
-    static constexpr auto apply_conjunction_v = apply_conjunction<type_list,trait>::value;
+    template <template <typename> typename trait, typename type_list>
+    static constexpr auto apply_conjunction_v = apply_conjunction<trait,type_list>::value;
 
     /**
      * @brief alias for appply_disjunction
@@ -1150,8 +1102,8 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <typename type_list, template <typename> typename trait>
-    struct apply_logical_or : apply_disjunction<type_list, trait> {};
+    template <template <typename> typename trait, typename type_list>
+    struct apply_logical_or : apply_disjunction<trait, type_list> {};
 
     /**
      * @brief alias for apply_conjunction
@@ -1159,8 +1111,8 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <typename type_list, template <typename> typename trait>
-    struct apply_logical_and : apply_conjunction<type_list, trait> {};
+    template <template <typename> typename trait, typename type_list>
+    struct apply_logical_and : apply_conjunction<trait, type_list> {};
 
     /**
      * @brief helper variable template for apply_logical_or
@@ -1168,8 +1120,8 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <typename type_list, template <typename> typename trait>
-    static inline constexpr auto apply_logical_or_v = apply_logical_or<type_list,trait>::value;
+    template <template <typename> typename trait, typename type_list>
+    static inline constexpr auto apply_logical_or_v = apply_logical_or<trait,type_list>::value;
 
     /**
      * @brief helper variable template for apply_logical_and
@@ -1177,8 +1129,8 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <typename type_list, template <typename> typename trait>
-    static inline constexpr auto apply_logical_and_v = apply_logical_and<type_list,trait>::value;
+    template <template <typename> typename trait, typename type_list>
+    static inline constexpr auto apply_logical_and_v = apply_logical_and<trait,type_list>::value;
 
     /**
      * @brief alias for std::conjuction
