@@ -178,7 +178,7 @@ namespace nmtools
     struct meta::fixed_matrix_size< transpose_t<array_t, indices_t>
         , std::enable_if_t<
             meta::has_tuple_size_v<indices_t>
-            && meta::apply_conjunction_v<indices_t,meta::is_integral_constant>
+            && meta::apply_conjunction_v<meta::is_integral_constant,indices_t>
         >
     >
     {
@@ -222,7 +222,7 @@ namespace nmtools
     struct meta::fixed_ndarray_shape< transpose_t<array_t, indices_t>
         , std::enable_if_t<
             meta::has_tuple_size_v<indices_t>
-            && meta::apply_conjunction_v<indices_t,meta::is_integral_constant>
+            && meta::apply_conjunction_v<meta::is_integral_constant,indices_t>
         >
     >
     {
