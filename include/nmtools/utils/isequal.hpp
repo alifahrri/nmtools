@@ -41,12 +41,21 @@ namespace nmtools::utils
         constexpr auto isequal(const T& t, const U& u)
         {
             static_assert(
-                (std::is_integral_v<T> && std::is_integral_v<U>) ||
-                (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)
+                (
+                    meta::compose_logical_or_v<T,std::is_integral,meta::is_integral_constant>
+                    || meta::compose_logical_or_v<U,std::is_integral,meta::is_integral_constant>
+                )
+                || (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)
                 , "unsupported isequal; only support integral element type"
             );
-            if constexpr (std::is_integral_v<T>)
-                return t == u;
+            if constexpr (std::is_integral_v<T>) {
+                using value_type = T;
+                return static_cast<value_type>(t) == static_cast<value_type>(u);
+            }
+            else if constexpr (meta::is_integral_constant_v<T>) {
+                using value_type = typename T::value_type;
+                return static_cast<value_type>(t) == static_cast<value_type>(u);
+            }
             else {
                 constexpr auto t_is_int = std::is_integral_v<meta::get_element_type_t<T>>;
                 constexpr auto u_is_int = std::is_integral_v<meta::get_element_type_t<U>>;
