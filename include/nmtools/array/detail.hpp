@@ -7,7 +7,8 @@
 #include <array>
 #include <tuple>
 
-#include "nmtools/traits.hpp"
+#include "nmtools/meta.hpp"
+#include "nmtools/array/utility/at.hpp"
 
 namespace nmtools::detail
 {
@@ -135,20 +136,47 @@ namespace nmtools::detail
 namespace nmtools::array::detail
 {
 
-    template <typename T, typename=void>
-    struct tuple_common_type
+    /**
+     * @brief compute product of 1D array
+     *
+     * Useful to compute number of elements.
+     * 
+     * @tparam array_t 
+     * @param vec 
+     * @return constexpr auto 
+     */
+    template <typename array_t>
+    constexpr auto product(const array_t& vec)
     {
-        using type = T;
-    }; // tuple_common_type
-
-    template <template<typename...> typename typelist, typename...Ts>
-    struct tuple_common_type<typelist<Ts...>>
-    {
-        using type = std::common_type_t<Ts...>;
-    };
-
-    template <typename T>
-    using tuple_common_type_t = typename tuple_common_type<T>::type;
+        using element_t = meta::get_element_type_t<array_t>;
+        using common_t  = std::conditional_t<
+            std::is_void_v<element_t>,
+            meta::apply_t<std::common_type,array_t>,
+            element_t
+        >;
+        // handle type vector
+        if constexpr (meta::apply_logical_and_v<array_t,meta::is_integral_constant>) {
+            constexpr auto vec_ = meta::constant_to_value<array_t>::value;
+            constexpr auto ret  = product(vec_);
+            // @todo convert back to type
+            return ret;
+        }
+        else {
+            auto ret = common_t{1};
+            if constexpr (meta::has_tuple_size_v<array_t>) {
+                constexpr auto n = std::tuple_size_v<array_t>;
+                meta::template_for<n>([&](auto index){
+                    constexpr auto i = decltype(index)::value;
+                    ret *= std::get<i>(vec);
+                });
+                return ret;
+            }
+            else
+                for (size_t i=0; i<vec.size(); i++)
+                    ret *= vec.at(i);
+            return ret;
+        }
+    } // product
 
     /**
      * @brief compute stride for ndarray offset
@@ -162,7 +190,7 @@ namespace nmtools::array::detail
     {
         if constexpr (meta::is_specialization_v<array_t,std::tuple> || meta::is_specialization_v<array_t,std::pair>)
         {
-            using value_type = tuple_common_type_t<array_t>;
+            using value_type = meta::apply_t<std::common_type,array_t>;
             static_assert( meta::is_integral_constant_v<size_type>
                 , "unsupported size_type for stride. for tuple type, k must be integral constant"
             );
@@ -197,21 +225,81 @@ namespace nmtools::array::detail
     template <typename array_t>
     constexpr auto compute_strides(const array_t& shape)
     {
-        auto strides_ = shape;
-        if constexpr (meta::is_specialization_v<array_t,std::tuple> || meta::is_specialization_v<array_t,std::pair>)
+        // handle if all elements in array_t is integral_constant
+        // return type can not have same type as shape, assignment is not available
+        // convert to value and then compute
+        if constexpr (meta::apply_logical_and_v<array_t,meta::is_integral_constant>)
         {
-            constexpr auto n = std::tuple_size_v<array_t>;
-            meta::template_for<n>([&](auto index){
-                constexpr auto i = decltype(index)::value;
-                auto k = std::integral_constant<size_t,i>{};
-                std::get<i>(strides_) = stride(shape, k);
-            });
+            constexpr auto shape_   = meta::constant_to_value<array_t>::value;
+            constexpr auto strides_ = compute_strides(shape_);
+            // @todo value_to_constant
+            return strides_;
         }
+        // otherwise value of array_t is only known at runtime
+        // return type can have same type as shape, assignment is ok
         else
-            for (size_t i=0; i<strides_.size(); i++)
-                strides_[i] = stride(shape, i);
-        return strides_;
+        {
+            auto strides_ = shape;
+            if constexpr (meta::is_specialization_v<array_t,std::tuple> || meta::is_specialization_v<array_t,std::pair>)
+            {
+                constexpr auto n = std::tuple_size_v<array_t>;
+                meta::template_for<n>([&](auto index){
+                    constexpr auto i = decltype(index)::value;
+                    auto k = std::integral_constant<size_t,i>{};
+                    std::get<i>(strides_) = stride(shape, k);
+                });
+            }
+            else
+                for (size_t i=0; i<strides_.size(); i++)
+                    strides_[i] = stride(shape, i);
+            return strides_;
+        }       
     } // strides
+
+    /**
+     * @brief access tuple with runtime value
+     *
+     * Also works with std::array or std::vector.
+     * 
+     * @tparam vector_t 
+     * @tparam idx_t 
+     * @param vec 
+     * @param idx 
+     * @return constexpr auto 
+     */
+    template <typename vector_t, typename idx_t>
+    constexpr auto tuple_at(const vector_t& vec, idx_t idx)
+    {
+        // std::array type has value_type
+        using element_t = meta::get_element_type_t<vector_t>;
+        using common_t  = std::conditional_t<
+            std::is_void_v<element_t>,
+            meta::apply_t<std::common_type,vector_t>,
+            element_t
+        >;
+        static_assert( std::is_arithmetic_v<common_t>
+            , "unsupported tuple_at"
+        );
+        auto value = common_t{};
+
+        if constexpr (meta::has_at_v<vector_t,idx_t>)
+            value = at(vec,idx);
+        // @note to check to N since n may be > i
+        // @note integral constant is cast-able to its value_type (int,size_t,...)
+        else
+            meta::template_for<std::tuple_size_v<vector_t>>([&](auto j){
+                if (idx==j) value = static_cast<common_t>(at(vec,j));
+            });
+        return value;
+    } // tuple_at
+
+    template <typename vector_t>
+    constexpr auto size(const vector_t& vec)
+    {
+        if constexpr (meta::has_tuple_size_v<vector_t>)
+            return std::tuple_size_v<vector_t>;
+        else return vec.size();
+    } // size
 
     /**
      * @brief compute offset from given indices and computed strides
@@ -225,19 +313,24 @@ namespace nmtools::array::detail
     template <typename indices_t, typename strides_t>
     constexpr auto compute_offset(const indices_t& indices, const strides_t& strides)
     {
-        constexpr auto indices_is_tuple_or_pair = meta::is_specialization_v<indices_t,std::tuple> || meta::is_specialization_v<indices_t,std::pair>;
-        constexpr auto strides_is_tuple_or_pair = meta::is_specialization_v<strides_t,std::tuple> || meta::is_specialization_v<strides_t,std::pair>;
+        constexpr auto indices_is_fixed = meta::has_tuple_size_v<indices_t> || meta::has_tuple_size_v<indices_t>;
+        constexpr auto strides_is_fixed = meta::has_tuple_size_v<strides_t> || meta::has_tuple_size_v<strides_t>;
         size_t offset = 0;
-        if constexpr (indices_is_tuple_or_pair && strides_is_tuple_or_pair)
+        auto m = detail::size(indices);
+        auto n = detail::size(strides);
+        // @todo static_assert whenever possible
+        assert (m==n
+            // , "unsupported compute_offset, mismatched shape for indices and strides"
+        );
+        if constexpr (indices_is_fixed || strides_is_fixed)
         {
-            constexpr auto n = std::tuple_size_v<indices_t>;
-            constexpr auto m = std::tuple_size_v<strides_t>;
-            static_assert (m==n
-                , "unsupported compute_offset, mismatched shape for indices and strides"
-            );
+            constexpr auto n = [&](){
+                if constexpr (indices_is_fixed)
+                    return std::tuple_size_v<meta::remove_cvref_t<decltype(indices)>>;
+                else return std::tuple_size_v<meta::remove_cvref_t<decltype(strides)>>;
+            }();
             meta::template_for<n>([&](auto index){
-                constexpr auto i = decltype(index)::value;
-                offset += std::get<i>(strides) * std::get<i>(indices);
+                offset += tuple_at(strides,index) * tuple_at(indices,index);
             });
         }
         else
