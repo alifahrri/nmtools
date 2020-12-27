@@ -53,6 +53,10 @@ namespace nmtools::utils
             using std::to_string;
             str += to_string(array);
         }
+        else if constexpr (meta::is_integral_constant_v<T>) {
+            using std::to_string;
+            str += to_string(T::value);
+        } // is_integral_constant
         else if constexpr (meta::is_ndarray_v<T>) {
             using std::to_string;
             using ::nmtools::detail::make_array;
