@@ -16,6 +16,7 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/utils/isequal.hpp"
 
 #include <type_traits>
 #include <cassert>
@@ -62,6 +63,9 @@ namespace nmtools::utils
                 );
                 auto t_shape = shape(t);
                 auto u_shape = shape(u);
+                assert (::nmtools::utils::isequal(t_shape,u_shape)
+                    // , "shape mismatch for isclose"
+                );
                 auto t_indices = indices_pack(t_shape);
                 auto u_indices = indices_pack(u_shape);
                 // @todo: static assert whenever possible

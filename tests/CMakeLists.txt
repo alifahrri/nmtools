@@ -164,6 +164,7 @@ set(NDARRAY_TEST_SOURCES
     src/doctest/array/fixed/matrix.cpp
     src/doctest/array/dynamic/matrix.cpp
     src/doctest/array/fixed/ndarray.cpp
+    src/doctest/array/hybrid/ndarray.cpp
     src/doctest/array/dynamic/ndarray.cpp
 )
 if (NOT TEST_NDARRAY)
