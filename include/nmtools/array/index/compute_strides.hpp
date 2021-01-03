@@ -2,6 +2,8 @@
 #define NMTOOLS_ARRAY_INDEX_COMPUTE_STRIDES_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/index/tuple_at.hpp"
 
 #include <type_traits>
 #include <cstddef> // size_t
@@ -40,8 +42,8 @@ namespace nmtools::index
         {
             using value_type = typename std::decay_t<decltype(shape)>::value_type;
             auto p = value_type{1};
-            for (auto j=k+1; j<shape.size(); j++)
-                p *= shape[j];
+            for (auto j=k+1; j<tuple_size(shape); j++)
+                p *= at(shape,j);
             return p;
         }
     } // stride
@@ -83,8 +85,8 @@ namespace nmtools::index
                 });
             }
             else
-                for (size_t i=0; i<strides_.size(); i++)
-                    strides_[i] = stride(shape, i);
+                for (size_t i=0; i<tuple_size(strides_); i++)
+                    at(strides_,i) = stride(shape,i);
             return strides_;
         }       
     } // strides
