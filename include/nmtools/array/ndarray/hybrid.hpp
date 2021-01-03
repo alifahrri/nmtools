@@ -11,6 +11,7 @@
 #include "nmtools/array/view/ref/initializer_list.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/clone.hpp"
+
 #include <cassert>
 #include <vector>
 #include <initializer_list>
@@ -144,10 +145,16 @@ namespace nmtools::array
         template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9, size_t Shape10, size_t Shape11>
         hybrid_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10][Shape11]) { init(a); }
 
-        auto shape() const
+        auto shape() const noexcept
         {
             return shape_;
         } // shape
+
+        // doesnt work, not ignored when dimension != 1
+        // auto size() const -> std::enable_if_t<dimension==1,size_t>
+        // {
+        //     return shape_[0];
+        // } // size
 
         auto strides() const
         {
@@ -179,7 +186,11 @@ namespace nmtools::array
         template <typename ...size_types>
         auto operator()(size_types...ns)
             // noexcept(detail::all_integral_constant_v<size_types...>>)
-            -> std::enable_if_t<sizeof...(ns)==dimension,reference>
+            -> std::enable_if_t<
+                sizeof...(ns)==dimension
+                && detail::all_integral_v<size_types...>,
+                reference
+            >
         {
             using common_size_t = std::common_type_t<size_types...>;
             auto indices = std::array<common_size_t,sizeof...(ns)>{
@@ -195,7 +206,11 @@ namespace nmtools::array
         template <typename ...size_types>
         auto operator()(size_types...ns) const
             // noexcept(detail::all_integral_constant_v<size_types...>>)
-            -> std::enable_if_t<sizeof...(ns)==dimension,const_reference>
+            -> std::enable_if_t<
+                sizeof...(ns)==dimension
+                && detail::all_integral_v<size_types...>,
+                const_reference
+            >
         {
             using common_size_t = std::common_type_t<size_types...>;
             auto indices = std::array<common_size_t,sizeof...(ns)>{
@@ -282,6 +297,46 @@ namespace nmtools::array
     template <typename T, size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9, size_t Shape10, size_t Shape11>
     hybrid_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10][Shape11]) -> hybrid_ndarray<T,Shape1*Shape2*Shape3*Shape4*Shape5*Shape6*Shape7*Shape8*Shape9*Shape10*Shape11,11>;
 
+
+    template <typename T>
+    struct is_hybrid_ndarray : std::false_type {};
+
+    template <typename T, size_t max_elements, size_t dimension>
+    struct is_hybrid_ndarray<hybrid_ndarray<T,max_elements,dimension>> : std::true_type {};
+
+    template <typename T>
+    static inline constexpr auto is_hybrid_ndarray_v = is_hybrid_ndarray<T>::value;
+
+    template <typename T, size_t max_elements>
+    auto size(const array::hybrid_ndarray<T,max_elements,1>& a)
+    {
+        return a.shape_[0];
+    } // size
+
+    template <typename T, size_t max_elements>
+    auto begin(const array::hybrid_ndarray<T,max_elements,1>& a)
+    {
+        return a.data;
+    } // begin
+
+    template <typename T, size_t max_elements>
+    auto begin(array::hybrid_ndarray<T,max_elements,1>& a)
+    {
+        return a.data;
+    } // begin
+
+    template <typename T, size_t max_elements>
+    auto end(const array::hybrid_ndarray<T,max_elements,1>& a)
+    {
+        return a.data + a.shape_[0];
+    } // end
+
+    template <typename T, size_t max_elements>
+    auto end(array::hybrid_ndarray<T,max_elements,1>& a)
+    {
+        return a.data + a.shape_[0];
+    } // end
+
     /** @} */ // end group dynamic
     
 } // namespace nmtools::array
@@ -332,12 +387,38 @@ namespace nmtools::meta
     struct is_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
 
     /**
-     * @brief specialization of is_hybrid_ndarray trait for hybrid_ndarray
+     * @brief specialization of is_dynamic_ndarray trait for hybrid_ndarray
      * 
      * @tparam T element type of hybrid_ndarray
      */
     template <typename T, size_t max_elements, size_t dimension>
     struct is_dynamic_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
+
+    template <typename T, size_t max_elements, size_t dimension>
+    struct is_hybrid_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
+
+    template <typename T, size_t max_elements>
+    struct is_hybrid_vector<array::hybrid_ndarray<T,max_elements,1>> : true_type {};
+
+    template <typename T, size_t max_elements>
+    struct hybrid_vector_maximum_size<array::hybrid_ndarray<T,max_elements,1>>
+    {
+        static constexpr auto value = max_elements;
+        using type = size_t;
+    }; // hybrid_vector_maximum_size
+
+    /**
+     * @brief specialize metafunction replace_hybrid_vector_maximum_size for hybrid_ndarray
+     * 
+     * @tparam T 
+     * @tparam max_elements 
+     * @tparam N new maximum size
+     */
+    template <typename T, size_t max_elements, auto N>
+    struct replace_hybrid_vector_maximum_size<array::hybrid_ndarray<T,max_elements,1>,N>
+    {
+        using type = array::hybrid_ndarray<T,N,1>;
+    }; // replace_hybrid_vector_maximum_size
 
     /**
      * @brief specialize replace_element_type for array::hybrid_ndarray
@@ -352,6 +433,19 @@ namespace nmtools::meta
     {
         using type = array::hybrid_ndarray<U,max_elements,dimension>;
     }; // replace_element_type
+
+    /**
+     * @brief return the element type of hybrid_ndarray
+     * 
+     * @tparam T element type
+     * @tparam max_elements 
+     * @tparam dimension 
+     */
+    template <typename T, size_t max_elements, size_t dimension>
+    struct get_element_type<array::hybrid_ndarray<T,max_elements,dimension>>
+    {
+        using type = T;
+    }; // get_element_type
 
     /** @} */ // end group traits
     
