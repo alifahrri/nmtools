@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_COMPUTE_OFFSET_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 
 #include <type_traits>
@@ -45,8 +46,8 @@ namespace nmtools::index
             });
         }
         else
-            for (size_t i=0; i<strides.size(); i++)
-                offset += strides[i]*indices[i];
+            for (size_t i=0; i<m; i++)
+                offset += at(strides,i)*at(indices,i);
         return offset;
     } // compute_offset
 } // namespace nmtools::index

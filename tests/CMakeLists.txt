@@ -123,11 +123,16 @@ endif ()
 
 set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/shape.cpp
+    src/doctest/array/index/argfilter.cpp
+    src/doctest/array/index/choose.cpp
     src/doctest/array/index/compute_indices.cpp
     src/doctest/array/index/compute_offset.cpp
     src/doctest/array/index/compute_strides.cpp
+    src/doctest/array/index/expand_dims.cpp
+    src/doctest/array/index/filter.cpp
     src/doctest/array/index/gather.cpp
     src/doctest/array/index/indices_pack.cpp
+    src/doctest/array/index/remove_single_dims.cpp
     src/doctest/array/index/reverse.cpp
     src/doctest/array/index/scatter.cpp
 )
@@ -180,6 +185,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/ref/initializer_list.cpp
     src/doctest/array/view/reshape.cpp
     src/doctest/array/view/slice.cpp
+    src/doctest/array/view/squeeze.cpp
     src/doctest/array/view/transpose.cpp
 )
 if (NOT TEST_ARRAY_VIEW)
@@ -215,6 +221,9 @@ target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
     src/doctest/meta.cpp
+    src/doctest/meta/array/index/argfilter.cpp
+    src/doctest/meta/array/index/choose.cpp
+    src/doctest/meta/array/index/expand_dims.cpp
     src/doctest/meta/traits/apply_conjunction.cpp
     src/doctest/meta/traits/apply_disjunction.cpp
     src/doctest/meta/traits/compose_logical_and.cpp
@@ -229,6 +238,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/constant_to_sequence.cpp
     src/doctest/meta/transform/gather.cpp
     src/doctest/meta/transform/get_element_type.cpp
+    src/doctest/meta/transform/insert_type.cpp
     src/doctest/meta/transform/replace_element_type.cpp
     src/doctest/meta/transform/nested_array_dim.cpp
     src/doctest/meta/transform/reduce.cpp

@@ -39,3 +39,6 @@ https://godbolt.org/z/asrh7q
 clang and gcc disagree on if constexpr inside lambda
 https://godbolt.org/z/8qc13s
 https://stackoverflow.com/questions/59647445/if-constexpr-with-static-assert-in-lambda-which-compiler-is-correct
+
+clang and gcc disagree on partial specialization & sfinae, makes ambious instantiaton on gcc but no issue on clang
+https://godbolt.org/z/sW3as8

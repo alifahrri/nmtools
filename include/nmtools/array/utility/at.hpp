@@ -18,7 +18,6 @@ namespace nmtools {
      * @{
      */
 
-    using std::size;
     using std::get;
 
     template <auto i, typename array_t>

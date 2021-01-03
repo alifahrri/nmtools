@@ -2,6 +2,8 @@
 #define NMTOOLS_ARRAY_INDEX_COMPUTE_INDICES_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 
 #include <type_traits>
@@ -39,8 +41,8 @@ namespace nmtools::index
             });
         }
         else
-            for (size_t i=0; i<shape.size(); i++)
-                indices[i] = (offset / strides[i]) % shape[i];
+            for (size_t i=0; i<tuple_size(shape); i++)
+                at(indices,i) = (offset / at(strides,i)) % at(shape,i);
         return indices;
     } // compute indices
 

@@ -2331,6 +2331,106 @@ namespace nmtools::meta
     template <typename T>
     using sequence_to_constant_t = type_t<sequence_to_constant<T>>;
 
+    namespace detail
+    {
+        template <template<typename>typename Predicate, typename T, typename=void>
+        struct filter_helper
+        {
+            using type = void;
+        }; // filter_helper
+
+        template <template<typename>typename Predicate, template<typename...>typename TT, typename T>
+        struct filter_helper<Predicate,TT<T>>
+        {
+            using type = std::conditional_t<
+                Predicate<T>::value, TT<T>, TT<>
+            >;
+        }; // filter_helper
+
+        template <template<typename>typename Predicate, template<typename...>typename TT, typename T, typename U, typename...Ts>
+        struct filter_helper<Predicate,TT<T,U,Ts...>>
+        {
+            using fst  = TT<T>;
+            using snd  = TT<U,Ts...>;
+            using type = merge_t<
+                type_t<filter_helper<Predicate,fst>>,
+                type_t<filter_helper<Predicate,snd>>
+            >;
+        }; // filter_helper
+    } // namespace detail
+
+    template <template<typename>typename Predicate, typename T, typename=void>
+    struct filter
+    {
+        using type = type_t<detail::filter_helper<Predicate,T>>;
+    }; // filter
+
+    template <template<typename>typename Predicate, typename T>    
+    using filter_t = type_t<filter<Predicate,T>>;
+
+    template <typename array_t>
+    struct get_element_or_common_type
+    {
+        using element_t = get_element_type_t<array_t>;
+        using common_t  = apply_t<std::common_type,array_t>;
+        using type      = std::conditional_t<
+            std::is_void_v<element_t>, common_t, element_t
+        >;
+    }; // get_element_or_common_type
+
+    template <typename array_t>
+    using get_element_or_common_type_t = type_t<get_element_or_common_type<array_t>>;
+
+    namespace detail
+    {
+        template <typename T, typename U, auto I, typename=void>
+        struct insert_type
+        {
+            using type = void;
+        }; // insert_type
+
+        // @note clang & gcc disagree on this, see compiler notes
+        // template <typename...Ts, typename U, auto I>
+        // struct insert_type<std::tuple<Ts...>,U,I,std::enable_if_t<(I>=0 && I<=sizeof...(Ts))>>
+        // {
+        //     using tuple_t = std::tuple<Ts...>;
+        //     using split_type = split_at<tuple_t,I>;
+        //     using fst = first_t<split_type>;
+        //     using snd = second_t<split_type>;
+        //     using type = merge_t<merge_t<fst,U>,snd>;
+        // }; // insert_type
+        // template <typename...Ts, typename U>
+        // struct insert_type<std::tuple<Ts...>,U,0>
+        // {
+        //     using type = std::tuple<U,Ts...>;
+        // }; // insert_type
+
+        template <typename...Ts, typename U, auto I>
+        struct insert_type<std::tuple<Ts...>,U,I,std::enable_if_t<(I>0 && I<=sizeof...(Ts))>>
+        {
+            using tuple_t    = std::tuple<Ts...>;
+            using split_type = split_at<tuple_t,I>;
+            using fst  = first_t<split_type>;
+            using snd  = second_t<split_type>;
+            using type = merge_t<merge_t<fst,U>,snd>;
+        }; // insert_type
+
+        template <typename...Ts, typename U>
+        struct insert_type<std::tuple<Ts...>,U,0>
+        {
+            using type = std::tuple<U,Ts...>;
+        }; // insert_type
+    } // namespace detail
+
+    template <typename T, typename U, auto I, typename=void>
+    struct insert_type
+    {
+        using type = type_t<detail::insert_type<T,U,I>>;
+    }; // insert_type
+
+    template <typename T, typename U, auto I>
+    using insert_type_t = type_t<insert_type<T,U,I>>;
+
     /** @} */ // end group meta
 } // namespace nmtools::meta
 

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_UTILITY_SHAPE_HPP
 #define NMTOOLS_ARRAY_UTILITY_SHAPE_HPP
 
-#include "nmtools/array/detail.hpp"
+#include "nmtools/array/index/make_array.hpp"
 #include "nmtools/array/meta.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
@@ -22,7 +22,6 @@ namespace nmtools
     * @{
     */
 
-    using std::size;
     using std::get;
 
     /**
@@ -222,7 +221,7 @@ namespace nmtools
     constexpr decltype(auto) shape(const array_t& array)
     {
         auto shape_ = shape(array);
-        return detail::make_array<shape_t>(shape_);
+        return index::make_array<shape_t>(shape_);
     } // shape
 
     /**
