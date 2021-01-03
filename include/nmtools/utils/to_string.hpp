@@ -69,8 +69,12 @@ namespace nmtools::utils
                 else return shape_;
             }();
             auto indices = indices_pack(s);
+
+            // print empty ndarray
+            if (!size(indices))
+                str = "[]";
             
-            for (int i=0; i<indices.size(); i++) {
+            for (int i=0; i<size(indices); i++) {
                 auto idx = [&](){
                     auto idx = indices[i];
                     using idx_t = decltype(idx);
@@ -84,8 +88,8 @@ namespace nmtools::utils
                 // check if we should print open bracket
                 // only add open bracket up to axis n
                 // that is equal to zero, starting from last axis
-                for (int ii=idx.size()-1; ii>=0; ii--) {
-                    if (idx[ii]==0)
+                for (int ii=size(idx)-1; ii>=0; ii--) {
+                    if (at(idx,ii)==0)
                         str += "[";
                     else break;
                 }
@@ -97,15 +101,15 @@ namespace nmtools::utils
                 // check if we should print closing bracket
                 // only add open bracket up to axis n
                 // that is equal to shape[n]-1, starting from last axis
-                for (int ii=idx.size()-1; ii>=0; ii--) {
-                    if (idx[ii]==(s[ii]-1)) {
+                for (int ii=size(idx)-1; ii>=0; ii--) {
+                    if (at(idx,ii)==(at(s,ii)-1)) {
                         str += "]";
                         // also count how much newline to be printed
                         print_comma++;
                     }
                     else break;
                 }
-                if (print_comma && i<indices.size()-1) {
+                if (print_comma && i<size(indices)-1) {
                     str += ",";
                     for (int ii=0; ii<print_comma; ii++)
                         str += "\n";
