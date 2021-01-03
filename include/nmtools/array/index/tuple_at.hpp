@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/shape.hpp"
 
 #include <type_traits>
 #include <cstddef> // size_t
@@ -26,26 +27,19 @@ namespace nmtools::index
     template <typename vector_t, typename idx_t>
     constexpr auto tuple_at(const vector_t& vec, idx_t idx)
     {
-        // std::array type has value_type
-        using element_t = meta::get_element_type_t<vector_t>;
-        using common_t  = std::conditional_t<
-            std::is_void_v<element_t>,
-            meta::apply_t<std::common_type,vector_t>,
-            element_t
-        >;
-        static_assert( std::is_arithmetic_v<common_t>
-            , "unsupported tuple_at"
+        using value_t = meta::get_element_or_common_type_t<vector_t>;
+        static_assert( std::is_arithmetic_v<value_t>
+            , "unsupported tuple_at, element_type / common_type is not arithmentic"
         );
-        auto value = common_t{};
+        auto value = value_t{};
 
-        if constexpr (meta::has_at_v<vector_t,idx_t>)
-            value = at(vec,idx);
         // @note to check to N since n may be > i
         // @note integral constant is cast-able to its value_type (int,size_t,...)
-        else
+        if constexpr (meta::has_tuple_size_v<vector_t>)
             meta::template_for<std::tuple_size_v<vector_t>>([&](auto j){
-                if (idx==j) value = static_cast<common_t>(at(vec,j));
+                if (idx==j) value = static_cast<value_t>(at(vec,j));
             });
+        else value = at(vec,idx);
         return value;
     } // tuple_at
 
@@ -54,7 +48,7 @@ namespace nmtools::index
     {
         if constexpr (meta::has_tuple_size_v<vector_t>)
             return std::tuple_size_v<vector_t>;
-        else return vec.size();
+        else return vector_size(vec);
     } // size
 } // namespace nmtools::index
 
