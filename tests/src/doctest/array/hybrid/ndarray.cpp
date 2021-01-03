@@ -26,7 +26,10 @@ TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("array"))
         auto array = na::hybrid_ndarray({1,2,3,4,5,6});
         using array_t = decltype(array);
         STATIC_CHECK_TRAIT( meta::is_ndarray, array_t );
+        STATIC_CHECK_TRAIT( meta::is_resizeable, array_t );
         STATIC_CHECK_TRAIT( meta::is_dynamic_ndarray, array_t );
+        STATIC_CHECK_IS_SAME( meta::get_element_type_t<array_t>, int );
+        STATIC_CHECK_TRAIT_FALSE( meta::has_tuple_size, array_t );
 
         double expected[6] = {1,2,3,4,5,6};
         NMTOOLS_ASSERT_CLOSE( array, expected );
