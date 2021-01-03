@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 
+#include <type_traits>
 #include <utility>
 #include <ratio>
 
@@ -166,6 +167,63 @@ namespace nmtools::meta
     {
         using type = type_t<detail::div<T,U>>;
     }; // div
+
+    /**
+     * @brief equality compare integral_constant T with constant I
+     *
+     * Return true if type T is integral_constant and its value is equal to I.
+     * 
+     * @tparam T 
+     * @tparam I 
+     */
+    template <typename T, auto I>
+    using constant_eq = std::is_same<std::integral_constant<decltype(I),I>,T>;
+
+    /**
+     * @brief helper variable template for constant_eq
+     * 
+     * @tparam T 
+     * @tparam I 
+     */
+    template <typename T, auto I>
+    static inline constexpr auto constant_eq_v = constant_eq<T,I>::value;
+
+    /**
+     * @brief greater-than comparison between type T with constant I.
+     *
+     * Return true if type T is integral_constant and its value is greater than I.
+     * 
+     * @tparam T type to test
+     * @tparam I constant value
+     * @tparam typename 
+     */
+    template <typename T, auto I, typename=void>
+    struct constant_gt : std::false_type {};
+
+    template <auto A, auto B>
+    struct constant_gt<
+        std::integral_constant<decltype(A),A>, B,
+        std::enable_if_t< (A>B) >
+    > : std::true_type {};
+
+    /**
+     * @brief lower-than comparison between type T with constant I.
+     *
+     * Return true if type T is integral_constant and its value is lower than I.
+     * 
+     * @tparam T type to test
+     * @tparam I constant value
+     * @tparam typename 
+     */
+    template <typename T, auto I, typename=void>
+    struct constant_lt : std::false_type {};
+
+    template <auto A, auto B>
+    struct constant_lt<
+        std::integral_constant<decltype(A),A>, B,
+        std::enable_if_t< (A<B) >
+    > : std::true_type {};
+
 } // nmtools
 
 #endif // NMTOOLS_META_ARITHMETIC_HPP
