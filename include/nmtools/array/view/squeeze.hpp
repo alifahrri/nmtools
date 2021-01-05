@@ -4,10 +4,10 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/index/argfilter.hpp"
 #include "nmtools/array/index/remove_single_dims.hpp"
-#include "nmtools/array/index/expand_dims.hpp"
+#include "nmtools/array/index/compute_indices.hpp"
+#include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/array/index/compute_offset.hpp"
 #include "nmtools/array/shape.hpp"
 
 namespace nmtools::view
