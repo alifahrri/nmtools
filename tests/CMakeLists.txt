@@ -177,6 +177,7 @@ if (NOT TEST_NDARRAY)
 endif ()
 
 set(ARRAY_VIEW_TEST_SOURCES
+    src/doctest/array/view/expand_dims.cpp
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
