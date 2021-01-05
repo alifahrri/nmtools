@@ -1200,7 +1200,7 @@ TEST_CASE("expand_dims(fixed_ndarray(3x1x1x2)->(1x3x1x2x1))" * doctest::test_sui
                 }
             }
         }};
-        auto axis = std::array{0,4};
+        auto axis = std::array{0,5};
         auto array_ref = view::expand_dims(array,axis);
         using squeezed_t = decltype(array_ref);
 
@@ -1263,7 +1263,27 @@ TEST_CASE("expand_dims(dynamic_ndarray(3x1x2)->(1x3x1x2))" * doctest::test_suite
 TEST_CASE("expand_dims(dynamic_ndarray(3x1x1x2)->(1x3x1x2x1))" * doctest::test_suite("view::expand_dims"))
 {
     {
-        auto array = na::dynamic_ndarray{{
+        // clang complains that this is ambiguous, gcc works fine
+        // note: candidate constructor [with Rows = 3, Cols = 1]
+        // note: candidate constructor [with Shape1 = 3, Shape2 = 1, Shape3 = 1, Shape4 = 2]
+        // auto array = na::dynamic_ndarray{{
+        //     {
+        //         {
+        //             {1,2},
+        //         }
+        //     },
+        //     {
+        //         {
+        //             {3,4},
+        //         }
+        //     },
+        //     {
+        //         {
+        //             {5,6}
+        //         }
+        //     }
+        // }};
+        double initializer[3][1][1][2] = {
             {
                 {
                     {1,2},
@@ -1276,10 +1296,12 @@ TEST_CASE("expand_dims(dynamic_ndarray(3x1x1x2)->(1x3x1x2x1))" * doctest::test_s
             },
             {
                 {
-                {5,6}
+                    {5,6}
                 }
             }
-        }};
+        };
+        // note that initializer must be moved
+        auto array = na::dynamic_ndarray{std::move(initializer)};
         double expected[1][3][1][1][2][1] = {{
             {
                 {
@@ -1297,7 +1319,7 @@ TEST_CASE("expand_dims(dynamic_ndarray(3x1x1x2)->(1x3x1x2x1))" * doctest::test_s
                 }
             }
         }};
-        auto axis = std::array{0,4};
+        auto axis = std::array{0,5};
         auto array_ref = view::expand_dims(array,axis);
         using squeezed_t = decltype(array_ref);
 
