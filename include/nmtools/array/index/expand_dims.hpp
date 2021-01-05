@@ -45,31 +45,22 @@ namespace nmtools::index
         {
             auto n_axes = tuple_size(axes);
             auto dim = tuple_size(shape);
-            auto shift = size_t{0};
-            // actual impl of expand_dims for each iter
-            auto expand_dims_impl = [&](auto i){
-                auto s = tuple_at(shape,i);
-                if (contains(axes,i)) {
-                    at(newshape, shift+i) = 1;
-                    shift++;
-                }
-                at(newshape, shift+i) = s;
-            }; // expand_dims_impl
 
             // resize output if necessary
             if constexpr (meta::is_resizeable_v<newshape_t>)
                 newshape.resize(dim+n_axes);
-
-            if constexpr (meta::has_tuple_size_v<shape_t>)
-                meta::template_for<std::tuple_size_v<shape_t>>([&](auto i){
-                    expand_dims_impl(i);
-                });
-            else
-                for (size_t i=0; i<dim; i++)
-                    expand_dims_impl(i);
-            // check if new axis should be on the last dimension
-            if (contains(axes,dim))
-                at(newshape,dim+n_axes-1) = 1;
+            
+            auto idx = size_t{0};
+            for (size_t i=0; i<size(newshape); i++) {
+                // fill ones
+                if (contains(axes,i))
+                    at(newshape,i) = 1;
+                // fill empty with shape
+                else {
+                    at(newshape,i) = tuple_at(shape,idx);
+                    idx++;
+                }
+            }
         } // expand_dims
     } // namespace impl
 

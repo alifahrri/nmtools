@@ -1,41 +1,36 @@
-#ifndef NMTOOLS_ARRAY_VIEW_SQUEEZE_HPP
-#define NMTOOLS_ARRAY_VIEW_SQUEEZE_HPP
+#ifndef NMTOOLS_ARRAY_VIEW_EXPAND_DIMS_HPP
+#define NMTOOLS_ARRAY_VIEW_EXPAND_DIMS_HPP
 
-#include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/index/remove_single_dims.hpp"
+#include "nmtools/array/index/expand_dims.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
+#include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 
 namespace nmtools::view
 {
-    /**
-     * @addtogroup view
-     * Collections of functions/class for view objects
-     * @{
-     */
-
-    template <typename array_t>
-    struct squeeze_t
+    template <typename array_t, typename axis_t>
+    struct expand_dims_t
     {
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
         using array_type = const array_t&;
+        using axis_type  = axis_t;
 
         array_type array;
+        axis_type  axis;
 
-        constexpr squeeze_t(array_type array)
-            : array(array) {}
+        constexpr expand_dims_t(array_type array, axis_type axis)
+            : array(array), axis(axis) {}
         
         constexpr auto shape() const noexcept
         {
-            auto shape_   = ::nmtools::shape(array);
-            auto squeezed = index::remove_single_dims(shape_);
-            return squeezed;
+            auto shape_ = ::nmtools::shape(array);
+            auto newshape = index::expand_dims(shape_,axis);
+            return newshape;
         } // shape
 
         constexpr auto dim() const noexcept
@@ -59,8 +54,8 @@ namespace nmtools::view
                 }
             }();
 
-            auto squeezed_shape   = shape();
-            auto squeezed_strides = index::compute_strides(squeezed_shape);
+            auto expanded_shape   = shape();
+            auto squeezed_strides = index::compute_strides(expanded_shape);
 
             auto shape_     = ::nmtools::shape(array);
             auto offset     = index::compute_offset(indices,squeezed_strides);
@@ -68,54 +63,67 @@ namespace nmtools::view
 
             return tf_indices;
         } // index
-    }; // squeeze_t
+    }; // expand_dims_t
 
     /**
-     * @brief remove single dimensional entry from array
+     * @brief expand the shape of an array
      * 
-     * @tparam array_t 
-     * @param array 
-     * @return constexpr auto 
+     * @tparam array_t array_like
+     * @tparam axis_t integer or array of integer
+     * @param array input array
+     * @param axis Position in the expanded axes where the new axis (or axes) is placed.
+     * @return constexpr auto expand_dims view
      */
-    template <typename array_t>
-    constexpr auto squeeze(const array_t& array)
+    template <typename array_t, typename axis_t>
+    constexpr auto expand_dims(const array_t& array, axis_t axis)
     {
-        return decorator_t<squeeze_t,array_t>{{array}};
-    } // squeeze
-    /* @} */
+        // convert integral type to tuple of integral
+        auto axis_ = [=](){
+            if constexpr (std::is_integral_v<axis_t>)
+                return std::array{axis};
+            else return axis;
+        }();
+        using axis_type = decltype(axis_);
+        return decorator_t<expand_dims_t,array_t,axis_type>{{array,axis_}};
+    } // expand_dims
+
 } // namespace nmtools::view
 
 namespace nmtools::meta
 {
     using view::decorator_t;
-    using view::squeeze_t;
+    using view::expand_dims_t;
 
-    template <typename array_t>
-    struct fixed_vector_size<  squeeze_t<array_t> >
+    template <typename array_t, typename axis_t>
+    struct fixed_vector_size< expand_dims_t<array_t,axis_t>
+    >
     {
         static inline constexpr auto value = detail::fail_t{};
         using value_type = decltype(value);
     }; // fixed_vector_size
 
-    template <typename array_t>
-    struct fixed_matrix_size<  squeeze_t<array_t> >
+    template <typename array_t, typename axis_t>
+    struct fixed_matrix_size< expand_dims_t<array_t,axis_t>
+    >
     {
         static inline constexpr auto value = detail::fail_t{};
         using value_type = decltype(value);
     }; // fixed_matrix_size
 
-    template <typename array_t>
-    struct fixed_ndarray_shape<  squeeze_t<array_t> >
+    template <typename array_t, typename axis_t>
+    struct fixed_ndarray_shape< expand_dims_t<array_t,axis_t>
+    >
     {
         static inline constexpr auto value = detail::fail_t{};
         using value_type = decltype(value);
-    }; // fixed_ndarray_shape
+    }; // fixed_matrix_size
 
-    template <typename array_t>
-    struct is_ndarray< decorator_t<squeeze_t,array_t> >
+    template <typename array_t, typename axis_t>
+    struct is_ndarray< decorator_t<expand_dims_t,array_t,axis_t> >
     {
         static inline constexpr auto value = true;
     }; // is_ndarray
-}
 
-#endif // NMTOOLS_ARRAY_VIEW_SQUEEZE_HPP
+} // namespace nmtools::meta
+
+#endif // NMTOOLS_ARRAY_VIEW_EXPAND_DIMS_HPP
