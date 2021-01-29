@@ -40,12 +40,21 @@ namespace nmtools::utils
         template <typename T, typename U>
         constexpr auto isequal(const T& t, const U& u)
         {
+            using tval_t = meta::get_element_type_t<T>;
+            using uval_t = meta::get_element_type_t<U>;
+            // @note add is_bit_reference here since std::vector<bool> access return std::_Bit_reference
+            // and specializing is_integral is undefined behaviour
             static_assert(
                 (
                     meta::compose_logical_or_v<T,std::is_integral,meta::is_integral_constant>
                     || meta::compose_logical_or_v<U,std::is_integral,meta::is_integral_constant>
                 )
-                || (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)
+                ||
+                (
+                    meta::is_ndarray_v<T> && meta::is_ndarray_v<U>
+                    && meta::compose_logical_or_v<tval_t,std::is_integral>
+                    && meta::compose_logical_or_v<uval_t,std::is_integral>
+                )
                 , "unsupported isequal; only support integral element type"
             );
             if constexpr (std::is_integral_v<T>) {
@@ -57,11 +66,6 @@ namespace nmtools::utils
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
             else {
-                constexpr auto t_is_int = std::is_integral_v<meta::get_element_type_t<T>>;
-                constexpr auto u_is_int = std::is_integral_v<meta::get_element_type_t<U>>;
-                static_assert (t_is_int && u_is_int
-                    , "unsupported isequal; only support integral element type"
-                );
                 bool equal = true;
                 // @todo: static assert whenever possible
                 assert (dim(t)==dim(u)
@@ -69,8 +73,8 @@ namespace nmtools::utils
                 );
                 auto t_shape = shape(t);
                 auto u_shape = shape(u);
-                auto t_indices = indices_pack(t_shape);
-                auto u_indices = indices_pack(u_shape);
+                auto t_indices = ndindex(t_shape);
+                auto u_indices = ndindex(u_shape);
                 // @todo: static assert whenever possible
                 assert (t_indices.size()==u_indices.size()
                     // , "size mismatch for isequal"

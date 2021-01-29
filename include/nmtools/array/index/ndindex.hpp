@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_ARRAY_INDEX_INDICES_PACK_HPP
-#define NMTOOLS_ARRAY_INDEX_INDICES_PACK_HPP
+#ifndef NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
+#define NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
 
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/meta.hpp"
@@ -16,14 +16,14 @@
 namespace nmtools::index
 {
     /**
-     * @brief indices_pack to support dynamic dimension
+     * @brief ndindex to support dynamic dimension
      * 
      * @tparam shape_t 
      * @tparam typename 
      * @todo remove, unify with fixed-dim version
      */
     template <typename shape_t, typename=void>
-    struct indices_pack_t
+    struct ndindex_t
     {
         using shape_type = shape_t;
         using stride_type = shape_t;
@@ -37,10 +37,10 @@ namespace nmtools::index
          * 
          * @param shape original array shape
          */
-        constexpr indices_pack_t(shape_type shape)
+        constexpr ndindex_t(shape_type shape)
             : shape(shape), stride(array::detail::compute_strides(shape))
         {
-            // @note: this prevents indices_pack_t to be used in constexpr
+            // @note: this prevents ndindex_t to be used in constexpr
             // gcc error: must be initialized by mem-initializer
             // stride = array::detail::compute_strides(shape);
         }
@@ -71,7 +71,7 @@ namespace nmtools::index
             // map offset (flat index) back to indices
             return compute_indices(i,shape,stride);
         } // operator[]
-    }; // indices_pack_t
+    }; // ndindex_t
 
     /**
      * @brief indices transformer
@@ -86,7 +86,7 @@ namespace nmtools::index
      * @see nmtools::apply_at
      */
     template <template<typename,size_t> typename array_t, typename T, size_t N>
-    struct indices_pack_t<array_t<T,N>>
+    struct ndindex_t<array_t<T,N>>
     {
         using shape_type = array_t<T,N>;
         using stride_type = array_t<T,N>;
@@ -100,10 +100,10 @@ namespace nmtools::index
          * 
          * @param shape original array shape
          */
-        constexpr indices_pack_t(shape_type shape)
+        constexpr ndindex_t(shape_type shape)
             : shape(shape), stride(array::detail::compute_strides(shape))
         {
-            // @note: this prevents indices_pack_t to be used in constexpr
+            // @note: this prevents ndindex_t to be used in constexpr
             // gcc error: must be initialized by mem-initializer
             // stride = array::detail::compute_strides(shape);
         }
@@ -137,26 +137,26 @@ namespace nmtools::index
             // map offset (flat index) back to indices
             return as_tuple(compute_indices(i,shape,stride));
         } // operator[]
-    }; // indices_pack_t
+    }; // ndindex_t
 
     /**
-     * @brief make indices_pack from array representing shape
+     * @brief make ndindex from array representing shape
      * 
      * @tparam T element type of shape
      * @tparam N number of dimension
      * @param shape original array shape
      * @return constexpr auto indices transformer
-     * @see indices_pack_t
+     * @see ndindex_t
      */
     template <typename shape_t>
-    constexpr auto indices_pack(shape_t shape)
+    constexpr auto ndindex(shape_t shape)
     {
         if constexpr (meta::is_specialization_v<shape_t,std::tuple> || meta::is_specialization_v<shape_t,std::pair>) {
             auto shape_ = detail::make_array<std::array>(shape);
-            return indices_pack_t(shape_);
+            return ndindex_t(shape_);
         }
-        else return indices_pack_t(shape);
-    } // indices_pack
+        else return ndindex_t(shape);
+    } // ndindex
 }
 
-#endif // NMTOOLS_ARRAY_INDEX_INDICES_PACK_HPP
+#endif // NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
