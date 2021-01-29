@@ -28,6 +28,26 @@ TEST_CASE("cast<float>(double[])" * doctest::test_suite("cast"))
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
 
+TEST_CASE("cast<bool>(bool[])" * doctest::test_suite("cast"))
+{
+    using dst_t = bool;
+    using expected_t = std::array<dst_t,5>;
+    bool src[5] = {true,false,true,false,true};
+    auto res = nm::cast<dst_t>(src);
+    STATIC_CHECK_IS_SAME( decltype(res), expected_t );
+    NMTOOLS_ASSERT_CLOSE( res, src );
+}
+
+TEST_CASE("cast<bool>(bool[])" * doctest::test_suite("cast"))
+{
+    using dst_t = bool;
+    using expected_t = std::array<dst_t,5>;
+    bool src[5] = {true,false,true,false,true};
+    auto res = nm::cast<expected_t>(src);
+    STATIC_CHECK_IS_SAME( decltype(res), expected_t );
+    NMTOOLS_ASSERT_CLOSE( res, src );
+}
+
 TEST_CASE("cast<vector>(double[])" * doctest::test_suite("cast"))
 {
     using dst_t = std::vector<double>;
@@ -45,6 +65,15 @@ TEST_CASE("cast<float>(vector)" * doctest::test_suite("cast"))
     auto src = src_t{1,2,3,4,5};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
+    NMTOOLS_ASSERT_CLOSE( res, src );
+}
+
+TEST_CASE("cast<vector>(bool[])" * doctest::test_suite("cast"))
+{
+    using dst_t = std::vector<bool>;
+    bool src[5] = {true,false,true,false,true};
+    auto res = nm::cast<dst_t>(src);
+    STATIC_CHECK_IS_SAME( decltype(res), dst_t );
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
 

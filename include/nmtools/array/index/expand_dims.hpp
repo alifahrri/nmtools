@@ -89,243 +89,32 @@ namespace nmtools
 {
     namespace meta
     {
-        /**
-         * @brief expand_dims for resizeable shape and axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
         template <typename shape_t, typename axes_t>
         struct resolve_optype<
-            std::enable_if_t<
-                is_resizeable_v<shape_t>
-                && is_resizeable_v<axes_t>
-                && !is_hybrid_vector_v<shape_t>
-                && !is_hybrid_vector_v<axes_t>
-                && std::is_integral_v<get_element_type_t<shape_t>>
-                && std::is_integral_v<get_element_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
+            void, index::expand_dims_t, shape_t, axes_t
         >
         {
-            using shape_value_t = get_element_type_t<shape_t>;
-            using axes_value_t  = get_element_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using type = replace_element_type_t<shape_t,value_t>;
-        }; // resolve_optype expand_dims_t
+            template <typename T>
+            struct is_resizeable_not_hybrid
+                : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
 
-        /**
-         * @brief expand_dims for resizeable shape and fixed axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
-        template <typename shape_t, typename axes_t>
-        struct resolve_optype<
-            std::enable_if_t<
-                is_resizeable_v<shape_t>
-                && !is_hybrid_vector_v<shape_t>
-                && !is_resizeable_v<axes_t>
-                && has_tuple_size_v<axes_t>
-                && std::is_integral_v<get_element_type_t<shape_t>>
-                && std::is_integral_v<get_element_or_common_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
-        >
-        {
-            using shape_value_t = get_element_type_t<shape_t>;
-            using axes_value_t  = get_element_or_common_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using type = replace_element_type_t<shape_t,value_t>;
-        }; // resolve_optype expand_dims_t
-
-        /**
-         * @brief expand_dims for resizeable shape and hybrid axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
-        template <typename shape_t, typename axes_t>
-        struct resolve_optype<
-            std::enable_if_t<
-                is_resizeable_v<shape_t>
-                && !is_hybrid_vector_v<shape_t>
-                && is_resizeable_v<axes_t>
-                && is_hybrid_vector_v<axes_t>
-                && std::is_integral_v<get_element_type_t<shape_t>>
-                && std::is_integral_v<get_element_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
-        >
-        {
-            using shape_value_t = get_element_type_t<shape_t>;
-            using axes_value_t  = get_element_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using type = replace_element_type_t<shape_t,value_t>;
-        }; // resolve_optype expand_dims_t
-
-        /**
-         * @brief expand_dims for fixed shape and axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
-        template <typename shape_t, typename axes_t>
-        struct resolve_optype<
-            std::enable_if_t<
-                !is_resizeable_v<shape_t>
-                && !is_resizeable_v<axes_t>
-                && has_tuple_size_v<shape_t>
-                && has_tuple_size_v<axes_t>
-                && std::is_integral_v<get_element_or_common_type_t<shape_t>>
-                && std::is_integral_v<get_element_or_common_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
-        >
-        {
-            static constexpr auto M = std::tuple_size_v<shape_t>;
-            static constexpr auto N = std::tuple_size_v<axes_t>;
-            using shape_value_t = get_element_or_common_type_t<shape_t>;
-            using axes_value_t  = get_element_or_common_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using type    = std::array<value_t,M+N>;
-        }; // resolve_optype expand_dims_t
-
-        /**
-         * @brief expand_dims for fixed shape and resizeable axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
-        template <typename shape_t, typename axes_t>
-        struct resolve_optype<
-            std::enable_if_t<
-                !is_resizeable_v<shape_t>
-                && has_tuple_size_v<shape_t>
-                && is_resizeable_v<axes_t>
-                && !is_hybrid_vector_v<axes_t>
-                && std::is_integral_v<get_element_or_common_type_t<shape_t>>
-                && std::is_integral_v<get_element_or_common_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
-        >
-        {
-            using shape_value_t = get_element_or_common_type_t<shape_t>;
-            using axes_value_t  = get_element_or_common_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using type    = replace_element_type_t<axes_t,value_t>;
-        }; // resolve_optype expand_dims_t
-
-        /**
-         * @brief expand_dims for fixed shape and hybrid axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
-        template <typename shape_t, typename axes_t>
-        struct resolve_optype<
-            std::enable_if_t<
-                !is_resizeable_v<shape_t>
-                && has_tuple_size_v<shape_t>
-                && !is_hybrid_vector_v<shape_t>
-                && is_resizeable_v<axes_t>
-                && is_hybrid_vector_v<axes_t>
-                && std::is_integral_v<get_element_or_common_type_t<shape_t>>
-                && std::is_integral_v<get_element_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
-        >
-        {
-            static constexpr auto N = hybrid_vector_maximum_size_v<axes_t>;
-            static constexpr auto M = std::tuple_size_v<shape_t>;
-            using shape_value_t = get_element_or_common_type_t<shape_t>;
-            using axes_value_t  = get_element_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using newshape_t = replace_element_type_t<axes_t,value_t>;
-            using type = replace_hybrid_vector_maximum_size_t<newshape_t,M+N>;
-        }; // resolve_optype expand_dims_t
-
-        /**
-         * @brief expand_dims for hybrid shape and axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
-        template <typename shape_t, typename axes_t>
-        struct resolve_optype<
-            std::enable_if_t<
-                is_resizeable_v<shape_t>
-                && is_hybrid_vector_v<shape_t>
-                && is_resizeable_v<axes_t>
-                && is_hybrid_vector_v<axes_t>
-                && std::is_integral_v<get_element_type_t<shape_t>>
-                && std::is_integral_v<get_element_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
-        >
-        {
-            static constexpr auto M = hybrid_vector_maximum_size_v<shape_t>;
-            static constexpr auto N = hybrid_vector_maximum_size_v<axes_t>;
-            using shape_value_t = get_element_type_t<shape_t>;
-            using axes_value_t  = get_element_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using newshape_t = replace_element_type_t<shape_t,value_t>;
-            using type = replace_hybrid_vector_maximum_size_t<newshape_t,M+N>;
-        }; // resolve_optype expand_dims_t
-
-        /**
-         * @brief expand_dims for hybrid shape and fixed axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
-        template <typename shape_t, typename axes_t>
-        struct resolve_optype<
-            std::enable_if_t<
-                is_resizeable_v<shape_t>
-                && is_hybrid_vector_v<shape_t>
-                && !is_resizeable_v<axes_t>
-                && has_tuple_size_v<axes_t>
-                && std::is_integral_v<get_element_type_t<shape_t>>
-                && std::is_integral_v<get_element_or_common_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
-        >
-        {
-            static constexpr auto M = hybrid_vector_maximum_size_v<shape_t>;
-            static constexpr auto N = std::tuple_size_v<axes_t>;
-            using shape_value_t = get_element_type_t<shape_t>;
-            using axes_value_t  = get_element_or_common_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using newshape_t = replace_element_type_t<shape_t,value_t>;
-            using type = replace_hybrid_vector_maximum_size_t<newshape_t,M+N>;
-        }; // resolve_optype expand_dims_t
-
-        /**
-         * @brief expand_dims for hybrid shape and resizeable axes
-         * 
-         * @tparam shape_t 
-         * @tparam axes_t 
-         */
-        template <typename shape_t, typename axes_t>
-        struct resolve_optype<
-            std::enable_if_t<
-                is_resizeable_v<shape_t>
-                && is_hybrid_vector_v<shape_t>
-                && is_resizeable_v<axes_t>
-                && !is_hybrid_vector_v<axes_t>
-                && std::is_integral_v<get_element_type_t<shape_t>>
-                && std::is_integral_v<get_element_or_common_type_t<axes_t>>
-            >,
-            index::expand_dims_t, shape_t, axes_t
-        >
-        {
-            static constexpr auto M = hybrid_vector_maximum_size_v<shape_t>;
-            using shape_value_t = get_element_type_t<shape_t>;
-            using axes_value_t  = get_element_type_t<axes_t>;
-            using value_t = std::common_type_t<shape_value_t,axes_value_t>;
-            using type = replace_element_type_t<axes_t,value_t>;
-        }; // resolve_optype expand_dims_t
+            using type_list = std::tuple<shape_t,axes_t>;
+            static constexpr auto selection_kind = [](){
+                if constexpr (apply_logical_or_v<is_resizeable_not_hybrid,type_list>)
+                    return select_resizeable_kind_t{};
+                else if constexpr (apply_logical_or_v<is_hybrid_ndarray,type_list>)
+                    return select_hybrid_kind_t{};
+                else return select_fixed_kind_t{};
+            }();
+            using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
+            using selection_t = select_array1d_t<
+                size_policy_add_t, selection_kind_t
+            >;
+            // final type
+            using type = resolve_optype_t<
+                selection_t, shape_t, axes_t
+            >;
+        }; // resolve_optype
     } // namespace meta
 }
 #endif // NMTOOLS_ARRAY_INDEX_EXPAND_DIMS_HPP

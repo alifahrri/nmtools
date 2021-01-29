@@ -5,7 +5,7 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
 
-TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("array"))
+TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("array::hybrid_ndarray"))
 {
     {
         auto array = na::hybrid_ndarray<double,3,1>{};
@@ -28,6 +28,7 @@ TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("array"))
         STATIC_CHECK_TRAIT( meta::is_ndarray, array_t );
         STATIC_CHECK_TRAIT( meta::is_resizeable, array_t );
         STATIC_CHECK_TRAIT( meta::is_dynamic_ndarray, array_t );
+        STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, array_t );
         STATIC_CHECK_IS_SAME( meta::get_element_type_t<array_t>, int );
         STATIC_CHECK_TRAIT_FALSE( meta::has_tuple_size, array_t );
 
@@ -42,7 +43,7 @@ TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("array"))
     }
 }
 
-TEST_CASE("hybrid_ndarray(2)" * doctest::test_suite("array"))
+TEST_CASE("hybrid_ndarray(2)" * doctest::test_suite("array::hybrid_ndarray"))
 {
     {
         auto array = na::hybrid_ndarray<double,6,2>{};
@@ -105,7 +106,10 @@ TEST_CASE("hybrid_ndarray(2)" * doctest::test_suite("array"))
         });
         using array_t = decltype(array);
         STATIC_CHECK_TRAIT( meta::is_ndarray, array_t );
+        STATIC_CHECK_TRAIT( meta::is_resizeable, array_t );
+        STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, array_t );
         STATIC_CHECK_TRAIT( meta::is_dynamic_ndarray, array_t );
+        STATIC_CHECK_IS_SAME( meta::get_element_type_t<array_t>, int );
         double expected[2][3] = {
             {1,2,3},
             {4,5,6}
@@ -134,7 +138,7 @@ TEST_CASE("hybrid_ndarray(2)" * doctest::test_suite("array"))
     }
 }
 
-TEST_CASE("hybrid_ndarray(3)" * doctest::test_suite("array"))
+TEST_CASE("hybrid_ndarray(3)" * doctest::test_suite("array::hybrid_ndarray"))
 {
     {
         auto array = na::hybrid_ndarray<double,6,3>{};
@@ -215,7 +219,10 @@ TEST_CASE("hybrid_ndarray(3)" * doctest::test_suite("array"))
         });
         using array_t = decltype(array);
         STATIC_CHECK_TRAIT( meta::is_ndarray, array_t );
+        STATIC_CHECK_TRAIT( meta::is_resizeable, array_t );
+        STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, array_t );
         STATIC_CHECK_TRAIT( meta::is_dynamic_ndarray, array_t );
+        STATIC_CHECK_IS_SAME( meta::get_element_type_t<array_t>, int );
 
         double expected[1][2][3] = {
             {

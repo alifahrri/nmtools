@@ -397,28 +397,25 @@ namespace nmtools::meta
     template <typename T, size_t max_elements, size_t dimension>
     struct is_hybrid_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
 
-    template <typename T, size_t max_elements>
-    struct is_hybrid_vector<array::hybrid_ndarray<T,max_elements,1>> : true_type {};
-
-    template <typename T, size_t max_elements>
-    struct hybrid_vector_maximum_size<array::hybrid_ndarray<T,max_elements,1>>
+    template <typename T, size_t max_elements, size_t dimension>
+    struct hybrid_ndarray_max_size<array::hybrid_ndarray<T,max_elements,dimension>>
     {
         static constexpr auto value = max_elements;
         using type = size_t;
-    }; // hybrid_vector_maximum_size
+    }; // hybrid_ndarray_max_size
 
     /**
-     * @brief specialize metafunction replace_hybrid_vector_maximum_size for hybrid_ndarray
+     * @brief specialize metafunction resize_hybrid_ndarray_max_size for hybrid_ndarray
      * 
      * @tparam T 
      * @tparam max_elements 
      * @tparam N new maximum size
      */
-    template <typename T, size_t max_elements, auto N>
-    struct replace_hybrid_vector_maximum_size<array::hybrid_ndarray<T,max_elements,1>,N>
+    template <typename T, size_t max_elements, auto N, size_t dimension>
+    struct resize_hybrid_ndarray_max_size<array::hybrid_ndarray<T,max_elements,dimension>,N>
     {
-        using type = array::hybrid_ndarray<T,N,1>;
-    }; // replace_hybrid_vector_maximum_size
+        using type = array::hybrid_ndarray<T,N,dimension>;
+    }; // resize_hybrid_ndarray_max_size
 
     /**
      * @brief specialize replace_element_type for array::hybrid_ndarray

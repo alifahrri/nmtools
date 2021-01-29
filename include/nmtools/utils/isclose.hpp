@@ -44,7 +44,7 @@ namespace nmtools::utils
         template <typename T, typename U, typename E=double>
         constexpr auto isclose(const T& t, const U& u, E eps=static_cast<E>(1e-6))
         {
-            using ::nmtools::indices_pack;
+            using ::nmtools::ndindex;
             static_assert(
                 (std::is_arithmetic_v<T> && std::is_arithmetic_v<U>) ||
                 (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)
@@ -66,8 +66,8 @@ namespace nmtools::utils
                 assert (::nmtools::utils::isequal(t_shape,u_shape)
                     // , "shape mismatch for isclose"
                 );
-                auto t_indices = indices_pack(t_shape);
-                auto u_indices = indices_pack(u_shape);
+                auto t_indices = ndindex(t_shape);
+                auto u_indices = ndindex(u_shape);
                 // @todo: static assert whenever possible
                 assert (t_indices.size()==u_indices.size()
                     // , "size mismatch for isclose"

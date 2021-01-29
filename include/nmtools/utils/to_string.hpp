@@ -68,7 +68,7 @@ namespace nmtools::utils
                     return make_array<std::array>(shape_);
                 else return shape_;
             }();
-            auto indices = indices_pack(s);
+            auto indices = ndindex(s);
 
             // print empty ndarray
             if (!size(indices))

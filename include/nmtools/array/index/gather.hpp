@@ -19,6 +19,12 @@ namespace nmtools
     namespace index
     {
         /**
+         * @brief specific tag to resolve return type
+         * 
+         */
+        struct gather_t {};
+    
+        /**
          * @brief perform gather op
          *
          * perform the following op: `ret[i] = vec[idx[i]]`, reverse of scatter
@@ -41,24 +47,13 @@ namespace nmtools
             auto n = tuple_size(vec);
             // get the size of indices
             auto m = tuple_size(indices);
-            // @todo static assert whenever possible
-            assert (n == m
-                // , "unsupported permute, mismatched dimension between vec and indices"
-            );
 
             using std::tuple_size_v;
-            // std::array type has value_type
-            using element_t = meta::get_element_type_t<vector_t>;
-            using common_t = std::conditional_t<
-                std::is_void_v<element_t>,
-                meta::apply_t<std::common_type,vector_t>,
-                element_t
-            >;
+            using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+            auto ret = return_t{};
 
-            // assume return type is same
-            auto ret = vector_t{};
-            if constexpr (meta::is_resizeable_v<vector_t>)
-                ret.resize(vec.size()); // assuming indicesh has size
+            if constexpr (meta::is_resizeable_v<return_t>)
+                ret.resize(m);
             
             auto gather_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
                 auto idx   = at(indices,i);
@@ -66,9 +61,8 @@ namespace nmtools
                 at(ret,i)  = value;
             }; // gather_impl
 
-            // handle tuple if it has common_type
-            if constexpr (meta::has_tuple_size_v<vector_t> && !std::is_void_v<common_t>)
-                meta::template_for<tuple_size_v<vector_t>>([&](auto i){
+            if constexpr (meta::has_tuple_size_v<indices_t>)
+                meta::template_for<tuple_size_v<indices_t>>([&](auto i){
                     gather_impl(ret, vec, indices, i);
                 });
             else
@@ -78,5 +72,36 @@ namespace nmtools
         } // gather
     } // namespace index
 } // namespace nmtools
+
+namespace nmtools::meta
+{
+    template <typename vector_t, typename indices_t>
+    struct resolve_optype<
+        void, index::gather_t, vector_t, indices_t
+    >
+    {
+        template <typename T>
+        struct is_resizeable_not_hybrid
+            : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
+
+        using type_list = std::tuple<vector_t,indices_t>;
+        static constexpr auto selection_kind = [](){
+            if constexpr (apply_logical_or_v<is_resizeable_not_hybrid,type_list>)
+                return select_resizeable_kind_t {};
+            else if constexpr (apply_logical_or_v<is_hybrid_ndarray,type_list>)
+                return select_hybrid_kind_t {};
+            else return select_fixed_kind_t {};
+        }();
+        using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
+        // shape type must be arithmetic
+        using selection_t = select_array1d_t<
+            size_policy_rhs_t, selection_kind_t, std::is_arithmetic, element_type_policy_lhs
+        >;
+        // final type
+        using type = resolve_optype_t<
+            selection_t, vector_t, indices_t
+        >;
+    }; // resolve_optype
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_GATHER_HPP

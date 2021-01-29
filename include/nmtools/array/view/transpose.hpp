@@ -79,10 +79,9 @@ namespace nmtools::view
 
             auto shape_ = ::nmtools::shape(array);
             if constexpr (std::is_same_v<axes_type,detail::none_t>)
-                shape_ = reverse(shape_);
+                return reverse(shape_);
             else
-                shape_ = gather(shape_, axes);
-            return shape_;
+                return gather(shape_, axes);
         } // shape
         
         /**

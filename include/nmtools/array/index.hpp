@@ -14,7 +14,7 @@
 #include "nmtools/array/index/compute_offset.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/gather.hpp"
-#include "nmtools/array/index/indices_pack.hpp"
+#include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/index/make_array.hpp"
 #include "nmtools/array/index/make_slice_index.hpp"
 #include "nmtools/array/index/product.hpp"
@@ -37,8 +37,8 @@ namespace nmtools
     using ::nmtools::index::end_t;
     using ::nmtools::index::end;
     using ::nmtools::index::make_slice_index;
-    using ::nmtools::index::indices_pack;
-    using ::nmtools::index::indices_pack_t;
+    using ::nmtools::index::ndindex;
+    using ::nmtools::index::ndindex_t;
 
     namespace detail
     {

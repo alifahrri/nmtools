@@ -145,6 +145,12 @@ namespace nmtools::array {
         return v.data + N;
     } // constexpr auto end
 
+    template <typename T, size_t N>
+    constexpr auto size(const fixed_vector<T,N>& v)
+    {
+        return N;
+    } // size
+
     template <typename T, typename=void>
     struct is_fixed_vector : std::false_type {};
 

@@ -4,7 +4,10 @@
 #include <type_traits>
 /** @todo use __has_include */
 #include <array>
-#include <vector> // @todo remove
+#if __has_include(<vector>)
+    #include <vector> // @todo remove
+    #define NMTOOLS_HAS_VECTOR
+#endif
 #include <complex> // @todo remove
 #include <tuple>
 #include <utility>
@@ -1225,6 +1228,45 @@ namespace nmtools::meta {
      */
     template <typename T, template <typename...> typename primary_template>
     inline constexpr auto is_specialization_v = is_specialization<T,primary_template>::value;
+
+    /**
+     * @brief check if type T is std::_Bit_reference
+     * 
+     * This trait is added since std::vector<bool> access return std::_Bit_reference
+     * and specializing is_integral is undefined behaviour
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T>
+    struct is_bit_reference : std::false_type {};
+
+    template <typename T>
+    inline constexpr auto is_bit_reference_v = is_bit_reference<T>::value;
+
+#if defined(NMTOOLS_HAS_VECTOR)
+    template <>
+    struct is_bit_reference<std::_Bit_reference> : std::true_type {};
+#endif
+
+    /**
+     * @brief check if type T is boolean
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct is_boolean : std::false_type {};
+
+    template <typename T>
+    inline constexpr auto is_boolean_v = is_boolean<T>::value;
+
+    /**
+     * @brief specialization of is_boolean for actual boolean type
+     * 
+     * @tparam  
+     */
+    template <>
+    struct is_boolean<bool> : std::true_type {};
 
     /** @} */ // end group traits
 

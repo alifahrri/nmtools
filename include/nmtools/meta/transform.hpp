@@ -1370,6 +1370,21 @@ namespace nmtools::meta
     template <typename T>
     using get_ndarray_value_type_t = typename get_ndarray_value_type<T>::type;
 
+    template <typename T, typename=void>
+    struct bit_reference_to_bool
+    {
+        using type = T;
+    }; // bit_reference_to_bool
+
+    template <typename T>
+    struct bit_reference_to_bool<T,std::enable_if_t<is_bit_reference_v<T>>>
+    {
+        using type = bool;
+    }; // bit_reference_to_bool
+
+    template <typename T>
+    using bit_reference_to_bool_t = type_t<bit_reference_to_bool<T>>;
+
     /**
      * @brief 
      * 
@@ -1401,7 +1416,10 @@ namespace nmtools::meta
                 return detail::void_to_fail_t<type>{};
             }
             else if constexpr (meta::nested_array_dim_v<T> > 0) {
-                using type = remove_all_nested_array_dim_t<T>;
+                using element_t = remove_all_nested_array_dim_t<T>;
+                // note that remove_all_nested_array_dim_t using expression to deduce the type
+                // causing vector<bool> deduced to std::_Bit_reference instead of bool
+                using type = bit_reference_to_bool_t<element_t>;
                 return detail::void_to_fail_t<type>{};
             }
             else if constexpr (meta::is_array2d_v<T>) {
@@ -1434,7 +1452,7 @@ namespace nmtools::meta
     }; // get_element_type
 
     /**
-     * @brief helper alias tempate for get_element_type
+     * @brief helper alias template for get_element_type
      * 
      * @tparam T type to transform
      */
@@ -2430,6 +2448,301 @@ namespace nmtools::meta
 
     template <typename T, typename U, auto I>
     using insert_type_t = type_t<insert_type<T,U,I>>;
+
+    /**
+     * @brief tag to tell array kind preference
+     * 
+     */
+    struct select_resizeable_kind_t {};
+    /**
+     * @brief tag to tell array kind preference
+     * 
+     */
+    struct select_fixed_kind_t {};
+    /**
+     * @brief tag to tell array kind preference
+     * 
+     */
+    struct select_hybrid_kind_t {};
+
+    struct size_policy_add_t
+    {
+        template <typename T, typename U>
+        static constexpr auto get(T t, U u)
+        {
+            return t + u;
+        } // get
+    }; // size_policy_add_t
+    struct size_policy_min_t
+    {
+        template <typename T, typename U>
+        static constexpr auto get(T t, U u)
+        {
+            return t < u ? t : u;
+        } // get
+    }; // size_policy_min_t
+    struct size_policy_max_t
+    {
+        template <typename T, typename U>
+        static constexpr auto get(T t, U u)
+        {
+            return t > u ? t : u;
+        } // get
+    }; // size_policy_max_t
+    struct size_policy_lhs_t
+    {
+        template <typename T, typename U>
+        static constexpr auto get(T t, U u)
+        {
+            return t;
+        } // get
+    }; // size_policy_lhs_t
+    struct size_policy_rhs_t
+    {
+        template <typename T, typename U>
+        static constexpr auto get(T t, U u)
+        {
+            return u;
+        } // get
+    }; // size_policy_rhs_t
+
+    template <typename T, typename U>
+    struct element_type_policy_common
+    {
+        using type = std::common_type_t<T,U>;
+    }; // element_type_policy_common
+
+    template <typename T, typename U>
+    struct element_type_policy_lhs
+    {
+        using type = T;
+    }; // element_type_policy_lhs
+
+    template <typename T, typename U>
+    struct element_type_policy_rhs
+    {
+        using type = U;
+    }; // element_type_policy_rhs
+
+    template <typename T, typename=void>
+    struct tuple_to_array
+    {
+        using type = T;
+    }; // tuple_to_array
+
+    template <typename...Ts>
+    struct tuple_to_array<std::tuple<Ts...>>
+    {
+        using common_t = std::common_type_t<Ts...>;
+        using type = std::array<common_t,sizeof...(Ts)>;
+    }; // tuple_to_array
+
+    template <typename T>
+    using tuple_to_array_t = type_t<tuple_to_array<T>>;
+
+    template <typename size_policy_t, typename selection_kind_t=void,
+        template<typename> typename element_predicate_t=std::is_arithmetic,
+        template<typename,typename> typename element_type_policy_t=element_type_policy_common>
+    struct select_array1d_t {};
+
+    template <typename lhs_t, typename rhs_t,
+        typename size_policy_t, typename selection_kind_t,
+        template<typename> typename element_predicate_t,
+        template<typename,typename> typename element_type_policy_t>
+    struct resolve_optype<
+        std::enable_if_t<
+               is_resizeable_v<lhs_t> && !is_hybrid_ndarray_v<lhs_t>
+            && is_resizeable_v<rhs_t> && !is_hybrid_ndarray_v<rhs_t>
+            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
+            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
+            && is_array1d_v<lhs_t> && is_array1d_v<rhs_t>
+        >,
+        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
+    >
+    {
+        using lhs_value_t = get_element_type_t<lhs_t>;
+        using rhs_value_t = get_element_type_t<rhs_t>;
+        using value_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
+        using type    = replace_element_type_t<lhs_t,value_t>;
+    }; // resolve_optype expand_dims_t
+
+    template <typename lhs_t, typename rhs_t,
+        typename size_policy_t, typename selection_kind_t,
+        template<typename> typename element_predicate_t,
+        template<typename,typename> typename element_type_policy_t>
+    struct resolve_optype<
+        std::enable_if_t<
+               is_resizeable_v<lhs_t> && !is_hybrid_ndarray_v<lhs_t>
+            && (is_hybrid_ndarray_v<rhs_t> || has_tuple_size_v<rhs_t>)
+            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
+            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
+        >,
+        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
+    >
+    {
+        using lhs_value_t = get_element_or_common_type_t<lhs_t>;
+        using rhs_value_t = get_element_or_common_type_t<rhs_t>;
+        using value_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
+
+        using rhs_type = tuple_to_array_t<rhs_t>;
+        using a_t = std::conditional_t<
+            std::is_same_v<selection_kind_t,select_resizeable_kind_t>,
+            lhs_t, void
+        >;
+        using b_t = std::conditional_t<
+            is_hybrid_ndarray_v<rhs_type> && std::is_void_v<a_t>
+            && std::is_same_v<selection_kind_t,select_hybrid_kind_t>,
+            rhs_type, a_t
+        >;
+        using c_t = std::conditional_t<
+            has_tuple_size_v<rhs_type> && std::is_void_v<b_t>
+            && std::is_same_v<selection_kind_t,select_fixed_kind_t>,
+            rhs_type, b_t
+        >;
+        using type = replace_element_type_t<c_t,value_t>;
+    }; // resolve_optype expand_dims_t
+
+    template <typename lhs_t, typename rhs_t,
+        typename size_policy_t, typename selection_kind_t,
+        template<typename> typename element_predicate_t,
+        template<typename,typename> typename element_type_policy_t>
+    struct resolve_optype<
+        std::enable_if_t<
+               !is_resizeable_v<lhs_t> && has_tuple_size_v<lhs_t>
+            && !is_resizeable_v<rhs_t> && has_tuple_size_v<rhs_t>
+            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
+            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
+        >,
+        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
+    >
+    {
+        static constexpr auto M = std::tuple_size_v<lhs_t>;
+        static constexpr auto N = std::tuple_size_v<rhs_t>;
+        static constexpr auto n = size_policy_t::get(M,N);
+        using lhs_value_t = get_element_or_common_type_t<lhs_t>;
+        using rhs_value_t = get_element_or_common_type_t<rhs_t>;
+        using value_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
+        using type    = std::array<value_t,n>;
+    }; // resolve_optype expand_dims_t
+
+    template <typename lhs_t, typename rhs_t,
+        typename size_policy_t, typename selection_kind_t,
+        template<typename> typename element_predicate_t,
+        template<typename,typename> typename element_type_policy_t>
+    struct resolve_optype<
+        std::enable_if_t<
+               !is_resizeable_v<lhs_t> && has_tuple_size_v<lhs_t>
+            && (is_resizeable_v<rhs_t> || is_hybrid_ndarray_v<rhs_t>)
+            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
+            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
+            && is_array1d_v<rhs_t>
+        >,
+        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
+    >
+    {
+        using lhs_value_t = get_element_or_common_type_t<lhs_t>;
+        using rhs_value_t = get_element_or_common_type_t<rhs_t>;
+        using common_t    = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
+
+        static constexpr auto M = std::tuple_size_v<lhs_t>;
+        static constexpr auto N = [](){
+            if constexpr (has_tuple_size_v<rhs_t>)
+                return std::tuple_size_v<rhs_t>;
+            else if constexpr (is_hybrid_ndarray_v<rhs_t>)
+                return hybrid_ndarray_max_size_v<rhs_t>;
+            else return 0;
+        }();
+        static constexpr auto n = size_policy_t::get(M,N);
+
+        using a_t = std::conditional_t<
+            std::is_same_v<selection_kind_t,select_fixed_kind_t>,
+            resize_fixed_vector_t<tuple_to_array_t<lhs_t>,n>, void
+        >;
+        using b_t = std::conditional_t<
+            is_resizeable_v<rhs_t> && !is_hybrid_ndarray_v<rhs_t> && std::is_void_v<a_t> &&
+            std::is_same_v<selection_kind_t,select_resizeable_kind_t>,
+            rhs_t, a_t
+        >;
+        using c_t = std::conditional_t<
+            is_hybrid_ndarray_v<rhs_t> && std::is_void_v<b_t> &&
+            std::is_same_v<selection_kind_t,select_hybrid_kind_t>,
+            resize_hybrid_ndarray_max_size_t<rhs_t, n>, b_t
+        >;
+        // final type
+        using type = replace_element_type_t<c_t,common_t>;
+    }; // resolve_optype expand_dims_t
+
+    template <typename lhs_t, typename rhs_t,
+        typename size_policy_t, typename selection_kind_t,
+        template<typename> typename element_predicate_t,
+        template<typename,typename> typename element_type_policy_t>
+    struct resolve_optype<
+        std::enable_if_t<
+               is_resizeable_v<lhs_t> && is_hybrid_ndarray_v<lhs_t>
+            && is_resizeable_v<rhs_t> && is_hybrid_ndarray_v<rhs_t>
+            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
+            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
+            && is_array1d_v<lhs_t> && is_array1d_v<rhs_t>
+        >,
+        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
+    >
+    {
+        static constexpr auto M = hybrid_ndarray_max_size_v<lhs_t>;
+        static constexpr auto N = hybrid_ndarray_max_size_v<rhs_t>;
+        static constexpr auto n = size_policy_t::get(M,N);
+        using lhs_value_t = get_element_type_t<lhs_t>;
+        using rhs_value_t = get_element_type_t<rhs_t>;
+        using common_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
+        using array_t  = replace_element_type_t<lhs_t,common_t>;
+        using type     = resize_hybrid_ndarray_max_size_t<array_t,n>;
+    }; // resolve_optype expand_dims_t
+
+    template <typename lhs_t, typename rhs_t,
+        typename size_policy_t, typename selection_kind_t,
+        template<typename> typename element_predicate_t,
+        template<typename,typename> typename element_type_policy_t>
+    struct resolve_optype<
+        std::enable_if_t<
+               is_resizeable_v<lhs_t> && is_hybrid_ndarray_v<lhs_t>
+            && (
+                   (is_resizeable_v<rhs_t> && !is_hybrid_ndarray_v<rhs_t>)
+                || (!is_resizeable_v<rhs_t> && has_tuple_size_v<rhs_t>)
+               )
+            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
+            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
+            && is_array1d_v<lhs_t> // && is_array1d_v<rhs_t>
+        >,
+        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
+    >
+    {
+        static constexpr auto M = hybrid_ndarray_max_size_v<lhs_t>;
+        static constexpr auto N = [](){
+            if constexpr (has_tuple_size_v<rhs_t>)
+                return std::tuple_size_v<rhs_t>;
+            else return 0;
+        }();
+        static constexpr auto n = size_policy_t::get(M,N);
+        using lhs_value_t = get_element_type_t<lhs_t>;
+        using rhs_value_t = get_element_or_common_type_t<rhs_t>;
+        using common_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
+
+        using a_t = std::conditional_t<
+            std::is_same_v<selection_kind_t,select_hybrid_kind_t>,
+            resize_hybrid_ndarray_max_size_t<lhs_t,n>, void
+        >;
+        using b_t = std::conditional_t<
+            std::is_same_v<selection_kind_t,select_resizeable_kind_t>
+            && is_resizeable_v<rhs_t> && std::is_void_v<a_t>,
+            rhs_t, a_t
+        >;
+        using c_t = std::conditional_t<
+            std::is_same_v<selection_kind_t,select_fixed_kind_t>
+            && has_tuple_size_v<rhs_t> && std::is_void_v<b_t>,
+            resize_fixed_vector_t<rhs_t,n>, b_t
+        >;
+        // final type
+        using type = replace_element_type_t<c_t,common_t>;
+    }; // resolve_optype expand_dims_t
 
     /** @} */ // end group meta
 } // namespace nmtools::meta
