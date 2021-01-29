@@ -124,14 +124,19 @@ endif ()
 set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/shape.cpp
     src/doctest/array/index/argfilter.cpp
+    src/doctest/array/index/broadcast_shape.cpp
+    src/doctest/array/index/broadcast_to.cpp
     src/doctest/array/index/choose.cpp
     src/doctest/array/index/compute_indices.cpp
     src/doctest/array/index/compute_offset.cpp
     src/doctest/array/index/compute_strides.cpp
     src/doctest/array/index/expand_dims.cpp
     src/doctest/array/index/filter.cpp
+    src/doctest/array/index/free_axes.cpp
     src/doctest/array/index/gather.cpp
-    src/doctest/array/index/indices_pack.cpp
+    src/doctest/array/index/logical_not.cpp
+    src/doctest/array/index/ndindex.cpp
+    src/doctest/array/index/nonzero.cpp
     src/doctest/array/index/remove_single_dims.cpp
     src/doctest/array/index/reverse.cpp
     src/doctest/array/index/scatter.cpp
@@ -177,6 +182,8 @@ if (NOT TEST_NDARRAY)
 endif ()
 
 set(ARRAY_VIEW_TEST_SOURCES
+    src/doctest/array/view/broadcast_to.cpp
+    src/doctest/array/view/broadcast_arrays.cpp
     src/doctest/array/view/expand_dims.cpp
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/mutable_flatten.cpp
@@ -223,8 +230,11 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     ## metafunctions
     src/doctest/meta.cpp
     src/doctest/meta/array/index/argfilter.cpp
+    src/doctest/meta/array/index/broadcast_shape.cpp
     src/doctest/meta/array/index/choose.cpp
     src/doctest/meta/array/index/expand_dims.cpp
+    src/doctest/meta/array/index/gather.cpp
+    src/doctest/meta/array/index/nonzero.cpp
     src/doctest/meta/traits/apply_conjunction.cpp
     src/doctest/meta/traits/apply_disjunction.cpp
     src/doctest/meta/traits/compose_logical_and.cpp
@@ -245,6 +255,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/reduce.cpp
     src/doctest/meta/transform/remove_nested_array_extents.cpp
     src/doctest/meta/transform/replace_at.cpp
+    src/doctest/meta/transform/select_array.cpp
     src/doctest/meta/transform/sequence.cpp
     src/doctest/meta/transform/split_at.cpp
     src/doctest/meta/transform/scatter.cpp
@@ -285,6 +296,11 @@ apply_nmtools(
 target_include_directories(
     ${PROJECT_NAME}-doctest-meta PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+# for now, force metafunctions test to defer static check
+target_compile_definitions(
+    ${PROJECT_NAME}-doctest-meta PRIVATE
+    DEFER_STATIC_CHECK
 )
 
 option(DEFER_STATIC_CHECK "defer static check to runtime for testing purpose" OFF)

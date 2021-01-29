@@ -12,9 +12,9 @@ using nmtools::utils::isequal;
 using std::tuple;
 using std::vector;
 
-TEST_CASE("indices_pack({3,2})" * doctest::test_suite("index"))
+TEST_CASE("ndindex({3,2})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::indices_pack(tuple{3,2});
+    auto indices = nm::index::ndindex(tuple{3,2});
     REQUIRE( indices.size() == 6 );
     {
         auto i = indices[0];
@@ -42,9 +42,9 @@ TEST_CASE("indices_pack({3,2})" * doctest::test_suite("index"))
     }
 }
 
-TEST_CASE("indices_pack(vector{3,2})" * doctest::test_suite("index"))
+TEST_CASE("ndindex(vector{3,2})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::indices_pack(vector{3,2});
+    auto indices = nm::index::ndindex(vector{3,2});
     REQUIRE( indices.size() == 6 );
     {
         auto i = indices[0];
@@ -72,9 +72,9 @@ TEST_CASE("indices_pack(vector{3,2})" * doctest::test_suite("index"))
     }
 }
 
-TEST_CASE("indices_pack({3,2,3})" * doctest::test_suite("index"))
+TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::indices_pack(tuple{3,2,3});
+    auto indices = nm::index::ndindex(tuple{3,2,3});
     REQUIRE( indices.size() == 18 );
     {
         auto i = indices[0];
@@ -150,9 +150,9 @@ TEST_CASE("indices_pack({3,2,3})" * doctest::test_suite("index"))
     }
 }
 
-TEST_CASE("indices_pack({3,2,3})" * doctest::test_suite("index"))
+TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::indices_pack(vector{3,2,3});
+    auto indices = nm::index::ndindex(vector{3,2,3});
     REQUIRE( indices.size() == 18 );
     {
         auto i = indices[0];
@@ -228,9 +228,9 @@ TEST_CASE("indices_pack({3,2,3})" * doctest::test_suite("index"))
     }
 }
 
-TEST_CASE("indices_pack({3,2,3,1})" * doctest::test_suite("index"))
+TEST_CASE("ndindex({3,2,3,1})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::indices_pack(tuple{3,2,3,1});
+    auto indices = nm::index::ndindex(tuple{3,2,3,1});
     REQUIRE( indices.size() == 18 );
     {
         auto i = indices[0];
@@ -306,9 +306,9 @@ TEST_CASE("indices_pack({3,2,3,1})" * doctest::test_suite("index"))
     }
 }
 
-TEST_CASE("indices_pack({3,2,3,1})" * doctest::test_suite("index"))
+TEST_CASE("ndindex({3,2,3,1})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::indices_pack(tuple{2,3,1,3,1});
+    auto indices = nm::index::ndindex(tuple{2,3,1,3,1});
     REQUIRE( indices.size() == 18 );
     {
         auto i = indices[0];

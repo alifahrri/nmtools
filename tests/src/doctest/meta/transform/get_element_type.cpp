@@ -78,6 +78,27 @@ TEST_CASE("get_element_type_t" * doctest::test_suite("meta"))
         STATIC_CHECK_IS_SAME( result_t, double );
     }
     {
+        using arg_t = std::array<bool,3>;
+        using result_t = meta::get_element_type_t<arg_t>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        STATIC_CHECK_IS_SAME( result_t, bool );
+    }
+    {
+        using arg_t = std::vector<bool>;
+        using result_t = meta::get_element_type_t<arg_t>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        STATIC_CHECK_IS_SAME( result_t, bool );
+    }
+    {
+        using arg_t = std::vector<std::vector<bool>>;
+        using result_t = meta::get_element_type_t<arg_t>;
+        LOG_TYPEINFO(arg_t);
+        LOG_TYPEINFO(result_t);
+        STATIC_CHECK_IS_SAME( result_t, bool );
+    }
+    {
         using arg_t = std::vector<std::vector<std::vector<double>>>;
         using result_t = meta::get_element_type_t<arg_t>;
         LOG_TYPEINFO(arg_t);
