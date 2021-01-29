@@ -25,9 +25,9 @@ namespace nmtools::index
      * @return constexpr decltype(auto) 
      */
     template <typename array_t, size_t...Is>
-    constexpr decltype(auto) as_tuple(array_t&& array, std::index_sequence<Is...>)
+    constexpr decltype(auto) as_tuple(const array_t& array, std::index_sequence<Is...>)
     {
-        return std::tuple{std::get<Is>(std::forward<array_t>(array))...};
+        return std::tuple{std::get<Is>(array)...};
     } // as_tuple
 
     /**
@@ -40,10 +40,10 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <template <typename,size_t> typename array_t, typename T, size_t N>
-    constexpr auto as_tuple(array_t<T,N>&& array)
+    constexpr auto as_tuple(const array_t<T,N>& array)
     {
         using indices_t = std::make_index_sequence<N>;
-        return as_tuple(std::forward<array_t<T,N>>(array), indices_t{});
+        return as_tuple(array,indices_t{});
     } // as_tuple
     
     /** @} */ // end group index
