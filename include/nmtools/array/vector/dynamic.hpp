@@ -56,8 +56,11 @@ namespace nmtools::array
          * @param i 
          * @return constexpr reference 
          */
-        constexpr reference operator()(size_type i)
+        constexpr decltype(auto) operator()(size_type i)
         {
+            // @note need to use decltype(auto) instead of reference
+            // to easily support dynamic_vector<bool> without specializing,
+            // also note that access to vector<bool> returns _Bit_reference
             return data[i];
         }
 
@@ -67,8 +70,11 @@ namespace nmtools::array
          * @param i 
          * @return constexpr const_reference 
          */
-        constexpr const_reference operator()(size_type i) const
+        constexpr decltype(auto) operator()(size_type i) const
         {
+            // @note need to use decltype(auto) instead of const_reference
+            // to easily support dynamic_vector<bool> without specializing,
+            // also note that access to vector<bool> returns _Bit_reference
             return data[i];
         }
 
@@ -130,6 +136,12 @@ namespace nmtools::array
     {
         return v.data.end();
     } // constexpr auto end
+
+    template <typename T>
+    auto size(const dynamic_vector<T>& v)
+    {
+        return v.size();
+    }
 
     /** @} */ // end group dynamic
     
