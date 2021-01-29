@@ -605,46 +605,40 @@ namespace nmtools::meta
     template <typename T>
     inline constexpr bool is_fixed_size_ndarray_v = is_fixed_size_ndarray<T>::value;
 
-    template <typename T, typename=void>
-    struct is_hybrid_ndarray : std::false_type {};
-
     template <typename T>
-    inline constexpr bool is_hybrid_ndarray_v = is_hybrid_ndarray<T>::value;
-
-    template <typename T>
-    struct hybrid_vector_maximum_size
+    struct hybrid_ndarray_max_size
     {
         static constexpr auto value = detail::fail_t{};
         using type = detail::fail_t;
-    }; // hybrid_vector_maximum_size
+    }; // hybrid_ndarray_max_size
 
     template <typename T>
-    inline constexpr auto hybrid_vector_maximum_size_v = hybrid_vector_maximum_size<T>::value;
+    inline constexpr auto hybrid_ndarray_max_size_v = hybrid_ndarray_max_size<T>::value;
 
     template <typename T, typename=void>
-    struct is_hybrid_vector
+    struct is_hybrid_ndarray
     {
         using value_type = std::conditional_t<
             std::is_same_v<
                 detail::fail_t,
-                type_t<hybrid_vector_maximum_size<T>>
+                type_t<hybrid_ndarray_max_size<T>>
             >,
             std::false_type, std::true_type
         >;
         static constexpr auto value = value_type::value;
-    }; // is_hybrid_vector
+    }; // is_hybrid_ndarray
 
     template <typename T>
-    inline constexpr bool is_hybrid_vector_v = is_hybrid_vector<T>::value;
+    inline constexpr bool is_hybrid_ndarray_v = is_hybrid_ndarray<T>::value;
 
     template <typename T, auto N, typename=void>
-    struct replace_hybrid_vector_maximum_size
+    struct resize_hybrid_ndarray_max_size
     {
         using type = void;
-    }; // replace_hybrid_vector_maximum_size
+    }; // resize_hybrid_ndarray_max_size
 
     template <typename T, auto N>
-    using replace_hybrid_vector_maximum_size_t = type_t<replace_hybrid_vector_maximum_size<T,N>>;
+    using resize_hybrid_ndarray_max_size_t = type_t<resize_hybrid_ndarray_max_size<T,N>>;
 
     template <typename T, typename=void>
     struct is_dynamic_ndarray : std::negation<is_fixed_size_ndarray<T>> {};
