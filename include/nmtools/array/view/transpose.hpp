@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_TRANSPOSE_HPP
 #define NMTOOLS_ARRAY_VIEW_TRANSPOSE_HPP
 
+#include "nmtools/constants.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
@@ -32,11 +33,7 @@ namespace nmtools::view
     
     namespace detail {
 
-        /**
-         * @brief specific tag to indicate that transpose does not have given axes
-         * 
-         */
-        struct none_t {};
+        using ::nmtools::none_t;
 
     } // namespace detail
     
