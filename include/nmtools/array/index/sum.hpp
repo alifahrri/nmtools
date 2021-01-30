@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_ARRAY_INDEX_PRODUCT_HPP
-#define NMTOOLS_ARRAY_INDEX_PRODUCT_HPP
+#ifndef NMTOOLS_ARRAY_INDEX_SUM_HPP
+#define NMTOOLS_ARRAY_INDEX_SUM_HPP
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
@@ -13,7 +13,7 @@
 namespace nmtools::index
 {
     /**
-     * @brief compute product of 1D array
+     * @brief compute sum of 1D array
      *
      * Useful to compute number of elements.
      * 
@@ -22,7 +22,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename array_t>
-    constexpr auto product(const array_t& vec)
+    constexpr auto sum(const array_t& vec)
     {
         using element_t = meta::get_element_type_t<array_t>;
         using common_t  = std::conditional_t<
@@ -33,26 +33,26 @@ namespace nmtools::index
         // handle type vector
         if constexpr (meta::apply_logical_and_v<meta::is_integral_constant,array_t>) {
             constexpr auto vec_ = meta::constant_to_value<array_t>::value;
-            constexpr auto ret  = product(vec_);
+            constexpr auto ret  = sum(vec_);
             // @todo convert back to type
             return ret;
         }
         else {
-            auto ret = common_t{1};
+            auto ret = common_t{0};
             if constexpr (meta::has_tuple_size_v<array_t>) {
                 constexpr auto n = std::tuple_size_v<array_t>;
                 meta::template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
-                    ret *= std::get<i>(vec);
+                    ret += std::get<i>(vec);
                 });
                 return ret;
             }
             else
-                for (size_t i=0; i<size(vec); i++)
-                    ret *= at(vec,i);
+                for (size_t i=0; i<vector_size(vec); i++)
+                    ret += at(vec,i);
             return ret;
         }
-    } // product
+    } // sum
 } // namespace nmtools::index
 
-#endif // NMTOOLS_ARRAY_INDEX_PRODUCT_HPP
+#endif // NMTOOLS_ARRAY_INDEX_SUM_HPP

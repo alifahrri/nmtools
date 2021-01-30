@@ -15,6 +15,12 @@
 namespace nmtools::index
 {
     /**
+     * @brief specific tag to resolve op type of compute_indices
+     * 
+     */
+    struct compute_indices_t {};
+
+    /**
      * @brief inverse operation of compute_offset
      * 
      * @param offset flat indices to be mapped
@@ -27,7 +33,12 @@ namespace nmtools::index
     {
         constexpr auto shape_is_tuple_or_pair = meta::is_specialization_v<shape_t,std::tuple> || meta::is_specialization_v<shape_t,std::pair>;
         constexpr auto strides_is_tuple_or_pair = meta::is_specialization_v<strides_t,std::tuple> || meta::is_specialization_v<strides_t,std::pair>;
-        auto indices = shape;
+
+        using return_t = meta::resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
+        auto indices = return_t{};
+        if constexpr (meta::is_resizeable_v<return_t>)
+            indices.resize(size(shape));
+
         if constexpr (shape_is_tuple_or_pair && strides_is_tuple_or_pair)
         {
             constexpr auto n = std::tuple_size_v<shape_t>;
@@ -62,5 +73,20 @@ namespace nmtools::index
         return compute_indices(offset, shape, strides);
     } // compute_indices
 } // namespace nmtools::index
+
+namespace nmtools::meta
+{
+    template <typename offset_t, typename shape_t, typename strides_t>
+    struct resolve_optype< void, index::compute_indices_t, offset_t, shape_t, strides_t >
+    {
+        using type = shape_t;
+    }; // resolve_optype
+
+    template <typename offset_t, typename shape_t>
+    struct resolve_optype< void, index::compute_indices_t, offset_t, shape_t >
+    {
+        using type = shape_t;
+    }; // resolve_optype
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_COMPUTE_INDICES_HPP

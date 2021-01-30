@@ -138,8 +138,10 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/ndindex.cpp
     src/doctest/array/index/nonzero.cpp
     src/doctest/array/index/remove_single_dims.cpp
+    src/doctest/array/index/repeat.cpp
     src/doctest/array/index/reverse.cpp
     src/doctest/array/index/scatter.cpp
+    src/doctest/array/index/shape_repeat.cpp
 )
 if (NOT TEST_ARRAY_DETAIL)
     set(ARRAY_DETAIL_TEST_SOURCES "")
@@ -191,6 +193,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/mutable_slice.cpp
     src/doctest/array/view/ref.cpp
     src/doctest/array/view/ref/initializer_list.cpp
+    src/doctest/array/view/repeat.cpp
     src/doctest/array/view/reshape.cpp
     src/doctest/array/view/slice.cpp
     src/doctest/array/view/squeeze.cpp

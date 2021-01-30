@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <array>
+#include <type_traits>
 
 namespace nmtools::detail
 {
@@ -62,5 +63,39 @@ namespace nmtools::literals
         return type{};
     } // _ct
 } // namespace nmtools::literals
+
+namespace nmtools
+{
+    /**
+     * @brief specific tag to represents "None" type
+     * 
+     */
+    struct none_t {};
+
+    /**
+     * @brief special inline variable to represent "None" value
+     * 
+     */
+    inline constexpr auto None = none_t {};
+
+    /**
+     * @brief helper traits to check for "None" type
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct is_none : std::false_type {};
+
+    template <>
+    struct is_none<none_t> : std::true_type {};
+
+    /**
+     * @brief helper inline variable template to check for "None" type
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    inline constexpr auto is_none_v = is_none<T>::value;
+} // namespace nmtools
 
 #endif // NMTOOLS_CONSTANTS_HPP
