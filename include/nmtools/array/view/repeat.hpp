@@ -83,9 +83,7 @@ namespace nmtools::meta
 {
     template <typename array_t, typename repeats_t, typename axis_t>
     struct is_ndarray< view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t> >
-    {
-        static inline constexpr auto value = true;
-    }; // is_ndarray
+        : is_ndarray<array_t> {};
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_REPEAT_HPP
