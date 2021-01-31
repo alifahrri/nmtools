@@ -142,6 +142,8 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/reverse.cpp
     src/doctest/array/index/scatter.cpp
     src/doctest/array/index/shape_repeat.cpp
+    src/doctest/array/index/shape_tile.cpp
+    src/doctest/array/index/tile.cpp
 )
 if (NOT TEST_ARRAY_DETAIL)
     set(ARRAY_DETAIL_TEST_SOURCES "")
@@ -198,6 +200,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/slice.cpp
     src/doctest/array/view/squeeze.cpp
     src/doctest/array/view/transpose.cpp
+    src/doctest/array/view/tile.cpp
 )
 if (NOT TEST_ARRAY_VIEW)
     set (ARRAY_VIEW_TEST_SOURCES "")
