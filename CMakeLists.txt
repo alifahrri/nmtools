@@ -15,20 +15,19 @@ set(NMTOOLS_HEADERS
     ${NMTOOLS_INCLUDE_DIR}/nmtools/array/fixed.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/array/utility.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/blas/blas.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/regression.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/sinusoid.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit/interpolation.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/differentiation/finite.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/integration/trapezoidal.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/curvefit/regression.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/curvefit/sinusoid.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/curvefit/interpolation.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/differentiation/finite.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/integration/trapezoidal.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/ode/euler.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/optimization/unconstrained.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/roots/bracketing.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/roots/open.hpp
+    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/taylor/taylor.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/decomposition.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/elimination.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/orthogonalization.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/ode/euler.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/runge_kutta.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/optimization/unconstrained.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/roots/bracketing.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/roots/open.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/taylor/taylor.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/helper.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/tag.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/blas.hpp

@@ -1157,6 +1157,17 @@ namespace nmtools::meta {
     template <typename...Ts>
     static constexpr inline auto logical_or_v = logical_or<Ts...>::value;
 
+    /**
+     * @brief alias for std::negation
+     * 
+     * @tparam Ts types that has value static constexpr member variable
+     */
+    template <typename T>
+    struct logical_not : std::negation<T> {};
+
+    template <typename T>
+    static constexpr inline auto logical_not_v = logical_not<T>::value;
+
     namespace detail
     {
         template <typename always_void, template<typename...>typename predicate, typename T, template<typename> typename trait, template<typename> typename...traits>

@@ -311,6 +311,99 @@ namespace nmtools::meta
         using type = T;
     };
 
+    /**
+     * @brief helper type to pack values as type
+     * 
+     * @tparam compile-time values
+     */
+    template <auto...>
+    struct value_type {};
+
+    template <typename T, auto...Shapes, template<auto...> typename typelist, auto...NewShapes>
+    struct resize_fixed_ndarray<array::fixed_ndarray<T,Shapes...>,typelist<NewShapes...>>
+    {
+        using type = array::fixed_ndarray<T,NewShapes...>;
+    }; // resize_fixed_ndarray
+
+    /**
+     * @brief resize array::fixed_ndarray from raw array
+     * 
+     * @tparam T 
+     * @tparam Shapes 
+     * @tparam NewShape1 
+     */
+    template <typename T, auto...Shapes, auto NewShape1>
+    struct resize_fixed_ndarray<
+        array::fixed_ndarray<T,Shapes...>,
+        T[NewShape1],
+        std::enable_if_t<std::is_arithmetic_v<T>>
+    >
+    {
+        using new_shape_t = value_type<NewShape1>;
+        using this_t = array::fixed_ndarray<T,Shapes...>;
+        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
+    }; // resize_fixed_ndarray
+
+    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2>
+    struct resize_fixed_ndarray<
+        array::fixed_ndarray<T,Shapes...>,
+        T[NewShape1][NewShape2],
+        std::enable_if_t<std::is_arithmetic_v<T>>
+    >
+    {
+        using new_shape_t = value_type<NewShape1,NewShape2>;
+        using this_t = array::fixed_ndarray<T,Shapes...>;
+        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
+    }; // resize_fixed_ndarray
+
+    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2, auto NewShape3>
+    struct resize_fixed_ndarray<
+        array::fixed_ndarray<T,Shapes...>,
+        T[NewShape1][NewShape2][NewShape3],
+        std::enable_if_t<std::is_arithmetic_v<T>>
+    >
+    {
+        using new_shape_t = value_type<NewShape1,NewShape2,NewShape3>;
+        using this_t = array::fixed_ndarray<T,Shapes...>;
+        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
+    }; // resize_fixed_ndarray
+
+    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2, auto NewShape3, auto NewShape4>
+    struct resize_fixed_ndarray<
+        array::fixed_ndarray<T,Shapes...>,
+        T[NewShape1][NewShape2][NewShape3][NewShape4],
+        std::enable_if_t<std::is_arithmetic_v<T>>
+    >
+    {
+        using new_shape_t = value_type<NewShape1,NewShape2,NewShape3,NewShape4>;
+        using this_t = array::fixed_ndarray<T,Shapes...>;
+        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
+    }; // resize_fixed_ndarray
+
+    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2, auto NewShape3, auto NewShape4, auto NewShape5>
+    struct resize_fixed_ndarray<
+        array::fixed_ndarray<T,Shapes...>,
+        T[NewShape1][NewShape2][NewShape3][NewShape4][NewShape5],
+        std::enable_if_t<std::is_arithmetic_v<T>>
+    >
+    {
+        using new_shape_t = value_type<NewShape1,NewShape2,NewShape3,NewShape4,NewShape5>;
+        using this_t = array::fixed_ndarray<T,Shapes...>;
+        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
+    }; // resize_fixed_ndarray
+
+    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2, auto NewShape3, auto NewShape4, auto NewShape5, auto NewShape6>
+    struct resize_fixed_ndarray<
+        array::fixed_ndarray<T,Shapes...>,
+        T[NewShape1][NewShape2][NewShape3][NewShape4][NewShape5][NewShape6],
+        std::enable_if_t<std::is_arithmetic_v<T>>
+    >
+    {
+        using new_shape_t = value_type<NewShape1,NewShape2,NewShape3,NewShape4,NewShape5,NewShape6>;
+        using this_t = array::fixed_ndarray<T,Shapes...>;
+        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
+    }; // resize_fixed_ndarray
+
     /** @} */ // end group meta
 } // namespace nmtools::meta
 

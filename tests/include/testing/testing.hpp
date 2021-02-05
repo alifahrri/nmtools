@@ -4,12 +4,15 @@
 #include "nmtools/utils/isclose.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/utils/to_string.hpp"
-/** @todo use __has_include */
+#include "nmtools/array/kind.hpp"
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
+#include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/utility/cast.hpp"
+#include "nmtools/array/index/product.hpp"
 #include <type_traits>
 #include <array>
+/** @todo use __has_include */
 #include <boost/type_index.hpp>
 
 /**
@@ -105,6 +108,71 @@ namespace nmtools::testing
 
     /** @} */ // end groupt testing
 } // nmtools::testing
+
+namespace nmtools::array::kind
+{
+    // for testing purpose only
+    struct nested_vector_t {};
+
+    inline constexpr auto nested_vec = nested_vector_t {};
+} // namespace nmtools::array::kind
+
+namespace nmtools
+{
+    struct cast_kind_t {};
+
+    template <typename src_t>
+    struct meta::resolve_optype<
+        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
+        cast_kind_t, src_t, array::kind::fixed_t
+    >
+    {
+        using element_t = get_element_type_t<src_t>;
+        // start with arbitrary shaped fixed_ndarray, then resize with src
+        using fixed_kind_t = array::fixed_ndarray<element_t,1>;
+        using type = resize_fixed_ndarray_t<fixed_kind_t,src_t>;
+    }; // resolve_optype
+
+    template <typename src_t>
+    struct meta::resolve_optype<
+        void, cast_kind_t, src_t, array::kind::dynamic_t
+    >
+    {
+        using element_t = get_element_type_t<src_t>;
+        using type = array::dynamic_ndarray<element_t>;
+    }; // resolve_optype
+
+    template <typename src_t>
+    struct meta::resolve_optype<
+        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
+        cast_kind_t, src_t, array::kind::hybrid_t
+    >
+    {
+        using element_t = get_element_type_t<src_t>;
+        static constexpr auto shape = fixed_ndarray_shape_v<src_t>;
+        static constexpr auto numel = index::product(shape);
+        static constexpr auto dim = fixed_ndarray_dim_v<src_t>;
+        using type = array::hybrid_ndarray<element_t,numel,dim>;
+    }; // resolve_optype
+
+    template <typename src_t>
+    struct meta::resolve_optype<
+        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
+        cast_kind_t, src_t, array::kind::nested_vector_t
+    >
+    {
+        using element_t = get_element_type_t<src_t>;
+        static constexpr auto dim = fixed_ndarray_dim_v<src_t>;
+        using type = meta::make_nested_dynamic_array_t<std::vector,element_t,dim>;
+    }; // resolve_optype
+
+    template <typename src_t, typename kind_t>
+    constexpr auto cast(const src_t& src, const kind_t& kind)
+    {
+        using ret_t = meta::resolve_optype_t<cast_kind_t,src_t,kind_t>;
+        return cast<ret_t>(src);
+    } // cast
+} // namespace nmtools
 
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
