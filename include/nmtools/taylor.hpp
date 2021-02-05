@@ -1,6 +1,6 @@
 #ifndef NMTOOLS_TAYLOR_HPP
 #define NMTOOLS_TAYLOR_HPP
 
-#include "nmtools/taylor/taylor.hpp"
+#include "nmtools/experimental/taylor/taylor.hpp"
 
 #endif // NMTOOLS_TAYLOR_HPP
