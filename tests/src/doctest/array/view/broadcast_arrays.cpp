@@ -2,6 +2,7 @@
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/kind.hpp"
 
 #include "testing/doctest.hpp"
 
@@ -11,6 +12,7 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
+namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
 {
@@ -23,16 +25,16 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {4},
             {5}
         };
-        auto lhs_v = cast<std::vector<std::vector<int>>>(lhs);
-        auto rhs_v = cast<std::vector<std::vector<int>>>(rhs);
+        auto lhs_v = cast(lhs,kind::nested_vec);
+        auto rhs_v = cast(rhs,kind::nested_vec);
         auto lhs_a = cast<int>(lhs);
         auto rhs_a = cast<int>(rhs);
-        auto lhs_d = cast<na::dynamic_ndarray<int>>(lhs);
-        auto rhs_d = cast<na::dynamic_ndarray<int>>(rhs);
-        auto lhs_f = cast<na::fixed_ndarray<int,1,3>>(lhs);
-        auto rhs_f = cast<na::fixed_ndarray<int,2,1>>(rhs);
-        auto lhs_h = cast<na::hybrid_ndarray<int,3,2>>(lhs);
-        auto rhs_h = cast<na::hybrid_ndarray<int,2,2>>(rhs);
+        auto lhs_d = cast(lhs,kind::dynamic);
+        auto rhs_d = cast(rhs,kind::dynamic);
+        auto lhs_f = cast(lhs,kind::fixed);
+        auto rhs_f = cast(rhs,kind::fixed);
+        auto lhs_h = cast(lhs,kind::hybrid);
+        auto rhs_h = cast(rhs,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -55,16 +57,16 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {4},
             {5}
         };
-        auto lhs_v = cast<std::vector<int>>(lhs);
-        auto rhs_v = cast<std::vector<std::vector<int>>>(rhs);
+        auto lhs_v = cast(lhs,kind::nested_vec);
+        auto rhs_v = cast(rhs,kind::nested_vec);
         auto lhs_a = cast<int>(lhs);
         auto rhs_a = cast<int>(rhs);
-        auto lhs_d = cast<na::dynamic_ndarray<int>>(lhs);
-        auto rhs_d = cast<na::dynamic_ndarray<int>>(rhs);
-        auto lhs_f = cast<na::fixed_ndarray<int,3>>(lhs);
-        auto rhs_f = cast<na::fixed_ndarray<int,2,1>>(rhs);
-        auto lhs_h = cast<na::hybrid_ndarray<int,3,1>>(lhs);
-        auto rhs_h = cast<na::hybrid_ndarray<int,2,2>>(rhs);
+        auto lhs_d = cast(lhs,kind::dynamic);
+        auto rhs_d = cast(rhs,kind::dynamic);
+        auto lhs_f = cast(lhs,kind::fixed);
+        auto rhs_f = cast(rhs,kind::fixed);
+        auto lhs_h = cast(lhs,kind::hybrid);
+        auto rhs_h = cast(rhs,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -91,16 +93,16 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {5}
             }
         };
-        auto lhs_v = cast<std::vector<std::vector<int>>>(lhs);
-        auto rhs_v = cast<std::vector<std::vector<std::vector<int>>>>(rhs);
+        auto lhs_v = cast(lhs,kind::nested_vec);
+        auto rhs_v = cast(rhs,kind::nested_vec);
         auto lhs_a = cast<int>(lhs);
         auto rhs_a = cast<int>(rhs);
-        auto lhs_d = cast<na::dynamic_ndarray<int>>(lhs);
-        auto rhs_d = cast<na::dynamic_ndarray<int>>(rhs);
-        auto lhs_f = cast<na::fixed_ndarray<int,1,3>>(lhs);
-        auto rhs_f = cast<na::fixed_ndarray<int,1,2,1>>(rhs);
-        auto lhs_h = cast<na::hybrid_ndarray<int,3,2>>(lhs);
-        auto rhs_h = cast<na::hybrid_ndarray<int,2,3>>(rhs);
+        auto lhs_d = cast(lhs,kind::dynamic);
+        auto rhs_d = cast(rhs,kind::dynamic);
+        auto lhs_f = cast(lhs,kind::fixed);
+        auto rhs_f = cast(rhs,kind::fixed);
+        auto lhs_h = cast(lhs,kind::hybrid);
+        auto rhs_h = cast(rhs,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -135,16 +137,16 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {7},
             },
         };
-        auto lhs_v = cast<std::vector<std::vector<int>>>(lhs);
-        auto rhs_v = cast<std::vector<std::vector<std::vector<int>>>>(rhs);
+        auto lhs_v = cast(lhs,kind::nested_vec);
+        auto rhs_v = cast(rhs,kind::nested_vec);
         auto lhs_a = cast<int>(lhs);
         auto rhs_a = cast<int>(rhs);
-        auto lhs_d = cast<na::dynamic_ndarray<int>>(lhs);
-        auto rhs_d = cast<na::dynamic_ndarray<int>>(rhs);
-        auto lhs_f = cast<na::fixed_ndarray<int,1,3>>(lhs);
-        auto rhs_f = cast<na::fixed_ndarray<int,2,2,1>>(rhs);
-        auto lhs_h = cast<na::hybrid_ndarray<int,3,2>>(lhs);
-        auto rhs_h = cast<na::hybrid_ndarray<int,4,3>>(rhs);
+        auto lhs_d = cast(lhs,kind::dynamic);
+        auto rhs_d = cast(rhs,kind::dynamic);
+        auto lhs_f = cast(lhs,kind::fixed);
+        auto rhs_f = cast(rhs,kind::fixed);
+        auto lhs_h = cast(lhs,kind::hybrid);
+        auto rhs_h = cast(rhs,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {

@@ -11,6 +11,7 @@
 
 namespace nm = nmtools;
 namespace na = nm::array;
+namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(tile_view)
 {
@@ -27,10 +28,10 @@ NMTOOLS_TESTING_DECLARE_CASE(tile_view)
         int reps[2] = {2,2};
         auto array_a = cast<int>(array);
         auto reps_a  = cast<int>(reps);
-        auto array_v = cast<std::vector<std::vector<std::vector<int>>>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,2,1,4>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,8,3>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -61,10 +62,10 @@ NMTOOLS_TESTING_DECLARE_CASE(tile_view)
         int reps[3] = {2,1,2};
         auto array_a = cast<int>(array);
         auto reps_a  = cast<int>(reps);
-        auto array_v = cast<std::vector<std::vector<std::vector<int>>>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,2,1,4>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,8,3>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -92,10 +93,10 @@ NMTOOLS_TESTING_DECLARE_CASE(tile_view)
         int reps[1]  = {2};
         auto array_a = cast<int>(array);
         auto reps_a  = cast<int>(reps);
-        auto array_v = cast<std::vector<int>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,3>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,3,1>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -110,10 +111,10 @@ NMTOOLS_TESTING_DECLARE_CASE(tile_view)
         int reps[2]  = {1,2};
         auto array_a = cast<int>(array);
         auto reps_a  = cast<int>(reps);
-        auto array_v = cast<std::vector<int>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,3>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,3,1>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -128,10 +129,10 @@ NMTOOLS_TESTING_DECLARE_CASE(tile_view)
         int reps[6]  = {2,1,1,1,1,1};
         auto array_a = cast<int>(array);
         auto reps_a  = cast<int>(reps);
-        auto array_v = cast<std::vector<int>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,3>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,3,1>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {

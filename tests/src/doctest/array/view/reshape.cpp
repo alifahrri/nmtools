@@ -2,6 +2,7 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
+#include "nmtools/array/index/as_tuple.hpp"
 #include "testing/doctest.hpp"
 
 #include <array>
@@ -12,372 +13,258 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
+namespace kind = na::kind;
 using namespace nm::literals;
 
-TEST_CASE("reshape: array(12)->(12x1)" * doctest::test_suite("view::reshape"))
+template <typename T>
+using not_array1d = meta::logical_not<meta::is_array1d<T>>;
+
+template <typename T>
+using not_array2d = meta::logical_not<meta::is_array2d<T>>;
+
+template <typename T>
+using not_fixed_size_ndarray = meta::logical_not<meta::is_fixed_size_ndarray<T>>;
+
+template <typename T>
+using not_fixed_dim_ndarray = meta::logical_not<meta::is_fixed_dim_ndarray<T>>;
+
+template <typename T>
+using is_fixed_size_array2d = meta::compose_logical_and<T,
+    not_array1d, meta::is_array2d, meta::is_ndarray,
+    meta::is_fixed_size_ndarray
+>;
+
+// dynamic shape but fixed dim
+// @TODO: fix trait for reshape view
+template <typename T>
+using is_fixed_dim_dynamic_size_array2d = meta::compose_logical_and<T,
+    not_array1d, meta::is_array2d, meta::is_ndarray
+    // , meta::is_fixed_dim_ndarray
+>;
+
+// dynamic shape dynamic dim
+template <typename T>
+using is_dynamic_dim_dynamic_size_array2d = meta::compose_logical_and<T,
+    meta::is_ndarray
+    , not_fixed_size_ndarray
+>;
+
+template <typename T>
+using is_fixed_dim_dynamic_size_ndarray = meta::compose_logical_and<T,
+    not_array1d, not_array2d, meta::is_ndarray
+    // , meta::is_fixed_dim_ndarray
+>;
+
+// dynamic shape dynamic dim
+template <typename T>
+using is_dynamic_dim_dynamic_size_ndarray = meta::compose_logical_and<T,
+    meta::is_ndarray
+    , not_fixed_size_ndarray
+>;
+
+NMTOOLS_TESTING_DECLARE_CASE(reshape)
 {
-    auto array = std::array{1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.};
-    double expected[12][1] = {
-        {1.}, {2.}, {3.}, {4.}, {5.}, {6.}, {7.}, {8.}, {9.}, {10.}, {11.}, {12.}
-    };
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        // should crash
-        // auto array_ref = view::reshape(array,std::array{3,2});
+        double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_f = cast(array,kind::fixed);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_h = cast(array,kind::hybrid);
+        int newshape[2] = {12,1};
+        auto newshape_ct = std::tuple{12_ct, 1_ct};
+        auto newshape_a = cast<int>(newshape);
+        auto newshape_v = cast(newshape,kind::nested_vec);
+        auto newshape_t = index::as_tuple(newshape_a);
     }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto newshape  = std::array{12,1};
-        auto array_ref = view::reshape(array,newshape);
-        using view_t = decltype(array_ref);
-
-        STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-        STATIC_CHECK( !meta::is_array1d_v<view_t> );
-        STATIC_CHECK(  meta::is_array2d_v<view_t> );
-        STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-        auto shape = nm::shape(array_ref);
-        auto dim   = nm::dim(array_ref);
-        NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-        NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-        NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-        NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
-
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        // isclose doesn support tuple and raw yet
+        int shape_[2] = {12,1};
+        auto shape = cast<int>(shape_);
+        double expected[12][1] = {
+            {1.}, {2.}, {3.}, {4.}, {5.}, {6.}, {7.}, {8.}, {9.}, {10.}, {11.}, {12.}
+        };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        auto newshape  = std::vector{12,1};
-        auto array_ref = view::reshape(array,newshape);
-        using view_t = decltype(array_ref);
-
-        STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-        STATIC_CHECK( !meta::is_array1d_v<view_t> );
-        STATIC_CHECK( !meta::is_array2d_v<view_t> );
-        STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-        auto shape = nm::shape(array_ref);
-        auto dim   = nm::dim(array_ref);
-        NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-        NMTOOLS_ASSERT_EQUAL( shape, newshape );
-        NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-        NMTOOLS_ASSERT_EQUAL( array_ref.shape(), newshape );
-
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_f = cast(array,kind::fixed);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_h = cast(array,kind::hybrid);
+        int newshape[2] = {3,4};
+        auto newshape_ct = std::tuple{3_ct, 4_ct};
+        auto newshape_a = cast<int>(newshape);
+        auto newshape_v = cast(newshape,kind::nested_vec);
+        auto newshape_t = index::as_tuple(newshape_a);
     }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto newshape  = std::tuple{12,1};
-        auto array_ref = view::reshape(array,newshape);
-        using view_t = decltype(array_ref);
-
-        STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-        STATIC_CHECK( !meta::is_array1d_v<view_t> );
-        STATIC_CHECK(  meta::is_array2d_v<view_t> );
-        STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-        auto shape = nm::shape(array_ref);
-        auto dim   = nm::dim(array_ref);
-        NMTOOLS_ASSERT_EQUAL( dim, 2 );
-        NMTOOLS_ASSERT_EQUAL( shape, newshape );
-        NMTOOLS_ASSERT_EQUAL( array_ref.dim(), 2 );
-        NMTOOLS_ASSERT_EQUAL( array_ref.shape(), newshape );
-
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        // isclose doesn support tuple and raw yet
+        int shape_[2] = {3,4};
+        auto shape = cast<int>(shape_);
+        double expected[3][4] = {
+            {1.,  2.,  3.,  4.},
+            {5.,  6.,  7.,  8.},
+            {9., 10., 11., 12.}
+        };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        auto newshape  = std::tuple{12_ct,1_ct};
-        auto array_ref = view::reshape(array,newshape);
-        using view_t = decltype(array_ref);
-
-        STATIC_CHECK(  meta::is_fixed_size_ndarray_v<view_t> );
-        STATIC_CHECK( !meta::is_array1d_v<view_t> );
-        STATIC_CHECK(  meta::is_array2d_v<view_t> );
-        STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-        auto shape = nm::shape(array_ref);
-        auto dim   = nm::dim(array_ref);
-        NMTOOLS_ASSERT_EQUAL( dim, 2 );
-        NMTOOLS_ASSERT_EQUAL( shape, newshape );
-        NMTOOLS_ASSERT_EQUAL( array_ref.dim(), 2 );
-        NMTOOLS_ASSERT_EQUAL( array_ref.shape(), newshape );
-
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_f = cast(array,kind::fixed);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_h = cast(array,kind::hybrid);
+        int newshape[4] = {1,2,3,2};
+        auto newshape_ct = std::tuple{1_ct, 2_ct, 3_ct, 2_ct};
+        auto newshape_a = cast<int>(newshape);
+        auto newshape_v = cast(newshape,kind::nested_vec);
+        auto newshape_t = index::as_tuple(newshape_a);
     }
-}
-
-TEST_CASE("reshape: array(12)->(3x4)" * doctest::test_suite("view::reshape"))
-{
-    auto array = std::array{1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.};
-    double expected[3][4] = {
-        {1.,  2.,  3.,  4.},
-        {5.,  6.,  7.,  8.},
-        {9., 10., 11., 12.}
-    };
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        auto newshape  = std::array{3,4};
-        auto array_ref = view::reshape(array,newshape);
-        using view_t = decltype(array_ref);
-
-        STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-        STATIC_CHECK( !meta::is_array1d_v<view_t> );
-        STATIC_CHECK(  meta::is_array2d_v<view_t> );
-        STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-        auto shape = nm::shape(array_ref);
-        auto dim   = nm::dim(array_ref);
-        NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-        NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-        NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-        NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
-
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-    }
-    {
-        auto newshape  = std::vector{3,4};
-        auto array_ref = view::reshape(array,newshape);
-        using view_t = decltype(array_ref);
-
-        STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-        STATIC_CHECK( !meta::is_array1d_v<view_t> );
-        STATIC_CHECK( !meta::is_array2d_v<view_t> );
-        STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-        auto shape = nm::shape(array_ref);
-        auto dim   = nm::dim(array_ref);
-        NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-        NMTOOLS_ASSERT_EQUAL( shape, newshape );
-        NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-        NMTOOLS_ASSERT_EQUAL( array_ref.shape(), newshape );
-
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-    }
-    {
-        auto newshape  = std::tuple{3,4};
-        auto array_ref = view::reshape(array,newshape);
-        using view_t = decltype(array_ref);
-
-        STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-        STATIC_CHECK( !meta::is_array1d_v<view_t> );
-        STATIC_CHECK(  meta::is_array2d_v<view_t> );
-        STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-        auto shape = nm::shape(array_ref);
-        auto dim   = nm::dim(array_ref);
-        NMTOOLS_ASSERT_EQUAL( dim, 2 );
-        NMTOOLS_ASSERT_EQUAL( shape, newshape );
-        NMTOOLS_ASSERT_EQUAL( array_ref.dim(), 2 );
-        NMTOOLS_ASSERT_EQUAL( array_ref.shape(), newshape );
-
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-    }
-    {
-        auto newshape  = std::tuple{3_ct,4_ct};
-        auto array_ref = view::reshape(array,newshape);
-        using view_t = decltype(array_ref);
-
-        STATIC_CHECK(  meta::is_fixed_size_ndarray_v<view_t> );
-        STATIC_CHECK( !meta::is_array1d_v<view_t> );
-        STATIC_CHECK(  meta::is_array2d_v<view_t> );
-        STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-        auto shape = nm::shape(array_ref);
-        auto dim   = nm::dim(array_ref);
-        NMTOOLS_ASSERT_EQUAL( dim, 2 );
-        NMTOOLS_ASSERT_EQUAL( shape, newshape );
-        NMTOOLS_ASSERT_EQUAL( array_ref.dim(), 2 );
-        NMTOOLS_ASSERT_EQUAL( array_ref.shape(), newshape );
-
-        NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-    }
-}
-
-TEST_CASE("reshape: double(12)->(12x1)" * doctest::test_suite("view::reshape"))
-{
-    double array[12] = {1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.};
-    double expected[12][1] = {
-        {1.}, {2.}, {3.}, {4.}, {5.}, {6.}, {7.}, {8.}, {9.}, {10.}, {11.}, {12.}
-    };
-    auto newshape = std::array{12,1};
-    auto array_ref = view::reshape(array,newshape);
-    using view_t = decltype(array_ref);
-
-    STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-    STATIC_CHECK( !meta::is_array1d_v<view_t> );
-    STATIC_CHECK(  meta::is_array2d_v<view_t> );
-    STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-    auto shape = nm::shape(array_ref);
-    auto dim   = nm::dim(array_ref);
-    NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-    NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
-
-    NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-}
-
-TEST_CASE("reshape: double(12)->(3x4)" * doctest::test_suite("view::reshape"))
-{
-    double array[12] = {1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.};
-    double expected[3][4] = {
-        {1.,  2.,  3.,  4.},
-        {5.,  6.,  7.,  8.},
-        {9., 10., 11., 12.}
-    };
-    auto newshape = std::array{3,4};
-    auto array_ref = view::reshape(array,newshape);
-    using view_t = decltype(array_ref);
-
-    STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-    STATIC_CHECK( !meta::is_array1d_v<view_t> );
-    STATIC_CHECK(  meta::is_array2d_v<view_t> );
-    STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-    auto shape = nm::shape(array_ref);
-    auto dim   = nm::dim(array_ref);
-    NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-    NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
-
-    NMTOOLS_ASSERT_CLOSE( array_ref, expected );
-}
-
-TEST_CASE("reshape: double(12)->(1x2x3x2)" * doctest::test_suite("view::reshape"))
-{
-    double array[12] = {1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.};
-    double expected[1][2][3][2] = {
-        {
+        // isclose doesn support tuple and raw yet
+        int shape_[4] = {1,2,3,2};
+        auto shape = cast<int>(shape_);
+        double expected[1][2][3][2] = {
             {
-                {1., 2.},
-                {3., 4.},
-                {5., 6.}
-            },
-            {
-                {7.,  8.},
-                {9., 10.},
-                {11.,12.}
+                {
+                    {1., 2.},
+                    {3., 4.},
+                    {5., 6.}
+                },
+                {
+                    {7.,  8.},
+                    {9., 10.},
+                    {11.,12.}
+                }
             }
-        }
-    };
-    auto newshape = std::array{1,2,3,2};
-    auto array_ref = view::reshape(array,newshape);
-    using view_t = decltype(array_ref);
-
-    STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-    STATIC_CHECK( !meta::is_array1d_v<view_t> );
-    STATIC_CHECK( !meta::is_array2d_v<view_t> );
-    STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-    auto shape = nm::shape(array_ref);
-    auto dim   = nm::dim(array_ref);
-    NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-    NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
-
-    NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+        };
+    }
 }
 
-TEST_CASE("reshape: vector(12)->(12x1)" * doctest::test_suite("view::reshape"))
-{
-    auto array = std::vector{1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.};
-    double expected[12][1] = {
-        {1.}, {2.}, {3.}, {4.}, {5.}, {6.}, {7.}, {8.}, {9.}, {10.}, {11.}, {12.}
-    };
-    auto newshape = std::array{12,1};
-    auto array_ref = view::reshape(array,newshape);
-    using view_t = decltype(array_ref);
-
-    STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-    STATIC_CHECK( !meta::is_array1d_v<view_t> );
-    STATIC_CHECK(  meta::is_array2d_v<view_t> );
-    STATIC_CHECK(  meta::is_ndarray_v<view_t> );
-
-    auto shape = nm::shape(array_ref);
-    auto dim   = nm::dim(array_ref);
-    NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-    NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
-
-    NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+#define RESHAPE_SUBCASE(case_name, array, newshape, trait) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(reshape, case_name) \
+    auto array_ref = view::reshape(args::array, args::newshape); \
+    using view_t = decltype(array_ref); \
+    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
+    STATIC_CHECK_TRAIT( trait, view_t ); \
 }
 
-TEST_CASE("reshape: vector(12)->(3x4)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(raw)" * doctest::test_suite("view::reshape"))
 {
-    auto array = std::vector{1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.};
-    double expected[3][4] = {
-        {1.,  2.,  3.,  4.},
-        {5.,  6.,  7.,  8.},
-        {9., 10., 11., 12.}
-    };
-    auto newshape = std::array{3,4};
-    auto array_ref = view::reshape(array,newshape);
-    using view_t = decltype(array_ref);
+    RESHAPE_SUBCASE( case1, array, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array, newshape_ct, is_fixed_size_array2d );
 
-    STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
-    STATIC_CHECK_TRAIT_FALSE( meta::is_array1d, view_t );
-    STATIC_CHECK_TRAIT_TRUE(  meta::is_array2d, view_t );
-    STATIC_CHECK_TRAIT_TRUE(  meta::is_ndarray, view_t );
+    RESHAPE_SUBCASE( case2, array, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array, newshape_ct, is_fixed_size_array2d );
 
-    auto shape = nm::shape(array_ref);
-    auto dim   = nm::dim(array_ref);
-    NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-    NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
-
-    NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+    RESHAPE_SUBCASE( case3, array, newshape_a, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array, newshape_t, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array, newshape_ct, meta::is_fixed_size_ndarray );
 }
 
-TEST_CASE("reshape: fixed_ndarray(12)->(3x4)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(array)" * doctest::test_suite("view::reshape"))
 {
-    auto array = na::fixed_ndarray{{1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.}};
-    double expected[3][4] = {
-        {1.,  2.,  3.,  4.},
-        {5.,  6.,  7.,  8.},
-        {9., 10., 11., 12.}
-    };
-    auto newshape = std::array{3,4};
-    auto array_ref = view::reshape(array,newshape);
-    using view_t = decltype(array_ref);
+    RESHAPE_SUBCASE( case1, array_a, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_a, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_a, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_a, newshape_ct, is_fixed_size_array2d );
 
-    STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-    STATIC_CHECK( !meta::is_array1d_v<view_t> );
-    STATIC_CHECK(  meta::is_array2d_v<view_t> );
-    STATIC_CHECK(  meta::is_ndarray_v<view_t> );
+    RESHAPE_SUBCASE( case2, array_a, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_a, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_a, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_a, newshape_ct, is_fixed_size_array2d );
 
-    auto shape = nm::shape(array_ref);
-    auto dim   = nm::dim(array_ref);
-    NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-    NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
-
-    NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+    RESHAPE_SUBCASE( case3, array_a, newshape_a, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_a, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_a, newshape_t, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_a, newshape_ct, meta::is_fixed_size_ndarray );
 }
 
-TEST_CASE("reshape: dynamic_ndarray(12)->(3x4)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(fixed_ndarray)" * doctest::test_suite("view::reshape"))
 {
-    auto array = na::dynamic_ndarray({1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.});
-    double expected[3][4] = {
-        {1.,  2.,  3.,  4.},
-        {5.,  6.,  7.,  8.},
-        {9., 10., 11., 12.}
-    };
-    auto newshape = std::array{3,4};
-    auto array_ref = view::reshape(array,newshape);
-    using view_t = decltype(array_ref);
+    RESHAPE_SUBCASE( case1, array_f, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_f, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_f, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_f, newshape_ct, is_fixed_size_array2d );
 
-    STATIC_CHECK( !meta::is_fixed_size_ndarray_v<view_t> );
-    STATIC_CHECK( !meta::is_array1d_v<view_t> );
-    STATIC_CHECK(  meta::is_array2d_v<view_t> );
-    STATIC_CHECK(  meta::is_ndarray_v<view_t> );
+    RESHAPE_SUBCASE( case2, array_f, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_f, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_f, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_f, newshape_ct, is_fixed_size_array2d );
 
-    auto shape = nm::shape(array_ref);
-    auto dim   = nm::dim(array_ref);
-    NMTOOLS_ASSERT_EQUAL( dim, newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( shape, (newshape) );
-    NMTOOLS_ASSERT_EQUAL( array_ref.dim(), newshape.size() );
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), (newshape) );
+    RESHAPE_SUBCASE( case3, array_f, newshape_a, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_f, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_f, newshape_t, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_f, newshape_ct, meta::is_fixed_size_ndarray );
+}
 
-    NMTOOLS_ASSERT_CLOSE( array_ref, expected );
+TEST_CASE("reshape(vector)" * doctest::test_suite("view::reshape"))
+{
+    RESHAPE_SUBCASE( case1, array_v, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_v, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_v, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_v, newshape_ct, is_fixed_dim_dynamic_size_array2d );
+
+    RESHAPE_SUBCASE( case2, array_v, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_v, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_v, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_v, newshape_ct, is_fixed_dim_dynamic_size_array2d );
+
+    RESHAPE_SUBCASE( case3, array_v, newshape_a, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_v, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_v, newshape_t, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_v, newshape_ct, is_fixed_dim_dynamic_size_ndarray );
+}
+
+TEST_CASE("reshape(dynamic_ndarray)" * doctest::test_suite("view::reshape"))
+{
+    RESHAPE_SUBCASE( case1, array_d, newshape_a, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case1, array_d, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case1, array_d, newshape_t, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case1, array_d, newshape_ct, is_dynamic_dim_dynamic_size_ndarray );
+
+    RESHAPE_SUBCASE( case2, array_d, newshape_a, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case2, array_d, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case2, array_d, newshape_t, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case2, array_d, newshape_ct, is_dynamic_dim_dynamic_size_ndarray );
+
+    RESHAPE_SUBCASE( case3, array_d, newshape_a, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_d, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_d, newshape_t, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_d, newshape_ct, is_dynamic_dim_dynamic_size_ndarray );
+}
+
+TEST_CASE("reshape(hybrid_ndarray)" * doctest::test_suite("view::reshape"))
+{
+    RESHAPE_SUBCASE( case1, array_h, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_h, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_h, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_h, newshape_ct, is_fixed_dim_dynamic_size_array2d );
+
+    RESHAPE_SUBCASE( case2, array_h, newshape_a, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_h, newshape_v, is_dynamic_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_h, newshape_t, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_h, newshape_ct, is_fixed_dim_dynamic_size_array2d );
+
+    RESHAPE_SUBCASE( case3, array_h, newshape_a, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_h, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_h, newshape_t, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_h, newshape_ct, is_fixed_dim_dynamic_size_ndarray );
 }

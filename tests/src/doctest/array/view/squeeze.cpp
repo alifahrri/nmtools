@@ -11,747 +11,223 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
 namespace view = nm::view;
+namespace kind = na::kind;
 
-TEST_CASE("squeeze(raw(6)->(6))" * doctest::test_suite("view::squeeze"))
+NMTOOLS_TESTING_DECLARE_CASE(squeeze)
 {
-    double array[6] = {1,2,3,4,5,6};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        double array[6] = {1,2,3,4,5,6};
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        int shape_[1] = {6};
+        auto shape = cast<int>(shape_);
+        double expected[6] = {1,2,3,4,5,6};
+    }
 
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(array(6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = std::array{1,2,3,4,5,6};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(vector(6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = std::vector{1,2,3,4,5,6};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(fixed_vector(6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::fixed_vector{{1,2,3,4,5,6}};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(dynamic_vector(6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::dynamic_vector{{1,2,3,4,5,6}};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(raw(6x1)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    double array[6][1] = {
-        {1},
-        {2},
-        {3},
-        {4},
-        {5},
-        {6}
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(raw(6x2)->(6x2))" * doctest::test_suite("view::squeeze"))
-{
-    double array[6][2] = {
-        {1,1},
-        {2,2},
-        {3,3},
-        {4,4},
-        {5,5},
-        {6,6}
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6,2};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 2 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6][2] = {
-        {1,1},
-        {2,2},
-        {3,3},
-        {4,4},
-        {5,5},
-        {6,6}
-    };
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(raw(1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    double array[1][6] = {
-        {1,2,3,4,5,6}
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(raw(6x1x1)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    double array[6][1][1] = {
-        {
-            {1}
-        },
-        {
-            {2}
-        },
-        {
-            {3}
-        },
-        {
-            {4}
-        },
-        {
-            {5}
-        },
-        {
-            {6}
-        }
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(raw(1x6x1)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    double array[1][6][1] = {
-        {
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        double array[6][1] = {
             {1},
             {2},
             {3},
             {4},
             {5},
-            {6}
-        }
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
+            {6},
+        };
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        int shape_[1] = {6};
+        auto shape = cast<int>(shape_);
+        double expected[6] = {1,2,3,4,5,6};
+    }
 
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        double array[6][2] = {
+            {1,1},
+            {2,2},
+            {3,3},
+            {4,4},
+            {5,5},
+            {6,6},
+        };
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        int shape_[2] = {6,2};
+        auto shape = cast<int>(shape_);
+        double expected[6][2] = {
+            {1,1},
+            {2,2},
+            {3,3},
+            {4,4},
+            {5,5},
+            {6,6},
+        };
+    }
 
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(raw(1x1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    double array[1][1][6] = {
-        {
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        double array[1][6] = {
             {1,2,3,4,5,6}
-        }
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
+        };
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        int shape_[1] = {6};
+        auto shape = cast<int>(shape_);
+        double expected[6] = {1,2,3,4,5,6};
+    }
 
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        double array[6][1][1] = {
+            {
+                {1}
+            },
+            {
+                {2}
+            },
+            {
+                {3}
+            },
+            {
+                {4}
+            },
+            {
+                {5}
+            },
+            {
+                {6}
+            }
+        };
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        int shape_[1] = {6};
+        auto shape = cast<int>(shape_);
+        double expected[6] = {1,2,3,4,5,6};
+    }
 
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        double array[1][6][1] = {
+            {
+                {1},
+                {2},
+                {3},
+                {4},
+                {5},
+                {6}
+            }
+        };
+        auto array_a = cast<double>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        int shape_[1] = {6};
+        auto shape = cast<int>(shape_);
+        double expected[6] = {1,2,3,4,5,6};
+    }
 }
 
-TEST_CASE("squeeze(array(1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    std::array<std::array<double,6>,1> array = {
-        {1,2,3,4,5,6}
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
+#define SQUEEZE_SUBCASE(case_name, array) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(squeeze, case_name) \
+    auto array_ref = view::squeeze(args::array); \
+    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
 
-TEST_CASE("squeeze(array(6x1)->(6))" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(raw)" * doctest::test_suite("view::squeeze"))
 {
-    // gcc error too many initializer, clang error excess element in struct init
-    // std::array<std::array<double,1>,6> array = {
-    //     {1},
-    //     {2},
-    //     {3},
-    //     {4},
-    //     {5},
-    //     {6}
-    // };
-    std::array<std::array<double,1>,6> array = {1,2,3,4,5,6};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
+    SQUEEZE_SUBCASE( case1, array );
+    SQUEEZE_SUBCASE( case2, array );
+    SQUEEZE_SUBCASE( case3, array );
+    SQUEEZE_SUBCASE( case4, array );
+    SQUEEZE_SUBCASE( case5, array );
+    SQUEEZE_SUBCASE( case6, array ); 
 }
 
-TEST_CASE("squeeze(array(6x2)->(6x2))" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(array)" * doctest::test_suite("view::squeeze"))
 {
-    std::array<std::array<double,2>,6> array = {{
-        {1,1},
-        {2,2},
-        {3,3},
-        {4,4},
-        {5,5},
-        {6,6}
-    }};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6,2};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 2 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6][2] = {
-        {1,1},
-        {2,2},
-        {3,3},
-        {4,4},
-        {5,5},
-        {6,6}
-    };
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
+    SQUEEZE_SUBCASE( case1, array_a );
+    SQUEEZE_SUBCASE( case2, array_a );
+    SQUEEZE_SUBCASE( case3, array_a );
+    SQUEEZE_SUBCASE( case4, array_a );
+    SQUEEZE_SUBCASE( case5, array_a );
+    SQUEEZE_SUBCASE( case6, array_a ); 
 }
 
-TEST_CASE("squeeze(array(1x6x1)->(6))" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(vector)" * doctest::test_suite("view::squeeze"))
 {
-    // :'D
-    // std::array<std::array<std::array<double,1>,6>,1> array = {
-    //     {
-    //         {1},
-    //         {2},
-    //         {3},
-    //         {4},
-    //         {5},
-    //         {6}
-    //     }
-    // };
-    std::array<std::array<std::array<double,1>,6>,1> array = {1,2,3,4,5,6};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
+    SQUEEZE_SUBCASE( case1, array_v );
+    SQUEEZE_SUBCASE( case2, array_v );
+    SQUEEZE_SUBCASE( case3, array_v );
+    SQUEEZE_SUBCASE( case4, array_v );
+    SQUEEZE_SUBCASE( case5, array_v );
+    SQUEEZE_SUBCASE( case6, array_v ); 
 }
 
-TEST_CASE("squeeze(vector(6x1)->(6))" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(fixed_ndarray)" * doctest::test_suite("view::squeeze"))
 {
-    std::vector<std::vector<double>> array = {
-        {1},
-        {2},
-        {3},
-        {4},
-        {5},
-        {6}
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
+    SQUEEZE_SUBCASE( case1, array_f );
+    SQUEEZE_SUBCASE( case2, array_f );
+    SQUEEZE_SUBCASE( case3, array_f );
+    SQUEEZE_SUBCASE( case4, array_f );
+    SQUEEZE_SUBCASE( case5, array_f );
+    SQUEEZE_SUBCASE( case6, array_f ); 
 }
 
-TEST_CASE("squeeze(vector(1x6)->(6))" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(dynamic_ndarray)" * doctest::test_suite("view::squeeze"))
 {
-    std::vector<std::vector<double>> array = {
-        {1,2,3,4,5,6}
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
+    SQUEEZE_SUBCASE( case1, array_d );
+    SQUEEZE_SUBCASE( case2, array_d );
+    SQUEEZE_SUBCASE( case3, array_d );
+    SQUEEZE_SUBCASE( case4, array_d );
+    SQUEEZE_SUBCASE( case5, array_d );
+    SQUEEZE_SUBCASE( case6, array_d ); 
 }
 
-TEST_CASE("squeeze(vector(6x1x1)->(6))" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(hybrid_ndarray)" * doctest::test_suite("view::squeeze"))
 {
-    std::vector<std::vector<std::vector<double>>> array = {
-        {
-            {1}
-        },
-        {
-            {2}
-        },
-        {
-            {3}
-        },
-        {
-            {4}
-        },
-        {
-            {5}
-        },
-        {
-            {6}
-        }
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(vector(1x6x1)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    std::vector<std::vector<std::vector<double>>> array = {
-        {
-            {1},
-            {2},
-            {3},
-            {4},
-            {5},
-            {6}
-        }
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(vector(1x1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    std::vector<std::vector<std::vector<double>>> array = {
-        {
-            {1,2,3,4,5,6}
-        }
-    };
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(vector(6x1)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    double init[6][1] = {
-        {1},
-        {2},
-        {3},
-        {4},
-        {5},
-        {6}
-    };
-    auto array = na::dynamic_ndarray(std::move(init));
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(vector(1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::dynamic_ndarray({
-        {1,2,3,4,5,6}
-    });
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(dynamic_ndarray(6x1x1)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    // auto array = na::dynamic_ndarray({
-    //     {
-    //         {1}
-    //     },
-    //     {
-    //         {2}
-    //     },
-    //     {
-    //         {3}
-    //     },
-    //     {
-    //         {4}
-    //     },
-    //     {
-    //         {5}
-    //     },
-    //     {
-    //         {6}
-    //     }
-    // });
-    double init[6][1][1] = {
-        {
-            {1}
-        },
-        {
-            {2}
-        },
-        {
-            {3}
-        },
-        {
-            {4}
-        },
-        {
-            {5}
-        },
-        {
-            {6}
-        }
-    };
-    auto array = na::dynamic_ndarray(std::move(init));
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-// gcc accept but clang doesnt
-// clang error: call to constructor of 'na::dynamic_ndarray<int, std::vector, std::vector>' 
-// (aka 'nmtools::array::dynamic_ndarray<int, std::vector, std::vector>') is ambiguous
-// somehow using this macro doesnt work
-// #ifndef __GNUC__
-#ifndef __clang__
-TEST_CASE("squeeze(dynamic_ndarray(1x6x1)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    // ambiguous call
-    // auto array = na::dynamic_ndarray({
-    //     {
-    //         {1},
-    //         {2},
-    //         {3},
-    //         {4},
-    //         {5},
-    //         {6}
-    //     }
-    // });
-    double init[1][6][1] = {
-        {
-            {1},
-            {2},
-            {3},
-            {4},
-            {5},
-            {6}
-        }
-    };
-    auto array = na::dynamic_ndarray(std::move(init));
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(vector(1x1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::dynamic_ndarray({
-        {
-            {1,2,3,4,5,6}
-        }
-    });
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-#endif // __GNUC__
-
-TEST_CASE("squeeze(fixed_ndarray(1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::fixed_ndarray{{
-        {1,2,3,4,5,6}
-    }};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(fixed_ndarray(6x1)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::fixed_ndarray<double,6,1>{{
-        {1},
-        {2},
-        {3},
-        {4},
-        {5},
-        {6}
-    }};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(fixed_ndarray(1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::fixed_ndarray<double,1,6>{{
-        {1,2,3,4,5,6}
-    }};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-// TEST_CASE("squeeze(fixed_ndarray(6x1x1)->(6))" * doctest::test_suite("view::squeeze"))
-// {
-//     auto array = na::fixed_ndarray<double,6,1,1>{{
-//         {
-//             {1}
-//         },
-//         {
-//             {2}
-//         },
-//         {
-//             {3}
-//         },
-//         {
-//             {4}
-//         },
-//         {
-//             {5}
-//         },
-//         {
-//             {6}
-//         }
-//     }};
-//     auto squeezed = view::squeeze(array);
-//     using squeezed_t = decltype(squeezed);
-
-//     auto shape = std::array{6};
-//     NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-//     NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-//     double expected[6] = {1,2,3,4,5,6};
-//     NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-// }
-
-// TEST_CASE("squeeze(fixed_ndarrayr(1x6x1)->(6))" * doctest::test_suite("view::squeeze"))
-// {
-//     auto array = na::fixed_ndarray<double,1,6,1>{{
-//         {
-//             {1},
-//             {2},
-//             {3},
-//             {4},
-//             {5},
-//             {6}
-//         }
-//     }};
-//     auto squeezed = view::squeeze(array);
-//     using squeezed_t = decltype(squeezed);
-
-//     auto shape = std::array{6};
-//     NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-//     NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-//     double expected[6] = {1,2,3,4,5,6};
-//     NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-// }
-
-TEST_CASE("squeeze(fixed_ndarray(1x1x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::fixed_ndarray{{
-        {
-            {1,2,3,4,5,6}
-        }
-    }};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    STATIC_CHECK_TRAIT( meta::is_ndarray, squeezed_t );
-
-    auto shape = std::array{6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 1 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[6] = {1,2,3,4,5,6};
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
-}
-
-TEST_CASE("squeeze(fixed_ndarray(1x2x6)->(6))" * doctest::test_suite("view::squeeze"))
-{
-    auto array = na::fixed_ndarray{{
-        {
-            {1,2,3,4,5,6},
-            {1,2,3,4,5,6}
-        }
-    }};
-    auto squeezed = view::squeeze(array);
-    using squeezed_t = decltype(squeezed);
-
-    STATIC_CHECK_TRAIT( meta::is_ndarray, squeezed_t );
-
-    auto shape = std::array{2,6};
-    NMTOOLS_ASSERT_EQUAL( squeezed.dim(), 2 );
-    NMTOOLS_ASSERT_EQUAL( squeezed.shape(), shape );
-
-    double expected[2][6] = {
-        {1,2,3,4,5,6},
-        {1,2,3,4,5,6}
-    };
-
-    NMTOOLS_ASSERT_CLOSE( squeezed, expected );
+    SQUEEZE_SUBCASE( case1, array_h );
+    SQUEEZE_SUBCASE( case2, array_h );
+    SQUEEZE_SUBCASE( case3, array_h );
+    SQUEEZE_SUBCASE( case4, array_h );
+    SQUEEZE_SUBCASE( case5, array_h );
+    SQUEEZE_SUBCASE( case6, array_h ); 
 }

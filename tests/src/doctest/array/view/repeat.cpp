@@ -13,6 +13,7 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
+namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(repeat_view)
 {
@@ -22,10 +23,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat_view)
         int repeats = 3;
         auto axis = None;
         auto array_a = cast<int>(array);
-        auto array_v = cast<std::vector<std::vector<int>>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,2,2>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,4,2>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -40,10 +41,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat_view)
         int repeats = 2;
         auto axis = 0;
         auto array_a = cast<int>(array);
-        auto array_v = cast<std::vector<std::vector<int>>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,2,2>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,4,2>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -63,10 +64,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat_view)
         int repeats = 2;
         auto axis = 1;
         auto array_a = cast<int>(array);
-        auto array_v = cast<std::vector<std::vector<int>>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,2,2>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,4,2>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -84,10 +85,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat_view)
         auto repeats = std::array{1,2};
         auto axis = 0;
         auto array_a = cast<int>(array);
-        auto array_v = cast<std::vector<std::vector<int>>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,2,2>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,4,2>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -106,10 +107,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat_view)
         auto repeats = std::array{1,2};
         auto axis = 1;
         auto array_a = cast<int>(array);
-        auto array_v = cast<std::vector<std::vector<int>>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,2,2>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,4,2>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -127,10 +128,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat_view)
         auto repeats = 2;
         auto axis = 0;
         auto array_a = cast<int>(array);
-        auto array_v = cast<std::vector<std::vector<std::vector<int>>>>(array);
-        auto array_d = cast<na::dynamic_ndarray<int>>(array);
-        auto array_f = cast<na::fixed_ndarray<int,1,2,2>>(array);
-        auto array_h = cast<na::hybrid_ndarray<int,4,3>>(array);
+        auto array_v = cast(array,kind::nested_vec);
+        auto array_d = cast(array,kind::dynamic);
+        auto array_f = cast(array,kind::fixed);
+        auto array_h = cast(array,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
