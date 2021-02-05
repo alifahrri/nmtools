@@ -9,4 +9,8 @@ endif()
 
 include(nmtools)
 
-add_subdirectory(nmtools)
+option(BUILD_EXAMPLES_ARRAY "build array example programs" ON)
+
+if (BUILD_EXAMPLES_ARRAY)
+    add_subdirectory(nmtools/array)
+endif (BUILD_EXAMPLES_ARRAY)
