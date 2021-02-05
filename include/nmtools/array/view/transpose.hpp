@@ -237,9 +237,8 @@ namespace nmtools
      * @tparam axes_t 
      */
     template <typename array_t, typename axes_t>
-    struct meta::is_ndarray< decorator_t<transpose_t,array_t,axes_t> 
-        , std::enable_if_t< meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>> >
-    > : std::true_type {};
+    struct meta::is_ndarray< decorator_t<transpose_t,array_t,axes_t> >
+     : meta::is_ndarray<array_t> {};
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_TRANSPOSE_HPP
