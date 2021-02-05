@@ -653,6 +653,28 @@ namespace nmtools::meta
     using resize_fixed_matrix_t = typename resize_fixed_matrix<T,Rows,Cols>::type;
 
     /**
+     * @brief resize fixed array
+     * 
+     * @tparam T original array
+     * @tparam U type containing new shape
+     * @tparam typename 
+     */
+    template <typename T, typename U, typename=void>
+    struct resize_fixed_ndarray
+    {
+        using type = T;
+    }; // resize_fixed_ndarray
+
+    /**
+     * @brief helper alias template for resize fixed array
+     * 
+     * @tparam T original array
+     * @tparam U type containing new shape
+     */
+    template <typename T, typename U>
+    using resize_fixed_ndarray_t = type_t<resize_fixed_ndarray<T,U>>;
+
+    /**
      * @brief metafunction to extract template paramters.
      * Given type T, return its template parameters as tuple,
      * e.g. given T<Params...>, return std::tuple<Params...>{}.
