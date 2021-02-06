@@ -30,6 +30,51 @@ namespace nmtools::utils
     using std::fabs;
 
     namespace detail {
+#ifdef NMTOOLS_HAS_VECTOR
+        // vector of bool madness
+
+        /**
+         * @brief specialize vector of bool reference to deal with its odds
+         * 
+         * @param t 
+         * @param u 
+         * @return auto 
+         */
+        template <typename T, typename Eps>
+        auto isclose(T t, std::vector<bool>::const_reference u, Eps)
+        {
+            // @todo fix either check for integral type for T 
+            // or casting to some common type then compare with eps
+            return t == u;
+        } // isequal
+
+        template <typename U, typename Eps>
+        auto isclose(std::vector<bool>::const_reference t, U u, Eps)
+        {
+            // @todo fix either check for integral type for T 
+            // or casting to some common type then compare with eps
+            return t == u;
+        } // isequal
+
+        // template <typename Eps>
+        // auto isclose(std::vector<bool>::const_reference t, std::vector<bool>::const_reference u, Eps)
+        // {
+        //     return t == u;
+        // } // isequal
+
+        // @note declaring these is okay for libc++ but causes redefinition error in libstdc++
+        // template <typename Eps>
+        // auto isclose(std::vector<bool>::const_reference t, bool u, Eps)
+        // {
+        //     return t == u;
+        // } // isequal
+
+        // template <typename Eps>
+        // auto isclose(bool t, std::vector<bool>::const_reference u, Eps)
+        // {
+        //     return t == u;
+        // } // isequal
+#endif // NMTOOLS_HAS_VECTOR
         /**
          * @brief check if all value of t is near with the value of u, element-wise.
          * 
