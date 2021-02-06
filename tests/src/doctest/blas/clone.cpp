@@ -4,7 +4,11 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/fixed.hpp"
 #include "testing/data/blas/clone.hpp"
-#include "doctest/doctest.h"
+#if __has_include("doctest/doctest.h")
+    #include "doctest/doctest.h"
+#else
+   #include "doctest.h"
+#endif
 
 /**
  * @brief define testing using doctest

@@ -30,6 +30,51 @@ namespace nmtools::utils
     using std::fabs;
 
     namespace detail {
+#ifdef NMTOOLS_HAS_VECTOR
+        // vector of bool madness
+
+        /**
+         * @brief specialize vector of bool reference to deal with its odds
+         * 
+         * @param t 
+         * @param u 
+         * @return auto 
+         */
+        template <typename T, typename Eps>
+        auto isclose(T t, std::vector<bool>::const_reference u, Eps)
+        {
+            // @todo fix either check for integral type for T 
+            // or casting to some common type then compare with eps
+            return t == u;
+        } // isequal
+
+        template <typename U, typename Eps>
+        auto isclose(std::vector<bool>::const_reference t, U u, Eps)
+        {
+            // @todo fix either check for integral type for T 
+            // or casting to some common type then compare with eps
+            return t == u;
+        } // isequal
+
+        // template <typename Eps>
+        // auto isclose(std::vector<bool>::const_reference t, std::vector<bool>::const_reference u, Eps)
+        // {
+        //     return t == u;
+        // } // isequal
+
+        // @note declaring these is okay for libc++ but causes redefinition error in libstdc++
+        // template <typename Eps>
+        // auto isclose(std::vector<bool>::const_reference t, bool u, Eps)
+        // {
+        //     return t == u;
+        // } // isequal
+
+        // template <typename Eps>
+        // auto isclose(bool t, std::vector<bool>::const_reference u, Eps)
+        // {
+        //     return t == u;
+        // } // isequal
+#endif // NMTOOLS_HAS_VECTOR
         /**
          * @brief check if all value of t is near with the value of u, element-wise.
          * 
@@ -50,6 +95,9 @@ namespace nmtools::utils
                 (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)
                 , "unsupported isclose; only support arithmetic element type or ndarray"
             );
+            auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
+                return fabs(lhs-rhs) < eps;
+            };
             if constexpr (std::is_arithmetic_v<T>) {
                 using common_t = std::common_type_t<T,U,E>;
                 return fabs(static_cast<common_t>(t)-static_cast<common_t>(u))
@@ -73,7 +121,8 @@ namespace nmtools::utils
                     // , "size mismatch for isclose"
                 );
                 for (size_t i = 0; i<t_indices.size(); i++)
-                    close = close && isclose(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
+                    // dont recurse, we already checked that t and u satify static assert here
+                    close = close && isclose_impl(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
                 return close;
             }
         } // isclose

@@ -55,6 +55,7 @@ option(BUILD_TESTS "build tests programs" ON)
 option(BUILD_EXAMPLES "build example programs" OFF)
 option(BUILD_BENCHMARKS "build benchmark programs" OFF)
 
+include_directories(include)
 if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)

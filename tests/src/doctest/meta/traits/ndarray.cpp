@@ -15,8 +15,11 @@
 #include "nmtools/array/utility.hpp"
 #include "testing/testing.hpp"
 
-#include "doctest/doctest.h"
-#include <boost/type_index.hpp>
+#if __has_include("doctest/doctest.h")
+    #include "doctest/doctest.h"
+#else
+   #include "doctest.h"
+#endif
 #include <array>
 
 namespace nm   = nmtools;

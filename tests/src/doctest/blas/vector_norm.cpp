@@ -6,7 +6,11 @@
 // TODO: fix dependency
 #include "nmtools/blas/blas.hpp"
 #include "testing/data/blas.hpp"
-#include "doctest/doctest.h"
+#if __has_include("doctest/doctest.h")
+    #include "doctest/doctest.h"
+#else
+   #include "doctest.h"
+#endif
 
 /**
  * @brief define testing using doctest

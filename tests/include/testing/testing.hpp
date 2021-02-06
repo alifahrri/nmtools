@@ -12,8 +12,20 @@
 #include "nmtools/array/index/product.hpp"
 #include <type_traits>
 #include <array>
-/** @todo use __has_include */
-#include <boost/type_index.hpp>
+// when using emscripten, compiler complains about 'boost/type_index.hpp' file not found
+// while cmake find boost is success, for now fallback to typeid
+#if __has_include(<boost/type_index.hpp>)
+    #include <boost/type_index.hpp>
+    #define _NMTOOLS_TESTING_HAS_TYPE_INDEX
+#endif
+
+#ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
+#define NMTOOLS_TESTING_GET_TYPENAME(type) \
+boost::typeindex::type_id<type>().pretty_name()
+#else
+#define NMTOOLS_TESTING_GET_TYPENAME(type) \
+typeid(type).name()
+#endif
 
 /**
  * @defgroup testing
@@ -40,29 +52,35 @@ namespace nmtools::testing
      * @param args arguments that should be passed to func
      * @return auto string formated with `func<tparams(s)...>(typename(s)...)`
      */
-    template <auto...Args>
-    auto make_func_args(std::string func, const auto&...args)
+    template <typename...Args>
+    auto make_func_args(std::string func, const Args&...args)
     {
         std::stringstream ss;
         constexpr auto n = (sizeof...(args));
         constexpr auto m = (sizeof...(Args));
+        #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
         auto typenames = std::array<std::string,n>{
             {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
         };
-        /* non-type template parameters, assuming can be converted to string*/
-        auto tparams = std::array<std::string,m>{
-            {std::to_string(Args)...}
+        #else
+        auto typenames = std::array<std::string,n>{
+            {typeid(decltype(args)).name()...}
         };
+        #endif
+        /* non-type template parameters, assuming can be converted to string*/
+        // auto tparams = std::array<std::string,m>{
+        //     {std::to_string(Args)...}
+        // };
         ss << func;
-        if constexpr (m>=1) {
-            ss << '<';
-            for (size_t i=0; i<m; i++) {
-                ss << tparams[i];
-                if (i!=(m-1))
-                    ss << ",";
-            }
-            ss << '>';
-        }
+        // if constexpr (m>=1) {
+        //     ss << '<';
+        //     for (size_t i=0; i<m; i++) {
+        //         ss << tparams[i];
+        //         if (i!=(m-1))
+        //             ss << ",";
+        //     }
+        //     ss << '>';
+        // }
         ss << '(';
         for (size_t i=0; i<n; i++) {
             ss << typenames[i];
@@ -73,29 +91,35 @@ namespace nmtools::testing
         return ss.str();
     } // auto make_func_args
 
-    template <auto...Args>
-    auto make_func_args(std::string func, std::string result_type, const auto&...args)
+    template <typename...Args>
+    auto make_func_args(std::string func, std::string result_type, const Args&...args)
     {
         std::stringstream ss;
         constexpr auto n = (sizeof...(args));
         constexpr auto m = (sizeof...(Args));
+        #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
         auto typenames = std::array<std::string,n>{
             {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
         };
-        /* non-type template parameters, assuming can be converted to string*/
-        auto tparams = std::array<std::string,m>{
-            {std::to_string(Args)...}
+        #else
+        auto typenames = std::array<std::string,n>{
+            {typeid(decltype(args)).name()...}
         };
+        #endif
+        /* non-type template parameters, assuming can be converted to string*/
+        // auto tparams = std::array<std::string,m>{
+        //     {std::to_string(Args)...}
+        // };
         ss << func;
-        if constexpr (m>=1) {
-            ss << '<';
-            for (size_t i=0; i<m; i++) {
-                ss << tparams[i];
-                if (i!=(m-1))
-                    ss << ",";
-            }
-            ss << '>';
-        }
+        // if constexpr (m>=1) {
+        //     ss << '<';
+        //     for (size_t i=0; i<m; i++) {
+        //         ss << tparams[i];
+        //         if (i!=(m-1))
+        //             ss << ",";
+        //     }
+        //     ss << '>';
+        // }
         ss << '(';
         for (size_t i=0; i<n; i++) {
             ss << typenames[i];
@@ -231,18 +255,31 @@ EXPECT_TRUE(isequal(result,expect)) \
  */
 #define NMTOOLS_TESTING_LOG_TYPEINFO_IMPL_DOCTEST INFO
 
+#ifndef __EMSCRIPTEN__
+#define NMTOOLS_CHECK_MESSAGE(result, message) \
+{ \
+    CHECK_MESSAGE(result, message); \
+}
+#else
+#define NMTOOLS_CHECK_MESSAGE(result, message) \
+{ \
+    CHECK(result); \
+}
+#endif // __EMSCRIPTEN__
+
 /**
  * @brief implementation of doctest assert macro with message
  * 
  */
 #define NMTOOLS_ASSERT_CLOSE_DOCTEST(result,expect) \
-CHECK_MESSAGE(isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION), \
-    (   \
-        std::string{} \
-        + "\n\tActual  : " + STRINGIFY(result) \
-        + "\n\tExpected: " + STRINGIFY(expect) \
-    )   \
-);
+{ \
+    auto __result = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
+    std::string message {}; \
+    message = message + \
+        + "\n\tActual  : " + STRINGIFY(result)  \
+        + "\n\tExpected: " + STRINGIFY(expect); \
+    NMTOOLS_CHECK_MESSAGE( __result, message ); \
+}
 
 /**
  * @brief implementation of doctest assert macro with message
@@ -370,7 +407,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
 } \
 
 #define NMTOOLS_TESTING_RESULT_TYPE(func,...) \
-boost::typeindex::type_id<decltype(func(__VA_ARGS__))>().pretty_name()
+NMTOOLS_TESTING_GET_TYPENAME(decltype(func(__VA_ARGS__)))
 
 #define NMTOOLS_TESTING_FUNCTION_SIGNATURE(func,...) \
 nmtools::testing::make_func_args(#func,NMTOOLS_TESTING_RESULT_TYPE(func,__VA_ARGS__),__VA_ARGS__).c_str()
@@ -1006,10 +1043,15 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
  * 
  * @warn only available for doctest
  */
+#ifdef __EMSCRIPTEN__
+    // somehow doctest MESSAGE macro doesnt work well with emscripten
+    #define LOG_TYPEINFO(type) {}
+#else
 #define LOG_TYPEINFO(type) \
 { \
-    MESSAGE(std::string(#type) + " = " + boost::typeindex::type_id<type>().pretty_name()); \
-} \
+    MESSAGE(std::string(#type) + " = " + NMTOOLS_TESTING_GET_TYPENAME(type)); \
+}
+#endif
 
 /**
  * @brief no operation used for static asssertion
@@ -1057,21 +1099,24 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
 { \
     constexpr auto is_same = std::is_same_v<type1,type2>; \
     NMTOOLS_STATIC_ASSERT(is_same); \
-    CHECK_MESSAGE(is_same, std::string(#type1) + " (" + boost::typeindex::type_id<type1>().pretty_name() + ")" + ", " + std::string(#type2) + " (" + boost::typeindex::type_id<type2>().pretty_name() + ")" ); \
+    std::string message = std::string(#type1) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type1) + ")" + ", " + std::string(#type2) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type2) + ")"; \
+    NMTOOLS_CHECK_MESSAGE(is_same, message); \
 } \
 
 #define STATIC_CHECK_TRAIT_FALSE(trait, type) \
 { \
     constexpr auto value = !trait<type>::value; \
     NMTOOLS_STATIC_ASSERT(value); \
-    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + boost::typeindex::type_id<type>().pretty_name() + "); false;" ); \
+    std::string message = std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); false;"; \
+    NMTOOLS_CHECK_MESSAGE(value, message); \
 } \
 
 #define STATIC_CHECK_TRAIT_TRUE(trait, type) \
 { \
     constexpr auto value = trait<type>::value; \
     NMTOOLS_STATIC_ASSERT(value); \
-    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + boost::typeindex::type_id<type>().pretty_name() + "); true;" ); \
+    std::string message = std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); true;"; \
+    NMTOOLS_CHECK_MESSAGE(value, message); \
 } \
 
 /**

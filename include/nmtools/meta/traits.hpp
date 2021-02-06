@@ -1257,7 +1257,7 @@ namespace nmtools::meta {
 
 #if defined(NMTOOLS_HAS_VECTOR)
     template <>
-    struct is_bit_reference<std::_Bit_reference> : std::true_type {};
+    struct is_bit_reference<std::vector<bool>::reference> : std::true_type {};
 #endif
 
     /**

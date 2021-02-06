@@ -11,12 +11,15 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/view.hpp"
-#include "nmtools/utility/helper.hpp"
 #include "nmtools/utils/isclose.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "testing/testing.hpp"
 
-#include "doctest/doctest.h"
+#if __has_include("doctest/doctest.h")
+    #include "doctest/doctest.h"
+#else
+   #include "doctest.h"
+#endif
 
 #include <array>
 #include <vector>

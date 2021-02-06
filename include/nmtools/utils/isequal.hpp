@@ -26,6 +26,53 @@
 namespace nmtools::utils
 {
     namespace detail {
+#ifdef NMTOOLS_HAS_VECTOR
+        // vector of bool madness
+
+        /**
+         * @brief specialize vector of bool reference to deal with its odds
+         * 
+         * @param t 
+         * @param u 
+         * @return auto 
+         */
+        template <typename T>
+        auto isequal(T t, std::vector<bool>::const_reference u)
+        {
+            // @todo fix check for integral type for T 
+            return t == u;
+        } // isequal
+
+        template <typename U>
+        auto isequal(std::vector<bool>::const_reference t, U u)
+        {
+            // @todo fix check for integral type for U
+            return t == u;
+        } // isequal
+
+        // turns out it is also needed to provide both explicit bool, no matching call error otherwise
+        inline auto isequal(bool t, bool u)
+        {
+            // @todo fix check for integral type for U
+            return t == u;
+        } // isequal
+
+        // inline auto isequal(std::vector<bool>::const_reference t, std::vector<bool>::const_reference u)
+        // {
+        //     return t == u;
+        // } // isequal
+
+        // @note declaring these is okay for libc++ but causes redefinition error in libstdc++
+        // inline auto isequal(std::vector<bool>::const_reference t, bool u)
+        // {
+        //     return t == u;
+        // } // isequal
+
+        // inline auto isequal(bool t, std::vector<bool>::const_reference u)
+        // {
+        //     return t == u;
+        // } // isequal
+#endif // NMTOOLS_HAS_VECTOR
         /**
          * @brief check if all elements of t is is equals to corresponding elements of u, element-wise.
          * 
