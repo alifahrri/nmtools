@@ -95,6 +95,9 @@ namespace nmtools::utils
                 (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)
                 , "unsupported isclose; only support arithmetic element type or ndarray"
             );
+            auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
+                return fabs(lhs-rhs) < eps;
+            };
             if constexpr (std::is_arithmetic_v<T>) {
                 using common_t = std::common_type_t<T,U,E>;
                 return fabs(static_cast<common_t>(t)-static_cast<common_t>(u))
@@ -118,7 +121,8 @@ namespace nmtools::utils
                     // , "size mismatch for isclose"
                 );
                 for (size_t i = 0; i<t_indices.size(); i++)
-                    close = close && isclose(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
+                    // dont recurse, we already checked that t and u satify static assert here
+                    close = close && isclose_impl(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
                 return close;
             }
         } // isclose

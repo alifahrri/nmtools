@@ -50,6 +50,13 @@ namespace nmtools::utils
             return t == u;
         } // isequal
 
+        // turns out it is also needed to provide both explicit bool, no matching call error otherwise
+        inline auto isequal(bool t, bool u)
+        {
+            // @todo fix check for integral type for U
+            return t == u;
+        } // isequal
+
         // inline auto isequal(std::vector<bool>::const_reference t, std::vector<bool>::const_reference u)
         // {
         //     return t == u;
