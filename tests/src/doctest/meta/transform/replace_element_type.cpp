@@ -3,7 +3,6 @@
 #include "nmtools/array/dynamic.hpp"
 #include "testing/doctest.hpp"
 
-#include <boost/type_index.hpp>
 #include <array>
 #include <vector>
 

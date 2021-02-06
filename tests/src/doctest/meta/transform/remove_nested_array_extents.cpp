@@ -7,7 +7,6 @@
 #include "testing/testing.hpp"
 
 #include "doctest/doctest.h"
-#include <boost/type_index.hpp>
 #include <array>
 #include <vector>
 #include <initializer_list>

@@ -8,7 +8,6 @@
 #include "testing/testing.hpp"
 
 #include "doctest/doctest.h"
-#include <boost/type_index.hpp>
 #include <array>
 
 namespace blas = nmtools::blas;
