@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.13.4) # version on my local
 project(numeric-tests)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -9,11 +9,17 @@ endif()
 
 include(nmtools)
 
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
+if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
+    set (EMSCRIPTEN)
+endif()
+
+if(NOT EMSCRIPTEN)
+    find_package(Boost REQUIRED)
+    find_package(GTest REQUIRED)
+    include_directories(${Boost_INCLUDE_DIRS})
+endif()
 
 enable_testing()
-find_package(GTest REQUIRED)
 
 # workaround for clang since gcc has constexpr math but clang doesnt
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
@@ -62,9 +68,27 @@ else()
     )
 endif()
 
-add_executable(${PROJECT_NAME} src/gtest/tests.cpp 
-    ${GTEST_SOURCE}
-)
+# skip gtest completely on emscripten, too much issues
+if(NOT EMSCRIPTEN)
+    add_executable(${PROJECT_NAME} src/gtest/tests.cpp 
+        ${GTEST_SOURCE}
+    )
+    apply_nmtools(
+        TARGET ${PROJECT_NAME}
+        COMPILE_OPTIONS -g
+    )
+    target_include_directories(
+        ${PROJECT_NAME} PRIVATE
+        ${GTEST_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
+    target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES} pthread)
+    add_test(tests ${PROJECT_NAME})
+    # may use scripts/install_doctest.sh to install
+    # dont know to fix this on emscripten toolchain
+    # should fallback to single header
+    find_package(doctest REQUIRED)
+endif()
 
 ## defer static check to runtime for clang
 ## since constexpr math not supported
@@ -74,8 +98,6 @@ endif ()
 
 ## disable benchmarks
 add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
-## may use scripts/install_doctest.sh to install
-find_package(doctest REQUIRED)
 
 option(TEST_ALL             "test all modules"              ON)
 option(TEST_BLAS            "test blas modules"             OFF)
@@ -230,8 +252,12 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ## misc
     ${MISC_TEST_SOURCES}
 )
-target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
-target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
+# so for emscripten, use single header doctest so this is not necessary
+# i dont know anymore
+if (NOT EMSCRIPTEN)
+    target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+    target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
+endif()
 
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
@@ -272,20 +298,11 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/blas/dot.cpp
     src/doctest/meta/blas/row.cpp
 )
-target_compile_features(${PROJECT_NAME}-doctest-meta PRIVATE cxx_std_17)
-target_link_libraries(${PROJECT_NAME}-doctest-meta PRIVATE doctest::doctest)
-
-apply_nmtools(
-    TARGET ${PROJECT_NAME}
-    COMPILE_OPTIONS -g
-)
-target_include_directories(
-    ${PROJECT_NAME} PRIVATE
-    ${GTEST_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES} pthread)
-add_test(tests ${PROJECT_NAME})
+# omg
+if (NOT EMSCRIPTEN)
+    target_compile_features(${PROJECT_NAME}-doctest-meta PRIVATE cxx_std_17)
+    target_link_libraries(${PROJECT_NAME}-doctest-meta PRIVATE doctest::doctest)
+endif()
 
 apply_nmtools(
     TARGET ${PROJECT_NAME}-doctest
