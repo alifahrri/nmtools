@@ -7,7 +7,11 @@
 #include "nmtools/array/utility.hpp"
 #include "testing/testing.hpp"
 
-#include "doctest/doctest.h"
+#if __has_include("doctest/doctest.h")
+    #include "doctest/doctest.h"
+#else
+   #include "doctest.h"
+#endif
 #include <array>
 
 namespace blas = nmtools::blas;

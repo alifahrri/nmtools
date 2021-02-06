@@ -2,7 +2,11 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/utils/to_string.hpp"
 #if __has_include("doctest/doctest.h")
+    #if __has_include("doctest/doctest.h")
     #include "doctest/doctest.h"
+#else
+   #include "doctest.h"
+#endif
 #else
     #include "doctest.h"
 #endif
@@ -18,6 +22,12 @@ namespace na = nmtools::array;
 using nmtools::array::fixed_ndarray;
 using nmtools::array::dynamic_ndarray;
 using nmtools::utils::to_string;
+
+// doctest MESSAGE macro doesnt work with emscripten
+#ifdef __EMSCRIPTEN__
+#undef MESSAGE
+#define MESSAGE(...) {}
+#endif
 
 TEST_CASE("to_string(double[1])" * doctest::test_suite("utils") * doctest::skip(true))
 {

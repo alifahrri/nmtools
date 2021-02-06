@@ -2,7 +2,11 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/utils/isclose.hpp"
 #if __has_include("doctest/doctest.h")
+    #if __has_include("doctest/doctest.h")
     #include "doctest/doctest.h"
+#else
+   #include "doctest.h"
+#endif
 #else
     #include "doctest.h"
 #endif

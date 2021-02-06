@@ -1,5 +1,4 @@
 #include "nmtools/array/dynamic.hpp"
-#include "nmtools/utility/helper.hpp"
 #include "nmtools/utils/isclose.hpp"
 #include "testing/doctest.hpp"
 #include <array>

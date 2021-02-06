@@ -9,7 +9,11 @@
 #include "testing/data/utility.hpp"
 #include "testing/data/array/utility/slice.hpp"
 
-#include "doctest/doctest.h"
+#if __has_include("doctest/doctest.h")
+    #include "doctest/doctest.h"
+#else
+   #include "doctest.h"
+#endif
 
 #include <array>
 #include <vector>
