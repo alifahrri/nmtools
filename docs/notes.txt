@@ -42,3 +42,7 @@ https://stackoverflow.com/questions/59647445/if-constexpr-with-static-assert-in-
 
 clang and gcc disagree on partial specialization & sfinae, makes ambious instantiaton on gcc but no issue on clang
 https://godbolt.org/z/sW3as8
+
+libc++ vs libstdc++
+vector of bool omg
+https://godbolt.org/z/T99cWj
