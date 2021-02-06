@@ -12,8 +12,20 @@
 #include "nmtools/array/index/product.hpp"
 #include <type_traits>
 #include <array>
-/** @todo use __has_include */
-#include <boost/type_index.hpp>
+// when using emscripten, compiler complains about 'boost/type_index.hpp' file not found
+// while cmake find boost is success, for now fallback to typeid
+#if __has_include(<boost/type_index.hpp>)
+    #include <boost/type_index.hpp>
+    #define _NMTOOLS_TESTING_HAS_TYPE_INDEX
+#endif
+
+#ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
+#define NMTOOLS_TESTING_GET_TYPENAME(type) \
+boost::typeindex::type_id<type>().pretty_name()
+#else
+#define NMTOOLS_TESTING_GET_TYPENAME(type) \
+typeid(type).name()
+#endif
 
 /**
  * @defgroup testing
@@ -46,9 +58,15 @@ namespace nmtools::testing
         std::stringstream ss;
         constexpr auto n = (sizeof...(args));
         constexpr auto m = (sizeof...(Args));
+        #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
         auto typenames = std::array<std::string,n>{
             {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
         };
+        #else
+        auto typenames = std::array<std::string,n>{
+            {typeid(decltype(args)).name()...}
+        };
+        #endif
         /* non-type template parameters, assuming can be converted to string*/
         auto tparams = std::array<std::string,m>{
             {std::to_string(Args)...}
@@ -79,9 +97,15 @@ namespace nmtools::testing
         std::stringstream ss;
         constexpr auto n = (sizeof...(args));
         constexpr auto m = (sizeof...(Args));
+        #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
         auto typenames = std::array<std::string,n>{
             {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
         };
+        #else
+        auto typenames = std::array<std::string,n>{
+            {typeid(decltype(args)).name()...}
+        };
+        #endif
         /* non-type template parameters, assuming can be converted to string*/
         auto tparams = std::array<std::string,m>{
             {std::to_string(Args)...}
@@ -370,7 +394,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
 } \
 
 #define NMTOOLS_TESTING_RESULT_TYPE(func,...) \
-boost::typeindex::type_id<decltype(func(__VA_ARGS__))>().pretty_name()
+NMTOOLS_TESTING_GET_TYPENAME(decltype(func(__VA_ARGS__)))
 
 #define NMTOOLS_TESTING_FUNCTION_SIGNATURE(func,...) \
 nmtools::testing::make_func_args(#func,NMTOOLS_TESTING_RESULT_TYPE(func,__VA_ARGS__),__VA_ARGS__).c_str()
@@ -1008,7 +1032,7 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
  */
 #define LOG_TYPEINFO(type) \
 { \
-    MESSAGE(std::string(#type) + " = " + boost::typeindex::type_id<type>().pretty_name()); \
+    MESSAGE(std::string(#type) + " = " + NMTOOLS_TESTING_GET_TYPENAME(type)); \
 } \
 
 /**
@@ -1057,21 +1081,21 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
 { \
     constexpr auto is_same = std::is_same_v<type1,type2>; \
     NMTOOLS_STATIC_ASSERT(is_same); \
-    CHECK_MESSAGE(is_same, std::string(#type1) + " (" + boost::typeindex::type_id<type1>().pretty_name() + ")" + ", " + std::string(#type2) + " (" + boost::typeindex::type_id<type2>().pretty_name() + ")" ); \
+    CHECK_MESSAGE(is_same, std::string(#type1) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type1) + ")" + ", " + std::string(#type2) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type2) + ")" ); \
 } \
 
 #define STATIC_CHECK_TRAIT_FALSE(trait, type) \
 { \
     constexpr auto value = !trait<type>::value; \
     NMTOOLS_STATIC_ASSERT(value); \
-    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + boost::typeindex::type_id<type>().pretty_name() + "); false;" ); \
+    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); false;" ); \
 } \
 
 #define STATIC_CHECK_TRAIT_TRUE(trait, type) \
 { \
     constexpr auto value = trait<type>::value; \
     NMTOOLS_STATIC_ASSERT(value); \
-    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + boost::typeindex::type_id<type>().pretty_name() + "); true;" ); \
+    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); true;" ); \
 } \
 
 /**
