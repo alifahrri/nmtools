@@ -141,6 +141,7 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/repeat.cpp
     src/doctest/array/index/reverse.cpp
     src/doctest/array/index/scatter.cpp
+    # src/doctest/array/index/shape_concatenate.cpp
     src/doctest/array/index/shape_repeat.cpp
     src/doctest/array/index/shape_tile.cpp
     src/doctest/array/index/tile.cpp
@@ -345,3 +346,27 @@ if (CODE_COVERAGE)
         EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"
     )
 endif (CODE_COVERAGE)
+
+# for emscripten generate js
+if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
+    message(" * C++ compiler: Emscripten")
+    message(STATUS "Emscripten detected")
+    option(JS_ONLY "build javascript only for emscripten" OFF)
+    if(JS_ONLY)
+        message(STATUS "Setting compilation target to native JavaScript")
+        set(CMAKE_EXECUTABLE_SUFFIX ".js")
+        set_target_properties(
+            ${PROJECT_NAME}-doctest
+            ${PROJECT_NAME}-doctest-meta
+            PROPERTIES LINK_FLAGS "--emrun -s EXPORTED_FUNCTIONS='[_main]'"
+        )
+    else(JS_ONLY)
+        message(STATUS "Setting compilation target to WASM")
+        set(CMAKE_EXECUTABLE_SUFFIX ".wasm.js")
+        set_target_properties(
+            ${PROJECT_NAME}-doctest
+            ${PROJECT_NAME}-doctest-meta
+            PROPERTIES LINK_FLAGS "--emrun -s WASM=1 -s BINARYEN_METHOD='native-wasm' -s EXPORTED_FUNCTIONS='[_main]' -s NO_EXIT_RUNTIME=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']"
+        )
+    endif(JS_ONLY)
+endif()
