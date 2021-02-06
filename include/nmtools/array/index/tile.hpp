@@ -36,7 +36,8 @@ namespace nmtools::index
         auto m = tuple_size(shape);
         auto n = tuple_size(indices);
         auto r = tuple_size(reps);
-        auto d = abs(m - n);
+        // clang (android & emscripten) complains about ambiguous call
+        auto d = std::abs(int(m - n));
         auto s = std::max(m,n);
 
         if constexpr (meta::is_resizeable_v<return_t>)
