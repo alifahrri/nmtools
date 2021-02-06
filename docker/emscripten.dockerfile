@@ -13,7 +13,7 @@ COPY nmtools.pc.in nmtools.pc.in
 COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
 # for emscripten use from include
-RUN bash scripts/bash scripts/download_doctest_header.sh -d include
+RUN bash scripts/download_doctest_header.sh -d include
 
 RUN /opt/emsdk/emsdk activate latest \
     && PATH=$PATH:/opt/emsdk:/opt/emsdk/node/12.18.1_64bit/bin:/opt/emsdk/upstream/emscripten \
