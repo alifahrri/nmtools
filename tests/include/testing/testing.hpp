@@ -52,8 +52,8 @@ namespace nmtools::testing
      * @param args arguments that should be passed to func
      * @return auto string formated with `func<tparams(s)...>(typename(s)...)`
      */
-    template <auto...Args>
-    auto make_func_args(std::string func, const auto&...args)
+    template <typename...Args>
+    auto make_func_args(std::string func, const Args&...args)
     {
         std::stringstream ss;
         constexpr auto n = (sizeof...(args));
@@ -68,19 +68,19 @@ namespace nmtools::testing
         };
         #endif
         /* non-type template parameters, assuming can be converted to string*/
-        auto tparams = std::array<std::string,m>{
-            {std::to_string(Args)...}
-        };
+        // auto tparams = std::array<std::string,m>{
+        //     {std::to_string(Args)...}
+        // };
         ss << func;
-        if constexpr (m>=1) {
-            ss << '<';
-            for (size_t i=0; i<m; i++) {
-                ss << tparams[i];
-                if (i!=(m-1))
-                    ss << ",";
-            }
-            ss << '>';
-        }
+        // if constexpr (m>=1) {
+        //     ss << '<';
+        //     for (size_t i=0; i<m; i++) {
+        //         ss << tparams[i];
+        //         if (i!=(m-1))
+        //             ss << ",";
+        //     }
+        //     ss << '>';
+        // }
         ss << '(';
         for (size_t i=0; i<n; i++) {
             ss << typenames[i];
@@ -91,8 +91,8 @@ namespace nmtools::testing
         return ss.str();
     } // auto make_func_args
 
-    template <auto...Args>
-    auto make_func_args(std::string func, std::string result_type, const auto&...args)
+    template <typename...Args>
+    auto make_func_args(std::string func, std::string result_type, const Args&...args)
     {
         std::stringstream ss;
         constexpr auto n = (sizeof...(args));
@@ -107,19 +107,19 @@ namespace nmtools::testing
         };
         #endif
         /* non-type template parameters, assuming can be converted to string*/
-        auto tparams = std::array<std::string,m>{
-            {std::to_string(Args)...}
-        };
+        // auto tparams = std::array<std::string,m>{
+        //     {std::to_string(Args)...}
+        // };
         ss << func;
-        if constexpr (m>=1) {
-            ss << '<';
-            for (size_t i=0; i<m; i++) {
-                ss << tparams[i];
-                if (i!=(m-1))
-                    ss << ",";
-            }
-            ss << '>';
-        }
+        // if constexpr (m>=1) {
+        //     ss << '<';
+        //     for (size_t i=0; i<m; i++) {
+        //         ss << tparams[i];
+        //         if (i!=(m-1))
+        //             ss << ",";
+        //     }
+        //     ss << '>';
+        // }
         ss << '(';
         for (size_t i=0; i<n; i++) {
             ss << typenames[i];
@@ -255,18 +255,31 @@ EXPECT_TRUE(isequal(result,expect)) \
  */
 #define NMTOOLS_TESTING_LOG_TYPEINFO_IMPL_DOCTEST INFO
 
+#ifndef __EMSCRIPTEN__
+#define NMTOOLS_CHECK_MESSAGE(result, message) \
+{ \
+    CHECK_MESSAGE(result, message); \
+}
+#else
+#define NMTOOLS_CHECK_MESSAGE(result, message) \
+{ \
+    CHECK(result); \
+}
+#endif // __EMSCRIPTEN__
+
 /**
  * @brief implementation of doctest assert macro with message
  * 
  */
 #define NMTOOLS_ASSERT_CLOSE_DOCTEST(result,expect) \
-CHECK_MESSAGE(isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION), \
-    (   \
-        std::string{} \
-        + "\n\tActual  : " + STRINGIFY(result) \
-        + "\n\tExpected: " + STRINGIFY(expect) \
-    )   \
-);
+{ \
+    auto __result = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
+    std::string message {}; \
+    message = message + \
+        + "\n\tActual  : " + STRINGIFY(result)  \
+        + "\n\tExpected: " + STRINGIFY(expect); \
+    NMTOOLS_CHECK_MESSAGE( __result, message ); \
+}
 
 /**
  * @brief implementation of doctest assert macro with message
@@ -1030,10 +1043,15 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
  * 
  * @warn only available for doctest
  */
+#ifdef __EMSCRIPTEN__
+    // somehow doctest MESSAGE macro doesnt work well with emscripten
+    #define LOG_TYPEINFO(type) {}
+#else
 #define LOG_TYPEINFO(type) \
 { \
     MESSAGE(std::string(#type) + " = " + NMTOOLS_TESTING_GET_TYPENAME(type)); \
-} \
+}
+#endif
 
 /**
  * @brief no operation used for static asssertion
@@ -1081,21 +1099,24 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
 { \
     constexpr auto is_same = std::is_same_v<type1,type2>; \
     NMTOOLS_STATIC_ASSERT(is_same); \
-    CHECK_MESSAGE(is_same, std::string(#type1) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type1) + ")" + ", " + std::string(#type2) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type2) + ")" ); \
+    std::string message = std::string(#type1) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type1) + ")" + ", " + std::string(#type2) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type2) + ")"; \
+    NMTOOLS_CHECK_MESSAGE(is_same, message); \
 } \
 
 #define STATIC_CHECK_TRAIT_FALSE(trait, type) \
 { \
     constexpr auto value = !trait<type>::value; \
     NMTOOLS_STATIC_ASSERT(value); \
-    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); false;" ); \
+    std::string message = std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); false;"; \
+    NMTOOLS_CHECK_MESSAGE(value, message); \
 } \
 
 #define STATIC_CHECK_TRAIT_TRUE(trait, type) \
 { \
     constexpr auto value = trait<type>::value; \
     NMTOOLS_STATIC_ASSERT(value); \
-    CHECK_MESSAGE(value, std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); true;" ); \
+    std::string message = std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); true;"; \
+    NMTOOLS_CHECK_MESSAGE(value, message); \
 } \
 
 /**
