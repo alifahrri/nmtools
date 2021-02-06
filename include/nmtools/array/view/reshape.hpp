@@ -148,7 +148,7 @@ namespace nmtools
     {
         static constexpr auto get()
         {
-            if constexpr (meta::apply_conjunction_v<shape_t,meta::is_integral_constant>)
+            if constexpr (meta::apply_conjunction_v<meta::is_integral_constant,shape_t>)
             {
                 constexpr auto N = std::tuple_size_v<shape_t>;
                 if constexpr (N > 1)
@@ -257,7 +257,7 @@ namespace nmtools
     {
         static constexpr auto get()
         {
-            if constexpr (meta::apply_conjunction_v<shape_t,meta::is_integral_constant>)
+            if constexpr (meta::apply_conjunction_v<meta::is_integral_constant,shape_t>)
                 return meta::value_v<meta::constant_to_sequence<shape_t>>;
             else return detail::fail_t{};
         } // get
