@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.13.4) # version on my local
+cmake_minimum_required(VERSION 3.10.2)
 project(numeric-tests)
+# note cxx_std_20 for target_compile_features doesnt seem to work properly on 3.10.2
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     find_package(nmtools REQUIRED CONFIG)
