@@ -3,3 +3,4 @@ build
 *html
 *xml
 *tex
+include/doctest.h
