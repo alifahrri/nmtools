@@ -150,6 +150,7 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/broadcast_shape.cpp
     src/doctest/array/index/broadcast_to.cpp
     src/doctest/array/index/choose.cpp
+    src/doctest/array/index/concatenate.cpp
     src/doctest/array/index/compute_indices.cpp
     src/doctest/array/index/compute_offset.cpp
     src/doctest/array/index/compute_strides.cpp
@@ -164,7 +165,7 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/repeat.cpp
     src/doctest/array/index/reverse.cpp
     src/doctest/array/index/scatter.cpp
-    # src/doctest/array/index/shape_concatenate.cpp
+    src/doctest/array/index/shape_concatenate.cpp
     src/doctest/array/index/shape_repeat.cpp
     src/doctest/array/index/shape_tile.cpp
     src/doctest/array/index/tile.cpp
@@ -212,6 +213,7 @@ endif ()
 set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/broadcast_to.cpp
     src/doctest/array/view/broadcast_arrays.cpp
+    src/doctest/array/view/concatenate.cpp
     src/doctest/array/view/expand_dims.cpp
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/mutable_flatten.cpp
@@ -266,6 +268,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/index/argfilter.cpp
     src/doctest/meta/array/index/broadcast_shape.cpp
     src/doctest/meta/array/index/choose.cpp
+    src/doctest/meta/array/index/concatenate.cpp
     src/doctest/meta/array/index/expand_dims.cpp
     src/doctest/meta/array/index/gather.cpp
     src/doctest/meta/array/index/nonzero.cpp
