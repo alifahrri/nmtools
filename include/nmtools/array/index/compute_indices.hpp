@@ -79,13 +79,13 @@ namespace nmtools::meta
     template <typename offset_t, typename shape_t, typename strides_t>
     struct resolve_optype< void, index::compute_indices_t, offset_t, shape_t, strides_t >
     {
-        using type = shape_t;
+        using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
     }; // resolve_optype
 
     template <typename offset_t, typename shape_t>
     struct resolve_optype< void, index::compute_indices_t, offset_t, shape_t >
     {
-        using type = shape_t;
+        using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
     }; // resolve_optype
 } // namespace nmtools::meta
 
