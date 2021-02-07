@@ -610,8 +610,11 @@ using namespace nmtools::testing::data::ns;
 #define NMTOOLS_TESTING_DECLARE_NS2(ns1, ns2) \
 using namespace nmtools::testing::data::ns1::ns2;
 
-#define NMTOOLS_TESTING_DECLARE_NS_MACRO(_1,_2,NAME,...) NAME
-#define NMTOOLS_TESTING_DECLARE_NS(...) NMTOOLS_TESTING_DECLARE_NS_MACRO(__VA_ARGS__, NMTOOLS_TESTING_DECLARE_NS2, NMTOOLS_TESTING_DECLARE_NS1)(__VA_ARGS__)
+#define NMTOOLS_TESTING_DECLARE_NS3(ns1, ns2, ns3) \
+using namespace nmtools::testing::data::ns1::ns2::ns3;
+
+#define NMTOOLS_TESTING_DECLARE_NS_MACRO(_1,_2,_3,NAME,...) NAME
+#define NMTOOLS_TESTING_DECLARE_NS(...) NMTOOLS_TESTING_DECLARE_NS_MACRO(__VA_ARGS__, NMTOOLS_TESTING_DECLARE_NS3, NMTOOLS_TESTING_DECLARE_NS2, NMTOOLS_TESTING_DECLARE_NS1)(__VA_ARGS__)
 
 /**
  * @brief helper macro to declare actual test data,

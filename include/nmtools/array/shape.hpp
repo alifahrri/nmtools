@@ -69,26 +69,39 @@ namespace nmtools
      * @return size_t 
      * @todo remove, prefer shape
      */
-    template <typename Vector>
-    constexpr auto vector_size(const Vector& v)
+    template <typename vector_t>
+    constexpr auto vector_size(const vector_t& v)
         -> std::enable_if_t<
             std::is_same_v<std::void_t<decltype(size(v))>,void>
-            && !meta::is_fixed_size_vector_v<Vector>, size_t >
+            && !meta::is_fixed_size_vector_v<vector_t>, size_t >
     {
         static_assert(
-            meta::is_array1d_v<Vector>
+            meta::is_array1d_v<vector_t>
             /* TODO: meaningful error message */
         );
 
         return size(v);
     } // size_t vector_size(const Vector& v)
 
-    template <typename Vector>
-    constexpr auto vector_size(const Vector& v)
-        -> std::enable_if_t< meta::is_fixed_size_vector_v<Vector>, size_t>
+    template <typename vector_t>
+    constexpr auto vector_size(const vector_t& v)
+        -> std::enable_if_t< meta::is_fixed_size_vector_v<vector_t>, size_t>
     {
-        return meta::fixed_vector_size_v<Vector>;
-    }
+        return meta::fixed_vector_size_v<vector_t>;
+    } // vector_size
+
+    template <typename array_t>
+    constexpr auto len(const array_t& array)
+    {
+        // alias for now
+        return vector_size(array);
+    } // len
+
+    template <typename...size_types>
+    constexpr auto len(const std::tuple<size_types...>& array)
+    {
+        return sizeof...(size_types);
+    } // len
 
     namespace detail
     {
