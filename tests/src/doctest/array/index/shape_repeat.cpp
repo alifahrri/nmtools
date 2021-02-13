@@ -100,64 +100,83 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
     }
 }
 
+#define RUN_impl(...) \
+nm::index::shape_repeat(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs shape_repeat fn to callable lambda
+#define RUN_shape_repeat(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("shape_repeat-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_shape_repeat(case_name, ...) \
+RUN_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
 #define SHAPE_REPEAT_SUBCASE(case_name,ashape,repeats,axis) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(shape_repeat, case_name); \
-    auto shape = nm::index::shape_repeat(args::ashape, args::repeats, args::axis); \
+    auto shape = RUN_shape_repeat(case_name, args::ashape, args::repeats, args::axis); \
     NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
 }
 
-TEST_CASE("shape_repeat(vector)" * doctest::test_suite("index::shape_repeat"))
-{
-    SHAPE_REPEAT_SUBCASE( case1, shape_v, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case2, shape_v, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case3, shape_v, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case4, shape_v, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case5, shape_v, repeats, axis );
-}
-
-TEST_CASE("shape_repeat(array)" * doctest::test_suite("index::shape_repeat"))
+TEST_CASE("shape_repeat(case1)" * doctest::test_suite("index::shape_repeat"))
 {
     SHAPE_REPEAT_SUBCASE( case1, shape_a, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case2, shape_a, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case3, shape_a, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case4, shape_a, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case5, shape_a, repeats, axis );
-}
-
-TEST_CASE("shape_repeat(fixed_vector)" * doctest::test_suite("index::shape_repeat"))
-{
+    SHAPE_REPEAT_SUBCASE( case1, shape_v, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case1, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case2, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case3, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case4, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case5, shape_f, repeats, axis );
-}
-
-TEST_CASE("shape_repeat(dynamic_vector)" * doctest::test_suite("index::shape_repeat"))
-{
     SHAPE_REPEAT_SUBCASE( case1, shape_d, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case2, shape_d, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case3, shape_d, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case4, shape_d, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case5, shape_d, repeats, axis );
-}
-
-TEST_CASE("shape_repeat(hybrid_vector)" * doctest::test_suite("index::shape_repeat"))
-{
     SHAPE_REPEAT_SUBCASE( case1, shape_h, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case2, shape_h, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case3, shape_h, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case4, shape_h, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case5, shape_h, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case1, shape_t, repeats, axis );
 }
 
-TEST_CASE("shape_repeat(tuple)" * doctest::test_suite("index::shape_repeat"))
+TEST_CASE("shape_repeat(case2)" * doctest::test_suite("index::shape_repeat"))
 {
-    SHAPE_REPEAT_SUBCASE( case1, shape_t, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case2, shape_a, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case2, shape_v, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case2, shape_f, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case2, shape_d, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case2, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case2, shape_t, repeats, axis );
+}
+
+TEST_CASE("shape_repeat(case3)" * doctest::test_suite("index::shape_repeat"))
+{
+    SHAPE_REPEAT_SUBCASE( case3, shape_a, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case3, shape_v, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case3, shape_f, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case3, shape_d, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case3, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case3, shape_t, repeats, axis );
+}
+
+TEST_CASE("shape_repeat(case4)" * doctest::test_suite("index::shape_repeat"))
+{
+    SHAPE_REPEAT_SUBCASE( case4, shape_a, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case4, shape_v, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case4, shape_f, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case4, shape_d, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case4, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case4, shape_t, repeats, axis );
+}
+
+TEST_CASE("shape_repeat(case5)" * doctest::test_suite("index::shape_repeat"))
+{
+    SHAPE_REPEAT_SUBCASE( case5, shape_a, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case5, shape_v, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case5, shape_f, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case5, shape_d, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case5, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case5, shape_t, repeats, axis );
 }

@@ -12,15 +12,16 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
+namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(nonzero)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int x[6] = {0,1,2,3,4,5};
-        auto x_vector = cast<std::vector<int>>(x);
-        auto x_array  = cast<int>(x);
-        auto x_hybrid = cast<na::hybrid_ndarray<int,6,1>>(x);
+        auto x_v = cast(x,kind::nested_vec);
+        auto x_a = cast<int>(x);
+        auto x_h = cast(x,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -30,9 +31,9 @@ NMTOOLS_TESTING_DECLARE_CASE(nonzero)
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
         int x[6] = {1,2,0,3,5,6};
-        auto x_vector = cast<std::vector<int>>(x);
-        auto x_array  = cast<int>(x);
-        auto x_hybrid = cast<na::hybrid_ndarray<int,6,1>>(x);
+        auto x_v = cast(x,kind::nested_vec);
+        auto x_a = cast<int>(x);
+        auto x_h = cast(x,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -42,9 +43,9 @@ NMTOOLS_TESTING_DECLARE_CASE(nonzero)
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
         bool x[6] = {true,true,false,true,true,true};
-        auto x_vector = cast<std::vector<bool>>(x);
-        auto x_array  = cast<bool>(x);
-        auto x_hybrid = cast<na::hybrid_ndarray<int,6,1>>(x);
+        auto x_v = cast<std::vector<bool>>(x);
+        auto x_a = cast<bool>(x);
+        auto x_h = cast(x,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -52,31 +53,55 @@ NMTOOLS_TESTING_DECLARE_CASE(nonzero)
     }
 }
 
+
+#define RUN_impl(...) \
+nm::index::nonzero(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs nonzero fn to callable lambda
+#define RUN_nonzero(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("nonzero-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_impl(args...); \
+    }; \
+    return TrackedBench::run<false>(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_nonzero(case_name, ...) \
+RUN_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
 #define NONZERO_SUBCASE(case_name, x) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(nonzero, case_name); \
-    auto result = nm::index::nonzero(args::x); \
+    auto result = RUN_nonzero(case_name, args::x); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 } \
 
-TEST_CASE("nonzero(vector)" * doctest::test_suite("index::nonzero"))
+TEST_CASE("nonzero(case1)" * doctest::test_suite("index::nonzero"))
 {
-    NONZERO_SUBCASE( case1, x_vector );
-    NONZERO_SUBCASE( case2, x_vector );
-    NONZERO_SUBCASE( case3, x_vector );
+    NONZERO_SUBCASE( case1, x_a );
+    NONZERO_SUBCASE( case1, x_v );
+    NONZERO_SUBCASE( case1, x_h );
 }
 
-TEST_CASE("nonzero(array)" * doctest::test_suite("index::nonzero"))
+TEST_CASE("nonzero(case2)" * doctest::test_suite("index::nonzero"))
 {
-    NONZERO_SUBCASE( case1, x_array );
-    NONZERO_SUBCASE( case2, x_array );
-    NONZERO_SUBCASE( case3, x_array );
+    NONZERO_SUBCASE( case2, x_a );
+    NONZERO_SUBCASE( case2, x_v );
+    NONZERO_SUBCASE( case2, x_h );
 }
 
-TEST_CASE("nonzero(hybrid_ndarray)" * doctest::test_suite("index::nonzero"))
+TEST_CASE("nonzero(case3)" * doctest::test_suite("index::nonzero"))
 {
-    NONZERO_SUBCASE( case1, x_hybrid );
-    NONZERO_SUBCASE( case2, x_hybrid );
-    NONZERO_SUBCASE( case3, x_hybrid );
+    NONZERO_SUBCASE( case3, x_a );
+    NONZERO_SUBCASE( case3, x_v );
+    NONZERO_SUBCASE( case3, x_h );
 }

@@ -282,97 +282,135 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
     }
 }
 
+#define RUN_impl(...) \
+nm::index::compute_indices(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs compute_indices fn to callable lambda
+#define RUN_compute_indices(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("compute_indices-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_compute_indices(case_name, ...) \
+RUN_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
 #define COMPUTE_INDICES_SUBCASE(case_name, offset, shape) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(compute_indices, case_name); \
-    auto indices = nm::index::compute_indices(args::offset, args::shape); \
+    auto indices = RUN_compute_indices(case_name, args::offset, args::shape); \
     NMTOOLS_ASSERT_EQUAL( indices, expect::indices ); \
 }
 
-TEST_CASE("compute_indices(vector)" * doctest::test_suite("index::compute_indices"))
-{
-    COMPUTE_INDICES_SUBCASE(case1_2d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case2_2d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case3_2d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case4_2d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case5_2d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case6_2d, offset, shape_v);
-
-    COMPUTE_INDICES_SUBCASE(case1_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case2_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case3_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case4_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case5_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case6_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case7_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case8_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case9_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case10_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case11_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case12_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case13_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case14_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case15_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case16_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case17_3d, offset, shape_v);
-    COMPUTE_INDICES_SUBCASE(case18_3d, offset, shape_v);
-}
-
-TEST_CASE("compute_indices(array)" * doctest::test_suite("index::compute_indices"))
+TEST_CASE("compute_indices(case2d)" * doctest::test_suite("index::compute_indices"))
 {
     COMPUTE_INDICES_SUBCASE(case1_2d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case2_2d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case3_2d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case4_2d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case5_2d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case6_2d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case1_2d, offset, shape_v);
+    COMPUTE_INDICES_SUBCASE(case1_2d, offset, shape_t);
 
-    COMPUTE_INDICES_SUBCASE(case1_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case2_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case3_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case4_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case5_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case6_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case7_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case8_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case9_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case10_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case11_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case12_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case13_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case14_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case15_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case16_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case17_3d, offset, shape_a);
-    COMPUTE_INDICES_SUBCASE(case18_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case2_2d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case2_2d, offset, shape_v);
+    COMPUTE_INDICES_SUBCASE(case2_2d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case3_2d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case3_2d, offset, shape_v);
+    COMPUTE_INDICES_SUBCASE(case3_2d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case4_2d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case4_2d, offset, shape_v);
+    COMPUTE_INDICES_SUBCASE(case4_2d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case5_2d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case5_2d, offset, shape_v);
+    COMPUTE_INDICES_SUBCASE(case5_2d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case6_2d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case6_2d, offset, shape_v);
+    COMPUTE_INDICES_SUBCASE(case6_2d, offset, shape_t);
 }
 
-TEST_CASE("compute_indices(tuple)" * doctest::test_suite("index::compute_indices"))
+TEST_CASE("compute_indices(case3d)" * doctest::test_suite("index::compute_indices"))
 {
-    COMPUTE_INDICES_SUBCASE(case1_2d, offset, shape_t);
-    COMPUTE_INDICES_SUBCASE(case2_2d, offset, shape_t);
-    COMPUTE_INDICES_SUBCASE(case3_2d, offset, shape_t);
-    COMPUTE_INDICES_SUBCASE(case4_2d, offset, shape_t);
-    COMPUTE_INDICES_SUBCASE(case5_2d, offset, shape_t);
-    COMPUTE_INDICES_SUBCASE(case6_2d, offset, shape_t);
-
+    COMPUTE_INDICES_SUBCASE(case1_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case1_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case1_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case2_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case2_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case2_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case3_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case3_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case3_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case4_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case4_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case4_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case5_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case5_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case5_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case6_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case6_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case6_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case7_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case7_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case7_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case8_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case8_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case8_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case9_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case9_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case9_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case10_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case10_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case10_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case11_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case11_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case11_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case12_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case12_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case12_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case13_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case13_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case13_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case14_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case14_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case14_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case15_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case15_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case15_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case16_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case16_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case16_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case17_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case17_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case17_3d, offset, shape_t);
+
+    COMPUTE_INDICES_SUBCASE(case18_3d, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case18_3d, offset, shape_v);
     COMPUTE_INDICES_SUBCASE(case18_3d, offset, shape_t);
 }

@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_PRODUCT_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/at.hpp"
 
 #include <type_traits>
@@ -48,7 +49,7 @@ namespace nmtools::index
                 return ret;
             }
             else
-                for (size_t i=0; i<size(vec); i++)
+                for (size_t i=0; i<len(vec); i++)
                     ret *= at(vec,i);
             return ret;
         }

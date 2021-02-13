@@ -40,13 +40,19 @@ namespace nmtools::index
         }
         else
         {
-            using value_type = typename std::decay_t<decltype(shape)>::value_type;
+            using value_type = meta::get_element_type_t<array_t>;
             auto p = value_type{1};
             for (auto j=k+1; j<tuple_size(shape); j++)
                 p *= at(shape,j);
             return p;
         }
     } // stride
+
+    /**
+     * @brief specific tag to resolve return type of compute_strides
+     * 
+     */
+    struct compute_strides_t {};
 
     /**
      * @brief compute stride for ndarray offset.
@@ -74,7 +80,10 @@ namespace nmtools::index
         // return type can have same type as shape, assignment is ok
         else
         {
-            auto strides_ = shape;
+            using return_t = meta::resolve_optype_t<compute_strides_t,array_t>;
+            auto strides_ = return_t{};
+            if constexpr (meta::is_resizeable_v<return_t>)
+                strides_.resize(len(shape));
             if constexpr (meta::is_specialization_v<array_t,std::tuple> || meta::is_specialization_v<array_t,std::pair>)
             {
                 constexpr auto n = std::tuple_size_v<array_t>;
@@ -85,11 +94,23 @@ namespace nmtools::index
                 });
             }
             else
-                for (size_t i=0; i<tuple_size(strides_); i++)
+                for (size_t i=0; i<len(strides_); i++)
                     at(strides_,i) = stride(shape,i);
             return strides_;
         }       
     } // strides
 } // namespace nmtools::index
+
+namespace nmtools::meta
+{
+
+    template <typename array_t>
+    struct resolve_optype<
+        void, index::compute_strides_t, array_t
+    >
+    {
+        using type = tuple_to_array_t<transform_bounded_array_t<array_t>>;
+    }; // resolve_optype
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_COMPUTE_STRIDES_HPP
