@@ -138,7 +138,12 @@ namespace nmtools::array::kind
     // for testing purpose only
     struct nested_vector_t {};
 
-    inline constexpr auto nested_vec = nested_vector_t {};
+    struct fixed_vec_t {};
+    struct dynamic_vec_t {};
+
+    inline constexpr auto nested_vec  = nested_vector_t {};
+    inline constexpr auto fixed_vec   = fixed_vec_t {};
+    inline constexpr auto dynamic_vec = dynamic_vec_t {};
 } // namespace nmtools::array::kind
 
 namespace nmtools
@@ -188,6 +193,34 @@ namespace nmtools
         using element_t = get_element_type_t<src_t>;
         static constexpr auto dim = fixed_ndarray_dim_v<src_t>;
         using type = meta::make_nested_dynamic_array_t<std::vector,element_t,dim>;
+    }; // resolve_optype
+
+    template <typename src_t>
+    struct meta::resolve_optype<
+        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
+        cast_kind_t, src_t, array::kind::fixed_vec_t
+    >
+    {
+        using element_t = get_element_type_t<src_t>;
+        static constexpr auto shape = fixed_ndarray_shape_v<src_t>;
+        static constexpr auto dim   = fixed_ndarray_dim_v<src_t>;
+        using type = std::conditional_t<dim==1,
+            array::fixed_vector<element_t,std::get<0>(shape)>, void
+        >;
+    }; // resolve_optype
+
+    template <typename src_t>
+    struct meta::resolve_optype<
+        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
+        cast_kind_t, src_t, array::kind::dynamic_vec_t
+    >
+    {
+        using element_t = get_element_type_t<src_t>;
+        static constexpr auto shape = fixed_ndarray_shape_v<src_t>;
+        static constexpr auto dim   = fixed_ndarray_dim_v<src_t>;
+        using type = std::conditional_t<dim==1,
+            array::dynamic_vector<element_t>, void
+        >;
     }; // resolve_optype
 
     template <typename src_t, typename kind_t>
