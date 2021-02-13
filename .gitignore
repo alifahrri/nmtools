@@ -4,3 +4,5 @@ build
 *xml
 *tex
 include/doctest.h
+include/nanobench.h
+*/__pycache__
