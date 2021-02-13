@@ -11,6 +11,7 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
+namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(free_axes)
 {
@@ -18,16 +19,16 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     {
         int a[2] = {5,4};
         int b[1] = {1};
-        auto a_vector = cast<std::vector<int>>(a);
-        auto b_vector = cast<std::vector<int>>(b);
-        auto a_array  = cast<std::array<int,2>>(a);
-        auto b_array  = cast<std::array<int,1>>(b);
-        auto a_fixed_vector   = cast<na::fixed_vector<int,2>>(a);
-        auto b_fixed_vector   = cast<na::fixed_vector<int,1>>(b);
-        auto a_dynamic_vector = cast<na::dynamic_vector<int>>(a);
-        auto b_dynamic_vector = cast<na::dynamic_vector<int>>(b);
-        auto a_hybrid_ndarray = cast<na::hybrid_ndarray<int,2,1>>(a);
-        auto b_hybrid_ndarray = cast<na::hybrid_ndarray<int,1,1>>(b);
+        auto a_v = cast(a,kind::nested_vec);
+        auto b_v = cast(b,kind::nested_vec);
+        auto a_a = cast<int>(a);
+        auto b_a = cast<int>(b);
+        auto a_f = cast(a,kind::fixed_vec);
+        auto b_f = cast(b,kind::fixed_vec);
+        auto a_d = cast(a,kind::dynamic_vec);
+        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(a);
+        auto b_h = cast<na::hybrid_ndarray<int,1,1>>(b);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -38,16 +39,16 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     {
         int a[2] = {5,4};
         int b[1] = {4};
-        auto a_vector = cast<std::vector<int>>(a);
-        auto b_vector = cast<std::vector<int>>(b);
-        auto a_array  = cast<std::array<int,2>>(a);
-        auto b_array  = cast<std::array<int,1>>(b);
-        auto a_fixed_vector   = cast<na::fixed_vector<int,2>>(a);
-        auto b_fixed_vector   = cast<na::fixed_vector<int,1>>(b);
-        auto a_dynamic_vector = cast<na::dynamic_vector<int>>(a);
-        auto b_dynamic_vector = cast<na::dynamic_vector<int>>(b);
-        auto a_hybrid_ndarray = cast<na::hybrid_ndarray<int,2,1>>(a);
-        auto b_hybrid_ndarray = cast<na::hybrid_ndarray<int,1,1>>(b);
+        auto a_v = cast(a,kind::nested_vec);
+        auto b_v = cast(b,kind::nested_vec);
+        auto a_a = cast<int>(a);
+        auto b_a = cast<int>(b);
+        auto a_f = cast(a,kind::fixed_vec);
+        auto b_f = cast(b,kind::fixed_vec);
+        auto a_d = cast(a,kind::dynamic_vec);
+        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(a);
+        auto b_h = cast<na::hybrid_ndarray<int,1,1>>(b);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -58,16 +59,16 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     {
         int a[4] = {8,7,6,5};
         int b[3] = {7,1,5};
-        auto a_vector = cast<std::vector<int>>(a);
-        auto b_vector = cast<std::vector<int>>(b);
-        auto a_array  = cast<std::array<int,4>>(a);
-        auto b_array  = cast<std::array<int,3>>(b);
-        auto a_fixed_vector   = cast<na::fixed_vector<int,4>>(a);
-        auto b_fixed_vector   = cast<na::fixed_vector<int,3>>(b);
-        auto a_dynamic_vector = cast<na::dynamic_vector<int>>(a);
-        auto b_dynamic_vector = cast<na::dynamic_vector<int>>(b);
-        auto a_hybrid_ndarray = cast<na::hybrid_ndarray<int,4,1>>(a);
-        auto b_hybrid_ndarray = cast<na::hybrid_ndarray<int,3,1>>(b);
+        auto a_v = cast(a,kind::nested_vec);
+        auto b_v = cast(b,kind::nested_vec);
+        auto a_a = cast<int>(a);
+        auto b_a = cast<int>(b);
+        auto a_f = cast(a,kind::fixed_vec);
+        auto b_f = cast(b,kind::fixed_vec);
+        auto a_d = cast(a,kind::dynamic_vec);
+        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_h = cast<na::hybrid_ndarray<int,4,1>>(a);
+        auto b_h = cast<na::hybrid_ndarray<int,3,1>>(b);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -78,16 +79,16 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     {
         int a[4] = {8,7,6,5};
         int b[4] = {8,1,5,1};
-        auto a_vector = cast<std::vector<int>>(a);
-        auto b_vector = cast<std::vector<int>>(b);
-        auto a_array  = cast<std::array<int,4>>(a);
-        auto b_array  = cast<std::array<int,4>>(b);
-        auto a_fixed_vector   = cast<na::fixed_vector<int,4>>(a);
-        auto b_fixed_vector   = cast<na::fixed_vector<int,4>>(b);
-        auto a_dynamic_vector = cast<na::dynamic_vector<int>>(a);
-        auto b_dynamic_vector = cast<na::dynamic_vector<int>>(b);
-        auto a_hybrid_ndarray = cast<na::hybrid_ndarray<int,4,1>>(a);
-        auto b_hybrid_ndarray = cast<na::hybrid_ndarray<int,4,1>>(b);
+        auto a_v = cast(a,kind::nested_vec);
+        auto b_v = cast(b,kind::nested_vec);
+        auto a_a = cast<int>(a);
+        auto b_a = cast<int>(b);
+        auto a_f = cast(a,kind::fixed_vec);
+        auto b_f = cast(b,kind::fixed_vec);
+        auto a_d = cast(a,kind::dynamic_vec);
+        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_h = cast<na::hybrid_ndarray<int,4,1>>(a);
+        auto b_h = cast<na::hybrid_ndarray<int,4,1>>(b);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -98,16 +99,16 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     {
         int a[3] = {256,256,3};
         int b[1] = {3};
-        auto a_vector = cast<std::vector<int>>(a);
-        auto b_vector = cast<std::vector<int>>(b);
-        auto a_array  = cast<std::array<int,3>>(a);
-        auto b_array  = cast<std::array<int,1>>(b);
-        auto a_fixed_vector   = cast<na::fixed_vector<int,3>>(a);
-        auto b_fixed_vector   = cast<na::fixed_vector<int,1>>(b);
-        auto a_dynamic_vector = cast<na::dynamic_vector<int>>(a);
-        auto b_dynamic_vector = cast<na::dynamic_vector<int>>(b);
-        auto a_hybrid_ndarray = cast<na::hybrid_ndarray<int,3,1>>(a);
-        auto b_hybrid_ndarray = cast<na::hybrid_ndarray<int,1,1>>(b);
+        auto a_v = cast(a,kind::nested_vec);
+        auto b_v = cast(b,kind::nested_vec);
+        auto a_a = cast<int>(a);
+        auto b_a = cast<int>(b);
+        auto a_f = cast(a,kind::fixed_vec);
+        auto b_f = cast(b,kind::fixed_vec);
+        auto a_d = cast(a,kind::dynamic_vec);
+        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_h = cast(a,kind::hybrid);
+        auto b_h = cast(b,kind::hybrid);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -125,55 +126,79 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
 //     }
 // }
 
+#define RUN_impl(...) \
+nm::index::free_axes(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs free_axes fn to callable lambda
+#define RUN_free_axes(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("free_axes-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_impl(args...); \
+    }; \
+    /* doNotOptimizeAway doesnt work (complains on std::array) */ \
+    return TrackedBench::run<false>(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_free_axes(case_name, ...) \
+RUN_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
 #define FREE_AXES_SUBCASE(case_name, a, b) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(free_axes, case_name); \
-    auto result = nm::index::free_axes(args::a, args::b); \
+    auto result = RUN_free_axes(case_name, args::a, args::b); \
     NMTOOLS_ASSERT_EQUAL(result, expect::x); \
 }
 
-TEST_CASE("free_axes(vector)" * doctest::test_suite("index::free_axes"))
+TEST_CASE("free_axes(case1)" * doctest::test_suite("index::free_axes"))
 {
-    FREE_AXES_SUBCASE(case1, a_vector, b_vector);
-    FREE_AXES_SUBCASE(case2, a_vector, b_vector);
-    FREE_AXES_SUBCASE(case3, a_vector, b_vector);
-    FREE_AXES_SUBCASE(case4, a_vector, b_vector);
-    FREE_AXES_SUBCASE(case5, a_vector, b_vector);
+    FREE_AXES_SUBCASE(case1, a_a, b_a);
+    FREE_AXES_SUBCASE(case1, a_v, b_v);
+    FREE_AXES_SUBCASE(case1, a_f, b_f);
+    FREE_AXES_SUBCASE(case1, a_d, b_d);
+    FREE_AXES_SUBCASE(case1, a_h, b_h);
 }
 
-TEST_CASE("free_axes(array)" * doctest::test_suite("index::free_axes"))
+TEST_CASE("free_axes(case2)" * doctest::test_suite("index::free_axes"))
 {
-    FREE_AXES_SUBCASE(case1, a_array, b_array);
-    FREE_AXES_SUBCASE(case2, a_array, b_array);
-    FREE_AXES_SUBCASE(case3, a_array, b_array);
-    FREE_AXES_SUBCASE(case4, a_array, b_array);
-    FREE_AXES_SUBCASE(case5, a_array, b_array);
+    FREE_AXES_SUBCASE(case2, a_a, b_a);
+    FREE_AXES_SUBCASE(case2, a_v, b_v);
+    FREE_AXES_SUBCASE(case2, a_f, b_f);
+    FREE_AXES_SUBCASE(case2, a_d, b_d);
+    FREE_AXES_SUBCASE(case2, a_h, b_h);
 }
 
-TEST_CASE("free_axes(fixed_vector)" * doctest::test_suite("index::free_axes"))
+TEST_CASE("free_axes(case3)" * doctest::test_suite("index::free_axes"))
 {
-    FREE_AXES_SUBCASE(case1, a_fixed_vector, b_fixed_vector);
-    FREE_AXES_SUBCASE(case2, a_fixed_vector, b_fixed_vector);
-    FREE_AXES_SUBCASE(case3, a_fixed_vector, b_fixed_vector);
-    FREE_AXES_SUBCASE(case4, a_fixed_vector, b_fixed_vector);
-    FREE_AXES_SUBCASE(case5, a_fixed_vector, b_fixed_vector);
+    FREE_AXES_SUBCASE(case3, a_a, b_a);
+    FREE_AXES_SUBCASE(case3, a_v, b_v);
+    FREE_AXES_SUBCASE(case3, a_f, b_f);
+    FREE_AXES_SUBCASE(case3, a_d, b_d);
+    FREE_AXES_SUBCASE(case3, a_h, b_h);
 }
 
-TEST_CASE("free_axes(dynamic_vector)" * doctest::test_suite("index::free_axes"))
+TEST_CASE("free_axes(case4)" * doctest::test_suite("index::free_axes"))
 {
-    FREE_AXES_SUBCASE(case1, a_dynamic_vector, b_dynamic_vector);
-    FREE_AXES_SUBCASE(case2, a_dynamic_vector, b_dynamic_vector);
-    FREE_AXES_SUBCASE(case3, a_dynamic_vector, b_dynamic_vector);
-    FREE_AXES_SUBCASE(case4, a_dynamic_vector, b_dynamic_vector);
-    FREE_AXES_SUBCASE(case5, a_dynamic_vector, b_dynamic_vector);
+    FREE_AXES_SUBCASE(case4, a_a, b_a);
+    FREE_AXES_SUBCASE(case4, a_v, b_v);
+    FREE_AXES_SUBCASE(case4, a_f, b_f);
+    FREE_AXES_SUBCASE(case4, a_d, b_d);
+    FREE_AXES_SUBCASE(case4, a_h, b_h);
 }
 
-TEST_CASE("free_axes(hybrid_ndarray)" * doctest::test_suite("index::free_axes"))
+TEST_CASE("free_axes(case5)" * doctest::test_suite("index::free_axes"))
 {
-    FREE_AXES_SUBCASE(case1, a_hybrid_ndarray, b_hybrid_ndarray);
-    FREE_AXES_SUBCASE(case2, a_hybrid_ndarray, b_hybrid_ndarray);
-    FREE_AXES_SUBCASE(case3, a_hybrid_ndarray, b_hybrid_ndarray);
-    FREE_AXES_SUBCASE(case4, a_hybrid_ndarray, b_hybrid_ndarray);
-    FREE_AXES_SUBCASE(case5, a_hybrid_ndarray, b_hybrid_ndarray);
+    FREE_AXES_SUBCASE(case5, a_a, b_a);
+    FREE_AXES_SUBCASE(case5, a_v, b_v);
+    FREE_AXES_SUBCASE(case5, a_f, b_f);
+    FREE_AXES_SUBCASE(case5, a_d, b_d);
+    FREE_AXES_SUBCASE(case5, a_h, b_h);
 }

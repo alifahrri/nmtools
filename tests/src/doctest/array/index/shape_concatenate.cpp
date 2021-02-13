@@ -112,12 +112,35 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
     }
 }
 
+#define RUN_impl(...) \
+nm::index::shape_concatenate(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs shape_concatenate fn to callable lambda
+#define RUN_shape_concatenate(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("shape_concatenate-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_shape_concatenate(case_name, ...) \
+RUN_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
 #ifdef __clang__
 #define SHAPE_CONCATENATE_SUBCASE(case_name, ashape, bshape, axis) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(shape_concatenate, case_name) \
-    auto result = idx::shape_concatenate(args::ashape, args::bshape, args::axis); \
+    auto result = RUN_shape_concatenate(case_name, args::ashape, args::bshape, args::axis); \
     auto success = std::get<0>(result); \
     auto shape = std::get<1>(result); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
@@ -129,42 +152,37 @@ SUBCASE(#case_name) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(shape_concatenate, case_name) \
-    auto [success, shape] = idx::shape_concatenate(args::ashape, args::bshape, args::axis); \
+    auto [success, shape] = RUN_shape_concatenate(case_name, args::ashape, args::bshape, args::axis); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
     if (expect::success) \
         NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
 }
 #endif // __clang__
 
-TEST_CASE("shape_concatenate(array)" * doctest::test_suite("index::shape_concatenate"))
+TEST_CASE("shape_concatenate(case1)" * doctest::test_suite("index::shape_concatenate"))
 {
     SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_a, axis );
-    SHAPE_CONCATENATE_SUBCASE( case2, ashape_a, bshape_a, axis );
-    SHAPE_CONCATENATE_SUBCASE( case3, ashape_a, bshape_a, axis );
-    SHAPE_CONCATENATE_SUBCASE( case4, ashape_a, bshape_a, axis );
-}
-
-TEST_CASE("shape_concatenate(vector)" * doctest::test_suite("index::shape_concatenate"))
-{
     SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_v, axis );
-    SHAPE_CONCATENATE_SUBCASE( case2, ashape_v, bshape_v, axis );
-    SHAPE_CONCATENATE_SUBCASE( case3, ashape_v, bshape_v, axis );
-    SHAPE_CONCATENATE_SUBCASE( case4, ashape_v, bshape_v, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_h, axis );
 }
 
-// TODO: fix
-// TEST_CASE("shape_concatenate(fixed_ndarray)" * doctest::test_suite("index::shape_concatenate"))
-// {
-//     SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_f, axis );
-//     SHAPE_CONCATENATE_SUBCASE( case2, ashape_f, bshape_f, axis );
-//     SHAPE_CONCATENATE_SUBCASE( case3, ashape_f, bshape_f, axis );
-//     SHAPE_CONCATENATE_SUBCASE( case4, ashape_f, bshape_f, axis );
-// }
-
-TEST_CASE("shape_concatenate(hybrid_ndarray)" * doctest::test_suite("index::shape_concatenate"))
+TEST_CASE("shape_concatenate(case2)" * doctest::test_suite("index::shape_concatenate"))
 {
-    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_h, axis );
+    SHAPE_CONCATENATE_SUBCASE( case2, ashape_a, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case2, ashape_v, bshape_v, axis );
     SHAPE_CONCATENATE_SUBCASE( case2, ashape_h, bshape_h, axis );
+}
+
+TEST_CASE("shape_concatenate(case3)" * doctest::test_suite("index::shape_concatenate"))
+{
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_a, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_v, bshape_v, axis );
     SHAPE_CONCATENATE_SUBCASE( case3, ashape_h, bshape_h, axis );
+}
+
+TEST_CASE("shape_concatenate(case4)" * doctest::test_suite("index::shape_concatenate"))
+{
+    SHAPE_CONCATENATE_SUBCASE( case4, ashape_a, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case4, ashape_v, bshape_v, axis );
     SHAPE_CONCATENATE_SUBCASE( case4, ashape_h, bshape_h, axis );
 }

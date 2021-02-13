@@ -262,6 +262,13 @@ if (NOT EMSCRIPTEN)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
 
+option(ENABLE_TEST_BENCHMARKS "build benchmark programs" OFF)
+if (ENABLE_TEST_BENCHMARKS)
+    add_definitions(-DNMTOOLS_TESTING_ENABLE_BENCHMARKS)
+    add_library(nanobench src/nanobench.cpp)
+    target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
+endif()
+
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
     src/doctest/meta.cpp

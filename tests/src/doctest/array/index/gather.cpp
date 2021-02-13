@@ -7,6 +7,8 @@
 #include <vector>
 
 namespace nm = nmtools;
+namespace na = nm::array;
+namespace kind = na::kind;
 using namespace nm::literals;
 using nmtools::utils::isequal;
 using std::tuple;
@@ -17,10 +19,15 @@ NMTOOLS_TESTING_DECLARE_CASE(gather)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        int vec[3] = {1,2,3};
-        int indices[3]   = {0,1,2};
-        auto vec_v = cast<vector<int>>(vec);
-        auto indices_v   = cast<vector<int>>(indices);
+        int vec[3]     = {1,2,3};
+        int indices[3] = {0,1,2};
+        auto vec_a     = cast<int>(vec);
+        auto indices_a = cast<int>(indices);
+        auto vec_t     = index::as_tuple(vec_a);
+        auto indices_t = index::as_tuple(indices_a);
+        auto vec_v     = cast(vec,kind::nested_vec);
+        auto indices_v = cast(indices,kind::nested_vec);
+        auto indices_ct = tuple{0_ct,1_ct,2_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -29,10 +36,15 @@ NMTOOLS_TESTING_DECLARE_CASE(gather)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        int vec[3] = {1,2,3};
-        int indices[3]   = {1,0,2};
-        auto vec_v = cast<vector<int>>(vec);
-        auto indices_v   = cast<vector<int>>(indices);
+        int vec[3]     = {1,2,3};
+        int indices[3] = {1,0,2};
+        auto vec_a     = cast<int>(vec);
+        auto indices_a = cast<int>(indices);
+        auto vec_t     = index::as_tuple(vec_a);
+        auto indices_t = index::as_tuple(indices_a);
+        auto vec_v     = cast(vec,kind::nested_vec);
+        auto indices_v = cast(indices,kind::nested_vec);
+        auto indices_ct = tuple{1_ct,0_ct,2_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -41,10 +53,15 @@ NMTOOLS_TESTING_DECLARE_CASE(gather)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        int vec[3] = {1,2,3};
-        int indices[3]   = {1,2,0};
-        auto vec_v = cast<vector<int>>(vec);
-        auto indices_v   = cast<vector<int>>(indices);
+        int vec[3]     = {1,2,3};
+        int indices[3] = {1,2,0};
+        auto vec_a     = cast<int>(vec);
+        auto indices_a = cast<int>(indices);
+        auto vec_t     = index::as_tuple(vec_a);
+        auto indices_t = index::as_tuple(indices_a);
+        auto vec_v     = cast(vec,kind::nested_vec);
+        auto indices_v = cast(indices,kind::nested_vec);
+        auto indices_ct = tuple{1_ct,2_ct,0_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -53,10 +70,15 @@ NMTOOLS_TESTING_DECLARE_CASE(gather)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
     {
-        int vec[3] = {1,2,3};
-        int indices[3]   = {2,0,1};
-        auto vec_v = cast<vector<int>>(vec);
-        auto indices_v   = cast<vector<int>>(indices);
+        int vec[3]     = {1,2,3};
+        int indices[3] = {2,0,1};
+        auto vec_a     = cast<int>(vec);
+        auto indices_a = cast<int>(indices);
+        auto vec_t     = index::as_tuple(vec_a);
+        auto indices_t = index::as_tuple(indices_a);
+        auto vec_v     = cast(vec,kind::nested_vec);
+        auto indices_v = cast(indices,kind::nested_vec);
+        auto indices_ct = tuple{2_ct,0_ct,1_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -65,10 +87,15 @@ NMTOOLS_TESTING_DECLARE_CASE(gather)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
     {
-        int vec[3] = {1,2,3};
-        int indices[3]   = {2,1,0};
-        auto vec_v = cast<vector<int>>(vec);
-        auto indices_v   = cast<vector<int>>(indices);
+        int vec[3]     = {1,2,3};
+        int indices[3] = {2,1,0};
+        auto vec_a     = cast<int>(vec);
+        auto indices_a = cast<int>(indices);
+        auto vec_t     = index::as_tuple(vec_a);
+        auto indices_t = index::as_tuple(indices_a);
+        auto vec_v     = cast(vec,kind::nested_vec);
+        auto indices_v = cast(indices,kind::nested_vec);
+        auto indices_ct = tuple{2_ct,1_ct,0_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -77,10 +104,15 @@ NMTOOLS_TESTING_DECLARE_CASE(gather)
     
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
     {
-        int vec[5] = {1,2,3,4,5};
-        int indices[3]   = {2,1,0};
-        auto vec_v = cast<vector<int>>(vec);
-        auto indices_v   = cast<vector<int>>(indices);
+        int vec[5]     = {1,2,3,4,5};
+        int indices[3] = {2,1,0};
+        auto vec_a     = cast<int>(vec);
+        auto indices_a = cast<int>(indices);
+        auto vec_t     = index::as_tuple(vec_a);
+        auto indices_t = index::as_tuple(indices_a);
+        auto vec_v     = cast(vec,kind::nested_vec);
+        auto indices_v = cast(indices,kind::nested_vec);
+        auto indices_ct = tuple{2_ct,1_ct,0_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -88,21 +120,82 @@ NMTOOLS_TESTING_DECLARE_CASE(gather)
     }
 }
 
+#define RUN_impl(...) \
+nm::index::gather(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs gather fn to callable lambda
+#define RUN_gather(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("gather-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_gather(case_name, ...) \
+RUN_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
 #define GATHER_SUBCASE(case_name, vec, indices) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(gather, case_name); \
-    auto result = nm::index::gather(args::vec, args::indices); \
+    auto result = RUN_gather(case_name, args::vec, args::indices); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 } \
 
-TEST_CASE("gather(vector)" * doctest::test_suite("index::gather"))
+TEST_CASE("gather(case1)" * doctest::test_suite("index::gather"))
 {
+    GATHER_SUBCASE(case1, vec_a, indices_a);
+    GATHER_SUBCASE(case1, vec_t, indices_t);
+    GATHER_SUBCASE(case1, vec_t, indices_ct);
     GATHER_SUBCASE(case1, vec_v, indices_v);
+}
+
+TEST_CASE("gather(case2)" * doctest::test_suite("index::gather"))
+{
+    GATHER_SUBCASE(case2, vec_a, indices_a);
+    GATHER_SUBCASE(case2, vec_t, indices_t);
+    GATHER_SUBCASE(case2, vec_t, indices_ct);
     GATHER_SUBCASE(case2, vec_v, indices_v);
+}
+
+TEST_CASE("gather(case3)" * doctest::test_suite("index::gather"))
+{
+    GATHER_SUBCASE(case3, vec_a, indices_a);
+    GATHER_SUBCASE(case3, vec_t, indices_t);
+    GATHER_SUBCASE(case3, vec_t, indices_ct);
     GATHER_SUBCASE(case3, vec_v, indices_v);
+}
+
+TEST_CASE("gather(case4)" * doctest::test_suite("index::gather"))
+{
+    GATHER_SUBCASE(case4, vec_a, indices_a);
+    GATHER_SUBCASE(case4, vec_t, indices_t);
+    GATHER_SUBCASE(case4, vec_t, indices_ct);
     GATHER_SUBCASE(case4, vec_v, indices_v);
+}
+
+TEST_CASE("gather(case5)" * doctest::test_suite("index::gather"))
+{
+    GATHER_SUBCASE(case5, vec_a, indices_a);
+    GATHER_SUBCASE(case5, vec_t, indices_t);
+    GATHER_SUBCASE(case5, vec_t, indices_ct);
     GATHER_SUBCASE(case5, vec_v, indices_v);
+}
+
+TEST_CASE("gather(case6)" * doctest::test_suite("index::gather"))
+{
+    GATHER_SUBCASE(case6, vec_a, indices_a);
+    GATHER_SUBCASE(case6, vec_t, indices_t);
+    GATHER_SUBCASE(case6, vec_t, indices_ct);
     GATHER_SUBCASE(case6, vec_v, indices_v);
 }
 
