@@ -2,7 +2,8 @@
 
 CWD=$pwd
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" 
-nanobench_header_url="https://raw.githubusercontent.com/martinus/nanobench/v4.0.0/src/include/nanobench.h"
+url="https://raw.githubusercontent.com/martinus/nanobench/v4.3.0/src/include/nanobench.h"
+file="nanobench.h"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -28,7 +29,7 @@ if [ -z "$DEST" -a "$DEST" != " " ]; then
     mkdir -p $DEST
 fi
 
-wget -O $DEST/nanobench.h https://raw.githubusercontent.com/martinus/nanobench/v4.0.0/src/include/nanobench.h
+wget -O $DEST/$file $url
 
 mkdir -p /usr/local/include/nanobench/
 cp $DEST/nanobench.h /usr/local/include/nanobench/
