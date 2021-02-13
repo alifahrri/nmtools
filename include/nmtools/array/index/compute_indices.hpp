@@ -33,13 +33,15 @@ namespace nmtools::index
     {
         constexpr auto shape_is_tuple_or_pair = meta::is_specialization_v<shape_t,std::tuple> || meta::is_specialization_v<shape_t,std::pair>;
         constexpr auto strides_is_tuple_or_pair = meta::is_specialization_v<strides_t,std::tuple> || meta::is_specialization_v<strides_t,std::pair>;
+        constexpr auto shape_has_tuple_size = meta::has_tuple_size_v<shape_t>;
+        constexpr auto strides_has_tuple_size = meta::has_tuple_size_v<strides_t>;
 
         using return_t = meta::resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
         auto indices = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
             indices.resize(size(shape));
 
-        if constexpr (shape_is_tuple_or_pair && strides_is_tuple_or_pair)
+        if constexpr (shape_has_tuple_size && strides_has_tuple_size)
         {
             constexpr auto n = std::tuple_size_v<shape_t>;
             constexpr auto m = std::tuple_size_v<strides_t>;
