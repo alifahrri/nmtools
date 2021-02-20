@@ -150,62 +150,89 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat_view)
     }
 }
 
+#define RUN_impl(...) \
+nm::view::repeat(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs repeat fn to callable lambda
+#define RUN_repeat(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("repeat-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_repeat(case_name, ...) \
+RUN_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
 #define REPEAT_SUBCASE(case_name, array, repeats, axis) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(repeat_view, case_name); \
-    auto array_view = view::repeat(args::array, args::repeats, args::axis); \
+    auto array_view = RUN_repeat(case_name, args::array, args::repeats, args::axis); \
     NMTOOLS_ASSERT_EQUAL( array_view.shape(), expect::shape ); \
     NMTOOLS_ASSERT_EQUAL( array_view.dim(), expect::dim ); \
     NMTOOLS_ASSERT_CLOSE( array_view, expect::result ); \
 }
 
-TEST_CASE("repeat(array)" * doctest::test_suite("view::repeat"))
+TEST_CASE("repeat(case1)" * doctest::test_suite("view::repeat"))
 {
     REPEAT_SUBCASE(case1, array_a, repeats, axis);
-    REPEAT_SUBCASE(case2, array_a, repeats, axis);
-    REPEAT_SUBCASE(case3, array_a, repeats, axis);
-    REPEAT_SUBCASE(case4, array_a, repeats, axis);
-    REPEAT_SUBCASE(case5, array_a, repeats, axis);
-    REPEAT_SUBCASE(case6, array_a, repeats, axis);
-}
-
-TEST_CASE("repeat(vector)" * doctest::test_suite("view::repeat"))
-{
     REPEAT_SUBCASE(case1, array_v, repeats, axis);
-    REPEAT_SUBCASE(case2, array_v, repeats, axis);
-    REPEAT_SUBCASE(case3, array_v, repeats, axis);
-    REPEAT_SUBCASE(case4, array_v, repeats, axis);
-    REPEAT_SUBCASE(case5, array_v, repeats, axis);
-    REPEAT_SUBCASE(case6, array_v, repeats, axis);
-}
-
-TEST_CASE("repeat(fixed_ndarray)" * doctest::test_suite("view::repeat"))
-{
     REPEAT_SUBCASE(case1, array_f, repeats, axis);
-    REPEAT_SUBCASE(case2, array_f, repeats, axis);
-    REPEAT_SUBCASE(case3, array_f, repeats, axis);
-    REPEAT_SUBCASE(case4, array_f, repeats, axis);
-    REPEAT_SUBCASE(case5, array_f, repeats, axis);
-    REPEAT_SUBCASE(case6, array_f, repeats, axis);
-}
-
-TEST_CASE("repeat(dynamic_ndarray)" * doctest::test_suite("view::repeat"))
-{
     REPEAT_SUBCASE(case1, array_d, repeats, axis);
-    REPEAT_SUBCASE(case2, array_d, repeats, axis);
-    REPEAT_SUBCASE(case3, array_d, repeats, axis);
-    REPEAT_SUBCASE(case4, array_d, repeats, axis);
-    REPEAT_SUBCASE(case5, array_d, repeats, axis);
-    REPEAT_SUBCASE(case6, array_d, repeats, axis);
+    REPEAT_SUBCASE(case1, array_h, repeats, axis);
 }
 
-TEST_CASE("repeat(hybrid_ndarray)" * doctest::test_suite("view::repeat"))
+TEST_CASE("repeat(case2)" * doctest::test_suite("view::repeat"))
 {
-    REPEAT_SUBCASE(case1, array_h, repeats, axis);
+    REPEAT_SUBCASE(case2, array_a, repeats, axis);
+    REPEAT_SUBCASE(case2, array_v, repeats, axis);
+    REPEAT_SUBCASE(case2, array_f, repeats, axis);
+    REPEAT_SUBCASE(case2, array_d, repeats, axis);
     REPEAT_SUBCASE(case2, array_h, repeats, axis);
+}
+
+TEST_CASE("repeat(case3)" * doctest::test_suite("view::repeat"))
+{
+    REPEAT_SUBCASE(case3, array_a, repeats, axis);
+    REPEAT_SUBCASE(case3, array_v, repeats, axis);
+    REPEAT_SUBCASE(case3, array_f, repeats, axis);
+    REPEAT_SUBCASE(case3, array_d, repeats, axis);
     REPEAT_SUBCASE(case3, array_h, repeats, axis);
+}
+
+TEST_CASE("repeat(case4)" * doctest::test_suite("view::repeat"))
+{
+    REPEAT_SUBCASE(case4, array_a, repeats, axis);
+    REPEAT_SUBCASE(case4, array_v, repeats, axis);
+    REPEAT_SUBCASE(case4, array_f, repeats, axis);
+    REPEAT_SUBCASE(case4, array_d, repeats, axis);
     REPEAT_SUBCASE(case4, array_h, repeats, axis);
+}
+
+TEST_CASE("repeat(case5)" * doctest::test_suite("view::repeat"))
+{
+    REPEAT_SUBCASE(case5, array_a, repeats, axis);
+    REPEAT_SUBCASE(case5, array_v, repeats, axis);
+    REPEAT_SUBCASE(case5, array_f, repeats, axis);
+    REPEAT_SUBCASE(case5, array_d, repeats, axis);
     REPEAT_SUBCASE(case5, array_h, repeats, axis);
+}
+
+TEST_CASE("repeat(case6)" * doctest::test_suite("view::repeat"))
+{
+    REPEAT_SUBCASE(case6, array_a, repeats, axis);
+    REPEAT_SUBCASE(case6, array_v, repeats, axis);
+    REPEAT_SUBCASE(case6, array_f, repeats, axis);
+    REPEAT_SUBCASE(case6, array_d, repeats, axis);
     REPEAT_SUBCASE(case6, array_h, repeats, axis);
 }

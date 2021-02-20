@@ -9,26 +9,28 @@
 namespace nmtools::view
 {
     /**
-     * @brief Broadcast two arrays against each other
+     * @brief broadcast arrays against each other.
      * 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     * @param lhs 
-     * @param rhs 
+     * @tparam first_t 
+     * @tparam second_t 
+     * @tparam rest_t 
+     * @param fst 
+     * @param snd 
+     * @param rst 
      * @return constexpr auto 
      */
-    template <typename lhs_t, typename rhs_t>
-    constexpr auto broadcast_arrays(const lhs_t& lhs, const rhs_t& rhs)
+    template <typename first_t, typename second_t, typename...rest_t>
+    constexpr auto broadcast_arrays(const first_t& fst, const second_t& snd, const rest_t&...rst)
     {
-        auto lhs_shape = ::nmtools::shape(lhs);
-        auto rhs_shape = ::nmtools::shape(rhs);
-        auto [success, broadcasted_shape] = index::broadcast_shape(lhs_shape, rhs_shape);
+        auto lhs_shape = ::nmtools::shape(fst);
+        auto snd_shape = ::nmtools::shape(snd);
+        auto [success, broadcasted_shape] = index::broadcast_shape(lhs_shape, snd_shape, ::nmtools::shape(rst)...);
         assert (success
             // , "cannot broadcast shape"
         );
-        auto lhs_view = broadcast_to(lhs,broadcasted_shape);
-        auto rhs_view = broadcast_to(rhs,broadcasted_shape);
-        return std::tuple{lhs_view, rhs_view};
+        auto lhs_view = broadcast_to(fst,broadcasted_shape);
+        auto snd_view = broadcast_to(snd,broadcasted_shape);
+        return std::tuple{lhs_view, snd_view, broadcast_to(rst,broadcasted_shape)...};
     } // broadcast_arrays
 } // namespace nmtools::view
 

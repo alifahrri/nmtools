@@ -2,9 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_ARGFILTER_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
+#include "nmtools/array/index/where.hpp"
 
 #include <type_traits>
 #include <cstddef>
@@ -30,25 +28,7 @@ namespace nmtools::index
     template <typename index_t=size_t, typename F, typename array_t>
     constexpr auto argfilter(const F& f, const array_t& array)
     {
-        using return_t = meta::resolve_optype_t<argfilter_t,array_t,index_t>;
-        auto res = return_t{};
-        if constexpr (meta::is_resizeable_v<return_t>)
-            res.resize(tuple_size(array));
-        auto n = size_t{0};
-        auto argfilter_impl = [&](auto i){
-            if (f(tuple_at(array,i)))
-                at(res,n++) = static_cast<size_t>(i);
-        };
-        if constexpr (meta::has_tuple_size_v<array_t>)
-            meta::template_for<std::tuple_size_v<array_t>>([&](auto i){
-                argfilter_impl(i);
-            });
-        else
-            for (size_t i=0; i<size(array); i++)
-                argfilter_impl(i);
-        if constexpr (meta::is_resizeable_v<return_t>)
-            res.resize(n);
-        return res;
+        return where(f,array);
     } // argfilter
 } // namespace nmtools
 

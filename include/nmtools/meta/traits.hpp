@@ -1279,6 +1279,61 @@ namespace nmtools::meta {
     template <>
     struct is_boolean<bool> : std::true_type {};
 
+    /**
+     * @brief Check if type `T` is an index
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_index : std::false_type {};
+
+    template <typename T>
+    inline constexpr auto is_index_v = is_index<T>::value;
+
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct is_index<T, std::enable_if_t<
+        std::is_integral_v<T> ||
+        meta::is_integral_constant_v<T>
+    > > : std::true_type {};
+
+    /**
+     * @brief Check if type `T` is index array
+     * 
+     * @tparam T type to check
+     */
+    template <typename T, typename=void>
+    struct is_index_array : std::false_type {};
+
+    /**
+     * @brief Specialization of is_index_array for std::array
+     * 
+     * @tparam T 
+     * @tparam N 
+     */
+    template <typename T, size_t N>
+    struct is_index_array<std::array<T,N>,
+        std::enable_if_t<std::is_integral_v<T>>
+    > : std::true_type {};
+
+    /**
+     * @brief Tuple of index is index array
+     * 
+     * @tparam args_t 
+     */
+    template <typename...args_t>
+    struct is_index_array<std::tuple<args_t...>,
+        std::enable_if_t<(meta::is_index_v<args_t> && ...)>
+    > : std::true_type {};
+
+    template <typename T>
+    inline constexpr auto is_index_array_v = is_index_array<T>::value;
+
     /** @} */ // end group traits
 
 } // namespace nmtools::meta

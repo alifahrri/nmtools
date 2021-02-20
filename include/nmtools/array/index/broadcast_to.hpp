@@ -30,26 +30,26 @@ namespace nmtools::index
 
         auto res = return_t{};
 
-        auto m = tuple_size(ashape);
-        auto n = tuple_size(bshape);
+        auto adim = tuple_size(ashape);
+        auto bdim = tuple_size(bshape);
 
         // also track free axes
         auto free_axes = free_axes_t{};
-        bool success = n >= m;
+        bool success = bdim >= adim;
 
         // for broadcast_to, the dimension will follow input shape (bshape)
         // in numpy, the following will raises error
         // np.broadcast_to(np.array([[1],[2],[3]]), (3,))
         // ValueError: input operand has more dimensions than allowed by the axis remapping
         if constexpr (meta::is_resizeable_v<return_t>) {
-            res.resize(n);
-            free_axes.resize(n);
+            res.resize(bdim);
+            free_axes.resize(bdim);
         }
         
         auto broadcast_to_impl = [&](auto i){
-            using idx_t = std::make_signed_t<decltype(m-i-1)>;
-            idx_t ai = m - i - 1;
-            idx_t bi = n - i - 1;
+            using idx_t = std::make_signed_t<decltype(adim-i-1)>;
+            idx_t ai = adim - i - 1;
+            idx_t bi = bdim - i - 1;
             if (ai<0) {
                 at(res,bi) = tuple_at(bshape,bi);
                 at(free_axes,bi) = true;
