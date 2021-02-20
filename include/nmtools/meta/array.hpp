@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/traits.hpp"
+#include "nmtools/meta/loop.hpp"
 
 #include <type_traits>
 #include <tuple>
@@ -39,7 +40,7 @@ namespace nmtools::meta
     }; // nested_array_size
 
     /**
-     * @brief helper variable templat to get the number of elements of fixed shape at its 1st axis.
+     * @brief helper variable template to get the number of elements of fixed shape at its 1st axis.
      * 
      * @tparam T type to check
      * @see nested_array_size
@@ -455,50 +456,6 @@ namespace nmtools::meta
      */
     template <typename T>
     inline constexpr bool is_fixed_size_matrix_v = is_fixed_size_matrix<T>::value;
-
-    /**
-     * @brief helper alias template for std::integral_constant<size_t,...>
-     * 
-     * @tparam N 
-     * @see nmtools::slice
-     * @see nmtools::make_slice_index
-     */
-    template <size_t N>
-    using index_constant = std::integral_constant<size_t,N>;
-
-    /**
-     * @brief call f N times with compile-time index.
-     *
-     * Call f with each compile-time index using fold expression.
-     * 
-     * @tparam F 
-     * @tparam Is index sequence
-     * @param f callable
-     * @return constexpr auto 
-     */
-    template <typename F, size_t...Is>
-    constexpr auto template_for(F&& f, std::index_sequence<Is...>)
-    {
-        (f(index_constant<Is>{}),...);
-    } // template_for
-
-    /**
-     * @brief call f N times with compile-time index.
-     *
-     * N index sequence will be generated at compile-time to call f.
-     * 
-     * @tparam N number of calls
-     * @tparam F 
-     * @param f callable
-     * @return constexpr auto 
-     * @todo check if f match the required signature
-     */
-    template <size_t N, typename F>
-    constexpr auto template_for(F&& f)
-    {
-        using index_t = std::make_index_sequence<N>;
-        template_for(f,index_t{});
-    } // template_for
 
     /**
      * @brief get fixed-array size at compile-time.
