@@ -150,11 +150,34 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
     }
 }
 
+#define RUN_impl(...) \
+nm::view::reshape(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs reshape fn to callable lambda
+#define RUN_reshape(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("reshape-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_reshape(case_name, ...) \
+RUN_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
 #define RESHAPE_SUBCASE(case_name, array, newshape, trait) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(reshape, case_name) \
-    auto array_ref = view::reshape(args::array, args::newshape); \
+    auto array_ref = RUN_reshape(case_name, args::array, args::newshape); \
     using view_t = decltype(array_ref); \
     NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \

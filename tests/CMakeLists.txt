@@ -10,6 +10,7 @@ endif()
 
 include(nmtools)
 
+# handle emscripten
 if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     set (EMSCRIPTEN)
 endif()
@@ -272,6 +273,7 @@ endif()
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
     src/doctest/meta.cpp
+    src/doctest/meta/loop.cpp
     src/doctest/meta/array/index/argfilter.cpp
     src/doctest/meta/array/index/broadcast_shape.cpp
     src/doctest/meta/array/index/choose.cpp
@@ -287,6 +289,8 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/traits/has_template_get.cpp
     src/doctest/meta/traits/has_type.cpp
     src/doctest/meta/traits/has_square_bracket.cpp
+    src/doctest/meta/traits/is_index.cpp
+    src/doctest/meta/traits/is_index_array.cpp
     src/doctest/meta/transform/accumulate.cpp
     src/doctest/meta/transform/apply.cpp
     src/doctest/meta/transform/constant.cpp
