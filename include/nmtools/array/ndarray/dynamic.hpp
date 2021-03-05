@@ -203,7 +203,7 @@ namespace nmtools::array
          * @todo explore more on error handling to make assertion more customizable
          */
         template <typename ...size_types>
-        constexpr reference operator()(size_type n, size_types...ns)
+        constexpr decltype(auto) operator()(size_type n, size_types...ns)
         {
             using common_size_t = std::common_type_t<size_type,size_types...>;
             auto indices = std::array<common_size_t,sizeof...(ns)+1>{
@@ -224,7 +224,7 @@ namespace nmtools::array
          * @todo explore more on error handling to make assertion more customizable
          */
         template <typename ...size_types>
-        constexpr const_reference operator()(size_type n, size_types...ns) const
+        constexpr decltype(auto) operator()(size_type n, size_types...ns) const
         {
             using common_size_t = std::common_type_t<size_type,size_types...>;
             auto indices = std::array<common_size_t,sizeof...(ns)+1>{
@@ -241,13 +241,13 @@ namespace nmtools::array
          * @param i packed indices with same type as shape_type
          * @return const_reference 
          */
-        const_reference at(shape_type i) const
+        decltype(auto) at(shape_type i) const
         {
             auto offset = detail::compute_offset(strides_, i);
             return data[offset];
         } // at
 
-        reference at(shape_type i)
+        decltype(auto) at(shape_type i)
         {
             auto offset = detail::compute_offset(strides_, i);
             return data[offset];
