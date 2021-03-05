@@ -90,19 +90,6 @@ namespace nmtools
         return meta::fixed_vector_size_v<vector_t>;
     } // vector_size
 
-    template <typename array_t>
-    constexpr auto len(const array_t& array)
-    {
-        // alias for now
-        return vector_size(array);
-    } // len
-
-    template <typename...size_types>
-    constexpr auto len(const std::tuple<size_types...>& array)
-    {
-        return sizeof...(size_types);
-    } // len
-
     namespace detail
     {
         /**
@@ -275,6 +262,19 @@ namespace nmtools
             return 1;
         }
     } // dim
+
+    template <typename array_t>
+    constexpr auto len(const array_t& array)
+    {
+        auto shape_ = shape(array);
+        return at(shape_, std::integral_constant<size_t,0>{});
+    } // len
+
+    template <typename...size_types>
+    constexpr auto len(const std::tuple<size_types...>& array)
+    {
+        return sizeof...(size_types);
+    } // len
 
     /** @} */ // end group utility
 } // namespace nmtools
