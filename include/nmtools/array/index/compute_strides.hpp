@@ -42,7 +42,7 @@ namespace nmtools::index
         {
             using value_type = meta::get_element_type_t<array_t>;
             auto p = value_type{1};
-            for (auto j=k+1; j<tuple_size(shape); j++)
+            for (auto j=k+1; j<len(shape); j++)
                 p *= at(shape,j);
             return p;
         }
