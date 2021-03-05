@@ -38,7 +38,7 @@ namespace nmtools::array {
         using size_type = size_t;
         using reference = value_type&;
         using const_reference = const value_type&;
-        using shape_type = std::pair<size_t,size_t>;
+        using shape_type = std::array<size_t,2>;
 
         /**
          * @brief underlying data
@@ -125,7 +125,7 @@ namespace nmtools::array {
          */
         constexpr shape_type shape() const noexcept
         {
-            return std::make_pair(Rows,Cols);
+            return {Rows,Cols};
         } // shape()
 
         template <typename matrix_t>
@@ -211,7 +211,9 @@ namespace nmtools
     template <typename T, size_t Rows, size_t Cols>
     struct meta::fixed_matrix_size<array::fixed_matrix<T,Rows,Cols>>
     {
-        static inline constexpr auto value = std::make_pair(Rows,Cols);
+        using matrix_type = array::fixed_matrix<T,Rows,Cols>;
+        using shape_type  = typename matrix_type::shape_type;
+        static inline constexpr auto value = shape_type{Rows,Cols};
         using value_type = decltype(value);
     };
 

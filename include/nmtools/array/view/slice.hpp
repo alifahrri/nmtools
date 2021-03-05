@@ -37,7 +37,8 @@ namespace nmtools::view
             auto shape_ = ::nmtools::shape(array);
             auto ashape = [&](){
                 using shape_t = meta::remove_cvref_t<decltype(shape_)>;
-                if constexpr (meta::is_specialization_v<shape_t, std::tuple>)
+                // TODO: make proper generalization of `index_array`
+                if constexpr (meta::is_specialization_v<shape_t, std::tuple> || meta::is_specialization_v<shape_t, std::pair>)
                     return make_array<std::array>(shape_);
                 else return shape_;
             }();
@@ -76,7 +77,8 @@ namespace nmtools::view
             auto shape_ = ::nmtools::shape(array);
             auto ashape = [&](){
                 using shape_t = meta::remove_cvref_t<decltype(shape_)>;
-                if constexpr (meta::is_specialization_v<shape_t, std::tuple>)
+                // TODO: make proper generalization of `index_array`
+                if constexpr (meta::is_specialization_v<shape_t, std::tuple> || meta::is_specialization_v<shape_t, std::pair>)
                     return make_array<std::array>(shape_);
                 else return shape_;
             }();
