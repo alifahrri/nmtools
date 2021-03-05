@@ -195,7 +195,6 @@ set(ARRAY_UTILITY_TEST_SOURCES
     src/doctest/array/utility/clone.cpp
     src/doctest/array/utility/row.cpp
     src/doctest/array/utility/column.cpp
-    src/doctest/array/utility/slice.cpp
     src/doctest/array/utility/squeeze.cpp
     src/doctest/array/utility/zeros_like.cpp
 )

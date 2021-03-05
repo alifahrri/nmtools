@@ -125,7 +125,6 @@ add_executable(
     ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/at.cpp
     ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/row.cpp
     ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/column.cpp
-    ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/slice.cpp
     ${NMTOOLS_ROOT_DIR}/tests/src/doctest/array/utility/squeeze.cpp
 )
 apply_nmtools(
