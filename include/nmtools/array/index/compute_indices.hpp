@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 
@@ -20,6 +21,32 @@ namespace nmtools::index
      */
     struct compute_indices_t {};
 
+    namespace impl
+    {
+        template <typename indices_t, typename offset_t, typename shape_t, typename strides_t>
+        constexpr auto compute_indices(indices_t& indices, const offset_t& offset, const shape_t& shape, const strides_t& strides)
+        {
+            constexpr auto shape_has_tuple_size = meta::has_tuple_size_v<shape_t>;
+            constexpr auto strides_has_tuple_size = meta::has_tuple_size_v<strides_t>;
+
+            if constexpr (shape_has_tuple_size && strides_has_tuple_size)
+            {
+                constexpr auto n = std::tuple_size_v<shape_t>;
+                constexpr auto m = std::tuple_size_v<strides_t>;
+                static_assert (m==n
+                    , "unsupported compute_indices, mismatched shape for shape and strides"
+                );
+                meta::template_for<n>([&](auto index){
+                    constexpr auto i = decltype(index)::value;
+                    std::get<i>(indices) = (offset / std::get<i>(strides)) % std::get<i>(shape);
+                });
+            }
+            else
+                for (size_t i=0; i<len(shape); i++)
+                    at(indices,i) = (offset / at(strides,i)) % at(shape,i);
+        } // compute_indices
+    } // namespace impl
+
     /**
      * @brief inverse operation of compute_offset
      * 
@@ -33,29 +60,14 @@ namespace nmtools::index
     {
         constexpr auto shape_is_tuple_or_pair = meta::is_specialization_v<shape_t,std::tuple> || meta::is_specialization_v<shape_t,std::pair>;
         constexpr auto strides_is_tuple_or_pair = meta::is_specialization_v<strides_t,std::tuple> || meta::is_specialization_v<strides_t,std::pair>;
-        constexpr auto shape_has_tuple_size = meta::has_tuple_size_v<shape_t>;
-        constexpr auto strides_has_tuple_size = meta::has_tuple_size_v<strides_t>;
 
         using return_t = meta::resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
         auto indices = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
             indices.resize(size(shape));
 
-        if constexpr (shape_has_tuple_size && strides_has_tuple_size)
-        {
-            constexpr auto n = std::tuple_size_v<shape_t>;
-            constexpr auto m = std::tuple_size_v<strides_t>;
-            static_assert (m==n
-                , "unsupported compute_indices, mismatched shape for shape and strides"
-            );
-            meta::template_for<n>([&](auto index){
-                constexpr auto i = decltype(index)::value;
-                std::get<i>(indices) = (offset / std::get<i>(strides)) % std::get<i>(shape);
-            });
-        }
-        else
-            for (size_t i=0; i<tuple_size(shape); i++)
-                at(indices,i) = (offset / at(strides,i)) % at(shape,i);
+        impl::compute_indices(indices, offset, shape, strides);
+
         return indices;
     } // compute indices
 
