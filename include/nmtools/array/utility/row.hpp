@@ -11,6 +11,7 @@
 
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/utility/clone.hpp"
+#include "nmtools/constants.hpp"
 
 /* TODO: should we include array and std::array specialization here? */
 #include <array>
@@ -96,9 +97,9 @@ namespace nmtools
         using detail::clone_impl;
 
         auto [rows,cols] = shape(M);
-        auto start       = std::tuple{r,   0};
-        auto stop        = std::tuple{r+1, end};
-        auto row_ref     = view::slice(M,start,stop);
+        auto axis0 = std::tuple{r,r+1};
+        auto axis1 = std::tuple{0,None};
+        auto row_ref     = view::slice(M,axis0,axis1);
         // @todo static_assert whenever possible
         {
             auto [rows,cols_] = shape(row_ref);
