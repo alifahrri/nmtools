@@ -137,11 +137,13 @@ namespace nmtools::array::kind
 {
     // for testing purpose only
     struct nested_vector_t {};
+    struct nested_array_t {};
 
     struct fixed_vec_t {};
     struct dynamic_vec_t {};
 
     inline constexpr auto nested_vec  = nested_vector_t {};
+    inline constexpr auto nested_arr  = nested_array_t {};
     inline constexpr auto fixed_vec   = fixed_vec_t {};
     inline constexpr auto dynamic_vec = dynamic_vec_t {};
 } // namespace nmtools::array::kind
@@ -193,6 +195,15 @@ namespace nmtools
         using element_t = get_element_type_t<src_t>;
         static constexpr auto dim = fixed_ndarray_dim_v<src_t>;
         using type = meta::make_nested_dynamic_array_t<std::vector,element_t,dim>;
+    }; // resolve_optype
+
+    template <typename src_t>
+    struct meta::resolve_optype<
+        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
+        cast_kind_t, src_t, array::kind::nested_array_t
+    >
+    {
+        using type = meta::transform_bounded_array_t<src_t>;
     }; // resolve_optype
 
     template <typename src_t>

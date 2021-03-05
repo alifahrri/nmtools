@@ -1,348 +1,252 @@
-/**
- * @file slice.cpp
- * @author Fahri Ali Rahman (ali.rahman.fahri@gmail.com)
- * @brief test file for slice view
- * @date 2020-10-28
- * 
- * @copyright Copyright (c) 2020
- * 
- */
-// @note need to includ array impl first to make sure overaload/specialization is visible
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
-#include "nmtools/array/view.hpp"
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/isequal.hpp"
-#include "testing/testing.hpp"
+#include "nmtools/array/index/slice.hpp"
+#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/testing/doctest.hpp"
+#include "nmtools/constants.hpp"
 
-#if __has_include("doctest/doctest.h")
-    #include "doctest/doctest.h"
-#else
-   #include "doctest.h"
-#endif
-
-#include <array>
 #include <vector>
+#include <array>
+#include <tuple>
 
 namespace nm = nmtools;
-namespace view = nmtools::view;
-using nmtools::utils::isclose;
-using nmtools::utils::isequal;
-using nmtools::array::fixed_vector;
-using nmtools::array::fixed_matrix;
-using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_vector;
-using nmtools::array::dynamic_matrix;
-using nmtools::array::dynamic_ndarray;
+namespace na = nm::array;
+namespace kind = na::kind;
 
-/**
- * @test test case for const slice view to 1D std::array
- */
-TEST_CASE("slice(std::array)"*doctest::test_suite("view::slice")) // slice with 1D std::array
+#define CAST_ARRAYS(name) \
+auto name##_a = cast(name, kind::nested_arr); \
+auto name##_v = cast(name, kind::nested_vec); \
+auto name##_f = cast(name, kind::fixed); \
+auto name##_d = cast(name, kind::dynamic); \
+auto name##_h = cast(name, kind::hybrid); \
+
+using std::tuple;
+
+NMTOOLS_TESTING_DECLARE_CASE(view, slice)
 {
-    auto array = std::array{1.,2.,3.};
-    auto array_ref = view::slice(array,0,1);
-    // @note even if the referenced array is fixed-size (std::array), the slice args are not!
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        auto offset = view::detail::offset(array,0,2);
-        using expected_t = std::tuple<std::tuple<size_t>,std::tuple<size_t>>;
-        STATIC_CHECK_IS_SAME( decltype(offset), expected_t );
-        auto start = std::get<0>(offset);
-        auto stop  = std::get<1>(offset);
-        CHECK( std::get<0>(start)==0 );
-        CHECK( std::get<0>(stop)==2 );
-    }
-
-    CHECK( array_ref.dim()==1 );
-    auto shape = array_ref.shape();
-    // single dimension, known at compile time
-    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
-    // the shape (of slice view) may be runtime value
-    CHECK( std::get<0>(shape)==1 );
-    // CHECK( isclose(array_ref.shape(),std::array{1}) );
-
-    {
-        auto expected = std::array{1.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        array[0] = 3;
-        auto expected = std::array{3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3;
-}
-
-/**
- * @test test case for const slice view to 1D std array, created using make_view
- */
-TEST_CASE("make_view<slice_t>(std::array)"*doctest::test_suite("view::slice")) // make_view<slice_t>
-{
-    using view::slice_t;
-    auto array = std::array{1.,2.,3.};
-    auto array_ref = view::make_view<slice_t>(array,0,1);
-    // @note even if the referenced array is fixed-size (std::array), the slice args are not!
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-
-    {
-        auto offset = view::detail::offset(array,0,2);
-        using expected_t = std::tuple<std::tuple<size_t>,std::tuple<size_t>>;
-        STATIC_CHECK_IS_SAME( decltype(offset), expected_t );
-        auto start = std::get<0>(offset);
-        auto stop  = std::get<1>(offset);
-        CHECK( std::get<0>(start)==0 );
-        CHECK( std::get<0>(stop)==2 );
-    }
-
-    CHECK( array_ref.dim()==1 );
-    auto shape = array_ref.shape();
-    // single dimension, known at compile time
-    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
-    // the shape (of slice view) may be runtime value
-    CHECK( std::get<0>(shape)==1 );
-    // CHECK( isclose(array_ref.shape(),std::array{1}) );
-    {
-        auto expected = std::array{1.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        array[0] = 3;
-        auto expected = std::array{3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3;
-}
-
-/**
- * @test test case for const slice view to 2D std::array
- */
-TEST_CASE("slice(std::array[2])"*doctest::test_suite("view::slice"))
-{
-    auto array = std::array{
-        std::array{1.,2.,3.},
-        std::array{3.,4.,5.},
-    };
-    // @note only support tuple for now, cant be pair
-    auto array_ref = view::slice(array, std::tuple{0,1}, std::tuple{1,2});
-    // @note even if the referenced array is fixed-size (std::array), the slice args are not!
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-
-    CHECK(array_ref.dim()==2);
-    CHECK( isequal(array_ref.shape(),std::array{1,1}) );
-
-    {
-        // @note somehow this deduced to std::array<double, 1ul>
-        // auto expected = std::array{
-        //     std::array{2.},
-        // };
-        // LOG_TYPEINFO(decltype(expected));
-        auto expected = std::array<std::array<double,1>,1>{{{2.}}};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array,0,1) = 6;
-        auto expected = std::array<std::array<double,1>,1>{{{6.}}};
-        CHECK( isclose(array_ref,expected) );
-    }
-
-    // @note should CRASH, since assert will fail
-    // @todo provide support for throw for easy testing
-    // CHECK( array_ref(0,1)==6 );
-    // CHECK( array_ref(1,0)==7 );
-
-    {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
-    }
-}
-
-/**
- * @test test case for const slice view to 1D std::vector
- */
-TEST_CASE("slice(std::vector)"*doctest::test_suite("view::slice")) // slice with 1D std::vector
-{
-    auto array = std::vector{1.,2.,3.};
-    auto array_ref = view::slice(array,0,1);
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    auto shape = array_ref.shape();
-    // single dimension, known at compile time
-    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
-    // the shape (of slice view) may be runtime value
-    CHECK( std::get<0>(shape)==1 );
-    // CHECK( isclose(array_ref.shape(),std::array{1}) );
-    {
-        auto expected = std::array{1.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        array[0] = 3;
-        auto expected = std::array{3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3;
-}
-
-/**
- * @test test case for const slice view to 2D std::vector
- */
-TEST_CASE("slice(std::vector[2])"*doctest::test_suite("view::slice"))
-{
-    auto array = std::vector{
-        std::vector{1.,2.,3.},
-        std::vector{3.,4.,5.},
-    };
-    // @note only support tuple for now, cant be pair
-    auto array_ref = view::slice(array, std::tuple{0,1}, std::tuple{1,2});
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-
-    CHECK(array_ref.dim()==2);
-    CHECK( isequal(array_ref.shape(),std::array{1,1}) );
-
-    {
-        // @note somehow this deduced to std::array<double, 1ul>
-        // auto expected = std::array{
-        //     std::array{2.},
-        // };
-        // LOG_TYPEINFO(decltype(expected));
-        auto expected = std::array<std::array<double,1>,1>{{{2.}}};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array,0,1) = 6;
-        auto expected = std::array<std::array<double,1>,1>{{{6.}}};
-        CHECK( isclose(array_ref,expected) );
-    }
-
-    // @note should CRASH, since assert will fail
-    // @todo provide support for throw for easy testing
-    // CHECK( array_ref(0,1)==6 );
-    // CHECK( array_ref(1,0)==7 );
-
-    {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
-    }
-}
-
-/**
- * @test test case for const slice view to fixed_vector
- */
-TEST_CASE("slice(fixed_vector)"*doctest::test_suite("view::slice")) // slice with 1D std::vector
-{
-    auto array = fixed_vector({1.,2.,3.});
-    auto array_ref = view::slice(array,1,nm::end_t{});
-    // @note even if the referenced array is fixed-size (fixed_vector), the slice args are not!
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    auto shape = array_ref.shape();
-    // single dimension, known at compile time
-    STATIC_CHECK_IS_SAME( decltype(shape), std::tuple<size_t> );
-    // the shape (of slice view) may be runtime value
-    CHECK( std::get<0>(shape)==2 );
-    // CHECK( isclose(array_ref.shape(),std::array{1}) );
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3;
-
-    {
-        auto expected = std::array{2.,3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        array(1) = 3;
-        auto expected = std::array{3.,3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-}
-
-/**
- * @test test case for const slice view to fixed_matrix
- */
-TEST_CASE("slice(fixed_matrix)"*doctest::test_suite("view::ref")) // slice with 2D fixed_ndarray
-{
-    auto array = fixed_matrix<double,3,2>{};
-    auto array_ref = view::slice(array,std::tuple{1,0},std::tuple{nm::end_t{},nm::end_t{}});
-    // @note even if the referenced array is fixed-size (fixed_matrix), the slice args are not!
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-
-    array = std::array{
-        std::array{1.,2.},
-        std::array{3.,4.},
-        std::array{4.,5.},
-    };
-
-    CHECK( array_ref.dim()==2 );
-    CHECK( isequal(array_ref.shape(),std::array{2,2}) );
-
-    {
-        auto expected = std::array{
-            std::array{3.,4.},
-            std::array{4.,5.},
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
         };
-        CHECK( isclose(array_ref,expected) );
+        auto slice0 = tuple{None,None};
+        auto slice1 = tuple{0,1};
+        auto slice2 = tuple{None,None};
+        CAST_ARRAYS(array)
     }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        nmtools::at(array,0,1) = 6;
-        nmtools::at(array,1,0) = 7;
-        auto expected = std::array{
-            std::array{7.,4.},
-            std::array{4.,5.},
+        int result[2][1][2] = {
+            {{0,1}},
+
+            {{6,7}}
         };
-        CHECK( isclose(array_ref,expected) );
     }
 
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = tuple{None,None};
+        auto slice1 = tuple{None,None};
+        auto slice2 = tuple{None,None};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        int result[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = tuple{1,2};
+        auto slice1 = tuple{0,1};
+        auto slice2 = tuple{None,None};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        int result[1][1][2] = {{{6,7}}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = tuple{1,3};
+        auto slice1 = tuple{0,1};
+        auto slice2 = tuple{None,None};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        int result[1][1][2] = {{{6,7}}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = tuple{None,None};
+        auto slice1 = tuple{0,2};
+        auto slice2 = tuple{None,-1};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        int result[2][2][1] = {
+            {
+                {0},
+                {2},
+            },
+            {
+                {6},
+                {8},
+            }
+        };
     }
 }
 
-TEST_CASE("slice(std::array[2])"*doctest::test_suite("view::slice"))
+#define RUN_slice_impl(...) \
+nm::view::slice(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs slice fn to callable lambda
+#define RUN_slice(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("slice-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_slice_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_slice(case_name, ...) \
+RUN_slice_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define SLICE_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(view, slice, case_name); \
+    using namespace args; \
+    auto result = RUN_slice(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+TEST_CASE("slice(case1)" * doctest::test_suite("view::slice"))
 {
-    auto array = std::array{
-        std::array{1.,2.,3.},
-        std::array{3.,4.,5.},
-    };
-    // @note only support tuple for now, cant be pair
-    auto array_ref = view::slice(array, std::tuple{1,0}, std::tuple{nm::end,nm::end});
-    // @note even if the referenced array is fixed-size (std::array), the slice args are not!
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
+    SLICE_SUBCASE(case1,   array, slice0, slice1, slice2);
+    SLICE_SUBCASE(case1, array_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case1, array_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case1, array_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case1, array_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case1, array_h, slice0, slice1, slice2);
+}
 
-    CHECK( array_ref.dim()==2 );
-    CHECK( isequal(array_ref.shape(),std::array{1,3}) );
-    CHECK( isequal(nm::shape(array_ref),std::array{1,3}));
+TEST_CASE("slice(case2)" * doctest::test_suite("view::slice"))
+{
+    SLICE_SUBCASE(case2,   array, slice0, slice1, slice2);
+    SLICE_SUBCASE(case2, array_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case2, array_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case2, array_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case2, array_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case2, array_h, slice0, slice1, slice2);
+}
 
-    {
-        double expected[1][3] = {{3.,4.,5.}};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array,0,1) = 6;
-        double expected[1][3] = {{3.,4.,5.}};
-        CHECK( isclose(array_ref,expected) );
-    }
+TEST_CASE("slice(case3)" * doctest::test_suite("view::slice"))
+{
+    SLICE_SUBCASE(case3,   array, slice0, slice1, slice2);
+    SLICE_SUBCASE(case3, array_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case3, array_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case3, array_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case3, array_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case3, array_h, slice0, slice1, slice2);
+}
 
-    {
-        STATIC_CHECK(( nmtools::meta::is_array2d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_matrix_value_type_t<decltype(array_ref)>> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
-    }
+TEST_CASE("slice(case4)" * doctest::test_suite("view::slice"))
+{
+    SLICE_SUBCASE(case4,   array, slice0, slice1, slice2);
+    SLICE_SUBCASE(case4, array_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case4, array_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case4, array_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case4, array_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case4, array_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case5)" * doctest::test_suite("view::slice"))
+{
+    SLICE_SUBCASE(case5,   array, slice0, slice1, slice2);
+    SLICE_SUBCASE(case5, array_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case5, array_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case5, array_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case5, array_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case5, array_h, slice0, slice1, slice2);
 }

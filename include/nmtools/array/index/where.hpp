@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/shape.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 
@@ -33,7 +34,7 @@ namespace nmtools::index
         using return_t = meta::resolve_optype_t<where_t,array_t,index_t>;
         auto res = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
-            res.resize(tuple_size(array));
+            res.resize(len(array));
         auto n = size_t{0};
         auto where_impl = [&](auto i){
             if (f(tuple_at(array,i)))
@@ -44,7 +45,7 @@ namespace nmtools::index
                 where_impl(i);
             });
         else
-            for (size_t i=0; i<size(array); i++)
+            for (size_t i=0; i<len(array); i++)
                 where_impl(i);
         if constexpr (meta::is_resizeable_v<return_t>)
             res.resize(n);
@@ -81,13 +82,21 @@ namespace nmtools::meta
     struct resolve_optype<
         std::enable_if_t<
             !meta::is_resizeable_v<array_t>
-            && has_tuple_size_v<array_t>
             && std::is_arithmetic_v<get_element_or_common_type_t<array_t>>
         >,
         index::where_t, array_t, index_t
     >
     {
-        static constexpr auto N = std::tuple_size_v<array_t>;
+        static constexpr auto N = [](){
+            if constexpr (is_fixed_size_ndarray_v<array_t>) {
+                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
+                return at(shape,std::integral_constant<size_t,0>{});
+            }
+            else {
+                using tf_array_t = transform_bounded_array_t<array_t>;
+                return std::tuple_size_v<tf_array_t>;
+            }
+        }();
         // need to use hybrid array1d since the size will depends on runtime value
         using type = array::hybrid_ndarray<index_t,N,1>;
     }; // resolve_optype where_t

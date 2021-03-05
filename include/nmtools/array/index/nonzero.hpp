@@ -45,7 +45,7 @@ namespace nmtools::index
         
         auto ret = return_t{};
 
-        ret.resize(size(a));
+        ret.resize(len(a));
         
         auto n = size_t{0}; // number of nonzero elements
         auto i = size_t{0};
@@ -62,7 +62,7 @@ namespace nmtools::index
                 nonzero_impl(idx);
             });
         else
-            for (size_t idx=0; idx<size(a); idx++)
+            for (size_t idx=0; idx<len(a); idx++)
                 nonzero_impl(idx);
         
         ret.resize(n);
@@ -82,7 +82,7 @@ namespace nmtools::meta
         void, index::nonzero_t, array_t
     >
     {
-        using array_type    = tuple_to_array_t<array_t>;
+        using array_type    = tuple_to_array_t<transform_bounded_array_t<array_t>>;
         using replaced_type = replace_element_type_t<array_type,size_t>;
         using type = type_t<index::make_resizeable<replaced_type>>;
     }; // resolve_optype

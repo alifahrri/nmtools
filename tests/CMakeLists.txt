@@ -108,6 +108,7 @@ option(TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
 option(TEST_UTILS           "test utils modules"            OFF)
 option(TEST_NDARRAY         "test ndarray modules"          OFF)
 option(TEST_ARRAY_VIEW      "test array view modules"       OFF)
+option(TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
 option(TEST_MISC            "test other modules"            OFF)
 
 if (TEST_ALL)
@@ -151,6 +152,7 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/broadcast_shape.cpp
     src/doctest/array/index/broadcast_to.cpp
     src/doctest/array/index/choose.cpp
+    src/doctest/array/index/compress.cpp
     src/doctest/array/index/concatenate.cpp
     src/doctest/array/index/compute_indices.cpp
     src/doctest/array/index/compute_offset.cpp
@@ -169,7 +171,9 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/shape_concatenate.cpp
     src/doctest/array/index/shape_repeat.cpp
     src/doctest/array/index/shape_tile.cpp
+    src/doctest/array/index/slice.cpp
     src/doctest/array/index/tile.cpp
+    src/doctest/array/index/take.cpp
 )
 if (NOT TEST_ARRAY_DETAIL)
     set(ARRAY_DETAIL_TEST_SOURCES "")
@@ -191,7 +195,6 @@ set(ARRAY_UTILITY_TEST_SOURCES
     src/doctest/array/utility/clone.cpp
     src/doctest/array/utility/row.cpp
     src/doctest/array/utility/column.cpp
-    src/doctest/array/utility/slice.cpp
     src/doctest/array/utility/squeeze.cpp
     src/doctest/array/utility/zeros_like.cpp
 )
@@ -215,6 +218,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/broadcast_to.cpp
     src/doctest/array/view/broadcast_arrays.cpp
     src/doctest/array/view/concatenate.cpp
+    src/doctest/array/view/compress.cpp
     src/doctest/array/view/expand_dims.cpp
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/mutable_flatten.cpp
@@ -226,11 +230,82 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/reshape.cpp
     src/doctest/array/view/slice.cpp
     src/doctest/array/view/squeeze.cpp
-    src/doctest/array/view/transpose.cpp
+    src/doctest/array/view/take.cpp
     src/doctest/array/view/tile.cpp
+    src/doctest/array/view/transpose.cpp
+    src/doctest/array/view/where.cpp
 )
 if (NOT TEST_ARRAY_VIEW)
     set (ARRAY_VIEW_TEST_SOURCES "")
+endif ()
+
+set(ARRAY_UFUNCS_TEST_SOURCES
+    src/doctest/array/view/ufuncs/add.cpp
+    src/doctest/array/view/ufuncs/arccos.cpp
+    src/doctest/array/view/ufuncs/arccosh.cpp
+    src/doctest/array/view/ufuncs/arcsin.cpp
+    src/doctest/array/view/ufuncs/arcsinh.cpp
+    src/doctest/array/view/ufuncs/arctan.cpp
+    src/doctest/array/view/ufuncs/arctanh.cpp
+    src/doctest/array/view/ufuncs/arctan2.cpp
+    src/doctest/array/view/ufuncs/bitwise_and.cpp
+    src/doctest/array/view/ufuncs/bitwise_or.cpp
+    src/doctest/array/view/ufuncs/bitwise_xor.cpp
+    src/doctest/array/view/ufuncs/cbrt.cpp
+    src/doctest/array/view/ufuncs/ceil.cpp
+    src/doctest/array/view/ufuncs/cos.cpp
+    src/doctest/array/view/ufuncs/cosh.cpp
+    src/doctest/array/view/ufuncs/divide.cpp
+    src/doctest/array/view/ufuncs/equal.cpp
+    src/doctest/array/view/ufuncs/exp.cpp
+    src/doctest/array/view/ufuncs/exp2.cpp
+    src/doctest/array/view/ufuncs/expm1.cpp
+    src/doctest/array/view/ufuncs/fabs.cpp
+    src/doctest/array/view/ufuncs/floor.cpp
+    src/doctest/array/view/ufuncs/fmax.cpp
+    src/doctest/array/view/ufuncs/fmin.cpp
+    src/doctest/array/view/ufuncs/fmod.cpp
+    src/doctest/array/view/ufuncs/greater.cpp
+    src/doctest/array/view/ufuncs/greater_equal.cpp
+    src/doctest/array/view/ufuncs/hypot.cpp
+    src/doctest/array/view/ufuncs/invert.cpp
+    src/doctest/array/view/ufuncs/isfinite.cpp
+    src/doctest/array/view/ufuncs/isinf.cpp
+    src/doctest/array/view/ufuncs/isnan.cpp
+    src/doctest/array/view/ufuncs/ldexp.cpp
+    src/doctest/array/view/ufuncs/left_shift.cpp
+    src/doctest/array/view/ufuncs/less.cpp
+    src/doctest/array/view/ufuncs/less_equal.cpp
+    src/doctest/array/view/ufuncs/log.cpp
+    src/doctest/array/view/ufuncs/log1p.cpp
+    src/doctest/array/view/ufuncs/log2.cpp
+    src/doctest/array/view/ufuncs/log10.cpp
+    src/doctest/array/view/ufuncs/logical_and.cpp
+    src/doctest/array/view/ufuncs/logical_not.cpp
+    src/doctest/array/view/ufuncs/logical_or.cpp
+    src/doctest/array/view/ufuncs/logical_xor.cpp
+    src/doctest/array/view/ufuncs/maximum.cpp
+    src/doctest/array/view/ufuncs/minimum.cpp
+    src/doctest/array/view/ufuncs/multiply.cpp
+    src/doctest/array/view/ufuncs/negative.cpp
+    src/doctest/array/view/ufuncs/not_equal.cpp
+    src/doctest/array/view/ufuncs/positive.cpp
+    src/doctest/array/view/ufuncs/power.cpp
+    src/doctest/array/view/ufuncs/reciprocal.cpp
+    src/doctest/array/view/ufuncs/right_shift.cpp
+    src/doctest/array/view/ufuncs/rint.cpp
+    src/doctest/array/view/ufuncs/signbit.cpp
+    src/doctest/array/view/ufuncs/sin.cpp
+    src/doctest/array/view/ufuncs/sinh.cpp
+    src/doctest/array/view/ufuncs/sqrt.cpp
+    src/doctest/array/view/ufuncs/square.cpp
+    src/doctest/array/view/ufuncs/subtract.cpp
+    src/doctest/array/view/ufuncs/tan.cpp
+    src/doctest/array/view/ufuncs/tanh.cpp
+    src/doctest/array/view/ufuncs/trunc.cpp
+)
+if (NOT TEST_ARRAY_UFUNCS)
+    set (ARRAY_UFUNCS_TEST_SOURCES "")
 endif ()
 
 set(MISC_TEST_SOURCES
@@ -253,6 +328,8 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ${NDARRAY_TEST_SOURCES}
     ## view
     ${ARRAY_VIEW_TEST_SOURCES}
+    ## ufuncs
+    ${ARRAY_UFUNCS_TEST_SOURCES}
     ## misc
     ${MISC_TEST_SOURCES}
 )
