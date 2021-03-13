@@ -164,6 +164,7 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/logical_not.cpp
     src/doctest/array/index/ndindex.cpp
     src/doctest/array/index/nonzero.cpp
+    src/doctest/array/index/remove_dims.cpp
     src/doctest/array/index/remove_single_dims.cpp
     src/doctest/array/index/repeat.cpp
     src/doctest/array/index/reverse.cpp
