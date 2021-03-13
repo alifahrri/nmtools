@@ -91,6 +91,19 @@ namespace nmtools::view
     {
         return decorator_t<slice_t,array_t,slices_t...>{{array, {slices...}}};
     } // slice
+
+    template <typename array_t, typename slices_t, size_t...Is>
+    constexpr auto apply_slice(const array_t& array, const slices_t& slices, std::index_sequence<Is...>)
+    {
+        return slice(array,std::get<Is>(slices)...);
+    } // apply_slice
+
+    template <typename array_t, typename slices_t>
+    constexpr auto apply_slice(const array_t& array, const slices_t& slices)
+    {
+        constexpr auto N = std::tuple_size_v<slices_t>;
+        return apply_slice(array, slices, std::make_index_sequence<N>{});
+    } // apply_slice
 } // namespace nmtools::view
 
 namespace nmtools::meta

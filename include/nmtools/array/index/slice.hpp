@@ -62,11 +62,13 @@ namespace nmtools::index
     template <typename shape_t, typename...slices_t>
     constexpr auto shape_slice(const shape_t& shape, const slices_t&...slices)
     {
-        // for now assume slices_t is tuple, mixing slice and at not supported yet
-        using return_t = meta::resolve_optype_t<shape_slice_t,shape_t,slices_t...>;
+        using op_type  = meta::resolve_optype<void,shape_slice_t,shape_t,slices_t...>;
+        using return_t = meta::type_t<op_type>;
+        // number of integer in slices, represent indexing instead of slice
+        constexpr auto N_INT = op_type::N_INT;
 
         auto res = return_t {};
-        auto dim = len(shape);
+        auto dim = len(shape) - N_INT;
         if constexpr (meta::is_resizeable_v<return_t>)
             res.resize(dim);
         
@@ -75,18 +77,39 @@ namespace nmtools::index
 
         auto slices_pack = std::tuple<const slices_t&...>{slices...};
 
+        // since res and shape may have different dim,
+        auto r_i = size_t{0};
         constexpr auto N_SLICES = sizeof...(slices);
         meta::template_for<N_SLICES>([&](auto i){
             auto slice = at(slices_pack, i);
-            auto [start, stop, step] = unpack(shape, slice, i);
+            using slice_t = meta::remove_cvref_t<decltype(slice)>;
+            // when slice is mixed with indexing,
+            // the resulting dimension is len(shape) - N_INT
+            // simply ignore if there is integer
+            if constexpr (!std::is_integral_v<slice_t>) {
+                auto [start, stop, step] = unpack(shape, slice, i);
 
-            // here we already transform negative value to actual bound
-            // but still need to handle negative step, for now just take abs value
-            at(res,i) = (stop - start) / std::abs(step);
+                // here we already transform negative value to actual bound
+                // but still need to handle negative step, for now just take abs value
+                at(res,r_i++) = (stop - start) / std::abs(step);
+            }
         });
 
         return res;
     } // shape_slice
+
+    template <typename shape_t, typename slices_t, size_t...Is>
+    constexpr auto apply_shape_slice(const shape_t& shape, const slices_t& slices, std::index_sequence<Is...>)
+    {
+        return shape_slice(shape, std::get<Is>(slices)...);
+    } // apply_shape_slice
+
+    template <typename shape_t, typename slices_t>
+    constexpr auto apply_shape_slice(const shape_t& shape, const slices_t& slices)
+    {
+        constexpr auto N = std::tuple_size_v<slices_t>;
+        return apply_shape_slice(shape, slices, std::make_index_sequence<N>{});
+    } // apply_shape_slice
 
     template <typename indices_t, typename shape_t, typename...slices_t>
     constexpr auto slice(const indices_t& indices, const shape_t& shape, const slices_t&...slices)
@@ -99,19 +122,40 @@ namespace nmtools::index
         
         auto slices_pack = std::tuple<const slices_t&...>{slices...};
 
+        // since res and shape may have different dim,
+        // also indices and shape may have different dim,
+        // this variable tracks index for indices
+        auto ii = size_t{0};
         // TODO: provide overloads that accepts unpacked `start`, `stop`, `step`
         constexpr auto N_SLICES = sizeof...(slices);
         meta::template_for<N_SLICES>([&](auto i){
             auto slice = at(slices_pack, i);
-            auto [start, stop, step] = unpack(shape, slice, i);
-
-            // TODO: check at(indices,i) < stop
-            // here, apply inverse from shape_pack
-            at(res,i) = start + (at(indices,i) * std::abs(step));
+            using slice_t = meta::remove_cvref_t<decltype(slice)>;
+            if constexpr (std::is_integral_v<slice_t>)
+                at(res,i) = slice;
+            else {
+                auto [start, stop, step] = unpack(shape, slice, i);
+                // TODO: check at(indices,i) < stop
+                // here, apply inverse from shape_pack
+                at(res,i) = start + (at(indices,ii++) * std::abs(step));
+            }
         });
 
         return res;
     } // slice
+
+    template <typename indices_t, typename shape_t, typename slices_t, size_t...Is>
+    constexpr auto apply_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices, std::index_sequence<Is...>)
+    {
+        return slice(indices, shape, std::get<Is>(slices)...);
+    } // apply_slice
+
+    template <typename indices_t, typename shape_t, typename slices_t>
+    constexpr auto apply_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices)
+    {
+        constexpr auto N = std::tuple_size_v<slices_t>;
+        return apply_slice(indices,shape,slices,std::make_index_sequence<N>{});
+    } // apply_slice
 
 } // namespace nmtools::index
 
@@ -122,7 +166,25 @@ namespace nmtools::meta
         void, index::shape_slice_t, shape_t, slices_t...
     >
     {
-        using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
+        static constexpr auto N_INT = [](){
+            using slices_type = std::tuple<slices_t...>;
+            size_t n_int = 0;
+            template_for<sizeof...(slices_t)>([&](auto idx){
+                constexpr auto i = decltype(idx)::value;
+                using slice_t = std::tuple_element_t<i,slices_type>;
+                if constexpr(std::is_integral_v<slice_t>)
+                    n_int = n_int+1;
+            });
+            return n_int;
+        }();
+        using shape_type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
+        // note resize_fixed_vector doesnt work well with std::vector
+        // only return resized when it shape_type is fixed
+        using type = std::conditional_t<
+            is_fixed_index_array_v<shape_type>,
+            resize_fixed_vector_t<shape_type,sizeof...(slices_t)-N_INT>,
+            shape_type
+        >;
     }; // shape_slice_t
 
     template <typename indices_t, typename shape_t, typename...slices_t>

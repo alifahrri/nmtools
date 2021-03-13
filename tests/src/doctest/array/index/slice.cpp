@@ -88,6 +88,32 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     {
         int result[3] = {2,2,1};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0 = tuple{None,None};
+        auto slice1 = 0;
+        auto slice2 = 0;
+        CAST_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        int result[1] = {2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0 = tuple{None,None};
+        auto slice1 = 0;
+        auto slice2 = tuple{None,-1};
+        CAST_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        int result[2] = {2,1};
+    }
 }
 
 #define RUN_shape_slice_impl(...) \
@@ -172,6 +198,26 @@ TEST_CASE("shape_slice(case5)" * doctest::test_suite("index::shape_slice"))
     SHAPE_SLICE_SUBCASE(case5, shape_h, slice0, slice1, slice2);
 }
 
+TEST_CASE("shape_slice(case6)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case6,   shape, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case6, shape_a, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case6, shape_v, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case6, shape_f, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case6, shape_d, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case6, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("shape_slice(case7)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case7,   shape, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case7, shape_a, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case7, shape_v, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case7, shape_f, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case7, shape_d, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case7, shape_h, slice0, slice1, slice2);
+}
+
 NMTOOLS_TESTING_DECLARE_CASE(index, slice)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -252,6 +298,38 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         // int result[3] = {2,2,1};
         int result[3] = {1,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        int indices[1] = {1};
+        int shape[3] = {2,3,2};
+        auto slice0 = tuple{None,None};
+        auto slice1 = 0;
+        auto slice2 = 0;
+        CAST_ARRAYS(indices)
+        CAST_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        // int result[1] = {2};
+        int result[3] = {1,0,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        int indices[2] = {1,0};
+        int shape[3] = {2,3,2};
+        auto slice0 = tuple{None,None};
+        auto slice1 = 0;
+        auto slice2 = tuple{None,-1};
+        CAST_ARRAYS(indices)
+        CAST_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        // int result[2] = {2,1};
+        int result[3] = {1,0,0};
     }
 }
 
@@ -335,4 +413,14 @@ TEST_CASE("slice(case5)" * doctest::test_suite("index::slice"))
     SLICE_SUBCASE(case5, indices_f, shape_f, slice0, slice1, slice2);
     SLICE_SUBCASE(case5, indices_d, shape_d, slice0, slice1, slice2);
     SLICE_SUBCASE(case5, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case6)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case6, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, indices_h, shape_h, slice0, slice1, slice2);
 }
