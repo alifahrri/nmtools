@@ -2,9 +2,9 @@
 
 CWD=$pwd
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" 
-doctest_url="https://github.com/onqtam/doctest/archive/2.4.0.tar.gz"
-doctest_file="2.4.0.tar.gz"
-doctest_dir="doctest-2.4.0"
+doctest_url="https://github.com/onqtam/doctest/archive/2.4.5.tar.gz"
+doctest_file="2.4.5.tar.gz"
+doctest_dir="doctest-2.4.5"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -26,7 +26,7 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [ -z "$DEST" -a "$DEST" != " " ]; then
-    DEST="~/tmp"
+    DEST="$HOME/tmp"
     mkdir -p $DEST
 fi
 
