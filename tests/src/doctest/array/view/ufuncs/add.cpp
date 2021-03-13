@@ -85,3 +85,323 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case1, a_d, b_d );
     ADD_SUBCASE( case1, a_h, b_h );
 }
+
+NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        int axis = 0;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        int shape[2] = {3,2};
+        int result[3][2] = {
+            { 6, 8},
+            {10,12},
+            {14,16},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        int axis = 1;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        int shape[2] = {2,2};
+        int result[2][2] = {
+            { 6, 9},
+            {24,27},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        int axis = 2;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        int shape[2] = {2,3};
+        int result[2][3] = {
+            { 1,  5,  9},
+            {13, 17, 21}
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        int axis[2] = {0,1};
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(axis)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        int shape[1]  = {2};
+        int result[2] = {30,36};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        int axis[2] = {0,2};
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(axis)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        int shape[1]  = {3};
+        int result[3] = {14,22,30};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        int axis[2] = {1,2};
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(axis)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        int shape[1]  = {2};
+        int result[2] = {15,51};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        uint8_t a[2][3][2] = {
+            {
+                {255, 1},
+                {  2, 3},
+                {  4, 5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        int axis = 0;
+        // must provide dtype for correct result
+        auto dtype = int16;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        int shape[2] = {3,2};
+        int result[3][2] = {
+            {261, 8},
+            { 10,12},
+            { 14,16},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        uint8_t a[2][3][2] = {
+            {
+                {  0, 1},
+                {  2, 3},
+                {  4, 5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        int axis = 2;
+        // must provide dtype for correct result
+        auto dtype = int16;
+        auto initial = 255;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        int shape[2] = {2,3};
+        int result[2][3] = {
+            {256,260,264},
+            {268,272,276},
+        };
+    }
+}
+
+#define RUN_reduce_add_impl(...) \
+nm::view::reduce_add(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs reduce_add fn to callable lambda
+#define RUN_reduce_add(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("reduce_add-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_reduce_add_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_reduce_add(case_name, ...) \
+RUN_reduce_add_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define REDUCE_ADD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case_name); \
+    using namespace args; \
+    auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
+}
+
+TEST_CASE("reduce_add(case1)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case1,   a, axis );
+    REDUCE_ADD_SUBCASE( case1, a_a, axis );
+    REDUCE_ADD_SUBCASE( case1, a_v, axis );
+    REDUCE_ADD_SUBCASE( case1, a_f, axis );
+    // not yet supported,
+    // cant figure out apply_slice for dynamic dim array yet
+    // REDUCE_ADD_SUBCASE( case1, a_d, axis );
+    REDUCE_ADD_SUBCASE( case1, a_h, axis );
+}
+
+TEST_CASE("reduce_add(case2)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case2,   a, axis );
+    REDUCE_ADD_SUBCASE( case2, a_a, axis );
+    REDUCE_ADD_SUBCASE( case2, a_v, axis );
+    REDUCE_ADD_SUBCASE( case2, a_f, axis );
+    REDUCE_ADD_SUBCASE( case2, a_h, axis );
+}
+
+TEST_CASE("reduce_add(case3)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case3,   a, axis );
+    REDUCE_ADD_SUBCASE( case3, a_a, axis );
+    REDUCE_ADD_SUBCASE( case3, a_v, axis );
+    REDUCE_ADD_SUBCASE( case3, a_f, axis );
+    REDUCE_ADD_SUBCASE( case3, a_h, axis );
+}
+
+TEST_CASE("reduce_add(case4)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case4,   a,   axis );
+    REDUCE_ADD_SUBCASE( case4, a_a, axis_a );
+    REDUCE_ADD_SUBCASE( case4, a_v, axis_v );
+    REDUCE_ADD_SUBCASE( case4, a_f, axis_f );
+    REDUCE_ADD_SUBCASE( case4, a_h, axis_h );
+}
+
+TEST_CASE("reduce_add(case5)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case5,   a,   axis );
+    REDUCE_ADD_SUBCASE( case5, a_a, axis_a );
+    REDUCE_ADD_SUBCASE( case5, a_v, axis_v );
+    REDUCE_ADD_SUBCASE( case5, a_f, axis_f );
+    REDUCE_ADD_SUBCASE( case5, a_h, axis_h );
+}
+
+TEST_CASE("reduce_add(case6)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case6,   a,   axis );
+    REDUCE_ADD_SUBCASE( case6, a_a, axis_a );
+    REDUCE_ADD_SUBCASE( case6, a_v, axis_v );
+    REDUCE_ADD_SUBCASE( case6, a_f, axis_f );
+    REDUCE_ADD_SUBCASE( case6, a_h, axis_h );
+}
+
+TEST_CASE("reduce_add(case7)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case7,   a, axis, dtype );
+    REDUCE_ADD_SUBCASE( case7, a_a, axis, dtype );
+    REDUCE_ADD_SUBCASE( case7, a_v, axis, dtype );
+    REDUCE_ADD_SUBCASE( case7, a_f, axis, dtype );
+    REDUCE_ADD_SUBCASE( case7, a_h, axis, dtype );
+}
+
+TEST_CASE("reduce_add(case8)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case8,   a, axis, dtype, initial );
+    REDUCE_ADD_SUBCASE( case8, a_a, axis, dtype, initial );
+    REDUCE_ADD_SUBCASE( case8, a_v, axis, dtype, initial );
+    REDUCE_ADD_SUBCASE( case8, a_f, axis, dtype, initial );
+    REDUCE_ADD_SUBCASE( case8, a_h, axis, dtype, initial );
+}

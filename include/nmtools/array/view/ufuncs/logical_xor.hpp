@@ -19,6 +19,14 @@ namespace nmtools::view
     {
         return ufunc(logical_xor_t{},a,b);
     } // logical_xor
+
+    template <typename left_t, typename axis_t>
+    constexpr auto reduce_logical_xor(const left_t& a, const axis_t& axis)
+    {
+        using initial_t = meta::get_element_type_t<left_t>;
+        auto init = false;
+        return reduce(logical_xor_t{},a,axis,init);
+    } // reduce_logical_xor
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_LOGICAL_XOR_HPP

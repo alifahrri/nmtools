@@ -167,6 +167,60 @@ NMTOOLS_TESTING_DECLARE_CASE(view, slice)
             }
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = tuple{None,None};
+        auto slice1 = 0;
+        auto slice2 = tuple{None,-1};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        int result[2][1] = {
+            {0},
+            {6},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = 1;
+        auto slice1 = tuple{0,2};
+        auto slice2 = tuple{None,-1};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        int result[2][1] = {
+            {6},
+            {8},
+        };
+    }
 }
 
 #define RUN_slice_impl(...) \
@@ -249,4 +303,24 @@ TEST_CASE("slice(case5)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case5, array_f, slice0, slice1, slice2);
     SLICE_SUBCASE(case5, array_d, slice0, slice1, slice2);
     SLICE_SUBCASE(case5, array_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case6)" * doctest::test_suite("view::slice"))
+{
+    SLICE_SUBCASE(case6,   array, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, array_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, array_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, array_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, array_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, array_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case7)" * doctest::test_suite("view::slice"))
+{
+    SLICE_SUBCASE(case7,   array, slice0, slice1, slice2);
+    SLICE_SUBCASE(case7, array_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case7, array_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case7, array_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case7, array_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case7, array_h, slice0, slice1, slice2);
 }

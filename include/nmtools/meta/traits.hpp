@@ -1321,6 +1321,11 @@ namespace nmtools::meta {
         std::enable_if_t<std::is_integral_v<T>>
     > : std::true_type {};
 
+    template <typename T, size_t N>
+    struct is_index_array<T[N],
+        std::enable_if_t<std::is_integral_v<T>>
+    > : std::true_type {};
+
     /**
      * @brief Tuple of index is index array
      * 
@@ -1333,6 +1338,53 @@ namespace nmtools::meta {
 
     template <typename T>
     inline constexpr auto is_index_array_v = is_index_array<T>::value;
+
+    template <typename T, typename=void>
+    struct fixed_index_array_size
+    {
+        static constexpr auto value = detail::fail_t{};
+    };
+
+    template <typename T, size_t N>
+    struct fixed_index_array_size<T[N],std::enable_if_t<is_index_v<T>>>
+    {
+        static constexpr auto value = N;
+    };
+
+    template <typename T, size_t N>
+    struct fixed_index_array_size<std::array<T,N>,std::enable_if_t<is_index_v<T>>>
+    {
+        static constexpr auto value = N;
+    };
+
+    template <typename...Ts>
+    struct fixed_index_array_size<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>>
+    {
+        static constexpr auto value = sizeof...(Ts);
+    };
+
+    template <typename T>
+    static constexpr auto fixed_index_array_size_v = fixed_index_array_size<T>::value;
+
+    template <typename T, typename=void>
+    struct is_fixed_index_array : std::false_type {};
+
+    template <typename T>
+    inline constexpr auto is_fixed_index_array_v = is_fixed_index_array<T>::value;
+
+    template <typename T, size_t N>
+    struct is_fixed_index_array<T[N],std::enable_if_t<is_index_v<T>>> : std::true_type {};
+
+    template <typename T, size_t N>
+    struct is_fixed_index_array<std::array<T,N>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
+
+    template <typename...Ts>
+    struct is_fixed_index_array<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>> : std::true_type {};
+
+#if defined(NMTOOLS_HAS_VECTOR)
+    template <typename T>
+    struct is_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
+#endif // NMTOOLS_HAS_VECTOR
 
     /** @} */ // end group traits
 

@@ -274,6 +274,31 @@ namespace nmtools
         using value_type = decltype(value);
     };
 
+    template <typename T, size_t N>
+    struct meta::is_index_array< array::fixed_ndarray<T,N>
+        , std::enable_if_t<meta::is_index_v<T>>
+    > : std::true_type {};
+
+    template <typename T, size_t N>
+    struct meta::is_fixed_index_array< array::fixed_ndarray<T,N>
+        , std::enable_if_t<meta::is_index_v<T>>
+    > : std::true_type {};
+
+    template <typename T, size_t N>
+    struct meta::fixed_index_array_size< array::fixed_ndarray<T,N>
+        , std::enable_if_t<meta::is_index_v<T>>
+    >
+    {
+        static constexpr auto value = N;
+    };
+
+    template <typename T, size_t N, auto NEW_SIZE>
+    struct meta::resize_fixed_vector< array::fixed_ndarray<T,N>, NEW_SIZE >
+    {
+        using type = array::fixed_ndarray<T,NEW_SIZE>;
+    };
+
+
     /**
      * @brief specialize replace_element_type for array::fixed_ndarray
      * 
