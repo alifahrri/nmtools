@@ -337,6 +337,10 @@ namespace nmtools::meta
     template <typename T>
     struct is_dynamic_ndarray<array::dynamic_ndarray<T>> : true_type {};
 
+    // cant be sure since the number of dimension depends at runtime
+    template <typename T>
+    struct is_index_array<array::dynamic_ndarray<T>> : false_type {};
+
     /**
      * @brief specialize replace_element_type for array::dynamic_ndarray
      * 
