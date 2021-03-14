@@ -283,6 +283,148 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         int shape[1] = {2};
         int result[2] = {0,85155840};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            },
+        };
+        int axis = 0;
+        auto dtype = None;
+        auto initial = None;
+        auto keepdims = True;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        int shape[3] = {1,3,2};
+        int result[1][3][2] = {
+            {
+                { 0, 7},
+                {16,27},
+                {40,55},
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            },
+        };
+        int axis = 1;
+        auto dtype = None;
+        auto initial = None;
+        auto keepdims = False;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        int shape[2] = {2,2};
+        int result[2][2] = {
+            {  0,  15},
+            {480, 693},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        int axis = 2;
+        auto dtype = None;
+        auto initial = None;
+        auto keepdims = true;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        int shape[3] = {2,3,1};
+        int result[2][3][1] = {
+            {{ 0}, { 6},  20},
+            {{42}, {72}, 110},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        int axis[2] = {0,1};
+        auto dtype = None;
+        auto initial = None;
+        auto keepdims = false;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
+    {
+        int shape[1] = {2};
+        int result[2] = {0, 10395};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case13)
+    {
+        int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        int axis[2] = {0,2};
+        auto dtype = None;
+        auto initial = None;
+        auto keepdims = true;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case13)
+    {
+        int shape[3] = {1,3,1};
+        int result[1][3][1] = { {{0}, {432}, {2200}} };
+    }
 }
 
 #define RUN_reduce_multiply_impl(...) \
@@ -390,4 +532,49 @@ TEST_CASE("reduce_multiply(case8)" * doctest::test_suite("view::reduce_multiply"
     REDUCE_MULTIPLY_SUBCASE( case8, a_v, axis, dtype, initial );
     REDUCE_MULTIPLY_SUBCASE( case8, a_f, axis, dtype, initial );
     REDUCE_MULTIPLY_SUBCASE( case8, a_h, axis, dtype, initial );
+}
+
+TEST_CASE("reduce_multiply(case9)" * doctest::test_suite("view::reduce_multiply"))
+{
+    REDUCE_MULTIPLY_SUBCASE( case9,   a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case9, a_a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case9, a_v, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case9, a_f, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case9, a_h, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_multiply(case10)" * doctest::test_suite("view::reduce_multiply"))
+{
+    REDUCE_MULTIPLY_SUBCASE( case10,   a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case10, a_a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case10, a_v, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case10, a_f, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case10, a_h, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_multiply(case11)" * doctest::test_suite("view::reduce_multiply"))
+{
+    REDUCE_MULTIPLY_SUBCASE( case11,   a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case11, a_a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case11, a_v, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case11, a_f, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case11, a_h, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_multiply(case12)" * doctest::test_suite("view::reduce_multiply"))
+{
+    REDUCE_MULTIPLY_SUBCASE( case12,   a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case12, a_a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case12, a_v, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case12, a_h, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_multiply(case13)" * doctest::test_suite("view::reduce_multiply"))
+{
+    REDUCE_MULTIPLY_SUBCASE( case13,   a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case13, a_a, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case13, a_v, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case13, a_f, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case13, a_h, axis, dtype, initial, keepdims );
 }

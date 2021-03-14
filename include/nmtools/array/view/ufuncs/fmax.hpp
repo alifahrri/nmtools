@@ -45,6 +45,15 @@ namespace nmtools::view
         return ufunc(fmax_t<>{},a,b);
     } // fmax
 
+    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto reduce_fmax(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t init, keepdims_t keepdims)
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = fmax_t<none_t,none_t,res_t>;
+        return reduce(op_t{},a,axis,init,keepdims);
+    } // reduce_fmax
+
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmax(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t init)

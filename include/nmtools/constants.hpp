@@ -79,6 +79,18 @@ namespace nmtools
     inline constexpr auto None = none_t {};
 
     /**
+     * @brief special constant for true_type
+     * 
+     */
+    inline constexpr auto True  = std::true_type {};
+
+    /**
+     * @brief sepcial constant for false_type
+     * 
+     */
+    inline constexpr auto False = std::false_type {};
+
+    /**
      * @brief helper traits to check for "None" type
      * 
      * @tparam T 
