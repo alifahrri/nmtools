@@ -41,6 +41,14 @@ namespace nmtools::view
         return ufunc(multiply_t<>{},a,b);
     } // multiply
 
+    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
+    constexpr auto reduce_multiply(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = multiply_t<none_t,none_t,res_t>;
+        return reduce(op_t{},a,axis,initial,keepdims);
+    } // reduce_multiply
+
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
     constexpr auto reduce_multiply(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
     {
