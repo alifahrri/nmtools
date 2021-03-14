@@ -194,6 +194,125 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_fmod)
             {5,5,5},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        float a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            },
+        };
+        int axis = 0;
+        auto dtype = None;
+        auto initial = None;
+        auto keepdims = True;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        int shape[3] = {1,3,2};
+        float result[1][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        float a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            },
+        };
+        int axis = 1;
+        auto dtype = None;
+        auto initial = None;
+        auto keepdims = False;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        int shape[2] = {2,2};
+        float result[2][2] = {
+            {0,1},
+            {6,7},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        float a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            },
+        };
+        int axis = 2;
+        auto dtype = None;
+        auto initial = None;
+        auto keepdims = true;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        int shape[3] = {2,3,1};
+        float result[2][3][1] = {
+            {{0},{2},{ 4}},
+            {{6},{8},{10}},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        float a[2][3][2] = {
+            {
+                {1,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            },
+        };
+        int axis = 2;
+        auto dtype = float64;
+        auto initial = 5;
+        auto keepdims = false;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        int shape[2] = {2,3};
+        float result[2][3] = {
+            {0,1,1},
+            {5,5,5},
+        };
+    }
 }
 
 #define RUN_reduce_fmod_impl(...) \
@@ -269,4 +388,40 @@ TEST_CASE("reduce_fmod(case4)" * doctest::test_suite("view::reduce_fmod"))
     REDUCE_FMOD_SUBCASE( case4, a_v, axis, dtype, initial );
     REDUCE_FMOD_SUBCASE( case4, a_f, axis, dtype, initial );
     REDUCE_FMOD_SUBCASE( case4, a_f, axis, dtype, initial );
+}
+
+TEST_CASE("reduce_fmod(case5)" * doctest::test_suite("view::reduce_fmod"))
+{
+    REDUCE_FMOD_SUBCASE( case5,   a, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case5, a_a, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case5, a_v, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case5, a_f, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case5, a_f, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmod(case6)" * doctest::test_suite("view::reduce_fmod"))
+{
+    REDUCE_FMOD_SUBCASE( case6,   a, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case6, a_a, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case6, a_v, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case6, a_f, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case6, a_f, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmod(case7)" * doctest::test_suite("view::reduce_fmod"))
+{
+    REDUCE_FMOD_SUBCASE( case7,   a, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case7, a_a, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case7, a_v, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case7, a_f, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case7, a_f, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmod(case8)" * doctest::test_suite("view::reduce_fmod"))
+{
+    REDUCE_FMOD_SUBCASE( case8,   a, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case8, a_a, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case8, a_v, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case8, a_f, axis, dtype, initial, keepdims );
+    REDUCE_FMOD_SUBCASE( case8, a_f, axis, dtype, initial, keepdims );
 }

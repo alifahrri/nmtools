@@ -32,6 +32,18 @@ NMTOOLS_TESTING_DECLARE_CASE(index, remove_dims)
     {
         int result[2] = {1,3};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        int shape[3] = {1,2,3};
+        int axis = 1;
+        auto keepdims = True;
+        CAST_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        int result[3] = {1,1,3};
+    }
 }
 
 #define RUN_impl(...) \
@@ -74,4 +86,14 @@ TEST_CASE("remove_dims(case1)" * doctest::test_suite("index::remove_dims"))
     REMOVE_DIMS_SUBCASE( case1, shape_f, axis );
     // REMOVE_DIMS_SUBCASE( case1, shape_d, axis );
     REMOVE_DIMS_SUBCASE( case1, shape_h, axis );
+}
+
+TEST_CASE("remove_dims(case2)" * doctest::test_suite("index::remove_dims"))
+{
+    REMOVE_DIMS_SUBCASE( case2, shape, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case2, shape_a, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case2, shape_v, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case2, shape_f, axis, keepdims );
+    // REMOVE_DIMS_SUBCASE( case2, shape_d, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case2, shape_h, axis, keepdims );
 }
