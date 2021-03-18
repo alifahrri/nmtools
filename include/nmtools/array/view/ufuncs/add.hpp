@@ -67,6 +67,20 @@ namespace nmtools::view
     {
         return reduce_add(a,axis,None,None);
     } // add
+
+    template <typename left_t, typename axis_t, typename dtype_t>
+    constexpr auto accumulate_add(const left_t& a, axis_t axis, dtype_t dtype)
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = add_t<none_t,none_t,res_t>;
+        return accumulate(op_t{},a,axis);
+    } // accumulate_add
+
+    template <typename left_t, typename axis_t>
+    constexpr auto accumulate_add(const left_t& a, axis_t axis)
+    {
+        return accumulate_add(a,axis,None);
+    } // accumulate_add
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_ADD_HPP

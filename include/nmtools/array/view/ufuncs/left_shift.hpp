@@ -80,6 +80,22 @@ namespace nmtools::view
     {
         return reduce_left_shift(a,axis,None,None);
     } // reduce_left_shift
+
+    template <typename left_t, typename axis_t, typename dtype_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto accumulate_left_shift(const left_t& a, const axis_t& axis, dtype_t dtype)
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = left_shift_t<none_t,none_t,res_t>;
+        return accumulate(op_t{},a,axis);
+    } // accumulate_left_shift
+
+    template <typename left_t, typename axis_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto accumulate_left_shift(const left_t& a, const axis_t& axis)
+    {
+        return accumulate_left_shift(a,axis,None);
+    } // accumulate_left_shift
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_LEFT_SHIFT_HPP

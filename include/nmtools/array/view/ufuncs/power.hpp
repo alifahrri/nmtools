@@ -98,6 +98,22 @@ namespace nmtools::view
     {
         return reduce_power(a,axis,None);
     } // reduce_power
+
+    template <typename left_t, typename axis_t, typename dtype_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto accumulate_power(const left_t& a, const axis_t& axis, dtype_t dtype)
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = power_t<none_t,none_t,res_t>;
+        return accumulate(op_t{},a,axis);
+    } // accumulate_power
+
+    template <typename left_t, typename axis_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto accumulate_power(const left_t& a, const axis_t& axis)
+    {
+        return accumulate_power(a,axis,None);
+    } // accumulate_power
 }
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_POWER_HPP
