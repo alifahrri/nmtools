@@ -68,6 +68,22 @@ namespace nmtools::view
     {
         return reduce_multiply(a,axis,None,None);
     } // reduce_multiply
+
+    template <typename left_t, typename axis_t, typename dtype_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto accumulate_multiply(const left_t& a, const axis_t& axis, dtype_t dtype)
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = multiply_t<none_t,none_t,res_t>;
+        return accumulate(op_t{},a,axis);
+    } // accumulate_multiply
+
+    template <typename left_t, typename axis_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto accumulate_multiply(const left_t& a, const axis_t& axis)
+    {
+        return accumulate_multiply(a,axis,None);
+    } // accumulate_multiply
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_MULTIPLY_HPP

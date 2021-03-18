@@ -76,6 +76,22 @@ namespace nmtools::view
     {
         return reduce_fmax(a,axis,None,None);
     } // reduce_fmax
+
+    template <typename left_t, typename axis_t, typename dtype_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto accumulate_fmax(const left_t& a, const axis_t& axis, dtype_t dtype)
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = fmax_t<none_t,none_t,res_t>;
+        return accumulate(op_t{},a,axis);
+    } // accumulate_fmax
+
+    template <typename left_t, typename axis_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto accumulate_fmax(const left_t& a, const axis_t& axis)
+    {
+        return accumulate_fmax(a,axis,None);
+    } // accumulate_fmax
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_FMAX_HPP
