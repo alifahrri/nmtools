@@ -379,6 +379,99 @@ namespace nmtools::view
         } // operator()
     }; // reduce_t
 
+    /**
+     * @brief Type constructor for accumulate ufuncs.
+     *
+     * Accumulate the result on given axis.
+     * 
+     * @tparam op_t operator type
+     * @tparam array_t array type
+     * @tparam axis_t axis type
+     */
+    template <typename op_t, typename array_t, typename axis_t>
+    struct accumulate_t
+    {
+        // if given array is a view, just use value instead of reference
+        using operands_type = std::conditional_t<is_view_v<array_t>,array_t,const array_t&>;
+        using array_type    = operands_type;
+        using axis_type     = axis_t;
+        using op_type       = op_t;
+        using reducer_type  = reducer_t<op_t>;
+        using element_type  = meta::get_element_type_t<array_t>;
+
+        template <typename element_t>
+        struct get_result_type
+        {
+            static constexpr auto vtype = [](){
+                if constexpr (detail::has_result_type_v<op_type>) {
+                    using result_t = typename op_type::result_type;
+                    return detail::type_wrapper<result_t>{};
+                }
+                else return detail::type_wrapper<element_t>{};
+            }();
+            using type = meta::type_t<meta::remove_cvref_t<decltype(vtype)>>;
+        };
+        using result_type = meta::type_t<get_result_type<element_type>>;
+
+        array_type array;
+        axis_type axis;
+        op_type op;
+        reducer_type reducer;
+
+        constexpr accumulate_t(op_type op, array_type array, axis_type axis)
+            : op(op), array(array), axis(axis), reducer{op} {}
+
+        constexpr auto shape() const
+        {
+            return ::nmtools::shape(array);
+        } // shape
+
+        constexpr auto dim() const
+        {
+            return ::nmtools::dim(array);
+        } // dim
+
+        template <typename...size_types>
+        constexpr auto operator()(size_types...indices) const
+        {
+            // here we directly provide operator() to actually performing operations,
+            // instead of returning (transformed) index only
+            using ::nmtools::detail::make_array;
+            using common_t = std::common_type_t<size_types...>;
+            auto indices_ = [&](){
+                // handle non-packed indices
+                if constexpr (std::is_integral_v<common_t>)
+                    return make_array<std::array>(indices...);
+                // handle packed indices, number of indices must be 1
+                else {
+                    static_assert (sizeof...(indices)==1
+                        , "unsupported index for broadcast_to view"
+                    );
+                    return std::get<0>(std::tuple{indices...});
+                }
+            }();
+            // for now, assume axis is int and array is fixed_dim
+            constexpr auto DIM = meta::fixed_dim_v<array_t>;
+            // type for slicing is DIMx2 where 2 represent start and stop
+            using slices_type = std::array<std::array<size_t,2>,DIM>;
+            auto slices = slices_type {};
+            // here, len(slices) already matched the dimension of source array
+            auto dim = len(slices);
+            for (size_t i=0; i<dim; i++) {
+                // index at axis i
+                auto s = at(indices_,i);
+                auto start = i==axis ? 0 : s;
+                auto stop  = s + 1;
+                at(slices,i) = {start,stop};
+            }
+            // apply slice only works with fixed dim ndarray for now
+            // TODO: support dynamic dim ndarray
+            auto sliced = apply_slice(array, slices);
+            auto flattened = flatten(sliced);
+            return reducer.template operator()<result_type>(flattened);
+        } // operator()
+    }; // accumulate_t
+
     // provide user defined CTAD with tuple of arrays as args
     template <typename op_t, typename...arrays_t>
     ufunc_t(op_t, std::tuple<arrays_t...>) -> ufunc_t<op_t,arrays_t...>;
@@ -438,6 +531,25 @@ namespace nmtools::view
         using view_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
         return view_t{{op,array,axis,initial,keepdims}};
     } // reduce
+
+    /**
+     * @brief Create accumulate_t object given op, array and axis.
+     * 
+     * @tparam op_t 
+     * @tparam array_t 
+     * @tparam axis_t 
+     * @param op 
+     * @param array 
+     * @param axis 
+     * @return constexpr auto 
+     */
+    template <typename op_t, typename array_t, typename axis_t>
+    constexpr auto accumulate(op_t op, const array_t& array, axis_t axis)
+    {
+        // note: axis as reference to prevent array decays
+        using view_t = decorator_t<accumulate_t,op_t,array_t,axis_t>;
+        return view_t{{op,array,axis}};
+    } // accumulate
 } // namespace nmtools::view
 
 namespace nmtools::meta
@@ -531,6 +643,56 @@ namespace nmtools::meta
     >
     {
         using type = typename view::reduce_t<op_t, array_t, axis_t, initial_t, keepdims_t>::result_type;
+    };
+
+    // NOTE: dont support fixed size for now
+    // TODO: fix for fixed size
+    template <typename op_t, typename array_t, typename axis_t>
+    struct fixed_matrix_size<
+        view::accumulate_t< op_t, array_t, axis_t >
+    >
+    {
+        static inline constexpr auto value = detail::fail_t{};
+        using value_type = decltype(value);
+    };
+
+    // NOTE: dont support fixed size for now
+    // TODO: fix for fixed size
+    template <typename op_t, typename array_t, typename axis_t>
+    struct fixed_vector_size<
+        view::accumulate_t< op_t, array_t, axis_t >
+    >
+    {
+        static inline constexpr auto value = detail::fail_t{};
+        using value_type = decltype(value);
+    };
+
+    // NOTE: dont support fixed size for now
+    // TODO: fix for fixed size
+    template <typename op_t, typename array_t, typename axis_t>
+    struct fixed_ndarray_shape<
+        view::accumulate_t< op_t, array_t, axis_t >
+    >
+    {
+        static inline constexpr auto value = detail::fail_t{};
+        using value_type = decltype(value);
+    }; // fixed_ndarray_shape
+
+    template <typename op_t, typename array_t, typename axis_t>
+    struct is_ndarray< 
+        view::decorator_t< view::accumulate_t, op_t, array_t, axis_t >
+    >
+    {
+        static constexpr auto value = is_ndarray_v<array_t>;
+    };
+
+    // provide specialization for reducer
+    template <typename op_t, typename array_t, typename axis_t>
+    struct get_element_type<
+        view::decorator_t< view::accumulate_t, op_t, array_t, axis_t >
+    >
+    {
+        using type = typename view::accumulate_t<op_t, array_t, axis_t>::result_type;
     };
 } // namespace nmtools::meta
 
