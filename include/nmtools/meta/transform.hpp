@@ -2766,6 +2766,18 @@ namespace nmtools::meta
         using type = replace_element_type_t<c_t,common_t>;
     }; // resolve_optype expand_dims_t
 
+    template <typename T, size_t N>
+    struct resize_fixed_index_array : resize_fixed_vector<T,N> {};
+
+    template <typename T, size_t N>
+    using resize_fixed_index_array_t = type_t<resize_fixed_index_array<T,N>>;
+
+    template <typename T>
+    struct as_value
+    {
+        using type = T;
+    };
+
     /** @} */ // end group meta
 } // namespace nmtools::meta
 

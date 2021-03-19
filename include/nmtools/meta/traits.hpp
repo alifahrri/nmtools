@@ -1381,9 +1381,18 @@ namespace nmtools::meta {
     template <typename...Ts>
     struct is_fixed_index_array<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>> : std::true_type {};
 
+    template <typename T, typename=void>
+    struct is_dynamic_index_array : std::false_type {};
+
+    template <typename T>
+    inline constexpr auto is_dynamic_index_array_v = is_dynamic_index_array<T>::value;
+
 #if defined(NMTOOLS_HAS_VECTOR)
     template <typename T>
     struct is_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
+
+    template <typename T>
+    struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
 #endif // NMTOOLS_HAS_VECTOR
 
     /** @} */ // end group traits
