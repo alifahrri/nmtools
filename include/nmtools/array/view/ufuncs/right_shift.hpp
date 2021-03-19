@@ -82,7 +82,6 @@ namespace nmtools::view
     } // reduce_right_shift
 
     template <typename left_t, typename axis_t, typename dtype_t>
-    NMTOOLS_UFUNC_CONSTEXPR
     auto accumulate_right_shift(const left_t& a, const axis_t& axis, dtype_t dtype)
     {
         using res_t = get_dtype_t<dtype_t>;
@@ -91,11 +90,18 @@ namespace nmtools::view
     } // accumulate_right_shift
 
     template <typename left_t, typename axis_t>
-    NMTOOLS_UFUNC_CONSTEXPR
     auto accumulate_right_shift(const left_t& a, const axis_t& axis)
     {
         return accumulate_right_shift(a,axis,None);
     } // accumulate_right_shift
+
+    template <typename left_t, typename right_t, typename dtype_t=none_t>
+    constexpr auto outer_right_shift(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{})
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = right_shift_t<none_t,none_t,res_t>;
+        return outer(op_t{},a,b);
+    } // outer_right_shift
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_RIGHT_SHIFT_HPP

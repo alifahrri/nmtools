@@ -81,7 +81,6 @@ namespace nmtools::view
     } // reduce_subtract
 
     template <typename left_t, typename axis_t, typename dtype_t>
-    NMTOOLS_UFUNC_CONSTEXPR
     auto accumulate_subtract(const left_t& a, const axis_t& axis, dtype_t dtype)
     {
         using res_t = get_dtype_t<dtype_t>;
@@ -90,11 +89,18 @@ namespace nmtools::view
     } // accumulate_subtract
 
     template <typename left_t, typename axis_t>
-    NMTOOLS_UFUNC_CONSTEXPR
     auto accumulate_subtract(const left_t& a, const axis_t& axis)
     {
         return accumulate_subtract(a,axis,None);
     } // accumulate_subtract
+
+    template <typename left_t, typename right_t, typename dtype_t=none_t>
+    constexpr auto outer_subtract(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{})
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = subtract_t<none_t,none_t,res_t>;
+        return outer(op_t{},a,b);
+    } // outer_subtract
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_SUBTRACT_HPP

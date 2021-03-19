@@ -151,6 +151,9 @@ namespace nmtools::benchmarks
                         (*bench).render(fmt,output);
                     }
                     // only available on certain version of nanobench
+                    #if (ANKERL_NANOBENCH_VERSION_MAJOR < 4)
+                    #else 
+                    #if (ANKERL_NANOBENCH_VERSION_MAJOR==4 && ANKERL_NANOBENCH_VERSION_MINOR >= 3) || (ANKERL_NANOBENCH_VERSION_MAJOR > 4)
                     if (output_pyperf) {
                         auto fmt = ankerl::nanobench::templates::pyperf();
                         for (const auto& result : (*bench).results()) {
@@ -160,6 +163,8 @@ namespace nmtools::benchmarks
                             ankerl::nanobench::render(fmt,{result},output);
                         }
                     }
+                    #endif
+                    #endif // ANKERL_NANOBENCH_VERSION_MAJOR
                 }
                 // mustache templates
                 if (output_csv) {

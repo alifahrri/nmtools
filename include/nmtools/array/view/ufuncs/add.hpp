@@ -81,6 +81,14 @@ namespace nmtools::view
     {
         return accumulate_add(a,axis,None);
     } // accumulate_add
+
+    template <typename left_t, typename right_t, typename dtype_t=none_t>
+    constexpr auto outer_add(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{})
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = add_t<none_t,none_t,res_t>;
+        return outer(op_t{},a,b);
+    } // outer_add
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_ADD_HPP

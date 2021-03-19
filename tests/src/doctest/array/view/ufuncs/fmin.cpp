@@ -733,3 +733,72 @@ TEST_CASE("accumulate_fmin(case3)" * doctest::test_suite("view::accumulate_fmin"
     // ACCUMULATE_FMIN_SUBCASE( case3, a_d, axis );
     ACCUMULATE_FMIN_SUBCASE( case3, a_f, axis );
 }
+
+NMTOOLS_TESTING_DECLARE_CASE(view, outer_fmin)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        int a[2][3] = {
+            {0,1,2},
+            {3,4,5},
+        };
+        int b[3] = { 6,  7, 8};
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        int shape[3] = {2,3,3};
+        int result[2][3][3] = \
+       {{{0, 0, 0},
+        {1, 1, 1},
+        {2, 2, 2}},
+
+       {{3, 3, 3},
+        {4, 4, 4},
+        {5, 5, 5}}};
+    }
+}
+
+#define RUN_outer_fmin_impl(...) \
+nm::view::outer_fmin(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs outer_fmin fn to callable lambda
+#define RUN_outer_fmin(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("outer_fmin-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_outer_fmin_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_outer_fmin(case_name, ...) \
+RUN_outer_fmin_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define OUTER_FMIN_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(view, outer_fmin, case_name); \
+    using namespace args; \
+    auto result = RUN_outer_fmin(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
+}
+
+TEST_CASE("outer_fmin(case1)" * doctest::test_suite("view::outer_fmin"))
+{
+    OUTER_FMIN_SUBCASE( case1,   a,   b );
+    OUTER_FMIN_SUBCASE( case1, a_a, b_a );
+    OUTER_FMIN_SUBCASE( case1, a_v, b_v );
+    OUTER_FMIN_SUBCASE( case1, a_f, b_f );
+    OUTER_FMIN_SUBCASE( case1, a_d, b_d );
+    OUTER_FMIN_SUBCASE( case1, a_h, b_h );
+}

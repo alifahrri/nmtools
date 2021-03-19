@@ -8,6 +8,7 @@
 #include "nmtools/array/view/slice.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/broadcast_arrays.hpp"
+#include "nmtools/array/index/outer.hpp"
 #include "nmtools/array/index/remove_dims.hpp"
 #include "nmtools/array/index/where.hpp"
 #include "nmtools/array/shape.hpp"
@@ -472,6 +473,71 @@ namespace nmtools::view
         } // operator()
     }; // accumulate_t
 
+    /**
+     * @brief Type constructor for outer ufuncs.
+     * 
+     * Apply op to pairs of element of lhs and rhs.
+     *
+     * @tparam op_t 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     */
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct outer_t
+    {
+        using operands_type = detail::get_operands_type_t<lhs_t,rhs_t>;
+        using array_type = operands_type;
+        using op_type = op_t;
+        using lhs_element_type = meta::get_element_type_t<lhs_t>;
+        using rhs_element_type = meta::get_element_type_t<rhs_t>;
+        using result_type = detail::get_result_type_t<op_t,lhs_element_type,rhs_element_type>;
+
+        op_type op;
+        operands_type operands;
+
+        constexpr outer_t(op_type op, operands_type operands)
+            : op(op), operands(operands) {}
+        
+        constexpr auto shape() const
+        {
+            auto ashape = ::nmtools::shape(std::get<0>(operands));
+            auto bshape = ::nmtools::shape(std::get<1>(operands));
+            return index::shape_outer(ashape,bshape);
+        } // shape
+
+        constexpr auto dim() const
+        {
+            return len(shape());
+        } // dim
+
+        template <typename...size_types>
+        constexpr auto operator()(size_types...indices) const
+        {
+            // here we directly provide operator() to actually performing operations,
+            // instead of returning (transformed) index only
+            using ::nmtools::detail::make_array;
+            using common_t = std::common_type_t<size_types...>;
+            auto indices_ = [&](){
+                // handle non-packed indices
+                if constexpr (std::is_integral_v<common_t>)
+                    return make_array<std::array>(indices...);
+                // handle packed indices, number of indices must be 1
+                else {
+                    static_assert (sizeof...(indices)==1
+                        , "unsupported index for broadcast_to view"
+                    );
+                    return std::get<0>(std::tuple{indices...});
+                }
+            }();
+            const auto& a = std::get<0>(operands);
+            const auto& b = std::get<1>(operands);
+            auto ashape = ::nmtools::shape(a);
+            auto bshape = ::nmtools::shape(b);
+            auto [aidx, bidx] = index::outer(indices_,ashape,bshape);
+            return op(apply_at(a,aidx),apply_at(b,bidx));
+        } // operator()
+    }; // outer_t
+
     // provide user defined CTAD with tuple of arrays as args
     template <typename op_t, typename...arrays_t>
     ufunc_t(op_t, std::tuple<arrays_t...>) -> ufunc_t<op_t,arrays_t...>;
@@ -550,6 +616,24 @@ namespace nmtools::view
         using view_t = decorator_t<accumulate_t,op_t,array_t,axis_t>;
         return view_t{{op,array,axis}};
     } // accumulate
+
+    /**
+     * @brief Create outer_t object given op, lhs array and rhs array.
+     * 
+     * @tparam op_t 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     * @param op operation to perform for each pair of lhs and rhs
+     * @param lhs lhs array
+     * @param rhs rhs array
+     * @return constexpr auto 
+     */
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    constexpr auto outer(op_t op, const lhs_t& lhs, const rhs_t& rhs)
+    {
+        using view_t = decorator_t<outer_t,op_t,lhs_t,rhs_t>;
+        return view_t{{op,{lhs,rhs}}};
+    }
 } // namespace nmtools::view
 
 namespace nmtools::meta
@@ -693,6 +777,56 @@ namespace nmtools::meta
     >
     {
         using type = typename view::accumulate_t<op_t, array_t, axis_t>::result_type;
+    };
+
+    // NOTE: dont support fixed size for now
+    // TODO: fix for fixed size
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct fixed_matrix_size<
+        view::outer_t< op_t, lhs_t, rhs_t >
+    >
+    {
+        static inline constexpr auto value = detail::fail_t{};
+        using value_type = decltype(value);
+    };
+
+    // NOTE: dont support fixed size for now
+    // TODO: fix for fixed size
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct fixed_vector_size<
+        view::outer_t< op_t, lhs_t, rhs_t >
+    >
+    {
+        static inline constexpr auto value = detail::fail_t{};
+        using value_type = decltype(value);
+    };
+
+    // NOTE: dont support fixed size for now
+    // TODO: fix for fixed size
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct fixed_ndarray_shape<
+        view::outer_t< op_t, lhs_t, rhs_t >
+    >
+    {
+        static inline constexpr auto value = detail::fail_t{};
+        using value_type = decltype(value);
+    }; // fixed_ndarray_shape
+
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct is_ndarray< 
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+    >
+    {
+        static constexpr auto value = is_ndarray_v<lhs_t> && is_ndarray_v<rhs_t>;
+    };
+
+    // provide specialization for reducer
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct get_element_type<
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+    >
+    {
+        using type = typename view::outer_t<op_t, lhs_t, rhs_t>::result_type;
     };
 } // namespace nmtools::meta
 
