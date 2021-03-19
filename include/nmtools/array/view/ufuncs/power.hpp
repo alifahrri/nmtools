@@ -114,6 +114,15 @@ namespace nmtools::view
     {
         return accumulate_power(a,axis,None);
     } // accumulate_power
+
+    template <typename left_t, typename right_t, typename dtype_t=none_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto outer_power(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{})
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = power_t<none_t,none_t,res_t>;
+        return outer(op_t{},a,b);
+    } // outer_power
 }
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_POWER_HPP

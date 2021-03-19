@@ -103,6 +103,15 @@ namespace nmtools::view
     {
         return accumulate_fmod(a,axis,None);
     } // accumulate_fmod
+
+    template <typename left_t, typename right_t, typename dtype_t=none_t>
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto outer_fmod(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{})
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = fmod_t<none_t,none_t,res_t>;
+        return outer(op_t{},a,b);
+    } // outer_fmod
 };
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_FMOD_HPP
