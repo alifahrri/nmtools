@@ -35,9 +35,9 @@ NMTOOLS_TESTING_DECLARE_CASE(view, fabs)
     {
         inline int shape[2] = {3,3};
         inline float result[3][3] = {
-            {std::fabs(0),std::fabs(-1),std::fabs(2)},
-            {std::fabs(3),std::fabs(-4),std::fabs(5)},
-            {std::fabs(6),std::fabs(-7),std::fabs(8)},
+            {static_cast<float>(std::fabs(0)),static_cast<float>(std::fabs(-1)),static_cast<float>(std::fabs(2))},
+            {static_cast<float>(std::fabs(3)),static_cast<float>(std::fabs(-4)),static_cast<float>(std::fabs(5))},
+            {static_cast<float>(std::fabs(6)),static_cast<float>(std::fabs(-7)),static_cast<float>(std::fabs(8))},
         };
     }
 }

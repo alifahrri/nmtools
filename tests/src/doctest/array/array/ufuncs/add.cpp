@@ -66,6 +66,8 @@ TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
     ADD_SUBCASE( case1, a_h, b_h, context, output );
 }
 
+// skip constexpr test for emscripten
+#ifndef __EMSCRIPTEN__
 TEST_CASE("add(constexpr)"  * doctest::test_suite("array::add"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view, constexpr_add, case1);
@@ -73,6 +75,7 @@ TEST_CASE("add(constexpr)"  * doctest::test_suite("array::add"))
     constexpr auto result = na::add(args::a,args::b,None,output);
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); 
 }
+#endif
 
 #define RUN_reduce_add_impl(...) \
 na::fn::add::reduce(__VA_ARGS__);

@@ -123,7 +123,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_power)
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
         inline int shape[2] = {2,3};
-        inline long int result[2][3] = {
+        inline uint64_t result[2][3] = {
             {     0,        8,        1024},
             {279936,134217728,100000000000},
         };
@@ -272,7 +272,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_power)
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
         inline int shape[3] = {2,3,1};
-        inline long int result[2][3][1] = {
+        inline uint64_t result[2][3][1] = {
             {{     0},{        8},{        1024}},
             {{279936},{134217728},{100000000000}},
         };
@@ -364,7 +364,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_power)
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
         inline int shape[3] = {2,3,2};
-        inline long long int result[2][3][2] = {
+        inline uint64_t result[2][3][2] = {
             {
                 {0,   0},
                 {2,   8},
