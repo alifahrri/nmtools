@@ -12,18 +12,21 @@ namespace na = nm::array;
 namespace meta = nm::meta;
 namespace kind = na::kind;
 
+#define CAST_ARRAYS(name) \
+auto name##_a = cast(name, kind::nested_arr); \
+auto name##_v = cast(name, kind::nested_vec); \
+auto name##_f = cast(name, kind::fixed); \
+auto name##_d = cast(name, kind::dynamic); \
+auto name##_h = cast(name, kind::hybrid); \
+
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int a[2] = {5,4};
         int b[1] = {1};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -37,12 +40,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[1] = {1};
         int b[2] = {5,4};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -56,12 +55,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[1] = {4};
         int b[2] = {5,4};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -75,12 +70,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[4] = {8,1,6,1};
         int b[3] = {7,1,5};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -94,12 +85,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[3] = {256,256,3};
         int b[1] = {3};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -113,12 +100,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[1] = {5};
         int b[2] = {5,4};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -132,12 +115,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[2] = {2,1};
         int b[3] = {8,4,3};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -152,15 +131,9 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
         int a[2] = {4,1};
         int b[3] = {8,1,3};
         int c[1] = {3};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto c_v = cast(c,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto c_a = cast<int>(c);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
-        auto c_h = cast(c,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
+        CAST_ARRAYS(c)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
         auto c_t = nm::index::as_tuple(c_a);
@@ -176,15 +149,9 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
         int a[2] = {4,1};
         int b[3] = {8,2,3};
         int c[1] = {3};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto c_v = cast(c,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto c_a = cast<int>(c);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
-        auto c_h = cast(c,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
+        CAST_ARRAYS(c)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
         auto c_t = nm::index::as_tuple(c_a);
@@ -201,18 +168,10 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
         int b[3] = {8,1,3};
         int c[1] = {3};
         int d[6] = {2,2,3,1,4,1};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto c_v = cast(c,kind::nested_vec);
-        auto d_v = cast(d,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto c_a = cast<int>(c);
-        auto d_a = cast<int>(d);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
-        auto c_h = cast(c,kind::hybrid);
-        auto d_h = cast(d,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
+        CAST_ARRAYS(c)
+        CAST_ARRAYS(d)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
         auto c_t = nm::index::as_tuple(c_a);
@@ -233,27 +192,13 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
         int e[1] =           {1};
         int f[4] =     {3,1,4,1};
         int g[6] = {2,1,1,1,1,1};
-        auto a_v = cast(a,kind::nested_vec);
-        auto b_v = cast(b,kind::nested_vec);
-        auto c_v = cast(c,kind::nested_vec);
-        auto d_v = cast(d,kind::nested_vec);
-        auto e_v = cast(e,kind::nested_vec);
-        auto f_v = cast(f,kind::nested_vec);
-        auto g_v = cast(g,kind::nested_vec);
-        auto a_a = cast<int>(a);
-        auto b_a = cast<int>(b);
-        auto c_a = cast<int>(c);
-        auto d_a = cast<int>(d);
-        auto e_a = cast<int>(e);
-        auto f_a = cast<int>(f);
-        auto g_a = cast<int>(g);
-        auto a_h = cast(a,kind::hybrid);
-        auto b_h = cast(b,kind::hybrid);
-        auto c_h = cast(c,kind::hybrid);
-        auto d_h = cast(d,kind::hybrid);
-        auto e_h = cast(e,kind::hybrid);
-        auto f_h = cast(f,kind::hybrid);
-        auto g_h = cast(g,kind::hybrid);
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(b)
+        CAST_ARRAYS(c)
+        CAST_ARRAYS(d)
+        CAST_ARRAYS(e)
+        CAST_ARRAYS(f)
+        CAST_ARRAYS(g)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
         auto c_t = nm::index::as_tuple(c_a);
@@ -665,4 +610,20 @@ TEST_CASE("broadcast_shape(case11)" * doctest::test_suite("index::broadcast_shap
     BROADCAST_SHAPE_SUBCASE(case11, a_a, b_h, c_a, d_a, e_a, f_a, g_a);
     BROADCAST_SHAPE_SUBCASE(case11, a_t, b_h, c_a, d_a, e_a, f_a, g_a);
     BROADCAST_SHAPE_SUBCASE(case11, a_v, b_h, c_a, d_a, e_a, f_a, g_a);
+}
+
+TEST_CASE("broadcast_shape(constexpr)" * doctest::test_suite("index::broadcast_shape"))
+{
+    {
+        constexpr int a[2] = {4,1};
+        constexpr int b[3] = {8,1,3};
+        constexpr int c[1] = {3};
+        constexpr int d[6] = {2,2,3,1,4,1};
+        constexpr int expected[6] = {2,2,3,8,4,3};
+        constexpr auto broadcasted = nm::index::broadcast_shape(a,b,c,d);
+        constexpr auto success = std::get<0>(broadcasted);
+        constexpr auto shape   = std::get<1>(broadcasted);
+        NMTOOLS_STATIC_ASSERT( success );
+        NMTOOLS_STATIC_ASSERT_EQUAL( shape, expected );
+    }
 }

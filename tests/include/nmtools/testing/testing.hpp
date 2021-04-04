@@ -325,6 +325,17 @@ EXPECT_TRUE(isequal(result,expect)) \
     NMTOOLS_CHECK_MESSAGE( __result, message ); \
 }
 
+#define NMTOOLS_STATIC_ASSERT_CLOSE_DOCTEST(result,expect) \
+{ \
+    constexpr auto __result = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
+    std::string message {}; \
+    message = message + \
+        + "\n\tActual  : " + STRINGIFY(result)  \
+        + "\n\tExpected: " + STRINGIFY(expect); \
+    NMTOOLS_STATIC_ASSERT( __result); \
+    NMTOOLS_CHECK_MESSAGE( __result, message ); \
+}
+
 /**
  * @brief implementation of doctest assert macro with message
  * 
@@ -337,6 +348,17 @@ CHECK_MESSAGE(isequal(result,expect), \
         + "\n\tExpected: " + STRINGIFY(expect) \
     )   \
 );
+
+#define NMTOOLS_STATIC_ASSERT_EQUAL_DOCTEST(result,expect) \
+{ \
+    constexpr auto __result = isequal(result,expect); \
+    std::string message {}; \
+    message = message + \
+        + "\n\tActual  : " + STRINGIFY(result)  \
+        + "\n\tExpected: " + STRINGIFY(expect); \
+    NMTOOLS_STATIC_ASSERT( __result); \
+    NMTOOLS_CHECK_MESSAGE( __result, message ); \
+}
 
 /**
  * @brief default implementation of typeinfo logging macro,

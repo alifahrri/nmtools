@@ -331,3 +331,90 @@ TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case5, A_f, B_f, C_f );
     BROADCAST_ARRAYS_SUBCASE(case5, A_h, B_h, C_h );
 }
+
+NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays_constexpr)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        constexpr int A[1][3] = {
+            {1,2,3}
+        };
+        constexpr int B[2][2][1] = {
+            {
+                {4},
+                {5},
+            },
+            {
+                {6},
+                {7},
+            },
+        };
+        constexpr int C[1][2][3] = {
+            {
+                { 8, 9,10},
+                {11,12,13},
+            }
+        };
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        constexpr int A[2][2][3] = {
+            {
+                {1,2,3},
+                {1,2,3},
+            },
+            {
+                {1,2,3},
+                {1,2,3},
+            },
+        };
+        constexpr int B[2][2][3] = {
+            {
+                {4,4,4},
+                {5,5,5},
+            },
+            {
+                {6,6,6},
+                {7,7,7},
+            }
+        };
+        constexpr int C[2][2][3] = {
+            {
+                { 8, 9,10},
+                {11,12,13},
+            },
+            {
+                { 8, 9,10},
+                {11,12,13},
+            }
+        };
+    }
+}
+
+#include "nmtools/array/eval.hpp"
+
+template <typename output_t, typename first_t, typename second_t, typename third_t>
+constexpr auto eval_broadcast_arrays(const first_t& A, const second_t& B, const third_t& C)
+{
+    auto [a,b,c] = view::broadcast_arrays(A,B,C);
+
+    auto out_t = nm::meta::as_value<output_t>{};
+    auto aout = na::eval(a,nm::None,out_t);
+    auto bout = na::eval(b,nm::None,out_t);
+    auto cout = na::eval(c,nm::None,out_t);
+
+    return std::tuple{aout,bout,cout};
+} // eval_broadcast_arrays
+
+TEST_CASE("broadcast_arrays(constexpr)" * doctest::test_suite("view::broadcast_arrays"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(broadcast_arrays_constexpr, case1);
+    using output_t = int[2][2][3];
+    constexpr auto broadcasted = eval_broadcast_arrays<output_t>(args::A,args::B,args::C);
+    constexpr auto A = std::get<0>(broadcasted);
+    constexpr auto B = std::get<1>(broadcasted);
+    constexpr auto C = std::get<2>(broadcasted);
+    NMTOOLS_STATIC_ASSERT_CLOSE( A, expect::A );
+    NMTOOLS_STATIC_ASSERT_CLOSE( B, expect::B );
+    NMTOOLS_STATIC_ASSERT_CLOSE( C, expect::C );
+}

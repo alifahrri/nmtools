@@ -1,7 +1,5 @@
 #include "nmtools/array/view/ufuncs/logical_not.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/testing/data/array/logical_not.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <vector>
@@ -11,36 +9,6 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
-namespace kind = na::kind;
-
-#define CAST_ARRAYS(name) \
-auto name##_a = cast(name, kind::nested_arr); \
-auto name##_v = cast(name, kind::nested_vec); \
-auto name##_f = cast(name, kind::fixed); \
-auto name##_d = cast(name, kind::dynamic); \
-auto name##_h = cast(name, kind::hybrid); \
-
-NMTOOLS_TESTING_DECLARE_CASE(view, logical_not)
-{
-    NMTOOLS_TESTING_DECLARE_ARGS(case1)
-    {
-        bool a[3][3] = {
-            { true, false,  true},
-            {false,  true, false},
-            { true, false,  true},
-        };
-        CAST_ARRAYS(a)
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
-    {
-        int shape[2] = {3,3};
-        bool result[3][3] = {
-            { !true, !false,  !true},
-            {!false,  !true, !false},
-            { !true, !false,  !true},
-        };
-    }
-}
 
 #define RUN_logical_not_impl(...) \
 nm::view::logical_not(__VA_ARGS__);

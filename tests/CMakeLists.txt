@@ -109,6 +109,7 @@ option(TEST_UTILS           "test utils modules"            OFF)
 option(TEST_NDARRAY         "test ndarray modules"          OFF)
 option(TEST_ARRAY_VIEW      "test array view modules"       OFF)
 option(TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
+option(TEST_ARRAY_EVAL      "test array evaluation"         OFF)
 option(TEST_MISC            "test other modules"            OFF)
 
 if (TEST_ALL)
@@ -118,6 +119,8 @@ if (TEST_ALL)
     SET(TEST_UTILS          ON CACHE BOOL "test utils modules"          FORCE)
     SET(TEST_NDARRAY        ON CACHE BOOL "test ndarray modules"        FORCE)
     SET(TEST_ARRAY_VIEW     ON CACHE BOOL "test array view modules"     FORCE)
+    SET(TEST_ARRAY_UFUNCS   ON CACHE BOOL "test array ufuncs modules"   FORCE)
+    SET(TEST_ARRAY_EVAL     ON CACHE BOOL "test array evaluation"       FORCE)
     SET(TEST_MISC           ON CACHE BOOL "test other modules"          FORCE)
 endif (TEST_ALL)
 
@@ -310,6 +313,74 @@ if (NOT TEST_ARRAY_UFUNCS)
     set (ARRAY_UFUNCS_TEST_SOURCES "")
 endif ()
 
+set(ARRAY_EVAL_TEST_SOURCES
+    src/doctest/array/array/ufuncs/add.cpp
+    src/doctest/array/array/ufuncs/arccos.cpp
+    src/doctest/array/array/ufuncs/arccosh.cpp
+    src/doctest/array/array/ufuncs/arcsin.cpp
+    src/doctest/array/array/ufuncs/arcsinh.cpp
+    src/doctest/array/array/ufuncs/arctan.cpp
+    src/doctest/array/array/ufuncs/arctan2.cpp
+    src/doctest/array/array/ufuncs/arctanh.cpp
+    src/doctest/array/array/ufuncs/bitwise_and.cpp
+    src/doctest/array/array/ufuncs/bitwise_or.cpp
+    src/doctest/array/array/ufuncs/bitwise_xor.cpp
+    src/doctest/array/array/ufuncs/ceil.cpp
+    src/doctest/array/array/ufuncs/cos.cpp
+    src/doctest/array/array/ufuncs/cosh.cpp
+    src/doctest/array/array/ufuncs/divide.cpp
+    src/doctest/array/array/ufuncs/equal.cpp
+    src/doctest/array/array/ufuncs/exp.cpp
+    src/doctest/array/array/ufuncs/exp2.cpp
+    src/doctest/array/array/ufuncs/expm1.cpp
+    src/doctest/array/array/ufuncs/fabs.cpp
+    src/doctest/array/array/ufuncs/floor.cpp
+    src/doctest/array/array/ufuncs/fmax.cpp
+    src/doctest/array/array/ufuncs/fmin.cpp
+    src/doctest/array/array/ufuncs/fmod.cpp
+    src/doctest/array/array/ufuncs/greater_equal.cpp
+    src/doctest/array/array/ufuncs/greater.cpp
+    src/doctest/array/array/ufuncs/hypot.cpp
+    src/doctest/array/array/ufuncs/invert.cpp
+    src/doctest/array/array/ufuncs/isfinite.cpp
+    src/doctest/array/array/ufuncs/isinf.cpp
+    src/doctest/array/array/ufuncs/isnan.cpp
+    src/doctest/array/array/ufuncs/ldexp.cpp
+    src/doctest/array/array/ufuncs/left_shift.cpp
+    src/doctest/array/array/ufuncs/less_equal.cpp
+    src/doctest/array/array/ufuncs/less.cpp
+    src/doctest/array/array/ufuncs/log.cpp
+    src/doctest/array/array/ufuncs/log1p.cpp
+    src/doctest/array/array/ufuncs/log2.cpp
+    src/doctest/array/array/ufuncs/log10.cpp
+    src/doctest/array/array/ufuncs/logical_and.cpp
+    src/doctest/array/array/ufuncs/logical_not.cpp
+    src/doctest/array/array/ufuncs/logical_or.cpp
+    src/doctest/array/array/ufuncs/logical_xor.cpp
+    src/doctest/array/array/ufuncs/maximum.cpp
+    src/doctest/array/array/ufuncs/minimum.cpp
+    src/doctest/array/array/ufuncs/multiply.cpp
+    src/doctest/array/array/ufuncs/negative.cpp
+    src/doctest/array/array/ufuncs/not_equal.cpp
+    src/doctest/array/array/ufuncs/positive.cpp
+    src/doctest/array/array/ufuncs/power.cpp
+    src/doctest/array/array/ufuncs/reciprocal.cpp
+    src/doctest/array/array/ufuncs/right_shift.cpp
+    src/doctest/array/array/ufuncs/rint.cpp
+    src/doctest/array/array/ufuncs/signbit.cpp
+    src/doctest/array/array/ufuncs/sin.cpp
+    src/doctest/array/array/ufuncs/sinh.cpp
+    src/doctest/array/array/ufuncs/sqrt.cpp
+    src/doctest/array/array/ufuncs/square.cpp
+    src/doctest/array/array/ufuncs/subtract.cpp
+    src/doctest/array/array/ufuncs/tan.cpp
+    src/doctest/array/array/ufuncs/tanh.cpp
+    src/doctest/array/array/ufuncs/trunc.cpp
+)
+if (NOT TEST_ARRAY_EVAL)
+    set (ARRAY_EVAL_TEST_SOURCES "")
+endif ()
+
 set(MISC_TEST_SOURCES
     src/doctest/misc/constants.cpp
 )
@@ -332,6 +403,8 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ${ARRAY_VIEW_TEST_SOURCES}
     ## ufuncs
     ${ARRAY_UFUNCS_TEST_SOURCES}
+    ## array evaluation
+    ${ARRAY_EVAL_TEST_SOURCES}
     ## misc
     ${MISC_TEST_SOURCES}
 )

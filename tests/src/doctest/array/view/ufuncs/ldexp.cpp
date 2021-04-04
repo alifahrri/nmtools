@@ -1,7 +1,5 @@
 #include "nmtools/array/view/ufuncs/ldexp.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/testing/data/array/ldexp.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <vector>
@@ -11,38 +9,6 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
-namespace kind = na::kind;
-
-#define CAST_ARRAYS(name) \
-auto name##_a = cast(name, kind::nested_arr); \
-auto name##_v = cast(name, kind::nested_vec); \
-auto name##_f = cast(name, kind::fixed); \
-auto name##_d = cast(name, kind::dynamic); \
-auto name##_h = cast(name, kind::hybrid); \
-
-NMTOOLS_TESTING_DECLARE_CASE(view, ldexp)
-{
-    NMTOOLS_TESTING_DECLARE_ARGS(case1)
-    {
-        int a[3][3] = {
-            {0,1,2},
-            {3,4,5},
-            {6,7,8},
-        };
-        int b[3] = {0,1,2};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
-    {
-        int shape[2] = {3,3};
-        float result[3][3] = {
-            {std::ldexp(0.f,0.f),std::ldexp(1.f,1.f),std::ldexp(2.f,2.f)},
-            {std::ldexp(3.f,0.f),std::ldexp(4.f,1.f),std::ldexp(5.f,2.f)},
-            {std::ldexp(6.f,0.f),std::ldexp(7.f,1.f),std::ldexp(8.f,2.f)},
-        };
-    }
-}
 
 #define RUN_ldexp_impl(...) \
 nm::view::ldexp(__VA_ARGS__);
