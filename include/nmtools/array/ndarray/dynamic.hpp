@@ -193,6 +193,19 @@ namespace nmtools::array
             data.resize(numel_);
         }
 
+        template <typename shape_t>
+        auto resize(const shape_t& shape)
+            -> std::enable_if_t<meta::is_index_array_v<shape_t>>
+        {
+            auto n = len(shape);
+            shape_.resize(n);
+            for (size_t i=0; i<n; i++)
+                shape_.at(i) = ::nmtools::at(shape,i);
+            strides_ = strides();
+            numel_   = numel();
+            data.resize(numel_);
+        } // resize
+
         /**
          * @brief mutable access to element
          * 
