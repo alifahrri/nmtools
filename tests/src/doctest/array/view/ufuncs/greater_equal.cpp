@@ -1,7 +1,5 @@
 #include "nmtools/array/view/ufuncs/greater_equal.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/testing/data/array/greater_equal.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <vector>
@@ -11,38 +9,6 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
-namespace kind = na::kind;
-
-#define CAST_ARRAYS(name) \
-auto name##_a = cast(name, kind::nested_arr); \
-auto name##_v = cast(name, kind::nested_vec); \
-auto name##_f = cast(name, kind::fixed); \
-auto name##_d = cast(name, kind::dynamic); \
-auto name##_h = cast(name, kind::hybrid); \
-
-NMTOOLS_TESTING_DECLARE_CASE(view, greater_equal)
-{
-    NMTOOLS_TESTING_DECLARE_ARGS(case1)
-    {
-        int a[3][3] = {
-            {0,1,2},
-            {3,4,5},
-            {6,7,8},
-        };
-        int b[3] = {0,1,2};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
-    {
-        int shape[2] = {3,3};
-        bool result[3][3] = {
-            {(0>=0),(1>=1),(2>=2)},
-            {(3>=0),(4>=1),(5>=2)},
-            {(6>=0),(7>=1),(8>=2)},
-        };
-    }
-}
 
 #define RUN_greater_equal_impl(...) \
 nm::view::greater_equal(__VA_ARGS__);

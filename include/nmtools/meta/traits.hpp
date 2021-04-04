@@ -1292,6 +1292,18 @@ namespace nmtools::meta {
     inline constexpr auto is_index_v = is_index<T>::value;
 
     /**
+     * @brief Check if type T is compile-time index.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_constant_index : is_integral_constant<T> {}; 
+
+    template <typename T>
+    inline constexpr auto is_constant_index_v = is_constant_index<T>::value;
+
+    /**
      * @brief 
      * 
      * @tparam T 
@@ -1339,6 +1351,14 @@ namespace nmtools::meta {
     template <typename T>
     inline constexpr auto is_index_array_v = is_index_array<T>::value;
 
+    /**
+     * @brief Return the length of fixed index array.
+     *
+     * By default, return fail_t type.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
     template <typename T, typename=void>
     struct fixed_index_array_size
     {
@@ -1366,6 +1386,12 @@ namespace nmtools::meta {
     template <typename T>
     static constexpr auto fixed_index_array_size_v = fixed_index_array_size<T>::value;
 
+    /**
+     * @brief Check if type T is fixed index array.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
     template <typename T, typename=void>
     struct is_fixed_index_array : std::false_type {};
 
@@ -1381,6 +1407,27 @@ namespace nmtools::meta {
     template <typename...Ts>
     struct is_fixed_index_array<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>> : std::true_type {};
 
+    /**
+     * @brief Check if type T is constant index array.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_constant_index_array : std::false_type {};
+
+    template <typename...Ts>
+    struct is_constant_index_array<std::tuple<Ts...>,std::enable_if_t<(is_constant_index_v<Ts> && ...)>> : std::true_type {};
+
+    template <typename T>
+    inline constexpr auto is_constant_index_array_v = is_constant_index_array<T>::value;
+
+    /**
+     * @brief Check if type T is dynamic index array.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
     template <typename T, typename=void>
     struct is_dynamic_index_array : std::false_type {};
 

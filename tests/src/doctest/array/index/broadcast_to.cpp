@@ -11,21 +11,27 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
+namespace kind = na::kind;
+
+#define CAST_ARRAYS(name) \
+auto name##_a = cast(name, kind::nested_arr); \
+auto name##_v = cast(name, kind::nested_vec); \
+auto name##_f = cast(name, kind::fixed); \
+auto name##_d = cast(name, kind::dynamic); \
+auto name##_h = cast(name, kind::hybrid); \
 
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
 {
+    using std::tuple;
+    using namespace nmtools::literals;
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int ashape[2] = {3,1};
         int bshape[2] = {3,1};
-        auto a_v = cast<std::vector<int>>(ashape);
-        auto b_v = cast<std::vector<int>>(bshape);
-        auto a_a  = cast<std::array<int,2>>(ashape);
-        auto b_a  = cast<std::array<int,2>>(bshape);
-        auto a_f = cast<na::fixed_vector<int,2>>(ashape);
-        auto b_f = cast<na::fixed_vector<int,2>>(bshape);
-        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(ashape);
-        auto b_h = cast<na::hybrid_ndarray<int,2,1>>(bshape);
+        CAST_ARRAYS(ashape)
+        CAST_ARRAYS(bshape)
+        auto ashape_ct = tuple{3_ct,1_ct};
+        auto bshape_ct = tuple{3_ct,1_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -39,14 +45,10 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         int ashape[2] = {3,1};
         int bshape[2] = {3,3};
-        auto a_v = cast<std::vector<int>>(ashape);
-        auto b_v = cast<std::vector<int>>(bshape);
-        auto a_a  = cast<std::array<int,2>>(ashape);
-        auto b_a  = cast<std::array<int,2>>(bshape);
-        auto a_f = cast<na::fixed_vector<int,2>>(ashape);
-        auto b_f = cast<na::fixed_vector<int,2>>(bshape);
-        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(ashape);
-        auto b_h = cast<na::hybrid_ndarray<int,2,1>>(bshape);
+        CAST_ARRAYS(ashape)
+        CAST_ARRAYS(bshape)
+        auto ashape_ct = tuple{3_ct,1_ct};
+        auto bshape_ct = tuple{3_ct,3_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -60,14 +62,10 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         int ashape[2] = {3,1};
         int bshape[3] = {3,3,1};
-        auto a_v = cast<std::vector<int>>(ashape);
-        auto b_v = cast<std::vector<int>>(bshape);
-        auto a_a  = cast<std::array<int,2>>(ashape);
-        auto b_a  = cast<std::array<int,3>>(bshape);
-        auto a_f = cast<na::fixed_vector<int,2>>(ashape);
-        auto b_f = cast<na::fixed_vector<int,3>>(bshape);
-        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(ashape);
-        auto b_h = cast<na::hybrid_ndarray<int,3,1>>(bshape);
+        CAST_ARRAYS(ashape)
+        CAST_ARRAYS(bshape)
+        auto ashape_ct = tuple{3_ct,1_ct};
+        auto bshape_ct = tuple{3_ct,3_ct,1_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -81,14 +79,10 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         int ashape[2] = {3,1};
         int bshape[3] = {3,3,6};
-        auto a_v = cast<std::vector<int>>(ashape);
-        auto b_v = cast<std::vector<int>>(bshape);
-        auto a_a  = cast<std::array<int,2>>(ashape);
-        auto b_a  = cast<std::array<int,3>>(bshape);
-        auto a_f = cast<na::fixed_vector<int,2>>(ashape);
-        auto b_f = cast<na::fixed_vector<int,3>>(bshape);
-        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(ashape);
-        auto b_h = cast<na::hybrid_ndarray<int,3,1>>(bshape);
+        CAST_ARRAYS(ashape)
+        CAST_ARRAYS(bshape)
+        auto ashape_ct = tuple{3_ct,1_ct};
+        auto bshape_ct = tuple{3_ct,3_ct,6_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -102,14 +96,10 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         int ashape[2] = {3,1};
         int bshape[1] = {3};
-        auto a_v = cast<std::vector<int>>(ashape);
-        auto b_v = cast<std::vector<int>>(bshape);
-        auto a_a  = cast<std::array<int,2>>(ashape);
-        auto b_a  = cast<std::array<int,1>>(bshape);
-        auto a_f = cast<na::fixed_vector<int,2>>(ashape);
-        auto b_f = cast<na::fixed_vector<int,1>>(bshape);
-        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(ashape);
-        auto b_h = cast<na::hybrid_ndarray<int,1,1>>(bshape);
+        CAST_ARRAYS(ashape)
+        CAST_ARRAYS(bshape)
+        auto ashape_ct = tuple{3_ct,1_ct};
+        auto bshape_ct = tuple{3_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -123,14 +113,10 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         int ashape[2] = {3,1};
         int bshape[3] = {3,6,6};
-        auto a_v = cast<std::vector<int>>(ashape);
-        auto b_v = cast<std::vector<int>>(bshape);
-        auto a_a  = cast<std::array<int,2>>(ashape);
-        auto b_a  = cast<std::array<int,3>>(bshape);
-        auto a_f = cast<na::fixed_vector<int,2>>(ashape);
-        auto b_f = cast<na::fixed_vector<int,3>>(bshape);
-        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(ashape);
-        auto b_h = cast<na::hybrid_ndarray<int,3,1>>(bshape);
+        CAST_ARRAYS(ashape)
+        CAST_ARRAYS(bshape)
+        auto ashape_ct = tuple{3_ct,1_ct};
+        auto bshape_ct = tuple{3_ct,6_ct,6_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -144,14 +130,10 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         int ashape[2] = {3,1};
         int bshape[4] = {7,3,3,6};
-        auto a_v = cast<std::vector<int>>(ashape);
-        auto b_v = cast<std::vector<int>>(bshape);
-        auto a_a  = cast<std::array<int,2>>(ashape);
-        auto b_a  = cast<std::array<int,4>>(bshape);
-        auto a_f = cast<na::fixed_vector<int,2>>(ashape);
-        auto b_f = cast<na::fixed_vector<int,4>>(bshape);
-        auto a_h = cast<na::hybrid_ndarray<int,2,1>>(ashape);
-        auto b_h = cast<na::hybrid_ndarray<int,4,1>>(bshape);
+        CAST_ARRAYS(ashape)
+        CAST_ARRAYS(bshape)
+        auto ashape_ct = tuple{3_ct,1_ct};
+        auto bshape_ct = tuple{7_ct,3_ct,3_ct,6_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -213,114 +195,116 @@ SUBCASE(#case_name) \
 
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("index::broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case1, a_a, b_a);
-    BROADCAST_TO_SUBCASE(case1, a_v, b_v);
-    BROADCAST_TO_SUBCASE(case1, a_h, b_h);
+    BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_a);
+    BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_v);
+    BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case1, a_a, b_v);
-    BROADCAST_TO_SUBCASE(case1, a_h, b_v);
+    BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_v);
+    BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case1, a_v, b_a);
-    BROADCAST_TO_SUBCASE(case1, a_h, b_a);
+    BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_a);
+    BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case1, a_a, b_h);
-    BROADCAST_TO_SUBCASE(case1, a_v, b_h);
+    BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_h);
+    BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_h);
+
+    BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_ct);
 }
 
 TEST_CASE("broadcast_to(case2)" * doctest::test_suite("index::broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case2, a_a, b_a);
-    BROADCAST_TO_SUBCASE(case2, a_v, b_v);
-    BROADCAST_TO_SUBCASE(case2, a_h, b_h);
+    BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_a);
+    BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_v);
+    BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case2, a_a, b_v);
-    BROADCAST_TO_SUBCASE(case2, a_h, b_v);
+    BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_v);
+    BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case2, a_v, b_a);
-    BROADCAST_TO_SUBCASE(case2, a_h, b_a);
+    BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_a);
+    BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case2, a_a, b_h);
-    BROADCAST_TO_SUBCASE(case2, a_v, b_h);
+    BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_h);
+    BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case3)" * doctest::test_suite("index::broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case3, a_a, b_a);
-    BROADCAST_TO_SUBCASE(case3, a_v, b_v);
-    BROADCAST_TO_SUBCASE(case3, a_h, b_h);
+    BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_a);
+    BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_v);
+    BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case3, a_a, b_v);
-    BROADCAST_TO_SUBCASE(case3, a_h, b_v);
+    BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_v);
+    BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case3, a_v, b_a);
-    BROADCAST_TO_SUBCASE(case3, a_h, b_a);
+    BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_a);
+    BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case3, a_a, b_h);
-    BROADCAST_TO_SUBCASE(case3, a_v, b_h);
+    BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_h);
+    BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case4)" * doctest::test_suite("index::broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case4, a_a, b_a);
-    BROADCAST_TO_SUBCASE(case4, a_v, b_v);
-    BROADCAST_TO_SUBCASE(case4, a_h, b_h);
+    BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_a);
+    BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_v);
+    BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case4, a_a, b_v);
-    BROADCAST_TO_SUBCASE(case4, a_h, b_v);
+    BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_v);
+    BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case4, a_v, b_a);
-    BROADCAST_TO_SUBCASE(case4, a_h, b_a);
+    BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_a);
+    BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case4, a_a, b_h);
-    BROADCAST_TO_SUBCASE(case4, a_v, b_h);
+    BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_h);
+    BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case5)" * doctest::test_suite("index::broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case5, a_a, b_a);
-    BROADCAST_TO_SUBCASE(case5, a_v, b_v);
-    BROADCAST_TO_SUBCASE(case5, a_h, b_h);
+    BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_a);
+    BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_v);
+    BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case5, a_a, b_v);
-    BROADCAST_TO_SUBCASE(case5, a_h, b_v);
+    BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_v);
+    BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case5, a_v, b_a);
-    BROADCAST_TO_SUBCASE(case5, a_h, b_a);
+    BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_a);
+    BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case5, a_a, b_h);
-    BROADCAST_TO_SUBCASE(case5, a_v, b_h);
+    BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_h);
+    BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case6)" * doctest::test_suite("index::broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case6, a_a, b_a);
-    BROADCAST_TO_SUBCASE(case6, a_v, b_v);
-    BROADCAST_TO_SUBCASE(case6, a_h, b_h);
+    BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_a);
+    BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_v);
+    BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case6, a_a, b_v);
-    BROADCAST_TO_SUBCASE(case6, a_h, b_v);
+    BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_v);
+    BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case6, a_v, b_a);
-    BROADCAST_TO_SUBCASE(case6, a_h, b_a);
+    BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_a);
+    BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case6, a_a, b_h);
-    BROADCAST_TO_SUBCASE(case6, a_v, b_h);
+    BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_h);
+    BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case7, a_a, b_a);
-    BROADCAST_TO_SUBCASE(case7, a_v, b_v);
-    BROADCAST_TO_SUBCASE(case7, a_h, b_h);
+    BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_a);
+    BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_v);
+    BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case7, a_a, b_v);
-    BROADCAST_TO_SUBCASE(case7, a_h, b_v);
+    BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_v);
+    BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case7, a_v, b_a);
-    BROADCAST_TO_SUBCASE(case7, a_h, b_a);
+    BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_a);
+    BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case7, a_a, b_h);
-    BROADCAST_TO_SUBCASE(case7, a_v, b_h);
+    BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_h);
+    BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_h);
 }
 
 // TEST_CASE("broadcast_to(fixed_vector)" * doctest::test_suite("index::broadcast_to"))
@@ -333,3 +317,19 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::broadcast_to"))
 //     BROADCAST_TO_SUBCASE(case6, a_f, a_f);
 //     BROADCAST_TO_SUBCASE(case7, a_f, a_f);
 // }
+
+TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("index::broadcast_to"))
+{
+    {
+        constexpr int ashape[2] = {3,1};
+        constexpr int bshape[4] = {7,3,3,6};
+        constexpr auto broadcasted = nm::index::broadcast_to(ashape,bshape);
+        constexpr auto success = std::get<0>(broadcasted);
+        constexpr auto shape = std::get<1>(broadcasted);
+        constexpr auto free  = std::get<2>(broadcasted);
+        constexpr auto expected_free = std::array{true,true,false,true};
+        NMTOOLS_STATIC_ASSERT( success );
+        NMTOOLS_STATIC_ASSERT_EQUAL( shape, bshape );
+        NMTOOLS_STATIC_ASSERT_EQUAL( free, expected_free );
+    }
+}

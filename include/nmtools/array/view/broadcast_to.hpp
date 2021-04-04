@@ -87,6 +87,16 @@ namespace nmtools::view
         auto not_free    = index::logical_not(free);
         auto origin_axes = index::nonzero(not_free);
         using origin_axes_t = decltype(origin_axes);
+        // NOTE:
+        // the array view itself cannot be called with constexpr directly (because it use reference)
+        // but can be evaluated in constexpr
+        // see also https://en.cppreference.com/w/cpp/language/constant_expression
+        // Seems like constexpr variable can't hold reference.
+        // clang complains with:
+        //      note: reference to 'x' is not a constant expression
+        // where 'x' is array
+        // but this function itself (and the broadcast_to_t constructor) are still marked as constexpr
+        // to let the view evaluated in constexpr context.
         return decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>{{array,shape,origin_axes}};
     } // broadcast_to
 

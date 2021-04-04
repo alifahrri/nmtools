@@ -28,8 +28,8 @@ namespace nmtools::index
         constexpr auto indices_is_fixed = meta::has_tuple_size_v<indices_t> || meta::has_tuple_size_v<indices_t>;
         constexpr auto strides_is_fixed = meta::has_tuple_size_v<strides_t> || meta::has_tuple_size_v<strides_t>;
         size_t offset = 0;
-        auto m = tuple_size(indices);
-        auto n = tuple_size(strides);
+        auto m = len(indices);
+        auto n = len(strides);
         // @todo static_assert whenever possible
         assert (m==n
             // , "unsupported compute_offset, mismatched shape for indices and strides"

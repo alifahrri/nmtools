@@ -51,7 +51,7 @@ namespace nmtools::utils
         } // isequal
 
         // turns out it is also needed to provide both explicit bool, no matching call error otherwise
-        inline auto isequal(bool t, bool u)
+        constexpr inline auto isequal(bool t, bool u)
         {
             // @todo fix check for integral type for U
             return t == u;

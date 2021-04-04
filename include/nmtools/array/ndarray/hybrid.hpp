@@ -44,6 +44,57 @@ namespace nmtools::array
         template <typename...Ts>
         static inline constexpr auto all_integral_constant_v = all_integral_constant<Ts...>::value;
 
+        template <int max_elements, typename shape_t>
+        constexpr auto init_shape()
+        {
+            // assume fixed size and same length for shape & stride
+            auto shape_ = shape_t{};
+            shape_[0] = max_elements;
+            for (size_t i=1; i<shape_.size(); i++)
+                shape_[i] = static_cast<size_t>(1);
+            return shape_;
+        } // init_shape
+
+        template <int max_elements, typename shape_t, typename other_shape_t>
+        constexpr auto init_shape(const other_shape_t& shape)
+        {
+            // assume fixed size and can hold shape
+            auto shape_ = shape_t{};
+            for (size_t i=0; i<len(shape); i++)
+                at(shape_,i) = at(shape,i);
+            return shape_;
+        } // init_shape
+
+        template <typename stride_t, typename shape_t>
+        constexpr auto init_strides(const shape_t& shape)
+        {
+            // assume fixed size shape_t and the size matches to shape
+            auto strides_ = stride_t{};
+            for (size_t i=0; i<len(strides_); i++)
+                at(strides_,i) = index::stride(shape,i);
+            return strides_;
+        } // init_strides
+
+        template <typename data_t, typename array_t>
+        constexpr auto init_data(array_t&& array)
+        {
+            data_t data{};
+            using ::nmtools::detail::clone_impl;
+            auto array_ref   = view::ref(array);
+            auto array_dim   = ::nmtools::dim(array);
+            auto array_shape = ::nmtools::shape(array_ref);
+            auto n = index::product(array_shape);
+            // assert ( array_dim == dimension
+            //     // , "unsupported init, mismatched dimension"
+            // );
+            // for (size_t i=0; i<array_dim; i++)
+            //     shape_[i] = ::nmtools::at(array_shape,i);
+            // strides_ = strides();
+            auto array_view = view::flatten(array_ref);
+            clone_impl(data, array_view, n);
+            return data;
+        } // init_data
+
     } // namespace detail
 
     /**
@@ -68,7 +119,8 @@ namespace nmtools::array
         }
         static inline constexpr auto dim_ = dimension;
 
-        using data_type     = T[max_elements];
+        // use std array to make it easier to support constexpr
+        using data_type     = std::array<T,max_elements>;
         using value_type    = T;
         using size_type     = size_t;
         using shape_type    = std::array<size_t,dim_>;
@@ -98,19 +150,20 @@ namespace nmtools::array
             clone_impl(data, array_view, n);
         } // init
 
-        hybrid_ndarray() : data{}
-        { 
-            shape_[0] = max_elements;
-            for (size_t i=1; i<shape_.size(); i++)
-                shape_[i] = static_cast<size_t>(1);
-            strides_ = strides();
-        } // hybrid_array
+        constexpr hybrid_ndarray() : data{},
+            shape_(detail::init_shape<max_elements,shape_type>()),
+            strides_(detail::init_strides<stride_type>(shape_))
+        {} // hybrid_array
 
         // explicit hybrid_ndarray(const shape_type& shape) { resize(shape); }
 
         // @note explicit required here, somehow related to operator=
         template <typename array_t, typename=std::enable_if_t<meta::is_ndarray_v<array_t>>>
-        explicit hybrid_ndarray(array_t&& a) { init(a); }
+        constexpr explicit hybrid_ndarray(array_t&& a) :
+            shape_(detail::init_shape<max_elements,shape_type>(::nmtools::shape(a))),
+            strides_(detail::init_strides<stride_type>(shape_)),
+            data(detail::init_data<data_type>(a))
+        {} // hybrid_ndarray
         
         template <size_t N>
         hybrid_ndarray(T (&&a)[N]) { init(a); }
@@ -145,7 +198,7 @@ namespace nmtools::array
         template <size_t Shape1, size_t Shape2, size_t Shape3, size_t Shape4, size_t Shape5, size_t Shape6, size_t Shape7, size_t Shape8, size_t Shape9, size_t Shape10, size_t Shape11>
         hybrid_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10][Shape11]) { init(a); }
 
-        auto shape() const noexcept
+        constexpr auto shape() const noexcept
         {
             return shape_;
         } // shape
@@ -156,14 +209,14 @@ namespace nmtools::array
         //     return shape_[0];
         // } // size
 
-        auto strides() const
+        constexpr auto strides() const
         {
             auto stride = index::compute_strides(shape_);
             return stride;
         } // strides
 
         template <typename...size_types>
-        auto resize(size_types...shape)
+        constexpr auto resize(size_types...shape)
             -> std::enable_if_t<detail::all_integral_v<size_types...>>
         {
             meta::template_for<sizeof...(shape)>([&](auto index){
@@ -175,7 +228,7 @@ namespace nmtools::array
             // data.resize(numel_);
         } // resize
 
-        auto resize(const shape_type& shape)
+        constexpr auto resize(const shape_type& shape)
         {
             shape_   = shape;
             strides_ = strides();
@@ -184,7 +237,7 @@ namespace nmtools::array
         } // resize
 
         template <typename ...size_types>
-        auto operator()(size_types...ns)
+        constexpr auto operator()(size_types...ns)
             // noexcept(detail::all_integral_constant_v<size_types...>>)
             -> std::enable_if_t<
                 sizeof...(ns)==dimension
@@ -204,7 +257,7 @@ namespace nmtools::array
         } // operator()
 
         template <typename ...size_types>
-        auto operator()(size_types...ns) const
+        constexpr auto operator()(size_types...ns) const
             // noexcept(detail::all_integral_constant_v<size_types...>>)
             -> std::enable_if_t<
                 sizeof...(ns)==dimension
@@ -223,13 +276,13 @@ namespace nmtools::array
             return data[offset];
         } // operator()
 
-        const_reference at(shape_type i) const
+        constexpr const_reference at(shape_type i) const
         {
             auto offset = index::compute_offset(strides_, i);
             return data[offset];
         } // at
 
-        reference at(shape_type i)
+        constexpr reference at(shape_type i)
         {
             auto offset = index::compute_offset(strides_, i);
             return data[offset];
@@ -316,25 +369,25 @@ namespace nmtools::array
     template <typename T, size_t max_elements>
     auto begin(const array::hybrid_ndarray<T,max_elements,1>& a)
     {
-        return a.data;
+        return a.data.data();
     } // begin
 
     template <typename T, size_t max_elements>
     auto begin(array::hybrid_ndarray<T,max_elements,1>& a)
     {
-        return a.data;
+        return a.data.data();
     } // begin
 
     template <typename T, size_t max_elements>
     auto end(const array::hybrid_ndarray<T,max_elements,1>& a)
     {
-        return a.data + a.shape_[0];
+        return a.data.data() + a.shape_[0];
     } // end
 
     template <typename T, size_t max_elements>
     auto end(array::hybrid_ndarray<T,max_elements,1>& a)
     {
-        return a.data + a.shape_[0];
+        return a.data.data() + a.shape_[0];
     } // end
 
     /** @} */ // end group dynamic
