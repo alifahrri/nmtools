@@ -2274,6 +2274,9 @@ namespace nmtools::meta
         static constexpr auto value = detail::fail_t{};
     }; // constant_to_value
 
+    template <typename T>
+    constexpr inline auto constant_to_value_v = constant_to_value<T>::value;
+
     /**
      * @brief specialization of integral_constant for constant_to_value
      * 

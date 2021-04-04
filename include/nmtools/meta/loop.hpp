@@ -16,6 +16,33 @@ namespace nmtools::meta
     template <size_t N>
     using index_constant = std::integral_constant<size_t,N>;
 
+    template <typename,typename,typename=void>
+    struct merge_ranges {};
+
+    template <size_t...left, size_t...right>
+    struct merge_ranges<std::integer_sequence<size_t,left...>,std::integer_sequence<size_t,right...>>
+    {
+        using type = std::integer_sequence<size_t,left...,right...>;
+    }; // merge_ranges
+
+    template <size_t start, size_t stop, typename=void>
+    struct range {}; // range
+
+    template <size_t start, size_t stop>
+    struct range<start,stop,std::enable_if_t<(start+1)==stop>>
+    {
+        using left  = std::integer_sequence<size_t,start>;
+        using type  = left;
+    }; // range
+
+    template <size_t start, size_t stop>
+    struct range<start,stop,std::enable_if_t<((start+1)<stop)>>
+    {
+        using left  = std::integer_sequence<size_t,start>;
+        using right = typename range<start+1,stop>::type;
+        using type  = typename merge_ranges<left,right>::type;
+    }; // range
+
     /**
      * @brief call f N times with compile-time index.
      *
@@ -64,6 +91,35 @@ namespace nmtools::meta
         template_for<N>(f_impl);
         return ret;
     }; // template_map
+
+    template <typename F, typename...args_t, typename initial_t, size_t I, size_t...Is>
+    constexpr auto template_reduce(F&& f, const initial_t& init, const std::tuple<args_t...>& args_pack, std::integer_sequence<size_t,I,Is...>)
+    {
+        auto init_ = f(init, std::get<I>(args_pack), std::integral_constant<size_t,I>{});
+        if constexpr (static_cast<bool>(sizeof...(Is))) {
+            using indices_t = std::integer_sequence<size_t,Is...>;
+            return template_reduce(f,init_,args_pack,indices_t{});
+        }
+        else
+            return init_;
+    } // template_reduce
+
+    template <typename F, typename...args_t, typename initial_t>
+    constexpr auto template_reduce(F&& f, const initial_t& init, const std::tuple<args_t...>& args_pack)
+    {
+        constexpr auto N = sizeof...(args_t);
+        using indices_t  = std::make_index_sequence<N>;
+        return template_reduce(f,init,args_pack,indices_t{});
+    } // template_reduce
+
+    template <typename F, typename...args_t>
+    constexpr auto template_reduce(F&& f, const std::tuple<args_t...>& args_pack)
+    {
+        constexpr auto N = sizeof...(args_t);
+        using indices_t  = typename range<1,N>::type;
+        auto init = std::get<0>(args_pack);
+        return template_reduce(f,init,args_pack,indices_t{});
+    } // template_reduce
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_LOOP_HPP
