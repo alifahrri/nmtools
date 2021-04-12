@@ -221,6 +221,274 @@ NMTOOLS_TESTING_DECLARE_CASE(view, slice)
             {8},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = tuple{None,None,-1};
+        auto slice1 = tuple{None,None};
+        auto slice2 = tuple{None,None};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        int result[3] = {2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = tuple{None,None};
+        auto slice1 = tuple{None,None,-1};
+        auto slice2 = tuple{None,None};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        int result[3] = {2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                {6,7},
+                {8,9},
+                {10,11},
+            }
+        };
+        auto slice0 = tuple{None,None,-1};
+        auto slice1 = tuple{None,None};
+        auto slice2 = tuple{None,None,-1};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        int result[3] = {2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{None,None,2};
+        auto slice1 = tuple{None,None};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        int result[2][2] = {
+            {0,1},
+            {4,5},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{None,None,2};
+        auto slice1 = tuple{None,2};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
+    {
+        int result[2][2] = {
+            {0,1},
+            {4,5},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case13)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{None,None,2};
+        auto slice1 = tuple{1,None};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case13)
+    {
+        int result[2][1] = {
+            {1},
+            {5},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case14)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{None,None,2};
+        auto slice1 = tuple{1,None,2};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case14)
+    {
+        int result[2][2] = {
+            {1},
+            {5},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case15)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{None,None,-2};
+        auto slice1 = tuple{1,None,-2};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case15)
+    {
+        int result[2][1] = {
+            {7},
+            {3},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case16)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{3,None,-2};
+        auto slice1 = tuple{1,None,-2};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case16)
+    {
+        int result[2][1] = {
+            {7},
+            {3},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case17)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{3,None,2};
+        auto slice1 = tuple{1,None,-2};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case17)
+    {
+        int result[1][1] = {{7}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case18)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{1,None,-2};
+        auto slice1 = tuple{1,None,-2};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case18)
+    {
+        int result[1][1] = {{3}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case19)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{2,None,-2};
+        auto slice1 = tuple{1,None,-2};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case19)
+    {
+        int result[2][1] = {
+            {5},
+            {1},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case20)
+    {
+        int array[4][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+            {6,7},
+        };
+        auto slice0 = tuple{None,None};
+        auto slice1 = tuple{1,None,4};
+        CAST_ARRAYS(array)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case20)
+    {
+        int result[4][1] = {
+            {1},
+            {3},
+            {5},
+            {7},
+        };
+    }
 }
 
 #define RUN_slice_impl(...) \
