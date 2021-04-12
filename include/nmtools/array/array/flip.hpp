@@ -1,0 +1,33 @@
+#ifndef NMTOOLS_ARRAY_ARRAY_FLIP_HPP
+#define NMTOOLS_ARRAY_ARRAY_FLIP_HPP
+
+#include "nmtools/array/eval.hpp"
+#include "nmtools/array/view/flip.hpp"
+#include "nmtools/constants.hpp"
+
+namespace nmtools::array
+{
+    /**
+     * @brief Eagerly evaluate flip
+     * 
+     * @tparam output_t 
+     * @tparam context_t 
+     * @tparam array_t 
+     * @tparam axis_t 
+     * @param array array to be flipped
+     * @param axis axis to operate on
+     * @param context exectution context
+     * @param output 
+     * @return constexpr auto 
+     */
+    template <typename output_t=none_t, typename context_t=none_t,
+        typename array_t, typename axis_t>
+    constexpr auto flip(const array_t& array, const axis_t& axis,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto flipped = view::flip(array,axis);
+        return eval(flipped,context,output);
+    } // flip
+} // namespace nmtools::array
+
+#endif // NMTOOLS_ARRAY_ARRAY_FLIP_HPP
