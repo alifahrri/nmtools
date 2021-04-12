@@ -146,11 +146,15 @@ namespace nmtools::index
                     // cant capture start, stop, step :|
                     // to avoid clang complaining about reference to local bindings
 
+                    auto si = at(shape,i);
                     // following numpy, stop is actually (stop,shape_i)
                     auto stop = [&](){
                         if constexpr (is_none_v<stop_t>)
                             return at(shape,i);
-                        else return std::min(static_cast<int>(stop_),static_cast<int>(at(shape,i)));
+                        // this triggers gcc 8 internal compiler error: in tsubst_copy, at cp/pt.c:15387
+                        // use ternary op instead, and move 'at' outside
+                        // else return std::min(static_cast<int>(stop_),static_cast<int>(at(shape,i)));
+                        else return stop_ < si ? stop_ : si;
                     }();
                     // (1)
                     if constexpr (std::is_unsigned_v<start_t> && std::is_unsigned_v<stop_t>)
