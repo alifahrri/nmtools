@@ -84,21 +84,40 @@ namespace nmtools::index
         meta::template_for<N_SLICES>([&](auto i){
             auto slice = at(slices_pack, i);
             using slice_t = meta::remove_cvref_t<decltype(slice)>;
+
+            // helper lambda to decompose start stop and step
+            auto decompose = [&](auto slice){
+                // assume slice has tuple_size
+                constexpr auto NS = std::tuple_size_v<decltype(slice)>;
+                if constexpr (NS==2) {
+                    auto [start, stop] = slice;
+                    return std::tuple{start,stop,None};
+                }
+                // return as it is to keep dtype
+                else if constexpr (NS==3)
+                    return slice;
+            };
+
             // when slice is mixed with indexing,
             // the resulting dimension is len(shape) - N_INT
             // simply ignore if there is integer
             if constexpr (!std::is_integral_v<slice_t>) {
-                auto [start_, stop_, step_] = [&](){
-                    // assume slice has tuple_size
-                    constexpr auto NS = std::tuple_size_v<decltype(slice)>;
-                    if constexpr (NS==2) {
-                        auto [start, stop] = slice;
-                        return std::tuple{start,stop,None};
-                    }
-                    // return as it is to keep dtype
-                    else if constexpr (NS==3)
-                        return slice;
-                }();
+                // using IILE here triggers gcc 8 internal compiler error: 
+                // in enclosing_instantiation_of, at cp/pt.c:13299 (works fine on gcc 9)
+                // https://godbolt.org/z/7vcvPG8c1
+                // move outside to avoid this problem
+                // auto [start_, stop_, step_] = [&](){
+                //     // assume slice has tuple_size
+                //     constexpr auto NS = std::tuple_size_v<decltype(slice)>;
+                //     if constexpr (NS==2) {
+                //         auto [start, stop] = slice;
+                //         return std::tuple{start,stop,None};
+                //     }
+                //     // return as it is to keep dtype
+                //     else if constexpr (NS==3)
+                //         return slice;
+                // }();
+                auto [start_,stop_,step_] = decompose(slice);
                 using start_t = meta::remove_cvref_t<decltype(start_)>;
                 using stop_t  = meta::remove_cvref_t<decltype(stop_)>;
                 using step_t  = meta::remove_cvref_t<decltype(step_)>;
