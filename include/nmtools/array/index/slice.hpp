@@ -87,8 +87,8 @@ namespace nmtools::index
             // we set si here to avoid gcc 8 internal error
             // note that we also explicit using size_t here
             // can't infer type (or using size_type ) :|
-            size_t si = at(shape,i);
             // size_type si = at(shape,i);
+            size_t si = at(shape,i);
             using slice_t = meta::remove_cvref_t<decltype(slice)>;
 
             // helper lambda to decompose start stop and step
@@ -151,23 +151,26 @@ namespace nmtools::index
                     // cant capture start, stop, step :|
                     // to avoid clang complaining about reference to local bindings
 
-                    // following numpy, stop is actually (stop,shape_i)
+                    // following numpy, stop is actually max(stop,shape_i)
                     auto stop = [&](){
                         if constexpr (is_none_v<stop_t>)
                             return si;
                         // this triggers gcc 8 internal compiler error: in tsubst_copy, at cp/pt.c:15387
                         // use ternary op instead, and move 'at' outside
                         // else return std::min(static_cast<int>(stop_),static_cast<int>(at(shape,i)));
-                        else return stop_ < si ? stop_ : si;
+                        else return static_cast<stop_t>(stop_ < si ? stop_ : si);
                     }();
                     // workaround to ambiguous call to std::abs, mostly because need to refactor avoiding
                     // gcc 8 internal compiler error :|
                     auto abs_ = [](auto v) { return v < 0 ? -v : v; };
-                    // (1)
-                    if constexpr (std::is_unsigned_v<start_t> && std::is_unsigned_v<stop_t>)
-                        return stop - start;
-                    // (2)
-                    else if constexpr (std::is_signed_v<start_t> && std::is_signed_v<stop_t>) {
+                    // (1) both start and stop is none, simply returh shape for this axis
+                    if constexpr (is_none_v<start_t> && is_none_v<stop_t>)
+                        return si;
+                    // (2) start is none, a.k.a. zero
+                    else if constexpr (is_none_v<start_t> && std::is_integral_v<stop_t>)
+                        return (stop_ < 0 ? (si + stop_) : stop);
+                    // (3)
+                    else if constexpr (std::is_integral_v<start_t> && std::is_integral_v<stop_t>) {
                         if (stop < 0 && start < 0)
                             return (si - abs_(stop)) - (si - abs_(start));
                         else if (stop < 0)
@@ -175,22 +178,10 @@ namespace nmtools::index
                         else
                             return stop - start;
                     }
-                    // (3)
-                    else if constexpr (std::is_unsigned_v<start_t> && std::is_signed_v<stop_t>)
-                        return (si - abs_(stop)) - start;
                     // (4)
-                    else if constexpr (is_none_v<start_t> && std::is_unsigned_v<stop_t>)
-                        return stop;
-                    // (5)
-                    else if constexpr (is_none_v<start_t> && std::is_signed_v<stop_t>)
-                        return stop < 0 ? (si - abs_(stop)) : stop;
-                    // (6)
-                    else if constexpr (is_none_v<start_t> && is_none_v<stop_t>)
-                        return si;
-                    // (7)
                     else if constexpr (std::is_integral_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>)
                         return si - start;
-                    // (8) need start + 1 for such following case: 2::-?
+                    // (5) need start + 1 for such following case: 2::-?
                     //     for such case, allowed indices should be (0,1,2) (range of 3) hence start + 1
                     else if constexpr (std::is_integral_v<start_t> && is_none_v<stop_t> && std::is_integral_v<step_t>)
                         return step_ < 0 && start >= 0 ? start + 1 : si - start;
