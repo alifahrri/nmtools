@@ -226,6 +226,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/compress.cpp
     src/doctest/array/view/expand_dims.cpp
     src/doctest/array/view/flatten.cpp
+    src/doctest/array/view/flip.cpp
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
     src/doctest/array/view/mutable_slice.cpp
@@ -258,6 +259,7 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     src/doctest/array/view/ufuncs/bitwise_xor.cpp
     src/doctest/array/view/ufuncs/cbrt.cpp
     src/doctest/array/view/ufuncs/ceil.cpp
+    src/doctest/array/view/ufuncs/clip.cpp
     src/doctest/array/view/ufuncs/cos.cpp
     src/doctest/array/view/ufuncs/cosh.cpp
     src/doctest/array/view/ufuncs/divide.cpp
@@ -314,6 +316,8 @@ if (NOT TEST_ARRAY_UFUNCS)
 endif ()
 
 set(ARRAY_EVAL_TEST_SOURCES
+    src/doctest/array/array/broadcast_to.cpp
+    src/doctest/array/array/flip.cpp
     src/doctest/array/array/ufuncs/add.cpp
     src/doctest/array/array/ufuncs/arccos.cpp
     src/doctest/array/array/ufuncs/arccosh.cpp
@@ -326,6 +330,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/ufuncs/bitwise_or.cpp
     src/doctest/array/array/ufuncs/bitwise_xor.cpp
     src/doctest/array/array/ufuncs/ceil.cpp
+    src/doctest/array/array/ufuncs/clip.cpp
     src/doctest/array/array/ufuncs/cos.cpp
     src/doctest/array/array/ufuncs/cosh.cpp
     src/doctest/array/array/ufuncs/divide.cpp

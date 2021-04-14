@@ -62,8 +62,9 @@ namespace nmtools::index
     template <typename shape_t, typename...slices_t>
     constexpr auto shape_slice(const shape_t& shape, const slices_t&...slices)
     {
-        using op_type  = meta::resolve_optype<void,shape_slice_t,shape_t,slices_t...>;
-        using return_t = meta::type_t<op_type>;
+        using op_type   = meta::resolve_optype<void,shape_slice_t,shape_t,slices_t...>;
+        using return_t  = meta::type_t<op_type>;
+        using size_type = meta::get_element_type_t<return_t>;
         // number of integer in slices, represent indexing instead of slice
         constexpr auto N_INT = op_type::N_INT;
 
@@ -80,18 +81,123 @@ namespace nmtools::index
         // since res and shape may have different dim,
         auto r_i = size_t{0};
         constexpr auto N_SLICES = sizeof...(slices);
+        // this is workaround for gcc 8, some how inferring 
         meta::template_for<N_SLICES>([&](auto i){
             auto slice = at(slices_pack, i);
+            // we set si here to avoid gcc 8 internal error
+            // note that we also explicit using size_t here
+            // can't infer type (or using size_type ) :|
+            // size_type si = at(shape,i);
+            size_t si = at(shape,i);
             using slice_t = meta::remove_cvref_t<decltype(slice)>;
+
+            // helper lambda to decompose start stop and step
+            auto decompose = [&](auto slice){
+                // assume slice has tuple_size
+                constexpr auto NS = std::tuple_size_v<decltype(slice)>;
+                if constexpr (NS==2) {
+                    auto [start, stop] = slice;
+                    return std::tuple{start,stop,None};
+                }
+                // return as it is to keep dtype
+                else if constexpr (NS==3)
+                    return slice;
+            };
+
             // when slice is mixed with indexing,
             // the resulting dimension is len(shape) - N_INT
             // simply ignore if there is integer
             if constexpr (!std::is_integral_v<slice_t>) {
-                auto [start, stop, step] = unpack(shape, slice, i);
+                // using IILE here triggers gcc 8 internal compiler error: 
+                // in enclosing_instantiation_of, at cp/pt.c:13299 (works fine on gcc 9)
+                // https://godbolt.org/z/7vcvPG8c1
+                // move outside to avoid this problem
+                // auto [start_, stop_, step_] = [&](){
+                //     // assume slice has tuple_size
+                //     constexpr auto NS = std::tuple_size_v<decltype(slice)>;
+                //     if constexpr (NS==2) {
+                //         auto [start, stop] = slice;
+                //         return std::tuple{start,stop,None};
+                //     }
+                //     // return as it is to keep dtype
+                //     else if constexpr (NS==3)
+                //         return slice;
+                // }();
+                auto [start_,stop_,step_] = decompose(slice);
+                using start_t = meta::remove_cvref_t<decltype(start_)>;
+                using stop_t  = meta::remove_cvref_t<decltype(stop_)>;
+                using step_t  = meta::remove_cvref_t<decltype(step_)>;
 
-                // here we already transform negative value to actual bound
-                // but still need to handle negative step, for now just take abs value
-                at(res,r_i++) = (stop - start) / std::abs(step);
+                // some tricky case:
+                // shape of the following is the same, assume shape = (4,2)
+                // (1) a[:,1::2]
+                // (2) a[:,1::]
+                // for now use ceil to handle such case
+                // without ceiling, (1) results in 0 when it should be 1
+                // another tricky case: assume shape=(4,2)
+                // (3) a[3::-2]
+                // (4) a[::-2]
+                // note that (3) and (4) should be the same
+                // another case to consider is: (not the same result)
+                // (5) a[2::-2]
+                // (6) a[1::-2]
+
+                using std::ceil;
+                using std::floor;
+
+                // here we compute the allowed range, regardless of the step,
+                // should handle various case, e.g. None, positive, negative start & stop
+                auto s = [&](auto start, auto stop_, auto step_) -> size_type {
+                    // cant capture start, stop, step :|
+                    // to avoid clang complaining about reference to local bindings
+
+                    // following numpy, stop is actually max(stop,shape_i)
+                    auto stop = [&](){
+                        if constexpr (is_none_v<stop_t>)
+                            return si;
+                        // this triggers gcc 8 internal compiler error: in tsubst_copy, at cp/pt.c:15387
+                        // use ternary op instead, and move 'at' outside
+                        // else return std::min(static_cast<int>(stop_),static_cast<int>(at(shape,i)));
+                        else return static_cast<stop_t>(stop_ < si ? stop_ : si);
+                    }();
+                    // workaround to ambiguous call to std::abs, mostly because need to refactor avoiding
+                    // gcc 8 internal compiler error :|
+                    auto abs_ = [](auto v) { return v < 0 ? -v : v; };
+                    // (1) both start and stop is none, simply returh shape for this axis
+                    if constexpr (is_none_v<start_t> && is_none_v<stop_t>)
+                        return si;
+                    // (2) start is none, a.k.a. zero
+                    else if constexpr (is_none_v<start_t> && std::is_integral_v<stop_t>)
+                        return (stop_ < 0 ? (si + stop_) : stop);
+                    // (3)
+                    else if constexpr (std::is_integral_v<start_t> && std::is_integral_v<stop_t>) {
+                        if (stop < 0 && start < 0)
+                            return (si - abs_(stop)) - (si - abs_(start));
+                        else if (stop < 0)
+                            return (si - abs_(stop)) - start;
+                        else
+                            return stop - start;
+                    }
+                    // (4)
+                    else if constexpr (std::is_integral_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>)
+                        return si - start;
+                    // (5) need start + 1 for such following case: 2::-?
+                    //     for such case, allowed indices should be (0,1,2) (range of 3) hence start + 1
+                    else if constexpr (std::is_integral_v<start_t> && is_none_v<stop_t> && std::is_integral_v<step_t>)
+                        return step_ < 0 && start >= 0 ? start + 1 : si - start;
+                }(start_,stop_,step_);
+
+                auto step = [](auto step_){
+                    if constexpr (is_none_v<step_t>)
+                        return 1ul;
+                    else if constexpr (std::is_unsigned_v<step_t>)
+                        return step_;
+                    else return std::abs(step_);
+                }(step_);
+
+                // finally the resulting shape for corresponding indices
+                // is simply the range divided by the step
+                at(res,r_i++) = static_cast<size_type>(ceil(static_cast<float>(s) / step));
             }
         });
 
@@ -115,6 +221,7 @@ namespace nmtools::index
     constexpr auto slice(const indices_t& indices, const shape_t& shape, const slices_t&...slices)
     {
         using return_t = meta::resolve_optype_t<slice_t,indices_t,shape_t,slices_t...>;
+        using index_t  = meta::get_element_type_t<return_t>;
         auto res = return_t {};
         auto dim = len(shape);
         if constexpr (meta::is_resizeable_v<return_t>)
@@ -130,14 +237,123 @@ namespace nmtools::index
         constexpr auto N_SLICES = sizeof...(slices);
         meta::template_for<N_SLICES>([&](auto i){
             auto slice = at(slices_pack, i);
+            // avoid gcc 8 internal compiler error
+            size_t si = at(shape,i);
             using slice_t = meta::remove_cvref_t<decltype(slice)>;
             if constexpr (std::is_integral_v<slice_t>)
                 at(res,i) = slice;
             else {
-                auto [start, stop, step] = unpack(shape, slice, i);
+                auto [start_, stop_, step_] = [&](){
+                    // assume slice has tuple_size
+                    constexpr auto NS = std::tuple_size_v<decltype(slice)>;
+                    if constexpr (NS==2) {
+                        auto [start, stop] = slice;
+                        return std::tuple{start,stop,None};
+                    }
+                    // return as it is to keep dtype
+                    else if constexpr (NS==3)
+                        return slice;
+                }();
+                using start_t = meta::remove_cvref_t<decltype(start_)>;
+                using stop_t  = meta::remove_cvref_t<decltype(stop_)>;
+                using step_t  = meta::remove_cvref_t<decltype(step_)>;
+
+                // some tricky case: assume shape=(4,2)
+                // (1) a[::-2,1::-2]
+                // (2) a[::-2,1::2]
+                // (1) and (2) is actually the same 
+                // TODO: exploit the type information, such as signed-/unsigned-ness
+                // to perform conditional compilation
+
+                // here we compute the start index step, regardless of the dst index
+                // should handle various case, e.g. None, positive, negative start & stop
+                // also assume indices is properly generated
+                auto [s, step] = [&](auto start_, auto stop_, auto step_) -> std::tuple<index_t,index_t> {
+                    auto start = start_; // just alias
+                    // following numpy, stop is actually (stop,shape_i)
+                    auto stop = [&](){
+                        if constexpr (is_none_v<stop_t>)
+                            return si;
+                        // clip value, keep sign
+                        else {
+                            auto s = stop_ < si ? stop_ : si;
+                                 s = s > -si ? s : -si;
+                            return s;
+                        }
+                    }();
+                    // alias
+                    auto step = step_;
+                    // (1) simplest case: all is none
+                    if constexpr (is_none_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>)
+                        return {0,1};
+                    // (2) only start is integer
+                    else if constexpr (std::is_integral_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>)
+                        return {start >= 0 ? start : stop - start, 1};
+                    // (3) start and stop is integer, can be positive or negative
+                    else if constexpr (std::is_integral_v<start_t> && std::is_integral_v<stop_t> && is_none_v<step_t>) {
+                        if (start >= 0 && stop > 0)
+                            return {start, 1};
+                        else if (start < 0 && stop > 0)
+                            return {stop+start,1};
+                        else if (start >= 0 && stop < 0)
+                            return {start, 1};
+                        else /* if (start < 0 && stop < 0) */
+                            return {si+start, 1};
+                    }
+                    // (4) all three is integer, can be positive or negative
+                    else if constexpr (std::is_integral_v<start_t> && std::is_integral_v<stop_t> && std::is_integral_v<step_t>) {
+                        // step is negative:
+                        if /**/ (start >= 0 && stop > 0 && step < 0)
+                            return {stop - 1, step};
+                        else if (start < 0 && stop > 0 && step < 0)
+                            return {stop+start, step};
+                        else if (start >= 0 && stop < 0 && step < 0)
+                            return {start, step};
+                        else if (start < 0 && stop < 0 && step < 0)
+                            return {si+start-1, step};
+
+                        // step is positive:
+                        else if (start >= 0 && stop > 0 && step > 0)
+                            return {start, step};
+                        else if (start < 0 && stop > 0 && step > 0)
+                            return {stop+start, step};
+                        else if (start >= 0 && stop < 0 && step > 0)
+                            return {start, step};
+                        else /* if (start < 0 && stop < 0 && step > 0) */
+                            return {si+start, step};
+                    }
+                    else if constexpr (is_none_v<start_t> && std::is_integral_v<stop_t> && is_none_v<step_t>)
+                        return {0,1};
+                    else if constexpr (is_none_v<start_t> && std::is_integral_v<stop_t> && std::is_integral_v<step_t>) {
+                        if (stop > 0 && step > 0)
+                            return {0,step};
+                        else if (stop > 0 && step < 0)
+                            return {si,step};
+                        else if (stop < 0 && step > 0)
+                            return {0,step};
+                        else /* if (stop > 0 && step > 0) */
+                            return {0,step};
+                    }
+                    else if constexpr (is_none_v<start_t> && is_none_v<stop_t> && std::is_integral_v<step_t>) {
+                        if (step < 0)
+                            return {si-1,step};
+                        else
+                            return {0,step};
+                    }
+                    else /* if constexpr (std::is_integral_v<start_t> && is_none_v<stop_t> && std::is_integral_v<step_t>) */ {
+                        if (start >= 0 && step > 0)
+                            return {start, step};
+                        else if (start >= 0 && step < 0)
+                            return {start, step};
+                        else if (start < 0 && step > 0)
+                            return {si+start,step};
+                        else /* if (start < 0 && step < 0) */
+                            return {start, step};
+                    }
+                }(start_,stop_,step_);
+
                 // TODO: check at(indices,i) < stop
-                // here, apply inverse from shape_pack
-                at(res,i) = start + (at(indices,ii++) * std::abs(step));
+                at(res,i) = s + at(indices,ii++) * step;
             }
         });
 

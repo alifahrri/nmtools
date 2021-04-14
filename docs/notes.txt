@@ -25,6 +25,10 @@ https://godbolt.org/z/zTa9dW
 gcc 7 internal compiler error: in tsubst, at cp/pt.c:13602 (works fine on gcc 8)
 https://godbolt.org/z/7r7ToM
 
+gcc 8 internal compiler error: in enclosing_instantiation_of, at cp/pt.c:13299 (works fine on gcc 9)
+https://godbolt.org/z/7vcvPG8c1
+solution: https://godbolt.org/z/Wa3aY3sjh
+
 initializer list ctad
 https://godbolt.org/z/bT6K7a
 https://stackoverflow.com/questions/55205176/is-stdinitializer-listx-y-z-ctad-valid
