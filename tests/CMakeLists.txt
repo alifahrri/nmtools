@@ -64,12 +64,11 @@ if (ENABLE_GTEST)
         ${PROJECT_NAME} PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
-    target_link_libraries(${PROJECT_NAME} pthread)
     target_include_directories(
         ${PROJECT_NAME} PRIVATE
         ${GTEST_INCLUDE_DIRS}
     )
-    target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES} pthread)
     add_test(tests ${PROJECT_NAME})
     # may use scripts/install_doctest.sh to install
     # dont know to fix this on emscripten toolchain
