@@ -15,12 +15,6 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     set (EMSCRIPTEN)
 endif()
 
-# TODO: remove gtest, hard to use on multiple platform
-# for now only run on gcc 
-if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") AND (NOT MSYS))
-    find_package(GTest)
-endif()
-
 # optionally use boost (esp. for type_id)
 find_package(Boost)
 if (Boost_FOUND)
@@ -30,7 +24,7 @@ endif()
 enable_testing()
 
 # workaround for clang since gcc has constexpr math but clang doesnt
-if (NOT GTest_FOUND)
+if((EMSCRIPTEN) OR (ANDROID) OR (MSYS))
     set(GTEST_SOURCE "")
 else()
     set(GTEST_SOURCE
@@ -58,6 +52,9 @@ endif()
 
 # skip gtest completely on emscripten, too much issues
 if((NOT EMSCRIPTEN) AND (NOT ANDROID) AND (NOT MSYS))
+    # TODO: remove gtest, hard to use on multiple platform
+    # for now only run on gcc 
+    find_package(GTest REQUIRED)
     add_executable(${PROJECT_NAME} src/gtest/tests.cpp 
         ${GTEST_SOURCE}
     )
@@ -70,13 +67,11 @@ if((NOT EMSCRIPTEN) AND (NOT ANDROID) AND (NOT MSYS))
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
     target_link_libraries(${PROJECT_NAME} pthread)
-    if (Gtest_FOUND)
-        target_include_directories(
-            ${PROJECT_NAME} PRIVATE
-            ${GTEST_INCLUDE_DIRS}
-        )
-        target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
-    endif()
+    target_include_directories(
+        ${PROJECT_NAME} PRIVATE
+        ${GTEST_INCLUDE_DIRS}
+    )
+    target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
     add_test(tests ${PROJECT_NAME})
     # may use scripts/install_doctest.sh to install
     # dont know to fix this on emscripten toolchain
