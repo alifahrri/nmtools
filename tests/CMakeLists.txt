@@ -405,13 +405,10 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ## misc
     ${MISC_TEST_SOURCES}
 )
-# so for emscripten, use single header doctest so this is not necessary
-# i dont know anymore
-if ((NOT EMSCRIPTEN) AND (NOT ANDROID))
-    target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
-    if (doctest_FOUND)
-        target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
-    endif()
+
+target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+if (doctest_FOUND)
+    target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
 
 option(ENABLE_TEST_BENCHMARKS "build benchmark programs" OFF)
