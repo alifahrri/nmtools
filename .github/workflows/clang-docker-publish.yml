@@ -1,4 +1,4 @@
-name: clang-docker
+name: clang
 
 on:
   push:

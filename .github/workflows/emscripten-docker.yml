@@ -1,4 +1,4 @@
-name: emscripten-docker
+name: emscripten
 
 on:
   push:
