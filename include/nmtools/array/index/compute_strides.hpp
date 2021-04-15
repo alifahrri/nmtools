@@ -33,7 +33,8 @@ namespace nmtools::index
             auto p = value_type{1};
             meta::template_for<n>([&](auto index){
                 constexpr auto i = decltype(index)::value;
-                if constexpr (i>=k+1)
+                // k cant be used in constant expression
+                if (i>=k+1)
                     p *= std::get<i>(shape);
             });
             return p;

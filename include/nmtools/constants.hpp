@@ -7,6 +7,8 @@
 
 namespace nmtools::detail
 {
+    using std::size_t;
+
     /**
      * @brief actual implementation of _ct UDL
      * 
@@ -52,6 +54,7 @@ namespace nmtools::literals
     template <char...cs>
     constexpr auto operator ""_ct()
     {
+        using std::size_t;
         static_assert( ((cs>='0' && cs<='9') && ...)
             , "unsupported _ct, expect all cs to be digits"
         );
