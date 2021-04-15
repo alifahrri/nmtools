@@ -28,5 +28,7 @@ jobs:
         with:
           path: ./build/${{ matrix.name }}
           key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/install_doctest.sh
       - name: build
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 numeric-tests-doctest'
