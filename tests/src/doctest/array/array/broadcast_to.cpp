@@ -123,7 +123,7 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("array::broadcast_to"))
 }
 
 // skip constexpr test for emscripten for now, works for gcc & clang
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
 TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("array::broadcast_to"))
 {
     {

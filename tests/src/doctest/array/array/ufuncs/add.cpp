@@ -67,7 +67,7 @@ TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
 }
 
 // skip constexpr test for emscripten
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
 TEST_CASE("add(constexpr)"  * doctest::test_suite("array::add"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view, constexpr_add, case1);

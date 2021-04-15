@@ -24,7 +24,7 @@ using nmtools::array::dynamic_ndarray;
 using nmtools::utils::to_string;
 
 // doctest MESSAGE macro doesnt work with emscripten
-#ifdef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
 #undef MESSAGE
 #define MESSAGE(...) {}
 #endif
@@ -34,7 +34,8 @@ TEST_CASE("to_string(double[1])" * doctest::test_suite("utils") * doctest::skip(
     {
         double arg[1] = {1.};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -44,7 +45,8 @@ TEST_CASE("to_string(double[1][1])" * doctest::test_suite("utils") * doctest::sk
     {
         double arg[1][1] = {{1.}};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -54,7 +56,8 @@ TEST_CASE("to_string(double[1][1][1])" * doctest::test_suite("utils") * doctest:
     {
         double arg[1][1][1] = {{{1.}}};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -64,7 +67,8 @@ TEST_CASE("to_string(double[1][1][1][1])" * doctest::test_suite("utils") * docte
     {
         double arg[1][1][1][1] = {{{{1.}}}};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -78,7 +82,8 @@ TEST_CASE("to_string(tuple)" * doctest::test_suite("utils") * doctest::skip(true
     {
         auto arg = tuple{1., 2., 3., 4., 5.};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -92,7 +97,8 @@ TEST_CASE("to_string(array)" * doctest::test_suite("utils") * doctest::skip(true
     {
         auto arg = array{1., 2., 3., 4., 5.};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -102,7 +108,8 @@ TEST_CASE("to_string(vector)" * doctest::test_suite("utils") * doctest::skip(tru
     {
         auto arg = vector{1., 2., 3., 4., 5.};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -112,7 +119,8 @@ TEST_CASE("to_string(double[5])" * doctest::test_suite("utils") * doctest::skip(
     {
         double arg[5] = {1., 2., 3., 4., 5.};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -122,7 +130,8 @@ TEST_CASE("to_string(fixed_vector)" * doctest::test_suite("utils") * doctest::sk
     {
         auto arg = na::fixed_vector<double,2>{};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -132,7 +141,8 @@ TEST_CASE("to_string(dynamic_vector)" * doctest::test_suite("utils") * doctest::
     {
         auto arg = na::dynamic_vector{1.,2.,3.,4.,5.};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -149,7 +159,8 @@ TEST_CASE("to_string(tuple[2])" * doctest::test_suite("utils") * doctest::skip(t
             tuple{4., 5., 6.}
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -166,7 +177,8 @@ TEST_CASE("to_string(array[2])" * doctest::test_suite("utils") * doctest::skip(t
             array{4., 5., 6.}
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -179,7 +191,8 @@ TEST_CASE("to_string(vector[2])" * doctest::test_suite("utils") * doctest::skip(
             vector{4., 5., 6.}
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -192,7 +205,8 @@ TEST_CASE("to_string(double[2][3])" * doctest::test_suite("utils") * doctest::sk
             {4., 5., 6.}
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -202,7 +216,8 @@ TEST_CASE("to_string(fixed_matrix)" * doctest::test_suite("utils") * doctest::sk
     {
         auto arg = na::fixed_matrix<double,2,3>{};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -214,7 +229,8 @@ TEST_CASE("to_string(dynamic_matrix)" * doctest::test_suite("utils") * doctest::
             {1.,2.,3.}, {4.,5.,6.}
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -237,7 +253,8 @@ TEST_CASE("to_string(tuple[3])" * doctest::test_suite("utils") * doctest::skip(t
             }
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -260,7 +277,8 @@ TEST_CASE("to_string(array[3])" * doctest::test_suite("utils") * doctest::skip(t
             }
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -279,7 +297,8 @@ TEST_CASE("to_string(vector[3])" * doctest::test_suite("utils") * doctest::skip(
             }
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -298,7 +317,8 @@ TEST_CASE("to_string(double[2][2][3])" * doctest::test_suite("utils") * doctest:
             }
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -308,7 +328,8 @@ TEST_CASE("to_string(fixed_ndarray[3])" * doctest::test_suite("utils") * doctest
     {
         auto arg = na::fixed_ndarray<double,2,2,3>{};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -343,7 +364,8 @@ TEST_CASE("to_string(array[4])" * doctest::test_suite("utils") * doctest::skip(t
             },
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -374,7 +396,8 @@ TEST_CASE("to_string(vector[4])" * doctest::test_suite("utils") * doctest::skip(
             },
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -405,7 +428,8 @@ TEST_CASE("to_string(double[2][2][2][3])" * doctest::test_suite("utils") * docte
             },
         };
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -415,7 +439,8 @@ TEST_CASE("to_string(fixed_ndarray[4])" * doctest::test_suite("utils") * doctest
     {
         auto arg = na::fixed_ndarray<double,2,2,2,3>{};
         auto str = to_string(arg);
-        MESSAGE( std::string("\n") + str );
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
         CHECK( str.size() );
     }
 }
@@ -426,7 +451,8 @@ TEST_CASE("to_string(fixed_ndarray[4])" * doctest::test_suite("utils") * doctest
 //     {
 //         auto arg = na::dynamic_ndarray<double>(std::vector{2ul,2ul,2ul,3ul});
 //         auto str = to_string(arg);
-//         MESSAGE( std::string("\n") + str );
+//         auto to_print = std::string("\n") + str;
+//         MESSAGE( to_print );
 //         CHECK( str.size() );
 //     }
 // }
