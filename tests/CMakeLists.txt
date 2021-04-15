@@ -51,7 +51,7 @@ else()
 endif()
 
 # skip gtest completely on emscripten, too much issues
-if((NOT EMSCRIPTEN) AND (NOT ANDROID) AND (NOT MSYS))
+if((NOT EMSCRIPTEN) AND (NOT ANDROID) AND (NOT MSYS) AND (NOT (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")))
     # TODO: remove gtest, hard to use on multiple platform
     # for now only run on gcc 
     find_package(GTest REQUIRED)
