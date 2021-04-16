@@ -266,6 +266,30 @@ namespace nmtools::array
             return data[offset];
         } // at
 
+        template <typename shape_t>
+        auto at(const shape_t& i) const
+            -> std::enable_if_t<meta::is_index_array_v<shape_t>, const value_type&>
+        {
+            // this function is provided to support cross-compile for android
+            // somehow storage_type is deduced as std::vector while
+            // provided index array (std::vector defined outside) deduced
+            // as std::__ndk1::vector
+            auto offset = detail::compute_offset(strides_, i);
+            return data[offset];
+        } // at
+
+        template <typename shape_t>
+        auto at(const shape_t& i)
+            -> std::enable_if_t<meta::is_index_array_v<shape_t>, value_type&>
+        {
+            // this function is provided to support cross-compile for android
+            // somehow storage_type is deduced std::vector while
+            // provided index array (std::vector defined outside) deduced
+            // as std::__ndk1::vector
+            auto offset = detail::compute_offset(strides_, i);
+            return data[offset];
+        } // at
+
         template <typename ndarray_t, typename=std::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         constexpr auto operator=(const ndarray_t& rhs);
 

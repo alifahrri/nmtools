@@ -14,39 +14,23 @@ include(nmtools)
 if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     set (EMSCRIPTEN)
 endif()
+if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
+    set (ARM)
+endif()
 
-if(NOT EMSCRIPTEN)
-    find_package(Boost REQUIRED)
-    find_package(GTest REQUIRED)
+# optionally use boost (esp. for type_id)
+find_package(Boost)
+if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
 enable_testing()
 
-# workaround for clang since gcc has constexpr math but clang doesnt
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    set(GTEST_SOURCE
-        # src/gtest/roots/bracketing.cpp
-        # src/gtest/roots/open.cpp
-        # src/gtest/optimization/unconstrained.cpp
-        # src/gtest/integration/trapezoidal.cpp
-        # src/gtest/differentiation/finite.cpp
-        # src/gtest/taylor/taylor.cpp
-        # src/gtest/curvefit/regression.cpp
-        # src/gtest/curvefit/sinusoid.cpp
-        # src/gtest/curvefit/interpolation.cpp
-        # src/gtest/utility/utility.cpp
-        # src/gtest/ode/euler.cpp
-        # src/gtest/ode/runge_kutta.cpp
-        # src/gtest/linalg/elimination.cpp
-        # src/gtest/linalg/decomposition.cpp
-        # src/gtest/blas/blas.cpp
-        # src/gtest/array/dynamic.cpp
-        # src/gtest/array/fixed.cpp
-        # src/gtest/array/utility.cpp
-        # src/gtest/array/linalg.cpp
-    )
-else()
+# TODO: remove gtest, hard to use on multiple platform
+# for now use custom flag
+option(ENABLE_GTEST "enable old gtest unit tests" OFF)
+
+if (ENABLE_GTEST)
     set(GTEST_SOURCE
         src/gtest/roots/bracketing.cpp
         src/gtest/roots/open.cpp
@@ -68,10 +52,7 @@ else()
         src/gtest/array/utility.cpp
         src/gtest/array/linalg.cpp
     )
-endif()
-
-# skip gtest completely on emscripten, too much issues
-if(NOT EMSCRIPTEN)
+    find_package(GTest REQUIRED)
     add_executable(${PROJECT_NAME} src/gtest/tests.cpp 
         ${GTEST_SOURCE}
     )
@@ -81,20 +62,23 @@ if(NOT EMSCRIPTEN)
     )
     target_include_directories(
         ${PROJECT_NAME} PRIVATE
-        ${GTEST_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
+    target_include_directories(
+        ${PROJECT_NAME} PRIVATE
+        ${GTEST_INCLUDE_DIRS}
     )
     target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES} pthread)
     add_test(tests ${PROJECT_NAME})
     # may use scripts/install_doctest.sh to install
     # dont know to fix this on emscripten toolchain
     # should fallback to single header
-    find_package(doctest REQUIRED)
+    find_package(doctest)
 endif()
 
 ## defer static check to runtime for clang
 ## since constexpr math not supported
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR EMSCRIPTEN OR ANDROID OR MSYS)
     add_definitions(-DDEFER_STATIC_CHECK)
 endif ()
 
@@ -413,10 +397,9 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ## misc
     ${MISC_TEST_SOURCES}
 )
-# so for emscripten, use single header doctest so this is not necessary
-# i dont know anymore
-if (NOT EMSCRIPTEN)
-    target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+
+target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
 
@@ -471,9 +454,11 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/blas/row.cpp
 )
 # omg
-if (NOT EMSCRIPTEN)
+if ((NOT EMSCRIPTEN) AND (NOT ANDROID))
     target_compile_features(${PROJECT_NAME}-doctest-meta PRIVATE cxx_std_17)
-    target_link_libraries(${PROJECT_NAME}-doctest-meta PRIVATE doctest::doctest)
+    if (doctest_FOUND)
+        target_link_libraries(${PROJECT_NAME}-doctest-meta PRIVATE doctest::doctest)
+    endif()
 endif()
 
 apply_nmtools(

@@ -299,7 +299,7 @@ EXPECT_TRUE(isequal(result,expect)) \
  */
 #define NMTOOLS_TESTING_LOG_TYPEINFO_IMPL_DOCTEST INFO
 
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
 #define NMTOOLS_CHECK_MESSAGE(result, message) \
 { \
     CHECK_MESSAGE(result, message); \
@@ -309,7 +309,7 @@ EXPECT_TRUE(isequal(result,expect)) \
 { \
     CHECK(result); \
 }
-#endif // __EMSCRIPTEN__
+#endif // (__EMSCRIPTEN__ || __ANDROID__ || __arm__ || __MINGW32__)
 
 /**
  * @brief implementation of doctest assert macro with message
@@ -1112,7 +1112,7 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
  * 
  * @warn only available for doctest
  */
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) || defined(__ANDROID__) || defined(__arm__) || defined(__MINGW32__)
     // somehow doctest MESSAGE macro doesnt work well with emscripten
     #define LOG_TYPEINFO(type) {}
 #else

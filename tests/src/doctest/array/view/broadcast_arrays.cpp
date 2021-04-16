@@ -407,7 +407,7 @@ constexpr auto eval_broadcast_arrays(const first_t& A, const second_t& B, const 
 } // eval_broadcast_arrays
 
 // skip constexpr test for emscripten for now, works for gcc & clang
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
 TEST_CASE("broadcast_arrays(constexpr)" * doctest::test_suite("view::broadcast_arrays"))
 {
     NMTOOLS_TESTING_DECLARE_NS(broadcast_arrays_constexpr, case1);

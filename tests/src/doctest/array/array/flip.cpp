@@ -79,7 +79,7 @@ TEST_CASE("flip(case4)" * doctest::test_suite("array::flip"))
 }
 
 // skip constexpr test for emscripten for now, works for gcc & clang
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
 TEST_CASE("flip(case1)" * doctest::test_suite("array::constexpr_flip"))
 {
     SUBCASE("case1")
