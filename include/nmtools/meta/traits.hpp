@@ -1002,49 +1002,49 @@ namespace nmtools::meta {
     inline constexpr bool is_integral_constant_v = is_integral_constant<T>::value;
 
     namespace detail {
-        template <template <typename> typename trait, typename type_list, typename=void>
+        template <template <typename...> typename trait, typename type_list, typename=void>
         struct apply_disjunction_helper
         {
             static constexpr auto value = fail_t{};
         }; // apply_disjunction_helper
 
-        template <template <typename> typename trait, typename T, typename...Ts>
+        template <template <typename...> typename trait, typename T, typename...Ts>
         struct apply_disjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)==0)>>
         {
             static constexpr auto value = trait<T>::value;
         }; // apply_disjunction_helper
 
-        template <template <typename> typename trait, typename T, typename U>
+        template <template <typename...> typename trait, typename T, typename U>
         struct apply_disjunction_helper<trait,std::pair<T,U>>
         {
             static constexpr auto value = trait<T>::value || trait<U>::value;
         }; // apply_disjunction_helper
 
-        template <template <typename> typename trait, typename T, typename...Ts>
+        template <template <typename...> typename trait, typename T, typename...Ts>
         struct apply_disjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)>0)>>
         {
             static constexpr auto value = trait<T>::value || apply_disjunction_helper<trait,std::tuple<Ts...>>::value;
         }; // apply_disjunction_helper
 
-        template <template <typename> typename trait, typename type_list, typename=void>
+        template <template <typename...> typename trait, typename type_list, typename=void>
         struct apply_conjunction_helper
         {
             static constexpr auto value = fail_t{};
         }; // apply_conjunction_helper
 
-        template <template <typename> typename trait, typename T, typename...Ts>
+        template <template <typename...> typename trait, typename T, typename...Ts>
         struct apply_conjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)==0)>>
         {
             static constexpr auto value = trait<T>::value;
         }; // apply_conjunction_helper
 
-        template <template <typename> typename trait, typename T, typename U>
+        template <template <typename...> typename trait, typename T, typename U>
         struct apply_conjunction_helper<trait,std::pair<T,U>,void>
         {
             static constexpr auto value = trait<T>::value && trait<U>::value;
         }; // apply_conjunction_helper
 
-        template <template <typename> typename trait, typename T, typename...Ts>
+        template <template <typename...> typename trait, typename T, typename...Ts>
         struct apply_conjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)>0)>>
         {
             static constexpr auto value = trait<T>::value && apply_conjunction_helper<trait,std::tuple<Ts...>>::value;
@@ -1057,7 +1057,7 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <template <typename> typename trait, typename type_list>
+    template <template <typename...> typename trait, typename type_list>
     struct apply_disjunction
     {
         static inline constexpr auto impl_value = detail::apply_disjunction_helper<trait,type_list>::value;
@@ -1072,7 +1072,7 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <template <typename> typename trait, typename type_list>
+    template <template <typename...> typename trait, typename type_list>
     static constexpr auto apply_disjunction_v = apply_disjunction<trait,type_list>::value;
 
     /**
@@ -1081,7 +1081,7 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <template <typename> typename trait, typename type_list>
+    template <template <typename...> typename trait, typename type_list>
     struct apply_conjunction
     {
         static inline constexpr auto impl_value = detail::apply_conjunction_helper<trait,type_list>::value;
@@ -1096,7 +1096,7 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <template <typename> typename trait, typename type_list>
+    template <template <typename...> typename trait, typename type_list>
     static constexpr auto apply_conjunction_v = apply_conjunction<trait,type_list>::value;
 
     /**
@@ -1105,7 +1105,7 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <template <typename> typename trait, typename type_list>
+    template <template <typename...> typename trait, typename type_list>
     struct apply_logical_or : apply_disjunction<trait, type_list> {};
 
     /**
@@ -1114,7 +1114,7 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <template <typename> typename trait, typename type_list>
+    template <template <typename...> typename trait, typename type_list>
     struct apply_logical_and : apply_conjunction<trait, type_list> {};
 
     /**
@@ -1123,7 +1123,7 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <template <typename> typename trait, typename type_list>
+    template <template <typename...> typename trait, typename type_list>
     static inline constexpr auto apply_logical_or_v = apply_logical_or<trait,type_list>::value;
 
     /**
@@ -1132,7 +1132,7 @@ namespace nmtools::meta {
      * @tparam type_list type list to be checked
      * @tparam trait template template parameter corresponding to trait to be satisfied
      */
-    template <template <typename> typename trait, typename type_list>
+    template <template <typename...> typename trait, typename type_list>
     static inline constexpr auto apply_logical_and_v = apply_logical_and<trait,type_list>::value;
 
     /**
@@ -1406,6 +1406,19 @@ namespace nmtools::meta {
 
     template <typename...Ts>
     struct is_fixed_index_array<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>> : std::true_type {};
+
+    /**
+     * @brief Check if type T is hybrid_index_array.
+     *
+     * Has max size but resizeable.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T, typename=void>
+    struct is_hybrid_index_array : std::false_type {};
+
+    template <typename T>
+    inline constexpr auto is_hybrid_index_array_v = is_hybrid_index_array<T>::value;
 
     /**
      * @brief Check if type T is constant index array.
