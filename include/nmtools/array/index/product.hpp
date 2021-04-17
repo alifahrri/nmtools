@@ -46,7 +46,6 @@ namespace nmtools::index
                     constexpr auto i = decltype(index)::value;
                     ret *= std::get<i>(vec);
                 });
-                return ret;
             }
             else
                 for (size_t i=0; i<len(vec); i++)
