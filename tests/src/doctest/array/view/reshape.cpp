@@ -16,62 +16,19 @@ namespace meta = nm::meta;
 namespace kind = na::kind;
 using namespace nm::literals;
 
-template <typename T>
-using not_array1d = meta::logical_not<meta::is_array1d<T>>;
-
-template <typename T>
-using not_array2d = meta::logical_not<meta::is_array2d<T>>;
-
-template <typename T>
-using not_fixed_size_ndarray = meta::logical_not<meta::is_fixed_size_ndarray<T>>;
-
-template <typename T>
-using not_fixed_dim_ndarray = meta::logical_not<meta::is_fixed_dim_ndarray<T>>;
-
-template <typename T>
-using is_fixed_size_array2d = meta::compose_logical_and<T,
-    not_array1d, meta::is_array2d, meta::is_ndarray,
-    meta::is_fixed_size_ndarray
->;
-
-// dynamic shape but fixed dim
-// @TODO: fix trait for reshape view
-template <typename T>
-using is_fixed_dim_dynamic_size_array2d = meta::compose_logical_and<T,
-    not_array1d, meta::is_array2d, meta::is_ndarray
-    // , meta::is_fixed_dim_ndarray
->;
-
-// dynamic shape dynamic dim
-template <typename T>
-using is_dynamic_dim_dynamic_size_array2d = meta::compose_logical_and<T,
-    meta::is_ndarray
-    , not_fixed_size_ndarray
->;
-
-template <typename T>
-using is_fixed_dim_dynamic_size_ndarray = meta::compose_logical_and<T,
-    not_array1d, not_array2d, meta::is_ndarray
-    // , meta::is_fixed_dim_ndarray
->;
-
-// dynamic shape dynamic dim
-template <typename T>
-using is_dynamic_dim_dynamic_size_ndarray = meta::compose_logical_and<T,
-    meta::is_ndarray
-    , not_fixed_size_ndarray
->;
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_v = cast(name, kind::nested_vec); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_d = cast(name, kind::dynamic); \
+inline auto name##_h = cast(name, kind::hybrid); \
 
 NMTOOLS_TESTING_DECLARE_CASE(reshape)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        auto array_a = cast<double>(array);
-        auto array_v = cast(array,kind::nested_vec);
-        auto array_f = cast(array,kind::fixed);
-        auto array_d = cast(array,kind::dynamic);
-        auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array)
         int newshape[2] = {12,1};
         auto newshape_ct = std::tuple{12_ct, 1_ct};
         auto newshape_a = cast<int>(newshape);
@@ -91,11 +48,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
         double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        auto array_a = cast<double>(array);
-        auto array_v = cast(array,kind::nested_vec);
-        auto array_f = cast(array,kind::fixed);
-        auto array_d = cast(array,kind::dynamic);
-        auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array)
         int newshape[2] = {3,4};
         auto newshape_ct = std::tuple{3_ct, 4_ct};
         auto newshape_a = cast<int>(newshape);
@@ -117,11 +70,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
         double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        auto array_a = cast<double>(array);
-        auto array_v = cast(array,kind::nested_vec);
-        auto array_f = cast(array,kind::fixed);
-        auto array_d = cast(array,kind::dynamic);
-        auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array)
         int newshape[4] = {1,2,3,2};
         auto newshape_ct = std::tuple{1_ct, 2_ct, 3_ct, 2_ct};
         auto newshape_a = cast<int>(newshape);
@@ -173,7 +122,7 @@ using nm::benchmarks::TrackedBench;
 RUN_impl(__VA_ARGS__);
 #endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
-#define RESHAPE_SUBCASE(case_name, array, newshape, trait) \
+#define RESHAPE_SUBCASE(case_name, array, newshape) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(reshape, case_name) \
@@ -181,113 +130,112 @@ SUBCASE(#case_name) \
     using view_t = decltype(array_ref); \
     NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
-    STATIC_CHECK_TRAIT( trait, view_t ); \
 }
 
 TEST_CASE("reshape(raw)" * doctest::test_suite("view::reshape"))
 {
-    RESHAPE_SUBCASE( case1, array, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array, newshape_ct, is_fixed_size_array2d );
+    RESHAPE_SUBCASE( case1, array, newshape_a );
+    RESHAPE_SUBCASE( case1, array, newshape_v );
+    RESHAPE_SUBCASE( case1, array, newshape_t );
+    RESHAPE_SUBCASE( case1, array, newshape_ct );
 
-    RESHAPE_SUBCASE( case2, array, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array, newshape_ct, is_fixed_size_array2d );
+    RESHAPE_SUBCASE( case2, array, newshape_a );
+    RESHAPE_SUBCASE( case2, array, newshape_v );
+    RESHAPE_SUBCASE( case2, array, newshape_t );
+    RESHAPE_SUBCASE( case2, array, newshape_ct );
 
-    RESHAPE_SUBCASE( case3, array, newshape_a, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array, newshape_t, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array, newshape_ct, meta::is_fixed_size_ndarray );
+    RESHAPE_SUBCASE( case3, array, newshape_a );
+    RESHAPE_SUBCASE( case3, array, newshape_v );
+    RESHAPE_SUBCASE( case3, array, newshape_t );
+    RESHAPE_SUBCASE( case3, array, newshape_ct );
 }
 
 TEST_CASE("reshape(array)" * doctest::test_suite("view::reshape"))
 {
-    RESHAPE_SUBCASE( case1, array_a, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_a, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_a, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_a, newshape_ct, is_fixed_size_array2d );
+    RESHAPE_SUBCASE( case1, array_a, newshape_a );
+    RESHAPE_SUBCASE( case1, array_a, newshape_v );
+    RESHAPE_SUBCASE( case1, array_a, newshape_t );
+    RESHAPE_SUBCASE( case1, array_a, newshape_ct );
 
-    RESHAPE_SUBCASE( case2, array_a, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_a, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_a, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_a, newshape_ct, is_fixed_size_array2d );
+    RESHAPE_SUBCASE( case2, array_a, newshape_a );
+    RESHAPE_SUBCASE( case2, array_a, newshape_v );
+    RESHAPE_SUBCASE( case2, array_a, newshape_t );
+    RESHAPE_SUBCASE( case2, array_a, newshape_ct );
 
-    RESHAPE_SUBCASE( case3, array_a, newshape_a, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_a, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_a, newshape_t, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_a, newshape_ct, meta::is_fixed_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_a, newshape_a );
+    RESHAPE_SUBCASE( case3, array_a, newshape_v );
+    RESHAPE_SUBCASE( case3, array_a, newshape_t );
+    RESHAPE_SUBCASE( case3, array_a, newshape_ct );
 }
 
 TEST_CASE("reshape(fixed_ndarray)" * doctest::test_suite("view::reshape"))
 {
-    RESHAPE_SUBCASE( case1, array_f, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_f, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_f, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_f, newshape_ct, is_fixed_size_array2d );
+    RESHAPE_SUBCASE( case1, array_f, newshape_a );
+    RESHAPE_SUBCASE( case1, array_f, newshape_v );
+    RESHAPE_SUBCASE( case1, array_f, newshape_t );
+    RESHAPE_SUBCASE( case1, array_f, newshape_ct );
 
-    RESHAPE_SUBCASE( case2, array_f, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_f, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_f, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_f, newshape_ct, is_fixed_size_array2d );
+    RESHAPE_SUBCASE( case2, array_f, newshape_a );
+    RESHAPE_SUBCASE( case2, array_f, newshape_v );
+    RESHAPE_SUBCASE( case2, array_f, newshape_t );
+    RESHAPE_SUBCASE( case2, array_f, newshape_ct );
 
-    RESHAPE_SUBCASE( case3, array_f, newshape_a, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_f, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_f, newshape_t, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_f, newshape_ct, meta::is_fixed_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_f, newshape_a );
+    RESHAPE_SUBCASE( case3, array_f, newshape_v );
+    RESHAPE_SUBCASE( case3, array_f, newshape_t );
+    RESHAPE_SUBCASE( case3, array_f, newshape_ct );
 }
 
 TEST_CASE("reshape(vector)" * doctest::test_suite("view::reshape"))
 {
-    RESHAPE_SUBCASE( case1, array_v, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_v, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_v, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_v, newshape_ct, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_v, newshape_a );
+    RESHAPE_SUBCASE( case1, array_v, newshape_v );
+    RESHAPE_SUBCASE( case1, array_v, newshape_t );
+    RESHAPE_SUBCASE( case1, array_v, newshape_ct );
 
-    RESHAPE_SUBCASE( case2, array_v, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_v, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_v, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_v, newshape_ct, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_v, newshape_a );
+    RESHAPE_SUBCASE( case2, array_v, newshape_v );
+    RESHAPE_SUBCASE( case2, array_v, newshape_t );
+    RESHAPE_SUBCASE( case2, array_v, newshape_ct );
 
-    RESHAPE_SUBCASE( case3, array_v, newshape_a, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_v, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_v, newshape_t, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_v, newshape_ct, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_v, newshape_a );
+    RESHAPE_SUBCASE( case3, array_v, newshape_v );
+    RESHAPE_SUBCASE( case3, array_v, newshape_t );
+    RESHAPE_SUBCASE( case3, array_v, newshape_ct );
 }
 
 TEST_CASE("reshape(dynamic_ndarray)" * doctest::test_suite("view::reshape"))
 {
-    RESHAPE_SUBCASE( case1, array_d, newshape_a, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case1, array_d, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case1, array_d, newshape_t, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case1, array_d, newshape_ct, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case1, array_d, newshape_a );
+    RESHAPE_SUBCASE( case1, array_d, newshape_v );
+    RESHAPE_SUBCASE( case1, array_d, newshape_t );
+    RESHAPE_SUBCASE( case1, array_d, newshape_ct );
 
-    RESHAPE_SUBCASE( case2, array_d, newshape_a, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case2, array_d, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case2, array_d, newshape_t, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case2, array_d, newshape_ct, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case2, array_d, newshape_a );
+    RESHAPE_SUBCASE( case2, array_d, newshape_v );
+    RESHAPE_SUBCASE( case2, array_d, newshape_t );
+    RESHAPE_SUBCASE( case2, array_d, newshape_ct );
 
-    RESHAPE_SUBCASE( case3, array_d, newshape_a, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_d, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_d, newshape_t, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_d, newshape_ct, is_dynamic_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_d, newshape_a );
+    RESHAPE_SUBCASE( case3, array_d, newshape_v );
+    RESHAPE_SUBCASE( case3, array_d, newshape_t );
+    RESHAPE_SUBCASE( case3, array_d, newshape_ct );
 }
 
 TEST_CASE("reshape(hybrid_ndarray)" * doctest::test_suite("view::reshape"))
 {
-    RESHAPE_SUBCASE( case1, array_h, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_h, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_h, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case1, array_h, newshape_ct, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case1, array_h, newshape_a );
+    RESHAPE_SUBCASE( case1, array_h, newshape_v );
+    RESHAPE_SUBCASE( case1, array_h, newshape_t );
+    RESHAPE_SUBCASE( case1, array_h, newshape_ct );
 
-    RESHAPE_SUBCASE( case2, array_h, newshape_a, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_h, newshape_v, is_dynamic_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_h, newshape_t, is_fixed_dim_dynamic_size_array2d );
-    RESHAPE_SUBCASE( case2, array_h, newshape_ct, is_fixed_dim_dynamic_size_array2d );
+    RESHAPE_SUBCASE( case2, array_h, newshape_a );
+    RESHAPE_SUBCASE( case2, array_h, newshape_v );
+    RESHAPE_SUBCASE( case2, array_h, newshape_t );
+    RESHAPE_SUBCASE( case2, array_h, newshape_ct );
 
-    RESHAPE_SUBCASE( case3, array_h, newshape_a, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_h, newshape_v, is_dynamic_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_h, newshape_t, is_fixed_dim_dynamic_size_ndarray );
-    RESHAPE_SUBCASE( case3, array_h, newshape_ct, is_fixed_dim_dynamic_size_ndarray );
+    RESHAPE_SUBCASE( case3, array_h, newshape_a );
+    RESHAPE_SUBCASE( case3, array_h, newshape_v );
+    RESHAPE_SUBCASE( case3, array_h, newshape_t );
+    RESHAPE_SUBCASE( case3, array_h, newshape_ct );
 }

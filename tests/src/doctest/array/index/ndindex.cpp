@@ -14,7 +14,8 @@ using std::vector;
 
 TEST_CASE("ndindex({3,2})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::ndindex(tuple{3,2});
+    auto shape_ = tuple{3,2};
+    auto indices = nm::index::ndindex(shape_);
     REQUIRE( indices.size() == 6 );
     {
         auto i = indices[0];
@@ -44,7 +45,10 @@ TEST_CASE("ndindex({3,2})" * doctest::test_suite("index"))
 
 TEST_CASE("ndindex(vector{3,2})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::ndindex(vector{3,2});
+    // NOTE: ndindex doesnt support temporary for now
+    // TODO: support temporary (?)
+    auto shape_ = vector{3,2};
+    auto indices = nm::index::ndindex(shape_);
     REQUIRE( indices.size() == 6 );
     {
         auto i = indices[0];
@@ -74,7 +78,8 @@ TEST_CASE("ndindex(vector{3,2})" * doctest::test_suite("index"))
 
 TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::ndindex(tuple{3,2,3});
+    auto shape_ = tuple{3,2,3};
+    auto indices = nm::index::ndindex(shape_);
     REQUIRE( indices.size() == 18 );
     {
         auto i = indices[0];
@@ -152,7 +157,8 @@ TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
 
 TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::ndindex(vector{3,2,3});
+    auto shape_ = vector{3,2,3};
+    auto indices = nm::index::ndindex(shape_);
     REQUIRE( indices.size() == 18 );
     {
         auto i = indices[0];
@@ -230,7 +236,8 @@ TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
 
 TEST_CASE("ndindex({3,2,3,1})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::ndindex(tuple{3,2,3,1});
+    auto shape_  = tuple{3,2,3,1};
+    auto indices = nm::index::ndindex(shape_);
     REQUIRE( indices.size() == 18 );
     {
         auto i = indices[0];
@@ -308,7 +315,8 @@ TEST_CASE("ndindex({3,2,3,1})" * doctest::test_suite("index"))
 
 TEST_CASE("ndindex({3,2,3,1})" * doctest::test_suite("index"))
 {
-    auto indices = nm::index::ndindex(tuple{2,3,1,3,1});
+    auto shape_  = tuple{2,3,1,3,1};
+    auto indices = nm::index::ndindex(shape_);
     REQUIRE( indices.size() == 18 );
     {
         auto i = indices[0];

@@ -49,7 +49,6 @@ if (ENABLE_GTEST)
         src/gtest/blas/blas.cpp
         src/gtest/array/dynamic.cpp
         src/gtest/array/fixed.cpp
-        src/gtest/array/utility.cpp
         src/gtest/array/linalg.cpp
     )
     find_package(GTest REQUIRED)
@@ -149,6 +148,7 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/free_axes.cpp
     src/doctest/array/index/gather.cpp
     src/doctest/array/index/logical_not.cpp
+    src/doctest/array/index/ndenumerate.cpp
     src/doctest/array/index/ndindex.cpp
     src/doctest/array/index/nonzero.cpp
     src/doctest/array/index/outer.cpp
@@ -213,7 +213,6 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/flip.cpp
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
-    src/doctest/array/view/mutable_slice.cpp
     src/doctest/array/view/ref.cpp
     src/doctest/array/view/ref/initializer_list.cpp
     src/doctest/array/view/repeat.cpp
