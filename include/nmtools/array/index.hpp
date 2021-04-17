@@ -21,7 +21,6 @@
 #include "nmtools/array/index/reverse.hpp"
 #include "nmtools/array/index/scatter.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
-#include "nmtools/array/index/unpack_slice_indices.hpp"
 
 #include <array>
 #include <tuple>
@@ -35,7 +34,6 @@ namespace nmtools
     using meta::remove_cvref_t;
 
     using ::nmtools::index::end_t;
-    using ::nmtools::index::end;
     using ::nmtools::index::make_slice_index;
     using ::nmtools::index::ndindex;
     using ::nmtools::index::ndindex_t;
@@ -45,7 +43,6 @@ namespace nmtools
         using ::nmtools::index::reverse;
         using ::nmtools::index::gather;
         using ::nmtools::index::scatter;
-        using ::nmtools::index::unpack_slice_indices;
     } // namespace detail
 } // namespace nmtools
 
