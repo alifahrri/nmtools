@@ -27,8 +27,6 @@ namespace nmtools::index
      */
     struct end_t {};
 
-    inline constexpr auto end = end_t{};
-
     /**
      * @brief helper function to create compile-time slice index
      * 
