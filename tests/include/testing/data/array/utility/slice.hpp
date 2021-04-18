@@ -4,7 +4,6 @@
 /* TODO: use __has_include */
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/utility.hpp" // nmtools::end_t, make_slice_index
-#include "nmtools/blas/blas.hpp"
 #include "testing/testing.hpp"
 #include <array>
 #include <tuple>
