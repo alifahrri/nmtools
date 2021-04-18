@@ -57,7 +57,6 @@ if (TEST_ALL)
 endif (TEST_ALL)
 
 set(ARRAY_DETAIL_TEST_SOURCES
-    src/doctest/array/shape.cpp
     src/doctest/array/index/argfilter.cpp
     src/doctest/array/index/broadcast_shape.cpp
     src/doctest/array/index/broadcast_to.cpp
