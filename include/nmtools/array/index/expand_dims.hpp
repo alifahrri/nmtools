@@ -51,7 +51,8 @@ namespace nmtools::index
                 newshape.resize(dim+n_axes);
             
             auto idx = size_t{0};
-            for (size_t i=0; i<size(newshape); i++) {
+            auto n = len(newshape);
+            for (size_t i=0; i<n; i++) {
                 // fill ones
                 if (contains(axes,i))
                     at(newshape,i) = 1;
@@ -94,25 +95,47 @@ namespace nmtools
             void, index::expand_dims_t, shape_t, axes_t
         >
         {
-            template <typename T>
-            struct is_resizeable_not_hybrid
-                : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
-
-            using type_list = std::tuple<shape_t,axes_t>;
-            static constexpr auto selection_kind = [](){
-                if constexpr (apply_logical_or_v<is_resizeable_not_hybrid,type_list>)
-                    return select_resizeable_kind_t{};
-                else if constexpr (apply_logical_or_v<is_hybrid_ndarray,type_list>)
-                    return select_hybrid_kind_t{};
-                else return select_fixed_kind_t{};
+            // deduce the type of expand_dim ops prefer dynamic index array when possible,
+            // otherwise select hybrid index, choose fixed index only if both are fixed 
+            static constexpr auto vtype = [](){
+                if constexpr (is_dynamic_index_array_v<shape_t>)
+                    return as_value<shape_t>{};
+                else if constexpr (is_dynamic_index_array_v<axes_t>)
+                    return as_value<axes_t>{};
+                else if constexpr (is_hybrid_index_array_v<shape_t> && is_hybrid_index_array_v<axes_t>) {
+                    constexpr auto max_shape = hybrid_index_array_max_size_v<shape_t>;
+                    constexpr auto max_axes  = hybrid_index_array_max_size_v<axes_t>;
+                    using type = resize_hybrid_index_array_max_size_t<shape_t,max_shape+max_axes>;
+                    return as_value<type>{};
+                }
+                else if constexpr (is_hybrid_index_array_v<shape_t> && is_fixed_index_array_v<axes_t>) {
+                    constexpr auto max_shape = hybrid_index_array_max_size_v<shape_t>;
+                    constexpr auto n_axes    = fixed_index_array_size_v<axes_t>;
+                    using type = resize_hybrid_index_array_max_size_t<shape_t,max_shape+n_axes>;
+                    return as_value<type>{};
+                }
+                else if constexpr (is_fixed_index_array_v<shape_t> && is_hybrid_index_array_v<axes_t>) {
+                    constexpr auto n_shape  = fixed_index_array_size_v<shape_t>;
+                    constexpr auto max_axes = hybrid_index_array_max_size_v<axes_t>;
+                    using type = resize_hybrid_index_array_max_size_t<axes_t,n_shape+max_axes>;
+                    return as_value<type>{};
+                }
+                else if constexpr (is_fixed_index_array_v<shape_t> && is_fixed_index_array_v<axes_t>) {
+                    constexpr auto n_shape = fixed_index_array_size_v<shape_t>;
+                    constexpr auto n_axes  = fixed_index_array_size_v<axes_t>;
+                    using type = resize_fixed_index_array_t<
+                        tuple_to_array_t<
+                            transform_bounded_array_t<shape_t>>
+                        , n_shape+n_axes
+                    >;
+                    return as_value<type>{};
+                }
+                else return as_value<void>{};
             }();
-            using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
-            using selection_t = select_array1d_t<
-                size_policy_add_t, selection_kind_t
-            >;
-            // final type
-            using type = resolve_optype_t<
-                selection_t, shape_t, axes_t
+
+            using type = tuple_to_array_t<
+                transform_bounded_array_t<
+                    type_t<remove_cvref_t<decltype(vtype)>>>
             >;
         }; // resolve_optype
     } // namespace meta

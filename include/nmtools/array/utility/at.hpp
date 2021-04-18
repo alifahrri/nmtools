@@ -204,7 +204,7 @@ namespace nmtools {
             && (i<rows && j<cols)
         );
         if constexpr (has_square_bracket2d_v<const array_t&,size_type>)
-            return a[i,j];
+            return a[{i,j}];
         else if constexpr (has_bracket2d_v<const array_t&,size_type>)
             return a(i,j);
         else {

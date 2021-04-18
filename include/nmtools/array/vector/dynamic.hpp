@@ -22,7 +22,7 @@ namespace nmtools::array
      * @tparam T elemen type of dynamic vector
      * @tparam storage_type=std::vector template template parameter which will be used to store actual data
      */
-    template <typename T, template <typename> typename storage_type=std::vector>
+    template <typename T, template <typename...> typename storage_type=std::vector>
     struct dynamic_vector
     {
         using data_type = storage_type<T>;
@@ -106,14 +106,14 @@ namespace nmtools::array
      * @param v 
      * @return constexpr auto 
      */
-    template <typename T>
-    constexpr auto begin(dynamic_vector<T>& v)
+    template <typename T, template <typename...> typename storage_type>
+    constexpr auto begin(dynamic_vector<T,storage_type>& v)
     {
         return v.data.begin();
     } // constexpr auto begin
 
-    template <typename T>
-    constexpr auto begin(const dynamic_vector<T>& v)
+    template <typename T, template <typename...> typename storage_type>
+    constexpr auto begin(const dynamic_vector<T,storage_type>& v)
     {
         return v.data.begin();
     } // constexpr auto begin
@@ -125,20 +125,20 @@ namespace nmtools::array
      * @param v 
      * @return constexpr auto 
      */
-    template <typename T>
-    constexpr auto end(dynamic_vector<T>& v)
+    template <typename T, template <typename...> typename storage_type>
+    constexpr auto end(dynamic_vector<T,storage_type>& v)
     {
         return v.data.end();
     } // constexpr auto end
 
-    template <typename T>
-    constexpr auto end(const dynamic_vector<T>& v)
+    template <typename T, template <typename...> typename storage_type>
+    constexpr auto end(const dynamic_vector<T,storage_type>& v)
     {
         return v.data.end();
     } // constexpr auto end
 
-    template <typename T>
-    auto size(const dynamic_vector<T>& v)
+    template <typename T, template <typename...> typename storage_type>
+    auto size(const dynamic_vector<T,storage_type>& v)
     {
         return v.size();
     }
@@ -157,8 +157,8 @@ namespace nmtools
      * @param v vector which size is to be checked
      * @return auto 
      */
-    template <typename T>
-    auto vector_size(const array::dynamic_vector<T>& v)
+    template <typename T, template <typename...> typename storage_type>
+    auto vector_size(const array::dynamic_vector<T,storage_type>& v)
     {
         return v.size();
     }
@@ -179,10 +179,10 @@ namespace nmtools::blas
      * @param v reference vector
      * @return auto 
      */
-    template <typename T>
-    auto zeros_like(const array::dynamic_vector<T>& v)
+    template <typename T, template <typename...> typename storage_type>
+    auto zeros_like(const array::dynamic_vector<T,storage_type>& v)
     {
-        auto ret = array::dynamic_vector<T>(v.size()); 
+        auto ret = array::dynamic_vector<T,storage_type>(v.size()); 
         return ret;
     }
 
@@ -203,24 +203,24 @@ namespace nmtools::meta
      * 
      * @tparam T element type of dynamic_vector, automatically deduced
      */
-    template <typename T>
-    struct is_array1d<array::dynamic_vector<T>> : true_type {};
+    template <typename T, template <typename...> typename storage_type>
+    struct is_array1d<array::dynamic_vector<T,storage_type>> : true_type {};
 
     /**
      * @brief specialization of is_array2d traits for dynamic_vector which is false
      * 
      * @tparam T element type of dynamic_vector, automatically deduced
      */
-    template <typename T>
-    struct is_array2d<array::dynamic_vector<T>> : false_type {};
+    template <typename T, template <typename...> typename storage_type>
+    struct is_array2d<array::dynamic_vector<T,storage_type>> : false_type {};
 
     /**
      * @brief specialization of is_resizeable trait for dynamic_vector which is true
      * 
      * @tparam T element type of dynamic_vector, automatically deduced
      */
-    template <typename T>
-    struct is_resizeable<array::dynamic_vector<T>> : true_type {};
+    template <typename T, template <typename...> typename storage_type>
+    struct is_resizeable<array::dynamic_vector<T,storage_type>> : true_type {};
 
     /**
      * @brief specialization of fixed_dim metafunction for dynamic_vector.
@@ -230,7 +230,7 @@ namespace nmtools::meta
      * @tparam T element type of dynamic_vector, automatically deduced
      * @tparam storage_type, template-template parameter corresponding to the storage type of dynamic_vector, automatically deduced
      */
-    template <typename T, template <typename> typename storage_type>
+    template <typename T, template <typename...> typename storage_type>
     struct fixed_dim<array::dynamic_vector<T,storage_type>>
     {
         static constexpr auto value = 1;
@@ -244,7 +244,7 @@ namespace nmtools::meta
      * @tparam U 
      * @tparam storage_type 
      */
-    template <typename T, typename U, template <typename> typename storage_type>
+    template <typename T, typename U, template <typename...> typename storage_type>
     struct replace_element_type<array::dynamic_vector<T,storage_type>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
     {
         using type = array::dynamic_vector<U,storage_type>;

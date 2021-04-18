@@ -23,7 +23,7 @@ namespace nmtools::array
      * @tparam T element type of dynamic matrix
      * @tparam storage_type=std::vector template template parameter to store actual data
      */
-    template <typename T, template <typename> typename storage_type=std::vector>
+    template <typename T, template <typename...> typename storage_type=std::vector>
     struct dynamic_matrix
     {
         using data_type = storage_type<T>;
@@ -159,8 +159,8 @@ namespace nmtools::array
      * @tparam T element type of dynamic_matrix
      * @see nmtools::testing::cast
      */
-    template <typename T>
-    struct is_dynamic_matrix<dynamic_matrix<T>> : std::true_type {};
+    template <typename T, template <typename...> typename storage_type>
+    struct is_dynamic_matrix<dynamic_matrix<T,storage_type>> : std::true_type {};
 
     /** @} */ // end group dynamic
 
@@ -175,8 +175,8 @@ namespace nmtools
      * @param m matrix which size is to be checked
      * @return auto 
      */
-    template <typename T>
-    auto matrix_size(const array::dynamic_matrix<T>& m)
+    template <typename T, template <typename...> typename storage_type>
+    auto matrix_size(const array::dynamic_matrix<T,storage_type>& m)
     {
         return m.shape();
     }
@@ -197,11 +197,11 @@ namespace nmtools::blas
      * @param v reference vector
      * @return auto 
      */
-    template <typename T>
-    auto zeros_like(const array::dynamic_matrix<T>& m)
+    template <typename T, template <typename...> typename storage_type>
+    auto zeros_like(const array::dynamic_matrix<T,storage_type>& m)
     {
         auto [rows, cols] = m.shape();
-        auto ret = array::dynamic_matrix<T>(rows,cols); 
+        auto ret = array::dynamic_matrix<T,storage_type>(rows,cols); 
         return ret;
     }
 
@@ -222,24 +222,24 @@ namespace nmtools::meta
      * 
      * @tparam T element type of dynamic_matrix, automatically deduced
      */
-    template <typename T>
-    struct is_array1d<array::dynamic_matrix<T>> : false_type {};
+    template <typename T, template <typename...> typename storage_type>
+    struct is_array1d<array::dynamic_matrix<T,storage_type>> : false_type {};
 
     /**
      * @brief specialization of is_array2d traits for dynamic_matrix which is true
      * 
      * @tparam T element type of dynamic_matrix, automatically deduced
      */
-    template <typename T>
-    struct is_array2d<array::dynamic_matrix<T>> : true_type {};
+    template <typename T, template <typename...> typename storage_type>
+    struct is_array2d<array::dynamic_matrix<T,storage_type>> : true_type {};
 
     /**
      * @brief specialiation of is_resizeable trait for dynamic_matrix which is true
      * 
      * @tparam T element type of dynamic_matrix, automatically deduced
      */
-    template <typename T>
-    struct is_resizeable<array::dynamic_matrix<T>> : true_type {};
+    template <typename T, template <typename...> typename storage_type>
+    struct is_resizeable<array::dynamic_matrix<T,storage_type>> : true_type {};
 
     /** @} */ // end group traits
     
@@ -255,10 +255,10 @@ namespace nmtools::meta
 
 namespace nmtools
 {
-    template <typename T>
-    struct meta::resolve_optype<void,row_t,array::dynamic_matrix<T>>
+    template <typename T, template <typename...> typename storage_type>
+    struct meta::resolve_optype<void,row_t,array::dynamic_matrix<T,storage_type>>
     {
-        using type = array::dynamic_vector<T>;
+        using type = array::dynamic_vector<T,storage_type>;
     }; // resolve_optype
 } // namespace nmtools
 
@@ -279,11 +279,11 @@ namespace nmtools::meta
      * @tparam U value_type of rhs vector, automatically deduced.
      * @see nmtools::blas::outer
      */
-    template <typename T, typename U>
-    struct make_outer_matrix<array::dynamic_vector<T>,array::dynamic_vector<U>>
+    template <typename T, typename U, template <typename...> typename t_storage_type, template <typename...> typename u_storage_type>
+    struct make_outer_matrix<array::dynamic_vector<T,t_storage_type>,array::dynamic_vector<U,u_storage_type>>
     {
         using common_t = std::common_type_t<T,U>;
-        using type = array::dynamic_matrix<common_t>;
+        using type = array::dynamic_matrix<common_t,t_storage_type>;
     };
 
     /**
@@ -297,11 +297,11 @@ namespace nmtools::meta
      * @tparam N number of element of fixed_vector
      * @see nmtools::blas::outer
      */
-    template <typename T, typename U, size_t N>
-    struct make_outer_matrix<array::fixed_vector<U,N>,array::dynamic_vector<T>>
+    template <typename T, typename U, size_t N, template <typename...> typename storage_type>
+    struct make_outer_matrix<array::fixed_vector<U,N>,array::dynamic_vector<T,storage_type>>
     {
         using common_t = std::common_type_t<T,U>;
-        using type = array::dynamic_matrix<common_t>;
+        using type = array::dynamic_matrix<common_t,storage_type>;
     };
 
     /**
@@ -315,8 +315,15 @@ namespace nmtools::meta
      * @tparam N number of element of fixed_vector
      * @see nmtools::blas::outer
      */
-    template <typename T, typename U, size_t N>
-    struct make_outer_matrix<array::dynamic_vector<T>,array::fixed_vector<U,N>>
+    template <typename T, typename U, size_t N, template <typename...> typename storage_type>
+    struct make_outer_matrix<array::dynamic_vector<T,storage_type>,array::fixed_vector<U,N>>
+    {
+        using common_t = std::common_type_t<T,U>;
+        using type = array::dynamic_matrix<common_t, storage_type>;
+    };
+
+    template <typename T, typename U>
+    struct make_outer_matrix<std::vector<T>,std::vector<U>>
     {
         using common_t = std::common_type_t<T,U>;
         using type = array::dynamic_matrix<common_t>;
@@ -331,10 +338,10 @@ namespace nmtools::meta
      * @see nmtools::column
      * @see ntmools::row
      */
-    template <typename T>
-    struct get_column_type<array::dynamic_matrix<T>>
+    template <typename T, template <typename...> typename storage_type>
+    struct get_column_type<array::dynamic_matrix<T,storage_type>>
     {
-        using type = array::dynamic_vector<T>;
+        using type = array::dynamic_vector<T,storage_type>;
     };
 
     /**
@@ -346,10 +353,10 @@ namespace nmtools::meta
      * @see nmtools::column
      * @see ntmools::row
      */
-    template <typename T>
-    struct get_row_type<array::dynamic_matrix<T>>
+    template <typename T, template <typename...> typename storage_type>
+    struct get_row_type<array::dynamic_matrix<T,storage_type>>
     {
-        using type = array::dynamic_vector<T>;
+        using type = array::dynamic_vector<T,storage_type>;
     };
 
     /**
@@ -360,7 +367,7 @@ namespace nmtools::meta
      * @tparam T element type of dynamic_matrix, automatically deduced
      * @tparam storage_type, template-template parameter corresponding to the storage type of dynamic_matrix, automatically deduced
      */
-    template <typename T, template <typename> typename storage_type>
+    template <typename T, template <typename...> typename storage_type>
     struct fixed_dim<array::dynamic_matrix<T,storage_type>>
     {
         static constexpr auto value = 2;
@@ -374,7 +381,7 @@ namespace nmtools::meta
      * @tparam storage_type 
      * @tparam U 
      */
-    template <typename T, template <typename> typename storage_type, typename U>
+    template <typename T, template <typename...> typename storage_type, typename U>
     struct replace_element_type<array::dynamic_matrix<T,storage_type>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
     {
         using type = array::dynamic_matrix<U,storage_type>;
@@ -400,7 +407,7 @@ namespace nmtools::array
      * @see nmtools::matrix_size
      * @see nmtools::detail::clone_impl
      */
-    template <typename T, template <typename> typename storage_type>
+    template <typename T, template <typename...> typename storage_type>
     template <typename matrix_t>
     constexpr auto dynamic_matrix<T,storage_type>::operator=(const matrix_t& rhs)
     {

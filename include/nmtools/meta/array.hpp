@@ -562,6 +562,31 @@ namespace nmtools::meta
     template <typename T>
     inline constexpr bool is_fixed_size_ndarray_v = is_fixed_size_ndarray<T>::value;
 
+    /**
+     * @brief Get the number of maximum size of hybrid index array
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct hybrid_index_array_max_size
+    {
+        static constexpr auto value = detail::fail_t{};
+        using type = detail::fail_t;
+    }; // hybrid_index_array_max_size
+
+    template <typename T>
+    inline constexpr auto hybrid_index_array_max_size_v = hybrid_index_array_max_size<T>::value;
+
+    template <typename T, auto N, typename=void>
+    struct resize_hybrid_index_array_max_size
+    {
+        using type = void;
+    }; // resize_hybrid_ndarray_max_size
+
+    template <typename T, auto N>
+    using resize_hybrid_index_array_max_size_t = type_t<resize_hybrid_index_array_max_size<T,N>>;
+
     template <typename T>
     struct hybrid_ndarray_max_size
     {

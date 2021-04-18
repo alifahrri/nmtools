@@ -5,7 +5,6 @@
 #include "nmtools/array/utility/squeeze.hpp"
 #include "nmtools/array/utility/row.hpp"
 #include "nmtools/array/utility/column.hpp"
-#include "nmtools/array/utility/slice.hpp"
 #include "nmtools/array/utility/clone.hpp"
 #include "nmtools/array/utility/zeros.hpp"
 #include "nmtools/array/utility/zeros_like.hpp"

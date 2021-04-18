@@ -436,6 +436,28 @@ namespace nmtools::meta
         , std::enable_if_t<is_index_v<T> && (dimension==1)>
     > : std::true_type {};
 
+    template <typename T, size_t max_elements>
+    struct is_hybrid_index_array< array::hybrid_ndarray<T,max_elements,1>
+        , std::enable_if_t<is_index_v<T>>
+    > : std::true_type {};
+
+    template <typename T, size_t max_elements>
+    struct hybrid_index_array_max_size< array::hybrid_ndarray<T,max_elements,1>
+        , std::enable_if_t<is_index_v<T>>
+    >
+    {
+        static constexpr auto value = max_elements;
+        using type = size_t;
+    }; // hybrid_index_array_max_size
+
+    template <typename T, size_t max_elements, size_t new_max_elements>
+    struct resize_hybrid_index_array_max_size< array::hybrid_ndarray<T,max_elements,1>
+        , new_max_elements, std::enable_if_t<is_index_v<T>>
+    >
+    {
+        using type = array::hybrid_ndarray<T,new_max_elements,1>;
+    }; // resize_hybrid_index_array_max_size
+
     /**
      * @brief specialization of is_ndarray trait for hybrid_ndarray
      * 

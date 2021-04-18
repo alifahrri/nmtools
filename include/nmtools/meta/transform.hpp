@@ -1630,23 +1630,8 @@ namespace nmtools::meta
     template <typename V1, typename V2, typename=void>
     struct make_outer_matrix
     {
-        /* TODO: assert if V1 and v2 is vector-like */
-        
-        /* default implementation will try to replace value_type (and value_type only) of V1 with V2 */
-        using col_t = meta::remove_cvref_t<V2>;
-        using col_tparam = extract_template_parameters_t<col_t>;
-        using col_value_type = meta::remove_cvref_t<typename pop_first<col_tparam>::first>;
-
-        using row_t = meta::remove_cvref_t<V1>;
-        using row_tparam = extract_template_parameters_t<row_t>;
-        using row_value_type = meta::remove_cvref_t<typename pop_first<row_tparam>::first>;
-
-        /* TODO: tell matrix_t to use common_t! */
-        using common_t = std::common_type_t<col_value_type,row_value_type>;
-        using matrix_t = replace_template_parameter_from_typelist_t<V1,std::tuple<col_t>>;
-
-        using type = matrix_t;
-    };
+        using type = detail::fail_t;
+    }; // make_outer_matrix
 
     /**
      * @brief specialization of make_outer_matrix for std::array.
@@ -1946,6 +1931,8 @@ namespace nmtools::meta
         template <template<typename...>typename TT, template<typename...>typename type_list, typename...Ts>
         struct apply_helper<TT,type_list<Ts...>>
         {
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wunused-value"
             static constexpr auto _get()
             {
                 using meta_fn_type = TT<Ts...>;
@@ -1961,7 +1948,10 @@ namespace nmtools::meta
             //     typename meta_fn_type::type, void
             // >;
 
+            // clang complain about return from _get() unused while gcc doesnt
+            // an it is SHOULD BE UNUSED
             using type = detail::fail_to_void_t<decltype(_get())>;
+            #pragma clang diagnostic pop
         }; // apply_helper
     } // namespace detail
 

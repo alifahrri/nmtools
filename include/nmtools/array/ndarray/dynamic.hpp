@@ -30,7 +30,7 @@ namespace nmtools::array
      * @tparam T element type of nd-array
      * @tparam storage_type template template parameter to store data
      */
-    template <typename T, template <typename> typename storage_type=std::vector, template<typename> typename shape_storage_type=std::vector>
+    template <typename T, template <typename...> typename storage_type=std::vector, template<typename...> typename shape_storage_type=std::vector>
     struct dynamic_ndarray
     {
         using data_type = storage_type<T>;
@@ -330,8 +330,8 @@ namespace nmtools
      * @param a 
      * @return auto 
      */
-    template <typename T>
-    auto shape(const array::dynamic_ndarray<T>& a)
+    template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
+    auto shape(const array::dynamic_ndarray<T,storage_type,shape_storage_type>& a)
     {
         return a.shape();
     } // shape
@@ -343,8 +343,8 @@ namespace nmtools
      * @param a array in which its dim is to be read
      * @return auto 
      */
-    template <typename T>
-    auto dim(const array::dynamic_ndarray<T>& a)
+    template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
+    auto dim(const array::dynamic_ndarray<T,storage_type,shape_storage_type>& a)
     {
         return a.dim();
     } // dim
@@ -363,20 +363,20 @@ namespace nmtools::meta
      * 
      * @tparam T element type of dynamic_ndarray
      */
-    template <typename T>
-    struct is_ndarray<array::dynamic_ndarray<T>> : true_type {};
+    template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
+    struct is_ndarray<array::dynamic_ndarray<T,storage_type,shape_storage_type>> : true_type {};
 
     /**
      * @brief specialization of is_dynamic_ndarray trait for dynamic_ndarray
      * 
      * @tparam T element type of dynamic_ndarray
      */
-    template <typename T>
-    struct is_dynamic_ndarray<array::dynamic_ndarray<T>> : true_type {};
+    template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
+    struct is_dynamic_ndarray<array::dynamic_ndarray<T,storage_type,shape_storage_type>> : true_type {};
 
     // cant be sure since the number of dimension depends at runtime
-    template <typename T>
-    struct is_index_array<array::dynamic_ndarray<T>> : false_type {};
+    template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
+    struct is_index_array<array::dynamic_ndarray<T,storage_type,shape_storage_type>> : false_type {};
 
     /**
      * @brief specialize replace_element_type for array::dynamic_ndarray
@@ -386,7 +386,7 @@ namespace nmtools::meta
      * @tparam storage_type 
      * @tparam shape_storage_type 
      */
-    template <typename T, typename U, template <typename> typename storage_type, template<typename> typename shape_storage_type>
+    template <typename T, typename U, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
     struct replace_element_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
     {
         using type = array::dynamic_ndarray<U,storage_type,shape_storage_type>;
@@ -414,8 +414,8 @@ namespace nmtools::meta
      * 
      * @tparam T element type of dynamic_ndarrray, deduced automatically
      */
-    template <typename T>
-    struct get_ndarray_value_type<array::dynamic_ndarray<T>>
+    template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
+    struct get_ndarray_value_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>>
     {
         using type = T;
     };
@@ -439,7 +439,7 @@ namespace nmtools::array
      * @see nmtools::matrix_size
      * @see nmtools::detail::clone_impl
      */
-    template <typename T, template <typename> typename storage_type, template<typename> typename shape_storage_type>
+    template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
     template <typename ndarray_t, typename>
     constexpr auto dynamic_ndarray<T,storage_type,shape_storage_type>::operator=(const ndarray_t& rhs)
     {
