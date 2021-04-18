@@ -12,7 +12,7 @@
 #include "nmtools/array/index/product.hpp"
 #include <type_traits>
 #include <array>
-#include <stringstream>
+#include <sstream>
 // when using emscripten, compiler complains about 'boost/type_index.hpp' file not found
 // while cmake find boost is success, for now fallback to typeid
 #if __has_include(<boost/type_index.hpp>)
