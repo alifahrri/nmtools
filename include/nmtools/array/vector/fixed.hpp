@@ -286,20 +286,6 @@ namespace nmtools::meta
      */
 
     /**
-     * @brief specialization of metafunction make_zeros_vector
-     * for custom fixed-size vector array::fixed_vector.
-     * 
-     * @tparam T value_type of original fixed-size vector with fixed compile time size, deduced automatically
-     * @tparam M old size of fixed_vector, deduced automatically
-     * @tparam N new desired size
-     */
-    template <typename T, size_t M, size_t N>
-    struct make_zeros_vector<array::fixed_vector<T,M>,N>
-    {
-        using type = array::fixed_vector<T,N>;
-    };
-
-    /**
      * @brief specialization of metafunction resize_fixed_vector,
      * which determine the new type given new size.
      * 
@@ -312,6 +298,26 @@ namespace nmtools::meta
     {
         using type = array::fixed_vector<T,new_size>;
     }; // struct resize_fixed_vector
+
+    /**
+     * @brief fixed_vector is fixed index array if T is index.
+     * 
+     * @tparam T 
+     * @tparam N 
+     */
+    template <typename T, size_t N>
+    struct is_fixed_index_array< array::fixed_vector<T,N>
+        , std::enable_if_t<is_index_v<T>>
+    > : std::true_type {};
+
+    template <typename T, size_t N>
+    struct fixed_index_array_size< array::fixed_vector<T,N>
+        , std::enable_if_t<is_index_v<T>>
+    >
+    {
+        static constexpr auto value = N;
+        using type = remove_cvref_t<decltype(value)>;
+    };
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

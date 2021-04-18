@@ -432,7 +432,6 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
-#include "nmtools/array/utility/clone.hpp" // clone_impl
 #include "nmtools/array/view/flatten.hpp" // view::flatten
 #include "nmtools/array/view/mutable_flatten.hpp" // view::mutable_flatten
 #include "nmtools/utils/isequal.hpp"
@@ -452,7 +451,6 @@ namespace nmtools::array
      * @todo support assignment from generic ndarray and also resizeable ndarray/matrix/vector
      * @see nmtools::matrix_size
      * @see nmtools::vector_size
-     * @see nmtools::detail::clone_impl
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
     template <typename ndarray_t, typename>
@@ -477,15 +475,14 @@ namespace nmtools::array
                 // , "unsupported shape for for fixed_ndarray assignment"
             );
 
-        using ::nmtools::detail::clone_impl;
-
         auto flat_rhs  = view::flatten(std::forward<ndarray_t>(rhs));
         auto flat_data = view::mutable_flatten(this->data);
         constexpr auto n_rhs = meta::fixed_vector_size_v<decltype(flat_rhs)>;
         static_assert (numel_==n_rhs
             , "mismatched shape for fixed_ndarray assignment"
         );
-        clone_impl(flat_data, flat_rhs, numel_);
+        for (size_t i=0; i<numel_; i++)
+            at(flat_data,i) = at(flat_rhs,i);
 
         return *this;
     } // operator=

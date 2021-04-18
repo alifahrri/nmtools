@@ -82,73 +82,64 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (
-                is_dynamic_index_array_v<vector_t> && is_dynamic_index_array_v<indices_t>
-            ) // both are dynamic resizeable
-                return as_value<vector_t>{};
+                is_dynamic_index_array_v<indices_t>
+            ) // whenever indices is dynamic, chose it
+                return as_value<indices_t>{};
             else if constexpr (
-                is_dynamic_index_array_v<vector_t> && is_hybrid_ndarray_v<indices_t>
-            ) // vector is dynamic resizeable
-                return as_value<vector_t>{};
+                is_dynamic_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>
+            ) /* vector is dynamic resizeable */ {
+                constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
+                using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
+                return as_value<return_t>{};
+            }
             else if constexpr (
                 is_hybrid_ndarray_v<vector_t> && is_dynamic_index_array_v<indices_t>
-            ) // indices is dynamic resizeable
+            ) /* indices is dynamic resizeable */
                 return as_value<indices_t>{};
             else if constexpr (
-                is_hybrid_ndarray_v<vector_t> && is_hybrid_ndarray_v<indices_t>
-            ) // both are hybrid, prefer indices
-                return as_value<indices_t>{};
+                is_hybrid_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>
+            ) /* both are hybrid, prefer indices */ {
+                constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
+                using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
+                return as_value<return_t>{};
+            }
             else if constexpr (
                 is_hybrid_ndarray_v<vector_t> && is_fixed_index_array_v<indices_t>
             ) /* prefer indices */ {
-                using type = transform_bounded_array_t<tuple_to_array_t<indices_t>>;
-                return as_value<type>{};
+                constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
+                using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
+                return as_value<return_t>{};
             }
             else if constexpr (
-                is_fixed_index_array_v<vector_t> && is_hybrid_ndarray_v<indices_t>
-            ) /* prefer indices */
-                return as_value<indices_t>{};
+                is_fixed_size_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>
+            ) /* prefer indices */ {
+                constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
+                using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
+                return as_value<return_t>{};
+            }
             else if constexpr (
-                is_dynamic_index_array_v<vector_t> && is_fixed_index_array_v<indices_t>
+                is_dynamic_ndarray_v<vector_t> && is_fixed_index_array_v<indices_t>
             ) /* prefer indices */ {
                 using type = transform_bounded_array_t<tuple_to_array_t<indices_t>>;
                 return as_value<type>{};
             }
             else if constexpr (
-                is_fixed_index_array_v<vector_t> && is_dynamic_index_array_v<indices_t>
+                is_fixed_size_ndarray_v<vector_t> && is_dynamic_index_array_v<indices_t>
             ) /* prefer indices */
                 return as_value<indices_t>{};
             else if constexpr (
-                is_fixed_index_array_v<vector_t> && is_fixed_index_array_v<indices_t>
+                is_fixed_size_ndarray_v<vector_t> && is_fixed_index_array_v<indices_t>
             ) /* prefer indices */ {
+                constexpr auto size = fixed_index_array_size_v<indices_t>;
                 using type = transform_bounded_array_t<tuple_to_array_t<indices_t>>;
-                return as_value<type>{};
+                using return_t = resize_fixed_vector_t<type,size>;
+                return as_value<return_t>{};
             }
             else return as_value<void>{};
         }();
 
-        using type = type_t<meta::remove_cvref_t<decltype(vtype)>>;
-
-        // template <typename T>
-        // struct is_resizeable_not_hybrid
-        //     : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
-
-        // using type_list = std::tuple<vector_t,indices_t>;
-        // static constexpr auto selection_kind = [](){
-        //     if constexpr (apply_logical_or_v<is_resizeable_not_hybrid,type_list>)
-        //         return select_resizeable_kind_t {};
-        //     else if constexpr (apply_logical_or_v<is_hybrid_ndarray,type_list>)
-        //         return select_hybrid_kind_t {};
-        //     else return select_fixed_kind_t {};
-        // }();
-        // using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
-        // // shape type must be arithmetic
-        // using selection_t = select_array1d_t<
-        //     size_policy_rhs_t, selection_kind_t, std::is_arithmetic, element_type_policy_lhs
-        // >;
-        // // final type
-        // using type = resolve_optype_t<
-        //     selection_t, vector_t, indices_t
-        // >;
+        using element_type = get_element_or_common_type_t<vector_t>;
+        using type = meta::replace_element_type_t<type_t<meta::remove_cvref_t<decltype(vtype)>>,element_type>;
     }; // resolve_optype
 } // namespace nmtools::meta
 

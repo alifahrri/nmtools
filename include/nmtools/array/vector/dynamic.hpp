@@ -223,6 +223,16 @@ namespace nmtools::meta
     struct is_resizeable<array::dynamic_vector<T,storage_type>> : true_type {};
 
     /**
+     * @brief dynamic_vector is dynamic index array if T is index.
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct is_dynamic_index_array< array::dynamic_vector<T>
+        , std::enable_if_t<is_index_v<T>>
+    > : std::true_type {};
+
+    /**
      * @brief specialization of fixed_dim metafunction for dynamic_vector.
      *
      * Tells the compiler that dynamic_vector has fixed-dimension of 1.

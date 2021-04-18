@@ -8,7 +8,7 @@
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/view/ref/initializer_list.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/array/utility/clone.hpp"
+
 #include <cassert>
 #include <vector>
 #include <initializer_list>
@@ -44,7 +44,6 @@ namespace nmtools::array
         template <typename array_t>
         auto init(array_t&& array)
         {
-            using ::nmtools::detail::clone_impl;
             auto array_ref = view::ref(array);
             auto array_shape = ::nmtools::shape(array_ref);
             for (const auto& s : array_shape)
@@ -53,7 +52,8 @@ namespace nmtools::array
             numel_   = numel();
             data.resize(numel_);
             auto array_view = view::flatten(array_ref);
-            clone_impl(data, array_view, numel_);
+            for (size_t i=0; i<numel_; i++)
+                nmtools::at(data,i) = nmtools::at(array_view,i);
         }
 
         dynamic_ndarray() {}
@@ -422,7 +422,6 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
-#include "nmtools/array/utility/clone.hpp" // clone_impl
 #include "nmtools/array/shape.hpp"
 #include "nmtools/utils/isequal.hpp"
 
@@ -436,8 +435,6 @@ namespace nmtools::array
      * @tparam ndarray_t type of matrix to be cloned
      * @param rhs matrix to be cloned
      * @return constexpr auto 
-     * @see nmtools::matrix_size
-     * @see nmtools::detail::clone_impl
      */
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
     template <typename ndarray_t, typename>
@@ -454,9 +451,9 @@ namespace nmtools::array
             // , mismatched shape for dynamic_ndarray assignment
         );
 
-        using ::nmtools::detail::clone_impl;
         auto flat_rhs = view::flatten(rhs);
-        clone_impl(this->data, flat_rhs, numel_);
+        for (size_t i=0; i<numel_; i++)
+            nmtools::at(this->data,i) = nmtools::at(flat_rhs,i);
 
         return *this;
     } // operator=
