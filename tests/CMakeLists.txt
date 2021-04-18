@@ -26,55 +26,6 @@ endif()
 
 enable_testing()
 
-# TODO: remove gtest, hard to use on multiple platform
-# for now use custom flag
-option(ENABLE_GTEST "enable old gtest unit tests" OFF)
-
-if (ENABLE_GTEST)
-    set(GTEST_SOURCE
-        src/gtest/roots/bracketing.cpp
-        src/gtest/roots/open.cpp
-        src/gtest/optimization/unconstrained.cpp
-        src/gtest/integration/trapezoidal.cpp
-        src/gtest/differentiation/finite.cpp
-        src/gtest/taylor/taylor.cpp
-        src/gtest/curvefit/regression.cpp
-        src/gtest/curvefit/sinusoid.cpp
-        src/gtest/curvefit/interpolation.cpp
-        src/gtest/utility/utility.cpp
-        src/gtest/ode/euler.cpp
-        src/gtest/ode/runge_kutta.cpp
-        src/gtest/linalg/elimination.cpp
-        src/gtest/linalg/decomposition.cpp
-        src/gtest/blas/blas.cpp
-        src/gtest/array/dynamic.cpp
-        src/gtest/array/fixed.cpp
-        src/gtest/array/linalg.cpp
-    )
-    find_package(GTest REQUIRED)
-    add_executable(${PROJECT_NAME} src/gtest/tests.cpp 
-        ${GTEST_SOURCE}
-    )
-    apply_nmtools(
-        TARGET ${PROJECT_NAME}
-        COMPILE_OPTIONS -g
-    )
-    target_include_directories(
-        ${PROJECT_NAME} PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-    )
-    target_include_directories(
-        ${PROJECT_NAME} PRIVATE
-        ${GTEST_INCLUDE_DIRS}
-    )
-    target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES} pthread)
-    add_test(tests ${PROJECT_NAME})
-    # may use scripts/install_doctest.sh to install
-    # dont know to fix this on emscripten toolchain
-    # should fallback to single header
-    find_package(doctest)
-endif()
-
 ## defer static check to runtime for clang
 ## since constexpr math not supported
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR EMSCRIPTEN OR ANDROID OR MSYS)
@@ -85,7 +36,6 @@ endif ()
 add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
 
 option(TEST_ALL             "test all modules"              ON)
-option(TEST_BLAS            "test blas modules"             OFF)
 option(TEST_ARRAY_DETAIL    "test array detail modules"     OFF)
 option(TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
 option(TEST_UTILS           "test utils modules"            OFF)
@@ -96,7 +46,6 @@ option(TEST_ARRAY_EVAL      "test array evaluation"         OFF)
 option(TEST_MISC            "test other modules"            OFF)
 
 if (TEST_ALL)
-    SET(TEST_BLAS           ON CACHE BOOL "test blas modules"           FORCE)
     SET(TEST_ARRAY_DETAIL   ON CACHE BOOL "test array detail modules"   FORCE)
     SET(TEST_ARRAY_UTILITY  ON CACHE BOOL "test array utility modules"  FORCE)
     SET(TEST_UTILS          ON CACHE BOOL "test utils modules"          FORCE)
@@ -107,33 +56,7 @@ if (TEST_ALL)
     SET(TEST_MISC           ON CACHE BOOL "test other modules"          FORCE)
 endif (TEST_ALL)
 
-set(BLAS_TEST_SOURCES
-    src/doctest/blas/clone.cpp
-    src/doctest/blas/ones_like.cpp
-    src/doctest/blas/zeros_like.cpp
-    src/doctest/blas/transpose.cpp
-    src/doctest/blas/vvadd.cpp
-    src/doctest/blas/mmadd.cpp
-    src/doctest/blas/dot.cpp
-    src/doctest/blas/outer.cpp
-    src/doctest/blas/col_sum.cpp
-    src/doctest/blas/row_sum.cpp
-    src/doctest/blas/sum.cpp
-    src/doctest/blas/vector_norm.cpp
-    src/doctest/blas/matrix_norm.cpp
-    src/doctest/blas/vsmul.cpp
-    src/doctest/blas/msmul.cpp
-    src/doctest/blas/mvmul.cpp
-    src/doctest/blas/mmmul.cpp
-    src/doctest/blas/saxpy.cpp
-    src/doctest/blas/gaxpy.cpp
-)
-if (NOT TEST_BLAS)
-    set(BLAS_TEST_SOURCES "")
-endif ()
-
 set(ARRAY_DETAIL_TEST_SOURCES
-    src/doctest/array/shape.cpp
     src/doctest/array/index/argfilter.cpp
     src/doctest/array/index/broadcast_shape.cpp
     src/doctest/array/index/broadcast_to.cpp
@@ -181,11 +104,6 @@ set(ARRAY_UTILITY_TEST_SOURCES
     src/doctest/array/utility/at.cpp
     src/doctest/array/utility/apply_at.cpp
     src/doctest/array/utility/cast.cpp
-    src/doctest/array/utility/clone.cpp
-    src/doctest/array/utility/row.cpp
-    src/doctest/array/utility/column.cpp
-    src/doctest/array/utility/squeeze.cpp
-    src/doctest/array/utility/zeros_like.cpp
 )
 if (NOT TEST_ARRAY_UTILITY)
     set (ARRAY_UTILITY_TEST_SOURCES "")
@@ -377,8 +295,6 @@ if (NOT TEST_MISC)
 endif()
 
 add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp 
-    ## blas module
-    ${BLAS_TEST_SOURCES}
     ## array detail
     ${ARRAY_DETAIL_TEST_SOURCES}
     ## utility function
@@ -447,10 +363,6 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/split_at.cpp
     src/doctest/meta/transform/scatter.cpp
     src/doctest/meta/get_container_value_type.cpp
-    src/doctest/meta/blas/mmadd.cpp
-    src/doctest/meta/blas/mmmul.cpp
-    src/doctest/meta/blas/dot.cpp
-    src/doctest/meta/blas/row.cpp
 )
 # omg
 if ((NOT EMSCRIPTEN) AND (NOT ANDROID))
@@ -511,7 +423,7 @@ if (CODE_COVERAGE)
     setup_target_for_coverage_gcovr_html(
         NAME ${PROJECT_NAME}-coverage 
         EXECUTABLE ${PROJECT_NAME}
-        EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "${GTEST_INCLUDE_DIRS}/*" "/usr/*"
+        EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"
     )
     setup_target_for_coverage_gcovr_html(
         NAME ${PROJECT_NAME}-doctest-coverage 

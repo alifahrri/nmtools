@@ -10,7 +10,6 @@
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/view/ref/initializer_list.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/array/utility/clone.hpp"
 
 #include <cassert>
 #include <vector>
@@ -79,7 +78,6 @@ namespace nmtools::array
         constexpr auto init_data(array_t&& array)
         {
             data_t data{};
-            using ::nmtools::detail::clone_impl;
             auto array_ref   = view::ref(array);
             auto array_dim   = ::nmtools::dim(array);
             auto array_shape = ::nmtools::shape(array_ref);
@@ -91,7 +89,8 @@ namespace nmtools::array
             //     shape_[i] = ::nmtools::at(array_shape,i);
             // strides_ = strides();
             auto array_view = view::flatten(array_ref);
-            clone_impl(data, array_view, n);
+            for (size_t i=0; i<n; i++)
+                at(data,i) = at(array_view,i);
             return data;
         } // init_data
 
@@ -135,7 +134,6 @@ namespace nmtools::array
         template <typename array_t>
         auto init(array_t&& array)
         {
-            using ::nmtools::detail::clone_impl;
             auto array_ref   = view::ref(array);
             auto array_dim   = ::nmtools::dim(array);
             auto array_shape = ::nmtools::shape(array_ref);
@@ -147,7 +145,8 @@ namespace nmtools::array
                 shape_[i] = ::nmtools::at(array_shape,i);
             strides_ = strides();
             auto array_view = view::flatten(array_ref);
-            clone_impl(data, array_view, n);
+            for (size_t i=0; i<n; i++)
+                nmtools::at(data,i) = nmtools::at(array_view,i);
         } // init
 
         constexpr hybrid_ndarray() : data{},
@@ -556,7 +555,6 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
-#include "nmtools/array/utility/clone.hpp" // clone_impl
 #include "nmtools/array/shape.hpp"
 #include "nmtools/utils/isequal.hpp"
 
@@ -570,8 +568,6 @@ namespace nmtools::array
      * @tparam ndarray_t type of matrix to be cloned
      * @param rhs matrix to be cloned
      * @return constexpr auto 
-     * @see nmtools::matrix_size
-     * @see nmtools::detail::clone_impl
      */
     template <typename T, size_t max_elements, size_t dimension>
     template <typename ndarray_t, typename>
@@ -580,7 +576,6 @@ namespace nmtools::array
         using nmtools::dim;
         using nmtools::shape;
         using nmtools::utils::isequal;
-        using ::nmtools::detail::clone_impl;
 
         assert (dim(rhs)==dim(*this)
             // , mismatched dimension for hybrid_ndarray assignment
@@ -591,7 +586,8 @@ namespace nmtools::array
         auto n = index::product(shape(rhs));
 
         auto flat_rhs = view::flatten(rhs);
-        clone_impl(this->data, flat_rhs, n);
+        for (size_t i=0; i<n; i++)
+            nmtools::at(this->data,i) = nmtools::at(flat_rhs,i);
 
         return *this;
     } // operator=

@@ -1,6 +1,7 @@
 #include "nmtools/array/view/broadcast_to.hpp"
 #include "nmtools/testing/data/array/broadcast_to.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/constants.hpp"
 
 #include <vector>
 #include <array>

@@ -14,34 +14,9 @@ set(NMTOOLS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(NMTOOLS_HEADERS
     ${NMTOOLS_INCLUDE_DIR}/nmtools/array/fixed.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/array/utility.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/blas/blas.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/curvefit/regression.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/curvefit/sinusoid.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/curvefit/interpolation.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/differentiation/finite.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/integration/trapezoidal.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/ode/euler.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/optimization/unconstrained.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/roots/bracketing.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/roots/open.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/experimental/taylor/taylor.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/decomposition.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/elimination.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg/orthogonalization.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/helper.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/utility/tag.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/blas.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/curvefit.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/differentiation.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/integration.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/linalg.hpp
     ${NMTOOLS_INCLUDE_DIR}/nmtools/meta.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/ode.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/optimization.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/roots.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/taylor.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/traits.hpp
-    ${NMTOOLS_INCLUDE_DIR}/nmtools/utility.hpp
 )
 
 add_library(nmtools INTERFACE)
@@ -53,7 +28,6 @@ target_include_directories(
 
 option(BUILD_TESTS "build tests programs" ON)
 option(BUILD_EXAMPLES "build example programs" OFF)
-option(BUILD_BENCHMARKS "build benchmark programs" OFF)
 
 include_directories(include)
 if(BUILD_TESTS)
@@ -64,10 +38,6 @@ endif(BUILD_TESTS)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif(BUILD_EXAMPLES)
-
-if(BUILD_BENCHMARKS)
-    add_subdirectory(benchmarks)
-endif(BUILD_BENCHMARKS)
 
 # Installation
 # ============

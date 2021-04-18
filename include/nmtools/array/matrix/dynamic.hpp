@@ -251,16 +251,6 @@ namespace nmtools::meta
 // include here so that dynamic vector_size and matrix_size visible
 #include "nmtools/array/matrix/fixed.hpp"
 #include "nmtools/array/vector/dynamic.hpp"
-#include "nmtools/array/utility/row.hpp" // clone_impl
-
-namespace nmtools
-{
-    template <typename T, template <typename...> typename storage_type>
-    struct meta::resolve_optype<void,row_t,array::dynamic_matrix<T,storage_type>>
-    {
-        using type = array::dynamic_vector<T,storage_type>;
-    }; // resolve_optype
-} // namespace nmtools
 
 namespace nmtools::meta
 {
@@ -268,96 +258,6 @@ namespace nmtools::meta
      * @ingroup meta
      * 
      */
-
-    /**
-     * @brief specialization for metafunction make_outer_matrix,
-     * which tells matrix type for outer product,
-     * for custom vector type array::dynamic_vector to 
-     * give array::dynamic_matrix as resulting type.
-     * 
-     * @tparam T value_type of lhs vector, automatically deduced.
-     * @tparam U value_type of rhs vector, automatically deduced.
-     * @see nmtools::blas::outer
-     */
-    template <typename T, typename U, template <typename...> typename t_storage_type, template <typename...> typename u_storage_type>
-    struct make_outer_matrix<array::dynamic_vector<T,t_storage_type>,array::dynamic_vector<U,u_storage_type>>
-    {
-        using common_t = std::common_type_t<T,U>;
-        using type = array::dynamic_matrix<common_t,t_storage_type>;
-    };
-
-    /**
-     * @brief specialization of metafunction make_outer_matrix,
-     * which tells matrix type for outer product, 
-     * for array::fixed_vector and array::dynamic_vector,
-     * resulting in array::dynamic_matrix type.
-     * 
-     * @tparam T element type of dynamic_vector
-     * @tparam U element type of fixed_vector
-     * @tparam N number of element of fixed_vector
-     * @see nmtools::blas::outer
-     */
-    template <typename T, typename U, size_t N, template <typename...> typename storage_type>
-    struct make_outer_matrix<array::fixed_vector<U,N>,array::dynamic_vector<T,storage_type>>
-    {
-        using common_t = std::common_type_t<T,U>;
-        using type = array::dynamic_matrix<common_t,storage_type>;
-    };
-
-    /**
-     * @brief specialization of metafunction make_outer_matrix,
-     * which tells matrix type for outer product, 
-     * for array::dynamic_vector and array::fixed_vector,
-     * resulting in array::dynamic_matrix type.
-     * 
-     * @tparam T element type of dynamic_vector
-     * @tparam U element type of fixed_vector
-     * @tparam N number of element of fixed_vector
-     * @see nmtools::blas::outer
-     */
-    template <typename T, typename U, size_t N, template <typename...> typename storage_type>
-    struct make_outer_matrix<array::dynamic_vector<T,storage_type>,array::fixed_vector<U,N>>
-    {
-        using common_t = std::common_type_t<T,U>;
-        using type = array::dynamic_matrix<common_t, storage_type>;
-    };
-
-    template <typename T, typename U>
-    struct make_outer_matrix<std::vector<T>,std::vector<U>>
-    {
-        using common_t = std::common_type_t<T,U>;
-        using type = array::dynamic_matrix<common_t>;
-    };
-
-    /**
-     * @brief specialization of metafunction get_column_type,
-     * which tells vector type for column function,
-     * for array::dynamic_matrix, resulting in array::dynamic_vector type.
-     * 
-     * @tparam T 
-     * @see nmtools::column
-     * @see ntmools::row
-     */
-    template <typename T, template <typename...> typename storage_type>
-    struct get_column_type<array::dynamic_matrix<T,storage_type>>
-    {
-        using type = array::dynamic_vector<T,storage_type>;
-    };
-
-    /**
-     * @brief specialization of metafunction get_row_type,
-     * which tells vector type for row function,
-     * for array::dynamic_matrix, resulting in array::dynamic_vector type.
-     * 
-     * @tparam T 
-     * @see nmtools::column
-     * @see ntmools::row
-     */
-    template <typename T, template <typename...> typename storage_type>
-    struct get_row_type<array::dynamic_matrix<T,storage_type>>
-    {
-        using type = array::dynamic_vector<T,storage_type>;
-    };
 
     /**
      * @brief specialization of fixed_dim metafunction for dynamic_vector.
@@ -390,8 +290,6 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
-#include "nmtools/array/utility/clone.hpp" // clone_impl
-
 namespace nmtools::array
 {
     
@@ -404,8 +302,6 @@ namespace nmtools::array
      * @tparam matrix_t type of matrix to be cloned
      * @param rhs matrix to be cloned
      * @return constexpr auto 
-     * @see nmtools::matrix_size
-     * @see nmtools::detail::clone_impl
      */
     template <typename T, template <typename...> typename storage_type>
     template <typename matrix_t>
@@ -416,13 +312,13 @@ namespace nmtools::array
             "dynamic_matrix only support assignment from array2d for now"
         );
 
-        using ::nmtools::detail::clone_impl;
-
         auto [rows, cols] = matrix_size(rhs);
         assert( (rows==_rows) && (cols==_cols)
             // , "mismatched type for dynamic_matrix assignment"
         );
-        clone_impl(*this,rhs,rows,cols);
+        for (size_t i=0; i<rows; i++)
+            for (size_t j=0; j<cols; j++)
+                at(*this,i,j) = at(rhs,i,j);
 
         return *this;
     } // operator=

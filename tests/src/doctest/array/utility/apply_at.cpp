@@ -5,14 +5,7 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
-#include "testing/testing.hpp"
-#include "testing/data/array/utility/apply_at.hpp"
-
-#if __has_include("doctest/doctest.h")
-    #include "doctest/doctest.h"
-#else
-   #include "doctest.h"
-#endif
+#include "nmtools/testing/doctest.hpp"
 
 #include <array>
 #include <vector>
@@ -23,25 +16,9 @@
  */
 #define NMTOOLS_ASSERT_CLOSE NMTOOLS_ASSERT_CLOSE_DOCTEST
 
-/**
- * @brief check if we should disable benchmark
- * 
- */
-#ifdef NMTOOLS_TESTING_DOCTEST_DISABLE_BENCH
-namespace nm  = nmtools;
-namespace nmt = nmtools;
-#define NMTOOLS_TEST_SUBCASE NMTOOLS_TESTING_DOCTEST_SUBCASE
-#else
-// TODO: rename to nmtools/bench/common.hpp or something
-#include "common.hpp"
-// TODO: rename to nmtools/bench/utility.hpp or something
-#include "utility.hpp"
-namespace nmt = nmtools::bench::nanobench;
-#define NMTOOLS_TEST_SUBCASE NMTOOLS_BENCH_DOCTEST_SUBCASE
-#endif
-
 using std::tuple;
 using std::vector;
+namespace nm = nmtools;
 
 TEST_CASE("apply_at(double[]...)" * doctest::test_suite("utility"))
 {

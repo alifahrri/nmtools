@@ -1,15 +1,7 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/utils/to_string.hpp"
-#if __has_include("doctest/doctest.h")
-    #if __has_include("doctest/doctest.h")
-    #include "doctest/doctest.h"
-#else
-   #include "doctest.h"
-#endif
-#else
-    #include "doctest.h"
-#endif
+#include "nmtools/testing/doctest.hpp"
 #include <array>
 #include <tuple>
 #include <vector>

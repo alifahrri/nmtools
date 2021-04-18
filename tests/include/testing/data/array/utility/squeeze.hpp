@@ -3,7 +3,6 @@
 
 /* TODO: use __has_include */
 #include "nmtools/array/fixed.hpp"
-#include "nmtools/blas/blas.hpp"
 #include "testing/testing.hpp"
 #include <array>
 #include <tuple>

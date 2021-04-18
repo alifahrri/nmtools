@@ -278,69 +278,6 @@ namespace nmtools::meta
      */
     
     /**
-     * @brief specialization of metafunction make_outer_matrix,
-     * which create matrix type for outer product,
-     * for custom fixed-size vector type array::fixed_vector.
-     * 
-     * @tparam T value_type of lhs vector, deduced automatically.
-     * @tparam U value_type of rhs vector, deduced automatically.
-     * @tparam M element size of lhs vector, deduced automatically.
-     * @tparam N element size of rhs vector, deduced automatically.
-     */
-    template <typename T, typename U, size_t M, size_t N>
-    struct make_outer_matrix<array::fixed_vector<T,M>,array::fixed_vector<U,N>>
-    {
-        using common_t = std::common_type_t<T,U>;
-        using type = array::fixed_matrix<common_t,M,N>;
-    };
-
-    /**
-     * @brief specialization of metafunction make_zeros_matrix
-     * for custom fixed-size matrix array::fixed_matrix.
-     * 
-     * @tparam T value_type of original fixed-size matrix with fixed compile time shape, deduced automatically
-     * @tparam Rows new desired row size
-     * @tparam Cols new desired column size
-     * @tparam oM old row size of original fixed-size matrix type, deduced automatically
-     * @tparam oN old col size of original fixed-size matrix type, deduced automatically
-     */
-    template <typename T, size_t Rows, size_t Cols, size_t oM, size_t oN>
-    struct make_zeros_matrix<array::fixed_matrix<T,oM,oN>,Rows,Cols>
-    {
-        using type = array::fixed_matrix<T,Rows,Cols>;
-    };
-
-    /**
-     * @brief specialization of metafunction get_column_type,
-     * which determinde the resulting type for column op.
-     * 
-     * @tparam T T value_type of original fixed-size matrix with fixed compile time shape, deduced automatically
-     * @tparam M Rows row size of array::fixed_matrix, deduced automatically
-     * @tparam N Cols column size of array::fixed_matrix, deduced automatically
-     * @see nmtools::column
-     * @see nmtools::blas::row_sum
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    struct get_column_type<array::fixed_matrix<T,Rows,Cols>>
-    {
-        using type = array::fixed_vector<T,Cols>;
-    }; // struct get_column_type
-
-    /**
-     * @brief specialization of metafunction get_row_type for array::fixed_matrix type,
-     * which determine the resulting type for col_sum op.
-     * 
-     * @tparam T value_type of array::fixed_matrix, automatically deduced
-     * @tparam Rows row size of array::fixed_matrix, deduced automatically
-     * @tparam Cols column size of array::fixed_matrix, deduced automatically
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    struct get_row_type<array::fixed_matrix<T,Rows,Cols>>
-    {
-        using type = array::fixed_vector<T,Rows>;
-    }; // struct get_column_type
-
-    /**
      * @brief specializatoin of metafunction resize_fixed_matrix for array::fixed_matrix type,
      * which create new type with new size at compile-time.
      * 
@@ -359,17 +296,6 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
-#include "nmtools/array/utility/row.hpp" // clone_impl
-
-namespace nmtools
-{
-    template <typename T, size_t Rows, size_t Cols>
-    struct meta::resolve_optype<void,row_t,array::fixed_matrix<T,Rows,Cols>>
-    {
-        using type = array::fixed_vector<T,Cols>;
-    }; // resolve_optype
-} // namespace nmtools
-
 namespace nmtools::array
 {
     
@@ -382,8 +308,6 @@ namespace nmtools::array
      * @tparam matrix_t type of matrix to be cloned
      * @param rhs matrix to be cloned
      * @return constexpr auto 
-     * @see nmtools::matrix_size
-     * @see nmtools::detail::clone_impl
      */
     template <typename T, size_t Rows, size_t Cols>
     template <typename matrix_t>
@@ -394,7 +318,11 @@ namespace nmtools::array
             "fixed_matrix only support assignment from array2d for now"
         );
 
-        using ::nmtools::detail::clone_impl;
+        auto clone_impl = [](auto& self, const auto& rhs, auto rows, auto cols) {
+            for (size_t i=0; i<rows; i++)
+                for (size_t j=0; j<cols; j++)
+                    at(self,i,j) = at(rhs,i,j);
+        };
 
         if constexpr (meta::is_fixed_size_matrix_v<matrix_t>) {
             constexpr auto size_ = meta::fixed_matrix_size_v<matrix_t>;

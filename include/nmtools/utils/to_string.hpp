@@ -13,6 +13,7 @@
 
 #if __has_include(<string>)
 #define HAS_STRING true
+    #include <string>
 #else
 #define HAS_STRING false
 #endif
