@@ -2,8 +2,7 @@
 #define NMTOOLS_ARRAY_UTILITY_CAST_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility/clone.hpp"
-#include "nmtools/array/utility/zeros_like.hpp" // apply_resize
+#include "nmtools/array/utility/apply_resize.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
