@@ -18,7 +18,7 @@ RUN bash scripts/download_doctest_header.sh -d include
 RUN /opt/emsdk/emsdk activate latest \
     && PATH=$PATH:/opt/emsdk:/opt/emsdk/node/12.18.1_64bit/bin:/opt/emsdk/upstream/emscripten \
     && mkdir build && cd build \
-    && emcmake cmake -DBUILD_BENCHMARKS=OFF -DBUILD_EXAMPLES=ON -DCODE_COVERAGE=OFF .. \
+    && emcmake cmake -DBUILD_EXAMPLES=ON -DCODE_COVERAGE=OFF .. \
     && make -j4 VERBOSE=1 && make install
 
 CMD ["/opt/emsdk/node/12.18.1_64bit/bin/node","/app/numeric_tools/build/tests/numeric-tests-doctest.wasm.js"]

@@ -28,7 +28,6 @@ target_include_directories(
 
 option(BUILD_TESTS "build tests programs" ON)
 option(BUILD_EXAMPLES "build example programs" OFF)
-option(BUILD_BENCHMARKS "build benchmark programs" OFF)
 
 include_directories(include)
 if(BUILD_TESTS)
@@ -39,10 +38,6 @@ endif(BUILD_TESTS)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif(BUILD_EXAMPLES)
-
-if(BUILD_BENCHMARKS)
-    add_subdirectory(benchmarks)
-endif(BUILD_BENCHMARKS)
 
 # Installation
 # ============
