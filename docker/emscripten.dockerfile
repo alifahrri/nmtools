@@ -2,7 +2,6 @@ FROM alifahrri/nmtools-emscripten-ubuntu:latest
 
 WORKDIR /app/numeric_tools/
 
-COPY benchmarks benchmarks
 COPY examples examples
 COPY include include
 COPY scripts scripts
