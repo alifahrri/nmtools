@@ -122,6 +122,7 @@ if (NOT TEST_NDARRAY)
 endif ()
 
 set(ARRAY_VIEW_TEST_SOURCES
+    src/doctest/array/view/arange.cpp
     src/doctest/array/view/broadcast_to.cpp
     src/doctest/array/view/broadcast_arrays.cpp
     src/doctest/array/view/concatenate.cpp
@@ -129,8 +130,10 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/expand_dims.cpp
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/flip.cpp
+    src/doctest/array/view/full.cpp
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
+    src/doctest/array/view/ones.cpp
     src/doctest/array/view/ref.cpp
     src/doctest/array/view/ref/initializer_list.cpp
     src/doctest/array/view/repeat.cpp
@@ -141,6 +144,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/tile.cpp
     src/doctest/array/view/transpose.cpp
     src/doctest/array/view/where.cpp
+    src/doctest/array/view/zeros.cpp
 )
 if (NOT TEST_ARRAY_VIEW)
     set (ARRAY_VIEW_TEST_SOURCES "")
