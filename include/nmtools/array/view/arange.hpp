@@ -11,10 +11,19 @@ namespace nmtools::view
 {
     namespace detail
     {
+        // workaround for clang
+        // since gcc has constexpr ceil while clang doesn't :|
+        constexpr size_t ceil_(float num)
+        {
+            return (static_cast<float>(static_cast<size_t>(num)) == num)
+                ? static_cast<size_t>(num)
+                : static_cast<size_t>(num) + ((num > 0) ? 1 : 0);
+        }
+
         template <typename start_t, typename stop_t, typename step_t>
         constexpr auto arange_shape(start_t start, stop_t stop, step_t step)
         {
-            size_t d = std::ceil(float(stop - start) / step);
+            size_t d = ceil_(float(stop - start) / step);
             return std::array{d};
         } // arange_shape
     } // namespace detail
