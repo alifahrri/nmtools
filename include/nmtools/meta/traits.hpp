@@ -1280,18 +1280,6 @@ namespace nmtools::meta {
     struct is_boolean<bool> : std::true_type {};
 
     /**
-     * @brief Check if type `T` is an index
-     * 
-     * @tparam T 
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct is_index : std::false_type {};
-
-    template <typename T>
-    inline constexpr auto is_index_v = is_index<T>::value;
-
-    /**
      * @brief Check if type T is compile-time index.
      * 
      * @tparam T 
@@ -1304,6 +1292,23 @@ namespace nmtools::meta {
     inline constexpr auto is_constant_index_v = is_constant_index<T>::value;
 
     /**
+     * @brief Check if type `T` is an index
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_index
+    {
+        static constexpr auto value = [](){
+            return is_constant_index_v<T>;
+        }();
+    };
+
+    template <typename T>
+    inline constexpr auto is_index_v = is_index<T>::value;
+
+    /**
      * @brief 
      * 
      * @tparam T 
@@ -1313,43 +1318,6 @@ namespace nmtools::meta {
         std::is_integral_v<T> ||
         meta::is_integral_constant_v<T>
     > > : std::true_type {};
-
-    /**
-     * @brief Check if type `T` is index array
-     * 
-     * @tparam T type to check
-     */
-    template <typename T, typename=void>
-    struct is_index_array : std::false_type {};
-
-    /**
-     * @brief Specialization of is_index_array for std::array
-     * 
-     * @tparam T 
-     * @tparam N 
-     */
-    template <typename T, size_t N>
-    struct is_index_array<std::array<T,N>,
-        std::enable_if_t<std::is_integral_v<T>>
-    > : std::true_type {};
-
-    template <typename T, size_t N>
-    struct is_index_array<T[N],
-        std::enable_if_t<std::is_integral_v<T>>
-    > : std::true_type {};
-
-    /**
-     * @brief Tuple of index is index array
-     * 
-     * @tparam args_t 
-     */
-    template <typename...args_t>
-    struct is_index_array<std::tuple<args_t...>,
-        std::enable_if_t<(meta::is_index_v<args_t> && ...)>
-    > : std::true_type {};
-
-    template <typename T>
-    inline constexpr auto is_index_array_v = is_index_array<T>::value;
 
     /**
      * @brief Return the length of fixed index array.
@@ -1449,11 +1417,27 @@ namespace nmtools::meta {
 
 #if defined(NMTOOLS_HAS_VECTOR)
     template <typename T>
-    struct is_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
-
-    template <typename T>
     struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
 #endif // NMTOOLS_HAS_VECTOR
+
+    /**
+     * @brief Check if type `T` is index array
+     * 
+     * @tparam T type to check
+     */
+    template <typename T, typename=void>
+    struct is_index_array
+    {
+        static constexpr auto value = [](){
+            return is_fixed_index_array_v<T>
+                || is_dynamic_index_array_v<T>
+                || is_constant_index_array_v<T>
+                || is_hybrid_index_array_v<T>;
+        }();
+    };
+
+    template <typename T>
+    constexpr inline auto is_index_array_v = is_index_array<T>::value;
 
     /** @} */ // end group traits
 
