@@ -8,6 +8,7 @@
 
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/constants.hpp"
 
 /* TODO: should we include array and std::array specialization here? */
 #include <array>
@@ -161,10 +162,14 @@ namespace nmtools
         static_assert (meta::is_fixed_size_ndarray_v<array_t> || meta::has_shape_v<array_t>
             || (meta::nested_array_dim_v<array_t> > 0)
             || (meta::is_array1d_v<array_t> && meta::has_size_v<array_t>)
-            , "unsupported shape; only support fixed-shape array or array has .shape()"
+            || (meta::is_scalar_v<array_t>)
+            , "unsupported shape; only support fixed-shape array or array has .shape() or scalar type"
         );
+        // for scalar type, simply return None
+        if constexpr (meta::is_scalar_v<array_t>)
+            return None;
         // check for fixed-shape array, should capture all kind of fixed-size array
-        if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
+        else if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
             // @todo whenever the shape is constant return it as compile-time constant
             // @note not possible at this point, need to refactor indices & strides computation to support compile-time constant
             // return detail::make_constant_shape(array);
