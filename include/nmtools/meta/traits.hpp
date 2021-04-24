@@ -1172,7 +1172,7 @@ namespace nmtools::meta {
 
     namespace detail
     {
-        template <typename always_void, template<typename...>typename predicate, typename T, template<typename> typename trait, template<typename> typename...traits>
+        template <typename always_void, template<typename...>typename predicate, typename T, template<typename...> typename trait, template<typename...> typename...traits>
         struct compose_trait_helper
         {
             static constexpr auto value = predicate<trait<T>,traits<T>...>::value;
@@ -1185,7 +1185,7 @@ namespace nmtools::meta {
      * @tparam T type to check
      * @tparam traits template template parameter resulting static constexpr member variable value
      */
-    template <typename T, template<typename> typename...traits>
+    template <typename T, template<typename...> typename...traits>
     struct compose_logical_and
     {
         static constexpr auto value = detail::compose_trait_helper<void,logical_and,T,traits...>::value;
@@ -1197,7 +1197,7 @@ namespace nmtools::meta {
      * @tparam T type to check
      * @tparam traits template template parameter resulting static constexpr member variable value
      */
-    template <typename T, template<typename> typename...traits>
+    template <typename T, template<typename...> typename...traits>
     struct compose_logical_or
     {
         static constexpr auto value = detail::compose_trait_helper<void,logical_or,T,traits...>::value;
@@ -1209,7 +1209,7 @@ namespace nmtools::meta {
      * @tparam T type to check
      * @tparam traits template template parameter resulting static constexpr member variable value
      */
-    template <typename T, template<typename> typename...traits>
+    template <typename T, template<typename...> typename...traits>
     static inline constexpr auto compose_logical_and_v = compose_logical_and<T,traits...>::value;
 
     /**
@@ -1218,7 +1218,7 @@ namespace nmtools::meta {
      * @tparam T type to check
      * @tparam traits template template parameter resulting static constexpr member variable value
      */
-    template <typename T, template<typename> typename...traits>
+    template <typename T, template<typename...> typename...traits>
     static inline constexpr auto compose_logical_or_v = compose_logical_or<T,traits...>::value;
 
     /**
