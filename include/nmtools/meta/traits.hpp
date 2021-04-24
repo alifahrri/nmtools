@@ -6,7 +6,9 @@
 #include <array>
 #if __has_include(<vector>)
     #include <vector> // @todo remove
-    #define NMTOOLS_HAS_VECTOR
+    #define NMTOOLS_HAS_VECTOR 1
+#else
+    #define NMTOOLS_HAS_VECTOR 0
 #endif
 #include <complex> // @todo remove
 #include <tuple>
@@ -1255,7 +1257,7 @@ namespace nmtools::meta {
     template <typename T>
     inline constexpr auto is_bit_reference_v = is_bit_reference<T>::value;
 
-#if defined(NMTOOLS_HAS_VECTOR)
+#if defined(NMTOOLS_HAS_VECTOR) && (NMTOOLS_HAS_VECTOR)
     template <>
     struct is_bit_reference<std::vector<bool>::reference> : std::true_type {};
 #endif
@@ -1415,7 +1417,7 @@ namespace nmtools::meta {
     template <typename T>
     inline constexpr auto is_dynamic_index_array_v = is_dynamic_index_array<T>::value;
 
-#if defined(NMTOOLS_HAS_VECTOR)
+#if defined(NMTOOLS_HAS_VECTOR) && (NMTOOLS_HAS_VECTOR)
     template <typename T>
     struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
 #endif // NMTOOLS_HAS_VECTOR

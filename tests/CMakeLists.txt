@@ -123,6 +123,9 @@ endif ()
 
 set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/arange.cpp
+    src/doctest/array/view/atleast_1d.cpp
+    src/doctest/array/view/atleast_2d.cpp
+    src/doctest/array/view/atleast_3d.cpp
     src/doctest/array/view/broadcast_to.cpp
     src/doctest/array/view/broadcast_arrays.cpp
     src/doctest/array/view/concatenate.cpp

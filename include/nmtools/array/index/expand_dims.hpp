@@ -43,24 +43,27 @@ namespace nmtools::index
         template <typename newshape_t, typename shape_t, typename axes_t>
         constexpr auto expand_dims(newshape_t& newshape, const shape_t shape, axes_t axes)
         {
-            auto n_axes = tuple_size(axes);
-            auto dim = tuple_size(shape);
+            auto n_axes = [&](){
+                if constexpr (meta::is_index_array_v<axes_t>)
+                    return len(axes);
+                else return 1ul;
+            }();
+            auto dim = len(shape);
+            auto n = dim+n_axes;
 
             // resize output if necessary
             if constexpr (meta::is_resizeable_v<newshape_t>)
-                newshape.resize(dim+n_axes);
+                newshape.resize(n);
             
             auto idx = size_t{0};
-            auto n = len(newshape);
             for (size_t i=0; i<n; i++) {
-                // fill ones
-                if (contains(axes,i))
-                    at(newshape,i) = 1;
-                // fill empty with shape
-                else {
-                    at(newshape,i) = tuple_at(shape,idx);
-                    idx++;
-                }
+                auto in_axis = [&](){
+                    if constexpr (meta::is_index_array_v<axes_t>)
+                        return contains(axes,i);
+                    else return i == axes;
+                }();
+                at(newshape,i) = (in_axis ? 1 : tuple_at(shape,idx));
+                idx += (!in_axis ? 1 : 0);
             }
         } // expand_dims
     } // namespace impl
@@ -127,6 +130,20 @@ namespace nmtools
                         tuple_to_array_t<
                             transform_bounded_array_t<shape_t>>
                         , n_shape+n_axes
+                    >;
+                    return as_value<type>{};
+                }
+                else if constexpr (is_hybrid_index_array_v<shape_t> && is_index_v<axes_t>) {
+                    constexpr auto max_shape = hybrid_index_array_max_size_v<shape_t>;
+                    using type = resize_hybrid_index_array_max_size_t<shape_t,max_shape+1>;
+                    return as_value<type>{};
+                }
+                else if constexpr (is_fixed_index_array_v<shape_t> && is_index_v<axes_t>) {
+                    constexpr auto n_shape = fixed_index_array_size_v<shape_t>;
+                    using type = resize_fixed_index_array_t<
+                        tuple_to_array_t<
+                            transform_bounded_array_t<shape_t>>
+                        , n_shape+1
                     >;
                     return as_value<type>{};
                 }
