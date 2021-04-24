@@ -51,3 +51,13 @@ TEST_CASE("logical_or(case1)" * doctest::test_suite("array::logical_or"))
     LOGICAL_OR_SUBCASE( case1, a_d, b_d );
     LOGICAL_OR_SUBCASE( case1, a_h, b_h );
 }
+
+TEST_CASE("logical_or(case2)" * doctest::test_suite("array::logical_or"))
+{
+    LOGICAL_OR_SUBCASE( case2,   a, b );
+    LOGICAL_OR_SUBCASE( case2, a_a, b );
+    LOGICAL_OR_SUBCASE( case2, a_v, b );
+    LOGICAL_OR_SUBCASE( case2, a_f, b );
+    LOGICAL_OR_SUBCASE( case2, a_d, b );
+    LOGICAL_OR_SUBCASE( case2, a_h, b );
+}

@@ -43,6 +43,26 @@ NMTOOLS_TESTING_DECLARE_CASE(view, logical_and)
             { true && false, false && true,  true && true},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline bool a[3][3] = {
+            { true, false,  true},
+            {false,  true, false},
+            { true, false,  true},
+        };
+        inline bool b = true;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int shape[2] = {3,3};
+        inline bool result[3][3] = {
+            { true && true, false && true,  true && true},
+            {false && true,  true && true, false && true},
+            { true && true, false && true,  true && true},
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(view, reduce_logical_and)

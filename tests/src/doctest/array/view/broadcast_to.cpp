@@ -123,3 +123,8 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_h, shape, expected );
 }
+
+TEST_CASE("broadcast_to(case10)" * doctest::test_suite("view::broadcast_to"))
+{
+    BROADCAST_TO_SUBCASE( case10, x, shape, expected );
+}

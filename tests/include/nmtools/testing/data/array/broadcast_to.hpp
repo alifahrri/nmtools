@@ -198,6 +198,18 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
             },
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        inline int x = 1;
+        inline auto shape = std::array{1,3};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        inline int expected[1][3] = {
+            {1,1,1}
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_to_constexpr)

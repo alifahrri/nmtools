@@ -53,6 +53,16 @@ TEST_CASE("logical_and(case1)" * doctest::test_suite("view::logical_and"))
     LOGICAL_AND_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("logical_and(case2)" * doctest::test_suite("view::logical_and"))
+{
+    LOGICAL_AND_SUBCASE( case2,   a, b );
+    LOGICAL_AND_SUBCASE( case2, a_a, b );
+    LOGICAL_AND_SUBCASE( case2, a_v, b );
+    LOGICAL_AND_SUBCASE( case2, a_f, b );
+    LOGICAL_AND_SUBCASE( case2, a_d, b );
+    LOGICAL_AND_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_logical_and_impl(...) \
 nm::view::reduce_logical_and(__VA_ARGS__);
 

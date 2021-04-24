@@ -52,6 +52,16 @@ TEST_CASE("right_shift(case1)" * doctest::test_suite("view::right_shift"))
     RIGHT_SHIFT_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("right_shift(case2)" * doctest::test_suite("view::right_shift"))
+{
+    RIGHT_SHIFT_SUBCASE( case2,   a, b );
+    RIGHT_SHIFT_SUBCASE( case2, a_a, b );
+    RIGHT_SHIFT_SUBCASE( case2, a_v, b );
+    RIGHT_SHIFT_SUBCASE( case2, a_f, b );
+    RIGHT_SHIFT_SUBCASE( case2, a_d, b );
+    RIGHT_SHIFT_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_right_shift_impl(...) \
 nm::view::reduce_right_shift(__VA_ARGS__);
 

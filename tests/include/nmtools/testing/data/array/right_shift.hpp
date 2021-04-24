@@ -42,6 +42,26 @@ NMTOOLS_TESTING_DECLARE_CASE(view, right_shift)
             {6 >> 0, 7 >> 1, 8 >> 2},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline int a[3][3] = {
+            {0,1,2},
+            {3,4,5},
+            {6,7,8},
+        };
+        inline int b = 2;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int shape[2] = {3,3};
+        inline int result[3][3] = {
+            {0 >> 2, 1 >> 2, 2 >> 2},
+            {3 >> 2, 4 >> 2, 5 >> 2},
+            {6 >> 2, 7 >> 2, 8 >> 2},
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(view, reduce_right_shift)

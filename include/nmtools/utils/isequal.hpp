@@ -26,7 +26,7 @@
 namespace nmtools::utils
 {
     namespace detail {
-#ifdef NMTOOLS_HAS_VECTOR
+#if NMTOOLS_HAS_VECTOR
         // vector of bool madness
 
         /**
@@ -93,18 +93,22 @@ namespace nmtools::utils
             // and specializing is_integral is undefined behaviour
             static_assert(
                 (
-                    meta::compose_logical_or_v<T,std::is_integral,meta::is_integral_constant>
-                    || meta::compose_logical_or_v<U,std::is_integral,meta::is_integral_constant>
+                    meta::compose_logical_or_v<T,meta::is_integer,meta::is_integral_constant>
+                    || meta::compose_logical_or_v<U,meta::is_integer,meta::is_integral_constant>
                 )
                 ||
                 (
                     meta::is_ndarray_v<T> && meta::is_ndarray_v<U>
-                    && meta::compose_logical_or_v<tval_t,std::is_integral>
-                    && meta::compose_logical_or_v<uval_t,std::is_integral>
+                    && meta::compose_logical_or_v<tval_t,meta::is_integer>
+                    && meta::compose_logical_or_v<uval_t,meta::is_integer>
                 )
+                ||
+                ( is_none_v<T> && is_none_v<U> )
                 , "unsupported isequal; only support integral element type"
             );
-            if constexpr (std::is_integral_v<T>) {
+            if constexpr (is_none_v<T>)
+                return true;
+            else if constexpr (meta::is_integer_v<T>) {
                 using value_type = T;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }

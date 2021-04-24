@@ -52,3 +52,13 @@ TEST_CASE("ldexp(case1)" * doctest::test_suite("view::ldexp"))
     LDEXP_SUBCASE( case1, a_d, b_d );
     LDEXP_SUBCASE( case1, a_h, b_h );
 }
+
+TEST_CASE("ldexp(case2)" * doctest::test_suite("view::ldexp"))
+{
+    LDEXP_SUBCASE( case2,   a, b );
+    LDEXP_SUBCASE( case2, a_a, b );
+    LDEXP_SUBCASE( case2, a_v, b );
+    LDEXP_SUBCASE( case2, a_f, b );
+    LDEXP_SUBCASE( case2, a_d, b );
+    LDEXP_SUBCASE( case2, a_h, b );
+}

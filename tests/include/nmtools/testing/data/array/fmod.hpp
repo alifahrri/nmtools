@@ -42,6 +42,26 @@ NMTOOLS_TESTING_DECLARE_CASE(view, fmod)
             {std::fmod(1.6f,1.f),std::fmod(2.7f,2.f),std::fmod(3.8f,3.f)},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline float a[3][3] = {
+            {1.0,2.1,3.2},
+            {1.3,2.4,3.5},
+            {1.6,2.7,3.8},
+        };
+        inline float b = 3.f;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int shape[2] = {3,3};
+        inline float result[3][3] = {
+            {std::fmod(1.0f,3.f),std::fmod(2.1f,3.f),std::fmod(3.2f,3.f)},
+            {std::fmod(1.3f,3.f),std::fmod(2.4f,3.f),std::fmod(3.5f,3.f)},
+            {std::fmod(1.6f,3.f),std::fmod(2.7f,3.f),std::fmod(3.8f,3.f)},
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(view, reduce_fmod)

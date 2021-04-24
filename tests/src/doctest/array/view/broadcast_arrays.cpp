@@ -14,6 +14,13 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace kind = na::kind;
 
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_v = cast(name, kind::nested_vec); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_d = cast(name, kind::dynamic); \
+inline auto name##_h = cast(name, kind::hybrid); \
+
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -25,16 +32,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {4},
             {5}
         };
-        auto lhs_v = cast(lhs,kind::nested_vec);
-        auto rhs_v = cast(rhs,kind::nested_vec);
-        auto lhs_a = cast<int>(lhs);
-        auto rhs_a = cast<int>(rhs);
-        auto lhs_d = cast(lhs,kind::dynamic);
-        auto rhs_d = cast(rhs,kind::dynamic);
-        auto lhs_f = cast(lhs,kind::fixed);
-        auto rhs_f = cast(rhs,kind::fixed);
-        auto lhs_h = cast(lhs,kind::hybrid);
-        auto rhs_h = cast(rhs,kind::hybrid);
+        CAST_ARRAYS(lhs)
+        CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -57,16 +56,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {4},
             {5}
         };
-        auto lhs_v = cast(lhs,kind::nested_vec);
-        auto rhs_v = cast(rhs,kind::nested_vec);
-        auto lhs_a = cast<int>(lhs);
-        auto rhs_a = cast<int>(rhs);
-        auto lhs_d = cast(lhs,kind::dynamic);
-        auto rhs_d = cast(rhs,kind::dynamic);
-        auto lhs_f = cast(lhs,kind::fixed);
-        auto rhs_f = cast(rhs,kind::fixed);
-        auto lhs_h = cast(lhs,kind::hybrid);
-        auto rhs_h = cast(rhs,kind::hybrid);
+        CAST_ARRAYS(lhs)
+        CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -93,16 +84,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {5}
             }
         };
-        auto lhs_v = cast(lhs,kind::nested_vec);
-        auto rhs_v = cast(rhs,kind::nested_vec);
-        auto lhs_a = cast<int>(lhs);
-        auto rhs_a = cast<int>(rhs);
-        auto lhs_d = cast(lhs,kind::dynamic);
-        auto rhs_d = cast(rhs,kind::dynamic);
-        auto lhs_f = cast(lhs,kind::fixed);
-        auto rhs_f = cast(rhs,kind::fixed);
-        auto lhs_h = cast(lhs,kind::hybrid);
-        auto rhs_h = cast(rhs,kind::hybrid);
+        CAST_ARRAYS(lhs)
+        CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -137,16 +120,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {7},
             },
         };
-        auto lhs_v = cast(lhs,kind::nested_vec);
-        auto rhs_v = cast(rhs,kind::nested_vec);
-        auto lhs_a = cast<int>(lhs);
-        auto rhs_a = cast<int>(rhs);
-        auto lhs_d = cast(lhs,kind::dynamic);
-        auto rhs_d = cast(rhs,kind::dynamic);
-        auto lhs_f = cast(lhs,kind::fixed);
-        auto rhs_f = cast(rhs,kind::fixed);
-        auto lhs_h = cast(lhs,kind::hybrid);
-        auto rhs_h = cast(rhs,kind::hybrid);
+        CAST_ARRAYS(lhs)
+        CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -195,21 +170,9 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {11,12,13},
             }
         };
-        auto A_v = cast(A,kind::nested_vec);
-        auto B_v = cast(B,kind::nested_vec);
-        auto C_v = cast(C,kind::nested_vec);
-        auto A_a = cast<int>(A);
-        auto B_a = cast<int>(B);
-        auto C_a = cast<int>(C);
-        auto A_d = cast(A,kind::dynamic);
-        auto B_d = cast(B,kind::dynamic);
-        auto C_d = cast(C,kind::dynamic);
-        auto A_f = cast(A,kind::fixed);
-        auto B_f = cast(B,kind::fixed);
-        auto C_f = cast(C,kind::fixed);
-        auto A_h = cast(A,kind::hybrid);
-        auto B_h = cast(B,kind::hybrid);
-        auto C_h = cast(C,kind::hybrid);
+        CAST_ARRAYS(A)
+        CAST_ARRAYS(B)
+        CAST_ARRAYS(C)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -221,6 +184,117 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {
                 {1,2,3},
                 {1,2,3},
+            },
+        };
+        int B[2][2][3] = {
+            {
+                {4,4,4},
+                {5,5,5},
+            },
+            {
+                {6,6,6},
+                {7,7,7},
+            }
+        };
+        int C[2][2][3] = {
+            {
+                { 8, 9,10},
+                {11,12,13},
+            },
+            {
+                { 8, 9,10},
+                {11,12,13},
+            }
+        };
+        auto shape = std::array{2,2,3};
+        auto expected = std::tuple{cast<int>(A),cast<int>(B),cast<int>(C)};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        int lhs[1][3] = {
+            {1,2,3}
+        };
+        int rhs = 6;
+        CAST_ARRAYS(lhs)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        int lhs[1][3] = {
+            {1,2,3}
+        };
+        int rhs[1][3] = {
+            {6,6,6}
+        };
+        auto shape = std::array{1,3};
+        auto expected = std::tuple{cast<int>(lhs),cast<int>(rhs)};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        int lhs = 6;
+        int rhs[1][3] = {
+            {1,2,3}
+        };
+        CAST_ARRAYS(rhs)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        int lhs[1][3] = {
+            {6,6,6}
+        };
+        int rhs[1][3] = {
+            {1,2,3}
+        };
+        auto shape = std::array{1,3};
+        auto expected = std::tuple{cast<int>(lhs),cast<int>(rhs)};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        int lhs = 6;
+        int rhs = 1;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        int lhs = 6;
+        int rhs = 1;
+        auto shape = None;
+        auto expected = std::tuple{lhs,rhs};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        int A = 6;
+        int B[2][2][1] = {
+            {
+                {4},
+                {5},
+            },
+            {
+                {6},
+                {7},
+            },
+        };
+        int C[1][2][3] = {
+            {
+                { 8, 9,10},
+                {11,12,13},
+            }
+        };
+        CAST_ARRAYS(B)
+        CAST_ARRAYS(C)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        int A[2][2][3] = {
+            {
+                {6,6,6},
+                {6,6,6},
+            },
+            {
+                {6,6,6},
+                {6,6,6},
             },
         };
         int B[2][2][3] = {
@@ -330,6 +404,38 @@ TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case5, A_d, B_d, C_d );
     BROADCAST_ARRAYS_SUBCASE(case5, A_f, B_f, C_f );
     BROADCAST_ARRAYS_SUBCASE(case5, A_h, B_h, C_h );
+}
+
+TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("view::broadcast_arrays"))
+{
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_a, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_v, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_d, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_f, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_h, rhs );
+}
+
+TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("view::broadcast_arrays"))
+{
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_a );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_v );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_d );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_f );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_h );
+}
+
+TEST_CASE("broadcast_arrays(case8)" * doctest::test_suite("view::broadcast_arrays"))
+{
+    BROADCAST_ARRAYS_SUBCASE(case8, lhs, rhs);
+}
+
+TEST_CASE("broadcast_arrays(case9)" * doctest::test_suite("view::broadcast_arrays"))
+{
+    BROADCAST_ARRAYS_SUBCASE(case9, A, B_a, C_a );
+    BROADCAST_ARRAYS_SUBCASE(case9, A, B_v, C_v );
+    BROADCAST_ARRAYS_SUBCASE(case9, A, B_d, C_d );
+    BROADCAST_ARRAYS_SUBCASE(case9, A, B_f, C_f );
+    BROADCAST_ARRAYS_SUBCASE(case9, A, B_h, C_h );
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays_constexpr)

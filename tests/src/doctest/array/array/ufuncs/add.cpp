@@ -66,6 +66,26 @@ TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
     ADD_SUBCASE( case1, a_h, b_h, context, output );
 }
 
+TEST_CASE("add(case2)" * doctest::test_suite("array::add"))
+{
+    auto context = None;
+
+    ADD_SUBCASE( case2,   a, b, context );
+    ADD_SUBCASE( case2, a_a, b, context );
+    ADD_SUBCASE( case2, a_v, b, context );
+    ADD_SUBCASE( case2, a_f, b, context );
+    ADD_SUBCASE( case2, a_d, b, context );
+    ADD_SUBCASE( case2, a_h, b, context );
+
+    auto output  = meta::as_value<int[3][3]>{};
+    ADD_SUBCASE( case2,   a, b, context, output );
+    ADD_SUBCASE( case2, a_a, b, context, output );
+    ADD_SUBCASE( case2, a_v, b, context, output );
+    ADD_SUBCASE( case2, a_f, b, context, output );
+    ADD_SUBCASE( case2, a_d, b, context, output );
+    ADD_SUBCASE( case2, a_h, b, context, output );
+}
+
 // skip constexpr test for emscripten
 #if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
 TEST_CASE("add(constexpr)"  * doctest::test_suite("array::add"))

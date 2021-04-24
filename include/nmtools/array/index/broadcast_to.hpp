@@ -14,7 +14,9 @@ namespace nmtools::index
     struct broadcast_to_t {};
 
     /**
-     * @brief check if ashape can be broadcasted to bshape
+     * @brief check if ashape can be broadcasted to bshape.
+     *
+     * Unidirectional broadcast from shape a to shape b.
      * 
      * @tparam ashape_t 
      * @tparam bshape_t 
@@ -79,6 +81,10 @@ namespace nmtools::index
             broadcast_to_impl(i);
         }
 
+        // - res will have dimension same with bshape, which is the target shape,
+        // - free_axes has same len with res,
+        // - free_axes value indicates wether the corresponding indices are free (either empty or 1).
+        // - free_axes is useful to perform the reverse operation.
         return std::tuple{success, res, free_axes};
     } // broadcast_to
 } // namespace nmtools::index

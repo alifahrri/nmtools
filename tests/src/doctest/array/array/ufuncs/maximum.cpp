@@ -52,6 +52,16 @@ TEST_CASE("maximum(case1)" * doctest::test_suite("array::maximum"))
     MAXIMUM_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("maximum(case2)" * doctest::test_suite("array::maximum"))
+{
+    MAXIMUM_SUBCASE( case2,   a, b );
+    MAXIMUM_SUBCASE( case2, a_a, b );
+    MAXIMUM_SUBCASE( case2, a_v, b );
+    MAXIMUM_SUBCASE( case2, a_f, b );
+    MAXIMUM_SUBCASE( case2, a_d, b );
+    MAXIMUM_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_maximum_impl(...) \
 nm::array::maximum.reduce(__VA_ARGS__);
 

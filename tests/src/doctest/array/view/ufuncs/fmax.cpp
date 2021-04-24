@@ -52,6 +52,16 @@ TEST_CASE("fmax(case1)" * doctest::test_suite("view::fmax"))
     FMAX_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("fmax(case2)" * doctest::test_suite("view::fmax"))
+{
+    FMAX_SUBCASE( case2,   a, b );
+    FMAX_SUBCASE( case2, a_a, b );
+    FMAX_SUBCASE( case2, a_v, b );
+    FMAX_SUBCASE( case2, a_f, b );
+    FMAX_SUBCASE( case2, a_d, b );
+    FMAX_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_fmax_impl(...) \
 nm::view::reduce_fmax(__VA_ARGS__);
 
