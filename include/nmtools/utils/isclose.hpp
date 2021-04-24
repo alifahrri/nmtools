@@ -30,7 +30,7 @@ namespace nmtools::utils
     using std::fabs;
 
     namespace detail {
-#ifdef NMTOOLS_HAS_VECTOR
+#if NMTOOLS_HAS_VECTOR
         // vector of bool madness
 
         /**
@@ -91,14 +91,14 @@ namespace nmtools::utils
         {
             using ::nmtools::ndindex;
             static_assert(
-                (std::is_arithmetic_v<T> && std::is_arithmetic_v<U>) ||
+                (meta::is_scalar_v<T>  && meta::is_scalar_v<U>) ||
                 (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)
                 , "unsupported isclose; only support arithmetic element type or ndarray"
             );
             auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
                 return fabs(lhs-rhs) < eps;
             };
-            if constexpr (std::is_arithmetic_v<T>) {
+            if constexpr (meta::is_scalar_v<T>) {
                 using common_t = std::common_type_t<T,U,E>;
                 return fabs(static_cast<common_t>(t)-static_cast<common_t>(u))
                     < static_cast<common_t>(eps);
