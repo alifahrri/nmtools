@@ -1441,6 +1441,36 @@ namespace nmtools::meta {
     template <typename T>
     constexpr inline auto is_index_array_v = is_index_array<T>::value;
 
+    /**
+     * @brief Check if type T is scalar type.
+     * 
+     * Note that specializing std::is_arithmetic is undefined behaviour.
+     * This traits exists to avoid UB while specializing similar concept is allowed.
+     *
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_scalar : std::is_arithmetic<T> {};
+
+    template <typename T>
+    constexpr inline auto is_scalar_v = is_scalar<T>::value;
+
+    /**
+     * @brief Check if type T is integer type.
+     * 
+     * Note that specializing std::is_integral is undefined behaviour.
+     * This traits exists to avoid UB while specializing similar concept is allowed.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_integer : std::is_integral<T> {};
+
+    template <typename T>
+    constexpr inline auto is_integer_v = is_integer<T>::value;
+
     /** @} */ // end group traits
 
 } // namespace nmtools::meta
