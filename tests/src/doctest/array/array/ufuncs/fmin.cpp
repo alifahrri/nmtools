@@ -51,6 +51,16 @@ TEST_CASE("fmin(case1)" * doctest::test_suite("array::fmin"))
     FMIN_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("fmin(case2)" * doctest::test_suite("array::fmin"))
+{
+    FMIN_SUBCASE( case2,   a, b );
+    FMIN_SUBCASE( case2, a_a, b );
+    FMIN_SUBCASE( case2, a_v, b );
+    FMIN_SUBCASE( case2, a_f, b );
+    FMIN_SUBCASE( case2, a_d, b );
+    FMIN_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_fmin_impl(...) \
 nm::array::fmin.reduce(__VA_ARGS__);
 

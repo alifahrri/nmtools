@@ -53,6 +53,16 @@ TEST_CASE("power(case1)" * doctest::test_suite("array::power"))
     POWER_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("power(case2)" * doctest::test_suite("array::power"))
+{
+    POWER_SUBCASE( case2,   a, b );
+    POWER_SUBCASE( case2, a_a, b );
+    POWER_SUBCASE( case2, a_v, b );
+    POWER_SUBCASE( case2, a_f, b );
+    POWER_SUBCASE( case2, a_d, b );
+    POWER_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_power_impl(...) \
 nm::array::power.reduce(__VA_ARGS__);
 

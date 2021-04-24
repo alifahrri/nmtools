@@ -53,6 +53,16 @@ TEST_CASE("logical_xor(case1)" * doctest::test_suite("view::logical_xor"))
     LOGICAL_XOR_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("logical_xor(case2)" * doctest::test_suite("view::logical_xor"))
+{
+    LOGICAL_XOR_SUBCASE( case2,   a, b );
+    LOGICAL_XOR_SUBCASE( case2, a_a, b );
+    LOGICAL_XOR_SUBCASE( case2, a_v, b );
+    LOGICAL_XOR_SUBCASE( case2, a_f, b );
+    LOGICAL_XOR_SUBCASE( case2, a_d, b );
+    LOGICAL_XOR_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_logical_xor_impl(...) \
 nm::view::reduce_logical_xor(__VA_ARGS__);
 

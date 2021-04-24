@@ -51,3 +51,13 @@ TEST_CASE("hypot(case1)" * doctest::test_suite("array::hypot"))
     HYPOT_SUBCASE( case1, a_d, b_d );
     HYPOT_SUBCASE( case1, a_h, b_h );
 }
+
+TEST_CASE("hypot(case2)" * doctest::test_suite("array::hypot"))
+{
+    HYPOT_SUBCASE( case2,   a, b );
+    HYPOT_SUBCASE( case2, a_a, b );
+    HYPOT_SUBCASE( case2, a_v, b );
+    HYPOT_SUBCASE( case2, a_f, b );
+    HYPOT_SUBCASE( case2, a_d, b );
+    HYPOT_SUBCASE( case2, a_h, b );
+}

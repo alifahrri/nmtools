@@ -42,6 +42,26 @@ NMTOOLS_TESTING_DECLARE_CASE(view, fmax)
             {std::fmax(6.f,0.F),std::fmax(7.f,1.f),std::fmax(8.f,NAN)},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline float a[3][3] = {
+            {0,1,2},
+            {3,4,5},
+            {6,7,8},
+        };
+        inline float b = 1.f;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int shape[2] = {3,3};
+        inline float result[3][3] = {
+            {std::fmax(0.f,1.f),std::fmax(1.f,1.f),std::fmax(2.f,1.f)},
+            {std::fmax(3.f,1.f),std::fmax(4.f,1.f),std::fmax(5.f,1.f)},
+            {std::fmax(6.f,1.f),std::fmax(7.f,1.f),std::fmax(8.f,1.f)},
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(view, reduce_fmax)

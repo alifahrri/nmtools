@@ -52,6 +52,16 @@ TEST_CASE("fmod(case1)" * doctest::test_suite("view::fmod"))
     FMOD_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("fmod(case2)" * doctest::test_suite("view::fmod"))
+{
+    FMOD_SUBCASE( case2,   a, b );
+    FMOD_SUBCASE( case2, a_a, b );
+    FMOD_SUBCASE( case2, a_v, b );
+    FMOD_SUBCASE( case2, a_f, b );
+    FMOD_SUBCASE( case2, a_d, b );
+    FMOD_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_fmod_impl(...) \
 nm::view::reduce_fmod(__VA_ARGS__);
 

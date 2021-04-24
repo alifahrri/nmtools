@@ -86,6 +86,28 @@ NMTOOLS_TESTING_DECLARE_CASE(array, clip)
             }
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        inline float a[3][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+        };
+        inline float amin[2] = {1,0};
+        inline float amax = 3;
+        CAST_ARRAYS(a)
+        CAST_ARRAYS(amin)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline int shape[2] = {3,2};
+        inline float result[3][2] = {
+            {1,1},
+            {2,3},
+            {3,3},
+        };
+    }
 }
 
 #undef CAST_ARRAYS

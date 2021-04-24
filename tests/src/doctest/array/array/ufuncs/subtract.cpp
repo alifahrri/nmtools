@@ -51,6 +51,16 @@ TEST_CASE("subtract(case1)" * doctest::test_suite("array::subtract"))
     SUBTRACT_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("subtract(case2)" * doctest::test_suite("array::subtract"))
+{
+    SUBTRACT_SUBCASE( case2,   a, b );
+    SUBTRACT_SUBCASE( case2, a_a, b );
+    SUBTRACT_SUBCASE( case2, a_v, b );
+    SUBTRACT_SUBCASE( case2, a_f, b );
+    SUBTRACT_SUBCASE( case2, a_d, b );
+    SUBTRACT_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_subtract_impl(...) \
 nm::array::subtract.reduce(__VA_ARGS__);
 

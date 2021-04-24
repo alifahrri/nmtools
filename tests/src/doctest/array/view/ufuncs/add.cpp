@@ -52,6 +52,16 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("add(case2)" * doctest::test_suite("view::add"))
+{
+    ADD_SUBCASE( case2,   a, b );
+    ADD_SUBCASE( case2, a_a, b );
+    ADD_SUBCASE( case2, a_v, b );
+    ADD_SUBCASE( case2, a_f, b );
+    ADD_SUBCASE( case2, a_d, b );
+    ADD_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_add_impl(...) \
 nm::view::reduce_add(__VA_ARGS__);
 

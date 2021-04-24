@@ -43,6 +43,26 @@ NMTOOLS_TESTING_DECLARE_CASE(view, minimum)
             {std::min(6,0),std::min(7,1),std::min(8,2)},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline int a[3][3] = {
+            {0,1,2},
+            {3,4,5},
+            {6,7,8},
+        };
+        inline int b = 2;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int shape[2] = {3,3};
+        inline int result[3][3] = {
+            {std::min(0,2),std::min(1,2),std::min(2,2)},
+            {std::min(3,2),std::min(4,2),std::min(5,2)},
+            {std::min(6,2),std::min(7,2),std::min(8,2)},
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(view, reduce_minimum)

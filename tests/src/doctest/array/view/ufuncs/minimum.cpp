@@ -53,6 +53,16 @@ TEST_CASE("minimum(case1)" * doctest::test_suite("view::minimum"))
     MINIMUM_SUBCASE( case1, a_h, b_h );
 }
 
+TEST_CASE("minimum(case2)" * doctest::test_suite("view::minimum"))
+{
+    MINIMUM_SUBCASE( case2,   a, b );
+    MINIMUM_SUBCASE( case2, a_a, b );
+    MINIMUM_SUBCASE( case2, a_v, b );
+    MINIMUM_SUBCASE( case2, a_f, b );
+    MINIMUM_SUBCASE( case2, a_d, b );
+    MINIMUM_SUBCASE( case2, a_h, b );
+}
+
 #define RUN_reduce_minimum_impl(...) \
 nm::view::reduce_minimum(__VA_ARGS__);
 

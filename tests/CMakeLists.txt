@@ -428,11 +428,6 @@ if (CODE_COVERAGE)
     include(CodeCoverage)
     append_coverage_compiler_flags()
     setup_target_for_coverage_gcovr_html(
-        NAME ${PROJECT_NAME}-coverage 
-        EXECUTABLE ${PROJECT_NAME}
-        EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"
-    )
-    setup_target_for_coverage_gcovr_html(
         NAME ${PROJECT_NAME}-doctest-coverage 
         EXECUTABLE ${PROJECT_NAME}-doctest
         EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"

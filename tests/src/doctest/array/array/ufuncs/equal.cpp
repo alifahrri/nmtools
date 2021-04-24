@@ -52,3 +52,13 @@ TEST_CASE("equal(case1)" * doctest::test_suite("array::equal"))
     EQUAL_SUBCASE( case1, a_d, b_d );
     EQUAL_SUBCASE( case1, a_h, b_h );
 }
+
+TEST_CASE("equal(case2)" * doctest::test_suite("array::equal"))
+{
+    EQUAL_SUBCASE( case2,   a, b );
+    EQUAL_SUBCASE( case2, a_a, b );
+    EQUAL_SUBCASE( case2, a_v, b );
+    EQUAL_SUBCASE( case2, a_f, b );
+    EQUAL_SUBCASE( case2, a_d, b );
+    EQUAL_SUBCASE( case2, a_h, b );
+}

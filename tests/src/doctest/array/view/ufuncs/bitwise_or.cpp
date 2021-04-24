@@ -51,3 +51,13 @@ TEST_CASE("bitwise_or(case1)" * doctest::test_suite("view::bitwise_or"))
     BITWISE_OR_SUBCASE( case1, a_d, b_d );
     BITWISE_OR_SUBCASE( case1, a_h, b_h );
 }
+
+TEST_CASE("bitwise_or(case2)" * doctest::test_suite("view::bitwise_or"))
+{
+    BITWISE_OR_SUBCASE( case2,   a, b );
+    BITWISE_OR_SUBCASE( case2, a_a, b );
+    BITWISE_OR_SUBCASE( case2, a_v, b );
+    BITWISE_OR_SUBCASE( case2, a_f, b );
+    BITWISE_OR_SUBCASE( case2, a_d, b );
+    BITWISE_OR_SUBCASE( case2, a_h, b );
+}

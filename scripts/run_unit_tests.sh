@@ -27,7 +27,6 @@ if [ -z "$BUILD_DIR" -a "$BUILD_DIR" != " " ]; then
 fi
 
 ## assuming this script is located in root/scripts & build directory in root/scripts
-$BUILD_DIR/tests/numeric-tests
 NMTOOLS_TESTBENCH_EPOCHS=3 NMTOOLS_TESTBENCH_WARMUP=1 $BUILD_DIR/tests/numeric-tests-doctest
 $BUILD_DIR/tests/numeric-tests-doctest-meta
 

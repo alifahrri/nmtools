@@ -51,3 +51,13 @@ TEST_CASE("bitwise_xor(case1)" * doctest::test_suite("view::bitwise_xor"))
     BITWISE_XOR_SUBCASE( case1, a_d, b_d );
     BITWISE_XOR_SUBCASE( case1, a_h, b_h );
 }
+
+TEST_CASE("bitwise_xor(case2)" * doctest::test_suite("view::bitwise_xor"))
+{
+    BITWISE_XOR_SUBCASE( case2,   a, b );
+    BITWISE_XOR_SUBCASE( case2, a_a, b );
+    BITWISE_XOR_SUBCASE( case2, a_v, b );
+    BITWISE_XOR_SUBCASE( case2, a_f, b );
+    BITWISE_XOR_SUBCASE( case2, a_d, b );
+    BITWISE_XOR_SUBCASE( case2, a_h, b );
+}

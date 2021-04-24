@@ -43,6 +43,26 @@ NMTOOLS_TESTING_DECLARE_CASE(view, ldexp)
             {std::ldexp(6.f,0.f),std::ldexp(7.f,1.f),std::ldexp(8.f,2.f)},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline int a[3][3] = {
+            {0,1,2},
+            {3,4,5},
+            {6,7,8},
+        };
+        inline int b = 2;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int shape[2] = {3,3};
+        inline float result[3][3] = {
+            {std::ldexp(0.f,2.f),std::ldexp(1.f,2.f),std::ldexp(2.f,2.f)},
+            {std::ldexp(3.f,2.f),std::ldexp(4.f,2.f),std::ldexp(5.f,2.f)},
+            {std::ldexp(6.f,2.f),std::ldexp(7.f,2.f),std::ldexp(8.f,2.f)},
+        };
+    }
 }
 
 #undef CAST_ARRAYS
