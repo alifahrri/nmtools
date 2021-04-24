@@ -41,38 +41,56 @@ namespace nmtools::index
         auto res = return_t{};
         bool success = true;
 
-        auto adim = len(ashape);
-        auto bdim = len(bshape);
-        auto rdim = adim > bdim ? adim : bdim;
-        if constexpr (meta::is_resizeable_v<return_t>)
-            res.resize(rdim);
-        
-        auto broadcast_shape_impl = [&](auto i){
-            using idx_t = std::make_signed_t<element_t>;
-            // compute index to fill from behind
-            idx_t si = rdim - i - 1;
-            idx_t ai = adim - i - 1;
-            idx_t bi = bdim - i - 1;
-            if ((ai>=0) && (bi>=0)) {
-                auto a = tuple_at(ashape,ai);
-                auto b = tuple_at(bshape,bi);
-                success = (a==b) || (a==1) || (b==1);
-                at(res,si) = a > b ? a : b;
-            }
-            else if (bi<0) {
-                auto a = tuple_at(ashape,ai);
-                at(res,si) = a;
-            }
-            else if (ai<0) {
-                auto b = tuple_at(bshape,bi);
-                at(res,si) = b;
-            }
-            else {} // not valid
-        };
+        // for none return type (both ashape and bshape is scalar)
+        // simply bypass this
+        if constexpr (!is_none_v<ashape_t> && !is_none_v<bshape_t>) {
+            auto adim = len(ashape);
+            auto bdim = len(bshape);
+            auto rdim = adim > bdim ? adim : bdim;
+            if constexpr (meta::is_resizeable_v<return_t>)
+                res.resize(rdim);
+            
+            auto broadcast_shape_impl = [&](auto i){
+                using idx_t = std::make_signed_t<element_t>;
+                // compute index to fill from behind
+                idx_t si = rdim - i - 1;
+                idx_t ai = adim - i - 1;
+                idx_t bi = bdim - i - 1;
+                if ((ai>=0) && (bi>=0)) {
+                    auto a = tuple_at(ashape,ai);
+                    auto b = tuple_at(bshape,bi);
+                    success = (a==b) || (a==1) || (b==1);
+                    at(res,si) = a > b ? a : b;
+                }
+                else if (bi<0) {
+                    auto a = tuple_at(ashape,ai);
+                    at(res,si) = a;
+                }
+                else if (ai<0) {
+                    auto b = tuple_at(bshape,bi);
+                    at(res,si) = b;
+                }
+                else {} // not valid
+            };
 
-        for (int i=0; i<size(res); i++) {
-            broadcast_shape_impl(i);
-            if (!success) break;
+            for (int i=0; i<size(res); i++) {
+                broadcast_shape_impl(i);
+                if (!success) break;
+            }
+        }
+        else if constexpr (is_none_v<ashape_t> && !is_none_v<bshape_t>) {
+            auto bdim = len(bshape);
+            if constexpr (meta::is_resizeable_v<return_t>)
+                res.resize(bdim);
+            for (size_t i=0; i<bdim; i++)
+                at(res,i) = at(bshape,i);
+        }
+        else if constexpr (is_none_v<bshape_t> && !is_none_v<ashape_t>) {
+            auto adim = len(ashape);
+            if constexpr (meta::is_resizeable_v<return_t>)
+                res.resize(adim);
+            for (size_t i=0; i<adim; i++)
+                at(res,i) = at(ashape,i);
         }
 
         return std::tuple{success, res};
@@ -103,7 +121,23 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (
+            // none shape indicates scalar type
+            if constexpr (is_none_v<ashape_t> && is_none_v<bshape_t>)
+                return as_value<none_t>{};
+            // return either b or a which is not None
+            else if constexpr (is_none_v<ashape_t>) {
+                using ret_t = tuple_to_array_t<
+                    transform_bounded_array_t<bshape_t>
+                >;
+                return as_value<ret_t>{};
+            }
+            else if constexpr (is_none_v<bshape_t>) {
+                using ret_t = tuple_to_array_t<
+                    transform_bounded_array_t<ashape_t>
+                >;
+                return as_value<ret_t>{};
+            }
+            else if constexpr (
                 is_dynamic_index_array_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
             ) // both are dynamic resizeable
                 return as_value<ashape_t>{};
