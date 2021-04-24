@@ -11,12 +11,17 @@
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
 
+#include "nmtools/constants.hpp"
+
 namespace nmtools::view
 {
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct broadcast_to_t
     {
-        using value_type = meta::get_element_type_t<array_t>;
+        using value_type = std::conditional_t<
+            std::is_arithmetic_v<array_t>, array_t,
+            meta::get_element_type_t<array_t>
+        >;
         using const_reference = const value_type&;
         // array type as required by decorator
         using array_type = const array_t&;
@@ -37,11 +42,13 @@ namespace nmtools::view
 
         constexpr decltype(auto) dim() const noexcept
         {
-            return index::tuple_size(shape_);
+            if constexpr (is_none_v<shape_t>)
+                return 0;
+            else return len(shape_);
         } // shape
 
         template <typename...size_types>
-        constexpr auto index(size_types...indices) const
+        constexpr auto operator()(size_types...indices) const
         {
             using ::nmtools::detail::make_array;
             using common_t = std::common_type_t<size_types...>;
@@ -57,14 +64,26 @@ namespace nmtools::view
                     return std::get<0>(std::tuple{indices...});
                 }
             }();
-            auto origin_shape   = index::gather(shape_,origin_axes);
-            auto origin_strides = index::compute_strides(origin_shape);
-            auto origin_indices = index::gather(indices_,origin_axes);
-            auto offset = index::compute_offset(origin_indices,origin_strides);
 
-            auto tf_indices = index::compute_indices(offset,::nmtools::shape(array));
-            return tf_indices;
-        } // index
+            if constexpr (std::is_arithmetic_v<array_t>)
+                return array;
+            else {
+                auto origin_shape   = index::gather(shape_,origin_axes);
+                auto origin_strides = index::compute_strides(origin_shape);
+                auto origin_indices = index::gather(indices_,origin_axes);
+                auto offset = index::compute_offset(origin_indices,origin_strides);
+
+                auto tf_indices = index::compute_indices(offset,::nmtools::shape(array));
+                return apply_at(array,tf_indices);
+            }
+        } // operator()
+
+        constexpr operator value_type() const
+        {
+            // conversion can't have trailing return type
+            static_assert(is_none_v<shape_t> && meta::is_scalar_v<array_t>);
+            return static_cast<value_type>(array);
+        } // operator value_type()
     }; // broadcast_to
 
     /**
@@ -79,25 +98,32 @@ namespace nmtools::view
     template <typename array_t, typename shape_t>
     constexpr auto broadcast_to(const array_t& array, shape_t shape)
     {
-        auto ashape = ::nmtools::shape(array);
-        auto [success, shape_, free] = index::broadcast_to(ashape,shape);
-        assert (success
-            // , "cannot broadcast shape"
-        );
-        auto not_free    = index::logical_not(free);
-        auto origin_axes = index::nonzero(not_free);
-        using origin_axes_t = decltype(origin_axes);
-        // NOTE:
-        // the array view itself cannot be called with constexpr directly (because it use reference)
-        // but can be evaluated in constexpr
-        // see also https://en.cppreference.com/w/cpp/language/constant_expression
-        // Seems like constexpr variable can't hold reference.
-        // clang complains with:
-        //      note: reference to 'x' is not a constant expression
-        // where 'x' is array
-        // but this function itself (and the broadcast_to_t constructor) are still marked as constexpr
-        // to let the view evaluated in constexpr context.
-        return decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>{{array,shape,origin_axes}};
+        // bypass broadcasting index logic if array_t is simply scalar type
+        if constexpr (std::is_arithmetic_v<array_t>) {
+            using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t>;
+            return view_t{{array, shape, None}};
+        }
+        else {
+            auto ashape = ::nmtools::shape(array);
+            auto [success, shape_, free] = index::broadcast_to(ashape,shape);
+            assert (success
+                // , "cannot broadcast shape"
+            );
+            auto not_free    = index::logical_not(free);
+            auto origin_axes = index::nonzero(not_free);
+            using origin_axes_t = decltype(origin_axes);
+            // NOTE:
+            // the array view itself cannot be called with constexpr directly (because it use reference)
+            // but can be evaluated in constexpr
+            // see also https://en.cppreference.com/w/cpp/language/constant_expression
+            // Seems like constexpr variable can't hold reference.
+            // clang complains with:
+            //      note: reference to 'x' is not a constant expression
+            // where 'x' is array
+            // but this function itself (and the broadcast_to_t constructor) are still marked as constexpr
+            // to let the view evaluated in constexpr context.
+            return decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>{{array,shape,origin_axes}};
+        }
     } // broadcast_to
 
 } // namespace nmtools::view
@@ -106,7 +132,15 @@ namespace nmtools::meta
 {
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct is_ndarray< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
-        : is_ndarray<array_t> {};
+    {
+        static constexpr auto value = (is_ndarray_v<array_t> || is_scalar_v<array_t>) && is_index_array_v<shape_t>;
+    };
+
+    template <typename array_t, typename shape_t, typename origin_axes_t>
+    struct is_scalar< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
+    {
+        static constexpr auto value = is_scalar_v<array_t> && is_none_v<shape_t>;
+    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_BROADCAST_TO_HPP
