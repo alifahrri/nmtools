@@ -32,6 +32,7 @@
 #include <cmath>
 #include <tuple>
 #include <array>
+#include <variant>
 
 namespace nmtools::utils
 {
@@ -50,9 +51,21 @@ namespace nmtools::utils
 
         std::string str;
 
-        if constexpr (std::is_arithmetic_v<T>) {
+        if constexpr (is_none_v<T>)
+            str += "None";
+        else if constexpr (meta::is_either_v<T>) {
+            using lhs_t = meta::get_either_left_t<T>;
+            using rhs_t = meta::get_either_right_t<T>;
+            if (auto ptr = std::get_if<lhs_t>(&array))
+                str += to_string(*ptr);
+            else if (auto ptr = std::get_if<rhs_t>(&array))
+                str += to_string(*ptr);
+        }
+        else if constexpr (meta::is_scalar_v<T>) {
             using std::to_string;
-            str += to_string(array);
+            // allow view type
+            using type_t = meta::get_element_type_t<T>;
+            str += to_string(static_cast<type_t>(array));
         }
         else if constexpr (meta::is_integral_constant_v<T>) {
             using std::to_string;

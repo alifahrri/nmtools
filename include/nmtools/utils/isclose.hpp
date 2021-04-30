@@ -90,17 +90,102 @@ namespace nmtools::utils
         constexpr auto isclose(const T& t, const U& u, E eps=static_cast<E>(1e-6))
         {
             using ::nmtools::ndindex;
+            // treat T & U as value
+            constexpr auto t1 = meta::as_value<T>{};
+            constexpr auto t2 = meta::as_value<U>{};
+
+            // check if T1 and T2 is both scalar or both ndarray
+            constexpr auto constrained = [](auto T1, auto T2){
+                // expect T1 and T2 is as_value
+                using t1 = meta::type_t<decltype(T1)>;
+                using t2 = meta::type_t<decltype(T2)>;
+                // allow scalar, ndarray, or None
+                return (meta::is_scalar_v<t1>  && meta::is_scalar_v<t2>)
+                    || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>)
+                    || (is_none_v<t1> && is_none_v<t2>);
+            };
+            // given either type, check if the type is constrained
+            constexpr auto constrained_either = [constrained](auto T1, auto T2){
+                using t1 = meta::type_t<decltype(T1)>;
+                using t2 = meta::type_t<decltype(T2)>;
+                auto t1_lhs = meta::as_value<meta::get_either_left_t<t1>>{};
+                auto t2_lhs = meta::as_value<meta::get_either_left_t<t2>>{};
+                auto t1_rhs = meta::as_value<meta::get_either_right_t<t1>>{};
+                auto t2_rhs = meta::as_value<meta::get_either_right_t<t2>>{};
+                if constexpr (meta::is_either_v<t1> && meta::is_either_v<t2>)
+                    return (constrained(t1_lhs,t2_lhs) || constrained(t1_rhs,t2_rhs));
+                else if constexpr (meta::is_either_v<t1>)
+                    return constrained(t1_lhs,T2) || constrained(t1_rhs,T2);
+                else if constexpr (meta::is_either_v<t2>)
+                    return constrained(T1,t2_lhs) || constrained(T1,t2_rhs);
+                else return false;
+            };
+            // actually constraint
             static_assert(
-                (meta::is_scalar_v<T>  && meta::is_scalar_v<U>) ||
-                (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>)
-                , "unsupported isclose; only support arithmetic element type or ndarray"
+                constrained(t1,t2) || constrained_either(t1,t2)
+                , "unsupported isclose; only support scalar type or ndarray"
             );
             auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
                 return fabs(lhs-rhs) < eps;
             };
-            if constexpr (meta::is_scalar_v<T>) {
-                using common_t = std::common_type_t<T,U,E>;
-                return fabs(static_cast<common_t>(t)-static_cast<common_t>(u))
+
+            using std::get_if;
+
+            if constexpr (is_none_v<T> && is_none_v<U>)
+                return true;
+            // for either type only match for both lhs or rhs for corresponding type,
+            // doesn't support matching lhs with rhs
+            else if constexpr (meta::is_either_v<T> && meta::is_either_v<U>) {
+                // get the left and right types for corresponding either type
+                using tlhs_t = meta::get_either_left_t<T>;
+                using trhs_t = meta::get_either_right_t<T>;
+                using ulhs_t = meta::get_either_left_t<U>;
+                using urhs_t = meta::get_either_right_t<U>;
+                using std::tuple;
+                auto close = false;
+                // under the hood, recursively call isclose to properly handle view type
+                if (auto [tptr, uptr] = tuple{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
+                    close = isclose(*tptr,*uptr,eps);
+                else if (auto [tptr, uptr] = tuple{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
+                    close = isclose(*tptr,*uptr,eps);
+                return close;
+            }
+            // only T is is either type
+            // select left or right that has same concept with U
+            else if constexpr (meta::is_either_v<T>) {
+                using lhs_t = meta::get_either_left_t<T>;
+                using rhs_t = meta::get_either_right_t<T>;
+                auto lhs = meta::as_value<lhs_t>{};
+                auto rhs = meta::as_value<rhs_t>{};
+                auto tsame = detail::select_same(lhs, rhs, t2);
+                using same_t = meta::type_t<decltype(tsame)>;
+
+                auto close = false;
+                if (auto ptr = get_if<same_t>(&t); ptr)
+                    close = isclose(*ptr,u);
+                return close;
+            }
+            // only U is either type
+            // select left or right that has same concept with T
+            else if constexpr (meta::is_either_v<U>) {
+                using lhs_t = meta::get_either_left_t<U>;
+                using rhs_t = meta::get_either_right_t<U>;
+                auto lhs = meta::as_value<lhs_t>{};
+                auto rhs = meta::as_value<rhs_t>{};
+                auto tsame = detail::select_same(lhs, rhs, t1);
+                using same_t = meta::type_t<decltype(tsame)>;
+
+                auto close = false;
+                if (auto ptr = get_if<same_t>(&u); ptr)
+                    close = isequal(t,*ptr);
+                return close;
+            }
+            else if constexpr (meta::is_scalar_v<T>) {
+                // use get_element_type to allow view
+                using t_type = meta::get_element_type_t<T>;
+                using u_type = meta::get_element_type_t<U>;
+                using common_t = std::common_type_t<t_type,u_type,E>;
+                return fabs(static_cast<t_type>(t)-static_cast<u_type>(u))
                     < static_cast<common_t>(eps);
             }
             else {
