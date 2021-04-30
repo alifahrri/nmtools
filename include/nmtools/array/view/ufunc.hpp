@@ -16,6 +16,7 @@
 #include "nmtools/array/dtypes.hpp"
 
 #include <tuple>
+#include <variant>
 
 // clang doesn't support constexpr math while gcc does
 #if defined(__GNUC__) && !defined(__clang__) && !defined(NMTOOLS_UFUNC_CONSTEXPR)
@@ -78,22 +79,22 @@ namespace nmtools::view
          * @tparam args_t 
          */
         template <typename always_void, typename op_t, typename...args_t>
-        struct get_result_type
+        struct get_ufunc_result_type
         {
             using type = decltype(std::declval<op_t>()(std::declval<args_t>()...));
-        }; // get_result_type
+        }; // get_ufunc_result_type
 
         template <typename op_t, typename...args_t>
-        struct get_result_type<
+        struct get_ufunc_result_type<
             std::void_t<typename op_t::result_type>,
             op_t, args_t...
         >
         {
             using type = typename op_t::result_type;
-        }; // get_result_type
+        }; // get_ufunc_result_type
 
         template <typename op_t, typename...args_t>
-        using get_result_type_t = typename get_result_type<void,op_t,args_t...>::type;
+        using get_ufunc_result_type_t = typename get_ufunc_result_type<void,op_t,args_t...>::type;
 
         /**
          * @brief Helper metafunction to deduce the type of reduce operations.
@@ -130,6 +131,28 @@ namespace nmtools::view
             using type = T;
         }; // type_wrapper
         
+        /**
+         * @brief Get the result type of given op_type
+         *
+         * Prefer op_type::result_type when available, use element_t otherwise.
+         * 
+         * @tparam element_t 
+         * @tparam op_type 
+         */
+        template <typename element_t, typename op_type>
+        struct get_result_type
+        {
+            // for op type with explicit result_type member type, prefer that type
+            // other wise use referenced array's element type
+            static constexpr auto vtype = [](){
+                if constexpr (detail::has_result_type_v<op_type>) {
+                    using result_t = typename op_type::result_type;
+                    return meta::as_value<result_t>{};
+                }
+                else return meta::as_value<element_t>{};
+            }();
+            using type = meta::type_t<meta::remove_cvref_t<decltype(vtype)>>;
+        };
     } // namespace detail
 
     /**
@@ -146,7 +169,7 @@ namespace nmtools::view
         using operands_type = detail::get_operands_type_t<arrays_t...>;
         using array_type = operands_type;
         using op_type = op_t;
-        using result_type = detail::get_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
+        using result_type = detail::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
 
         op_type op;
         operands_type operands;
@@ -271,19 +294,7 @@ namespace nmtools::view
         using element_type  = meta::get_element_type_t<array_t>;
         using keepdims_type = keepdims_t;
 
-        template <typename element_t>
-        struct get_result_type
-        {
-            static constexpr auto vtype = [](){
-                if constexpr (detail::has_result_type_v<op_type>) {
-                    using result_t = typename op_type::result_type;
-                    return detail::type_wrapper<result_t>{};
-                }
-                else return detail::type_wrapper<element_t>{};
-            }();
-            using type = meta::type_t<meta::remove_cvref_t<decltype(vtype)>>;
-        };
-        using result_type = meta::type_t<get_result_type<element_type>>;
+        using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
         array_type array;
         axis_type axis;
@@ -308,6 +319,9 @@ namespace nmtools::view
 
         /**
          * @brief compute element at given indices, effectively perform reduction.
+         * 
+         * Computing such element only available if not reducing the whole array
+         * (axis_t is not None).
          * 
          * @tparam size_types 
          * @param indices 
@@ -381,6 +395,101 @@ namespace nmtools::view
     }; // reduce_t
 
     /**
+     * @brief Specialization of reduce_t for None axis.
+     *
+     * Following numpy, when axis is None, perform reduction on flattened array.
+     * 
+     * @tparam op_t 
+     * @tparam array_t 
+     * @tparam initial_t 
+     * @tparam keepdims_t 
+     */
+    template <typename op_t, typename array_t, typename initial_t, typename keepdims_t>
+    struct reduce_t<op_t,array_t,none_t,initial_t,keepdims_t>
+    {
+        // if given array is a view, just use value instead of reference
+        using operands_type = std::conditional_t<is_view_v<array_t>,array_t,const array_t&>;
+        using array_type    = operands_type;
+        // use reference for now since raw array decays to pointer
+        using axis_type     = const none_t&;
+        using op_type       = op_t;
+        using initial_type  = initial_t;
+        using reducer_type  = reducer_t<op_t>;
+        using element_type  = meta::get_element_type_t<array_t>;
+        using keepdims_type = keepdims_t;
+
+        using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
+
+        array_type array;
+        axis_type axis;
+        op_type op;
+        initial_type initial;
+        reducer_type reducer;
+        keepdims_type keepdims;
+
+        constexpr reduce_t(op_type op, array_type array, axis_type axis, initial_type initial, keepdims_type keepdims)
+            : op(op), array(array), axis(axis), initial(initial), reducer{op}, keepdims(keepdims) {}
+        
+        constexpr auto shape() const
+        {
+            // just get the original shape and then fill with one
+            auto f_shape = [&](){
+                auto shape_ = nmtools::shape(array);
+                for (size_t i=0; i<len(shape_); i++)
+                    at(shape_,i) = 1;
+                return shape_;
+            };
+            if constexpr (meta::is_integral_constant_v<keepdims_t>) {
+                if constexpr (static_cast<bool>(keepdims_t::value))
+                    return f_shape();
+                else return None;
+            }
+            // use variant since it can be none or the shape
+            // else if constexpr (meta::is_boolean_v<keepdims_t>) {
+            //     using shape_t  = decltype(nmtools::shape(array));
+            //     // use none_t as first alternative, since it is must be defautl construtctibel
+            //     using return_t = std::variant<none_t,shape_t>;
+            //     return (keepdims ? return_t{f_shape()} : return_t{None});
+            // }
+            else // if (is_none_v<keepdims_t>)
+                return None;
+        } // shape
+
+        constexpr auto dim() const
+        {
+            if constexpr (meta::is_integral_constant_v<keepdims_t>) {
+                if constexpr (!static_cast<bool>(keepdims_t::value))
+                    return 0;
+                else return nmtools::dim(array);
+            }
+            else return 0;
+        } // dim
+
+        operator result_type() const
+        {
+            // reduce the whole array
+            auto flattened = flatten(array);
+            return [&](){
+                if constexpr (is_none_v<initial_type>)
+                    return reducer.template operator()<result_type>(flattened);
+                else return reducer.template operator()<result_type>(flattened,initial);
+            }(); 
+        } // operator result_type()
+
+        template <typename...size_types>
+        constexpr auto operator()(size_types...indices) const
+        {
+            // reduce the whole array
+            auto flattened = flatten(array);
+            return [&](){
+                if constexpr (is_none_v<initial_type>)
+                    return reducer.template operator()<result_type>(flattened);
+                else return reducer.template operator()<result_type>(flattened,initial);
+            }(); 
+        } // operator()
+    }; // reduce_t
+
+    /**
      * @brief Type constructor for accumulate ufuncs.
      *
      * Accumulate the result on given axis.
@@ -400,19 +509,7 @@ namespace nmtools::view
         using reducer_type  = reducer_t<op_t>;
         using element_type  = meta::get_element_type_t<array_t>;
 
-        template <typename element_t>
-        struct get_result_type
-        {
-            static constexpr auto vtype = [](){
-                if constexpr (detail::has_result_type_v<op_type>) {
-                    using result_t = typename op_type::result_type;
-                    return detail::type_wrapper<result_t>{};
-                }
-                else return detail::type_wrapper<element_t>{};
-            }();
-            using type = meta::type_t<meta::remove_cvref_t<decltype(vtype)>>;
-        };
-        using result_type = meta::type_t<get_result_type<element_type>>;
+        using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
         array_type array;
         axis_type axis;
@@ -490,7 +587,7 @@ namespace nmtools::view
         using op_type = op_t;
         using lhs_element_type = meta::get_element_type_t<lhs_t>;
         using rhs_element_type = meta::get_element_type_t<rhs_t>;
-        using result_type = detail::get_result_type_t<op_t,lhs_element_type,rhs_element_type>;
+        using result_type = detail::get_ufunc_result_type_t<op_t,lhs_element_type,rhs_element_type>;
 
         op_type op;
         operands_type operands;
@@ -594,8 +691,23 @@ namespace nmtools::view
     constexpr auto reduce(op_t op, const array_t& array, const axis_t& axis, initial_t initial, keepdims_t keepdims=keepdims_t{})
     {
         // note: axis as reference to prevent array decays
-        using view_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
-        return view_t{{op,array,axis,initial,keepdims}};
+
+        // when axis is None can return scalar or ndarray depends on keepdims type
+        // use variant to tell that the return value may be scalar or ndarray,
+        // depending on the value of keepdims at runtime
+        if constexpr (is_none_v<axis_t> && meta::is_boolean_v<keepdims_t>) {
+            using scalar_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,std::false_type>;
+            using ndarray_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,std::true_type>;
+            using either_t = std::variant<scalar_t,ndarray_t>;
+            return (keepdims ?
+                    either_t{ndarray_t{{op,array,axis,initial,True}}}
+                : either_t{scalar_t{{op,array,axis,initial,False}}});
+        }
+        // otherwise simply use as it is
+        else {
+            using view_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            return view_t{{op,array,axis,initial,keepdims}};
+        }
     } // reduce
 
     /**
@@ -717,7 +829,29 @@ namespace nmtools::meta
         view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
     >
     {
-        static constexpr auto value = is_ndarray_v<array_t>;
+        static constexpr auto value_ = [](){
+            if constexpr (is_none_v<axis_t> && is_none_v<keepdims_t>)
+                return false;
+            else if constexpr (is_none_v<axis_t> && is_integral_constant_v<keepdims_t>)
+                return static_cast<bool>(keepdims_t::value);
+            else return true;
+        }();
+        static constexpr auto value = is_ndarray_v<array_t> && value_;
+    };
+
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    struct is_scalar< 
+        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
+    >
+    {
+        static constexpr auto value_ = [](){
+            if constexpr (is_none_v<keepdims_t>)
+                return true;
+            else if constexpr (is_integral_constant_v<keepdims_t>)
+                return !static_cast<bool>(keepdims_t::value);
+            else return false;
+        }();
+        static constexpr auto value = is_ndarray_v<array_t> && is_none_v<axis_t> && value_;
     };
 
     // provide specialization for reducer
