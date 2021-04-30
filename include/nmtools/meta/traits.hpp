@@ -13,6 +13,7 @@
 #include <complex> // @todo remove
 #include <tuple>
 #include <utility>
+#include <variant>
 
 #include "nmtools/meta/common.hpp"
 
@@ -1470,6 +1471,86 @@ namespace nmtools::meta {
 
     template <typename T>
     constexpr inline auto is_integer_v = is_integer<T>::value;
+
+    /**
+     * @brief Check if type T is either type (variant with exactly 2 type).
+     * 
+     * The name is from haskell's Either type with Left and Right.
+     *
+     * @tparam T type to check
+     * @tparam typename sfinae point
+     */
+    template <typename T, typename=void>
+    struct is_either : std::false_type{};
+
+    template <typename left_t, typename right_t>
+    struct is_either<std::variant<left_t,right_t>> : std::true_type {};
+
+    template <typename T>
+    constexpr inline auto is_either_v = is_either<T>::value;
+
+    /**
+     * @brief Get the Left type of Either
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct get_either_left
+    {
+        using type = void;
+    };
+
+    /**
+     * @brief Get the Right type of Either
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct get_either_right
+    {
+        using type = void;
+    };
+
+    template <typename left_t, typename right_t>
+    struct get_either_left<std::variant<left_t,right_t>>
+    {
+        using type = left_t;
+    };
+
+    template <typename left_t, typename right_t>
+    struct get_either_right<std::variant<left_t,right_t>>
+    {
+        using type = right_t;
+    };
+
+    template <typename T>
+    using get_either_left_t = typename get_either_left<T>::type;
+
+    template <typename T>
+    using get_either_right_t = typename get_either_right<T>::type;
+
+    /**
+     * @brief Replace existing Left and Right from given either type
+     * with new Left and Right.
+     * 
+     * @tparam either_t 
+     * @tparam Left 
+     * @tparam Right 
+     */
+    template <typename either_t, typename Left, typename Right>
+    struct replace_either
+    {
+        using type = either_t;
+    };
+
+    template <typename left_t, typename right_t, typename Left, typename Right>
+    struct replace_either<std::variant<left_t,right_t>,Left,Right>
+    {
+        using type = std::variant<Left,Right>;
+    };
+
+    template <typename either_t, typename Left, typename Right>
+    using replace_either_t = typename replace_either<either_t,Left,Right>::type;
 
     /** @} */ // end group traits
 
