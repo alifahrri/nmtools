@@ -15,6 +15,19 @@
 #include <tuple>
 #include <type_traits>
 
+#if defined(__clang__)
+#define NMTOOLS_IGNORE_WRETURN_TYPE_PUSH() \
+        _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wreturn-type\"")
+#define NMTOOLS_IGNORE_WRETURN_TYPE_POP() _Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
+#define NMTOOLS_IGNORE_WRETURN_TYPE_PUSH() \
+        _Pragma("clang diagnostic push") _Pragma("GCC diagnostic ignored \"-Wreturn-type\"")
+#define NMTOOLS_IGNORE_WRETURN_TYPE_POP() _Pragma("GCC diagnostic pop")
+#else
+#define NMTOOLS_IGNORE_WRETURN_TYPE_PUSH()
+#define NMTOOLS_IGNORE_WRETURN_TYPE_POP()
+#endif
+
 namespace nmtools
 {
     /** @addtogroup utility
@@ -159,14 +172,43 @@ namespace nmtools
     template <typename array_t>
     constexpr auto shape(const array_t& array)
     {
-        static_assert (meta::is_fixed_size_ndarray_v<array_t> || meta::has_shape_v<array_t>
-            || (meta::nested_array_dim_v<array_t> > 0)
-            || (meta::is_array1d_v<array_t> && meta::has_size_v<array_t>)
-            || (meta::is_scalar_v<array_t>)
+        // allow scalar and ndarray
+        constexpr auto constrained = [](auto a){
+            using type = meta::type_t<meta::remove_cvref_t<decltype(a)>>;
+            return meta::is_fixed_size_ndarray_v<type> || meta::has_shape_v<type>
+                || (meta::nested_array_dim_v<type> > 0)
+                || (meta::is_array1d_v<type> && meta::has_size_v<type>)
+                || (meta::is_scalar_v<type>);
+        };
+        // for either type, both Left and Right must satisfy constraint (scalar or ndarray)
+        constexpr auto constrained_either = [constrained](auto a){
+            using type = meta::type_t<meta::remove_cvref_t<decltype(a)>>;
+            auto lhs = meta::as_value<meta::get_either_left_t<type>>{};
+            auto rhs = meta::as_value<meta::get_either_right_t<type>>{};
+            if constexpr (meta::is_either_v<type>)
+                return constrained(lhs) && constrained(rhs);
+            else return false;
+        };
+        constexpr auto t_array = meta::as_value<array_t>{};
+        static_assert (
+            constrained(t_array) || constrained_either(t_array)
             , "unsupported shape; only support fixed-shape array or array has .shape() or scalar type"
         );
+        if constexpr (meta::is_either_v<array_t>) {
+            NMTOOLS_IGNORE_WRETURN_TYPE_PUSH()
+            using left_t  = meta::get_either_left_t<array_t>;
+            using right_t = meta::get_either_right_t<array_t>;
+            using left_shape_t  = decltype(shape(std::declval<left_t>()));
+            using right_shape_t = decltype(shape(std::declval<right_t>()));
+            using shape_t = meta::replace_either_t<array_t,left_shape_t,right_shape_t>;
+            if (auto ptr = std::get_if<left_t>(&array))
+                return shape_t{shape(*ptr)};
+            else if (auto ptr = std::get_if<right_t>(&array))
+                return shape_t{shape(*ptr)};
+            NMTOOLS_IGNORE_WRETURN_TYPE_POP()
+        }
         // for scalar type, simply return None
-        if constexpr (meta::is_scalar_v<array_t>)
+        else if constexpr (meta::is_scalar_v<array_t>)
             return None;
         // check for fixed-shape array, should capture all kind of fixed-size array
         else if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
