@@ -994,6 +994,40 @@ TEST_CASE("isequal(fixed_ndarray[4],fixed_ndarray[4])" * doctest::test_suite("ut
     }
 }
 
+TEST_CASE("isequal(variant)" * doctest::test_suite("isequal"))
+{
+    {
+        using lhs_t = std::variant<nmtools::none_t,int>;
+        using rhs_t = std::variant<nmtools::none_t,int>;
+        CHECK(  isequal(lhs_t{nmtools::None},rhs_t{nmtools::None}) );
+        CHECK( !isequal(lhs_t{nmtools::None},rhs_t{1}) );
+        CHECK( !isequal(lhs_t{1},rhs_t{nmtools::None}) );
+        CHECK(  isequal(lhs_t{1},rhs_t{1}) );
+    }
+    {
+        using lhs_t = std::variant<nmtools::none_t,std::array<long int,3>>;
+        using rhs_t = std::variant<nmtools::none_t,std::vector<long int>>;
+        CHECK((  isequal(lhs_t{nmtools::None},rhs_t{nmtools::None}) ));
+        CHECK(( !isequal(lhs_t{nmtools::None},rhs_t{std::vector{1l,2l,3l}}) ));
+        CHECK(( !isequal(lhs_t{std::array{1l,2l,3l}},rhs_t{nmtools::None}) ));
+        CHECK((  isequal(lhs_t{std::array{1l,2l,3l}},rhs_t{std::vector{1l,2l,3l}}) ));
+    }
+    {
+        using lhs_t = std::variant<nmtools::none_t,std::array<long int,3>>;
+        using rhs_t = std::vector<long int>;
+        auto rhs = rhs_t{1l,2l,3l};
+        CHECK(( !isequal(lhs_t{nmtools::None},rhs) ));
+        CHECK((  isequal(lhs_t{std::array{1l,2l,3l}},rhs) ));
+    }
+    {
+        using lhs_t = std::vector<long int>;
+        using rhs_t = std::variant<nmtools::none_t,std::array<long int,3>>;
+        auto lhs = lhs_t{1l,2l,3l};
+        CHECK(( !isequal(lhs,rhs_t{nmtools::None}) ));
+        CHECK((  isequal(lhs,rhs_t{std::array{1l,2l,3l}}) ));
+    }
+}
+
 // should NOT COMPILE static assertion failed: unsupported isequal, mismatched size for packed type
 // TEST_CASE("isequal(array[2],array[2])" * doctest::test_suite("utils"))
 // {

@@ -73,6 +73,27 @@ namespace nmtools::utils
         //     return t == u;
         // } // isequal
 #endif // NMTOOLS_HAS_VECTOR
+
+        // given T1 and T2 from either type, select T1 or T2
+        // which has same concept as U
+        template <typename t1, typename t2, typename u_t>
+        constexpr auto select_same(meta::as_value<t1> T1, meta::as_value<t2> T2, meta::as_value<u_t> u)
+        {
+            if constexpr (is_none_v<u_t> && is_none_v<t1>)
+                return T1;
+            else if constexpr (is_none_v<u_t> && is_none_v<t2>)
+                return T2;
+            else if constexpr (meta::is_scalar_v<u_t> && meta::is_scalar_v<t1>)
+                return T1;
+            else if constexpr (meta::is_scalar_v<u_t> && meta::is_scalar_v<t2>)
+                return T2;
+            else if constexpr (meta::is_ndarray_v<u_t> && meta::is_ndarray_v<t1>)
+                return T1;
+            else if constexpr (meta::is_ndarray_v<u_t> && meta::is_ndarray_v<t2>)
+                return T2;
+            else return meta::as_value<void>{};
+        }
+
         /**
          * @brief check if all elements of t is is equals to corresponding elements of u, element-wise.
          * 
@@ -89,33 +110,114 @@ namespace nmtools::utils
         {
             using tval_t = meta::get_element_type_t<T>;
             using uval_t = meta::get_element_type_t<U>;
-            // @note add is_bit_reference here since std::vector<bool> access return std::_Bit_reference
-            // and specializing is_integral is undefined behaviour
+            // treat T & U as value
+            constexpr auto t1 = meta::as_value<T>{};
+            constexpr auto t2 = meta::as_value<U>{};
+
+            // check if T1 and T2 is both scalar or both ndarray
+            constexpr auto constrained = [](auto T1, auto T2){
+                // expect T1 and T2 is as_value
+                using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
+                using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
+                using t1_t = meta::get_element_type_t<t1>;
+                using t2_t = meta::get_element_type_t<t2>;
+
+                // allow none, integer, or ndarray
+                // for ndarray, the element type must be integral
+                auto is_none = is_none_v<t1> && is_none_v<t1>;
+                auto is_integer = (meta::is_integer_v<t1> || meta::is_integral_constant_v<t1>)
+                    && (meta::is_integer_v<t2> || meta::is_integral_constant_v<t2>);
+                auto is_scalar_or_array =  (meta::is_scalar_v<t1> && meta::is_scalar_v<t2>)
+                    || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>);
+                auto element_is_integer = meta::is_integer_v<t1_t> && meta::is_integer_v<t2_t>;
+                return (is_scalar_or_array && element_is_integer) || is_integer || is_none;
+            };
+
+            // given either type, check if the type is constrained
+            constexpr auto constrained_either = [constrained](auto T1, auto T2){
+                using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
+                using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
+                auto t1_lhs = meta::as_value<meta::get_either_left_t<t1>>{};
+                auto t2_lhs = meta::as_value<meta::get_either_left_t<t2>>{};
+                auto t1_rhs = meta::as_value<meta::get_either_right_t<t1>>{};
+                auto t2_rhs = meta::as_value<meta::get_either_right_t<t2>>{};
+                if constexpr (meta::is_either_v<t1> && meta::is_either_v<t2>)
+                    return constrained(t1_lhs,t2_lhs) || constrained(t1_rhs,t2_rhs);
+                else if constexpr (meta::is_either_v<t1>)
+                    return constrained(t1_lhs,T2) || constrained(t1_rhs,T2);
+                else if constexpr (meta::is_either_v<t2>)
+                    return constrained(T1,t2_lhs) || constrained(T1,t2_rhs);
+                else return false;
+            };
+            // actually constraint
             static_assert(
-                (
-                    meta::compose_logical_or_v<T,meta::is_integer,meta::is_integral_constant>
-                    || meta::compose_logical_or_v<U,meta::is_integer,meta::is_integral_constant>
-                )
-                ||
-                (
-                    meta::is_ndarray_v<T> && meta::is_ndarray_v<U>
-                    && meta::compose_logical_or_v<tval_t,meta::is_integer>
-                    && meta::compose_logical_or_v<uval_t,meta::is_integer>
-                )
-                ||
-                ( is_none_v<T> && is_none_v<U> )
-                , "unsupported isequal; only support integral element type"
+                constrained(t1,t2) || constrained_either(t1,t2)
+                , "unsupported isclose; only support scalar type or ndarray"
             );
-            if constexpr (is_none_v<T>)
+
+            // assume either type is variant
+            using std::get_if;
+
+            if constexpr (is_none_v<T> && is_none_v<U>)
                 return true;
+            // both are either type
+            // match left with left, or right with right, then recursively call isclose
+            else if constexpr (meta::is_either_v<T> && meta::is_either_v<U>) {
+                // get the left and right types for corresponding either type
+                using tlhs_t = meta::get_either_left_t<T>;
+                using trhs_t = meta::get_either_right_t<T>;
+                using ulhs_t = meta::get_either_left_t<U>;
+                using urhs_t = meta::get_either_right_t<U>;
+                using std::tuple;
+                auto same = false;
+                // under the hood, recursively call isclose to properly handle view type
+                if (auto [tptr, uptr] = tuple{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
+                    same = isequal(*tptr,*uptr);
+                else if (auto [tptr, uptr] = tuple{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
+                    same = isequal(*tptr,*uptr);
+                return same;
+            }
+            // only T is is either type
+            // select left or right that has same concept with U
+            else if constexpr (meta::is_either_v<T>) {
+                using lhs_t = meta::get_either_left_t<T>;
+                using rhs_t = meta::get_either_right_t<T>;
+                auto lhs = meta::as_value<lhs_t>{};
+                auto rhs = meta::as_value<rhs_t>{};
+                auto tsame = detail::select_same(lhs, rhs, t2);
+                using same_t = meta::type_t<decltype(tsame)>;
+
+                auto same = false;
+                if (auto ptr = get_if<same_t>(&t); ptr)
+                    same = isequal(*ptr,u);
+                return same;
+            }
+            // only U is either type
+            // select left or right that has same concept with T
+            else if constexpr (meta::is_either_v<U>) {
+                using lhs_t = meta::get_either_left_t<U>;
+                using rhs_t = meta::get_either_right_t<U>;
+                auto lhs = meta::as_value<lhs_t>{};
+                auto rhs = meta::as_value<rhs_t>{};
+                auto tsame = detail::select_same(lhs, rhs, t1);
+                using same_t = meta::type_t<decltype(tsame)>;
+
+                auto same = false;
+                if (auto ptr = get_if<same_t>(&u); ptr)
+                    same = isequal(t,*ptr);
+                return same;
+            }
+            // assume both T and U is integer
             else if constexpr (meta::is_integer_v<T>) {
                 using value_type = T;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
+            // assume both T and U is integral constant
             else if constexpr (meta::is_integral_constant_v<T>) {
                 using value_type = typename T::value_type;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
+            // assume both T and U is ndarray
             else {
                 bool equal = true;
                 // @todo: static assert whenever possible

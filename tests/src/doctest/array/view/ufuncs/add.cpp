@@ -91,7 +91,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case_name); \
     using namespace args; \
     auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -222,6 +222,60 @@ TEST_CASE("reduce_add(case14)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case14, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_h, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_add(case15)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case15,   a, axis );
+    REDUCE_ADD_SUBCASE( case15, a_a, axis );
+    REDUCE_ADD_SUBCASE( case15, a_v, axis );
+    REDUCE_ADD_SUBCASE( case15, a_f, axis );
+    REDUCE_ADD_SUBCASE( case15, a_h, axis );
+}
+
+TEST_CASE("reduce_add(case16)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case16,   a, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case16, a_a, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case16, a_v, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case16, a_f, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case16, a_h, axis, nmtools::None, initial );
+}
+
+TEST_CASE("reduce_add(case17)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case17,   a, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case17, a_a, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case17, a_v, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case17, a_f, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case17, a_h, axis, nmtools::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_add(case18)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case18,   a, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case18, a_a, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case18, a_v, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case18, a_f, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case18, a_h, axis, nmtools::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_add(case19)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case19,   a, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case19, a_a, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case19, a_v, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case19, a_f, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case19, a_h, axis, nmtools::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_add(case20)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case20,   a, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case20, a_a, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case20, a_v, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case20, a_f, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case20, a_h, axis, nmtools::None, initial, keepdims );
 }
 
 #define RUN_accumulate_add_impl(...) \

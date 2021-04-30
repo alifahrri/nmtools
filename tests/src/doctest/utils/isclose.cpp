@@ -2,17 +2,14 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/utils/isclose.hpp"
 #if __has_include("doctest/doctest.h")
-    #if __has_include("doctest/doctest.h")
     #include "doctest/doctest.h"
 #else
    #include "doctest.h"
 #endif
-#else
-    #include "doctest.h"
-#endif
 #include <array>
 #include <tuple>
 #include <vector>
+#include <variant>
 
 using std::vector;
 using std::array;
@@ -693,6 +690,33 @@ TEST_CASE("isclose(int[][][][],int[][][][])" * doctest::test_suite("utils"))
             },
         };
         CHECK( !isclose(lhs,rhs) );
+    }
+}
+
+TEST_CASE("isclose(variant)" * doctest::test_suite("isclose"))
+{
+    {
+        using lhs_t = std::variant<nmtools::none_t,int>;
+        using rhs_t = std::variant<nmtools::none_t,int>;
+        CHECK(  isclose(lhs_t{nmtools::None},rhs_t{nmtools::None}) );
+        CHECK( !isclose(lhs_t{nmtools::None},rhs_t{1}) );
+        CHECK( !isclose(lhs_t{1},rhs_t{nmtools::None}) );
+        CHECK(  isclose(lhs_t{1},rhs_t{1}) );
+    }
+    {
+        using lhs_t = std::variant<nmtools::none_t,std::array<float,3>>;
+        using rhs_t = std::variant<nmtools::none_t,std::vector<float>>;
+        CHECK((  isclose(lhs_t{nmtools::None},rhs_t{nmtools::None}) ));
+        CHECK(( !isclose(lhs_t{nmtools::None},rhs_t{std::vector{1.f,2.f,3.f}}) ));
+        CHECK(( !isclose(lhs_t{std::array{1.f,2.f,3.f}},rhs_t{nmtools::None}) ));
+        CHECK((  isclose(lhs_t{std::array{1.f,2.f,3.f}},rhs_t{std::vector{1.f,2.f,3.f}}) ));
+    }
+    {
+        using lhs_t = std::variant<nmtools::none_t,std::array<float,3>>;
+        using rhs_t = std::vector<float>;
+        auto rhs = rhs_t{1.f, 2.f, 3.f};
+        CHECK(( !isclose(lhs_t{nmtools::None},rhs) ));
+        CHECK((  isclose(lhs_t{std::array{1.f,2.f,3.f}},rhs) ));
     }
 }
 

@@ -437,6 +437,26 @@ TEST_CASE("to_string(fixed_ndarray[4])" * doctest::test_suite("utils") * doctest
     }
 }
 
+TEST_CASE("to_string(variant)" * doctest::test_suite("utils") * doctest::skip(true))
+{
+    {
+        using arg_t = std::variant<nmtools::none_t,std::array<size_t,3>>;
+        auto arg = arg_t{nmtools::None};
+        auto str = to_string(arg);
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
+        CHECK( str.size() );
+    }
+    {
+        using arg_t = std::variant<nmtools::none_t,std::array<size_t,3>>;
+        auto arg = arg_t{std::array<size_t,3>{1ul,2ul,3ul}};
+        auto str = to_string(arg);
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
+        CHECK( str.size() );
+    }
+}
+
 // @note not yet supported
 // TEST_CASE("to_string(dynamic_ndarray[4])" * doctest::test_suite("utils") * doctest::skip(true))
 // {

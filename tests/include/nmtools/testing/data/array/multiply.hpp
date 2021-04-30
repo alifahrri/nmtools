@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <array>
+#include <variant>
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -402,6 +403,129 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
     {
         inline int shape[3] = {1,3,1};
         inline int result[1][3][1] = { {{0}, {432}, {2200}} };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case14)
+    {
+        inline int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        inline auto axis = None;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case14)
+    {
+        inline auto shape = None;
+        inline int result = 0;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case15)
+    {
+        inline int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        inline auto axis = None;
+        inline auto initial = 10;
+        inline auto keepdims = False;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case15)
+    {
+        inline auto shape = None;
+        inline int result = 0;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case16)
+    {
+        inline int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        inline auto axis = None;
+        inline auto initial = 10;
+        inline auto keepdims = True;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case16)
+    {
+        inline int shape[3] = {1,1,1};
+        inline int result[1][1][1] = {{{0}}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case17)
+    {
+        inline int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        inline auto axis = None;
+        inline auto initial = 10;
+        inline auto keepdims = false;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case17)
+    {
+        inline auto shape = None;
+        inline int result = 0;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case18)
+    {
+        inline int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        inline auto axis = None;
+        inline auto initial = 10;
+        inline auto keepdims = true;
+        CAST_ARRAYS(a)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case18)
+    {
+        inline int shape[3] = {1,1,1};
+        inline int result[1][1][1] = {{{0}}};
     }
 }
 

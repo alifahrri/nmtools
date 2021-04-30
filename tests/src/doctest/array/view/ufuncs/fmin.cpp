@@ -91,7 +91,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, reduce_fmin, case_name); \
     using namespace args; \
     auto result = RUN_reduce_fmin(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -213,6 +213,51 @@ TEST_CASE("reduce_fmin(case12)" * doctest::test_suite("view::reduce_fmin"))
     REDUCE_FMIN_SUBCASE( case12, a_v, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmin(case13)" * doctest::test_suite("view::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case13,   a, axis );
+    REDUCE_FMIN_SUBCASE( case13, a_a, axis );
+    REDUCE_FMIN_SUBCASE( case13, a_v, axis );
+    REDUCE_FMIN_SUBCASE( case13, a_f, axis );
+    REDUCE_FMIN_SUBCASE( case13, a_f, axis );
+}
+
+TEST_CASE("reduce_fmin(case14)" * doctest::test_suite("view::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case14,   a, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case14, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case14, a_v, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case14, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case14, a_f, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmin(case15)" * doctest::test_suite("view::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case15,   a, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_v, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_f, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmin(case15)" * doctest::test_suite("view::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case15,   a, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_v, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_f, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmin(case16)" * doctest::test_suite("view::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case16,   a, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case16, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case16, a_v, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case16, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case16, a_f, axis, nm::None, initial, keepdims );
 }
 
 #define RUN_accumulate_fmin_impl(...) \
