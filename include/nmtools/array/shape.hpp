@@ -169,6 +169,7 @@ namespace nmtools
      * @param array
      * @return constexpr auto 
      */
+    NMTOOLS_IGNORE_WRETURN_TYPE_PUSH()
     template <typename array_t>
     constexpr auto shape(const array_t& array)
     {
@@ -195,7 +196,6 @@ namespace nmtools
             , "unsupported shape; only support fixed-shape array or array has .shape() or scalar type"
         );
         if constexpr (meta::is_either_v<array_t>) {
-            NMTOOLS_IGNORE_WRETURN_TYPE_PUSH()
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
             using left_shape_t  = decltype(shape(std::declval<left_t>()));
@@ -205,7 +205,6 @@ namespace nmtools
                 return shape_t{shape(*ptr)};
             else if (auto ptr = std::get_if<right_t>(&array))
                 return shape_t{shape(*ptr)};
-            NMTOOLS_IGNORE_WRETURN_TYPE_POP()
         }
         // for scalar type, simply return None
         else if constexpr (meta::is_scalar_v<array_t>)
@@ -253,6 +252,7 @@ namespace nmtools
             return std::tuple{vector_size(array)};
         else return array.shape();
     } // shape
+    NMTOOLS_IGNORE_WRETURN_TYPE_POP()
 
     /**
      * @brief get the shape of an array, and convert it to given shape-type
