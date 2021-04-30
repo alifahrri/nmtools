@@ -449,7 +449,7 @@ TEST_CASE("to_string(variant)" * doctest::test_suite("utils") * doctest::skip(tr
     }
     {
         using arg_t = std::variant<nmtools::none_t,std::array<size_t,3>>;
-        auto arg = arg_t{std::array{1ul,2ul,3ul}};
+        auto arg = arg_t{std::array<size_t,3>{1ul,2ul,3ul}};
         auto str = to_string(arg);
         auto to_print = std::string("\n") + str;
         MESSAGE( to_print );
