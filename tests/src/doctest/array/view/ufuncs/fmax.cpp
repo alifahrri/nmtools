@@ -91,7 +91,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, reduce_fmax, case_name); \
     using namespace args; \
     auto result = RUN_reduce_fmax(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -222,6 +222,51 @@ TEST_CASE("reduce_fmax(case13)" * doctest::test_suite("view::reduce_fmax"))
     REDUCE_FMAX_SUBCASE( case13, a_v, axis, dtype, initial, keepdims );
     REDUCE_FMAX_SUBCASE( case13, a_f, axis, dtype, initial, keepdims );
     REDUCE_FMAX_SUBCASE( case13, a_f, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmax(case14)" * doctest::test_suite("view::reduce_fmax"))
+{
+    REDUCE_FMAX_SUBCASE( case14,   a, axis );
+    REDUCE_FMAX_SUBCASE( case14, a_a, axis );
+    REDUCE_FMAX_SUBCASE( case14, a_v, axis );
+    REDUCE_FMAX_SUBCASE( case14, a_f, axis );
+    REDUCE_FMAX_SUBCASE( case14, a_f, axis );
+}
+
+TEST_CASE("reduce_fmax(case15)" * doctest::test_suite("view::reduce_fmax"))
+{
+    REDUCE_FMAX_SUBCASE( case15,   a, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case15, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case15, a_v, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case15, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case15, a_f, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmax(case16)" * doctest::test_suite("view::reduce_fmax"))
+{
+    REDUCE_FMAX_SUBCASE( case16,   a, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case16, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case16, a_v, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case16, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case16, a_f, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmax(case17)" * doctest::test_suite("view::reduce_fmax"))
+{
+    REDUCE_FMAX_SUBCASE( case17,   a, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case17, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case17, a_v, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case17, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case17, a_f, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmax(case18)" * doctest::test_suite("view::reduce_fmax"))
+{
+    REDUCE_FMAX_SUBCASE( case18,   a, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case18, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case18, a_v, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case18, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_FMAX_SUBCASE( case18, a_f, axis, nm::None, initial, keepdims );
 }
 
 #define RUN_accumulate_fmax_impl(...) \
