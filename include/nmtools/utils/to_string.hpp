@@ -56,10 +56,20 @@ namespace nmtools::utils
         else if constexpr (meta::is_either_v<T>) {
             using lhs_t = meta::get_either_left_t<T>;
             using rhs_t = meta::get_either_right_t<T>;
-            if (auto ptr = std::get_if<lhs_t>(&array))
+            // assume get_if<type>(&array) is available for either type
+            // which is supported by std::variant
+            using std::get_if;
+            if (auto ptr = get_if<lhs_t>(&array))
                 str += to_string(*ptr);
-            else if (auto ptr = std::get_if<rhs_t>(&array))
+            else if (auto ptr = get_if<rhs_t>(&array))
                 str += to_string(*ptr);
+        }
+        else if constexpr (meta::is_maybe_v<T>) {
+            // for maybe type,
+            // assume casting to bool checks if the objects contains a value
+            // which is supported by std::optional
+            if (static_cast<bool>(array))
+                str += to_string(*array);
         }
         else if constexpr (meta::is_scalar_v<T>) {
             using std::to_string;
