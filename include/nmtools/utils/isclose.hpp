@@ -104,6 +104,7 @@ namespace nmtools::utils
                     || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>)
                     || (is_none_v<t1> && is_none_v<t2>);
             };
+
             // given either type, check if the type is constrained
             constexpr auto constrained_either = [constrained](auto T1, auto T2){
                 using t1 = meta::type_t<decltype(T1)>;
@@ -120,9 +121,25 @@ namespace nmtools::utils
                     return constrained(T1,t2_lhs) || constrained(T1,t2_rhs);
                 else return false;
             };
+
+            // given maybe type, check if the type is constrained
+            constexpr auto constrained_maybe = [constrained](auto T1, auto T2){
+                using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
+                using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
+                auto v1  = meta::as_value<meta::get_maybe_type_t<t1>>{};
+                auto v2  = meta::as_value<meta::get_maybe_type_t<t2>>{};
+                if constexpr (meta::is_maybe_v<t1> && meta::is_maybe_v<t2>)
+                    return constrained(v1,v2);
+                else if constexpr (meta::is_maybe_v<t1>)
+                    return constrained(v1,T2);
+                else if constexpr (meta::is_maybe_v<t2>)
+                    return constrained(T1,v2);
+                else return false;
+            };
+
             // actually constraint
             static_assert(
-                constrained(t1,t2) || constrained_either(t1,t2)
+                constrained(t1,t2) || constrained_either(t1,t2) || constrained_maybe(t1,t2)
                 , "unsupported isclose; only support scalar type or ndarray"
             );
             auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
@@ -133,6 +150,30 @@ namespace nmtools::utils
 
             if constexpr (is_none_v<T> && is_none_v<U>)
                 return true;
+            // both type is maybe type, when both is empty, this also return true
+            else if constexpr (meta::is_maybe_v<T> && meta::is_maybe_v<U>) {
+                // for maybe type,
+                // assume casting to bool checks if the objects contains a value
+                // which is supported by std::optional
+                auto hast = static_cast<bool>(t);
+                auto hasu = static_cast<bool>(u);
+                auto same = hast == hasu;
+                if (hast && hasu && same)
+                    same = same && isclose(*t,*u,eps);
+                return same;
+            }
+            // only lhs is maybe
+            // return true if t is not empty and the value is equal to u
+            else if constexpr (meta::is_maybe_v<T>) {
+                auto has_value = static_cast<bool>(t);
+                return (has_value ? isclose(*t,u,eps) : false);
+            }
+            // only rhs is maybe
+            // return true if u is not empty and the value is equal to t
+            else if constexpr (meta::is_maybe_v<U>) {
+                auto has_value = static_cast<bool>(u);
+                return (has_value ? isclose(t,*u,eps) : false);
+            }
             // for either type only match for both lhs or rhs for corresponding type,
             // doesn't support matching lhs with rhs
             else if constexpr (meta::is_either_v<T> && meta::is_either_v<U>) {
