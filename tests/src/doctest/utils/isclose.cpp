@@ -720,6 +720,30 @@ TEST_CASE("isclose(variant)" * doctest::test_suite("isclose"))
     }
 }
 
+TEST_CASE("isclose(optional)" * doctest::test_suite("isclose"))
+{
+    SUBCASE("int")
+    {
+        using lhs_t = std::optional<int>;
+        using rhs_t = std::optional<int>;
+        CHECK(  isclose(lhs_t{std::nullopt},rhs_t{std::nullopt}) );
+        CHECK(  isclose(lhs_t{0},rhs_t{0}) );
+        CHECK( !isclose(lhs_t{std::nullopt},rhs_t{0}) );
+        CHECK( !isclose(lhs_t{0},rhs_t{std::nullopt}) );
+    }
+    SUBCASE("array")
+    {
+        using array_t = std::array<float,3>;
+        using vector_t = std::vector<float>;
+        using lhs_t = std::optional<array_t>;
+        using rhs_t = std::optional<vector_t>;
+        CHECK(  isclose(lhs_t{std::nullopt}, rhs_t{std::nullopt}) );
+        CHECK(  isclose(lhs_t{array_t{1,2,3}}, rhs_t{vector_t{1,2,3}}) );
+        CHECK( !isclose(lhs_t{std::nullopt}, rhs_t{vector_t{1,2,3}}) );
+        CHECK( !isclose(lhs_t{array_t{1,2,3}}, rhs_t{std::nullopt}) );
+    }
+}
+
 // should NOT COMPILE static assertion failed: unsupported isclose, mismatched size for packed type
 // TEST_CASE("isclose(array[2],array[2])" * doctest::test_suite("utils"))
 // {

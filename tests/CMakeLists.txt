@@ -43,17 +43,21 @@ option(TEST_NDARRAY         "test ndarray modules"          OFF)
 option(TEST_ARRAY_VIEW      "test array view modules"       OFF)
 option(TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
 option(TEST_ARRAY_EVAL      "test array evaluation"         OFF)
+option(TEST_EXCEPTION       "test exception error handling" OFF)
+option(TEST_OPTIONAL        "test optional error handling"  OFF)
 option(TEST_MISC            "test other modules"            OFF)
 
 if (TEST_ALL)
-    SET(TEST_ARRAY_DETAIL   ON CACHE BOOL "test array detail modules"   FORCE)
-    SET(TEST_ARRAY_UTILITY  ON CACHE BOOL "test array utility modules"  FORCE)
-    SET(TEST_UTILS          ON CACHE BOOL "test utils modules"          FORCE)
-    SET(TEST_NDARRAY        ON CACHE BOOL "test ndarray modules"        FORCE)
-    SET(TEST_ARRAY_VIEW     ON CACHE BOOL "test array view modules"     FORCE)
-    SET(TEST_ARRAY_UFUNCS   ON CACHE BOOL "test array ufuncs modules"   FORCE)
-    SET(TEST_ARRAY_EVAL     ON CACHE BOOL "test array evaluation"       FORCE)
-    SET(TEST_MISC           ON CACHE BOOL "test other modules"          FORCE)
+    SET(TEST_ARRAY_DETAIL   ON CACHE BOOL "test array detail modules"     FORCE)
+    SET(TEST_ARRAY_UTILITY  ON CACHE BOOL "test array utility modules"    FORCE)
+    SET(TEST_UTILS          ON CACHE BOOL "test utils modules"            FORCE)
+    SET(TEST_NDARRAY        ON CACHE BOOL "test ndarray modules"          FORCE)
+    SET(TEST_ARRAY_VIEW     ON CACHE BOOL "test array view modules"       FORCE)
+    SET(TEST_ARRAY_UFUNCS   ON CACHE BOOL "test array ufuncs modules"     FORCE)
+    SET(TEST_ARRAY_EVAL     ON CACHE BOOL "test array evaluation"         FORCE)
+    SET(TEST_EXCEPTION      ON CACHE BOOL "test exception error handling" FORCE)
+    SET(TEST_OPTIONAL       ON CACHE BOOL "test optional error handling"  FORCE)
+    SET(TEST_MISC           ON CACHE BOOL "test other modules"            FORCE)
 endif (TEST_ALL)
 
 set(ARRAY_DETAIL_TEST_SOURCES
@@ -152,6 +156,24 @@ set(ARRAY_VIEW_TEST_SOURCES
 if (NOT TEST_ARRAY_VIEW)
     set (ARRAY_VIEW_TEST_SOURCES "")
 endif ()
+
+set(EXCEPTION_TEST_SOURCES
+    # exception tests
+    src/doctest/error/array/view/broadcast_arrays_exception.cpp
+    src/doctest/error/array/view/broadcast_to_exception.cpp
+)
+if (NOT TEST_EXCEPTION)
+    set (EXCEPTION_TEST_SOURCES "")
+endif ()
+
+set(OPTIONAL_TEST_SOURCES
+    src/doctest/error/array/view/broadcast_arrays_optional.cpp
+    src/doctest/error/array/view/broadcast_to_optional.cpp
+)
+if (NOT TEST_OPTIONAL)
+    set (OPTIONAL_TEST_SOURCES "")
+endif ()
+
 
 set(ARRAY_UFUNCS_TEST_SOURCES
     src/doctest/array/view/ufuncs/add.cpp
@@ -320,9 +342,33 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ${MISC_TEST_SOURCES}
 )
 
+# Workaround for testing for error handling,
+# the error handling can be using exception or optional via macro,
+# but when testing for both exception and optional in the same executable,
+# only one mechanism works
+# for now, make executables for each handing mechanism
+add_executable(${PROJECT_NAME}-doctest-exception src/doctest/tests.cpp
+    ## exception handling
+    ${EXCEPTION_TEST_SOURCES}
+)
+add_executable(${PROJECT_NAME}-doctest-optional src/doctest/tests.cpp
+    ## optional
+    ${OPTIONAL_TEST_SOURCES}
+)
+
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
+endif()
+
+target_compile_features(${PROJECT_NAME}-doctest-exception PRIVATE cxx_std_17)
+if (doctest_FOUND)
+    target_link_libraries(${PROJECT_NAME}-doctest-exception PRIVATE doctest::doctest)
+endif()
+
+target_compile_features(${PROJECT_NAME}-doctest-optional PRIVATE cxx_std_17)
+if (doctest_FOUND)
+    target_link_libraries(${PROJECT_NAME}-doctest-optional PRIVATE doctest::doctest)
 endif()
 
 option(ENABLE_TEST_BENCHMARKS "build benchmark programs" OFF)
@@ -385,6 +431,24 @@ apply_nmtools(
 )
 target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-doctest-exception
+    COMPILE_OPTIONS -g
+)
+target_include_directories(
+    ${PROJECT_NAME}-doctest-exception PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+apply_nmtools(
+    TARGET ${PROJECT_NAME}-doctest-optional
+    COMPILE_OPTIONS -g
+)
+target_include_directories(
+    ${PROJECT_NAME}-doctest-optional PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
