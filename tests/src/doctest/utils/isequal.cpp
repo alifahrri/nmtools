@@ -2,9 +2,12 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "testing/doctest.hpp"
+
 #include <array>
 #include <tuple>
 #include <vector>
+#include <variant>
+#include <optional>
 
 using std::vector;
 using std::array;
@@ -1025,6 +1028,30 @@ TEST_CASE("isequal(variant)" * doctest::test_suite("isequal"))
         auto lhs = lhs_t{1l,2l,3l};
         CHECK(( !isequal(lhs,rhs_t{nmtools::None}) ));
         CHECK((  isequal(lhs,rhs_t{std::array{1l,2l,3l}}) ));
+    }
+}
+
+TEST_CASE("isequal(optional)" * doctest::test_suite("isequal"))
+{
+    SUBCASE("int")
+    {
+        using lhs_t = std::optional<int>;
+        using rhs_t = std::optional<int>;
+        CHECK(  isequal(lhs_t{0},rhs_t{0}) );
+        CHECK(  isequal(lhs_t{std::nullopt},rhs_t{std::nullopt}));
+        CHECK( !isequal(lhs_t{std::nullopt},rhs_t{0}));
+        CHECK( !isequal(lhs_t{0},rhs_t{std::nullopt}));
+    }
+    SUBCASE("array")
+    {
+        using array_t = std::array<int,3>;
+        using vector_t = std::vector<int>;
+        using lhs_t = std::optional<array_t>;
+        using rhs_t = std::optional<vector_t>;
+        CHECK(  isequal(lhs_t{array_t{1,2,3}},rhs_t{vector_t{1,2,3}}) );
+        CHECK(  isequal(lhs_t{std::nullopt},rhs_t{std::nullopt}) );
+        CHECK( !isequal(lhs_t{array_t{1,2,3}},rhs_t{std::nullopt}) );
+        CHECK( !isequal(lhs_t{std::nullopt},rhs_t{vector_t{1,2,3}}) );
     }
 }
 

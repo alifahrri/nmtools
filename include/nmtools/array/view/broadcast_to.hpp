@@ -12,16 +12,23 @@
 #include "nmtools/array/index/compute_offset.hpp"
 
 #include "nmtools/constants.hpp"
+#include "nmtools/assert.hpp"
 
 namespace nmtools::view
 {
+    /**
+     * @brief View object for broadcast_to.
+     *
+     * Broadcast given array to desired shape.
+     * 
+     * @tparam array_t 
+     * @tparam shape_t 
+     * @tparam origin_axes_t 
+     */
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct broadcast_to_t
     {
-        using value_type = std::conditional_t<
-            std::is_arithmetic_v<array_t>, array_t,
-            meta::get_element_type_t<array_t>
-        >;
+        using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
         using array_type = const array_t&;
@@ -77,14 +84,53 @@ namespace nmtools::view
                 return apply_at(array,tf_indices);
             }
         } // operator()
+    }; // broadcast_to_t
 
-        constexpr operator value_type() const
+    /**
+     * @brief Specialization of broadcast_to_t for None shape.
+     *
+     * array_t must be scalar type. Doesn't have member operator().
+     * This view is considered as scalar type.
+     * 
+     * @tparam array_t 
+     * @tparam origin_axes_t 
+     */
+    template <typename array_t, typename origin_axes_t>
+    struct broadcast_to_t<array_t,none_t,origin_axes_t>
+    {
+        // conversion can't have trailing return type
+        static_assert( meta::is_scalar_v<array_t>
+            , "when shape is None, only accepts scalar array");
+        using value_type = array_t;
+        using const_reference = const value_type&;
+        // array type as required by decorator
+        using array_type = const array_t&;
+        using shape_type = none_t;
+        // ignored:
+        using origin_axes_type = origin_axes_t;
+
+        array_type array;
+        shape_type shape_; // broadcasted shape
+        origin_axes_type origin_axes; // origin axes axes
+
+        constexpr broadcast_to_t(array_type array, shape_type shape, origin_axes_type origin_axes)
+            : array(array), shape_(shape), origin_axes(origin_axes) {}
+        
+        constexpr auto shape() const noexcept
         {
-            // conversion can't have trailing return type
-            static_assert(is_none_v<shape_t> && meta::is_scalar_v<array_t>);
+            return None;
+        } // shape
+
+        constexpr auto dim() const noexcept
+        {
+            return 0;
+        } // shape
+
+        constexpr operator value_type() const noexcept
+        {
             return static_cast<value_type>(array);
         } // operator value_type()
-    }; // broadcast_to
+    }; // broadcast_to_t
 
     /**
      * @brief broadcast array to a new shape
@@ -103,15 +149,17 @@ namespace nmtools::view
             using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t>;
             return view_t{{array, shape, None}};
         }
+        // assume array_t is ndarray
         else {
             auto ashape = ::nmtools::shape(array);
             auto [success, shape_, free] = index::broadcast_to(ashape,shape);
-            assert (success
-                // , "cannot broadcast shape"
-            );
             auto not_free    = index::logical_not(free);
             auto origin_axes = index::nonzero(not_free);
             using origin_axes_t = decltype(origin_axes);
+            using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>;
+            // maybe declare return_t as optional type
+            nmtools_assert_prepare_type (return_t, view_t);
+            nmtools_assert (success, "cannot broadcast shape", return_t);
             // NOTE:
             // the array view itself cannot be called with constexpr directly (because it use reference)
             // but can be evaluated in constexpr
@@ -122,7 +170,7 @@ namespace nmtools::view
             // where 'x' is array
             // but this function itself (and the broadcast_to_t constructor) are still marked as constexpr
             // to let the view evaluated in constexpr context.
-            return decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>{{array,shape,origin_axes}};
+            return return_t{view_t{{array,shape,origin_axes}}};
         }
     } // broadcast_to
 

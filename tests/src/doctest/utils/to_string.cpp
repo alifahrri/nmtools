@@ -439,6 +439,7 @@ TEST_CASE("to_string(fixed_ndarray[4])" * doctest::test_suite("utils") * doctest
 
 TEST_CASE("to_string(variant)" * doctest::test_suite("utils") * doctest::skip(true))
 {
+    SUBCASE("None")
     {
         using arg_t = std::variant<nmtools::none_t,std::array<size_t,3>>;
         auto arg = arg_t{nmtools::None};
@@ -447,9 +448,31 @@ TEST_CASE("to_string(variant)" * doctest::test_suite("utils") * doctest::skip(tr
         MESSAGE( to_print );
         CHECK( str.size() );
     }
+    SUBCASE("array")
     {
         using arg_t = std::variant<nmtools::none_t,std::array<size_t,3>>;
         auto arg = arg_t{std::array<size_t,3>{1ul,2ul,3ul}};
+        auto str = to_string(arg);
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
+        CHECK( str.size() );
+    }
+}
+
+TEST_CASE("to_string(optional)" * doctest::test_suite("utils") * doctest::skip(true))
+{
+    using arg_t = std::optional<std::array<size_t,3>>;
+    SUBCASE("nullopt")
+    {
+        auto arg = std::nullopt;
+        auto str = to_string(arg);
+        auto to_print = std::string("\n") + str;
+        MESSAGE( to_print );
+        CHECK( !str.size() );
+    }
+    SUBCASE("array")
+    {
+        auto arg = std::array<size_t,3>{1ul,2ul,3ul};
         auto str = to_string(arg);
         auto to_print = std::string("\n") + str;
         MESSAGE( to_print );

@@ -14,6 +14,7 @@
 #include <tuple>
 #include <utility>
 #include <variant>
+#include <optional>
 
 #include "nmtools/meta/common.hpp"
 
@@ -1490,6 +1491,23 @@ namespace nmtools::meta {
     constexpr inline auto is_either_v = is_either<T>::value;
 
     /**
+     * @brief Check if type T is optional type.
+     *
+     * The name is from haskell's Maybe type.
+     * 
+     * @tparam T type to check
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_maybe : std::false_type {};
+
+    template <typename T>
+    struct is_maybe<std::optional<T>> : std::true_type {};
+
+    template <typename T>
+    constexpr inline auto is_maybe_v = is_maybe<T>::value;
+
+    /**
      * @brief Get the Left type of Either
      * 
      * @tparam T 
@@ -1528,6 +1546,27 @@ namespace nmtools::meta {
 
     template <typename T>
     using get_either_right_t = typename get_either_right<T>::type;
+
+    /**
+     * @brief Get the value type of maybe type
+     * 
+     * @tparam T type to check 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct get_maybe_type
+    {
+        using type = void;
+    };
+
+    template <typename T>
+    struct get_maybe_type<std::optional<T>>
+    {
+        using type = T;
+    };
+
+    template <typename T>
+    using get_maybe_type_t = typename get_maybe_type<T>::type;
 
     /**
      * @brief Replace existing Left and Right from given either type
