@@ -178,6 +178,35 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    /**
+     * @brief Specialization of fixed_ndarray_shape for broadcast_to view.
+     *
+     * Return the fixed shape if array_t is fixed size
+     * and shape_t is known at compile time (constant index array).
+     * 
+     * @tparam array_t 
+     * @tparam shape_t 
+     * @tparam origin_axes_t 
+     */
+    template <typename array_t, typename shape_t, typename origin_axes_t>
+    struct fixed_ndarray_shape< view::broadcast_to_t<array_t, shape_t, origin_axes_t> >
+    {
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_t> && is_fixed_size_ndarray_v<array_t>) {
+                constexpr auto src_shape = fixed_ndarray_shape_v<array_t>;
+                constexpr auto dst_shape = shape_t{};
+                constexpr auto dim = fixed_index_array_size_v<shape_t>;
+                constexpr auto result = index::broadcast_to(src_shape,dst_shape);
+                constexpr auto success = std::get<0>(result);
+                if constexpr (success)
+                    return dst_shape;
+                else return detail::fail_t{};
+            }
+            else return detail::fail_t{};
+        }();
+        using value_type = meta::remove_cvref_t<decltype(value)>;
+    }; // fixed_ndarray_shape
+
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct is_ndarray< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
     {
