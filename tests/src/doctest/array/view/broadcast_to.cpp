@@ -141,14 +141,15 @@ TEST_CASE("broadcast_to(traits)"  * doctest::test_suite("view::broadcast_to"))
         using broadcasted_t = decltype(broadcasted);
         NMTOOLS_ASSERT_EQUAL( meta::is_fixed_size_ndarray_v<broadcasted_t>, true );
     }
-    SUBCASE("is_fixed_size_ndarray(2)")
-    {
-        int x[3] = {1,2,3};
-        // cant do this here, will assert
-        // auto shape = std::tuple{1_ct,3_ct,2_ct};
-        auto shape = std::tuple{1,3,2};
-        auto broadcasted = view::broadcast_to(x,shape);
-        using broadcasted_t = decltype(broadcasted);
-        NMTOOLS_ASSERT_EQUAL( meta::is_fixed_size_ndarray_v<broadcasted_t>, false );
-    }
+    // this use assert
+    // SUBCASE("is_fixed_size_ndarray(2)")
+    // {
+    //     int x[3] = {1,2,3};
+    //     // cant do this here, will assert
+    //     // auto shape = std::tuple{1_ct,3_ct,2_ct};
+    //     auto shape = std::tuple{1,3,2};
+    //     auto broadcasted = view::broadcast_to(x,shape);
+    //     using broadcasted_t = decltype(broadcasted);
+    //     NMTOOLS_ASSERT_EQUAL( meta::is_fixed_size_ndarray_v<broadcasted_t>, false );
+    // }
 }
