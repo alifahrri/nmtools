@@ -241,6 +241,7 @@ namespace nmtools::meta
     template <template<typename...> typename T, typename ...Subs, typename ...Origin>
     struct replace_template_parameter<T<Origin...>,Subs...>
     {
+        // use lighter type for type-list
         using origin_tparams = std::tuple<Origin...>;
         /**
          * @brief this assumes that the number of given substitute type, sizeof...(Subs),
@@ -1481,6 +1482,25 @@ namespace nmtools::meta
     template <typename T>
     using get_element_type_t = typename get_element_type<T>::type;
 
+    /**
+     * @brief Type as value
+     * 
+     * @tparam T type to wrap
+     */
+    template <typename T>
+    struct as_value
+    {
+        using type = T;
+    };
+
+    /**
+     * @brief helper inline variable for as_value
+     * 
+     * @tparam T type to wrap
+     */
+    template <typename T>
+    constexpr inline auto as_value_v = as_value<T>{};
+
     namespace detail
     {
         /**
@@ -1498,29 +1518,24 @@ namespace nmtools::meta
             using type = void;
         };
 
-        template <template<typename...>typename TT, typename T, typename U>
-        struct replace_element_type_helper<TT<T>,U,std::enable_if_t< has_value_type_v<TT<T>> && std::is_arithmetic_v<U> > >
+        // NOTE: make it easier to recurse
+        template <typename T, typename U>
+        struct replace_element_type_helper<T,U,std::enable_if_t<std::is_arithmetic_v<U>>>
         {
-            using array_t = TT<T>;
-            using value_type = remove_cvref_t<typename array_t::value_type>;
-            using type = std::conditional_t<
-                std::is_arithmetic_v<value_type>,
-                replace_template_parameter_t<array_t,U>,
-                replace_template_parameter_t<array_t,typename replace_element_type_helper<value_type,U>::type>
-            >;
-        };
-
-        template <typename T, size_t N, typename U>
-        struct replace_element_type_helper<std::array<T,N>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
-        {
-            using array_t = std::array<T,N>;
-            using value_type = remove_cvref_t<typename array_t::value_type>;
-            using size_type = std::integral_constant<size_t,N>;
-            using type = std::conditional_t<
-                std::is_arithmetic_v<value_type>,
-                replace_template_parameter_t<array_t,U,size_type>,
-                replace_template_parameter_t<array_t, typename replace_element_type_helper<value_type,U>::type, size_type>
-            >;
+            static constexpr auto vtype = [](){
+                if constexpr (has_value_type_v<T>) {
+                    using value_type = typename T::value_type;
+                    // TODO: wrap std::is_arithmetic using other metafunctions
+                    if constexpr (std::is_arithmetic_v<value_type>)
+                        return as_value_v<replace_template_parameter_t<T,U>>;
+                    else {
+                        using type = type_t<replace_element_type_helper<value_type,U>>;
+                        return as_value_v<replace_template_parameter_t<T,type>>;
+                    }
+                }
+                else return as_value_v<void>;
+            }();
+            using type = type_t<decltype(vtype)>;
         };
     } // namespace detail
 
@@ -1541,7 +1556,31 @@ namespace nmtools::meta
     template <typename T, typename U, typename=void>
     struct replace_element_type
     {
-        using type = typename detail::replace_element_type_helper<T,U>::type;
+        using type = type_t<detail::replace_element_type_helper<T,U>>;
+    }; // replace_element_type
+
+    /**
+     * @brief Replace element type of std::array
+     * 
+     * @tparam T src element type, maybe nested array
+     * @tparam N 
+     * @tparam U dst element type
+     */
+    template <typename T, size_t N, typename U>
+    struct replace_element_type<std::array<T,N>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (std::is_arithmetic_v<T>) {
+                using type = std::array<U,N>;
+                return as_value_v<type>;
+            }
+            else {
+                using element_t = type_t<replace_element_type<T,U>>;
+                using type = std::array<element_t,N>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     }; // replace_element_type
 
     /**
@@ -2296,6 +2335,21 @@ namespace nmtools::meta
         static constexpr auto value = std::tuple{I,Is...};
     }; // constant_to_value
 
+    // some edge case for single element array with compile-time value
+    // such array exist maybe because element type deduction is imperfect
+    // or couldnt handle such case
+    template <auto I, size_t N>
+    struct constant_to_value< std::array<std::integral_constant<decltype(I),I>,N> >
+    {
+        static constexpr auto value = [](){
+            using return_t = std::array<decltype(I),N>;
+            auto res = return_t{};
+            for (size_t i=0; i<N; i++)
+                res[i] = I;
+            return res;
+        }();
+    }; // constant_to_value
+
     /**
      * @brief metafunction to transform (tuple of) integral constant to integer sequence
      * 
@@ -2552,6 +2606,13 @@ namespace nmtools::meta
         using type = std::array<common_t,sizeof...(Ts)>;
     }; // tuple_to_array
 
+    template <typename first, typename second>
+    struct tuple_to_array<std::pair<first,second>>
+    {
+        using common_t = std::common_type_t<first,second>;
+        using type = std::array<common_t,2>;
+    }; // tuple_to_array
+
     template <typename T>
     using tuple_to_array_t = type_t<tuple_to_array<T>>;
 
@@ -2765,11 +2826,50 @@ namespace nmtools::meta
     template <typename T, size_t N>
     using resize_fixed_index_array_t = type_t<resize_fixed_index_array<T,N>>;
 
+    /**
+     * @brief Helper metafunction for convinient tuple-size
+     * 
+     * @tparam T 
+     */
     template <typename T>
-    struct as_value
+    struct len
     {
-        using type = T;
+        static constexpr auto value = [](){
+            if constexpr (has_tuple_size_v<T>)
+                return std::tuple_size_v<T>;
+            else return 0;
+        }();
     };
+
+    template <typename T>
+    constexpr inline auto len_v = len<T>::value;
+
+    template <typename...Ts>
+    struct type_list {};
+
+    template <size_t I, typename type_list_t, typename=void>
+    struct type_list_at
+    {
+        using type = void;
+    }; // type_list_at
+
+    template <size_t I, typename T, typename...Ts>
+    struct type_list_at<I,type_list<T,Ts...>>
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (I==0)
+                return as_value_v<T>;
+            else {
+                using new_type_list = type_list<Ts...>;
+                using type = type_t<type_list_at<I-1,new_type_list>>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // type_list_at
+
+    template <size_t I, typename T>
+    using type_list_at_t = type_t<type_list_at<I,T>>;
 
     /** @} */ // end group meta
 } // namespace nmtools::meta
