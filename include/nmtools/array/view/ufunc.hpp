@@ -660,6 +660,7 @@ namespace nmtools::view
     template <typename op_t, typename array_t, typename...arrays_t>
     constexpr auto ufunc(op_t op, const array_t& array, const arrays_t&...arrays)
     {
+        // enable broadcasting if operands >= 2
         if constexpr (sizeof...(arrays) > 0) {
             auto b_arrays = broadcast_arrays(array, arrays...);
             auto func = ufunc_t{op, b_arrays};
@@ -667,6 +668,7 @@ namespace nmtools::view
             // return decorator_t{func};
             return _ufunc(func);
         }
+        // single argument ufunc, skip broadcasting
         else {
             using view_t = decorator_t<ufunc_t,op_t,array_t>;
             return view_t{{op,{array}}};
@@ -773,7 +775,49 @@ namespace nmtools::meta
     template <typename op_t, typename...arrays_t>
     struct fixed_ndarray_shape< view::ufunc_t<op_t,arrays_t...> >
     {
-        static inline constexpr auto value = detail::fail_t{};
+        static inline constexpr auto value = [](){
+            using array_types = type_list<arrays_t...>;
+            // check if all arrays is fixed shape
+            // NOTE: somehow if constexpr with fold expression doesnt work, use template_for instead
+            constexpr auto all_fixed_shape = [](){
+                auto all_fixed = true;
+                template_for<sizeof...(arrays_t)>([&all_fixed](auto index){
+                    constexpr auto I = decltype(index)::value;
+                    using type = type_list_at_t<I,array_types>;
+                    all_fixed = all_fixed && is_fixed_size_ndarray_v<type>;
+                });
+                return all_fixed;
+            }();
+            // if all array is fixed shape, check if all array has same shape
+            if constexpr (all_fixed_shape) {
+                // assume at least 1 array is provided
+                using array0_t = type_list_at_t<0,array_types>;
+                constexpr auto shape0 = fixed_ndarray_shape_v<array0_t>;
+                // actual checking
+                constexpr auto shame_shape = [=](){
+                    auto same = true;
+                    template_for<sizeof...(arrays_t)>([&same,&shape0](auto index){
+                        constexpr auto I = decltype(index)::value;
+                        using type = type_list_at_t<I,array_types>;
+                        static_assert( !std::is_void_v<type>
+                            , "internal error: fixed_ndarray_shape< view::ufunc_t<op_t,arrays_t...> >"
+                        );
+                        static_assert( is_fixed_size_ndarray_v<type>
+                            , "internal error: fixed_ndarray_shape< view::ufunc_t<op_t,arrays_t...> >"
+                        );
+                        same = same && utils::isequal(fixed_ndarray_shape_v<type>,shape0);
+                    });
+                    return same;
+                }();
+                // if all arrays have the same shape, return the shape
+                // otherwise return fail
+                if constexpr (shame_shape)
+                    return shape0;
+                else return detail::Fail;
+            }
+            // otherwise return fail
+            else return detail::Fail;
+        }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
 
@@ -840,7 +884,7 @@ namespace nmtools::meta
     };
 
     template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
-    struct is_scalar< 
+    struct is_num< 
         view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
     >
     {
