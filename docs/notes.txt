@@ -50,3 +50,7 @@ https://godbolt.org/z/sW3as8
 libc++ vs libstdc++
 vector of bool omg
 https://godbolt.org/z/T99cWj
+
+gcc 8 lambda capture variable doesnt keep constexpr-ness: error: '__closure' is not a constant expression
+supported on clang, fixed in gcc 9
+https://godbolt.org/z/Tdn6Yvf3f
