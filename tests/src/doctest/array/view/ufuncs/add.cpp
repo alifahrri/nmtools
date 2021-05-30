@@ -389,3 +389,35 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
     OUTER_ADD_SUBCASE( case1, a_d, b_d );
     OUTER_ADD_SUBCASE( case1, a_h, b_h );
 }
+
+#define ADD_FIXED_SHAPE_SUBCASE(subcase_name, expected_shape, ...) \
+SUBCASE(#subcase_name) \
+{ \
+    auto result = RUN_add(subcase_name, __VA_ARGS__); \
+    using result_t = decltype(result); \
+    NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, result_t ); \
+    NMTOOLS_STATIC_ASSERT_EQUAL( meta::fixed_ndarray_shape_v<result_t>, expected_shape ); \
+}
+
+TEST_CASE("add(fixed_shape)" * doctest::test_suite("view::add"))
+{
+    namespace meta = nmtools::meta;
+    {
+        int A[1][3] = {{1,2,3}};
+        int B[3][1] = {{4},{5},{6}};
+        constexpr auto expected_shape = std::array{3,3};
+        ADD_FIXED_SHAPE_SUBCASE( raw, expected_shape, A, B );
+    }
+    {
+        auto A = std::array{1,2,3};
+        auto B = std::array{std::array{4,5,6}};
+        constexpr auto expected_shape = std::array{3};
+        ADD_FIXED_SHAPE_SUBCASE( array, expected_shape, A, B );
+    }
+    {
+        auto A = na::fixed_ndarray{{1,2,3}};
+        auto B = na::fixed_ndarray{{{1,2,3},{4,5,6}}};
+        constexpr auto expected_shape = std::array{2,3};
+        ADD_FIXED_SHAPE_SUBCASE( fixed_ndarray, expected_shape, A, B );
+    }
+}

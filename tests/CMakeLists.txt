@@ -384,11 +384,15 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/loop.cpp
     src/doctest/meta/array/index/argfilter.cpp
     src/doctest/meta/array/index/broadcast_shape.cpp
+    src/doctest/meta/array/index/broadcast_to.cpp
     src/doctest/meta/array/index/choose.cpp
+    src/doctest/meta/array/index/compute_indices.cpp
     src/doctest/meta/array/index/concatenate.cpp
     src/doctest/meta/array/index/expand_dims.cpp
     src/doctest/meta/array/index/gather.cpp
     src/doctest/meta/array/index/nonzero.cpp
+    src/doctest/meta/array/index/repeat.cpp
+    src/doctest/meta/array/index/where.cpp
     src/doctest/meta/traits/apply_conjunction.cpp
     src/doctest/meta/traits/apply_disjunction.cpp
     src/doctest/meta/traits/compose_logical_and.cpp

@@ -1055,6 +1055,30 @@ TEST_CASE("isequal(optional)" * doctest::test_suite("isequal"))
     }
 }
 
+TEST_CASE("isequal(integral_constant)" * doctest::test_suite("isequal"))
+{
+    using namespace nmtools::literals;
+    SUBCASE("ct")
+    {
+        auto lhs = 1_ct;
+        auto rhs = 1;
+        CHECK( isequal(lhs,rhs) );
+    }
+    SUBCASE("tuple(ct)")
+    {
+        {
+            auto lhs = std::tuple{1_ct};
+            auto rhs = std::array{1};
+            CHECK( isequal(lhs,rhs) );
+        }
+        {
+            auto lhs = std::tuple{1_ct};
+            auto rhs = std::vector{1};
+            CHECK( isequal(lhs,rhs) );
+        }
+    }
+}
+
 // should NOT COMPILE static assertion failed: unsupported isequal, mismatched size for packed type
 // TEST_CASE("isequal(array[2],array[2])" * doctest::test_suite("utils"))
 // {

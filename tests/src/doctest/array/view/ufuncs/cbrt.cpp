@@ -51,3 +51,32 @@ TEST_CASE("cbrt(case1)" * doctest::test_suite("view::cbrt"))
     CBRT_SUBCASE( case1, a_d);
     CBRT_SUBCASE( case1, a_h);
 }
+
+#define CBRT_FIXED_SHAPE_SUBCASE(subcase_name, expected_shape, ...) \
+SUBCASE(#subcase_name) \
+{ \
+    auto result = RUN_cbrt(subcase_name, __VA_ARGS__); \
+    using result_t = decltype(result); \
+    NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, result_t ); \
+    NMTOOLS_STATIC_ASSERT_EQUAL( meta::fixed_ndarray_shape_v<result_t>, expected_shape ); \
+}
+
+TEST_CASE("cbrt(fixed_shape)" * doctest::test_suite("view::cbrt"))
+{
+    namespace meta = nmtools::meta;
+    {
+        constexpr auto expected_shape = std::array{3};
+        int A[3] = {1,2,3};
+        CBRT_FIXED_SHAPE_SUBCASE( raw, expected_shape, A );
+    }
+    {
+        constexpr auto expected_shape = std::array{3};
+        auto A = std::array{1,2,3};
+        CBRT_FIXED_SHAPE_SUBCASE( array, expected_shape, A );
+    }
+    {
+        constexpr auto expected_shape = std::array{3};
+        auto A = na::fixed_ndarray{{1,2,3}};
+        CBRT_FIXED_SHAPE_SUBCASE( fixed_ndarray, expected_shape, A );
+    }
+}

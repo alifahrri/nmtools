@@ -29,6 +29,19 @@ boost::typeindex::type_id<type>().pretty_name()
 typeid(type).name()
 #endif
 
+#if defined(__clang__)
+#define NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH() \
+        _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wunused-value\"")
+#define NMTOOLS_IGNORE_WUNUSED_VALUE_POP() _Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
+#define NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH() \
+        _Pragma("clang diagnostic push") _Pragma("GCC diagnostic ignored \"-Wunused-value\"")
+#define NMTOOLS_IGNORE_WUNUSED_VALUE_POP() _Pragma("GCC diagnostic pop")
+#else
+#define NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH()
+#define NMTOOLS_IGNORE_WUNUSED_VALUE_POP()
+#endif
+
 /**
  * @defgroup testing
  * collections of helper functions and macros for testing purpose.
@@ -1151,8 +1164,10 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
  */
 #define STATIC_CHECK(expr) \
 { \
-  NMTOOLS_STATIC_ASSERT(expr); \
-  CHECK_MESSAGE(expr, #expr); \
+    NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH() \
+    NMTOOLS_STATIC_ASSERT(expr); \
+    CHECK_MESSAGE(expr, #expr); \
+    NMTOOLS_IGNORE_WUNUSED_VALUE_POP() \
 } \
 
 /**
@@ -1189,6 +1204,20 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
     std::string message = std::string("trait") + " (" + std::string(#trait) + "), " + std::string(#type) + " (" + NMTOOLS_TESTING_GET_TYPENAME(type) + "); true;"; \
     NMTOOLS_CHECK_MESSAGE(value, message); \
 } \
+
+#define NMTOOLS_STATIC_CHECK_IS_SAME STATIC_CHECK_IS_SAME
+
+#define NMTOOLS_STATIC_CHECK( expr ) \
+{ \
+    NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH() \
+    NMTOOLS_STATIC_ASSERT( expr ); \
+    NMTOOLS_CHECK_MESSAGE( expr, #expr ); \
+    NMTOOLS_IGNORE_WUNUSED_VALUE_POP() \
+}
+
+#define NMTOOLS_STATIC_CHECK_TRAIT_TRUE  STATIC_CHECK_TRAIT_TRUE
+#define NMTOOLS_STATIC_CHECK_TRAIT_FALSE STATIC_CHECK_TRAIT_FALSE
+#define NMTOOLS_STATIC_CHECK_TRAIT       STATIC_CHECK_TRAIT_TRUE
 
 /**
  * @brief perform static assertion given trait and type

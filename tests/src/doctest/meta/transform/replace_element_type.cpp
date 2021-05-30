@@ -99,6 +99,14 @@ TEST_CASE("replace_element_type_t" * doctest::test_suite("meta"))
         STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
+        constexpr auto n = 1;
+        using arg0_t   = std::array<int,1>;
+        using arg1_t   = bool;
+        using result_t = meta::replace_element_type_t<arg0_t,arg1_t>;
+        using expected_t = std::array<arg1_t,n>;
+        STATIC_CHECK_IS_SAME( result_t, expected_t );
+    }
+    {
         constexpr auto n = 7;
         using arg0_t   = std::array<std::array<double,n>,n>;
         using arg1_t   = bool;

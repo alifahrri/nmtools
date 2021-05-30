@@ -2,7 +2,7 @@
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 #include <vector>
 #include <array>
@@ -265,5 +265,18 @@ TEST_CASE("gather(tuple;tuple)" * doctest::test_suite("index::gather"))
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
         using exp_t = std::array<bool,3>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
+    }
+}
+
+TEST_CASE("gather" * doctest::test_suite("index"))
+{
+    SUBCASE("integral_constant")
+    {
+        using vector_t  = std::tuple<std::integral_constant<size_t,10>>;
+        using indices_t = na::hybrid_ndarray<size_t,1,1>;
+        using result_t  = meta::resolve_optype_t<nm::index::gather_t,vector_t,indices_t>;
+        using expected_t = na::hybrid_ndarray<size_t,1,1>;
+        static_assert( meta::is_constant_index_array_v<vector_t> && meta::is_hybrid_index_array_v<indices_t> );
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
 }

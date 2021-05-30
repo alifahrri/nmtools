@@ -18,7 +18,7 @@ TEST_CASE("broadcast_arrays(exception)" * doctest::test_suite("view::broadcast_a
 {
     SUBCASE("array")
     {
-        int x[3] = {1,2,3};
+        auto x = std::vector{1,2,3};
         int y[3][2] = {{1,2},{3,4},{5,6}};
         auto f = [&](){
             RUN_impl(x,y);

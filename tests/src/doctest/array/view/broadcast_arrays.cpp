@@ -438,6 +438,50 @@ TEST_CASE("broadcast_arrays(case9)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case9, A, B_h, C_h );
 }
 
+TEST_CASE("broadcast_arrays(fixed_shape)" * doctest::test_suite("view::broadcast_arrays"))
+{
+    namespace meta = nmtools::meta;
+    SUBCASE("raw")
+    {
+        int A[1][3] = {{1,2,3}};
+        int B[3][1] = {{4},{5},{6}};
+        auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
+        using bA_t = decltype(bA);
+        using bB_t = decltype(bB);
+        NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bA_t> );
+        NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bB_t> );
+        constexpr auto expected_shape = std::array{3,3};
+        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bA_t>, expected_shape) ));
+        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bB_t>, expected_shape) ));
+    }
+    SUBCASE("array")
+    {
+        auto A = std::array{1,2,3};
+        auto B = std::array{std::array{4,5,6}};
+        auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
+        using bA_t = decltype(bA);
+        using bB_t = decltype(bB);
+        NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bA_t> );
+        NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bB_t> );
+        constexpr auto expected_shape = std::array{3};
+        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bA_t>, expected_shape) ));
+        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bB_t>, expected_shape) ));
+    }
+    SUBCASE("fixed_ndarray")
+    {
+        auto A = na::fixed_ndarray{{1,2,3}};
+        auto B = na::fixed_ndarray{{{1,2,3},{4,5,6}}};
+        auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
+        using bA_t = decltype(bA);
+        using bB_t = decltype(bB);
+        NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bA_t> );
+        NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bB_t> );
+        constexpr auto expected_shape = std::array{2,3};
+        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bA_t>, expected_shape) ));
+        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bB_t>, expected_shape) ));
+    }
+}
+
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays_constexpr)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
