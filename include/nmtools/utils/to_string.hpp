@@ -71,7 +71,7 @@ namespace nmtools::utils
             if (static_cast<bool>(array))
                 str += to_string(*array);
         }
-        else if constexpr (meta::is_scalar_v<T>) {
+        else if constexpr (meta::is_num_v<T>) {
             using std::to_string;
             // allow view type
             using type_t = meta::get_element_type_t<T>;

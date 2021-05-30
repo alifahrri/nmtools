@@ -23,12 +23,13 @@ namespace nmtools::index
      * @param vec 
      * @param idx 
      * @return constexpr auto 
+     * @todo remove, use at with static index
      */
     template <typename vector_t, typename idx_t>
     constexpr auto tuple_at(const vector_t& vec, idx_t idx)
     {
         using value_t = meta::get_element_or_common_type_t<vector_t>;
-        static_assert( std::is_arithmetic_v<value_t>
+        static_assert( std::is_arithmetic_v<value_t> || meta::is_index_v<value_t>
             , "unsupported tuple_at, element_type / common_type is not arithmentic"
         );
         auto value = value_t{};
@@ -43,6 +44,14 @@ namespace nmtools::index
         return value;
     } // tuple_at
 
+    /**
+     * @brief Get the size of 1d array, including tuple
+     * 
+     * @tparam vector_t 
+     * @param vec 
+     * @return constexpr auto 
+     * @todo remove, use len instead
+     */
     template <typename vector_t>
     constexpr auto tuple_size(const vector_t& vec)
     {

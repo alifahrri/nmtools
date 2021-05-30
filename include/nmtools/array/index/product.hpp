@@ -25,21 +25,17 @@ namespace nmtools::index
     template <typename array_t>
     constexpr auto product(const array_t& vec)
     {
-        using element_t = meta::get_element_type_t<array_t>;
-        using common_t  = std::conditional_t<
-            std::is_void_v<element_t>,
-            meta::apply_t<std::common_type,array_t>,
-            element_t
-        >;
-        // handle type vector
-        if constexpr (meta::apply_logical_and_v<meta::is_integral_constant,array_t>) {
+        // handle constant index array,
+        // for now, simply convert to value and recurse
+        if constexpr (meta::is_constant_index_array_v<array_t>) {
             constexpr auto vec_ = meta::constant_to_value<array_t>::value;
             constexpr auto ret  = product(vec_);
             // @todo convert back to type
             return ret;
         }
         else {
-            auto ret = common_t{1};
+            using element_t = meta::get_element_or_common_type_t<array_t>;
+            auto ret = element_t{1};
             if constexpr (meta::has_tuple_size_v<array_t>) {
                 constexpr auto n = std::tuple_size_v<array_t>;
                 meta::template_for<n>([&](auto index){

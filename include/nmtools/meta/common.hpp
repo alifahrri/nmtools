@@ -28,6 +28,9 @@ namespace nmtools::meta::detail
      * 
      */
     struct fail_t {};
+
+    // inline variable for convinience
+    constexpr inline auto Fail = fail_t{};
         
     /**
      * @brief helper metafunction to transform fail_t to void
