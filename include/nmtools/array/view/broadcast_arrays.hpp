@@ -7,6 +7,35 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/assert.hpp"
 
+namespace nmtools::view::detail::fn
+{
+    /**
+     * @brief Compile time version of index::broadcast_shape.
+     * 
+     * @tparam arrays_t 
+     * @return constexpr auto 
+     */
+    template <typename...arrays_t>
+    constexpr auto broadcast_shape(meta::as_value<arrays_t>...)
+    {
+        // map type to value, and actually call broadcast_shape implementation
+        constexpr auto result  = index::broadcast_shape(meta::fixed_ndarray_shape_v<arrays_t>...);
+        constexpr auto success = std::get<0>(result);
+        if constexpr (success) {
+            // then map back to type
+            constexpr auto bshape = std::get<1>(result);
+            constexpr auto shape  = meta::template_map<len(bshape)>([&](auto i){
+                constexpr auto ts = at(bshape,i);
+                return std::integral_constant<size_t,ts>{};
+            });
+            return shape;
+        }
+        // since this value is expected to be called at compile time,
+        // return fail type when fail
+        else return meta::detail::Fail;
+    } // broadcast_shape
+} // namespace nmtools::view::detail::fn
+
 namespace nmtools::view
 {
     /**
@@ -22,14 +51,26 @@ namespace nmtools::view
         static_assert( sizeof...(arrays_t) >= 2
             , "please provide at least two arrays for broadcast_arrays");
 
-        auto [success, broadcasted_shape] = index::broadcast_shape(::nmtools::shape(arrays)...);
+        // when all arrays' shapes are known at compile time, perform checks at compile time
+        // the return type is not wrapped, and should be noexcept ready
+        if constexpr ((meta::is_fixed_size_ndarray_v<arrays_t> && ...)) {
+            constexpr auto bshape = detail::fn::broadcast_shape(meta::as_value_v<arrays_t>...);
+            static_assert( !meta::is_fail_v<decltype(bshape)>
+                , "cannot broadcast arrays together" );
+            return std::tuple{broadcast_to(arrays,bshape)...};
+        }
+        // otherwise call runtime version,
+        // the return type can be maybe type, and may throw if not maybe type
+        else {
+            auto [success, broadcasted_shape] = index::broadcast_shape(::nmtools::shape(arrays)...);
 
-        // easiest way to get result type
-        using result_t = decltype(std::tuple{broadcast_to(arrays,broadcasted_shape)...});
-        nmtools_assert_prepare_type (return_t, result_t);
-        nmtools_assert (success, "cannot broadcast shape", return_t);
+            // easiest way to get result type
+            using result_t = decltype(std::tuple{broadcast_to(arrays,broadcasted_shape)...});
+            nmtools_assert_prepare_type (return_t, result_t);
+            nmtools_assert (success, "cannot broadcast arrays together", return_t);
 
-        return return_t{std::tuple{broadcast_to(arrays,broadcasted_shape)...}};
+            return return_t{std::tuple{broadcast_to(arrays,broadcasted_shape)...}};
+        }
     } // broadcast_arrays
 } // namespace nmtools::view
 
