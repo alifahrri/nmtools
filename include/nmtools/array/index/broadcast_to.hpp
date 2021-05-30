@@ -52,8 +52,15 @@ namespace nmtools::index
             using idx_t = std::make_signed_t<decltype(adim-i-1)>;
             idx_t ai = adim - i - 1;
             idx_t bi = bdim - i - 1;
+            // handle bshape if constant index array;
+            // TODO: find out better way
+            auto get_b = [&](){
+                if constexpr (meta::is_constant_index_array_v<bshape_t>)
+                    return tuple_at(meta::constant_to_value_v<bshape_t>,bi);
+                else return tuple_at(bshape,bi);
+            };
             if (ai<0) {
-                at(res,bi) = tuple_at(bshape,bi);
+                at(res,bi) = get_b();
                 at(free_axes,bi) = true;
             }
             // unlike broadcast_shape, we dont do this here
@@ -61,7 +68,7 @@ namespace nmtools::index
             //     at(res,si) = tuple_at(ashape,ai);
             else {
                 auto a = tuple_at(ashape,ai);
-                auto b = tuple_at(bshape,bi);
+                auto b = get_b();
                 if (a==b) {
                     at(res,bi) = a;
                     at(free_axes,bi) = false;
@@ -102,8 +109,56 @@ namespace nmtools::meta
         void, index::broadcast_to_t, ashape_t, bshape_t
     >
     {
+        static constexpr auto vtype = [](){
+            // bshape_t (target shape) may be raw or tuple
+            using type = tuple_to_array_t<transform_bounded_array_t<bshape_t>>;
+            using element_t = get_element_type_t<type>;
+            // specialize when both lhs and rhs is constant index array
+            // also make sure the resulting type's element type is not contant index
+            if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                constexpr auto N = len_v<ashape_t>;
+                constexpr auto M = len_v<bshape_t>;
+                using new_type_t = element_t;
+                if constexpr (is_constant_index_v<new_type_t>) {
+                    using return_t = std::array<typename new_type_t::value_type,M>;
+                    return as_value_v<return_t>;
+                }
+                else {
+                    using return_t = std::array<new_type_t,M>;
+                    return as_value_v<return_t>;
+                }
+            }
+            // make sure the resulting type's element type is not contant index
+            else if constexpr (is_fixed_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                // src's shape type may be raw or tuple
+                constexpr auto N = len_v<bshape_t>;
+                using ashape_type = tuple_to_array_t<transform_bounded_array_t<ashape_t>>;
+                using shape_type  = resize_fixed_index_array_t<ashape_type,N>;
+                if constexpr (is_constant_index_v<element_t>) {
+                    using type  = replace_element_type_t<shape_type,typename element_t::value_type>;
+                    return as_value_v<type>;
+                }
+                else {
+                    using type  = replace_element_type_t<shape_type,element_t>;
+                    return as_value_v<type>;
+                }
+            }
+            // make sure the resulting type's element type is not contant index
+            else if constexpr (is_constant_index_array_v<bshape_t>) {
+                using ashape_type = tuple_to_array_t<transform_bounded_array_t<ashape_t>>;
+                if constexpr (is_constant_index_v<element_t>) {
+                    using type  = replace_element_type_t<ashape_type,typename element_t::value_type>;
+                    return as_value_v<type>;
+                }
+                else {
+                    using type  = replace_element_type_t<ashape_type,element_t>;
+                    return as_value_v<type>;
+                }
+            }
+            else return as_value_v<type>;
+        }();
         // for broadcast_to, the resulting shape will follow bshape
-        using type = tuple_to_array_t<transform_bounded_array_t<bshape_t>>;
+        using type = type_t<decltype(vtype)>;
     }; // resolve_optype
 } // namespace nmtools::meta
 
