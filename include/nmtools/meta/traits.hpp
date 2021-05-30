@@ -1296,6 +1296,38 @@ namespace nmtools::meta {
     inline constexpr auto is_constant_index_v = is_constant_index<T>::value;
 
     /**
+     * @brief Check if type T is num type.
+     * 
+     * Note that specializing std::is_arithmetic is undefined behaviour.
+     * This traits exists to avoid UB while specializing similar concept is allowed.
+     * THis is useful to allow reduce view that reduce the elements to single num.
+     * The name "num" is inspired from haskell's `Num`.
+     *
+     * @tparam T type tot check
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_num : std::is_arithmetic<T> {};
+
+    template <typename T>
+    constexpr inline auto is_num_v = is_num<T>::value;
+
+    /**
+     * @brief Check if type T is integer type.
+     * 
+     * Note that specializing std::is_integral is undefined behaviour.
+     * This traits exists to avoid UB while specializing similar concept is allowed.
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct is_integer : std::is_integral<T> {};
+
+    template <typename T>
+    constexpr inline auto is_integer_v = is_integer<T>::value;
+
+    /**
      * @brief Check if type `T` is an index
      * 
      * @tparam T 
@@ -1305,7 +1337,7 @@ namespace nmtools::meta {
     struct is_index
     {
         static constexpr auto value = [](){
-            return is_constant_index_v<T>;
+            return is_constant_index_v<T> || is_integer_v<T>;
         }();
     };
 
@@ -1404,6 +1436,10 @@ namespace nmtools::meta {
     template <typename...Ts>
     struct is_constant_index_array<std::tuple<Ts...>,std::enable_if_t<(is_constant_index_v<Ts> && ...)>> : std::true_type {};
 
+    // some edge case for array
+    template <typename T, size_t N>
+    struct is_constant_index_array<std::array<T,N>,std::enable_if_t<is_constant_index_v<T>>> : std::true_type {};
+
     template <typename T>
     inline constexpr auto is_constant_index_array_v = is_constant_index_array<T>::value;
 
@@ -1442,36 +1478,6 @@ namespace nmtools::meta {
 
     template <typename T>
     constexpr inline auto is_index_array_v = is_index_array<T>::value;
-
-    /**
-     * @brief Check if type T is scalar type.
-     * 
-     * Note that specializing std::is_arithmetic is undefined behaviour.
-     * This traits exists to avoid UB while specializing similar concept is allowed.
-     *
-     * @tparam T 
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct is_scalar : std::is_arithmetic<T> {};
-
-    template <typename T>
-    constexpr inline auto is_scalar_v = is_scalar<T>::value;
-
-    /**
-     * @brief Check if type T is integer type.
-     * 
-     * Note that specializing std::is_integral is undefined behaviour.
-     * This traits exists to avoid UB while specializing similar concept is allowed.
-     * 
-     * @tparam T 
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct is_integer : std::is_integral<T> {};
-
-    template <typename T>
-    constexpr inline auto is_integer_v = is_integer<T>::value;
 
     /**
      * @brief Check if type T is either type (variant with exactly 2 type).
@@ -1590,6 +1596,20 @@ namespace nmtools::meta {
 
     template <typename either_t, typename Left, typename Right>
     using replace_either_t = typename replace_either<either_t,Left,Right>::type;
+
+    /**
+     * @brief Check if type T is fail type.
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct is_fail
+    {
+        static constexpr auto value = std::is_same_v<remove_cvref_t<T>,detail::fail_t>;
+    };
+
+    template <typename T>
+    constexpr auto is_fail_v = is_fail<T>::value;
 
     /** @} */ // end group traits
 
