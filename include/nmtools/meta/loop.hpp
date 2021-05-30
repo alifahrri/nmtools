@@ -92,6 +92,27 @@ namespace nmtools::meta
         return ret;
     }; // template_map
 
+    template <typename F, size_t...Is>
+    constexpr auto template_map(F&& f, std::index_sequence<Is...>)
+    {
+        return std::tuple{f(index_constant<Is>{})...};
+    } // template_map
+
+    /**
+     * @brief Compile time mapping. Useful to convert constexpr value back to type.
+     * 
+     * @tparam N number of iteration
+     * @tparam F function to call, must return something
+     * @param f function to call, e.g. lambda capturing constexpr value, then map to type.
+     * @return constexpr auto 
+     */
+    template <size_t N, typename F>
+    constexpr auto template_map(F&& f)
+    {
+        using index_t = std::make_index_sequence<N>;
+        return template_map(f,index_t{});
+    }
+
     template <typename F, typename...args_t, typename initial_t, size_t I, size_t...Is>
     constexpr auto template_reduce(F&& f, const initial_t& init, const std::tuple<args_t...>& args_pack, std::integer_sequence<size_t,I,Is...>)
     {
