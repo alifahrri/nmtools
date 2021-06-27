@@ -100,7 +100,7 @@ namespace nmtools::utils
                 using t1 = meta::type_t<decltype(T1)>;
                 using t2 = meta::type_t<decltype(T2)>;
                 // allow scalar, ndarray, or None
-                return (meta::is_scalar_v<t1>  && meta::is_scalar_v<t2>)
+                return (meta::is_num_v<t1>  && meta::is_num_v<t2>)
                     || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>)
                     || (is_none_v<t1> && is_none_v<t2>);
             };
@@ -221,7 +221,7 @@ namespace nmtools::utils
                     close = isequal(t,*ptr);
                 return close;
             }
-            else if constexpr (meta::is_scalar_v<T>) {
+            else if constexpr (meta::is_num_v<T>) {
                 // use get_element_type to allow view
                 using t_type = meta::get_element_type_t<T>;
                 using u_type = meta::get_element_type_t<U>;

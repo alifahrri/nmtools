@@ -1,4 +1,4 @@
-name: arm
+name: web-wasm
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: linux-arm64
+          - name: web-wasm
     steps:
       - uses: actions/checkout@v2
       - name: setup dockcross
@@ -28,8 +28,9 @@ jobs:
         with:
           path: ./build/${{ matrix.name }}
           key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
-      # temporarily disabled: gcc-8 no longer supported, dockcross doesn't have linux-arm64 with gcc-9
-      # - name: setup doctest
-      #   run: bash scripts/download_doctest_header.sh -d include/
-      # - name: build
-      #   run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2'
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 VERBOSE=1'
+      - name: run tests
+        run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/numeric-tests-doctest.wasm.js

@@ -34,6 +34,6 @@ jobs:
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
           else
-            docker build . --file docker/dockerfile --tag $IMAGE_NAME
+            docker build . --file docker/gcc.dockerfile --tag $IMAGE_NAME
             docker run $ci_env $IMAGE_NAME
           fi

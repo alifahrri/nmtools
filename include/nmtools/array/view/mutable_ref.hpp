@@ -131,6 +131,16 @@ namespace nmtools
     struct meta::fixed_matrix_size< view::mutable_ref_t<array_t>
         , std::enable_if_t< meta::is_fixed_size_matrix_v<meta::remove_cvref_t<array_t>> >
     > : meta::fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
+
+    /**
+     * @brief specialization of meta::fixed_ndarray_shape cvfor mutable_ref view.
+     * 
+     * @tparam array_t referenced array type
+     */
+    template <typename array_t>
+    struct meta::fixed_ndarray_shape< view::mutable_ref_t<array_t>
+        , std::enable_if_t< meta::is_fixed_size_ndarray_v< meta::remove_cvref_t<array_t> > >
+    > : meta::fixed_ndarray_shape< meta::remove_cvref_t<array_t> > {};
 } // namespace nmtool
 
 #endif // NMTOOLS_ARRAY_VIEW_MUTABLE_REF_HPP

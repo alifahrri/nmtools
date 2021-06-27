@@ -76,6 +76,8 @@ namespace nmtools::index
     constexpr auto compress(const indices_t& indices, const condition_t& condition, const shape_t& shape, axis_t axis)
     {
         using return_t = meta::resolve_optype_t<compress_t,indices_t,condition_t,shape_t,axis_t>;
+        static_assert (!std::is_void_v<return_t>
+            , "unsupported index::compress, couldn't deduce return type");
 
         auto res = return_t{};
 

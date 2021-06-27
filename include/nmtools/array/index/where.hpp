@@ -32,6 +32,8 @@ namespace nmtools::index
     constexpr auto where(const F& f, const array_t& array)
     {
         using return_t = meta::resolve_optype_t<where_t,array_t,index_t>;
+        static_assert (!std::is_void_v<return_t>
+            , "unsupported index::where, couldn't deduce return type" );
         auto res = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
             res.resize(len(array));
@@ -63,42 +65,23 @@ namespace nmtools::meta
      */
     template <typename array_t, typename index_t>
     struct resolve_optype<
-        std::enable_if_t<
-            meta::is_resizeable_v<array_t>
-        >,
-        index::where_t, array_t, index_t
+        void, index::where_t, array_t, index_t
     >
     {
-        using type = meta::replace_element_type_t<array_t,index_t>;
-    }; // resolve_optype where_t
-
-    /**
-     * @brief resolve where return type for fixed array type
-     * 
-     * @tparam array_t 
-     * @tparam index_t 
-     */
-    template <typename array_t, typename index_t>
-    struct resolve_optype<
-        std::enable_if_t<
-            !meta::is_resizeable_v<array_t>
-            && std::is_arithmetic_v<get_element_or_common_type_t<array_t>>
-        >,
-        index::where_t, array_t, index_t
-    >
-    {
-        static constexpr auto N = [](){
-            if constexpr (is_fixed_size_ndarray_v<array_t>) {
-                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
-                return at(shape,std::integral_constant<size_t,0>{});
+        static constexpr auto vtype = [](){
+            if constexpr (is_resizeable_v<array_t>) {
+                using type = replace_element_type_t<array_t,index_t>;
+                return as_value_v<type>;
             }
-            else {
-                using tf_array_t = transform_bounded_array_t<array_t>;
-                return std::tuple_size_v<tf_array_t>;
+            else if constexpr (is_fixed_index_array_v<array_t>) {
+                constexpr auto N = fixed_index_array_size_v<array_t>;
+                // need to use hybrid array1d since the size will depends on runtime value
+                using type = array::hybrid_ndarray<index_t,N,1>;
+                return as_value_v<type>;
             }
+            else return as_value_v<void>;
         }();
-        // need to use hybrid array1d since the size will depends on runtime value
-        using type = array::hybrid_ndarray<index_t,N,1>;
+        using type = type_t<remove_cvref_t<decltype(vtype)>>;
     }; // resolve_optype where_t
 } // namespace nmtools::meta
 

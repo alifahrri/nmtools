@@ -58,10 +58,9 @@ namespace nmtools::index
     template <typename offset_t, typename shape_t, typename strides_t>
     constexpr auto compute_indices(const offset_t& offset, const shape_t& shape, const strides_t& strides)
     {
-        constexpr auto shape_is_tuple_or_pair = meta::is_specialization_v<shape_t,std::tuple> || meta::is_specialization_v<shape_t,std::pair>;
-        constexpr auto strides_is_tuple_or_pair = meta::is_specialization_v<strides_t,std::tuple> || meta::is_specialization_v<strides_t,std::pair>;
-
         using return_t = meta::resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
+        static_assert( !std::is_void_v<return_t>
+            , "unsupported return type for compute_indices" );
         auto indices = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
             indices.resize(size(shape));
@@ -90,17 +89,32 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    /**
+     * @brief resolve return type for compute_indices
+     * 
+     * @tparam offset_t 
+     * @tparam shape_t 
+     * @tparam strides_t 
+     */
     template <typename offset_t, typename shape_t, typename strides_t>
     struct resolve_optype< void, index::compute_indices_t, offset_t, shape_t, strides_t >
     {
-        using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
+        static constexpr auto vtype = [](){
+            using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
+            using element_t = get_element_type_t<type>;
+            // temporary workaround:
+            // the element type may be constant index,
+            // especially when shape is tuple with single element
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                constexpr auto N = fixed_index_array_size_v<shape_t>;
+                using result_t = std::array<size_t,N>;
+                return as_value_v<result_t>;
+            }
+            else return as_value_v<type>;
+        }();
+        using type = type_t<remove_cvref_t<decltype(vtype)>>;
     }; // resolve_optype
 
-    template <typename offset_t, typename shape_t>
-    struct resolve_optype< void, index::compute_indices_t, offset_t, shape_t >
-    {
-        using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
-    }; // resolve_optype
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_COMPUTE_INDICES_HPP

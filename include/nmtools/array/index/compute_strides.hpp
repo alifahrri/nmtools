@@ -25,7 +25,13 @@ namespace nmtools::index
     {
         if constexpr (meta::is_specialization_v<array_t,std::tuple> || meta::is_specialization_v<array_t,std::pair>)
         {
-            using value_type = meta::apply_t<std::common_type,array_t>;
+            constexpr auto vtype = [](){
+                using value_type = meta::apply_t<std::common_type,array_t>;
+                if constexpr (meta::is_integral_constant_v<value_type>)
+                    return meta::as_value_v<typename value_type::value_type>;
+                else return meta::as_value_v<value_type>;
+            }();
+            using value_type = meta::type_t<decltype(vtype)>;
             static_assert( meta::is_integral_constant_v<size_type>
                 , "unsupported size_type for stride. for tuple type, k must be integral constant"
             );
@@ -41,7 +47,13 @@ namespace nmtools::index
         }
         else
         {
-            using value_type = meta::get_element_type_t<array_t>;
+            constexpr auto vtype = [](){
+                using value_type = meta::get_element_type_t<array_t>;
+                if constexpr (meta::is_integral_constant_v<value_type>)
+                    return meta::as_value_v<typename value_type::value_type>;
+                else return meta::as_value_v<value_type>;
+            }();
+            using value_type = meta::type_t<decltype(vtype)>;
             auto p = value_type{1};
             for (auto j=k+1; j<len(shape); j++)
                 p *= at(shape,j);
@@ -70,7 +82,7 @@ namespace nmtools::index
         // handle if all elements in array_t is integral_constant
         // return type can not have same type as shape, assignment is not available
         // convert to value and then compute
-        if constexpr (meta::apply_logical_and_v<meta::is_integral_constant,array_t>)
+        if constexpr (meta::is_constant_index_array_v<array_t>)
         {
             constexpr auto shape_   = meta::constant_to_value<array_t>::value;
             constexpr auto strides_ = compute_strides(shape_);
@@ -81,7 +93,12 @@ namespace nmtools::index
         // return type can have same type as shape, assignment is ok
         else
         {
-            using return_t = meta::resolve_optype_t<compute_strides_t,array_t>;
+            using element_t = meta::get_element_or_common_type_t<array_t>;
+            using return_t  = meta::resolve_optype_t<compute_strides_t,array_t>;
+            // for now compute_strides only support integral, not index
+            // TODO: may be support index
+            static_assert( std::is_integral_v<element_t>
+                , "unsupported compute_strides" );
             auto strides_ = return_t{};
             if constexpr (meta::is_resizeable_v<return_t>)
                 strides_.resize(len(shape));
@@ -105,12 +122,24 @@ namespace nmtools::index
 namespace nmtools::meta
 {
 
-    template <typename array_t>
+    template <typename shape_t>
     struct resolve_optype<
-        void, index::compute_strides_t, array_t
+        void, index::compute_strides_t, shape_t
     >
     {
-        using type = tuple_to_array_t<transform_bounded_array_t<array_t>>;
+        static constexpr auto vtype = [](){
+            using type = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
+            // temporary workaround:
+            // the element type may be constant index,
+            // especially when shape is tuple with single element
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                constexpr auto N = fixed_index_array_size_v<shape_t>;
+                using result_t = std::array<size_t,N>;
+                return as_value_v<result_t>;
+            }
+            else return as_value_v<type>;
+        }();
+        using type = type_t<decltype(vtype)>;
     }; // resolve_optype
 } // namespace nmtools::meta
 

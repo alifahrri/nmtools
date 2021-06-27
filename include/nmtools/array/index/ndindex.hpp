@@ -88,6 +88,8 @@ namespace nmtools::index
     template <typename shape_t>
     constexpr auto ndindex(const shape_t& shape)
     {
+        static_assert( meta::is_index_array_v<shape_t>
+            , "unsupported ndindex" );
         return ndindex_t(shape);
     } // ndindex
 }

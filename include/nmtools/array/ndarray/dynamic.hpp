@@ -173,8 +173,9 @@ namespace nmtools::array
         } // strides
 
         template <typename...size_types>
-        auto resize(size_types...shape) -> std::enable_if_t<(std::is_integral_v<size_types> &&...)>
+        auto resize(size_types...shape) -> std::enable_if_t<(meta::is_index_v<size_types> &&...)>
         {
+            // NOTE: use meta::is_index_v to allow constant index
             shape_.resize(sizeof...(shape));
             meta::template_for<sizeof...(shape)>([&](auto index){
                 constexpr auto i = decltype(index)::value;

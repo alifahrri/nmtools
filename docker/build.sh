@@ -34,5 +34,9 @@ if [ -z "$FILE" -a "$FILE" != " " ]; then
         FILE="${DIR}/dockerfile"
 fi
 
+BUILD_ARGS=${POSITIONAL[@]}
+
+echo $BUILD_ARGS
+
 ## assuming this script is located in root/scripts & Dockerfile in root/docker
-docker build -t $IMG -f ${FILE} ${DIR}/..
+docker build $BUILD_ARGS -t $IMG -f ${FILE} ${DIR}/..

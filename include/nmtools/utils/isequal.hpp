@@ -83,9 +83,9 @@ namespace nmtools::utils
                 return T1;
             else if constexpr (is_none_v<u_t> && is_none_v<t2>)
                 return T2;
-            else if constexpr (meta::is_scalar_v<u_t> && meta::is_scalar_v<t1>)
+            else if constexpr (meta::is_num_v<u_t> && meta::is_num_v<t1>)
                 return T1;
-            else if constexpr (meta::is_scalar_v<u_t> && meta::is_scalar_v<t2>)
+            else if constexpr (meta::is_num_v<u_t> && meta::is_num_v<t2>)
                 return T2;
             else if constexpr (meta::is_ndarray_v<u_t> && meta::is_ndarray_v<t1>)
                 return T1;
@@ -127,10 +127,11 @@ namespace nmtools::utils
                 auto is_none = is_none_v<t1> && is_none_v<t1>;
                 auto is_integer = (meta::is_integer_v<t1> || meta::is_integral_constant_v<t1>)
                     && (meta::is_integer_v<t2> || meta::is_integral_constant_v<t2>);
-                auto is_scalar_or_array =  (meta::is_scalar_v<t1> && meta::is_scalar_v<t2>)
+                auto is_num_or_array =  (meta::is_num_v<t1> && meta::is_num_v<t2>)
                     || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>);
+                auto is_index_constant = meta::is_index_array_v<t1> && meta::is_index_array_v<t2>;
                 auto element_is_integer = meta::is_integer_v<t1_t> && meta::is_integer_v<t2_t>;
-                return (is_scalar_or_array && element_is_integer) || is_integer || is_none;
+                return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none;
             };
 
             // given either type, check if the type is constrained
@@ -256,6 +257,32 @@ namespace nmtools::utils
             else if constexpr (meta::is_integral_constant_v<T>) {
                 using value_type = typename T::value_type;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
+            }
+            // "specialize" on index array, avoid using ndindex
+            else if constexpr (meta::is_index_array_v<T> && meta::is_index_array_v<U>) {
+                bool equal = true;
+                // @todo: static assert whenever possible
+                assert ( len(t)==len(u) );
+                // prefer fixed size for indexing to allow constant index
+                if constexpr (meta::is_constant_index_array_v<T>) {
+                    constexpr auto N = meta::fixed_index_array_size_v<T>;
+                    meta::template_for<N>([&](auto i){
+                        equal = equal && (at(t,i) == at(u,i));
+                    });
+                    return equal;
+                }
+                else if constexpr (meta::is_constant_index_array_v<U>) {
+                    constexpr auto N = meta::fixed_index_array_size_v<U>;
+                    meta::template_for<N>([&](auto i){
+                        equal = equal && (at(t,i) == at(u,i));
+                    });
+                    return equal;
+                }
+                else {
+                    for (size_t i=0; i<len(t); i++)
+                        equal = equal && (at(t,i) == at(u,i));
+                    return equal;
+                }
             }
             // assume both T and U is ndarray
             else {

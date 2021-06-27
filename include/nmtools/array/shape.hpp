@@ -179,7 +179,8 @@ namespace nmtools
             return meta::is_fixed_size_ndarray_v<type> || meta::has_shape_v<type>
                 || (meta::nested_array_dim_v<type> > 0)
                 || (meta::is_array1d_v<type> && meta::has_size_v<type>)
-                || (meta::is_scalar_v<type>);
+                || (meta::is_num_v<type>)
+                || (meta::is_fixed_index_array_v<type>);
         };
         // for either type, both Left and Right must satisfy constraint (scalar or ndarray)
         constexpr auto constrained_either = [constrained](auto a){
@@ -207,7 +208,7 @@ namespace nmtools
                 return shape_t{shape(*ptr)};
         }
         // for scalar type, simply return None
-        else if constexpr (meta::is_scalar_v<array_t>)
+        else if constexpr (meta::is_num_v<array_t>)
             return None;
         // check for fixed-shape array, should capture all kind of fixed-size array
         else if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
@@ -216,6 +217,8 @@ namespace nmtools
             // return detail::make_constant_shape(array);
             return meta::fixed_ndarray_shape_v<array_t>;
         }
+        else if constexpr (meta::is_fixed_index_array_v<array_t>)
+            return meta::fixed_index_array_size_v<array_t>;
         // check for dynamic-shape array but fixed-dimension array
         else if constexpr (meta::nested_array_dim_v<array_t> > 0) {
             constexpr auto N = meta::nested_array_dim_v<array_t>;
@@ -263,6 +266,7 @@ namespace nmtools
      * @tparam array_t array type
      * @param array 
      * @return constexpr decltype(auto) 
+     * @todo remove
      */
     template <template<typename,size_t> typename shape_t, typename array_t>
     constexpr decltype(auto) shape(const array_t& array)
@@ -270,6 +274,28 @@ namespace nmtools
         auto shape_ = shape(array);
         return index::make_array<shape_t>(shape_);
     } // shape
+
+    /**
+     * @brief Get the length of array.
+     *
+     * Mimics python's len.
+     * 
+     * @tparam array_t 
+     * @param array 
+     * @return constexpr auto 
+     */
+    template <typename array_t>
+    constexpr auto len(const array_t& array)
+    {
+        auto shape_ = shape(array);
+        return at(shape_, std::integral_constant<size_t,0>{});
+    } // len
+
+    template <typename...size_types>
+    constexpr auto len(const std::tuple<size_types...>& array)
+    {
+        return sizeof...(size_types);
+    } // len
 
     /**
      * @brief return the number of dimension of an array
@@ -284,9 +310,6 @@ namespace nmtools
     template <typename array_t>
     constexpr auto dim(const array_t& array)
     {
-        static_assert (meta::is_fixed_dim_ndarray_v<array_t> || meta::has_dim_v<array_t>
-            , "unsupported dim; only support fixed-dim array or array has .dim()"
-        );
         // prefer for explicit call to dim() first
         if constexpr (meta::has_dim_v<array_t>)
             return array.dim();
@@ -308,20 +331,8 @@ namespace nmtools
             // return meta::index_constant<1>{};
             return 1;
         }
+        else return len(shape(array));
     } // dim
-
-    template <typename array_t>
-    constexpr auto len(const array_t& array)
-    {
-        auto shape_ = shape(array);
-        return at(shape_, std::integral_constant<size_t,0>{});
-    } // len
-
-    template <typename...size_types>
-    constexpr auto len(const std::tuple<size_types...>& array)
-    {
-        return sizeof...(size_types);
-    } // len
 
     /** @} */ // end group utility
 } // namespace nmtools

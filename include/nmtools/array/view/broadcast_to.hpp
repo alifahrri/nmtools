@@ -14,6 +14,36 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/assert.hpp"
 
+namespace nmtools::view::detail::fn
+{
+    /**
+     * @brief Index broadcast_to, compile-time version.
+     * 
+     * @tparam array_t 
+     * @tparam shape_t 
+     * @return constexpr auto 
+     */
+    template <typename array_t, typename shape_t>
+    constexpr auto broadcast_to(meta::as_value<array_t>, meta::as_value<shape_t>)
+    {
+        // map type to value
+        constexpr auto src_shape = meta::fixed_ndarray_shape_v<array_t>;
+        constexpr auto dst_shape = meta::constant_to_value_v<shape_t>;
+        // actually call broadcast to
+        constexpr auto result    = index::broadcast_to(src_shape,dst_shape);
+        // TODO: use optional
+        constexpr auto success   = std::get<0>(result);
+        if constexpr (success) {
+            constexpr auto shape_ = std::get<1>(result);
+            constexpr auto free   = std::get<2>(result);
+            constexpr auto not_free    = index::logical_not(free);
+            constexpr auto origin_axes = index::nonzero(not_free);
+            return std::tuple{shape_, origin_axes};
+        }
+        else return meta::detail::Fail;
+    }
+} // nmtools::view::detail::fn
+
 namespace nmtools::view
 {
     /**
@@ -99,7 +129,7 @@ namespace nmtools::view
     struct broadcast_to_t<array_t,none_t,origin_axes_t>
     {
         // conversion can't have trailing return type
-        static_assert( meta::is_scalar_v<array_t>
+        static_assert( meta::is_num_v<array_t>
             , "when shape is None, only accepts scalar array");
         using value_type = array_t;
         using const_reference = const value_type&;
@@ -148,6 +178,22 @@ namespace nmtools::view
         if constexpr (std::is_arithmetic_v<array_t>) {
             using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t>;
             return view_t{{array, shape, None}};
+        }
+        // both shape is known at compile time, checks at compile time
+        else if constexpr (meta::is_fixed_size_ndarray_v<array_t> && meta::is_constant_index_array_v<shape_t>) {
+            constexpr auto array_v = meta::as_value_v<array_t>;
+            constexpr auto shape_v = meta::as_value_v<shape_t>;
+            constexpr auto result  = detail::fn::broadcast_to(array_v,shape_v);
+            using result_t = decltype(result);
+            if constexpr (!meta::is_fail_v<result_t>) {
+                constexpr auto shape_ = std::get<0>(result);
+                constexpr auto origin_axes = std::get<1>(result);
+                using origin_axes_t = meta::remove_cvref_t<decltype(origin_axes)>;
+                using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>;
+                return view_t{{array,shape,origin_axes}};
+            }
+            else static_assert( !meta::is_fail_v<result_t>
+                , "unsupported broadcast_to" );
         }
         // assume array_t is ndarray
         else {
@@ -210,13 +256,13 @@ namespace nmtools::meta
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct is_ndarray< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
     {
-        static constexpr auto value = (is_ndarray_v<array_t> || is_scalar_v<array_t>) && is_index_array_v<shape_t>;
+        static constexpr auto value = (is_ndarray_v<array_t> || is_num_v<array_t>) && is_index_array_v<shape_t>;
     };
 
     template <typename array_t, typename shape_t, typename origin_axes_t>
-    struct is_scalar< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
+    struct is_num< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
     {
-        static constexpr auto value = is_scalar_v<array_t> && is_none_v<shape_t>;
+        static constexpr auto value = is_num_v<array_t> && is_none_v<shape_t>;
     };
 } // namespace nmtools::meta
 

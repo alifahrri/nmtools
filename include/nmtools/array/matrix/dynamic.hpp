@@ -31,7 +31,7 @@ namespace nmtools::array
         using size_type = size_t;
         using reference = value_type&;
         using const_reference = const value_type&;
-        using shape_type = std::pair<size_t,size_t>;
+        using shape_type = std::array<size_t,2>;
 
         explicit dynamic_matrix(size_type rows, size_type cols)
             : _rows(rows), _cols(cols)
@@ -110,7 +110,7 @@ namespace nmtools::array
          */
         constexpr shape_type shape() const noexcept
         {
-            return std::make_pair(_rows,_cols);
+            return {_rows,_cols};
         }
 
         /**
