@@ -1127,13 +1127,13 @@ NMTOOLS_TEST_SUBCASE( func, result, xprefix##df, yprefix##df, zprefix##df );
  * 
  * @warn only available for doctest
  */
-#if defined(__EMSCRIPTEN__) || defined(__ANDROID__) || defined(__arm__) || defined(__MINGW32__)
-    // somehow doctest MESSAGE macro doesnt work well with emscripten
+#if 0
     #define LOG_TYPEINFO(type) {}
 #else
 #define LOG_TYPEINFO(type) \
 { \
-    MESSAGE(std::string(#type) + " = " + NMTOOLS_TESTING_GET_TYPENAME(type)); \
+    std::string msg = std::string(#type) + std::string(" = ") + NMTOOLS_TESTING_GET_TYPENAME(type); \
+    MESSAGE(msg); \
 }
 #endif
 
