@@ -257,6 +257,15 @@ namespace nmtools::view
     }; // get_underlying_array_type
 
     /**
+     * @brief helper alias template for get_underlying_array_type
+     * 
+     * @tparam T type to transform
+     * @see get_underlying_array_type
+     */
+    template <typename T>
+    using get_underlying_array_type_t = typename get_underlying_array_type<T>::type;
+
+    /**
      * @brief specialization of get_underlying_array_type for view type.
      * 
      * @tparam view_t 
@@ -265,21 +274,49 @@ namespace nmtools::view
     template <template<typename...> typename view_t, typename...Ts>
     struct get_underlying_array_type<decorator_t<view_t,Ts...>>
     {
-        using view_type = decorator_t<view_t,Ts...>;
-        using array_type = get_array_type_t<view_type>;
-        // need to remove cvref from array_type since is_view doesnt aware of it
-        using type = std::conditional_t<is_view_v<meta::remove_cvref_t<array_type>>,
-            typename get_underlying_array_type<meta::remove_cvref_t<array_type>>::type, array_type>;
+        static constexpr auto vtype = [](){
+            using view_type = decorator_t<view_t,Ts...>;
+            using array_type = get_array_type_t<view_type>;
+            using nocv_array_t = meta::remove_cvref_t<array_type>;
+            // there some possibility of array_type trait/concept:
+            // - the array is view (which also ndarray)
+            // - the array is list of array (array type of binary ufuncs, for example)
+            // - the array is actual concrete array (ndarray but not view)
+            if constexpr (meta::is_tuple_v<nocv_array_t>) {
+                // for each element in array_type,
+                // recursively call get_underlying_array_type
+                constexpr auto N = meta::len_v<nocv_array_t>;
+                constexpr auto vtype = meta::template_reduce<N>([](auto init, auto index){
+                    constexpr auto i = decltype(index)::value;
+                    using init_t  = decltype(init);
+                    using array_i = meta::at_t<array_type,i>;
+                    // array_i may be cvref
+                    using nocv_array_i = meta::remove_cvref_t<array_i>;
+                    using array_t = std::conditional_t<is_view_v<nocv_array_i>,
+                        get_underlying_array_type_t<nocv_array_i>, array_i
+                    >;
+                    if constexpr (is_none_v<init_t>) {
+                        // init typelist, use std::tuple for now,
+                        // TODO: deduce template template of nocv_array_tif possible
+                        using type = std::tuple<array_t>;
+                        return meta::as_value_v<type>;
+                    } else {
+                        using tuple_t = meta::type_t<init_t>;
+                        using type = meta::append_type_t<tuple_t,array_t>;
+                        return meta::as_value_v<type>;
+                    }
+                }, /*init=*/None);
+                return vtype;
+            } else if constexpr (is_view_v<nocv_array_t>) {
+                using type = get_underlying_array_type_t<nocv_array_t>;
+                return meta::as_value_v<type>;
+            } else /* if constexpr (meta::is_ndarray_v<nocv_array_t>) */ {
+                // assume concrete array already
+                return meta::as_value_v<array_type>;
+            }
+        }();
+        using type = meta::type_t<decltype(vtype)>;
     }; // get_underlying_array_type
-
-    /**
-     * @brief helper alias template for get_underlying_array_type
-     * 
-     * @tparam T type to transform
-     * @see get_underlying_array_type
-     */
-    template <typename T>
-    using get_underlying_array_type_t = typename get_underlying_array_type<T>::type;
 
     /** @} */ // end group view
 } // namespace nmtools::view
