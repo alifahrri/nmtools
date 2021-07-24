@@ -122,8 +122,7 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("array::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_h, shape, expected );
 }
 
-// skip constexpr test for emscripten for now, works for gcc & clang
-#if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
+#if NMTOOLS_TESTING_HAS_CONSTEXPR_MATH
 TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("array::broadcast_to"))
 {
     {

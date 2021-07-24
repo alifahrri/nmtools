@@ -129,17 +129,82 @@ TEST_CASE("broadcast_to(case10)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case10, x, shape, expected );
 }
 
+// TODO: move to meta (?)
 TEST_CASE("broadcast_to(traits)"  * doctest::test_suite("view::broadcast_to"))
 {
     using namespace nmtools::literals;
     namespace meta = nmtools::meta;
-    SUBCASE("is_fixed_size_ndarray(1)")
+    SUBCASE("is_ndarray")
     {
-        int  x[3] = {1,2,3};
-        auto shape = std::tuple{1_ct,2_ct,3_ct};
-        auto broadcasted = view::broadcast_to(x,shape);
-        using broadcasted_t = decltype(broadcasted);
-        NMTOOLS_ASSERT_EQUAL( meta::is_fixed_size_ndarray_v<broadcasted_t>, true );
+        {
+            auto x = std::vector{1,2,3};
+            auto shape = std::tuple{1_ct,2_ct,3_ct};
+            auto broadcasted    = view::broadcast_to(x,shape);
+            using broadcasted_t = decltype(broadcasted);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, broadcasted_t );
+        }
+    }
+    SUBCASE("is_hybrid_ndarray")
+    {
+        {
+            // broadcast_to view can't be hybrid_ndarray for now
+            auto x = na::hybrid_ndarray({1,2,3});
+            auto shape = std::array{1,2,3};
+            auto broadcasted    = view::broadcast_to(x,shape);
+            using broadcasted_t = decltype(broadcasted);
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_hybrid_ndarray, broadcasted_t );
+        }
+    }
+    SUBCASE("is_fixed_size_ndarray")
+    {
+        {
+            int  x[3] = {1,2,3};
+            auto shape = std::tuple{1_ct,2_ct,3_ct};
+            auto broadcasted = view::broadcast_to(x,shape);
+            using broadcasted_t = decltype(broadcasted);
+            NMTOOLS_ASSERT_EQUAL( meta::is_fixed_size_ndarray_v<broadcasted_t>, true );
+        }
+        {
+            int  x[3] = {1,2,3};
+            auto shape = std::vector{1,2,3};
+            auto broadcasted = view::broadcast_to(x,shape);
+            using broadcasted_t = decltype(broadcasted);
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, broadcasted_t );
+        }
+    }
+    SUBCASE("is_dynamic_ndarray")
+    {
+        {
+            auto x     = std::vector{1,2,3};
+            auto shape = std::vector{1,2,3};
+            auto broadcasted    = view::broadcast_to(x,shape);
+            using broadcasted_t = decltype(broadcasted);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_dynamic_ndarray, broadcasted_t );
+        }
+        {
+            auto x     = std::vector{1,2,3};
+            auto shape = std::tuple{1_ct,2_ct,3_ct};
+            auto broadcasted    = view::broadcast_to(x,shape);
+            using broadcasted_t = decltype(broadcasted);
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_dynamic_ndarray, broadcasted_t );
+        }
+    }
+    SUBCASE("is_fixed_dim_ndarray")
+    {
+        {
+            auto x     = std::vector{1,2,3};
+            auto shape = std::vector{1,2,3};
+            auto broadcasted    = view::broadcast_to(x,shape);
+            using broadcasted_t = decltype(broadcasted);
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, broadcasted_t );
+        }
+        {
+            auto x     = std::vector{1,2,3};
+            auto shape = std::tuple{1_ct,2_ct,3_ct};
+            auto broadcasted    = view::broadcast_to(x,shape);
+            using broadcasted_t = decltype(broadcasted);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, broadcasted_t );
+        }
     }
     // this use assert
     // SUBCASE("is_fixed_size_ndarray(2)")

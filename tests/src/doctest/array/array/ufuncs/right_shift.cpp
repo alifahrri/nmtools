@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, right_shift, case_name); \
     using namespace args; \
     auto result = RUN_right_shift(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -90,7 +90,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, reduce_right_shift, case_name); \
     using namespace args; \
     auto result = RUN_reduce_right_shift(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -201,7 +201,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, accumulate_right_shift, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_right_shift(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -267,7 +267,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, outer_right_shift, case_name); \
     using namespace args; \
     auto result = RUN_outer_right_shift(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -275,7 +275,7 @@ TEST_CASE("outer_right_shift(case1)" * doctest::test_suite("array::outer_right_s
 {
     OUTER_RIGHT_SHIFT_SUBCASE( case1,   a,   b );
     OUTER_RIGHT_SHIFT_SUBCASE( case1, a_a, b_a );
-    OUTER_RIGHT_SHIFT_SUBCASE( case1, a_v, b_v );
+    // OUTER_RIGHT_SHIFT_SUBCASE( case1, a_v, b_v );
     OUTER_RIGHT_SHIFT_SUBCASE( case1, a_f, b_f );
     OUTER_RIGHT_SHIFT_SUBCASE( case1, a_d, b_d );
     OUTER_RIGHT_SHIFT_SUBCASE( case1, a_h, b_h );

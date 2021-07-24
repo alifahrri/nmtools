@@ -71,6 +71,32 @@ TEST_CASE("clip(case3)" * doctest::test_suite("view::clip"))
     CLIP_SUBCASE( case3, a_h, amin_h, amax);
 }
 
+namespace meta = nmtools::meta;
+
+TEST_CASE("clip(traits)" * doctest::test_suite("view::clip"))
+{
+    SUBCASE("is_ndarray")
+    {
+        auto array = std::vector{1,2,3};
+        auto amin  = std::vector{0,0,0};
+        auto amax  = std::vector{3,3,3};
+        auto view  = nm::view::clip(array,amin,amax);
+        using view_t = decltype(view);
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
+    }
+    SUBCASE("is_hybrid_ndarray")
+    {
+        {
+            auto array = na::hybrid_ndarray({1,2,3});
+            auto amin  = na::hybrid_ndarray({0,0,0});
+            auto amax  = na::hybrid_ndarray({3,3,3});
+            auto view  = nm::view::clip(array,amin,amax);
+            using view_t = decltype(view);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
+        }
+    }
+}
+
 #define CLIP_FIXED_SHAPE_SUBCASE(subcase_name, expected_shape, ...) \
 SUBCASE(#subcase_name) \
 { \
@@ -82,7 +108,6 @@ SUBCASE(#subcase_name) \
 
 TEST_CASE("clip(fixed_shape)" * doctest::test_suite("view::clip"))
 {
-    namespace meta = nmtools::meta;
     {
         int A[1][3] = {{1,2,3}};
         int B[3][1] = {{4},{5},{6}};
