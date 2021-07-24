@@ -393,6 +393,22 @@ namespace nmtools::meta
         using type = array::dynamic_ndarray<U,storage_type,shape_storage_type>;
     }; // replace_element_type
 
+    /**
+     * @brief Default definition of make_dynamic_ndarray,
+     * returns nmtools::array::dynamic_ndarray.
+     * 
+     * @tparam element_t desired element type of resulting array
+     * @todo consider to make this metafunction override-able via global macro
+     */
+    template <typename element_t>
+    struct make_dynamic_ndarray
+    {
+        using type = array::dynamic_ndarray<element_t>;
+    }; // make_dynamic_ndarray
+
+    template <typename element_t>
+    using make_dynamic_ndarray_t = type_t<make_dynamic_ndarray<element_t>>;
+
     /** @} */ // end group traits
     
 } // namespace nmtools::meta
@@ -413,7 +429,7 @@ namespace nmtools::meta
      * @brief specialization of metafunction get_ndarray_value_type,
      * which tells the value/element type of dynamic_ndarray
      * 
-     * @tparam T element type of dynamic_ndarrray, deduced automatically
+     * @tparam T element type of dynamic_ndarray, deduced automatically
      */
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
     struct get_ndarray_value_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>>
