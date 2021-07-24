@@ -10,29 +10,52 @@
 namespace nmtools::view::detail::fn
 {
     /**
+     * @brief Returns either None (if array_t is number) or the shape otherwise
+     * 
+     * Broadcasting can involve number and ndarray(s).
+     *
+     * @tparam array_t 
+     * @return constexpr auto 
+     */
+    template <typename array_t>
+    constexpr auto fixed_shape_or_none(meta::as_value<array_t>)
+    {
+        if constexpr (meta::is_num_v<array_t>) {
+            return None;
+        } else {
+            return meta::fixed_ndarray_shape_v<array_t>;
+        }
+    } // fixed_shape_or_none
+
+    /**
      * @brief Compile time version of index::broadcast_shape.
      * 
      * @tparam arrays_t 
      * @return constexpr auto 
      */
     template <typename...arrays_t>
-    constexpr auto broadcast_shape(meta::as_value<arrays_t>...)
+    constexpr auto broadcast_shape(meta::as_value<arrays_t>...arrays)
     {
         // map type to value, and actually call broadcast_shape implementation
-        constexpr auto result  = index::broadcast_shape(meta::fixed_ndarray_shape_v<arrays_t>...);
+        constexpr auto result  = index::broadcast_shape(fixed_shape_or_none(arrays)...);
         constexpr auto success = std::get<0>(result);
-        if constexpr (success) {
+        constexpr auto bshape = std::get<1>(result);
+        using bshape_t = meta::remove_cvref_t<decltype(bshape)>;
+        if constexpr (success && is_none_v<bshape_t>) {
+            // Note broadcasting numbers return none
+            return None;
+        } else if constexpr (success && !is_none_v<bshape_t>) {
             // then map back to type
-            constexpr auto bshape = std::get<1>(result);
             constexpr auto shape  = meta::template_map<len(bshape)>([&](auto i){
                 constexpr auto ts = at(bshape,i);
                 return std::integral_constant<size_t,ts>{};
             });
             return shape;
+        } else {
+            // since this value is expected to be called at compile time,
+            // return fail type when fail
+            return meta::detail::Fail;
         }
-        // since this value is expected to be called at compile time,
-        // return fail type when fail
-        else return meta::detail::Fail;
     } // broadcast_shape
 } // namespace nmtools::view::detail::fn
 
@@ -53,7 +76,7 @@ namespace nmtools::view
 
         // when all arrays' shapes are known at compile time, perform checks at compile time
         // the return type is not wrapped, and should be noexcept ready
-        if constexpr ((meta::is_fixed_size_ndarray_v<arrays_t> && ...)) {
+        if constexpr (((meta::is_fixed_size_ndarray_v<arrays_t> || meta::is_num_v<arrays_t>) && ...)) {
             constexpr auto bshape = detail::fn::broadcast_shape(meta::as_value_v<arrays_t>...);
             static_assert( !meta::is_fail_v<decltype(bshape)>
                 , "cannot broadcast arrays together" );
