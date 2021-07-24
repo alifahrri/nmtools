@@ -113,8 +113,8 @@ namespace nmtools::meta
         return template_map(f,index_t{});
     }
 
-    template <typename F, typename...args_t, typename initial_t, size_t I, size_t...Is>
-    constexpr auto template_reduce(F&& f, const initial_t& init, const std::tuple<args_t...>& args_pack, std::integer_sequence<size_t,I,Is...>)
+    template <typename F, typename args_pack_t, typename initial_t, size_t I, size_t...Is>
+    constexpr auto template_reduce(F&& f, const initial_t& init, const args_pack_t& args_pack, std::integer_sequence<size_t,I,Is...>)
     {
         auto init_ = f(init, std::get<I>(args_pack), std::integral_constant<size_t,I>{});
         if constexpr (static_cast<bool>(sizeof...(Is))) {
@@ -125,6 +125,17 @@ namespace nmtools::meta
             return init_;
     } // template_reduce
 
+    /**
+     * @brief Perform reduce-like operator f on args_pack typelist with initial value.
+     * 
+     * @tparam F 
+     * @tparam args_t 
+     * @tparam initial_t 
+     * @param f         reduce-like operation
+     * @param init      initial value
+     * @param args_pack typelist to operate on
+     * @return constexpr auto 
+     */
     template <typename F, typename...args_t, typename initial_t>
     constexpr auto template_reduce(F&& f, const initial_t& init, const std::tuple<args_t...>& args_pack)
     {
@@ -133,13 +144,75 @@ namespace nmtools::meta
         return template_reduce(f,init,args_pack,indices_t{});
     } // template_reduce
 
+    /**
+     * @brief Perform reduce-like operator f on args_pack typelist
+     * with initial value and explicit number of recursion (N).
+     * 
+     * @tparam N 
+     * @tparam F 
+     * @tparam args_pack_t 
+     * @tparam initial_t 
+     * @param f 
+     * @param init 
+     * @param args_pack 
+     * @return constexpr auto 
+     */
+    template <size_t N, typename F, typename args_pack_t, typename initial_t>
+    constexpr auto template_reduce(F&& f, const initial_t& init, const args_pack_t& args_pack)
+    {
+        using indices_t  = std::make_index_sequence<N>;
+        return template_reduce(f,init,args_pack,indices_t{});
+    } // template_reduce
+
+    /**
+     * @brief Entrypoint for template_reduce. Perform reduce-like operator f on typelist args_pack.
+     *
+     * This can be helpful when one wants to operate on the whole type-list.
+     * For example transforming tuple{1_ct,3_ct,2_ct} to int[1][3][2];
+     * 
+     * @tparam F 
+     * @tparam args_t 
+     * @param f         reduce-like operation
+     * @param args_pack type list to operate on
+     * @return constexpr auto 
+     */
     template <typename F, typename...args_t>
     constexpr auto template_reduce(F&& f, const std::tuple<args_t...>& args_pack)
     {
         constexpr auto N = sizeof...(args_t);
         using indices_t  = typename range<1,N>::type;
+        // TODO: do not use std::get, use more generic ver
         auto init = std::get<0>(args_pack);
         return template_reduce(f,init,args_pack,indices_t{});
+    } // template_reduce
+
+    template <typename F, typename init_t, size_t I, size_t...Is>
+    constexpr auto template_reduce(F&& f, const init_t& init, std::integer_sequence<size_t,I,Is...>)
+    {
+        auto result = f(init, std::integral_constant<size_t,I>{});
+        if constexpr (static_cast<bool>(sizeof...(Is))) {
+            using indices_t = std::integer_sequence<size_t,Is...>;
+            return template_reduce(f,result,indices_t{});
+        } else {
+            return result;
+        }
+    } // template_reduce
+
+    /**
+     * @brief Simplified version of template_reduce that doesn't take the tuple to "iterate".
+     * 
+     * @tparam N number of desired iteration
+     * @tparam F reducer with "f(init,index) -> init_k" signature
+     * @tparam init_t 
+     * @param f reducer
+     * @param init initial value for k=0
+     * @return constexpr auto 
+     */
+    template <size_t N, typename F, typename init_t>
+    constexpr auto template_reduce(F&& f, const init_t& init)
+    {
+        using indices_t = typename range<0,N>::type;
+        return template_reduce(f, init, indices_t{});
     } // template_reduce
 } // namespace nmtools::meta
 
