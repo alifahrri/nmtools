@@ -11,9 +11,12 @@
 #include "nmtools/array/index/outer.hpp"
 #include "nmtools/array/index/remove_dims.hpp"
 #include "nmtools/array/index/where.hpp"
+#include "nmtools/array/index/sum.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/constants.hpp"
 #include "nmtools/array/dtypes.hpp"
+#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/array/eval.hpp"
+#include "nmtools/constants.hpp"
 
 #include <tuple>
 #include <variant>
@@ -694,12 +697,13 @@ namespace nmtools::view
     {
         // note: axis as reference to prevent array decays
 
-        // when axis is None can return scalar or ndarray depends on keepdims type
+        // when axis is None, reduce can return scalar or ndarray depends on keepdims type
         // use variant to tell that the return value may be scalar or ndarray,
         // depending on the value of keepdims at runtime
         if constexpr (is_none_v<axis_t> && meta::is_boolean_v<keepdims_t>) {
             using scalar_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,std::false_type>;
             using ndarray_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,std::true_type>;
+            // TODO: make default either type configurable
             using either_t = std::variant<scalar_t,ndarray_t>;
             return (keepdims ?
                     either_t{ndarray_t{{op,array,axis,initial,True}}}
@@ -770,8 +774,59 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
+    /**
+     * @brief Specialization of hybrid_ndarray_max_size for ufunc view.
+     *
+     * Note that when this meta fn returns not Fail results,
+     * is_hybrid_ndarray concept should be true.
+     * 
+     * @tparam op_t 
+     * @tparam arrays_t 
+     */
+    template <typename op_t, typename...arrays_t>
+    struct hybrid_ndarray_max_size< view::decorator_t<view::ufunc_t, op_t,arrays_t...> >
+    {
+        static inline constexpr auto value = [](){
+            if constexpr ((is_hybrid_ndarray_v<arrays_t> && ...)) {
+                using types = std::tuple<arrays_t...>;
+                return template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
+                    constexpr auto i = decltype(index)::value;
+                    using type = at_t<types,i>;
+                    constexpr auto s = hybrid_ndarray_max_size_v<type>;
+                    return (init > s ? init : s);
+                }, 0ul);
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = remove_cvref_t<decltype(value)>;
+        using type = value_type;
+    }; // hybrid_ndarray_max_size
+
+    template <typename op_t, typename...arrays_t>
+    struct fixed_dim< view::decorator_t<view::ufunc_t, op_t,arrays_t...> >
+    {
+        static inline constexpr auto value = [](){
+            if constexpr ((is_fixed_dim_ndarray_v<arrays_t> && ...)) {
+                using types = std::tuple<arrays_t...>;
+                auto ref_dim  = fixed_dim_v<at_t<types,0>>;
+                if constexpr (static_cast<bool>((fixed_dim_v<arrays_t> == ...)))
+                    return ref_dim;
+                else return detail::Fail;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = remove_cvref_t<decltype(value)>;
+        using type = value_type;
+    }; // fixed_dim
+
+    /**
+     * @brief Specialization of fixed_ndarray_shape for ufunc view
+     * 
+     * @tparam op_t 
+     * @tparam arrays_t 
+     */
     template <typename op_t, typename...arrays_t>
     struct fixed_ndarray_shape< view::ufunc_t<op_t,arrays_t...> >
     {
@@ -864,7 +919,26 @@ namespace nmtools::meta
         view::reduce_t< op_t, array_t, axis_t, initial_t, keepdims_t >
     >
     {
-        static inline constexpr auto value = detail::fail_t{};
+        static inline constexpr auto value = [](){
+            // the shape of the reduction can only be known at compile time
+            // if axis and keepdims is integral constant
+            if constexpr (
+                   is_fixed_size_ndarray_v<array_t>
+                && is_integral_constant_v<axis_t>
+                && (is_integral_constant_v<keepdims_t> || is_none_v<keepdims_t>)
+            ) {
+                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
+                constexpr auto axis  = axis_t::value;
+                constexpr auto keepdims = [](){
+                    if constexpr (is_integral_constant_v<keepdims_t>)
+                        return keepdims_t::value;
+                    else /* if constexpr (is_none_v) */ return false;
+                }();
+                return index::remove_dims(shape, axis, keepdims);
+            } else {
+                return detail::Fail;
+            }
+        }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
 
@@ -907,6 +981,40 @@ namespace nmtools::meta
         using type = typename view::reduce_t<op_t, array_t, axis_t, initial_t, keepdims_t>::result_type;
     };
 
+    /**
+     * @brief Specialization of eval return type resolver for reduce ufunc.
+     *
+     * Need to specialize eval resolver because reducer may produce num, ndarray, or either.
+     * 
+     * @tparam op_t 
+     * @tparam array_t 
+     * @tparam axis_t 
+     * @tparam initial_t 
+     * @tparam keepdims_t 
+     */
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    struct resolve_optype<
+        void, array::eval_t, view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t>, none_t
+    >
+    {
+        static constexpr auto vtype = [](){
+            using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t>;
+            if constexpr (is_fixed_size_ndarray_v<view_t>) {
+                // NOTE: resolve_unary_array_type defined in eval.hpp
+                // only call on fixed_size_ndarray because axis_t may be runtime value otherwise
+                return resolve_unary_array_type(as_value_v<array_t>, as_value_v<view_t>);
+            } else if constexpr (is_num_v<view_t>) {
+                using type = get_element_type_t<view_t>;
+                return as_value_v<type>;
+            } else /* if constexpr (is_ndarray_v<view_t>) */ {
+                using element_t = get_element_type_t<view_t>;
+                using type = make_dynamic_ndarray_t<element_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // resolve_optype
+
     // NOTE: dont support fixed size for now
     // TODO: fix for fixed size
     template <typename op_t, typename array_t, typename axis_t>
@@ -929,14 +1037,13 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
     template <typename op_t, typename array_t, typename axis_t>
     struct fixed_ndarray_shape<
         view::accumulate_t< op_t, array_t, axis_t >
     >
     {
-        static inline constexpr auto value = detail::fail_t{};
+        // accumulate ufunc doesnt change the shape
+        static inline constexpr auto value = fixed_ndarray_shape_v<array_t>;
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
 
@@ -979,16 +1086,95 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
     template <typename op_t, typename lhs_t, typename rhs_t>
     struct fixed_ndarray_shape<
         view::outer_t< op_t, lhs_t, rhs_t >
     >
     {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
+        static inline constexpr auto value = [](){
+            if constexpr (is_fixed_size_ndarray_v<lhs_t> && is_fixed_size_ndarray_v<rhs_t>) {
+                constexpr auto lhs_shape = fixed_ndarray_shape_v<lhs_t>;
+                constexpr auto rhs_shape = fixed_ndarray_shape_v<rhs_t>;
+                return index::shape_outer(lhs_shape,rhs_shape);
+            } else {
+                return detail::fail_t{};
+            }
+        }();
+        using value_type = remove_cvref_t<decltype(value)>;
     }; // fixed_ndarray_shape
+
+    /**
+     * @brief Infer the fixed dim for outer view.
+     *
+     * Return Fail when dimension of the view is not known at compile-time.
+     * 
+     * @tparam op_t 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     */
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct fixed_dim<
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+    >
+    {
+        static constexpr auto value = [](){
+            using view_t = view::outer_t< op_t, lhs_t, rhs_t >;
+            if constexpr (
+                   is_fixed_dim_ndarray_v<lhs_t>
+                && is_fixed_dim_ndarray_v<rhs_t>
+            ) {
+                return fixed_dim_v<lhs_t> + fixed_dim_v<rhs_t>;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = remove_cvref_t<decltype(value)>;
+        using type = value_type;
+    };
+
+    /**
+     * @brief Infer maximum size (of hybrid ndarray) for outer view.
+     * 
+     * Return Fail when the view is not hybrid ndarray.
+     * 
+     * @tparam op_t 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     */
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct hybrid_ndarray_max_size<
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (
+                   is_hybrid_ndarray_v<lhs_t>
+                && is_hybrid_ndarray_v<rhs_t>
+            ) {
+                return hybrid_ndarray_max_size_v<lhs_t> * hybrid_ndarray_max_size_v<rhs_t>;
+            } else if constexpr (
+                   is_fixed_size_ndarray_v<lhs_t>
+                && is_hybrid_ndarray_v<rhs_t>
+            ) {
+                constexpr auto shape = fixed_ndarray_shape_v<lhs_t>;
+                constexpr auto lhs = index::sum(shape);
+                constexpr auto rhs = hybrid_ndarray_max_size_v<rhs_t>;
+                return lhs * rhs;
+            }  else if constexpr (
+                   is_hybrid_ndarray_v<lhs_t>
+                && is_fixed_size_ndarray_v<rhs_t>
+            ) {
+                constexpr auto lhs = hybrid_ndarray_max_size_v<lhs_t>;
+                constexpr auto shape = fixed_ndarray_shape_v<rhs_t>;
+                constexpr auto rhs = index::sum(shape);
+                return lhs * rhs;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = remove_cvref_t<decltype(value)>;
+        using type = value_type;
+    };
 
     template <typename op_t, typename lhs_t, typename rhs_t>
     struct is_ndarray< 
