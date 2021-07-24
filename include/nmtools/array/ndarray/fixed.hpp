@@ -5,6 +5,7 @@
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/meta.hpp" // meta::fixed_matrix_size etc.
 #include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/shape.hpp"
 
 #include <array>
 #include <tuple>
@@ -339,10 +340,19 @@ namespace nmtools::meta
     /**
      * @brief helper type to pack values as type
      * 
+     * Helpful for pack compile-time values for resize_fixed_ndarray
+     * which requires type.
+     * 
      * @tparam compile-time values
      */
     template <auto...>
     struct value_type {};
+
+    template <auto...values, auto new_value>
+    struct append_value< value_type<values...>, new_value >
+    {
+        using type = value_type<values..., new_value>;
+    }; // append_value
 
     template <typename T, auto...Shapes, template<auto...> typename typelist, auto...NewShapes>
     struct resize_fixed_ndarray<array::fixed_ndarray<T,Shapes...>,typelist<NewShapes...>>
@@ -351,83 +361,108 @@ namespace nmtools::meta
     }; // resize_fixed_ndarray
 
     /**
-     * @brief resize array::fixed_ndarray from raw array
+     * @brief Construct new fixed_ndarray type with resized shape.
      * 
-     * @tparam T 
-     * @tparam Shapes 
-     * @tparam NewShape1 
+     * @tparam T        element type of fixed_ndarray
+     * @tparam Shapes   shapes of fixed_ndarray
+     * @tparam U        another fixed-size ndarray that contain desired shape
      */
-    template <typename T, auto...Shapes, auto NewShape1>
+    template <typename T, auto...Shapes, typename U>
     struct resize_fixed_ndarray<
-        array::fixed_ndarray<T,Shapes...>,
-        T[NewShape1],
-        std::enable_if_t<std::is_arithmetic_v<T>>
+        array::fixed_ndarray<T,Shapes...>, U,
+        std::enable_if_t<is_fixed_size_ndarray_v<U> && is_num_v<T>>
     >
     {
-        using new_shape_t = value_type<NewShape1>;
-        using this_t = array::fixed_ndarray<T,Shapes...>;
-        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
+        // convert shape value of U (a fixed ndarray type) to type
+        static constexpr auto vshape = [](){
+            constexpr auto shape = fixed_ndarray_shape_v<U>;
+            constexpr auto dim = fixed_ndarray_dim_v<U>;
+            // dummy type, template_reduce call std::get
+            using array = std::array<size_t,dim>;
+
+            constexpr auto vshape = template_reduce<dim>([&](auto lhs, auto rhs, auto index){
+                using lhs_t = remove_cvref_t<decltype(lhs)>;
+                using rhs_t = remove_cvref_t<decltype(rhs)>;
+                constexpr auto i = decltype(index)::value;
+                // somehow the order is reversed, don't know why
+                // note: shape can hold constant value (int constant)
+                // use compile time constant to index
+                // and make sure to convert to value as needed by resize
+                constexpr auto I = [&](){
+                    auto I_ = at(shape,ct<i>{});
+                    using I_t = decltype(I_);
+                    if constexpr (is_constant_index_v<I_t>)
+                        return I_t::value;
+                    else return I_;
+                }();
+
+                // for initial, just create value_type
+                // otherwise call append
+                if constexpr (i==0) {
+                    using type = value_type<I>;
+                    return as_value_v<type>;
+                } else {
+                    using vtype = type_t<lhs_t>;
+                    using type  = append_value_t<vtype,I>;
+                    return as_value_v<type>;
+                }
+            }, /*init=*/None, array{});
+            return vshape;
+        }();
+        using type = resize_fixed_ndarray_t<
+            array::fixed_ndarray<T,Shapes...>,
+            type_t<decltype(vshape)>
+        >;
     }; // resize_fixed_ndarray
 
-    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2>
-    struct resize_fixed_ndarray<
-        array::fixed_ndarray<T,Shapes...>,
-        T[NewShape1][NewShape2],
-        std::enable_if_t<std::is_arithmetic_v<T>>
-    >
+    /**
+     * @brief Default definition of make_fixed_ndarray.
+     * returns nmtools::array::fixed_ndarray.
+     * 
+     * @tparam element_t desired element type
+     * @tparam shape_t   a constant index array type, containing desired shape
+     * @todo consider to make this default fixed_ndarray override-able via global macro
+     */
+    template <typename element_t, typename shape_t>
+    struct make_fixed_ndarray
     {
-        using new_shape_t = value_type<NewShape1,NewShape2>;
-        using this_t = array::fixed_ndarray<T,Shapes...>;
-        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
-    }; // resize_fixed_ndarray
+        static constexpr auto vshape = [](){
+            // template_reduce needs at least 2 elements
+            constexpr auto DIM = len_v<shape_t>;
+            if constexpr (DIM >= 2) {
+                // perform reduce op to combine all values in shape_t to T[axis0][axis1]...
+                // as needed to feed shape to resize_fixed_ndarray_t
+                // assume shape_t has default constructor and constexpr-ready
+                constexpr auto shape = template_reduce([](auto lhs, auto rhs, auto index){
+                    using lhs_t = remove_cvref_t<decltype(lhs)>;
+                    using rhs_t = remove_cvref_t<decltype(rhs)>;
+                    constexpr auto i = decltype(index)::value;
+                    // assume shape is_constant_index_array
+                    // somehow the order is reversed, don't know why
+                    constexpr auto N = at_t<shape_t,DIM-i-1>::value;
+                    if constexpr (is_none_v<lhs_t>) {
+                        return as_value_v<element_t[N]>;
+                    } else {
+                        // at this poiht lhs_t should be as_value<T[axis0][axis1]...>
+                        using T = type_t<lhs_t>;
+                        return as_value_v<T[N]>;
+                    }
+                }, /*init=*/None, shape_t{});
+                return shape;
+            } else {
+                // assume shape is_constant_index_array
+                constexpr auto N = at_t<shape_t,0>::value;
+                return as_value_v<element_t[N]>;
+            }
+        }();
+        using type = resize_fixed_ndarray_t<
+            array::fixed_ndarray<element_t,1>,
+            type_t<decltype(vshape)>
+        >;
+    }; // make_fixed_ndarray
 
-    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2, auto NewShape3>
-    struct resize_fixed_ndarray<
-        array::fixed_ndarray<T,Shapes...>,
-        T[NewShape1][NewShape2][NewShape3],
-        std::enable_if_t<std::is_arithmetic_v<T>>
-    >
-    {
-        using new_shape_t = value_type<NewShape1,NewShape2,NewShape3>;
-        using this_t = array::fixed_ndarray<T,Shapes...>;
-        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
-    }; // resize_fixed_ndarray
-
-    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2, auto NewShape3, auto NewShape4>
-    struct resize_fixed_ndarray<
-        array::fixed_ndarray<T,Shapes...>,
-        T[NewShape1][NewShape2][NewShape3][NewShape4],
-        std::enable_if_t<std::is_arithmetic_v<T>>
-    >
-    {
-        using new_shape_t = value_type<NewShape1,NewShape2,NewShape3,NewShape4>;
-        using this_t = array::fixed_ndarray<T,Shapes...>;
-        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
-    }; // resize_fixed_ndarray
-
-    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2, auto NewShape3, auto NewShape4, auto NewShape5>
-    struct resize_fixed_ndarray<
-        array::fixed_ndarray<T,Shapes...>,
-        T[NewShape1][NewShape2][NewShape3][NewShape4][NewShape5],
-        std::enable_if_t<std::is_arithmetic_v<T>>
-    >
-    {
-        using new_shape_t = value_type<NewShape1,NewShape2,NewShape3,NewShape4,NewShape5>;
-        using this_t = array::fixed_ndarray<T,Shapes...>;
-        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
-    }; // resize_fixed_ndarray
-
-    template <typename T, auto...Shapes, auto NewShape1, auto NewShape2, auto NewShape3, auto NewShape4, auto NewShape5, auto NewShape6>
-    struct resize_fixed_ndarray<
-        array::fixed_ndarray<T,Shapes...>,
-        T[NewShape1][NewShape2][NewShape3][NewShape4][NewShape5][NewShape6],
-        std::enable_if_t<std::is_arithmetic_v<T>>
-    >
-    {
-        using new_shape_t = value_type<NewShape1,NewShape2,NewShape3,NewShape4,NewShape5,NewShape6>;
-        using this_t = array::fixed_ndarray<T,Shapes...>;
-        using type = type_t<resize_fixed_ndarray<this_t,new_shape_t>>;
-    }; // resize_fixed_ndarray
+    template <typename element_t, typename shape_t>
+    using make_fixed_ndarray_t = type_t<make_fixed_ndarray<element_t,shape_t>>;
 
     /** @} */ // end group meta
 } // namespace nmtools::meta
