@@ -20,6 +20,38 @@ namespace nmtools::meta
     static inline constexpr auto value_v = T::value;
 } // nmtools::meta
 
+namespace nmtools::meta
+{
+    /**
+     * @brief Create default fixed-size ndarray.
+     * Forward declaration, to be defined later.
+     * 
+     * @tparam element_t desired element type
+     * @tparam shape_t   desired shape
+     */
+    template <typename element_t, typename shape_t>
+    struct make_fixed_ndarray;
+
+    /**
+     * @brief Create default dynamic-size ndarray.
+     * Forward declaration, to be defined later.
+     * 
+     * @tparam element_t desired element type
+     */
+    template <typename element_t>
+    struct make_dynamic_ndarray;
+
+    /**
+     * @brief Create default hybrid ndarray.
+     * 
+     * @tparam element_t    Desired element type
+     * @tparam max_elements Desired maximum number of elements
+     * @tparam dim          Desired number of dimension
+     */
+    template <typename element_t, auto max_elements, auto dim>
+    struct make_hybrid_ndarray;
+} // namespace nmtools::meta
+
 namespace nmtools::meta::detail
 {
     
