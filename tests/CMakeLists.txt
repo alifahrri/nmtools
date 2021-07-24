@@ -246,8 +246,15 @@ if (NOT TEST_ARRAY_UFUNCS)
 endif ()
 
 set(ARRAY_EVAL_TEST_SOURCES
+    src/doctest/array/array/arange.cpp
+    src/doctest/array/array/atleast_1d.cpp
+    src/doctest/array/array/atleast_2d.cpp
+    src/doctest/array/array/atleast_3d.cpp
     src/doctest/array/array/broadcast_to.cpp
     src/doctest/array/array/flip.cpp
+    src/doctest/array/array/full.cpp
+    src/doctest/array/array/ones.cpp
+    src/doctest/array/array/zeros.cpp
     src/doctest/array/array/ufuncs/add.cpp
     src/doctest/array/array/ufuncs/arccos.cpp
     src/doctest/array/array/ufuncs/arccosh.cpp
@@ -382,6 +389,16 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     ## metafunctions
     src/doctest/meta.cpp
     src/doctest/meta/loop.cpp
+    src/doctest/meta/array/eval/arange.cpp
+    src/doctest/meta/array/eval/atleast_1d.cpp
+    src/doctest/meta/array/eval/atleast_2d.cpp
+    src/doctest/meta/array/eval/atleast_3d.cpp
+    src/doctest/meta/array/eval/broadcast_to.cpp
+    src/doctest/meta/array/eval/flip.cpp
+    src/doctest/meta/array/eval/full.cpp
+    src/doctest/meta/array/eval/ones.cpp
+    src/doctest/meta/array/eval/zeros.cpp
+    src/doctest/meta/array/eval/ufunc.cpp
     src/doctest/meta/array/index/argfilter.cpp
     src/doctest/meta/array/index/broadcast_shape.cpp
     src/doctest/meta/array/index/broadcast_to.cpp
@@ -409,11 +426,15 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/constant_to_sequence.cpp
     src/doctest/meta/transform/gather.cpp
     src/doctest/meta/transform/get_element_type.cpp
+    src/doctest/meta/transform/get_underlying_array_type.cpp
+    src/doctest/meta/transform/hybrid_ndarray_max_size.cpp
     src/doctest/meta/transform/insert_type.cpp
     src/doctest/meta/transform/replace_element_type.cpp
     src/doctest/meta/transform/nested_array_dim.cpp
     src/doctest/meta/transform/reduce.cpp
     src/doctest/meta/transform/remove_nested_array_extents.cpp
+    src/doctest/meta/transform/resize_fixed_ndarray.cpp
+    src/doctest/meta/transform/resize_hybrid_ndarray_max_size.cpp
     src/doctest/meta/transform/replace_at.cpp
     src/doctest/meta/transform/select_array.cpp
     src/doctest/meta/transform/sequence.cpp

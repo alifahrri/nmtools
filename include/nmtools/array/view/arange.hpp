@@ -33,6 +33,7 @@ namespace nmtools::view
     {
         using start_type = const start_t;
         using stop_type  = const stop_t;
+        // step can be none, represent 1
         using step_type  = const step_t;
         using element_type = T;
         using array_type = none_t;
@@ -46,7 +47,10 @@ namespace nmtools::view
 
         constexpr auto shape() const
         {
-            return detail::arange_shape(start,stop,step);
+            if constexpr (is_none_v<step_t>)
+                return detail::arange_shape(start,stop,1);
+            else
+                return detail::arange_shape(start,stop,step);
         } // shape
 
         constexpr auto dim() const
@@ -57,7 +61,10 @@ namespace nmtools::view
         template <typename size_type>
         constexpr auto operator()(size_type index) const
         {
-            return static_cast<element_type>(start + index * step);
+            if constexpr (is_none_v<step_t>)
+                return static_cast<element_type>(start + index);
+            else
+                return static_cast<element_type>(start + index * step);
         } // operator()
     }; // arange_t
     
@@ -87,13 +94,15 @@ namespace nmtools::view
     template <typename start_t, typename stop_t, typename T=float>
     constexpr auto arange(start_t start, stop_t stop, dtype_t<T> dtype=float32)
     {
-        return arange(start,stop,1,dtype);
+        using namespace literals;
+        return arange(start,stop,1_ct,dtype);
     } // arange
 
     template <typename stop_t, typename T=float>
     constexpr auto arange(stop_t stop, dtype_t<T> dtype=float32)
     {
-        return arange(0,stop,1,dtype);
+        using namespace literals;
+        return arange(0_ct,stop,1_ct,dtype);
     } // arange
 
 } // namespace nmtools::view
@@ -121,8 +130,13 @@ namespace nmtools::meta
     struct fixed_ndarray_shape< view::arange_t<start_t, stop_t, step_t, T> >
     {
         static inline constexpr auto value = [](){
-            if constexpr (is_integral_constant_v<start_t> && is_integral_constant_v<stop_t> && is_integral_constant_v<step_t>)
+            if constexpr (is_integral_constant_v<start_t> && is_integral_constant_v<stop_t> && is_integral_constant_v<step_t>) {
                 return view::detail::arange_shape(start_t{}, stop_t{}, step_t{});
+            } else if constexpr (is_integral_constant_v<start_t> && is_integral_constant_v<stop_t> && is_none_v<step_t>) {
+                return view::detail::arange_shape(start_t{}, stop_t{}, 1);
+            } else if constexpr (is_none_v<start_t> && is_integral_constant_v<stop_t> && is_none_v<step_t>) {
+                return view::detail::arange_shape(0, stop_t{}, 1);
+            }
             else return detail::fail_t{};
         }();
         using value_type = decltype(value);

@@ -133,11 +133,12 @@ SUBCASE(#case_name) \
 TEST_CASE("add.reduce(case1)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[3][2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case1,   a, axis );
     REDUCE_ADD_SUBCASE( case1, a_a, axis );
-    REDUCE_ADD_SUBCASE( case1, a_v, axis );
+    // REDUCE_ADD_SUBCASE( case1, a_v, axis );
     REDUCE_ADD_SUBCASE( case1, a_f, axis );
     REDUCE_ADD_SUBCASE( case1, a_h, axis );
     // not yet supported,
@@ -155,7 +156,8 @@ TEST_CASE("add.reduce(case1)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case2)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2][2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case2,   a, axis );
     REDUCE_ADD_SUBCASE( case2, a_a, axis );
@@ -174,7 +176,8 @@ TEST_CASE("add.reduce(case2)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case3)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2][3]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case3,   a, axis );
     REDUCE_ADD_SUBCASE( case3, a_a, axis );
@@ -192,7 +195,8 @@ TEST_CASE("add.reduce(case3)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case4)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case4,   a,   axis );
     REDUCE_ADD_SUBCASE( case4, a_a, axis_a );
@@ -210,7 +214,8 @@ TEST_CASE("add.reduce(case4)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case5)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[3]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case5,   a,   axis );
     REDUCE_ADD_SUBCASE( case5, a_a, axis_a );
@@ -228,7 +233,8 @@ TEST_CASE("add.reduce(case5)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case6)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case6,   a,   axis );
     REDUCE_ADD_SUBCASE( case6, a_a, axis_a );
@@ -246,7 +252,8 @@ TEST_CASE("add.reduce(case6)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case7)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[3][2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case7,   a, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_a, axis, dtype );
@@ -264,7 +271,8 @@ TEST_CASE("add.reduce(case7)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case8)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2][3]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case8,   a, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_a, axis, dtype, initial );
@@ -282,7 +290,8 @@ TEST_CASE("add.reduce(case8)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case9)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[1][3][2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case9,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_a, axis, dtype, initial, keepdims );
@@ -300,7 +309,8 @@ TEST_CASE("add.reduce(case9)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case10)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2][2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case10,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_a, axis, dtype, initial, keepdims );
@@ -318,7 +328,8 @@ TEST_CASE("add.reduce(case10)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case11)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2][3][1]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case11,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_a, axis, dtype, initial, keepdims );
@@ -336,7 +347,8 @@ TEST_CASE("add.reduce(case11)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case12)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case12,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_a, axis, dtype, initial, keepdims );
@@ -354,7 +366,8 @@ TEST_CASE("add.reduce(case12)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case13)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[1][3][1]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case13,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_a, axis, dtype, initial, keepdims );
@@ -372,7 +385,8 @@ TEST_CASE("add.reduce(case13)" * doctest::test_suite("array::add.reduce"))
 TEST_CASE("add.reduce(case14)" * doctest::test_suite("array::add.reduce"))
 {
     auto context = None;
-    auto output  = meta::as_value<int[2]>{};
+    using output_t = nm::array::dynamic_ndarray<int>;
+    auto output  = meta::as_value_v<output_t>;
 
     REDUCE_ADD_SUBCASE( case14,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_a, axis, dtype, initial, keepdims );
@@ -524,7 +538,8 @@ TEST_CASE("add.outer(case1)" * doctest::test_suite("array::add.outer"))
 
     OUTER_ADD_SUBCASE( case1,   a,   b );
     OUTER_ADD_SUBCASE( case1, a_a, b_a );
-    OUTER_ADD_SUBCASE( case1, a_v, b_v );
+    // disable nested array for now
+    // OUTER_ADD_SUBCASE( case1, a_v, b_v );
     OUTER_ADD_SUBCASE( case1, a_f, b_f );
     OUTER_ADD_SUBCASE( case1, a_d, b_d );
     OUTER_ADD_SUBCASE( case1, a_h, b_h );

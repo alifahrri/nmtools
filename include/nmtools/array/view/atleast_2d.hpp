@@ -8,6 +8,10 @@
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
+#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/eval.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
 
@@ -169,6 +173,53 @@ namespace nmtools::meta
     struct is_ndarray< view::decorator_t< view::atleast_2d_t, array_t >>
     {
         static constexpr auto value = std::is_arithmetic_v<array_t> || is_ndarray_v<array_t>;
+    };
+
+    /**
+     * @brief specialization of eval type resolver for atleast_2d view.
+     * 
+     * @tparam array_t 
+     * @note this specialization is provided since no actual type
+     *      with fixed-dim dynamic-size trait is available, while such array is needed for this view.
+     * @todo add fixed-dim dynamic-size ndarray and remove this specialization.
+     */
+    template <typename array_t>
+    struct resolve_optype<
+        void, array::eval_t, view::decorator_t< view::atleast_2d_t, array_t >, none_t
+    >
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_num_v<array_t>) {
+                using shape_t = std::tuple<ct<1>,ct<1>>;
+                using type = make_fixed_ndarray_t<array_t,shape_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_fixed_size_ndarray_v<array_t>) {
+                if constexpr (fixed_ndarray_dim_v<array_t> == 1) {
+                    constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
+                    // use arbitraty fixed-shape type to 
+                    // match resize_fixed_ndarray signature
+                    // (needs type instead of value)
+                    // using some_array_t = std::array<std::array<int,at(shape_,0)>,1>;
+                    using some_array_t = int[1][nmtools::at(shape_,0)];
+                    using tf_array_t   = transform_bounded_array_t<array_t>;
+                    using type = resize_fixed_ndarray_t<tf_array_t,some_array_t>;
+                    return as_value_v<type>;
+                } else /* if constexpr (fixed_ndarray_dim_v<array_t> >= 2) */ {
+                    return as_value_v<array_t>;
+                }
+            } else if constexpr (is_fixed_dim_ndarray_v<array_t>) {
+                if constexpr (fixed_dim_v<array_t> == 2) {
+                    return as_value_v<array_t>;
+                } else {
+                    using element_t = get_element_type_t<array_t>;
+                    using type = make_dynamic_ndarray_t<element_t>;
+                    return as_value_v<type>;
+                }
+            } else /* if constexpr (is_dynamic_ndarray_v<array_t> || is_hybrid_ndarray_v<array_t>) */ {
+                return as_value_v<array_t>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     };
 } // namespace nmtools::meta
 

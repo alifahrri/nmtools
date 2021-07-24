@@ -94,6 +94,23 @@ namespace nmtools::index
         // - free_axes is useful to perform the reverse operation.
         return std::tuple{success, res, free_axes};
     } // broadcast_to
+
+    /**
+     * @brief Specialization for broadcast_to function.
+     * 
+     * Shape of Num type is represented as None,
+     * broadcasting num to None should always be successfull.
+     * 
+     * @tparam  
+     * @param ashape 
+     * @param bshape 
+     * @return constexpr auto 
+     */
+    template<>
+    constexpr auto broadcast_to<none_t,none_t>(const none_t& ashape, const none_t& bshape)
+    {
+        return std::tuple{true,None,None};
+    } // broadcast_to
 } // namespace nmtools::index
 
 namespace nmtools::meta

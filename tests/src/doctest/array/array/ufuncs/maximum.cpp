@@ -38,7 +38,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, maximum, case_name); \
     using namespace args; \
     auto result = RUN_maximum(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -91,7 +91,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, reduce_maximum, case_name); \
     using namespace args; \
     auto result = RUN_reduce_maximum(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -244,7 +244,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, accumulate_maximum, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_maximum(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -310,7 +310,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, outer_maximum, case_name); \
     using namespace args; \
     auto result = RUN_outer_maximum(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -318,7 +318,8 @@ TEST_CASE("outer_maximum(case1)" * doctest::test_suite("array::outer_maximum"))
 {
     OUTER_MAXIMUM_SUBCASE( case1,   a,   b );
     OUTER_MAXIMUM_SUBCASE( case1, a_a, b_a );
-    OUTER_MAXIMUM_SUBCASE( case1, a_v, b_v );
+    // TODO: remove support for nested vector as ndarray
+    // OUTER_MAXIMUM_SUBCASE( case1, a_v, b_v );
     OUTER_MAXIMUM_SUBCASE( case1, a_f, b_f );
     OUTER_MAXIMUM_SUBCASE( case1, a_d, b_d );
     OUTER_MAXIMUM_SUBCASE( case1, a_h, b_h );

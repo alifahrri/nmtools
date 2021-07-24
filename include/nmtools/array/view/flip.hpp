@@ -125,9 +125,14 @@ namespace nmtools::view
         // deduce slice type from fn call
         using slices_type = meta::remove_cvref_t<decltype(detail::get_flip_slices<array_t>(std::declval<axes_type>()))>;
 
+        // the underlying array
         array_type array;
+        // the underlying array's shape
         shape_type shape_;
+        // axes represents underlying array's axes to be flipped
         axes_type axes;
+        // under the hood, this view uses index' slice to compute indices
+        // for example flip(a) is the same as a[::-1] where a is 1D array
         slices_type slices;
 
         constexpr flip_t(array_type array, axis_type axis) : array(array)
@@ -138,6 +143,7 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
+            // note that flipping doesn't change the shape at all
             return shape_;
         } // shape
 
@@ -211,12 +217,19 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
+    /**
+     * @brief Specialization of fixed_ndarray_shape for view::flip.
+     *
+     * Flip doesn't change shape, simply call fixed_ndarray_shape_v
+     * on the underlying array type.
+     * 
+     * @tparam array_t 
+     * @tparam axis_t 
+     */
     template <typename array_t, typename axis_t>
     struct fixed_ndarray_shape< view::flip_t<array_t,axis_t> >
     {
-        static inline constexpr auto value = detail::fail_t{};
+        static inline constexpr auto value = fixed_ndarray_shape_v<array_t>;
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
 

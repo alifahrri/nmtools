@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, fmod, case_name); \
     using namespace args; \
     auto result = RUN_fmod(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -90,7 +90,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, reduce_fmod, case_name); \
     using namespace args; \
     auto result = RUN_reduce_fmod(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -201,7 +201,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, accumulate_fmod, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_fmod(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -267,7 +267,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, outer_fmod, case_name); \
     using namespace args; \
     auto result = RUN_outer_fmod(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -275,7 +275,8 @@ TEST_CASE("outer_fmod(case1)" * doctest::test_suite("array::outer_fmod"))
 {
     OUTER_FMOD_SUBCASE( case1,   a,   b );
     OUTER_FMOD_SUBCASE( case1, a_a, b_a );
-    OUTER_FMOD_SUBCASE( case1, a_v, b_v );
+    // TODO: remove support for nested vector as ndarray
+    // OUTER_FMOD_SUBCASE( case1, a_v, b_v );
     OUTER_FMOD_SUBCASE( case1, a_f, b_f );
     OUTER_FMOD_SUBCASE( case1, a_d, b_d );
     OUTER_FMOD_SUBCASE( case1, a_h, b_h );

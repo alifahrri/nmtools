@@ -359,15 +359,21 @@ namespace nmtools::meta {
     template <typename T>
     using remove_cvref_t = std::remove_cv_t<std::remove_reference_t<T>>;
 
+    // TODO: remove
     using std::tuple;
 
     /**
-     * @brief check if given type is tuple
+     * @brief check if given type is tuple kind.
+     *
+     * Note that this is not necessarily std::tuple,
+     * this is intended to be more like tuple in concept.
+     * The choice of the name, tuple, is from haskell Tuple.
      */
     template <typename>
-    struct is_tuple : false_type {};
+    struct is_tuple : std::false_type {};
+
     template <typename ...Args>
-    struct is_tuple<tuple<Args...>> : true_type {};
+    struct is_tuple<std::tuple<Args...>> : std::true_type {};
 
     /**
      * @brief helper variable template to check if given type is tuple
@@ -1393,6 +1399,8 @@ namespace nmtools::meta {
     /**
      * @brief Check if type T is fixed index array.
      * 
+     * A fixed index array represent fixed-dim index/shape.
+     * 
      * @tparam T 
      * @tparam typename 
      */
@@ -1415,6 +1423,10 @@ namespace nmtools::meta {
      * @brief Check if type T is hybrid_index_array.
      *
      * Has max size but resizeable.
+     * Note that the max size represents maximum "dimension" of the array
+     * instead of maximum "element" of the array.
+     * Currently querying maximum "element" of an hybrid array
+     * from the index/shape array is not supported.
      * 
      * @tparam T type to check
      */
@@ -1426,6 +1438,8 @@ namespace nmtools::meta {
 
     /**
      * @brief Check if type T is constant index array.
+     * 
+     * A constant index array represent index/shape at compile-time.
      * 
      * @tparam T 
      * @tparam typename 
@@ -1517,6 +1531,7 @@ namespace nmtools::meta {
      * @brief Get the Left type of Either
      * 
      * @tparam T 
+     * @todo move to transform
      */
     template <typename T>
     struct get_either_left
@@ -1528,6 +1543,7 @@ namespace nmtools::meta {
      * @brief Get the Right type of Either
      * 
      * @tparam T 
+     * @todo move to transform
      */
     template <typename T>
     struct get_either_right
@@ -1558,6 +1574,7 @@ namespace nmtools::meta {
      * 
      * @tparam T type to check 
      * @tparam typename 
+     * @todo move to transform
      */
     template <typename T, typename=void>
     struct get_maybe_type
@@ -1581,6 +1598,7 @@ namespace nmtools::meta {
      * @tparam either_t 
      * @tparam Left 
      * @tparam Right 
+     * @todo move to transform
      */
     template <typename either_t, typename Left, typename Right>
     struct replace_either
@@ -1603,13 +1621,10 @@ namespace nmtools::meta {
      * @tparam T type to check
      */
     template <typename T>
-    struct is_fail
-    {
-        static constexpr auto value = std::is_same_v<remove_cvref_t<T>,detail::fail_t>;
-    };
+    struct is_fail : std::is_base_of<detail::fail_t,T> {};
 
     template <typename T>
-    constexpr auto is_fail_v = is_fail<T>::value;
+    constexpr inline auto is_fail_v = is_fail<T>::value;
 
     /** @} */ // end group traits
 

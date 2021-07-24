@@ -11,6 +11,11 @@
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
 
+// to get make_dynamic_ndarray & make_fixed_ndarray defn.
+#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/eval.hpp"
+
 #include "nmtools/constants.hpp"
 #include "nmtools/assert.hpp"
 
@@ -51,9 +56,10 @@ namespace nmtools::view
      *
      * Broadcast given array to desired shape.
      * 
-     * @tparam array_t 
-     * @tparam shape_t 
-     * @tparam origin_axes_t 
+     * @tparam array_t src array type
+     * @tparam shape_t desired shape type
+     * @tparam origin_axes_t the type of origin_axes which is used
+     * for gather the original (src) shape from desired (dst) shape.
      */
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct broadcast_to_t
@@ -224,6 +230,34 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    template <typename array_t, typename shape_t, typename origin_axes_t>
+    struct is_dynamic_ndarray< 
+        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
+    >
+    {
+        static constexpr auto value = [](){
+            if (is_fixed_index_array_v<shape_t> || is_constant_index_array_v<shape_t> || is_hybrid_index_array_v<shape_t>) {
+                return false;
+            } else if (is_index_array_v<shape_t>) {
+                return true;
+            }
+        }();
+    }; // is_dynamic_ndarray
+
+    template <typename array_t, typename shape_t, typename origin_axes_t>
+    struct is_fixed_dim_ndarray<
+        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
+    >
+    {
+        static constexpr auto value = [](){
+            if (is_fixed_index_array_v<shape_t> || is_constant_index_array_v<shape_t>) {
+                return true;
+            } else /* if (is_index_array_v<shape_t> || is_hybrid_index_array_v<shape_t>) */ {
+                return false;
+            }
+        }();
+    }; // is_fixed_dim_ndarray
+
     /**
      * @brief Specialization of fixed_ndarray_shape for broadcast_to view.
      *
@@ -238,15 +272,28 @@ namespace nmtools::meta
     struct fixed_ndarray_shape< view::broadcast_to_t<array_t, shape_t, origin_axes_t> >
     {
         static constexpr auto value = [](){
+            // for now, only deduce broadcast_to view as fixed-size
+            // whenever BOTH the shape and referenced array's shape is known at compile-time
+            // TODO: consider to deduce as fixed-size when 
+            // shape is known at compile time regardless the type of ref array
             if constexpr (is_constant_index_array_v<shape_t> && is_fixed_size_ndarray_v<array_t>) {
                 constexpr auto src_shape = fixed_ndarray_shape_v<array_t>;
+                // assume the shape is default constructible
+                // and the shape information is embedded to the type
                 constexpr auto dst_shape = shape_t{};
                 constexpr auto dim = fixed_index_array_size_v<shape_t>;
+                // by constructing the view itself,
+                // it should be known already if src and dst is broadcastable
+                // hence it is actually redundant to check here
+                // TODO: skip checking)
                 constexpr auto result = index::broadcast_to(src_shape,dst_shape);
                 constexpr auto success = std::get<0>(result);
                 if constexpr (success)
                     return dst_shape;
                 else return detail::fail_t{};
+            } else if constexpr (is_constant_index_array_v<shape_t> && is_num_v<array_t>) {
+                // constant index array should be default-constructible;
+                return shape_t{};
             }
             else return detail::fail_t{};
         }();
@@ -264,6 +311,33 @@ namespace nmtools::meta
     {
         static constexpr auto value = is_num_v<array_t> && is_none_v<shape_t>;
     };
+
+    /**
+     * @brief Resolve optype for broadcast_to view evaluation.
+     * 
+     * @tparam array_t 
+     * @tparam shape_t 
+     * @tparam origin_axes_t 
+     */
+    template <typename array_t, typename shape_t, typename origin_axes_t>
+    struct resolve_optype<
+        void, array::eval_t, view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >, none_t
+    >
+    {
+        static constexpr auto vtype = [](){
+            using element_t = get_element_type_t<array_t>;
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                using ref_array_t = make_fixed_ndarray_t<element_t,shape_t>;
+                using type = resize_fixed_ndarray_t<array_t,ref_array_t>;
+                return as_value_v<type>;
+            } else /* if constexpr (is_dynamic_index_array_v<shape_t> */ {
+                using type = make_dynamic_ndarray_t<element_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // resolve_optype
+
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_BROADCAST_TO_HPP

@@ -465,14 +465,6 @@ namespace nmtools::meta
     template <typename T, size_t max_elements, size_t dimension>
     struct is_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
 
-    /**
-     * @brief specialization of is_dynamic_ndarray trait for hybrid_ndarray
-     * 
-     * @tparam T element type of hybrid_ndarray
-     */
-    template <typename T, size_t max_elements, size_t dimension>
-    struct is_dynamic_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
-
     template <typename T, size_t max_elements, size_t dimension>
     struct is_hybrid_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
 
@@ -504,6 +496,22 @@ namespace nmtools::meta
     }; // resize_hybrid_ndarray_max_size
 
     /**
+     * @brief Construct new hybrid_ndarray which its dimension are replaced with new dimension.
+     * 
+     * @tparam T            element type
+     * @tparam max_elements 
+     * @tparam dimension    existing dimension
+     * @tparam DIM          desired new dimension
+     */
+    template <typename T, size_t max_elements, size_t dimension, auto DIM>
+    struct resize_hybrid_ndarray_dim<
+        array::hybrid_ndarray<T,max_elements,dimension>, DIM
+    >
+    {
+        using type = array::hybrid_ndarray<T,max_elements,DIM>;
+    }; // resize_hybrid_ndarray_dim
+
+    /**
      * @brief specialize replace_element_type for array::hybrid_ndarray
      * 
      * @tparam T 
@@ -529,6 +537,23 @@ namespace nmtools::meta
     {
         using type = T;
     }; // get_element_type
+
+    /**
+     * @brief Default impl for make_hybrid_ndarray
+     * 
+     * @tparam element_t 
+     * @tparam max_elements 
+     * @tparam dim 
+     * @todo make this bypass-able via macro
+     */
+    template <typename element_t, auto max_elements, auto dim>
+    struct make_hybrid_ndarray
+    {
+        using type = array::hybrid_ndarray<element_t,max_elements,dim>;
+    }; // make_hybrid_ndarray
+
+    template <typename element_t, auto max_elements, auto dim>
+    using make_hybrid_ndarray_t = type_t<make_hybrid_ndarray<element_t,max_elements,dim>>;
 
     /** @} */ // end group traits
     

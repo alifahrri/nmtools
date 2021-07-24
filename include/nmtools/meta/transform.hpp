@@ -657,7 +657,7 @@ namespace nmtools::meta
      * @brief resize fixed array
      * 
      * @tparam T original array
-     * @tparam U type containing new shape
+     * @tparam U fixed ndarray type containing new shape
      * @tparam typename 
      */
     template <typename T, typename U, typename=void>
@@ -2616,11 +2616,13 @@ namespace nmtools::meta
     template <typename T>
     using tuple_to_array_t = type_t<tuple_to_array<T>>;
 
+    // TODO: remove
     template <typename size_policy_t, typename selection_kind_t=void,
         template<typename> typename element_predicate_t=std::is_arithmetic,
         template<typename,typename> typename element_type_policy_t=element_type_policy_common>
     struct select_array1d_t {};
 
+    // TODO: remove
     template <typename lhs_t, typename rhs_t,
         typename size_policy_t, typename selection_kind_t,
         template<typename> typename element_predicate_t,
@@ -2642,6 +2644,7 @@ namespace nmtools::meta
         using type    = replace_element_type_t<lhs_t,value_t>;
     }; // resolve_optype expand_dims_t
 
+    // TODO: remove
     template <typename lhs_t, typename rhs_t,
         typename size_policy_t, typename selection_kind_t,
         template<typename> typename element_predicate_t,
@@ -2678,6 +2681,7 @@ namespace nmtools::meta
         using type = replace_element_type_t<c_t,value_t>;
     }; // resolve_optype expand_dims_t
 
+    // TODO: remove
     template <typename lhs_t, typename rhs_t,
         typename size_policy_t, typename selection_kind_t,
         template<typename> typename element_predicate_t,
@@ -2701,6 +2705,7 @@ namespace nmtools::meta
         using type    = std::array<value_t,n>;
     }; // resolve_optype expand_dims_t
 
+    // TODO: remove
     template <typename lhs_t, typename rhs_t,
         typename size_policy_t, typename selection_kind_t,
         template<typename> typename element_predicate_t,
@@ -2748,6 +2753,7 @@ namespace nmtools::meta
         using type = replace_element_type_t<c_t,common_t>;
     }; // resolve_optype expand_dims_t
 
+    // TODO: remove
     template <typename lhs_t, typename rhs_t,
         typename size_policy_t, typename selection_kind_t,
         template<typename> typename element_predicate_t,
@@ -2773,6 +2779,7 @@ namespace nmtools::meta
         using type     = resize_hybrid_ndarray_max_size_t<array_t,n>;
     }; // resolve_optype expand_dims_t
 
+    // TODO: remove
     template <typename lhs_t, typename rhs_t,
         typename size_policy_t, typename selection_kind_t,
         template<typename> typename element_predicate_t,
@@ -2844,6 +2851,11 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto len_v = len<T>::value;
 
+    /**
+     * @brief "value-less" type list.
+     * 
+     * @tparam Ts 
+     */
     template <typename...Ts>
     struct type_list {};
 
@@ -2870,6 +2882,138 @@ namespace nmtools::meta
 
     template <size_t I, typename T>
     using type_list_at_t = type_t<type_list_at<I,T>>;
+
+    /**
+     * @brief Helper metafunction to get type at index I from type list T.
+     * 
+     * @tparam T type list
+     * @tparam I index to get the type
+     */
+    template <typename T, size_t I>
+    struct type_at
+    {
+        using type = detail::fail_t;
+    }; // at
+
+    template <typename...Ts, size_t I>
+    struct type_at<std::tuple<Ts...>,I>
+    {
+        using tuple_t = std::tuple<Ts...>;
+        using type = std::tuple_element_t<I,tuple_t>;
+    }; // type_at
+
+    /**
+     * @brief Helper alias template to type_at.
+     * 
+     * @tparam T type list
+     * @tparam I index to get the type
+     */
+    template <typename T, size_t I>
+    using at_t = type_t<type_at<T,I>>;
+
+    /**
+     * @brief Append new value to the end of some value type.
+     * 
+     * @tparam value_type some value type to be appended
+     * @tparam new_value  desired new value
+     */
+    template <typename value_type, auto new_value>
+    struct append_value
+    {
+        using type = void;
+    }; // append_value
+
+    template <typename value_type, auto N>
+    using append_value_t = type_t<append_value<value_type,N>>;
+
+    /**
+     * @brief Append new type to the end of some type list.
+     * 
+     * @tparam T        some type list to be appended
+     * @tparam new_type desired new type
+     */
+    template <typename T, typename new_type>
+    struct append_type
+    {
+        using type = void;
+    }; // append_type
+
+
+    template <typename T, typename new_type>
+    using append_type_t = type_t<append_type<T,new_type>>;
+
+    template <typename...Ts, typename new_type>
+    struct append_type<std::tuple<Ts...>,new_type>
+    {
+        using type = std::tuple<Ts...,new_type>;
+    }; // append_type
+
+    /**
+     * @brief Specialization of resize_fixed_ndarray for std::array.
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam N 
+     * @todo move to separate file, e.g. meta/stl/transform.hpp
+     */
+    template <typename T, typename U, size_t N>
+    struct resize_fixed_ndarray<std::array<T,N>,U,
+        std::enable_if_t<is_fixed_size_ndarray_v<U>>
+    >
+    {
+        template <typename array_t, typename new_t>
+        struct replace_value_type
+        {
+            using type = void;
+        };
+
+        template <typename value_t, size_t M, typename new_t>
+        struct replace_value_type<std::array<value_t,M>,new_t>
+        {
+            static constexpr auto vtype = [](){
+                if constexpr (is_num_v<value_t>) {
+                    using type = std::array<new_t,M>;
+                    return as_value_v<type>;
+                } else {
+                    using inner_t = type_t<replace_value_type<value_t,new_t>>;
+                    using type = std::array<inner_t,M>;
+                    return as_value_v<type>;
+                }
+            }();
+            using type = type_t<decltype(vtype)>;
+        };
+        
+        static constexpr auto vtype = [](){
+            constexpr auto shape = fixed_ndarray_shape_v<U>;
+            constexpr auto DIM = fixed_ndarray_dim_v<U>;
+            using element_t = get_element_type_t<std::array<T,N>>;
+            return template_reduce<DIM>([&](auto init, auto index){
+                constexpr auto i = decltype(index)::value;
+                using init_t = type_t<remove_cvref_t<decltype(init)>>;
+                constexpr auto size = std::get<i>(shape);
+                if constexpr (i==0) {
+                    using type = std::array<element_t,size>;
+                    return as_value_v<type>;
+                } else {
+                    using array_t = init_t;
+                    using inner_t = std::array<element_t,size>;
+                    using type = type_t<replace_value_type<array_t,inner_t>>;
+                    return as_value_v<type>;
+                }
+            }, /*init=*/as_value_v<void>);
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // resize_fixed_ndarray
+
+    template <typename T, typename U, size_t N>
+    struct resize_fixed_ndarray<T[N],U,
+        std::enable_if_t<is_fixed_size_ndarray_v<U>>
+    >
+    {
+        using shape_t = std::tuple<std::integral_constant<size_t,N>>;
+        using default_ndarray_t = type_t<make_fixed_ndarray<T,shape_t>>;
+        using type = resize_fixed_ndarray_t<default_ndarray_t,U>;
+    }; // resize_fixed_ndarray
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

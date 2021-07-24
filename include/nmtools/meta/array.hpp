@@ -565,6 +565,9 @@ namespace nmtools::meta
     /**
      * @brief Get the number of maximum size of hybrid index array
      * 
+     * Note that this meta fn is intended to return maximum size of index/shape array,
+     * hence effectively return the maximum "dimennsion" of array.
+     * 
      * @tparam T 
      * @tparam typename 
      */
@@ -581,6 +584,7 @@ namespace nmtools::meta
     template <typename T, auto N, typename=void>
     struct resize_hybrid_index_array_max_size
     {
+        // TODO: use specific type to represent error
         using type = void;
     }; // resize_hybrid_ndarray_max_size
 
@@ -613,17 +617,75 @@ namespace nmtools::meta
     template <typename T>
     inline constexpr bool is_hybrid_ndarray_v = is_hybrid_ndarray<T>::value;
 
+    /**
+     * @brief Given hybrid ndarray and desired new maximum size, create
+     * new hybrid ndarray that has the desired new max size.
+     * 
+     * @tparam T 
+     * @tparam N desired new maximum size
+     * @tparam typename 
+     * @todo use specific error type as default, instead of void
+     */
     template <typename T, auto N, typename=void>
     struct resize_hybrid_ndarray_max_size
     {
+        // TODO: use specific type to represent error
         using type = void;
     }; // resize_hybrid_ndarray_max_size
 
     template <typename T, auto N>
     using resize_hybrid_ndarray_max_size_t = type_t<resize_hybrid_ndarray_max_size<T,N>>;
 
+    namespace error
+    {
+        /**
+         * @brief Default error type for resize_hybrid_ndarray_dim
+         * 
+         */
+        struct RESIZE_HYBRID_ERROR : detail::fail_t {};
+    }
+
+    /**
+     * @brief Given hybrid ndarray and desired new dim, create
+     * new hybrid ndarray that has the desired new dim.
+     * 
+     * @tparam T 
+     * @tparam DIM desired new dimension
+     * @tparam typename 
+     */
+    template <typename T, auto DIM, typename=void>
+    struct resize_hybrid_ndarray_dim
+    {
+        using type = error::RESIZE_HYBRID_ERROR;
+    };
+
+    template <typename T, auto N>
+    using resize_hybrid_ndarray_dim_t = type_t<resize_hybrid_ndarray_dim<T,N>>;
+
+    /**
+     * @brief Check if type T is dynamic ndarray.
+     * 
+     * Default implementation check if T is fixed-size of hybrid ndarray,
+     * if both return false, then assume T is dynamic.
+     *
+     * @tparam T type to check
+     * @tparam typename 
+     */
     template <typename T, typename=void>
-    struct is_dynamic_ndarray : std::negation<is_fixed_size_ndarray<T>> {};
+    struct is_dynamic_ndarray
+    {
+        static constexpr auto value = [](){
+            // get_element_type defined in transform, while transform
+            // depends on this file hence may create circular dependency
+            // TODO: also check get_element_type return numeric concept
+            // using element_t = get_element_type_t<T>;
+            if (is_fixed_size_ndarray_v<T> || is_hybrid_ndarray_v<T>) {
+                return false;
+            } else {
+                return true;
+            }
+        }();
+    }; // is_dynamic_ndarray
 
     template <typename T>
     inline constexpr bool is_dynamic_ndarray_v = is_dynamic_ndarray<T>::value;

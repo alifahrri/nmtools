@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(array, clip, case_name); \
     using namespace args; \
     auto result = RUN_clip(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -45,7 +45,8 @@ TEST_CASE("clip(case1)" * doctest::test_suite("array::clip"))
 {
     CLIP_SUBCASE( case1,   a,   amin,   amax);
     CLIP_SUBCASE( case1, a_a, amin_a, amax_a);
-    CLIP_SUBCASE( case1, a_v, amin_v, amax_v);
+    // TODO: remove support for nested vector as ndarray
+    // CLIP_SUBCASE( case1, a_v, amin_v, amax_v);
     CLIP_SUBCASE( case1, a_f, amin_f, amax_f);
     CLIP_SUBCASE( case1, a_d, amin_d, amax_d);
     CLIP_SUBCASE( case1, a_h, amin_h, amax_h);
@@ -55,7 +56,8 @@ TEST_CASE("clip(case2)" * doctest::test_suite("array::clip"))
 {
     CLIP_SUBCASE( case2,   a,   amin,   amax);
     CLIP_SUBCASE( case2, a_a, amin_a, amax_a);
-    CLIP_SUBCASE( case2, a_v, amin_v, amax_v);
+    // TODO: remove support for nested vector as ndarray
+    // CLIP_SUBCASE( case2, a_v, amin_v, amax_v);
     CLIP_SUBCASE( case2, a_f, amin_f, amax_f);
     CLIP_SUBCASE( case2, a_d, amin_d, amax_d);
     CLIP_SUBCASE( case2, a_h, amin_h, amax_h);
@@ -65,7 +67,8 @@ TEST_CASE("clip(case3)" * doctest::test_suite("array::clip"))
 {
     CLIP_SUBCASE( case3,   a,   amin, amax);
     CLIP_SUBCASE( case3, a_a, amin_a, amax);
-    CLIP_SUBCASE( case3, a_v, amin_v, amax);
+    // TODO: remove support for nested vector as ndarray
+    // CLIP_SUBCASE( case3, a_v, amin_v, amax);
     CLIP_SUBCASE( case3, a_f, amin_f, amax);
     CLIP_SUBCASE( case3, a_d, amin_d, amax);
     CLIP_SUBCASE( case3, a_h, amin_h, amax);

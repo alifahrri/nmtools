@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, subtract, case_name); \
     using namespace args; \
     auto result = RUN_subtract(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -90,7 +90,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, reduce_subtract, case_name); \
     using namespace args; \
     auto result = RUN_reduce_subtract(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -201,7 +201,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, accumulate_subtract, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_subtract(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -267,7 +267,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, outer_subtract, case_name); \
     using namespace args; \
     auto result = RUN_outer_subtract(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -275,7 +275,8 @@ TEST_CASE("outer_subtract(case1)" * doctest::test_suite("array::outer_subtract")
 {
     OUTER_SUBTRACT_SUBCASE( case1,   a,   b );
     OUTER_SUBTRACT_SUBCASE( case1, a_a, b_a );
-    OUTER_SUBTRACT_SUBCASE( case1, a_v, b_v );
+    // TODO: remove support for nested vector as ndarray
+    // OUTER_SUBTRACT_SUBCASE( case1, a_v, b_v );
     OUTER_SUBTRACT_SUBCASE( case1, a_f, b_f );
     OUTER_SUBTRACT_SUBCASE( case1, a_d, b_d );
     OUTER_SUBTRACT_SUBCASE( case1, a_h, b_h );
