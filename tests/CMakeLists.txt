@@ -176,6 +176,10 @@ endif ()
 
 
 set(ARRAY_UFUNCS_TEST_SOURCES
+    src/doctest/array/view/cumprod.cpp
+    src/doctest/array/view/cumsum.cpp
+    src/doctest/array/view/prod.cpp
+    src/doctest/array/view/sum.cpp
     src/doctest/array/view/ufuncs/add.cpp
     src/doctest/array/view/ufuncs/arccos.cpp
     src/doctest/array/view/ufuncs/arccosh.cpp
@@ -251,9 +255,13 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/atleast_2d.cpp
     src/doctest/array/array/atleast_3d.cpp
     src/doctest/array/array/broadcast_to.cpp
+    src/doctest/array/array/cumprod.cpp
+    src/doctest/array/array/cumsum.cpp
     src/doctest/array/array/flip.cpp
     src/doctest/array/array/full.cpp
     src/doctest/array/array/ones.cpp
+    src/doctest/array/array/prod.cpp
+    src/doctest/array/array/sum.cpp
     src/doctest/array/array/zeros.cpp
     src/doctest/array/array/ufuncs/add.cpp
     src/doctest/array/array/ufuncs/arccos.cpp
