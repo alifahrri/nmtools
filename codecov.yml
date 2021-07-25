@@ -1,3 +1,3 @@
 ignore:
-  - "/usr/include/"        # ignore system lib
-  - "/usr/local/include/"  # ignore 3rd parties
+  - "/usr/include/**/*"        # ignore system lib
+  - "/usr/local/include/**/*"  # ignore 3rd parties
