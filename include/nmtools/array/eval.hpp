@@ -40,6 +40,7 @@ namespace nmtools::array
 
         template <typename output_t>
         constexpr auto operator()(output_t& output) const
+            -> std::enable_if_t<meta::is_ndarray_v<output_t>>
         {
             auto out_shape = ::nmtools::shape(output);
             auto inp_shape = ::nmtools::shape(view);
@@ -65,6 +66,13 @@ namespace nmtools::array
                 auto out_idx = out_index[i];
                 apply_at(output,out_idx) = apply_at(view,inp_idx);
             }
+        } // operator()
+
+        template <typename output_t>
+        constexpr auto operator()(output_t& output) const
+            -> std::enable_if_t<meta::is_num_v<output_t>>
+        {
+            output = static_cast<output_t>(view);
         } // operator()
 
         template <typename output_t=output_type, std::enable_if_t<!std::is_void_v<output_t>,int> = 0>
@@ -105,8 +113,31 @@ namespace nmtools::array
     template <typename output_t=none_t, typename context_t=none_t, typename view_t>
     constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        auto evaluator_ = evaluator(view,context);
-        return evaluator_(output);
+        if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) {
+            auto evaluator_ = evaluator(view,context);
+            return evaluator_(output);
+        } else if constexpr (meta::is_either_v<view_t>) {
+            // for now, assume either type is std::variant
+            // TODO: add support for other either type
+            using std::get_if;
+            using left_t   = meta::get_either_left_t<view_t>;
+            using right_t  = meta::get_either_right_t<view_t>;
+            // deduce return type for each type
+            using rleft_t  = decltype(eval(std::declval<left_t>(),context,output));
+            using rright_t = decltype(eval(std::declval<right_t>(),context,output));
+            // TODO: make default either type configurable
+            using either_t = std::variant<rleft_t,rright_t>;
+            // match either type at runtime
+            if (auto view_ptr = get_if<left_t>(&view)) {
+                return either_t{eval(*view_ptr,context,output)};
+            } else if (auto view_ptr = get_if<right_t>(&view)) {
+                return either_t{eval(*view_ptr,context,output)};
+            } else {
+                // TODO: error
+            }
+        } else {
+            // TODO: error
+        }
     } // eval
 
 } // namespace nmtools::array
