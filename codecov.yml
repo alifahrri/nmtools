@@ -1,3 +1,22 @@
+codecov:
+  require_ci_to_pass: yes
+
+coverage:
+  status:
+    project:
+      default:
+        # basic
+        target: auto
+        threshold: 1%
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: yes
+      loop: yes
+      method: no
+      macro: yes
+
 ignore:
   - "/usr/include/**/*"        # ignore system lib
   - "/usr/local/include/**/*"  # ignore 3rd parties
