@@ -29,7 +29,7 @@ fi
 set -e
 
 ## assuming this script is located in root/scripts & build directory in root/scripts
-NMTOOLS_TESTBENCH_EPOCHS=3 NMTOOLS_TESTBENCH_WARMUP=1 $BUILD_DIR/tests/numeric-tests-doctest \
+NMTOOLS_TESTBENCH_EPOCHS=3 NMTOOLS_TESTBENCH_WARMUP=1 NMTOOLS_TESTBENCH_QUIET=1 $BUILD_DIR/tests/numeric-tests-doctest \
     && $BUILD_DIR/tests/numeric-tests-doctest-optional \
     && $BUILD_DIR/tests/numeric-tests-doctest-exception \
     && $BUILD_DIR/tests/numeric-tests-doctest-meta
