@@ -817,7 +817,7 @@ namespace nmtools::meta
                 return detail::Fail;
             }
         }();
-        using value_type = remove_cvref_t<decltype(value)>;
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
         using type = value_type;
     }; // fixed_dim
 
@@ -1128,7 +1128,7 @@ namespace nmtools::meta
                 return detail::Fail;
             }
         }();
-        using value_type = remove_cvref_t<decltype(value)>;
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
         using type = value_type;
     };
 

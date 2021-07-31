@@ -1,4 +1,4 @@
-#include "nmtools/array/view/transpose.hpp"
+#include "nmtools/array/array/transpose.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/data/array/transpose.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -8,18 +8,17 @@
 
 namespace nm = nmtools;
 namespace na = nm::array;
-namespace view = nm::view;
 
 #define TRANSPOSE_SUBCASE(case_name, array, axes) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS( transpose, case_name ); \
-    auto array_ref = view::transpose(args::array, args::axes); \
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
-    NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
+    auto array = na::transpose(args::array, args::axes); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(array), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( array, expect::expected ); \
 }
 
-TEST_CASE("transpose(array)" * doctest::test_suite("view::transpose"))
+TEST_CASE("transpose(array)" * doctest::test_suite("array::transpose"))
 {
     TRANSPOSE_SUBCASE( case1, array_a, axes_a );
     TRANSPOSE_SUBCASE( case2, array_a, axes_a );
@@ -56,7 +55,7 @@ TEST_CASE("transpose(array)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case10, array_a, axes_ct );
 }
 
-TEST_CASE("transpose(vector)" * doctest::test_suite("view::transpose"))
+TEST_CASE("transpose(vector)" * doctest::test_suite("array::transpose"))
 {
     TRANSPOSE_SUBCASE( case1, array_v, axes_a );
     TRANSPOSE_SUBCASE( case2, array_v, axes_a );
@@ -94,7 +93,7 @@ TEST_CASE("transpose(vector)" * doctest::test_suite("view::transpose"))
     // TRANSPOSE_SUBCASE( case10, array_v, axes_ct );
 }
 
-TEST_CASE("transpose(fixed_ndarray)" * doctest::test_suite("view::transpose"))
+TEST_CASE("transpose(fixed_ndarray)" * doctest::test_suite("array::transpose"))
 {
     TRANSPOSE_SUBCASE( case1, array_f, axes_a );
     TRANSPOSE_SUBCASE( case2, array_f, axes_a );
@@ -131,7 +130,7 @@ TEST_CASE("transpose(fixed_ndarray)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case10, array_f, axes_ct );
 }
 
-TEST_CASE("transpose(hybrid_ndarray)" * doctest::test_suite("view::transpose"))
+TEST_CASE("transpose(hybrid_ndarray)" * doctest::test_suite("array::transpose"))
 {
     TRANSPOSE_SUBCASE( case1, array_h, axes_a );
     TRANSPOSE_SUBCASE( case2, array_h, axes_a );
@@ -169,7 +168,7 @@ TEST_CASE("transpose(hybrid_ndarray)" * doctest::test_suite("view::transpose"))
     // TRANSPOSE_SUBCASE( case10, array_h, axes_ct );
 }
 
-TEST_CASE("transpose(dynamic_ndarray)" * doctest::test_suite("view::transpose"))
+TEST_CASE("transpose(dynamic_ndarray)" * doctest::test_suite("array::transpose"))
 {
     TRANSPOSE_SUBCASE( case1, array_d, axes_a );
     TRANSPOSE_SUBCASE( case2, array_d, axes_a );

@@ -10,6 +10,12 @@
 
 namespace nmtools::view
 {
+    /**
+     * @brief Type constructor for tile view.
+     * 
+     * @tparam array_t array type to be referenced.
+     * @tparam reps_t  reps type
+     */
     template <typename array_t, typename reps_t>
     struct tile_t
     {
@@ -76,6 +82,7 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    // TODO: remove
     template <typename array_t, typename reps_t>
     struct fixed_matrix_size< view::tile_t<array_t,reps_t> >
     {
@@ -83,6 +90,7 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
+    // TODO: remove
     template <typename array_t, typename reps_t>
     struct fixed_vector_size< view::tile_t<array_t,reps_t> >
     {
@@ -90,12 +98,47 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
+    /**
+     * @brief Infer the shape of tile view at compile-time.
+     * 
+     * @tparam array_t 
+     * @tparam reps_t 
+     */
     template <typename array_t, typename reps_t>
     struct fixed_ndarray_shape< view::tile_t<array_t,reps_t> >
     {
-        static inline constexpr auto value = detail::fail_t{};
+        static inline constexpr auto value = [](){
+            // we can only know the shape at compile time if both array and reps are compile-time constant
+            // note that shape_tile will "repeat elements" or multiply size between array's shape and reps
+            if constexpr (is_fixed_size_ndarray_v<array_t> && is_constant_index_array_v<reps_t>) {
+                constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
+                constexpr auto reps   = reps_t{};
+                return index::shape_tile(shape_,reps);
+            } else {
+                return detail::Fail;
+            }
+        }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
+
+    /**
+     * @brief Infer dimension of tile view at compile-time.
+     * 
+     * @tparam array_t 
+     * @tparam reps_t 
+     */
+    template <typename array_t, typename reps_t>
+    struct fixed_dim< view::decorator_t<view::tile_t, array_t, reps_t> >
+    {
+        static inline constexpr auto value = [](){
+            if constexpr (is_fixed_index_array_v<reps_t>) {
+                return fixed_index_array_size_v<reps_t>;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_dim
 
     template <typename array_t, typename reps_t>
     struct is_ndarray< view::decorator_t< view::tile_t, array_t, reps_t >>

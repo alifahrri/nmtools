@@ -26,8 +26,6 @@ TEST_CASE("get_container_value_type_t" * doctest::test_suite("meta"))
     {
         using lhs_t = double[3];
         using result_t = meta::get_container_value_type_t<lhs_t>;
-        LOG_TYPEINFO(lhs_t);
-        LOG_TYPEINFO(result_t);
         STATIC_CHECK_IS_SAME( result_t, double );
     }
 }

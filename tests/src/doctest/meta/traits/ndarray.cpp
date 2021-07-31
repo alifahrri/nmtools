@@ -29,92 +29,74 @@ TEST_CASE("is_fixed_size_ndarray_v" * doctest::test_suite("array"))
 {
     {
         using arg_t = double[3][2][4][5];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double[3][2][4];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double[3][2];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double[3];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( !meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,2,3,4,5>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,2,3,4>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,2,3>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,2>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = nmtools::array::dynamic_ndarray<double>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( !meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<std::array<std::array<std::array<std::array<double,5>,4>,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<std::array<std::array<std::array<double,4>,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<std::array<std::array<double,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<std::array<double,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<double,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::vector<std::vector<std::vector<double>>>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( !meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::vector<std::vector<double>>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( !meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::vector<double>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( !meta::is_fixed_size_ndarray_v<arg_t> ));
     }
 }
@@ -123,99 +105,80 @@ TEST_CASE("fixed_ndarray_dim_v" * doctest::test_suite("array"))
 {
     {
         using arg_t = double[3][2][4][5];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::fixed_ndarray_dim_v<arg_t> == 4 ));
     }
     {
         using arg_t = double[3][2][4];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::fixed_ndarray_dim_v<arg_t> == 3 ));
     }
     {
         using arg_t = double[3][2];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::fixed_ndarray_dim_v<arg_t> == 2 ));
     }
     {
         using arg_t = double[3];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::fixed_ndarray_dim_v<arg_t> == 1 ));
     }
     {
         using arg_t = double;
         using result_t = meta::fixed_ndarray_dim<arg_t>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK_IS_SAME( typename result_t::value_type, void );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,2,3,4,5>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 4 );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,2,3,4>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 3 );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,2,3>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 2 );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,2>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 1 );
     }
     {
         using arg_t = std::array<std::array<std::array<std::array<std::array<double,5>,4>,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         CHECK( meta::fixed_ndarray_dim_v<arg_t> == 5 );
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 5 );
     }
     {
         using arg_t = std::array<std::array<std::array<std::array<double,4>,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 4 );
     }
     {
         using arg_t = std::array<std::array<std::array<double,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 3 );
     }
     {
         using arg_t = std::array<std::array<double,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 2 );
     }
     {
         using arg_t = std::array<double,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 1 );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,5,4,3,2,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 5 );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,5,4,3,2>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 4 );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,5,4,3>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 3 );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,5,4>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 2 );
     }
     {
         using arg_t = nmtools::array::fixed_ndarray<double,5>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 1 );
     }
 }
@@ -229,13 +192,6 @@ TEST_CASE("fixed_ndarray_shape_v" * doctest::test_suite("array"))
     using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
     using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
     using dndarray_t = nmtools::array::dynamic_ndarray<double>;
-    LOG_TYPEINFO(array_t);
-    LOG_TYPEINFO(vector_t);
-    LOG_TYPEINFO(fvector_t);
-    LOG_TYPEINFO(fmatrix_t);
-    LOG_TYPEINFO(ndarray_t);
-    LOG_TYPEINFO(dndarray_t);
-    LOG_TYPEINFO(ndarray3_t);
 
     {
         constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<fvector_t>;
@@ -279,127 +235,102 @@ TEST_CASE("is_ndarray_v" * doctest::test_suite("array"))
 
     {
         using arg_t = vvector_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = mvector_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = varray_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = marray_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = fvector_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = fmatrix_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = dvector_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = dmatrix_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = ftensor_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = dtensor_t;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double[3][1][2][4][5];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double[3][1][2][4];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double[3][1][2];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double[3][1];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double[3];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = double;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( !meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<std::array<std::array<std::array<std::array<double,5>,4>,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<std::array<std::array<std::array<double,4>,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<std::array<std::array<double,3>,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<std::array<double,2>,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::array<double,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::vector<std::vector<std::vector<double>>>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::vector<std::vector<double>>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::vector<double>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
         using arg_t = std::tuple<double,int>;
-        LOG_TYPEINFO( arg_t );
         STATIC_CHECK( !meta::is_ndarray_v<arg_t> );
     }
 }
@@ -408,58 +339,47 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("array"))
 {
     {
         using arg_t = double;
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( !meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = double[1];
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = double[1][1];
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = double[1][1][1];
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = double[1][1][1][1];
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = std::array<double,2>;
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = std::array<std::array<double,3>,2>;
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = std::array<std::array<std::array<double,1>,3>,2>;
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = std::vector<double>;
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = std::vector<std::vector<double>>;
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
     {
         using arg_t = std::vector<std::vector<std::vector<double>>>;
-        LOG_TYPEINFO(arg_t);
-        STATIC_CHECK(( meta::is_fixed_dim_ndarray_v<arg_t> ));
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, arg_t );
     }
 }
 
@@ -467,62 +387,50 @@ TEST_CASE("fixed_dim" * doctest::test_suite("array"))
 {
     {
         using arg_t = double[1];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1 );
     }
     {
         using arg_t = double[1][1];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2 );
     }
     {
         using arg_t = double[1][1][1];
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3 );
     }
     {
         using arg_t = std::array<double,2>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1);
     }
     {
         using arg_t = std::array<std::array<double,3>,2>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2);
     }
     {
         using arg_t = std::array<std::array<std::array<double,1>,3>,2>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3);
     }
     {
         using arg_t = std::vector<double>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1);
     }
     {
         using arg_t = std::vector<std::vector<double>>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2);
     }
     {
         using arg_t = std::vector<std::vector<std::vector<double>>>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3);
     }
     {
         using arg_t = nm::array::fixed_ndarray<double,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1);
     }
     {
         using arg_t = nm::array::fixed_ndarray<double,1,2>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2);
     }
     {
         using arg_t = nm::array::fixed_ndarray<double,2,3,1>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3);
     }
 }
@@ -531,7 +439,6 @@ TEST_CASE("is_array1d_v" * doctest::test_suite("array"))
 {
     {
         using arg_t = std::initializer_list<double>;
-        LOG_TYPEINFO(arg_t);
         STATIC_CHECK( !meta::is_array1d_v<arg_t> );
     }
 }

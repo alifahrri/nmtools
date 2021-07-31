@@ -37,9 +37,9 @@ NMTOOLS_TESTING_DECLARE_CASE(view, bitwise_xor)
     {
         inline int shape[2] = {3,3};
         inline int result[3][3] = {
-            {0 ^ 0, 1 ^ 1, 2 ^ 2},
-            {3 ^ 0, 4 ^ 1, 5 ^ 2},
-            {6 ^ 0, 7 ^ 1, 8 ^ 2},
+            {0 xor 0, 1 xor 1, 2 xor 2},
+            {3 xor 0, 4 xor 1, 5 xor 2},
+            {6 xor 0, 7 xor 1, 8 xor 2},
         };
     }
 
@@ -57,9 +57,9 @@ NMTOOLS_TESTING_DECLARE_CASE(view, bitwise_xor)
     {
         inline int shape[2] = {3,3};
         inline int result[3][3] = {
-            {0 ^ 1, 1 ^ 1, 2 ^ 1},
-            {3 ^ 1, 4 ^ 1, 5 ^ 1},
-            {6 ^ 1, 7 ^ 1, 8 ^ 1},
+            {0 xor 1, 1 xor 1, 2 xor 1},
+            {3 xor 1, 4 xor 1, 5 xor 1},
+            {6 xor 1, 7 xor 1, 8 xor 1},
         };
     }
 }

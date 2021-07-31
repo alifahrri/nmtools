@@ -5,6 +5,7 @@
 #include "nmtools/array/view/ufuncs/sin.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/clip.hpp"
+#include "nmtools/array/view/where.hpp"
 #include "nmtools/array/view/broadcast_to.hpp"
 #include "nmtools/array/view/flip.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -130,6 +131,18 @@ TEST_CASE("get_underlying_array_type(clip)" * doctest::test_suite("get_underlyin
         >;
         using array_t = meta::get_underlying_array_type_t<view_t>;
         using expected_t = std::tuple<const na::fixed_ndarray<float,3,2>&, const na::fixed_ndarray<float,2>&, const float& >;
+        NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
+    }
+}
+
+TEST_CASE("get_underlying_array_type(where)" * doctest::test_suite("get_underlying_array_type"))
+{
+    {
+        using view_t = view::decorator_t<
+            view::where_t, int[3], int[3], int[3]
+        >;
+        using array_t = meta::get_underlying_array_type_t<view_t>;
+        using expected_t = std::tuple<const int(&)[3],const int(&)[3],const int(&)[3]>;
         NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
 }
