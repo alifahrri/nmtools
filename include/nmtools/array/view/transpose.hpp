@@ -153,6 +153,7 @@ namespace nmtools
      * @tparam array_t 
      * @todo extend this for compile-time axes
      * @note there is specialization of is_fixed_size_matrix that depends on meta::fixed_matrix_size
+     * @todo remove
      */
     template <typename array_t>
     struct meta::fixed_matrix_size< transpose_t<array_t,none_t>
@@ -169,6 +170,7 @@ namespace nmtools
      * 
      * @tparam array_t 
      * @tparam indices_t 
+     * @todo remove
      */
     template <typename array_t, typename indices_t>
     struct meta::fixed_matrix_size< transpose_t<array_t, indices_t>
@@ -194,36 +196,31 @@ namespace nmtools
     > : meta::fixed_vector_size<meta::remove_cvref_t<array_t>> {};
 
     /**
-     * @brief specialization of meta::fixed_ndarray_shape for transpose view and none axes
+     * @brief Specialization of fixed_ndarray_shape for transpose view.
      * 
-     * @tparam array_t 
-     */
-    template <typename array_t>
-    struct meta::fixed_ndarray_shape< transpose_t<array_t,none_t>
-        , std::enable_if_t< meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>> >
-    >
-    {
-        static inline constexpr auto src_value = meta::fixed_ndarray_shape_v<meta::remove_cvref_t<array_t>>;
-        static inline constexpr auto value = ::nmtools::detail::reverse(src_value);
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-
-    /**
-     * @brief specialization of meta::fixed_ndarray_shape for transpose view and integer_constant axes
-     * 
-     * @tparam array_t 
-     * @tparam indices_t 
+     * @tparam array_t      referenced array type
+     * @tparam indices_t    indices type
      */
     template <typename array_t, typename indices_t>
-    struct meta::fixed_ndarray_shape< transpose_t<array_t, indices_t>
-        , std::enable_if_t<
-            meta::has_tuple_size_v<indices_t>
-            && meta::apply_conjunction_v<meta::is_integral_constant,indices_t>
-        >
+    struct meta::fixed_ndarray_shape<
+        transpose_t<array_t,indices_t>
     >
     {
-        static inline constexpr auto src_value = meta::fixed_ndarray_shape_v<meta::remove_cvref_t<array_t>>;
-        static inline constexpr auto value = ::nmtools::detail::gather(src_value,indices_t{});
+        static constexpr auto value = [](){
+            if constexpr (!is_fixed_size_ndarray_v<array_t>) {
+                return detail::Fail;
+            } else if constexpr (is_none_v<indices_t>) {
+                constexpr auto src_value = meta::fixed_ndarray_shape_v<array_t>;
+                return ::nmtools::detail::reverse(src_value);
+            } else if constexpr (meta::is_constant_index_array_v<indices_t>) {
+                constexpr auto src = meta::fixed_ndarray_shape_v<array_t>;
+                constexpr auto dst = indices_t{};
+                return ::nmtools::detail::gather(src,dst);
+            } else {
+                // the array is fixed size but the desired indices are not
+                return detail::Fail;
+            }
+        }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
 
