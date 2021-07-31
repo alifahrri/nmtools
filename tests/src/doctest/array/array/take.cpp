@@ -1,4 +1,4 @@
-#include "nmtools/array/view/take.hpp"
+#include "nmtools/array/array/take.hpp"
 #include "nmtools/testing/data/array/take.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/constants.hpp"
@@ -7,7 +7,7 @@ namespace nm = nmtools;
 namespace na = nm::array;
 
 #define RUN_take_impl(...) \
-nm::view::take(__VA_ARGS__);
+nm::array::take(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
@@ -38,7 +38,7 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
-TEST_CASE("case1" * doctest::test_suite("view::take"))
+TEST_CASE("case1" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case1,   array,   indices, axis );
     TAKE_SUBCASE( case1, array_a, indices_a, axis );
@@ -48,7 +48,7 @@ TEST_CASE("case1" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case1, array_h, indices_h, axis );
 }
 
-TEST_CASE("case2" * doctest::test_suite("view::take"))
+TEST_CASE("case2" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case2,   array,   indices, axis );
     TAKE_SUBCASE( case2, array_a, indices_a, axis );
@@ -58,7 +58,7 @@ TEST_CASE("case2" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case2, array_h, indices_h, axis );
 }
 
-TEST_CASE("case3" * doctest::test_suite("view::take"))
+TEST_CASE("case3" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case3,   array,   indices, axis );
     TAKE_SUBCASE( case3, array_a, indices_a, axis );
@@ -68,7 +68,7 @@ TEST_CASE("case3" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case3, array_h, indices_h, axis );
 }
 
-TEST_CASE("case4" * doctest::test_suite("view::take"))
+TEST_CASE("case4" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case4,   array,   indices, axis );
     TAKE_SUBCASE( case4, array_a, indices_a, axis );
@@ -78,7 +78,7 @@ TEST_CASE("case4" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case4, array_h, indices_h, axis );
 }
 
-TEST_CASE("case5" * doctest::test_suite("view::take"))
+TEST_CASE("case5" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case5,   array,   indices, axis );
     TAKE_SUBCASE( case5, array_a, indices_a, axis );
@@ -88,7 +88,7 @@ TEST_CASE("case5" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case5, array_h, indices_h, axis );
 }
 
-TEST_CASE("case6" * doctest::test_suite("view::take"))
+TEST_CASE("case6" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case6,   array,   indices, axis );
     TAKE_SUBCASE( case6, array_a, indices_a, axis );

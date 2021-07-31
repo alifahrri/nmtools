@@ -262,6 +262,10 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/ones.cpp
     src/doctest/array/array/prod.cpp
     src/doctest/array/array/sum.cpp
+    src/doctest/array/array/take.cpp
+    src/doctest/array/array/tile.cpp
+    src/doctest/array/array/transpose.cpp
+    src/doctest/array/array/where.cpp
     src/doctest/array/array/zeros.cpp
     src/doctest/array/array/ufuncs/add.cpp
     src/doctest/array/array/ufuncs/arccos.cpp
@@ -397,6 +401,9 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     ## metafunctions
     src/doctest/meta.cpp
     src/doctest/meta/loop.cpp
+    src/doctest/meta/array/view/broadcast_to.cpp
+    src/doctest/meta/array/view/take.cpp
+    src/doctest/meta/array/view/ufunc.cpp
     src/doctest/meta/array/eval/arange.cpp
     src/doctest/meta/array/eval/atleast_1d.cpp
     src/doctest/meta/array/eval/atleast_2d.cpp
@@ -405,8 +412,11 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/eval/flip.cpp
     src/doctest/meta/array/eval/full.cpp
     src/doctest/meta/array/eval/ones.cpp
-    src/doctest/meta/array/eval/zeros.cpp
+    src/doctest/meta/array/eval/take.cpp
+    src/doctest/meta/array/eval/tile.cpp
     src/doctest/meta/array/eval/ufunc.cpp
+    src/doctest/meta/array/eval/where.cpp
+    src/doctest/meta/array/eval/zeros.cpp
     src/doctest/meta/array/index/argfilter.cpp
     src/doctest/meta/array/index/broadcast_shape.cpp
     src/doctest/meta/array/index/broadcast_to.cpp
@@ -448,6 +458,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/sequence.cpp
     src/doctest/meta/transform/split_at.cpp
     src/doctest/meta/transform/scatter.cpp
+    src/doctest/meta/transform/transform_bounded_array.cpp
     src/doctest/meta/get_container_value_type.cpp
 )
 # omg
