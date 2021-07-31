@@ -1,6 +1,8 @@
 #ifndef NMTOOLS_ARRAY_INDEX_SHAPE_TILE_HPP
 #define NMTOOLS_ARRAY_INDEX_SHAPE_TILE_HPP
 
+// TODO: move to index/tile.hpp
+
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
@@ -61,6 +63,11 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        struct SHAPE_TILE_ERROR : detail::fail_t {};
+    } // namespace error
+    
     /**
      * @brief resolve return type for index::shape_tile op
      * 
@@ -72,6 +79,45 @@ namespace nmtools::meta
         void, index::shape_tile_t, shape_t, reps_t
     >
     {
+        static constexpr auto value = [](){
+            if constexpr (is_dynamic_index_array_v<shape_t> && is_dynamic_index_array_v<reps_t>) {
+                return as_value_v<shape_t>;
+            } else if constexpr (is_hybrid_index_array_v<shape_t> && is_hybrid_index_array_v<reps_t>) {
+                constexpr auto shape_max = hybrid_index_array_max_size_v<shape_t>;
+                constexpr auto reps_max  = hybrid_index_array_max_size_v<reps_t>;
+                constexpr auto max_size  = shape_max > reps_max ? shape_max : reps_max;
+                using type = resize_hybrid_index_array_max_size_t<shape_t,max_size>;
+                return as_value_v<type>;
+            } else if constexpr (is_fixed_index_array_v<shape_t> && is_fixed_index_array_v<reps_t>) {
+                constexpr auto shape_size = fixed_index_array_size_v<shape_t>;
+                constexpr auto reps_size  = fixed_index_array_size_v<reps_t>;
+                constexpr auto size = shape_size > reps_size ? shape_size : reps_size;
+                using type = resize_fixed_index_array_t<shape_t,size>;
+                return as_value_v<type>;
+            } else if constexpr (is_dynamic_index_array_v<shape_t>) {
+                return as_value_v<shape_t>;
+            } else if constexpr (is_dynamic_index_array_v<reps_t>) {
+                return as_value_v<reps_t>;
+            } else if constexpr (is_hybrid_index_array_v<shape_t>) {
+                // always select max
+                constexpr auto shape_max = hybrid_ndarray_max_size_v<shape_t>;
+                constexpr auto reps_size = fixed_index_array_size_v<reps_t>;
+                constexpr auto max = shape_max > reps_size ? shape_max : reps_size;
+                using type = resize_hybrid_index_array_max_size_t<shape_t,max>;
+                return as_value_v<type>;
+            } else if constexpr (is_hybrid_index_array_v<reps_t>) {
+                constexpr auto shape_size = fixed_index_array_size_v<shape_t>;
+                constexpr auto reps_max   = hybrid_ndarray_max_size_v<reps_t>;
+                constexpr auto max = shape_size > reps_max ? shape_size : reps_max;
+                using type = resize_hybrid_index_array_max_size_t<reps_t,max>;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<error::SHAPE_TILE_ERROR>;
+            }
+        }();
+        using type = type_t<decltype(value)>;
+
+        // TODO: remove
         template <typename T>
         struct is_resizeable_not_hybrid
             : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
@@ -88,10 +134,6 @@ namespace nmtools::meta
         // shape type must be integral
         using selection_t = select_array1d_t<
             size_policy_max_t, selection_kind_t, std::is_integral
-        >;
-        // final type
-        using type = resolve_optype_t<
-            selection_t, shape_t, reps_t
         >;
     }; // resolve_optype
 } // namespace nmtools::meta
