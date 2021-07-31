@@ -116,6 +116,23 @@ namespace nmtools::meta
     };
 
     template <typename array_t>
+    struct fixed_dim<
+        view::decorator_t< view::atleast_1d_t, array_t >
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (is_num_v<array_t>) {
+                return 1;
+            } else if constexpr (is_fixed_dim_ndarray_v<array_t>) {
+                return fixed_dim_v<array_t>;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_dim
+
+    template <typename array_t>
     struct is_ndarray< view::decorator_t< view::atleast_1d_t, array_t >>
     {
         static constexpr auto value = std::is_arithmetic_v<array_t> || is_ndarray_v<array_t>;

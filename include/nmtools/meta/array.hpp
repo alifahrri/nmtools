@@ -783,6 +783,7 @@ namespace nmtools::meta
             // which simply count the number of shape
             using dim_t = fixed_dim<T>;
             using value_type = typename dim_t::value_type;
+            // TODO: use fail type instead of void
             if constexpr (!std::is_same_v<value_type,void>)
                 return true;
             else return false;

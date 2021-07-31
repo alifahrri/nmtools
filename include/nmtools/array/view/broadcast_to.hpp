@@ -24,6 +24,11 @@ namespace nmtools::view::detail::fn
     /**
      * @brief Index broadcast_to, compile-time version.
      * 
+     * This is useful when one wants to check broadcasting at compile time,
+     * but it is desired that the results is to be type instead of value.
+     * For instance, broadcast_to type constructor requires the shape_t argument
+     * to be type template parameter.
+     * 
      * @tparam array_t 
      * @tparam shape_t 
      * @return constexpr auto 
@@ -245,18 +250,20 @@ namespace nmtools::meta
     }; // is_dynamic_ndarray
 
     template <typename array_t, typename shape_t, typename origin_axes_t>
-    struct is_fixed_dim_ndarray<
+    struct fixed_dim<
         view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
     >
     {
         static constexpr auto value = [](){
-            if (is_fixed_index_array_v<shape_t> || is_constant_index_array_v<shape_t>) {
-                return true;
+            if constexpr (is_fixed_index_array_v<shape_t> || is_constant_index_array_v<shape_t>) {
+                return fixed_index_array_size_v<shape_t>;
             } else /* if (is_index_array_v<shape_t> || is_hybrid_index_array_v<shape_t>) */ {
-                return false;
+                return detail::Fail;
             }
         }();
-    }; // is_fixed_dim_ndarray
+        // TODO: use fail type instead of void
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
+    }; // fixed_dim
 
     /**
      * @brief Specialization of fixed_ndarray_shape for broadcast_to view.
