@@ -8,13 +8,16 @@ coverage:
         # basic
         target: auto
         threshold: 1%
+    patch:
+      default:
+        target: 80%
 
 parsers:
   gcov:
     branch_detection:
       conditional: yes
       loop: yes
-      method: no
+      method: yes
       macro: yes
 
 ignore:
