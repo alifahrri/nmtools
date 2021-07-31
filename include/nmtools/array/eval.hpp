@@ -113,10 +113,7 @@ namespace nmtools::array
     template <typename output_t=none_t, typename context_t=none_t, typename view_t>
     constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) {
-            auto evaluator_ = evaluator(view,context);
-            return evaluator_(output);
-        } else if constexpr (meta::is_either_v<view_t>) {
+        if constexpr (meta::is_either_v<view_t>) {
             // for now, assume either type is std::variant
             // TODO: add support for other either type
             using std::get_if;
@@ -132,11 +129,10 @@ namespace nmtools::array
                 return either_t{eval(*view_ptr,context,output)};
             } else if (auto view_ptr = get_if<right_t>(&view)) {
                 return either_t{eval(*view_ptr,context,output)};
-            } else {
-                // TODO: error
             }
-        } else {
-            // TODO: error
+        } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
+            auto evaluator_ = evaluator(view,context);
+            return evaluator_(output);
         }
     } // eval
 
@@ -147,6 +143,7 @@ namespace nmtools::meta
     namespace error
     {
         // error type for eval type resolver
+        struct EVAL_MISMATCHED_DIM : detail::fail_t {};
         struct EVAL_UNHANDLED_CASE : detail::fail_t {};
         struct EVAL_UNHANDLED_UNARY_CASE : detail::fail_t {};
         struct EVAL_UNHANDLED_BINARY_CASE : detail::fail_t {};
@@ -181,8 +178,13 @@ namespace nmtools::meta
                is_none_v<array_t>
             && is_fixed_size_ndarray_v<view_type>            
         ) {
+            // None array type can be encountered for creation routine
+            // such as view::zeros,ones...
             constexpr auto shape = fixed_ndarray_shape_v<view_type>;
             constexpr auto dim   = fixed_ndarray_dim_v<view_type>;
+            // convert to std::tuple of integral constant
+            // since default impl of make_fixed_ndarray (defined in ndarray/fixed.hpp)
+            // only support such type
             constexpr auto vshape = template_reduce<dim>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 // shape may be constant index_array,
@@ -206,6 +208,7 @@ namespace nmtools::meta
                is_num_v<array_t>
             && is_hybrid_ndarray_v<view_type>
         ) {
+            // num array type can be the result of reducer such as view::reduce_t
             constexpr auto max_size = hybrid_ndarray_max_size_v<view_type>;
             constexpr auto dim = fixed_dim_v<view_type>;
             using type = make_hybrid_ndarray_t<element_t,max_size,dim>;
@@ -252,8 +255,41 @@ namespace nmtools::meta
         } else if constexpr (
                is_dynamic_ndarray_v<view_type>
             && is_dynamic_ndarray_v<array_t>
+            && !is_fixed_dim_ndarray_v<view_type>
+            && !is_fixed_dim_ndarray_v<array_t>
         ) {
+            // dynamic-size fixed-dim ndarray should be treated 
+            // differently with its dynamic-dim counterpart
+            // at the moment, there is no clear differentiation for such cases
+            // and fixed-dim ndarray is pretty much ignored
+            // note that for fixed-dim ndarray,
+            // it is possible to have dynamic-size or hybrid-size
+            // TODO: improve fixed-dim handling
             using type = replace_element_type_t<array_t,element_t>;
+            return as_value_v<type>;
+        } else if constexpr (
+               is_dynamic_ndarray_v<view_type>
+            && is_dynamic_ndarray_v<array_t>
+            && is_fixed_dim_ndarray_v<view_type>
+            && is_fixed_dim_ndarray_v<array_t>
+        ) {
+            constexpr auto view_dim  = fixed_dim_v<view_type>;
+            constexpr auto array_dim = fixed_dim_v<array_t>;
+            if constexpr (view_dim == array_dim) {
+                using type = replace_element_type_t<array_t,element_t>;
+                return as_value_v<type>;
+            } else {
+                using type = make_dynamic_ndarray_t<element_t>;
+                return as_value_v<type>;
+                // return as_value_v<error::EVAL_MISMATCHED_DIM>;
+            }
+        } else if constexpr (
+               is_dynamic_ndarray_v<view_type>
+            && is_dynamic_ndarray_v<array_t>
+        ) {
+            // here, either view_type or array_t is fixed-dim, but not both,
+            // for now use default dynamic ndarray
+            using type = make_dynamic_ndarray_t<element_t>;
             return as_value_v<type>;
         } else if constexpr (
                is_fixed_size_ndarray_v<view_type>
