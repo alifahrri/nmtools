@@ -1,21 +1,32 @@
 #ifndef NMTOOLS_ARRAY_VIEW_WHERE_HPP
 #define NMTOOLS_ARRAY_VIEW_WHERE_HPP
 
-#include "nmtools/meta.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/broadcast_arrays.hpp"
+#include "nmtools/utils/isequal.hpp"
+#include "nmtools/meta.hpp"
 
 namespace nmtools::view
 {
     template <typename condition_t, typename x_t, typename y_t>
     struct where_t
     {
-        using condition_type = condition_t;
-        using x_type = x_t;
-        using y_type = y_t;
-        // TODO: make decorator to be independent from array_type
-        using array_type = condition_t;
+        // deduce array types, copy if view, take const ref if concrete array
+        using condition_type = std::conditional_t<
+            meta::is_view_v<condition_t>,
+            condition_t, const condition_t&>;
+        using x_type = std::conditional_t<
+            meta::is_view_v<x_t>, x_t, const x_t&>;
+        using y_type = std::conditional_t<
+            meta::is_view_v<y_t>, y_t, const y_t&>;
+        // needed by decorator_t, also used to deduce underlying array type
+        using array_type = std::tuple<condition_type,x_type,y_type>;
+        // result type, use common type for now
+        using element_type = std::common_type_t<
+            meta::get_element_type_t<condition_t>,
+            meta::get_element_type_t<x_t>, meta::get_element_type_t<y_t>
+        >;
 
         condition_type condition;
         x_type x;
@@ -54,7 +65,7 @@ namespace nmtools::view
             auto c  = apply_at(condition, indices_);
             auto x_ = apply_at(x, indices_);
             auto y_ = apply_at(y, indices_);
-            return c ? x_ : y_;
+            return static_cast<element_type>(c ? x_ : y_);
         } // operator()
     }; // where_t
 
@@ -74,6 +85,10 @@ namespace nmtools::view
     {
         // broadcast condition, x, y together
         // TODO: better error handling
+        // take hybrid_ndarray with fixed-dimension for example,
+        // while the maximum size is known at compile-time,
+        // the size itself is a runtime value, hence may be incompatible.
+        // the next question is when/where to check and handle error
         auto [condition_, x_, y_] = broadcast_arrays(condition, x, y);
         using bcondition_t = decltype(condition_);
         using bx_t = decltype(x_);
@@ -103,13 +118,76 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
     template <typename condition_t, typename x_t, typename y_t>
-    struct fixed_ndarray_shape< view::where_t<condition_t,x_t,y_t> >
+    struct get_element_type< view::decorator_t<view::where_t, condition_t, x_t, y_t> >
     {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
+        using view_t = view::where_t<condition_t,x_t,y_t>;
+        using type = typename view_t::element_type;
+    }; // get_element_type
+
+    template <typename condition_t, typename x_t, typename y_t>
+    struct hybrid_ndarray_max_size< view::decorator_t<view::where_t, condition_t, x_t, y_t> >
+    {
+        static inline constexpr auto value = [](){
+            if constexpr (is_hybrid_ndarray_v<condition_t> && is_hybrid_ndarray_v<x_t> && is_hybrid_ndarray_v<y_t>) {
+                auto cmax = hybrid_ndarray_max_size_v<condition_t>;
+                auto xmax = hybrid_ndarray_max_size_v<x_t>;
+                auto ymax = hybrid_ndarray_max_size_v<y_t>;
+                auto max = cmax;
+                max = max > xmax ? max : xmax;
+                max = max > ymax ? max : ymax;
+                return max;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = remove_cvref_t<decltype(value)>;
+        using type = value_type;
+    }; // hybrid_ndarray_max_size
+
+    template <typename condition_t, typename x_t, typename y_t>
+    struct fixed_dim<
+        view::decorator_t<view::where_t, condition_t, x_t, y_t>
+    >
+    {
+        static inline constexpr auto value = [](){
+            if constexpr (is_fixed_dim_ndarray_v<condition_t> && is_fixed_dim_ndarray_v<x_t> && is_fixed_dim_ndarray_v<y_t>) {
+                constexpr auto cdim = fixed_dim_v<condition_t>;
+                constexpr auto xdim = fixed_dim_v<x_t>;
+                constexpr auto ydim = fixed_dim_v<y_t>;
+                if constexpr ( (cdim == xdim) && (xdim == ydim)) {
+                    return cdim;
+                } else {
+                    return detail::Fail;
+                }
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = remove_cvref_t<decltype(value)>;
+        using type = value_type;
+    }; // fixed_dim
+
+    template <typename condition_t, typename x_t, typename y_t>
+    struct fixed_ndarray_shape< view::where_t< condition_t, x_t, y_t> >
+    {
+        static inline constexpr auto value = [](){
+            if constexpr (is_fixed_size_ndarray_v<condition_t> && is_fixed_size_ndarray_v<x_t> && is_fixed_size_ndarray_v<y_t>) {
+                using utils::isequal;
+                constexpr auto cshape = fixed_ndarray_shape_v<condition_t>;
+                constexpr auto xshape = fixed_ndarray_shape_v<x_t>;
+                constexpr auto yshape = fixed_ndarray_shape_v<y_t>;
+                if constexpr (isequal(cshape,xshape) && isequal(xshape,yshape)) {
+                    return cshape;
+                } else {
+                    return detail::Fail;
+                }
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = remove_cvref_t<decltype(value)>;
+        using type = value_type;
     }; // fixed_ndarray_shape
 
     template <typename condition_t, typename x_t, typename y_t>
