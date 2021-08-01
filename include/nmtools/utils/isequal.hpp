@@ -264,14 +264,14 @@ namespace nmtools::utils
                 // @todo: static assert whenever possible
                 assert ( len(t)==len(u) );
                 // prefer fixed size for indexing to allow constant index
-                if constexpr (meta::is_constant_index_array_v<T>) {
+                if constexpr (meta::is_fixed_index_array_v<T>) {
                     constexpr auto N = meta::fixed_index_array_size_v<T>;
                     meta::template_for<N>([&](auto i){
                         equal = equal && (at(t,i) == at(u,i));
                     });
                     return equal;
                 }
-                else if constexpr (meta::is_constant_index_array_v<U>) {
+                else if constexpr (meta::is_fixed_index_array_v<U>) {
                     constexpr auto N = meta::fixed_index_array_size_v<U>;
                     meta::template_for<N>([&](auto i){
                         equal = equal && (at(t,i) == at(u,i));

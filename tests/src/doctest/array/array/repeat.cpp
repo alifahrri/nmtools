@@ -1,4 +1,4 @@
-#include "nmtools/array/view/repeat.hpp"
+#include "nmtools/array/array/repeat.hpp"
 #include "nmtools/testing/data/array/repeat.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -9,10 +9,9 @@
 
 namespace nm = nmtools;
 namespace na = nm::array;
-namespace view = nm::view;
 
 #define RUN_impl(...) \
-nm::view::repeat(__VA_ARGS__);
+nm::array::repeat(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
@@ -38,13 +37,13 @@ RUN_impl(__VA_ARGS__);
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(array, repeat, case_name); \
-    auto array_view = RUN_repeat(case_name, args::array_input, args::repeats, args::axis); \
-    NMTOOLS_ASSERT_EQUAL( array_view.shape(), expect::shape ); \
-    NMTOOLS_ASSERT_EQUAL( array_view.dim(), expect::dim ); \
-    NMTOOLS_ASSERT_CLOSE( array_view, expect::result ); \
+    auto array_array = RUN_repeat(case_name, args::array_input, args::repeats, args::axis); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(array_array), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nm::dim(array_array), expect::dim ); \
+    NMTOOLS_ASSERT_CLOSE( array_array, expect::result ); \
 }
 
-TEST_CASE("repeat(case1)" * doctest::test_suite("view::repeat"))
+TEST_CASE("repeat(case1)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case1, array_a, repeats, axis);
     REPEAT_SUBCASE(case1, array_v, repeats, axis);
@@ -53,7 +52,7 @@ TEST_CASE("repeat(case1)" * doctest::test_suite("view::repeat"))
     REPEAT_SUBCASE(case1, array_h, repeats, axis);
 }
 
-TEST_CASE("repeat(case2)" * doctest::test_suite("view::repeat"))
+TEST_CASE("repeat(case2)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case2, array_a, repeats, axis);
     REPEAT_SUBCASE(case2, array_v, repeats, axis);
@@ -62,7 +61,7 @@ TEST_CASE("repeat(case2)" * doctest::test_suite("view::repeat"))
     REPEAT_SUBCASE(case2, array_h, repeats, axis);
 }
 
-TEST_CASE("repeat(case3)" * doctest::test_suite("view::repeat"))
+TEST_CASE("repeat(case3)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case3, array_a, repeats, axis);
     REPEAT_SUBCASE(case3, array_v, repeats, axis);
@@ -71,7 +70,7 @@ TEST_CASE("repeat(case3)" * doctest::test_suite("view::repeat"))
     REPEAT_SUBCASE(case3, array_h, repeats, axis);
 }
 
-TEST_CASE("repeat(case4)" * doctest::test_suite("view::repeat"))
+TEST_CASE("repeat(case4)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case4, array_a, repeats, axis);
     REPEAT_SUBCASE(case4, array_v, repeats, axis);
@@ -80,7 +79,7 @@ TEST_CASE("repeat(case4)" * doctest::test_suite("view::repeat"))
     REPEAT_SUBCASE(case4, array_h, repeats, axis);
 }
 
-TEST_CASE("repeat(case5)" * doctest::test_suite("view::repeat"))
+TEST_CASE("repeat(case5)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case5, array_a, repeats, axis);
     REPEAT_SUBCASE(case5, array_v, repeats, axis);
@@ -89,7 +88,7 @@ TEST_CASE("repeat(case5)" * doctest::test_suite("view::repeat"))
     REPEAT_SUBCASE(case5, array_h, repeats, axis);
 }
 
-TEST_CASE("repeat(case6)" * doctest::test_suite("view::repeat"))
+TEST_CASE("repeat(case6)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case6, array_a, repeats, axis);
     REPEAT_SUBCASE(case6, array_v, repeats, axis);

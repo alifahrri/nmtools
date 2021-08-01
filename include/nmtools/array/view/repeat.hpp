@@ -81,6 +81,58 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    /**
+     * @brief Infer fixed ndarray shape at compile-time for repeat view.
+     * 
+     * @tparam array_t 
+     * @tparam repeats_t 
+     * @tparam axis_t 
+     */
+    template <typename array_t, typename repeats_t, typename axis_t>
+    struct fixed_ndarray_shape< view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t> >
+    {
+        static constexpr auto value = [](){
+            if constexpr (
+                   is_fixed_size_ndarray_v<array_t>
+                && (is_constant_index_array_v<repeats_t> || is_constant_index_v<repeats_t>)
+                && (is_constant_index_v<axis_t> || is_none_v<axis_t>)
+            ) {
+                constexpr auto shape   = fixed_ndarray_shape_v<array_t>;
+                constexpr auto repeats = repeats_t{};
+                constexpr auto axis    = axis_t{};
+                return index::shape_repeat(shape,repeats,axis);
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
+    }; // fixed_ndarray_shape
+
+    /**
+     * @brief Infer the dimension of repeat view at compile-time.
+     * 
+     * @tparam array_t 
+     * @tparam repeats_t 
+     * @tparam axis_t 
+     */
+    template <typename array_t, typename repeats_t, typename axis_t>
+    struct fixed_dim<
+        view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t>
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (is_none_v<axis_t>) {
+                return 1;
+            } else if constexpr (is_fixed_dim_ndarray_v<array_t>) {
+                return fixed_dim_v<array_t>;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        // TODO: don't convert fail to void type
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
+    }; // fixed_dim
+
     template <typename array_t, typename repeats_t, typename axis_t>
     struct is_ndarray< view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t> >
         : is_ndarray<array_t> {};

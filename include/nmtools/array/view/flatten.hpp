@@ -6,6 +6,7 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/index/product.hpp"
 
 #include "nmtools/array/meta.hpp"
 #include "nmtools/array/detail.hpp"
@@ -41,23 +42,10 @@ namespace nmtools::view
 
         constexpr auto shape() const noexcept
         {
-            // assuming fixed dim array
             auto shape_ = ::nmtools::shape(array);
-            // compute product
-            auto identity = 1;
-            if constexpr (meta::is_specialization_v<decltype(shape_),std::tuple> || meta::is_specialization_v<decltype(shape_),std::pair>)
-            {
-                constexpr auto n = std::tuple_size_v<decltype(shape_)>;
-                meta::template_for<n>([&](auto index){
-                    constexpr auto i = decltype(index)::value;
-                    identity *= std::get<i>(shape_);
-                });
-            }
-            else
-                for (size_t i=0; i<shape_.size(); i++)
-                    identity *= shape_[i];
+            auto N = index::product(shape_);
             // flattened array is strictly 1D
-            return std::tuple{identity};
+            return std::tuple{N};
         } // shape
 
         template <typename size_type>
@@ -110,6 +98,7 @@ namespace nmtools::meta
 
 namespace nmtools
 {
+    // TODO: remove
     template <typename array_t>
     struct meta::fixed_vector_size< view::flatten_t<array_t>
         , std::enable_if_t<
@@ -132,23 +121,37 @@ namespace nmtools
         using value_type = decltype(_get());
     };
 
+    /**
+     * @brief Infer the shape of flatten view at compile time.
+     * 
+     * @tparam array_t 
+     */
     template <typename array_t>
-    struct meta::fixed_ndarray_shape< view::flatten_t<array_t>
-        , std::enable_if_t<
-            meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>>
-        > 
-    >
+    struct meta::fixed_ndarray_shape< view::flatten_t<array_t> >
     {
-        static constexpr auto _get()
-        {
-            constexpr auto N = meta::fixed_vector_size_v<view::flatten_t<array_t>>;
-            // pack integer as tuple
-            return std::tuple{N};
-        } // _get()
+        static constexpr auto value = [](){
+            if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
+                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
+                constexpr auto N     = index::product(shape);
+                return std::tuple{N};
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_ndarray_shape
 
-        static constexpr auto value = _get();
-        using value_type = decltype(_get());
-    };
+    /**
+     * @brief Infer the dimension of flatten view at compile-time.
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    struct meta::fixed_dim < view::decorator_t<view::flatten_t, array_t> >
+    {
+        static constexpr auto value = 1ul;
+        using value_type = size_t;
+    }; // fixed_dim
 } // nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_FLATTEN_HPP

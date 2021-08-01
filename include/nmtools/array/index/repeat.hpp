@@ -26,6 +26,9 @@ namespace nmtools::index
     /**
      * @brief Compute the shape of a repeat view.
      * 
+     * If axis is none, the shape is reduced to 1D, with size: numel * repeats.
+     * Otherwise, the dimension is remains the same.
+     * 
      * @tparam shape_t 
      * @tparam repeats_t 
      * @tparam axis_t 
@@ -59,10 +62,21 @@ namespace nmtools::index
                 at(ret,i) = tuple_at(shape,i);
 
             if constexpr (meta::is_array1d_v<repeats_t>) {
+                // TODO: make optional
                 assert ( at(ret,axis) == vector_size(repeats)
                     // , "unsupported shape_repeat"
                     // numpy: ValueError: operands could not be broadcast together with shape
                 );
+                // when axis is specified and repeats is index array,
+                // the number of element at the specified axis is simply the sum of the repeats
+                // for example:
+                // >>> x = np.array([[1,2],[3,4]])
+                // >>> np.repeat(x, [1, 2], axis=0)
+                // array([[1, 2],
+                //        [3, 4],
+                //        [3, 4]])
+                // at axis 0, first element x(axis,0) is not repeated (repeats(0)=1)
+                // while the second element x(axis,1) is repeated once (repeats(1)=2)
                 at(ret,axis) = sum(repeats);
             }
             else
