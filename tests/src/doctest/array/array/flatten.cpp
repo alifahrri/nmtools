@@ -1,4 +1,4 @@
-#include "nmtools/array/view/flatten.hpp"
+#include "nmtools/array/array/flatten.hpp"
 #include "nmtools/testing/data/array/flatten.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -7,11 +7,10 @@
 
 namespace nm = nmtools;
 namespace na = nm::array;
-namespace view = nm::view;
 namespace meta = nm::meta;
 
 #define RUN_impl(...) \
-nm::view::flatten(__VA_ARGS__);
+nm::array::flatten(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
@@ -38,11 +37,11 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(flatten,case_name); \
     auto array_ref = RUN_flatten(case_name, args::array); \
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(array_ref), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
 
-TEST_CASE("flatten(case1)" * doctest::test_suite("view::flatten"))
+TEST_CASE("flatten(case1)" * doctest::test_suite("array::flatten"))
 {
     FLATTEN_SUBCASE( case1, array );
     FLATTEN_SUBCASE( case1, array_a );
@@ -52,7 +51,7 @@ TEST_CASE("flatten(case1)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case1, array_h );
 }
 
-TEST_CASE("flatten(case2)" * doctest::test_suite("view::flatten"))
+TEST_CASE("flatten(case2)" * doctest::test_suite("array::flatten"))
 {
     FLATTEN_SUBCASE( case2, array );
     FLATTEN_SUBCASE( case2, array_a );
@@ -62,7 +61,7 @@ TEST_CASE("flatten(case2)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case2, array_h );
 }
 
-TEST_CASE("flatten(case3)" * doctest::test_suite("view::flatten"))
+TEST_CASE("flatten(case3)" * doctest::test_suite("array::flatten"))
 {
     FLATTEN_SUBCASE( case3, array );
     FLATTEN_SUBCASE( case3, array_a );
@@ -72,7 +71,7 @@ TEST_CASE("flatten(case3)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case3, array_h );
 }
 
-TEST_CASE("flatten(case4)" * doctest::test_suite("view::flatten"))
+TEST_CASE("flatten(case4)" * doctest::test_suite("array::flatten"))
 {
     FLATTEN_SUBCASE( case4, array );
     FLATTEN_SUBCASE( case4, array_a );
