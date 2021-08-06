@@ -263,6 +263,8 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/ones.cpp
     src/doctest/array/array/prod.cpp
     src/doctest/array/array/repeat.cpp
+    src/doctest/array/array/reshape.cpp
+    src/doctest/array/array/squeeze.cpp
     src/doctest/array/array/sum.cpp
     src/doctest/array/array/take.cpp
     src/doctest/array/array/tile.cpp
@@ -406,6 +408,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/view/broadcast_to.cpp
     src/doctest/meta/array/view/flatten.cpp
     src/doctest/meta/array/view/repeat.cpp
+    src/doctest/meta/array/view/reshape.cpp
     src/doctest/meta/array/view/take.cpp
     src/doctest/meta/array/view/ufunc.cpp
     src/doctest/meta/array/eval/arange.cpp

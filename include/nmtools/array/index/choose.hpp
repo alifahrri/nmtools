@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 
 #include <type_traits>
@@ -38,18 +39,20 @@ namespace nmtools::index
 
         // actual implementation of choose
         auto choose_impl = [&](auto i){
-            auto ii = tuple_at(indices,i);
-            auto s  = tuple_at(array,ii);
+            auto ii = at(indices,i);
+            // TODO: tuple to array
+            auto s  = at(array,ii);
             at(res,i) = s;
         }; // choose_impl
 
-        if constexpr (meta::has_tuple_size_v<indices_t>)
-            meta::template_for<std::tuple_size_v<indices_t>>([&](auto i){
+        if constexpr (meta::is_fixed_index_array_v<indices_t>) {
+            meta::template_for<meta::len_v<indices_t>>([&](auto i){
                 choose_impl(i);
             });
-        else
-            for (size_t i=0; i<tuple_size(indices); i++)
+        } else {
+            for (size_t i=0; i<len(indices); i++)
                 choose_impl(i);
+        }
 
         return res;
     } // choose
@@ -57,90 +60,112 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
-    /**
-     * @brief resolve choose return type for resizeable indices and resizeable array
-     * 
-     * @tparam indices_t 
-     * @tparam array_t 
-     */
+    namespace error
+    {
+        // specific type tor respresent index::choose type infer error
+        struct INDEX_CHOOSE_UNHANDLED_CASE : detail::fail_t {};
+    } // namespace error
+    
     template <typename indices_t, typename array_t>
     struct resolve_optype<
-        std::enable_if_t<
-            is_resizeable_v<array_t>
-            && is_resizeable_v<indices_t>
-            && std::is_integral_v<meta::get_element_type_t<indices_t>>
-            && std::is_arithmetic_v<get_element_or_common_type_t<array_t>>
-        >,
-        index::choose_t, indices_t, array_t
+        void, index::choose_t, indices_t, array_t
     >
     {
-        using element_t = get_element_or_common_type_t<array_t>;
-        using type = replace_element_type_t<indices_t,element_t>;
-    }; // resolve_optype choose_t
+        static constexpr auto vtype = [](){
+            using element_t = get_element_or_common_type_t<array_t>;
+            if constexpr (
+                   is_hybrid_index_array_v<indices_t>
+                && is_hybrid_index_array_v<array_t>
+            ) {
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_dynamic_index_array_v<indices_t>
+                && is_dynamic_index_array_v<array_t>
+            ) {
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_fixed_index_array_v<indices_t>
+                && is_fixed_index_array_v<array_t>
+            ) {
+                using tf_indices_t = tuple_to_array_t<transform_bounded_array_t<indices_t>>;
+                using type = replace_element_type_t<tf_indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_constant_index_array_v<indices_t>
+                && is_constant_index_array_v<array_t>
+            ) {
+                // TODO: compute at compile-time here, then maps back to type
+                constexpr auto N = fixed_index_array_size_v<indices_t>;
+                using type = make_fixed_ndarray_t<element_t,std::tuple<ct<N>>>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_hybrid_index_array_v<indices_t>
+                && is_dynamic_index_array_v<array_t>
+            ) {
+                // in this case, we can still choose indices_t since the shape will
+                // mostly depends on indices_t
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_hybrid_index_array_v<indices_t>
+                && is_fixed_index_array_v<array_t>
+            ) {
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_hybrid_index_array_v<indices_t>
+                && is_constant_index_array_v<array_t>
+            ) {
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_dynamic_index_array_v<indices_t>
+                && is_hybrid_index_array_v<array_t>
+            ) {
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_dynamic_index_array_v<indices_t>
+                && is_fixed_index_array_v<array_t>
+            ) {
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_dynamic_index_array_v<indices_t>
+                && is_constant_index_array_v<array_t>
+            ) {
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_fixed_index_array_v<indices_t>
+                && is_hybrid_index_array_v<array_t>
+            ) {
+                using tf_indices_t = tuple_to_array_t<transform_bounded_array_t<indices_t>>;
+                using type = replace_element_type_t<tf_indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_fixed_index_array_v<indices_t>
+                && is_dynamic_index_array_v<array_t>
+            ) {
+                using tf_indices_t = tuple_to_array_t<transform_bounded_array_t<indices_t>>;
+                using type = replace_element_type_t<tf_indices_t,element_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_fixed_index_array_v<indices_t>
+                && is_constant_index_array_v<array_t>
+            ) {
+                using tf_indices_t = tuple_to_array_t<transform_bounded_array_t<indices_t>>;
+                using type = replace_element_type_t<tf_indices_t,element_t>;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<error::INDEX_CHOOSE_UNHANDLED_CASE>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
 
-    /**
-     * @brief resolve choose return type for resizeable indices and fixed-size array
-     * 
-     * @tparam indices_t 
-     * @tparam array_t 
-     */
-    template <typename indices_t, typename array_t>
-    struct resolve_optype<
-        std::enable_if_t<
-            !is_resizeable_v<array_t>
-            && has_tuple_size_v<array_t>
-            && is_resizeable_v<indices_t>
-            && std::is_integral_v<meta::get_element_type_t<indices_t>>
-            && std::is_arithmetic_v<get_element_or_common_type_t<array_t>>
-        >,
-        index::choose_t, indices_t, array_t
-    >
-    {
-        using value_t = get_element_or_common_type_t<array_t>;
-        using type    = replace_element_type_t<indices_t,value_t>;
-    }; // resolve_optype choose_t
-
-    /**
-     * @brief resolve choose return type for resizeable fixed size indices and resizeable array
-     * 
-     * @tparam indices_t 
-     * @tparam array_t 
-     */
-    template <typename indices_t, typename array_t>
-    struct resolve_optype<
-        std::enable_if_t<
-            !is_resizeable_v<indices_t>
-            && has_tuple_size_v<indices_t>
-            && is_resizeable_v<array_t>
-            && std::is_integral_v<get_element_or_common_type_t<indices_t>>
-            && std::is_arithmetic_v<get_element_or_common_type_t<array_t>>
-        >,
-        index::choose_t, indices_t, array_t
-    >
-    {
-        static constexpr auto N = std::tuple_size_v<indices_t>;
-        using value_t = get_element_or_common_type_t<array_t>;
-        using type    = std::array<value_t,N>;
-    }; // resolve_optype choose_t
-
-    template <typename indices_t, typename array_t>
-    struct resolve_optype<
-        std::enable_if_t<
-            !is_resizeable_v<indices_t>
-            && !is_resizeable_v<array_t>
-            && has_tuple_size_v<indices_t>
-            && has_tuple_size_v<array_t>
-            && std::is_integral_v<get_element_or_common_type_t<indices_t>>
-            && std::is_arithmetic_v<get_element_or_common_type_t<array_t>>
-        >,
-        index::choose_t, indices_t, array_t
-    >
-    {
-        static constexpr auto M = std::tuple_size_v<indices_t>;
-        static constexpr auto N = std::tuple_size_v<array_t>;
-        using value_t = get_element_or_common_type_t<array_t>;
-        using type = std::array<value_t,M>;
-    }; // resolve_optype choose_t
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_EXTRACT_HPP

@@ -50,7 +50,6 @@ namespace nmtools::view
          */
         constexpr auto dim() const noexcept
         {
-            // flattened array is strictly 1D
             auto n = [&](){
                 if constexpr (meta::has_tuple_size_v<shape_type>)
                     return std::tuple_size_v<shape_type>;
@@ -66,6 +65,7 @@ namespace nmtools::view
          */
         constexpr decltype(auto) shape() const noexcept
         {
+            // TODO: support negative shape dimension
             return new_shape;
         } // shape
 
@@ -121,6 +121,7 @@ namespace nmtools::view
         using ::nmtools::array::detail::product;
         auto shape = ::nmtools::shape(array);
         auto numel = product(shape);
+        // TODO: better error handling
         assert( numel == product(new_shape)
             // , "unsupported reshape, mismatched number of elements"
         );
@@ -133,6 +134,7 @@ namespace nmtools::view
 
 namespace nmtools
 {
+    // TODO: remove
     /**
      * @brief specialization of fixed_vector_size for reshape view
      * 
@@ -162,6 +164,7 @@ namespace nmtools
         using value_type = decltype(value);
     }; // fixed_vector_size
 
+    // TODO: remove
     /**
      * @brief specialization fo is_array1d for reshape view
      *
@@ -187,6 +190,7 @@ namespace nmtools
         using value_type = decltype(value);
     }; // is_array_1d
 
+    // TODO: remove
     /**
      * @brief specialization fo is_array2d for reshape view
      *
@@ -249,21 +253,23 @@ namespace nmtools
      * @tparam shape_t 
      */
     template <typename array_t, typename shape_t>
-    struct meta::fixed_ndarray_shape< view::reshape_t<array_t, shape_t>
-        , std::enable_if_t< meta::is_fixed_size_ndarray_v<
-            meta::remove_cvref_t<typename view::reshape_t<array_t,shape_t>::array_type>
-        >
-    >>
+    struct meta::fixed_ndarray_shape<
+        view::reshape_t< array_t, shape_t>
+    >
     {
-        static constexpr auto get()
+        static constexpr auto value = []()
         {
-            if constexpr (meta::apply_conjunction_v<meta::is_integral_constant,shape_t>)
-                return meta::value_v<meta::constant_to_sequence<shape_t>>;
-            else return detail::fail_t{};
-        } // get
-
-        static inline constexpr auto value = meta::value_v<meta::constant_to_sequence<shape_t>>;
-        using value_type = decltype(value);
+            // for now, simply return the new shape
+            // when both src shape and dst shape is known at compile time.
+            // it should be possible to allow array with runtime shape
+            // to be reshaped with fixed shape.
+            if constexpr (is_fixed_size_ndarray_v<array_t> && (is_constant_index_v<shape_t> || is_constant_index_array_v<shape_t>)) {
+                return shape_t{};
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
     }; // fixed_ndarray_shape
 
 } // namespace nmtools
