@@ -1,4 +1,4 @@
-#include "nmtools/array/view/reshape.hpp"
+#include "nmtools/array/array/reshape.hpp"
 #include "nmtools/testing/data/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -12,7 +12,7 @@ namespace view = nm::view;
 namespace meta = nm::meta;
 
 #define RUN_impl(...) \
-nm::view::reshape(__VA_ARGS__);
+nm::array::reshape(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
@@ -39,12 +39,12 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(reshape, case_name) \
     auto array_ref = RUN_reshape(case_name, args::array, args::newshape); \
-    using view_t = decltype(array_ref); \
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
+    using array_t = decltype(array_ref); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(array_ref), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
 
-TEST_CASE("reshape(raw)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(raw)" * doctest::test_suite("array::reshape"))
 {
     RESHAPE_SUBCASE( case1, array, newshape_a );
     RESHAPE_SUBCASE( case1, array, newshape_v );
@@ -62,7 +62,7 @@ TEST_CASE("reshape(raw)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE( case3, array, newshape_ct );
 }
 
-TEST_CASE("reshape(array)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(array)" * doctest::test_suite("array::reshape"))
 {
     RESHAPE_SUBCASE( case1, array_a, newshape_a );
     RESHAPE_SUBCASE( case1, array_a, newshape_v );
@@ -80,7 +80,7 @@ TEST_CASE("reshape(array)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE( case3, array_a, newshape_ct );
 }
 
-TEST_CASE("reshape(fixed_ndarray)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(fixed_ndarray)" * doctest::test_suite("array::reshape"))
 {
     RESHAPE_SUBCASE( case1, array_f, newshape_a );
     RESHAPE_SUBCASE( case1, array_f, newshape_v );
@@ -98,7 +98,7 @@ TEST_CASE("reshape(fixed_ndarray)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE( case3, array_f, newshape_ct );
 }
 
-TEST_CASE("reshape(vector)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(vector)" * doctest::test_suite("array::reshape"))
 {
     RESHAPE_SUBCASE( case1, array_v, newshape_a );
     RESHAPE_SUBCASE( case1, array_v, newshape_v );
@@ -116,7 +116,7 @@ TEST_CASE("reshape(vector)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE( case3, array_v, newshape_ct );
 }
 
-TEST_CASE("reshape(dynamic_ndarray)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(dynamic_ndarray)" * doctest::test_suite("array::reshape"))
 {
     RESHAPE_SUBCASE( case1, array_d, newshape_a );
     RESHAPE_SUBCASE( case1, array_d, newshape_v );
@@ -134,7 +134,7 @@ TEST_CASE("reshape(dynamic_ndarray)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE( case3, array_d, newshape_ct );
 }
 
-TEST_CASE("reshape(hybrid_ndarray)" * doctest::test_suite("view::reshape"))
+TEST_CASE("reshape(hybrid_ndarray)" * doctest::test_suite("array::reshape"))
 {
     RESHAPE_SUBCASE( case1, array_h, newshape_a );
     RESHAPE_SUBCASE( case1, array_h, newshape_v );

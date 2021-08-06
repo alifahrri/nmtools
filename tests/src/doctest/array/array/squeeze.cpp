@@ -1,4 +1,4 @@
-#include "nmtools/array/view/squeeze.hpp"
+#include "nmtools/array/array/squeeze.hpp"
 #include "nmtools/testing/data/array/squeeze.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -11,7 +11,7 @@ namespace na = nm::array;
 namespace meta = nm::meta;
 
 #define RUN_impl(...) \
-nm::view::squeeze(__VA_ARGS__);
+nm::array::squeeze(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
@@ -37,12 +37,12 @@ RUN_impl(__VA_ARGS__);
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(squeeze, case_name) \
-    auto array_ref = RUN_squeeze(case_name, args::array); \
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
-    NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
+    auto array_ = RUN_squeeze(case_name, args::array); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(array_), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( array_, expect::expected ); \
 }
 
-TEST_CASE("squeeze(case1)" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(case1)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case1, array );
     SQUEEZE_SUBCASE( case1, array_a );
@@ -52,7 +52,7 @@ TEST_CASE("squeeze(case1)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case1, array_h );
 }
 
-TEST_CASE("squeeze(case2)" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(case2)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case2, array );
     SQUEEZE_SUBCASE( case2, array_a );
@@ -62,7 +62,7 @@ TEST_CASE("squeeze(case2)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case2, array_h );
 }
 
-TEST_CASE("squeeze(case3)" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(case3)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case3, array );
     SQUEEZE_SUBCASE( case3, array_a );
@@ -72,7 +72,7 @@ TEST_CASE("squeeze(case3)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case3, array_h );
 }
 
-TEST_CASE("squeeze(case4)" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(case4)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case4, array );
     SQUEEZE_SUBCASE( case4, array_a );
@@ -82,7 +82,7 @@ TEST_CASE("squeeze(case4)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case4, array_h );
 }
 
-TEST_CASE("squeeze(case5)" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(case5)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case5, array );
     SQUEEZE_SUBCASE( case5, array_a );
@@ -92,7 +92,7 @@ TEST_CASE("squeeze(case5)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case5, array_h );
 }
 
-TEST_CASE("squeeze(case6)" * doctest::test_suite("view::squeeze"))
+TEST_CASE("squeeze(case6)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case6, array );
     SQUEEZE_SUBCASE( case6, array_a );

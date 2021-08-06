@@ -547,6 +547,7 @@ namespace nmtools::meta
         {
             using fixed_size_t = fixed_ndarray_shape<T>;
             using value_type   = typename fixed_size_t::value_type;
+            // TODO: use fail type instead of void
             if constexpr (!std::is_same_v<value_type,void>)
                 return true;
             else return false;
