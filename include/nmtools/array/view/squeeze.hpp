@@ -90,6 +90,7 @@ namespace nmtools::meta
     using view::decorator_t;
     using view::squeeze_t;
 
+    // TODO: remove
     template <typename array_t>
     struct fixed_vector_size<  squeeze_t<array_t> >
     {
@@ -97,6 +98,7 @@ namespace nmtools::meta
         using value_type = decltype(value);
     }; // fixed_vector_size
 
+    // TODO: remove
     template <typename array_t>
     struct fixed_matrix_size<  squeeze_t<array_t> >
     {
@@ -104,11 +106,60 @@ namespace nmtools::meta
         using value_type = decltype(value);
     }; // fixed_matrix_size
 
+    /**
+     * @brief Infer squeeze view shape at compile time.
+     * 
+     * Removes single dimension axis from array shape.
+     * 
+     * @tparam array_t 
+     */
     template <typename array_t>
-    struct fixed_ndarray_shape<  squeeze_t<array_t> >
+    struct fixed_ndarray_shape< squeeze_t<array_t> >
     {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
+        static inline constexpr auto value = [](){
+            if constexpr (is_fixed_size_ndarray_v<array_t>) {
+                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
+                constexpr auto ndim  = fixed_ndarray_dim_v<array_t>;
+                // remove_single_dims is not constexpr friendly yet
+                // use template_reduce for now
+                // TODO: make remove_single_dims constexpr friendly
+                // return index::remove_single_dims(shape);
+                constexpr auto vtype = template_reduce<ndim>([&](auto init, auto index){
+                    // note: we will return value-less type, e.g. tuple<integral_constant<...>>
+                    // to make sure reduced value is known at compile-time.
+                    constexpr auto idx = decltype(index)::value;
+                    constexpr auto i   = ct<idx>{};
+                    constexpr auto dim = at(shape,idx);
+                    using init_t = type_t<decltype(init)>;
+                    if constexpr (std::is_void_v<init_t> && (ndim == 1)) {
+                        // for now, return as value-less type for the shape.
+                        // note that in numpy, when the shape is 1D and the dim at axis=0 is 1,
+                        // np.shape returns empty tuple,
+                        // at the moment, empty tuple as shape is not supported yet.
+                        // TODO: deduce as scalar or consider to support empty shape.
+                        using type = std::tuple<ct<dim>>;
+                        return as_value_v<type>;
+                    } else if constexpr (std::is_void_v<init_t> && (dim > 1)) {
+                        // here, we are still initializing,
+                        // but the number of dimension should be > 1,
+                        // for such case, also filter dimension > 1.
+                        using type = std::tuple<ct<dim>>;
+                        return as_value_v<type>;
+                    } else if constexpr (dim > 1) {
+                        using type = append_type_t<init_t,ct<dim>>;
+                        return as_value_v<type>;
+                    } else {
+                        return init;
+                    }
+                }, as_value_v<void>);
+                using type = type_t<decltype(vtype)>;
+                // type should be value-less (at runtime) and default-constructible
+                return type{};
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
     }; // fixed_ndarray_shape
 
     template <typename array_t>
