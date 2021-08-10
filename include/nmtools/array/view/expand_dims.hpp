@@ -29,6 +29,7 @@ namespace nmtools::view
         constexpr auto shape() const noexcept
         {
             auto shape_ = ::nmtools::shape(array);
+            // TODO: maybe rename index::expand_dims to index::shape_expand_dims
             auto newshape = index::expand_dims(shape_,axis);
             return newshape;
         } // shape
@@ -54,6 +55,7 @@ namespace nmtools::view
                 }
             }();
 
+            // TODO: maybe move index computation to index::expand_dims
             auto expanded_shape   = shape();
             auto squeezed_strides = index::compute_strides(expanded_shape);
 
@@ -94,6 +96,7 @@ namespace nmtools::meta
     using view::decorator_t;
     using view::expand_dims_t;
 
+    // TODO: remove
     template <typename array_t, typename axis_t>
     struct fixed_vector_size< expand_dims_t<array_t,axis_t>
     >
@@ -102,6 +105,7 @@ namespace nmtools::meta
         using value_type = decltype(value);
     }; // fixed_vector_size
 
+    // TODO: remove
     template <typename array_t, typename axis_t>
     struct fixed_matrix_size< expand_dims_t<array_t,axis_t>
     >
@@ -110,12 +114,36 @@ namespace nmtools::meta
         using value_type = decltype(value);
     }; // fixed_matrix_size
 
+    /**
+     * @brief Infer the shape of expand_dims view at compile-time.
+     * 
+     * @tparam array_t 
+     * @tparam axis_t 
+     */
     template <typename array_t, typename axis_t>
     struct fixed_ndarray_shape< expand_dims_t<array_t,axis_t>
     >
     {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
+        static inline constexpr auto value = [](){
+            if constexpr (is_fixed_size_ndarray_v<array_t> &&
+                (is_constant_index_array_v<axis_t> || is_constant_index_v<axis_t>))
+            {
+                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
+                constexpr auto axis  = [](){
+                    if constexpr (is_constant_index_v<axis_t>) {
+                        // use std::tuple for now
+                        return std::tuple{axis_t{}};
+                    } else {
+                        return axis_t{};
+                    }
+                }();
+                // TODO: maybe rename index::expand_dims to index::shape_expand_dims
+                return index::expand_dims(shape,axis);
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
     }; // fixed_matrix_size
 
     template <typename array_t, typename axis_t>
