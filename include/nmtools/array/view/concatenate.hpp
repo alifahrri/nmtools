@@ -146,6 +146,126 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    /**
+     * @brief Infer the element type of concatenate view.
+     * 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     * @tparam axis_t 
+     */
+    template <typename lhs_t, typename rhs_t, typename axis_t>
+    struct get_element_type< view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t > >
+    {
+        // by default, get_element_type should accept type with value_type
+        // but fail on this case.
+        using view_type = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
+        using type = typename view_type::value_type;
+    }; // get_element_type
+
+    /**
+     * @brief Infer the shape of concatenate view at compile-time.
+     * 
+     * Return Fail when the shape is only known at runtime.
+     * 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     * @tparam axis_t 
+     */
+    template <typename lhs_t, typename rhs_t, typename axis_t>
+    struct fixed_ndarray_shape<
+        view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (
+                    is_fixed_size_ndarray_v<lhs_t>
+                &&  is_fixed_size_ndarray_v<rhs_t>
+                && (is_constant_index_v<axis_t> || is_none_v<axis_t>)
+            ) {
+                constexpr auto ashape  = fixed_ndarray_shape_v<lhs_t>;
+                constexpr auto bshape  = fixed_ndarray_shape_v<rhs_t>;
+                constexpr auto axis    = axis_t{};
+                constexpr auto result  = index::shape_concatenate(ashape,bshape,axis);
+                constexpr auto success = std::get<0>(result);
+                constexpr auto shape   = std::get<1>(result);
+                if constexpr (success) {
+                    return shape;
+                } else {
+                    return detail::Fail;
+                }
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
+    }; // fixed_ndarray_shape
+
+    /**
+     * @brief Infer the dimension of concatenate view at compile-time.
+     * 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     * @tparam axis_t 
+     */
+    template <typename lhs_t, typename rhs_t, typename axis_t>
+    struct fixed_dim<
+        view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >
+    >
+    {
+        static constexpr auto value = [](){
+            using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
+            if constexpr (is_fixed_size_ndarray_v<view_t>) {
+                return len(fixed_ndarray_shape_v<view_t>);
+            } else if constexpr (is_none_v<axis_t>) {
+                return 1;
+            } else if constexpr (
+                   is_fixed_dim_ndarray_v<lhs_t>
+                && is_fixed_dim_ndarray_v<rhs_t>
+            ) {
+                // concatenate doesn't create new axis
+                // just check if the dimension is the same
+                constexpr auto ldim = fixed_dim_v<lhs_t>;
+                constexpr auto rdim = fixed_dim_v<rhs_t>;
+                if constexpr (ldim == rdim) {
+                    return ldim;
+                } else {
+                    return detail::Fail;
+                }
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
+    }; // fixed_dim
+
+    /**
+     * @brief Infer the shape of hybrid ndarray maximum size at compile-time.
+     * Successful call will make the view considered hybrid_ndarray.
+     * 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     * @tparam axis_t 
+     */
+    template <typename lhs_t, typename rhs_t, typename axis_t>
+    struct hybrid_ndarray_max_size<
+        view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (
+                   is_hybrid_ndarray_v<lhs_t>
+                && is_hybrid_ndarray_v<rhs_t>
+            ) {
+                return hybrid_ndarray_max_size_v<lhs_t> + hybrid_ndarray_max_size_v<rhs_t>;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        // TODO: fix either use value_type or type for deducing a valid value
+        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
+        using type = remove_cvref_t<decltype(value)>;
+    }; // hybrid_ndarray_max_size
+
     template <typename lhs_array_t, typename rhs_array_t, typename axis_t>
     struct is_ndarray< 
         view::decorator_t<
