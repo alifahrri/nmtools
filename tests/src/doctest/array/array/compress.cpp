@@ -1,4 +1,4 @@
-#include "nmtools/array/view/compress.hpp"
+#include "nmtools/array/array/compress.hpp"
 #include "nmtools/testing/data/array/compress.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -6,7 +6,7 @@ namespace nm = nmtools;
 namespace na = nm::array;
 
 #define RUN_compress_impl(...) \
-nm::view::compress(__VA_ARGS__);
+nm::array::compress(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
-TEST_CASE("compress(case1)" * doctest::test_suite("view::compress"))
+TEST_CASE("compress(case1)" * doctest::test_suite("array::compress"))
 {
     COMPRESS_SUBCASE( case1,   condition,   array, axis );
     COMPRESS_SUBCASE( case1, condition_a, array_a, axis );
@@ -47,7 +47,7 @@ TEST_CASE("compress(case1)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case1, condition_h, array_h, axis );
 }
 
-TEST_CASE("compress(case2)" * doctest::test_suite("view::compress"))
+TEST_CASE("compress(case2)" * doctest::test_suite("array::compress"))
 {
     COMPRESS_SUBCASE( case2,   condition,   array, axis );
     COMPRESS_SUBCASE( case2, condition_a, array_a, axis );
@@ -57,7 +57,7 @@ TEST_CASE("compress(case2)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case2, condition_h, array_h, axis );
 }
 
-TEST_CASE("compress(case3)" * doctest::test_suite("view::compress"))
+TEST_CASE("compress(case3)" * doctest::test_suite("array::compress"))
 {
     COMPRESS_SUBCASE( case3,   condition,   array, axis );
     COMPRESS_SUBCASE( case3, condition_a, array_a, axis );
@@ -67,7 +67,7 @@ TEST_CASE("compress(case3)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case3, condition_h, array_h, axis );
 }
 
-TEST_CASE("compress(case4)" * doctest::test_suite("view::compress"))
+TEST_CASE("compress(case4)" * doctest::test_suite("array::compress"))
 {
     COMPRESS_SUBCASE( case4,   condition,   array, axis );
     COMPRESS_SUBCASE( case4, condition_a, array_a, axis );
@@ -77,7 +77,7 @@ TEST_CASE("compress(case4)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case4, condition_h, array_h, axis );
 }
 
-TEST_CASE("compress(case5)" * doctest::test_suite("view::compress"))
+TEST_CASE("compress(case5)" * doctest::test_suite("array::compress"))
 {
     COMPRESS_SUBCASE( case5, condition,   array, axis );
     COMPRESS_SUBCASE( case5, condition, array_a, axis );
