@@ -96,6 +96,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::compress"))
     }
 }
 
+#if NMTOOLS_TESTING_HAS_CONSTEXPR_MATH
 TEST_CASE("fixed_ndarray_shape" * doctest::test_suite("view::compress"))
 {
     // constant condition, None axis
@@ -138,6 +139,7 @@ TEST_CASE("fixed_ndarray_shape" * doctest::test_suite("view::compress"))
         NMTOOLS_STATIC_ASSERT_CLOSE( shape, expected );
     }
 }
+#endif // NMTOOLS_TESTING_HAS_CONSTEXPR_MATH
 
 TEST_CASE("is_hybrid_ndarray" * doctest::test_suite("view::compress"))
 {
