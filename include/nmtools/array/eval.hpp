@@ -310,7 +310,7 @@ namespace nmtools::meta
             && is_fixed_size_ndarray_v<array_t>
         ) {
             constexpr auto max_elements = hybrid_ndarray_max_size_v<view_type>;
-            constexpr auto dim = fixed_ndarray_dim_v<view_type>;
+            constexpr auto dim = fixed_dim_v<view_type>;
             using type = make_hybrid_ndarray_t<element_t,max_elements,dim>;
             return as_value_v<type>;
         } else {
@@ -373,8 +373,8 @@ namespace nmtools::meta
             using type = replace_element_type_t<resized_t,element_t>;
             return as_value_v<type>;
         } else if constexpr(
-               is_hybrid_ndarray_v<lhs_t>
-            && is_hybrid_ndarray_v<rhs_t>
+               (is_hybrid_ndarray_v<lhs_t> || is_fixed_size_ndarray_v<lhs_t>)
+            && (is_hybrid_ndarray_v<rhs_t> || is_fixed_size_ndarray_v<rhs_t>)
             && is_dynamic_ndarray_v<view_type>
         ) {
             using type = make_dynamic_ndarray_t<element_t>;

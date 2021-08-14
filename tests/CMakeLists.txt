@@ -255,8 +255,11 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/atleast_2d.cpp
     src/doctest/array/array/atleast_3d.cpp
     src/doctest/array/array/broadcast_to.cpp
+    src/doctest/array/array/compress.cpp
+    src/doctest/array/array/concatenate.cpp
     src/doctest/array/array/cumprod.cpp
     src/doctest/array/array/cumsum.cpp
+    src/doctest/array/array/expand_dims.cpp
     src/doctest/array/array/flatten.cpp
     src/doctest/array/array/flip.cpp
     src/doctest/array/array/full.cpp
@@ -406,6 +409,8 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta.cpp
     src/doctest/meta/loop.cpp
     src/doctest/meta/array/view/broadcast_to.cpp
+    src/doctest/meta/array/view/compress.cpp
+    src/doctest/meta/array/view/concatenate.cpp
     src/doctest/meta/array/view/flatten.cpp
     src/doctest/meta/array/view/repeat.cpp
     src/doctest/meta/array/view/reshape.cpp
@@ -416,6 +421,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/eval/atleast_2d.cpp
     src/doctest/meta/array/eval/atleast_3d.cpp
     src/doctest/meta/array/eval/broadcast_to.cpp
+    src/doctest/meta/array/eval/concatenate.cpp
     src/doctest/meta/array/eval/flip.cpp
     src/doctest/meta/array/eval/full.cpp
     src/doctest/meta/array/eval/ones.cpp
