@@ -40,7 +40,7 @@ namespace nmtools::index
         // fn to check if given i is detected in axis
         // representing axis to be removed
         auto in_axis = [&](auto i){
-            if constexpr (std::is_integral_v<axis_t>)
+            if constexpr (meta::is_index_v<axis_t>)
                 return i==axis;
             else {
                 auto f_predicate = [i](auto axis){
@@ -51,10 +51,24 @@ namespace nmtools::index
             }
         };
 
+        // TODO: formulate how to deduce index type
+        // , may be using meta::get_index_type_t
+        // use the same type as axis_t for loop index
+        constexpr auto idx_vtype = [](){
+            if constexpr (meta::is_index_array_v<axis_t>) {
+                using type = meta::get_element_type_t<axis_t>;
+                return meta::as_value_v<type>;
+            } else if constexpr (meta::is_integer_v<axis_t>) {
+                return meta::as_value_v<axis_t>;
+            } else {
+                return meta::as_value_v<size_t>;
+            }
+        }();
+        using idx_t = meta::type_t<decltype(idx_vtype)>;
+        idx_t idx = 0;
         // res and shape have different size
         // index to fill res
-        size_t idx = 0;
-        for (size_t i=0; i<dim; i++) {
+        for (idx_t i=0; i<dim; i++) {
             auto in_axis_ = in_axis(i);
             if (in_axis_ && !keepdims)
                 continue;
@@ -73,63 +87,59 @@ namespace nmtools::index
 
 } // namespace nmtools::index
 
-namespace nmtools
+namespace nmtools::meta
 {
-
     template <typename shape_t, typename axis_t, typename keepdims_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<
-            meta::is_index_array_v<shape_t>
-            && !meta::is_fixed_index_array_v<shape_t>
-        >,
-        index::remove_dims_t, shape_t, axis_t, keepdims_t
+    struct resolve_optype<
+        void, index::remove_dims_t, shape_t, axis_t, keepdims_t
     >
     {
-        using type = shape_t;
-    }; // resolve_optype remove_dims_t
-
-    template <typename shape_t, typename axis_t, typename keepdims_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<
-            meta::is_index_array_v<shape_t>
-            && meta::is_fixed_index_array_v<shape_t>
-            && (meta::is_index_array_v<axis_t> || std::is_integral_v<axis_t>)
-            && (std::is_integral_v<keepdims_t> || meta::is_integral_constant_v<keepdims_t>)
-        >,
-        index::remove_dims_t, shape_t, axis_t, keepdims_t
-    >
-    {
-        static constexpr auto DIM = fixed_index_array_size_v<shape_t>;
-        static constexpr auto N   = [](){
-            // this is the number of axis to be removed at compile-time,
-            // if required information is not available, make this 0 and
-            // make the return type resizeable
-            if constexpr (is_fixed_index_array_v<axis_t> && meta::is_integral_constant_v<keepdims_t>)
-                return (keepdims_t::value ? 0 : fixed_index_array_size_v<axis_t>);
-            else if constexpr (std::is_integral_v<axis_t> && meta::is_integral_constant_v<keepdims_t>)
-                return (keepdims_t::value ? 0 : 1);
-            else return 0;
+        static constexpr auto vtype = [](){
+            if constexpr (
+                    is_index_array_v<shape_t>
+                && !is_fixed_index_array_v<shape_t>
+            ) {
+                using type = shape_t;
+                return as_value_v<type>;
+            } else if constexpr (
+                   is_fixed_index_array_v<shape_t>
+                && is_integral_constant_v<keepdims_t>
+            ) {
+                constexpr auto keepdims = keepdims_t {};
+                if constexpr (keepdims) {
+                    return as_value_v<shape_t>;
+                } else if constexpr (is_index_v<axis_t>) {
+                    // TODO: resize shape_t instead of using std::array
+                    constexpr auto N = fixed_index_array_size_v<shape_t>;
+                    using type = std::array<size_t,N-1>;
+                    return as_value_v<type>;
+                } else if constexpr (is_fixed_index_array_v<axis_t>) {
+                    // TODO: resize shape_t instead of using std::array
+                    constexpr auto N = fixed_index_array_size_v<shape_t>;
+                    constexpr auto M = fixed_index_array_size_v<axis_t>;
+                    using type = std::array<size_t,N-M>;
+                    return as_value_v<type>;
+                } else if constexpr (is_index_array_v<axis_t>) {
+                    // TODO: consider to provide metafunction make_hybrid_index_array
+                    constexpr auto N = fixed_index_array_size_v<shape_t>;
+                    using type = array::hybrid_ndarray<size_t,N,1>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (
+                   is_fixed_index_array_v<shape_t>
+                && is_boolean_v<keepdims_t>
+            ) {
+                // here we don't know exact size, but we know maximum size
+                // TODO: consider to provide metafunction make_hybrid_index_array
+                constexpr auto N = fixed_index_array_size_v<shape_t>;
+                using type = array::hybrid_ndarray<size_t,N,1>;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<void>;
+            }
         }();
-        // keepdim at compile time:
-        // if keepdims_t is compile-time constant, we can know in advance
-        // otherwise, assume it's false and should return resizeable type
-        // note that this keepdims options doesnt depend on axis param,
-        // don't care if axis is integer or array, if keepdims is true,
-        // the dimension will follow the original
-        static constexpr auto KEEPDIMS = [](){
-            if constexpr (meta::is_integral_constant_v<keepdims_t>)
-                return keepdims_t::value;
-            else return false;
-        }();
-        using common_t = meta::get_element_or_common_type_t<shape_t>;
-        using fixed_array_t = std::array<common_t,DIM-N>;
-        using hybrid_array_t = array::hybrid_ndarray<common_t,DIM,1>;
-        // select fixed array if axis is fixed index array or is integral,
-        // select hybrid array with DIM as upper-bound otherwise
-        using type = std::conditional_t<
-            KEEPDIMS, fixed_array_t, hybrid_array_t
-        >;
-    }; // resolve_optype remove_dims_t
-} // namespace nmtools
+        using type = transform_bounded_array_t<type_t<decltype(vtype)>>;
+    }; // resolve_optype
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_REMOVE_DIMS_HPP
