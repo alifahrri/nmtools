@@ -691,6 +691,7 @@ namespace nmtools::meta
     template <typename T>
     inline constexpr bool is_dynamic_ndarray_v = is_dynamic_ndarray<T>::value;
 
+    // TODO: remove, put the logic on fixed_dim instead
     /**
      * @brief get fixed-array dimension
      *
@@ -711,7 +712,7 @@ namespace nmtools::meta
         {
             if constexpr (is_fixed_size_ndarray_v<T>) {
                 auto shape = fixed_ndarray_shape_v<T>;
-                auto dim = std::tuple_size_v<decltype(shape)>;
+                auto dim   = std::tuple_size_v<decltype(shape)>;
                 return dim;
             }
             else return detail::fail_t{};

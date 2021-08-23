@@ -337,4 +337,21 @@ namespace nmtools
     /** @} */ // end group utility
 } // namespace nmtools
 
+namespace nmtools::meta
+{
+    /**
+     * @brief Return the index type of an array.
+     * 
+     * By default, deduce using expression: shape(array).
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    struct get_index_type<array_t, std::enable_if_t<is_ndarray_v<array_t>>>
+    {
+        using type = get_element_or_common_type_t<decltype(nmtools::shape(std::declval<array_t>()))>;
+    }; // get_index_type
+} // namespace nmtools::meta
+
+
 #endif // NMTOOLS_ARRAY_UTILITY_SHAPE_HPP
