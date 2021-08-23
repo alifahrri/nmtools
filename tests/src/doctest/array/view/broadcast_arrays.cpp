@@ -320,6 +320,17 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
         auto shape = std::array{2,2,3};
         auto expected = std::tuple{cast<int>(A),cast<int>(B),cast<int>(C)};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        int A = 1;
+        int B = 2;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        auto shape = None;
+        auto expected = std::tuple{1,2};
+    }
 }
 
 #define RUN_impl(...) \
@@ -436,6 +447,11 @@ TEST_CASE("broadcast_arrays(case9)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case9, A, B_d, C_d );
     BROADCAST_ARRAYS_SUBCASE(case9, A, B_f, C_f );
     BROADCAST_ARRAYS_SUBCASE(case9, A, B_h, C_h );
+}
+
+TEST_CASE("broadcast_arrays(case10)" * doctest::test_suite("view::broadcast_arrays"))
+{
+    BROADCAST_ARRAYS_SUBCASE(case10, A, B);
 }
 
 TEST_CASE("broadcast_arrays(fixed_shape)" * doctest::test_suite("view::broadcast_arrays"))

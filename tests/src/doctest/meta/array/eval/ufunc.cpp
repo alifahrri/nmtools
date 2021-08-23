@@ -16,6 +16,8 @@ namespace meta = nm::meta;
 using namespace nm::literals;
 using nm::none_t;
 
+#define declval(x) std::declval<x>()
+
 TEST_CASE("eval(ufunc)" * doctest::test_suite("eval"))
 {
     SUBCASE("sin")
@@ -205,36 +207,5 @@ TEST_CASE("eval(outer_ufunc)" * doctest::test_suite("eval"))
         static_assert( meta::is_hybrid_ndarray_v<lhs_t> );
         // static_assert( !meta::is_dynamic_ndarray_v<view_t> );
         // static_assert( !meta::is_dynamic_ndarray_v<lhs_t > );
-    }
-}
-
-TEST_CASE("eval(reduce_ufunc)" * doctest::test_suite("eval"))
-{
-    SUBCASE("add")
-    {
-        {
-            using view_t = view::decorator_t< view::reduce_t, view::add_t<>, int[2][3], none_t, none_t, none_t>;
-            using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = int;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-        }
-        {
-            using view_t = view::decorator_t< view::reduce_t, view::add_t<>, int[2][3], int, none_t, none_t>;
-            using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = na::dynamic_ndarray<int>;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-        }
-        {
-            using view_t = view::decorator_t< view::reduce_t, view::add_t<>, na::hybrid_ndarray<int,6,2>, none_t, none_t, none_t >;
-            using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = int;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-        }
-        {
-            using view_t = view::decorator_t< view::reduce_t, view::add_t<>, na::hybrid_ndarray<int,6,2>, int, none_t, none_t >;
-            using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = na::dynamic_ndarray<int>;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-        }
     }
 }

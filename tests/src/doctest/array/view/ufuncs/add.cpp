@@ -62,6 +62,11 @@ TEST_CASE("add(case2)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case2, a_h, b );
 }
 
+TEST_CASE("add(case3)" * doctest::test_suite("view::add"))
+{
+    ADD_SUBCASE(case3, a, b);
+}
+
 #define RUN_reduce_add_impl(...) \
 nm::view::reduce_add(__VA_ARGS__);
 
@@ -276,6 +281,26 @@ TEST_CASE("reduce_add(case20)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case20, a_v, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_f, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_h, axis, nmtools::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_add(case21)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case21,   a, axis, dtype );
+    REDUCE_ADD_SUBCASE( case21, a_a, axis, dtype );
+    // TODO: remove support for nested std::vector
+    // REDUCE_ADD_SUBCASE( case21, a_v, axis, dtype );
+    REDUCE_ADD_SUBCASE( case21, a_f, axis, dtype );
+    REDUCE_ADD_SUBCASE( case21, a_h, axis, dtype );
+}
+
+TEST_CASE("reduce_add(case22)" * doctest::test_suite("view::reduce_add"))
+{
+    REDUCE_ADD_SUBCASE( case22,   a, axis, dtype );
+    REDUCE_ADD_SUBCASE( case22, a_a, axis, dtype );
+    // TODO: remove support for nested std::vector
+    // REDUCE_ADD_SUBCASE( case22, a_v, axis, dtype );
+    REDUCE_ADD_SUBCASE( case22, a_f, axis, dtype );
+    REDUCE_ADD_SUBCASE( case22, a_h, axis, dtype );
 }
 
 #define RUN_accumulate_add_impl(...) \

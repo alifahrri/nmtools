@@ -138,6 +138,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/flip.cpp
     src/doctest/array/view/full.cpp
+    src/doctest/array/view/mean.cpp
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
     src/doctest/array/view/ones.cpp
@@ -150,6 +151,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/take.cpp
     src/doctest/array/view/tile.cpp
     src/doctest/array/view/transpose.cpp
+    src/doctest/array/view/ufunc.cpp
     src/doctest/array/view/where.cpp
     src/doctest/array/view/zeros.cpp
 )
@@ -263,6 +265,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/flatten.cpp
     src/doctest/array/array/flip.cpp
     src/doctest/array/array/full.cpp
+    src/doctest/array/array/mean.cpp
     src/doctest/array/array/ones.cpp
     src/doctest/array/array/prod.cpp
     src/doctest/array/array/repeat.cpp
@@ -404,6 +407,7 @@ if (ENABLE_TEST_BENCHMARKS)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
 endif()
 
+# TODO: move to separate cmakelist.txt
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
     src/doctest/meta.cpp
@@ -412,6 +416,8 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/view/compress.cpp
     src/doctest/meta/array/view/concatenate.cpp
     src/doctest/meta/array/view/flatten.cpp
+    src/doctest/meta/array/view/mean.cpp
+    src/doctest/meta/array/view/reduce.cpp
     src/doctest/meta/array/view/repeat.cpp
     src/doctest/meta/array/view/reshape.cpp
     src/doctest/meta/array/view/take.cpp
@@ -424,7 +430,9 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/eval/concatenate.cpp
     src/doctest/meta/array/eval/flip.cpp
     src/doctest/meta/array/eval/full.cpp
+    src/doctest/meta/array/eval/mean.cpp
     src/doctest/meta/array/eval/ones.cpp
+    src/doctest/meta/array/eval/reduce.cpp
     src/doctest/meta/array/eval/repeat.cpp
     src/doctest/meta/array/eval/take.cpp
     src/doctest/meta/array/eval/tile.cpp
@@ -543,6 +551,16 @@ if (ADDRESS_SANITIZER)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fsanitize=leak")
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=address -fsanitize=leak")
 endif (ADDRESS_SANITIZER)
+
+option(NMTOOLS_UNDEFINED_SANITIZER "build with -fsanitize=undefined" OFF)
+message(STATUS "NMTOOLS_UNDEFINED_SANITIZER ${NMTOOLS_UNDEFINED_SANITIZER}")
+
+if (NMTOOLS_UNDEFINED_SANITIZER)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=undefined")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=undefined")
+endif (NMTOOLS_UNDEFINED_SANITIZER)
 
 option(CODE_COVERAGE "build with code coverage reporting" OFF)
 message(STATUS "CODE_COVERAGE ${CODE_COVERAGE}")

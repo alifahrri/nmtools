@@ -129,6 +129,90 @@ TEST_CASE("broadcast_to(case10)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case10, x, shape, expected );
 }
 
+TEST_CASE("broadcast_to(case11)" * doctest::test_suite("view::broadcast_to"))
+{
+    BROADCAST_TO_SUBCASE( case11, x, shape, expected );
+}
+
+
+// the following tests are to make sure it is safe to 
+// return the view itself as long as it doesn't outlive
+// the referenced array
+
+template <typename array_t>
+auto f(const array_t& array)
+{
+    return view::broadcast_to(array, std::array{1,1,3});
+}
+
+template <typename array_t>
+auto g(const array_t& array)
+{
+    auto a = f(array);
+    return view::broadcast_to(a, std::array{1,1,1,3});
+}
+
+TEST_CASE("broadcast_to" * doctest::test_suite("view::broadcast_to"))
+{
+    SUBCASE("one function")
+    {
+        // std::array
+        {
+            auto array = std::array{1,2,3};
+            auto broacasted = f(array);
+            int expected[1][1][3] = {
+                {
+                    {1,2,3}
+                }
+            };
+            NMTOOLS_ASSERT_EQUAL( broacasted, expected );
+        }
+        // raw array
+        {
+            int array[3] = {1,2,3};
+            auto broacasted = f(array);
+            int expected[1][1][3] = {
+                {
+                    {1,2,3}
+                }
+            };
+            NMTOOLS_ASSERT_EQUAL( broacasted, expected );
+        }
+    }
+    SUBCASE("two function")
+    {
+        // std::array
+        {
+            auto array = std::array{1,2,3};
+            auto broacasted = g(array);
+            int expected[1][1][1][3] = {
+                {
+                    {
+                        {1,2,3}
+                    }
+                }
+            };
+            NMTOOLS_ASSERT_EQUAL( broacasted.shape(), nm::shape(expected) );
+            NMTOOLS_ASSERT_EQUAL( broacasted, expected );
+        }
+
+        // raw array
+        {
+            int array[3] = {1,2,3};
+            auto broacasted = g(array);
+            int expected[1][1][1][3] = {
+                {
+                    {
+                        {1,2,3}
+                    }
+                }
+            };
+            NMTOOLS_ASSERT_EQUAL( broacasted.shape(), nm::shape(expected) );
+            NMTOOLS_ASSERT_EQUAL( broacasted, expected );
+        }
+    }
+}
+
 // TODO: move to meta (?)
 TEST_CASE("broadcast_to(traits)"  * doctest::test_suite("view::broadcast_to"))
 {
