@@ -32,8 +32,8 @@ namespace nmtools::index
 
         auto res = return_t{};
 
-        auto adim = tuple_size(ashape);
-        auto bdim = tuple_size(bshape);
+        auto adim = len(ashape);
+        auto bdim = len(bshape);
 
         // also track free axes
         auto free_axes = free_axes_t{};
@@ -43,6 +43,7 @@ namespace nmtools::index
         // in numpy, the following will raises error
         // np.broadcast_to(np.array([[1],[2],[3]]), (3,))
         // ValueError: input operand has more dimensions than allowed by the axis remapping
+        // TODO: error handling for unsupported broadcast_to dimension
         if constexpr (meta::is_resizeable_v<return_t>) {
             res.resize(bdim);
             free_axes.resize(bdim);
@@ -92,6 +93,7 @@ namespace nmtools::index
         // - free_axes has same len with res,
         // - free_axes value indicates wether the corresponding indices are free (either empty or 1).
         // - free_axes is useful to perform the reverse operation.
+        // TODO: use optional instead
         return std::tuple{success, res, free_axes};
     } // broadcast_to
 
@@ -109,6 +111,7 @@ namespace nmtools::index
     template<>
     constexpr auto broadcast_to<none_t,none_t>(const none_t& ashape, const none_t& bshape)
     {
+        // TODO: use optional instead
         return std::tuple{true,None,None};
     } // broadcast_to
 } // namespace nmtools::index
