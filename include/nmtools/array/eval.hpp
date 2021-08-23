@@ -18,6 +18,9 @@ namespace nmtools::array
     // special tag to resolve eval return type
     struct eval_t {};
 
+    // TODO: consider to change signature to evaluator_<view_c,context_t,output_t,void>
+    // hence performing eval resolver outside the struct, allowing to easily specialize evaluator_t
+    // based on specific output_t
     /**
      * @brief View evaluator, actually computes the view.
      * 
@@ -205,6 +208,13 @@ namespace nmtools::meta
             using type = make_fixed_ndarray_t<element_t,shape_t>;
             return as_value_v<type>;
         } else if constexpr (
+                is_num_v<view_type>
+            && (is_ndarray_v<array_t>)
+        ) {
+            // no matter what the array type is,
+            // if the resulting view is num then return num
+            return as_value_v<element_t>;
+        } else if constexpr (
                is_num_v<array_t>
             && is_hybrid_ndarray_v<view_type>
         ) {
@@ -336,6 +346,12 @@ namespace nmtools::meta
     {
         using element_t = get_element_type_t<view_type>;
         if constexpr (
+            is_num_v<view_type>
+        ) {
+            // no matter what lhs and rhs types are,
+            // return num type
+            return as_value_v<element_t>;
+        } else if constexpr (
                is_num_v<lhs_t>
             && is_ndarray_v<rhs_t>
             && is_ndarray_v<view_type>
@@ -417,21 +433,22 @@ namespace nmtools::meta
         static constexpr auto vtype = [](){
             // underlying array may have multiple arrays
             using arrays_t = get_underlying_array_type_t<view_t>;
-            using nocv_arrays_t = remove_cvref_t<arrays_t>;
+            // NOTE: now the underlying array may be reference, pointer, or value (for none or scalar num).
+            using nocv_arrays_t = remove_cvref_pointer_t<arrays_t>;
             if constexpr (is_ndarray_v<nocv_arrays_t> || is_none_v<nocv_arrays_t> || is_num_v<nocv_arrays_t>) {
                 // single array
-                using array_t = remove_cvref_t<arrays_t>;
+                using array_t = remove_cvref_pointer_t<arrays_t>;
                 return resolve_unary_array_type(as_value_v<array_t>, as_value_v<view_t>);
             } else if constexpr (is_tuple_v<nocv_arrays_t> && len_v<arrays_t> == 1) {
                 // packed single array, can be found in views that accepts variadic such as ufunc
                 // TODO: use meta::at_t
-                using array_t = remove_cvref_t<std::tuple_element_t<0,arrays_t>>;
+                using array_t = remove_cvref_pointer_t<std::tuple_element_t<0,arrays_t>>;
                 return resolve_unary_array_type(as_value_v<array_t>, as_value_v<view_t>);
             } else if constexpr (is_tuple_v<nocv_arrays_t> && len_v<arrays_t> == 2) {
                 // binary array
                 // TODO: use meta::at_t
-                using lhs_t = remove_cvref_t<std::tuple_element_t<0,arrays_t>>;
-                using rhs_t = remove_cvref_t<std::tuple_element_t<1,arrays_t>>;
+                using lhs_t = remove_cvref_pointer_t<at_t<arrays_t,0>>;
+                using rhs_t = remove_cvref_pointer_t<at_t<arrays_t,1>>;
                 return resolve_binary_array_type(as_value_v<lhs_t>, as_value_v<rhs_t>, as_value_v<view_t>);
             } else if constexpr (is_tuple_v<nocv_arrays_t> && len_v<arrays_t> > 2) {
                 // more than 2 array, simply perform reduction using binary case resolver
@@ -440,8 +457,8 @@ namespace nmtools::meta
                     constexpr auto i = decltype(index)::value;
                     using init_t = type_t<decltype(init)>;
                     // TODO: use meta::at_t
-                    using lhs_t = remove_cvref_t<at_t<arrays_t,i>>;
-                    using rhs_t = remove_cvref_t<at_t<arrays_t,i+1>>;
+                    using lhs_t = remove_cvref_pointer_t<at_t<arrays_t,i>>;
+                    using rhs_t = remove_cvref_pointer_t<at_t<arrays_t,i+1>>;
                     // we start from void type
                     if constexpr (std::is_void_v<init_t>) {
                         return resolve_binary_array_type(as_value_v<lhs_t>, as_value_v<rhs_t>, as_value_v<view_t>);
@@ -454,7 +471,7 @@ namespace nmtools::meta
                 return as_value_v<error::EVAL_UNHANDLED_CASE>;
             }
         }();
-        using type = type_t<remove_cvref_t<decltype(vtype)>>;
+        using type = type_t<remove_cvref_pointer_t<decltype(vtype)>>;
     }; // eval_t
 } // namespace nmtools::meta
 

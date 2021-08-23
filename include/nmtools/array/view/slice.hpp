@@ -16,15 +16,15 @@ namespace nmtools::view
     template <typename array_t, typename...slices_t>
     struct slice_t
     {
-        using array_type = const array_t&;
-        using slices_type = std::tuple<slices_t...>;
+        using array_type  = resolve_array_type_t<array_t>;
+        using slices_type = std::tuple<meta::remove_cvref_t<slices_t>...>;
 
         array_type array;
         slices_type slices;
 
-        constexpr slice_t(array_type array, slices_type slices)
-            : array(array), slices(slices) {}
-        
+        constexpr slice_t(const array_t& array, slices_t...slices)
+            : array(initialize<array_type>(array)), slices({slices...}) {}
+
         template <typename shape_t, size_t...Is>
         constexpr auto shape(const shape_t& ashape, std::index_sequence<Is...>) const
         {
@@ -34,8 +34,10 @@ namespace nmtools::view
         constexpr auto shape() const
         {
             using ::nmtools::index::make_array;
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
+            // TODO: no need to transform to array
             auto ashape = [&](){
+                using index::make_array;
                 using shape_t = meta::remove_cvref_t<decltype(shape_)>;
                 // TODO: make proper generalization of `index_array`
                 if constexpr (meta::is_specialization_v<shape_t, std::tuple> || meta::is_specialization_v<shape_t, std::pair>)
@@ -59,23 +61,12 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            using ::nmtools::index::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for slice view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto indices_ = pack_indices(indices...);
 
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
+            // TODO: no need to transform to array
             auto ashape = [&](){
+                using index::make_array;
                 using shape_t = meta::remove_cvref_t<decltype(shape_)>;
                 // TODO: make proper generalization of `index_array`
                 if constexpr (meta::is_specialization_v<shape_t, std::tuple> || meta::is_specialization_v<shape_t, std::pair>)
@@ -87,9 +78,10 @@ namespace nmtools::view
     }; // slice_t
 
     template <typename array_t, typename...slices_t>
-    constexpr auto slice(const array_t& array, const slices_t&...slices)
+    constexpr auto slice(const array_t& array, slices_t...slices)
     {
-        return decorator_t<slice_t,array_t,slices_t...>{{array, {slices...}}};
+        using view_t = decorator_t<slice_t,array_t,slices_t...>;
+        return view_t{{array, slices...}};
     } // slice
 
     template <typename array_t, typename slices_t, size_t...Is>
