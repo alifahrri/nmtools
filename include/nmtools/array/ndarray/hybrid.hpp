@@ -360,31 +360,31 @@ namespace nmtools::array
     static inline constexpr auto is_hybrid_ndarray_v = is_hybrid_ndarray<T>::value;
 
     template <typename T, size_t max_elements>
-    auto size(const array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto size(const array::hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.shape_[0];
     } // size
 
     template <typename T, size_t max_elements>
-    auto begin(const array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto begin(const array::hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.data.data();
     } // begin
 
     template <typename T, size_t max_elements>
-    auto begin(array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto begin(array::hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.data.data();
     } // begin
 
     template <typename T, size_t max_elements>
-    auto end(const array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto end(const array::hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.data.data() + a.shape_[0];
     } // end
 
     template <typename T, size_t max_elements>
-    auto end(array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto end(array::hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.data.data() + a.shape_[0];
     } // end
