@@ -235,7 +235,7 @@ namespace nmtools::utils
                 // @todo: static assert whenever possible
                 auto t_dim = ::nmtools::dim(t);
                 auto u_dim = ::nmtools::dim(u);
-                nmtools_assert_throw( dim(t)==dim(u)
+                nmtools_assert_throw( (t_dim==u_dim)
                     , "dimension mismatch for isclose"
                 );
                 auto t_shape = ::nmtools::shape(t);
@@ -248,7 +248,7 @@ namespace nmtools::utils
                 auto t_size = t_indices.size();
                 auto u_size = u_indices.size();
                 // @todo: static assert whenever possible
-                nmtools_assert_throw( t_size==u_size
+                nmtools_assert_throw( (t_size==u_size)
                     , "size mismatch for isclose"
                 );
                 for (size_t i = 0; i<t_indices.size(); i++)

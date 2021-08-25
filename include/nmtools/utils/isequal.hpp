@@ -12,6 +12,7 @@
 #define NMTOOLS_UTILS_ISEQUAL_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/assert.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
@@ -287,17 +288,21 @@ namespace nmtools::utils
             // assume both T and U is ndarray
             else {
                 bool equal = true;
+                auto t_dim = ::nmtools::dim(t);
+                auto u_dim = ::nmtools::dim(u);
                 // @todo: static assert whenever possible
-                assert (dim(t)==dim(u)
-                    // , "dimension mismatch for isequal"
+                nmtools_assert_throw( (t_dim == u_dim)
+                    , "dimension mismatch for isequal"
                 );
-                auto t_shape = shape(t);
-                auto u_shape = shape(u);
+                auto t_shape = ::nmtools::shape(t);
+                auto u_shape = ::nmtools::shape(u);
                 auto t_indices = ndindex(t_shape);
                 auto u_indices = ndindex(u_shape);
                 // @todo: static assert whenever possible
-                assert (t_indices.size()==u_indices.size()
-                    // , "size mismatch for isequal"
+                auto t_size = t_indices.size();
+                auto u_size = u_indices.size();
+                nmtools_assert_throw( (t_size == u_size)
+                    , "size mismatch for isequal"
                 );
                 for (size_t i=0; i<t_indices.size(); i++)
                     equal = equal && (apply_at(t, t_indices[i]) == apply_at(u, u_indices[i]));
