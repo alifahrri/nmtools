@@ -480,6 +480,30 @@ TEST_CASE("add.reduce(case22)" * doctest::test_suite("array::add.reduce"))
     REDUCE_ADD_SUBCASE( case22, a_h, axis, dtype );
 }
 
+TEST_CASE("add.reduce(case23)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    REDUCE_ADD_SUBCASE( case23,   a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case23, a_a, axis, dtype, initial, keepdims );
+    // TODO: remove support for nested std::vector
+    // REDUCE_ADD_SUBCASE( case23, a_v, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case23, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case23, a_h, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("add.reduce(case24)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    REDUCE_ADD_SUBCASE( case24,   a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case24, a_a, axis, dtype, initial, keepdims );
+    // TODO: remove support for nested std::vector
+    // REDUCE_ADD_SUBCASE( case24, a_v, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case24, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case24, a_h, axis, dtype, initial, keepdims );
+}
+
 #define RUN_accumulate_add_impl(...) \
 na::add.accumulate(__VA_ARGS__);
 

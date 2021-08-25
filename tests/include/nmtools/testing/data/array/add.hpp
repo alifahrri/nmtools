@@ -700,6 +700,54 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
             {14.f,16.f},
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case23)
+    {
+        inline int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        CAST_ARRAYS(a)
+        inline auto axis = None;
+        inline auto keepdims = True;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case23)
+    {
+        inline int shape[3] = {1,1,1};
+        inline int result[1][1][1] = {{{66}}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case24)
+    {
+        inline int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6,  7},
+                { 8,  9},
+                {10, 11},
+            }
+        };
+        CAST_ARRAYS(a)
+        inline auto axis = None;
+        inline auto keepdims = False;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case24)
+    {
+        inline auto shape = None;
+        inline int result = 66;
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_add)
