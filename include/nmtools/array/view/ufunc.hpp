@@ -283,7 +283,7 @@ namespace nmtools::view
         constexpr auto dim() const
         {
             // assume arrays is already broadcasted together
-            return ::nmtools::dim(std::get<0>(operands));
+            return detail::dim(std::get<0>(operands));
         } // dim
 
         template <typename indices_t, size_t...Is>
@@ -814,7 +814,25 @@ namespace nmtools::view
     template <typename op_t, typename array_t, typename...arrays_t>
     constexpr auto ufunc(op_t op, const array_t& array, const arrays_t&...arrays)
     {
-        if constexpr (meta::is_num_v<array_t> && (meta::is_num_v<arrays_t> && ...)) {
+        if constexpr (meta::is_either_v<array_t>) {
+            // handle if array is either type,
+            // such case can happen for reduce ufunc with runtime keepdims.
+            // TODO: also handle any either type in arrays...
+            // TODO: generalize get_if, declval
+            using std::get_if; // assume either type is variant
+            using lhs_t = meta::get_either_left_t<array_t>;
+            using rhs_t = meta::get_either_right_t<array_t>;
+            using lhs_ufunc_t = decltype(ufunc(op,std::declval<lhs_t>(),arrays...));
+            using rhs_ufunc_t = decltype(ufunc(op,std::declval<rhs_t>(),arrays...));
+            using result_t = meta::replace_either_t<array_t,lhs_ufunc_t,rhs_ufunc_t>;
+            if (auto lptr = get_if<lhs_t>(&array)) {
+                return result_t{ufunc(op,*lptr,arrays...)};
+            } else /* if (auto rptr = get_if<rhs_t>(&array)) */ {
+                // must be true
+                auto rptr = get_if<rhs_t>(&array);
+                return result_t{ufunc(op,*rptr,arrays...)};
+            }
+        } else if constexpr (meta::is_num_v<array_t> && (meta::is_num_v<arrays_t> && ...)) {
             // all arrays are numeric, use scalar_ufunc instead
             using view_t = decorator_t<scalar_ufunc_t,op_t,array_t,arrays_t...>;
             return view_t{{op,array,arrays...}};
