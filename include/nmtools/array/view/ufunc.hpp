@@ -828,7 +828,8 @@ namespace nmtools::view
             if (auto lptr = get_if<lhs_t>(&array)) {
                 return result_t{ufunc(op,*lptr,arrays...)};
             } else /* if (auto rptr = get_if<rhs_t>(&array)) */ {
-                // must be true
+                // must be true,
+                // use else to avoid warnings
                 auto rptr = get_if<rhs_t>(&array);
                 return result_t{ufunc(op,*rptr,arrays...)};
             }
@@ -1143,34 +1144,53 @@ namespace nmtools::meta
             // the shape of the reduction can only be known at compile time
             // if axis and keepdims is integral constant
             if constexpr (
-                   is_fixed_size_ndarray_v<array_t>
-                && is_integral_constant_v<axis_t>
+                    is_fixed_size_ndarray_v<array_t>
+                && (is_integral_constant_v<axis_t> || is_none_v<axis_t>)
                 && (is_integral_constant_v<keepdims_t> || is_none_v<keepdims_t>)
             ) {
-                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
-                constexpr auto axis  = axis_t::value;
                 constexpr auto keepdims = [](){
                     if constexpr (is_integral_constant_v<keepdims_t>)
                         return keepdims_t::value;
                     else /* if constexpr (is_none_v) */ return false;
                 }();
-                constexpr auto shape_ = index::remove_dims(shape, axis, keepdims);
-                constexpr auto dim_   = ::nmtools::len(shape_);
-                // here, shape_ may be hybrid index array
-                // convert to something that makes std::tuple_size_v is well-formed
-                // as needed by resize_fixed_ndarray on std::array.
-                // convert to std::array
-                // TODO: consider to add make_fixed_index_array metafunction
-                using result_t = std::array<size_t,dim_>;
-                auto result = result_t{};
-                for (size_t i=0; i<dim_; i++)
-                    at(result,i) = at(shape_,i);
-                return result;
+                if constexpr (!keepdims && is_none_v<axis_t>) {
+                    // reduce on all axis and not keep dimensions,
+                    // this is not considered as fixed shape ndarray, but should be num type instead
+                    return detail::Fail;
+                } else {
+                    constexpr auto shape  = fixed_ndarray_shape_v<array_t>;
+                    constexpr auto axes   = [&](){
+                        if constexpr (is_none_v<axis_t>) {
+                            // reduce on all axis and keepdims.
+                            // use std array for now
+                            constexpr auto dim = ::nmtools::len(shape);
+                            using axis_type = std::array<size_t,dim>;
+                            auto axes = axis_type{};
+                            for (size_t i=0; i<dim; i++)
+                                at(axes,i) = i; // on all axis
+                            return axes;
+                        } else {
+                            return axis_t::value;
+                        }
+                    }();
+                    constexpr auto shape_ = index::remove_dims(shape, axes, keepdims);
+                    constexpr auto dim_   = ::nmtools::len(shape_);
+                    // here, shape_ may be hybrid index array
+                    // convert to something that makes std::tuple_size_v is well-formed
+                    // as needed by resize_fixed_ndarray on std::array.
+                    // convert to std::array
+                    // TODO: consider to add make_fixed_index_array metafunction
+                    using result_t = std::array<size_t,dim_>;
+                    auto result = result_t{};
+                    for (size_t i=0; i<dim_; i++)
+                        at(result,i) = at(shape_,i);
+                    return result;
+                }
             } else {
                 return detail::Fail;
             }
         }();
-        using value_type = decltype(value);
+        using value_type = remove_cvref_t<decltype(value)>;
     }; // fixed_ndarray_shape
 
     /**
