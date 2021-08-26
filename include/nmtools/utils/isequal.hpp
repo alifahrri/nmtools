@@ -92,6 +92,12 @@ namespace nmtools::utils
                 return T1;
             else if constexpr (meta::is_ndarray_v<u_t> && meta::is_ndarray_v<t2>)
                 return T2;
+            // the following index array may be found when either type contains tuple
+            // which is not considered ndarray, but is index array
+            else if constexpr (meta::is_index_array_v<u_t> && meta::is_index_array_v<t1>)
+                return T1;
+            else if constexpr (meta::is_index_array_v<u_t> && meta::is_index_array_v<t2>)
+                return T2;
             else return meta::as_value<void>{};
         }
 
@@ -228,6 +234,9 @@ namespace nmtools::utils
                 auto rhs = meta::as_value<rhs_t>{};
                 auto tsame = detail::select_same(lhs, rhs, t2);
                 using same_t = meta::type_t<decltype(tsame)>;
+                static_assert( !std::is_void_v<same_t>
+                    , "couldn't find matching left / right concept in variants"
+                );
 
                 auto same = false;
                 if (auto ptr = get_if<same_t>(&t); ptr)
