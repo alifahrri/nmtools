@@ -272,3 +272,147 @@ TEST_CASE("mean(case20)" * doctest::test_suite("view::mean"))
     // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
     // MEAN_SUBCASE(case20, a_d, axis, dtype, keepdims);
 }
+
+TEST_CASE("mean(case21)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case21, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case21, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case21, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case21, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case21, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case22)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case22, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case22, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case22, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case22, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case22, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case23)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case23, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case23, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case23, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case23, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case23, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case23)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case23, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case23, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case23, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case23, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case23, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case24)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case24, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case24, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case24, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case24, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case24, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case25)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case25, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case25, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case25, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case25, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case25, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case26)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case26, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case26, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case26, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case26, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case26, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case27)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case27, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case27, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case27, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case27, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case27, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case28)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case28, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case28, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case28, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case28, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case28, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case30)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case30, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case30, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case30, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case30, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case30, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case31)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case31, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case31, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case31, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case31, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case27, a_d, axis, dtype, keepdims);
+}
+
+TEST_CASE("mean(case32)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    MEAN_SUBCASE(case32, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case32, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case32, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case32, a_h, axis, dtype, keepdims);
+    // NOTE: dynamic-size, dynamic-dim ndarray not supported yet, not supported by reducer
+    // TODO: support dynamic-size, dynamic-dim ndarray, by generalizing reducer
+    // MEAN_SUBCASE(case32, a_d, axis, dtype, keepdims);
+}

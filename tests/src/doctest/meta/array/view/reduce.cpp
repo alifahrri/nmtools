@@ -52,6 +52,17 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::reduce"))
         using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
+
+    // keepdims
+    {
+        using op_t       = view::add_t<none_t, none_t, float, void>;
+        using array_t    = int[3][2];
+        using axis_t     = none_t;
+        using dtype_t    = none_t;
+        using keepdims_t = std::true_type;
+        using view_t     = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, dtype_t, keepdims_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+    }
 }
 
 TEST_CASE("fixed_ndarray_shape" * doctest::test_suite("view::reduce"))

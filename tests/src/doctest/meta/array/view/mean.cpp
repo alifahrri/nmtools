@@ -62,7 +62,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using array_t    = int[3][2];
         using axis_t     = decltype(0_ct);
         using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
@@ -70,7 +70,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using array_t    = std::array<std::array<int,2>,3>;
         using axis_t     = decltype(0_ct);
         using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
@@ -78,7 +78,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using array_t    = na::fixed_ndarray<int,3,2>;
         using axis_t     = decltype(0_ct);
         using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
@@ -86,7 +86,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using array_t    = na::hybrid_ndarray<int,6,2>;
         using axis_t     = decltype(0_ct);
         using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
@@ -94,7 +94,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using array_t    = na::dynamic_ndarray<int>;
         using axis_t     = decltype(0_ct);
         using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
@@ -149,7 +149,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using dtype_t    = none_t;
         using keepdims_t = bool;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_either, view_t );
     }
     {
         using array_t    = std::array<std::array<int,2>,3>;
@@ -157,7 +157,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using dtype_t    = none_t;
         using keepdims_t = bool;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_either, view_t );
     }
     {
         using array_t    = na::fixed_ndarray<int,3,2>;
@@ -165,7 +165,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using dtype_t    = none_t;
         using keepdims_t = bool;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_either, view_t );
     }
     {
         using array_t    = na::hybrid_ndarray<int,6,2>;
@@ -173,7 +173,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using dtype_t    = none_t;
         using keepdims_t = bool;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
-        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_either, view_t );
     }
     {
         using array_t    = na::dynamic_ndarray<int>;
@@ -181,7 +181,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using dtype_t    = none_t;
         using keepdims_t = bool;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
-        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_either, view_t );
     }
 }
 
