@@ -72,16 +72,18 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = const array_t&;
+        // NOTE: do not take ref if the array is another view
+        // since it makes composing view not possible.
+        using array_type = resolve_array_type_t<array_t>;
         using shape_type = shape_t;
         using origin_axes_type = origin_axes_t;
 
         array_type array;
         shape_type shape_; // broadcasted shape
         origin_axes_type origin_axes; // origin axes axes
-
-        constexpr broadcast_to_t(array_type array, shape_type shape, origin_axes_type origin_axes)
-            : array(array), shape_(shape), origin_axes(origin_axes) {}
+        
+        constexpr broadcast_to_t(const array_t& array, shape_type shape, origin_axes_type origin_axes)
+            : array(initialize<array_type>(array)), shape_(shape), origin_axes(origin_axes) {}
         
         constexpr decltype(auto) shape() const noexcept
         {
@@ -98,20 +100,7 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
-            using ::nmtools::detail::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for broadcast_to view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto indices_ = pack_indices(indices...);
 
             if constexpr (std::is_arithmetic_v<array_t>)
                 return array;
@@ -121,8 +110,13 @@ namespace nmtools::view
                 auto origin_indices = index::gather(indices_,origin_axes);
                 auto offset = index::compute_offset(origin_indices,origin_strides);
 
-                auto tf_indices = index::compute_indices(offset,::nmtools::shape(array));
-                return apply_at(array,tf_indices);
+                if constexpr (std::is_pointer_v<array_type>) {
+                    auto tf_indices = index::compute_indices(offset,::nmtools::shape(*array));
+                    return apply_at(*array,tf_indices);
+                } else {
+                    auto tf_indices = index::compute_indices(offset,::nmtools::shape(array));
+                    return apply_at(array,tf_indices);
+                }
             }
         } // operator()
     }; // broadcast_to_t
@@ -214,7 +208,7 @@ namespace nmtools::view
             auto origin_axes = index::nonzero(not_free);
             using origin_axes_t = decltype(origin_axes);
             using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>;
-            // maybe declare return_t as optional type
+            // prepare_type: may declare return_t as optional type
             nmtools_assert_prepare_type (return_t, view_t);
             nmtools_assert (success, "cannot broadcast shape", return_t);
             // NOTE:

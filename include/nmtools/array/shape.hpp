@@ -38,6 +38,7 @@ namespace nmtools
 
     using std::get;
 
+    // TODO: remove
     /**
      * @brief generic function to get size of dynamic-matrix, assuming nested vector.
      * May be specialized for custom dynamic-matrix type.
@@ -74,6 +75,7 @@ namespace nmtools
         else return std::pair{size(M), size(at(M,0))};
     } // std::pair<size_t,size_t> matrix_size(const Matrix& M)
 
+    // TODO: remove
     /**
      * @brief generic function to get size of dynamic-vector (as in math vector, not container).
      * May be specialized for custom dynamic-matrix type.
@@ -97,6 +99,7 @@ namespace nmtools
         return size(v);
     } // size_t vector_size(const Vector& v)
 
+    // TODO: remove
     template <typename vector_t>
     constexpr auto vector_size(const vector_t& v)
         -> std::enable_if_t< meta::is_fixed_size_vector_v<vector_t>, size_t>
@@ -297,6 +300,12 @@ namespace nmtools
         return sizeof...(size_types);
     } // len
 
+    template <>
+    constexpr auto len<none_t>(const none_t&)
+    {
+        return 0;
+    } // len
+
     /**
      * @brief return the number of dimension of an array
      *
@@ -336,5 +345,22 @@ namespace nmtools
 
     /** @} */ // end group utility
 } // namespace nmtools
+
+namespace nmtools::meta
+{
+    /**
+     * @brief Return the index type of an array.
+     * 
+     * By default, deduce using expression: shape(array).
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    struct get_index_type<array_t, std::enable_if_t<is_ndarray_v<array_t>>>
+    {
+        using type = get_element_or_common_type_t<decltype(nmtools::shape(std::declval<array_t>()))>;
+    }; // get_index_type
+} // namespace nmtools::meta
+
 
 #endif // NMTOOLS_ARRAY_UTILITY_SHAPE_HPP

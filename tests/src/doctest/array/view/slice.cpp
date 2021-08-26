@@ -593,3 +593,100 @@ TEST_CASE("slice(case7)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case7, array_d, slice0, slice1, slice2);
     SLICE_SUBCASE(case7, array_h, slice0, slice1, slice2);
 }
+
+namespace meta = nmtools::meta;
+namespace view = nmtools::view;
+
+TEST_CASE("slice" * doctest::test_suite("view::slice"))
+{
+    SUBCASE("fixed_ndarray")
+    {
+        auto array  = na::fixed_ndarray{{1,2,3}};
+        auto slice  = tuple{nm::None,nm::None};
+        auto sliced = view::slice(array,slice);
+        using sliced_t = decltype(sliced);
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, sliced_t );
+    }
+    SUBCASE("dynamic_ndarray")
+    {
+        auto array  = na::dynamic_ndarray({1,2,3});
+        auto slice  = tuple{nm::None,nm::None};
+        auto sliced = view::slice(array,slice);
+        using sliced_t = decltype(sliced);
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, sliced_t );
+    }
+    SUBCASE("hybrid_ndarray")
+    {
+        auto array  = na::hybrid_ndarray({1,2,3});
+        auto slice  = tuple{nm::None,nm::None};
+        auto sliced = view::slice(array,slice);
+        using sliced_t = decltype(sliced);
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, sliced_t );
+    }
+}
+
+namespace testing::slice
+{
+    template <typename array_t>
+    constexpr auto f(const array_t& array)
+    {
+        auto slice0 = std::tuple{nm::None,nm::None};
+        auto slice1 = std::tuple{nm::None,nm::None};
+        static_assert( !meta::is_view_v<array_t> );
+        auto sliced = view::slice(array,slice0,slice1);
+        // assert( sliced.array == &array );
+        return sliced;
+    }
+
+    template <typename array_t>
+    constexpr auto g(const array_t& array)
+    {
+        auto sliced = f(array);
+        auto slice0 = std::tuple{0,1};
+        auto slice1 = std::tuple{0,1};
+        auto result = view::slice(sliced,slice0,slice1);
+        // assert( sliced.array.array == &array );
+        return result;
+    }
+}
+
+TEST_CASE("slice" * doctest::test_suite("view::slice"))
+{
+    using testing::slice::f, testing::slice::g;
+    {
+        auto array = std::array<std::array<int,3>,2> {{
+            {1,2,3},
+            {4,5,6},
+        }};
+        auto sliced = f(array);
+        int expected[2][3] = {
+            {1,2,3},
+            {4,5,6},
+        };
+        CHECK( &array == sliced.array );
+        NMTOOLS_ASSERT_EQUAL( sliced, expected );
+    }
+    {
+        auto array = std::array<std::array<int,3>,2> {{
+            {1,2,3},
+            {4,5,6},
+        }};
+        auto sliced = g(array);
+        int expected[1][1] = {
+            {{1}}
+        };
+        CHECK( &array == sliced.array.array );
+        NMTOOLS_ASSERT_EQUAL( sliced, expected );
+    }
+    {
+        int array[2][3] = {
+            {1,2,3},
+            {4,5,6},
+        };
+        auto sliced = view::slice(array, tuple{0,1}, tuple{0,1});
+        int expected[1][1] = {
+            {{1}}
+        };
+        NMTOOLS_ASSERT_EQUAL( sliced, expected );
+    }
+}

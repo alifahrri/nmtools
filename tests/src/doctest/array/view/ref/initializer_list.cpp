@@ -18,8 +18,8 @@ TEST_CASE("initializer_list" * doctest::test_suite("view::ref"))
     // CHECK(view(1,0)==2);
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
-    STATIC_CHECK( nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array2d_v<decltype(view)>);
+
+    
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
     {
@@ -109,7 +109,7 @@ TEST_CASE("initializer_list[3]" * doctest::test_suite("view::ref"))
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
     STATIC_CHECK(!nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array2d_v<decltype(view)>);
+    
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
     {
@@ -142,17 +142,9 @@ TEST_CASE("ref(ref(ref(initializer_list)))" * doctest::test_suite("view::ref"))
     // CHECK(view(1,0)==2);
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
-    STATIC_CHECK( nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array2d_v<decltype(view)>);
+    
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
-    {
-        using nmtools::view::decorator_t;
-        using nmtools::view::ref_t;
-        using array_t = nmtools::meta::get_array_type_t<decltype(view)>;
-        using expected_t = const decorator_t<ref_t, decorator_t<ref_t, std::initializer_list<double>>>&;
-        STATIC_CHECK_IS_SAME( array_t, expected_t );
-    }
     {
         using array_t = nmtools::meta::get_underlying_array_type_t<decltype(view)>;
         using expected_t = const std::initializer_list<double>&;
@@ -178,19 +170,10 @@ TEST_CASE("ref(ref(ref(initializer_list[2])))" * doctest::test_suite("view::ref"
     // CHECK(view(1,0)==2);
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK( nmtools::meta::is_array2d_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view1)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view0)>);
-    {
-        using nmtools::view::decorator_t;
-        using nmtools::view::ref_t;
-        using array_t = nmtools::meta::get_array_type_t<decltype(view)>;
-        using expected_t = const decorator_t<ref_t, decorator_t<ref_t, std::initializer_list<std::initializer_list<double>>>>&;
-        STATIC_CHECK_IS_SAME( array_t, expected_t );
-    }
     {
         using array_t = nmtools::meta::get_underlying_array_type_t<decltype(view)>;
         using expected_t = const std::initializer_list<std::initializer_list<double>>&;
@@ -215,7 +198,7 @@ TEST_CASE("ref(ref(ref(initializer_list[3])))" * doctest::test_suite("view::ref"
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
     STATIC_CHECK(!nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array2d_v<decltype(view)>);
+    
     // LOG_TYPEINFO( decltype(view) );
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
@@ -243,15 +226,15 @@ TEST_CASE("flattten(ref(initializer_list))" * doctest::test_suite("view::ref"))
     // CHECK(view(1,0)==2);
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
-    STATIC_CHECK( nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array2d_v<decltype(view)>);
+    
+    
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
     {
         using nmtools::view::decorator_t;
         using nmtools::view::ref_t;
         using array_t = nmtools::meta::get_array_type_t<decltype(view)>;
-        using expected_t = const decorator_t<ref_t,std::initializer_list<double>>&;
+        using expected_t = const decorator_t<ref_t,std::initializer_list<double>>;
         STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
     {
@@ -278,15 +261,15 @@ TEST_CASE("flattten(ref(initializer_list[2]))" * doctest::test_suite("view::ref"
     // CHECK(view(1,0)==2);
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
-    STATIC_CHECK( nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array2d_v<decltype(view)>);
+    
+    
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
     {
         using nmtools::view::decorator_t;
         using nmtools::view::ref_t;
         using array_t = nmtools::meta::get_array_type_t<decltype(view)>;
-        using expected_t = const decorator_t<ref_t,std::initializer_list<std::initializer_list<double>>>&;
+        using expected_t = const decorator_t<ref_t,std::initializer_list<std::initializer_list<double>>>;
         STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
     {

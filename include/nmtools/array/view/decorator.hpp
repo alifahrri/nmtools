@@ -6,12 +6,95 @@
 #include "nmtools/array/meta.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/array/index/make_array.hpp"
 
 #include <cassert>
+
+namespace nmtools::view::detail
+{
+    /**
+     * @brief Helper shape function that is pointer-aware.
+     * 
+     * Defined in namespace detail to prevent ADL.
+     * 
+     * @tparam array_t 
+     * @param array     input array
+     * @return constexpr auto 
+     */
+    template <typename array_t>
+    constexpr auto shape(const array_t& array)
+    {
+        if constexpr (std::is_pointer_v<array_t>) {
+            return ::nmtools::shape(*array);
+        } else {
+            return ::nmtools::shape(array);
+        }
+    } // shape
+
+    /**
+     * @brief Helper dim function that is ponter-aware.
+     * 
+     * @tparam array_t 
+     * @param array     input array
+     * @return constexpr auto 
+     */
+    template <typename array_t>
+    constexpr auto dim(const array_t& array)
+    {
+        if constexpr (std::is_pointer_v<array_t>) {
+            return ::nmtools::dim(*array);
+        } else {
+            return ::nmtools::dim(array);
+        }
+    } // shape
+
+    /**
+     * @brief Helper apply_at function that is pointer-aware.
+     * 
+     * @tparam array_t 
+     * @tparam indices_t 
+     * @param array         input array, checked if pointer.
+     * @param indices       indices to be expanded, passed as it is.
+     * @return constexpr auto 
+     */
+    template <typename array_t, typename indices_t>
+    constexpr auto apply_at(const array_t& array, const indices_t& indices)
+    {
+        if constexpr (std::is_pointer_v<array_t>) {
+            return ::nmtools::apply_at(*array,indices);
+        } else {
+            return ::nmtools::apply_at(array,indices);
+        }
+    }
+} // nmtools::view::detail
 
 namespace nmtools::view
 {
     using meta::is_fixed_size_ndarray_v;
+
+    /**
+     * @brief Pack arbitrary number of indices to a single array.
+     * If single index are provided and it is not an integral
+     * return as it is.
+     * 
+     * @tparam size_types 
+     * @param indices 
+     * @return constexpr auto 
+     */
+    template <typename...size_types>
+    constexpr auto pack_indices(size_types...indices)
+    {
+        using index::make_array;
+        using common_t = std::common_type_t<size_types...>;
+        if constexpr (std::is_integral_v<common_t>) {
+            return make_array<std::array>(indices...);
+        } else {
+            static_assert (sizeof...(indices)==1
+                , "unsupported indices for pack"
+            );
+            return std::get<0>(std::tuple{indices...});
+        }
+    } // pack_indices
 
     /**
      * @addtogroup view
@@ -51,7 +134,7 @@ namespace nmtools::view
                 return view_type::dim();
             // @note may be recursive
             else
-                return ::nmtools::dim(view_type::array);
+                return detail::dim(view_type::array);
         } // dim()
 
         /**
@@ -67,7 +150,7 @@ namespace nmtools::view
             using array_t = meta::remove_cvref_t<array_type>;
             if constexpr (meta::has_shape_v<meta::remove_cvref_t<view_type>>)
                 return view_type::shape();
-            else return ::nmtools::shape(view_type::array);
+            else return detail::shape(view_type::array);
         } // shape
 
         /**
@@ -110,8 +193,13 @@ namespace nmtools::view
                 // else
                 //     assert (dim()==n);
 
-                // call at to referred object, not to this
-                return apply_at(view_type::array, transformed_indices);
+                // call at to referred object, not to this.
+                // the array_type from the view may be pointer
+                if constexpr (std::is_pointer_v<array_type>) {
+                    return apply_at(*view_type::array, transformed_indices);
+                } else {
+                    return apply_at(view_type::array, transformed_indices);
+                }
             }
         } // operator()
 
@@ -156,7 +244,11 @@ namespace nmtools::view
                 //     assert (dim()==n);
 
                 // call at to referred object, not to this
-                return apply_at(view_type::array, transformed_indices);
+                if constexpr (std::is_pointer_v<array_type>) {
+                    return apply_at(*view_type::array, transformed_indices);
+                } else {
+                    return apply_at(view_type::array, transformed_indices);
+                }
             }
         } // operator()
 
@@ -277,7 +369,7 @@ namespace nmtools::view
         static constexpr auto vtype = [](){
             using view_type = decorator_t<view_t,Ts...>;
             using array_type = get_array_type_t<view_type>;
-            using nocv_array_t = meta::remove_cvref_t<array_type>;
+            using nocv_array_t = meta::remove_cvref_pointer_t<array_type>;
             // there some possibility of array_type trait/concept:
             // - the array is view (which also ndarray)
             // - the array is list of array (array type of binary ufuncs, for example)
@@ -317,6 +409,96 @@ namespace nmtools::view
         }();
         using type = meta::type_t<decltype(vtype)>;
     }; // get_underlying_array_type
+
+    // TODO: complete, with noptr, noval, asref, asptr, asval
+    template <typename array_t>
+    struct noref_t
+    {
+        const array_t* array;
+    }; // noref_t
+
+    template <typename array_t>
+    struct is_noref : std::false_type {};
+
+    template <typename array_t>
+    struct is_noref<noref_t<array_t>> : std::true_type {};
+
+    template <typename array_t>
+    inline constexpr auto is_noref_v = is_noref<array_t>::value;
+
+    template <typename array_t>
+    constexpr auto noref(const array_t& array)
+    {
+        return noref_t{&array};
+    } // noref
+
+    /**
+     * @brief Metafunction to resolve array type for view type constructor.
+     * 
+     * Return const value type if array_t is a view or a simple number.
+     * For bounded array type, return const reference.
+     * Otherwise return const pointer to array_t.
+     * 
+     * Note: for bounded array type, using const reference
+     * makes it can't be returned from a function (not copyable and not moveable).
+     * TODO: find out how to properly take const pointer to bounded array.
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    struct resolve_array_type
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_view_v<array_t>
+                || meta::is_num_v<array_t>
+                || is_none_v<array_t>
+                || meta::is_constant_index_array_v<array_t>
+                || meta::is_constant_index_v<array_t>
+            ) {
+                return meta::as_value_v<const array_t>;
+            } else if constexpr (meta::is_bounded_array_v<array_t>) {
+                return meta::as_value_v<const array_t&>;
+            } else {
+                return meta::as_value_v<const array_t*>;
+            }
+        }();
+        using type = meta::type_t<decltype(vtype)>;
+    }; // resolve_array_type
+
+    template <typename array_t>
+    struct resolve_array_type<noref_t<array_t>>
+    {
+        using type = const array_t;
+    }; // resolve_array_type
+
+    template <typename array_t>
+    struct resolve_array_type<const array_t> : resolve_array_type<array_t> {};
+
+    template <typename array_t>
+    struct resolve_array_type<const array_t&> : resolve_array_type<array_t> {};
+
+    template <typename array_t>
+    using resolve_array_type_t = meta::type_t<resolve_array_type<array_t>>;
+
+    /**
+     * @brief Helper funciton to initialize array for view constructor.
+     * 
+     * Simply detect if should return pointer or not.
+     * 
+     * @tparam array_type 
+     * @tparam array_t 
+     * @param array 
+     * @return constexpr array_type 
+     */
+    template <typename array_type, typename array_t>
+    constexpr array_type initialize(const array_t& array)
+    {
+        if constexpr (std::is_pointer_v<array_type>) {
+            return &array;
+        } else {
+            return array;
+        }
+    } // initialize
 
     /** @} */ // end group view
 } // namespace nmtools::view
@@ -370,6 +552,7 @@ namespace nmtools::meta
     using view::get_underlying_array_type;
     using view::get_underlying_array_type_t;
 
+    // TODO: remove
     /**
      * @brief specialization of is_array1d for view type
      * 
@@ -381,6 +564,7 @@ namespace nmtools::meta
     struct is_array1d<view::decorator_t<view_t,Ts...>,void>
         : is_array1d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
+    // TODO: remove
     /**
      * @brief specialization of is_array2d for view type
      * 
@@ -392,6 +576,7 @@ namespace nmtools::meta
     struct is_array2d<view::decorator_t<view_t,Ts...>>
         : is_array2d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
+    // TODO: remove
     /**
      * @brief specialization of is_array3d for view type
      * 
@@ -427,6 +612,7 @@ namespace nmtools
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     }; // meta::fixed_ndarray_shape
 
+    // TODO: remove
     /**
      * @brief specialization of meta::fixed_matrix_size for view type (view::decorator_t<...>).
      * 
@@ -460,6 +646,7 @@ namespace nmtools
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     }; // meta::fixed_matrix_size
 
+    // TODO: remove
     template <template<typename...> typename view_t, typename...Ts>
     struct meta::fixed_vector_size<view::decorator_t<view_t,Ts...>>
     {
@@ -483,6 +670,7 @@ namespace nmtools
 
 namespace nmtools::meta
 {
+    // TODO: remove
     /**
      * @brief specializtion of metafunction get_vector_value_type for view type
      * 
@@ -494,6 +682,7 @@ namespace nmtools::meta
     struct get_vector_value_type<view::decorator_t<view_t,Ts...>>
         : get_vector_value_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
     
+    // TODO: remove
     /**
      * @brief specialization of metafunction get_matrix_value_type for view type
      * 
@@ -524,7 +713,7 @@ namespace nmtools::meta
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct get_element_type<view::decorator_t<view_t,Ts...>>
-        : get_element_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+        : get_element_type<meta::remove_cvref_pointer_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_DECORATOR_HPP

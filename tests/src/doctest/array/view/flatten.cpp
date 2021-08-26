@@ -81,3 +81,38 @@ TEST_CASE("flatten(case4)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case4, array_d );
     FLATTEN_SUBCASE( case4, array_h );
 }
+
+template <typename array_t>
+auto f(const array_t& array)
+{
+    return view::flatten(array);
+}
+
+template <typename array_t>
+auto g(const array_t& array)
+{
+    auto flattened = f(array);
+    return view::flatten(flattened);
+}
+
+TEST_CASE("flatten" * doctest::test_suite("view::flatten"))
+{
+    {
+        int array[2][3] = {
+            {1,2,3},
+            {4,5,6},
+        };
+        auto flattened = f(array);
+        auto expected  = std::array{1,2,3,4,5,6};
+        NMTOOLS_ASSERT_EQUAL( flattened, expected );
+    }
+    {
+        int array[2][3] = {
+            {1,2,3},
+            {4,5,6},
+        };
+        auto flattened = g(array);
+        auto expected  = std::array{1,2,3,4,5,6};
+        NMTOOLS_ASSERT_EQUAL( flattened, expected );
+    }
+}

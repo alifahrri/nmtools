@@ -53,22 +53,17 @@ namespace nmtools::view
      * but specialized for 1D/2D/ND fixed/resizeable array with random access and numpy-like
      * array shape information (dim(), shape())
      * 
-     * @tparam Array non-cvref type of array to be referenced, should be deducable via CTAD
+     * @tparam array_t non-cvref type of array to be referenced, should be deducable via CTAD
      */
-    template <typename Array>
+    template <typename array_t>
     struct ref_t
     {
-        static_assert(
-            is_array1d_v<Array> || is_array2d_v<Array> || is_ndarray_v<Array>,
-            "ref_t only support 1D, 2D, or ndarray for now"
-        );
         // get_element_type metafunction should be able to handle
         // ndarray, array2d, array1d etc
-        using value_type = meta::get_element_type_t<Array>;
+        using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = const Array&;
-        static inline constexpr bool is_fixed_size = is_fixed_size_vector_v<Array> || is_fixed_size_matrix_v<Array> || is_fixed_size_ndarray_v<Array>;
+        using array_type = resolve_array_type_t<array_t>;
 
         // const reference to actual array type
         array_type array;
@@ -77,7 +72,8 @@ namespace nmtools::view
          * @brief construct ref view
          * 
          */
-        constexpr ref_t(array_type array) : array(array) {}
+        constexpr ref_t(const array_t& array)
+            : array(initialize<array_type>(array)) {}
 
         /**
          * @brief identity mapping of indices

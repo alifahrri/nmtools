@@ -2985,7 +2985,7 @@ namespace nmtools::meta
         
         static constexpr auto vtype = [](){
             constexpr auto shape = fixed_ndarray_shape_v<U>;
-            constexpr auto DIM = fixed_ndarray_dim_v<U>;
+            constexpr auto DIM   = fixed_ndarray_dim_v<U>;
             using element_t = get_element_type_t<std::array<T,N>>;
             return template_reduce<DIM>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
@@ -3014,6 +3014,60 @@ namespace nmtools::meta
         using default_ndarray_t = type_t<make_fixed_ndarray<T,shape_t>>;
         using type = resize_fixed_ndarray_t<default_ndarray_t,U>;
     }; // resize_fixed_ndarray
+
+    namespace error
+    {
+        // default type (error-type) for promote_types metafunction
+        struct PROMOTE_TYPE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+    
+    /**
+     * @brief Metafunction to promote / deduce the resulting type from two arrays.
+     * 
+     * @tparam tag_t can be specialize if desired.
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     * @tparam typename 
+     */
+    template <typename tag_t, typename lhs_t, typename rhs_t, typename=void>
+    struct promote_types
+    {
+        using type = error::PROMOTE_TYPE_UNSUPPORTED;
+    }; // promote_types
+
+    template <typename tag_t, typename lhs_t, typename rhs_t>
+    using promote_types_t = type_t<promote_types<tag_t,lhs_t,rhs_t>>;
+
+    namespace error
+    {
+        // default type (error-type) for get_index_type
+        struct GET_INDEX_TYPE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+
+    template <typename array_t, typename=void>
+    struct get_index_type
+    {
+        using type = error::GET_INDEX_TYPE_UNSUPPORTED;
+    }; // get_index_type
+
+    template <typename array_t>
+    using get_index_type_t = type_t<get_index_type<array_t>>;
+
+    /**
+     * @brief Alias to std::remove_pointer_t.
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    using remove_pointer_t = std::remove_pointer_t<array_t>;
+
+    /**
+     * @brief Remove const-ness, reference, and pointer from a type.
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    using remove_cvref_pointer_t = remove_cvref_t<remove_pointer_t<array_t>>;
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

@@ -13,6 +13,7 @@
 #define NMTOOLS_UTILS_ISCLOSE_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/assert.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
@@ -232,19 +233,23 @@ namespace nmtools::utils
             else {
                 bool close = true;
                 // @todo: static assert whenever possible
-                assert (dim(t)==dim(u)
-                    // , "dimension mismatch for isclose"
+                auto t_dim = ::nmtools::dim(t);
+                auto u_dim = ::nmtools::dim(u);
+                nmtools_assert_throw( (t_dim==u_dim)
+                    , "dimension mismatch for isclose"
                 );
-                auto t_shape = shape(t);
-                auto u_shape = shape(u);
-                assert (::nmtools::utils::isequal(t_shape,u_shape)
-                    // , "shape mismatch for isclose"
+                auto t_shape = ::nmtools::shape(t);
+                auto u_shape = ::nmtools::shape(u);
+                nmtools_assert_throw( ::nmtools::utils::isequal(t_shape,u_shape)
+                    , "shape mismatch for isclose"
                 );
                 auto t_indices = ndindex(t_shape);
                 auto u_indices = ndindex(u_shape);
+                auto t_size = t_indices.size();
+                auto u_size = u_indices.size();
                 // @todo: static assert whenever possible
-                assert (t_indices.size()==u_indices.size()
-                    // , "size mismatch for isclose"
+                nmtools_assert_throw( (t_size==u_size)
+                    , "size mismatch for isclose"
                 );
                 for (size_t i = 0; i<t_indices.size(); i++)
                     // dont recurse, we already checked that t and u satify static assert here

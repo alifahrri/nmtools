@@ -210,6 +210,16 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
             {1,1,1}
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        inline int x = 1;
+        inline auto shape = None;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        inline int expected = 1;
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_to_constexpr)

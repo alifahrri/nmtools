@@ -22,7 +22,8 @@ TEST_CASE("get_underlying_array_type(ufunc)" * doctest::test_suite("get_underlyi
     {
         using view_t  = view::decorator_t< view::ufunc_t, view::sin_t, std::vector<int> >;
         using array_t = meta::get_underlying_array_type_t<view_t>;
-        using expected_t = std::tuple<const std::vector<int>&>;
+        // the underlying array may be ptr to allow copy
+        using expected_t = std::tuple<const std::vector<int>*>;
         NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
     {
@@ -44,7 +45,8 @@ TEST_CASE("get_underlying_array_type(ufunc)" * doctest::test_suite("get_underlyi
             view::decorator_t< view::broadcast_to_t, int, shape_t , free_axes_t >
         >;
         using array_t = meta::get_underlying_array_type_t< view_t >;
-        using expected_t = std::tuple<const int(&)[3][3], const int(&)>;
+        // based on new (default) policy, bounded array is taken as const ref while scalar is copied
+        using expected_t = std::tuple<const int(&)[3][3], const int>;
         NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
 }
@@ -112,13 +114,13 @@ TEST_CASE("get_underlying_array_type(clip)" * doctest::test_suite("get_underlyin
             view::decorator_t< view::broadcast_to_t, na::hybrid_ndarray<int,1,1>,  std::array<size_t,3>, na::hybrid_ndarray<size_t,3,1> >
         >;
         using array_t = meta::get_underlying_array_type_t<view_t>;
-        using expected_t = std::tuple<const na::hybrid_ndarray<int,6,2>&, const na::hybrid_ndarray<int,12,3>&, const na::hybrid_ndarray<int,1,1>&>;
+        using expected_t = std::tuple<const na::hybrid_ndarray<int,6,2>*, const na::hybrid_ndarray<int,12,3>*, const na::hybrid_ndarray<int,1,1>*>;
         NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
-        using a0_t = meta::remove_cvref_t<meta::at_t<array_t,0>>;
+        using a0_t = meta::remove_cvref_pointer_t<meta::at_t<array_t,0>>;
         static_assert( meta::is_hybrid_ndarray_v<a0_t> );
-        using a1_t = meta::remove_cvref_t<meta::at_t<array_t,1>>;
+        using a1_t = meta::remove_cvref_pointer_t<meta::at_t<array_t,1>>;
         static_assert( meta::is_hybrid_ndarray_v<a1_t> );
-        using a2_t = meta::remove_cvref_t<meta::at_t<array_t,2>>;
+        using a2_t = meta::remove_cvref_pointer_t<meta::at_t<array_t,2>>;
         static_assert( meta::is_hybrid_ndarray_v<a2_t> );
     }
     {
@@ -130,7 +132,7 @@ TEST_CASE("get_underlying_array_type(clip)" * doctest::test_suite("get_underlyin
             view::decorator_t< view::broadcast_to_t, float, shape_t, origin_axes_t >
         >;
         using array_t = meta::get_underlying_array_type_t<view_t>;
-        using expected_t = std::tuple<const na::fixed_ndarray<float,3,2>&, const na::fixed_ndarray<float,2>&, const float& >;
+        using expected_t = std::tuple<const na::fixed_ndarray<float,3,2>*, const na::fixed_ndarray<float,2>*, const float>;
         NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
 }
