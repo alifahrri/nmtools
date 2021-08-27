@@ -183,6 +183,8 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     src/doctest/array/view/prod.cpp
     src/doctest/array/view/sum.cpp
     src/doctest/array/view/ufuncs/add.cpp
+    src/doctest/array/view/ufuncs/amax.cpp
+    src/doctest/array/view/ufuncs/amin.cpp
     src/doctest/array/view/ufuncs/arccos.cpp
     src/doctest/array/view/ufuncs/arccosh.cpp
     src/doctest/array/view/ufuncs/arcsin.cpp
@@ -278,6 +280,8 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/where.cpp
     src/doctest/array/array/zeros.cpp
     src/doctest/array/array/ufuncs/add.cpp
+    src/doctest/array/array/ufuncs/amax.cpp
+    src/doctest/array/array/ufuncs/amin.cpp
     src/doctest/array/array/ufuncs/arccos.cpp
     src/doctest/array/array/ufuncs/arccosh.cpp
     src/doctest/array/array/ufuncs/arcsin.cpp
