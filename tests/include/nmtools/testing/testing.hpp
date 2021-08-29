@@ -221,34 +221,6 @@ namespace nmtools
         using type = meta::transform_bounded_array_t<src_t>;
     }; // resolve_optype
 
-    template <typename src_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
-        cast_kind_t, src_t, array::kind::fixed_vec_t
-    >
-    {
-        using element_t = get_element_type_t<src_t>;
-        static constexpr auto shape = fixed_ndarray_shape_v<src_t>;
-        static constexpr auto dim   = fixed_ndarray_dim_v<src_t>;
-        using type = std::conditional_t<dim==1,
-            array::fixed_vector<element_t,std::get<0>(shape)>, void
-        >;
-    }; // resolve_optype
-
-    template <typename src_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
-        cast_kind_t, src_t, array::kind::dynamic_vec_t
-    >
-    {
-        using element_t = get_element_type_t<src_t>;
-        static constexpr auto shape = fixed_ndarray_shape_v<src_t>;
-        static constexpr auto dim   = fixed_ndarray_dim_v<src_t>;
-        using type = std::conditional_t<dim==1,
-            array::dynamic_vector<element_t>, void
-        >;
-    }; // resolve_optype
-
     template <typename src_t, typename kind_t>
     constexpr auto cast(const src_t& src, const kind_t& kind)
     {
@@ -545,16 +517,6 @@ template <typename T>
 using nested_vec_t = std::vector<std::vector<T>>;
 
 /**
- * @brief alias template for 1D fixed array using nmtools::array::fixed_vector
- * 
- * @tparam N desired number of elements
- */
-template <size_t N>
-using fdvec_t = nmtools::array::fixed_vector<double,N>;
-template <size_t N>
-using ffvec_t = nmtools::array::fixed_vector<float,N>;
-
-/**
  * @brief alias template for 2D fixed array using nmtools::array::fixed_matrix
  * 
  * @tparam Rows desired number of rows
@@ -564,22 +526,6 @@ template <size_t Rows, size_t Cols>
 using fdmat_t = nmtools::array::fixed_matrix<double,Rows,Cols>;
 template <size_t Rows, size_t Cols>
 using ffmat_t = nmtools::array::fixed_matrix<float,Rows,Cols>;
-
-/**
- * @brief alias template for 1D dynamic array using nmtools::array::dynamic_vector
- * 
- * @tparam T value_type
- */
-template <typename T>
-using dvec_t = nmtools::array::dynamic_vector<T>;
-
-/**
- * @brief alias template for 2D dynamic array using nmtools::array::dynamic_matrix
- * 
- * @tparam T value_type
- */
-template <typename T>
-using dmat_t = nmtools::array::dynamic_matrix<T>;
 
 /**
  * @brief helper macro to declare inline std::array

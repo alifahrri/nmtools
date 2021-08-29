@@ -268,7 +268,6 @@ namespace nmtools::meta
 } // namespace nmtooclls::traits
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/vector/fixed.hpp"
 
 namespace nmtools::meta
 {

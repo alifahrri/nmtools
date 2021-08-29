@@ -140,23 +140,6 @@ TEST_CASE("meta" * doctest::skip(true)) // meta::fixed_matrix_size
     }
 }
 
-TEST_CASE("meta" * doctest::skip(true)) // meta::fixed_vector_size
-{
-    using fvector_t  = nmtools::array::fixed_vector<double,5>;
-    using ndarray_t  = nmtools::array::fixed_ndarray<double,5>;
-    LOG_TYPEINFO(fvector_t);
-    LOG_TYPEINFO(ndarray_t);
-
-    {
-        constexpr auto shape = nmtools::meta::fixed_vector_size_v<fvector_t>;
-        STATIC_CHECK(( shape==5 ));
-    }
-    {
-        constexpr auto shape = nmtools::meta::fixed_vector_size_v<ndarray_t>;
-        STATIC_CHECK(( shape==5 ));
-    }
-}
-
 using meta::merge_t;
 using meta::type_push_back_t;
 using meta::pop_first_t;
@@ -193,9 +176,7 @@ TEST_CASE("meta" * doctest::skip(true))
 {
     using vvector_t   = std::vector<double>;
     using marray_t    = std::array<std::array<double,3>,5>;
-    using fvector_t  = nmtools::array::fixed_vector<double,3>;
     using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
-    using dvector_t  = nmtools::array::dynamic_vector<double>;
     using dmatrix_t  = nmtools::array::dynamic_matrix<double>;
     using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
     using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
@@ -203,7 +184,6 @@ TEST_CASE("meta" * doctest::skip(true))
 
     LOG_TYPEINFO(marray_t);
     LOG_TYPEINFO(vvector_t);
-    LOG_TYPEINFO(fvector_t);
     LOG_TYPEINFO(fmatrix_t);
     LOG_TYPEINFO(ndarray_t);
     LOG_TYPEINFO(dndarray_t);

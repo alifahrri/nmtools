@@ -187,16 +187,11 @@ TEST_CASE("fixed_ndarray_shape_v" * doctest::test_suite("array"))
 {
     using vector_t   = std::array<double,3>;
     using array_t    = std::array<std::array<double,3>,5>;
-    using fvector_t  = nmtools::array::fixed_vector<double,3>;
     using fmatrix_t  = nmtools::array::fixed_matrix<double,5,3>;
     using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
     using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
     using dndarray_t = nmtools::array::dynamic_ndarray<double>;
 
-    {
-        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<fvector_t>;
-        STATIC_CHECK(( std::get<0>(shape)==3 ));
-    }
     {
         constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<array_t>;
         STATIC_CHECK(( std::get<0>(shape)==5 ));
@@ -224,8 +219,6 @@ TEST_CASE("is_ndarray_v" * doctest::test_suite("array"))
 {
     using vvector_t = std::vector<double>;
     using varray_t  = std::array<double,3>;
-    using fvector_t = nmtools::array::fixed_vector<double,3>;
-    using dvector_t = nmtools::array::dynamic_vector<double>;
     using mvector_t = std::vector<double>;
     using marray_t  = std::array<std::array<double,3>,2>;
     using fmatrix_t = nmtools::array::fixed_matrix<double,2,3>;
@@ -250,15 +243,7 @@ TEST_CASE("is_ndarray_v" * doctest::test_suite("array"))
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
-        using arg_t = fvector_t;
-        STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
-    }
-    {
         using arg_t = fmatrix_t;
-        STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
-    }
-    {
-        using arg_t = dvector_t;
         STATIC_CHECK(( meta::is_ndarray_v<arg_t> ));
     }
     {
