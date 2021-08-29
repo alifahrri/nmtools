@@ -250,7 +250,6 @@ namespace nmtools::meta
 // note: fixed array also include array/utility,
 // include here so that dynamic vector_size and matrix_size visible
 #include "nmtools/array/matrix/fixed.hpp"
-#include "nmtools/array/vector/dynamic.hpp"
 
 namespace nmtools::meta
 {
