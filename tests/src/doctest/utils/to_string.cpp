@@ -117,28 +117,6 @@ TEST_CASE("to_string(double[5])" * doctest::test_suite("utils") * doctest::skip(
     }
 }
 
-TEST_CASE("to_string(fixed_vector)" * doctest::test_suite("utils") * doctest::skip(true))
-{
-    {
-        auto arg = na::fixed_vector<double,2>{};
-        auto str = to_string(arg);
-        auto to_print = std::string("\n") + str;
-        MESSAGE( to_print );
-        CHECK( str.size() );
-    }
-}
-
-TEST_CASE("to_string(dynamic_vector)" * doctest::test_suite("utils") * doctest::skip(true))
-{
-    {
-        auto arg = na::dynamic_vector{1.,2.,3.,4.,5.};
-        auto str = to_string(arg);
-        auto to_print = std::string("\n") + str;
-        MESSAGE( to_print );
-        CHECK( str.size() );
-    }
-}
-
 /**
  * @test to_string(tuple[2])
  * 

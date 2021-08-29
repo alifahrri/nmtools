@@ -114,7 +114,6 @@ if (NOT TEST_ARRAY_UTILITY)
 endif ()
 
 set(NDARRAY_TEST_SOURCES
-    src/doctest/array/fixed/vector.cpp
     src/doctest/array/fixed/matrix.cpp
     src/doctest/array/dynamic/matrix.cpp
     src/doctest/array/fixed/ndarray.cpp
@@ -485,7 +484,6 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/split_at.cpp
     src/doctest/meta/transform/scatter.cpp
     src/doctest/meta/transform/transform_bounded_array.cpp
-    src/doctest/meta/get_container_value_type.cpp
 )
 # omg
 if ((NOT EMSCRIPTEN) AND (NOT ANDROID))

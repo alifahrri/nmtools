@@ -21,8 +21,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto axis    = None;
         auto shape_a = cast<int>(shape);
         auto shape_v = cast<std::vector<int>>(shape);
-        auto shape_f = cast<na::fixed_vector<int,2>>(shape);
-        auto shape_d = cast<na::dynamic_vector<int>>(shape);
+        auto shape_f = cast<na::fixed_ndarray<int,2>>(shape);
         auto shape_h = cast<na::hybrid_ndarray<int,2,1>>(shape);
         auto shape_t = index::as_tuple(shape_a);
     }
@@ -38,8 +37,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto axis    = 0;
         auto shape_a = cast<int>(shape);
         auto shape_v = cast<std::vector<int>>(shape);
-        auto shape_f = cast<na::fixed_vector<int,2>>(shape);
-        auto shape_d = cast<na::dynamic_vector<int>>(shape);
+        auto shape_f = cast<na::fixed_ndarray<int,2>>(shape);
         auto shape_h = cast<na::hybrid_ndarray<int,2,1>>(shape);
         auto shape_t = index::as_tuple(shape_a);
     }
@@ -55,8 +53,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto axis    = 1;
         auto shape_a = cast<int>(shape);
         auto shape_v = cast<std::vector<int>>(shape);
-        auto shape_f = cast<na::fixed_vector<int,2>>(shape);
-        auto shape_d = cast<na::dynamic_vector<int>>(shape);
+        auto shape_f = cast<na::fixed_ndarray<int,2>>(shape);
         auto shape_h = cast<na::hybrid_ndarray<int,2,1>>(shape);
         auto shape_t = index::as_tuple(shape_a);
     }
@@ -72,8 +69,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto axis    = 1;
         auto shape_a = cast<int>(shape);
         auto shape_v = cast<std::vector<int>>(shape);
-        auto shape_f = cast<na::fixed_vector<int,2>>(shape);
-        auto shape_d = cast<na::dynamic_vector<int>>(shape);
+        auto shape_f = cast<na::fixed_ndarray<int,2>>(shape);
         auto shape_h = cast<na::hybrid_ndarray<int,2,1>>(shape);
         auto shape_t = index::as_tuple(shape_a);
     }
@@ -89,8 +85,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto axis    = 0;
         auto shape_a = cast<int>(shape);
         auto shape_v = cast<std::vector<int>>(shape);
-        auto shape_f = cast<na::fixed_vector<int,2>>(shape);
-        auto shape_d = cast<na::dynamic_vector<int>>(shape);
+        auto shape_f = cast<na::fixed_ndarray<int,2>>(shape);
         auto shape_h = cast<na::hybrid_ndarray<int,2,1>>(shape);
         auto shape_t = index::as_tuple(shape_a);
     }
@@ -136,7 +131,6 @@ TEST_CASE("shape_repeat(case1)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case1, shape_a, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case1, shape_v, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case1, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case1, shape_d, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case1, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case1, shape_t, repeats, axis );
 }
@@ -146,7 +140,6 @@ TEST_CASE("shape_repeat(case2)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case2, shape_a, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case2, shape_v, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case2, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case2, shape_d, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case2, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case2, shape_t, repeats, axis );
 }
@@ -156,7 +149,6 @@ TEST_CASE("shape_repeat(case3)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case3, shape_a, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case3, shape_v, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case3, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case3, shape_d, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case3, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case3, shape_t, repeats, axis );
 }
@@ -166,7 +158,6 @@ TEST_CASE("shape_repeat(case4)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case4, shape_a, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case4, shape_v, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case4, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case4, shape_d, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case4, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case4, shape_t, repeats, axis );
 }
@@ -176,7 +167,6 @@ TEST_CASE("shape_repeat(case5)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case5, shape_a, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case5, shape_v, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case5, shape_f, repeats, axis );
-    SHAPE_REPEAT_SUBCASE( case5, shape_d, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case5, shape_h, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case5, shape_t, repeats, axis );
 }

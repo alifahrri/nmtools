@@ -21,10 +21,8 @@
 namespace view = nmtools::view;
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
-using nmtools::array::fixed_vector;
 using nmtools::array::fixed_matrix;
 using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_vector;
 using nmtools::array::dynamic_matrix;
 using nmtools::array::dynamic_ndarray;
 
@@ -187,30 +185,6 @@ TEST_CASE("mutable_ref(std::vector[2])"*doctest::test_suite("view::mutable_ref")
 }
 
 /**
- * @test test case for mutable ref view to fixed_vector
- * 
- */
-TEST_CASE("mutable_ref(fixed_vector)"*doctest::test_suite("view::mutable_ref")) // ref with fixed_vector
-{
-    auto array = fixed_vector({1.,2.,3.});
-    auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    CHECK( isequal(array_ref.shape(),std::array{3}) );
-
-    {
-        auto expected = std::array{1.,2.,3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        array_ref(0) = 3;
-        auto expected = std::array{3.,2.,3.};
-        CHECK( isclose(array,expected) );
-    }
-}
-
-/**
  * @test test case for mutable ref view to fixed_matrix
  * 
  */
@@ -240,31 +214,6 @@ TEST_CASE("mutable_ref(fixed_matrix)"*doctest::test_suite("view::mutable_ref")) 
             std::array{1.,6.,3.},
             std::array{7.,4.,5.},
         };
-        CHECK( isclose(array,expected) );
-    }
-}
-
-/**
- * @test test case for mutable ref view to dynamic_vector
- * 
- */
-TEST_CASE("mutable_ref(dynamic_vector)"*doctest::test_suite("view::mutable_ref")) // ref with dynamic_vector
-{
-    auto array = dynamic_vector{1.,2.,3.};
-    auto array_ref = view::mutable_ref(array);
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    CHECK( isequal(array_ref.shape(),std::array{3}) );
-    CHECK( nmtools::at(array_ref,0)==1 );
-
-    {
-        auto expected = std::array{1.,2.,3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        array_ref(0) = 3;
-        auto expected = std::array{3.,2.,3.};
         CHECK( isclose(array,expected) );
     }
 }

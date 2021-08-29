@@ -165,42 +165,6 @@ TEST_CASE("apply_at(std::vector<...>)" * doctest::test_suite("utility"))
     }
 }
 
-TEST_CASE("apply_at(fixed_vector<>)" * doctest::test_suite("utility"))
-{
-    using nm::array::fixed_vector;
-    {
-        auto a = fixed_vector({1,2,3,4,5,6});
-        {
-            auto indices = tuple{1};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 2);
-        }
-        {
-            auto indices = tuple{2};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 3);
-        }
-    }
-}
-
-TEST_CASE("apply_at(dynamic_vector<>)" * doctest::test_suite("utility"))
-{
-    using nm::array::dynamic_vector;
-    {
-        auto a = dynamic_vector<double>{1,2,3,4,5,6};
-        {
-            auto indices = tuple{1};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 2);
-        }
-        {
-            auto indices = tuple{2};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 3);
-        }
-    }
-}
-
 TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 {
     using nm::array::dynamic_ndarray;

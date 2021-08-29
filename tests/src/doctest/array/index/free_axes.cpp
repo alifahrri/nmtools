@@ -23,10 +23,8 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
         auto b_v = cast(b,kind::nested_vec);
         auto a_a = cast<int>(a);
         auto b_a = cast<int>(b);
-        auto a_f = cast(a,kind::fixed_vec);
-        auto b_f = cast(b,kind::fixed_vec);
-        auto a_d = cast(a,kind::dynamic_vec);
-        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_f = cast(a,kind::fixed);
+        auto b_f = cast(b,kind::fixed);
         auto a_h = cast<na::hybrid_ndarray<int,2,1>>(a);
         auto b_h = cast<na::hybrid_ndarray<int,1,1>>(b);
     }
@@ -43,10 +41,8 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
         auto b_v = cast(b,kind::nested_vec);
         auto a_a = cast<int>(a);
         auto b_a = cast<int>(b);
-        auto a_f = cast(a,kind::fixed_vec);
-        auto b_f = cast(b,kind::fixed_vec);
-        auto a_d = cast(a,kind::dynamic_vec);
-        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_f = cast(a,kind::fixed);
+        auto b_f = cast(b,kind::fixed);
         auto a_h = cast<na::hybrid_ndarray<int,2,1>>(a);
         auto b_h = cast<na::hybrid_ndarray<int,1,1>>(b);
     }
@@ -63,10 +59,8 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
         auto b_v = cast(b,kind::nested_vec);
         auto a_a = cast<int>(a);
         auto b_a = cast<int>(b);
-        auto a_f = cast(a,kind::fixed_vec);
-        auto b_f = cast(b,kind::fixed_vec);
-        auto a_d = cast(a,kind::dynamic_vec);
-        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_f = cast(a,kind::fixed);
+        auto b_f = cast(b,kind::fixed);
         auto a_h = cast<na::hybrid_ndarray<int,4,1>>(a);
         auto b_h = cast<na::hybrid_ndarray<int,3,1>>(b);
     }
@@ -83,10 +77,8 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
         auto b_v = cast(b,kind::nested_vec);
         auto a_a = cast<int>(a);
         auto b_a = cast<int>(b);
-        auto a_f = cast(a,kind::fixed_vec);
-        auto b_f = cast(b,kind::fixed_vec);
-        auto a_d = cast(a,kind::dynamic_vec);
-        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_f = cast(a,kind::fixed);
+        auto b_f = cast(b,kind::fixed);
         auto a_h = cast<na::hybrid_ndarray<int,4,1>>(a);
         auto b_h = cast<na::hybrid_ndarray<int,4,1>>(b);
     }
@@ -103,10 +95,8 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
         auto b_v = cast(b,kind::nested_vec);
         auto a_a = cast<int>(a);
         auto b_a = cast<int>(b);
-        auto a_f = cast(a,kind::fixed_vec);
-        auto b_f = cast(b,kind::fixed_vec);
-        auto a_d = cast(a,kind::dynamic_vec);
-        auto b_d = cast(b,kind::dynamic_vec);
+        auto a_f = cast(a,kind::fixed);
+        auto b_f = cast(b,kind::fixed);
         auto a_h = cast(a,kind::hybrid);
         auto b_h = cast(b,kind::hybrid);
     }
@@ -163,7 +153,6 @@ TEST_CASE("free_axes(case1)" * doctest::test_suite("index::free_axes"))
     FREE_AXES_SUBCASE(case1, a_a, b_a);
     FREE_AXES_SUBCASE(case1, a_v, b_v);
     FREE_AXES_SUBCASE(case1, a_f, b_f);
-    FREE_AXES_SUBCASE(case1, a_d, b_d);
     FREE_AXES_SUBCASE(case1, a_h, b_h);
 }
 
@@ -172,7 +161,6 @@ TEST_CASE("free_axes(case2)" * doctest::test_suite("index::free_axes"))
     FREE_AXES_SUBCASE(case2, a_a, b_a);
     FREE_AXES_SUBCASE(case2, a_v, b_v);
     FREE_AXES_SUBCASE(case2, a_f, b_f);
-    FREE_AXES_SUBCASE(case2, a_d, b_d);
     FREE_AXES_SUBCASE(case2, a_h, b_h);
 }
 
@@ -181,7 +169,6 @@ TEST_CASE("free_axes(case3)" * doctest::test_suite("index::free_axes"))
     FREE_AXES_SUBCASE(case3, a_a, b_a);
     FREE_AXES_SUBCASE(case3, a_v, b_v);
     FREE_AXES_SUBCASE(case3, a_f, b_f);
-    FREE_AXES_SUBCASE(case3, a_d, b_d);
     FREE_AXES_SUBCASE(case3, a_h, b_h);
 }
 
@@ -190,7 +177,6 @@ TEST_CASE("free_axes(case4)" * doctest::test_suite("index::free_axes"))
     FREE_AXES_SUBCASE(case4, a_a, b_a);
     FREE_AXES_SUBCASE(case4, a_v, b_v);
     FREE_AXES_SUBCASE(case4, a_f, b_f);
-    FREE_AXES_SUBCASE(case4, a_d, b_d);
     FREE_AXES_SUBCASE(case4, a_h, b_h);
 }
 
@@ -199,6 +185,5 @@ TEST_CASE("free_axes(case5)" * doctest::test_suite("index::free_axes"))
     FREE_AXES_SUBCASE(case5, a_a, b_a);
     FREE_AXES_SUBCASE(case5, a_v, b_v);
     FREE_AXES_SUBCASE(case5, a_f, b_f);
-    FREE_AXES_SUBCASE(case5, a_d, b_d);
     FREE_AXES_SUBCASE(case5, a_h, b_h);
 }
