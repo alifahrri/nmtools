@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
+#include "nmtools/array/shape.hpp"
 
 namespace nmtools::index
 {
@@ -25,8 +26,8 @@ namespace nmtools::index
         using return_t = meta::replace_element_type_t<ashape_t,bool>;
         auto res = return_t{};
 
-        auto m = tuple_size(ashape);
-        auto n = tuple_size(bshape);
+        auto m = len(ashape);
+        auto n = len(bshape);
         auto s = m;
 
         if constexpr (meta::is_resizeable_v<return_t>)
@@ -44,7 +45,7 @@ namespace nmtools::index
             at(res,si) = free;
         }; // free_axes_impl
 
-        for (int i=0; i<size(res); i++)
+        for (int i=0; i<len(res); i++)
             free_axes_impl(i);
 
         return res;
