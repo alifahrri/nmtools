@@ -548,6 +548,7 @@ namespace nmtools::meta
         - T<auto,typename...>, etc.
     */
 
+    // TODO: remove
     /**
      * @brief metafunction to resize fixed vector.
      * 
@@ -3040,6 +3041,50 @@ namespace nmtools::meta
 
     namespace error
     {
+        struct PROMOTE_INDEX_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+
+    template <typename lhs_t, typename rhs_t>
+    struct promote_index
+    {
+        static constexpr auto non_constant = [](){
+            if constexpr (!is_constant_index_v<lhs_t>) {
+                return as_value_v<lhs_t>;
+            } else {
+                return as_value_v<rhs_t>;
+            }
+        }();
+        template <typename T>
+        static constexpr auto make_non_constant(as_value<T>) {
+            if constexpr (is_constant_index_v<T>) {
+                return as_value_v<typename T::value_type>;
+            } else {
+                return as_value_v<T>;
+            }
+        }
+        static constexpr auto vtype = [](){
+            if constexpr (is_index_v<lhs_t> && is_index_v<rhs_t>) {
+                if constexpr (is_signed_v<lhs_t> && is_signed_v<rhs_t>) {
+                    return non_constant;
+                } else if constexpr (is_unsigned_v<lhs_t> && is_unsigned_v<rhs_t>) {
+                    return non_constant;
+                } else if constexpr (is_signed_v<lhs_t>) {
+                    return make_non_constant(as_value_v<lhs_t>);
+                } else /* if constexpr (is_signed_v<rhs_t>) */ {
+                    return make_non_constant(as_value_v<rhs_t>);
+                }
+            } else {
+                return as_value_v<error::PROMOTE_INDEX_UNSUPPORTED>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // promote_index
+
+    template <typename lhs_t, typename rhs_t>
+    using promote_index_t = type_t<promote_index<lhs_t,rhs_t>>;
+
+    namespace error
+    {
         // default type (error-type) for get_index_type
         struct GET_INDEX_TYPE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
@@ -3068,6 +3113,24 @@ namespace nmtools::meta
      */
     template <typename array_t>
     using remove_cvref_pointer_t = remove_cvref_t<remove_pointer_t<array_t>>;
+
+    /**
+     * @brief Reserved metafunction to create maybe type
+     * 
+     * @tparam T 
+     */
+    template <typename T, typename=void>
+    struct make_maybe_type;
+
+
+    /**
+     * @brief Reserved metafunction to create nothing type
+     * E.g. std::nullopt, boost::none
+     * 
+     * @tparam ypename 
+     */
+    template <typename=void>
+    struct make_nothing;
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

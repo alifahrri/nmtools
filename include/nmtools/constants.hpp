@@ -82,6 +82,14 @@ namespace nmtools
     inline constexpr auto None = none_t {};
 
     /**
+     * @brief Special tag to represents "..." a.k.a. "Elipsis" type
+     * 
+     */
+    struct elipsis_t {};
+
+    inline constexpr auto Elipsis = elipsis_t {};
+
+    /**
      * @brief special constant for true_type
      * 
      */
@@ -92,6 +100,13 @@ namespace nmtools
      * 
      */
     inline constexpr auto False = std::false_type {};
+
+    // TODO: do not directly use std::integral_constant, create meta::make_constant
+    /**
+     * @brief Special constant to represents "-1"
+     * 
+     */
+    inline constexpr auto Last = std::integral_constant<int,-1>{};
 
     /**
      * @brief helper traits to check for "None" type
@@ -111,6 +126,21 @@ namespace nmtools
      */
     template <typename T>
     inline constexpr auto is_none_v = is_none<T>::value;
+
+    template <typename T>
+    struct is_elipsis : std::false_type {};
+
+    template <typename T>
+    struct is_elipsis<const T> : is_elipsis<T> {};
+
+    template <typename T>
+    struct is_elipsis<const T&> : is_elipsis<T> {};
+
+    template <>
+    struct is_elipsis<elipsis_t> : std::true_type {};
+
+    template <typename T>
+    inline constexpr auto is_elipsis_v = is_elipsis<T>::value;
 } // namespace nmtools
 
 #endif // NMTOOLS_CONSTANTS_HPP

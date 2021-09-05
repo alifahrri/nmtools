@@ -273,6 +273,157 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     {
         int result[2] = {4,1};
     }
+
+    // a[...,:]
+    NMTOOLS_TESTING_DECLARE_ARGS(case21)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = tuple{None,None};
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case21)
+    {
+        int result[3] = {2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case22)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = tuple{None,Last};
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case22)
+    {
+        int result[3] = {2,3,1};
+    }
+
+    // a[...,0:-1]
+    NMTOOLS_TESTING_DECLARE_ARGS(case23)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = tuple{0,Last};
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case23)
+    {
+        int result[3] = {2,3,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case24)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0  = tuple{0ul,Last};
+        auto slice1  = Elipsis;
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case24)
+    {
+        int result[3] = {1,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case25)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0  = 0;
+        auto slice1  = Elipsis;
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case25)
+    {
+        int result[2] = {3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case26)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = 0;
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case26)
+    {
+        int result[2] = {2,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case27)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0  = 0;
+        auto slice1  = Elipsis;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case27)
+    {
+        int result[1] = {3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case28)
+    {
+        int shape[4] = {2,1,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = 1;
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case28)
+    {
+        int result[3] = {2,1,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case29)
+    {
+        int shape[4] = {2,1,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = 1;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case29)
+    {
+        int result[2] = {2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case30)
+    {
+        int shape[4] = {2,1,3,2};
+        auto slice0  = 1;
+        auto slice1  = Elipsis;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case30)
+    {
+        int result[2] = {1,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case31)
+    {
+        int shape[4] = {2,1,3,2};
+        auto slice0  = Last;
+        auto slice1  = Elipsis;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case31)
+    {
+        int result[2] = {1,3};
+    }
+
+    // a[...,0:-1:-1]
+    NMTOOLS_TESTING_DECLARE_ARGS(case32)
+    {
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = tuple{0,Last,-1};
+        CAST_ARRAYS(shape);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case32)
+    {
+        int result[3] = {2,3,1};
+    }
 }
 
 #define RUN_shape_slice_impl(...) \
@@ -505,6 +656,129 @@ TEST_CASE("shape_slice(case20)" * doctest::test_suite("index::shape_slice"))
     SHAPE_SLICE_SUBCASE(case20, shape_f, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case20, shape_d, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case20, shape_h, slice0, slice1);
+}
+
+TEST_CASE("shape_slice(case21)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case21,   shape, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case21, shape_a, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case21, shape_v, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case21, shape_f, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case21, shape_d, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case21, shape_h, slice0, slice1);
+}
+
+TEST_CASE("shape_slice(case22)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case22,   shape, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case22, shape_a, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case22, shape_v, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case22, shape_f, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case22, shape_d, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case22, shape_h, slice0, slice1);
+}
+
+TEST_CASE("shape_slice(case23)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case23,   shape, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case23, shape_a, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case23, shape_v, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case23, shape_f, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case23, shape_d, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case23, shape_h, slice0, slice1);
+}
+
+TEST_CASE("shape_slice(case24)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case24,   shape, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case24, shape_a, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case24, shape_v, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case24, shape_f, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case24, shape_d, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case24, shape_h, slice0, slice1);
+
+    static_assert( nm::meta::is_index_v<decltype(nm::Last)> );
+    static_assert( nm::meta::is_integral_constant_v<decltype(nm::Last)> );
+}
+
+TEST_CASE("shape_slice(case25)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case25,   shape, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case25, shape_a, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case25, shape_v, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case25, shape_f, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case25, shape_d, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case25, shape_h, slice0, slice1);
+}
+
+TEST_CASE("shape_slice(case26)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case26,   shape, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case26, shape_a, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case26, shape_v, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case26, shape_f, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case26, shape_d, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case26, shape_h, slice0, slice1);
+}
+
+TEST_CASE("shape_slice(case27)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case27,   shape, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case27, shape_a, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case27, shape_v, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case27, shape_f, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case27, shape_d, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case27, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("shape_slice(case28)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case28,   shape, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case28, shape_a, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case28, shape_v, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case28, shape_f, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case28, shape_d, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case28, shape_h, slice0, slice1);
+}
+
+TEST_CASE("shape_slice(case29)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case29,   shape, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case29, shape_a, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case29, shape_v, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case29, shape_f, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case29, shape_d, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case29, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("shape_slice(case30)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case30,   shape, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case30, shape_a, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case30, shape_v, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case30, shape_f, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case30, shape_d, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case30, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("shape_slice(case31)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case31,   shape, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case31, shape_a, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case31, shape_v, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case31, shape_f, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case31, shape_d, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case31, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("shape_slice(case32)" * doctest::test_suite("index::shape_slice"))
+{
+    SHAPE_SLICE_SUBCASE(case32,   shape, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case32, shape_a, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case32, shape_v, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case32, shape_f, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case32, shape_d, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case32, shape_h, slice0, slice1);
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(index, slice)
@@ -853,6 +1127,313 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int result[2] = {3,1};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case24)
+    {
+        int indices[3] = {0,1,0};
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = tuple{None,None};
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case24)
+    {
+        int result[3] = {0,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case25)
+    {
+        int indices[3] = {0,1,0};
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = tuple{None,Last};
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case25)
+    {
+        int result[3] = {0,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case26)
+    {
+        int indices[3] = {0,1,0};
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = tuple{0,Last};
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case26)
+    {
+        int result[3] = {0,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case27)
+    {
+        int indices[3] = {0,1,0};
+        int shape[3] = {2,3,2};
+        auto slice0  = tuple{0ul,Last};
+        auto slice1  = Elipsis;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case27)
+    {
+        int result[3] = {0,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case28)
+    {
+        int indices[2] = {1,0};
+        int shape[3] = {2,3,2};
+        auto slice0  = 0;
+        auto slice1  = Elipsis;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case28)
+    {
+        int result[3] = {0,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case29)
+    {
+        int indices[2] = {1,1};
+        int shape[3] = {2,3,2};
+        auto slice0  = 0;
+        auto slice1  = Elipsis;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case29)
+    {
+        int result[3] = {0,1,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case30)
+    {
+        int indices[2] = {1,0};
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = 0;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case30)
+    {
+        int result[3] = {1,0,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case31)
+    {
+        int indices[2] = {1,1};
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = 0;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case31)
+    {
+        int result[3] = {1,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case32)
+    {
+        int indices[1] = {2};
+        int shape[3] = {2,3,2};
+        auto slice0  = 0;
+        auto slice1  = Elipsis;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case32)
+    {
+        int result[3] = {0,2,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case33)
+    {
+        int indices[3] = {0,0,0};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = 1;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case33)
+    {
+        int result[4] = {0,0,0,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case34)
+    {
+        int indices[2] = {0,0};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = 1;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case34)
+    {
+        int result[4] = {0,0,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case35)
+    {
+        int indices[2] = {0,0};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = 1;
+        auto slice1  = Elipsis;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case35)
+    {
+        int result[4] = {1,0,0,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case36)
+    {
+        int indices[2] = {0,2};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = 1;
+        auto slice1  = Elipsis;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case36)
+    {
+        int result[4] = {1,0,2,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case37)
+    {
+        int indices[2] = {1,0};
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = -1;
+        auto slice2  = tuple{None,None,-1};
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case37)
+    {
+        int result[3] = {1,2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case38)
+    {
+        int indices[2] = {1,1};
+        int shape[3] = {2,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = -2;
+        auto slice2  = tuple{None,None,-1};
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case38)
+    {
+        int result[3] = {1,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case39)
+    {
+        int indices[1] = {2};
+        int shape[3] = {2,3,2};
+        auto slice0  = 0;
+        auto slice1  = Elipsis;
+        auto slice2  = -1;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case39)
+    {
+        int result[3] = {0,2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case40)
+    {
+        int indices[3] = {0,0,-1};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = -1;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case40)
+    {
+        int result[4] = {0,0,2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case41)
+    {
+        int indices[2] = {1,0};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = Elipsis;
+        auto slice1  = -1;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case41)
+    {
+        int result[4] = {1,0,2,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case42)
+    {
+        int indices[2] = {0,-1};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = -1;
+        auto slice1  = Elipsis;
+        auto slice2  = 0;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case42)
+    {
+        int result[4] = {1,0,2,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case43)
+    {
+        int indices[2] = {0,0};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = 1;
+        auto slice1  = Elipsis;
+        auto slice2  = tuple{None,None,-1};
+        auto slice3  = 1;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case43)
+    {
+        int result[4] = {1,0,2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case44)
+    {
+        int indices[2] = {0,2};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = 1;
+        auto slice1  = Elipsis;
+        auto slice2  = tuple{None,None,1};
+        auto slice3  = 1;
+        CAST_ARRAYS(shape);
+        CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case44)
+    {
+        int result[4] = {1,0,2,1};
+    }
 }
 
 #define RUN_slice_impl(...) \
@@ -1115,4 +1696,214 @@ TEST_CASE("slice(case23)" * doctest::test_suite("index::slice"))
     SLICE_SUBCASE(case23, indices_f, shape_f, slice0, slice1);
     SLICE_SUBCASE(case23, indices_d, shape_d, slice0, slice1);
     SLICE_SUBCASE(case23, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case24)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case24, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case24, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case24, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case24, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case24, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case24, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case25)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case25, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case25, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case25, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case25, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case25, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case25, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case26)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case26, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case26, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case26, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case26, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case26, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case26, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case27)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case27, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case27, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case27, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case27, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case27, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case27, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case28)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case28, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case28, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case28, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case28, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case28, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case28, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case29)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case29, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case29, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case29, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case29, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case29, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case29, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case30)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case30, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case30, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case30, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case30, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case30, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case30, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case31)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case31, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case31, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case31, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case31, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case31, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case31, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case32)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case32, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case32, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case32, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case32, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case32, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case32, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case33)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case33, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case33, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case33, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case33, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case33, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case33, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case34)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case34, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case34, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case34, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case34, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case34, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case34, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case35)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case35, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case35, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case35, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case35, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case35, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case35, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case36)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case36, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case36, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case36, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case36, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case36, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case36, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case37)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case37, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case37, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case37, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case37, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case37, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case37, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case38)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case38, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case38, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case38, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case38, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case38, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case38, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case39)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case39, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case39, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case39, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case39, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case39, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case39, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case40)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case40, indices,   shape, slice0, slice1);
+    SLICE_SUBCASE(case40, indices_a, shape_a, slice0, slice1);
+    SLICE_SUBCASE(case40, indices_v, shape_v, slice0, slice1);
+    SLICE_SUBCASE(case40, indices_f, shape_f, slice0, slice1);
+    SLICE_SUBCASE(case40, indices_d, shape_d, slice0, slice1);
+    SLICE_SUBCASE(case40, indices_h, shape_h, slice0, slice1);
+}
+
+TEST_CASE("slice(case41)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case41, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case41, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case41, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case41, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case41, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case41, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case42)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case42, indices,   shape, slice0, slice1, slice2);
+    SLICE_SUBCASE(case42, indices_a, shape_a, slice0, slice1, slice2);
+    SLICE_SUBCASE(case42, indices_v, shape_v, slice0, slice1, slice2);
+    SLICE_SUBCASE(case42, indices_f, shape_f, slice0, slice1, slice2);
+    SLICE_SUBCASE(case42, indices_d, shape_d, slice0, slice1, slice2);
+    SLICE_SUBCASE(case42, indices_h, shape_h, slice0, slice1, slice2);
+}
+
+TEST_CASE("slice(case43)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case43, indices,   shape, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case43, indices_a, shape_a, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case43, indices_v, shape_v, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case43, indices_f, shape_f, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case43, indices_d, shape_d, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case43, indices_h, shape_h, slice0, slice1, slice2, slice3);
+}
+
+TEST_CASE("slice(case44)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case44, indices,   shape, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case44, indices_a, shape_a, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case44, indices_v, shape_v, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case44, indices_f, shape_f, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case44, indices_d, shape_d, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case44, indices_h, shape_h, slice0, slice1, slice2, slice3);
 }
