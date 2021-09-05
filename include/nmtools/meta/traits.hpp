@@ -995,6 +995,12 @@ namespace nmtools::meta {
     template <typename T>
     struct is_integral_constant : false_type {};
 
+    template <typename T>
+    struct is_integral_constant<const T> : is_integral_constant<T> {};
+
+    template <typename T>
+    struct is_integral_constant<const T&> : is_integral_constant<T> {}; 
+
     /**
      * @brief check if given type T is std::integral_constant
      * 
@@ -1350,6 +1356,44 @@ namespace nmtools::meta {
     template <typename T>
     inline constexpr auto is_index_v = is_index<T>::value;
 
+    template <typename T>
+    struct is_signed : std::false_type {};
+
+#define NMTOOLS_META_REGISTER_IS_SIGNED(type, signed) \
+    template <> \
+    struct is_signed<type> : std::signed##_type {}; \
+
+    NMTOOLS_META_REGISTER_IS_SIGNED(int32_t,true);
+    NMTOOLS_META_REGISTER_IS_SIGNED(int64_t,true);
+    NMTOOLS_META_REGISTER_IS_SIGNED(int16_t,true);
+    NMTOOLS_META_REGISTER_IS_SIGNED(int8_t, true);
+
+    NMTOOLS_META_REGISTER_IS_SIGNED(uint32_t,false);
+    NMTOOLS_META_REGISTER_IS_SIGNED(uint64_t,false);
+    NMTOOLS_META_REGISTER_IS_SIGNED(uint16_t,false);
+    NMTOOLS_META_REGISTER_IS_SIGNED(uint8_t, false);
+
+    template <int value>
+    struct is_signed<std::integral_constant<int,value>> : std::true_type {};
+
+    template <size_t value>
+    struct is_signed<std::integral_constant<size_t,value>> : std::false_type {};
+
+#undef NMTOOLS_META_REGISTER_IS_SIGNED
+
+    template <typename T>
+    inline constexpr auto is_signed_v = is_signed<T>::value;
+
+    template <typename T>
+    struct is_unsigned
+    {
+        static constexpr auto value = !is_signed_v<T>;
+    }; // is_unsigned
+
+    template <typename T>
+    inline constexpr auto is_unsigned_v = is_unsigned<T>::value;
+
+    // TODO: remove
     /**
      * @brief 
      * 
