@@ -36,7 +36,7 @@ endif ()
 add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
 
 option(TEST_ALL             "test all modules"              ON)
-option(TEST_ARRAY_DETAIL    "test array detail modules"     OFF)
+option(TEST_ARRAY_INDEX     "test array index modules"      OFF)
 option(TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
 option(TEST_UTILS           "test utils modules"            OFF)
 option(TEST_NDARRAY         "test ndarray modules"          OFF)
@@ -48,7 +48,7 @@ option(TEST_OPTIONAL        "test optional error handling"  OFF)
 option(TEST_MISC            "test other modules"            OFF)
 
 if (TEST_ALL)
-    SET(TEST_ARRAY_DETAIL   ON CACHE BOOL "test array detail modules"     FORCE)
+    SET(TEST_ARRAY_INDEX    ON CACHE BOOL "test array index modules"      FORCE)
     SET(TEST_ARRAY_UTILITY  ON CACHE BOOL "test array utility modules"    FORCE)
     SET(TEST_UTILS          ON CACHE BOOL "test utils modules"            FORCE)
     SET(TEST_NDARRAY        ON CACHE BOOL "test ndarray modules"          FORCE)
@@ -60,7 +60,7 @@ if (TEST_ALL)
     SET(TEST_MISC           ON CACHE BOOL "test other modules"            FORCE)
 endif (TEST_ALL)
 
-set(ARRAY_DETAIL_TEST_SOURCES
+set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/argfilter.cpp
     src/doctest/array/index/broadcast_shape.cpp
     src/doctest/array/index/broadcast_to.cpp
@@ -91,8 +91,8 @@ set(ARRAY_DETAIL_TEST_SOURCES
     src/doctest/array/index/tile.cpp
     src/doctest/array/index/take.cpp
 )
-if (NOT TEST_ARRAY_DETAIL)
-    set(ARRAY_DETAIL_TEST_SOURCES "")
+if (NOT TEST_ARRAY_INDEX)
+    set(ARRAY_INDEX_TEST_SOURCES "")
 endif ()
 
 set(UTILS_TEST_SOURCES
@@ -271,6 +271,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/prod.cpp
     src/doctest/array/array/repeat.cpp
     src/doctest/array/array/reshape.cpp
+    src/doctest/array/array/slice.cpp
     src/doctest/array/array/squeeze.cpp
     src/doctest/array/array/sum.cpp
     src/doctest/array/array/take.cpp
@@ -357,7 +358,7 @@ endif()
 
 add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp 
     ## array detail
-    ${ARRAY_DETAIL_TEST_SOURCES}
+    ${ARRAY_INDEX_TEST_SOURCES}
     ## utility function
     ${UTILS_TEST_SOURCES}
     ## array utility
@@ -452,6 +453,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/index/gather.cpp
     src/doctest/meta/array/index/nonzero.cpp
     src/doctest/meta/array/index/repeat.cpp
+    src/doctest/meta/array/index/slice.cpp
     src/doctest/meta/array/index/where.cpp
     src/doctest/meta/traits/apply_conjunction.cpp
     src/doctest/meta/traits/apply_disjunction.cpp
