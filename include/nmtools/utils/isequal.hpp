@@ -57,22 +57,6 @@ namespace nmtools::utils
             // @todo fix check for integral type for U
             return t == u;
         } // isequal
-
-        // inline auto isequal(std::vector<bool>::const_reference t, std::vector<bool>::const_reference u)
-        // {
-        //     return t == u;
-        // } // isequal
-
-        // @note declaring these is okay for libc++ but causes redefinition error in libstdc++
-        // inline auto isequal(std::vector<bool>::const_reference t, bool u)
-        // {
-        //     return t == u;
-        // } // isequal
-
-        // inline auto isequal(bool t, std::vector<bool>::const_reference u)
-        // {
-        //     return t == u;
-        // } // isequal
 #endif // NMTOOLS_HAS_VECTOR
 
         // given T1 and T2 from either type, select T1 or T2
@@ -80,26 +64,29 @@ namespace nmtools::utils
         template <typename t1, typename t2, typename u_t>
         constexpr auto select_same(meta::as_value<t1> T1, meta::as_value<t2> T2, meta::as_value<u_t> u)
         {
-            if constexpr (is_none_v<u_t> && is_none_v<t1>)
+            if constexpr (is_none_v<u_t> && is_none_v<t1>) {
                 return T1;
-            else if constexpr (is_none_v<u_t> && is_none_v<t2>)
+            } else if constexpr (is_none_v<u_t> && is_none_v<t2>) {
                 return T2;
-            else if constexpr (meta::is_num_v<u_t> && meta::is_num_v<t1>)
+            } else if constexpr (meta::is_num_v<u_t> && meta::is_num_v<t1>) {
                 return T1;
-            else if constexpr (meta::is_num_v<u_t> && meta::is_num_v<t2>)
+            } else if constexpr (meta::is_num_v<u_t> && meta::is_num_v<t2>) {
                 return T2;
-            else if constexpr (meta::is_ndarray_v<u_t> && meta::is_ndarray_v<t1>)
+            } else if constexpr (meta::is_ndarray_v<u_t> && meta::is_ndarray_v<t1>) {
                 return T1;
-            else if constexpr (meta::is_ndarray_v<u_t> && meta::is_ndarray_v<t2>)
+            } else if constexpr (meta::is_ndarray_v<u_t> && meta::is_ndarray_v<t2>) {
                 return T2;
+            }
             // the following index array may be found when either type contains tuple
             // which is not considered ndarray, but is index array
-            else if constexpr (meta::is_index_array_v<u_t> && meta::is_index_array_v<t1>)
+            else if constexpr (meta::is_index_array_v<u_t> && meta::is_index_array_v<t1>) {
                 return T1;
-            else if constexpr (meta::is_index_array_v<u_t> && meta::is_index_array_v<t2>)
+            } else if constexpr (meta::is_index_array_v<u_t> && meta::is_index_array_v<t2>) {
                 return T2;
-            else return meta::as_value<void>{};
-        }
+            } else {
+                return meta::as_value<void>{};
+            }
+        } // select_same
 
         /**
          * @brief check if all elements of t is is equals to corresponding elements of u, element-wise.
@@ -180,6 +167,7 @@ namespace nmtools::utils
             );
 
             // assume either type is variant
+            // TODO(wrap std metafunctions): provide nmtools::get_if, or other customization point objects
             using std::get_if;
 
             if constexpr (is_none_v<T> && is_none_v<U>)
@@ -188,7 +176,7 @@ namespace nmtools::utils
             else if constexpr (meta::is_maybe_v<T> && meta::is_maybe_v<U>) {
                 // for maybe type,
                 // assume casting to bool checks if the objects contains a value
-                // which is supported by std::optional
+                // which is supported by optional
                 auto hast = static_cast<bool>(t);
                 auto hasu = static_cast<bool>(u);
                 auto same = hast == hasu;
@@ -216,6 +204,7 @@ namespace nmtools::utils
                 using trhs_t = meta::get_either_right_t<T>;
                 using ulhs_t = meta::get_either_left_t<U>;
                 using urhs_t = meta::get_either_right_t<U>;
+                // TODO(wrap std metafunctions): make default tuple type configurable, e.g. meta::make_tuple_t
                 using std::tuple;
                 auto same = false;
                 // under the hood, recursively call isclose to properly handle view type
@@ -260,12 +249,14 @@ namespace nmtools::utils
             }
             // assume both T and U is integer
             else if constexpr (meta::is_integer_v<T>) {
-                using value_type = T;
+                // TODO(wrap std metafunctions): consider to use meta::promote_types_t with index_t as tag
+                using value_type = std::common_type_t<T,U>;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
             // assume both T and U is integral constant
             else if constexpr (meta::is_integral_constant_v<T>) {
-                using value_type = typename T::value_type;
+                // TODO(wrap std metafunctions): consider to use meta::promote_types_t with index_t as tag
+                using value_type = std::common_type_t<typename T::value_type,U>;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
             // "specialize" on index array, avoid using ndindex
@@ -342,6 +333,7 @@ namespace nmtools::utils
         constexpr auto is_array_U = meta::is_ndarray_v<U>;
 
         if constexpr (is_packed_T && is_packed_U) {
+            // TODO(wrap std metafunctions): use meta::len_v
             constexpr auto nt = std::tuple_size_v<T>;
             constexpr auto nu = std::tuple_size_v<U>;
             static_assert (nt==nu
@@ -350,6 +342,7 @@ namespace nmtools::utils
             auto equal = true; // conjuction identity
             meta::template_for<nt>([&](auto index){
                 constexpr auto i = decltype(index)::value;
+                // TODO(wrap std metafunctions): provide nmtools::get (or using at)
                 const auto& t_ = std::get<i>(t);
                 const auto& u_ = std::get<i>(u);
                 equal = equal && isequal(t_,u_);
@@ -357,7 +350,7 @@ namespace nmtools::utils
             return equal;
         }
         else return detail::isequal(t,u);
-    }
+    } // isequal
 } // namespace nmtools::utils
 
 #endif // NMTOOLS_UTILS_ISEQUAL_HPP

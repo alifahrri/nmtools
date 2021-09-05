@@ -109,6 +109,7 @@ namespace nmtools
 
     namespace detail
     {
+        // TODO: remove
         /**
          * @brief return the shape of fixed-size ndarray as compile-time constant
          * 
@@ -126,6 +127,7 @@ namespace nmtools
             return std::tuple{meta::index_constant<std::get<Is>(shape_)>{}...};
         } // make_constant_shape
 
+        // TODO: remove
         /**
          * @brief return the shape of fixed-size ndarray as compile-time constant
          * 
@@ -225,6 +227,7 @@ namespace nmtools
         // check for dynamic-shape array but fixed-dimension array
         else if constexpr (meta::nested_array_dim_v<array_t> > 0) {
             constexpr auto N = meta::nested_array_dim_v<array_t>;
+            // TODO: do not directly use std::array, create and wrap via meta::make_array_t<size_t,N>
             auto shape_ = std::array<size_t,N>{};
             meta::template_for<N>([&](auto index){
                 constexpr auto i = decltype(index)::value;
@@ -254,9 +257,10 @@ namespace nmtools
             });
             return shape_;
         }
-        else if constexpr (meta::is_array1d_v<array_t> && meta::has_size_v<array_t>)
+        else if constexpr (meta::is_array1d_v<array_t> && meta::has_size_v<array_t>) {
+            // TODO (wrap std metafunctions): wrap as meta::make_tuple
             return std::tuple{vector_size(array)};
-        else return array.shape();
+        } else return array.shape();
     } // shape
     NMTOOLS_IGNORE_WRETURN_TYPE_POP()
 
@@ -291,9 +295,11 @@ namespace nmtools
     constexpr auto len(const array_t& array)
     {
         auto shape_ = shape(array);
+        // TODO (wrap std metafunctions): wrap as meta::integral_constant
         return at(shape_, std::integral_constant<size_t,0>{});
     } // len
 
+    // TODO (wrap std metafunctions): wrap as meta::make_tuple_t
     template <typename...size_types>
     constexpr auto len(const std::tuple<size_types...>& array)
     {
@@ -328,12 +334,14 @@ namespace nmtools
             // return meta::index_constant<meta::fixed_ndarray_dim_v<array_t>>{};
             return meta::fixed_dim_v<array_t>;
         }
+        // TODO: remove
         else if constexpr (meta::is_array2d_v<array_t>) {
             // @todo whenever the dim is constant return it as compile-time constant
             // @note not possible at this point, need to refactor indices & strides computation to support compile-time constant
             // return meta::index_constant<2>{};
             return 2;
         }
+        // TODO: remove
         else if constexpr (meta::is_array1d_v<array_t>) {
             // @todo whenever the dim is constant return it as compile-time constant
             // @note not possible at this point, need to refactor indices & strides computation to support compile-time constant
@@ -358,6 +366,7 @@ namespace nmtools::meta
     template <typename array_t>
     struct get_index_type<array_t, std::enable_if_t<is_ndarray_v<array_t>>>
     {
+        // TODO (wrap std metafunctions): wrap as meta::enable_if_t
         using type = get_element_or_common_type_t<decltype(nmtools::shape(std::declval<array_t>()))>;
     }; // get_index_type
 } // namespace nmtools::meta
