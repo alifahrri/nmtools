@@ -645,14 +645,12 @@ namespace nmtools::meta {
          * 
          * @return constexpr auto 
          */
-        static constexpr auto _check()
-        {
+        static constexpr auto value = [](){
             using expression = detail::expression_check<void,expr::square_bracket,T,size_type>;
             if constexpr (expression::value)
                 return true;
             else return false;
-        } // _check()
-        static constexpr auto value = _check();
+        }();
     }; // has_square_bracket
 
     /**
@@ -1570,6 +1568,19 @@ namespace nmtools::meta {
 
     template <typename T>
     constexpr inline auto is_maybe_v = is_maybe<T>::value;
+
+    /**
+     * @brief Check if type T is Nothing type (std::nullopt,..)
+     * 
+     * The name Nothing is from haskell maybe type
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct is_nothing : std::false_type {};
+
+    template <typename T>
+    constexpr inline auto is_nothing_v = is_nothing<T>::value;
 
     /**
      * @brief Get the Left type of Either
