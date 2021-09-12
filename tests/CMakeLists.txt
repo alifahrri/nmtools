@@ -137,6 +137,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/flatten.cpp
     src/doctest/array/view/flip.cpp
     src/doctest/array/view/full.cpp
+    src/doctest/array/view/matmul.cpp
     src/doctest/array/view/mean.cpp
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
@@ -266,6 +267,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/flatten.cpp
     src/doctest/array/array/flip.cpp
     src/doctest/array/array/full.cpp
+    src/doctest/array/array/matmul.cpp
     src/doctest/array/array/mean.cpp
     src/doctest/array/array/ones.cpp
     src/doctest/array/array/prod.cpp
@@ -420,6 +422,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/view/compress.cpp
     src/doctest/meta/array/view/concatenate.cpp
     src/doctest/meta/array/view/flatten.cpp
+    src/doctest/meta/array/view/matmul.cpp
     src/doctest/meta/array/view/mean.cpp
     src/doctest/meta/array/view/reduce.cpp
     src/doctest/meta/array/view/repeat.cpp
@@ -434,6 +437,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/eval/concatenate.cpp
     src/doctest/meta/array/eval/flip.cpp
     src/doctest/meta/array/eval/full.cpp
+    src/doctest/meta/array/eval/matmul.cpp
     src/doctest/meta/array/eval/mean.cpp
     src/doctest/meta/array/eval/ones.cpp
     src/doctest/meta/array/eval/reduce.cpp
@@ -503,6 +507,10 @@ target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+# TODO: this may not be portable across compiler, detect compiler
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE
+    -ftemplate-backtrace-limit=0
+)
 
 apply_nmtools(
     TARGET ${PROJECT_NAME}-doctest-exception
@@ -534,6 +542,11 @@ target_include_directories(
 target_compile_definitions(
     ${PROJECT_NAME}-doctest-meta PRIVATE
     DEFER_STATIC_CHECK
+)
+# useful for debugging metafunctions
+# TODO: this may not be portable across compiler, detect compiler
+target_compile_options(${PROJECT_NAME}-doctest-meta PRIVATE
+    -ftemplate-backtrace-limit=0
 )
 
 option(DEFER_STATIC_CHECK "defer static check to runtime for testing purpose" OFF)

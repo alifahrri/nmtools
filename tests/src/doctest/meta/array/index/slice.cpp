@@ -44,4 +44,8 @@ TEST_CASE("shape_slice" * doctest::test_suite("meta::index"))
         using expected_t = na::fixed_ndarray<int,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
+    {
+        using shape_t = std::array<size_t,3>;
+        // using slice0_t = size_t, size_t, size_t, none_t, none_t;
+    }
 }
