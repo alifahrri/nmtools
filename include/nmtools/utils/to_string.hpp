@@ -20,7 +20,7 @@
 
 #if HAS_STRING
 
-#include "nmtools/traits.hpp"
+#include "nmtools/meta.hpp"
 #include "nmtools/array/utility.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index.hpp"
@@ -59,10 +59,15 @@ namespace nmtools::utils
             // assume get_if<type>(&array) is available for either type
             // which is supported by std::variant
             using std::get_if;
-            if (auto ptr = get_if<lhs_t>(&array))
-                str += to_string(*ptr);
-            else if (auto ptr = get_if<rhs_t>(&array))
-                str += to_string(*ptr);
+            if (auto lptr = get_if<lhs_t>(&array)) {
+                str += to_string(*lptr);
+            } else {
+                auto rptr = get_if<rhs_t>(&array);
+                str += to_string(*rptr);
+            }
+        }
+        else if constexpr (meta::is_nothing_v<T>) {
+            str += "Nothing";
         }
         else if constexpr (meta::is_maybe_v<T>) {
             // for maybe type,
@@ -70,6 +75,7 @@ namespace nmtools::utils
             // which is supported by std::optional
             if (static_cast<bool>(array))
                 str += to_string(*array);
+            else str+= "Nothing";
         }
         else if constexpr (meta::is_num_v<T>) {
             using std::to_string;
