@@ -130,8 +130,9 @@ namespace nmtools::array
             // match either type at runtime
             if (auto view_ptr = get_if<left_t>(&view)) {
                 return either_t{eval(*view_ptr,context,output)};
-            } else if (auto view_ptr = get_if<right_t>(&view)) {
-                return either_t{eval(*view_ptr,context,output)};
+            } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
+                auto view_rptr = get_if<right_t>(&view);
+                return either_t{eval(*view_rptr,context,output)};
             }
         } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
             auto evaluator_ = evaluator(view,context);
@@ -407,6 +408,18 @@ namespace nmtools::meta
         ) {
             using type = replace_element_type_t<rhs_t,element_t>;
             return as_value_v<type>;
+        } else if constexpr (
+               is_hybrid_ndarray_v<lhs_t>
+            && is_hybrid_ndarray_v<view_type>
+        ) {
+            // may occur when lhs is hybrid, rhs is fixed,
+            // and the view type is deduced as hybrid
+            return resolve_unary_array_type(lhs,view);
+        } else if constexpr (
+               is_hybrid_ndarray_v<rhs_t>
+            && is_hybrid_ndarray_v<view_type>
+        ) {
+            return resolve_unary_array_type(rhs,view);
         } else {
             return as_value_v<error::EVAL_UNHANDLED_BINARY_CASE>;
         }
