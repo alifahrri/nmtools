@@ -109,6 +109,15 @@ namespace nmtools
             const auto N = len(a);
             const auto index = N - 1;
             return at(a,index);
+        } else if constexpr (meta::is_constant_index_v<index_type>) {
+            // assume constant index has static member value
+            constexpr auto index = index_type::value;
+            if constexpr (index < 0) {
+                const auto N = len(a) + index;
+                return at(a,meta::make_unsigned_t<decltype(N)>{N});
+            } else {
+                return at<index>(a);
+            }
         // TODO (wrap std metafunctions): wrap as meta::is_signed_v
         } else if constexpr (std::is_signed_v<index_type>) {
             // NOTE: make index to be unsigned to avoid infinite recursion
@@ -130,8 +139,6 @@ namespace nmtools
             return a[i];
         } else if constexpr (meta::has_bracket_v<const array_t&,index_type>) {
             return a(i);
-        } else if constexpr (meta::is_integral_constant_v<index_type>) {
-            return at<index_type::value>(a);
         } else {
             /* compile errror */
             static_assert( meta::has_bracket_v<const array_t&,index_type> );
@@ -168,6 +175,15 @@ namespace nmtools
             const auto N = len(a);
             const auto index = N - 1;
             return at(a,index);
+        } else if constexpr (meta::is_constant_index_v<index_type>) {
+            // assume constant index has static member value
+            constexpr auto index = index_type::value;
+            if constexpr (index < 0) {
+                const auto N = len(a) + index;
+                return at(a,meta::make_unsigned_t<decltype(N)>{N});
+            } else {
+                return at<index>(a);
+            }
         // TODO (wrap std metafunctions): wrap as meta::is_signed_v
         } else if constexpr (std::is_signed_v<index_type>) {
             // TODO(wrap std metafunctions): consider to wrap std::make_unsigned_t to meta::make_unsigned_t
@@ -185,8 +201,6 @@ namespace nmtools
             return a[i];
         } else if constexpr (meta::has_bracket_v<array_t&,index_type>) {
             return a(i);
-        } else if constexpr (meta::is_integral_constant_v<index_type>) {
-            return at<index_type::value>(a);
         } else {
             /* compile errror */
             static_assert(meta::has_bracket_v<array_t&,index_type>);

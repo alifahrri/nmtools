@@ -639,8 +639,9 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case20)
     {
-        using shape_t = std::variant<none_t,std::array<size_t,1>>;
-        inline auto shape = shape_t{None};
+        // using shape_t = std::variant<none_t,std::array<size_t,1>>;
+        // inline auto shape = shape_t{None};
+        inline auto shape = None;
         inline int result = 76;
     }
 

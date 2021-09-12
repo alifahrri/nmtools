@@ -146,7 +146,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
 }
 
 #define RUN_impl(...) \
-nm::index::broadcast_to(__VA_ARGS__);
+nm::index::shape_broadcast_to(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
@@ -194,7 +194,7 @@ SUBCASE(#case_name) \
 }
 #endif
 
-TEST_CASE("broadcast_to(case1)" * doctest::test_suite("index::broadcast_to"))
+TEST_CASE("broadcast_to(case1)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_v);
@@ -212,7 +212,7 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("index::broadcast_to"))
     BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_ct);
 }
 
-TEST_CASE("broadcast_to(case2)" * doctest::test_suite("index::broadcast_to"))
+TEST_CASE("broadcast_to(case2)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_v);
@@ -228,7 +228,7 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("index::broadcast_to"))
     BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_h);
 }
 
-TEST_CASE("broadcast_to(case3)" * doctest::test_suite("index::broadcast_to"))
+TEST_CASE("broadcast_to(case3)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_v);
@@ -244,7 +244,7 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("index::broadcast_to"))
     BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_h);
 }
 
-TEST_CASE("broadcast_to(case4)" * doctest::test_suite("index::broadcast_to"))
+TEST_CASE("broadcast_to(case4)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_v);
@@ -260,7 +260,7 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("index::broadcast_to"))
     BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_h);
 }
 
-TEST_CASE("broadcast_to(case5)" * doctest::test_suite("index::broadcast_to"))
+TEST_CASE("broadcast_to(case5)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_v);
@@ -276,7 +276,7 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("index::broadcast_to"))
     BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_h);
 }
 
-TEST_CASE("broadcast_to(case6)" * doctest::test_suite("index::broadcast_to"))
+TEST_CASE("broadcast_to(case6)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_v);
@@ -292,7 +292,7 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("index::broadcast_to"))
     BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_h);
 }
 
-TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::broadcast_to"))
+TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_v);
@@ -308,7 +308,7 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::broadcast_to"))
     BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_h);
 }
 
-// TEST_CASE("broadcast_to(fixed_vector)" * doctest::test_suite("index::broadcast_to"))
+// TEST_CASE("broadcast_to(fixed_vector)" * doctest::test_suite("index::shape_broadcast_to"))
 // {
 //     BROADCAST_TO_SUBCASE(case1, a_f, a_f);
 //     BROADCAST_TO_SUBCASE(case2, a_f, a_f);
@@ -319,12 +319,12 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::broadcast_to"))
 //     BROADCAST_TO_SUBCASE(case7, a_f, a_f);
 // }
 
-TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("index::broadcast_to"))
+TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     {
         constexpr int ashape[2] = {3,1};
         constexpr int bshape[4] = {7,3,3,6};
-        constexpr auto broadcasted = nm::index::broadcast_to(ashape,bshape);
+        constexpr auto broadcasted = nm::index::shape_broadcast_to(ashape,bshape);
         constexpr auto success = std::get<0>(broadcasted);
         constexpr auto shape = std::get<1>(broadcasted);
         constexpr auto free  = std::get<2>(broadcasted);

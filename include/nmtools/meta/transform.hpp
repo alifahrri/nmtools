@@ -2281,6 +2281,15 @@ namespace nmtools::meta
     using ct = constant_t<I,Is...>;
 
     /**
+     * @brief Helper inline variable so we dont have to type ct<0>{};
+     * 
+     * @tparam I 
+     * @tparam Is 
+     */
+    template <auto I, auto...Is>
+    constexpr inline auto ct_v = ct<I,Is...>{};
+
+    /**
      * @brief helper alias template to construct integer_sequence
      * 
      * @tparam I 
@@ -2834,6 +2843,8 @@ namespace nmtools::meta
     template <typename T, size_t N>
     using resize_fixed_index_array_t = type_t<resize_fixed_index_array<T,N>>;
 
+    // TODO(wrap std metafunctions): specialize on std::tuple_size_v instead of as default
+    // TODO(wrap stl): do something with std::get
     /**
      * @brief Helper metafunction for convinient tuple-size
      * 
@@ -2843,8 +2854,22 @@ namespace nmtools::meta
     struct len
     {
         static constexpr auto value = [](){
-            if constexpr (has_tuple_size_v<T>)
+            if constexpr (has_tuple_size_v<T>) {
                 return std::tuple_size_v<T>;
+            } else if constexpr (is_fixed_size_ndarray_v<T>) {
+                // similar to python, when len is used on ndarray
+                // return the size of first axis
+                constexpr auto shape = fixed_ndarray_shape_v<T>;
+                using shape_t = remove_cvref_t<decltype(shape)>;
+                if constexpr (has_square_bracket_v<shape_t,size_t>) {
+                    return shape[0];
+                } else if constexpr (has_bracket_v<shape_t,size_t>) {
+                    return shape(0);
+                } else if constexpr (has_template_get_v<shape_t>) {
+                    using std::get;
+                    return get<0>(shape);
+                }
+            }
             else return 0;
         }();
     };
@@ -3114,6 +3139,14 @@ namespace nmtools::meta
     template <typename array_t>
     using remove_cvref_pointer_t = remove_cvref_t<remove_pointer_t<array_t>>;
 
+    // reserved metafunction make_unsigned
+    template <typename T>
+    struct make_unsigned;
+
+    // reserved metafunction make_tuple
+    template <typename...Ts>
+    struct make_tuple;
+
     /**
      * @brief Reserved metafunction to create maybe type
      * 
@@ -3121,16 +3154,6 @@ namespace nmtools::meta
      */
     template <typename T, typename=void>
     struct make_maybe_type;
-
-
-    /**
-     * @brief Reserved metafunction to create nothing type
-     * E.g. std::nullopt, boost::none
-     * 
-     * @tparam ypename 
-     */
-    template <typename=void>
-    struct make_nothing;
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

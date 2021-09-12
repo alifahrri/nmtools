@@ -34,13 +34,13 @@ namespace nmtools::view::detail::fn
      * @return constexpr auto 
      */
     template <typename array_t, typename shape_t>
-    constexpr auto broadcast_to(meta::as_value<array_t>, meta::as_value<shape_t>)
+    constexpr auto shape_broadcast_to(meta::as_value<array_t>, meta::as_value<shape_t>)
     {
         // map type to value
         constexpr auto src_shape = meta::fixed_ndarray_shape_v<array_t>;
         constexpr auto dst_shape = meta::constant_to_value_v<shape_t>;
         // actually call broadcast to
-        constexpr auto result    = index::broadcast_to(src_shape,dst_shape);
+        constexpr auto result    = index::shape_broadcast_to(src_shape,dst_shape);
         // TODO: use optional
         constexpr auto success   = std::get<0>(result);
         if constexpr (success) {
@@ -102,19 +102,21 @@ namespace nmtools::view
         {
             auto indices_ = pack_indices(indices...);
 
+            // while broadcast_to is purely indexing view
+            // (transform one (dst) indices to another (src) indices),
+            // we also need to handle Num type here,
+            // so for now use "operator()" instead of "index" member fn.
+            // TODO: consider to move Num type handling to decorator_t
+
             if constexpr (std::is_arithmetic_v<array_t>)
                 return array;
             else {
-                auto origin_shape   = index::gather(shape_,origin_axes);
-                auto origin_strides = index::compute_strides(origin_shape);
-                auto origin_indices = index::gather(indices_,origin_axes);
-                auto offset = index::compute_offset(origin_indices,origin_strides);
+                auto src_shape = detail::shape(array);
 
+                auto tf_indices = ::nmtools::index::broadcast_to(indices_,src_shape,shape_,origin_axes);
                 if constexpr (std::is_pointer_v<array_type>) {
-                    auto tf_indices = index::compute_indices(offset,::nmtools::shape(*array));
                     return apply_at(*array,tf_indices);
                 } else {
-                    auto tf_indices = index::compute_indices(offset,::nmtools::shape(array));
                     return apply_at(array,tf_indices);
                 }
             }
@@ -145,7 +147,7 @@ namespace nmtools::view
         using origin_axes_type = origin_axes_t;
 
         array_type array;
-        shape_type shape_; // broadcasted shape
+        shape_type shape_; // broadcasted shape (destination)
         origin_axes_type origin_axes; // origin axes axes
 
         constexpr broadcast_to_t(array_type array, shape_type shape, origin_axes_type origin_axes)
@@ -188,7 +190,7 @@ namespace nmtools::view
         else if constexpr (meta::is_fixed_size_ndarray_v<array_t> && meta::is_constant_index_array_v<shape_t>) {
             constexpr auto array_v = meta::as_value_v<array_t>;
             constexpr auto shape_v = meta::as_value_v<shape_t>;
-            constexpr auto result  = detail::fn::broadcast_to(array_v,shape_v);
+            constexpr auto result  = detail::fn::shape_broadcast_to(array_v,shape_v);
             using result_t = decltype(result);
             if constexpr (!meta::is_fail_v<result_t>) {
                 constexpr auto shape_ = std::get<0>(result);
@@ -203,7 +205,7 @@ namespace nmtools::view
         // assume array_t is ndarray
         else {
             auto ashape = ::nmtools::shape(array);
-            auto [success, shape_, free] = index::broadcast_to(ashape,shape);
+            auto [success, shape_, free] = index::shape_broadcast_to(ashape,shape);
             auto not_free    = index::logical_not(free);
             auto origin_axes = index::nonzero(not_free);
             using origin_axes_t = decltype(origin_axes);
@@ -287,7 +289,7 @@ namespace nmtools::meta
                 // it should be known already if src and dst is broadcastable
                 // hence it is actually redundant to check here
                 // TODO: skip checking)
-                constexpr auto result = index::broadcast_to(src_shape,dst_shape);
+                constexpr auto result = index::shape_broadcast_to(src_shape,dst_shape);
                 constexpr auto success = std::get<0>(result);
                 if constexpr (success)
                     return dst_shape;

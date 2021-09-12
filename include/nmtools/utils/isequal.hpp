@@ -88,6 +88,40 @@ namespace nmtools::utils
             }
         } // select_same
 
+        template <typename t1>
+        constexpr auto constrained(meta::as_value<t1> T1)
+        {
+            using t1_t = meta::get_element_type_t<t1>;
+
+            // allow none, integer, or ndarray
+            // for ndarray, the element type must be integral
+            auto is_none = is_none_v<t1>;
+            auto is_integer         = (meta::is_integer_v<t1> || meta::is_integral_constant_v<t1>);
+            auto is_num_or_array    = (meta::is_num_v<t1>) || (meta::is_ndarray_v<t1>);
+            auto is_index_constant  =  meta::is_index_array_v<t1>;
+            auto element_is_integer =  meta::is_integer_v<t1_t>;
+            return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none;
+        } // constrained(T1,T2)
+
+        // check if T1 and T2 is both scalar or both ndarray
+        template <typename t1, typename t2>
+        constexpr auto constrained(meta::as_value<t1> T1, meta::as_value<t2> T2)
+        {
+            using t1_t = meta::get_element_type_t<t1>;
+            using t2_t = meta::get_element_type_t<t2>;
+
+            // allow none, integer, or ndarray
+            // for ndarray, the element type must be integral
+            auto is_none = is_none_v<t1> && is_none_v<t1>;
+            auto is_integer = (meta::is_integer_v<t1> || meta::is_integral_constant_v<t1>)
+                && (meta::is_integer_v<t2> || meta::is_integral_constant_v<t2>);
+            auto is_num_or_array =  (meta::is_num_v<t1> && meta::is_num_v<t2>)
+                || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>);
+            auto is_index_constant = meta::is_index_array_v<t1> && meta::is_index_array_v<t2>;
+            auto element_is_integer = meta::is_integer_v<t1_t> && meta::is_integer_v<t2_t>;
+            return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none;
+        } // constrained(T1,T2)
+
         /**
          * @brief check if all elements of t is is equals to corresponding elements of u, element-wise.
          * 
@@ -108,28 +142,8 @@ namespace nmtools::utils
             constexpr auto t1 = meta::as_value<T>{};
             constexpr auto t2 = meta::as_value<U>{};
 
-            // check if T1 and T2 is both scalar or both ndarray
-            constexpr auto constrained = [](auto T1, auto T2){
-                // expect T1 and T2 is as_value
-                using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
-                using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
-                using t1_t = meta::get_element_type_t<t1>;
-                using t2_t = meta::get_element_type_t<t2>;
-
-                // allow none, integer, or ndarray
-                // for ndarray, the element type must be integral
-                auto is_none = is_none_v<t1> && is_none_v<t1>;
-                auto is_integer = (meta::is_integer_v<t1> || meta::is_integral_constant_v<t1>)
-                    && (meta::is_integer_v<t2> || meta::is_integral_constant_v<t2>);
-                auto is_num_or_array =  (meta::is_num_v<t1> && meta::is_num_v<t2>)
-                    || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>);
-                auto is_index_constant = meta::is_index_array_v<t1> && meta::is_index_array_v<t2>;
-                auto element_is_integer = meta::is_integer_v<t1_t> && meta::is_integer_v<t2_t>;
-                return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none;
-            };
-
             // given either type, check if the type is constrained
-            constexpr auto constrained_either = [constrained](auto T1, auto T2){
+            constexpr auto constrained_either = [](auto T1, auto T2){
                 using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
                 using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
                 auto t1_lhs = meta::as_value<meta::get_either_left_t<t1>>{};
@@ -146,13 +160,18 @@ namespace nmtools::utils
             };
 
             // given maybe type, check if the type is constrained
-            constexpr auto constrained_maybe = [constrained](auto T1, auto T2){
+            constexpr auto constrained_maybe = [](auto T1, auto T2){
                 using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
                 using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
                 auto v1  = meta::as_value<meta::get_maybe_type_t<t1>>{};
                 auto v2  = meta::as_value<meta::get_maybe_type_t<t2>>{};
                 if constexpr (meta::is_maybe_v<t1> && meta::is_maybe_v<t2>)
                     return constrained(v1,v2);
+                // may be type is 
+                else if constexpr (meta::is_maybe_v<t1> && meta::is_nothing_v<t2>)
+                    return constrained(v1);
+                else if constexpr (meta::is_nothing_v<t1> && meta::is_maybe_v<t2>)
+                    return constrained(v2);
                 else if constexpr (meta::is_maybe_v<t1>)
                     return constrained(v1,T2);
                 else if constexpr (meta::is_maybe_v<t2>)
@@ -183,6 +202,13 @@ namespace nmtools::utils
                 if (hast && hasu && same)
                     same = same && isequal(*t,*u);
                 return same;
+            }
+            // comparison of maybe type with nothing type is allowed
+            else if constexpr (meta::is_maybe_v<T> && meta::is_nothing_v<U>) {
+                return !static_cast<bool>(t);
+            }
+            else if constexpr (meta::is_nothing_v<T> && meta::is_maybe_v<U>) {
+                return !static_cast<bool>(u);
             }
             // only lhs is maybe
             // return true if t is not empty and the value is equal to u
@@ -248,7 +274,7 @@ namespace nmtools::utils
                 return same;
             }
             // assume both T and U is integer
-            else if constexpr (meta::is_integer_v<T>) {
+            else if constexpr (meta::is_num_v<T>) {
                 // TODO(wrap std metafunctions): consider to use meta::promote_types_t with index_t as tag
                 using value_type = std::common_type_t<T,U>;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
