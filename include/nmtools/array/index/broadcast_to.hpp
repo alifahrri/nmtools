@@ -4,6 +4,11 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
+#include "nmtools/array/index/gather.hpp"
+#include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/array/index/compute_offset.hpp"
+#include "nmtools/array/index/logical_not.hpp"
+#include "nmtools/array/index/nonzero.hpp"
 
 namespace nmtools::index
 {
@@ -11,7 +16,7 @@ namespace nmtools::index
      * @brief specific tag to resolve op type
      * 
      */
-    struct broadcast_to_t {};
+    struct shape_broadcast_to_t {};
 
     /**
      * @brief check if ashape can be broadcasted to bshape.
@@ -25,9 +30,9 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename ashape_t, typename bshape_t>
-    constexpr auto broadcast_to(const ashape_t& ashape, const bshape_t& bshape)
+    constexpr auto shape_broadcast_to(const ashape_t& ashape, const bshape_t& bshape)
     {
-        using return_t = meta::resolve_optype_t<broadcast_to_t,ashape_t,bshape_t>;
+        using return_t = meta::resolve_optype_t<shape_broadcast_to_t,ashape_t,bshape_t>;
         using free_axes_t = meta::replace_element_type_t<return_t,bool>;
 
         auto res = return_t{};
@@ -39,17 +44,17 @@ namespace nmtools::index
         auto free_axes = free_axes_t{};
         bool success = bdim >= adim;
 
-        // for broadcast_to, the dimension will follow input shape (bshape)
+        // for shape_broadcast_to, the dimension will follow input shape (bshape)
         // in numpy, the following will raises error
-        // np.broadcast_to(np.array([[1],[2],[3]]), (3,))
+        // np.shape_broadcast_to(np.array([[1],[2],[3]]), (3,))
         // ValueError: input operand has more dimensions than allowed by the axis remapping
-        // TODO: error handling for unsupported broadcast_to dimension
+        // TODO: error handling for unsupported shape_broadcast_to dimension
         if constexpr (meta::is_resizeable_v<return_t>) {
             res.resize(bdim);
             free_axes.resize(bdim);
         }
         
-        auto broadcast_to_impl = [&](auto i){
+        auto shape_broadcast_to_impl = [&](auto i){
             using idx_t = std::make_signed_t<decltype(adim-i-1)>;
             idx_t ai = adim - i - 1;
             idx_t bi = bdim - i - 1;
@@ -81,12 +86,12 @@ namespace nmtools::index
                 else
                     success = false;
             }
-        }; // broadcast_to_impl
+        }; // shape_broadcast_to_impl
 
-        for (int i=0; i<size(res); i++) {
+        for (int i=0; i<len(res); i++) {
             if (!success)
                 break;
-            broadcast_to_impl(i);
+            shape_broadcast_to_impl(i);
         }
 
         // - res will have dimension same with bshape, which is the target shape,
@@ -95,10 +100,10 @@ namespace nmtools::index
         // - free_axes is useful to perform the reverse operation.
         // TODO: use optional instead
         return std::tuple{success, res, free_axes};
-    } // broadcast_to
+    } // shape_broadcast_to
 
     /**
-     * @brief Specialization for broadcast_to function.
+     * @brief Specialization for shape_broadcast_to function.
      * 
      * Shape of Num type is represented as None,
      * broadcasting num to None should always be successfull.
@@ -109,24 +114,64 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template<>
-    constexpr auto broadcast_to<none_t,none_t>(const none_t& ashape, const none_t& bshape)
+    constexpr auto shape_broadcast_to<none_t,none_t>(const none_t& ashape, const none_t& bshape)
     {
         // TODO: use optional instead
         return std::tuple{true,None,None};
+    } // shape_broadcast_to
+
+    template <typename indices_t, typename src_shape_t, typename dst_shape_t, typename origin_axes_t>
+    constexpr auto broadcast_to(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape, const origin_axes_t& origin_axes)
+    {
+        // compute the offste while ignoring "broadcasted axes"
+        // which is either 1 or empty according to the broadcasting rules
+        // then transform back the offset to with respect to orignal shape (src_shape).
+
+        // NOTE: the following are suspect to be hotspot
+        // since broadcasting is almost used everywhere
+        // TODO: measure and inspect if this can be optimized
+
+        auto origin_shape   = gather(dst_shape,origin_axes);
+        auto origin_strides = compute_strides(origin_shape);
+        auto origin_indices = gather(indices,origin_axes);
+
+        auto offset = compute_offset(origin_indices,origin_strides);
+        return compute_indices(offset,src_shape);
+    } // broadcast_to
+
+    /**
+     * @brief Overloaded version of broadcast_to that takes no origin_axes.
+     * 
+     * @tparam indices_t 
+     * @tparam src_shape_t 
+     * @tparam dst_shape_t 
+     * @param indices 
+     * @param src_shape 
+     * @param dst_shape 
+     * @return constexpr auto 
+     */
+    template <typename indices_t, typename src_shape_t, typename dst_shape_t>
+    constexpr auto broadcast_to(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape)
+    {
+        auto [success, shape_, free] = shape_broadcast_to(src_shape,dst_shape);
+        auto not_free    = logical_not(free);
+        auto origin_axes = nonzero(not_free);
+
+        return broadcast_to(indices,src_shape,dst_shape,origin_axes);
     } // broadcast_to
 } // namespace nmtools::index
 
 namespace nmtools::meta
 {
     /**
-     * @brief resolve return type of index::broadcast_to
+     * @brief resolve return type of index::shape_shape_broadcast_to
      * 
      * @tparam ashape_t 
      * @tparam bshape_t 
      */
     template <typename ashape_t, typename bshape_t>
     struct resolve_optype <
-        void, index::broadcast_to_t, ashape_t, bshape_t
+        void, index::shape_broadcast_to_t, ashape_t, bshape_t
     >
     {
         static constexpr auto vtype = [](){
@@ -177,7 +222,8 @@ namespace nmtools::meta
             }
             else return as_value_v<type>;
         }();
-        // for broadcast_to, the resulting shape will follow bshape
+        // unline broadcast_shape,
+        // for shape_broadcast_to, the resulting shape will follow bshape
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
 } // namespace nmtools::meta
