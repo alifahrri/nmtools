@@ -1,0 +1,32 @@
+#ifndef NMTOOLS_ARRAY_ARRAY_ACTIVATION_LEAKY_RELU_HPP
+#define NMTOOLS_ARRAY_ARRAY_ACTIVATION_LEAKY_RELU_HPP
+
+#include "nmtools/array/view/activations/leaky_relu.hpp"
+#include "nmtools/array/eval.hpp"
+
+namespace nmtools::array
+{
+    /**
+     * @brief Eagerly compute element-wise leaky relu
+     * 
+     * @tparam output_t 
+     * @tparam context_t 
+     * @tparam array_t 
+     * @tparam negative_slope_t 
+     * @param array             input array
+     * @param negative_slope    controls the angle of the negative slope
+     * @param context           evaluation context
+     * @param output 
+     * @return constexpr auto 
+     */
+    template <typename output_t=none_t, typename context_t=none_t,
+        typename array_t, typename negative_slope_t=float>
+    constexpr auto leaky_relu(const array_t& array, negative_slope_t negative_slope=negative_slope_t{0.01},
+        context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto a = view::leaky_relu(array,negative_slope);
+        return eval(a,context,output);
+    } // leaky_relu
+} // namespace nmtools::array
+
+#endif // NMTOOLS_ARRAY_ARRAY_ACTIVATION_LEAKY_RELU_HPP
