@@ -43,21 +43,25 @@ option(TEST_NDARRAY         "test ndarray modules"          OFF)
 option(TEST_ARRAY_VIEW      "test array view modules"       OFF)
 option(TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
 option(TEST_ARRAY_EVAL      "test array evaluation"         OFF)
+option(TEST_ARRAY_VIEW_NN   "test array nn view modules"    OFF)
+option(TEST_ARRAY_VIEW_EVAL "test array nn eval modules"    OFF)
 option(TEST_EXCEPTION       "test exception error handling" OFF)
 option(TEST_OPTIONAL        "test optional error handling"  OFF)
 option(TEST_MISC            "test other modules"            OFF)
 
 if (TEST_ALL)
-    SET(TEST_ARRAY_INDEX    ON CACHE BOOL "test array index modules"      FORCE)
-    SET(TEST_ARRAY_UTILITY  ON CACHE BOOL "test array utility modules"    FORCE)
-    SET(TEST_UTILS          ON CACHE BOOL "test utils modules"            FORCE)
-    SET(TEST_NDARRAY        ON CACHE BOOL "test ndarray modules"          FORCE)
-    SET(TEST_ARRAY_VIEW     ON CACHE BOOL "test array view modules"       FORCE)
-    SET(TEST_ARRAY_UFUNCS   ON CACHE BOOL "test array ufuncs modules"     FORCE)
-    SET(TEST_ARRAY_EVAL     ON CACHE BOOL "test array evaluation"         FORCE)
-    SET(TEST_EXCEPTION      ON CACHE BOOL "test exception error handling" FORCE)
-    SET(TEST_OPTIONAL       ON CACHE BOOL "test optional error handling"  FORCE)
-    SET(TEST_MISC           ON CACHE BOOL "test other modules"            FORCE)
+    SET(TEST_ARRAY_INDEX     ON CACHE BOOL "test array index modules"      FORCE)
+    SET(TEST_ARRAY_UTILITY   ON CACHE BOOL "test array utility modules"    FORCE)
+    SET(TEST_UTILS           ON CACHE BOOL "test utils modules"            FORCE)
+    SET(TEST_NDARRAY         ON CACHE BOOL "test ndarray modules"          FORCE)
+    SET(TEST_ARRAY_VIEW      ON CACHE BOOL "test array view modules"       FORCE)
+    SET(TEST_ARRAY_UFUNCS    ON CACHE BOOL "test array ufuncs modules"     FORCE)
+    SET(TEST_ARRAY_EVAL      ON CACHE BOOL "test array evaluation"         FORCE)
+    SET(TEST_ARRAY_VIEW_NN   ON CACHE BOOL "test array nn view modules"    FORCE)
+    SET(TEST_ARRAY_VIEW_EVAL ON CACHE BOOL "test array nn eval modules"    FORCE)
+    SET(TEST_EXCEPTION       ON CACHE BOOL "test exception error handling" FORCE)
+    SET(TEST_OPTIONAL        ON CACHE BOOL "test optional error handling"  FORCE)
+    SET(TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
 endif (TEST_ALL)
 
 set(ARRAY_INDEX_TEST_SOURCES
@@ -351,6 +355,54 @@ if (NOT TEST_ARRAY_EVAL)
     set (ARRAY_EVAL_TEST_SOURCES "")
 endif ()
 
+set(VIEW_NN_TEST_SOURCES
+    src/doctest/array/view/activations/celu.cpp
+    src/doctest/array/view/activations/elu.cpp
+    src/doctest/array/view/activations/hardshrink.cpp
+    src/doctest/array/view/activations/hardswish.cpp
+    src/doctest/array/view/activations/hardtanh.cpp
+    src/doctest/array/view/activations/leaky_relu.cpp
+    src/doctest/array/view/activations/log_sigmoid.cpp
+    src/doctest/array/view/activations/mish.cpp
+    src/doctest/array/view/activations/prelu.cpp
+    src/doctest/array/view/activations/relu.cpp
+    src/doctest/array/view/activations/relu6.cpp
+    src/doctest/array/view/activations/selu.cpp
+    src/doctest/array/view/activations/silu.cpp
+    src/doctest/array/view/activations/sigmoid.cpp
+    src/doctest/array/view/activations/softplus.cpp
+    src/doctest/array/view/activations/softshrink.cpp
+    src/doctest/array/view/activations/softsign.cpp
+    src/doctest/array/view/activations/tanhshrink.cpp
+)
+if (NOT TEST_ARRAY_VIEW_NN)
+    set (VIEW_NN_TEST_SOURCES "")
+endif ()
+
+set(EVAL_NN_TEST_SOURCES
+    src/doctest/array/array/activations/celu.cpp
+    src/doctest/array/array/activations/elu.cpp
+    src/doctest/array/array/activations/hardshrink.cpp
+    src/doctest/array/array/activations/hardswish.cpp
+    src/doctest/array/array/activations/hardtanh.cpp
+    src/doctest/array/array/activations/leaky_relu.cpp
+    src/doctest/array/array/activations/log_sigmoid.cpp
+    src/doctest/array/array/activations/mish.cpp
+    src/doctest/array/array/activations/prelu.cpp
+    src/doctest/array/array/activations/relu.cpp
+    src/doctest/array/array/activations/relu6.cpp
+    src/doctest/array/array/activations/selu.cpp
+    src/doctest/array/array/activations/sigmoid.cpp
+    src/doctest/array/array/activations/silu.cpp
+    src/doctest/array/array/activations/softplus.cpp
+    src/doctest/array/array/activations/softsign.cpp
+    src/doctest/array/array/activations/softshrink.cpp
+    src/doctest/array/array/activations/tanhshrink.cpp
+)
+if (NOT TEST_ARRAY_VIEW_EVAL)
+    set (EVAL_NN_TEST_SOURCES "")
+endif ()
+
 set(MISC_TEST_SOURCES
     src/doctest/misc/constants.cpp
 )
@@ -373,6 +425,10 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ${ARRAY_UFUNCS_TEST_SOURCES}
     ## array evaluation
     ${ARRAY_EVAL_TEST_SOURCES}
+    ## array view nn
+    ${VIEW_NN_TEST_SOURCES}
+    ## array eval nn
+    ${EVAL_NN_TEST_SOURCES}
     ## misc
     ${MISC_TEST_SOURCES}
 )
