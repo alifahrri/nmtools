@@ -505,10 +505,11 @@ namespace nmtools::array
             static_assert( isequal(fixed_ndarray_shape_v<ndarray_t>, this_shape)
                 , "unsupported shape for for fixed_ndarray assignment"
             );
-        else
-            assert( isequal(shape(rhs),this_shape)
-                // , "unsupported shape for for fixed_ndarray assignment"
+        else {
+            nmtools_assert_throw( isequal(::nmtools::shape(rhs),this_shape)
+                , "unsupported shape for for fixed_ndarray assignment"
             );
+        }
 
         auto flat_rhs  = view::flatten(std::forward<ndarray_t>(rhs));
         auto flat_data = view::mutable_flatten(this->data);
