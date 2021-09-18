@@ -109,7 +109,7 @@ using nm::benchmarks::TrackedBench;
 #else
 // run normally without benchmarking, ignore case_name
 #define RUN_index_pad(case_name, ...) \
-RUN_pad_impl(__VA_ARGS__);
+RUN_index_pad_impl(__VA_ARGS__);
 #endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define INDEX_PAD_SUBCASE(case_name, ...) \
