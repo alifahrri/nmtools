@@ -146,6 +146,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
     src/doctest/array/view/ones.cpp
+    src/doctest/array/view/pad.cpp
     src/doctest/array/view/ref.cpp
     src/doctest/array/view/ref/initializer_list.cpp
     src/doctest/array/view/repeat.cpp
@@ -274,6 +275,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/matmul.cpp
     src/doctest/array/array/mean.cpp
     src/doctest/array/array/ones.cpp
+    src/doctest/array/array/pad.cpp
     src/doctest/array/array/prod.cpp
     src/doctest/array/array/repeat.cpp
     src/doctest/array/array/reshape.cpp
@@ -480,6 +482,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/view/flatten.cpp
     src/doctest/meta/array/view/matmul.cpp
     src/doctest/meta/array/view/mean.cpp
+    src/doctest/meta/array/view/pad.cpp
     src/doctest/meta/array/view/reduce.cpp
     src/doctest/meta/array/view/repeat.cpp
     src/doctest/meta/array/view/reshape.cpp
