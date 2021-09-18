@@ -2316,6 +2316,28 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto constant_to_value_v = constant_to_value<T>::value;
 
+    namespace error
+    {
+        struct TO_VALUE_UNSUPPORTED : detail::fail_t {};
+    }
+
+    /**
+     * @brief Convert constant index to value
+     * 
+     * If T is tuple, it is expected to transform to array
+     * for easy handling as value.
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct to_value
+    {
+        static inline constexpr auto value = error::TO_VALUE_UNSUPPORTED {};
+    }; // to_value
+
+    template <typename T>
+    constexpr inline auto to_value_v = to_value<T>::value;
+
     /**
      * @brief specialization of integral_constant for constant_to_value
      * 
@@ -3142,6 +3164,10 @@ namespace nmtools::meta
     // reserved metafunction make_unsigned
     template <typename T>
     struct make_unsigned;
+
+    // reserved metafunction make_signed
+    template <typename T>
+    struct make_signed;
 
     // reserved metafunction make_tuple
     template <typename...Ts>

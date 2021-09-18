@@ -42,6 +42,21 @@ namespace nmtools::meta
     using make_unsigned_t = type_t<make_unsigned<T>>;
 #endif // NMTOOLS_META_MAKE_UNSIGNED
 
+#ifndef NMTOOLS_META_MAKE_SIGNED
+#define NMTOOLS_META_MAKE_SIGNED
+
+    /**
+     * @brief define make_signed to use std::make_signed
+     * 
+     * @tparam T type to be transformed
+     */
+    template<typename T>
+    struct make_signed : ::std::make_signed<T> {};
+
+    template <typename T>
+    using make_signed_t = type_t<make_signed<T>>;
+#endif // NMTOOLS_META_MAKE_SIGNED
+
 
 #ifndef NMTOOLS_META_MAKE_TUPLE
 #define NMTOOLS_META_MAKE_TUPLE
@@ -62,6 +77,19 @@ namespace nmtools::meta
 #endif // NMTOOLS_META_MAKE_TUPLE
 
     // TODO: add make_tuple, make_either...
+
+    /**
+     * @brief Specialization fo to_value for std types (tuple of int constant)
+     * 
+     * @tparam Is 
+     */
+    template <auto...Is>
+    struct to_value<
+        std::tuple<std::integral_constant<decltype(Is),Is>...>
+    >
+    {
+        static inline constexpr auto value = std::array{Is...};
+    }; // to_value
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRANSFORM_HPP
