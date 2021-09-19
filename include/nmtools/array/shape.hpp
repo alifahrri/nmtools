@@ -38,75 +38,6 @@ namespace nmtools
 
     using std::get;
 
-    // TODO: remove
-    /**
-     * @brief generic function to get size of dynamic-matrix, assuming nested vector.
-     * May be specialized for custom dynamic-matrix type.
-     * 
-     * @tparam Matrix matrix-like
-     * @param M matrix to check
-     * @return std::enable_if_t<meta::is_nested_array2d_v<Matrix> || meta::is_fixed_size_matrix_v<Matrix>,std::pair<size_t,size_t>> 
-     * @todo remove, prefer shape
-     */
-    template <typename Matrix>
-    constexpr auto matrix_size(const Matrix& M) 
-        -> std::enable_if_t<
-            meta::is_nested_array2d_v<Matrix>
-            || meta::is_fixed_size_matrix_v<Matrix>
-            || meta::has_shape_v<Matrix>
-            , std::pair<size_t,size_t> >
-    {
-        static_assert(
-            meta::is_array2d_v<Matrix>
-            /* TODO: meaningful error message */
-        );
-        /* TODO: check all size for each rows. 
-        Nested vector container may have different size at axis 0 */
-        if constexpr (meta::is_fixed_size_matrix_v<Matrix>)
-        {
-            auto [rows, cols] = meta::fixed_matrix_size_v<Matrix>;
-            return {rows, cols};
-        }
-        else if constexpr (meta::has_shape_v<Matrix>)
-        {
-            auto [rows, cols] = M.shape();
-            return {rows, cols};
-        }
-        else return std::pair{size(M), size(at(M,0))};
-    } // std::pair<size_t,size_t> matrix_size(const Matrix& M)
-
-    // TODO: remove
-    /**
-     * @brief generic function to get size of dynamic-vector (as in math vector, not container).
-     * May be specialized for custom dynamic-matrix type.
-     * 
-     * @tparam Vector vector-like
-     * @param v vector to check
-     * @return size_t 
-     * @todo remove, prefer shape
-     */
-    template <typename vector_t>
-    constexpr auto vector_size(const vector_t& v)
-        -> std::enable_if_t<
-            std::is_same_v<std::void_t<decltype(size(v))>,void>
-            && !meta::is_fixed_size_vector_v<vector_t>, size_t >
-    {
-        static_assert(
-            meta::is_array1d_v<vector_t>
-            /* TODO: meaningful error message */
-        );
-
-        return size(v);
-    } // size_t vector_size(const Vector& v)
-
-    // TODO: remove
-    template <typename vector_t>
-    constexpr auto vector_size(const vector_t& v)
-        -> std::enable_if_t< meta::is_fixed_size_vector_v<vector_t>, size_t>
-    {
-        return meta::fixed_vector_size_v<vector_t>;
-    } // vector_size
-
     namespace detail
     {
         // TODO: remove
@@ -164,6 +95,27 @@ namespace nmtools
         } // repeat
 
     } // namespace detail
+
+    template <typename array_t>
+    constexpr auto len(const array_t& array);
+
+    template <typename T>
+    constexpr auto len(const std::vector<T>& array)
+    {
+        return array.size();
+    } // len
+
+    template <typename T, size_t N>
+    constexpr auto len(const std::array<T,N>& array)
+    {
+        return N;
+    } // len
+
+    template <typename T, size_t N>
+    constexpr auto len(const T(&array)[N])
+    {
+        return N;
+    } // len
 
     /**
      * @brief return the shape of an array
@@ -244,14 +196,14 @@ namespace nmtools
                 // indices = array<size_t,2>{0,0};
                 // s: size_t
                 if constexpr (i==0) {
-                    auto s = vector_size(array);
+                    auto s = len(array);
                     std::get<i>(shape_) = s;
                 }
                 else {
                     auto indices = detail::repeat<i>(0ul);
                     auto a = apply_at(array, indices);
                     // assuming nested array has size(a), which it should
-                    auto s = vector_size(a);
+                    auto s = len(a);
                     std::get<i>(shape_) = s;
                 }
             });
@@ -315,7 +267,7 @@ namespace nmtools
     /**
      * @brief return the number of dimension of an array
      *
-     * This fn should work with an array that is fixed-dim, matrix, vector, or the array has .dim().
+     * This fn should work with an array that is fixed-dim or the array has .dim().
      * 
      * @tparam array_t array type
      * @param array 
@@ -333,20 +285,6 @@ namespace nmtools
             // @note not possible at this point, need to refactor indices & strides computation to support compile-time constant
             // return meta::index_constant<meta::fixed_ndarray_dim_v<array_t>>{};
             return meta::fixed_dim_v<array_t>;
-        }
-        // TODO: remove
-        else if constexpr (meta::is_array2d_v<array_t>) {
-            // @todo whenever the dim is constant return it as compile-time constant
-            // @note not possible at this point, need to refactor indices & strides computation to support compile-time constant
-            // return meta::index_constant<2>{};
-            return 2;
-        }
-        // TODO: remove
-        else if constexpr (meta::is_array1d_v<array_t>) {
-            // @todo whenever the dim is constant return it as compile-time constant
-            // @note not possible at this point, need to refactor indices & strides computation to support compile-time constant
-            // return meta::index_constant<1>{};
-            return 1;
         }
         else return len(shape(array));
     } // dim

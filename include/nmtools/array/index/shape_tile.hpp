@@ -116,25 +116,6 @@ namespace nmtools::meta
             }
         }();
         using type = type_t<decltype(value)>;
-
-        // TODO: remove
-        template <typename T>
-        struct is_resizeable_not_hybrid
-            : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
-
-        using type_list = std::tuple<shape_t,reps_t>;
-        static constexpr auto selection_kind = [](){
-            if constexpr (apply_logical_or_v<is_resizeable_not_hybrid,type_list>)
-                return select_resizeable_kind_t {};
-            else if constexpr (apply_logical_or_v<is_hybrid_ndarray,type_list>)
-                return select_hybrid_kind_t {};
-            else return select_fixed_kind_t {};
-        }();
-        using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
-        // shape type must be integral
-        using selection_t = select_array1d_t<
-            size_policy_max_t, selection_kind_t, std::is_integral
-        >;
     }; // resolve_optype
 } // namespace nmtools::meta
 

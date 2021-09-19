@@ -90,22 +90,6 @@ namespace nmtools::meta
     using view::decorator_t;
     using view::squeeze_t;
 
-    // TODO: remove
-    template <typename array_t>
-    struct fixed_vector_size<  squeeze_t<array_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    }; // fixed_vector_size
-
-    // TODO: remove
-    template <typename array_t>
-    struct fixed_matrix_size<  squeeze_t<array_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    }; // fixed_matrix_size
-
     /**
      * @brief Infer squeeze view shape at compile time.
      * 

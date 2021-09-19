@@ -33,9 +33,9 @@ namespace nmtools::index
         auto ret = return_t {};
 
         // len(indices) == max(len(shape),len(reps))
-        auto m = tuple_size(shape);
-        auto n = tuple_size(indices);
-        auto r = tuple_size(reps);
+        auto m = len(shape);
+        auto n = len(indices);
+        auto r = len(reps);
         // clang (android & emscripten) complains about ambiguous call
         auto d = std::abs(int(m - n));
         auto s = std::max(m,n);
@@ -62,6 +62,10 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error {
+        struct INDEX_TILE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+
     /**
      * @brief resolve return type for index::tile op
      * 
@@ -74,6 +78,20 @@ namespace nmtools::meta
         void, index::tile_t, shape_t, reps_t, indices_t
     >
     {
+        static constexpr auto vtype = [](){
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                return as_value_v<error::INDEX_TILE_UNSUPPORTED>;
+            } else if constexpr (is_fixed_index_array_v<shape_t>) {
+                return as_value_v<transform_bounded_array_t<shape_t>>;
+            } else if constexpr (is_index_array_v<shape_t>) {
+                return as_value_v<shape_t>;
+            } else {
+                return as_value_v<error::INDEX_TILE_UNSUPPORTED>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+
+        // TODO: remove
         template <typename T>
         struct is_resizeable_not_hybrid
             : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
@@ -88,14 +106,6 @@ namespace nmtools::meta
             else return select_fixed_kind_t {};
         }();
         using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
-        // shape type must be integral
-        using selection_t = select_array1d_t<
-            size_policy_lhs_t, selection_kind_t, std::is_integral
-        >;
-        // final type
-        using type = resolve_optype_t<
-            selection_t, shape_type, indices_t
-        >;
     }; // resolve_optype
 } // namespace nmtools::meta
 

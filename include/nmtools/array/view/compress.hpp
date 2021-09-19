@@ -90,24 +90,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename condition_t, typename array_t, typename axis_t>
-    struct fixed_matrix_size< view::compress_t<condition_t,array_t,axis_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename condition_t, typename array_t, typename axis_t>
-    struct fixed_vector_size< view::compress_t<condition_t,array_t,axis_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
     /**
      * @brief Infer the shape of compress view at compile-time.
      * 

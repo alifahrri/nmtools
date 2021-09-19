@@ -100,29 +100,6 @@ namespace nmtools::meta
 
 namespace nmtools
 {
-    // TODO: remove
-    template <typename array_t>
-    struct meta::fixed_vector_size< view::flatten_t<array_t>
-        , std::enable_if_t<
-            meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>>
-        >
-    > {
-        static constexpr auto _get()
-        {
-            constexpr auto shape_ = meta::fixed_ndarray_shape_v<meta::remove_cvref_t<array_t>>;
-            constexpr auto shape  = ::nmtools::detail::make_array<std::array>(shape_);
-            // compute product
-            auto identity = 1;
-            for (size_t i=0; i<shape.size(); i++)
-                identity *= shape[i];
-            // flattened array is strictly 1D
-            return identity;
-        } // get
-
-        static constexpr auto value = _get();
-        using value_type = decltype(_get());
-    };
-
     /**
      * @brief Infer the shape of flatten view at compile time.
      * 

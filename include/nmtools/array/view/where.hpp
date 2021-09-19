@@ -100,24 +100,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
-    template <typename condition_t, typename x_t, typename y_t>
-    struct fixed_matrix_size< view::where_t<condition_t,x_t,y_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
-    template <typename condition_t, typename x_t, typename y_t>
-    struct fixed_vector_size< view::where_t<condition_t,x_t,y_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
     template <typename condition_t, typename x_t, typename y_t>
     struct get_element_type< view::decorator_t<view::where_t, condition_t, x_t, y_t> >
     {

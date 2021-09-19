@@ -103,24 +103,6 @@ namespace nmtools::meta
     // NOTE: dont support fixed size for now
     // TODO: fix for fixed size
     template <typename array_t, typename...slices_t>
-    struct fixed_matrix_size< view::slice_t<array_t,slices_t...> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
-    template <typename array_t, typename...slices_t>
-    struct fixed_vector_size< view::slice_t<array_t,slices_t...> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
-    template <typename array_t, typename...slices_t>
     struct fixed_ndarray_shape< view::slice_t<array_t,slices_t...> >
     {
         static inline constexpr auto value = detail::fail_t{};

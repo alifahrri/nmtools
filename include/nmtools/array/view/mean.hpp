@@ -49,6 +49,47 @@ namespace nmtools::meta
     }; // promote_types
 } // nmtools::meta
 
+namespace nmtools::view::detail
+{
+    /**
+     * @brief Compute the divisor for mean view.
+     * 
+     * Can also used for compute divisor for var view.
+     * 
+     * @tparam shape_t 
+     * @tparam axis_t 
+     * @param shape     original array shape
+     * @param axis      desired axis
+     * @return constexpr auto 
+     */
+    template <typename shape_t, typename axis_t>
+    constexpr auto mean_divisor(const shape_t& shape, const axis_t& axis)
+    {
+        if constexpr (is_none_v<axis_t>) {
+            return index::product(shape);
+        } else if constexpr (meta::is_index_array_v<axis_t>) {
+            using index_t = meta::get_element_or_common_type_t<axis_t>;
+            auto divisor = index_t{1};
+            // TODO: decide what todo when shape is tuple
+            if constexpr (meta::is_tuple_v<axis_t>) {
+                constexpr auto N = meta::len_v<axis_t>;
+                meta::template_for<N>([&](auto index){
+                    auto idx = at(axis,index);
+                    divisor *= static_cast<index_t>(at(shape,idx));
+                });
+            } else {
+                for (size_t i=0; i<len(axis); i++) {
+                    auto idx = at(axis,i);
+                    divisor *= at(shape,idx);
+                }
+            }
+            return divisor;
+        } else /* if constexpr (meta::is_num_v<axis_t>) */ {
+            return at(shape,axis);
+        }
+    } // mean_divisor
+}
+
 namespace nmtools::view
 {
     /**
@@ -70,31 +111,8 @@ namespace nmtools::view
         // note that this mean view is created not by create new view type,
         // but by composing two view (add.reduce + divide) instead
 
-        auto divisor = [&](){
-            auto shape = ::nmtools::shape(array);
-            if constexpr (is_none_v<axis_t>) {
-                return index::product(shape);
-            } else if constexpr (meta::is_index_array_v<axis_t>) {
-                using index_t = meta::get_element_or_common_type_t<axis_t>;
-                auto divisor = index_t{1};
-                // TODO: decide what todo when shape is tuple
-                if constexpr (meta::is_tuple_v<axis_t>) {
-                    constexpr auto N = meta::len_v<axis_t>;
-                    meta::template_for<N>([&](auto index){
-                        auto idx = at(axis,index);
-                        divisor *= static_cast<index_t>(at(shape,idx));
-                    });
-                } else {
-                    for (size_t i=0; i<len(axis); i++) {
-                        auto idx = at(axis,i);
-                        divisor *= at(shape,idx);
-                    }
-                }
-                return divisor;
-            } else /* if constexpr (meta::is_num_v<axis_t>) */ {
-                return at(shape,axis);
-            }
-        }();
+        auto shape = ::nmtools::shape(array);
+        auto divisor = detail::mean_divisor(shape,axis);
         using divisor_t = decltype(divisor);
         using element_t = meta::get_element_type_t<array_t>;
         auto dtype_  = [&](){

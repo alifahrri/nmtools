@@ -96,24 +96,6 @@ namespace nmtools::meta
     using view::decorator_t;
     using view::expand_dims_t;
 
-    // TODO: remove
-    template <typename array_t, typename axis_t>
-    struct fixed_vector_size< expand_dims_t<array_t,axis_t>
-    >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    }; // fixed_vector_size
-
-    // TODO: remove
-    template <typename array_t, typename axis_t>
-    struct fixed_matrix_size< expand_dims_t<array_t,axis_t>
-    >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    }; // fixed_matrix_size
-
     /**
      * @brief Infer the shape of expand_dims view at compile-time.
      * 
@@ -144,7 +126,7 @@ namespace nmtools::meta
             }
         }();
         using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-    }; // fixed_matrix_size
+    }; // fixed_ndarray_shape
 
     template <typename array_t, typename axis_t>
     struct is_ndarray< decorator_t<expand_dims_t,array_t,axis_t> >

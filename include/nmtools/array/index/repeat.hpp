@@ -63,7 +63,7 @@ namespace nmtools::index
 
             if constexpr (meta::is_array1d_v<repeats_t>) {
                 // TODO: make optional
-                assert ( at(ret,axis) == vector_size(repeats)
+                assert ( at(ret,axis) == len(repeats)
                     // , "unsupported shape_repeat"
                     // numpy: ValueError: operands could not be broadcast together with shape
                 );

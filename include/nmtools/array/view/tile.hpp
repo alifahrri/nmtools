@@ -82,22 +82,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    // TODO: remove
-    template <typename array_t, typename reps_t>
-    struct fixed_matrix_size< view::tile_t<array_t,reps_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // TODO: remove
-    template <typename array_t, typename reps_t>
-    struct fixed_vector_size< view::tile_t<array_t,reps_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
     /**
      * @brief Infer the shape of tile view at compile-time.
      * 

@@ -548,112 +548,6 @@ namespace nmtools::meta
         - T<auto,typename...>, etc.
     */
 
-    // TODO: remove
-    /**
-     * @brief metafunction to resize fixed vector.
-     * 
-     * @tparam T fixed vector type to be resized.
-     * @tparam N new size.
-     */
-    template <typename T, auto N, typename=void>
-    struct resize_fixed_vector
-    {
-        /* pack new size as type instead of non-type template param */
-        using new_size = std::integral_constant<size_t,N>;
-        using type = replace_template_parameter_t<T,new_size>;
-    };
-
-    /**
-     * @brief specialization of resize_fixed_vector for std::array type
-     * 
-     * @tparam T value_type of std::array, automatically deduced
-     * @tparam N size of std::array, automatically deduced
-     * @tparam new_size new desired size
-     */
-    template <typename T, auto N, auto new_size>
-    struct resize_fixed_vector<std::array<T,N>,new_size>
-    {
-        using type = std::array<T,new_size>;
-    };
-
-    /**
-     * @brief specialization of resize_fixed_vector for raw array type,
-     * resulting type is std::array instead of raw array.
-     * 
-     * @tparam T element type of raw array, automatically deduced
-     * @tparam N size of raw array, automatically deduced
-     * @tparam new_size new desired size
-     */
-    template <typename T, auto N, auto new_size>
-    struct resize_fixed_vector<T[N],new_size>
-    {
-        using type = std::array<T,new_size>;
-    };
-
-    /**
-     * @brief helper alias template to resize metafunction to resize fixed vector.
-     * 
-     * @tparam T fixed vector type to be resized.
-     * @tparam N new size.
-     */
-    template <typename T, auto N>
-    using resize_fixed_vector_t = typename resize_fixed_vector<T,N>::type;
-
-    /**
-     * @brief given fixed matrix T, return new type of fixed matrix with Rows and Cols.
-     * Default implementation define type as void.
-     * 
-     * @tparam T 
-     * @tparam Rows 
-     * @tparam Cols 
-     */
-    template <typename T, auto Rows, auto Cols>
-    struct resize_fixed_matrix
-    {
-        using type = void;
-    };
-
-    /**
-     * @brief specialization of metafunction resize_fixed_matrix for nested std::array
-     * 
-     * @tparam T value type
-     * @tparam M number of row of origin type
-     * @tparam N number of column of origin type
-     * @tparam Rows new desired row size
-     * @tparam Cols new desired column size
-     */
-    template <typename T, auto M, auto N, auto Rows, auto Cols>
-    struct resize_fixed_matrix<std::array<std::array<T,N>,M>,Rows,Cols>
-    {
-        using type = std::array<std::array<T,Cols>,Rows>;
-    };
-
-    /**
-     * @brief specialization of metafunction resize_fixed_matrix for nested raw array
-     * 
-     * @tparam T value type
-     * @tparam M number of row of origin type
-     * @tparam N number of column of origin type
-     * @tparam Rows new desired row size
-     * @tparam Cols new desired column size
-     */
-    template <typename T, auto M, auto N, auto Rows, auto Cols>
-    struct resize_fixed_matrix<T[M][N],Rows,Cols>
-    {
-        using type = std::array<std::array<T,Cols>,Rows>;
-    };
-
-    /**
-     * @brief helper alias template to get the resulting type of metafunction resize_fixed_matrix
-     * 
-     * @tparam T origin type
-     * @tparam Rows new desired row size
-     * @tparam Cols new desired column size
-     * @see nmtools::meta::resize_fixed_matrix
-     */
-    template <typename T, auto Rows, auto Cols>
-    using resize_fixed_matrix_t = typename resize_fixed_matrix<T,Rows,Cols>::type;
-
     /**
      * @brief resize fixed array
      * 
@@ -912,75 +806,6 @@ namespace nmtools::meta
     using make_reversed_index_sequence = make_reversed_integer_sequence<size_t,N>;
 
     /**
-     * @brief metafunction to select resizeable matrix type
-     * 
-     * @tparam A 
-     * @tparam B 
-     * @tparam typename=void 
-     * @TODO: rename this to select_resizeable_container to avoid confusion
-     */
-    template <typename A, typename B, typename=void>
-    struct select_resizeable_mat {};
-
-    /**
-     * @brief specialization of select_resizeable_mat when both A & B is resizeable
-     * will have member type `type` that is resizeable
-     * 
-     * @tparam A 
-     * @tparam B 
-     * @TODO: rename this to select_resizeable_container to avoid confusion
-     */
-    template <typename A, typename B>
-    struct select_resizeable_mat<A,B,
-        std::enable_if_t<meta::is_resizeable_v<A> && meta::is_resizeable_v<B> >
-    >
-    {
-        using type = A;
-    };
-
-    /**
-     * @brief specialization of select_resizeable_mat when A is resizeable and B is not
-     * will have member type `type` that is resizeable
-     * 
-     * @tparam A 
-     * @tparam B 
-     * @TODO: rename this to select_resizeable_container to avoid confusion
-     */
-    template <typename A, typename B>
-    struct select_resizeable_mat<A,B,
-        std::enable_if_t<meta::is_resizeable_v<A> && !meta::is_resizeable_v<B> >
-    >
-    {
-        using type = A;
-    };
-
-    /**
-     * @brief specialization of select_resizeable_mat when B is resizeable and A is not
-     * will have member type `type` that is resizeable
-     * 
-     * @tparam A 
-     * @tparam B 
-     * @TODO: rename this to select_resizeable_container to avoid confusion
-     */
-    template <typename A, typename B>
-    struct select_resizeable_mat<A,B,
-        std::enable_if_t<meta::is_resizeable_v<B> && !meta::is_resizeable_v<A> >
-    >
-    {
-        using type = B;
-    };
-
-    /**
-     * @brief helper alias template to select resizeable mat
-     * 
-     * @tparam A 
-     * @tparam B 
-     * @TODO: rename this to select_resizeable_container to avoid confusion
-     */
-    template <typename A, typename B>
-    using select_resizeable_mat_t = typename select_resizeable_mat<A,B>::type;
-
-    /**
      * @brief metafunction to resolve specific op return type.
      *
      * Default implementation has `type` member type aliasing `void`,
@@ -1005,88 +830,6 @@ namespace nmtools::meta
      */
     template <typename op_t, typename...tparams>
     using resolve_optype_t = typename resolve_optype<void,op_t,tparams...>::type;
-
-    template <typename A, typename B, typename=void>
-    struct select_resizeable_matrix {};
-
-    template <typename A, typename B>
-    struct select_resizeable_matrix<A,B,
-        std::enable_if_t<
-            /* BOTH A and B should be array2d */
-            meta::is_array2d_v<A> && meta::is_array2d_v<B> &&
-            meta::is_resizeable_v<A> && meta::is_resizeable_v<B>
-        >
-    >{
-        /* when both A and B is resizeable, select A */
-        using type = A;
-    };
-
-    template <typename A, typename B>
-    struct select_resizeable_matrix<A,B,
-        std::enable_if_t<
-            /* BOTH A and B should be array2d */
-            meta::is_array2d_v<A> && meta::is_array2d_v<B> &&
-            !meta::is_resizeable_v<A> && meta::is_resizeable_v<B>
-        >
-    >{
-        using type = B;
-    };
-
-    template <typename A, typename B>
-    struct select_resizeable_matrix<A,B,
-        std::enable_if_t<
-            /* BOTH A and B should be array2d */
-            meta::is_array2d_v<A> && meta::is_array2d_v<B> &&
-            meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>
-        >
-    >{
-        using type = A;
-    };
-
-    template <typename A, typename B>
-    using select_resizeable_matrix_t = typename select_resizeable_matrix<A,B>::type;
-
-    /* select resizeable vector */
-
-    template <typename A, typename B, typename=void>
-    struct select_resizeable_vector {};
-
-    template <typename A, typename B>
-    struct select_resizeable_vector<A,B,
-        std::enable_if_t<
-            /* BOTH A and B should be array1d */
-            meta::is_array1d_v<A> && meta::is_array1d_v<B> &&
-            meta::is_resizeable_v<A> && meta::is_resizeable_v<B>
-        >
-    >{
-        /* when both A and B is resizeable, select A */
-        using type = A;
-    };
-
-    template <typename A, typename B>
-    struct select_resizeable_vector<A,B,
-        std::enable_if_t<
-            /* BOTH A and B should be array1d */
-            meta::is_array1d_v<A> && meta::is_array1d_v<B> &&
-            !meta::is_resizeable_v<A> && meta::is_resizeable_v<B>
-        >
-    >{
-        using type = B;
-    };
-
-    template <typename A, typename B>
-    struct select_resizeable_vector<A,B,
-        std::enable_if_t<
-            /* BOTH A and B should be array1d */
-            meta::is_array1d_v<A> && meta::is_array1d_v<B> &&
-            meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>
-        >
-    >{
-        using type = A;
-    };
-
-    template <typename A, typename B>
-    using select_resizeable_vector_t = typename select_resizeable_vector<A,B>::type;
     
     /**
      * @brief helper alias template to add specialization 
@@ -1283,98 +1026,6 @@ namespace nmtools::meta
     using get_container_value_type_t = typename get_container_value_type<T>::type;
 
     /**
-     * @brief specialization of enable_if, to improve readibility,
-     * for cases where T::value_type is well-formed.
-     * used by get_matrix_value_type
-     * 
-     * @tparam T type to test
-     */
-    template <typename T>
-    using enable_if_has_value_type = std::enable_if<meta::has_value_type_v<T>>;
-
-    /**
-     * @brief helper alias template for enable_if_has_value_type.
-     * 
-     * @tparam T type to test
-     */
-    template <typename T>
-    using enable_if_has_value_type_t = typename enable_if_has_value_type<T>::type;
-
-    /**
-     * @brief specialization of enable_if to disable nested 2d array specialization.
-     * used by get_matrix_value_type.
-     * 
-     * @tparam T type to test
-     */
-    template <typename T>
-    using disable_if_nested_array2d = std::enable_if<!meta::is_nested_array2d_v<T>>;
-
-    /**
-     * @brief 
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    using disable_if_nested_array2d_t = typename disable_if_nested_array2d<T>::type;
-
-    /**
-     * @brief metafunction to get matrix element type, has public
-     * member type `type` (T::value_type or deduced from experession)
-     * 
-     * @tparam T 
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct get_matrix_value_type
-    {
-        /* TODO: consider to set value_type to void 
-            to allow easier to set error message with context */
-        /* assuming nested vector */
-        /* TODO: consider to use nmtools::at from nmtools/array/utility.hpp for generic case */
-        /* TODO: use std::remove_cvref_t when possible */
-        using type = meta::remove_cvref_t<decltype(std::declval<T>()[0][0])>;
-    };
-
-    /**
-     * @brief specialization of metafunction get_matrix_value_type
-     * when T actually has public member type value_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    struct get_matrix_value_type<T,
-        /* has value type but not nested array (which also has value_type) */
-        std::void_t<enable_if_has_value_type_t<T>,disable_if_nested_array2d_t<T>>
-    >
-    {
-        using type = typename T::value_type;
-    };
-    
-    /**
-     * @brief helper alias template for metafunction get_matrix_value_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using get_matrix_value_type_t = typename get_matrix_value_type<T>::type;
-
-    /**
-     * @brief alias for get_container_value_type
-     * 
-     * @tparam T type to test
-     */
-    template <typename T>
-    struct get_vector_value_type : get_container_value_type<T> {};
-
-    /**
-     * @brief helper alias template for get_vector_value_type
-     * 
-     * @tparam T type to test
-     */
-    template <typename T>
-    using get_vector_value_type_t = typename get_vector_value_type<T>::type;
-
-    /**
      * @brief metafunction to get the value/element type of an ndarray
      * 
      * @tparam T type to test
@@ -1444,14 +1095,6 @@ namespace nmtools::meta
                 // note that remove_all_nested_array_dim_t using expression to deduce the type
                 // causing vector<bool> deduced to std::_Bit_reference instead of bool
                 using type = bit_reference_to_bool_t<element_t>;
-                return detail::void_to_fail_t<type>{};
-            }
-            else if constexpr (meta::is_array2d_v<T>) {
-                using type = get_matrix_value_type_t<T>;
-                return detail::void_to_fail_t<type>{};
-            }
-            else if constexpr (meta::is_array1d_v<T>) {
-                using type = get_vector_value_type_t<T>;
                 return detail::void_to_fail_t<type>{};
             }
             // ndarray is more generic
@@ -1592,208 +1235,6 @@ namespace nmtools::meta
      */
     template <typename T, typename U>
     using replace_element_type_t = typename replace_element_type<T,U>::type;
-
-    /**
-     * @brief metafunction to make vector with new size N from original type T
-     * default implementation will try to replace template parameter of T with new size,
-     * may be specialized with custom type implementation.
-     * 
-     * @tparam T original fixed-size vector with fixed compile time size
-     * @tparam N new desired size
-     * @tparam typename=void 
-     */
-    template <typename T, size_t N, typename=void>
-    struct make_zeros_vector
-    {
-        using value_t   = meta::remove_cvref_t<typename T::value_type>;
-        using new_size  = std::integral_constant<size_t,N>;
-        using new_array = replace_template_parameter<T,value_t,new_size>;
-
-        /* final type */
-        using type = typename new_array::type;
-    };
-
-    /**
-     * @brief helper alias template to make vector with new size N from original type T
-     * 
-     * @tparam T original fixed-size vector with fixed compile time size
-     * @tparam N new desired size
-     */
-    template <typename T, size_t N>
-    using make_zeros_vector_t = typename make_zeros_vector<T,N>::type;
-
-    /**
-     * @brief metafunction to make zeros matrix with new Rows and Cols
-     * default implementation assumes nested array-like
-     * and will try to replace its template parameters with new size.
-     * 
-     * @tparam T original fixed-size matrix with fixed compile-time size
-     * @tparam Rows new desired rows
-     * @tparam Cols new desired cols
-     * @tparam typename=void 
-     */
-    template <typename T, size_t Rows, size_t Cols, typename=void>
-    struct make_zeros_matrix
-    {
-        /* NOTE: assuming nested array */
-        using row_t = T;
-        using col_t = meta::remove_cvref_t<typename row_t::value_type>;
-        using element_t = meta::remove_cvref_t<typename col_t::value_type>;
-        using new_col_size = std::integral_constant<size_t,Cols>;
-        using new_row_size = std::integral_constant<size_t,Rows>;
-        using new_col_t = replace_template_parameter<col_t,element_t,new_col_size>;
-        using new_row_t = replace_template_parameter<row_t,typename new_col_t::type,new_row_size>;
-
-        /* final type, implicitly assumed that it has constructor that fills it elements with zero */
-        using type = typename new_row_t::type;
-
-        /* TODO: consider to provide operator() that actually return zeros matrix */
-    };
-
-    /**
-     * @brief helper alias template for make_zeros_matrix.
-     * 
-     * @tparam T original fixed-size matrix with fixed compile-time size
-     * @tparam Rows new desired rows
-     * @tparam Cols new desired cols
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    using make_zeros_matrix_t = typename make_zeros_matrix<T,Rows,Cols>::type;
-    
-    /**
-     * @brief make matrix type for outer product operations.
-     * 
-     * @tparam V1 lhs vector type
-     * @tparam V2 rhs vector type
-     * @tparam typename=void 
-     */
-    template <typename V1, typename V2, typename=void>
-    struct make_outer_matrix
-    {
-        using type = detail::fail_t;
-    }; // make_outer_matrix
-
-    /**
-     * @brief specialization of make_outer_matrix for std::array.
-     * 
-     * @tparam row_t lhs vector value_type
-     * @tparam col_t lhs vector value_type
-     * @tparam M 
-     * @tparam N 
-     */
-    template <typename row_t, typename col_t, size_t M, size_t N>
-    struct make_outer_matrix<std::array<row_t,M>,std::array<col_t,N>>
-    {
-        using common_t = std::common_type_t<row_t,col_t>;
-        using type = std::array<std::array<common_t,N>,M>;
-    };
-
-    /**
-     * @brief helper alias template for make_outer_matrix.
-     * example: https://godbolt.org/z/zMMosG
-     * 
-     * @tparam V1 lhs vector type
-     * @tparam V2 rhs vector type
-     */
-    template <typename V1, typename V2>
-    using make_outer_matrix_t = typename make_outer_matrix<V1,V2>::type;
-
-    /**
-     * @brief metafunction to deduce type of column operation for matrix.
-     * 
-     * @tparam T matrix type
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct get_column_type
-    {
-        using type = void;
-    };
-
-    /**
-     * @brief specialization of metafunction get_column_type when T
-     * satifies is_nested_array2d and has_value_type traits.
-     * 
-     * @tparam T matrix type
-     */
-    template <typename T>
-    struct get_column_type<T,std::enable_if_t<meta::is_nested_array2d_v<T> && meta::has_value_type_v<T>>>
-    {
-        using type = typename T::value_type;
-    };
-
-    /**
-     * @brief specialization of metafunction get_column_type when T is raw 2d array.
-     * 
-     * @tparam T element type of raw array, automatically deduced
-     * @tparam M size of first axis (rows) of raw array, automatically deduced
-     * @tparam N size of second axis (cols) of raw array, automatically deduced
-     */
-    template <typename T, size_t M, size_t N>
-    struct get_column_type<T[M][N],void>
-    {
-        using value_t = meta::remove_cvref_t<T>;
-        using type    = std::array<value_t,N>;
-    };
-
-    /**
-     * @brief helper alias template for metafunction get_column_type
-     * to deduce the type of column operation.
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using get_column_type_t = typename get_column_type<T>::type;
-
-    /**
-     * @brief 
-     * 
-     * @tparam T 
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct get_row_type
-    {
-        using type = void;
-    };
-
-    /**
-     * @brief 
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    struct get_row_type<T,std::enable_if_t<meta::is_nested_array2d_v<T> && meta::has_value_type_v<T> && meta::is_dynamic_size_matrix_v<T>>>
-    {
-        using col_type = typename T::value_type;
-        using value_type = typename col_type::value_type;
-        using type = replace_template_parameter_t<T,value_type>;
-    };
-
-    /**
-     * @brief 
-     * 
-     * @tparam T 
-     */
-    template <typename T, size_t M, size_t N>
-    struct get_row_type<std::array<std::array<T,N>,M>>
-    {
-        using type = std::array<T,M>;
-    };
-
-    template <typename T, size_t M, size_t N>
-    struct get_row_type<T[M][N]>
-    {
-        using type = std::array<T,M>;
-    };
-
-    /**
-     * @brief 
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    using get_row_type_t = typename get_row_type<T>::type;
 
     /**
      * @brief make nested raw array from element type T, first axis size N, and the rest of axis size Ns...
@@ -2648,216 +2089,55 @@ namespace nmtools::meta
     template <typename T>
     using tuple_to_array_t = type_t<tuple_to_array<T>>;
 
-    // TODO: remove
-    template <typename size_policy_t, typename selection_kind_t=void,
-        template<typename> typename element_predicate_t=std::is_arithmetic,
-        template<typename,typename> typename element_type_policy_t=element_type_policy_common>
-    struct select_array1d_t {};
-
-    // TODO: remove
-    template <typename lhs_t, typename rhs_t,
-        typename size_policy_t, typename selection_kind_t,
-        template<typename> typename element_predicate_t,
-        template<typename,typename> typename element_type_policy_t>
-    struct resolve_optype<
-        std::enable_if_t<
-               is_resizeable_v<lhs_t> && !is_hybrid_ndarray_v<lhs_t>
-            && is_resizeable_v<rhs_t> && !is_hybrid_ndarray_v<rhs_t>
-            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
-            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
-            && is_array1d_v<lhs_t> && is_array1d_v<rhs_t>
-        >,
-        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
-    >
+    /**
+     * @brief metafunction to resize fixed vector.
+     * 
+     * @tparam T fixed vector type to be resized.
+     * @tparam N new size.
+     */
+    template <typename T, auto N, typename=void>
+    struct resize_fixed_vector
     {
-        using lhs_value_t = get_element_type_t<lhs_t>;
-        using rhs_value_t = get_element_type_t<rhs_t>;
-        using value_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
-        using type    = replace_element_type_t<lhs_t,value_t>;
-    }; // resolve_optype expand_dims_t
+        /* pack new size as type instead of non-type template param */
+        using new_size = std::integral_constant<size_t,N>;
+        using type = replace_template_parameter_t<T,new_size>;
+    };
 
-    // TODO: remove
-    template <typename lhs_t, typename rhs_t,
-        typename size_policy_t, typename selection_kind_t,
-        template<typename> typename element_predicate_t,
-        template<typename,typename> typename element_type_policy_t>
-    struct resolve_optype<
-        std::enable_if_t<
-               is_resizeable_v<lhs_t> && !is_hybrid_ndarray_v<lhs_t>
-            && (is_hybrid_ndarray_v<rhs_t> || has_tuple_size_v<rhs_t>)
-            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
-            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
-        >,
-        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
-    >
+    /**
+     * @brief specialization of resize_fixed_vector for std::array type
+     * 
+     * @tparam T value_type of std::array, automatically deduced
+     * @tparam N size of std::array, automatically deduced
+     * @tparam new_size new desired size
+     */
+    template <typename T, auto N, auto new_size>
+    struct resize_fixed_vector<std::array<T,N>,new_size>
     {
-        using lhs_value_t = get_element_or_common_type_t<lhs_t>;
-        using rhs_value_t = get_element_or_common_type_t<rhs_t>;
-        using value_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
+        using type = std::array<T,new_size>;
+    };
 
-        using rhs_type = tuple_to_array_t<rhs_t>;
-        using a_t = std::conditional_t<
-            std::is_same_v<selection_kind_t,select_resizeable_kind_t>,
-            lhs_t, void
-        >;
-        using b_t = std::conditional_t<
-            is_hybrid_ndarray_v<rhs_type> && std::is_void_v<a_t>
-            && std::is_same_v<selection_kind_t,select_hybrid_kind_t>,
-            rhs_type, a_t
-        >;
-        using c_t = std::conditional_t<
-            has_tuple_size_v<rhs_type> && std::is_void_v<b_t>
-            && std::is_same_v<selection_kind_t,select_fixed_kind_t>,
-            rhs_type, b_t
-        >;
-        using type = replace_element_type_t<c_t,value_t>;
-    }; // resolve_optype expand_dims_t
-
-    // TODO: remove
-    template <typename lhs_t, typename rhs_t,
-        typename size_policy_t, typename selection_kind_t,
-        template<typename> typename element_predicate_t,
-        template<typename,typename> typename element_type_policy_t>
-    struct resolve_optype<
-        std::enable_if_t<
-               !is_resizeable_v<lhs_t> && has_tuple_size_v<lhs_t>
-            && !is_resizeable_v<rhs_t> && has_tuple_size_v<rhs_t>
-            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
-            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
-        >,
-        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
-    >
+    /**
+     * @brief specialization of resize_fixed_vector for raw array type,
+     * resulting type is std::array instead of raw array.
+     * 
+     * @tparam T element type of raw array, automatically deduced
+     * @tparam N size of raw array, automatically deduced
+     * @tparam new_size new desired size
+     */
+    template <typename T, auto N, auto new_size>
+    struct resize_fixed_vector<T[N],new_size>
     {
-        static constexpr auto M = std::tuple_size_v<lhs_t>;
-        static constexpr auto N = std::tuple_size_v<rhs_t>;
-        static constexpr auto n = size_policy_t::get(M,N);
-        using lhs_value_t = get_element_or_common_type_t<lhs_t>;
-        using rhs_value_t = get_element_or_common_type_t<rhs_t>;
-        using value_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
-        using type    = std::array<value_t,n>;
-    }; // resolve_optype expand_dims_t
+        using type = std::array<T,new_size>;
+    };
 
-    // TODO: remove
-    template <typename lhs_t, typename rhs_t,
-        typename size_policy_t, typename selection_kind_t,
-        template<typename> typename element_predicate_t,
-        template<typename,typename> typename element_type_policy_t>
-    struct resolve_optype<
-        std::enable_if_t<
-               !is_resizeable_v<lhs_t> && has_tuple_size_v<lhs_t>
-            && (is_resizeable_v<rhs_t> || is_hybrid_ndarray_v<rhs_t>)
-            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
-            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
-            && is_array1d_v<rhs_t>
-        >,
-        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
-    >
-    {
-        using lhs_value_t = get_element_or_common_type_t<lhs_t>;
-        using rhs_value_t = get_element_or_common_type_t<rhs_t>;
-        using common_t    = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
-
-        static constexpr auto M = std::tuple_size_v<lhs_t>;
-        static constexpr auto N = [](){
-            if constexpr (has_tuple_size_v<rhs_t>)
-                return std::tuple_size_v<rhs_t>;
-            else if constexpr (is_hybrid_ndarray_v<rhs_t>)
-                return hybrid_ndarray_max_size_v<rhs_t>;
-            else return 0;
-        }();
-        static constexpr auto n = size_policy_t::get(M,N);
-
-        using a_t = std::conditional_t<
-            std::is_same_v<selection_kind_t,select_fixed_kind_t>,
-            resize_fixed_vector_t<tuple_to_array_t<lhs_t>,n>, void
-        >;
-        using b_t = std::conditional_t<
-            is_resizeable_v<rhs_t> && !is_hybrid_ndarray_v<rhs_t> && std::is_void_v<a_t> &&
-            std::is_same_v<selection_kind_t,select_resizeable_kind_t>,
-            rhs_t, a_t
-        >;
-        using c_t = std::conditional_t<
-            is_hybrid_ndarray_v<rhs_t> && std::is_void_v<b_t> &&
-            std::is_same_v<selection_kind_t,select_hybrid_kind_t>,
-            resize_hybrid_ndarray_max_size_t<rhs_t, n>, b_t
-        >;
-        // final type
-        using type = replace_element_type_t<c_t,common_t>;
-    }; // resolve_optype expand_dims_t
-
-    // TODO: remove
-    template <typename lhs_t, typename rhs_t,
-        typename size_policy_t, typename selection_kind_t,
-        template<typename> typename element_predicate_t,
-        template<typename,typename> typename element_type_policy_t>
-    struct resolve_optype<
-        std::enable_if_t<
-               is_resizeable_v<lhs_t> && is_hybrid_ndarray_v<lhs_t>
-            && is_resizeable_v<rhs_t> && is_hybrid_ndarray_v<rhs_t>
-            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
-            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
-            && is_array1d_v<lhs_t> && is_array1d_v<rhs_t>
-        >,
-        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
-    >
-    {
-        static constexpr auto M = hybrid_ndarray_max_size_v<lhs_t>;
-        static constexpr auto N = hybrid_ndarray_max_size_v<rhs_t>;
-        static constexpr auto n = size_policy_t::get(M,N);
-        using lhs_value_t = get_element_type_t<lhs_t>;
-        using rhs_value_t = get_element_type_t<rhs_t>;
-        using common_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
-        using array_t  = replace_element_type_t<lhs_t,common_t>;
-        using type     = resize_hybrid_ndarray_max_size_t<array_t,n>;
-    }; // resolve_optype expand_dims_t
-
-    // TODO: remove
-    template <typename lhs_t, typename rhs_t,
-        typename size_policy_t, typename selection_kind_t,
-        template<typename> typename element_predicate_t,
-        template<typename,typename> typename element_type_policy_t>
-    struct resolve_optype<
-        std::enable_if_t<
-               is_resizeable_v<lhs_t> && is_hybrid_ndarray_v<lhs_t>
-            && (
-                   (is_resizeable_v<rhs_t> && !is_hybrid_ndarray_v<rhs_t>)
-                || (!is_resizeable_v<rhs_t> && has_tuple_size_v<rhs_t>)
-               )
-            && element_predicate_t<get_element_or_common_type_t<lhs_t>>::value
-            && element_predicate_t<get_element_or_common_type_t<rhs_t>>::value
-            && is_array1d_v<lhs_t> // && is_array1d_v<rhs_t>
-        >,
-        select_array1d_t<size_policy_t,selection_kind_t,element_predicate_t,element_type_policy_t>, lhs_t, rhs_t
-    >
-    {
-        static constexpr auto M = hybrid_ndarray_max_size_v<lhs_t>;
-        static constexpr auto N = [](){
-            if constexpr (has_tuple_size_v<rhs_t>)
-                return std::tuple_size_v<rhs_t>;
-            else return 0;
-        }();
-        static constexpr auto n = size_policy_t::get(M,N);
-        using lhs_value_t = get_element_type_t<lhs_t>;
-        using rhs_value_t = get_element_or_common_type_t<rhs_t>;
-        using common_t = type_t<element_type_policy_t<lhs_value_t,rhs_value_t>>;
-
-        using a_t = std::conditional_t<
-            std::is_same_v<selection_kind_t,select_hybrid_kind_t>,
-            resize_hybrid_ndarray_max_size_t<lhs_t,n>, void
-        >;
-        using b_t = std::conditional_t<
-            std::is_same_v<selection_kind_t,select_resizeable_kind_t>
-            && is_resizeable_v<rhs_t> && std::is_void_v<a_t>,
-            rhs_t, a_t
-        >;
-        using c_t = std::conditional_t<
-            std::is_same_v<selection_kind_t,select_fixed_kind_t>
-            && has_tuple_size_v<rhs_t> && std::is_void_v<b_t>,
-            resize_fixed_vector_t<rhs_t,n>, b_t
-        >;
-        // final type
-        using type = replace_element_type_t<c_t,common_t>;
-    }; // resolve_optype expand_dims_t
+    /**
+     * @brief helper alias template to resize metafunction to resize fixed vector.
+     * 
+     * @tparam T fixed vector type to be resized.
+     * @tparam N new size.
+     */
+    template <typename T, auto N>
+    using resize_fixed_vector_t = typename resize_fixed_vector<T,N>::type;
 
     template <typename T, size_t N>
     struct resize_fixed_index_array : resize_fixed_vector<T,N> {};

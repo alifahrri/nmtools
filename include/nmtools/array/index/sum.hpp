@@ -48,7 +48,7 @@ namespace nmtools::index
                 return ret;
             }
             else
-                for (size_t i=0; i<vector_size(vec); i++)
+                for (size_t i=0; i<len(vec); i++)
                     ret += at(vec,i);
             return ret;
         }

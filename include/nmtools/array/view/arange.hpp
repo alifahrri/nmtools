@@ -116,17 +116,6 @@ namespace nmtools::meta
     };
 
     template <typename start_t, typename stop_t, typename step_t, typename T>
-    struct fixed_matrix_size< view::arange_t<start_t, stop_t, step_t, T> >
-        : fixed_ndarray_shape< view::arange_t<start_t, stop_t, step_t, T> > {};
-
-    template <typename start_t, typename stop_t, typename step_t, typename T>
-    struct fixed_vector_size< view::arange_t<start_t, stop_t, step_t, T> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    template <typename start_t, typename stop_t, typename step_t, typename T>
     struct fixed_ndarray_shape< view::arange_t<start_t, stop_t, step_t, T> >
     {
         static inline constexpr auto value = [](){

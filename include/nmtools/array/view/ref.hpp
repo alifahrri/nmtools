@@ -15,8 +15,6 @@ namespace nmtools::view
     using meta::is_array1d_v;
     using meta::is_array2d_v;
     using meta::is_ndarray_v;
-    using meta::is_fixed_size_vector_v;
-    using meta::is_fixed_size_matrix_v;
     using meta::is_fixed_size_ndarray_v;
     using meta::has_shape_v;
     using meta::has_size_v;
@@ -110,34 +108,6 @@ namespace nmtools::view
 
 namespace nmtools
 {
-    /**
-     * @brief specialization of meta::fixed_vector_size for ref view.
-     *
-     * Only enabled when the referenced array is fixed-size.
-     * 
-     * @tparam array_t referenced array type
-     * @note needs to remove-cvref since the referenced array type returned from make_view may be ref
-     * @see nmtools::view::make_view
-     */
-    template <typename array_t>
-    struct meta::fixed_vector_size< view::ref_t<array_t>
-        , std::enable_if_t< meta::is_fixed_size_vector_v< meta::remove_cvref_t<array_t> > >
-    > : meta::fixed_vector_size< meta::remove_cvref_t<array_t> > {};
-
-    /**
-     * @brief specialization of meta::fixed_matrix_size for ref view.
-     *
-     * Only enabled when the referenced array is fixed-size.
-     * 
-     * @tparam array_t referenced array type
-     * @note needs to remove-cvref since the referenced array type returned from make_view may be ref
-     * @see nmtools::view::make_view
-     */
-    template <typename array_t>
-    struct meta::fixed_matrix_size< view::ref_t<array_t>
-        , std::enable_if_t< meta::is_fixed_size_matrix_v< meta::remove_cvref_t<array_t> > >
-    > : meta::fixed_matrix_size< meta::remove_cvref_t<array_t> > {};
-
     /**
      * @brief specialization of meta::fixed_ndarray_shape for ref view.
      *

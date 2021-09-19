@@ -932,24 +932,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename op_t, typename...arrays_t>
-    struct fixed_matrix_size< view::ufunc_t<op_t,arrays_t...> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename op_t, typename...arrays_t>
-    struct fixed_vector_size< view::ufunc_t<op_t,arrays_t...> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
     /**
      * @brief Scalar ufunc is num
      * 
@@ -1102,29 +1084,6 @@ namespace nmtools::meta
     {
         using type = typename view::ufunc_t<op_t, arrays_t...>::result_type;
     };
-
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
-    struct fixed_matrix_size<
-        view::reduce_t< op_t, array_t, axis_t, initial_t, keepdims_t >
-    >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
-    struct fixed_vector_size<
-        view::reduce_t< op_t, array_t, axis_t, initial_t, keepdims_t >
-    >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
     
     /**
      * @brief Compile-time shape inference for reduce ufuncs.
@@ -1306,28 +1265,6 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
 
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename op_t, typename array_t, typename axis_t>
-    struct fixed_matrix_size<
-        view::accumulate_t< op_t, array_t, axis_t >
-    >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename op_t, typename array_t, typename axis_t>
-    struct fixed_vector_size<
-        view::accumulate_t< op_t, array_t, axis_t >
-    >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
     /**
      * @brief Compile-time shape inference for accumulate ufunc
      * 
@@ -1360,28 +1297,6 @@ namespace nmtools::meta
     >
     {
         using type = typename view::accumulate_t<op_t, array_t, axis_t>::result_type;
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename op_t, typename lhs_t, typename rhs_t>
-    struct fixed_matrix_size<
-        view::outer_t< op_t, lhs_t, rhs_t >
-    >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: remove
-    template <typename op_t, typename lhs_t, typename rhs_t>
-    struct fixed_vector_size<
-        view::outer_t< op_t, lhs_t, rhs_t >
-    >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
     };
 
     /**

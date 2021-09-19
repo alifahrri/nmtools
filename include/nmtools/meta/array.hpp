@@ -319,30 +319,6 @@ namespace nmtools::meta
      */
     template <typename T>
     inline constexpr bool is_array1d_v = is_array1d<T>::value;
-
-    /**
-     * @brief check if T is vector-like, (in math terms, not container terms)
-     * 
-     * @tparam T 
-     * @todo remove
-     */
-    template <typename T>
-    struct is_vector_like : is_array1d<T> {};
-
-    template <typename T>
-    inline constexpr bool is_vector_like_v = is_vector_like<T>::value;
-
-    /**
-     * @brief check if T is matrix-like
-     * 
-     * @tparam T 
-     * @todo remove
-     */
-    template <typename T>
-    struct is_matrix_like : is_array2d<T> {};
-
-    template <typename T>
-    inline constexpr bool is_matrix_like_v = is_matrix_like<T>::value;
 } // namespace nmtools::meta
 
 namespace nmtools::meta
@@ -351,111 +327,6 @@ namespace nmtools::meta
      * @addtogroup traits
      * @{
      */
-
-    /**
-     * @brief get fixed-size vector (math) size at compile time
-     * 
-     * @tparam T 
-     * @tparam typename=void 
-     * @see fixed_vector_size_v
-     * @see is_fixed_size_vector
-     */
-    template <typename T, typename=void>
-    struct fixed_vector_size
-    {
-        using value_type = void;
-    }; // fixed_vector_size
-
-    /**
-     * @brief helper variable template for fixed_vector_size
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    inline constexpr auto fixed_vector_size_v = fixed_vector_size<T>::value;
-
-    /**
-     * @brief trait to check if type T is fixed-size vector (math).
-     * 
-     * @tparam T type to check
-     * @tparam typename=void 
-     * @see is_fixed_size_vector_v
-     * @see fixed_vector_size
-     */
-    template <typename T, typename=void>
-    struct is_fixed_size_vector
-    {
-        static constexpr auto _check()
-        {
-            using fixed_size_t = fixed_vector_size<T>;
-            using value_type   = typename fixed_size_t::value_type;
-            if constexpr (!std::is_same_v<value_type,void>)
-                return true;
-            else return false;
-        } // _check()
-        static constexpr auto value = _check();
-    }; // is_fixed_size_vector
-
-    /**
-     * @brief helper variable template for is_fixed_size_vector.
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool is_fixed_size_vector_v = is_fixed_size_vector<T>::value;
-
-    /**
-     * @brief get fixed-matrix's size at compile time.
-     * well-formed specialization should have `value` and `value_type`.
-     * 
-     * @tparam T 
-     * @tparam typename=void 
-     * @see fixed_matrix_size_v
-     * @see is_fixed_size_matrix
-     */
-    template <typename T, typename=void>
-    struct fixed_matrix_size
-    {
-        using value_type = void;
-    };
-
-    /**
-     * @brief helper variable template to get fixed-matrix's size
-     * 
-     * @tparam M fixed-matrix
-     */
-    template <typename M>
-    inline constexpr auto fixed_matrix_size_v = fixed_matrix_size<M>::value;
-
-    /**
-     * @brief traits to check if type T is fixed-size matrix
-     * 
-     * @tparam T type to check
-     * @tparam typename=void 
-     * @see is_fixed_size_matrix_v
-     * @see fixed_matrix_size
-     */
-    template <typename T, typename=void>
-    struct is_fixed_size_matrix
-    {
-        static constexpr auto _check()
-        {
-            using fixed_size_t = fixed_matrix_size<T>;
-            using value_type   = typename fixed_size_t::value_type;
-            if constexpr (!std::is_same_v<value_type,void>)
-                return true;
-            else return false;
-        } // _check()
-        static constexpr auto value = _check();
-    }; // is_fixed_size_matrix
-
-    /**
-     * @brief helper variable template for is_fixed_size_matrix
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool is_fixed_size_matrix_v = is_fixed_size_matrix<T>::value;
 
     /**
      * @brief get fixed-array size at compile-time.
@@ -473,8 +344,6 @@ namespace nmtools::meta
          * Dispatched code based on the attributes, with the following order:
          * - T is nested array and has fixed-size
          * - T is bounded array
-         * - T is fixed-size matrix
-         * - T is fixed-size vector
          * - fail
          * 
          * @return constexpr auto 
@@ -505,15 +374,6 @@ namespace nmtools::meta
                 });
                 return shape;
             }
-            // default for matrix
-            else if constexpr (is_fixed_size_matrix_v<T>)
-                return fixed_matrix_size_v<T>;
-            // default for vector
-            else if constexpr (is_fixed_size_vector_v<T>){
-                constexpr auto value = fixed_vector_size_v<T>;
-                // @need to make_tuple to provide consistency between dimensions!
-                return std::make_tuple(value);
-            }
             // fail otherwise
             else return detail::fail_t{};
         } // _get()
@@ -531,7 +391,7 @@ namespace nmtools::meta
     inline constexpr auto fixed_ndarray_shape_v = fixed_ndarray_shape<T>::value;
 
     /**
-     * @brief check if given type T is fixed-size array (vector/matrix/ndarray)
+     * @brief check if given type T is fixed-size array
      *
      * Default implementation check if calls to fixed_ndarray_shape returns successful (value_type not void),
      * returns true for such case, false otherwise.
@@ -850,81 +710,6 @@ namespace nmtools::meta
      * @addtogroup traits
      * @{
      */
-    
-    /* various partial specializaton / sfinae */
-
-    /**
-     * @brief specializaton fo fixed_matrix_size for raw array type.
-     *
-     * Specialized when T is 2D bounded array.
-     * 
-     * @tparam T element type of raw array
-     * @tparam Rows size of array at first axis (number of rows)
-     * @tparam Cols size of array at second axis (number of columns)
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    struct fixed_matrix_size<T[Rows][Cols]>
-    {
-        static constexpr inline auto value = std::make_pair(Rows,Cols);
-        using value_type = decltype(value);
-    }; // fixed_matrix_size
-
-    /**
-     * @brief specializaton of fixed_matrix_size for nested std::array type
-     * 
-     * @tparam T 
-     * @tparam n 
-     * @tparam m 
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    struct fixed_matrix_size<std::array<std::array<T,Cols>,Rows>> 
-    {
-        static inline constexpr auto value = std::make_pair(Rows,Cols);
-        using value_type = decltype(value); // std::pair
-    }; // fixed_matrix_size
-
-    /**
-     * @brief specializaton of fixed_vector_size for std::array
-     * 
-     * @tparam T 
-     * @tparam N 
-     */
-    template <typename T, size_t N>
-    struct fixed_vector_size<std::array<T,N>> : std::tuple_size<std::array<T,N>> {};
-
-    /**
-     * @brief specialization of fixed_vector size for raw arary
-     * 
-     * @tparam T element type of raw array, automatically deduced
-     * @tparam N size of raw array, automatically deduced
-     * @todo move to array meta
-     */
-    template <typename T, size_t N>
-    struct fixed_vector_size<T[N]>
-    {
-        static inline constexpr auto value = N;
-    };
-
-    /**
-     * @brief specializaton fo is_fixed_size_vector for raw array type.
-     * 
-     * @tparam T element type of raw array, automatically deduced
-     * @tparam N size of raw array, automatically deduced
-     */
-    template <typename T, size_t N>
-    struct is_fixed_size_vector<T[N]> : true_type {};
-
-    template <typename T>
-    struct is_dynamic_size_matrix : std::negation<is_fixed_size_matrix<T>> {};
-
-    template <typename T>
-    inline constexpr bool is_dynamic_size_matrix_v = is_dynamic_size_matrix<T>::value;
-
-    template <typename T>
-    struct is_dynamic_size_vector : std::negation<is_fixed_size_vector<T>> {};
-
-    template <typename T>
-    inline constexpr bool is_dynamic_size_vector_v = is_dynamic_size_vector<T>::value;
 
     /** @} */ // end group traits
 
