@@ -57,6 +57,8 @@ namespace nmtools::index
         // note that ashape should be lhs shape and rhs shape and lhs array corresponds to lower indices,
         // then if indices[axis] < ahape[axis] select a otherwise select b
 
+        // TODO: do not use tuple_at, specialize constant index/shape instead
+    
         if constexpr (is_none_v<axis_t>) {
             auto na = product(ashape);
             auto nb = product(bshape);
@@ -102,6 +104,11 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        struct INDEX_CONCATENATE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+    
     /**
      * @brief resolve return type for index::concatenate
      * 
@@ -114,6 +121,22 @@ namespace nmtools::meta
         void, index::concatenate_t, shape_t, indices_t, axis_t
     >
     {
+        static constexpr auto vtype = [](){
+            if constexpr (is_fixed_index_array_v<shape_t>) {
+                // tuple<int,..> is also belong to this category
+                constexpr auto N = fixed_index_array_size_v<shape_t>;
+                using elem_t = meta::get_element_or_common_type_t<shape_t>;
+                // TODO: create make_array_t metafunction
+                return as_value_v<std::array<elem_t,N>>;
+            } else if constexpr (is_index_array_v<shape_t>) {
+                return as_value_v<shape_t>;
+            } else {
+                return as_value_v<error::INDEX_CONCATENATE_UNSUPPORTED>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+
+        // TODO: remove
         template <typename T>
         struct is_resizeable_not_hybrid
             : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
@@ -129,14 +152,6 @@ namespace nmtools::meta
             else return select_fixed_kind_t {};
         }();
         using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
-        // shape type must be integral
-        using selection_t = select_array1d_t<
-            size_policy_lhs_t, selection_kind_t, std::is_integral
-        >;
-        // final type
-        using type = resolve_optype_t<
-            selection_t, shape_type, indices_type
-        >;
     }; // struct resolve_optype
 
 } // namespace nmtools::meta
@@ -204,6 +219,11 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        struct SHAPE_CONCATENATE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+    
     /**
      * @brief resolve return type for index::shape_concatenate op
      * 
@@ -217,7 +237,28 @@ namespace nmtools::meta
     >
     {
         // @todo enforce same dim
+        static constexpr auto vtype = [](){
+            if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                return as_value_v<error::SHAPE_CONCATENATE_UNSUPPORTED>;
+            } else if constexpr (is_dynamic_index_array_v<ashape_t>) {
+                return as_value_v<ashape_t>;
+            } else if constexpr (is_dynamic_index_array_v<bshape_t>) {
+                return as_value_v<bshape_t>;
+            } else if constexpr (is_hybrid_index_array_v<ashape_t>) {
+                return as_value_v<ashape_t>;
+            } else if constexpr (is_hybrid_index_array_v<bshape_t>) {
+                return as_value_v<bshape_t>;
+            } else if constexpr (is_fixed_index_array_v<ashape_t>) {
+                return as_value_v<transform_bounded_array_t<ashape_t>>;
+            } else if constexpr (is_fixed_index_array_v<bshape_t>) {
+                return as_value_v<transform_bounded_array_t<bshape_t>>;
+            } else {
+                return as_value_v<error::SHAPE_CONCATENATE_UNSUPPORTED>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
 
+        // TODO: remove
         template <typename T>
         struct is_resizeable_not_hybrid
             : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
@@ -236,13 +277,6 @@ namespace nmtools::meta
 
         using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
         // shape type must be integral
-        using selection_t = select_array1d_t<
-            size_policy_max_t, selection_kind_t, std::is_integral
-        >;
-        // final type
-        using type = resolve_optype_t<
-            selection_t, ashape_t, bshape_t
-        >;
     }; // resolve_optype
 
     template <typename ashape_t, typename bshape_t>

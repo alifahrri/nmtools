@@ -12,9 +12,7 @@
 namespace view = nmtools::view;
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
-using nmtools::array::fixed_matrix;
 using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_matrix;
 using nmtools::array::dynamic_ndarray;
 
 TEST_CASE("mutable_flatten(double[N])" * doctest::test_suite("view::mutable_flatten"))
@@ -26,15 +24,12 @@ TEST_CASE("mutable_flatten(double[N])" * doctest::test_suite("view::mutable_flat
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isequal(array_ref.shape(),std::array{3}) );
 
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
     {
         constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
         STATIC_CHECK( isequal(shape, std::array{3}) );
     }
-    // LOG_TYPEINFO( decltype(array_ref) );
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     {
         auto expected = std::array{1.,2.,3.};
@@ -137,10 +132,6 @@ TEST_CASE("mutable_flatten(std::array)" * doctest::test_suite("view::mutable_fla
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isclose(array_ref.shape(),std::array{3}) );
 
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    // LOG_TYPEINFO( decltype(array_ref) );
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-
     {
         auto expected = std::array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );
@@ -201,10 +192,6 @@ TEST_CASE("mutable_flatten(std::vector)" * doctest::test_suite("view::mutable_fl
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isequal(array_ref.shape(),std::array{3}) );
 
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    // LOG_TYPEINFO( decltype(array_ref) );
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
-
     {
         auto expected = std::array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );
@@ -251,64 +238,6 @@ TEST_CASE("flatten(std::vector[2])" * doctest::test_suite("view::flatten"))
         auto expected = std::vector{
             std::vector{1.,6.,3.},
             std::vector{7.,4.,5.},
-        };
-        CHECK( isclose(array,expected) );
-    }
-}
-
-TEST_CASE("mutable_flatten(fixed_matrix)" * doctest::test_suite("view::mutable_flatten"))
-{
-    auto array = fixed_matrix{{
-        {1.,2.,3.},
-        {3.,4.,5.},
-    }};
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isequal(array_ref.shape(),std::array{6}) );
-
-    {
-        auto expected = std::array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        double expected[2][3] = {
-            {1.,6.,3.},
-            {7.,4.,5.},
-        };
-        CHECK( isclose(array,expected) );
-    }
-}
-
-TEST_CASE("mutable_flatten(dynamic_matrix)" * doctest::test_suite("view::mutable_flatten"))
-{
-    auto array = dynamic_matrix{
-        {1.,2.,3.},
-        {3.,4.,5.},
-    };
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isequal(array_ref.shape(),std::array{6}) );
-
-    {
-        auto expected = std::array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        auto expected = dynamic_matrix{
-            {1.,6.,3.},
-            {7.,4.,5.},
         };
         CHECK( isclose(array,expected) );
     }

@@ -15,11 +15,7 @@
 
 namespace nmtools::view
 {
-    using meta::is_array1d_v;
-    using meta::is_array2d_v;
     using meta::is_ndarray_v;
-    using meta::is_fixed_size_vector_v;
-    using meta::is_fixed_size_matrix_v;
     using meta::is_fixed_size_ndarray_v;
     using meta::has_shape_v;
     using meta::has_size_v;
@@ -143,57 +139,6 @@ namespace nmtools
     using view::decorator_t;
     using std::get;
     using std::make_pair;
-
-    /**
-     * @brief specialization of meta::fixed_matrix_size trait for transpose view and the axes_t is none_t.
-     * 
-     * Only enable when the axes_type is view::detail::none_t and the referenced
-     * array is fixed.
-     * 
-     * @tparam array_t 
-     * @todo extend this for compile-time axes
-     * @note there is specialization of is_fixed_size_matrix that depends on meta::fixed_matrix_size
-     * @todo remove
-     */
-    template <typename array_t>
-    struct meta::fixed_matrix_size< transpose_t<array_t,none_t>
-        , std::enable_if_t< meta::is_fixed_size_matrix_v<meta::remove_cvref_t<array_t>> >
-    >
-    {
-        static inline constexpr auto src_value = meta::fixed_matrix_size_v<meta::remove_cvref_t<array_t>>;
-        static inline constexpr auto value = make_pair(get<1>(src_value),get<0>(src_value));
-        using value_type = decltype(value); // std::pair
-    };
-
-    /**
-     * @brief specialization of meta::fixed_matrix_size for transpose view and the axes_t is is integral_constant
-     * 
-     * @tparam array_t 
-     * @tparam indices_t 
-     * @todo remove
-     */
-    template <typename array_t, typename indices_t>
-    struct meta::fixed_matrix_size< transpose_t<array_t, indices_t>
-        , std::enable_if_t<
-            meta::has_tuple_size_v<indices_t>
-            && meta::apply_conjunction_v<meta::is_integral_constant,indices_t>
-        >
-    >
-    {
-        static inline constexpr auto src_value = meta::fixed_matrix_size_v<meta::remove_cvref_t<array_t>>;
-        static inline constexpr auto value = ::nmtools::detail::gather(src_value,indices_t{});
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-
-    /**
-     * @brief specialization of meta::fixed_vector_size strait for transpose view and the axes_t is none_t.
-     * 
-     * @tparam array_t 
-     */
-    template <typename array_t>
-    struct meta::fixed_vector_size< transpose_t<array_t,none_t>
-        , std::enable_if_t< meta::is_fixed_size_vector_v<meta::remove_cvref_t<array_t>> >
-    > : meta::fixed_vector_size<meta::remove_cvref_t<array_t>> {};
 
     /**
      * @brief Specialization of fixed_ndarray_shape for transpose view.

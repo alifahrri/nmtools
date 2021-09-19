@@ -118,8 +118,6 @@ if (NOT TEST_ARRAY_UTILITY)
 endif ()
 
 set(NDARRAY_TEST_SOURCES
-    src/doctest/array/fixed/matrix.cpp
-    src/doctest/array/dynamic/matrix.cpp
     src/doctest/array/fixed/ndarray.cpp
     src/doctest/array/hybrid/ndarray.cpp
     src/doctest/array/dynamic/ndarray.cpp
@@ -544,7 +542,6 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/resize_fixed_ndarray.cpp
     src/doctest/meta/transform/resize_hybrid_ndarray_max_size.cpp
     src/doctest/meta/transform/replace_at.cpp
-    src/doctest/meta/transform/select_array.cpp
     src/doctest/meta/transform/sequence.cpp
     src/doctest/meta/transform/split_at.cpp
     src/doctest/meta/transform/scatter.cpp

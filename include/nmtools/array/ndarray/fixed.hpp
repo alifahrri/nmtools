@@ -3,7 +3,6 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/detail.hpp"
-#include "nmtools/array/meta.hpp" // meta::fixed_matrix_size etc.
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 
@@ -235,33 +234,6 @@ namespace nmtools
     /** @} */ // end group utility
 
     /**
-     * @brief specialization of fixed_ndarray for meta::fixed_matrix_size array traits
-     * 
-     * @tparam T element type of fixed_ndarray
-     * @tparam Rows number of elements of 1st axis of fixed_ndarray
-     * @tparam Cols number of elements of 2nd axis of fixed_ndarray
-     */
-    template <typename T, size_t Rows, size_t Cols>
-    struct meta::fixed_matrix_size<array::fixed_ndarray<T,Rows,Cols>>
-    {
-        static inline constexpr auto value = std::make_pair(Rows,Cols);
-        using value_type = decltype(value);
-    };
-
-    /**
-     * @brief specialization of fixed_ndarray fo rmeta::fixed_vector_size array traits.
-     * 
-     * @tparam T element type of fixed_ndarray
-     * @tparam N number of elements of fixed_ndarray
-     */
-    template <typename T, size_t N>
-    struct meta::fixed_vector_size<array::fixed_ndarray<T,N>>
-    {
-        static constexpr inline auto value = N;
-        using value_type = decltype(value);
-    };
-
-    /**
      * @brief specialization of fixed_ndarray for meta::fixed_ndarray_shape array traits.
      * 
      * @tparam T element type of fixed_vector
@@ -483,9 +455,7 @@ namespace nmtools::array
      * @tparam ndarray_t 
      * @param rhs ndarray to be cloned
      * @return constexpr auto 
-     * @todo support assignment from generic ndarray and also resizeable ndarray/matrix/vector
-     * @see nmtools::matrix_size
-     * @see nmtools::vector_size
+     * @todo support assignment from generic ndarray and also resizeable ndarray
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
     template <typename ndarray_t, typename>
@@ -513,7 +483,7 @@ namespace nmtools::array
 
         auto flat_rhs  = view::flatten(std::forward<ndarray_t>(rhs));
         auto flat_data = view::mutable_flatten(this->data);
-        constexpr auto n_rhs = meta::fixed_vector_size_v<decltype(flat_rhs)>;
+        constexpr auto n_rhs = nmtools::at(meta::fixed_ndarray_shape_v<decltype(flat_rhs)>,meta::ct_v<0>);
         static_assert (numel_==n_rhs
             , "mismatched shape for fixed_ndarray assignment"
         );

@@ -86,7 +86,7 @@ namespace nmtools
             using element_t = meta::get_element_type_t<return_t>;
             auto ret_view = view::mutable_flatten(ret);
             auto arr_view = view::flatten(array);
-            auto n = vector_size(arr_view);
+            auto n = len(arr_view);
             cast_impl<element_t>(ret_view,arr_view,n);
             return ret;
         }

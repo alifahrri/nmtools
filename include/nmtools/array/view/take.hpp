@@ -91,24 +91,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
-    template <typename array_t, typename indices_t, typename axis_t>
-    struct fixed_matrix_size< view::take_t<array_t,indices_t,axis_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
-    template <typename array_t, typename indices_t, typename axis_t>
-    struct fixed_vector_size< view::take_t<array_t,indices_t,axis_t> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
     /**
      * @brief Infer shape for take view at compile-time.
      * 

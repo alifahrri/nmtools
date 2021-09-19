@@ -587,11 +587,11 @@ namespace nmtools::array
 {
     
     /**
-     * @brief assignment operator for hybrid_ndarray from generic matrix type
+     * @brief assignment operator for hybrid_ndarray from generic ndarray type
      * 
      * @tparam T element type of hybrid_ndarray
-     * @tparam ndarray_t type of matrix to be cloned
-     * @param rhs matrix to be cloned
+     * @tparam ndarray_t type of ndarray to be cloned
+     * @param rhs ndarray to be cloned
      * @return constexpr auto 
      */
     template <typename T, size_t max_elements, size_t dimension>

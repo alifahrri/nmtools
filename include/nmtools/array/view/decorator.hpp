@@ -141,8 +141,6 @@ namespace nmtools::view
          * @brief return the shape of this array
          * 
          * @return constexpr auto 
-         * @see nmtools::vector_size
-         * @see nmtools::matrix_size
          * @see nmtools::shape
          */
         constexpr decltype(auto) shape() const noexcept
@@ -503,41 +501,6 @@ namespace nmtools::view
     /** @} */ // end group view
 } // namespace nmtools::view
 
-namespace nmtools
-{
-    /**
-     * @brief sfinae-enabled matrix_size specialization for view type
-     * 
-     * @tparam view_t underlying view class template
-     * @tparam Ts arguments to view_t
-     * @param t 
-     * @return std::enable_if_t<meta::is_array2d_v<view::decorator_t<view_t,Ts...>>,std::pair<size_t,size_t>> 
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    constexpr auto matrix_size(const view::decorator_t<view_t,Ts...>& t)
-        -> std::enable_if_t<meta::is_array2d_v<view::decorator_t<view_t,Ts...>>,std::pair<size_t,size_t>>
-    {
-        auto [rows, cols] = t.shape();
-        return {rows,cols};
-    } // matrix_size
-
-    /**
-     * @brief sfinae-enable specializatoin for vector_size
-     * 
-     * @tparam T view type
-     * @param t viewed vector
-     * @return std::enable_if_t<view::is_view_v<T> && meta::is_array1d_v<T>, size_t> 
-     * @note vector_size has sfinae overload that enabled for is_fixed_size_vector
-     */
-    template <typename T>
-    constexpr auto vector_size(const T& t)
-        -> std::enable_if_t<view::is_view_v<T> && meta::is_array1d_v<T> && !meta::is_fixed_size_vector_v<T>, size_t>
-    {
-        auto [n] = t.shape();
-        return n;
-    } // vector_size
-} // namespace nmtools
-
 namespace nmtools::meta
 {
     // make is_view available from namespace meta
@@ -596,7 +559,7 @@ namespace nmtools
     struct meta::fixed_ndarray_shape<view::decorator_t<view_t,Ts...>>
     {
         /**
-         * @brief helper function to deduce the value of the matrix
+         * @brief helper function to deduce the value of the ndarray
          * 
          * @return constexpr auto 
          */
@@ -612,88 +575,10 @@ namespace nmtools
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     }; // meta::fixed_ndarray_shape
 
-    // TODO: remove
-    /**
-     * @brief specialization of meta::fixed_matrix_size for view type (view::decorator_t<...>).
-     * 
-     * Metafunction to get the size of matrix at compile-time. This specialization also
-     * serves as entry point for checking the underlying view type (view_t<Ts...>) if that
-     * underlying view is_fixed_size_matrix then calls meta::fixed_matrix_size_v for that underlying view,
-     * otherwise this should fail. Note that meta::is_fixed_size_matrix has specialization
-     * for type(s) that its specialization of meta::fixed_matrix_size has value, value_type, and the value_type
-     * is not void.
-     * 
-     * @tparam view_t template-template parameter corresponding to the underlying view type
-     * @tparam Ts template parameters to underlying type
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct meta::fixed_matrix_size<view::decorator_t<view_t,Ts...>>
-    {
-        /**
-         * @brief helper function to deduce the value of the matrix
-         * 
-         * @return constexpr auto 
-         */
-        static constexpr auto _get()
-        {
-            if constexpr (meta::is_fixed_size_matrix_v<view_t<Ts...>>)
-                return meta::fixed_matrix_size_v<view_t<Ts...>>;
-            else return detail::fail_t{};
-        } // _get()
-    
-        static inline constexpr auto value = _get();
-        // @note that remove_cvref_t here is necessary since decltype(value) may be const
-        using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
-    }; // meta::fixed_matrix_size
-
-    // TODO: remove
-    template <template<typename...> typename view_t, typename...Ts>
-    struct meta::fixed_vector_size<view::decorator_t<view_t,Ts...>>
-    {
-        /**
-         * @brief helper function to deduce the value of the matrix
-         * 
-         * @return constexpr auto 
-         */
-        static constexpr auto _get()
-        {
-            if constexpr (meta::is_fixed_size_vector_v<view_t<Ts...>>)
-                return meta::fixed_vector_size_v<view_t<Ts...>>;
-            else return detail::fail_t{};
-        } // _get()
-
-        static inline constexpr auto value = _get();
-        // @note that remove_cvref_t here is necessary since decltype(value) may be const
-        using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
-    }; // meta::fixed_vector_size
 } // namespace nmtools
 
 namespace nmtools::meta
 {
-    // TODO: remove
-    /**
-     * @brief specializtion of metafunction get_vector_value_type for view type
-     * 
-     * @tparam view_t template template parameter corresponding to the underlying view
-     * @tparam Ts template parameter(s) to the underlying view
-     * @todo remove
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct get_vector_value_type<view::decorator_t<view_t,Ts...>>
-        : get_vector_value_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
-    
-    // TODO: remove
-    /**
-     * @brief specialization of metafunction get_matrix_value_type for view type
-     * 
-     * @tparam view_t template template parameter corresponding to the underlying view
-     * @tparam Ts template parameter(s) to the underlying view
-     * @todo remove
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct get_matrix_value_type<view::decorator_t<view_t,Ts...>>
-        : get_matrix_value_type<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
-
     /**
      * @brief specialization of metafunction get_ndarray_value_type for view type
      * 

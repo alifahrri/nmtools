@@ -28,9 +28,7 @@
 namespace view = nmtools::view;
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
-using nmtools::array::fixed_matrix;
 using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_matrix;
 using nmtools::array::dynamic_ndarray;
 
 /**
@@ -44,9 +42,6 @@ TEST_CASE("ref(std::array)" * doctest::test_suite("view::ref")) // ref with 1D s
 
     CHECK( array_ref.dim()==1 );
     CHECK( isequal(array_ref.shape(),std::array{3}) );
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    // LOG_TYPEINFO( decltype(array_ref) );
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     {
         auto expected = std::array{1.,2.,3.};
@@ -66,7 +61,6 @@ TEST_CASE("ref(std::array)" * doctest::test_suite("view::ref")) // ref with 1D s
         // view should have meta::fixed_ndarray_shape if its underlying array have too
         constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
         STATIC_CHECK(( std::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     }
 }
 
@@ -81,7 +75,6 @@ TEST_CASE("ref(std::array<std::array>)" * doctest::test_suite("view::ref")) // r
         std::array{3.,4.,5.},
     };
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==2 );
     CHECK( isequal(array_ref.shape(),std::array{2,3}) );
@@ -116,7 +109,6 @@ TEST_CASE("ref(std::vector)" * doctest::test_suite("view::ref")) // ref with 1D 
 {
     auto array = std::vector{1.,2.,3.};
     auto array_ref = view::ref(array);
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_vector_v<decltype(array_ref)> ));
 
     CHECK( array_ref.dim()==1 );
     CHECK( isequal(array_ref.shape(),std::array{3}) );
@@ -136,120 +128,6 @@ TEST_CASE("ref(std::vector)" * doctest::test_suite("view::ref")) // ref with 1D 
 
     {
         STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
-    }
-}
-
-/**
- * @test test case for const ref view to 2D std::vector
- * 
- */
-TEST_CASE("ref(std::vector<std::vector>)" * doctest::test_suite("view::ref")) // ref with 2D std::vector
-{
-    auto array = std::vector{
-        std::vector{1.,2.,3.},
-        std::vector{3.,4.,5.},
-    };
-    auto array_ref = view::ref(array);
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==2 );
-    CHECK( isequal(array_ref.shape(),std::array{2,3}) );
-
-    {
-        auto expected = std::array{
-            std::array{1.,2.,3.},
-            std::array{3.,4.,5.},
-        };
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array,0,1) = 6;
-        nmtools::at(array,1,0) = 7;
-        auto expected = std::array{
-            std::array{1.,6.,3.},
-            std::array{7.,4.,5.},
-        };
-        CHECK( isclose(array_ref,expected) );
-    }
-
-    {
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
-    }
-}
-
-/**
- * @test test case for const ref view to fixed_matrix
- * 
- */
-TEST_CASE("ref(fixed_matrix)" * doctest::test_suite("view::ref")) // ref with fixed_matrix
-{
-    auto array = fixed_matrix{{
-        {1.,2.,3.},
-        {3.,4.,5.},
-    }};
-    auto array_ref = view::ref(array);
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==2 );
-    CHECK( isequal(array_ref.shape(), std::array{2,3}) );
-
-    {
-        auto expected = std::array{
-            std::array{1.,2.,3.},
-            std::array{3.,4.,5.},
-        };
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array,0,1) = 6;
-        nmtools::at(array,1,0) = 7;
-        auto expected = std::array{
-            std::array{1.,6.,3.},
-            std::array{7.,4.,5.},
-        };
-        CHECK( isclose(array_ref,expected) );
-    }
-
-    {
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
-    }
-}
-
-/**
- * @test test case for const ref view to dynamic_matrix
- * 
- */
-TEST_CASE("ref(dynamic_matrix)" * doctest::test_suite("view::ref")) // ref with dynamic_matrix
-{
-    auto array = dynamic_matrix{
-        {1.,2.,3.},
-        {3.,4.,5.},
-    };
-    auto array_ref = view::ref(array);
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_matrix_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==2 );
-    CHECK( isequal(array_ref.shape(), std::array{2,3}) );
-
-    {
-        auto expected = std::array{
-            std::array{1.,2.,3.},
-            std::array{3.,4.,5.},
-        };
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array,0,1) = 6;
-        nmtools::at(array,1,0) = 7;
-        auto expected = std::array{
-            std::array{1.,6.,3.},
-            std::array{7.,4.,5.},
-        };
-        CHECK( isclose(array_ref,expected) );
-    }
-
-    {
         STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
     }
 }

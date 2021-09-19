@@ -181,30 +181,6 @@ TEST_CASE("to_string(double[2][3])" * doctest::test_suite("utils") * doctest::sk
     }
 }
 
-TEST_CASE("to_string(fixed_matrix)" * doctest::test_suite("utils") * doctest::skip(true))
-{
-    {
-        auto arg = na::fixed_matrix<double,2,3>{};
-        auto str = to_string(arg);
-        auto to_print = std::string("\n") + str;
-        MESSAGE( to_print );
-        CHECK( str.size() );
-    }
-}
-
-TEST_CASE("to_string(dynamic_matrix)" * doctest::test_suite("utils") * doctest::skip(true))
-{
-    {
-        auto arg = na::dynamic_matrix{
-            {1.,2.,3.}, {4.,5.,6.}
-        };
-        auto str = to_string(arg);
-        auto to_print = std::string("\n") + str;
-        MESSAGE( to_print );
-        CHECK( str.size() );
-    }
-}
-
 /**
  * @brief to_string(tuple[3])
  * 

@@ -243,13 +243,6 @@ namespace nmtools
         using std::get;
         // TODO (wrap std metafunctions): wrap as meta::common_type_t
         using index_type = std::common_type_t<decltype(i),decltype(j)>;
-        constexpr auto shape = meta::fixed_matrix_size_v<array_t>;
-        constexpr auto rows = get<0>(shape);
-        constexpr auto cols = get<1>(shape);
-        static_assert(
-            meta::is_fixed_size_matrix_v<array_t>
-            && (i<rows && j<cols)
-        );
         if constexpr (meta::has_square_bracket2d_v<const array_t&,index_type>) {
             return a[{i,j}];
         } else if constexpr (meta::has_bracket2d_v<const array_t&,index_type>) {

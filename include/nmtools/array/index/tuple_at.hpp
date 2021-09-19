@@ -57,7 +57,7 @@ namespace nmtools::index
     {
         if constexpr (meta::has_tuple_size_v<vector_t>)
             return std::tuple_size_v<vector_t>;
-        else return vector_size(vec);
+        else return len(vec);
     } // size
 } // namespace nmtools::index
 

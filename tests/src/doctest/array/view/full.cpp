@@ -70,14 +70,4 @@ TEST_CASE("full_traits(case1)" * doctest::test_suite("view::full_traits"))
         constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;
         static_assert( is_fixed_shape );
     }
-    // TODO: fix
-    // {
-    //     using namespace nm::literals;
-    //     auto shape = std::tuple{2_ct,3_ct};
-    //     auto fill_value = 1;
-    //     auto array = nm::view::full(shape,fill_value);
-    //     using array_t = decltype(array);
-    //     constexpr auto is_fixed_shape = nm::meta::is_fixed_size_matrix_v<array_t>;
-    //     static_assert( is_fixed_shape );
-    // }
 }

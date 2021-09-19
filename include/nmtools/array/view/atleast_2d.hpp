@@ -134,24 +134,6 @@ namespace nmtools::meta
     };
 
     template <typename array_t>
-    struct fixed_vector_size< view::atleast_2d_t<array_t> >
-    {
-        static constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    };
-
-    template <typename array_t>
-    struct fixed_matrix_size< view::atleast_2d_t<array_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (std::is_arithmetic_v<array_t>)
-                return std::array{1ul,1ul};
-            return fixed_matrix_size_v<array_t>;
-        }();
-        using value_type = decltype(value);
-    };
-
-    template <typename array_t>
     struct fixed_ndarray_shape< view::atleast_2d_t<array_t> >
     {
         static inline constexpr auto value = [](){

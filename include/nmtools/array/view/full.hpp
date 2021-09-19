@@ -121,34 +121,6 @@ namespace nmtools::meta
     };
 
     template <typename shape_t, typename fill_value_t>
-    struct fixed_matrix_size< view::full_t<shape_t, fill_value_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_constant_index_array_v<shape_t>) {
-                if constexpr (fixed_index_array_size_v<shape_t> == 2)
-                    return fixed_ndarray_shape_v<shape_t>;
-                else return detail::fail_t{};
-            }
-            return detail::fail_t{};
-        }();
-        using value_type = decltype(value);
-    };
-
-    template <typename shape_t, typename fill_value_t>
-    struct fixed_vector_size< view::full_t<shape_t, fill_value_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_constant_index_array_v<shape_t>) {
-                if constexpr (fixed_index_array_size_v<shape_t> == 1)
-                    return fixed_ndarray_shape_v<shape_t>;
-                else return detail::fail_t{};
-            }
-            return detail::fail_t{};
-        }();
-        using value_type = decltype(value);
-    };
-
-    template <typename shape_t, typename fill_value_t>
     struct fixed_ndarray_shape< view::full_t<shape_t, fill_value_t> >
     {
         static inline constexpr auto value = [](){

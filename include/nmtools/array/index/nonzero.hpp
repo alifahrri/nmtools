@@ -18,17 +18,18 @@ namespace nmtools::index
     template <typename T, typename=void>
     struct make_resizeable
     {
-        using type = T;
-    }; // make_resizeable
-
-    template <typename T>
-    struct make_resizeable<T,
-        std::enable_if_t<meta::is_fixed_size_vector_v<T>>
-    >
-    {
-        static constexpr auto n = meta::fixed_vector_size_v<T>;
-        using element_t = meta::get_element_type_t<T>;
-        using type = array::hybrid_ndarray<element_t,n,1>;
+        static constexpr auto vtype = [](){
+            if constexpr (meta::is_fixed_size_ndarray_v<T>) {
+                constexpr auto shape = meta::fixed_ndarray_shape_v<T>;
+                constexpr auto N = index::product(shape);
+                using element_t = meta::get_element_type_t<T>;
+                using type = array::hybrid_ndarray<element_t,N,1>;
+                return meta::as_value_v<type>;
+            } else {
+                return meta::as_value_v<T>;
+            }
+        }();
+        using type = meta::type_t<decltype(vtype)>;
     }; // make_resizeable
 
     /**

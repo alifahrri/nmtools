@@ -13,9 +13,7 @@ using std::vector;
 using std::array;
 using std::tuple;
 using nmtools::array::fixed_ndarray;
-using nmtools::array::fixed_matrix;
 using nmtools::array::dynamic_ndarray;
-using nmtools::array::dynamic_matrix;
 using nmtools::utils::isequal;
 
 /**
@@ -310,62 +308,6 @@ TEST_CASE("isequal(fixed_ndarray[2],fixed_ndarray[2])" * doctest::test_suite("ut
             {4, 5, 6}
         };
         rhs = {
-            {1, 2, 3},
-            {4, 1, 6}
-        };
-        CHECK( !isequal(lhs,rhs) );
-    }
-}
-
-TEST_CASE("isequal(fixed_matrix,fixed_matrix)" * doctest::test_suite("utils"))
-{
-    {
-        auto lhs = fixed_matrix<int,2,3>{};
-        auto rhs = fixed_matrix<int,2,3>{};
-        lhs = {
-            {1, 2, 3},
-            {4, 5, 6}
-        };
-        rhs = {
-            {1, 2, 3},
-            {4, 5, 6}
-        };
-        CHECK( isequal(lhs,rhs) );
-    }
-    {
-        auto lhs = fixed_matrix<int,2,3>{};
-        auto rhs = fixed_matrix<int,2,3>{};
-        lhs = {
-            {1, 2, 3},
-            {4, 5, 6}
-        };
-        rhs = {
-            {1, 2, 3},
-            {4, 1, 6}
-        };
-        CHECK( !isequal(lhs,rhs) );
-    }
-}
-
-TEST_CASE("isequal(dynamic_matrix,dynamic_matrix)" * doctest::test_suite("utils"))
-{
-    {
-        auto lhs = dynamic_matrix{
-            {1, 2, 3},
-            {4, 5, 6}
-        };
-        auto rhs = dynamic_matrix{
-            {1, 2, 3},
-            {4, 5, 6}
-        };
-        CHECK( isequal(lhs,rhs) );
-    }
-    {
-        auto lhs = dynamic_matrix{
-            {1, 2, 3},
-            {4, 5, 6}
-        };
-        auto rhs = dynamic_matrix{
             {1, 2, 3},
             {4, 1, 6}
         };

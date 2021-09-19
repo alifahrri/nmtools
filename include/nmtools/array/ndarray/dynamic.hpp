@@ -413,9 +413,6 @@ namespace nmtools::meta
     
 } // namespace nmtools::meta
 
-// include fixed array for metafunction specialization
-// note: fixed array also include array/utility,
-// include here so that dynamic vector_size and matrix_size visible
 #include "nmtools/array/fixed.hpp"
 
 namespace nmtools::meta
@@ -446,11 +443,11 @@ namespace nmtools::array
 {
     
     /**
-     * @brief assignment operator for dynamic_ndarray from generic matrix type
+     * @brief assignment operator for dynamic_ndarray from generic ndarray type
      * 
      * @tparam T element type of dynamic_ndarray
-     * @tparam ndarray_t type of matrix to be cloned
-     * @param rhs matrix to be cloned
+     * @tparam ndarray_t type of ndarray to be cloned
+     * @param rhs array to be cloned
      * @return constexpr auto 
      */
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
