@@ -308,17 +308,6 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::shape_broadcast_to
     BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_h);
 }
 
-// TEST_CASE("broadcast_to(fixed_vector)" * doctest::test_suite("index::shape_broadcast_to"))
-// {
-//     BROADCAST_TO_SUBCASE(case1, a_f, a_f);
-//     BROADCAST_TO_SUBCASE(case2, a_f, a_f);
-//     BROADCAST_TO_SUBCASE(case3, a_f, a_f);
-//     BROADCAST_TO_SUBCASE(case4, a_f, a_f);
-//     BROADCAST_TO_SUBCASE(case5, a_f, a_f);
-//     BROADCAST_TO_SUBCASE(case6, a_f, a_f);
-//     BROADCAST_TO_SUBCASE(case7, a_f, a_f);
-// }
-
 TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("index::shape_broadcast_to"))
 {
     {

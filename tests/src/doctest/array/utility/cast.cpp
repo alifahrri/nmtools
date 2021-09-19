@@ -168,64 +168,6 @@ TEST_CASE("cast<float>(vector[2])" * doctest::test_suite("cast"))
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
 
-TEST_CASE("cast<fixed_matrix>(double[2])" * doctest::test_suite("cast"))
-{
-    using dst_t = na::fixed_matrix<double,2,3>;
-    double src[2][3] = {
-        {1,2,3},
-        {4,5,6},
-    };
-    auto res = nm::cast<dst_t>(src);
-    STATIC_CHECK_IS_SAME( decltype(res), dst_t );
-    NMTOOLS_ASSERT_CLOSE( res, src );
-}
-
-TEST_CASE("cast<float>(fixed_matrix)" * doctest::test_suite("cast"))
-{
-    using src_t = na::fixed_matrix<double,2,3>;
-    using dst_t = float;
-    using expected_t = na::fixed_matrix<dst_t,2,3>;
-    // @todo allow this
-    // auto src = src_t{{
-    //     {1,2,3},
-    //     {4,5,6},
-    // }};
-    auto src = src_t{};
-    src = {
-        {1,2,3},
-        {4,5,6},
-    };
-    auto res = nm::cast<dst_t>(src);
-    STATIC_CHECK_IS_SAME( decltype(res), expected_t );
-    NMTOOLS_ASSERT_CLOSE( res, src );
-}
-
-TEST_CASE("cast<dynamic_matrix>(double[2])" * doctest::test_suite("cast"))
-{
-    using dst_t = na::dynamic_matrix<double>;
-    double src[2][3] = {
-        {1,2,3},
-        {4,5,6},
-    };
-    auto res = nm::cast<dst_t>(src);
-    STATIC_CHECK_IS_SAME( decltype(res), dst_t );
-    NMTOOLS_ASSERT_CLOSE( res, src );
-}
-
-TEST_CASE("cast<float>(dynamic_matrix)" * doctest::test_suite("cast"))
-{
-    using src_t = na::dynamic_matrix<double>;
-    using dst_t = float;
-    using expected_t = na::dynamic_matrix<dst_t>;
-    auto src = src_t({
-        {1,2,3},
-        {4,5,6},
-    });
-    auto res = nm::cast<dst_t>(src);
-    STATIC_CHECK_IS_SAME( decltype(res), expected_t );
-    NMTOOLS_ASSERT_CLOSE( res, src );
-}
-
 TEST_CASE("cast<fixed_ndarray>(double[2])" * doctest::test_suite("cast"))
 {
     using dst_t = na::fixed_ndarray<double,2,3>;
@@ -464,30 +406,6 @@ TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
 TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
 {
     using dst_t = std::vector<std::vector<float>>;
-    double src[2][3] = {
-        {1,2,3},
-        {4,5,6},
-    };
-    auto res = nm::cast<dst_t>(src);
-    STATIC_CHECK_IS_SAME( decltype(res), dst_t );
-    NMTOOLS_ASSERT_CLOSE( res, src );
-}
-
-TEST_CASE("cast<fixed_matrix>(double[2])" * doctest::test_suite("cast"))
-{
-    using dst_t = na::fixed_matrix<float,2,3>;
-    double src[2][3] = {
-        {1,2,3},
-        {4,5,6},
-    };
-    auto res = nm::cast<dst_t>(src);
-    STATIC_CHECK_IS_SAME( decltype(res), dst_t );
-    NMTOOLS_ASSERT_CLOSE( res, src );
-}
-
-TEST_CASE("cast<dynamic_matrix>(double[2])" * doctest::test_suite("cast"))
-{
-    using dst_t = na::dynamic_matrix<float>;
     double src[2][3] = {
         {1,2,3},
         {4,5,6},

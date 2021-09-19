@@ -201,64 +201,6 @@ TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
     }
 }
 
-TEST_CASE("apply_at(fixed_matrix<>)" * doctest::test_suite("utility"))
-{
-    using nm::array::fixed_matrix;
-    {
-        // fixed_matrix<double,3,2>
-        // @todo allow this
-        // auto a = fixed_matrix<double,3,2>{{
-        //     {1,2},
-        //     {3,4},
-        //     {5,6}
-        // }};
-        auto a = fixed_matrix<double,3,2>{};
-        a = {
-            {1,2},
-            {3,4},
-            {5,6}
-        };
-        {
-            auto indices = tuple{0,1};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 2);
-        }
-        {
-            auto indices = tuple{1,0};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 3);
-        }
-        {
-            auto indices = tuple{2,1};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 6);
-        }
-    }
-}
-
-TEST_CASE("apply_at(dynamic_matrix<>)" * doctest::test_suite("utility"))
-{
-    using nm::array::dynamic_matrix;
-    {
-        auto a = dynamic_matrix{ {1,2}, {3,4}, {5,6} };
-        {
-            auto indices = tuple{0,1};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 2);
-        }
-        {
-            auto indices = tuple{1,0};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 3);
-        }
-        {
-            auto indices = tuple{2,1};
-            auto res = nm::apply_at(a, indices);
-            NMTOOLS_ASSERT_CLOSE(res, 6);
-        }
-    }
-}
-
 TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 {
     using nm::array::dynamic_ndarray;
