@@ -378,24 +378,33 @@ namespace nmtools::view
                 constexpr auto N = meta::len_v<nocv_array_t>;
                 constexpr auto vtype = meta::template_reduce<N>([](auto init, auto index){
                     constexpr auto i = decltype(index)::value;
-                    using init_t  = decltype(init);
+                    using type_i  = meta::type_t<decltype(init)>;
                     using array_i = meta::at_t<array_type,i>;
-                    // array_i may be cvref
-                    using nocv_array_i = meta::remove_cvref_t<array_i>;
+                    // array_i may be cvref or even a pointer
+                    using nocv_array_i = meta::remove_cvref_pointer_t<array_i>;
                     using array_t = std::conditional_t<is_view_v<nocv_array_i>,
                         get_underlying_array_type_t<nocv_array_i>, array_i
                     >;
-                    if constexpr (is_none_v<init_t>) {
+                    // at this point array_t (which may be the result of recursively calling get_underlying_array_type)
+                    // may be tuple may be array may be num. must call meta::concat if it is tuple, meta::append otherwise.
+
+                    if constexpr (is_none_v<type_i> && !meta::is_tuple_v<array_t>) {
                         // init typelist, use std::tuple for now,
-                        // TODO: deduce template template of nocv_array_tif possible
+                        // TODO: deduce template template of nocv_array_t if possible
                         using type = std::tuple<array_t>;
                         return meta::as_value_v<type>;
-                    } else {
-                        using tuple_t = meta::type_t<init_t>;
-                        using type = meta::append_type_t<tuple_t,array_t>;
+                    } else if constexpr (is_none_v<type_i> && meta::is_tuple_v<array_t>) {
+                        return meta::as_value_v<array_t>;
+                    } else if constexpr (meta::is_tuple_v<array_t>) {
+                        // assume type_i is tuple-like type-list
+                        // need to concatenate if array_t is also a tuple/type-list
+                        using type = meta::concat_type_t<type_i,array_t>;
+                        return meta::as_value_v<type>;
+                    } else /* if constexpr (meta::is_ndarray_v<array_t> || meta::is_num_v<array_t>) */ {
+                        using type = meta::append_type_t<type_i,array_t>;
                         return meta::as_value_v<type>;
                     }
-                }, /*init=*/None);
+                }, /*init=*/meta::as_value_v<none_t>);
                 return vtype;
             } else if constexpr (is_view_v<nocv_array_t>) {
                 using type = get_underlying_array_type_t<nocv_array_t>;
