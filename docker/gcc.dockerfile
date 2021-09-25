@@ -13,9 +13,9 @@ COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
 RUN mkdir build && cd build \
     && cmake \
-        -DBUILD_EXAMPLES=ON \
-        -DCODE_COVERAGE=ON \
-        -DENABLE_TEST_BENCHMARKS=ON \
+        -DNMTOOLS_BUILD_EXAMPLES=ON \
+        -DNMTOOLS_CODE_COVERAGE=ON \
+        -DNMTOOLS_ENABLE_TEST_BENCHMARKS=ON \
         -DCMAKE_BUILD_TYPE=Debug .. \
     && make VERBOSE=1 -j4 && make install
 
