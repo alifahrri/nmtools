@@ -493,7 +493,7 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
         }};
         auto sliced = g(array);
         int expected[1][1] = {
-            {{1}}
+            {1}
         };
         CHECK( &array == sliced.array.array );
         NMTOOLS_ASSERT_EQUAL( sliced, expected );
@@ -505,7 +505,7 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
         };
         auto sliced = view::slice(array, tuple{0,1}, tuple{0,1});
         int expected[1][1] = {
-            {{1}}
+            {1}
         };
         NMTOOLS_ASSERT_EQUAL( sliced, expected );
     }

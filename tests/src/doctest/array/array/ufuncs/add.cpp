@@ -86,6 +86,20 @@ TEST_CASE("add(case2)" * doctest::test_suite("array::add"))
     ADD_SUBCASE( case2, a_h, b, context, output );
 }
 
+TEST_CASE("add(case3)" * doctest::test_suite("array::add"))
+{
+    ADD_SUBCASE(case3, a, b);
+}
+
+TEST_CASE("add(case4)" * doctest::test_suite("array::add"))
+{
+    ADD_SUBCASE(case4, a, b);
+    ADD_SUBCASE(case4, a_a, b);
+    ADD_SUBCASE(case4, a_f, b);
+    ADD_SUBCASE(case4, a_d, b);
+    ADD_SUBCASE(case4, a_h, b);
+}
+
 // skip constexpr test for emscripten
 // NOTE: temporarily disable constexpr test,
 // latest changes to support view composition makes it not possible for the current implementaion,

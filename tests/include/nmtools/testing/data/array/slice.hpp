@@ -794,12 +794,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
     NMTOOLS_TESTING_DECLARE_EXPECT(case29)
     {
         inline int result[2][1] = {
-            {
-                {2}
-            },
-            {
-                {8}
-            }
+            {2},
+            {8}
         };
     }
 

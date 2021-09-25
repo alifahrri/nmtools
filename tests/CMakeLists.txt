@@ -35,34 +35,36 @@ endif ()
 ## disable benchmarks
 add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
 
-option(TEST_ALL             "test all modules"              ON)
-option(TEST_ARRAY_INDEX     "test array index modules"      OFF)
-option(TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
-option(TEST_UTILS           "test utils modules"            OFF)
-option(TEST_NDARRAY         "test ndarray modules"          OFF)
-option(TEST_ARRAY_VIEW      "test array view modules"       OFF)
-option(TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
-option(TEST_ARRAY_EVAL      "test array evaluation"         OFF)
-option(TEST_ARRAY_VIEW_NN   "test array nn view modules"    OFF)
-option(TEST_ARRAY_VIEW_EVAL "test array nn eval modules"    OFF)
-option(TEST_EXCEPTION       "test exception error handling" OFF)
-option(TEST_OPTIONAL        "test optional error handling"  OFF)
-option(TEST_MISC            "test other modules"            OFF)
+option(NMTOOLS_TEST_ALL             "test all modules"              ON)
+option(NMTOOLS_TEST_ARRAY_INDEX     "test array index modules"      OFF)
+option(NMTOOLS_TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
+option(NMTOOLS_TEST_UTILS           "test utils modules"            OFF)
+option(NMTOOLS_TEST_NDARRAY         "test ndarray modules"          OFF)
+option(NMTOOLS_TEST_ARRAY_VIEW      "test array view modules"       OFF)
+option(NMTOOLS_TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
+option(NMTOOLS_TEST_ARRAY_EVAL      "test array evaluation"         OFF)
+option(NMTOOLS_TEST_ARRAY_VIEW_NN   "test array nn view modules"    OFF)
+option(NMTOOLS_TEST_ARRAY_NN_EVAL   "test array nn eval modules"    OFF)
+option(NMTOOLS_TEST_COMPOSITION     "test array view composition"   OFF)
+option(NMTOOLS_TEST_EXCEPTION       "test exception error handling" OFF)
+option(NMTOOLS_TEST_OPTIONAL        "test optional error handling"  OFF)
+option(NMTOOLS_TEST_MISC            "test other modules"            OFF)
 
-if (TEST_ALL)
-    SET(TEST_ARRAY_INDEX     ON CACHE BOOL "test array index modules"      FORCE)
-    SET(TEST_ARRAY_UTILITY   ON CACHE BOOL "test array utility modules"    FORCE)
-    SET(TEST_UTILS           ON CACHE BOOL "test utils modules"            FORCE)
-    SET(TEST_NDARRAY         ON CACHE BOOL "test ndarray modules"          FORCE)
-    SET(TEST_ARRAY_VIEW      ON CACHE BOOL "test array view modules"       FORCE)
-    SET(TEST_ARRAY_UFUNCS    ON CACHE BOOL "test array ufuncs modules"     FORCE)
-    SET(TEST_ARRAY_EVAL      ON CACHE BOOL "test array evaluation"         FORCE)
-    SET(TEST_ARRAY_VIEW_NN   ON CACHE BOOL "test array nn view modules"    FORCE)
-    SET(TEST_ARRAY_VIEW_EVAL ON CACHE BOOL "test array nn eval modules"    FORCE)
-    SET(TEST_EXCEPTION       ON CACHE BOOL "test exception error handling" FORCE)
-    SET(TEST_OPTIONAL        ON CACHE BOOL "test optional error handling"  FORCE)
-    SET(TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
-endif (TEST_ALL)
+if (NMTOOLS_TEST_ALL)
+    SET(NMTOOLS_TEST_ARRAY_INDEX     ON CACHE BOOL "test array index modules"      FORCE)
+    SET(NMTOOLS_TEST_ARRAY_UTILITY   ON CACHE BOOL "test array utility modules"    FORCE)
+    SET(NMTOOLS_TEST_UTILS           ON CACHE BOOL "test utils modules"            FORCE)
+    SET(NMTOOLS_TEST_NDARRAY         ON CACHE BOOL "test ndarray modules"          FORCE)
+    SET(NMTOOLS_TEST_ARRAY_VIEW      ON CACHE BOOL "test array view modules"       FORCE)
+    SET(NMTOOLS_TEST_ARRAY_UFUNCS    ON CACHE BOOL "test array ufuncs modules"     FORCE)
+    SET(NMTOOLS_TEST_ARRAY_EVAL      ON CACHE BOOL "test array evaluation"         FORCE)
+    SET(NMTOOLS_TEST_ARRAY_VIEW_NN   ON CACHE BOOL "test array nn view modules"    FORCE)
+    SET(NMTOOLS_TEST_ARRAY_NN_EVAL   ON CACHE BOOL "test array nn eval modules"    FORCE)
+    SET(NMTOOLS_TEST_COMPOSITION     ON CACHE BOOL "test array view composition"   FORCE)
+    SET(NMTOOLS_TEST_EXCEPTION       ON CACHE BOOL "test exception error handling" FORCE)
+    SET(NMTOOLS_TEST_OPTIONAL        ON CACHE BOOL "test optional error handling"  FORCE)
+    SET(NMTOOLS_TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
+endif (NMTOOLS_TEST_ALL)
 
 set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/argfilter.cpp
@@ -95,7 +97,7 @@ set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/tile.cpp
     src/doctest/array/index/take.cpp
 )
-if (NOT TEST_ARRAY_INDEX)
+if (NOT NMTOOLS_TEST_ARRAY_INDEX)
     set(ARRAY_INDEX_TEST_SOURCES "")
 endif ()
 
@@ -104,7 +106,7 @@ set(UTILS_TEST_SOURCES
     src/doctest/utils/isclose.cpp
     src/doctest/utils/to_string.cpp
 )
-if (NOT TEST_UTILS)
+if (NOT NMTOOLS_TEST_UTILS)
     set(UTILS_TEST_SOURCES "")
 endif ()
 
@@ -113,7 +115,7 @@ set(ARRAY_UTILITY_TEST_SOURCES
     src/doctest/array/utility/apply_at.cpp
     src/doctest/array/utility/cast.cpp
 )
-if (NOT TEST_ARRAY_UTILITY)
+if (NOT NMTOOLS_TEST_ARRAY_UTILITY)
     set (ARRAY_UTILITY_TEST_SOURCES "")
 endif ()
 
@@ -122,7 +124,7 @@ set(NDARRAY_TEST_SOURCES
     src/doctest/array/hybrid/ndarray.cpp
     src/doctest/array/dynamic/ndarray.cpp
 )
-if (NOT TEST_NDARRAY)
+if (NOT NMTOOLS_TEST_NDARRAY)
     set(NDARRAY_TEST_SOURCES "")
 endif ()
 
@@ -151,14 +153,16 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/reshape.cpp
     src/doctest/array/view/slice.cpp
     src/doctest/array/view/squeeze.cpp
+    src/doctest/array/view/stddev.cpp
     src/doctest/array/view/take.cpp
     src/doctest/array/view/tile.cpp
     src/doctest/array/view/transpose.cpp
     src/doctest/array/view/ufunc.cpp
+    src/doctest/array/view/var.cpp
     src/doctest/array/view/where.cpp
     src/doctest/array/view/zeros.cpp
 )
-if (NOT TEST_ARRAY_VIEW)
+if (NOT NMTOOLS_TEST_ARRAY_VIEW)
     set (ARRAY_VIEW_TEST_SOURCES "")
 endif ()
 
@@ -167,7 +171,7 @@ set(EXCEPTION_TEST_SOURCES
     src/doctest/error/array/view/broadcast_arrays_exception.cpp
     src/doctest/error/array/view/broadcast_to_exception.cpp
 )
-if (NOT TEST_EXCEPTION)
+if (NOT NMTOOLS_TEST_EXCEPTION)
     set (EXCEPTION_TEST_SOURCES "")
 endif ()
 
@@ -175,7 +179,7 @@ set(OPTIONAL_TEST_SOURCES
     src/doctest/error/array/view/broadcast_arrays_optional.cpp
     src/doctest/error/array/view/broadcast_to_optional.cpp
 )
-if (NOT TEST_OPTIONAL)
+if (NOT NMTOOLS_TEST_OPTIONAL)
     set (OPTIONAL_TEST_SOURCES "")
 endif ()
 
@@ -252,8 +256,17 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     src/doctest/array/view/ufuncs/tanh.cpp
     src/doctest/array/view/ufuncs/trunc.cpp
 )
-if (NOT TEST_ARRAY_UFUNCS)
+if (NOT NMTOOLS_TEST_ARRAY_UFUNCS)
     set (ARRAY_UFUNCS_TEST_SOURCES "")
+endif ()
+
+set(COMPOSITION_TEST_SOURCES
+    src/doctest/array/composition/mean_subtract.cpp
+    src/doctest/array/composition/subtract_fabs_square.cpp
+    src/doctest/array/composition/square_sum_divide.cpp
+)
+if (NOT NMTOOLS_TEST_COMPOSITION)
+    set(COMPOSITION_TEST_SOURCES "")
 endif ()
 
 set(ARRAY_EVAL_TEST_SOURCES
@@ -279,10 +292,12 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/reshape.cpp
     src/doctest/array/array/slice.cpp
     src/doctest/array/array/squeeze.cpp
+    src/doctest/array/array/stddev.cpp
     src/doctest/array/array/sum.cpp
     src/doctest/array/array/take.cpp
     src/doctest/array/array/tile.cpp
     src/doctest/array/array/transpose.cpp
+    src/doctest/array/array/var.cpp
     src/doctest/array/array/where.cpp
     src/doctest/array/array/zeros.cpp
     src/doctest/array/array/ufuncs/add.cpp
@@ -351,7 +366,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/ufuncs/tanh.cpp
     src/doctest/array/array/ufuncs/trunc.cpp
 )
-if (NOT TEST_ARRAY_EVAL)
+if (NOT NMTOOLS_TEST_ARRAY_EVAL)
     set (ARRAY_EVAL_TEST_SOURCES "")
 endif ()
 
@@ -375,7 +390,7 @@ set(VIEW_NN_TEST_SOURCES
     src/doctest/array/view/activations/softsign.cpp
     src/doctest/array/view/activations/tanhshrink.cpp
 )
-if (NOT TEST_ARRAY_VIEW_NN)
+if (NOT NMTOOLS_TEST_ARRAY_VIEW_NN)
     set (VIEW_NN_TEST_SOURCES "")
 endif ()
 
@@ -399,14 +414,14 @@ set(EVAL_NN_TEST_SOURCES
     src/doctest/array/array/activations/softshrink.cpp
     src/doctest/array/array/activations/tanhshrink.cpp
 )
-if (NOT TEST_ARRAY_VIEW_EVAL)
+if (NOT NMTOOLS_TEST_ARRAY_NN_EVAL)
     set (EVAL_NN_TEST_SOURCES "")
 endif ()
 
 set(MISC_TEST_SOURCES
     src/doctest/misc/constants.cpp
 )
-if (NOT TEST_MISC)
+if (NOT NMTOOLS_TEST_MISC)
     set (MISC_TEST_SOURCES "")
 endif()
 
@@ -429,6 +444,8 @@ add_executable(${PROJECT_NAME}-doctest src/doctest/tests.cpp
     ${VIEW_NN_TEST_SOURCES}
     ## array eval nn
     ${EVAL_NN_TEST_SOURCES}
+    ## view composition
+    ${COMPOSITION_TEST_SOURCES}
     ## misc
     ${MISC_TEST_SOURCES}
 )
@@ -462,8 +479,8 @@ if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest-optional PRIVATE doctest::doctest)
 endif()
 
-option(ENABLE_TEST_BENCHMARKS "build benchmark programs" OFF)
-if (ENABLE_TEST_BENCHMARKS)
+option(NMTOOLS_ENABLE_TEST_BENCHMARKS "build benchmark programs" OFF)
+if (NMTOOLS_ENABLE_TEST_BENCHMARKS)
     add_definitions(-DNMTOOLS_TESTING_ENABLE_BENCHMARKS)
     add_library(nanobench src/nanobench.cpp)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
@@ -486,6 +503,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/view/reshape.cpp
     src/doctest/meta/array/view/take.cpp
     src/doctest/meta/array/view/ufunc.cpp
+    src/doctest/meta/array/view/var.cpp
     src/doctest/meta/array/eval/arange.cpp
     src/doctest/meta/array/eval/atleast_1d.cpp
     src/doctest/meta/array/eval/atleast_2d.cpp
@@ -502,6 +520,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/eval/take.cpp
     src/doctest/meta/array/eval/tile.cpp
     src/doctest/meta/array/eval/ufunc.cpp
+    src/doctest/meta/array/eval/var.cpp
     src/doctest/meta/array/eval/where.cpp
     src/doctest/meta/array/eval/zeros.cpp
     src/doctest/meta/array/index/argfilter.cpp
@@ -605,25 +624,25 @@ target_compile_options(${PROJECT_NAME}-doctest-meta PRIVATE
     -ftemplate-backtrace-limit=0
 )
 
-option(DEFER_STATIC_CHECK "defer static check to runtime for testing purpose" OFF)
-if (DEFER_STATIC_CHECK)
+option(NMTOOLS_DEFER_STATIC_CHECK "defer static check to runtime for testing purpose" OFF)
+if (NMTOOLS_DEFER_STATIC_CHECK)
     add_definitions(-DDEFER_STATIC_CHECK)
 endif ()
 
 
-option(ADDRESS_SANITIZER "build with -fsanitize=address" OFF)
-message(STATUS "ADDRESS_SANITIZER ${ADDRESS_SANITIZER}")
+option(NMTOOLS_ADDRESS_SANITIZER "build with -fsanitize=address" OFF)
+message(STATUS "NMTOOLS_ADDRESS_SANITIZER ${ADDRESS_SANITIZER}")
 
 # from https://gist.github.com/jlblancoc/44be9d4d466f0a973b1f3808a8e56782
 # TODO: findout if can be used for private target instead
 # TODO: find out if can be used with other compiler
 # TODO: provide option to disable/enable
-if (ADDRESS_SANITIZER)
+if (NMTOOLS_ADDRESS_SANITIZER)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -fsanitize=leak")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fsanitize=leak")
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=address -fsanitize=leak")
-endif (ADDRESS_SANITIZER)
+endif (NMTOOLS_ADDRESS_SANITIZER)
 
 option(NMTOOLS_UNDEFINED_SANITIZER "build with -fsanitize=undefined" OFF)
 message(STATUS "NMTOOLS_UNDEFINED_SANITIZER ${NMTOOLS_UNDEFINED_SANITIZER}")
@@ -635,9 +654,9 @@ if (NMTOOLS_UNDEFINED_SANITIZER)
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=undefined")
 endif (NMTOOLS_UNDEFINED_SANITIZER)
 
-option(CODE_COVERAGE "build with code coverage reporting" OFF)
+option(NMTOOLS_CODE_COVERAGE "build with code coverage reporting" OFF)
 message(STATUS "CODE_COVERAGE ${CODE_COVERAGE}")
-if (CODE_COVERAGE)
+if (NMTOOLS_CODE_COVERAGE)
     include(CodeCoverage)
     append_coverage_compiler_flags()
     setup_target_for_coverage_gcovr_html(
@@ -645,9 +664,9 @@ if (CODE_COVERAGE)
         EXECUTABLE ${PROJECT_NAME}-doctest
         EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"
     )
-endif (CODE_COVERAGE)
+endif (NMTOOLS_CODE_COVERAGE)
 
-# for emscripten generate js
+# for emscripten, generate js main
 if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     message(" * C++ compiler: Emscripten")
     message(STATUS "Emscripten detected")

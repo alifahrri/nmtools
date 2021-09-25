@@ -46,6 +46,7 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
 {
     ADD_SUBCASE( case1,   a,   b );
     ADD_SUBCASE( case1, a_a, b_a );
+    // TODO: remove nested vector
     ADD_SUBCASE( case1, a_v, b_v );
     ADD_SUBCASE( case1, a_f, b_f );
     ADD_SUBCASE( case1, a_d, b_d );
@@ -56,6 +57,7 @@ TEST_CASE("add(case2)" * doctest::test_suite("view::add"))
 {
     ADD_SUBCASE( case2,   a, b );
     ADD_SUBCASE( case2, a_a, b );
+    // TODO: remove nested vector
     ADD_SUBCASE( case2, a_v, b );
     ADD_SUBCASE( case2, a_f, b );
     ADD_SUBCASE( case2, a_d, b );
@@ -65,6 +67,15 @@ TEST_CASE("add(case2)" * doctest::test_suite("view::add"))
 TEST_CASE("add(case3)" * doctest::test_suite("view::add"))
 {
     ADD_SUBCASE(case3, a, b);
+}
+
+TEST_CASE("add(case4)" * doctest::test_suite("view::add"))
+{
+    ADD_SUBCASE(case4, a, b);
+    ADD_SUBCASE(case4, a_a, b);
+    ADD_SUBCASE(case4, a_f, b);
+    ADD_SUBCASE(case4, a_d, b);
+    ADD_SUBCASE(case4, a_h, b);
 }
 
 #define RUN_reduce_add_impl(...) \
