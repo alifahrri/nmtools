@@ -411,8 +411,10 @@ namespace nmtools::view
         /**
          * @brief compute element at given indices, effectively perform reduction.
          * 
-         * Computing such element only available if not reducing the whole array
-         * (axis_t is not None).
+         * Computing element (at given indices) only available if not reducing the whole array
+         * (axis_t is not None), because the view is not ndarray but num.
+         * Internally this operator slices the referenced array then flatten then actually
+         * perform reduction (using reducer_t).
          * 
          * @tparam size_types 
          * @param indices 
@@ -421,6 +423,11 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
+            // The slice can be illustrated as follows:
+            // assume array is (2,3,2) shape, and we are reducing on axis=1
+            // hence the resulting shape should be (2,2)
+            // at index (0,0), the slice should be (0,:,0)
+            // the following axis logic is basically doing that.
             // TODO: consider to call eval on slices instead of putting all the code here
 
             // here we directly provide operator() to actually performing operations,
@@ -461,7 +468,11 @@ namespace nmtools::view
 
             // use the same type as axis_t for loop index
             constexpr auto idx_vtype = [](){
-                if constexpr (meta::is_index_array_v<axis_t>) {
+                if constexpr (meta::is_constant_index_array_v<axis_t>) {
+                    // std::commont_type can't handle constant index array :|
+                    // shortcut for now, just use int
+                    return meta::as_value_v<int>;
+                } else if constexpr (meta::is_index_array_v<axis_t>) {
                     using type = meta::get_element_type_t<axis_t>;
                     return meta::as_value_v<type>;
                 } else if constexpr (meta::is_integer_v<axis_t>) {
@@ -477,10 +488,12 @@ namespace nmtools::view
             // this variable track index for indices_
             auto ii = idx_t{0};
             // here, len(slices) already matched the dimension of source array
-            for (idx_t i=0; i<len(slices); i++) {
+            meta::template_for<DIM>([&](auto index){
+                constexpr auto i = decltype(index)::value;
                 // take all elements at given axis
                 if (in_axis(i)) {
-                    at(slices,i) = {static_cast<idx_t>(0),at(shape_,i)};
+                    // note that shape_ maybe constant index array
+                    at(slices,i) = {static_cast<idx_t>(0),at(shape_,meta::ct_v<i>)};
                     // if keepdims is true, also increment indices index
                     if (keepdims)
                         ii++;
@@ -490,7 +503,7 @@ namespace nmtools::view
                     auto s = at(indices_,ii++);
                     at(slices,i) = {s,s+1};
                 }
-            }
+            });
             // apply slice only works with fixed dim ndarray for now
             // TODO: support dynamic dim ndarray
             auto sliced = [&](){
@@ -503,6 +516,8 @@ namespace nmtools::view
                 }
             }();
             auto flattened = flatten(sliced);
+            // TODO: instead of reduce using reducer_t, return reduce using None axis
+            // doing so may simplify evaluation
             return [&](){
                 if constexpr (is_none_v<initial_type>)
                     return reducer.template operator()<result_type>(flattened);
@@ -547,12 +562,25 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
+            // None axis with keepdims True:
             // just get the original shape and then fill with one
             auto f_shape = [&](){
                 auto shape_ = detail::shape(array);
-                for (size_t i=0; i<len(shape_); i++)
-                    at(shape_,i) = 1;
-                return shape_;
+                using mshape_t = decltype(shape_);
+                if constexpr (meta::is_constant_index_array_v<mshape_t>) {
+                    // special case: shape is compile-time value,
+                    // can't access and modify at runtime
+                    constexpr auto N   = meta::len_v<mshape_t>;
+                    constexpr auto val = meta::ct_v<1>;
+                    auto res = meta::template_reduce<N-1>([&](auto init, auto index){
+                        return std::tuple_cat(init,std::tuple{val});
+                    }, /*init=*/std::tuple{val});
+                    return res;
+                } else {
+                    for (size_t i=0; i<len(shape_); i++)
+                        at(shape_,i) = 1;
+                    return shape_;
+                }
             };
             if constexpr (meta::is_integral_constant_v<keepdims_t>) {
                 if constexpr (static_cast<bool>(keepdims_t::value))
@@ -1038,35 +1066,23 @@ namespace nmtools::meta
                 });
                 return all_fixed;
             }();
-            // if all array is fixed shape, check if all array has same shape
-            if constexpr (all_fixed_shape) {
-                // assume at least 1 array is provided
-                using array0_t = type_list_at_t<0,array_types>;
-                constexpr auto shape0 = fixed_ndarray_shape_v<array0_t>;
-                // actual checking
-                constexpr auto shame_shape = [=](){
-                    auto same = true;
-                    template_for<sizeof...(arrays_t)>([&same,&shape0](auto index){
-                        constexpr auto I = decltype(index)::value;
-                        using type = type_list_at_t<I,array_types>;
-                        static_assert( !std::is_void_v<type>
-                            , "internal error: fixed_ndarray_shape< view::ufunc_t<op_t,arrays_t...> >"
-                        );
-                        static_assert( is_fixed_size_ndarray_v<type>
-                            , "internal error: fixed_ndarray_shape< view::ufunc_t<op_t,arrays_t...> >"
-                        );
-                        same = same && utils::isequal(fixed_ndarray_shape_v<type>,shape0);
-                    });
-                    return same;
-                }();
-                // if all arrays have the same shape, return the shape
+            // if all array is fixed shape, check if all array shapes can be broadcasted together
+            // note that broadcast_shape doesn't support unary
+            if constexpr (all_fixed_shape && (sizeof...(arrays_t) > 1)) {
+                constexpr auto broadcasted_shape = index::broadcast_shape(fixed_ndarray_shape_v<arrays_t>...);
+                constexpr auto success = at(broadcasted_shape,ct_v<0>);
+                if constexpr (success) {
+                    return at(broadcasted_shape,ct_v<1>);
+                } else {
+                    return detail::Fail;
+                }
+            } else if constexpr (all_fixed_shape) {
+                // unary ufunc
+                return fixed_ndarray_shape_v<type_list_at_t<0,array_types>>;
+            } else {
                 // otherwise return fail
-                if constexpr (shame_shape)
-                    return shape0;
-                else return detail::Fail;
+                return detail::Fail;
             }
-            // otherwise return fail
-            else return detail::Fail;
         }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
