@@ -1061,72 +1061,6 @@ namespace nmtools::meta
     using bit_reference_to_bool_t = type_t<bit_reference_to_bool<T>>;
 
     /**
-     * @brief 
-     * 
-     * @tparam T 
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct get_element_type
-    {
-        /**
-         * @brief helper function to deduce resulting type
-         * 
-         * @return constexpr auto 
-         * @todo consider use expr to deduce type (e.g. expr::atnd)
-         */
-        static inline constexpr auto _get()
-        {
-            /**
-             * @note since is_array1d_v and is_array2d_v may not be mutually exclusive,
-             * it is hard to use std::enable_if / std::void_t to specialize,
-             * hence using helper function instead
-             * to deduce the resulting element type.
-             * 
-             * @todo make this fn consteval
-             * @note using detail::void_to_fail_t since void can't be instantiated, reversed back to void at the caller site.
-             */
-            if constexpr (std::is_array_v<T>) {
-                using type = std::remove_all_extents_t<T>;
-                return detail::void_to_fail_t<type>{};
-            }
-            else if constexpr (meta::nested_array_dim_v<T> > 0) {
-                using element_t = remove_all_nested_array_dim_t<T>;
-                // note that remove_all_nested_array_dim_t using expression to deduce the type
-                // causing vector<bool> deduced to std::_Bit_reference instead of bool
-                using type = bit_reference_to_bool_t<element_t>;
-                return detail::void_to_fail_t<type>{};
-            }
-            // ndarray is more generic
-            else if constexpr (meta::is_ndarray_v<T>) {
-                using type = get_ndarray_value_type_t<T>;
-                return detail::void_to_fail_t<type>{};
-            }
-            else if constexpr (meta::is_integral_constant_v<T>)
-                return typename T::value_type{};
-            else if constexpr (meta::has_value_type_v<T>) {
-                using type = typename T::value_type;
-                if constexpr (std::is_arithmetic_v<type>)
-                    return type{};
-                else
-                    return typename get_element_type<type>::type{};
-            }
-            else if constexpr (std::is_arithmetic_v<T>)
-                return T{};
-            else return detail::fail_t{};
-        }
-        using type = detail::fail_to_void_t<decltype(_get())>;
-    }; // get_element_type
-
-    /**
-     * @brief helper alias template for get_element_type
-     * 
-     * @tparam T type to transform
-     */
-    template <typename T>
-    using get_element_type_t = typename get_element_type<T>::type;
-
-    /**
      * @brief Type as value
      * 
      * @tparam T type to wrap
@@ -1144,6 +1078,78 @@ namespace nmtools::meta
      */
     template <typename T>
     constexpr inline auto as_value_v = as_value<T>{};
+
+    namespace error
+    {
+        struct GET_ELEMENT_TYPE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     * @tparam typename=void 
+     */
+    template <typename T, typename=void>
+    struct get_element_type
+    {
+        /**
+         * @brief helper function to deduce resulting type
+         * 
+         * @return constexpr auto 
+         * @todo consider use expr to deduce type (e.g. expr::atnd)
+         */
+        static inline constexpr auto vtype = []()
+        {
+            /**
+             * @note since is_array1d_v and is_array2d_v may not be mutually exclusive,
+             * it is hard to use std::enable_if / std::void_t to specialize,
+             * hence using helper function instead
+             * to deduce the resulting element type.
+             * 
+             * @todo make this fn consteval
+             * @note using detail::void_to_fail_t since void can't be instantiated, reversed back to void at the caller site.
+             */
+            if constexpr (std::is_array_v<T>) {
+                using type = std::remove_all_extents_t<T>;
+                return as_value_v<type>;
+            }
+            else if constexpr (meta::nested_array_dim_v<T> > 0) {
+                using element_t = remove_all_nested_array_dim_t<T>;
+                // note that remove_all_nested_array_dim_t using expression to deduce the type
+                // causing vector<bool> deduced to std::_Bit_reference instead of bool
+                using type = bit_reference_to_bool_t<element_t>;
+                return as_value_v<type>;
+            }
+            // ndarray is more generic
+            else if constexpr (meta::is_ndarray_v<T>) {
+                using type = get_ndarray_value_type_t<T>;
+                return as_value_v<type>;
+            }
+            else if constexpr (meta::is_integral_constant_v<T>) {
+                return as_value_v<typename T::value_type>;
+            }
+            else if constexpr (meta::has_value_type_v<T>) {
+                using type = typename T::value_type;
+                if constexpr (std::is_arithmetic_v<type>)
+                    return as_value_v<type>;
+                else
+                    return as_value_v<typename get_element_type<type>::type>;
+            }
+            else if constexpr (std::is_arithmetic_v<T>)
+                return as_value_v<T>;
+            else return as_value_v<error::GET_ELEMENT_TYPE_UNSUPPORTED>;
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // get_element_type
+
+    /**
+     * @brief helper alias template for get_element_type
+     * 
+     * @tparam T type to transform
+     */
+    template <typename T>
+    using get_element_type_t = typename get_element_type<T>::type;
 
     namespace detail
     {
@@ -1931,11 +1937,18 @@ namespace nmtools::meta
     template <typename array_t>
     struct get_element_or_common_type
     {
+        static constexpr auto vtype = [](){
+            using element_t = get_element_type_t<array_t>;
+            if constexpr (std::is_void_v<element_t> || is_fail_v<element_t>) {
+                using common_t = apply_t<std::common_type,array_t>;
+                return as_value_v<common_t>;
+            } else /* if constexpr (is_num_v<element_t>) */ {
+                return as_value_v<element_t>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
         using element_t = get_element_type_t<array_t>;
         using common_t  = apply_t<std::common_type,array_t>;
-        using type      = std::conditional_t<
-            std::is_void_v<element_t>, common_t, element_t
-        >;
     }; // get_element_or_common_type
 
     template <typename array_t>
@@ -2254,6 +2267,11 @@ namespace nmtools::meta
     template <typename value_type, auto N>
     using append_value_t = type_t<append_value<value_type,N>>;
 
+    namespace error
+    {
+        struct APPEND_TYPE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+
     /**
      * @brief Append new type to the end of some type list.
      * 
@@ -2263,7 +2281,7 @@ namespace nmtools::meta
     template <typename T, typename new_type>
     struct append_type
     {
-        using type = void;
+        using type = error::APPEND_TYPE_UNSUPPORTED;
     }; // append_type
 
 
@@ -2275,6 +2293,39 @@ namespace nmtools::meta
     {
         using type = std::tuple<Ts...,new_type>;
     }; // append_type
+
+    namespace error
+    {
+        struct CONCAT_TYPE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+
+    /**
+     * @brief Concatenate two type list to single type list.
+     * Given List<Ts...> and List<Us...> return List<Ts...,Us...>;
+     * 
+     * @tparam T type list
+     * @tparam U type list
+     */
+    template <typename T, typename U>
+    struct concat_type
+    {
+        using type = error::CONCAT_TYPE_UNSUPPORTED;
+    }; // concat_type
+
+    /**
+     * @brief Helper type alias for concat_type
+     * 
+     * @tparam T type list
+     * @tparam U type list
+     */
+    template <typename T, typename U>
+    using concat_type_t = type_t<concat_type<T,U>>;
+
+    template <typename...Ts, typename...Us>
+    struct concat_type< std::tuple<Ts...>, std::tuple<Us...> >
+    {
+        using type = std::tuple<Ts...,Us...>;
+    }; // concat_type
 
     /**
      * @brief Specialization of resize_fixed_ndarray for std::array.

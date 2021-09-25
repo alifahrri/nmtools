@@ -88,7 +88,14 @@ namespace nmtools::meta
         std::tuple<std::integral_constant<decltype(Is),Is>...>
     >
     {
-        static inline constexpr auto value = std::array{Is...};
+        using value_type = std::common_type_t<decltype(Is)...>;
+        static inline constexpr auto value = std::array<value_type,sizeof...(Is)>{Is...};
+    }; // to_value
+
+    template <auto I>
+    struct to_value<std::integral_constant<decltype(I),I>>
+    {
+        static inline constexpr auto value = I;
     }; // to_value
 } // namespace nmtools::meta
 
