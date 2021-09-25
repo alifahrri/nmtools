@@ -108,7 +108,7 @@ namespace nmtools::view
             // so for now use "operator()" instead of "index" member fn.
             // TODO: consider to move Num type handling to decorator_t
 
-            if constexpr (std::is_arithmetic_v<array_t>)
+            if constexpr (meta::is_num_v<array_t>)
                 return array;
             else {
                 auto src_shape = detail::shape(array);
@@ -206,8 +206,21 @@ namespace nmtools::view
         else {
             auto ashape = ::nmtools::shape(array);
             auto [success, shape_, free] = index::shape_broadcast_to(ashape,shape);
-            auto not_free    = index::logical_not(free);
-            auto origin_axes = index::nonzero(not_free);
+            auto origin_axes = [](auto free){
+                // NOTE: can't use capture because clang complains something local binding
+
+                using free_t  = decltype(free);
+                // free axes can be none when num type is broadcasted to some shape,
+                // avoid call any further logic when free axes is none.
+                // when it is none, that means the array is num type and view::broadcast_to_t won't complain
+                if constexpr (meta::is_ndarray_v<free_t>) {
+                    auto not_free    = index::logical_not(free);
+                    auto origin_axes = index::nonzero(not_free);
+                    return origin_axes;
+                } else /* if constexpr (is_none_v<free_t>) */ {
+                    return None;
+                }
+            }(free);
             using origin_axes_t = decltype(origin_axes);
             using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>;
             // prepare_type: may declare return_t as optional type

@@ -19,6 +19,37 @@ namespace nmtools::index
     struct shape_broadcast_to_t {};
 
     /**
+     * @brief Overloaded version of shape_broadcast_to where the src shape is None (from num type).
+     * 
+     * @tparam bshape_t 
+     * @param bshape    target shape
+     * @return constexpr auto 
+     */
+    template <typename bshape_t>
+    constexpr auto shape_broadcast_to(const none_t&, const bshape_t& bshape)
+    {
+        using return_t = meta::tuple_to_array_t<
+            meta::transform_bounded_array_t<bshape_t>
+        >;
+
+        auto ret = return_t {};
+        auto dim = len(bshape);
+
+        if constexpr (meta::is_tuple_v<bshape_t>) {
+            constexpr auto N = meta::len_v<bshape_t>;
+            meta::template_for<N>([&](auto index){
+                constexpr auto i = decltype(index)::value;
+                at(ret,i) = at(bshape,meta::ct_v<i>);
+            });
+        } else {
+            for (size_t i=0; i<dim; i++)
+                at(ret,i) = at(bshape,i);
+        }
+
+        return std::tuple{true,ret,None};
+    } // shape_broadcast_to
+
+    /**
      * @brief check if ashape can be broadcasted to bshape.
      *
      * Unidirectional broadcast from shape a to shape b.
