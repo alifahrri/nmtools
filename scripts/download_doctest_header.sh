@@ -2,7 +2,7 @@
 
 CWD=$pwd
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" 
-doctest_url="https://raw.githubusercontent.com/onqtam/doctest/2.4.0/doctest/doctest.h"
+doctest_url="https://raw.githubusercontent.com/onqtam/doctest/2.4.6/doctest/doctest.h"
 doctest_file="doctest.h"
 
 POSITIONAL=()
