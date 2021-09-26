@@ -26,18 +26,18 @@ target_include_directories(
     $<INSTALL_INTERFACE:include>
 )
 
-option(BUILD_TESTS "build tests programs" ON)
-option(BUILD_EXAMPLES "build example programs" OFF)
+option(NMTOOLS_BUILD_TESTS "build tests programs" ON)
+option(NMTOOLS_BUILD_EXAMPLES "build example programs" OFF)
 
 include_directories(include)
-if(BUILD_TESTS)
+if(NMTOOLS_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
-endif(BUILD_TESTS)
+endif(NMTOOLS_BUILD_TESTS)
 
-if(BUILD_EXAMPLES)
+if(NMTOOLS_BUILD_EXAMPLES)
     add_subdirectory(examples)
-endif(BUILD_EXAMPLES)
+endif(NMTOOLS_BUILD_EXAMPLES)
 
 # Installation
 # ============

@@ -211,8 +211,13 @@ namespace nmtools::meta
     template <size_t N, typename F, typename init_t>
     constexpr auto template_reduce(F&& f, const init_t& init)
     {
-        using indices_t = typename range<0,N>::type;
-        return template_reduce(f, init, indices_t{});
+        // range<0,0> not defined to have type
+        if constexpr (N>0) {
+            using indices_t = typename range<0,N>::type;
+            return template_reduce(f, init, indices_t{});
+        } else {
+            return init;
+        }
     } // template_reduce
 } // namespace nmtools::meta
 

@@ -1,0 +1,40 @@
+name: gcc
+
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+
+jobs:
+  dockcross-gcc:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2'
+      - name: run tests
+        run: 
+            - build/${{ matrix.name }}/tests/numeric-tests-doctest
+            - build/${{ matrix.name }}/tests/numeric-tests-doctest-meta
+            - build/${{ matrix.name }}/tests/numeric-tests-doctest-exception
+            - build/${{ matrix.name }}/tests/numeric-tests-doctest-optional

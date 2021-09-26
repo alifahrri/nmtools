@@ -19,6 +19,37 @@ namespace nmtools::index
     struct shape_broadcast_to_t {};
 
     /**
+     * @brief Overloaded version of shape_broadcast_to where the src shape is None (from num type).
+     * 
+     * @tparam bshape_t 
+     * @param bshape    target shape
+     * @return constexpr auto 
+     */
+    template <typename bshape_t>
+    constexpr auto shape_broadcast_to(const none_t&, const bshape_t& bshape)
+    {
+        using return_t = meta::tuple_to_array_t<
+            meta::transform_bounded_array_t<bshape_t>
+        >;
+
+        auto ret = return_t {};
+        auto dim = len(bshape);
+
+        if constexpr (meta::is_tuple_v<bshape_t>) {
+            constexpr auto N = meta::len_v<bshape_t>;
+            meta::template_for<N>([&](auto index){
+                constexpr auto i = decltype(index)::value;
+                at(ret,i) = at(bshape,meta::ct_v<i>);
+            });
+        } else {
+            for (size_t i=0; i<dim; i++)
+                at(ret,i) = at(bshape,i);
+        }
+
+        return std::tuple{true,ret,None};
+    } // shape_broadcast_to
+
+    /**
      * @brief check if ashape can be broadcasted to bshape.
      *
      * Unidirectional broadcast from shape a to shape b.
@@ -59,10 +90,10 @@ namespace nmtools::index
             idx_t ai = adim - i - 1;
             idx_t bi = bdim - i - 1;
             // handle bshape if constant index array;
-            // TODO: find out better way
+            // TODO: move constant index handling at higher level, see remove_dims for example
             auto get_b = [&](){
                 if constexpr (meta::is_constant_index_array_v<bshape_t>)
-                    return tuple_at(meta::constant_to_value_v<bshape_t>,bi);
+                    return at(meta::to_value_v<bshape_t>,bi);
                 else return tuple_at(bshape,bi);
             };
             if (ai<0) {

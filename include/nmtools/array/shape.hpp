@@ -246,7 +246,7 @@ namespace nmtools
     template <typename array_t>
     constexpr auto len(const array_t& array)
     {
-        auto shape_ = shape(array);
+        const auto shape_ = shape(array);
         // TODO (wrap std metafunctions): wrap as meta::integral_constant
         return at(shape_, std::integral_constant<size_t,0>{});
     } // len

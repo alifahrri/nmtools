@@ -75,6 +75,26 @@ NMTOOLS_TESTING_DECLARE_CASE(view, add)
         inline auto shape = None;
         inline int result = 2;
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        inline int a[3][2] = {
+            {0,1},
+            {2,3},
+            {4,5},
+        };
+        inline int b = 1;
+        CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline int shape[2] = {3,2};
+        inline int result[3][2] = {
+            {1,2},
+            {3,4},
+            {5,6},
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(view, constexpr_add)

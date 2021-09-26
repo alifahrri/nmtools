@@ -36,14 +36,18 @@ namespace nmtools::index
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape)
     {
         using return_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
-        using element_t = meta::get_element_type_t<return_t>;
+        using element_t = meta::get_element_or_common_type_t<return_t>;
 
         auto res = return_t{};
         bool success = true;
 
+        if constexpr (meta::is_constant_index_array_v<return_t>) {
+            // do nothing, already computed at compile-time
+            // the type holds broadcasted shape
+        }
         // for none return type (both ashape and bshape is scalar)
         // simply bypass this
-        if constexpr (!is_none_v<ashape_t> && !is_none_v<bshape_t>) {
+        else if constexpr (!is_none_v<ashape_t> && !is_none_v<bshape_t>) {
             auto adim = len(ashape);
             auto bdim = len(bshape);
             auto rdim = adim > bdim ? adim : bdim;
@@ -79,6 +83,8 @@ namespace nmtools::index
             }
         }
         else if constexpr (is_none_v<ashape_t> && !is_none_v<bshape_t>) {
+            // one of the shape is none (from shape of num type):
+            // just copy the other shape, bshape in this case
             auto bdim = len(bshape);
             if constexpr (meta::is_resizeable_v<return_t>)
                 res.resize(bdim);
@@ -86,11 +92,14 @@ namespace nmtools::index
                 at(res,i) = at(bshape,i);
         }
         else if constexpr (is_none_v<bshape_t> && !is_none_v<ashape_t>) {
+            // similar to above case, but ashape is index array instead of bshape
             auto adim = len(ashape);
             if constexpr (meta::is_resizeable_v<return_t>)
                 res.resize(adim);
             for (size_t i=0; i<adim; i++)
                 at(res,i) = at(ashape,i);
+        } else {
+            // do nothing
         }
 
         return std::tuple{success, res};
@@ -109,6 +118,14 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        // error type for in-compatible shapes
+        struct BROADCAST_SHAPE_ERROR : detail::fail_t {};
+        // error type for unsupported ashape_t bshape_t
+        struct BROADCAST_SHAPE_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief return resizeable array
      * 
@@ -121,34 +138,62 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
+            // both ashape and bshape values are known at compile-time
+            // then compute at compile-time
+            if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                constexpr auto ashape = to_value_v<ashape_t>;
+                constexpr auto bshape = to_value_v<bshape_t>;
+                constexpr auto broadcasted = index::broadcast_shape(ashape,bshape);
+                constexpr auto success = at(broadcasted,meta::ct_v<0>);
+                if constexpr (success) {
+                    // convert back from value to type
+                    constexpr auto shape = at(broadcasted,meta::ct_v<1>);
+                    constexpr auto s0 = at(shape,0);
+                    return template_reduce<::nmtools::len(shape)-1>([&](auto init, auto index){
+                        // init should be as_value<sometype>
+                        using init_t = type_t<decltype(init)>;
+                        constexpr auto s_i1 = at(shape,index+1);
+                        using type = append_type_t<init_t,meta::ct<s_i1>>;
+                        return as_value_v<type>;
+                    }, meta::as_value_v<std::tuple<ct<s0>>>);
+                } else {
+                    return as_value_v<error::BROADCAST_SHAPE_ERROR>;
+                }
+            } else if constexpr (is_none_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                // broadcasting with none retain shape, just select the shape
+                return as_value_v<bshape_t>;
+            } else if constexpr (is_constant_index_array_v<ashape_t> && is_none_v<bshape_t>) {
+                return as_value_v<ashape_t>;
+            }
             // none shape indicates scalar type
-            if constexpr (is_none_v<ashape_t> && is_none_v<bshape_t>)
-                return as_value<none_t>{};
+            else if constexpr (is_none_v<ashape_t> && is_none_v<bshape_t>) {
+                // broadcasting none and none should result none
+                return as_value_v<none_t>;
             // return either b or a which is not None
-            else if constexpr (is_none_v<ashape_t>) {
+            } else if constexpr (is_none_v<ashape_t>) {
                 using ret_t = tuple_to_array_t<
                     transform_bounded_array_t<bshape_t>
                 >;
-                return as_value<ret_t>{};
+                return as_value_v<ret_t>;
             }
             else if constexpr (is_none_v<bshape_t>) {
                 using ret_t = tuple_to_array_t<
                     transform_bounded_array_t<ashape_t>
                 >;
-                return as_value<ret_t>{};
+                return as_value_v<ret_t>;
             }
             else if constexpr (
                 is_dynamic_index_array_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
             ) // both are dynamic resizeable
-                return as_value<ashape_t>{};
+                return as_value_v<ashape_t>;
             else if constexpr (
                 is_dynamic_index_array_v<ashape_t> && is_hybrid_ndarray_v<bshape_t>
             ) // a is dynamic resizeable
-                return as_value<ashape_t>{};
+                return as_value_v<ashape_t>;
             else if constexpr (
                 is_hybrid_ndarray_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
             ) // b is dynamic resizeable
-                return as_value<bshape_t>{};
+                return as_value_v<bshape_t>;
             else if constexpr (
                 is_hybrid_ndarray_v<ashape_t> && is_hybrid_ndarray_v<bshape_t>
             ) /* both is hybrid */ {
@@ -156,7 +201,7 @@ namespace nmtools::meta
                 constexpr auto bmax = hybrid_ndarray_max_size_v<bshape_t>;
                 constexpr auto rmax = amax > bmax ? amax : bmax;
                 using new_type = resize_hybrid_ndarray_max_size_t<ashape_t,rmax>;
-                return as_value<new_type>{};
+                return as_value_v<new_type>;
             }
             else if constexpr (
                 is_hybrid_ndarray_v<ashape_t> && is_fixed_index_array_v<bshape_t>
@@ -165,7 +210,7 @@ namespace nmtools::meta
                 constexpr auto bsize = fixed_index_array_size_v<bshape_t>;
                 constexpr auto rmax = amax > bsize ? amax : bsize;
                 using new_type = resize_hybrid_ndarray_max_size_t<ashape_t,rmax>;
-                return as_value<new_type>{};
+                return as_value_v<new_type>;
             }
             else if constexpr (
                 is_fixed_index_array_v<ashape_t> && is_hybrid_ndarray_v<bshape_t>
@@ -174,7 +219,7 @@ namespace nmtools::meta
                 constexpr auto bmax  = hybrid_ndarray_max_size_v<bshape_t>;
                 constexpr auto rmax  = asize > bmax ? asize : bmax;
                 using new_type = resize_hybrid_ndarray_max_size_t<bshape_t,rmax>;
-                return as_value<new_type>{};
+                return as_value_v<new_type>;
             }
             else if constexpr (
                 is_fixed_index_array_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
@@ -183,7 +228,7 @@ namespace nmtools::meta
             else if constexpr (
                 is_dynamic_index_array_v<ashape_t> && is_fixed_index_array_v<bshape_t>
             ) /* prefer dynamic */
-                return as_value<ashape_t>{};
+                return as_value_v<ashape_t>;
             else if constexpr (
                 is_fixed_index_array_v<ashape_t> && is_fixed_index_array_v<bshape_t>
             ) /* both are fixed */ {
@@ -192,9 +237,9 @@ namespace nmtools::meta
                 constexpr auto rsize = asize > bsize ? asize : bsize;
                 using new_type = transform_bounded_array_t<tuple_to_array_t<ashape_t>>;
                 using type = resize_fixed_index_array_t<new_type,rsize>;
-                return as_value<type>{};
+                return as_value_v<type>;
             }
-            else return as_value<void>{};
+            else return as_value_v<error::BROADCAST_SHAPE_UNSUPPORTED>;
         }();
 
         using type = type_t<meta::remove_cvref_t<decltype(vtype)>>;

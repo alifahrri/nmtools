@@ -84,7 +84,8 @@ namespace nmtools::index
         // convert to value and then compute
         if constexpr (meta::is_constant_index_array_v<array_t>)
         {
-            constexpr auto shape_   = meta::constant_to_value<array_t>::value;
+            // TODO: move constant index handling at higher level, see remove_dims for example
+            constexpr auto shape_   = meta::to_value_v<array_t>;
             constexpr auto strides_ = compute_strides(shape_);
             // @todo value_to_constant
             return strides_;

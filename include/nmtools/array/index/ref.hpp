@@ -22,13 +22,7 @@ namespace nmtools::index
         }
 
         template <typename size_type>
-        constexpr auto at(size_type i) const
-        {
-            return nmtools::at(array,i);
-        }
-
-        template <typename size_type>
-        constexpr auto at(size_type i)
+        constexpr auto operator[](size_type i) const
         {
             return nmtools::at(array,i);
         }
@@ -41,7 +35,13 @@ namespace nmtools
     constexpr auto len(const index::ref<array_t>& array)
     {
         return array.size();
-    }
+    } // len
+
+    template <typename array_t, typename index_t>
+    constexpr auto at(const index::ref<array_t>& array, index_t i)
+    {
+        return at(array.array,i);
+    } // len
 } // namespace nmtools
 
 
