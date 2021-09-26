@@ -149,13 +149,14 @@ namespace nmtools::meta
                 constexpr auto keepdims = keepdims_t::value;
                 constexpr auto newshape = index::remove_dims(shape,axis,keepdims);
                 constexpr auto N = ::nmtools::len(newshape);
+                constexpr auto initial = ::nmtools::at(newshape,0);
                 // convert back from value to type
                 constexpr auto result = meta::template_reduce<N-1>([&](auto init, auto index){
                     using init_t = type_t<remove_cvref_t<decltype(init)>>;
-                    constexpr auto s_i1 = at(newshape,index+1);
+                    constexpr auto s_i1 = ::nmtools::at(newshape,index+1);
                     using r_t = append_type_t<init_t,ct<s_i1>>;
                     return as_value_v<r_t>;
-                }, as_value_v<std::tuple<ct<at(newshape,0)>>>);
+                }, as_value_v<std::tuple<ct<initial>>>);
                 return result;
             } else if constexpr (
                 is_constant_index_array_v<shape_t>

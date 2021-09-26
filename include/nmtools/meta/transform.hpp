@@ -1745,24 +1745,6 @@ namespace nmtools::meta
     template <auto I, auto...Is>
     using sequence_t = std::integer_sequence<decltype(I),I,Is...>;
 
-    /**
-     * @brief convert compile time type constant to value.
-     *
-     * Default behaviour results in meta::detail::fail_t{}
-     * unless specialization for type T provided
-     * 
-     * @tparam T type to convert
-     * @tparam typename sfinae point
-     */
-    template <typename T, typename=void>
-    struct constant_to_value
-    {
-        static constexpr auto value = detail::fail_t{};
-    }; // constant_to_value
-
-    template <typename T>
-    constexpr inline auto constant_to_value_v = constant_to_value<T>::value;
-
     namespace error
     {
         struct TO_VALUE_UNSUPPORTED : detail::fail_t {};
@@ -1784,50 +1766,6 @@ namespace nmtools::meta
 
     template <typename T>
     constexpr inline auto to_value_v = to_value<T>::value;
-
-    /**
-     * @brief specialization of integral_constant for constant_to_value
-     * 
-     * @tparam T 
-     * @tparam I 
-     */
-    template <typename T, auto I>
-    struct constant_to_value<std::integral_constant<T,I>>
-    {
-        static constexpr auto value = I;
-    }; // constant_to_value
-
-    /**
-     * @brief specialization of tuple of integral_constant for constant_to_value
-     * 
-     * @tparam I 
-     * @tparam Is 
-     */
-    template <auto I, auto...Is>
-    struct constant_to_value<
-        std::tuple<
-            std::integral_constant<decltype(I),I>,
-            std::integral_constant<decltype(Is),Is>...
-        >
-    >
-    {
-        static constexpr auto value = std::tuple{I,Is...};
-    }; // constant_to_value
-
-    // some edge case for single element array with compile-time value
-    // such array exist maybe because element type deduction is imperfect
-    // or couldnt handle such case
-    template <auto I, size_t N>
-    struct constant_to_value< std::array<std::integral_constant<decltype(I),I>,N> >
-    {
-        static constexpr auto value = [](){
-            using return_t = std::array<decltype(I),N>;
-            auto res = return_t{};
-            for (size_t i=0; i<N; i++)
-                res[i] = I;
-            return res;
-        }();
-    }; // constant_to_value
 
     /**
      * @brief metafunction to transform (tuple of) integral constant to integer sequence

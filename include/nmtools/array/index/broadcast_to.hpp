@@ -90,10 +90,10 @@ namespace nmtools::index
             idx_t ai = adim - i - 1;
             idx_t bi = bdim - i - 1;
             // handle bshape if constant index array;
-            // TODO: find out better way
+            // TODO: move constant index handling at higher level, see remove_dims for example
             auto get_b = [&](){
                 if constexpr (meta::is_constant_index_array_v<bshape_t>)
-                    return tuple_at(meta::constant_to_value_v<bshape_t>,bi);
+                    return at(meta::to_value_v<bshape_t>,bi);
                 else return tuple_at(bshape,bi);
             };
             if (ai<0) {

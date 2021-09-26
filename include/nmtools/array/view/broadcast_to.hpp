@@ -38,7 +38,7 @@ namespace nmtools::view::detail::fn
     {
         // map type to value
         constexpr auto src_shape = meta::fixed_ndarray_shape_v<array_t>;
-        constexpr auto dst_shape = meta::constant_to_value_v<shape_t>;
+        constexpr auto dst_shape = meta::to_value_v<shape_t>;
         // actually call broadcast to
         constexpr auto result    = index::shape_broadcast_to(src_shape,dst_shape);
         // TODO: use optional

@@ -28,9 +28,10 @@ namespace nmtools::index
         // handle constant index array,
         // for now, simply convert to value and recurse
         if constexpr (meta::is_constant_index_array_v<array_t>) {
-            constexpr auto vec_ = meta::constant_to_value<array_t>::value;
+            // TODO: move constant index handling at higher level, see remove_dims for example
+            constexpr auto vec_ = meta::to_value_v<array_t>;
             constexpr auto ret  = product(vec_);
-            // @todo convert back to type
+            // TODO: convert back to type
             return ret;
         }
         else {
