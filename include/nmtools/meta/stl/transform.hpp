@@ -78,7 +78,8 @@ namespace nmtools::meta
 
     // TODO: add make_tuple, make_either...
 
-// the following code breaks gcc (even in newest version: 11.2), works fine on clang, check the else block for workaround
+// the following code breaks gcc: "internal compiler error: in finish_member_declaration, at cp/semantics.c:3237"
+// (even in newest version: 11.2), works fine on clang, check the else block for workaround
 // https://github.com/alifahrri/nmtools/runs/3708887742?check_suite_focus=true
 // https://github.com/alifahrri/nmtools/pull/156/checks?check_run_id=3708887743
 // https://github.com/alifahrri/nmtools/pull/156/checks?check_run_id=3711520594
