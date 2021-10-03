@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        test: [manip, ufuncs]
+        test: [manip]
 
     steps:
     - uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
       run: |
         pio package pack --output nmtools.tar.gz
         cp nmtools.tar.gz tests/src/platformio/mbed/${{ matrix.test }}
-        cd tests/src/platformio/${{ matrix.test }}
+        cd tests/src/platformio/mbed/${{ matrix.test }}
         mkdir -p lib
         cd lib
         tar -zxvf ../nmtools.tar.gz
