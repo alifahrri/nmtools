@@ -7,13 +7,14 @@
     #define NMTOOLS_HAS_OPTIONAL 1
 #else
     #define NMTOOLS_HAS_OPTIONAL 0
-#endif
+#endif // __has_include(<optional>)
+
 #if __has_include(<stdexcept>)
     #include <stdexcept>
     #define NMTOOLS_HAS_STDEXCEPT 1
 #else
     #define NMTOOLS_HAS_STDEXCEPT 0
-#endif
+#endif // __has_include(<stdexcept>)
 
 #define nmtools_assert_throw(condition, message, ...) \
     if (!condition) throw std::runtime_error(message);
@@ -26,18 +27,20 @@ using name = std::optional<type>;
 
 #ifdef NMTOOLS_USE_EXCEPTION
 #define nmtools_assert nmtools_assert_throw
-#endif
+#endif // NMTOOLS_USE_EXCEPTION
 
 #ifdef NMTOOLS_USE_OPTIONAL
 #undef nmtools_assert
 #define nmtools_assert nmtools_assert_optional
-#endif
+#endif // NMTOOLS_USE_OPTIONAL
 
-#ifndef nmtools_assert
-#define nmtools_assert(condition, message, ...) \
+#define nmtools_cassert(condition, ...) \
 { \
     assert(condition); \
 }
+
+#ifndef nmtools_assert
+#define nmtools_assert nmtools_cassert
 #endif // nmtools_assert
 
 #ifdef NMTOOLS_USE_OPTIONAL
@@ -45,6 +48,6 @@ using name = std::optional<type>;
 #else
 #define nmtools_assert_prepare_type(name, type) \
 using name = type;
-#endif
+#endif // NMTOOLS_USE_OPTIONAL
 
 #endif // NMTOOLS_ASSERT_HPP
