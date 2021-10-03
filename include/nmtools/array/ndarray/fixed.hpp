@@ -113,7 +113,6 @@ namespace nmtools::array {
         constexpr auto operator()(size_type n, size...ns)
             -> std::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),reference>
         {
-            using common_size_t = std::common_type_t<size_type,size...>;
             return at(data, n, ns...);
         } // operator()
 
@@ -131,7 +130,6 @@ namespace nmtools::array {
         constexpr auto operator()(size_type n, size...ns) const
             -> std::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),const_reference>
         {
-            using common_size_t = std::common_type_t<size_type,size...>;
             return at(data, n, ns...);
         } // operator()
 
@@ -354,7 +352,7 @@ namespace nmtools::meta
 
             constexpr auto vshape = template_reduce<dim>([&](auto lhs, auto rhs, auto index){
                 using lhs_t = remove_cvref_t<decltype(lhs)>;
-                using rhs_t = remove_cvref_t<decltype(rhs)>;
+                // using rhs_t = remove_cvref_t<decltype(rhs)>;
                 constexpr auto i = decltype(index)::value;
                 // somehow the order is reversed, don't know why
                 // note: shape can hold constant value (int constant)
@@ -402,12 +400,12 @@ namespace nmtools::meta
             // template_reduce needs at least 2 elements
             constexpr auto DIM = len_v<shape_t>;
             if constexpr (DIM >= 2) {
+                // TODO: refactor to use template_reduce with explicit number of iteration
                 // perform reduce op to combine all values in shape_t to T[axis0][axis1]...
                 // as needed to feed shape to resize_fixed_ndarray_t
                 // assume shape_t has default constructor and constexpr-ready
                 constexpr auto shape = template_reduce([](auto lhs, auto rhs, auto index){
                     using lhs_t = remove_cvref_t<decltype(lhs)>;
-                    using rhs_t = remove_cvref_t<decltype(rhs)>;
                     constexpr auto i = decltype(index)::value;
                     // assume shape is_constant_index_array
                     // somehow the order is reversed, don't know why

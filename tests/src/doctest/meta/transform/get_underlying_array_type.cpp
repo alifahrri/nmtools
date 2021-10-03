@@ -66,13 +66,13 @@ TEST_CASE("get_underlying_array_type(atleast_1d)" * doctest::test_suite("get_und
     {
         using view_t  = view::decorator_t< view::atleast_1d_t, int >;
         using array_t = meta::get_underlying_array_type_t<view_t>;
-        using expected_t = const int&;
+        using expected_t = const int;
         NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
     {
         using view_t  = view::decorator_t< view::atleast_1d_t, std::vector<int> >;
         using array_t = meta::get_underlying_array_type_t<view_t>;
-        using expected_t = const std::vector<int>&;
+        using expected_t = const std::vector<int>*; // ptr because now view take ptr when possible to allow copy
         NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
 }

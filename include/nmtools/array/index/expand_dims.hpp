@@ -41,7 +41,7 @@ namespace nmtools::index
     namespace impl
     {
         template <typename newshape_t, typename shape_t, typename axes_t>
-        constexpr auto expand_dims(newshape_t& newshape, const shape_t shape, axes_t axes)
+        constexpr auto expand_dims(newshape_t& newshape, const shape_t shape, const axes_t& axes)
         {
             auto n_axes = [&](){
                 if constexpr (meta::is_index_array_v<axes_t>)
@@ -78,14 +78,20 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename axes_t>
-    constexpr auto expand_dims(const shape_t shape, axes_t axes)
+    constexpr auto expand_dims(const shape_t shape, const axes_t& axes)
     {
-        using return_t = meta::resolve_optype_t<expand_dims_t,shape_t,axes_t>;
-        auto newshape = return_t{};
+        if constexpr (meta::is_index_v<axes_t>) {
+            using index_t = meta::make_array_type_t<axes_t,1>;
+            auto axes_    = index_t{axes};
+            return expand_dims(shape,axes_);
+        } else {
+            using return_t = meta::resolve_optype_t<expand_dims_t,shape_t,axes_t>;
+            auto newshape = return_t{};
 
-        impl::expand_dims(newshape, shape, axes);
-        
-        return newshape;
+            impl::expand_dims(newshape, shape, axes);
+            
+            return newshape;
+        }
     } // expand_dims
 } // namespace nmtools::index
 

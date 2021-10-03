@@ -4,7 +4,7 @@
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/testing/doctest.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #include <vector>
 #include <array>
@@ -78,7 +78,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, atleast_3d)
     {
         inline int dim = 4;
         inline int shape[4] = {2,1,2,1};
-        inline int result[2][1][2][1] = {{{1,2}},{{3,4}}};
+        inline int result[2][1][2][1] = {{{{1},{2}}},{{{3},{4}}}};
     }
 }
 

@@ -67,21 +67,6 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
-            using ::nmtools::index::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for broadcast_to view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
-
             // TODO: assert if indices < shape
 
             return static_cast<element_type>(1);
@@ -89,7 +74,7 @@ namespace nmtools::view
     }; // ones_t
 
     /**
-     * @brief Creates a ones view with given shape and dytpe.
+     * @brief Creates a ones view with given shape and dtype.
      * 
      * All elements in the view has value of 1.
      * 

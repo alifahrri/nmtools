@@ -116,6 +116,7 @@ namespace nmtools::index
     template <size_t N>
     using size_constant = std::integral_constant<size_t,N>;
 
+    // TODO: remove
     /**
      * @brief create array of reference from a.
      * With new_size starting from offset.
@@ -134,6 +135,7 @@ namespace nmtools::index
         return make_array<array_t>(a, std::make_index_sequence<new_size>{}, offset);
     }
 
+    // TODO: remove
     /**
      * @brief create array of reference from a.
      * With new_size starting from offset.
@@ -148,7 +150,6 @@ namespace nmtools::index
     template <typename T, size_t N, size_t new_size>
     constexpr auto make_array_ref(const std::array<T,N> &a, size_constant<new_size>, size_t offset=0)
     {
-        using array_t = array_ref<const T,N>;
         return make_array(a, std::make_index_sequence<new_size>{}, offset);
     }
 

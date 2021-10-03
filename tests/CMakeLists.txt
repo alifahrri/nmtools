@@ -102,9 +102,9 @@ if (NOT NMTOOLS_TEST_ARRAY_INDEX)
 endif ()
 
 set(UTILS_TEST_SOURCES
-    src/doctest/utils/isequal.cpp
-    src/doctest/utils/isclose.cpp
-    src/doctest/utils/to_string.cpp
+    src/doctest/array/utils/isequal.cpp
+    src/doctest/array/utils/isclose.cpp
+    src/doctest/array/utils/to_string.cpp
 )
 if (NOT NMTOOLS_TEST_UTILS)
     set(UTILS_TEST_SOURCES "")
@@ -419,7 +419,7 @@ if (NOT NMTOOLS_TEST_ARRAY_NN_EVAL)
 endif ()
 
 set(MISC_TEST_SOURCES
-    src/doctest/misc/constants.cpp
+    src/doctest/array/misc/constants.cpp
 )
 if (NOT NMTOOLS_TEST_MISC)
     set (MISC_TEST_SOURCES "")
@@ -464,6 +464,8 @@ add_executable(${PROJECT_NAME}-doctest-optional src/doctest/tests.cpp
     ${OPTIONAL_TEST_SOURCES}
 )
 
+# target_compile_options(${PROJECT_NAME}-doctest PRIVATE -Wall)
+
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
@@ -498,6 +500,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/view/matmul.cpp
     src/doctest/meta/array/view/mean.cpp
     src/doctest/meta/array/view/pad.cpp
+    src/doctest/meta/array/view/prod.cpp
     src/doctest/meta/array/view/reduce.cpp
     src/doctest/meta/array/view/repeat.cpp
     src/doctest/meta/array/view/reshape.cpp
@@ -515,6 +518,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/eval/matmul.cpp
     src/doctest/meta/array/eval/mean.cpp
     src/doctest/meta/array/eval/ones.cpp
+    src/doctest/meta/array/eval/prod.cpp
     src/doctest/meta/array/eval/reduce.cpp
     src/doctest/meta/array/eval/repeat.cpp
     src/doctest/meta/array/eval/take.cpp

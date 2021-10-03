@@ -12,25 +12,23 @@ namespace nmtools::view
     struct atleast_1d_t
     {
         // TODO: consider to copy when array_t is simply arithmetic type
-        using array_type = const array_t&;
+        using array_type = resolve_array_type_t<array_t>;
 
         array_type array;
 
-        constexpr atleast_1d_t(array_type array)
-            : array(array) {}
+        constexpr atleast_1d_t(const array_t& array)
+            : array(initialize(array, meta::as_value_v<array_type>)) {}
         
         constexpr auto shape() const
         {
             if constexpr (std::is_arithmetic_v<array_t>)
                 return std::array{1};
-            else return ::nmtools::shape(array);
+            else return detail::shape(array);
         } // shape
 
         constexpr auto dim() const
         {
-            if constexpr (std::is_arithmetic_v<array_t>)
-                return 1ul;
-            else return ::nmtools::dim(array);
+            return len(shape());
         } // dim
 
         template <typename...size_types>
@@ -38,25 +36,17 @@ namespace nmtools::view
         {
             // for now, assume indices is generated such that
             // they are within range
+            // TODO: move to "index" member function
             // TODO: check shape
-            if constexpr (std::is_arithmetic_v<array_t>)
+            if constexpr (std::is_arithmetic_v<array_t>) {
                 return array;
-            else {
-                using ::nmtools::index::make_array;
-                using common_t = std::common_type_t<size_types...>;
-                auto indices_ = [&](){
-                    // handle non-packed indices
-                    if constexpr (std::is_integral_v<common_t>)
-                        return make_array<std::array>(indices...);
-                    // handle packed indices, number of indices must be 1
-                    else {
-                        static_assert (sizeof...(indices)==1
-                            , "unsupported index for broadcast_to view"
-                        );
-                        return std::get<0>(std::tuple{indices...});
-                    }
-                }();
-                return apply_at(array, indices_);
+            } else {
+                auto indices_ = pack_indices(indices...);
+                if constexpr (std::is_pointer_v<array_type>) {
+                    return apply_at(*array, indices_);
+                } else {
+                    return apply_at(array, indices_);
+                }
             }
         } // operator()
     }; // atleast_1d_t

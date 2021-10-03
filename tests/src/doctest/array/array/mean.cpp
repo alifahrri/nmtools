@@ -106,9 +106,26 @@ TEST_CASE("mean(case6)" * doctest::test_suite("array::mean"))
     // MEAN_SUBCASE(case6, a_d, axis, dtype, keepdims);
 }
 
+namespace meta = nm::meta;
+
 TEST_CASE("mean(case7)" * doctest::test_suite("array::mean"))
 {
     auto dtype = nm::None;
+    {
+        NMTOOLS_TESTING_DECLARE_NS(array, mean, case7);
+        using namespace args;
+        auto result = na::mean(a, axis, dtype, keepdims);
+        using result_t = decltype(result);
+        using left_t   = meta::get_either_left_t<result_t>;
+        using right_t  = meta::get_either_right_t<result_t>;
+        static_assert( meta::is_either_v<result_t> );
+        static_assert( meta::is_num_v<left_t> );
+        static_assert( meta::is_ndarray_v<right_t> );
+        auto rptr = std::get_if<right_t>(&result);
+        CHECK( rptr );
+        NMTOOLS_ASSERT_EQUAL( nm::shape(*rptr), expect::shape );
+    }
+
     MEAN_SUBCASE(case7, a, axis, dtype, keepdims);
     MEAN_SUBCASE(case7, a_a, axis, dtype, keepdims);
     MEAN_SUBCASE(case7, a_f, axis, dtype, keepdims);

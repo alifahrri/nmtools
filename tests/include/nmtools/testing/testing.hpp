@@ -42,6 +42,21 @@ typeid(type).name()
 #define NMTOOLS_IGNORE_WUNUSED_VALUE_POP()
 #endif
 
+// allow to test on platform without RTTI support,
+#if defined(__clang__)
+  #if __has_feature(cxx_rtti)
+    #define NMTOOLS_RTTI_ENABLED
+  #endif
+#elif defined(__GNUC__)
+  #if defined(__GXX_RTTI)
+    #define NMTOOLS_RTTI_ENABLED
+  #endif
+#elif defined(_MSC_VER)
+  #if defined(_CPPRTTI)
+    #define NMTOOLS_RTTI_ENABLED
+  #endif
+#endif
+
 /**
  * @defgroup testing
  * collections of helper functions and macros for testing purpose.
@@ -72,30 +87,19 @@ namespace nmtools::testing
     {
         std::stringstream ss;
         constexpr auto n = (sizeof...(args));
-        constexpr auto m = (sizeof...(Args));
         #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
         auto typenames = std::array<std::string,n>{
             {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
         };
-        #else
+        #elif defined(NMTOOLS_RTTI_ENABLED)
         auto typenames = std::array<std::string,n>{
             {typeid(decltype(args)).name()...}
         };
+        #else
+        // empty
+        auto typenames = std::array<std::string,n>{};
         #endif
-        /* non-type template parameters, assuming can be converted to string*/
-        // auto tparams = std::array<std::string,m>{
-        //     {std::to_string(Args)...}
-        // };
         ss << func;
-        // if constexpr (m>=1) {
-        //     ss << '<';
-        //     for (size_t i=0; i<m; i++) {
-        //         ss << tparams[i];
-        //         if (i!=(m-1))
-        //             ss << ",";
-        //     }
-        //     ss << '>';
-        // }
         ss << '(';
         for (size_t i=0; i<n; i++) {
             ss << typenames[i];
@@ -111,30 +115,19 @@ namespace nmtools::testing
     {
         std::stringstream ss;
         constexpr auto n = (sizeof...(args));
-        constexpr auto m = (sizeof...(Args));
         #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
         auto typenames = std::array<std::string,n>{
             {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
         };
-        #else
+        #elif defined(NMTOOLS_RTTI_ENABLED)
         auto typenames = std::array<std::string,n>{
             {typeid(decltype(args)).name()...}
         };
+        #else
+        // empty
+        auto typenames = std::array<std::string,n>{};
         #endif
-        /* non-type template parameters, assuming can be converted to string*/
-        // auto tparams = std::array<std::string,m>{
-        //     {std::to_string(Args)...}
-        // };
         ss << func;
-        // if constexpr (m>=1) {
-        //     ss << '<';
-        //     for (size_t i=0; i<m; i++) {
-        //         ss << tparams[i];
-        //         if (i!=(m-1))
-        //             ss << ",";
-        //     }
-        //     ss << '>';
-        // }
         ss << '(';
         for (size_t i=0; i<n; i++) {
             ss << typenames[i];

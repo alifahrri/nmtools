@@ -16,7 +16,7 @@ namespace nmtools::index
     struct compress_t {};
 
     template <typename condition_t, typename shape_t, typename axis_t>
-    constexpr auto shape_compress(const condition_t& condition, const shape_t& shape, const axis_t axis)
+    constexpr auto shape_compress(const condition_t& condition, const shape_t& shape, [[maybe_unused]] const axis_t axis)
     {
         using return_t = meta::resolve_optype_t<shape_compress_t,condition_t,shape_t,axis_t>;
 
@@ -46,17 +46,19 @@ namespace nmtools::index
         // (3, 1)
         // ```
 
-        auto cdim = len(nonzero(condition));
+        auto c_dim = len(nonzero(condition));
         if constexpr (is_none_v<axis_t>)
-            at(res,0) = cdim;
+            at(res,0) = c_dim;
         else {
             // array dim
-            auto dim = len(shape);
+            [[maybe_unused]] auto dim = len(shape);
             if constexpr (meta::is_resizeable_v<return_t>)
                 res.resize(dim);
 
             auto shape_compress_impl = [&](auto i){
-                at(res,i) = (i == axis) ? cdim : at(shape,i);
+                using a_t = meta::get_element_or_common_type_t<axis_t>;
+                using idx_t = meta::promote_index_t<decltype(i),a_t>;
+                at(res,i) = ((idx_t)i == (idx_t)axis) ? c_dim : at(shape,i);
             };
 
             if constexpr (meta::has_tuple_size_v<shape_t>) {
@@ -81,10 +83,11 @@ namespace nmtools::index
 
         auto res = return_t{};
 
-        // array dim
-        auto dim = len(shape);
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizeable_v<return_t>) {
+            // array dim
+            auto dim = len(shape);
             res.resize(dim);
+        }
 
         // maps dst indices (compress) to src indices (following shape)
         // given condition and axis
@@ -112,7 +115,7 @@ namespace nmtools::index
         // the resulting indices should be `[0,1]`
         // 
 
-        // TOOD: provide overload for computed idx_nonzero
+        // TODO: provide overload for computed idx_nonzero
         // compute indices of condition which has true/nonzero value
         auto fun_nonzero = [](auto i){
             return static_cast<bool>(i);
@@ -120,7 +123,7 @@ namespace nmtools::index
         auto idx_nonzero = where(fun_nonzero, condition);
 
         // i should start form 0 to len(shape)
-        auto compress_impl = [&](auto i){
+        [[maybe_unused]] auto compress_impl = [&](auto i){
             auto dst_i = at(indices, i);
             at(res, i) = (i == axis) ? at(idx_nonzero,dst_i) : dst_i;
         };
@@ -166,6 +169,7 @@ namespace nmtools::meta
         void, index::shape_compress_t, condition_t, shape_t, none_t
     >
     {
+        // TODO: use meta::make_array_type
         // when working on flattened array, shape is single element 1D array
         using type = std::array<size_t,1>;
     }; // shape_compress_t

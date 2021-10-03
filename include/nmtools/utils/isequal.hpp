@@ -84,7 +84,7 @@ namespace nmtools::utils
             } else if constexpr (meta::is_index_array_v<u_t> && meta::is_index_array_v<t2>) {
                 return T2;
             } else {
-                return meta::as_value<void>{};
+                return meta::as_value_v<void>;
             }
         } // select_same
 
@@ -136,20 +136,18 @@ namespace nmtools::utils
         template <typename T, typename U>
         constexpr auto isequal(const T& t, const U& u)
         {
-            using tval_t = meta::get_element_type_t<T>;
-            using uval_t = meta::get_element_type_t<U>;
             // treat T & U as value
-            constexpr auto t1 = meta::as_value<T>{};
-            constexpr auto t2 = meta::as_value<U>{};
+            constexpr auto t1 = meta::as_value_v<T>;
+            constexpr auto t2 = meta::as_value_v<U>;
 
             // given either type, check if the type is constrained
             constexpr auto constrained_either = [](auto T1, auto T2){
                 using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
                 using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
-                auto t1_lhs = meta::as_value<meta::get_either_left_t<t1>>{};
-                auto t2_lhs = meta::as_value<meta::get_either_left_t<t2>>{};
-                auto t1_rhs = meta::as_value<meta::get_either_right_t<t1>>{};
-                auto t2_rhs = meta::as_value<meta::get_either_right_t<t2>>{};
+                [[maybe_unused]] auto t1_lhs = meta::as_value_v<meta::get_either_left_t<t1>>;
+                [[maybe_unused]] auto t2_lhs = meta::as_value_v<meta::get_either_left_t<t2>>;
+                [[maybe_unused]] auto t1_rhs = meta::as_value_v<meta::get_either_right_t<t1>>;
+                [[maybe_unused]] auto t2_rhs = meta::as_value_v<meta::get_either_right_t<t2>>;
                 if constexpr (meta::is_either_v<t1> && meta::is_either_v<t2>)
                     return constrained(t1_lhs,t2_lhs) || constrained(t1_rhs,t2_rhs);
                 else if constexpr (meta::is_either_v<t1>)
@@ -163,8 +161,8 @@ namespace nmtools::utils
             constexpr auto constrained_maybe = [](auto T1, auto T2){
                 using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
                 using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
-                auto v1  = meta::as_value<meta::get_maybe_type_t<t1>>{};
-                auto v2  = meta::as_value<meta::get_maybe_type_t<t2>>{};
+                [[maybe_unused]] auto v1  = meta::as_value_v<meta::get_maybe_type_t<t1>>;
+                [[maybe_unused]] auto v2  = meta::as_value_v<meta::get_maybe_type_t<t2>>;
                 if constexpr (meta::is_maybe_v<t1> && meta::is_maybe_v<t2>)
                     return constrained(v1,v2);
                 // may be type is 
@@ -245,12 +243,12 @@ namespace nmtools::utils
             else if constexpr (meta::is_either_v<T>) {
                 using lhs_t = meta::get_either_left_t<T>;
                 using rhs_t = meta::get_either_right_t<T>;
-                auto lhs = meta::as_value<lhs_t>{};
-                auto rhs = meta::as_value<rhs_t>{};
-                auto tsame = detail::select_same(lhs, rhs, t2);
-                using same_t = meta::type_t<decltype(tsame)>;
+                auto lhs = meta::as_value_v<lhs_t>;
+                auto rhs = meta::as_value_v<rhs_t>;
+                auto t_same = detail::select_same(lhs, rhs, t2);
+                using same_t = meta::type_t<decltype(t_same)>;
                 static_assert( !std::is_void_v<same_t>
-                    , "couldn't find matching left / right concept in variants"
+                    , "couldn't find matching left / right concept in either type"
                 );
 
                 auto same = false;
@@ -263,8 +261,8 @@ namespace nmtools::utils
             else if constexpr (meta::is_either_v<U>) {
                 using lhs_t = meta::get_either_left_t<U>;
                 using rhs_t = meta::get_either_right_t<U>;
-                auto lhs = meta::as_value<lhs_t>{};
-                auto rhs = meta::as_value<rhs_t>{};
+                auto lhs = meta::as_value_v<lhs_t>;
+                auto rhs = meta::as_value_v<rhs_t>;
                 auto tsame = detail::select_same(lhs, rhs, t1);
                 using same_t = meta::type_t<decltype(tsame)>;
 
@@ -288,8 +286,11 @@ namespace nmtools::utils
             // "specialize" on index array, avoid using ndindex
             else if constexpr (meta::is_index_array_v<T> && meta::is_index_array_v<U>) {
                 bool equal = true;
-                // @todo: static assert whenever possible
-                assert ( len(t)==len(u) );
+                // TODO: static assert whenever possible
+                // NOTE: use assert instead of exception, to support compile with -fno-exceptions
+                nmtools_cassert ( len(t)==len(u)
+                    , "mismatched dimension"
+                );
                 // prefer fixed size for indexing to allow constant index
                 if constexpr (meta::is_fixed_index_array_v<T>) {
                     constexpr auto N = meta::fixed_index_array_size_v<T>;
@@ -300,14 +301,25 @@ namespace nmtools::utils
                 }
                 else if constexpr (meta::is_fixed_index_array_v<U>) {
                     constexpr auto N = meta::fixed_index_array_size_v<U>;
+                    using t_t = meta::get_element_or_common_type_t<T>;
+                    using u_t = meta::get_element_or_common_type_t<U>;
                     meta::template_for<N>([&](auto i){
-                        equal = equal && (at(t,i) == at(u,i));
+                        auto t_i = at(t,i);
+                        auto u_i = at(u,i);
+                        using common_t = meta::promote_index_t<t_t,u_t>;
+                        equal = equal && (static_cast<common_t>(t_i) == static_cast<common_t>(u_i));
                     });
                     return equal;
                 }
                 else {
-                    for (size_t i=0; i<len(t); i++)
-                        equal = equal && (at(t,i) == at(u,i));
+                    using t_t = meta::get_element_or_common_type_t<T>;
+                    using u_t = meta::get_element_or_common_type_t<U>;
+                    for (size_t i=0; i<len(t); i++) {
+                        auto t_i = at(t,i);
+                        auto u_i = at(u,i);
+                        using idx_t = meta::promote_index_t<t_t,u_t>;
+                        equal = equal && ((idx_t)t_i == (idx_t)u_i);
+                    }
                     return equal;
                 }
             }
@@ -316,18 +328,20 @@ namespace nmtools::utils
                 bool equal = true;
                 auto t_dim = ::nmtools::dim(t);
                 auto u_dim = ::nmtools::dim(u);
-                // @todo: static assert whenever possible
-                nmtools_assert_throw( (t_dim == u_dim)
+                // TODO: static assert whenever possible
+                // NOTE: use assert instead of exception, to support compile with -fno-exceptions
+                // TODO: use maybe type
+                nmtools_cassert( (t_dim == u_dim)
                     , "dimension mismatch for isequal"
                 );
                 auto t_shape = ::nmtools::shape(t);
                 auto u_shape = ::nmtools::shape(u);
                 auto t_indices = ndindex(t_shape);
                 auto u_indices = ndindex(u_shape);
-                // @todo: static assert whenever possible
+                // TODO: static assert whenever possible
                 auto t_size = t_indices.size();
                 auto u_size = u_indices.size();
-                nmtools_assert_throw( (t_size == u_size)
+                nmtools_cassert( (t_size == u_size)
                     , "size mismatch for isequal"
                 );
                 for (size_t i=0; i<t_indices.size(); i++)
@@ -354,9 +368,6 @@ namespace nmtools::utils
         // check if tuple_size for T & U is available
         constexpr auto is_packed_T = meta::has_tuple_size_v<T>;
         constexpr auto is_packed_U = meta::has_tuple_size_v<U>;
-        // check if T & U is simply array
-        constexpr auto is_array_T = meta::is_ndarray_v<T>;
-        constexpr auto is_array_U = meta::is_ndarray_v<U>;
 
         if constexpr (is_packed_T && is_packed_U) {
             // TODO(wrap std metafunctions): use meta::len_v

@@ -23,7 +23,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/array/index.hpp"
+#include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 
@@ -47,8 +47,6 @@ namespace nmtools::utils
     template <typename T>
     auto to_string(const T& array)
     {
-        constexpr auto is_packed = meta::has_tuple_size_v<T>;
-
         std::string str;
 
         if constexpr (is_none_v<T>)
@@ -59,11 +57,11 @@ namespace nmtools::utils
             // assume get_if<type>(&array) is available for either type
             // which is supported by std::variant
             using std::get_if;
-            if (auto lptr = get_if<lhs_t>(&array)) {
-                str += to_string(*lptr);
+            if (auto l_ptr = get_if<lhs_t>(&array)) {
+                str += to_string(*l_ptr);
             } else {
-                auto rptr = get_if<rhs_t>(&array);
-                str += to_string(*rptr);
+                auto r_ptr = get_if<rhs_t>(&array);
+                str += to_string(*r_ptr);
             }
         }
         else if constexpr (meta::is_nothing_v<T>) {
@@ -104,15 +102,17 @@ namespace nmtools::utils
             if (!size(indices))
                 str = "[]";
             
-            for (int i=0; i<size(indices); i++) {
+            for (size_t i=0; i<(size_t)len(indices); i++) {
                 auto idx = [&](){
                     auto idx = indices[i];
                     using idx_t = decltype(idx);
                     if constexpr (meta::is_specialization_v<idx_t,std::tuple>
-                        || meta::is_specialization_v<idx_t,std::pair>)
-                        return make_array<std::array>(idx);
+                        || meta::is_specialization_v<idx_t,std::pair>) {
+                            return make_array<std::array>(idx);
+                    }
                     else return idx;
                 }();
+                // TODO: support tuple for apply_at
                 auto a = apply_at(array, idx);
 
                 // check if we should print open bracket
@@ -131,7 +131,7 @@ namespace nmtools::utils
                 // check if we should print closing bracket
                 // only add open bracket up to axis n
                 // that is equal to shape[n]-1, starting from last axis
-                for (int ii=size(idx)-1; ii>=0; ii--) {
+                for (int ii=(int)size(idx)-1; ii>=0; ii--) {
                     if (at(idx,ii)==(at(s,ii)-1)) {
                         str += "]";
                         // also count how much newline to be printed
@@ -147,7 +147,7 @@ namespace nmtools::utils
             }
         } // meta::is_ndarray_v<T>
         // handle packed type (e.g. tuple), recursively call to_string for each elements
-        else if constexpr (is_packed) {
+        else if constexpr (meta::has_tuple_size_v<T>) {
             constexpr auto N = std::tuple_size_v<T>;
             str += "(";
             meta::template_for<N>([&](auto index){

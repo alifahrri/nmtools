@@ -119,6 +119,11 @@ namespace nmtools
     template <>
     struct is_none<none_t> : std::true_type {};
 
+    template <>
+    struct is_none<const none_t> : std::true_type {};
+    template <>
+    struct is_none<const none_t&> : std::true_type {};
+
     /**
      * @brief helper inline variable template to check for "None" type
      * 

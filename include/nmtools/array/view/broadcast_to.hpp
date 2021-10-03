@@ -100,8 +100,6 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
-            auto indices_ = pack_indices(indices...);
-
             // while broadcast_to is purely indexing view
             // (transform one (dst) indices to another (src) indices),
             // we also need to handle Num type here,
@@ -111,6 +109,7 @@ namespace nmtools::view
             if constexpr (meta::is_num_v<array_t>)
                 return array;
             else {
+                auto indices_  = pack_indices(indices...);
                 auto src_shape = detail::shape(array);
 
                 auto tf_indices = ::nmtools::index::broadcast_to(indices_,src_shape,shape_,origin_axes);
@@ -193,7 +192,6 @@ namespace nmtools::view
             constexpr auto result  = detail::fn::shape_broadcast_to(array_v,shape_v);
             using result_t = decltype(result);
             if constexpr (!meta::is_fail_v<result_t>) {
-                constexpr auto shape_ = std::get<0>(result);
                 constexpr auto origin_axes = std::get<1>(result);
                 using origin_axes_t = meta::remove_cvref_t<decltype(origin_axes)>;
                 using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>;
@@ -297,7 +295,6 @@ namespace nmtools::meta
                 // assume the shape is default constructible
                 // and the shape information is embedded to the type
                 constexpr auto dst_shape = shape_t{};
-                constexpr auto dim = fixed_index_array_size_v<shape_t>;
                 // by constructing the view itself,
                 // it should be known already if src and dst is broadcastable
                 // hence it is actually redundant to check here

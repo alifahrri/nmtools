@@ -31,8 +31,6 @@ TEST_CASE("eval(mean)" * doctest::test_suite("eval"))
         using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using eval_t     = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-        // may result in dtype_t<float>, something like that
-        // using expected_t = meta::promote_types_t<meta::promote_mean,int,size_t>;
         using expected_t = float;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
@@ -190,6 +188,32 @@ TEST_CASE("eval(mean)" * doctest::test_suite("eval"))
         using eval_t     = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
         using element_t  = float;
         using expected_t = na::dynamic_ndarray<element_t>;
+        NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
+    }
+
+    // None axis, runtime keepdims
+    {
+        using array_t    = int[3][2];
+        using axis_t     = none_t;
+        using dtype_t    = none_t;
+        using keepdims_t = bool;
+        using view_t     = decltype(view::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
+        using left_t     = meta::get_either_left_t<view_t>;
+        using right_t    = meta::get_either_right_t<view_t>;
+        using left_eval_t    = meta::resolve_optype_t< na::eval_t, left_t, none_t >;
+        using right_eval_t   = meta::resolve_optype_t< na::eval_t, right_t, none_t >;
+        using left_expect_t  = float;
+        using right_expect_t = std::array<std::array<float,1>,1>;
+        NMTOOLS_STATIC_CHECK_IS_SAME( left_eval_t, left_expect_t );
+        NMTOOLS_STATIC_CHECK_IS_SAME( right_eval_t, right_expect_t );
+    }
+    {
+        using array_t    = int[3][2];
+        using axis_t     = none_t;
+        using dtype_t    = none_t;
+        using keepdims_t = bool;
+        using eval_t     = decltype(na::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
+        using expected_t = std::variant<float,std::array<std::array<float,1ul>,1ul>>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
 }

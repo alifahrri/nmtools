@@ -1,0 +1,30 @@
+{
+    "name": "nmtools",
+    "version": "0.1.0",
+    "description": "A generic, composable multidimensional array library",
+    "keywords": "tensors, multidimensional-arrays, ndarray, numpy",
+    "homepage": "https://github.com/alifahrri/nmtools//blob/master/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/alifahrri/nmtools.git"
+    },
+    "authors": [
+        {
+            "name": "Fahri Ali Rahman",
+            "url": "https://github.com/alifahrri",
+            "maintainer": true
+        }
+    ],
+    "frameworks": "*",
+    "platforms": "*",
+    "export": {
+        "include": [
+            "include",
+            "tests/include"
+        ],
+        "exclude": [
+            "include/doctest.h",
+            "include/nanobench.h"
+        ]
+    }
+}

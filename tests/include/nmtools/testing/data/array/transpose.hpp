@@ -7,7 +7,7 @@
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/constants.hpp"
 
-#include "nmtools/testing/doctest.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #include <array>
 #include <vector>
@@ -138,6 +138,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         inline auto array_d = cast(array,kind::dynamic);
         inline auto array_f = cast(array,kind::fixed);
         inline auto array_h = cast(array,kind::hybrid);
+        inline auto axes    = None;
         inline auto axes_a  = None;
         inline auto axes_ct = None;
         inline auto axes_v  = None;
@@ -269,6 +270,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         inline auto array_d = cast(array,kind::dynamic);
         inline auto array_f = cast(array,kind::fixed);
         inline auto array_h = cast(array,kind::hybrid);
+        inline auto axes    = None;
         inline auto axes_a  = None;
         inline auto axes_ct = None;
         inline auto axes_v  = None;

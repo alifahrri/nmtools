@@ -15,19 +15,6 @@
 #include <tuple>
 #include <type_traits>
 
-#if defined(__clang__)
-#define NMTOOLS_IGNORE_WRETURN_TYPE_PUSH() \
-        _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wreturn-type\"")
-#define NMTOOLS_IGNORE_WRETURN_TYPE_POP() _Pragma("clang diagnostic pop")
-#elif defined(__GNUC__)
-#define NMTOOLS_IGNORE_WRETURN_TYPE_PUSH() \
-        _Pragma("clang diagnostic push") _Pragma("GCC diagnostic ignored \"-Wreturn-type\"")
-#define NMTOOLS_IGNORE_WRETURN_TYPE_POP() _Pragma("GCC diagnostic pop")
-#else
-#define NMTOOLS_IGNORE_WRETURN_TYPE_PUSH()
-#define NMTOOLS_IGNORE_WRETURN_TYPE_POP()
-#endif
-
 namespace nmtools
 {
     /** @addtogroup utility
@@ -126,7 +113,6 @@ namespace nmtools
      * @param array
      * @return constexpr auto 
      */
-    NMTOOLS_IGNORE_WRETURN_TYPE_PUSH()
     template <typename array_t>
     constexpr auto shape(const array_t& array)
     {
@@ -142,8 +128,8 @@ namespace nmtools
         // for either type, both Left and Right must satisfy constraint (scalar or ndarray)
         constexpr auto constrained_either = [constrained](auto a){
             using type = meta::type_t<meta::remove_cvref_t<decltype(a)>>;
-            auto lhs = meta::as_value<meta::get_either_left_t<type>>{};
-            auto rhs = meta::as_value<meta::get_either_right_t<type>>{};
+            [[maybe_unused]] auto lhs = meta::as_value_v<meta::get_either_left_t<type>>;
+            [[maybe_unused]] auto rhs = meta::as_value_v<meta::get_either_right_t<type>>;
             if constexpr (meta::is_either_v<type>)
                 return constrained(lhs) && constrained(rhs);
             else return false;
@@ -159,10 +145,12 @@ namespace nmtools
             using left_shape_t  = decltype(shape(std::declval<left_t>()));
             using right_shape_t = decltype(shape(std::declval<right_t>()));
             using shape_t = meta::replace_either_t<array_t,left_shape_t,right_shape_t>;
-            if (auto ptr = std::get_if<left_t>(&array))
-                return shape_t{shape(*ptr)};
-            else if (auto ptr = std::get_if<right_t>(&array))
-                return shape_t{shape(*ptr)};
+            if (auto lptr = std::get_if<left_t>(&array)) {
+                return shape_t{shape(*lptr)};
+            } else /* if (auto ptr = std::get_if<right_t>(&array)) */ {
+                auto rptr = std::get_if<right_t>(&array);
+                return shape_t{shape(*rptr)};
+            }
         }
         // for scalar type, simply return None
         else if constexpr (meta::is_num_v<array_t>)
@@ -183,7 +171,6 @@ namespace nmtools
             auto shape_ = std::array<size_t,N>{};
             meta::template_for<N>([&](auto index){
                 constexpr auto i = decltype(index)::value;
-                constexpr auto n = i+1;
                 // example for 3dim nested dynamic array
                 // vector<vector<vector<>>>; N==3
                 // i==0:
@@ -212,9 +199,11 @@ namespace nmtools
         else if constexpr (meta::is_array1d_v<array_t> && meta::has_size_v<array_t>) {
             // TODO (wrap std metafunctions): wrap as meta::make_tuple
             return std::tuple{vector_size(array)};
-        } else return array.shape();
+        }
+        else {
+            return array.shape();
+        }
     } // shape
-    NMTOOLS_IGNORE_WRETURN_TYPE_POP()
 
     /**
      * @brief get the shape of an array, and convert it to given shape-type

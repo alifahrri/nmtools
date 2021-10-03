@@ -37,10 +37,10 @@ namespace nmtools::index
             }
         }();
 
-        auto dim  = len(shape);
-        auto npad = len(pad_width);
+        auto dim   = len(shape);
+        auto n_pad = len(pad_width);
 
-        if (dim*2 == npad) {
+        if (dim*2 == n_pad) {
             auto res = result_t {};
             if constexpr (meta::is_resizeable_v<result_t>) {
                 res.resize(dim);
@@ -87,14 +87,14 @@ namespace nmtools::index
         auto ret = return_t {};
         auto res = result_t {};
 
-        auto src_dim = len(src_shape);
-        auto dst_dim = len(dst_shape);
         auto idx_dim = len(index);
-        auto npad    = len(pad_width);
 
-        // assume src_dim*2 == npad, dst_dim == src_dim == idx_dim
+        // auto dst_dim = len(dst_shape);
+        // auto n_pad    = len(pad_width);
+        // assume src_dim*2 == n_pad, dst_dim == src_dim == idx_dim
 
         if constexpr (meta::is_resizeable_v<result_t>) {
+            auto src_dim = len(src_shape);
             res.resize(src_dim);
         }
 
@@ -102,7 +102,6 @@ namespace nmtools::index
         for (size_t i=0; (i<idx_dim) && (!out_of_bound); i++) {
             auto idx = static_cast<s_idx_t>(at(index,i));
             auto s_i = static_cast<s_idx_t>(at(src_shape,i));
-            auto d_i = static_cast<s_idx_t>(at(dst_shape,i));
             auto p_i = static_cast<s_idx_t>(at(pad_width,i));
             auto r_bound =  idx >= (s_i + p_i);
             auto l_bound = (idx - p_i) < 0;
@@ -143,8 +142,8 @@ namespace nmtools::view
     struct pad_t
     {
         using array_type     = resolve_array_type_t<array_t>;
-        using pad_width_type = const pad_width_t&;
-        using pad_value_type = const value_t;
+        using pad_width_type = resolve_attribute_type_t<pad_width_t>;
+        using pad_value_type = resolve_attribute_type_t<value_t>;
         using value_type     = meta::get_element_type_t<array_t>;
 
         array_type     array;
@@ -156,7 +155,9 @@ namespace nmtools::view
         const PADDING_MODE mode = PADDING_MODE::CONSTANT;
 
         constexpr pad_t(const array_t& array, const pad_width_t& pad_width, const value_t pad_value)
-            : array(initialize<array_type>(array)), pad_width(pad_width), pad_value(pad_value) {}
+            : array(initialize(array, meta::as_value_v<array_type>))
+            , pad_width(init_attribute(pad_width, meta::as_value_v<pad_width_type>))
+            , pad_value(init_attribute(pad_value, meta::as_value_v<pad_value_type>)) {}
         
         constexpr auto shape() const
         {

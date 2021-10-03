@@ -13,7 +13,7 @@ namespace nmtools::index
     struct shape_take_t {};
 
     template <typename shape_t, typename indices_t, typename axis_t>
-    constexpr auto shape_take(const shape_t& shape, const indices_t& indices, axis_t axis)
+    constexpr auto shape_take(const shape_t& shape, const indices_t& indices, [[maybe_unused]] axis_t axis)
     {
         using return_t = meta::resolve_optype_t<shape_take_t,shape_t,indices_t,axis_t>;
 
@@ -21,19 +21,19 @@ namespace nmtools::index
 
         auto n = len(indices);
         // TODO: error when n > at(shape,axis)
-        auto shape_take_impl = [&](auto i){
-            at(res,i) = (i == axis) ? n : at(shape,i);
-        };
 
         if constexpr (is_none_v<axis_t>)
             at(res,0) = n;
         else {
-            auto dim = len(shape);
+            auto shape_take_impl = [&](auto i){
+                at(res,i) = (i == axis) ? n : at(shape,i);
+            };
+            [[maybe_unused]] auto dim = len(shape);
             if constexpr (meta::is_resizeable_v<return_t>)
                 res.resize(dim);
 
-            if constexpr (meta::has_tuple_size_v<shape_t>) {
-                constexpr auto DIM = std::tuple_size_v<shape_t>;
+            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
+                constexpr auto DIM = meta::len_v<shape_t>;
                 meta::template_for<DIM>(shape_take_impl);
             }
             else {
@@ -46,12 +46,12 @@ namespace nmtools::index
     } // shape_take
 
     template <typename index_t, typename shape_t, typename indices_t, typename axis_t>
-    constexpr auto take(const index_t& index, const shape_t& shape, const indices_t& indices, axis_t axis)
+    constexpr auto take(const index_t& index, const shape_t& shape, const indices_t& indices, [[maybe_unused]] axis_t axis)
     {
         using return_t = meta::resolve_optype_t<take_t,index_t,shape_t,indices_t,axis_t>;
 
         auto res = return_t {};
-        auto dim = len(shape);
+        [[maybe_unused]] auto dim = len(shape);
         if constexpr (meta::is_resizeable_v<return_t>)
             res.resize(dim);
 
@@ -66,11 +66,6 @@ namespace nmtools::index
         // let n be the number of dim,
         // the dst_i is index at i
         // the src_i should be the value of indices at dst_i
-        
-        auto take_impl = [&](auto i){
-            auto dst_i = at(index,i);
-            at(res, i) = (i == axis) ? at(indices,dst_i) : dst_i;
-        };
 
         if constexpr (is_none_v<axis_t>) {
             // handle flat indices
@@ -81,6 +76,10 @@ namespace nmtools::index
             impl::compute_indices(res, offset, shape, strides);
         }
         else {
+            auto take_impl = [&](auto i){
+                auto dst_i = at(index,i);
+                at(res, i) = (i == axis) ? at(indices,dst_i) : dst_i;
+            };
             if constexpr (meta::has_tuple_size_v<index_t>) {
                 constexpr auto DIM = std::tuple_size_v<index_t>;
                 meta::template_for<DIM>(take_impl);

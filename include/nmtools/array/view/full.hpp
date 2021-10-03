@@ -50,7 +50,7 @@ namespace nmtools::view
     {
         using shape_type = const shape_t&;
         using fill_value_type = fill_value_t;
-        using element_type = fill_value_type;
+        using element_type    = fill_value_type;
 
         using array_type = none_t;
 
@@ -74,21 +74,6 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
-            using ::nmtools::index::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for broadcast_to view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
-
             // TODO: assert if indices < shape
 
             return fill_value;

@@ -54,12 +54,12 @@ namespace nmtools::index
             else return 1;
         }();
         auto dim = len(shape);
-        auto new_dim = [&](){
-            if (static_cast<bool>(keepdims))
-                return dim;
-            else return dim-n;
-        }();
         if constexpr (meta::is_resizeable_v<return_t>) {
+            auto new_dim = [&](){
+                if (static_cast<bool>(keepdims))
+                    return dim;
+                else return dim-n;
+            }();
             res.resize(new_dim);
         }
         // fn to check if given i is detected in axis
@@ -76,6 +76,8 @@ namespace nmtools::index
             }
         };
 
+        // NOTE: axis maybe signed, so prefer signed size for now
+
         // TODO: formulate how to deduce index type
         // , may be using meta::get_index_type_t
         // use the same type as axis_t for loop index
@@ -90,7 +92,7 @@ namespace nmtools::index
             } else if constexpr (meta::is_integer_v<axis_t>) {
                 return meta::as_value_v<axis_t>;
             } else {
-                return meta::as_value_v<size_t>;
+                return meta::as_value_v<int>;
             }
         }();
 
@@ -102,7 +104,7 @@ namespace nmtools::index
             idx_t idx = 0;
             // res and shape have different size
             // index to fill res
-            for (idx_t i=0; i<dim; i++) {
+            for (idx_t i=0; i<(idx_t)dim; i++) {
                 auto in_axis_ = in_axis(i);
                 if (in_axis_ && !keepdims)
                     continue;

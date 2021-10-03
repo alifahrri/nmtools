@@ -4,8 +4,9 @@
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/testing/doctest.hpp"
 #include "nmtools/constants.hpp"
+
+#include "nmtools/testing/testing.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

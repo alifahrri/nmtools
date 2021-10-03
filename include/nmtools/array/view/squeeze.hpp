@@ -24,45 +24,34 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = const array_t&;
+        using array_type = resolve_array_type_t<array_t>;
 
         array_type array;
 
-        constexpr squeeze_t(array_type array)
-            : array(array) {}
+        constexpr squeeze_t(const array_t& array)
+            : array(initialize(array, meta::as_value_v<array_type>)) {}
         
         constexpr auto shape() const noexcept
         {
-            auto shape_   = ::nmtools::shape(array);
+            auto shape_   = detail::shape(array);
             auto squeezed = index::remove_single_dims(shape_);
             return squeezed;
         } // shape
 
         constexpr auto dim() const noexcept
         {
-            auto shape_ = shape();
-            auto dim_   = ::nmtools::shape(shape_);
-            return at(dim_, 0);
+            return len(shape());
         } // dim
 
         template <typename...size_types>
         constexpr auto index(size_types...Is) const
         {
-            auto indices = [&](){
-                if constexpr (meta::logical_and_v<std::is_integral<size_types>...>)
-                    return std::tuple{Is...};
-                else {
-                    static_assert ( sizeof...(Is)==1
-                        , "unsupported element access of squeeze"
-                    );
-                    return std::get<0>(std::tuple{Is...});
-                }
-            }();
+            auto indices = pack_indices(Is...);
 
             auto squeezed_shape   = shape();
             auto squeezed_strides = index::compute_strides(squeezed_shape);
 
-            auto shape_     = ::nmtools::shape(array);
+            auto shape_     = detail::shape(array);
             auto offset     = index::compute_offset(indices,squeezed_strides);
             auto tf_indices = index::compute_indices(offset,shape_);
 
@@ -103,19 +92,18 @@ namespace nmtools::meta
         static inline constexpr auto value = [](){
             if constexpr (is_fixed_size_ndarray_v<array_t>) {
                 constexpr auto shape = fixed_ndarray_shape_v<array_t>;
-                constexpr auto ndim  = fixed_ndarray_dim_v<array_t>;
+                constexpr auto n_dim  = fixed_ndarray_dim_v<array_t>;
                 // remove_single_dims is not constexpr friendly yet
                 // use template_reduce for now
                 // TODO: make remove_single_dims constexpr friendly
                 // return index::remove_single_dims(shape);
-                constexpr auto vtype = template_reduce<ndim>([&](auto init, auto index){
+                constexpr auto vtype = template_reduce<n_dim>([&](auto init, auto index){
                     // note: we will return value-less type, e.g. tuple<integral_constant<...>>
                     // to make sure reduced value is known at compile-time.
                     constexpr auto idx = decltype(index)::value;
-                    constexpr auto i   = ct<idx>{};
                     constexpr auto dim = at(shape,idx);
                     using init_t = type_t<decltype(init)>;
-                    if constexpr (std::is_void_v<init_t> && (ndim == 1)) {
+                    if constexpr (std::is_void_v<init_t> && (n_dim == 1)) {
                         // for now, return as value-less type for the shape.
                         // note that in numpy, when the shape is 1D and the dim at axis=0 is 1,
                         // np.shape returns empty tuple,

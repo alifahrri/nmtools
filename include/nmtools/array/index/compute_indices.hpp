@@ -101,7 +101,6 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
-            using element_t = get_element_type_t<type>;
             // temporary workaround:
             // the element type may be constant index,
             // especially when shape is tuple with single element

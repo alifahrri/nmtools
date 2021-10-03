@@ -54,7 +54,10 @@ namespace nmtools::index
                 at(ret,si) = a * b;
             }
         }; // shape_tile_impl
-        for (int i=0; i<size(ret); i++)
+
+        // TOOD: consider to unroll when possible
+
+        for (size_t i=0; i<(size_t)len(ret); i++)
             shape_tile_impl(i);
 
         return ret;

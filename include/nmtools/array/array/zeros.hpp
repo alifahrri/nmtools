@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_ARRAY_ARRAY_ONES_HPP
-#define NMTOOLS_ARRAY_ARRAY_ONES_HPP
+#ifndef NMTOOLS_ARRAY_ARRAY_ZEROS_HPP
+#define NMTOOLS_ARRAY_ARRAY_ZEROS_HPP
 
 #include "nmtools/array/view/zeros.hpp"
 #include "nmtools/array/eval.hpp"
@@ -29,4 +29,4 @@ namespace nmtools::array
     } // zeros
 } // namespace nmtools::array
 
-#endif // NMTOOLS_ARRAY_ARRAY_ONES_HPP
+#endif // NMTOOLS_ARRAY_ARRAY_ZEROS_HPP

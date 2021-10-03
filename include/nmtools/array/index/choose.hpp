@@ -72,7 +72,7 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            using element_t = get_element_or_common_type_t<array_t>;
+            using element_t = remove_cvref_t<get_element_or_common_type_t<array_t>>;
             if constexpr (
                    is_hybrid_index_array_v<indices_t>
                 && is_hybrid_index_array_v<array_t>

@@ -168,6 +168,44 @@ namespace nmtools::meta
             return value;
         }();
     }; // to_value
+
+#ifndef NMTOOLS_META_MAKE_ARRAY_TYPE
+#define NMTOOLS_META_MAKE_ARRAY_TYPE
+
+    template <typename T, size_t N, typename>
+    struct make_array_type
+    {
+        using type = std::array<T,N>;
+    }; // make_array_type
+
+    template <typename T, size_t N>
+    using make_array_type_t = type_t<make_array_type<T,N>>;
+#endif // NMTOOLS_META_MAKE_ARRAY_TYPE
+
+    template <typename left_t, typename right_t>
+    struct get_either_left<std::variant<left_t,right_t>>
+    {
+        using type = left_t;
+    };
+
+    template <typename left_t, typename right_t>
+    struct get_either_right<std::variant<left_t,right_t>>
+    {
+        using type = right_t;
+    };
+
+    template <typename left_t, typename right_t>
+    struct get_either_left<const std::variant<left_t,right_t>>
+    {
+        using type = left_t;
+    };
+
+    template <typename left_t, typename right_t>
+    struct get_either_right<const std::variant<left_t,right_t>>
+    {
+        using type = right_t;
+    };
+
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRANSFORM_HPP

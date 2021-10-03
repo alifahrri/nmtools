@@ -79,15 +79,9 @@ namespace nmtools::array
         {
             data_t data{};
             auto array_ref   = view::ref(array);
-            auto array_dim   = ::nmtools::dim(array);
             auto array_shape = ::nmtools::shape(array_ref);
             auto n = index::product(array_shape);
-            // assert ( array_dim == dimension
-            //     // , "unsupported init, mismatched dimension"
-            // );
-            // for (size_t i=0; i<array_dim; i++)
-            //     shape_[i] = ::nmtools::at(array_shape,i);
-            // strides_ = strides();
+            // TODO: better error handling when dimension mismatch
             auto array_view = view::flatten(array_ref);
             for (size_t i=0; i<n; i++)
                 at(data,i) = at(array_view,i);
@@ -159,9 +153,9 @@ namespace nmtools::array
         // @note explicit required here, somehow related to operator=
         template <typename array_t, typename=std::enable_if_t<meta::is_ndarray_v<array_t>>>
         constexpr explicit hybrid_ndarray(array_t&& a) :
+            data(detail::init_data<data_type>(a)),
             shape_(detail::init_shape<max_elements,shape_type>(::nmtools::shape(a))),
-            strides_(detail::init_strides<stride_type>(shape_)),
-            data(detail::init_data<data_type>(a))
+            strides_(detail::init_strides<stride_type>(shape_))
         {} // hybrid_ndarray
         
         template <size_t N>
@@ -296,7 +290,7 @@ namespace nmtools::array
             auto rhs_view = view::ref(rhs); \
             using nested_t = decltype(rhs_view);  \
             return this->template operator=<nested_t>(rhs_view);         \
-        } // operator=  \
+        } // operator=
         
         NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(1)
         NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(2)

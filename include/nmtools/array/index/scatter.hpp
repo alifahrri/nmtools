@@ -33,10 +33,6 @@ namespace nmtools
         template <typename vector_t, typename indices_t>
         constexpr auto scatter(const vector_t& vec, const indices_t& indices)
         {
-            constexpr auto indices_is_tuple = meta::is_specialization_v<vector_t,std::tuple> 
-                || meta::is_specialization_v<vector_t,std::tuple>;
-            constexpr auto order_is_tuple = meta::is_specialization_v<indices_t,std::tuple> 
-                || meta::is_specialization_v<indices_t,std::tuple>;
             // get the size of vec, add namespace to avoid ambiguous call
             auto n = tuple_size(vec);
             // get the size of indices
@@ -48,7 +44,7 @@ namespace nmtools
 
             using std::tuple_size_v;
             // std::array type has value_type
-            using element_t = meta::get_element_type_t<vector_t>;
+            using element_t = meta::remove_cvref_t<meta::get_element_type_t<vector_t>>;
             using common_t = std::conditional_t<
                 std::is_void_v<element_t>,
                 meta::apply_t<std::common_type,vector_t>,
