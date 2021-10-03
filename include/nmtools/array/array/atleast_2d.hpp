@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_ARRAY_ARRAY_ATLEAST_1D_HPP
-#define NMTOOLS_ARRAY_ARRAY_ATLEAST_1D_HPP
+#ifndef NMTOOLS_ARRAY_ARRAY_ATLEAST_2D_HPP
+#define NMTOOLS_ARRAY_ARRAY_ATLEAST_2D_HPP
 
 #include "nmtools/array/view/atleast_2d.hpp"
 #include "nmtools/array/eval.hpp"
@@ -27,4 +27,4 @@ namespace nmtools::array
     } // atleast_2d
 } // namespace nmtools::array
 
-#endif // NMTOOLS_ARRAY_ARRAY_ATLEAST_1D_HPP
+#endif // NMTOOLS_ARRAY_ARRAY_ATLEAST_2D_HPP
