@@ -1,6 +1,14 @@
 name: mbed-platformio
 
-on: [push]
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
 
 jobs:
   build:
