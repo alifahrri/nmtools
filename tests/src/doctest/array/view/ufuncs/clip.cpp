@@ -118,12 +118,7 @@ TEST_CASE("clip(fixed_shape)" * doctest::test_suite("view::clip"))
     {
         auto A = std::array{1,2,3};
         auto B = std::array{std::array{4,5,6},std::array{1,2,3}};
-        // suppress warning on clang causes gcc error 🤦
-#ifdef __clang__
-        auto C = std::array<std::array<int,1>,2>{{7},{8}};
-#else // __GNUC__
         auto C = std::array<std::array<int,1>,2>{7,8};
-#endif
         constexpr auto expected_shape = std::array{2,3};
         CLIP_FIXED_SHAPE_SUBCASE( array, expected_shape, A, B, C );
     }
