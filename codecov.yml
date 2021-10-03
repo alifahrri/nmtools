@@ -25,3 +25,4 @@ parsers:
 ignore:
   - "/usr/include/**/*"        # ignore system lib
   - "/usr/local/include/**/*"  # ignore 3rd parties
+  - "tests/src/platformio"     # don't know how to check coverage with platformio yet
