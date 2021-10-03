@@ -104,9 +104,11 @@ namespace nmtools::index
             // else if (bi < 0)
             //     at(res,si) = tuple_at(ashape,ai);
             else {
+                // TODO: do not use tuple at
                 auto a = tuple_at(ashape,ai);
                 auto b = get_b();
-                if (a==b) {
+                using common_t = meta::promote_index_t<decltype(a),decltype(b)>;
+                if (static_cast<common_t>(a)==static_cast<common_t>(b)) {
                     at(res,bi) = a;
                     at(free_axes,bi) = false;
                 }
@@ -119,7 +121,7 @@ namespace nmtools::index
             }
         }; // shape_broadcast_to_impl
 
-        for (int i=0; i<len(res); i++) {
+        for (size_t i=0; i<(size_t)len(res); i++) {
             if (!success)
                 break;
             shape_broadcast_to_impl(i);
@@ -208,11 +210,10 @@ namespace nmtools::meta
         static constexpr auto vtype = [](){
             // bshape_t (target shape) may be raw or tuple
             using type = tuple_to_array_t<transform_bounded_array_t<bshape_t>>;
-            using element_t = get_element_type_t<type>;
+            using element_t = remove_cvref_t<get_element_type_t<type>>;
             // specialize when both lhs and rhs is constant index array
             // also make sure the resulting type's element type is not contant index
             if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
-                constexpr auto N = len_v<ashape_t>;
                 constexpr auto M = len_v<bshape_t>;
                 using new_type_t = element_t;
                 if constexpr (is_constant_index_v<new_type_t>) {

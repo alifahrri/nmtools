@@ -82,8 +82,9 @@ namespace nmtools::index
         );
 
         auto res = return_t {};
-        // Elipsis doesn't contribute to dimension reduction
-        auto dim = len(shape) - N_INT;
+        // Elipsis doesn't contribute to dimension reduction.
+        // Not all constexpr branches are using dim
+        [[maybe_unused]] auto dim = len(shape) - N_INT;
         if constexpr (meta::is_resizeable_v<return_t>) {
             res.resize(dim);
         }
@@ -111,7 +112,7 @@ namespace nmtools::index
             using slice_t = meta::remove_cvref_t<decltype(slice)>;
 
             // helper lambda to decompose start stop and step
-            auto decompose = [&](auto slice){
+            [[maybe_unused]] auto decompose = [&](auto slice){
                 // assume slice has tuple_size
                 // TODO (wrap std metafunctions): use meta::len_v
                 constexpr auto NS = std::tuple_size_v<decltype(slice)>;
@@ -187,12 +188,12 @@ namespace nmtools::index
                  * should handle various case, e.g. None, postive, negative start & stop
                  * 
                  */
-                auto compute_range = [&](auto start, auto stop_, auto step_) -> size_type {
+                auto compute_range = [&]([[maybe_unused]] auto start, auto stop_, [[maybe_unused]] auto step_) -> size_type {
                     // cant capture start, stop, step :|
                     // to avoid clang complaining about reference to local bindings
 
                     // following numpy, stop is actually max(stop,shape_i)
-                    auto stop = [&](){
+                    [[maybe_unused]] auto stop = [&](){
                         if constexpr (is_none_v<stop_t>)
                             return si;
                         else {
@@ -205,7 +206,7 @@ namespace nmtools::index
                     // workaround to ambiguous call to std::abs, mostly because need to refactor avoiding
                     // gcc 8 internal compiler error :|
                     // gcc 8 no longer supported, maybe cleanup this code
-                    auto abs_ = [](auto v) { return v < 0 ? -v : v; };
+                    [[maybe_unused]] auto abs_ = [](auto v) { return v < 0 ? -v : v; };
                     // both start and stop is none, simply returh shape for this axis
                     if constexpr (is_none_v<start_t> && is_none_v<stop_t>) {
                         return si;
@@ -241,7 +242,8 @@ namespace nmtools::index
 
                 auto s = compute_range(start_,stop_,step_);
 
-                auto step = [](auto step_){
+                auto step = []([[maybe_unused]] auto step_){
+                    // NOTE: step_ is passed instead of captured to avoid clang error
                     if constexpr (is_none_v<step_t>)
                         return 1ul;
                     else if constexpr (std::is_unsigned_v<step_t>)
@@ -283,7 +285,7 @@ namespace nmtools::index
     constexpr auto slice(const indices_t& indices, const shape_t& shape, const slices_t&...slices)
     {
         using return_t = meta::resolve_optype_t<slice_t,indices_t,shape_t,slices_t...>;
-        using index_t  = meta::get_element_type_t<return_t>;
+        using index_t  = meta::remove_cvref_t<meta::get_element_type_t<return_t>>;
         auto res = return_t {};
         auto dim = len(shape);
         if constexpr (meta::is_resizeable_v<return_t>)
@@ -304,7 +306,8 @@ namespace nmtools::index
         auto abs_ = [](auto v) { return v < 0 ? -v : v; };
         meta::template_for<N_SLICES>([&](auto i){
             auto slice = at(slices_pack, i);
-            size_t si  = at(shape,s_i);
+            // si may not be used in all constexpr branch
+            [[maybe_unused]] size_t si  = at(shape,s_i);
             using slice_t = meta::remove_cvref_t<decltype(slice)>;
             if constexpr (meta::is_index_v<slice_t>) {
                 if constexpr (meta::is_signed_v<slice_t>) {
@@ -316,10 +319,10 @@ namespace nmtools::index
                 auto n = (dim-(N_SLICES-1));
                 for (size_t j=0; j<n; j++) {
                     // we're on elipsis, active shape index may also shifted
-                    auto si    = at(shape,s_i+j);
                     auto index = at(indices,i_i+j);
                     using index_t = meta::remove_cvref_t<decltype(index)>;
                     if constexpr (meta::is_signed_v<index_t>) {
+                        auto si    = at(shape,s_i+j);
                         at(res,r_i+j) = (index < 0 ? si - abs_(index) : index);
                     } else {
                         at(res,r_i+j) = index;
@@ -363,20 +366,23 @@ namespace nmtools::index
                 // should handle various case, e.g. None, positive, negative start & stop
                 // also assume indices is properly generated
                 auto index = [&](auto start_, auto stop_, auto step_) -> index_t {
-                    auto start = start_; // just alias
+                    [[maybe_unused]] auto start = start_; // just alias
                     // following numpy, stop is actually (stop,shape_i)
-                    auto stop = [&](){
+                    [[maybe_unused]] auto stop = [&](){
                         if constexpr (is_none_v<stop_t>)
                             return si;
                         // clip value, keep sign
                         else {
-                            auto s = stop_ < si ? stop_ : si;
-                                 s = s > -si ? s : -si;
+                            using common_t = meta::promote_index_t<decltype(stop_),decltype(si)>;
+                            auto s = static_cast<common_t>(stop_) < static_cast<common_t>(si)
+                                        ? static_cast<common_t>(stop_) : static_cast<common_t>(si);
+                                 s = static_cast<common_t>(s) > static_cast<common_t>(-si)
+                                        ? static_cast<common_t>(s) : static_cast<common_t>(-si);
                             return s;
                         }
                     }();
                     // alias
-                    auto step = step_;
+                    [[maybe_unused]] auto step = step_;
                     // (1) simplest case: all is none
                     if constexpr (is_none_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>) {
                         // example case:

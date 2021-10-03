@@ -16,20 +16,22 @@ namespace nmtools::view
     {
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
-        using array_type = const array_t&;
-        using repeats_type = repeats_t;
-        using axis_type = axis_t;
+        using array_type   = resolve_array_type_t<array_t>;
+        using repeats_type = resolve_attribute_type_t<repeats_t>;
+        using axis_type    = resolve_attribute_type_t<axis_t>;
 
         array_type array;
         repeats_type repeats;
         axis_type axis;
 
-        constexpr repeat_t(array_type array, repeats_type repeats, axis_type axis)
-            : array(array), repeats(repeats), axis(axis) {}
+        constexpr repeat_t(const array_t& array, const repeats_t& repeats, const axis_t& axis)
+            : array(initialize(array, meta::as_value_v<array_type>))
+            , repeats(init_attribute(repeats, meta::as_value_v<repeats_type>))
+            , axis(init_attribute(axis, meta::as_value_v<axis_type>)) {}
         
         constexpr decltype(auto) shape() const
         {
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
             return index::shape_repeat(shape_,repeats,axis);
         } // shape
 
@@ -38,25 +40,14 @@ namespace nmtools::view
             if constexpr (is_none_v<axis_type>)
                 return 1;
             else
-                return ::nmtools::dim(array);
+                return detail::dim(array);
         } // dim
 
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            using ::nmtools::detail::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for transpose view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
-            auto shape_ = ::nmtools::shape(array);
+            auto indices_ = pack_indices(indices...);
+            auto shape_   = detail::shape(array);
             return index::repeat(shape_,indices_,repeats,axis);
         } // index
     }; // repeat_t
@@ -73,7 +64,7 @@ namespace nmtools::view
      * @return constexpr auto 
      */
     template <typename array_t, typename repeats_t, typename axis_t>
-    constexpr auto repeat(const array_t& array, repeats_t repeats, axis_t axis)
+    constexpr auto repeat(const array_t& array, const repeats_t& repeats, const axis_t& axis)
     {
         return decorator_t<repeat_t,array_t,repeats_t,axis_t>{{array,repeats,axis}};
     } // repeat

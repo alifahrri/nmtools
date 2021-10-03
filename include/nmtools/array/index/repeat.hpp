@@ -38,7 +38,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename repeats_t, typename axis_t>
-    constexpr auto shape_repeat(const shape_t shape, const repeats_t& repeats, axis_t axis)
+    constexpr auto shape_repeat(const shape_t shape, const repeats_t& repeats, [[maybe_unused]] axis_t axis)
     {
         using return_t = meta::resolve_optype_t<shape_repeat_t,shape_t,repeats_t,axis_t>;
         static_assert (meta::is_index_array_v<return_t>
@@ -141,7 +141,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename indices_t, typename repeats_t, typename axis_t>
-    constexpr auto repeat(const shape_t& shape, const indices_t& indices, const repeats_t& repeats, axis_t axis)
+    constexpr auto repeat(const shape_t& shape, const indices_t& indices, const repeats_t& repeats, [[maybe_unused]] axis_t axis)
     {
         using return_t = meta::resolve_optype_t<repeat_t,shape_t,indices_t,repeats_t,axis_t>;
         static_assert (meta::is_index_array_v<return_t>
@@ -168,12 +168,13 @@ namespace nmtools::index
             if constexpr (meta::is_resizeable_v<return_t>)
                 ret.resize(n);
             for (size_t i=0; i<n; i++) {
+                using common_t = meta::promote_index_t<size_t,axis_t>;
                 auto idx = at(indices,i);
-                if constexpr (std::is_integral_v<repeats_t>)
-                    at(ret,i) = (i==axis ? idx / repeats : idx);
-                else {
+                if constexpr (std::is_integral_v<repeats_t>) {
+                    at(ret,i) = (static_cast<common_t>(i)==static_cast<common_t>(axis) ? idx / repeats : idx);
+                } else {
                     auto csum = cumsum(repeats);
-                    if (i==axis) {
+                    if (static_cast<common_t>(i)==static_cast<common_t>(axis)) {
                         // note: len(repeats) == shape[axis]
                         // simply find arg of repeats such that idx >= accumulate(repeats)[args]
                         auto f = [&](auto a){

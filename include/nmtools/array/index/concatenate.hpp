@@ -33,8 +33,9 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename ashape_t, typename bshape_t, typename indices_t, typename axis_t>
-    constexpr auto concatenate(const ashape_t& ashape, const bshape_t& bshape, const indices_t& indices, axis_t axis)
+    constexpr auto concatenate(const ashape_t& ashape, const bshape_t& bshape, const indices_t& indices, [[maybe_unused]] axis_t axis)
     {
+        // TODO: allow negative axis
         using a_indices_t = meta::resolve_optype_t<concatenate_t,ashape_t,indices_t,axis_t>;
         using b_indices_t = meta::resolve_optype_t<concatenate_t,bshape_t,indices_t,axis_t>;
 
@@ -44,8 +45,8 @@ namespace nmtools::index
         bool aflag = false;
         bool bflag = false;
 
-        auto ad = len(ashape);
-        auto bd = len(bshape);
+        [[maybe_unused]] auto ad = len(ashape);
+        [[maybe_unused]] auto bd = len(bshape);
 
         if constexpr (meta::is_resizeable_v<a_indices_t>)
             a_indices.resize(ad);
@@ -62,7 +63,8 @@ namespace nmtools::index
         if constexpr (is_none_v<axis_t>) {
             auto na = product(ashape);
             auto nb = product(bshape);
-            // todo error handling if len(indices) != 1
+            // TODO: error handling if len(indices) != 1
+            // TODO: do not use tuple_at
             auto i = tuple_at(indices,0);
             if (i<na) {
                 aflag = true;
@@ -75,6 +77,7 @@ namespace nmtools::index
             // not valid
         }
         else {
+            // TODO: do not use tuple_at
             auto aa = tuple_at(ashape,axis);
             auto ba = tuple_at(bshape,axis);
             auto ia = tuple_at(indices,axis);
@@ -87,10 +90,12 @@ namespace nmtools::index
             }
             // also take account for offset
             else if (ia<(ba+aa)) {
+                using idx_t = meta::promote_index_t<size_t,axis_t>;
                 bflag = true;
                 // select ashape, must apply offset from ashape
                 for (size_t i=0; i<bd; i++) {
-                    if (i==axis)
+                    // TODO: do not use tuple_at
+                    if (static_cast<idx_t>(i)==static_cast<idx_t>(axis))
                         at(b_indices,i) = tuple_at(indices,i) - aa;
                     else at(b_indices,i) = tuple_at(indices,i);
                 }
@@ -98,6 +103,7 @@ namespace nmtools::index
             // not valid
         }
 
+        // TODO: use optional instead
         return std::tuple{aflag,bflag,a_indices,b_indices};
     } // concatenate
 } // namespace nmtools::index
@@ -125,7 +131,7 @@ namespace nmtools::meta
             if constexpr (is_fixed_index_array_v<shape_t>) {
                 // tuple<int,..> is also belong to this category
                 constexpr auto N = fixed_index_array_size_v<shape_t>;
-                using elem_t = meta::get_element_or_common_type_t<shape_t>;
+                using elem_t = remove_cvref_t<get_element_or_common_type_t<shape_t>>;
                 // TODO: create make_array_t metafunction
                 return as_value_v<std::array<elem_t,N>>;
             } else if constexpr (is_index_array_v<shape_t>) {
@@ -135,23 +141,6 @@ namespace nmtools::meta
             }
         }();
         using type = type_t<decltype(vtype)>;
-
-        // TODO: remove
-        template <typename T>
-        struct is_resizeable_not_hybrid
-            : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
-
-        using shape_type   = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
-        using indices_type = transform_bounded_array_t<tuple_to_array_t<indices_t>>;
-        // index for concatenate should follow shape type
-        static constexpr auto selection_kind = [](){
-            if constexpr (is_resizeable_not_hybrid<shape_type>::value)
-                return select_resizeable_kind_t {};
-            else if constexpr (is_hybrid_ndarray_v<shape_type>)
-                return select_hybrid_kind_t {};
-            else return select_fixed_kind_t {};
-        }();
-        using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
     }; // struct resolve_optype
 
 } // namespace nmtools::meta
@@ -176,15 +165,16 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename ashape_t, typename bshape_t, typename axis_t>
-    constexpr auto shape_concatenate(const ashape_t& ashape, const bshape_t& bshape, axis_t axis)
+    constexpr auto shape_concatenate(const ashape_t& ashape, const bshape_t& bshape, [[maybe_unused]] axis_t axis)
     {
+        // TODO: allow negative axis
         using return_t = meta::resolve_optype_t<shape_concatenate_t,ashape_t,bshape_t,axis_t>;
 
         auto ret = return_t {};
         bool suc = true;
 
-        auto ad = len(ashape);
-        auto bd = len(bshape);
+        [[maybe_unused]] auto ad = len(ashape);
+        [[maybe_unused]] auto bd = len(bshape);
 
         if constexpr (meta::is_resizeable_v<return_t>)
             ret.resize(ad); // ad must be == bd
@@ -196,11 +186,13 @@ namespace nmtools::index
             at(ret,0) = na + nb;
         }
         else if (ad==bd) {
+            using idx_t = meta::promote_index_t<size_t,axis_t>;
             // todo: maybe convert ashape & bshape to array first to simplify expression
-            for (size_t i=0; i<ad; i++) {
+            for (size_t i=0; i<(size_t)ad; i++) {
+                // TODO: do not use tuple_at
                 auto ai = tuple_at(ashape,i);
                 auto bi = tuple_at(bshape,i);
-                if (i==axis)
+                if (static_cast<idx_t>(i)==static_cast<idx_t>(axis))
                     at(ret,i) = ai + bi;
                 // concat must have same shape except at axis idx
                 else if (ai==bi)
@@ -213,6 +205,7 @@ namespace nmtools::index
         }
         else suc = false;
         
+        // TODO: use optional instead
         return std::tuple{suc,ret};
     } // shape_concatenate
 } // namespace nmtools::index
@@ -257,26 +250,6 @@ namespace nmtools::meta
             }
         }();
         using type = type_t<decltype(vtype)>;
-
-        // TODO: remove
-        template <typename T>
-        struct is_resizeable_not_hybrid
-            : logical_and<is_resizeable<T>,std::negation<is_hybrid_ndarray<T>>> {};
-
-        using type_list = std::tuple<ashape_t,bshape_t>;
-        static constexpr auto selection_kind = [](){
-            // either ashape or bshape is pure resizeable, prefer pure resizeable
-            if constexpr (apply_logical_or_v<is_resizeable_not_hybrid,type_list>)
-                return select_resizeable_kind_t {};
-            // either ashape or bshape is hybrid, but bot is not pure resizeable, prefer hybrid
-            else if constexpr (apply_logical_or_v<is_hybrid_ndarray,type_list>)
-                return select_hybrid_kind_t {};
-            // both is fixed ndarray
-            else return select_fixed_kind_t {};
-        }();
-
-        using selection_kind_t = remove_cvref_t<decltype(selection_kind)>;
-        // shape type must be integral
     }; // resolve_optype
 
     template <typename ashape_t, typename bshape_t>

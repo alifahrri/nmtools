@@ -92,8 +92,8 @@ namespace nmtools::utils
         {
             using ::nmtools::ndindex;
             // treat T & U as value
-            constexpr auto t1 = meta::as_value<T>{};
-            constexpr auto t2 = meta::as_value<U>{};
+            constexpr auto t1 = meta::as_value_v<T>;
+            constexpr auto t2 = meta::as_value_v<U>;
 
             // check if T1 and T2 is both scalar or both ndarray
             constexpr auto constrained = [](auto T1, auto T2){
@@ -110,10 +110,10 @@ namespace nmtools::utils
             constexpr auto constrained_either = [constrained](auto T1, auto T2){
                 using t1 = meta::type_t<decltype(T1)>;
                 using t2 = meta::type_t<decltype(T2)>;
-                auto t1_lhs = meta::as_value<meta::get_either_left_t<t1>>{};
-                auto t2_lhs = meta::as_value<meta::get_either_left_t<t2>>{};
-                auto t1_rhs = meta::as_value<meta::get_either_right_t<t1>>{};
-                auto t2_rhs = meta::as_value<meta::get_either_right_t<t2>>{};
+                [[maybe_unused]] auto t1_lhs = meta::as_value_v<meta::get_either_left_t<t1>>;
+                [[maybe_unused]] auto t2_lhs = meta::as_value_v<meta::get_either_left_t<t2>>;
+                [[maybe_unused]] auto t1_rhs = meta::as_value_v<meta::get_either_right_t<t1>>;
+                [[maybe_unused]] auto t2_rhs = meta::as_value_v<meta::get_either_right_t<t2>>;
                 if constexpr (meta::is_either_v<t1> && meta::is_either_v<t2>)
                     return (constrained(t1_lhs,t2_lhs) || constrained(t1_rhs,t2_rhs));
                 else if constexpr (meta::is_either_v<t1>)
@@ -127,8 +127,8 @@ namespace nmtools::utils
             constexpr auto constrained_maybe = [constrained](auto T1, auto T2){
                 using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
                 using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
-                auto v1  = meta::as_value<meta::get_maybe_type_t<t1>>{};
-                auto v2  = meta::as_value<meta::get_maybe_type_t<t2>>{};
+                [[maybe_unused]] auto v1  = meta::as_value_v<meta::get_maybe_type_t<t1>>;
+                [[maybe_unused]] auto v2  = meta::as_value_v<meta::get_maybe_type_t<t2>>;
                 if constexpr (meta::is_maybe_v<t1> && meta::is_maybe_v<t2>)
                     return constrained(v1,v2);
                 else if constexpr (meta::is_maybe_v<t1>)
@@ -143,9 +143,6 @@ namespace nmtools::utils
                 constrained(t1,t2) || constrained_either(t1,t2) || constrained_maybe(t1,t2)
                 , "unsupported isclose; only support scalar type or ndarray"
             );
-            auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
-                return fabs(lhs-rhs) < eps;
-            };
 
             using std::get_if;
 
@@ -231,27 +228,34 @@ namespace nmtools::utils
                     < static_cast<common_t>(eps);
             }
             else {
+                auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
+                    return fabs(lhs-rhs) < eps;
+                };
                 bool close = true;
                 // @todo: static assert whenever possible
                 auto t_dim = ::nmtools::dim(t);
                 auto u_dim = ::nmtools::dim(u);
-                nmtools_assert_throw( (t_dim==u_dim)
-                    , "dimension mismatch for isclose"
+                // TODO: static assert whenever possible
+                // NOTE: use assert instead of exception, to support compile with -fno-exceptions
+                // TODO: use maybe type
+                nmtools_cassert( (t_dim == u_dim)
+                    , "dimension mismatch for isequal"
                 );
                 auto t_shape = ::nmtools::shape(t);
                 auto u_shape = ::nmtools::shape(u);
-                nmtools_assert_throw( ::nmtools::utils::isequal(t_shape,u_shape)
+                nmtools_cassert( ::nmtools::utils::isequal(t_shape,u_shape)
                     , "shape mismatch for isclose"
                 );
                 auto t_indices = ndindex(t_shape);
                 auto u_indices = ndindex(u_shape);
                 auto t_size = t_indices.size();
                 auto u_size = u_indices.size();
-                // @todo: static assert whenever possible
-                nmtools_assert_throw( (t_size==u_size)
-                    , "size mismatch for isclose"
+                // TODO: static assert whenever possible
+                nmtools_cassert( (t_size == u_size)
+                    , "size mismatch for isequal"
                 );
-                for (size_t i = 0; i<t_indices.size(); i++)
+                auto numel = t_indices.size();
+                for (size_t i = 0; i<numel; i++)
                     // dont recurse, we already checked that t and u satify static assert here
                     close = close && isclose_impl(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
                 return close;
@@ -276,9 +280,6 @@ namespace nmtools::utils
         // check if tuple_size for T & U is available
         constexpr auto is_packed_T = meta::has_tuple_size_v<T>;
         constexpr auto is_packed_U = meta::has_tuple_size_v<U>;
-        // check if T & U is simply array
-        constexpr auto is_array_T = meta::is_ndarray_v<T>;
-        constexpr auto is_array_U = meta::is_ndarray_v<U>;
 
         if constexpr (is_packed_T && is_packed_U) {
             constexpr auto nt = std::tuple_size_v<T>;

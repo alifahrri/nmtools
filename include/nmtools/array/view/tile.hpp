@@ -21,43 +21,33 @@ namespace nmtools::view
     {
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
-        using array_type = const array_t&;
-        using reps_type  = reps_t;
+        using array_type = resolve_array_type_t<array_t>;
+        using reps_type  = resolve_attribute_type_t<reps_t>;
         
         array_type array;
         reps_type  reps;
 
-        constexpr tile_t(array_type array, reps_type reps)
-            : array(array), reps(reps) {}
+        constexpr tile_t(const array_t& array, const reps_t& reps)
+            : array(initialize(array, meta::as_value_v<array_type>))
+            , reps(init_attribute(reps, meta::as_value_v<reps_type>)) {}
         
         constexpr decltype(auto) shape() const
         {
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
             return index::shape_tile(shape_,reps);
         } // shape
 
         constexpr decltype(auto) dim() const
         {
-            auto shape_ = ::nmtools::shape(array);
-            return index::tuple_size(index::shape_tile(shape_,reps));
+            return len(shape());
         } // dim
 
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            using index::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for transpose view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
-            auto shape_ = ::nmtools::shape(array);
+            // tile view is just indexing view, no value transform
+            auto indices_ = pack_indices(indices...);
+            auto shape_   = detail::shape(array);
             return index::tile(shape_,reps,indices_);
         } // index
     }; // tile_t

@@ -27,7 +27,7 @@ namespace nmtools::index
     {
         using shape_type = const shape_t&;
         using stride_type = meta::remove_cvref_t<decltype(compute_strides(std::declval<shape_t>()))>;
-        using size_type = meta::get_element_or_common_type_t<shape_t>;
+        using size_type = meta::remove_cvref_t<meta::get_element_or_common_type_t<shape_t>>;
 
         shape_type shape;
         stride_type stride;
@@ -52,7 +52,8 @@ namespace nmtools::index
          */
         constexpr decltype(auto) size() const noexcept
         {
-            return product(shape);
+            // TODO: consider to return as constant index when possible
+            return static_cast<size_t>(product(shape));
         } // size
 
         /**
@@ -93,5 +94,22 @@ namespace nmtools::index
         return ndindex_t(shape);
     } // ndindex
 }
+
+namespace nmtools
+{
+    /**
+     * @brief Specialization of len for ndindex
+     * 
+     * @tparam shape_t 
+     * @param ndindex 
+     * @return constexpr auto 
+     */
+    template <typename shape_t>
+    constexpr auto len(const index::ndindex_t<shape_t>& ndindex)
+    {
+        return ndindex.size();
+    } // len
+} // namespace nmtools
+
 
 #endif // NMTOOLS_ARRAY_INDEX_NDINDEX_HPP

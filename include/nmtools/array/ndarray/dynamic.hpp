@@ -300,7 +300,7 @@ namespace nmtools::array
             auto rhs_view = view::ref(rhs); \
             using nested_t = decltype(rhs_view);  \
             return this->template operator=<nested_t>(rhs_view);         \
-        } // operator=  \
+        } // operator=
         
         NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(1)
         NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(2)

@@ -13,6 +13,7 @@
 
 namespace nmtools::index
 {
+    // TODO: remove
     /**
      * @brief access tuple with runtime value
      *
@@ -36,10 +37,14 @@ namespace nmtools::index
 
         // @note to check to N since n may be > i
         // @note integral constant is cast-able to its value_type (int,size_t,...)
-        if constexpr (meta::has_tuple_size_v<vector_t>)
-            meta::template_for<std::tuple_size_v<vector_t>>([&](auto j){
-                if (idx==j) value = static_cast<value_t>(at(vec,j));
+        if constexpr (meta::has_tuple_size_v<vector_t> && !meta::is_constant_index_v<idx_t>) {
+            // simply unroll and assign if match with idx (runtime value)
+            constexpr auto N = meta::len_v<vector_t>;
+            meta::template_for<N>([&](auto j){
+                if (idx==static_cast<idx_t>(j))
+                    value = static_cast<value_t>(at(vec,j));
             });
+        }
         else value = at(vec,idx);
         return value;
     } // tuple_at

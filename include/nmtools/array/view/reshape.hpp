@@ -8,7 +8,11 @@
 #include "nmtools/array/view/flatten.hpp"
 
 #include "nmtools/array/detail.hpp"
-#include "nmtools/array/index.hpp"
+#include "nmtools/array/index/product.hpp"
+#include "nmtools/array/index/compute_indices.hpp"
+#include "nmtools/array/index/compute_offset.hpp"
+#include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/assert.hpp"
 
 namespace nmtools::view
 {
@@ -30,8 +34,8 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = const array_t&;
-        using shape_type = shape_t;
+        using array_type = resolve_array_type_t<array_t>;
+        using shape_type = resolve_attribute_type_t<shape_t>;
         
         array_type array;
         shape_type new_shape;
@@ -40,8 +44,9 @@ namespace nmtools::view
          * @brief construct reshape view
          * 
          */
-        constexpr reshape_t(array_type array, shape_type shape)
-            : array(array), new_shape(shape) {}
+        constexpr reshape_t(const array_t& array, const shape_t& shape)
+            : array(initialize(array, meta::as_value_v<array_type>))
+            , new_shape(init_attribute(shape, meta::as_value_v<shape_type>)) {}
         
         /**
          * @brief simply return size of new_shape
@@ -50,12 +55,7 @@ namespace nmtools::view
          */
         constexpr auto dim() const noexcept
         {
-            auto n = [&](){
-                if constexpr (meta::has_tuple_size_v<shape_type>)
-                    return std::tuple_size_v<shape_type>;
-                else return new_shape.size();
-            }();
-            return n;
+            return len(new_shape);
         } // dim
         
         /**
@@ -66,6 +66,7 @@ namespace nmtools::view
         constexpr decltype(auto) shape() const noexcept
         {
             // TODO: support negative shape dimension
+            // NOTE: must normalize raw bounded array
             return new_shape;
         } // shape
 
@@ -79,29 +80,11 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            using ::nmtools::array::detail::compute_strides;
-            using ::nmtools::array::detail::compute_indices;
-            using ::nmtools::array::detail::compute_offset;
-            using ::nmtools::detail::make_array;
-            using ::nmtools::shape;
-            using common_t = std::common_type_t<size_types...>;
-
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for transpose view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
-            auto shape_  = shape(array);
-            auto strides = compute_strides(new_shape);
-            auto offset  = compute_offset(indices_,strides);
-            auto tf_idx  = compute_indices(offset,shape_);
+            auto indices_ = pack_indices(indices...);
+            auto shape_   = detail::shape(array); // src shape
+            auto strides  = index::compute_strides(new_shape);
+            auto offset   = index::compute_offset(indices_,strides);
+            auto tf_idx   = index::compute_indices(offset,shape_);
             return tf_idx;
         } // index
     }; // reshape_t
@@ -116,14 +99,14 @@ namespace nmtools::view
      * @return constexpr auto reshape view
      */
     template <typename array_t, typename shape_t>
-    constexpr auto reshape(const array_t& array, shape_t new_shape)
+    constexpr auto reshape(const array_t& array, const shape_t& new_shape)
     {
-        using ::nmtools::array::detail::product;
         auto shape = ::nmtools::shape(array);
-        auto numel = product(shape);
+        auto old_numel = index::product(shape);
+        auto new_numel = index::product(new_shape);
         // TODO: better error handling
-        assert( numel == product(new_shape)
-            // , "unsupported reshape, mismatched number of elements"
+        nmtools_assert( old_numel == new_numel
+            , "unsupported reshape, mismatched number of elements"
         );
         return decorator_t<reshape_t,array_t,shape_t>{{array,new_shape}};
     } // reshape

@@ -35,19 +35,16 @@ namespace nmtools::index
         // len(indices) == max(len(shape),len(reps))
         auto m = len(shape);
         auto n = len(indices);
-        auto r = len(reps);
         // clang (android & emscripten) complains about ambiguous call
-        auto d = std::abs(int(m - n));
         auto s = std::max(m,n);
 
         if constexpr (meta::is_resizeable_v<return_t>)
             ret.resize(size(shape));
         
-        for (int i=0; i<s; i++) {
+        // use int since ai/bi may be negative
+        for (int i=0; i<(int)s; i++) {
             int ai = m - i - 1;
             int bi = n - i - 1;
-            int ri = r - i - 1;
-            int ci = s - i - 1;
             if (ai >= 0) {
                 auto idx = at(indices,bi);
                 auto s = tuple_at(shape,ai);

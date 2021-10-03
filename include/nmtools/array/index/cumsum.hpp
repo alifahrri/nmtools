@@ -29,7 +29,7 @@ namespace nmtools::index
             ret.resize(size(array));
         
         at(ret,0) = at(array,0);
-        for (int i=1; i<size(ret); i++)
+        for (size_t i=1; i<(size_t)len(ret); i++)
             at(ret,i) = at(ret,i-1) + at(array,i);
         
         return ret;

@@ -113,9 +113,21 @@ namespace nmtools::array
         return evaluator_type{view,context};
     } // evaluator
 
+    /**
+     * @brief Evaluate a view, given context and optional output.
+     * 
+     * @tparam output_t 
+     * @tparam context_t 
+     * @tparam view_t 
+     * @param view 
+     * @param context 
+     * @param output 
+     * @return constexpr auto 
+     */
     template <typename output_t=none_t, typename context_t=none_t, typename view_t>
     constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{})
     {
+        // TODO: support maybe type
         if constexpr (meta::is_either_v<view_t>) {
             // for now, assume either type is std::variant
             // TODO: add support for other either type
@@ -431,9 +443,12 @@ namespace nmtools::meta
      * At the moment the implementation should be working for various view type
      * such as ufuncs, outer_ufuncs, accumulate_ufuncs, arange, atleast_1d, full, ones, zeros, flip.
      * Some views are known to have its own specialization, such as reduce_ufuncs, atleast_2d, atleast_3d, broadcast_to.
+     * 
+     * Note that this resolver doesn't handle either type,
+     * the resolution of either type should be handled at the caller site.
      *
      * @tparam view_t view type in which its eval type is to be resolved.
-     * @todo generalize to accomodate other specialized resolver
+     * @todo generalize to accommodate other specialized resolver
      */
     template <typename view_t>
     struct resolve_optype<

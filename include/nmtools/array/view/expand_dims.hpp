@@ -17,18 +17,19 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = const array_t&;
-        using axis_type  = axis_t;
+        using array_type = resolve_array_type_t<array_t>;
+        using axis_type  = resolve_attribute_type_t<axis_t>;
 
         array_type array;
         axis_type  axis;
 
-        constexpr expand_dims_t(array_type array, axis_type axis)
-            : array(array), axis(axis) {}
+        constexpr expand_dims_t(const array_t& array, const axis_t& axis)
+            : array(initialize(array, meta::as_value_v<array_type>))
+            , axis(init_attribute(axis, meta::as_value_v<axis_type>)) {}
         
         constexpr auto shape() const noexcept
         {
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
             // TODO: maybe rename index::expand_dims to index::shape_expand_dims
             auto newshape = index::expand_dims(shape_,axis);
             return newshape;
@@ -44,22 +45,13 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto index(size_types...Is) const
         {
-            auto indices = [&](){
-                if constexpr (meta::logical_and_v<std::is_integral<size_types>...>)
-                    return std::tuple{Is...};
-                else {
-                    static_assert ( sizeof...(Is)==1
-                        , "unsupported element access of squeeze"
-                    );
-                    return std::get<0>(std::tuple{Is...});
-                }
-            }();
+            auto indices = pack_indices(Is...);
 
             // TODO: maybe move index computation to index::expand_dims
             auto expanded_shape   = shape();
             auto squeezed_strides = index::compute_strides(expanded_shape);
 
-            auto shape_     = ::nmtools::shape(array);
+            auto shape_     = detail::shape(array);
             auto offset     = index::compute_offset(indices,squeezed_strides);
             auto tf_indices = index::compute_indices(offset,shape_);
 
@@ -77,16 +69,9 @@ namespace nmtools::view
      * @return constexpr auto expand_dims view
      */
     template <typename array_t, typename axis_t>
-    constexpr auto expand_dims(const array_t& array, axis_t axis)
+    constexpr auto expand_dims(const array_t& array, const axis_t& axis)
     {
-        // convert integral type to tuple of integral
-        auto axis_ = [=](){
-            if constexpr (std::is_integral_v<axis_t>)
-                return std::array{axis};
-            else return axis;
-        }();
-        using axis_type = decltype(axis_);
-        return decorator_t<expand_dims_t,array_t,axis_type>{{array,axis_}};
+        return decorator_t<expand_dims_t,array_t,axis_t>{{array,axis}};
     } // expand_dims
 
 } // namespace nmtools::view

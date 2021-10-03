@@ -39,10 +39,8 @@ namespace nmtools
         template <typename vector_t, typename indices_t>
         constexpr auto gather(const vector_t& vec, const indices_t& indices)
         {
-            // get the size of vec
-            auto n = len(vec);
             // get the size of indices
-            auto m = len(indices);
+            [[maybe_unused]] auto m = len(indices);
 
             using std::tuple_size_v;
             using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
@@ -71,13 +69,18 @@ namespace nmtools
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        struct GATHER_UNSUPPORTED : detail::fail_t {};
+    }
+
     template <typename vector_t, typename indices_t>
     struct resolve_optype<
         void, index::gather_t, vector_t, indices_t
     >
     {
         static constexpr auto vtype = [](){
-            using element_t = get_element_or_common_type_t<vector_t>;
+            using element_t = remove_cvref_t<get_element_or_common_type_t<vector_t>>;
             if constexpr (
                 is_dynamic_index_array_v<indices_t>
             ) // whenever indices is dynamic, chose it
@@ -138,7 +141,9 @@ namespace nmtools::meta
                 using return_t = resize_fixed_vector_t<type,size>;
                 return as_value_v<replace_element_type_t<return_t,element_t>>;
             }
-            else return as_value_v<void>;
+            else {
+                return as_value_v<error::GATHER_UNSUPPORTED>;
+            }
         }();
 
         using type = type_t<remove_cvref_t<decltype(vtype)>>;

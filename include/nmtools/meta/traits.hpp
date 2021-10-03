@@ -1582,6 +1582,12 @@ namespace nmtools::meta {
     template <typename T>
     constexpr inline auto is_nothing_v = is_nothing<T>::value;
 
+    namespace error
+    {
+        struct GET_EITHER_LEFT_UNSUPPORTED : detail::fail_t {};
+        struct GET_EITHER_RIGHT_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief Get the Left type of Either
      * 
@@ -1591,7 +1597,7 @@ namespace nmtools::meta {
     template <typename T>
     struct get_either_left
     {
-        using type = void;
+        using type = error::GET_EITHER_LEFT_UNSUPPORTED;
     };
 
     /**
@@ -1603,19 +1609,7 @@ namespace nmtools::meta {
     template <typename T>
     struct get_either_right
     {
-        using type = void;
-    };
-
-    template <typename left_t, typename right_t>
-    struct get_either_left<std::variant<left_t,right_t>>
-    {
-        using type = left_t;
-    };
-
-    template <typename left_t, typename right_t>
-    struct get_either_right<std::variant<left_t,right_t>>
-    {
-        using type = right_t;
+        using type = error::GET_EITHER_RIGHT_UNSUPPORTED;
     };
 
     template <typename T>

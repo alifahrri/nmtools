@@ -32,7 +32,7 @@ namespace nmtools::view::detail
     } // shape
 
     /**
-     * @brief Helper dim function that is ponter-aware.
+     * @brief Helper dim function that is pointer-aware.
      * 
      * @tparam array_t 
      * @param array     input array
@@ -145,7 +145,6 @@ namespace nmtools::view
          */
         constexpr decltype(auto) shape() const noexcept
         {
-            using array_t = meta::remove_cvref_t<array_type>;
             if constexpr (meta::has_shape_v<meta::remove_cvref_t<view_type>>)
                 return view_type::shape();
             else return detail::shape(view_type::array);
@@ -158,7 +157,7 @@ namespace nmtools::view
          * @param indices 
          * @return constexpr auto
          * @todo make error handling configurable, e.g. throw/assert/optional
-         * @note for fixed size, it is necessary to pass Array{} (value initialization) to dim since `this` may not be constant exprression
+         * @note for fixed size, it is necessary to pass Array{} (value initialization) to dim since `this` may not be constant expression
          * @see https://en.cppreference.com/w/cpp/language/value_initialization
          * @see nmtools::at
          */
@@ -175,21 +174,14 @@ namespace nmtools::view
             else {
                 auto transformed_indices = view_type::index(indices...);
 
-                using array_t = meta::remove_cvref_t<array_type>;
                 constexpr auto n = sizeof...(size_types);
                 // only perform assert if integral type is passed
                 // otherwise assume indices is packed and pass to apply_at
                 // to allow access from packed indices
+                // TODO: better error handling
                 if constexpr (std::is_integral_v<common_t>)
                     // @todo static_assert whenever possible
                     assert (dim()==n); // tmp assertion
-
-                // @note needs to initialize array_t since view_type::array may not be constant expression
-                // @note flatten_t dim invocation differs from other view types @todo fix
-                // if constexpr (meta::is_fixed_size_ndarray_v<array_t>)
-                //     static_assert (detail::dim(array_t{})==n);
-                // else
-                //     assert (dim()==n);
 
                 // call at to referred object, not to this.
                 // the array_type from the view may be pointer
@@ -208,7 +200,7 @@ namespace nmtools::view
          * @param indices 
          * @return constexpr auto
          * @todo make error handling configurable, e.g. throw/assert/optional
-         * @note for fixed size, it is necessary to pass Array{} (value initialization) to dim since `this` may not be constant exprression
+         * @note for fixed size, it is necessary to pass Array{} (value initialization) to dim since `this` may not be constant expression
          * @see https://en.cppreference.com/w/cpp/language/value_initialization
          * @see nmtools::at
          */
@@ -225,7 +217,6 @@ namespace nmtools::view
             else {
                 auto transformed_indices = view_type::index(indices...);
 
-                using array_t = meta::remove_cvref_t<array_type>;
                 constexpr auto n = sizeof...(size_types);
                 // only perform assert if integral type is passed
                 // otherwise assume indices is packed and pass to apply_at
@@ -252,6 +243,7 @@ namespace nmtools::view
 
     }; // decorator_t
 
+    // TODO: remove
     /**
      * @brief make view given parameters arrays
      * 
@@ -488,7 +480,7 @@ namespace nmtools::view
     using resolve_array_type_t = meta::type_t<resolve_array_type<array_t>>;
 
     /**
-     * @brief Helper funciton to initialize array for view constructor.
+     * @brief Helper function to initialize array for view constructor.
      * 
      * Simply detect if should return pointer or not.
      * 
@@ -506,6 +498,92 @@ namespace nmtools::view
             return array;
         }
     } // initialize
+
+    template <typename array_t, typename array_type>
+    constexpr array_type initialize(const array_t& array, meta::as_value<array_type>)
+    {
+        return initialize<array_type>(array);
+    } // initialize
+
+    namespace error
+    {
+        // error type for resolve_attribute_type metafunction
+        struct RESOLVE_ATTRIBUTE_TYPE_UNSUPPORTED : meta::detail::fail_t {};
+    }
+
+    /**
+     * @brief Metafunction to infer attribute type, prefer value semantics.
+     * 
+     * @tparam attribute_t 
+     */
+    template <typename attribute_t>
+    struct resolve_attribute_type
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (meta::is_bounded_array_v<attribute_t>) {
+                // convert to array type that has value semantics
+                constexpr auto N = meta::len_v<attribute_t>;
+                using elem_t = meta::get_element_type_t<attribute_t>;
+                using type = meta::make_array_type_t<elem_t,N>;
+                return meta::as_value_v<const type>;
+            } else if constexpr (
+                         is_none_v<attribute_t>
+                || meta::is_num_v<attribute_t>
+                || meta::is_index_array_v<attribute_t>
+                || meta::is_ndarray_v<attribute_t>)
+            {
+                return meta::as_value_v<const attribute_t>;
+            } else {
+                return meta::as_value_v<error::RESOLVE_ATTRIBUTE_TYPE_UNSUPPORTED>;
+            }
+        }();
+        using type = meta::type_t<decltype(vtype)>;
+    }; // resolve_attribute_type
+
+    template <typename attribute_t>
+    using resolve_attribute_type_t = meta::type_t<resolve_attribute_type<attribute_t>>;
+
+    /**
+     * @brief Initialize attribute
+     * 
+     * @tparam attribute_type   attribute type from resolve_attribute type metafunction
+     * @tparam attribute_t      original attribute type (without const ref)
+     * @param attribute 
+     * @return constexpr auto 
+     */
+    template <typename attribute_type, typename attribute_t>
+    constexpr auto init_attribute(const attribute_t& attribute)
+    {
+        if constexpr (meta::is_constant_index_array_v<attribute_t>) {
+            return static_cast<attribute_type>(attribute);
+        } else if constexpr (meta::is_fixed_index_array_v<attribute_t>) {
+            using attr_t = meta::remove_cvref_t<attribute_type>;
+            auto attr = attr_t{};
+            constexpr auto N = meta::len_v<attr_t>;
+            meta::template_for<N>([&](auto index){
+                at(attr,index) = at(attribute,index);
+            });
+            return attr;
+        } else if constexpr (meta::is_index_array_v<attribute_t>) {
+            using attr_t = meta::remove_cvref_t<attribute_type>;
+            auto attr = attr_t{};
+            if constexpr (meta::is_resizeable_v<attr_t>) {
+                attr.resize(len(attribute));
+            }
+            for (size_t i=0; i<(size_t)len(attribute); i++) {
+                at(attr,i) = at(attribute,i);
+            }
+            return attr;
+        } else /* if constexpr (meta::is_index_v<attribute_t>) */ {
+            return static_cast<attribute_type>(attribute);
+        }
+    } // init attribute
+
+    template <typename attribute_t, typename attribute_type>
+    constexpr auto init_attribute(const attribute_t& attribute, meta::as_value<attribute_type>)
+    {
+        return init_attribute<attribute_type>(attribute);
+    } // init_attribute
 
     /** @} */ // end group view
 } // namespace nmtools::view

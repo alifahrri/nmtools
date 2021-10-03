@@ -93,7 +93,7 @@ namespace nmtools
      * @return constexpr decltype(auto) 
      */
     template <typename array_t, typename index_type>
-    constexpr decltype(auto) at(const array_t& a, index_type i)
+    constexpr decltype(auto) at(const array_t& a, [[maybe_unused]] index_type i)
     {
         static_assert(
             meta::has_at_v<const array_t&,index_type>
@@ -159,7 +159,7 @@ namespace nmtools
      * @return constexpr decltype(auto) 
      */
     template <typename array_t, typename index_type>
-    constexpr decltype(auto) at(array_t& a, index_type i)
+    constexpr decltype(auto) at(array_t& a, [[maybe_unused]] index_type i)
     {
         static_assert(
             meta::has_at_v<array_t&,index_type>

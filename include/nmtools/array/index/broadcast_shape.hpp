@@ -36,7 +36,7 @@ namespace nmtools::index
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape)
     {
         using return_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
-        using element_t = meta::get_element_or_common_type_t<return_t>;
+        using element_t = meta::remove_cvref_t<meta::get_element_or_common_type_t<return_t>>;
 
         auto res = return_t{};
         bool success = true;
@@ -77,7 +77,7 @@ namespace nmtools::index
                 else {} // not valid
             };
 
-            for (int i=0; i<size(res); i++) {
+            for (size_t i=0; i<(size_t)len(res); i++) {
                 broadcast_shape_impl(i);
                 if (!success) break;
             }

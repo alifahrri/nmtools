@@ -2,36 +2,26 @@
 #define NMTOOLS_ARRAY_VIEW_TRANSPOSE_HPP
 
 #include "nmtools/constants.hpp"
-#include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
 
 #include "nmtools/array/detail.hpp"
-#include "nmtools/array/index.hpp"
+#include "nmtools/array/index/scatter.hpp"
+#include "nmtools/array/index/gather.hpp"
+#include "nmtools/array/index/reverse.hpp"
 
 #include <cassert>
 
 namespace nmtools::view
 {
-    using meta::is_ndarray_v;
-    using meta::is_fixed_size_ndarray_v;
-    using meta::has_shape_v;
-    using meta::has_size_v;
-    using meta::has_dim_v;
 
     /**
      * @addtogroup view
      * Collections of functions/class for view objects
      * @{
      */
-    
-    namespace detail {
-
-        using ::nmtools::none_t;
-
-    } // namespace detail
     
     /**
      * @brief Returns a view of the array with axes transposed.
@@ -44,20 +34,21 @@ namespace nmtools::view
      * @tparam axes_t type of axes, deducible via ctad
      * @todo support for compile-time axes (e.g. tuple<integral_constant<...>...>)
      */
-    template <typename array_t, typename axes_t=detail::none_t>
+    template <typename array_t, typename axes_t=none_t>
     struct transpose_t
     {
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = const array_t&;
-        using axes_type = axes_t;
+        using array_type = resolve_array_type_t<array_t>;
+        using axes_type  = resolve_attribute_type_t<axes_t>;
 
         array_type array;
         axes_type axes;
 
-        constexpr transpose_t(array_type array, axes_type axes=axes_t{})
-            : array(array), axes(axes) {}
+        constexpr transpose_t(const array_t& array, const axes_t& axes=axes_t{})
+            : array(initialize(array, meta::as_value_v<array_type>))
+            , axes(init_attribute(axes, meta::as_value_v<axes_type>)) {}
         
         /**
          * @brief return the shape of dst (sliced) array
@@ -66,15 +57,12 @@ namespace nmtools::view
          */
         constexpr decltype(auto) shape() const noexcept
         {
-            using ::nmtools::detail::make_array;
-            using ::nmtools::detail::reverse;
-            using ::nmtools::detail::gather;
-
-            auto shape_ = ::nmtools::shape(array);
-            if constexpr (std::is_same_v<axes_type,detail::none_t>)
-                return reverse(shape_);
-            else
-                return gather(shape_, axes);
+            auto shape_ = detail::shape(array);
+            if constexpr (is_none_v<axes_type>) {
+                return nmtools::index::reverse(shape_);
+            } else {
+                return nmtools::index::gather(shape_, axes);
+            }
         } // shape
         
         /**
@@ -87,28 +75,13 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            using ::nmtools::detail::make_array;
-            using ::nmtools::detail::reverse;
-            using ::nmtools::detail::scatter;
+            auto indices_ = pack_indices(indices...);
 
-            using common_t = std::common_type_t<size_types...>;
-
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for transpose view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
-            if constexpr (std::is_same_v<axes_type,detail::none_t>)
-                indices_ = reverse(indices_);
-            else
-                indices_ = scatter(indices_, axes);
+            if constexpr (is_none_v<axes_type>) {
+                indices_ = ::nmtools::index::reverse(indices_);
+            } else {
+                indices_ = ::nmtools::index::scatter(indices_, axes);
+            }
             return indices_;
         } // index
     }; // transpose_t
@@ -122,8 +95,8 @@ namespace nmtools::view
      * @param axes 
      * @return constexpr auto 
      */
-    template <typename array_t, typename axes_t=detail::none_t>
-    constexpr auto transpose(const array_t& array, axes_t axes=axes_t{})
+    template <typename array_t, typename axes_t=none_t>
+    constexpr auto transpose(const array_t& array, const axes_t& axes=axes_t{})
     {
         return decorator_t<transpose_t,array_t,axes_t>{{array,axes}};
     } // transpose
@@ -134,9 +107,6 @@ namespace nmtools::view
 
 namespace nmtools
 {
-    using view::detail::none_t;
-    using view::transpose_t;
-    using view::decorator_t;
     using std::get;
     using std::make_pair;
 
@@ -148,7 +118,7 @@ namespace nmtools
      */
     template <typename array_t, typename indices_t>
     struct meta::fixed_ndarray_shape<
-        transpose_t<array_t,indices_t>
+        view::transpose_t<array_t,indices_t>
     >
     {
         static constexpr auto value = [](){
@@ -156,11 +126,11 @@ namespace nmtools
                 return detail::Fail;
             } else if constexpr (is_none_v<indices_t>) {
                 constexpr auto src_value = meta::fixed_ndarray_shape_v<array_t>;
-                return ::nmtools::detail::reverse(src_value);
+                return ::nmtools::index::reverse(src_value);
             } else if constexpr (meta::is_constant_index_array_v<indices_t>) {
                 constexpr auto src = meta::fixed_ndarray_shape_v<array_t>;
                 constexpr auto dst = indices_t{};
-                return ::nmtools::detail::gather(src,dst);
+                return ::nmtools::index::gather(src,dst);
             } else {
                 // the array is fixed size but the desired indices are not
                 return detail::Fail;
@@ -179,7 +149,7 @@ namespace nmtools
      * @tparam axes_t 
      */
     template <typename array_t, typename axes_t>
-    struct meta::is_ndarray< decorator_t<transpose_t,array_t,axes_t> >
+    struct meta::is_ndarray< view::decorator_t<view::transpose_t,array_t,axes_t> >
      : meta::is_ndarray<array_t> {};
 } // namespace nmtools
 

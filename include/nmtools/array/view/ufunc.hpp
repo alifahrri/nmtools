@@ -130,7 +130,7 @@ namespace nmtools::view::detail
     using get_reducer_result_type_t = typename get_reducer_result_type<reducer_t,element_t>::type;
 
     /**
-     * @brief helper type that wrapps type `T`, avoid constructing the actual type.
+     * @brief helper type that wraps type `T`, avoid constructing the actual type.
      * 
      * @tparam T 
      */
@@ -327,7 +327,7 @@ namespace nmtools::view
         template <typename result_t, typename array_t>
         constexpr auto operator()(const array_t& array) const
         {
-            using index_t = meta::get_index_type_t<array_t>;
+            using index_t = meta::remove_cvref_t<meta::get_index_type_t<array_t>>;
             auto initial = static_cast<result_t>(at(array,0));
             auto size = len(array);
             for (index_t i=1; i<size; i++)
@@ -380,20 +380,24 @@ namespace nmtools::view
 
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
+        op_type       op;
         array_type    array;
         axis_type     axis;
-        op_type       op;
         initial_type  initial;
         reducer_type  reducer;
         keepdims_type keepdims;
 
         constexpr reduce_t(op_type op, const array_t& array, const axis_t& axis, initial_type initial, keepdims_type keepdims)
-            : op(op), array(initialize<array_type>(array)), axis(initialize<axis_type>(axis)), initial(initial), reducer{op}, keepdims(keepdims) {}
+            : op(op), array(initialize<array_type>(array))
+            , axis(initialize<axis_type>(axis))
+            , initial(initial)
+            , reducer{op} // TODO: recurse to scalar reduce ufunc instead of using reducer
+            , keepdims(keepdims) {}
 
         constexpr auto shape() const
         {
             auto shape_ = detail::shape(array);
-            // NOTE: can't provide convinience function
+            // NOTE: can't provide convenience function
             // without causing bounded array to decay to pointer
             if constexpr (std::is_pointer_v<axis_type>) {
                 return index::remove_dims(shape_,*axis,keepdims);
@@ -454,7 +458,7 @@ namespace nmtools::view
                         return i==axis;
                     };
                     // axis is index array (reducing on multiple axes),
-                    // axis may be pointer, but can't provide convinience function
+                    // axis may be pointer, but can't provide convenience function
                     // since may decay bounded array to pointer
                     if constexpr (std::is_pointer_v<axis_type>) {
                         auto found = index::where(f_predicate, *axis);
@@ -550,9 +554,9 @@ namespace nmtools::view
 
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
+        op_type       op;
         array_type    array;
         axis_type     axis;
-        op_type       op;
         initial_type  initial;
         reducer_type  reducer;
         keepdims_type keepdims;
@@ -566,11 +570,11 @@ namespace nmtools::view
             // just get the original shape and then fill with one
             auto f_shape = [&](){
                 auto shape_ = detail::shape(array);
-                using mshape_t = decltype(shape_);
-                if constexpr (meta::is_constant_index_array_v<mshape_t>) {
+                using m_shape_t = decltype(shape_);
+                if constexpr (meta::is_constant_index_array_v<m_shape_t>) {
                     // special case: shape is compile-time value,
                     // can't access and modify at runtime
-                    constexpr auto N   = meta::len_v<mshape_t>;
+                    constexpr auto N   = meta::len_v<m_shape_t>;
                     constexpr auto val = meta::ct_v<1>;
                     auto res = meta::template_reduce<N-1>([&](auto init, auto index){
                         return std::tuple_cat(init,std::tuple{val});
@@ -590,7 +594,7 @@ namespace nmtools::view
             // use variant since it can be none or the shape
             // else if constexpr (meta::is_boolean_v<keepdims_t>) {
             //     using shape_t  = decltype(nmtools::shape(array));
-            //     // use none_t as first alternative, since it is must be defautl construtctibel
+            //     // use none_t as first alternative, since it is must be default constructible
             //     using return_t = std::variant<none_t,shape_t>;
             //     return (keepdims ? return_t{f_shape()} : return_t{None});
             // }
@@ -668,9 +672,9 @@ namespace nmtools::view
 
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
-        array_type array;
-        axis_type axis;
-        op_type op;
+        op_type      op;
+        array_type   array;
+        axis_type    axis;
         reducer_type reducer;
 
         constexpr accumulate_t(op_type op, array_type array, axis_type axis)
@@ -1124,9 +1128,11 @@ namespace nmtools::meta
                 && (is_integral_constant_v<keepdims_t> || is_none_v<keepdims_t>)
             ) {
                 constexpr auto keepdims = [](){
-                    if constexpr (is_integral_constant_v<keepdims_t>)
+                    if constexpr (is_integral_constant_v<keepdims_t>) {
                         return keepdims_t::value;
-                    else /* if constexpr (is_none_v) */ return false;
+                     }else /* if constexpr (is_none_v) */ {
+                        return false;
+                     }
                 }();
                 if constexpr (!keepdims && is_none_v<axis_t>) {
                     // reduce on all axis and not keep dimensions,
@@ -1354,7 +1360,6 @@ namespace nmtools::meta
     >
     {
         static constexpr auto value = [](){
-            using view_t = view::outer_t< op_t, lhs_t, rhs_t >;
             if constexpr (
                    is_fixed_dim_ndarray_v<lhs_t>
                 && is_fixed_dim_ndarray_v<rhs_t>

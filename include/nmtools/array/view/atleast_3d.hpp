@@ -25,13 +25,12 @@ namespace nmtools::view
     template <typename array_t>
     struct atleast_3d_t
     {
-        // TODO: consider to copy when array_t is simply arithmetic type
-        using array_type = const array_t&;
+        using array_type = resolve_array_type_t<array_t>;
 
         array_type array;
 
-        constexpr atleast_3d_t(array_type array)
-            : array(array) {}
+        constexpr atleast_3d_t(const array_t& array)
+            : array(initialize(array, meta::as_value_v<array_type>)) {}
         
         constexpr auto shape() const
         {
@@ -41,7 +40,7 @@ namespace nmtools::view
             // check if fixed 1d array
             else if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
                 using namespace nmtools::literals;
-                auto shape_ = ::nmtools::shape(array);
+                auto shape_ = detail::shape(array);
                 constexpr auto dim_ = meta::fixed_dim_v<array_t>;
                 if constexpr (dim_ == 1)
                     return index::expand_dims(shape_,std::tuple{0_ct,1_ct});
@@ -52,64 +51,52 @@ namespace nmtools::view
             }
             // assume dynamic dim
             else {
+                // TODO: create metafunction "make_sequence_type" to create vector
                 // assume std::vector is available
                 static_assert (NMTOOLS_HAS_VECTOR);
-                auto shape_ = ::nmtools::shape(array);
-                auto dim_   = ::nmtools::dim(array);
+                auto shape_ = detail::shape(array);
+                auto dim_   = detail::dim(array);
 
                 using shape_t = decltype(shape_);
-                auto rshape = shape_t{};
+                auto r_shape = shape_t{};
                 // prepend
                 if (dim_ == 1)
-                    index::impl::expand_dims(rshape,shape_,std::array{0ul,1ul});
+                    index::impl::expand_dims(r_shape,shape_,std::array{0ul,1ul});
                 else if (dim_ == 2)
-                    index::impl::expand_dims(rshape,shape_,std::array{0ul});
-                else rshape = shape_;
-                return rshape;
+                    index::impl::expand_dims(r_shape,shape_,std::array{0ul});
+                else r_shape = shape_;
+                return r_shape;
             }
         } // shape
 
         constexpr auto dim() const
         {
-            if constexpr (std::is_arithmetic_v<array_t>)
-                return 3ul;
-            else {
-                auto dim_ = ::nmtools::dim(array);
-                return dim_ < 3 ? 3 : dim_;
-            }
+            return len(shape());
         } // dim
 
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
-            using ::nmtools::index::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for broadcast_to view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
-
             // for now, assume indices is generated such that
             // they are within range
+            // TODO: move to "index" member function
             // TODO: check shape
-            if constexpr (std::is_arithmetic_v<array_t>)
+            // TODO: make decorator support returning num array, then make implement the following under index member fn
+            if constexpr (std::is_arithmetic_v<array_t>) {
                 return array;
-            else {
+            } else {
+                auto indices_ = pack_indices(indices...);
                 auto expanded_shape   = shape();
                 auto squeezed_strides = index::compute_strides(expanded_shape);
 
-                auto shape_     = ::nmtools::shape(array);
+                auto shape_     = detail::shape(array);
                 auto offset     = index::compute_offset(indices_,squeezed_strides);
                 auto tf_indices = index::compute_indices(offset,shape_);
-                return apply_at(array,tf_indices);
+                if constexpr (std::is_pointer_v<array_type>) {
+                    return apply_at(*array,tf_indices);
+                } else {
+                    return apply_at(array,tf_indices);
+                }
             }
         } // operator()
     }; // atleast_3d_t

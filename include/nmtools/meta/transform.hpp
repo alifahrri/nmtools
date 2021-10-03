@@ -1403,6 +1403,7 @@ namespace nmtools::meta
 
     namespace detail
     {
+        // TODO: remove metafunctions
         /**
          * @brief helper metafunction for meta::apply
          * 
@@ -1415,33 +1416,23 @@ namespace nmtools::meta
             using type = void;
         }; // apply_helper
 
+        // TODO: remove metafunctions
         template <template<typename...>typename TT, template<typename...>typename type_list, typename...Ts>
         struct apply_helper<TT,type_list<Ts...>>
         {
-            #pragma clang diagnostic push
-            #pragma clang diagnostic ignored "-Wunused-value"
-            static constexpr auto _get()
+            static constexpr auto vtype = []()
             {
                 using meta_fn_type = TT<Ts...>;
                 if constexpr (meta::has_type_v<meta_fn_type>)
-                    // assumning type from meta_fn_type is default constructible
+                    // assuming type from meta_fn_type is default constructible
                     return typename meta_fn_type::type{};
-                else detail::fail_t{};
-            } // _get()
-
-            // @note this wont work
-            // using type = std::conditional_t<
-            //     meta::has_type_v<meta_fn_type>,
-            //     typename meta_fn_type::type, void
-            // >;
-
-            // clang complain about return from _get() unused while gcc doesnt
-            // an it is SHOULD BE UNUSED
-            using type = detail::fail_to_void_t<decltype(_get())>;
-            #pragma clang diagnostic pop
+                else return detail::fail_t{};
+            }();
+            using type = meta::remove_cvref_t<detail::fail_to_void_t<decltype(vtype)>>;
         }; // apply_helper
     } // namespace detail
 
+    // TODO: remove metafunctions
     /**
      * @brief apply template template parameter T on type list T
      * 
@@ -1466,6 +1457,7 @@ namespace nmtools::meta
 
     namespace detail
     {
+        // TODO: remove metafunctions
         template <typename T, typename U, typename=void>
         struct gather_helper
         {
@@ -1487,6 +1479,7 @@ namespace nmtools::meta
             using type   = merge_t<TT<type_i>,rest_t>;
         }; // gather_helper
 
+        // TODO: remove metafunctions
         template <template<typename...>typename TT, typename T, typename...Ts, typename int_t, auto I>
         struct gather_helper<TT<T,Ts...>,integer_sequence<int_t,I>>
         {
@@ -1495,12 +1488,14 @@ namespace nmtools::meta
             using type = TT<type_i>;
         }; // gather_helper
 
+        // TODO: remove metafunctions
         template <typename T, typename U, typename=void>
         struct scatter_helper
         {
             using type = void;
         }; // scatter_helper
 
+        // TODO: remove metafunctions
         template <template<typename...>typename TT, typename T, typename T1, typename...Ts, typename int_t, auto I, auto I1, auto...Is>
         struct scatter_helper<TT<T,T1,Ts...>,integer_sequence<int_t,I,I1,Is...>
             , std::enable_if_t<(sizeof...(Ts)>0)&&(sizeof...(Is)>0)>
@@ -1530,6 +1525,7 @@ namespace nmtools::meta
             using type = replace_at_t<rest_t,type_list_i,I>;
         }; // scatter_helper
 
+        // TODO: remove metafunctions
         template <template<typename...>typename TT, typename T, typename T1, typename...Ts, typename int_t, auto I0, auto I1>
         struct scatter_helper<TT<T,T1,Ts...>,integer_sequence<int_t,I0,I1>
             // , std::enable_if_t<(sizeof...(Ts)>0)>
@@ -1557,6 +1553,7 @@ namespace nmtools::meta
         // }; // scatter_helper
     } // namespace detail
 
+    // TODO: remove metafunctions
     /**
      * @brief metafunction to perform gather op `ret[i] = vec[idx[i]]` on type-list
      * 
@@ -1569,6 +1566,7 @@ namespace nmtools::meta
         using type = type_t<detail::gather_helper<T,U>>;
     }; // gather
 
+    // TODO: remove metafunctions
     /**
      * @brief helper alias template for gather
      * 
@@ -1578,6 +1576,7 @@ namespace nmtools::meta
     template <typename T, typename U>
     using gather_t = type_t<gather<T,U>>;
 
+    // TODO: remove metafunctions
     /**
      * @brief metafunction to perform scatter op `ret[idx[i]] = vec[i]` on type-list
      * 
@@ -1590,6 +1589,7 @@ namespace nmtools::meta
         using type = type_t<detail::scatter_helper<T,U>>;
     }; // scatter
 
+    // TODO: remove metafunctions
     /**
      * @brief helper alias template for scatter
      * 
@@ -1601,12 +1601,14 @@ namespace nmtools::meta
 
     namespace detail
     {
+        // TODO: remove metafunctions
         template <template<typename,typename...> typename Op, typename T, typename=void>
         struct apply_reduce_helper
         {
             using type = void;
         }; // apply_reduce_helper
 
+        // TODO: remove metafunctions
         template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U, typename V, typename...Ts>
         struct apply_reduce_helper<Op,TT<T,U,V,Ts...>>
         {
@@ -1614,6 +1616,7 @@ namespace nmtools::meta
             using type = type_t<apply_reduce_helper<Op,TT<tmp_type,V,Ts...>>>;
         }; //  apply_reduce_helper
 
+        // TODO: remove metafunctions
         template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U>
         struct apply_reduce_helper<Op,TT<T,U>>
         {
@@ -1621,41 +1624,50 @@ namespace nmtools::meta
         }; // apply_reduce_helper
     }  // namespace detail
 
+    // TODO: remove metafunctions
     template <template<typename,typename...>typename Op, typename T, typename=void>
     struct apply_reduce
     {
         using type = type_t<detail::apply_reduce_helper<Op,T>>;
     }; // reduce
 
+    // TODO: remove metafunctions
     template <template<typename,typename...>typename Op, typename T>
     using apply_reduce_t = type_t<apply_reduce<Op,T>>;
 
+    // TODO: remove metafunctions
     template <typename T>
     using apply_prod = apply_reduce<mul,T>;
 
+    // TODO: remove metafunctions
     template <typename T>
     using apply_prod_t = type_t<apply_prod<T>>;
 
+    // TODO: remove metafunctions
     template <typename T>
     using apply_sum = apply_reduce<add,T>;
 
+    // TODO: remove metafunctions
     template <typename T>
     using apply_sum_t = type_t<apply_sum<T>>;
 
     namespace detail
     {
+        // TODO: remove metafunctions
         template <template<typename,typename...> typename Op, typename T, typename=void>
         struct apply_accumulate_helper
         {
             using type = void;
         }; // apply_accumulate_helper
 
+    // TODO: remove metafunctions
         template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T>
         struct apply_accumulate_helper<Op,TT<T>>
         {
             using type = TT<T>;
         }; // apply_accumulate_helper
 
+        // TODO: remove metafunctions
         template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U>
         struct apply_accumulate_helper<Op,TT<T,U>>
         {
@@ -1664,6 +1676,7 @@ namespace nmtools::meta
             using type = TT<T,reduced_type>;
         }; // apply_accumulate_helper
 
+        // TODO: remove metafunctions
         // @note this specialization behaves differently on clang & gcc (8.3)
         // example case:
         // using arg_t = std::tuple<meta::ct<1>,meta::ct<3>,meta::ct<7>>;
@@ -1687,21 +1700,26 @@ namespace nmtools::meta
         }; // apply_accumulate_helper
     } // namespace detail
 
+    // TODO: remove metafunctions
     template <template<typename,typename...> typename Op, typename T>
     struct apply_accumulate
     {
         using type = type_t<detail::apply_accumulate_helper<Op,T>>;
     }; // apply_accumulate
 
+    // TODO: remove metafunctions
     template <template<typename,typename...> typename Op, typename T>
     using apply_accumulate_t = type_t<apply_accumulate<Op,T>>;
 
+    // TODO: remove metafunctions
     template <typename T>
     using apply_cumprod = apply_accumulate<mul,T>;
 
+    // TODO: remove metafunctions
     template <typename T>
     using apply_cumprod_t = type_t<apply_cumprod<T>>;
 
+    // TODO: cleanup metafunctions
     /**
      * @brief helper alias template to construct (tuple of) integral_constant
      * 
@@ -1767,6 +1785,7 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto to_value_v = to_value<T>::value;
 
+    // TODO: remove metafunctions
     /**
      * @brief metafunction to transform (tuple of) integral constant to integer sequence
      * 
@@ -2363,13 +2382,15 @@ namespace nmtools::meta
     template <typename lhs_t, typename rhs_t>
     struct promote_index
     {
-        static constexpr auto non_constant = [](){
-            if constexpr (!is_constant_index_v<lhs_t>) {
-                return as_value_v<lhs_t>;
-            } else {
-                return as_value_v<rhs_t>;
+        template <typename left_t, typename right_t>
+        static constexpr auto non_constant(as_value<left_t>, as_value<right_t>) {
+            if constexpr (!is_constant_index_v<left_t>) {
+                return as_value_v<left_t>;
+            } else /* if constexpr (!is_constant_index_v<right_t>) */{
+                return as_value_v<right_t>;
             }
-        }();
+        }
+    
         template <typename T>
         static constexpr auto make_non_constant(as_value<T>) {
             if constexpr (is_constant_index_v<T>) {
@@ -2378,17 +2399,36 @@ namespace nmtools::meta
                 return as_value_v<T>;
             }
         }
+
+        template <typename left_t, typename right_t>
+        static constexpr auto cast(as_value<left_t>, as_value<right_t>) {
+            // TODO: consider to select largest byte
+            if constexpr (is_signed_v<left_t>) {
+                return as_value_v<left_t>;
+            } else /* if (is_signed_v<right_t>) */ {
+                return as_value_v<right_t>;
+            }
+        }
+
         static constexpr auto vtype = [](){
-            if constexpr (is_index_v<lhs_t> && is_index_v<rhs_t>) {
-                if constexpr (is_signed_v<lhs_t> && is_signed_v<rhs_t>) {
-                    return non_constant;
-                } else if constexpr (is_unsigned_v<lhs_t> && is_unsigned_v<rhs_t>) {
-                    return non_constant;
-                } else if constexpr (is_signed_v<lhs_t>) {
-                    return make_non_constant(as_value_v<lhs_t>);
-                } else /* if constexpr (is_signed_v<rhs_t>) */ {
-                    return make_non_constant(as_value_v<rhs_t>);
-                }
+            if constexpr (is_constant_index_v<lhs_t> && is_constant_index_v<rhs_t>) {
+                using left_t  = typename lhs_t::value_type;
+                using right_t = typename rhs_t::value_type;
+                return cast(as_value_v<left_t>, as_value_v<right_t>);
+            } else if constexpr (is_index_v<lhs_t> && is_index_v<rhs_t>) {
+                // simply select signed and non constant if possible
+                auto signed_   = cast(as_value_v<lhs_t>, as_value_v<rhs_t>);
+                auto non_const = make_non_constant(signed_);
+                return non_const;
+                // if constexpr (is_signed_v<lhs_t> && is_signed_v<rhs_t>) {
+                //     return non_constant(as_value_v<lhs_t>, as_value_v<rhs_t>);
+                // } else if constexpr (is_unsigned_v<lhs_t> && is_unsigned_v<rhs_t>) {
+                //     return non_constant(as_value_v<lhs_t>, as_value_v<rhs_t>);
+                // } else if constexpr (is_signed_v<lhs_t>) {
+                //     return make_non_constant(as_value_v<lhs_t>);
+                // } else /* if constexpr (is_signed_v<rhs_t>) */ {
+                //     return make_non_constant(as_value_v<rhs_t>);
+                // }
             } else {
                 return as_value_v<error::PROMOTE_INDEX_UNSUPPORTED>;
             }
@@ -2430,15 +2470,30 @@ namespace nmtools::meta
     template <typename array_t>
     using remove_cvref_pointer_t = remove_cvref_t<remove_pointer_t<array_t>>;
 
-    // reserved metafunction make_unsigned
+    /**
+     * @brief Reserved metafunction to make type T unsigned
+     * 
+     * @tparam T 
+     * @note implementation should use macro NMTOOLS_META_MAKE_UNSIGNED
+     */
     template <typename T>
     struct make_unsigned;
 
-    // reserved metafunction make_signed
+    /**
+     * @brief Reserved metafunction to make type T signed
+     * 
+     * @tparam T 
+     * @note implementation should use macro NMTOOLS_META_MAKE_SIGNED
+     */
     template <typename T>
     struct make_signed;
 
-    // reserved metafunction make_tuple
+    /**
+     * @brief Reserved metafunction to create a tuple type
+     * 
+     * @tparam Ts 
+     * @note implementation should use macro NMTOOLS_META_MAKE_TUPLE
+     */
     template <typename...Ts>
     struct make_tuple;
 
@@ -2446,9 +2501,21 @@ namespace nmtools::meta
      * @brief Reserved metafunction to create maybe type
      * 
      * @tparam T 
+     * @note implementation should use macro NMTOOLS_META_MAKE_MAYBE_TYPE
      */
     template <typename T, typename=void>
     struct make_maybe_type;
+
+    /**
+     * @brief Reserved metafunction to create an array type
+     * 
+     * @tparam T element type
+     * @tparam N desired length
+     * @tparam typename 
+     * @note implementation should use macro NMTOOLS_META_MAKE_ARRAY_TYPE
+     */
+    template <typename T, size_t N, typename=void>
+    struct make_array_type;
 
     /** @} */ // end group meta
 } // namespace nmtools::meta
