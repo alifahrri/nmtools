@@ -6,11 +6,6 @@ A generic codes collection on Numerical Methods.
 ## Quick Start
 Requirement :
 - C++17
-### Using Docker
-Run the build script
-```
-$ docker/build.sh
-```
 
 ## Examples
   See [cmake examples](examples/nmtools/array/README.md) or [notebook examples](examples/notebooks)
