@@ -104,10 +104,14 @@ namespace nmtools::index
             // else if (bi < 0)
             //     at(res,si) = tuple_at(ashape,ai);
             else {
+                // prefer get_element_type over decltype(a),
+                // to avoid weird deduction, such as vector of bool
+                using a_t = meta::get_element_or_common_type_t<ashape_t>;
+                using b_t = meta::get_element_or_common_type_t<bshape_t>;
                 // TODO: do not use tuple at
                 auto a = tuple_at(ashape,ai);
                 auto b = get_b();
-                using common_t = meta::promote_index_t<decltype(a),decltype(b)>;
+                using common_t = meta::promote_index_t<a_t,b_t>;
                 if (static_cast<common_t>(a)==static_cast<common_t>(b)) {
                     at(res,bi) = a;
                     at(free_axes,bi) = false;

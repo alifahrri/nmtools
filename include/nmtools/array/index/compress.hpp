@@ -56,7 +56,8 @@ namespace nmtools::index
                 res.resize(dim);
 
             auto shape_compress_impl = [&](auto i){
-                using idx_t = meta::promote_index_t<decltype(i),decltype(axis)>;
+                using a_t = meta::get_element_or_common_type_t<axis_t>;
+                using idx_t = meta::promote_index_t<decltype(i),a_t>;
                 at(res,i) = ((idx_t)i == (idx_t)axis) ? c_dim : at(shape,i);
             };
 

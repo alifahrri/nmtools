@@ -301,19 +301,23 @@ namespace nmtools::utils
                 }
                 else if constexpr (meta::is_fixed_index_array_v<U>) {
                     constexpr auto N = meta::fixed_index_array_size_v<U>;
+                    using t_t = meta::get_element_or_common_type_t<T>;
+                    using u_t = meta::get_element_or_common_type_t<U>;
                     meta::template_for<N>([&](auto i){
                         auto t_i = at(t,i);
                         auto u_i = at(u,i);
-                        using common_t = meta::promote_index_t<decltype(t_i),decltype(u_i)>;
+                        using common_t = meta::promote_index_t<t_t,u_t>;
                         equal = equal && (static_cast<common_t>(t_i) == static_cast<common_t>(u_i));
                     });
                     return equal;
                 }
                 else {
+                    using t_t = meta::get_element_or_common_type_t<T>;
+                    using u_t = meta::get_element_or_common_type_t<U>;
                     for (size_t i=0; i<len(t); i++) {
                         auto t_i = at(t,i);
                         auto u_i = at(u,i);
-                        using idx_t = meta::promote_index_t<decltype(t_i),decltype(u_i)>;
+                        using idx_t = meta::promote_index_t<t_t,u_t>;
                         equal = equal && ((idx_t)t_i == (idx_t)u_i);
                     }
                     return equal;
