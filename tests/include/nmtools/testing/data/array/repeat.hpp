@@ -6,7 +6,7 @@
 #include "nmtools/array/ndarray/fixed.hpp"
 
 #include "nmtools/constants.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #include <vector>
 #include <array>

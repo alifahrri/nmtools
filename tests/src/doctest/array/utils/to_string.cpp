@@ -415,7 +415,6 @@ TEST_CASE("to_string(variant)" * doctest::test_suite("utils") * doctest::skip(tr
 
 TEST_CASE("to_string(optional)" * doctest::test_suite("utils") * doctest::skip(true))
 {
-    using arg_t = std::optional<std::array<size_t,3>>;
     SUBCASE("nullopt")
     {
         auto arg = std::nullopt;

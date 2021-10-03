@@ -5,7 +5,7 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/index/as_tuple.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #include <array>
 #include <tuple>
@@ -35,7 +35,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline auto newshape_ct = std::tuple{12_ct, 1_ct};
         inline auto newshape_a = cast<int>(newshape);
         inline auto newshape_v = cast(newshape,kind::nested_vec);
-        inline auto newshape_t = index::as_tuple(newshape_a);
+        inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -55,7 +55,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline auto newshape_ct = std::tuple{3_ct, 4_ct};
         inline auto newshape_a = cast<int>(newshape);
         inline auto newshape_v = cast(newshape,kind::nested_vec);
-        inline auto newshape_t = index::as_tuple(newshape_a);
+        inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -77,7 +77,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline auto newshape_ct = std::tuple{1_ct, 2_ct, 3_ct, 2_ct};
         inline auto newshape_a = cast<int>(newshape);
         inline auto newshape_v = cast(newshape,kind::nested_vec);
-        inline auto newshape_t = index::as_tuple(newshape_a);
+        inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {

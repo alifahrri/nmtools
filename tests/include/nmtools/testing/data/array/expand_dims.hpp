@@ -3,7 +3,7 @@
 
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #include <array>
 #include <tuple>

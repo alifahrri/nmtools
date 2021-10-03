@@ -4,9 +4,7 @@
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/view.hpp"
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/isequal.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #include <array>
 #include <vector>

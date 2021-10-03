@@ -150,6 +150,10 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
         using keepdims_t = bool;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_either, view_t );
+        using left_t     = meta::get_either_left_t<view_t>;
+        using right_t    = meta::get_either_right_t<view_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, left_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, right_t );
     }
     {
         using array_t    = std::array<std::array<int,2>,3>;

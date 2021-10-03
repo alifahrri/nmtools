@@ -348,8 +348,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
     {
         inline int shape[3] = {2,3,1};
         inline int result[2][3][1] = {
-            {{ 0}, { 6},  20},
-            {{42}, {72}, 110},
+            {{ 0}, { 6}, { 20}},
+            {{42}, {72}, {110}},
         };
     }
 

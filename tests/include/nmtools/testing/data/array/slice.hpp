@@ -5,8 +5,9 @@
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/view/slice.hpp"
-#include "nmtools/testing/doctest.hpp"
 #include "nmtools/constants.hpp"
+
+#include "nmtools/testing/testing.hpp"
 
 #include <vector>
 #include <array>
