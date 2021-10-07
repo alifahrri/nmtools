@@ -4,7 +4,7 @@
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/testing/doctest.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #include <vector>
 #include <array>
@@ -14,12 +14,19 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+#ifndef PLATFORMIO
 #define CAST_ARRAYS(name) \
 inline auto name##_a = cast(name, kind::nested_arr); \
 inline auto name##_v = cast(name, kind::nested_vec); \
 inline auto name##_f = cast(name, kind::fixed); \
 inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid); \
+inline auto name##_h = cast(name, kind::hybrid);
+#else
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_h = cast(name, kind::hybrid);
+#endif // PLATFORMIO
 
 NMTOOLS_TESTING_DECLARE_CASE(view, logical_and)
 {

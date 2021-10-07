@@ -16,6 +16,20 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+#ifndef PLATFORMIO
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_v = cast(name, kind::nested_vec); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_d = cast(name, kind::dynamic); \
+inline auto name##_h = cast(name, kind::hybrid);
+#else
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_h = cast(name, kind::hybrid);
+#endif // PLATFORMIO
+
 NMTOOLS_TESTING_DECLARE_CASE(view, concatenate)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -23,16 +37,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, concatenate)
         inline int lhs[2][2] = {{1,2},{3,4}};
         inline int rhs[1][2] = {{5,6}};
         inline int axis = 0;
-        inline auto lhs_a = cast<int>(lhs);
-        inline auto rhs_a = cast<int>(rhs);
-        inline auto lhs_v = cast(lhs,kind::nested_vec);
-        inline auto rhs_v = cast(rhs,kind::nested_vec);
-        inline auto lhs_d = cast(lhs,kind::dynamic);
-        inline auto rhs_d = cast(rhs,kind::dynamic);
-        inline auto lhs_h = cast(lhs,kind::hybrid);
-        inline auto rhs_h = cast(rhs,kind::hybrid);
-        inline auto lhs_f = cast(lhs,kind::fixed);
-        inline auto rhs_f = cast(rhs,kind::fixed);
+        CAST_ARRAYS(lhs);
+        CAST_ARRAYS(rhs);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -49,16 +55,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, concatenate)
         inline int lhs[2][2] = {{1,2},{3,4}};
         inline int rhs[2][1] = {{5},{6}};
         inline int axis = 1;
-        inline auto lhs_a = cast<int>(lhs);
-        inline auto rhs_a = cast<int>(rhs);
-        inline auto lhs_v = cast(lhs,kind::nested_vec);
-        inline auto rhs_v = cast(rhs,kind::nested_vec);
-        inline auto lhs_d = cast(lhs,kind::dynamic);
-        inline auto rhs_d = cast(rhs,kind::dynamic);
-        inline auto lhs_h = cast(lhs,kind::hybrid);
-        inline auto rhs_h = cast(rhs,kind::hybrid);
-        inline auto lhs_f = cast(lhs,kind::fixed);
-        inline auto rhs_f = cast(rhs,kind::fixed);
+        CAST_ARRAYS(lhs);
+        CAST_ARRAYS(rhs);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -74,16 +72,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, concatenate)
         inline int lhs[2][2] = {{1,2},{3,4}};
         inline int rhs[2][1] = {{5},{6}};
         inline auto axis = None;
-        inline auto lhs_a = cast<int>(lhs);
-        inline auto rhs_a = cast<int>(rhs);
-        inline auto lhs_v = cast(lhs,kind::nested_vec);
-        inline auto rhs_v = cast(rhs,kind::nested_vec);
-        inline auto lhs_d = cast(lhs,kind::dynamic);
-        inline auto rhs_d = cast(rhs,kind::dynamic);
-        inline auto lhs_h = cast(lhs,kind::hybrid);
-        inline auto rhs_h = cast(rhs,kind::hybrid);
-        inline auto lhs_f = cast(lhs,kind::fixed);
-        inline auto rhs_f = cast(rhs,kind::fixed);
+        CAST_ARRAYS(lhs);
+        CAST_ARRAYS(rhs);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -96,16 +86,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, concatenate)
         inline int lhs[2][1][2] = {{{1,2}},{{3,4}}};
         inline int rhs[2][1][1] = {{{5}},{{6}}};
         inline int axis = 2;
-        inline auto lhs_a = cast<int>(lhs);
-        inline auto rhs_a = cast<int>(rhs);
-        inline auto lhs_v = cast(lhs,kind::nested_vec);
-        inline auto rhs_v = cast(rhs,kind::nested_vec);
-        inline auto lhs_d = cast(lhs,kind::dynamic);
-        inline auto rhs_d = cast(rhs,kind::dynamic);
-        inline auto lhs_h = cast(lhs,kind::hybrid);
-        inline auto rhs_h = cast(rhs,kind::hybrid);
-        inline auto lhs_f = cast(lhs,kind::fixed);
-        inline auto rhs_f = cast(rhs,kind::fixed);
+        CAST_ARRAYS(lhs);
+        CAST_ARRAYS(rhs);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -120,5 +102,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, concatenate)
         };
     }
 }
+
+#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_CONCATENATE_HPP

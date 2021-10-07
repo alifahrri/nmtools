@@ -18,28 +18,34 @@ namespace meta = nm::meta;
 namespace kind = na::kind;
 using namespace nm::literals;
 
+#ifndef PLATFORMIO
 #define CAST_ARRAYS(name) \
 inline auto name##_a = cast(name, kind::nested_arr); \
 inline auto name##_v = cast(name, kind::nested_vec); \
 inline auto name##_f = cast(name, kind::fixed); \
 inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid); \
+inline auto name##_h = cast(name, kind::hybrid);
+#else
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_h = cast(name, kind::hybrid);
+#endif // PLATFORMIO
 
 NMTOOLS_TESTING_DECLARE_CASE(reshape)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        CAST_ARRAYS(array)
         inline int newshape[2] = {12,1};
+        CAST_ARRAYS(array)
+        CAST_ARRAYS(newshape)
         inline auto newshape_ct = std::tuple{12_ct, 1_ct};
-        inline auto newshape_a = cast<int>(newshape);
-        inline auto newshape_v = cast(newshape,kind::nested_vec);
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        // isclose doesnt support tuple and raw yet
+        // isclose doesn't support tuple and raw yet
         inline int shape_[2] = {12,1};
         inline auto shape = cast<int>(shape_);
         inline double expected[12][1] = {
@@ -50,11 +56,10 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
         inline double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        CAST_ARRAYS(array)
         inline int newshape[2] = {3,4};
+        CAST_ARRAYS(array)
+        CAST_ARRAYS(newshape)
         inline auto newshape_ct = std::tuple{3_ct, 4_ct};
-        inline auto newshape_a = cast<int>(newshape);
-        inline auto newshape_v = cast(newshape,kind::nested_vec);
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -72,11 +77,10 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
         inline double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        CAST_ARRAYS(array)
         inline int newshape[4] = {1,2,3,2};
+        CAST_ARRAYS(array)
+        CAST_ARRAYS(newshape)
         inline auto newshape_ct = std::tuple{1_ct, 2_ct, 3_ct, 2_ct};
-        inline auto newshape_a = cast<int>(newshape);
-        inline auto newshape_v = cast(newshape,kind::nested_vec);
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)

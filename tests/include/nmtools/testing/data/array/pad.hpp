@@ -13,12 +13,19 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+#ifndef PLATFORMIO
 #define CAST_ARRAYS(name) \
 inline auto name##_a = cast(name, kind::nested_arr); \
 inline auto name##_v = cast(name, kind::nested_vec); \
 inline auto name##_f = cast(name, kind::fixed); \
 inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid); \
+inline auto name##_h = cast(name, kind::hybrid);
+#else
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_h = cast(name, kind::hybrid);
+#endif // PLATFORMIO
 
 NMTOOLS_TESTING_DECLARE_CASE(index, shape_pad)
 {
@@ -246,5 +253,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, pad)
         { 0,  0,  0,  0}}};
     }
 }
+
+#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_PAD_HPP

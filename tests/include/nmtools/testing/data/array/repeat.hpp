@@ -17,6 +17,20 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace kind = na::kind;
 
+#ifndef PLATFORMIO
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_v = cast(name, kind::nested_vec); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_d = cast(name, kind::dynamic); \
+inline auto name##_h = cast(name, kind::hybrid);
+#else
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_h = cast(name, kind::hybrid);
+#endif // PLATFORMIO
+
 NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -24,11 +38,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 3;
         inline auto axis = None;
-        inline auto array_a = cast<int>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -42,11 +52,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 2;
         inline auto axis = 0;
-        inline auto array_a = cast<int>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -65,11 +71,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 2;
         inline auto axis = 1;
-        inline auto array_a = cast<int>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -86,11 +88,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline auto repeats = std::array{1,2};
         inline auto axis = 0;
-        inline auto array_a = cast<int>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -108,11 +106,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline auto repeats = std::array{1,2};
         inline auto axis = 1;
-        inline auto array_a = cast<int>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -129,11 +123,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[1][2][2] = {{{1,2},{3,4}}};
         inline auto repeats = 2;
         inline auto axis = 0;
-        inline auto array_a = cast<int>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -151,5 +141,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         };
     }
 }
+
+#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_REPEAT_HPP
