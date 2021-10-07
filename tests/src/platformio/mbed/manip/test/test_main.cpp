@@ -313,10 +313,12 @@ void test_arange()
     NMTOOLS_PIO_SUBCASE( case9, result, view::arange, start, stop, step );
 }
 
-#define WAIT_TIME_MS 500
+#define WAIT_TIME_MS 1000
 
 int main()
 {
+    thread_sleep_for(WAIT_TIME_MS);
+
     UNITY_BEGIN();
 
     RUN_TEST(test_transpose);
