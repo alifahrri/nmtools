@@ -45,7 +45,7 @@ namespace nmtools
             using com_t = meta::promote_index_t<vec_t,ind_t>;
             // TODO: support optional
             // TODO: static assert whenever possible
-            nmtools_assert ((com_t)n == (com_t)m
+            nmtools_cassert ((com_t)n == (com_t)m
                 , "unsupported permute, mismatched dimension between vec and indices"
             );
 

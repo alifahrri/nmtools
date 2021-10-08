@@ -25,19 +25,20 @@
 #define nmtools_make_optional(name, type) \
 using name = std::optional<type>;
 
+#define nmtools_cassert(condition, ...) \
+{ \
+    assert(condition); \
+}
+
 #ifdef NMTOOLS_USE_EXCEPTION
 #define nmtools_assert nmtools_assert_throw
+#define nmtools_cassert nmtools_assert_throw
 #endif // NMTOOLS_USE_EXCEPTION
 
 #ifdef NMTOOLS_USE_OPTIONAL
 #undef nmtools_assert
 #define nmtools_assert nmtools_assert_optional
 #endif // NMTOOLS_USE_OPTIONAL
-
-#define nmtools_cassert(condition, ...) \
-{ \
-    assert(condition); \
-}
 
 #ifndef nmtools_assert
 #define nmtools_assert nmtools_cassert

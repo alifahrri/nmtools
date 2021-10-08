@@ -183,7 +183,7 @@ namespace nmtools::view
                 if constexpr (std::is_integral_v<common_t>) {
                     constexpr auto n = sizeof...(size_types);
                     // TODO: static_assert whenever possible
-                    nmtools_assert ( (common_t)dim()==(common_t)n
+                    nmtools_cassert ( (common_t)dim()==(common_t)n
                         , "mismatched dimension"
                     ); // tmp assertion
                 }

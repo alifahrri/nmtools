@@ -597,10 +597,10 @@ namespace nmtools::array
         using nmtools::shape;
         using nmtools::utils::isequal;
 
-        nmtools_assert (isequal(dim(rhs),dim(*this))
+        nmtools_cassert (isequal(dim(rhs),dim(*this))
             , "mismatched dimension for hybrid_ndarray assignment"
         );
-        nmtools_assert (isequal(shape(rhs),shape(*this))
+        nmtools_cassert (isequal(shape(rhs),shape(*this))
             , "mismatched shape for hybrid_ndarray assignment"
         );
         auto n = index::product(shape(rhs));
