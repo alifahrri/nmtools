@@ -15,16 +15,26 @@ namespace view = nm::view;
 namespace meta = nm::meta;
 namespace kind = na::kind;
 
+#ifndef PLATFORMIO
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_v = cast(name, kind::nested_vec); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_d = cast(name, kind::dynamic); \
+inline auto name##_h = cast(name, kind::hybrid);
+#else
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_h = cast(name, kind::hybrid);
+#endif // PLATFORMIO
+
 NMTOOLS_TESTING_DECLARE_CASE(flatten)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline double array[3] = {1.,2.,3.};
-        inline auto array_a = cast<double>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -39,11 +49,7 @@ NMTOOLS_TESTING_DECLARE_CASE(flatten)
             {1.,2.,3.},
             {3.,4.,5.},
         };
-        inline auto array_a = cast<double>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -58,11 +64,7 @@ NMTOOLS_TESTING_DECLARE_CASE(flatten)
             {{1.},{2.},{3.}},
             {{3.},{4.},{5.}},
         };
-        inline auto array_a = cast<double>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -85,19 +87,17 @@ NMTOOLS_TESTING_DECLARE_CASE(flatten)
                 {5.,11.}
             },
         };
-        inline auto array_a = cast<double>(array);
-        inline auto array_v = cast(array,kind::nested_vec);
-        inline auto array_f = cast(array,kind::fixed);
-        inline auto array_d = cast(array,kind::dynamic);
-        inline auto array_h = cast(array,kind::hybrid);
+        CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        // isequal doesnt support tuple and raw yet
+        // isequal doesn't support tuple and raw yet
         inline int shape_[1] = {12};
         inline auto shape = cast<int>(shape_);
         inline double expected[12] = {1,6,2,7,3,8,3,9,4,10,5,11};
     }
 }
+
+#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_FLATTEN_HPP

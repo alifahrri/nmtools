@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_TESTING_DATA_ARAY_CELU_HPP
-#define NMTOOLS_TESTING_DATA_ARAY_CELU_HPP
+#ifndef NMTOOLS_TESTING_DATA_ARRAY_CELU_HPP
+#define NMTOOLS_TESTING_DATA_ARRAY_CELU_HPP
 
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
@@ -13,12 +13,19 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+#ifndef PLATFORMIO
 #define CAST_ARRAYS(name) \
 inline auto name##_a = cast(name, kind::nested_arr); \
 inline auto name##_v = cast(name, kind::nested_vec); \
 inline auto name##_f = cast(name, kind::fixed); \
 inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid); \
+inline auto name##_h = cast(name, kind::hybrid);
+#else
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_h = cast(name, kind::hybrid);
+#endif // PLATFORMIO
 
 NMTOOLS_TESTING_DECLARE_CASE(activations, celu)
 {
@@ -68,4 +75,4 @@ NMTOOLS_TESTING_DECLARE_CASE(activations, celu)
     }
 }
 
-#endif // NMTOOLS_TESTING_DATA_ARAY_CELU_HPP
+#endif // NMTOOLS_TESTING_DATA_ARRAY_CELU_HPP

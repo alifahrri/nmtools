@@ -417,6 +417,8 @@ TEST_CASE("slice(case38)" * doctest::test_suite("view::slice"))
 namespace meta = nmtools::meta;
 namespace view = nmtools::view;
 
+using std::tuple;
+
 TEST_CASE("slice" * doctest::test_suite("view::slice"))
 {
     SUBCASE("fixed_ndarray")

@@ -14,6 +14,20 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+#ifndef PLATFORMIO
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_v = cast(name, kind::nested_vec); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_d = cast(name, kind::dynamic); \
+inline auto name##_h = cast(name, kind::hybrid);
+#else
+#define CAST_ARRAYS(name) \
+inline auto name##_a = cast(name, kind::nested_arr); \
+inline auto name##_f = cast(name, kind::fixed); \
+inline auto name##_h = cast(name, kind::hybrid);
+#endif // PLATFORMIO
+
 NMTOOLS_TESTING_DECLARE_CASE(view, where)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -21,21 +35,9 @@ NMTOOLS_TESTING_DECLARE_CASE(view, where)
         inline bool condition[10] = {true, true, true, true, true, false, false, false, false, false};
         inline int x[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         inline int y[10] = {0,10,20,30,40,50,60,70,80,90};
-        inline auto condition_a = cast<bool>(condition);
-        inline auto condition_v = cast(condition, kind::nested_vec);
-        inline auto condition_d = cast(condition, kind::dynamic);
-        inline auto condition_f = cast(condition, kind::fixed);
-        inline auto condition_h = cast(condition, kind::hybrid);
-        inline auto x_a = cast<int>(x);
-        inline auto x_v = cast(x, kind::nested_vec);
-        inline auto x_d = cast(x, kind::dynamic);
-        inline auto x_f = cast(x, kind::fixed);
-        inline auto x_h = cast(x, kind::hybrid);
-        inline auto y_a = cast<int>(y);
-        inline auto y_v = cast(y, kind::nested_vec);
-        inline auto y_d = cast(y, kind::dynamic);
-        inline auto y_f = cast(y, kind::fixed);
-        inline auto y_h = cast(y, kind::hybrid);
+        CAST_ARRAYS(condition)
+        CAST_ARRAYS(x)
+        CAST_ARRAYS(y)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -57,21 +59,9 @@ NMTOOLS_TESTING_DECLARE_CASE(view, where)
             {2},
         };
         inline int y[1][4] = {{10,11,12,13}};
-        inline auto condition_a = cast<bool>(condition);
-        inline auto condition_v = cast(condition, kind::nested_vec);
-        inline auto condition_d = cast(condition, kind::dynamic);
-        inline auto condition_f = cast(condition, kind::fixed);
-        inline auto condition_h = cast(condition, kind::hybrid);
-        inline auto x_a = cast<int>(x);
-        inline auto x_v = cast(x, kind::nested_vec);
-        inline auto x_d = cast(x, kind::dynamic);
-        inline auto x_f = cast(x, kind::fixed);
-        inline auto x_h = cast(x, kind::hybrid);
-        inline auto y_a = cast<int>(y);
-        inline auto y_v = cast(y, kind::nested_vec);
-        inline auto y_d = cast(y, kind::dynamic);
-        inline auto y_f = cast(y, kind::fixed);
-        inline auto y_h = cast(y, kind::hybrid);
+        CAST_ARRAYS(condition)
+        CAST_ARRAYS(x)
+        CAST_ARRAYS(y)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -99,21 +89,9 @@ NMTOOLS_TESTING_DECLARE_CASE(view, where)
             }
         };
         inline int y[1][4] = {{10,11,12,13}};
-        inline auto condition_a = cast<bool>(condition);
-        inline auto condition_v = cast(condition, kind::nested_vec);
-        inline auto condition_d = cast(condition, kind::dynamic);
-        inline auto condition_f = cast(condition, kind::fixed);
-        inline auto condition_h = cast(condition, kind::hybrid);
-        inline auto x_a = cast<int>(x);
-        inline auto x_v = cast(x, kind::nested_vec);
-        inline auto x_d = cast(x, kind::dynamic);
-        inline auto x_f = cast(x, kind::fixed);
-        inline auto x_h = cast(x, kind::hybrid);
-        inline auto y_a = cast<int>(y);
-        inline auto y_v = cast(y, kind::nested_vec);
-        inline auto y_d = cast(y, kind::dynamic);
-        inline auto y_f = cast(y, kind::fixed);
-        inline auto y_h = cast(y, kind::hybrid);
+        CAST_ARRAYS(condition)
+        CAST_ARRAYS(x)
+        CAST_ARRAYS(y)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -128,5 +106,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, where)
         };
     }
 }
+
+#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_WHERE_HPP

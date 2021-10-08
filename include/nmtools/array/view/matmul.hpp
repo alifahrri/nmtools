@@ -423,9 +423,9 @@ namespace nmtools::meta
                 return as_value_v<type>;
             } else if constexpr (is_hybrid_index_array_v<rhs_shape_t>) {
                 constexpr auto lhs = fixed_index_array_size_v<lhs_shape_t>;
-                constexpr auto rhs = hybrid_index_array_max_size_v<lhs_shape_t>;
+                constexpr auto rhs = hybrid_index_array_max_size_v<rhs_shape_t>;
                 constexpr auto max = lhs > rhs ? lhs : rhs;
-                using type = resize_hybrid_index_array_max_size_t<lhs_shape_t,max>;
+                using type = resize_hybrid_index_array_max_size_t<rhs_shape_t,max>;
                 return as_value_v<type>;
             }
             // unsupported
