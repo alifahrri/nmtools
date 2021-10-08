@@ -331,13 +331,13 @@ CHECK_MESSAGE(isequal(result,expect), \
 
 #define NMTOOLS_STATIC_ASSERT_EQUAL_DOCTEST(result,expect) \
 { \
-    constexpr auto __result = isequal(result,expect); \
+    [[maybe_unused]] constexpr auto result_ = isequal(result,expect); \
     std::string message {}; \
     message = message + \
         + "\n\tActual  : " + STRINGIFY(result)  \
         + "\n\tExpected: " + STRINGIFY(expect); \
-    NMTOOLS_STATIC_ASSERT( __result); \
-    NMTOOLS_CHECK_MESSAGE( __result, message ); \
+    NMTOOLS_STATIC_ASSERT( result_ ); \
+    NMTOOLS_CHECK_MESSAGE( result_, message ); \
 }
 
 /**
