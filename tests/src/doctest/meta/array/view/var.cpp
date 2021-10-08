@@ -20,7 +20,7 @@ TEST_CASE("is_ndarray" * doctest::test_suite("view::var"))
         using array_t = int[2][3][2];
         using axis_t  = std::vector<int>;
         using view_t  = decltype(view::var(declval(array_t),declval(axis_t)));
-        // NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
     }
 }
 

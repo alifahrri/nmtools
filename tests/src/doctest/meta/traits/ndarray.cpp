@@ -185,11 +185,11 @@ TEST_CASE("fixed_ndarray_dim_v" * doctest::test_suite("array"))
 
 TEST_CASE("fixed_ndarray_shape_v" * doctest::test_suite("array"))
 {
-    using vector_t   = std::array<double,3>;
+    // using vector_t   = std::array<double,3>;
     using array_t    = std::array<std::array<double,3>,5>;
     using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
     using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
-    using dndarray_t = nmtools::array::dynamic_ndarray<double>;
+    // using dndarray_t = nmtools::array::dynamic_ndarray<double>;
 
     {
         constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<array_t>;

@@ -10,8 +10,6 @@ namespace meta = nmtools::meta;
 
 TEST_CASE("apply_disjunction" * doctest::test_suite("traits"))
 {
-    using vector_t   = std::array<double,3>;
-    using array_t    = std::array<std::array<double,3>,5>;
     using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
     using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
     using dndarray_t = nmtools::array::dynamic_ndarray<double>;

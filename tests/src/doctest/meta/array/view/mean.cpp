@@ -18,40 +18,40 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
     {
         using array_t    = int[3][2];
         using axis_t     = size_t;
-        using dtype_t    = nm::none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = nm::none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using array_t    = std::array<std::array<int,2>,3>;
         using axis_t     = size_t;
-        using dtype_t    = nm::none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = nm::none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using array_t    = na::fixed_ndarray<int,3,2>;
         using axis_t     = size_t;
-        using dtype_t    = nm::none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = nm::none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using array_t    = na::hybrid_ndarray<int,6,2>;
         using axis_t     = size_t;
-        using dtype_t    = nm::none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = nm::none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using array_t    = na::dynamic_ndarray<int>;
         using axis_t     = size_t;
-        using dtype_t    = nm::none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = nm::none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
@@ -61,40 +61,40 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::mean"))
     {
         using array_t    = int[3][2];
         using axis_t     = decltype(0_ct);
-        using dtype_t    = none_t;
-        using keepdims_t = std::true_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using array_t    = std::array<std::array<int,2>,3>;
         using axis_t     = decltype(0_ct);
-        using dtype_t    = none_t;
-        using keepdims_t = std::true_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using array_t    = na::fixed_ndarray<int,3,2>;
         using axis_t     = decltype(0_ct);
-        using dtype_t    = none_t;
-        using keepdims_t = std::true_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using array_t    = na::hybrid_ndarray<int,6,2>;
         using axis_t     = decltype(0_ct);
-        using dtype_t    = none_t;
-        using keepdims_t = std::true_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using array_t    = na::dynamic_ndarray<int>;
         using axis_t     = decltype(0_ct);
-        using dtype_t    = none_t;
-        using keepdims_t = std::true_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
@@ -194,8 +194,8 @@ TEST_CASE("is_num" * doctest::test_suite("view::mean"))
     {
         using array_t    = int[3][2];
         using axis_t     = nm::none_t;
-        using dtype_t    = nm::none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = nm::none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
     }
@@ -206,8 +206,8 @@ TEST_CASE("get_underlying_array_type" * doctest::test_suite("view::mean"))
     {
         using array_t    = int[3][2];
         using axis_t     = nm::none_t;
-        using dtype_t    = nm::none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = nm::none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using result_t   = meta::get_underlying_array_type_t<view_t>;
         using expected_t = std::tuple<const array_t&,size_t>;
@@ -221,8 +221,8 @@ TEST_CASE("get_element_type" * doctest::test_suite("view::mean"))
     {
         using array_t    = int[3][2];
         using axis_t     = size_t;
-        using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using element_t  = meta::get_element_type_t<view_t>;
         using expected_t = float;
@@ -231,8 +231,8 @@ TEST_CASE("get_element_type" * doctest::test_suite("view::mean"))
     {
         using array_t    = std::array<std::array<int,2>,3>;
         using axis_t     = size_t;
-        using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using element_t  = meta::get_element_type_t<view_t>;
         using expected_t = float;
@@ -241,8 +241,8 @@ TEST_CASE("get_element_type" * doctest::test_suite("view::mean"))
     {
         using array_t    = na::fixed_ndarray<int,3,2>;
         using axis_t     = size_t;
-        using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using element_t  = meta::get_element_type_t<view_t>;
         using expected_t = float;
@@ -251,8 +251,8 @@ TEST_CASE("get_element_type" * doctest::test_suite("view::mean"))
     {
         using array_t    = na::hybrid_ndarray<int,6,2>;
         using axis_t     = size_t;
-        using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using element_t  = meta::get_element_type_t<view_t>;
         using expected_t = float;
@@ -261,8 +261,8 @@ TEST_CASE("get_element_type" * doctest::test_suite("view::mean"))
     {
         using array_t    = na::dynamic_ndarray<int>;
         using axis_t     = size_t;
-        using dtype_t    = none_t;
-        using keepdims_t = std::false_type;
+        // using dtype_t    = none_t;
+        // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using element_t  = meta::get_element_type_t<view_t>;
         using expected_t = float;

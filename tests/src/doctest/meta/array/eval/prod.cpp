@@ -19,8 +19,8 @@ TEST_CASE("eval(prod)" * doctest::test_suite("eval"))
     {
         using array_t = int[3][2];
         using axis_t  = none_t;
-        using initial_t  = none_t;
-        using keepdims_t = std::false_type;
+        // using initial_t  = none_t;
+        // using keepdims_t = std::false_type;
         using eval_t     = decltype(na::prod(declval(array_t),declval(axis_t)));
         using expect_t   = int;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expect_t );
