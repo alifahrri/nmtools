@@ -43,8 +43,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
             }
         };
         inline int reps[2] = {2,2};
-        CAST_ARRAY(array)
-        CAST_ARRAY(reps)
+        CAST_ARRAYS(array)
+        CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -73,8 +73,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
             }
         };
         inline int reps[3] = {2,1,2};
-        CAST_ARRAY(array)
-        CAST_ARRAY(reps)
+        CAST_ARRAYS(array)
+        CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -100,8 +100,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
     {
         inline int array[3] = {0,1,2};
         inline int reps[1]  = {2};
-        CAST_ARRAY(array)
-        CAST_ARRAY(reps)
+        CAST_ARRAYS(array)
+        CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -132,8 +132,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
     {
         inline int array[3] = {0,1,2};
         inline int reps[6]  = {2,1,1,1,1,1};
-        CAST_ARRAY(array)
-        CAST_ARRAY(reps)
+        CAST_ARRAYS(array)
+        CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
