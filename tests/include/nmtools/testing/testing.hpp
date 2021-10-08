@@ -568,7 +568,7 @@ namespace subcase::expect
  * @see STATIC_CHECK
  * @see STATIC_CHECK_IS_SAME
  */
-#define NMTOOLS_DEFERRED_STATIC_ASSERT(value) {static_cast<bool>(value);}
+#define NMTOOLS_DEFERRED_STATIC_ASSERT(value) {}
 
 #ifndef DEFER_STATIC_CHECK
 #define NMTOOLS_STATIC_ASSERT static_assert
