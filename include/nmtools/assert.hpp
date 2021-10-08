@@ -32,6 +32,7 @@ using name = std::optional<type>;
 
 #ifdef NMTOOLS_USE_EXCEPTION
 #define nmtools_assert nmtools_assert_throw
+#undef nmtools_cassert
 #define nmtools_cassert nmtools_assert_throw
 #endif // NMTOOLS_USE_EXCEPTION
 
