@@ -12,7 +12,7 @@ COPY nmtools.pc.in nmtools.pc.in
 COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
 RUN mkdir build && cd build \
-    && CC=clang CXX=clang++ cmake \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/clang-werror.cmake \
         -DNMTOOLS_CODE_COVERAGE=ON \
         -DNMTOOLS_ENABLE_TEST_BENCHMARKS=ON \
         -DCMAKE_BUILD_TYPE=Debug .. \
