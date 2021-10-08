@@ -8,6 +8,7 @@
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/view/ref/initializer_list.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/assert.hpp"
 
 #include <cassert>
 #include <vector>
@@ -458,11 +459,11 @@ namespace nmtools::array
         using nmtools::shape;
         using nmtools::utils::isequal;
 
-        assert (dim(rhs)==dim(*this)
-            // , mismatched dimension for dynamic_ndarray assignment
+        nmtools_assert (isequal(dim(rhs),dim(*this))
+            , "mismatched dimension for dynamic_ndarray assignment"
         );
-        assert (isequal(shape(rhs),shape(*this))
-            // , mismatched shape for dynamic_ndarray assignment
+        nmtools_assert (isequal(shape(rhs),shape(*this))
+            , "mismatched shape for dynamic_ndarray assignment"
         );
 
         auto flat_rhs = view::flatten(rhs);

@@ -350,9 +350,8 @@ namespace nmtools::meta
             // dummy type, template_reduce call std::get
             using array = std::array<size_t,dim>;
 
-            constexpr auto vshape = template_reduce<dim>([&](auto lhs, auto rhs, auto index){
+            constexpr auto vshape = template_reduce<dim>([&](auto lhs, auto /*rhs*/, auto index){
                 using lhs_t = remove_cvref_t<decltype(lhs)>;
-                // using rhs_t = remove_cvref_t<decltype(rhs)>;
                 constexpr auto i = decltype(index)::value;
                 // somehow the order is reversed, don't know why
                 // note: shape can hold constant value (int constant)
@@ -404,7 +403,7 @@ namespace nmtools::meta
                 // perform reduce op to combine all values in shape_t to T[axis0][axis1]...
                 // as needed to feed shape to resize_fixed_ndarray_t
                 // assume shape_t has default constructor and constexpr-ready
-                constexpr auto shape = template_reduce([](auto lhs, auto rhs, auto index){
+                constexpr auto shape = template_reduce([](auto lhs, auto /*rhs*/, auto index){
                     using lhs_t = remove_cvref_t<decltype(lhs)>;
                     constexpr auto i = decltype(index)::value;
                     // assume shape is_constant_index_array

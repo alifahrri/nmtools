@@ -568,8 +568,8 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            constexpr auto n_integer = ((static_cast<size_t>(meta::is_index_v<slices_t>)) + ...);
             if constexpr (is_fixed_index_array_v<shape_t>) {
+                constexpr auto n_integer = ((static_cast<size_t>(meta::is_index_v<slices_t>)) + ...);
                 constexpr auto dim = fixed_index_array_size_v<shape_t> - n_integer;
                 using shape_type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
                 using type = resize_fixed_index_array_t<shape_type,dim>;

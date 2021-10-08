@@ -19,9 +19,10 @@ namespace nmtools::index
 
         auto adim = len(ashape);
         auto bdim = len(bshape);
-        auto dim  = adim + bdim;
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizeable_v<return_t>) {
+            auto dim  = adim + bdim;
             res.resize(dim);
+        }
         
         for (size_t i=0; i<adim; i++)
             at(res,i) = at(ashape,i);

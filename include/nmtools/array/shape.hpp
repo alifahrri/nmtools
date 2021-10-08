@@ -27,41 +27,6 @@ namespace nmtools
 
     namespace detail
     {
-        // TODO: remove
-        /**
-         * @brief return the shape of fixed-size ndarray as compile-time constant
-         * 
-         * @tparam array_t fixed-size ndarray
-         * @tparam typename sfinae to enable this fn for fixed-size ndarray only
-         * @tparam Is compile-time index sequence to get the shape element
-         * @param array 
-         * @return constexpr auto 
-         * @see meta::index_constant
-         */
-        template <typename array_t, typename=std::enable_if_t<meta::is_fixed_size_ndarray_v<array_t>>, size_t...Is>
-        constexpr auto make_constant_shape(const array_t& array, std::index_sequence<Is...>)
-        {
-            constexpr auto shape_ =  meta::fixed_ndarray_shape_v<array_t>;
-            return std::tuple{meta::index_constant<std::get<Is>(shape_)>{}...};
-        } // make_constant_shape
-
-        // TODO: remove
-        /**
-         * @brief return the shape of fixed-size ndarray as compile-time constant
-         * 
-         * @tparam array_t fixed-size ndarray
-         * @tparam typename sfinae to enable this fn for fixed-size ndarray only
-         * @param array 
-         * @return constexpr auto 
-         */
-        template <typename array_t, typename=std::enable_if_t<meta::is_fixed_size_ndarray_v<array_t>>>
-        constexpr auto make_constant_shape(const array_t& array)
-        {
-            constexpr auto N = meta::fixed_ndarray_dim_v<array_t>;
-            using indices_t = std::make_index_sequence<N>;
-            return make_constant_shape(array, indices_t{});
-        } // make_constant_shape
-
         /**
          * @brief repeat t N times as array
          * 
@@ -93,13 +58,13 @@ namespace nmtools
     } // len
 
     template <typename T, size_t N>
-    constexpr auto len(const std::array<T,N>& array)
+    constexpr auto len(const std::array<T,N>&)
     {
         return N;
     } // len
 
     template <typename T, size_t N>
-    constexpr auto len(const T(&array)[N])
+    constexpr auto len(const T(&)[N])
     {
         return N;
     } // len
@@ -159,7 +124,6 @@ namespace nmtools
         else if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
             // @todo whenever the shape is constant return it as compile-time constant
             // @note not possible at this point, need to refactor indices & strides computation to support compile-time constant
-            // return detail::make_constant_shape(array);
             return meta::fixed_ndarray_shape_v<array_t>;
         }
         else if constexpr (meta::is_fixed_index_array_v<array_t>)
@@ -242,7 +206,7 @@ namespace nmtools
 
     // TODO (wrap std metafunctions): wrap as meta::make_tuple_t
     template <typename...size_types>
-    constexpr auto len(const std::tuple<size_types...>& array)
+    constexpr auto len(const std::tuple<size_types...>&)
     {
         return sizeof...(size_types);
     } // len

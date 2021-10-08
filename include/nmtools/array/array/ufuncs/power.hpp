@@ -27,7 +27,7 @@ namespace nmtools::array
                 context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto power = view::reduce_power(a,axis,dtype,initial,keepdims);
-                return eval(power,context);
+                return eval(power,context,output);
             } // reduce
 
             template <typename output_t=none_t, typename context_t=none_t,
@@ -36,7 +36,7 @@ namespace nmtools::array
                 context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto power = view::accumulate_power(a,axis,dtype);
-                return eval(power,context);
+                return eval(power,context,output);
             } // accumulate
 
             template <typename output_t=none_t, typename context_t=none_t,

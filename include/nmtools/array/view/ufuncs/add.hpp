@@ -41,7 +41,7 @@ namespace nmtools::view
     } // add
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
-    constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
+    constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t /*dtype*/, initial_t initial, keepdims_t keepdims)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
@@ -49,7 +49,7 @@ namespace nmtools::view
     } // add
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
-    constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
+    constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t /*dtype*/, initial_t initial)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
@@ -69,7 +69,7 @@ namespace nmtools::view
     } // add
 
     template <typename left_t, typename axis_t, typename dtype_t>
-    constexpr auto accumulate_add(const left_t& a, axis_t axis, dtype_t dtype)
+    constexpr auto accumulate_add(const left_t& a, axis_t axis, dtype_t /*dtype*/)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
@@ -83,7 +83,7 @@ namespace nmtools::view
     } // accumulate_add
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
-    constexpr auto outer_add(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{})
+    constexpr auto outer_add(const left_t& a, const right_t& b, dtype_t /*dtype*/=dtype_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;

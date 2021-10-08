@@ -62,7 +62,7 @@ namespace nmtools::utils
         // given T1 and T2 from either type, select T1 or T2
         // which has same concept as U
         template <typename t1, typename t2, typename u_t>
-        constexpr auto select_same(meta::as_value<t1> T1, meta::as_value<t2> T2, meta::as_value<u_t> u)
+        constexpr auto select_same([[maybe_unused]] meta::as_value<t1> T1, [[maybe_unused]] meta::as_value<t2> T2, meta::as_value<u_t>)
         {
             if constexpr (is_none_v<u_t> && is_none_v<t1>) {
                 return T1;
@@ -89,7 +89,7 @@ namespace nmtools::utils
         } // select_same
 
         template <typename t1>
-        constexpr auto constrained(meta::as_value<t1> T1)
+        constexpr auto constrained(meta::as_value<t1>)
         {
             using t1_t = meta::get_element_type_t<t1>;
 
@@ -105,7 +105,7 @@ namespace nmtools::utils
 
         // check if T1 and T2 is both scalar or both ndarray
         template <typename t1, typename t2>
-        constexpr auto constrained(meta::as_value<t1> T1, meta::as_value<t2> T2)
+        constexpr auto constrained(meta::as_value<t1>, meta::as_value<t2>)
         {
             using t1_t = meta::get_element_type_t<t1>;
             using t2_t = meta::get_element_type_t<t2>;
@@ -294,8 +294,11 @@ namespace nmtools::utils
                 // prefer fixed size for indexing to allow constant index
                 if constexpr (meta::is_fixed_index_array_v<T>) {
                     constexpr auto N = meta::fixed_index_array_size_v<T>;
+                    using t_t = meta::get_element_or_common_type_t<T>;
+                    using u_t = meta::get_element_or_common_type_t<U>;
+                    using common_t = meta::promote_index_t<t_t,u_t>;
                     meta::template_for<N>([&](auto i){
-                        equal = equal && (at(t,i) == at(u,i));
+                        equal = equal && ((common_t)at(t,i) == (common_t)at(u,i));
                     });
                     return equal;
                 }
@@ -328,12 +331,15 @@ namespace nmtools::utils
                 bool equal = true;
                 auto t_dim = ::nmtools::dim(t);
                 auto u_dim = ::nmtools::dim(u);
-                // TODO: static assert whenever possible
-                // NOTE: use assert instead of exception, to support compile with -fno-exceptions
-                // TODO: use maybe type
-                nmtools_cassert( (t_dim == u_dim)
-                    , "dimension mismatch for isequal"
-                );
+                {
+                    using common_t = meta::promote_index_t<decltype(t_dim),decltype(u_dim)>;
+                    // TODO: static assert whenever possible
+                    // NOTE: use assert instead of exception, to support compile with -fno-exceptions
+                    // TODO: use maybe type
+                    nmtools_cassert( ((common_t)t_dim == (common_t)u_dim)
+                        , "dimension mismatch for isequal"
+                    );
+                }
                 auto t_shape = ::nmtools::shape(t);
                 auto u_shape = ::nmtools::shape(u);
                 auto t_indices = ndindex(t_shape);
@@ -341,11 +347,17 @@ namespace nmtools::utils
                 // TODO: static assert whenever possible
                 auto t_size = t_indices.size();
                 auto u_size = u_indices.size();
-                nmtools_cassert( (t_size == u_size)
-                    , "size mismatch for isequal"
-                );
+                {
+                    using common_t = meta::promote_index_t<decltype(t_size),decltype(u_size)>;
+                    nmtools_cassert( ((common_t)t_size == (common_t)u_size)
+                        , "size mismatch for isequal"
+                    );
+                }
+                using t_t = meta::get_element_or_common_type_t<T>;
+                using u_t = meta::get_element_or_common_type_t<U>;
+                using common_t = meta::promote_index_t<t_t,u_t>;
                 for (size_t i=0; i<t_indices.size(); i++)
-                    equal = equal && (apply_at(t, t_indices[i]) == apply_at(u, u_indices[i]));
+                    equal = equal && ((common_t)apply_at(t, t_indices[i]) == (common_t)apply_at(u, u_indices[i]));
                 return equal;
             }
         } // isequal

@@ -26,7 +26,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename reps_t, typename indices_t>
-    constexpr auto tile(const shape_t& shape, const reps_t& reps, const indices_t& indices)
+    constexpr auto tile(const shape_t& shape, const reps_t&, const indices_t& indices)
     {
         using return_t = meta::resolve_optype_t<tile_t,shape_t,reps_t,indices_t>;
 

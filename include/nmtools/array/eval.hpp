@@ -355,7 +355,7 @@ namespace nmtools::meta
      * @return constexpr auto 
      */
     template <typename lhs_t, typename rhs_t, typename view_type>
-    constexpr auto resolve_binary_array_type(as_value<lhs_t> lhs, as_value<rhs_t> rhs, as_value<view_type> view)
+    constexpr auto resolve_binary_array_type([[maybe_unused]] as_value<lhs_t> lhs, [[maybe_unused]] as_value<rhs_t> rhs, [[maybe_unused]] as_value<view_type> view)
     {
         using element_t = get_element_type_t<view_type>;
         if constexpr (

@@ -452,10 +452,12 @@ namespace nmtools::view
                 if constexpr (meta::is_index_v<axis_t> && std::is_pointer_v<axis_type>) {
                     return i==*axis;
                 } else if constexpr (meta::is_index_v<axis_t>) {
-                    return i==axis;
+                    using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+                    return (common_t)i==(common_t)axis;
                 } else {
                     auto f_predicate = [i](auto axis){
-                        return i==axis;
+                        using common_t = meta::promote_index_t<decltype(i),decltype(axis)>;
+                        return (common_t)i==(common_t)axis;
                     };
                     // axis is index array (reducing on multiple axes),
                     // axis may be pointer, but can't provide convenience function
@@ -568,6 +570,7 @@ namespace nmtools::view
         {
             // None axis with keepdims True:
             // just get the original shape and then fill with one
+            [[maybe_unused]]
             auto f_shape = [&](){
                 auto shape_ = detail::shape(array);
                 using m_shape_t = decltype(shape_);
@@ -576,7 +579,7 @@ namespace nmtools::view
                     // can't access and modify at runtime
                     constexpr auto N   = meta::len_v<m_shape_t>;
                     constexpr auto val = meta::ct_v<1>;
-                    auto res = meta::template_reduce<N-1>([&](auto init, auto index){
+                    auto res = meta::template_reduce<N-1>([&](auto init, auto /*index*/){
                         return std::tuple_cat(init,std::tuple{val});
                     }, /*init=*/std::tuple{val});
                     return res;
@@ -632,7 +635,7 @@ namespace nmtools::view
         } // operator result_type()
 
         template <typename...size_types>
-        constexpr auto operator()(size_types...indices) const
+        constexpr auto operator()(size_types.../*indices*/) const
         {
             // reduce the whole array
             auto flattened = [&](){
@@ -719,7 +722,8 @@ namespace nmtools::view
             for (size_t i=0; i<dim; i++) {
                 // index at axis i
                 auto s = at(indices_,i);
-                auto start = i==axis ? 0 : s;
+                using common_t = meta::promote_index_t<decltype(axis),size_t>;
+                auto start = (common_t)i==(common_t)axis ? 0 : s;
                 auto stop  = s + 1;
                 at(slices,i) = {start,stop};
             }
@@ -1033,10 +1037,12 @@ namespace nmtools::meta
     {
         static inline constexpr auto value = [](){
             if constexpr ((is_fixed_dim_ndarray_v<arrays_t> && ...)) {
-                using types = std::tuple<arrays_t...>;
-                auto ref_dim  = fixed_dim_v<at_t<types,0>>;
-                if constexpr (static_cast<bool>((fixed_dim_v<arrays_t> == ...)))
+                constexpr auto all_same_dim = (fixed_dim_v<arrays_t> == ...);
+                if constexpr (static_cast<bool>(all_same_dim)) {
+                    using types = std::tuple<arrays_t...>;
+                    auto ref_dim  = fixed_dim_v<at_t<types,0>>;
                     return ref_dim;
+                }
                 else return detail::Fail;
             } else {
                 return detail::Fail;

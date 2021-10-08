@@ -178,7 +178,7 @@ namespace nmtools::meta
                 return as_value_v<type>;
             } else if constexpr (is_fixed_size_ndarray_v<array_t>) {
                 constexpr auto dim_ = fixed_ndarray_dim_v<array_t>;
-                constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
+                [[maybe_unused]] constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
                 if constexpr (dim_ == 1) {
                     using some_array_t = int[1][1][nmtools::at(shape_,0)];
                     using tf_array_t   = transform_bounded_array_t<array_t>;

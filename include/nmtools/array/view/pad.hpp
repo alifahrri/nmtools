@@ -76,7 +76,7 @@ namespace nmtools::index
      */
     template <typename index_t, typename src_shape_t, typename dst_shape_t, typename pad_width_t>
     constexpr auto pad(const index_t& index, const src_shape_t& src_shape
-        , const dst_shape_t& dst_shape, const pad_width_t& pad_width)
+        , const dst_shape_t& /*dst_shape*/, const pad_width_t& pad_width)
     {
         using result_t = meta::resolve_optype_t<pad_t,index_t,src_shape_t,dst_shape_t,pad_width_t>;
         // use maybe type to indicate out of bound index (of src shape)

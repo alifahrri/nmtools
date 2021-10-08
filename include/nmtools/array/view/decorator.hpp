@@ -8,6 +8,8 @@
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/array/index/make_array.hpp"
 
+#include "nmtools/assert.hpp"
+
 #include <cassert>
 
 namespace nmtools::view::detail
@@ -174,14 +176,17 @@ namespace nmtools::view
             else {
                 auto transformed_indices = view_type::index(indices...);
 
-                constexpr auto n = sizeof...(size_types);
                 // only perform assert if integral type is passed
                 // otherwise assume indices is packed and pass to apply_at
                 // to allow access from packed indices
                 // TODO: better error handling
-                if constexpr (std::is_integral_v<common_t>)
-                    // @todo static_assert whenever possible
-                    assert (dim()==n); // tmp assertion
+                if constexpr (std::is_integral_v<common_t>) {
+                    constexpr auto n = sizeof...(size_types);
+                    // TODO: static_assert whenever possible
+                    nmtools_assert ( (common_t)dim()==(common_t)n
+                        , "mismatched dimension"
+                    ); // tmp assertion
+                }
 
                 // call at to referred object, not to this.
                 // the array_type from the view may be pointer

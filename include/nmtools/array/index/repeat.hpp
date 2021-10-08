@@ -12,6 +12,8 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/sum.hpp"
 
+#include "nmtools/assert.hpp"
+
 #include <type_traits>
 #include <array>
 
@@ -61,10 +63,13 @@ namespace nmtools::index
             for (size_t i=0; i<n; i++)
                 at(ret,i) = tuple_at(shape,i);
 
-            if constexpr (meta::is_array1d_v<repeats_t>) {
-                // TODO: make optional
-                assert ( at(ret,axis) == len(repeats)
-                    // , "unsupported shape_repeat"
+            if constexpr (meta::is_index_array_v<repeats_t>) {
+                auto r_a = at(ret,axis);
+                auto n   = len(repeats);
+                using common_t = meta::promote_index_t<decltype(r_a),decltype(n)>;
+                // TODO: support optional
+                nmtools_assert ( (common_t)r_a == (common_t)n
+                    , "unsupported shape_repeat"
                     // numpy: ValueError: operands could not be broadcast together with shape
                 );
                 // when axis is specified and repeats is index array,
@@ -178,7 +183,8 @@ namespace nmtools::index
                         // note: len(repeats) == shape[axis]
                         // simply find arg of repeats such that idx >= accumulate(repeats)[args]
                         auto f = [&](auto a){
-                            return idx<a;
+                            using common_t = meta::promote_index_t<decltype(idx),decltype(a)>;
+                            return (common_t)idx<(common_t)a;
                         };
                         auto arg = argfilter(f, csum);
                         at(ret,i) = at(arg,0); // take first

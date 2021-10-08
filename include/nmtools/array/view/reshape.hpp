@@ -14,6 +14,8 @@
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/assert.hpp"
 
+#include "nmtools/utils/isequal.hpp"
+
 namespace nmtools::view
 {
     /**
@@ -105,7 +107,7 @@ namespace nmtools::view
         auto old_numel = index::product(shape);
         auto new_numel = index::product(new_shape);
         // TODO: better error handling
-        nmtools_assert( old_numel == new_numel
+        nmtools_assert( utils::isequal(old_numel,new_numel)
             , "unsupported reshape, mismatched number of elements"
         );
         return decorator_t<reshape_t,array_t,shape_t>{{array,new_shape}};
