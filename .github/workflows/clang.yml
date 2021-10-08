@@ -34,7 +34,7 @@ jobs:
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
-          build/${{ matrix.name }}/tests/numeric-tests-doctest
-          build/${{ matrix.name }}/tests/numeric-tests-doctest-meta
-          build/${{ matrix.name }}/tests/numeric-tests-doctest-exception
-          build/${{ matrix.name }}/tests/numeric-tests-doctest-optional
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/numeric-tests-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/numeric-tests-doctest-meta'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/numeric-tests-doctest-exception'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/numeric-tests-doctest-optional'
