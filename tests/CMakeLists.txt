@@ -464,8 +464,6 @@ add_executable(${PROJECT_NAME}-doctest-optional src/doctest/tests.cpp
     ${OPTIONAL_TEST_SOURCES}
 )
 
-# target_compile_options(${PROJECT_NAME}-doctest PRIVATE -Wall)
-
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)

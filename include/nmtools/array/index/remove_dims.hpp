@@ -30,7 +30,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename axis_t, typename keepdims_t>
-    constexpr auto remove_dims(const shape_t& shape_, const axis_t& axis, keepdims_t keepdims)
+    constexpr auto remove_dims(const shape_t& shape_, const axis_t& axis, [[maybe_unused]] keepdims_t keepdims)
     {
         // note: axis as reference to prevent raw array to ptr
         using return_t = meta::resolve_optype_t<remove_dims_t,shape_t,axis_t,keepdims_t>;
@@ -46,15 +46,15 @@ namespace nmtools::index
             }
         }();
 
-        // number of axis to be removed
-        // also take keepdims into accounts
-        auto n = [&](){
-            if constexpr (meta::is_index_array_v<axis_t>)
-                return len(axis);
-            else return 1;
-        }();
-        auto dim = len(shape);
+        [[maybe_unused]] auto dim = len(shape);
         if constexpr (meta::is_resizeable_v<return_t>) {
+            // number of axis to be removed
+            // also take keepdims into accounts
+            auto n = [&](){
+                if constexpr (meta::is_index_array_v<axis_t>)
+                    return len(axis);
+                else return 1;
+            }();
             auto new_dim = [&](){
                 if (static_cast<bool>(keepdims))
                     return dim;
@@ -64,12 +64,15 @@ namespace nmtools::index
         }
         // fn to check if given i is detected in axis
         // representing axis to be removed
+        [[maybe_unused]]
         auto in_axis = [&](auto i){
-            if constexpr (meta::is_index_v<axis_t>)
-                return i==axis;
-            else {
+            if constexpr (meta::is_index_v<axis_t>) {
+                using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+                return (common_t)i==(common_t)axis;
+            } else {
                 auto f_predicate = [i](auto axis){
-                    return i==axis;
+                    using common_t = meta::promote_index_t<decltype(axis),decltype(i)>;
+                    return (common_t)i==(common_t)axis;
                 };
                 auto found = where(f_predicate, axis);
                 return static_cast<bool>(len(found));

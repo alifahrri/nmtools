@@ -36,7 +36,6 @@ namespace nmtools::index
         auto free_axes_impl = [&](auto i){
             // @todo support type list (tuple of int constant)
             using idx_t = std::make_signed_t<decltype(m-i-1)>;
-            idx_t ai = m - i - 1;
             idx_t bi = n - i - 1;
             idx_t si = s - i - 1;
             auto free = (bi < 0);
@@ -45,7 +44,8 @@ namespace nmtools::index
             at(res,si) = free;
         }; // free_axes_impl
 
-        for (int i=0; i<len(res); i++)
+        // choose to use int since may be treated as signed
+        for (int i=0; i<(int)len(res); i++)
             free_axes_impl(i);
 
         return res;

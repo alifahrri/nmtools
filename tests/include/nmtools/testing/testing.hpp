@@ -215,7 +215,7 @@ namespace nmtools
     }; // resolve_optype
 
     template <typename src_t, typename kind_t>
-    constexpr auto cast(const src_t& src, const kind_t& kind)
+    constexpr auto cast(const src_t& src, const kind_t&)
     {
         using ret_t = meta::resolve_optype_t<cast_kind_t,src_t,kind_t>;
         return cast<ret_t>(src);
@@ -331,13 +331,13 @@ CHECK_MESSAGE(isequal(result,expect), \
 
 #define NMTOOLS_STATIC_ASSERT_EQUAL_DOCTEST(result,expect) \
 { \
-    constexpr auto __result = isequal(result,expect); \
+    [[maybe_unused]] constexpr auto result_ = isequal(result,expect); \
     std::string message {}; \
     message = message + \
         + "\n\tActual  : " + STRINGIFY(result)  \
         + "\n\tExpected: " + STRINGIFY(expect); \
-    NMTOOLS_STATIC_ASSERT( __result); \
-    NMTOOLS_CHECK_MESSAGE( __result, message ); \
+    NMTOOLS_STATIC_ASSERT( result_ ); \
+    NMTOOLS_CHECK_MESSAGE( result_, message ); \
 }
 
 /**
@@ -568,7 +568,7 @@ namespace subcase::expect
  * @see STATIC_CHECK
  * @see STATIC_CHECK_IS_SAME
  */
-#define NMTOOLS_DEFERRED_STATIC_ASSERT(value) {static_cast<bool>(value);}
+#define NMTOOLS_DEFERRED_STATIC_ASSERT(value) {}
 
 #ifndef DEFER_STATIC_CHECK
 #define NMTOOLS_STATIC_ASSERT static_assert

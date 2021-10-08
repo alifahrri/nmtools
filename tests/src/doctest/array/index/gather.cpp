@@ -208,14 +208,14 @@ NMTOOLS_TESTING_DECLARE_CASE(index, gahter_constexpr)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        constexpr int result[3] = {2,3,1};
+        [[maybe_unused]] constexpr int result[3] = {2,3,1};
     }
 }
 
 TEST_CASE("gather(constexpr)" * doctest::test_suite("index::gather"))
 {
     NMTOOLS_TESTING_DECLARE_NS(index, gahter_constexpr, case1);
-    constexpr auto result = nm::index::gather(args::vec,args::indices);
+    [[maybe_unused]] constexpr auto result = nm::index::gather(args::vec,args::indices);
     NMTOOLS_STATIC_ASSERT( (nm::utils::isclose(result,expect::result)) );
 }
 

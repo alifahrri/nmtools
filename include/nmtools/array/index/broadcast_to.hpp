@@ -151,7 +151,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template<>
-    constexpr auto shape_broadcast_to<none_t,none_t>(const none_t& ashape, const none_t& bshape)
+    constexpr auto shape_broadcast_to<none_t,none_t>(const none_t&, const none_t&)
     {
         // TODO: use optional instead
         return std::tuple{true,None,None};

@@ -132,7 +132,8 @@ namespace nmtools::utils
                 // only add open bracket up to axis n
                 // that is equal to shape[n]-1, starting from last axis
                 for (int ii=(int)size(idx)-1; ii>=0; ii--) {
-                    if (at(idx,ii)==(at(s,ii)-1)) {
+                    // for simplicity just use int
+                    if ((int)at(idx,ii)==(int)(at(s,ii)-1)) {
                         str += "]";
                         // also count how much newline to be printed
                         print_comma++;

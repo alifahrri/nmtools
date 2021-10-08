@@ -23,7 +23,7 @@ TEST_CASE("template_map" * doctest::test_suite("meta"))
 TEST_CASE("template_reduce" * doctest::test_suite("meta"))
 {
     constexpr auto args = std::tuple{0,1,2,3};
-    auto f = [&](auto init, auto a, auto i){
+    auto f = [&](auto init, auto /*a*/, auto i){
         using init_t = decltype(init);
         constexpr auto I = decltype(i)::value;
         auto ai = std::get<I>(args);
@@ -32,5 +32,5 @@ TEST_CASE("template_reduce" * doctest::test_suite("meta"))
         else
             return std::tuple_cat(init,std::tuple{ai});
     };
-    auto res = meta::template_reduce(f,args);
+    [[maybe_unused]] auto res = meta::template_reduce(f,args);
 }

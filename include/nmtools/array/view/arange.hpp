@@ -85,7 +85,7 @@ namespace nmtools::view
      * @return constexpr auto 
      */
     template <typename start_t, typename stop_t, typename step_t, typename T=float>
-    constexpr auto arange(start_t start, stop_t stop, step_t step, dtype_t<T> dtype=float32)
+    constexpr auto arange(start_t start, stop_t stop, step_t step, dtype_t<T> = float32)
     {
         using view_t = decorator_t<arange_t,start_t,stop_t,step_t,T>;
         return view_t{{start,stop,step}};

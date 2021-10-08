@@ -187,8 +187,8 @@ namespace nmtools::meta
                 constexpr auto axis    = axis_t{};
                 constexpr auto result  = index::shape_concatenate(ashape,bshape,axis);
                 constexpr auto success = std::get<0>(result);
-                constexpr auto shape   = std::get<1>(result);
                 if constexpr (success) {
+                    constexpr auto shape = std::get<1>(result);
                     return shape;
                 } else {
                     return detail::Fail;

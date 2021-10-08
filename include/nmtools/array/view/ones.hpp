@@ -23,7 +23,7 @@ namespace nmtools::view
             >;
             auto res = return_t{};
 
-            const auto n = len(shape);
+            [[maybe_unused]] const auto n = len(shape);
             if constexpr (meta::is_resizeable_v<return_t>)
                 res.resize(n);
             
@@ -65,7 +65,7 @@ namespace nmtools::view
         } // dim
 
         template <typename...size_types>
-        constexpr auto operator()(size_types...indices) const
+        constexpr auto operator()(size_types.../*indices*/) const
         {
             // TODO: assert if indices < shape
 

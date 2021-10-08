@@ -64,8 +64,9 @@ namespace nmtools::view
 
             for (size_t i=0; i<DIM; i++) {
                 auto in_axis = static_cast<bool>(
-                    index::count([&](const auto& ii){
-                        return ii == i;
+                    index::count([&](const auto ii){
+                        using common_t = meta::promote_index_t<decltype(ii),size_t>;
+                        return (common_t)ii == (common_t)i;
                     }, axes)
                 );
                 // note that None is not assignable (yet?)
@@ -77,7 +78,10 @@ namespace nmtools::view
         } // get_flip_slices
 
         /**
-         * @brief Helper fn to prepare slice param
+         * @brief Helper fn to prepare slice param.
+         * 
+         * Note that flip is implemented using slice,
+         * this fn prepare the slices, called at view construction.
          * 
          * @tparam array_t 
          * @tparam axes_t 

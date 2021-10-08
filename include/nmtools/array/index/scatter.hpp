@@ -10,6 +10,8 @@
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/shape.hpp"
 
+#include "nmtools/assert.hpp"
+
 #include <array>
 #include <tuple>
 #include <type_traits>
@@ -18,6 +20,7 @@ namespace nmtools
 {
     namespace index
     {
+        // TODO: cleanup
         /**
          * @brief perform scatter op
          * 
@@ -37,9 +40,13 @@ namespace nmtools
             auto n = tuple_size(vec);
             // get the size of indices
             auto m = tuple_size(indices);
-            // @todo static assert whenever possible
-            assert (n == m
-                // , "unsupported permute, mismatched dimension between vec and indices"
+            using vec_t = meta::get_element_or_common_type_t<vector_t>;
+            using ind_t = meta::get_element_or_common_type_t<indices_t>;
+            using com_t = meta::promote_index_t<vec_t,ind_t>;
+            // TODO: support optional
+            // TODO: static assert whenever possible
+            nmtools_cassert ((com_t)n == (com_t)m
+                , "unsupported permute, mismatched dimension between vec and indices"
             );
 
             using std::tuple_size_v;
@@ -51,10 +58,11 @@ namespace nmtools
                 element_t
             >;
 
+            // TODO: explicitly resolve return type using metafunction
             // assume return type is same
             auto ret = vector_t{};
             if constexpr (meta::is_resizeable_v<vector_t>)
-                ret.resize(vec.size()); // assuming indices has size
+                ret.resize(len(vec)); // assuming indices has size
 
             auto scatter_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
                 auto value  = at(vec,i);
@@ -62,7 +70,7 @@ namespace nmtools
                 // store value to return
                 if constexpr (meta::is_integral_constant_v<decltype(i)>)
                     meta::template_for<tuple_size_v<meta::remove_cvref_t<decltype(vec)>>>([&](auto j){
-                        if (idx==j) at(ret,j) = value;
+                        if ((com_t)idx==(com_t)j) at(ret,j) = value;
                     });
                     // clang and gcc disagree on this
                     // meta::template_for<tuple_size_v<vector_t>>([&](auto j){

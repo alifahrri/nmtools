@@ -27,7 +27,7 @@ namespace nmtools::array
                 context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto subtract = view::reduce_subtract(a,axis,dtype,initial,keepdims);
-                return eval(subtract,context);
+                return eval(subtract,context,output);
             } // reduce
 
             template <typename output_t=none_t, typename context_t=none_t,
@@ -36,7 +36,7 @@ namespace nmtools::array
                 context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto subtract = view::accumulate_subtract(a,axis,dtype);
-                return eval(subtract,context);
+                return eval(subtract,context,output);
             } // accumulate
 
             template <typename output_t=none_t, typename context_t=none_t,

@@ -26,7 +26,8 @@ namespace nmtools::index
             at(res,0) = n;
         else {
             auto shape_take_impl = [&](auto i){
-                at(res,i) = (i == axis) ? n : at(shape,i);
+                using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+                at(res,i) = ((common_t)i == (common_t)axis) ? n : at(shape,i);
             };
             [[maybe_unused]] auto dim = len(shape);
             if constexpr (meta::is_resizeable_v<return_t>)
@@ -78,7 +79,8 @@ namespace nmtools::index
         else {
             auto take_impl = [&](auto i){
                 auto dst_i = at(index,i);
-                at(res, i) = (i == axis) ? at(indices,dst_i) : dst_i;
+                using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+                at(res, i) = ((common_t)i == (common_t)axis) ? at(indices,dst_i) : dst_i;
             };
             if constexpr (meta::has_tuple_size_v<index_t>) {
                 constexpr auto DIM = std::tuple_size_v<index_t>;

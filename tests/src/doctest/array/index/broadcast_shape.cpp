@@ -621,8 +621,8 @@ TEST_CASE("broadcast_shape(constexpr)" * doctest::test_suite("index::broadcast_s
         constexpr int d[6] = {2,2,3,1,4,1};
         constexpr int expected[6] = {2,2,3,8,4,3};
         constexpr auto broadcasted = nm::index::broadcast_shape(a,b,c,d);
-        constexpr auto success = std::get<0>(broadcasted);
-        constexpr auto shape   = std::get<1>(broadcasted);
+        [[maybe_unused]] constexpr auto success = std::get<0>(broadcasted);
+        [[maybe_unused]] constexpr auto shape   = std::get<1>(broadcasted);
         NMTOOLS_STATIC_ASSERT( success );
         NMTOOLS_STATIC_ASSERT_EQUAL( shape, expected );
     }

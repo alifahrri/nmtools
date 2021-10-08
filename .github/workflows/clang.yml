@@ -1,4 +1,4 @@
-name: web-wasm
+name: clang
 
 on:
   push:
@@ -12,13 +12,13 @@ on:
 
 
 jobs:
-  dockcross-wasm:
+  dockcross-clang:
     name: ${{ matrix.name }}
     runs-on: ubuntu-18.04
     strategy:
       matrix:
         include:
-          - name: web-wasm
+          - name: linux-x64-clang
     steps:
       - uses: actions/checkout@v2
       - name: setup dockcross
@@ -33,4 +33,8 @@ jobs:
       - name: build
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 VERBOSE=1'
       - name: run tests
-        run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/numeric-tests-doctest.wasm.js
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/numeric-tests-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/numeric-tests-doctest-meta'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/numeric-tests-doctest-exception'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/numeric-tests-doctest-optional'

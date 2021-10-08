@@ -322,7 +322,7 @@ TEST_CASE("fixed_ndarray_shape" * doctest::test_suite("view::concatenate"))
         using rhs_t  = int[2][1];
         using axis_t = nm::none_t;
         using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
-        constexpr auto shape = meta::fixed_ndarray_shape_v<view_t>;
+        [[maybe_unused]] constexpr auto shape = meta::fixed_ndarray_shape_v<view_t>;
         NMTOOLS_STATIC_ASSERT_EQUAL( shape, std::array{6} );
     }
     {
@@ -330,7 +330,7 @@ TEST_CASE("fixed_ndarray_shape" * doctest::test_suite("view::concatenate"))
         using rhs_t  = std::array<std::array<int,1>,2>;
         using axis_t = nm::none_t;
         using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
-        constexpr auto shape = meta::fixed_ndarray_shape_v<view_t>;
+        [[maybe_unused]] constexpr auto shape = meta::fixed_ndarray_shape_v<view_t>;
         NMTOOLS_STATIC_ASSERT_EQUAL( shape, std::array{6} );
     }
     {

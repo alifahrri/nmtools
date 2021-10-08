@@ -11,7 +11,6 @@ using namespace nmtools::literals;
 TEST_CASE("compute_offset" * doctest::test_suite("index"))
 {
     {
-        auto shape   = std::array{3,2};
         auto strides = std::array{2,1};
         {
             auto indices = std::array{0,0};
@@ -277,7 +276,6 @@ TEST_CASE("compute_offset(std::vector)" * doctest::test_suite("index"))
 TEST_CASE("compute_offset(std::tuple)" * doctest::test_suite("index"))
 {
     {
-        auto shape   = std::tuple{3,2};
         auto strides = std::tuple{2,1};
         {
             auto indices = std::tuple{0,0};

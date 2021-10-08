@@ -1977,47 +1977,6 @@ namespace nmtools::meta
      */
     struct select_hybrid_kind_t {};
 
-    struct size_policy_add_t
-    {
-        template <typename T, typename U>
-        static constexpr auto get(T t, U u)
-        {
-            return t + u;
-        } // get
-    }; // size_policy_add_t
-    struct size_policy_min_t
-    {
-        template <typename T, typename U>
-        static constexpr auto get(T t, U u)
-        {
-            return t < u ? t : u;
-        } // get
-    }; // size_policy_min_t
-    struct size_policy_max_t
-    {
-        template <typename T, typename U>
-        static constexpr auto get(T t, U u)
-        {
-            return t > u ? t : u;
-        } // get
-    }; // size_policy_max_t
-    struct size_policy_lhs_t
-    {
-        template <typename T, typename U>
-        static constexpr auto get(T t, U u)
-        {
-            return t;
-        } // get
-    }; // size_policy_lhs_t
-    struct size_policy_rhs_t
-    {
-        template <typename T, typename U>
-        static constexpr auto get(T t, U u)
-        {
-            return u;
-        } // get
-    }; // size_policy_rhs_t
-
     template <typename T, typename U>
     struct element_type_policy_common
     {

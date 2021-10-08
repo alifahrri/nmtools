@@ -88,7 +88,7 @@ namespace nmtools::utils
          * @return constexpr auto 
          */
         template <typename T, typename U, typename E=double>
-        constexpr auto isclose(const T& t, const U& u, E eps=static_cast<E>(1e-6))
+        constexpr auto isclose(const T& t, const U& u, [[maybe_unused]] E eps=static_cast<E>(1e-6))
         {
             using ::nmtools::ndindex;
             // treat T & U as value
@@ -232,15 +232,9 @@ namespace nmtools::utils
                     return fabs(lhs-rhs) < eps;
                 };
                 bool close = true;
-                // @todo: static assert whenever possible
-                auto t_dim = ::nmtools::dim(t);
-                auto u_dim = ::nmtools::dim(u);
                 // TODO: static assert whenever possible
                 // NOTE: use assert instead of exception, to support compile with -fno-exceptions
                 // TODO: use maybe type
-                nmtools_cassert( (t_dim == u_dim)
-                    , "dimension mismatch for isequal"
-                );
                 auto t_shape = ::nmtools::shape(t);
                 auto u_shape = ::nmtools::shape(u);
                 nmtools_cassert( ::nmtools::utils::isequal(t_shape,u_shape)
@@ -248,12 +242,6 @@ namespace nmtools::utils
                 );
                 auto t_indices = ndindex(t_shape);
                 auto u_indices = ndindex(u_shape);
-                auto t_size = t_indices.size();
-                auto u_size = u_indices.size();
-                // TODO: static assert whenever possible
-                nmtools_cassert( (t_size == u_size)
-                    , "size mismatch for isequal"
-                );
                 auto numel = t_indices.size();
                 for (size_t i = 0; i<numel; i++)
                     // dont recurse, we already checked that t and u satify static assert here

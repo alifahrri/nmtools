@@ -125,7 +125,8 @@ namespace nmtools::index
         // i should start form 0 to len(shape)
         [[maybe_unused]] auto compress_impl = [&](auto i){
             auto dst_i = at(indices, i);
-            at(res, i) = (i == axis) ? at(idx_nonzero,dst_i) : dst_i;
+            using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+            at(res, i) = ((common_t)i == (common_t)axis) ? at(idx_nonzero,dst_i) : dst_i;
         };
 
         if constexpr (is_none_v<axis_t>) {

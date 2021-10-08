@@ -34,19 +34,6 @@ namespace nmtools::view::detail
         using left_t   = meta::at_t<result_t,0>;
         using right_t  = meta::at_t<result_t,1>;
 
-        using maybe_left_t  = meta::make_maybe_type_t<left_t>;
-        using maybe_right_t = meta::make_maybe_type_t<right_t>;
-
-        constexpr auto axis_vtype = [](){
-            if constexpr (meta::is_constant_index_v<index_t>) {
-                using type = typename index_t::value_type;
-                return meta::as_value_v<type>;
-            } else {
-                return meta::as_value_v<index_t>;
-            }
-        }();
-        using axis_t = meta::make_unsigned_t<meta::type_t<decltype(axis_vtype)>>;
-
         auto dim  = len(shape);
         auto axis = dim;
 
@@ -57,15 +44,15 @@ namespace nmtools::view::detail
             axis = N;
         }
 
-        auto ldim  = axis;
-        auto rdim  = dim - axis;
         
         auto left  = left_t  {};
         auto right = right_t {};
         if constexpr (meta::is_resizeable_v<left_t>) {
+            auto ldim  = axis;
             left.resize(ldim);
         }
         if constexpr (meta::is_resizeable_v<right_t>) {
+            auto rdim  = dim - axis;
             right.resize(rdim);
         }
 
@@ -105,8 +92,8 @@ namespace nmtools::view::detail
         auto [b_bshape, m_bshape] = split(bshape,-2);
 
         auto l1 = at(ashape,i1);
-        auto l2 = at(ashape,i2);
-        auto r1 = at(bshape,i1);
+        // auto l2 = at(ashape,i2);
+        // auto r1 = at(bshape,i1);
         auto r2 = at(bshape,i2);
 
         auto adim = len(ashape);
@@ -177,6 +164,7 @@ namespace nmtools::view::detail
          * Only fixed index arrays are supported for now.
          * 
          */
+        [[maybe_unused]]
         constexpr auto broadcast_matmul_indices = [](const auto& indices, const auto& src_shape, const auto& dst_shape) {
             using src_shape_t  = meta::remove_cvref_t<decltype(src_shape)>;
             // assume src_shape is fixed index array
@@ -221,10 +209,7 @@ namespace nmtools::view::detail
          */
         constexpr auto concat_indices = [&](const auto& indices, const auto& tuple) {
             using m_indices_t = meta::remove_cvref_t<decltype(indices)>;
-            using tuple_t   = meta::remove_cvref_t<decltype(tuple)>;
             constexpr auto n_index = meta::len_v<m_indices_t>;
-            constexpr auto n_tuple = meta::len_v<tuple_t>;
-            constexpr auto N = n_index + n_tuple;
             auto joined = meta::template_reduce<n_index>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 if constexpr (i<(n_index-1)) {

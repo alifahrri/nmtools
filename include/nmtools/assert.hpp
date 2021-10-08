@@ -17,27 +17,29 @@
 #endif // __has_include(<stdexcept>)
 
 #define nmtools_assert_throw(condition, message, ...) \
-    if (!condition) throw std::runtime_error(message);
+    if (!(condition)) throw std::runtime_error(message);
 
 #define nmtools_assert_optional(condition, message, return_type, ...) \
-    if (!condition) return return_type{std::nullopt};
+    if (!(condition)) return return_type{std::nullopt};
 
 #define nmtools_make_optional(name, type) \
 using name = std::optional<type>;
 
+#define nmtools_cassert(condition, ...) \
+{ \
+    assert(condition); \
+}
+
 #ifdef NMTOOLS_USE_EXCEPTION
 #define nmtools_assert nmtools_assert_throw
+#undef nmtools_cassert
+#define nmtools_cassert nmtools_assert_throw
 #endif // NMTOOLS_USE_EXCEPTION
 
 #ifdef NMTOOLS_USE_OPTIONAL
 #undef nmtools_assert
 #define nmtools_assert nmtools_assert_optional
 #endif // NMTOOLS_USE_OPTIONAL
-
-#define nmtools_cassert(condition, ...) \
-{ \
-    assert(condition); \
-}
 
 #ifndef nmtools_assert
 #define nmtools_assert nmtools_cassert

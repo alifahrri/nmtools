@@ -27,7 +27,7 @@ namespace nmtools::array
                 context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto fmax = view::reduce_fmax(a,axis,dtype,initial,keepdims);
-                return eval(fmax,context);
+                return eval(fmax,context,output);
             } // reduce
 
             template <typename output_t=none_t, typename context_t=none_t,
@@ -36,7 +36,7 @@ namespace nmtools::array
                 context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto fmax = view::accumulate_fmax(a,axis,dtype);
-                return eval(fmax,context);
+                return eval(fmax,context,output);
             } // accumulate
 
             template <typename output_t=none_t, typename context_t=none_t,

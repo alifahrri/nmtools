@@ -67,7 +67,7 @@ namespace nmtools::benchmarks
             {
                 auto bench = nm::benchmarks::TrackedBench::get_instance().get_bench(title);
                 bench->run(name, [&](){
-                    auto x = f();
+                    [[maybe_unused]] auto x = f();
                     if constexpr (dont_optimize)
                         ankerl::nanobench::doNotOptimizeAway(x);
                 });

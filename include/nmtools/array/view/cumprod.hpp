@@ -19,7 +19,7 @@ namespace nmtools::view
      * @return constexpr auto 
      */
     template <typename array_t, typename axis_t, typename dtype_t>
-    constexpr auto cumprod(const array_t& a, axis_t axis, dtype_t dtype)
+    constexpr auto cumprod(const array_t& a, axis_t axis, dtype_t)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = multiply_t<none_t,none_t,res_t>;

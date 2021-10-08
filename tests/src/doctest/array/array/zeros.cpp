@@ -54,7 +54,6 @@ TEST_CASE("zeros_traits(case1)" * doctest::test_suite("array::zeros_traits"))
     {
         using shape_t = int[3];
         shape_t shape = {2,3,2};
-        auto fill_value = 1;
         auto array = nm::array::zeros(shape,nm::float32);
         using array_t = decltype(array);
         constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;
@@ -63,7 +62,6 @@ TEST_CASE("zeros_traits(case1)" * doctest::test_suite("array::zeros_traits"))
     {
         using namespace nm::literals;
         auto shape = std::tuple{2_ct,3_ct,2_ct};
-        auto fill_value = 1;
         auto array = nm::array::zeros(shape,nm::float32);
         using array_t = decltype(array);
         constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;

@@ -27,7 +27,7 @@ namespace nmtools::array
                 context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto minimum = view::reduce_minimum(a,axis,dtype,initial,keepdims);
-                return eval(minimum,context);
+                return eval(minimum,context,output);
             } // reduce
 
             template <typename output_t=none_t, typename context_t=none_t,
@@ -36,7 +36,7 @@ namespace nmtools::array
                 context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto minimum = view::accumulate_minimum(a,axis,dtype);
-                return eval(minimum,context);
+                return eval(minimum,context,output);
             } // accumulate
 
             template <typename output_t=none_t, typename context_t=none_t,
