@@ -95,12 +95,6 @@ TEST_CASE("mutable_flatten(double[2][3][1])" * doctest::test_suite("view::mutabl
         {{3.},{4.},{5.}},
     };
     auto array_ref = view::mutable_flatten(array);
-    {
-        using view_type = typename decltype(array_ref)::view_type;
-        auto index = static_cast<view_type>(array_ref).index(0);
-        auto expected = std::array{0,0,0};
-        // CHECK( isclose(index,expected) );
-    }
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
@@ -276,12 +270,6 @@ TEST_CASE("mutable_flatten(fixed_ndarray[3])" * doctest::test_suite("view::mutab
         {{3.},{4.},{5.}},
     };
     auto array_ref = view::mutable_flatten(array);
-    {
-        using view_type = typename decltype(array_ref)::view_type;
-        auto index = static_cast<view_type>(array_ref).index(0);
-        auto expected = std::array{0,0,0};
-        // CHECK( isclose(index,expected) );
-    }
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
@@ -312,12 +300,6 @@ TEST_CASE("mutable_flatten(fixed_ndarray[4])" * doctest::test_suite("view::mutab
         {{{3.},{4.},{5.}}},
     };
     auto array_ref = view::mutable_flatten(array);
-    {
-        using view_type = typename decltype(array_ref)::view_type;
-        auto index = static_cast<view_type>(array_ref).index(0);
-        auto expected = std::array{0,0,0};
-        // CHECK( isclose(index,expected) );
-    }
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 
@@ -348,12 +330,6 @@ TEST_CASE("mutable_flatten(fixed_ndarray[5])" * doctest::test_suite("view::mutab
         {{{3.},{4.},{5.}}},
     }};
     auto array_ref = view::mutable_flatten(array);
-    {
-        using view_type = typename decltype(array_ref)::view_type;
-        auto index = static_cast<view_type>(array_ref).index(0);
-        auto expected = std::array{0,0,0};
-        // CHECK( isclose(index,expected) );
-    }
     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
     STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
 

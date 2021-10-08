@@ -215,7 +215,7 @@ namespace nmtools
     }; // resolve_optype
 
     template <typename src_t, typename kind_t>
-    constexpr auto cast(const src_t& src, const kind_t& kind)
+    constexpr auto cast(const src_t& src, const kind_t&)
     {
         using ret_t = meta::resolve_optype_t<cast_kind_t,src_t,kind_t>;
         return cast<ret_t>(src);

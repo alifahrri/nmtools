@@ -39,7 +39,6 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(reshape, case_name) \
     auto array_ref = RUN_reshape(case_name, args::array, args::newshape); \
-    using array_t = decltype(array_ref); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_ref), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
