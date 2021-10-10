@@ -9,6 +9,7 @@ namespace nmtools::index
 {
     struct count_t {};
 
+    // TODO cleanup index functions, support constant index array
     template <typename F, typename array_t>
     constexpr auto count(const F& f, const array_t& array)
     {

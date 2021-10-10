@@ -24,6 +24,7 @@ namespace nmtools
          */
         struct gather_t {};
     
+        // TODO: cleanup index functions, handling constant index array
         /**
          * @brief perform gather op
          *
@@ -74,6 +75,7 @@ namespace nmtools::meta
         struct GATHER_UNSUPPORTED : detail::fail_t {};
     }
 
+    // TODO: cleanup index metafunctions, handling constant index array
     template <typename vector_t, typename indices_t>
     struct resolve_optype<
         void, index::gather_t, vector_t, indices_t

@@ -104,6 +104,7 @@ namespace nmtools::index
             // do nothing
         }
 
+        // TODO: use optional
         return std::tuple{success, res};
     } // broadcast_shape
 

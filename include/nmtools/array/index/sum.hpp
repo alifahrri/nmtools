@@ -12,6 +12,7 @@
 
 namespace nmtools::index
 {
+    // TODO: cleanup index functions
     /**
      * @brief compute sum of 1D array
      *

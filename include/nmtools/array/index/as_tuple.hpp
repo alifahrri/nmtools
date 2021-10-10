@@ -16,6 +16,7 @@ namespace nmtools::index
      * @{
      */
 
+    // TODO: remove
     /**
      * @brief create tuple from array
      * 

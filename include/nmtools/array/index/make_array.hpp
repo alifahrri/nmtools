@@ -1,6 +1,8 @@
 #ifndef NMTOOLS_ARRAY_INDEX_MAKE_ARRAY_HPP
 #define NMTOOLS_ARRAY_INDEX_MAKE_ARRAY_HPP
 
+// TODO: remove this file
+
 #include <type_traits>
 #include <cstddef> // size_t
 #include <utility> // integer_sequence
@@ -16,6 +18,7 @@ namespace nmtools::index
      * @{
      */
 
+    // TODO: remove
     /**
      * @brief given array-like a, make array of type array_t,
      * where the element is initialized using elements of array-like a
@@ -36,6 +39,7 @@ namespace nmtools::index
         return array_t{a[I+offset]...};
     } // make_array
 
+    // TODO: remove
     /**
      * @brief create array from packed type T.
      * <a href="https://godbolt.org/z/v39Goh">godbolt demo</a>.

@@ -15,6 +15,7 @@ namespace nmtools::index
      */
     struct nonzero_t {};
 
+    // TODO: remove
     template <typename T, typename=void>
     struct make_resizeable
     {
@@ -32,6 +33,7 @@ namespace nmtools::index
         using type = meta::type_t<decltype(vtype)>;
     }; // make_resizeable
 
+    // TODO: cleanup index functions, handling constant index array
     /**
      * @brief return indices of array a which are nonzero
      * 
@@ -73,6 +75,7 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: cleanup index metafunctions
     /**
      * @brief resolve return type for index::nonzero op
      * 

@@ -47,6 +47,7 @@ namespace nmtools::index
         } // compute_indices
     } // namespace impl
 
+    // TODO: cleanup index functions
     /**
      * @brief inverse operation of compute_offset
      * 

@@ -19,6 +19,7 @@ namespace nmtools::index
      */
     struct expand_dims_t {};
 
+    // TODO: remove
     template <typename array_t, typename value_t>
     constexpr auto contains(const array_t& array, const value_t& value)
     {
@@ -40,6 +41,7 @@ namespace nmtools::index
 
     namespace impl
     {
+        // TODO: maybe remove
         template <typename newshape_t, typename shape_t, typename axes_t>
         constexpr auto expand_dims(newshape_t& newshape, const shape_t shape, const axes_t& axes)
         {

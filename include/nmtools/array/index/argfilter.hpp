@@ -16,6 +16,7 @@ namespace nmtools::index
      */
     struct argfilter_t {};
 
+    // TODO: cleanup or remove index functions
     /**
      * @brief return indices of array that satisfy predicate f
      * 
@@ -34,6 +35,7 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: cleanup index metafunctions
     /**
      * @brief resolve argfilter return type for resizeable array type
      * 
@@ -51,6 +53,7 @@ namespace nmtools::meta
         using type = meta::replace_element_type_t<array_t,index_t>;
     }; // resolve_optype argfilter_t
 
+    // TODO: cleanup index metafunctions
     /**
      * @brief resolve argfilter return type for fixed array type
      * 

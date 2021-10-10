@@ -8,6 +8,7 @@
 
 namespace nmtools::index
 {
+    // TODO: cleanup index functions
     /**
      * @brief given ashape determine which axes' are free with respect to bshape.
      *

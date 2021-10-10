@@ -1,6 +1,8 @@
 #ifndef NMTOOLS_ARRAY_INDEX_MAKE_SLICE_INDEX_HPP
 #define NMTOOLS_ARRAY_INDEX_MAKE_SLICE_INDEX_HPP
 
+// TODO: remove this file
+
 #include "nmtools/array/detail.hpp"
 #include "nmtools/array/meta.hpp"
 #include "nmtools/traits.hpp"
@@ -27,6 +29,7 @@ namespace nmtools::index
      */
     struct end_t {};
 
+    // TODO: remove
     /**
      * @brief helper function to create compile-time slice index
      * 
@@ -41,6 +44,7 @@ namespace nmtools::index
         return meta::index_constant<i>{};
     } // make_slice_index
 
+    // TODO: remove
     /**
      * @brief helper function to create compile-time slice index
      * 
@@ -56,6 +60,7 @@ namespace nmtools::index
         return i{};
     } // make_slice_index
 
+    // TODO: remove
     /**
      * @brief helper function to create compile-time slice indices,
      * effectively maps compile-time value to type.

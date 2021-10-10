@@ -13,6 +13,7 @@
 
 namespace nmtools::index
 {
+    // TODO: cleanup index functions
     /**
      * @brief compute product of 1D array
      *

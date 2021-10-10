@@ -55,7 +55,7 @@ namespace nmtools::index
             }
         }; // shape_tile_impl
 
-        // TOOD: consider to unroll when possible
+        // TODO: consider to unroll when possible
 
         for (size_t i=0; i<(size_t)len(ret); i++)
             shape_tile_impl(i);

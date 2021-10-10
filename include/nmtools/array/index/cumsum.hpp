@@ -13,6 +13,7 @@ namespace nmtools::index
      */
     struct cumsum_t {};
 
+    // TODO: cleanup index functions, handling constant index array
     /**
      * @brief compute cumulative sum or 1D array
      * 

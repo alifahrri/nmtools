@@ -17,7 +17,6 @@ namespace meta = nmtools::meta;
 namespace meta = nmtools::meta;
 
 using meta::merge_t;
-using meta::type_push_back_t;
 using meta::pop_first_t;
 using meta::pop_last_t;
 using meta::type_reverse_t;
@@ -29,9 +28,6 @@ TEST_CASE("meta" * doctest::skip(true))
     STATIC_CHECK(( std::is_same_v<merge_t<std::tuple<int,char>,std::tuple<double>>, std::tuple<int,char,double>> ));
     STATIC_CHECK(( std::is_same_v<merge_t<std::tuple<int,char>,double>, std::tuple<int,char,double>> ));
     STATIC_CHECK(( std::is_same_v<merge_t<int,std::tuple<char,double>>, std::tuple<int,char,double>> ));
-
-    // type_push_back test
-    STATIC_CHECK(( std::is_same_v<type_push_back_t<std::tuple<int,char>,double>, std::tuple<int,char,double>> ));
 
     // pop_first test
     STATIC_CHECK(( std::is_same_v<pop_first_t<std::tuple<int,char>>,std::tuple<char>> ));
