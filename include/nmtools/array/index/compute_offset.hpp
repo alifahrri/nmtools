@@ -13,6 +13,7 @@
 
 namespace nmtools::index
 {
+    // TODO: cleanup index functions
     /**
      * @brief compute offset from given indices and computed strides
      * 

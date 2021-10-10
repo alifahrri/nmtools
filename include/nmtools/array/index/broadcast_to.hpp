@@ -18,6 +18,7 @@ namespace nmtools::index
      */
     struct shape_broadcast_to_t {};
 
+    // TODO: cleanup index functions
     /**
      * @brief Overloaded version of shape_broadcast_to where the src shape is None (from num type).
      * 

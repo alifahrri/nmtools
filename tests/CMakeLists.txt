@@ -499,7 +499,6 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/view/mean.cpp
     src/doctest/meta/array/view/pad.cpp
     src/doctest/meta/array/view/prod.cpp
-    src/doctest/meta/array/view/reduce.cpp
     src/doctest/meta/array/view/repeat.cpp
     src/doctest/meta/array/view/reshape.cpp
     src/doctest/meta/array/view/take.cpp
@@ -537,35 +536,23 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/index/repeat.cpp
     src/doctest/meta/array/index/slice.cpp
     src/doctest/meta/array/index/where.cpp
-    src/doctest/meta/traits/apply_conjunction.cpp
-    src/doctest/meta/traits/apply_disjunction.cpp
-    src/doctest/meta/traits/compose_logical_and.cpp
-    src/doctest/meta/traits/compose_logical_or.cpp
     src/doctest/meta/traits/ndarray.cpp
     src/doctest/meta/traits/has_template_get.cpp
     src/doctest/meta/traits/has_type.cpp
     src/doctest/meta/traits/has_square_bracket.cpp
     src/doctest/meta/traits/is_index.cpp
     src/doctest/meta/traits/is_index_array.cpp
-    src/doctest/meta/transform/accumulate.cpp
     src/doctest/meta/transform/apply.cpp
-    src/doctest/meta/transform/constant.cpp
-    src/doctest/meta/transform/constant_to_sequence.cpp
-    src/doctest/meta/transform/gather.cpp
     src/doctest/meta/transform/get_element_type.cpp
     src/doctest/meta/transform/get_underlying_array_type.cpp
     src/doctest/meta/transform/hybrid_ndarray_max_size.cpp
-    src/doctest/meta/transform/insert_type.cpp
     src/doctest/meta/transform/replace_element_type.cpp
     src/doctest/meta/transform/nested_array_dim.cpp
-    src/doctest/meta/transform/reduce.cpp
     src/doctest/meta/transform/remove_nested_array_extents.cpp
     src/doctest/meta/transform/resize_fixed_ndarray.cpp
     src/doctest/meta/transform/resize_hybrid_ndarray_max_size.cpp
-    src/doctest/meta/transform/replace_at.cpp
     src/doctest/meta/transform/sequence.cpp
     src/doctest/meta/transform/split_at.cpp
-    src/doctest/meta/transform/scatter.cpp
     src/doctest/meta/transform/transform_bounded_array.cpp
 )
 # omg

@@ -156,6 +156,7 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: cleanup index metafunctions
     template <typename condition_t, typename shape_t, typename axis_t>
     struct resolve_optype<
         void, index::shape_compress_t, condition_t, shape_t, axis_t
@@ -165,6 +166,7 @@ namespace nmtools::meta
         using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
     }; // shape_compress_t
 
+    // TODO: cleanup index metafunctions
     template <typename condition_t, typename shape_t>
     struct resolve_optype<
         void, index::shape_compress_t, condition_t, shape_t, none_t
@@ -175,6 +177,7 @@ namespace nmtools::meta
         using type = std::array<size_t,1>;
     }; // shape_compress_t
 
+    // TODO: cleanup index metafunctions
     template <typename indices_t, typename condition_t, typename shape_t, typename axis_t>
     struct resolve_optype<
         void, index::compress_t, indices_t, condition_t, shape_t, axis_t

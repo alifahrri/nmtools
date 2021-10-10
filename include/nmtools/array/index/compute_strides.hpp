@@ -13,6 +13,7 @@
 
 namespace nmtools::index
 {
+    // TODO: cleanup index functions
     /**
      * @brief compute stride for ndarray offset
      * 
@@ -23,6 +24,7 @@ namespace nmtools::index
     template <typename array_t, typename size_type>
     constexpr auto stride(const array_t& shape, size_type k)
     {
+        // TODO: cleanup index functions, use specialized traits instead
         if constexpr (meta::is_specialization_v<array_t,std::tuple> || meta::is_specialization_v<array_t,std::pair>)
         {
             constexpr auto vtype = [](){

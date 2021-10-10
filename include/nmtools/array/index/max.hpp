@@ -9,6 +9,7 @@ namespace nmtools::index
 {
     struct max_t {};
 
+    // TODO: cleanup index functions
     template <typename array_t>
     constexpr auto max(const array_t& array)
     {
@@ -44,6 +45,7 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: cleanup index metafunctions
     template <typename array_t>
     struct resolve_optype<
         std::enable_if_t<is_index_array_v<array_t>>,

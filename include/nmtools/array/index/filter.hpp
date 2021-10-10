@@ -12,6 +12,7 @@
 
 namespace nmtools::index
 {
+    // TODO: cleanup index functions or remove
     /**
      * @brief filter an array with predicate f
      * 

@@ -22,28 +22,6 @@ namespace nmtools::array
 
     namespace detail
     {
-        /**
-         * @brief alias tempate to check if all type Ts is integral constant
-         * 
-         * @tparam Ts 
-         */
-        template <typename...Ts>
-        using all_integral = meta::apply_logical_and<std::is_integral,std::tuple<Ts...>>;
-
-        template <typename...Ts>
-        static inline constexpr auto all_integral_v = all_integral<Ts...>::value;
-
-        /**
-         * @brief alias tempate to check if all type Ts is integral constant
-         * 
-         * @tparam Ts 
-         */
-        template <typename...Ts>
-        using all_integral_constant = meta::apply_logical_and<meta::is_integral_constant,std::tuple<Ts...>>;
-
-        template <typename...Ts>
-        static inline constexpr auto all_integral_constant_v = all_integral_constant<Ts...>::value;
-
         template <int max_elements, typename shape_t>
         constexpr auto init_shape()
         {
@@ -197,7 +175,7 @@ namespace nmtools::array
             return shape_;
         } // shape
 
-        // doesnt work, not ignored when dimension != 1
+        // doesn't work, not ignored when dimension != 1
         // auto size() const -> std::enable_if_t<dimension==1,size_t>
         // {
         //     return shape_[0];
@@ -211,7 +189,7 @@ namespace nmtools::array
 
         template <typename...size_types>
         constexpr auto resize(size_types...shape)
-            -> std::enable_if_t<detail::all_integral_v<size_types...>>
+            -> std::enable_if_t<(meta::is_index_v<size_types> && ...)>
         {
             meta::template_for<sizeof...(shape)>([&](auto index){
                 constexpr auto i = decltype(index)::value;
@@ -232,10 +210,9 @@ namespace nmtools::array
 
         template <typename ...size_types>
         constexpr auto operator()(size_types...ns)
-            // noexcept(detail::all_integral_constant_v<size_types...>>)
             -> std::enable_if_t<
-                sizeof...(ns)==dimension
-                && detail::all_integral_v<size_types...>,
+                   (sizeof...(ns)==dimension)
+                && (meta::is_index_v<size_types> && ...),
                 reference
             >
         {
@@ -244,7 +221,7 @@ namespace nmtools::array
                 static_cast<common_size_t>(ns)...
             };
             static_assert ( dimension == sizeof...(ns)
-                , "unsupporter element access, mismatched dimension"
+                , "unsupported element access, mismatched dimension"
             );
             auto offset = index::compute_offset(strides_, indices);
             return data[offset];
@@ -252,10 +229,9 @@ namespace nmtools::array
 
         template <typename ...size_types>
         constexpr auto operator()(size_types...ns) const
-            // noexcept(detail::all_integral_constant_v<size_types...>>)
             -> std::enable_if_t<
-                sizeof...(ns)==dimension
-                && detail::all_integral_v<size_types...>,
+                   (sizeof...(ns)==dimension)
+                && (meta::is_index_v<size_types> && ...),
                 const_reference
             >
         {

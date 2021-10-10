@@ -19,6 +19,7 @@ namespace nmtools::index
      */
     struct choose_t {};
 
+    // TODO: cleanup index functions
     /**
      * @brief construct array from indices array
      * 
@@ -31,6 +32,7 @@ namespace nmtools::index
     template <typename indices_t, typename array_t>
     constexpr auto choose(const indices_t& indices, const array_t& array)
     {
+        // TODO: support constant index array
         using return_t = meta::resolve_optype_t<choose_t,indices_t,array_t>;
         auto res = return_t{};
 

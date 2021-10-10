@@ -19,6 +19,7 @@ namespace nmtools::index
      */
     struct where_t {};
 
+    // TODO: cleanup index functions
     /**
      * @brief return indices of array that satisfy predicate f
      * 

@@ -20,7 +20,7 @@ namespace nmtools
 {
     namespace index
     {
-        // TODO: cleanup
+        // TODO: cleanup index functions
         /**
          * @brief perform scatter op
          * 

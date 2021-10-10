@@ -200,6 +200,7 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: cleanup index metafunctions: add error type
     /**
      * @brief resolve return type for repeat op that transform indices from view (dst) to src
      * follow shape_t

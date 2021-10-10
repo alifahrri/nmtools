@@ -17,6 +17,7 @@ namespace nmtools
 {
     namespace index
     {
+        // TODO: cleanup index functions
         /**
          * @brief reverse array (of indices)
          * 

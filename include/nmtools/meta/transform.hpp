@@ -15,135 +15,6 @@
 
 namespace nmtools::meta
 {
-    namespace detail {
-
-        template <typename T, typename R=void>
-        using enable_if_tuple_t = std::enable_if_t<meta::is_tuple_v<T>,R>;
-
-        /**
-         * @brief find type T in tuple Tuple, return tuple element index
-         * https://devblogs.microsoft.com/oldnewthing/20200629-00/?p=103910#comment-136848
-         * 
-         * @tparam index current search index
-         * @tparam TypeCompare=std::is_same type comparator 
-         *      TypeCompare<T,tuple_element_t<index,Tuple>>::value should be valid
-         * @tparam T type to find
-         * @tparam Tuple tuple to be searched
-         * @return constexpr int matched index if success, tuple size else
-         * @todo make this consteval in c++20
-         */
-        template <size_t index, template<typename,typename> typename TypeCompare=std::is_same, typename T, typename Tuple>
-        constexpr int tuple_element_index(T=T{}, Tuple=Tuple{})
-        {
-            /* reached max tuple element, means failed to find matched type */
-            if constexpr (index == std::tuple_size_v<Tuple>)
-                return index;
-            /* if we find matched T, return index, else increment index and retry */
-            else 
-                return TypeCompare<T,std::tuple_element_t<index, Tuple>>::value ?
-                    index : tuple_element_index<index+1,TypeCompare>(T{},Tuple{});
-        }
-
-        /**
-         * @brief overloaded version of tuple_element_index 
-         * where arguments only supported via template parameters
-         * and differs in template parameters order
-         * to supports non-literal type
-         * 
-         * @tparam index 
-         * @tparam T 
-         * @tparam Tuple 
-         * @tparam TypeCompare=std::is_same 
-         * @return constexpr int 
-         */
-        template <size_t index, typename T, typename Tuple, template<typename,typename> typename TypeCompare=std::is_same>
-        constexpr int tuple_element_index()
-        {
-            /* reached max tuple element, means failed to find matched type */
-            if constexpr (index == std::tuple_size_v<Tuple>)
-                return index;
-            /* if we find matched T, return index, else increment index and retry */
-            else 
-                return TypeCompare<T,std::tuple_element_t<index, Tuple>>::value ?
-                    index : tuple_element_index<index+1,T,Tuple,TypeCompare>();
-        }
-    } // namespace detail
-
-    /** @defgroup meta
-    * Collections of metafunctions used accross the library
-    * @{
-    */
-
-    /**
-     * @brief find type T in tuple Tuple, return tuple element index
-     * https://devblogs.microsoft.com/oldnewthing/20200629-00/?p=103910#comment-136848
-     * @tparam TypeCompare=std::is_same type comparator
-     *      TypeCompare<T,tuple_element_t<index,Tuple>>::value should be valid
-     * @tparam T type to find
-     * @tparam Tuple tupe to be searched
-     * @return constexpr int matched index if success, tuple size else
-     * @todo make this consteval in c++20
-     */
-    template <template<typename,typename> typename TypeCompare=std::is_same, typename T, typename Tuple>
-    constexpr int tuple_element_index(T=T{}, Tuple=Tuple{}) {
-        /* start search from 0 */
-        return detail::tuple_element_index<0,TypeCompare>(T{},Tuple{});
-    }
-
-    /**
-     * @brief overloaded version of tuple_element_index,
-     * differs in template parameter order and only supports
-     * passing parameter type via template parameter
-     * to supports non-literal type
-     * 
-     * @tparam T 
-     * @tparam Tuple 
-     * @tparam TypeCompare=std::is_same type comparator
-     *      TypeCompare<T,tuple_element_t<index,Tuple>>::value should be valid
-     * @return constexpr int 
-     * @todo make this consteval in c++20
-     */
-    template <typename T, typename Tuple, template<typename,typename> typename TypeCompare=std::is_same>
-    constexpr int tuple_element_index() {
-        /* start search from 0 */
-        return detail::tuple_element_index<0,T,Tuple,TypeCompare>();
-    }
-
-    /**
-     * @brief check if type T is found in tuple Tuple
-     * 
-     * @tparam TypeCompare=std::is_same 
-     * @tparam T type to find
-     * @tparam Tuple tuple to be searched
-     * @return true type T is in tuple Tuple
-     * @return false type T is not in tuple Tuple
-     * @todo make this consteval in c++20
-     */
-    template <template<typename,typename> typename TypeCompare=std::is_same, typename T, typename Tuple>
-    constexpr auto type_in_tuple(T=T{}, Tuple=Tuple{}) -> detail::enable_if_tuple_t<Tuple,bool>
-    {
-        return tuple_element_index<TypeCompare>(T{},Tuple{}) < std::tuple_size_v<Tuple>;
-    }
-
-    /**
-     * @brief overloaded version of type_in_tuple,
-     * differs in template parameter order and only supports
-     * passing parameter type via template parameter 
-     * to supports non-literal type
-     * 
-     * @tparam T 
-     * @tparam Tuple 
-     * @tparam TypeCompare=std::is_same 
-     * @return true 
-     * @return false
-     * @todo make this consteval in c++20 
-     */
-    template <typename T, typename Tuple, template<typename,typename> typename TypeCompare=std::is_same>
-    constexpr auto type_in_tuple() -> detail::enable_if_tuple_t<Tuple,bool>
-    {
-        return tuple_element_index<T,Tuple,TypeCompare>() < std::tuple_size_v<Tuple>;
-    }
-
     /**
      * @brief transform (bounded) raw array to std::array
      * should have member type `type` with type of std::array
@@ -159,56 +30,12 @@ namespace nmtools::meta
     };
 
     /**
-     * @brief overloaded version of transform_bounded_array for T[N]
-     * 
-     * @tparam T element type
-     * @tparam N number of elements
-     */
-    template <typename T, std::size_t N>
-    struct transform_bounded_array<T[N]>
-    {
-        using value_type = typename transform_bounded_array<remove_cvref_t<T>>::type;
-        using type = std::array<remove_cvref_t<value_type>,N>;
-    };
-
-    /**
      * @brief helper alias template to transform (bounded) raw array to std::array
      * 
      * @tparam T (bounded) array
      */
     template <typename T>
     using transform_bounded_array_t = typename transform_bounded_array<T>::type;
-
-    /**
-     * @brief get T::value_type as member type or type == T
-     * 
-     * @tparam T type to transform
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct get_value_type_or_same
-    {
-        using type = T;
-    };
-
-    /**
-     * @brief specialization when T actually has value_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    struct get_value_type_or_same<T,std::enable_if_t<meta::has_value_type_v<T>>>
-    {
-        using type = typename T::value_type;
-    };
-
-    /**
-     * @brief helper alias template to transform get T::value_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using get_value_type_or_same_t = typename get_value_type_or_same<T>::type;
 
     /**
      * @brief given T<Origin..>, transform to T<Substitution...>, if failed type is void
@@ -221,6 +48,7 @@ namespace nmtools::meta
     template <typename T, typename...>
     struct replace_template_parameter 
     {
+        // TODO: remove metafunctions
         using origin_tparams = void;
         /**
          * @brief define resulting type as void, so that
@@ -231,6 +59,7 @@ namespace nmtools::meta
         using type = void;
     };
 
+    // TODO: remove metafunctions
     /**
      * @brief specialization for replace_template_parameter for success case
      * 
@@ -252,6 +81,7 @@ namespace nmtools::meta
         using type = T<Subs...>;
     };
 
+    // TODO: remove metafunctions
     /**
      * @brief specialization for replace_template_parameter for std::array, 
      * since we can't mix non-type & type as variadic template parameter.
@@ -278,6 +108,25 @@ namespace nmtools::meta
      */
     template <typename T, typename...Args>
     using replace_template_parameter_t = typename replace_template_parameter<T,Args...>::type;
+
+    /**
+     * @brief Type as value
+     * 
+     * @tparam T type to wrap
+     */
+    template <typename T>
+    struct as_value
+    {
+        using type = T;
+    };
+
+    /**
+     * @brief helper inline variable for as_value
+     * 
+     * @tparam T type to wrap
+     */
+    template <typename T>
+    constexpr inline auto as_value_v = as_value<T>{};
 
     /**
      * @brief similar to replace_template_parameter but assuming
@@ -340,24 +189,28 @@ namespace nmtools::meta
 
     namespace detail
     {
+        // TODO: remove metafunctions
         template <typename T, typename U, typename=void>
         struct merge_helper
         {
             using type = std::tuple<T,U>;
         }; // merge_helper
 
+        // TODO: remove metafunctions
         template <template<typename...>typename TT, typename...Ts, template<typename...>typename TU, typename...Us>
         struct merge_helper<TT<Ts...>,TU<Us...>>
         {
             using type = TT<Ts...,Us...>;
         }; // merge_helper
 
+        // TODO: remove metafunctions
         template <template<typename...>typename TT, typename...Ts, typename U>
         struct merge_helper<TT<Ts...>,U>
         {
             using type = TT<Ts...,U>;
         }; // merge_helper
 
+        // TODO: remove metafunctions
         template <typename T, template<typename...>typename TU, typename...Us>
         struct merge_helper<T,TU<Us...>>
         {
@@ -366,6 +219,7 @@ namespace nmtools::meta
 
     } // namespace detail
 
+    // TODO: remove metafunctions
     /**
      * @brief merge two type T (possibly tuple) and U (possibly tuple) to single tuple.
      * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
@@ -407,6 +261,7 @@ namespace nmtools::meta
 
     namespace detail
     {
+        // TODO: cleanup metafunctions
         template <typename T, auto I, typename=void>
         struct split_at_helper
         {
@@ -415,6 +270,7 @@ namespace nmtools::meta
             using type = T;
         }; // split_at_helper
 
+        // TODO: cleanup metafunctions
         template <template<typename...>typename TT, typename T, typename...Ts>
         struct split_at_helper<TT<T,Ts...>,1>
         {
@@ -423,6 +279,7 @@ namespace nmtools::meta
             using type   = std::pair<first,second>;
         }; // split_at_helper
 
+        // TODO: cleanup metafunctions
         template <template<typename...>typename TT, typename T, typename...Ts, auto I>
         struct split_at_helper<TT<T,Ts...>,I,std::enable_if_t<(I>1)>>
         {
@@ -433,6 +290,7 @@ namespace nmtools::meta
         }; // split_at_helper
     } // namespace detail
 
+    // TODO: cleanup metafunctions
     /**
      * @brief metafunction to split type list at index I
      *
@@ -465,83 +323,6 @@ namespace nmtools::meta
     template <typename T, auto I>
     using split_at_t = type_t<split_at<T,I>>;
 
-    namespace detail
-    {
-        template <typename T, typename U, auto I, typename=void>
-        struct replace_at_helper
-        {
-            using type = void;
-        }; // replace_at_helper
-
-        template <template<typename...>typename TT, typename T, typename U, typename...Ts>
-        struct replace_at_helper<TT<T,Ts...>,U,0>
-        {
-            using type = TT<U,Ts...>;
-        }; // replace_at_helper
-
-        template <template<typename...>typename TT, typename U, typename...Ts, auto I>
-        struct replace_at_helper<TT<Ts...>,U,I>
-        {
-            using type_list  = TT<Ts...>;
-            // split at can results on same type
-            using split_type = split_at<type_list,I>;
-
-            // @note cant work since need to 
-            // check for first and second type to be not void
-
-            // using first    = first_t<split_type>;
-            // using second   = second_t<split_type>;
-            // using replaced = type_t<replace_at_helper<second,U,0>>;
-            // using type     = merge_t<first,replaced>;
-
-            template <typename split_type>
-            static constexpr auto get_type()
-            {
-                // first and second can be void
-                using first    = first_t<split_type>;
-                using second   = second_t<split_type>;
-                // assuming replaced type is default constructible
-                if constexpr (!std::is_void_v<first>) {
-                    using replaced = type_t<replace_at_helper<second,U,0>>;
-                    using type = merge_t<first,replaced>;
-                    return type{};
-                }
-                else {
-                    using replaced = replace_at_helper<type_t<split_type>,U,0>;
-                    return type_t<replaced>{};
-                }
-            } // get_type
-            using type = decltype(get_type<split_type>());
-        }; // replace_at_helper
-    } // namespace detail
-
-    /**
-     * @brief metafunction to replace the type of type-list T at index I with U.
-     *
-     * On failed specialization (default case) member type `type` is defined as `void`,
-     * otherwise it hold the replaced type-list.
-     * 
-     * @tparam T type-list to replace
-     * @tparam U replacement type
-     * @tparam I replacement index
-     * @tparam typename 
-     */
-    template <typename T, typename U, auto I, typename=void>
-    struct replace_at
-    {
-        using type = typename detail::replace_at_helper<T,U,I>::type;
-    }; // replace_at
-
-    /**
-     * @brief helper alias template for replace_at
-     * 
-     * @tparam T type-list to replace
-     * @tparam U replacement type
-     * @tparam I replacement index
-     */
-    template <typename T, typename U, auto I>
-    using replace_at_t = typename replace_at<T,U,I>::type;
-
     /*
     TODO: consider to provide specialization for replace_template_parameter, that accepts
         - T<typename,auto..>, 
@@ -570,52 +351,10 @@ namespace nmtools::meta
     template <typename T, typename U>
     using resize_fixed_ndarray_t = type_t<resize_fixed_ndarray<T,U>>;
 
-    /**
-     * @brief metafunction to extract template paramters.
-     * Given type T, return its template parameters as tuple,
-     * e.g. given T<Params...>, return std::tuple<Params...>{}.
-     * 
-     * @tparam T type which its template parameters are to be extracted
-     * @tparam Params template parameters of T, automatically deduced.
-     * @return constexpr auto tuple of template parameters of T.
-     */
-    template <template<typename...> typename T, typename...Params>
-    constexpr auto extract_template_parameters(const T<Params...>)
-    {
-        /* TODO: use consteval instead */
-        /* template parameter packs must be the last template parameter,
-            can't have typename=void at the end, deduce using function instead */
-        /* assuming each type from Rest... can be instantiated this way */
-        return std::tuple<Params...>{};
-    }
-
-    /**
-     * @brief specialization of extract_template_parameters
-     * for std::array since it accepts template parameters that is not a type
-     * (size_t N as its element size), N will be packed as integral_constant
-     * so that its value can be treated as type.
-     * 
-     * @tparam T value_type of std::array, automatically deduced.
-     * @tparam N element size of std::array, automatically deduced.
-     * @return constexpr auto tuple<T,integral_constant<size_t,N>>;
-     */
-    template <typename T, size_t N>
-    constexpr auto extract_template_parameters(const std::array<T,N>)
-    {
-        return std::tuple<T,std::integral_constant<size_t,N>>{};
-    }
-
-    /**
-     * @brief helper alias template for extract_template_parameters.
-     * 
-     * @tparam T type which its template parameters are to be extracted.
-     */
-    template <typename T>
-    using extract_template_parameters_t = decltype(extract_template_parameters(std::declval<T>()));
-
     template <typename T>
     struct pop_first
     {
+        // TODO: remove metafunction
         /**
         * @brief pop first type of std::tuple
         * 
@@ -639,6 +378,7 @@ namespace nmtools::meta
     template <typename T>
     using pop_first_t = typename pop_first<T>::type;
 
+    // TODO: remove metafunctions
     /**
      * @brief pop the last element of typelist (tuple) T.
      * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
@@ -682,36 +422,6 @@ namespace nmtools::meta
     using pop_last_t = typename pop_last<T>::type;
 
     /**
-     * @brief add U to typelist (tuple) T.
-     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
-     * 
-     * @tparam T tuple to be added with U
-     * @tparam U type to be added to T
-     */
-    template <typename T, typename U>
-    struct type_push_back
-    {
-        template <typename...Ts>
-        static constexpr auto _type_push_back(std::tuple<Ts...>)
-        {
-            using type = std::tuple<Ts...,U>;
-            return type{};
-        }
-
-        using type = decltype(_type_push_back(std::declval<T>()));
-    }; // push
-
-    /**
-     * @brief helper alias template to add U to typelist (tuple) T.
-     * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
-     * 
-     * @tparam T tuple to be added with U
-     * @tparam U type to be added to T
-     */
-    template <typename T, typename U>
-    using type_push_back_t = typename type_push_back<T,U>::type;
-
-    /**
      * @brief reverse the element of typelist (tuple) T.
      * <a href="https://godbolt.org/z/MEEjsE">godbolt demo</a>.
      * 
@@ -720,6 +430,7 @@ namespace nmtools::meta
     template <typename T>
     struct type_reverse
     {
+        // TODO: cleanup metafunctions
         template <typename Ts>
         static constexpr auto _reverse_type_list(std::tuple<Ts>)
         {
@@ -830,200 +541,6 @@ namespace nmtools::meta
      */
     template <typename op_t, typename...tparams>
     using resolve_optype_t = typename resolve_optype<void,op_t,tparams...>::type;
-    
-    /**
-     * @brief helper alias template to add specialization 
-     * (which check if T is rezieable) to overload set
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using enable_if_resizeable_t = std::enable_if_t<meta::is_resizeable_v<T>>;
-
-    /**
-     * @brief helper alias template to add specialization
-     * (which check if T has tuple size) to overload set
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using enable_if_fixed_t = std::enable_if_t<meta::has_tuple_size_v<T>>;
-
-    /**
-     * @brief helper alias template to remove specialization
-     * (which check if T is resizeable) from overload set
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using disable_if_resizeable_t = std::enable_if_t<!meta::is_resizeable_v<T>>;
-
-    /**
-     * @brief helper alias template to remove specialization
-     * (which check if T has tuple size) from overload set
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using disable_if_fixed_t = std::enable_if_t<!meta::has_tuple_size_v<T>>;
-
-    /**
-     * @brief given type A, B, C, select A (has type = A) 
-     * if A is resizeable (satisfy is_resizeable_v) and B is not resizeable;
-     * select B if B is resizeable and A is not, select C 
-     * 
-     * @tparam A type to check
-     * @tparam B type to check
-     * @tparam C default type when specialization fails
-     * @tparam typename=void 
-     */
-    template <typename A, typename B, typename C, typename=void>
-    struct select_resizeable
-    {
-        /**
-         * @brief default implementation to select resizeable.
-         *
-         * Implemented as static member function instead of clunky sfinae.
-         * Assuming the type(s) has default initializaton.
-         * 
-         * @return constexpr auto 
-         */
-        static constexpr auto _get()
-        {
-            if constexpr (meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>)
-                return A{};
-            else if constexpr (!meta::is_resizeable_v<A> && meta::is_resizeable_v<B>)
-                return B{};
-            else if constexpr (meta::is_resizeable_v<A> && meta::is_resizeable_v<B>)
-                return A{};
-            else return C{};
-        } // _get()
-
-        using type = decltype(_get());
-    }; // select_resizeable
-
-    /**
-     * @brief helper alias template for select_resizeable
-     * 
-     * @tparam A type to check
-     * @tparam B type to check
-     * @tparam C default type
-     */
-    template <typename A, typename B, typename C>
-    using select_resizeable_t = typename select_resizeable<A,B,C>::type;
-
-
-    template <typename A, typename B, typename C, typename=void>
-    struct select_fixed
-    {
-        /**
-         * @brief default implementation to select fixed.
-         *
-         * Implemented as static member function instead of clunky sfinae.
-         * Assuming the type(s) has default initializaton.
-         * 
-         * @return constexpr auto 
-         */
-        static constexpr auto _get()
-        {
-            if constexpr (!meta::is_resizeable_v<A> && meta::is_resizeable_v<B>)
-                return A{};
-            else if constexpr (meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>)
-                return B{};
-            else if constexpr (!meta::is_resizeable_v<A> && !meta::is_resizeable_v<B>)
-                return A{};
-            else return C{};
-        }
-        using type = decltype(_get());
-    }; // select_fixed
-
-    template <typename A, typename B, typename C>
-    using select_fixed_t = typename select_fixed<A,B,C>::type;
-
-    /**
-     * @brief get the velue type of container
-     * 
-     * @tparam T type to check
-     * @tparam typename=void sfinae point
-     */
-    template <typename T, typename=void>
-    struct get_container_value_type
-    {
-        /**
-         * @brief helper function declaration to get the return type of U(i).
-         *
-         * This function is not intended to be called, only to deduce type
-         * without requiring U to be initialized.
-         * 
-         * @tparam U 
-         * @tparam size_type 
-         * @return decltype(std::declval<U>().operator()(std::declval<size_type>())) 
-         */
-        template <typename U, typename size_type>
-        static constexpr auto _func()
-            -> decltype(std::declval<U>().operator()(std::declval<size_type>()));
-        /**
-         * @brief helper function declaration to get the return type of U[i].
-         * 
-         * @tparam U 
-         * @tparam size_type 
-         * @return decltype(std::declval<U>().operator[](std::declval<size_type>())) 
-         */
-        template <typename U, typename size_type>
-        static constexpr auto _bracket()
-            -> decltype(std::declval<U>().operator[](std::declval<size_type>()));
-        /**
-         * @brief helper function declaration to get the return type of U(i).
-         * 
-         * @tparam U 
-         * @tparam size_type 
-         * @return decltype(std::declval<U>().at(std::declval<size_type>())) 
-         */
-        template <typename U, typename size_type>
-        static constexpr auto _at()
-            -> decltype(std::declval<U>().at(std::declval<size_type>()));
-        /**
-         * @brief default implementation to get container value_type.
-         *
-         * Implemented as static member function instead of clunky sfinae.
-         * Assuming the element type(s) has default initializaton.
-         * 
-         * @return constexpr auto 
-         */
-        static constexpr auto _get()
-        {
-            if constexpr (meta::has_value_type_v<T>) {
-                using type = typename T::value_type;
-                return meta::remove_cvref_t<type>{};
-            }
-            else if constexpr (std::is_array_v<T>) {
-                using type = std::remove_all_extents_t<T>;
-                return meta::remove_cvref_t<type>{};
-            }
-            else if constexpr (meta::has_funcnd_v<T,size_t>) {
-                using type = decltype(_func<T,size_t>());
-                return meta::remove_cvref_t<type>{};
-            }
-            else if constexpr (meta::has_bracketnd_v<T,size_t>) {
-                using type = decltype(_bracket<T,size_t>());
-                return meta::remove_cvref_t<type>{};
-            }
-            else if constexpr (meta::has_atnd_v<T,size_t>) {
-                using type = decltype(_at<T,size_t>());
-                return meta::remove_cvref_t<type>{};
-            }
-            else return detail::fail_t{};
-        } // _get()
-        using type = meta::remove_cvref_t<detail::fail_to_void_t<decltype(_get())>>;
-    }; // get_container_value_type
-
-    /**
-     * @brief helper alias template to get the value type of container T
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    using get_container_value_type_t = typename get_container_value_type<T>::type;
 
     /**
      * @brief metafunction to get the value/element type of an ndarray
@@ -1048,36 +565,18 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct bit_reference_to_bool
     {
-        using type = T;
-    }; // bit_reference_to_bool
-
-    template <typename T>
-    struct bit_reference_to_bool<T,std::enable_if_t<is_bit_reference_v<T>>>
-    {
-        using type = bool;
+        static constexpr auto vtype = [](){
+            if constexpr (is_bit_reference_v<T>) {
+                return as_value_v<bool>;
+            } else {
+                return as_value_v<T>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     }; // bit_reference_to_bool
 
     template <typename T>
     using bit_reference_to_bool_t = type_t<bit_reference_to_bool<T>>;
-
-    /**
-     * @brief Type as value
-     * 
-     * @tparam T type to wrap
-     */
-    template <typename T>
-    struct as_value
-    {
-        using type = T;
-    };
-
-    /**
-     * @brief helper inline variable for as_value
-     * 
-     * @tparam T type to wrap
-     */
-    template <typename T>
-    constexpr inline auto as_value_v = as_value<T>{};
 
     namespace error
     {
@@ -1107,7 +606,6 @@ namespace nmtools::meta
              * hence using helper function instead
              * to deduce the resulting element type.
              * 
-             * @todo make this fn consteval
              * @note using detail::void_to_fail_t since void can't be instantiated, reversed back to void at the caller site.
              */
             if constexpr (std::is_array_v<T>) {
@@ -1159,7 +657,7 @@ namespace nmtools::meta
          * return void type if no specialization exists
          * 
          * @tparam T type in which its element type to be replaced
-         * @tparam U substitute to elemen type  of T
+         * @tparam U substitute to element type  of T
          * @tparam typename 
          */
         template <typename T, typename U, typename=void>
@@ -1168,6 +666,7 @@ namespace nmtools::meta
             using type = void;
         };
 
+        // TODO: cleanup metafunctions
         // NOTE: make it easier to recurse
         template <typename T, typename U>
         struct replace_element_type_helper<T,U,std::enable_if_t<std::is_arithmetic_v<U>>>
@@ -1195,11 +694,11 @@ namespace nmtools::meta
      * The default implementation if no specialization of type T exists is defined
      * by helper metafunction detail::relace_element_type_helper. This helper can handles
      * nested std::vector and std::array. By deferring implementation to helper class,
-     * this metafunction doesnt need to provide specialization hence it will be easier
+     * this metafunction doesn't need to provide specialization hence it will be easier
      * to specialize on custom types.
      * 
      * @tparam T type in which its element type to be replaced
-     * @tparam U substitute to elemen type  of T
+     * @tparam U substitute to element type  of T
      * @tparam typename sfinae point
      * @see detail::replace_element_type_helper
      */
@@ -1210,38 +709,15 @@ namespace nmtools::meta
     }; // replace_element_type
 
     /**
-     * @brief Replace element type of std::array
-     * 
-     * @tparam T src element type, maybe nested array
-     * @tparam N 
-     * @tparam U dst element type
-     */
-    template <typename T, size_t N, typename U>
-    struct replace_element_type<std::array<T,N>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
-    {
-        static constexpr auto vtype = [](){
-            if constexpr (std::is_arithmetic_v<T>) {
-                using type = std::array<U,N>;
-                return as_value_v<type>;
-            }
-            else {
-                using element_t = type_t<replace_element_type<T,U>>;
-                using type = std::array<element_t,N>;
-                return as_value_v<type>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    }; // replace_element_type
-
-    /**
      * @brief helper alias template for replace element type
      * 
      * @tparam T type in which its element type to be replaced
-     * @tparam U substitute to elemen type  of T
+     * @tparam U substitute to element type  of T
      */
     template <typename T, typename U>
     using replace_element_type_t = typename replace_element_type<T,U>::type;
 
+    // TODO: cleanup metafunctions
     /**
      * @brief make nested raw array from element type T, first axis size N, and the rest of axis size Ns...
      *
@@ -1270,32 +746,6 @@ namespace nmtools::meta
     }; // make_nested_raw_array
 
     /**
-     * @brief make nested array given template-template parameter, element type and shape.
-     *
-     * https://godbolt.org/z/Pdha6T
-     * 
-     * @tparam array_t template-template parameter in which nested array is to be constructed from, (e.g. std::array)
-     * @tparam T desired element type of nested array
-     * @tparam I size of first axis
-     * @tparam Ns size(s) of the rest axes
-     */
-    template <template<typename,size_t> typename array_t, typename T, size_t I, size_t...Ns>
-    struct make_nested_fixed_array
-    {
-        static constexpr auto _make_nested_type()
-        {
-            if constexpr (sizeof...(Ns)==0)
-                return array_t<T,I>{};
-            else {
-                using type = typename make_nested_fixed_array<array_t,T,Ns...>::type;
-                return array_t<type,I>{};
-            }
-        } // _make_nested_type()
-
-        using type = decltype(_make_nested_type());
-    };
-
-    /**
      * @brief metafunction to make nested dynamic array.
      * 
      * Create nested array type to N number of depth.
@@ -1322,6 +772,7 @@ namespace nmtools::meta
         using type = decltype(_make_nested_type());
     };
 
+    // TODO: remove metafunctions
     /**
      * @brief helper alias template to get the type of nested raw array.
      * 
@@ -1332,17 +783,7 @@ namespace nmtools::meta
     template <typename T, size_t N, size_t...Ns>
     using make_nested_raw_array_t = typename make_nested_raw_array<T,N,Ns...>::type;
 
-    /**
-     * @brief helper alias template to make nested array given template-template parameter, element type and shape
-     * 
-     * @tparam array_t template-template parameter in which nested array is to be constructed from, (e.g. std::array)
-     * @tparam T desired element type of nested array
-     * @tparam I size of first axis
-     * @tparam Ns size(s) of the rest axes
-     */
-    template <template<typename,size_t> typename array_t, typename T, size_t I, size_t...Ns>
-    using make_nested_fixed_array_t = typename make_nested_fixed_array<array_t,T,I,Ns...>::type;
-
+    // TODO: remove metafunctions
     /**
      * @brief helper alias template to make nested dynamic array.
      * 
@@ -1354,52 +795,6 @@ namespace nmtools::meta
      */
     template <template<typename...> typename array_t, typename T, size_t N>
     using make_nested_dynamic_array_t = typename make_nested_dynamic_array<array_t,T,N>::type;
-
-    /**
-     * @brief helper function declaration to get the type of nested array.
-     * 
-     * @tparam T desired element type
-     * @tparam N size of first axis
-     * @tparam Ns size of the rest of axes
-     * @return make_nested_raw_array_t<T,N,Ns...> 
-     */
-    template <typename T, size_t N, size_t...Ns>
-    constexpr auto make_nested_array()
-        -> make_nested_raw_array_t<T,N,Ns...>;
-
-    /**
-     * @brief helper function declaration to get the type of nested array.
-     *
-     * Note that since class template parameter can't be overloaded (https://godbolt.org/z/vrsKn5), we need helper function
-     * to properly calls correct class template given its template parameter, either it is template or type tparams.
-     * <a href="https://godbolt.org/z/qsno5Y">Examples</a>.:
-     * @code{.cpp}
-     * // same name make_nested_array can handle both template and type template-parameter
-     * static_assert( std::is_same_v<decltype(make_nested_array<std::array,double,1,2>()),std::array<std::array<double,2>,1>> );
-     * static_assert( std::is_same_v<decltype(make_nested_array<std::vector,double,2>()),std::vector<std::vector<double>>> );
-     * @endcode
-     * 
-     * @tparam array_t 
-     * @tparam T 
-     * @tparam I 
-     * @tparam Ns 
-     * @return make_nested_fixed_array_t<array_t,T,I,Ns...> 
-     */
-    template <template<typename,size_t> typename array_t, typename T, size_t I, size_t...Ns>
-    constexpr auto make_nested_array()
-        -> make_nested_fixed_array_t<array_t,T,I,Ns...>;
-
-    /**
-     * @brief overloaded version of make_nested_array
-     * 
-     * @tparam array_t 
-     * @tparam T 
-     * @tparam N 
-     * @return make_nested_dynamic_array_t<array_t,T,N,Args...> 
-     */
-    template <template<typename...> typename array_t, typename T, size_t N>
-    constexpr auto make_nested_array()
-        -> make_nested_dynamic_array_t<array_t,T,N>;
 
     namespace detail
     {
@@ -1455,305 +850,16 @@ namespace nmtools::meta
     template <template<typename...>typename TT, typename T>
     using apply_t = typename apply<TT,T>::type;
 
-    namespace detail
-    {
-        // TODO: remove metafunctions
-        template <typename T, typename U, typename=void>
-        struct gather_helper
-        {
-            using type = void;
-        }; // gather_helper
-
-        using std::tuple_element_t;
-        using std::integer_sequence;
-
-        template <template<typename...>typename TT, typename T, typename...Ts, typename int_t, auto I, auto...Is>
-        struct gather_helper<TT<T,Ts...>,integer_sequence<int_t,I,Is...>
-            , std::enable_if_t<(sizeof...(Ts)>0)&&(sizeof...(Is)>0)>
-        >
-        {
-            // ret[i] = vec[idx[i]]
-            using type_list = TT<T,Ts...>;
-            using type_i = tuple_element_t<I,type_list>;
-            using rest_t = type_t<gather_helper<TT<T,Ts...>,integer_sequence<int_t,Is...>>>;
-            using type   = merge_t<TT<type_i>,rest_t>;
-        }; // gather_helper
-
-        // TODO: remove metafunctions
-        template <template<typename...>typename TT, typename T, typename...Ts, typename int_t, auto I>
-        struct gather_helper<TT<T,Ts...>,integer_sequence<int_t,I>>
-        {
-            using type_list = TT<T,Ts...>;
-            using type_i = tuple_element_t<I,type_list>;
-            using type = TT<type_i>;
-        }; // gather_helper
-
-        // TODO: remove metafunctions
-        template <typename T, typename U, typename=void>
-        struct scatter_helper
-        {
-            using type = void;
-        }; // scatter_helper
-
-        // TODO: remove metafunctions
-        template <template<typename...>typename TT, typename T, typename T1, typename...Ts, typename int_t, auto I, auto I1, auto...Is>
-        struct scatter_helper<TT<T,T1,Ts...>,integer_sequence<int_t,I,I1,Is...>
-            , std::enable_if_t<(sizeof...(Ts)>0)&&(sizeof...(Is)>0)>
-        >
-        {
-            // ret[indices[i]] = type_list[i]
-            // indices[i] = I;
-
-            // example:
-            // type_list = <int,size_t,double>;
-            // indices = <2,1,0>
-            // i = 0; (Ts=1 - Is=1)
-            // type_list[i] = int
-            // rest_t = scatter(<int,size_t,double>,<1,0>)
-            // i = 1; (Ts=1 - Is=0)
-            // rest_t = <double,size_t,double>
-            // type = replace(<double,size_t,double>,int,2)
-            // type = <double,size_t,int>
-
-            static constexpr auto i = sizeof...(Ts) - sizeof...(Is);
-            using type_list   = TT<T,T1,Ts...>;
-            using type_list_i = tuple_element_t<i,type_list>;
-            
-            using rest_indices = integer_sequence<int_t,I1,Is...>;
-            using rest_t = type_t<scatter_helper<type_list,rest_indices>>;
-
-            using type = replace_at_t<rest_t,type_list_i,I>;
-        }; // scatter_helper
-
-        // TODO: remove metafunctions
-        template <template<typename...>typename TT, typename T, typename T1, typename...Ts, typename int_t, auto I0, auto I1>
-        struct scatter_helper<TT<T,T1,Ts...>,integer_sequence<int_t,I0,I1>
-            // , std::enable_if_t<(sizeof...(Ts)>0)>
-        >
-        {
-            // ret[indices[i]] = type_list[i]
-            static constexpr auto i = sizeof...(Ts);
-            using type_list = TT<T,T1,Ts...>;
-            using type_0 = tuple_element_t<i,type_list>;
-            using type_1 = tuple_element_t<i+1,type_list>;
-            using type = replace_at_t<
-                replace_at_t<type_list,type_1,I1>,
-                type_0, I0
-            >;
-        }; // scatter_helper
-
-        // template <template<typename...>typename TT, typename T, typename T1, typename int_t, auto I0, auto I1>
-        // struct scatter_helper<TT<T,T1>,integer_sequence<int_t,I0,I1>>
-        // {
-        //     // ret[indices[i]] = type_list[i]
-        //     using type_list = TT<T,T1>;
-        //     using type_0 = tuple_element_t<I0,type_list>;
-        //     using type_1 = tuple_element_t<I1,type_list>;
-        //     using type = TT<type_0,type_1>;
-        // }; // scatter_helper
-    } // namespace detail
-
-    // TODO: remove metafunctions
     /**
-     * @brief metafunction to perform gather op `ret[i] = vec[idx[i]]` on type-list
-     * 
-     * @tparam T type-list
-     * @tparam U integer_sequence represents the gather indices
-     */
-    template <typename T, typename U>
-    struct gather
-    {
-        using type = type_t<detail::gather_helper<T,U>>;
-    }; // gather
-
-    // TODO: remove metafunctions
-    /**
-     * @brief helper alias template for gather
-     * 
-     * @tparam T type-list
-     * @tparam U integer_sequence represents the gather indices
-     */
-    template <typename T, typename U>
-    using gather_t = type_t<gather<T,U>>;
-
-    // TODO: remove metafunctions
-    /**
-     * @brief metafunction to perform scatter op `ret[idx[i]] = vec[i]` on type-list
-     * 
-     * @tparam T type-list
-     * @tparam U integer_sequence respresenting scatter indices
-     */
-    template <typename T, typename U>
-    struct scatter
-    {
-        using type = type_t<detail::scatter_helper<T,U>>;
-    }; // scatter
-
-    // TODO: remove metafunctions
-    /**
-     * @brief helper alias template for scatter
-     * 
-     * @tparam T type-list
-     * @tparam U integer_sequence respresenting scatter indices
-     */
-    template <typename T, typename U>
-    using scatter_t = type_t<scatter<T,U>>;
-
-    namespace detail
-    {
-        // TODO: remove metafunctions
-        template <template<typename,typename...> typename Op, typename T, typename=void>
-        struct apply_reduce_helper
-        {
-            using type = void;
-        }; // apply_reduce_helper
-
-        // TODO: remove metafunctions
-        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U, typename V, typename...Ts>
-        struct apply_reduce_helper<Op,TT<T,U,V,Ts...>>
-        {
-            using tmp_type = type_t<Op<T,U>>;
-            using type = type_t<apply_reduce_helper<Op,TT<tmp_type,V,Ts...>>>;
-        }; //  apply_reduce_helper
-
-        // TODO: remove metafunctions
-        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U>
-        struct apply_reduce_helper<Op,TT<T,U>>
-        {
-            using type = type_t<Op<T,U>>;
-        }; // apply_reduce_helper
-    }  // namespace detail
-
-    // TODO: remove metafunctions
-    template <template<typename,typename...>typename Op, typename T, typename=void>
-    struct apply_reduce
-    {
-        using type = type_t<detail::apply_reduce_helper<Op,T>>;
-    }; // reduce
-
-    // TODO: remove metafunctions
-    template <template<typename,typename...>typename Op, typename T>
-    using apply_reduce_t = type_t<apply_reduce<Op,T>>;
-
-    // TODO: remove metafunctions
-    template <typename T>
-    using apply_prod = apply_reduce<mul,T>;
-
-    // TODO: remove metafunctions
-    template <typename T>
-    using apply_prod_t = type_t<apply_prod<T>>;
-
-    // TODO: remove metafunctions
-    template <typename T>
-    using apply_sum = apply_reduce<add,T>;
-
-    // TODO: remove metafunctions
-    template <typename T>
-    using apply_sum_t = type_t<apply_sum<T>>;
-
-    namespace detail
-    {
-        // TODO: remove metafunctions
-        template <template<typename,typename...> typename Op, typename T, typename=void>
-        struct apply_accumulate_helper
-        {
-            using type = void;
-        }; // apply_accumulate_helper
-
-    // TODO: remove metafunctions
-        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T>
-        struct apply_accumulate_helper<Op,TT<T>>
-        {
-            using type = TT<T>;
-        }; // apply_accumulate_helper
-
-        // TODO: remove metafunctions
-        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U>
-        struct apply_accumulate_helper<Op,TT<T,U>>
-        {
-            using type_list    = TT<T,U>;
-            using reduced_type = apply_reduce_t<Op,type_list>;
-            using type = TT<T,reduced_type>;
-        }; // apply_accumulate_helper
-
-        // TODO: remove metafunctions
-        // @note this specialization behaves differently on clang & gcc (8.3)
-        // example case:
-        // using arg_t = std::tuple<meta::ct<1>,meta::ct<3>,meta::ct<7>>;
-        // using result_t = meta::apply_accumulate_t<meta::add,arg_t>;
-        // using expected_t = std::tuple<meta::ct<1>,meta::ct<4>,meta::ct<11>>;
-        // clang correctly produce expected type, while gcc results void for second type of expected type
-        // must be something to do when recursively call the metafunction, 
-        // somehow gcc cant find specialization for struct apply_accumulate_helper<Op,TT<T,U>>
-        template <template<typename,typename...> typename Op, template<typename...>typename TT, typename T, typename U, typename...Ts>
-        struct apply_accumulate_helper<Op,TT<T,U,Ts...>,std::enable_if_t<(sizeof...(Ts)>0)>>
-        {
-            static constexpr auto numel = 2 + sizeof...(Ts);
-            using type_list  = TT<T,U,Ts...>;
-            using split_type = split_at<type_list,numel-1>;
-            using first_type = first_t<split_type>;
-
-            using fst = type_t<apply_accumulate_helper<Op,first_type>>;
-            using snd = apply_reduce_t<Op,type_list>;
-
-            using type = merge_t<fst,snd>;
-        }; // apply_accumulate_helper
-    } // namespace detail
-
-    // TODO: remove metafunctions
-    template <template<typename,typename...> typename Op, typename T>
-    struct apply_accumulate
-    {
-        using type = type_t<detail::apply_accumulate_helper<Op,T>>;
-    }; // apply_accumulate
-
-    // TODO: remove metafunctions
-    template <template<typename,typename...> typename Op, typename T>
-    using apply_accumulate_t = type_t<apply_accumulate<Op,T>>;
-
-    // TODO: remove metafunctions
-    template <typename T>
-    using apply_cumprod = apply_accumulate<mul,T>;
-
-    // TODO: remove metafunctions
-    template <typename T>
-    using apply_cumprod_t = type_t<apply_cumprod<T>>;
-
-    // TODO: cleanup metafunctions
-    /**
-     * @brief helper alias template to construct (tuple of) integral_constant
-     * 
-     * @tparam I first constant
-     * @tparam Is optional constant
-     */
-    template <auto I, auto...Is>
-    using constant_t = std::conditional_t<
-        (sizeof...(Is) > 0),
-        std::tuple<
-            std::integral_constant<decltype(I),I>,
-            std::integral_constant<decltype(Is),Is>...
-        >,
-        std::integral_constant<decltype(I),I>
-    >;
-
-    /**
-     * @brief helper alias template for constant_t
-     * 
-     * @tparam I first constant
-     * @tparam Is optional constant
-     */
-    template <auto I, auto...Is>
-    using ct = constant_t<I,Is...>;
-
-    /**
-     * @brief Helper inline variable so we dont have to type ct<0>{};
+     * @brief Reserved metafunction to create a compile-time constant
      * 
      * @tparam I 
      * @tparam Is 
      */
     template <auto I, auto...Is>
-    constexpr inline auto ct_v = ct<I,Is...>{};
+    struct make_ct;
 
+    // TODO: remove metafunctions
     /**
      * @brief helper alias template to construct integer_sequence
      * 
@@ -1785,83 +891,16 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto to_value_v = to_value<T>::value;
 
-    // TODO: remove metafunctions
-    /**
-     * @brief metafunction to transform (tuple of) integral constant to integer sequence
-     * 
-     * @tparam T type to transform
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct constant_to_sequence
-    {
-        static constexpr auto value = detail::fail_t{};
-        using type = void;
-    }; // constant_to_sequence
-
-    template <typename T, auto I>
-    struct constant_to_sequence<std::integral_constant<T,I>>
-    {
-        static constexpr auto value = I;
-        using type = sequence_t<I>;
-    }; // constant_to_sequence
-
-    template <auto I, auto...Is>
-    struct constant_to_sequence<
-        std::tuple<
-            std::integral_constant<decltype(I),I>,
-            std::integral_constant<decltype(Is),Is>...
-        >
-    >
-    {
-        static constexpr auto value = std::tuple{I,Is...};
-        using type = sequence_t<I,Is...>;
-    }; // constant_to_sequence
-
-    /**
-     * @brief helper alias template for constant_to_sequence
-     * 
-     * @tparam T type to transform
-     */
-    template <typename T>
-    using constant_to_sequence_t = type_t<constant_to_sequence<T>>;
-
-    /**
-     * @brief metafunction to transform integer sequence to (tuple of) integeral constant
-     * 
-     * @tparam T type to transform
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct sequence_to_constant
-    {
-        static constexpr auto value = detail::fail_t{};
-        using type = void;
-    }; // sequence_to_constant
-
-    template <typename T, auto I, auto...Is>
-    struct sequence_to_constant<std::integer_sequence<T,I,Is...>>
-    {
-        static constexpr auto value = std::tuple{I,Is...};
-        using type = constant_t<I,Is...>;
-    }; // sequence_to_constant
-
-    /**
-     * @brief helper alias template for sequence_to_constant
-     * 
-     * @tparam T type to transform
-     */
-    template <typename T>
-    using sequence_to_constant_t = type_t<sequence_to_constant<T>>;
-
     namespace detail
     {
+        // TODO: remove metafunctions
         template <template<typename>typename Predicate, typename T, typename=void>
         struct filter_helper
         {
             using type = void;
         }; // filter_helper
 
+        // TODO: remove metafunctions
         template <template<typename>typename Predicate, template<typename...>typename TT, typename T>
         struct filter_helper<Predicate,TT<T>>
         {
@@ -1870,6 +909,7 @@ namespace nmtools::meta
             >;
         }; // filter_helper
 
+        // TODO: remove metafunctions
         template <template<typename>typename Predicate, template<typename...>typename TT, typename T, typename U, typename...Ts>
         struct filter_helper<Predicate,TT<T,U,Ts...>>
         {
@@ -1882,12 +922,14 @@ namespace nmtools::meta
         }; // filter_helper
     } // namespace detail
 
+    // TODO: remove metafunctions
     template <template<typename>typename Predicate, typename T, typename=void>
     struct filter
     {
         using type = type_t<detail::filter_helper<Predicate,T>>;
     }; // filter
 
+    // TODO: remove metafunctions
     template <template<typename>typename Predicate, typename T>    
     using filter_t = type_t<filter<Predicate,T>>;
 
@@ -1911,108 +953,10 @@ namespace nmtools::meta
     template <typename array_t>
     using get_element_or_common_type_t = type_t<get_element_or_common_type<array_t>>;
 
-    namespace detail
-    {
-        template <typename T, typename U, auto I, typename=void>
-        struct insert_type
-        {
-            using type = void;
-        }; // insert_type
-
-        // @note clang & gcc disagree on this, see compiler notes
-        // template <typename...Ts, typename U, auto I>
-        // struct insert_type<std::tuple<Ts...>,U,I,std::enable_if_t<(I>=0 && I<=sizeof...(Ts))>>
-        // {
-        //     using tuple_t = std::tuple<Ts...>;
-        //     using split_type = split_at<tuple_t,I>;
-        //     using fst = first_t<split_type>;
-        //     using snd = second_t<split_type>;
-        //     using type = merge_t<merge_t<fst,U>,snd>;
-        // }; // insert_type
-        // template <typename...Ts, typename U>
-        // struct insert_type<std::tuple<Ts...>,U,0>
-        // {
-        //     using type = std::tuple<U,Ts...>;
-        // }; // insert_type
-
-        template <typename...Ts, typename U, auto I>
-        struct insert_type<std::tuple<Ts...>,U,I,std::enable_if_t<(I>0 && I<=sizeof...(Ts))>>
-        {
-            using tuple_t    = std::tuple<Ts...>;
-            using split_type = split_at<tuple_t,I>;
-            using fst  = first_t<split_type>;
-            using snd  = second_t<split_type>;
-            using type = merge_t<merge_t<fst,U>,snd>;
-        }; // insert_type
-
-        template <typename...Ts, typename U>
-        struct insert_type<std::tuple<Ts...>,U,0>
-        {
-            using type = std::tuple<U,Ts...>;
-        }; // insert_type
-    } // namespace detail
-
-    template <typename T, typename U, auto I, typename=void>
-    struct insert_type
-    {
-        using type = type_t<detail::insert_type<T,U,I>>;
-    }; // insert_type
-
-    template <typename T, typename U, auto I>
-    using insert_type_t = type_t<insert_type<T,U,I>>;
-
-    /**
-     * @brief tag to tell array kind preference
-     * 
-     */
-    struct select_resizeable_kind_t {};
-    /**
-     * @brief tag to tell array kind preference
-     * 
-     */
-    struct select_fixed_kind_t {};
-    /**
-     * @brief tag to tell array kind preference
-     * 
-     */
-    struct select_hybrid_kind_t {};
-
-    template <typename T, typename U>
-    struct element_type_policy_common
-    {
-        using type = std::common_type_t<T,U>;
-    }; // element_type_policy_common
-
-    template <typename T, typename U>
-    struct element_type_policy_lhs
-    {
-        using type = T;
-    }; // element_type_policy_lhs
-
-    template <typename T, typename U>
-    struct element_type_policy_rhs
-    {
-        using type = U;
-    }; // element_type_policy_rhs
-
     template <typename T, typename=void>
     struct tuple_to_array
     {
         using type = T;
-    }; // tuple_to_array
-
-    template <typename...Ts>
-    struct tuple_to_array<std::tuple<Ts...>>
-    {
-        using common_t = std::common_type_t<Ts...>;
-        using type = std::array<common_t,sizeof...(Ts)>;
-    }; // tuple_to_array
-
-    template <typename first, typename second>
-    struct tuple_to_array<std::pair<first,second>>
-    {
-        using common_t = std::common_type_t<first,second>;
-        using type = std::array<common_t,2>;
     }; // tuple_to_array
 
     template <typename T>
@@ -2027,36 +971,10 @@ namespace nmtools::meta
     template <typename T, auto N, typename=void>
     struct resize_fixed_vector
     {
+        // TODO: use error type
         /* pack new size as type instead of non-type template param */
         using new_size = std::integral_constant<size_t,N>;
         using type = replace_template_parameter_t<T,new_size>;
-    };
-
-    /**
-     * @brief specialization of resize_fixed_vector for std::array type
-     * 
-     * @tparam T value_type of std::array, automatically deduced
-     * @tparam N size of std::array, automatically deduced
-     * @tparam new_size new desired size
-     */
-    template <typename T, auto N, auto new_size>
-    struct resize_fixed_vector<std::array<T,N>,new_size>
-    {
-        using type = std::array<T,new_size>;
-    };
-
-    /**
-     * @brief specialization of resize_fixed_vector for raw array type,
-     * resulting type is std::array instead of raw array.
-     * 
-     * @tparam T element type of raw array, automatically deduced
-     * @tparam N size of raw array, automatically deduced
-     * @tparam new_size new desired size
-     */
-    template <typename T, auto N, auto new_size>
-    struct resize_fixed_vector<T[N],new_size>
-    {
-        using type = std::array<T,new_size>;
     };
 
     /**
@@ -2152,13 +1070,6 @@ namespace nmtools::meta
         using type = detail::fail_t;
     }; // at
 
-    template <typename...Ts, size_t I>
-    struct type_at<std::tuple<Ts...>,I>
-    {
-        using tuple_t = std::tuple<Ts...>;
-        using type = std::tuple_element_t<I,tuple_t>;
-    }; // type_at
-
     /**
      * @brief Helper alias template to type_at.
      * 
@@ -2204,12 +1115,6 @@ namespace nmtools::meta
     template <typename T, typename new_type>
     using append_type_t = type_t<append_type<T,new_type>>;
 
-    template <typename...Ts, typename new_type>
-    struct append_type<std::tuple<Ts...>,new_type>
-    {
-        using type = std::tuple<Ts...,new_type>;
-    }; // append_type
-
     namespace error
     {
         struct CONCAT_TYPE_UNSUPPORTED : detail::fail_t {};
@@ -2236,79 +1141,6 @@ namespace nmtools::meta
      */
     template <typename T, typename U>
     using concat_type_t = type_t<concat_type<T,U>>;
-
-    template <typename...Ts, typename...Us>
-    struct concat_type< std::tuple<Ts...>, std::tuple<Us...> >
-    {
-        using type = std::tuple<Ts...,Us...>;
-    }; // concat_type
-
-    /**
-     * @brief Specialization of resize_fixed_ndarray for std::array.
-     * 
-     * @tparam T 
-     * @tparam U 
-     * @tparam N 
-     * @todo move to separate file, e.g. meta/stl/transform.hpp
-     */
-    template <typename T, typename U, size_t N>
-    struct resize_fixed_ndarray<std::array<T,N>,U,
-        std::enable_if_t<is_fixed_size_ndarray_v<U>>
-    >
-    {
-        template <typename array_t, typename new_t>
-        struct replace_value_type
-        {
-            using type = void;
-        };
-
-        template <typename value_t, size_t M, typename new_t>
-        struct replace_value_type<std::array<value_t,M>,new_t>
-        {
-            static constexpr auto vtype = [](){
-                if constexpr (is_num_v<value_t>) {
-                    using type = std::array<new_t,M>;
-                    return as_value_v<type>;
-                } else {
-                    using inner_t = type_t<replace_value_type<value_t,new_t>>;
-                    using type = std::array<inner_t,M>;
-                    return as_value_v<type>;
-                }
-            }();
-            using type = type_t<decltype(vtype)>;
-        };
-        
-        static constexpr auto vtype = [](){
-            constexpr auto shape = fixed_ndarray_shape_v<U>;
-            constexpr auto DIM   = fixed_ndarray_dim_v<U>;
-            using element_t = get_element_type_t<std::array<T,N>>;
-            return template_reduce<DIM>([&](auto init, auto index){
-                constexpr auto i = decltype(index)::value;
-                using init_t = type_t<remove_cvref_t<decltype(init)>>;
-                constexpr auto size = std::get<i>(shape);
-                if constexpr (i==0) {
-                    using type = std::array<element_t,size>;
-                    return as_value_v<type>;
-                } else {
-                    using array_t = init_t;
-                    using inner_t = std::array<element_t,size>;
-                    using type = type_t<replace_value_type<array_t,inner_t>>;
-                    return as_value_v<type>;
-                }
-            }, /*init=*/as_value_v<void>);
-        }();
-        using type = type_t<decltype(vtype)>;
-    }; // resize_fixed_ndarray
-
-    template <typename T, typename U, size_t N>
-    struct resize_fixed_ndarray<T[N],U,
-        std::enable_if_t<is_fixed_size_ndarray_v<U>>
-    >
-    {
-        using shape_t = std::tuple<std::integral_constant<size_t,N>>;
-        using default_ndarray_t = type_t<make_fixed_ndarray<T,shape_t>>;
-        using type = resize_fixed_ndarray_t<default_ndarray_t,U>;
-    }; // resize_fixed_ndarray
 
     namespace error
     {
@@ -2338,6 +1170,12 @@ namespace nmtools::meta
         struct PROMOTE_INDEX_UNSUPPORTED : detail::fail_t {};
     } // namespace error
 
+    /**
+     * @brief Metafunction to deduce common type for index operation
+     * 
+     * @tparam lhs_t 
+     * @tparam rhs_t 
+     */
     template <typename lhs_t, typename rhs_t>
     struct promote_index
     {
@@ -2379,15 +1217,6 @@ namespace nmtools::meta
                 auto signed_   = cast(as_value_v<lhs_t>, as_value_v<rhs_t>);
                 auto non_const = make_non_constant(signed_);
                 return non_const;
-                // if constexpr (is_signed_v<lhs_t> && is_signed_v<rhs_t>) {
-                //     return non_constant(as_value_v<lhs_t>, as_value_v<rhs_t>);
-                // } else if constexpr (is_unsigned_v<lhs_t> && is_unsigned_v<rhs_t>) {
-                //     return non_constant(as_value_v<lhs_t>, as_value_v<rhs_t>);
-                // } else if constexpr (is_signed_v<lhs_t>) {
-                //     return make_non_constant(as_value_v<lhs_t>);
-                // } else /* if constexpr (is_signed_v<rhs_t>) */ {
-                //     return make_non_constant(as_value_v<rhs_t>);
-                // }
             } else {
                 return as_value_v<error::PROMOTE_INDEX_UNSUPPORTED>;
             }

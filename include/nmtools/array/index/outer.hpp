@@ -11,6 +11,7 @@ namespace nmtools::index
 {
     struct shape_outer_t {};
 
+    // TODO: cleanup index functions, handling constant index array
     template <typename ashape_t, typename bshape_t>
     constexpr auto shape_outer(const ashape_t& ashape, const bshape_t& bshape)
     {
@@ -57,6 +58,7 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: cleanup index metafunctions, handling constant index array
     template <typename ashape_t, typename bshape_t>
     struct resolve_optype<
         void, index::shape_outer_t, ashape_t, bshape_t
