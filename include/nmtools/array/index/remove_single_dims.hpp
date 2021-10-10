@@ -12,9 +12,6 @@
 
 namespace nmtools::index
 {
-    template <typename T>
-    using eq_one = meta::constant_eq<T,1>;
-
     /**
      * @brief specific tag to resolve return type
      * 
@@ -31,58 +28,68 @@ namespace nmtools::index
     template <typename shape_t>
     constexpr auto remove_single_dims(const shape_t& shape)
     {
-        if constexpr (meta::apply_logical_and_v<meta::is_integral_constant,shape_t>) {
-            using squeezed_t = meta::filter_t<eq_one,shape_t>;
-            return squeezed_t{};
-        }
-        else {
+        using return_t = meta::resolve_optype_t<remove_single_dims_t, shape_t>;
+
+        auto res = return_t{};
+
+        if constexpr (!meta::is_constant_index_array_v<return_t>) {
             constexpr auto f = [](auto a){
                 return a > 1;
             };
             auto [arg, squeezed] = filter(f,shape);
-            return squeezed;
+            // manual assignment
+            auto n = len(squeezed);
+
+            if constexpr (meta::is_resizeable_v<return_t>) {
+                res.resize(n);
+            }
+
+            for (size_t i=0; i<(size_t)n; i++) {
+                at(res,i) = at(squeezed,i);
+            }
         }
+
+        return res;
     } // remove_single_dims
 } // namespace index
 
-namespace nmtools
+namespace nmtools::meta
 {
-    /**
-     * @brief resolve return type for remove_single_dims op when
-     * 
-     * @tparam shape_t resizeable array with integral element type
-     */
-    template <typename shape_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<
-            meta::is_resizeable_v<shape_t>
-            && std::is_integral_v<meta::get_element_type_t<shape_t>>
-        >,
-        index::remove_single_dims_t, shape_t
-    >
-    {
-        using type = shape_t;
-    }; // resolve_optype remove_single_dims_t
+    namespace error {
+        struct INDEX_REMOVE_SINGLE_DIMS_UNSUPPORTED : detail::fail_t {};
+    }
 
-    /**
-     * @brief resolve return type for remove_single_dims op
-     * 
-     * @tparam shape_t fixed array or tuple with integral element type
-     */
     template <typename shape_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<
-            !meta::is_resizeable_v<shape_t>
-            && meta::has_tuple_size_v<shape_t>
-            && std::is_integral_v<meta::get_element_or_common_type_t<shape_t>>
-        >,
-        index::remove_single_dims_t, shape_t
+    struct resolve_optype<
+        void, index::remove_single_dims_t, shape_t
     >
     {
-        static constexpr auto N = std::tuple_size_v<shape_t>;
-        using common_t = meta::get_element_or_common_type_t<shape_t>;
-        using type = array::hybrid_ndarray<common_t,N,1>;
-    }; // resolve_optype remove_single_dims_t
-}
+        static constexpr inline auto vtype = [](){
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                constexpr auto shape  = to_value_v<shape_t>;
+                constexpr auto result = index::remove_single_dims(shape);
+                // assuming len(result) > 0
+                // transform back to type
+                using init_type = make_tuple_t<ct<at(result,0)>>;
+                return template_reduce<len(result)-1>([&](auto init, auto index){
+                    using init_t   = type_t<decltype(init)>;
+                    using result_i = ct<at(result,index+1)>;
+                    using result_t = append_type_t<init_t,result_i>;
+                    return as_value_v<result_t>;
+                }, as_value_v<init_type>);
+            } else if constexpr (is_fixed_index_array_v<shape_t>) {
+                constexpr auto n = len_v<shape_t>;
+                using index_t = get_element_type_t<shape_t>;
+                using type = make_hybrid_ndarray_t<index_t,n,1>;
+                return as_value_v<type>;
+            } else if constexpr (is_index_array_v<shape_t>) {
+                return as_value_v<shape_t>;
+            } else {
+                return as_value_v<error::INDEX_REMOVE_SINGLE_DIMS_UNSUPPORTED>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_REMOVE_SINGLE_DIMS_HPP
