@@ -206,6 +206,200 @@ namespace nmtools::meta
         using type = right_t;
     };
 
+    template <typename...Ts, size_t I>
+    struct type_at<std::tuple<Ts...>,I>
+    {
+        using tuple_t = std::tuple<Ts...>;
+        using type = std::tuple_element_t<I,tuple_t>;
+    }; // type_at
+
+
+    /**
+     * @brief specialization of resize_fixed_vector for std::array type
+     * 
+     * @tparam T value_type of std::array, automatically deduced
+     * @tparam N size of std::array, automatically deduced
+     * @tparam new_size new desired size
+     */
+    template <typename T, auto N, auto new_size>
+    struct resize_fixed_vector<std::array<T,N>,new_size>
+    {
+        using type = std::array<T,new_size>;
+    };
+
+    /**
+     * @brief specialization of resize_fixed_vector for raw array type,
+     * resulting type is std::array instead of raw array.
+     * 
+     * @tparam T element type of raw array, automatically deduced
+     * @tparam N size of raw array, automatically deduced
+     * @tparam new_size new desired size
+     */
+    template <typename T, auto N, auto new_size>
+    struct resize_fixed_vector<T[N],new_size>
+    {
+        using type = std::array<T,new_size>;
+    };
+
+    template <typename...Ts>
+    struct tuple_to_array<std::tuple<Ts...>>
+    {
+        using common_t = std::common_type_t<Ts...>;
+        using type = std::array<common_t,sizeof...(Ts)>;
+    }; // tuple_to_array
+
+    template <typename first, typename second>
+    struct tuple_to_array<std::pair<first,second>>
+    {
+        using common_t = std::common_type_t<first,second>;
+        using type = std::array<common_t,2>;
+    }; // tuple_to_array
+
+    /**
+     * @brief overloaded version of transform_bounded_array for T[N]
+     * 
+     * @tparam T element type
+     * @tparam N number of elements
+     */
+    template <typename T, std::size_t N>
+    struct transform_bounded_array<T[N]>
+    {
+        using value_type = typename transform_bounded_array<remove_cvref_t<T>>::type;
+        using type = std::array<remove_cvref_t<value_type>,N>;
+    };
+
+#ifndef NMTOOLS_META_MAKE_CT
+#define NMTOOLS_META_MAKE_CT
+    template <auto I, auto...Is>
+    struct make_ct
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (static_cast<bool>(sizeof...(Is))) {
+                using type = std::integer_sequence<decltype(I),I,Is...>;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<std::integral_constant<decltype(I),I>>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
+    template <auto I, auto...Is>
+    using ct = type_t<make_ct<I,Is...>>;
+
+    template <auto I, auto...Is>
+    constexpr inline auto ct_v = ct<I,Is...>{};
+#endif // NMTOOLS_META_MAKE_CT
+
+    /**
+     * @brief Replace element type of std::array
+     * 
+     * @tparam T src element type, maybe nested array
+     * @tparam N 
+     * @tparam U dst element type
+     */
+    template <typename T, size_t N, typename U>
+    struct replace_element_type<std::array<T,N>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (std::is_arithmetic_v<T>) {
+                using type = std::array<U,N>;
+                return as_value_v<type>;
+            }
+            else {
+                using element_t = type_t<replace_element_type<T,U>>;
+                using type = std::array<element_t,N>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // replace_element_type
+
+    template <typename...Ts, typename new_type>
+    struct append_type<std::tuple<Ts...>,new_type>
+    {
+        using type = std::tuple<Ts...,new_type>;
+    }; // append_type
+
+    template <typename...Ts, typename...Us>
+    struct concat_type< std::tuple<Ts...>, std::tuple<Us...> >
+    {
+        using type = std::tuple<Ts...,Us...>;
+    }; // concat_type
+
+    /**
+     * @brief Specialization of resize_fixed_ndarray for std::array.
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam N 
+     * @todo move to separate file, e.g. meta/stl/transform.hpp
+     */
+    template <typename T, typename U, size_t N>
+    struct resize_fixed_ndarray<std::array<T,N>,U,
+        std::enable_if_t<is_fixed_size_ndarray_v<U>>
+    >
+    {
+        template <typename array_t, typename new_t>
+        struct replace_value_type
+        {
+            using type = void;
+        };
+
+        template <typename value_t, size_t M, typename new_t>
+        struct replace_value_type<std::array<value_t,M>,new_t>
+        {
+            static constexpr auto vtype = [](){
+                if constexpr (is_num_v<value_t>) {
+                    using type = std::array<new_t,M>;
+                    return as_value_v<type>;
+                } else {
+                    using inner_t = type_t<replace_value_type<value_t,new_t>>;
+                    using type = std::array<inner_t,M>;
+                    return as_value_v<type>;
+                }
+            }();
+            using type = type_t<decltype(vtype)>;
+        };
+        
+        static constexpr auto vtype = [](){
+            constexpr auto shape = fixed_ndarray_shape_v<U>;
+            constexpr auto DIM   = fixed_ndarray_dim_v<U>;
+            using element_t = get_element_type_t<std::array<T,N>>;
+            return template_reduce<DIM>([&](auto init, auto index){
+                constexpr auto i = decltype(index)::value;
+                using init_t = type_t<remove_cvref_t<decltype(init)>>;
+                constexpr auto size = std::get<i>(shape);
+                if constexpr (i==0) {
+                    using type = std::array<element_t,size>;
+                    return as_value_v<type>;
+                } else {
+                    using array_t = init_t;
+                    using inner_t = std::array<element_t,size>;
+                    using type = type_t<replace_value_type<array_t,inner_t>>;
+                    return as_value_v<type>;
+                }
+            }, /*init=*/as_value_v<void>);
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // resize_fixed_ndarray
+
+    template <typename T, typename U, size_t N>
+    struct resize_fixed_ndarray<T[N],U,
+        std::enable_if_t<is_fixed_size_ndarray_v<U>>
+    >
+    {
+        using shape_t = std::tuple<std::integral_constant<size_t,N>>;
+        using default_ndarray_t = type_t<make_fixed_ndarray<T,shape_t>>;
+        using type = resize_fixed_ndarray_t<default_ndarray_t,U>;
+    }; // resize_fixed_ndarray
+
+    template <typename left_t, typename right_t, typename Left, typename Right>
+    struct replace_either<std::variant<left_t,right_t>,Left,Right>
+    {
+        using type = std::variant<Left,Right>;
+    };
+
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRANSFORM_HPP
