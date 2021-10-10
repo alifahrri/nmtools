@@ -25,74 +25,14 @@ namespace nmtools::meta {
     * @{ 
     */
 
+   
     using std::false_type;
     using std::true_type;
     using std::declval;
     using std::void_t;
     using std::enable_if_t;
 
-    /**
-     * @brief check if T() * U() is valid
-     * 
-     * @tparam T 
-     * @tparam U 
-     * @tparam void 
-     */
-    template <typename T, typename U, typename = void>
-    struct is_multiplicative : std::false_type {};
-
-    /**
-     * @brief specialization of is_multiplicative
-     * 
-     * @tparam T lhs
-     * @tparam U rhs
-     */
-    template <typename T, typename U>
-    struct is_multiplicative<T, U, std::void_t<
-        decltype(std::declval<T>() * std::declval<U>())
-    > > : std::true_type {};
-
-    /**
-     * @brief helper variable template to check if
-     * T and U is multiplicative
-     * 
-     * @tparam T lhs
-     * @tparam U rhs
-     */
-    template <typename T, typename U>
-    inline constexpr bool is_multiplicative_v = is_multiplicative<T,U>::value;
-
-    /**
-     * @brief check if T() + U() is valid
-     * 
-     * @tparam T lhs
-     * @tparam U rhs
-     * @tparam void 
-     */
-    template <typename T, typename U, typename = void>
-    struct is_additive : std::false_type {};
-
-    /**
-     * @brief specialization of is_additive
-     * 
-     * @tparam T lhs
-     * @tparam U rhs
-     */
-    template <typename T, typename U>
-    struct is_additive<T, U, std::void_t<
-        decltype(std::declval<T>() + std::declval<U>())
-    > > : std::true_type {};
-
-    /**
-     * @brief helper variable template to check if
-     * T and U is additive
-     * 
-     * @tparam T lhs
-     * @tparam U rhs
-     */
-    template <typename T, typename U>
-    inline constexpr bool is_additive_v = is_additive<T,U>::value;
-
+    // TODO: cleanup metafunctions
     /**
      * @brief check if F(Args...) is well-formed
      * 
@@ -123,27 +63,12 @@ namespace nmtools::meta {
     template <typename F, typename...Args>
     inline constexpr bool is_callable_v = is_callable<F,Args...>::value;
 
+    // TODO: remove metafunctions
     /* TODO : move (?) */
     using std::begin;
     using std::end;
 
-    template <typename T>
-    struct is_iterable {
-    private:
-        template <typename It>
-        static constexpr auto test(int)
-            -> decltype(begin(std::declval<It>()), end(std::declval<It>()), bool())
-        { return true; }
-        template <typename It>
-        static constexpr auto test(char)
-        { return false; }
-    public:
-        constexpr static bool value = test<T>(int());
-    };
-
-    template <typename T>
-    inline constexpr bool is_iterable_v = is_iterable<T>::value;
-
+    // TODO: remove metafunctions
     /**
      * @brief check if type T has member type size_type
      * 
@@ -163,6 +88,7 @@ namespace nmtools::meta {
         std::void_t<typename T::size_type>
     > : std::true_type {};
 
+    // TODO: remove metafunctions
     /**
      * @brief helper variable template to check if T has size_type
      * 
@@ -180,6 +106,7 @@ namespace nmtools::meta {
     template <typename T, typename=void>
     struct has_value_type : std::false_type {};
 
+    // TODO: cleanup metafunctions
     /**
      * @brief specialization when T actually has value_type
      * 
@@ -197,134 +124,6 @@ namespace nmtools::meta {
     inline constexpr bool has_value_type_v = has_value_type<T>::value;
 
     /**
-     * @brief check if type T has member type allocator_type
-     * 
-     * @tparam T type to check
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct has_allocator_type : std::false_type {};
-
-    /**
-     * @brief specialization when T actually has allocator_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    struct has_allocator_type<T,std::void_t<typename T::allocator_type> > : std::true_type {};
-
-    /**
-     * @brief helper variable template to chek if T has allocator_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    inline constexpr bool has_allocator_type_v = has_allocator_type<T>::value;
-
-    /**
-     * @brief helper alias template to enable/add to overload set if T has size_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using enable_if_has_size_type = std::enable_if<has_size_type_v<T>>;
-
-    /**
-     * @brief helper alias template to enable/add to overload set if T has size_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using enable_if_has_size_type_t = typename enable_if_has_size_type<T>::type;
-
-    /**
-     * @brief helper alias template to disable/remove from overload set if T has size_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using disable_if_has_size_type = std::enable_if<!has_size_type_v<T>>;
-
-    /**
-     * @brief helper alias template to disable/remove from overload set if T has size_type
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    using disable_if_has_size_type_t = typename disable_if_has_size_type<T>::type;
-
-    /**
-     * @brief check if T is resizeable
-     * 
-     * @tparam T type to check
-     * @tparam void 
-     */
-    // template <typename T, typename = void>
-    // struct is_resizeable : std::false_type {};
-
-    /**
-     * @brief specialization of is_resizeable when T is resizeable using size_t
-     * 
-     * @tparam T type to check
-     */
-    // template <typename T>
-    // struct is_resizeable<T, 
-    //     std::void_t<
-    //         disable_if_has_size_type_t<T>,
-    //         decltype(std::declval<T>().resize(std::declval<size_t>()))
-    //     >
-    // > : std::true_type {};
-
-    /**
-     * @brief specialization of is_resizeable when T is resizeable using T::size_type
-     * 
-     * @tparam T type to check
-     */
-    // template <typename T>
-    // struct is_resizeable<T, 
-    //     std::void_t<
-    //         enable_if_has_size_type_t<T>,
-    //         decltype(std::declval<T>().resize(std::declval<typename T::size_type>()))
-    //     >
-    // > : std::true_type {};
-
-    /**
-     * @brief helper variable template to check if T is resizeable
-     * 
-     * @tparam T type to check
-     */
-    // template <typename T>
-    // static constexpr auto is_resizeable_v = is_resizeable<T>::value;
-
-    /**
-     * @brief check if T can be resized with 2 arguments, e.g. declval<T>().resize(i,i)
-     * 
-     * @tparam T type to check
-     * @tparam void 
-     */
-    // template <typename T, typename = void>
-    // struct is_resizeable2d : std::false_type {};
-
-    // template <typename T>
-    // struct is_resizeable2d<T, 
-    //     std::void_t<
-    //         disable_if_has_size_type_t<T>,
-    //         decltype(declval<T>().resize(declval<size_t>(),declval<size_t>()))
-    //     >
-    // > : true_type {};
-
-    // template <typename T>
-    // struct is_resizeable2d<T, 
-    //     std::void_t<
-    //         enable_if_has_size_type_t<T>,
-    //         decltype(declval<T>().resize(declval<typename T::size_type>(),declval<typename T::size_type>()))
-    //     >
-    // > : true_type {};
-
-    // template <typename T>
-    // static constexpr auto is_resizeable2d_v = is_resizeable2d<T>::value;
-
-    /**
      * @brief check if std::tuple_size<T> is valid for T
      * should be true for std::array, std::tuple, std::pair
      * 
@@ -334,6 +133,7 @@ namespace nmtools::meta {
     template <typename T, typename=void>
     struct has_tuple_size : std::false_type {};
 
+    // TODO: remove metafunctions
     /**
      * @brief specialization of has_tuple_size when tuple_size<T> is well-formed
      * 
@@ -351,6 +151,7 @@ namespace nmtools::meta {
     template <typename T>
     inline constexpr bool has_tuple_size_v = has_tuple_size<T>::value;
 
+    // TODO cleanup metafunctions
     /**
      * @brief helper alias template combining remove_cv and remove_reference
      * 
@@ -371,9 +172,6 @@ namespace nmtools::meta {
      */
     template <typename>
     struct is_tuple : std::false_type {};
-
-    template <typename ...Args>
-    struct is_tuple<std::tuple<Args...>> : std::true_type {};
 
     /**
      * @brief helper variable template to check if given type is tuple
@@ -405,12 +203,6 @@ namespace nmtools::meta {
     template <typename T>
     inline constexpr bool is_bounded_array_v = is_bounded_array<T>::value;
 
-    template <template<typename...> typename T, typename...>
-    struct is_template_instantiable : std::false_type {};
-    
-    template <template<typename...> typename T, typename U, typename ...Args>
-    struct is_template_instantiable<T,T<U,Args...>> : std::true_type {};
-
     /**
      * @brief check if type T has operator at with size_type as single argument.
      * 
@@ -421,6 +213,7 @@ namespace nmtools::meta {
     template <typename T, typename size_type, typename=void>
     struct has_at : false_type {};
 
+    // TODO: cleanup metafunctions
     /**
      * @brief specialization of has_at for true case.
      * Enabled if T has operator at with size_type as single argument,
@@ -442,38 +235,6 @@ namespace nmtools::meta {
      */
     template <typename T, typename size_type>
     inline constexpr bool has_at_v = has_at<T,size_type>::value;
-
-    /**
-     * @brief check if type T has operator at with size_type as single argument.
-     * 
-     * @tparam T type to check.
-     * @tparam size_type argument type.
-     * @tparam typename=void 
-     */
-    template <typename T, typename size_type, typename=void>
-    struct has_at2d : false_type {};
-
-    /**
-     * @brief specialization of has_at for true case.
-     * Enabled if T has operator at with size_type as single argument,
-     * e.g. declval<T>().at(i,i), with i of size_type, is well-formed.
-     * 
-     * @tparam T type to check
-     * @tparam size_type argument type
-     */
-    template <typename T, typename size_type>
-    struct has_at2d<T,size_type,
-        void_t<decltype(declval<T>().at(declval<size_type>(),declval<size_type>()))>
-    > : true_type {};
-
-    /**
-     * @brief helper variable template for has_at2d
-     * 
-     * @tparam T type to check
-     * @tparam size_type argument type
-     */
-    template <typename T, typename size_type>
-    inline constexpr bool has_at2d_v = has_at2d<T,size_type>::value;
 
     namespace detail
     {
@@ -594,6 +355,7 @@ namespace nmtools::meta {
         template <typename T, typename Is, typename=void>
         struct template_get_helper {};
 
+        // TODO: remove
         using std::get;
 
         template <typename T, auto...Is>
@@ -634,7 +396,7 @@ namespace nmtools::meta {
      * 
      * @tparam T type to check
      * @tparam size_type argument type to indexing subscript
-     * @tparam typename customizaiton point
+     * @tparam typename customization point
      * @see expr::square_bracket
      */
     template <typename T, typename size_type, typename=void>
@@ -680,6 +442,7 @@ namespace nmtools::meta {
     template <typename T, typename...size_types>
     inline constexpr bool is_resizeable_nd_v = is_resizeable_nd<T,size_types...>::value;
 
+    // TODO: cleanup metafunctions
     /**
      * @brief check if given type T is resizeable (1D).
      *
@@ -723,6 +486,7 @@ namespace nmtools::meta {
     template <typename T>
     inline constexpr bool is_resizeable_v = is_resizeable<T>::value;
 
+    // TODO: cleanup metafunctions
     /**
      * @brief check if given type T is resizeable (2D).
      *
@@ -957,35 +721,6 @@ namespace nmtools::meta {
     inline constexpr bool has_bracket2d_v = has_bracket2d<T,size_type>::value;
 
     /**
-     * @brief check if T is nested 2d array,
-     * default is false unless specialization is provided.
-     * 
-     * @tparam T 
-     * @tparam typename=void 
-     */
-    template <typename T, typename=void>
-    struct is_nested_array2d : false_type {};
-
-    /**
-     * @brief specialization of is_nested_array2d when
-     * expression T{}[0][0] is well-formed;
-     * 
-     * @tparam T type to check.
-     */
-    template <typename T>
-    struct is_nested_array2d<T,
-        void_t<decltype(std::declval<T>()[0][0])>
-    > : true_type {};
-
-    /**
-     * @brief helper variable template to check if T is_nested_array2d.
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    inline constexpr bool is_nested_array2d_v = is_nested_array2d<T>::value;
-
-    /**
      * @brief check if given type T is std::integral_constant
      * 
      * @tparam T type to check
@@ -1000,238 +735,12 @@ namespace nmtools::meta {
     struct is_integral_constant<const T&> : is_integral_constant<T> {}; 
 
     /**
-     * @brief check if given type T is std::integral_constant
-     * 
-     * @tparam T type to check
-     */
-    template <typename T, auto N>
-    struct is_integral_constant<std::integral_constant<T,N>> : true_type {};
-
-    /**
      * @brief helper inline variable to check if given type T is std::integral_constant
      * 
      * @tparam T type to check
      */
     template <typename T>
     inline constexpr bool is_integral_constant_v = is_integral_constant<T>::value;
-
-    namespace detail {
-        template <template <typename...> typename trait, typename type_list, typename=void>
-        struct apply_disjunction_helper
-        {
-            static constexpr auto value = fail_t{};
-        }; // apply_disjunction_helper
-
-        template <template <typename...> typename trait, typename T, typename...Ts>
-        struct apply_disjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)==0)>>
-        {
-            static constexpr auto value = trait<T>::value;
-        }; // apply_disjunction_helper
-
-        template <template <typename...> typename trait, typename T, typename U>
-        struct apply_disjunction_helper<trait,std::pair<T,U>>
-        {
-            static constexpr auto value = trait<T>::value || trait<U>::value;
-        }; // apply_disjunction_helper
-
-        template <template <typename...> typename trait, typename T, typename...Ts>
-        struct apply_disjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)>0)>>
-        {
-            static constexpr auto value = trait<T>::value || apply_disjunction_helper<trait,std::tuple<Ts...>>::value;
-        }; // apply_disjunction_helper
-
-        template <template <typename...> typename trait, typename type_list, typename=void>
-        struct apply_conjunction_helper
-        {
-            static constexpr auto value = fail_t{};
-        }; // apply_conjunction_helper
-
-        template <template <typename...> typename trait, typename T, typename...Ts>
-        struct apply_conjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)==0)>>
-        {
-            static constexpr auto value = trait<T>::value;
-        }; // apply_conjunction_helper
-
-        template <template <typename...> typename trait, typename T, typename U>
-        struct apply_conjunction_helper<trait,std::pair<T,U>,void>
-        {
-            static constexpr auto value = trait<T>::value && trait<U>::value;
-        }; // apply_conjunction_helper
-
-        template <template <typename...> typename trait, typename T, typename...Ts>
-        struct apply_conjunction_helper<trait,std::tuple<T,Ts...>,std::enable_if_t<(sizeof...(Ts)>0)>>
-        {
-            static constexpr auto value = trait<T>::value && apply_conjunction_helper<trait,std::tuple<Ts...>>::value;
-        }; // apply_conjunction_helper
-    } // namespace detail
-
-    /**
-     * @brief check if any type in type_list satisfy trait
-     * 
-     * @tparam type_list type list to be checked
-     * @tparam trait template template parameter corresponding to trait to be satisfied
-     */
-    template <template <typename...> typename trait, typename type_list>
-    struct apply_disjunction
-    {
-        static inline constexpr auto impl_value = detail::apply_disjunction_helper<trait,type_list>::value;
-        using value_type = decltype(impl_value);
-        // make false on fail (value_type==fail_t)
-        static inline constexpr auto value = detail::fail_to_false(impl_value);
-    }; // apply_disjunction
-
-    /**
-     * @brief helper variable template to check if all type in type_list satisfy trait
-     * 
-     * @tparam type_list type list to be checked
-     * @tparam trait template template parameter corresponding to trait to be satisfied
-     */
-    template <template <typename...> typename trait, typename type_list>
-    static constexpr auto apply_disjunction_v = apply_disjunction<trait,type_list>::value;
-
-    /**
-     * @brief check if all type in type_list satisfy trait
-     * 
-     * @tparam type_list type list to be checked
-     * @tparam trait template template parameter corresponding to trait to be satisfied
-     */
-    template <template <typename...> typename trait, typename type_list>
-    struct apply_conjunction
-    {
-        static inline constexpr auto impl_value = detail::apply_conjunction_helper<trait,type_list>::value;
-        using value_type = decltype(impl_value);
-        // make false on fail (value_type==fail_t)
-        static inline constexpr auto value = detail::fail_to_false(impl_value);
-    }; // apply_conjunction
-
-    /**
-     * @brief helper variable template to check if any type in type_list satisfy trait
-     * 
-     * @tparam type_list type list to be checked
-     * @tparam trait template template parameter corresponding to trait to be satisfied
-     */
-    template <template <typename...> typename trait, typename type_list>
-    static constexpr auto apply_conjunction_v = apply_conjunction<trait,type_list>::value;
-
-    /**
-     * @brief alias for appply_disjunction
-     * 
-     * @tparam type_list type list to be checked
-     * @tparam trait template template parameter corresponding to trait to be satisfied
-     */
-    template <template <typename...> typename trait, typename type_list>
-    struct apply_logical_or : apply_disjunction<trait, type_list> {};
-
-    /**
-     * @brief alias for apply_conjunction
-     * 
-     * @tparam type_list type list to be checked
-     * @tparam trait template template parameter corresponding to trait to be satisfied
-     */
-    template <template <typename...> typename trait, typename type_list>
-    struct apply_logical_and : apply_conjunction<trait, type_list> {};
-
-    /**
-     * @brief helper variable template for apply_logical_or
-     * 
-     * @tparam type_list type list to be checked
-     * @tparam trait template template parameter corresponding to trait to be satisfied
-     */
-    template <template <typename...> typename trait, typename type_list>
-    static inline constexpr auto apply_logical_or_v = apply_logical_or<trait,type_list>::value;
-
-    /**
-     * @brief helper variable template for apply_logical_and
-     * 
-     * @tparam type_list type list to be checked
-     * @tparam trait template template parameter corresponding to trait to be satisfied
-     */
-    template <template <typename...> typename trait, typename type_list>
-    static inline constexpr auto apply_logical_and_v = apply_logical_and<trait,type_list>::value;
-
-    /**
-     * @brief alias for std::conjuction
-     * 
-     * @tparam Ts types that has value static constexpr member variable
-     */
-    template <typename...Ts>
-    struct logical_and : std::conjunction<Ts...> {};
-
-    template <typename...Ts>
-    static constexpr inline auto logical_and_v = logical_and<Ts...>::value;
-
-    /**
-     * @brief alias for std::disjunction
-     * 
-     * @tparam Ts types that has value static constexpr member variable
-     */
-    template <typename...Ts>
-    struct logical_or : std::disjunction<Ts...> {};
-
-    template <typename...Ts>
-    static constexpr inline auto logical_or_v = logical_or<Ts...>::value;
-
-    /**
-     * @brief alias for std::negation
-     * 
-     * @tparam Ts types that has value static constexpr member variable
-     */
-    template <typename T>
-    struct logical_not : std::negation<T> {};
-
-    template <typename T>
-    static constexpr inline auto logical_not_v = logical_not<T>::value;
-
-    namespace detail
-    {
-        template <typename always_void, template<typename...>typename predicate, typename T, template<typename...> typename trait, template<typename...> typename...traits>
-        struct compose_trait_helper
-        {
-            static constexpr auto value = predicate<trait<T>,traits<T>...>::value;
-        };
-    } // namespace detail
-
-    /**
-     * @brief given type T and variadic traits, perform logical_and on trait<T> for each trait in traits
-     * 
-     * @tparam T type to check
-     * @tparam traits template template parameter resulting static constexpr member variable value
-     */
-    template <typename T, template<typename...> typename...traits>
-    struct compose_logical_and
-    {
-        static constexpr auto value = detail::compose_trait_helper<void,logical_and,T,traits...>::value;
-    }; // compose_logical_and
-
-    /**
-     * @brief given type T and variadic traits, perform logical_or on trait<T> for each trait in traits
-     * 
-     * @tparam T type to check
-     * @tparam traits template template parameter resulting static constexpr member variable value
-     */
-    template <typename T, template<typename...> typename...traits>
-    struct compose_logical_or
-    {
-        static constexpr auto value = detail::compose_trait_helper<void,logical_or,T,traits...>::value;
-    }; // compose_logical_or
-
-    /**
-     * @brief alias variable template for compose_logical_and
-     * 
-     * @tparam T type to check
-     * @tparam traits template template parameter resulting static constexpr member variable value
-     */
-    template <typename T, template<typename...> typename...traits>
-    static inline constexpr auto compose_logical_and_v = compose_logical_and<T,traits...>::value;
-
-    /**
-     * @brief alias variable template for compose_logical_or
-     * 
-     * @tparam T type to check
-     * @tparam traits template template parameter resulting static constexpr member variable value
-     */
-    template <typename T, template<typename...> typename...traits>
-    static inline constexpr auto compose_logical_or_v = compose_logical_or<T,traits...>::value;
 
     /**
      * @brief check if given type T is specialization of template-template param primary_template
@@ -1268,11 +777,6 @@ namespace nmtools::meta {
 
     template <typename T>
     inline constexpr auto is_bit_reference_v = is_bit_reference<T>::value;
-
-#if defined(NMTOOLS_HAS_VECTOR) && (NMTOOLS_HAS_VECTOR)
-    template <>
-    struct is_bit_reference<std::vector<bool>::reference> : std::true_type {};
-#endif
 
     /**
      * @brief check if type T is boolean
@@ -1357,6 +861,7 @@ namespace nmtools::meta {
     template <typename T>
     struct is_signed : std::false_type {};
 
+// TODO: do not use std::true_type / std::false_type, define value instead
 #define NMTOOLS_META_REGISTER_IS_SIGNED(type, signed) \
     template <> \
     struct is_signed<type> : std::signed##_type {}; \
@@ -1370,12 +875,6 @@ namespace nmtools::meta {
     NMTOOLS_META_REGISTER_IS_SIGNED(uint64_t,false);
     NMTOOLS_META_REGISTER_IS_SIGNED(uint16_t,false);
     NMTOOLS_META_REGISTER_IS_SIGNED(uint8_t, false);
-
-    template <int value>
-    struct is_signed<std::integral_constant<int,value>> : std::true_type {};
-
-    template <size_t value>
-    struct is_signed<std::integral_constant<size_t,value>> : std::false_type {};
 
 #undef NMTOOLS_META_REGISTER_IS_SIGNED
 
@@ -1403,6 +902,8 @@ namespace nmtools::meta {
         meta::is_integral_constant_v<T>
     > > : std::true_type {};
 
+    // TODO: do not directly use detail::fail_t,
+    // define specific error type instead
     /**
      * @brief Return the length of fixed index array.
      *
@@ -1421,18 +922,6 @@ namespace nmtools::meta {
     struct fixed_index_array_size<T[N],std::enable_if_t<is_index_v<T>>>
     {
         static constexpr auto value = N;
-    };
-
-    template <typename T, size_t N>
-    struct fixed_index_array_size<std::array<T,N>,std::enable_if_t<is_index_v<T>>>
-    {
-        static constexpr auto value = N;
-    };
-
-    template <typename...Ts>
-    struct fixed_index_array_size<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>>
-    {
-        static constexpr auto value = sizeof...(Ts);
     };
 
     template <typename T>
@@ -1454,12 +943,6 @@ namespace nmtools::meta {
 
     template <typename T, size_t N>
     struct is_fixed_index_array<T[N],std::enable_if_t<is_index_v<T>>> : std::true_type {};
-
-    template <typename T, size_t N>
-    struct is_fixed_index_array<std::array<T,N>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
-
-    template <typename...Ts>
-    struct is_fixed_index_array<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>> : std::true_type {};
 
     /**
      * @brief Check if type T is hybrid_index_array.
@@ -1489,13 +972,6 @@ namespace nmtools::meta {
     template <typename T, typename=void>
     struct is_constant_index_array : std::false_type {};
 
-    template <typename...Ts>
-    struct is_constant_index_array<std::tuple<Ts...>,std::enable_if_t<(is_constant_index_v<Ts> && ...)>> : std::true_type {};
-
-    // some edge case for array
-    template <typename T, size_t N>
-    struct is_constant_index_array<std::array<T,N>,std::enable_if_t<is_constant_index_v<T>>> : std::true_type {};
-
     template <typename T>
     inline constexpr auto is_constant_index_array_v = is_constant_index_array<T>::value;
 
@@ -1510,11 +986,6 @@ namespace nmtools::meta {
 
     template <typename T>
     inline constexpr auto is_dynamic_index_array_v = is_dynamic_index_array<T>::value;
-
-#if defined(NMTOOLS_HAS_VECTOR) && (NMTOOLS_HAS_VECTOR)
-    template <typename T>
-    struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
-#endif // NMTOOLS_HAS_VECTOR
 
     /**
      * @brief Check if type `T` is index array
@@ -1546,9 +1017,6 @@ namespace nmtools::meta {
     template <typename T, typename=void>
     struct is_either : std::false_type{};
 
-    template <typename left_t, typename right_t>
-    struct is_either<std::variant<left_t,right_t>> : std::true_type {};
-
     template <typename T>
     constexpr inline auto is_either_v = is_either<T>::value;
 
@@ -1562,9 +1030,6 @@ namespace nmtools::meta {
      */
     template <typename T, typename=void>
     struct is_maybe : std::false_type {};
-
-    template <typename T>
-    struct is_maybe<std::optional<T>> : std::true_type {};
 
     template <typename T>
     constexpr inline auto is_maybe_v = is_maybe<T>::value;
@@ -1632,12 +1097,6 @@ namespace nmtools::meta {
     };
 
     template <typename T>
-    struct get_maybe_type<std::optional<T>>
-    {
-        using type = T;
-    };
-
-    template <typename T>
     using get_maybe_type_t = typename get_maybe_type<T>::type;
 
     /**
@@ -1653,12 +1112,6 @@ namespace nmtools::meta {
     struct replace_either
     {
         using type = either_t;
-    };
-
-    template <typename left_t, typename right_t, typename Left, typename Right>
-    struct replace_either<std::variant<left_t,right_t>,Left,Right>
-    {
-        using type = std::variant<Left,Right>;
     };
 
     template <typename either_t, typename Left, typename Right>
