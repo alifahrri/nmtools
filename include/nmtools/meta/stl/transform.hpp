@@ -19,8 +19,12 @@ namespace nmtools::meta
     template <typename T>
     using make_maybe_type_t = type_t<make_maybe_type<T>>;
 
+    // TODO: remove
     // std::nullopt_t has no default constructor
     inline constexpr auto nothing = ::std::nullopt;
+
+    // constant to represents nothing type
+    inline constexpr auto Nothing = ::std::nullopt;
 
     // useful for detect nothing
     using nothing_t = meta::remove_cvref_t<decltype(nothing)>;
