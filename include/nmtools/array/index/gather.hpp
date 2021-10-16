@@ -43,26 +43,30 @@ namespace nmtools
             // get the size of indices
             [[maybe_unused]] auto m = len(indices);
 
-            using std::tuple_size_v;
             using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
             auto ret = return_t{};
 
             if constexpr (meta::is_resizeable_v<return_t>)
                 ret.resize(m);
             
-            auto gather_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
+            [[maybe_unused]] auto gather_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
                 auto idx   = at(indices,i);
+                // TODO: drop tuple w/ runtime value, do not use tuple_at
                 auto value = tuple_at(vec,idx);
                 at(ret,i)  = value;
             }; // gather_impl
 
-            if constexpr (meta::has_tuple_size_v<indices_t>)
-                meta::template_for<tuple_size_v<indices_t>>([&](auto i){
-                    gather_impl(ret, vec, indices, i);
-                });
-            else
-                for (size_t i=0; i<m; i++)
-                    gather_impl(ret, vec, indices, i);
+            // assume the result is computed at compile-time if its constant index array
+            if constexpr (!meta::is_constant_index_array_v<return_t>) {
+                if constexpr (meta::is_fixed_index_array_v<indices_t>)
+                    meta::template_for<meta::len_v<indices_t>>([&](auto i){
+                        gather_impl(ret, vec, indices, i);
+                    });
+                else
+                    for (size_t i=0; i<m; i++)
+                        gather_impl(ret, vec, indices, i);
+            }
+
             return ret;
         } // gather
     } // namespace index
@@ -83,7 +87,22 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             using element_t = remove_cvref_t<get_element_or_common_type_t<vector_t>>;
-            if constexpr (
+            if constexpr (is_constant_index_array_v<vector_t>
+                && is_constant_index_array_v<indices_t>
+            ) {
+                constexpr auto vector  = to_value_v<vector_t>;
+                constexpr auto indices = to_value_v<indices_t>;
+                constexpr auto result  = index::gather(vector,indices);
+                // assuming len(result) > 0
+                // transform back to type
+                using init_type = make_tuple_t<ct<at(result,0)>>;
+                return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
+                    using init_t   = type_t<decltype(init)>;
+                    using result_i = ct<at(result,index+1)>;
+                    using result_t = append_type_t<init_t,result_i>;
+                    return as_value_v<result_t>;
+                }, as_value_v<init_type>);
+            } else if constexpr (
                 is_dynamic_index_array_v<indices_t>
             ) // whenever indices is dynamic, chose it
                 return as_value_v<replace_element_type_t<indices_t,element_t>>;
