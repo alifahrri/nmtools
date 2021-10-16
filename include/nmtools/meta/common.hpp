@@ -63,7 +63,8 @@ namespace nmtools::meta::detail
 
     // inline variable for convinience
     constexpr inline auto Fail = fail_t{};
-        
+
+    // TODO: remove 
     /**
      * @brief helper metafunction to transform fail_t to void
      *
@@ -78,6 +79,7 @@ namespace nmtools::meta::detail
         using type = T;
     }; // fail_to_void
 
+    // TODO: remove
     /**
      * @brief actual case for fail_to_void when T is fail_T
      * 
@@ -88,7 +90,8 @@ namespace nmtools::meta::detail
     {
         using type = void;
     }; // fail_to_void
-        
+
+    // TODO: remove
     /**
      * @brief helper alias template to fail_to_void
      * 
@@ -97,6 +100,7 @@ namespace nmtools::meta::detail
     template <typename T>
     using fail_to_void_t = typename fail_to_void<T>::type;
 
+    // TODO: remove
     /**
      * @brief maps void type to fail_t type.
      *
@@ -112,6 +116,7 @@ namespace nmtools::meta::detail
         using type = T;
     }; // void_to_fail
 
+    // TODO: remove
     /**
      * @brief actual case for void_to_fail when T is void
      * 
@@ -123,6 +128,7 @@ namespace nmtools::meta::detail
         using type = fail_t;
     };
 
+    // TODO: remove
     /**
      * @brief helper alias template for void_to_fail.
      * 
@@ -131,6 +137,7 @@ namespace nmtools::meta::detail
     template <typename T>
     using void_to_fail_t = typename void_to_fail<T>::type;
 
+    // TODO: remove
     /**
      * @brief helper function to map fail_t to bool as false
      * 
@@ -142,6 +149,7 @@ namespace nmtools::meta::detail
         return v;
     } // fail_to_false
 
+    // TODO: remove
     /**
      * @brief helper function to map fail_t to bool as false
      * 
@@ -152,6 +160,23 @@ namespace nmtools::meta::detail
         return false;
     } // fail_to_false
 
+    /**
+     * @brief To provide enable_if without depends to stl
+     * 
+     * @tparam condition 
+     * @tparam T 
+     */
+    template <bool condition, typename T=void>
+    struct enable_if {};
+
+    template <typename T>
+    struct enable_if<true, T>
+    {
+        using type = T;
+    };
+
+    template <bool condition, typename T>
+    using enable_if_t = type_t<enable_if<condition,T>>;
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_COMMON_HPP
