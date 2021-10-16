@@ -68,6 +68,7 @@ endif (NMTOOLS_TEST_ALL)
 
 set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/argfilter.cpp
+    src/doctest/array/index/argsort.cpp
     src/doctest/array/index/broadcast_shape.cpp
     src/doctest/array/index/broadcast_to.cpp
     src/doctest/array/index/choose.cpp
@@ -84,6 +85,7 @@ set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/ndenumerate.cpp
     src/doctest/array/index/ndindex.cpp
     src/doctest/array/index/nonzero.cpp
+    src/doctest/array/index/normalize_axis.cpp
     src/doctest/array/index/outer.cpp
     src/doctest/array/index/remove_dims.cpp
     src/doctest/array/index/remove_single_dims.cpp
@@ -143,6 +145,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/full.cpp
     src/doctest/array/view/matmul.cpp
     src/doctest/array/view/mean.cpp
+    src/doctest/array/view/moveaxis.cpp
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
     src/doctest/array/view/ones.cpp
@@ -285,6 +288,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/full.cpp
     src/doctest/array/array/matmul.cpp
     src/doctest/array/array/mean.cpp
+    src/doctest/array/array/moveaxis.cpp
     src/doctest/array/array/ones.cpp
     src/doctest/array/array/pad.cpp
     src/doctest/array/array/prod.cpp
