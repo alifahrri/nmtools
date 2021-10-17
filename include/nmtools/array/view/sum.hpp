@@ -42,13 +42,13 @@ namespace nmtools::view
     template <typename left_t, typename axis_t, typename dtype_t>
     constexpr auto sum(const left_t& a, const axis_t& axis, dtype_t dtype)
     {
-        return sum(a,axis,dtype,None);
+        return view::sum(a,axis,dtype,None);
     } // add
 
     template <typename left_t, typename axis_t>
     constexpr auto sum(const left_t& a, const axis_t& axis)
     {
-        return sum(a,axis,None,None);
+        return view::sum(a,axis,None,None);
     } // add
 } // namespace nmtools::view
 
