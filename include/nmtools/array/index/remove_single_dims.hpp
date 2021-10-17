@@ -71,7 +71,7 @@ namespace nmtools::meta
                 // assuming len(result) > 0
                 // transform back to type
                 using init_type = make_tuple_t<ct<at(result,0)>>;
-                return template_reduce<len(result)-1>([&](auto init, auto index){
+                return template_reduce<::nmtools::len(result)-1>([&](auto init, auto index){
                     using init_t   = type_t<decltype(init)>;
                     using result_i = ct<at(result,index+1)>;
                     using result_t = append_type_t<init_t,result_i>;
