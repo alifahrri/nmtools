@@ -3,3 +3,5 @@ docker/*
 .git/
 build/
 docs/
+.devcontainer
+!.devcontainer/.zshrc
