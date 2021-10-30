@@ -91,6 +91,33 @@ namespace nmtools
             return ret;
         }
     } // cast
+
+    /**
+     * @brief Overloaded version of cast that accept type as second params.
+     * 
+     * @tparam src_t source array type
+     * @tparam dst_t desired array type
+     * @param array source array
+     * @return constexpr auto 
+     */
+    template <typename src_t, typename dst_t>
+    constexpr auto cast(const src_t& array, const meta::as_value<dst_t>)
+    {
+        // assume dst_t is default-constructible
+        auto ret = dst_t{};
+        if constexpr (meta::is_resizeable_v<dst_t>) {
+            detail::apply_resize(ret, ::nmtools::shape(array));
+        }
+        auto ret_view = view::mutable_flatten(ret);
+        auto arr_view = view::flatten(array);
+        auto n = len(arr_view);
+
+        for (size_t i=0; i<n; i++) {
+            at(ret_view,i) = at(arr_view,i);
+        }
+
+        return ret;
+    }
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_UTILITY_CAST_HPP

@@ -1,0 +1,19 @@
+<!doctype html>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<html>
+  <div id="log"></div>
+  <script src="manip.js"></script>
+  <script>
+    Module.onRuntimeInitialized = _ => {
+      // TODO: maybe create class with convinience constructor
+      var a = new Object();
+      a.data = new Int32Array([1,2,3,4,5,6,7,8,9,10,11,12]);
+      a.shape = new Int32Array([2,3,2]);
+
+      // use stringify to prettier print
+      const transpose_result = JSON.stringify(Module.transpose_i32(a));
+      document.getElementById('log').innerHTML += ('transpose result: ' + transpose_result + '\n');
+    };
+  </script>
+</html>
