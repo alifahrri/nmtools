@@ -99,7 +99,7 @@ namespace nmtools::view::detail
         auto adim = len(ashape);
         auto bdim = len(bshape);
         using dim_t   = decltype(adim);
-        using tuple_t = meta::make_tuple_t<dim_t,dim_t>;
+        using tuple_t = meta::make_tuple_type_t<dim_t,dim_t>;
         auto [h_dim, l_dim] = (adim > bdim) ? tuple_t{adim,bdim} : tuple_t{bdim,adim};
 
         // check matrix shape
@@ -440,10 +440,10 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (is_dynamic_index_array_v<shape_t>) {
-                using type = make_tuple_t<shape_t,shape_t>;
+                using type = make_tuple_type_t<shape_t,shape_t>;
                 return as_value_v<type>;
             } else if constexpr (is_hybrid_index_array_v<shape_t>) {
-                using type = make_tuple_t<shape_t,shape_t>;
+                using type = make_tuple_type_t<shape_t,shape_t>;
                 return as_value_v<type>;
             } else if constexpr (is_constant_index_array_v<shape_t>) {
                 // not supported yet
@@ -453,7 +453,7 @@ namespace nmtools::meta
                 constexpr auto max_elements = fixed_index_array_size_v<shape_t>;
                 using element_t = get_element_type_t<shape_t>;
                 using hybrid_t  = make_hybrid_ndarray_t<element_t,max_elements,1>;
-                using type = make_tuple_t<hybrid_t,hybrid_t>;
+                using type = make_tuple_type_t<hybrid_t,hybrid_t>;
                 return as_value_v<type>;
             } else if constexpr (is_fixed_index_array_v<shape_t> && is_constant_index_v<split_t>) {
                 // number of dimension of the array
@@ -469,11 +469,11 @@ namespace nmtools::meta
                 }();
                 using element_t = get_element_type_t<shape_t>;
 
-                using left_size_t  = make_tuple_t<ct<i>>;
-                using right_size_t = make_tuple_t<ct<N-i>>;
+                using left_size_t  = make_tuple_type_t<ct<i>>;
+                using right_size_t = make_tuple_type_t<ct<N-i>>;
                 using left_t  = make_fixed_ndarray_t<element_t,left_size_t>;
                 using right_t = make_fixed_ndarray_t<element_t,right_size_t>;
-                using type    = make_tuple_t<left_t,right_t>;
+                using type    = make_tuple_type_t<left_t,right_t>;
                 return as_value_v<type>;
             } else {
                 return as_value_v<error::SPLIT_INDEX_UNSUPPORTED>;

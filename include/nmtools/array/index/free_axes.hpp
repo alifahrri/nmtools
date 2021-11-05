@@ -3,7 +3,6 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/shape.hpp"
 
 namespace nmtools::index
@@ -36,7 +35,7 @@ namespace nmtools::index
         
         auto free_axes_impl = [&](auto i){
             // @todo support type list (tuple of int constant)
-            using idx_t = std::make_signed_t<decltype(m-i-1)>;
+            using idx_t = meta::make_signed_t<decltype(m-i-1)>;
             idx_t bi = n - i - 1;
             idx_t si = s - i - 1;
             auto free = (bi < 0);

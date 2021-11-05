@@ -1,7 +1,6 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_TRANSPOSE_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_TRANSPOSE_HPP
 
-#include "nmtools/array/view/transpose.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
@@ -34,8 +33,6 @@ inline auto name##_h = cast(name, kind::hybrid);
 NMTOOLS_TESTING_DECLARE_CASE(transpose)
 {
     using namespace nmtools::literals;
-    using nmtools::utils::isclose;
-    using nmtools::utils::isequal;
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {

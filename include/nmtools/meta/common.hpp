@@ -18,6 +18,54 @@ namespace nmtools::meta
      */
     template <typename T>
     static inline constexpr auto value_v = T::value;
+
+    struct false_type
+    {
+        using value_type = bool;
+        static constexpr auto value = false;
+        operator value_type()
+        {
+            return value;
+        }
+    };
+
+    struct true_type
+    {
+        using value_type = bool;
+        static constexpr auto value = true;
+        operator value_type()
+        {
+            return value;
+        }
+    };
+
+
+    /**
+     * @brief To provide enable_if without depends to stl
+     * 
+     * @tparam condition 
+     * @tparam T 
+     */
+    template <bool condition, typename T=void>
+    struct enable_if {};
+
+    template <typename T>
+    struct enable_if<true, T>
+    {
+        using type = T;
+    };
+
+    template <bool condition, typename T=void>
+    using enable_if_t = type_t<enable_if<condition,T>>;
+
+    template <typename T, typename U>
+    struct is_same : false_type {};
+
+    template <typename T>
+    struct is_same<T,T> : true_type {};
+
+    template <typename T, typename U>
+    constexpr inline auto is_same_v = is_same<T,U>::value;
 } // nmtools::meta
 
 namespace nmtools::meta
@@ -159,24 +207,6 @@ namespace nmtools::meta::detail
     {
         return false;
     } // fail_to_false
-
-    /**
-     * @brief To provide enable_if without depends to stl
-     * 
-     * @tparam condition 
-     * @tparam T 
-     */
-    template <bool condition, typename T=void>
-    struct enable_if {};
-
-    template <typename T>
-    struct enable_if<true, T>
-    {
-        using type = T;
-    };
-
-    template <bool condition, typename T>
-    using enable_if_t = type_t<enable_if<condition,T>>;
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_COMMON_HPP

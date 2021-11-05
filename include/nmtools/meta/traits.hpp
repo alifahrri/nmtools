@@ -25,12 +25,8 @@ namespace nmtools::meta {
     * @{ 
     */
 
-   
-    using std::false_type;
-    using std::true_type;
     using std::declval;
     using std::void_t;
-    using std::enable_if_t;
 
     // TODO: cleanup metafunctions
     /**
@@ -76,7 +72,7 @@ namespace nmtools::meta {
      * @tparam void 
      */
     template <typename T, typename = void>
-    struct has_size_type : std::false_type {};
+    struct has_size_type : false_type {};
 
     /**
      * @brief specialization when T actually size_type
@@ -86,7 +82,7 @@ namespace nmtools::meta {
     template <typename T>
     struct has_size_type<T,
         std::void_t<typename T::size_type>
-    > : std::true_type {};
+    > : true_type {};
 
     // TODO: remove metafunctions
     /**
@@ -104,7 +100,7 @@ namespace nmtools::meta {
      * @tparam typename=void 
      */
     template <typename T, typename=void>
-    struct has_value_type : std::false_type {};
+    struct has_value_type : false_type {};
 
     // TODO: cleanup metafunctions
     /**
@@ -113,7 +109,7 @@ namespace nmtools::meta {
      * @tparam T type to check
      */
     template <typename T>
-    struct has_value_type<T, std::void_t<typename T::value_type> > : std::true_type {};
+    struct has_value_type<T, std::void_t<typename T::value_type> > : true_type {};
 
     /**
      * @brief helper variable template to check if T has member type value_type
@@ -123,6 +119,15 @@ namespace nmtools::meta {
     template <typename T>
     inline constexpr bool has_value_type_v = has_value_type<T>::value;
 
+    template <typename T>
+    struct is_void : false_type {};
+
+    template <>
+    struct is_void<void> : true_type {};
+
+    template <typename T>
+    constexpr inline auto is_void_v  = is_void<T>::value;
+
     /**
      * @brief check if std::tuple_size<T> is valid for T
      * should be true for std::array, std::tuple, std::pair
@@ -131,7 +136,7 @@ namespace nmtools::meta {
      * @tparam typename=void 
      */
     template <typename T, typename=void>
-    struct has_tuple_size : std::false_type {};
+    struct has_tuple_size : false_type {};
 
     // TODO: remove metafunctions
     /**
@@ -140,7 +145,7 @@ namespace nmtools::meta {
      * @tparam T type to check
      */
     template <typename T>
-    struct has_tuple_size<T, std::void_t<typename std::tuple_size<T>::type>> : std::true_type {};
+    struct has_tuple_size<T, std::void_t<typename std::tuple_size<T>::type>> : true_type {};
 
     /**
      * @brief helper variable template to check if std::tuple_size<T> is valid
@@ -171,7 +176,7 @@ namespace nmtools::meta {
      * The choice of the name, tuple, is from haskell Tuple.
      */
     template <typename>
-    struct is_tuple : std::false_type {};
+    struct is_tuple : false_type {};
 
     /**
      * @brief helper variable template to check if given type is tuple
@@ -190,10 +195,10 @@ namespace nmtools::meta {
      * @tparam T 
      */
     template<typename T>
-    struct is_bounded_array: std::false_type {};
+    struct is_bounded_array: false_type {};
     
     template<typename T, std::size_t N>
-    struct is_bounded_array<T[N]> : std::true_type {};
+    struct is_bounded_array<T[N]> : true_type {};
 
     /**
      * @brief helper variable template to check if T is bounded array
@@ -749,10 +754,10 @@ namespace nmtools::meta {
      * @tparam primary_template primary template
      */
     template <typename T, template <typename...> typename primary_template>
-    struct is_specialization : std::false_type {};
+    struct is_specialization : false_type {};
 
     template <template <typename...> typename primary_template, typename... Args>
-    struct is_specialization<primary_template<Args...>, primary_template> : std::true_type {};
+    struct is_specialization<primary_template<Args...>, primary_template> : true_type {};
 
     /**
      * @brief helper alias template for is_specialization
@@ -773,7 +778,7 @@ namespace nmtools::meta {
      * @tparam typename 
      */
     template <typename T>
-    struct is_bit_reference : std::false_type {};
+    struct is_bit_reference : false_type {};
 
     template <typename T>
     inline constexpr auto is_bit_reference_v = is_bit_reference<T>::value;
@@ -784,7 +789,7 @@ namespace nmtools::meta {
      * @tparam T 
      */
     template <typename T>
-    struct is_boolean : std::false_type {};
+    struct is_boolean : false_type {};
 
     template <typename T>
     inline constexpr auto is_boolean_v = is_boolean<T>::value;
@@ -795,7 +800,7 @@ namespace nmtools::meta {
      * @tparam  
      */
     template <>
-    struct is_boolean<bool> : std::true_type {};
+    struct is_boolean<bool> : true_type {};
 
     /**
      * @brief Check if type T is compile-time index.
@@ -836,10 +841,34 @@ namespace nmtools::meta {
      * @tparam typename 
      */
     template <typename T, typename=void>
-    struct is_integer : std::is_integral<T> {};
+    struct is_integer : false_type {};
 
     template <typename T>
     constexpr inline auto is_integer_v = is_integer<T>::value;
+
+    template <typename T, typename=void>
+    struct is_integral : is_integer<T> {};
+
+    template <typename T>
+    constexpr inline auto is_integral_v = is_integral<T>::value;
+
+#define NMTOOLS_IS_INTEGER_TRAIT(type) \
+    template <> \
+    struct is_integer<type> : true_type {};
+
+    NMTOOLS_IS_INTEGER_TRAIT(short int)
+    NMTOOLS_IS_INTEGER_TRAIT(unsigned short int)
+
+    NMTOOLS_IS_INTEGER_TRAIT(int)
+    NMTOOLS_IS_INTEGER_TRAIT(unsigned int)
+
+    NMTOOLS_IS_INTEGER_TRAIT(long int)
+    NMTOOLS_IS_INTEGER_TRAIT(unsigned long int)
+
+    NMTOOLS_IS_INTEGER_TRAIT(long long int)
+    NMTOOLS_IS_INTEGER_TRAIT(unsigned long long int)
+
+#undef NMTOOLS_IS_INTEGER_TRAIT
 
     /**
      * @brief Check if type `T` is an index
@@ -859,9 +888,9 @@ namespace nmtools::meta {
     inline constexpr auto is_index_v = is_index<T>::value;
 
     template <typename T>
-    struct is_signed : std::false_type {};
+    struct is_signed : false_type {};
 
-// TODO: do not use std::true_type / std::false_type, define value instead
+// TODO: do not use true_type / false_type, define value instead
 #define NMTOOLS_META_REGISTER_IS_SIGNED(type, signed) \
     template <> \
     struct is_signed<type> : std::signed##_type {}; \
@@ -897,10 +926,10 @@ namespace nmtools::meta {
      * @tparam T 
      */
     template <typename T>
-    struct is_index<T, std::enable_if_t<
+    struct is_index<T, enable_if_t<
         std::is_integral_v<T> ||
         meta::is_integral_constant_v<T>
-    > > : std::true_type {};
+    > > : true_type {};
 
     // TODO: do not directly use detail::fail_t,
     // define specific error type instead
@@ -919,7 +948,7 @@ namespace nmtools::meta {
     };
 
     template <typename T, size_t N>
-    struct fixed_index_array_size<T[N],std::enable_if_t<is_index_v<T>>>
+    struct fixed_index_array_size<T[N],enable_if_t<is_index_v<T>>>
     {
         static constexpr auto value = N;
     };
@@ -936,13 +965,13 @@ namespace nmtools::meta {
      * @tparam typename 
      */
     template <typename T, typename=void>
-    struct is_fixed_index_array : std::false_type {};
+    struct is_fixed_index_array : false_type {};
 
     template <typename T>
     inline constexpr auto is_fixed_index_array_v = is_fixed_index_array<T>::value;
 
     template <typename T, size_t N>
-    struct is_fixed_index_array<T[N],std::enable_if_t<is_index_v<T>>> : std::true_type {};
+    struct is_fixed_index_array<T[N],enable_if_t<is_index_v<T>>> : true_type {};
 
     /**
      * @brief Check if type T is hybrid_index_array.
@@ -956,7 +985,7 @@ namespace nmtools::meta {
      * @tparam T type to check
      */
     template <typename T, typename=void>
-    struct is_hybrid_index_array : std::false_type {};
+    struct is_hybrid_index_array : false_type {};
 
     template <typename T>
     inline constexpr auto is_hybrid_index_array_v = is_hybrid_index_array<T>::value;
@@ -970,7 +999,7 @@ namespace nmtools::meta {
      * @tparam typename 
      */
     template <typename T, typename=void>
-    struct is_constant_index_array : std::false_type {};
+    struct is_constant_index_array : false_type {};
 
     template <typename T>
     inline constexpr auto is_constant_index_array_v = is_constant_index_array<T>::value;
@@ -982,7 +1011,7 @@ namespace nmtools::meta {
      * @tparam typename 
      */
     template <typename T, typename=void>
-    struct is_dynamic_index_array : std::false_type {};
+    struct is_dynamic_index_array : false_type {};
 
     template <typename T>
     inline constexpr auto is_dynamic_index_array_v = is_dynamic_index_array<T>::value;
@@ -1015,7 +1044,7 @@ namespace nmtools::meta {
      * @tparam typename sfinae point
      */
     template <typename T, typename=void>
-    struct is_either : std::false_type{};
+    struct is_either : false_type{};
 
     template <typename T>
     constexpr inline auto is_either_v = is_either<T>::value;
@@ -1029,7 +1058,7 @@ namespace nmtools::meta {
      * @tparam typename 
      */
     template <typename T, typename=void>
-    struct is_maybe : std::false_type {};
+    struct is_maybe : false_type {};
 
     template <typename T>
     constexpr inline auto is_maybe_v = is_maybe<T>::value;
@@ -1042,7 +1071,7 @@ namespace nmtools::meta {
      * @tparam T 
      */
     template <typename T>
-    struct is_nothing : std::false_type {};
+    struct is_nothing : false_type {};
 
     template <typename T>
     constexpr inline auto is_nothing_v = is_nothing<T>::value;

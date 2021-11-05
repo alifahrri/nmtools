@@ -15,7 +15,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/assert.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/array/index.hpp"
+#include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/utils/isequal.hpp"
 
@@ -90,7 +90,7 @@ namespace nmtools::utils
         template <typename T, typename U, typename E=double>
         constexpr auto isclose(const T& t, const U& u, [[maybe_unused]] E eps=static_cast<E>(1e-6))
         {
-            using ::nmtools::ndindex;
+            using ::nmtools::index::ndindex;
             // treat T & U as value
             constexpr auto t1 = meta::as_value_v<T>;
             constexpr auto t2 = meta::as_value_v<U>;

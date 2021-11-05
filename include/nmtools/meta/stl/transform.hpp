@@ -77,7 +77,7 @@ namespace nmtools::meta
     }; // make_tuple
 
     template <typename...Ts>
-    using make_tuple_t = type_t<make_tuple<Ts...>>;
+    using make_tuple_type_t = type_t<make_tuple<Ts...>>;
 #endif // NMTOOLS_META_MAKE_TUPLE
 
     // TODO: add make_tuple, make_either...
@@ -122,31 +122,51 @@ namespace nmtools::meta
         std::tuple<Ts...>
     >
     {
-        using tuple_type = type_list<Ts...>;
+        using tuple_type = std::tuple<Ts...>;
+        using error_type = error::TO_VALUE_UNSUPPORTED<std::tuple<Ts...>>;
         static constexpr auto value = [](){
             constexpr auto N = sizeof...(Ts);
-            // for simplicity, use int as value type for now
-            using array_type = std::array<int,N>;
+            // this can't compile: clang 10 & gcc 9.3
+            // gcc error: pack expansion argument for non-pack parameter
+            // clang error: pack expansion used as argument for non-pack parameter of alias template
+            // seems like related:
+            // - https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59498
+            // - https://stackoverflow.com/questions/57080425/clang-fails-to-expand-parameter-pack-in-stdfunction-instantiation
+            // using element_t  = promote_index_t<Ts...>;
+
+            /* trying to work-around but cannot make this work, both on gcc (9.3) and clang (10), */
+            // using element_t = typename promote_index<Ts...>::type;
+            // static_assert( is_index_v<element_t>, "nmtools internal error" );
+            // using array_type = std::array<element_t,N>;
             return meta::template_reduce<N>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 using init_t = remove_cvref_t<decltype(init)>;
-                using type_i = type_list_at_t<i,tuple_type>;
-                if constexpr (is_integral_constant_v<type_i>) {
+                using type_i = remove_cvref_t<std::tuple_element_t<i,tuple_type>>;
+                if constexpr (is_constant_index_v<type_i>) {
                     if constexpr (i==0) {
                         // starting point, create the array
+                        using element_t = typename type_i::value_type;
+                        using array_type = std::array<element_t,1>;
                         auto array = array_type{};
                         array[i] = type_i::value;
                         return array;
-                    } else if constexpr (std::is_same_v<init_t,error::TO_VALUE_UNSUPPORTED>) {
-                        return error::TO_VALUE_UNSUPPORTED{};
-                    } else {
-                        init[i] = type_i::value;
-                        return init;
+                    } else if constexpr (std::is_same_v<init_t,error_type>) {
+                        return error_type{};
+                    } else /* if constexpr (is_index_array_v<init_t>) */ {
+                        using value_type = typename type_i::value_type;
+                        using element_t  = promote_index_t<value_type,get_element_type_t<init_t>>;
+                        using array_type = std::array<element_t,i+1>;
+                        auto array = array_type{};
+                        for (size_t j=0; j<i; j++) {
+                            array[j] = init[j];
+                        }
+                        array[i] = type_i::value;
+                        return array;
                     }
                 } else {
-                    return error::TO_VALUE_UNSUPPORTED{};
+                    return error_type{};
                 }
-            }, error::TO_VALUE_UNSUPPORTED{});
+            }, error_type{});
         }();
     }; // to_value
 #endif

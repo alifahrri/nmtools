@@ -698,20 +698,7 @@ namespace nmtools::view
         {
             // here we directly provide operator() to actually performing operations,
             // instead of returning (transformed) index only
-            using ::nmtools::detail::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for broadcast_to view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto indices_ = pack_indices(indices...);
             // for now, assume axis is int and array is fixed_dim
             constexpr auto DIM = meta::fixed_dim_v<array_t>;
             // type for slicing is DIMx2 where 2 represent start and stop
@@ -794,20 +781,7 @@ namespace nmtools::view
         {
             // here we directly provide operator() to actually performing operations,
             // instead of returning (transformed) index only
-            using ::nmtools::detail::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for broadcast_to view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto indices_ = pack_indices(indices...);
             const auto& a = std::get<0>(operands);
             const auto& b = std::get<1>(operands);
             auto ashape = detail::shape(a);

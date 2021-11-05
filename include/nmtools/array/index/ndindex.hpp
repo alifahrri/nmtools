@@ -1,9 +1,10 @@
 #ifndef NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
 #define NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
 
-#include "nmtools/array/detail.hpp"
+#include "nmtools/array/index/as_tuple.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/meta.hpp"
 #include "nmtools/meta.hpp"
 
@@ -26,7 +27,7 @@ namespace nmtools::index
     struct ndindex_t
     {
         using shape_type = const shape_t&;
-        using stride_type = meta::remove_cvref_t<decltype(compute_strides(std::declval<shape_t>()))>;
+        using stride_type = meta::resolve_optype_t<compute_strides_t,shape_t>;
         using size_type = meta::remove_cvref_t<meta::get_element_or_common_type_t<shape_t>>;
 
         shape_type shape;
@@ -38,12 +39,7 @@ namespace nmtools::index
          * @param shape original array shape
          */
         constexpr ndindex_t(shape_type shape)
-            : shape(shape), stride(compute_strides(shape))
-        {
-            // @note: this prevents ndindex_t to be used in constexpr
-            // gcc error: must be initialized by mem-initializer
-            // stride = array::detail::compute_strides(shape);
-        }
+            : shape(shape), stride(compute_strides(shape)) {}
 
         /**
          * @brief return the number of element
@@ -64,9 +60,10 @@ namespace nmtools::index
          */
         constexpr inline decltype(auto) operator[](size_t i) const
         {
-            using array::detail::compute_indices;
+            // TODO: do not use as_tuple
+            using index::as_tuple;
+            using index::compute_indices;
             if constexpr (meta::is_fixed_index_array_v<shape_t>) {
-                using detail::as_tuple;
                 // map offset (flat index) back to indices
                 return as_tuple(compute_indices(i,shape,stride));
             }

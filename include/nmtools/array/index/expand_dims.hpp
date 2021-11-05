@@ -23,9 +23,9 @@ namespace nmtools::index
     template <typename array_t, typename value_t>
     constexpr auto contains(const array_t& array, const value_t& value)
     {
-        if constexpr (meta::has_tuple_size_v<array_t>) {
+        if constexpr (meta::is_fixed_index_array_v<array_t>) {
             bool contain = false;
-            meta::template_for<std::tuple_size_v<array_t>>([&](auto i){
+            meta::template_for<meta::len_v<array_t>>([&](auto i){
                 if (utils::isequal(tuple_at(array,i),value))
                     contain = true;
             });

@@ -5,6 +5,7 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/array/index/compute_offset.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"

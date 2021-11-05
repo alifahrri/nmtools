@@ -1,14 +1,10 @@
 #ifndef NMTOOLS_ARRAY_INDEX_FILTER_HPP
 #define NMTOOLS_ARRAY_INDEX_FILTER_HPP
 
-#include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
-#include "nmtools/array/index/argfilter.hpp"
+#include "nmtools/array/index/where.hpp"
 #include "nmtools/array/index/choose.hpp"
 
-#include <tuple>
+#include "nmtools/meta.hpp"
 
 namespace nmtools::index
 {
@@ -25,9 +21,12 @@ namespace nmtools::index
     template <typename F, typename array_t>
     constexpr auto filter(const F& f, const array_t& array)
     {
-        auto indices = argfilter(f,array);
+        auto indices = where(f,array);
         auto chosen  = choose(indices,array);
-        return std::tuple{indices, chosen};
+        using indices_t = meta::remove_cvref_t<decltype(indices)>;
+        using chosen_t  = meta::remove_cvref_t<decltype(chosen)>;
+        using return_t  = meta::make_tuple_type_t<indices_t,chosen_t>;
+        return return_t{indices, chosen};
     } // filter
 } // namespace nmtools::index
 

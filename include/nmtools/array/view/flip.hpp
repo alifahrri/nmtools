@@ -4,7 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/slice.hpp"
 #include "nmtools/array/index/count.hpp"
-#include "nmtools/array/index/make_array.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
@@ -157,27 +156,14 @@ namespace nmtools::view
         } // dim
 
         template <typename...size_types>
-        constexpr auto operator()(size_types...indices) const
+        constexpr auto index(size_types...indices) const
         {
             // here we directly provide operator() to actually performing operations,
             // instead of returning (transformed) index only
-            using ::nmtools::index::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto flip_indices = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for broadcast_to view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto flip_indices = pack_indices(indices...);
 
             auto indices_ = index::apply_slice(flip_indices,shape_,slices);
-            return apply_at(array,indices_);
+            return indices_;
         } // operator()
     }; // flip_t
 

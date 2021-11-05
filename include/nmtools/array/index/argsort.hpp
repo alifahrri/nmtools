@@ -95,7 +95,7 @@ namespace nmtools::meta
                 constexpr auto array = to_value_v<array_t>;
                 constexpr auto args  = index::argsort(array);
                 // transform back to type
-                using init_type = make_tuple_t<ct<at(args,0)>>;
+                using init_type = make_tuple_type_t<ct<at(args,0)>>;
                 return template_reduce<nmtools::len(args)-1>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;
                     using init_i = ct<at(args,index+1)>;

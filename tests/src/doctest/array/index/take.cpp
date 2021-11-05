@@ -225,7 +225,8 @@ TEST_CASE("take(case1)" * doctest::test_suite("index::take"))
     TAKE_SUBCASE( case1, idx_a, shape_a, indices_a, axis );
     TAKE_SUBCASE( case1, idx_v, shape_v, indices_v, axis );
     TAKE_SUBCASE( case1, idx_f, shape_f, indices_f, axis );
-    TAKE_SUBCASE( case1, idx_d, shape_d, indices_d, axis );
+    // dynamic dimension ndarray is not considered as index array, even if the element type is index type
+    // TAKE_SUBCASE( case1, idx_d, shape_d, indices_d, axis );
     TAKE_SUBCASE( case1, idx_h, shape_h, indices_h, axis );
 }
 
@@ -235,7 +236,7 @@ TEST_CASE("take(case2)" * doctest::test_suite("index::take"))
     TAKE_SUBCASE( case2, idx_a, shape_a, indices_a, axis );
     TAKE_SUBCASE( case2, idx_v, shape_v, indices_v, axis );
     TAKE_SUBCASE( case2, idx_f, shape_f, indices_f, axis );
-    TAKE_SUBCASE( case2, idx_d, shape_d, indices_d, axis );
+    // TAKE_SUBCASE( case2, idx_d, shape_d, indices_d, axis );
     TAKE_SUBCASE( case2, idx_h, shape_h, indices_h, axis );
 }
 
@@ -245,7 +246,7 @@ TEST_CASE("take(case3)" * doctest::test_suite("index::take"))
     TAKE_SUBCASE( case3, idx_a, shape_a, indices_a, axis );
     TAKE_SUBCASE( case3, idx_v, shape_v, indices_v, axis );
     TAKE_SUBCASE( case3, idx_f, shape_f, indices_f, axis );
-    TAKE_SUBCASE( case3, idx_d, shape_d, indices_d, axis );
+    // TAKE_SUBCASE( case3, idx_d, shape_d, indices_d, axis );
     TAKE_SUBCASE( case3, idx_h, shape_h, indices_h, axis );
 }
 
@@ -255,6 +256,6 @@ TEST_CASE("take(case4)" * doctest::test_suite("index::take"))
     TAKE_SUBCASE( case4, idx_a, shape_a, indices_a, axis );
     TAKE_SUBCASE( case4, idx_v, shape_v, indices_v, axis );
     TAKE_SUBCASE( case4, idx_f, shape_f, indices_f, axis );
-    TAKE_SUBCASE( case4, idx_d, shape_d, indices_d, axis );
+    // TAKE_SUBCASE( case4, idx_d, shape_d, indices_d, axis );
     TAKE_SUBCASE( case4, idx_h, shape_h, indices_h, axis );
 }

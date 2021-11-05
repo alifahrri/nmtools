@@ -3,76 +3,34 @@
 
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/shape.hpp"
-
-#include <tuple>
 
 namespace nmtools::index
 {
     struct shape_slice_t {};
     struct slice_t {};
 
-    // TODO: remove
-    template <typename shape_t, typename slice_t, typename axis_t>
-    constexpr auto unpack(const shape_t& shape, const slice_t& slice, axis_t axis)
-    {
-        constexpr auto N = std::tuple_size_v<slice_t>;
-
-        // TODO (wrap std metafunctions): provide meta::make_array_t<...>;
-        using return_t = std::array<int,3>;
-        auto res = return_t {};
-
-        if constexpr (N==2) {
-            // here, we dont have `step` parameter specified, fill with None
-            // then recurse
-            // TODO (wrap std metafunctions): create meta::make_tuple_t<...>;
-            res = unpack(shape, std::tuple{std::get<0>(slice), std::get<1>(slice), None},axis);
-        }
-        else if constexpr (N==3) {
-            // we have all `start` `stop` and `step` parameter,
-            // check for those parameters, for any None params, replace with appropriate value,
-            // for example None start should be 0, None stop should be actual shape at current axis
-            auto [start, stop, step] = slice;
-            using start_t = meta::remove_cvref_t<decltype(start)>;
-            using stop_t  = meta::remove_cvref_t<decltype(stop)>;
-            using step_t  = meta::remove_cvref_t<decltype(step)>;
-            if constexpr (is_none_v<start_t>) {
-                // TODO (wrap std metafunctions): create meta::make_tuple_t<...>;
-                res = unpack(shape, std::tuple<size_t,decltype(stop),decltype(step)>{0,stop,step},axis);
-            }
-            else if constexpr (is_none_v<stop_t>) {
-                // shape at axis, to replace None stop with actual size
-                auto s = at(shape,axis);
-                // TODO (wrap std metafunctions): create meta::make_tuple_t<...>;
-                res = unpack(shape, std::tuple<decltype(start),size_t,decltype(step)>{start,s,step},axis);
-            }
-            else if constexpr (is_none_v<step_t>) {
-                // TODO (wrap std metafunctions): create meta::make_tuple_t<...>;
-                res = unpack(shape, std::tuple<decltype(start),decltype(stop),size_t>{start,stop,1},axis);
-            } else {
-                // here all of the params, `start`, `stop`, and `step` is already converted to numbers
-                // now we need to wrap around for negative params,
-                auto s = at(shape,axis);
-                if (start < 0)
-                    start = s - start;
-                if (stop < 0)
-                    stop = s + stop;
-                // following numpy, stop is calculated as min(stop,at(shape,i))
-                stop = std::min(static_cast<int>(stop),static_cast<int>(s));
-                res = {static_cast<int>(start),static_cast<int>(stop),static_cast<int>(step)};
-            }
-        }
-        // TODO error handling here
-        return res;
-    } // unpack
-
     template <typename shape_t, typename...slices_t>
-    constexpr auto shape_slice(const shape_t& shape, const slices_t&...slices)
+    constexpr auto shape_slice(const shape_t& shape_, const slices_t&...slices)
     {
         using return_t  = meta::resolve_optype_t<shape_slice_t,shape_t,slices_t...>;
         using size_type = meta::get_element_type_t<return_t>;
         // number of integer in slices, represent indexing instead of slice
         constexpr auto N_INT = (static_cast<size_t>(meta::is_index_v<slices_t>) + ...);
+
+        auto shape = [&](){
+            // convert constant_index_array of shape to easily allow element access with runtime index
+            if constexpr (meta::is_constant_index_array_v<shape_t>) {
+                return meta::to_value_v<shape_t>;
+            } else if constexpr (meta::is_bounded_array_v<shape_t>) {
+                // raw array can't be copied (without decaying)
+                return index::ref(shape_);
+            } else /* if constexpr (meta::is_index_array_v<shape_t>) */ {
+                // assume copyable
+                return shape_;
+            }
+        }();
 
         // computes the number of elipsis provided in slices_t...
         // note that the only valid number of elipsis should be either 0 or 1
@@ -92,7 +50,7 @@ namespace nmtools::index
         // TODO error handling
         // make sure sizeof...(slices) <= len(shape)
 
-        auto slices_pack = std::tuple<const slices_t&...>{slices...};
+        auto slices_pack = meta::make_tuple_type_t<const slices_t&...>{slices...};
 
         // since res and shape may have different dim,
         // this var is to keep track of the active result index
@@ -115,11 +73,14 @@ namespace nmtools::index
             [[maybe_unused]] auto decompose = [&](auto slice){
                 // assume slice has tuple_size
                 // TODO (wrap std metafunctions): use meta::len_v
-                constexpr auto NS = std::tuple_size_v<decltype(slice)>;
+                constexpr auto NS = meta::len_v<decltype(slice)>;
                 if constexpr (NS==2) {
                     auto [start, stop] = slice;
-                    // TODO (wrap std metafunctions): create meta::make_tuple_t<...>;
-                    return std::tuple{start,stop,None};
+                    using start_t = decltype(start);
+                    using stop_t  = decltype(stop);
+                    // TODO (wrap std metafunctions): create meta::make_tuple_type_t<...>;
+                    using mreturn_t = meta::make_tuple_type_t<start_t,stop_t,none_t>;
+                    return mreturn_t{start,stop,None};
                 }
                 // return as it is to keep dtype
                 else if constexpr (NS==3) {
@@ -246,9 +207,18 @@ namespace nmtools::index
                     // NOTE: step_ is passed instead of captured to avoid clang error
                     if constexpr (is_none_v<step_t>)
                         return 1ul;
-                    else if constexpr (std::is_unsigned_v<step_t>)
+                    else if constexpr (meta::is_unsigned_v<step_t>)
                         return step_;
-                    else return std::abs(step_);
+                    else {
+                        // return std::abs(step_);
+                        return [&](){
+                            if (step_ < 0) {
+                                return -step_;
+                            } else {
+                                return step_;
+                            }
+                        }();
+                    }
                 }(step_);
 
                 // finally the resulting shape for corresponding indices
@@ -256,7 +226,7 @@ namespace nmtools::index
                 at(res,r_i++) = static_cast<size_type>(ceil(static_cast<float>(s) / step));
             } else /* if constexpr (meta::is_index_v<slice_t>) */ {
                 // only reduce the dimension,
-                // doen't contributes to shape computation
+                // doesn't contributes to shape computation
             }
             // increment the active shape index here
             // to make sure that it handled all the case (elipsis,tuple,integral).
@@ -277,21 +247,35 @@ namespace nmtools::index
     template <typename shape_t, typename slices_t>
     constexpr auto apply_shape_slice(const shape_t& shape, const slices_t& slices)
     {
-        constexpr auto N = std::tuple_size_v<slices_t>;
+        constexpr auto N = meta::len_v<slices_t>;
         return apply_shape_slice(shape, slices, std::make_index_sequence<N>{});
     } // apply_shape_slice
 
     template <typename indices_t, typename shape_t, typename...slices_t>
-    constexpr auto slice(const indices_t& indices, const shape_t& shape, const slices_t&...slices)
+    constexpr auto slice(const indices_t& indices, const shape_t& shape_, const slices_t&...slices)
     {
         using return_t = meta::resolve_optype_t<slice_t,indices_t,shape_t,slices_t...>;
         using index_t  = meta::remove_cvref_t<meta::get_element_type_t<return_t>>;
+
+        auto shape = [&](){
+            // convert constant_index_array of shape to easily allow element access with runtime index
+            if constexpr (meta::is_constant_index_array_v<shape_t>) {
+                return meta::to_value_v<shape_t>;
+            } else if constexpr (meta::is_bounded_array_v<shape_t>) {
+                // raw array can't be copied (without decaying)
+                return index::ref(shape_);
+            } else /* if constexpr (meta::is_index_array_v<shape_t>) */ {
+                // assume copyable
+                return shape_;
+            }
+        }();
+
         auto res = return_t {};
         auto dim = len(shape);
         if constexpr (meta::is_resizeable_v<return_t>)
             res.resize(dim);
         
-        auto slices_pack = std::tuple<const slices_t&...>{slices...};
+        auto slices_pack = meta::make_tuple_type_t<const slices_t&...>{slices...};
 
         // since res and shape may have different dim,
         // also indices and shape may have different dim,
@@ -342,10 +326,11 @@ namespace nmtools::index
             } else {
                 auto [start_, stop_, step_] = [&](){
                     // assume slice has tuple_size
-                    constexpr auto NS = std::tuple_size_v<decltype(slice)>;
+                    constexpr auto NS = meta::len_v<decltype(slice)>;
                     if constexpr (NS==2) {
                         auto [start, stop] = slice;
-                        return std::tuple{start,stop,None};
+                        using mresult_t = meta::make_tuple_type_t<decltype(start),decltype(stop),none_t>;
+                        return mresult_t{start,stop,None};
                     }
                     // return as it is to keep dtype
                     else if constexpr (NS==3)
@@ -554,7 +539,7 @@ namespace nmtools::index
     template <typename indices_t, typename shape_t, typename slices_t>
     constexpr auto apply_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices)
     {
-        constexpr auto N = std::tuple_size_v<slices_t>;
+        constexpr auto N = meta::len_v<slices_t>;
         return apply_slice(indices,shape,slices,std::make_index_sequence<N>{});
     } // apply_slice
 
@@ -562,6 +547,7 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: compute at compile time whenever possible
     template <typename shape_t, typename...slices_t>
     struct resolve_optype<
         void, index::shape_slice_t, shape_t, slices_t...

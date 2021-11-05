@@ -82,8 +82,8 @@ namespace nmtools::index
                 using common_t = meta::promote_index_t<axis_t,decltype(i)>;
                 at(res, i) = ((common_t)i == (common_t)axis) ? at(indices,dst_i) : dst_i;
             };
-            if constexpr (meta::has_tuple_size_v<index_t>) {
-                constexpr auto DIM = std::tuple_size_v<index_t>;
+            if constexpr (meta::is_fixed_index_array_v<index_t>) {
+                constexpr auto DIM = meta::len_v<index_t>;
                 meta::template_for<DIM>(take_impl);
             }
             else {
@@ -98,15 +98,17 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: compute at compile-time whenever possible
     template <typename shape_t, typename indices_t>
     struct resolve_optype<
         void, index::shape_take_t, shape_t, indices_t, none_t
     >
     {
         // when slicing flattened array, the shape should be single element 1D array
-        using type = std::array<size_t,1>;
+        using type = make_array_type_t<size_t,1>;
     }; // shape_take_t
 
+    // TODO: compute at compile-time whenever possible
     template <typename shape_t, typename indices_t, typename axis_t>
     struct resolve_optype<
         void, index::shape_take_t, shape_t, indices_t, axis_t

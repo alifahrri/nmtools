@@ -6,7 +6,6 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
-#include "nmtools/array/index/make_array.hpp"
 #include "nmtools/array/index/max.hpp"
 #include "nmtools/array/index/sum.hpp"
 #include "nmtools/array/index/where.hpp"
@@ -35,13 +34,13 @@ namespace nmtools::index
     template <typename ashape_t, typename bshape_t>
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape)
     {
-        using return_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
-        using element_t = meta::remove_cvref_t<meta::get_element_or_common_type_t<return_t>>;
+        using result_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
+        using element_t = meta::remove_cvref_t<meta::get_element_or_common_type_t<result_t>>;
 
-        auto res = return_t{};
+        auto res = result_t{};
         bool success = true;
 
-        if constexpr (meta::is_constant_index_array_v<return_t>) {
+        if constexpr (meta::is_constant_index_array_v<result_t>) {
             // do nothing, already computed at compile-time
             // the type holds broadcasted shape
         }
@@ -51,11 +50,11 @@ namespace nmtools::index
             auto adim = len(ashape);
             auto bdim = len(bshape);
             auto rdim = adim > bdim ? adim : bdim;
-            if constexpr (meta::is_resizeable_v<return_t>)
+            if constexpr (meta::is_resizeable_v<result_t>)
                 res.resize(rdim);
             
             auto broadcast_shape_impl = [&](auto i){
-                using idx_t = std::make_signed_t<element_t>;
+                using idx_t = meta::make_signed_t<element_t>;
                 // compute index to fill from behind
                 idx_t si = rdim - i - 1;
                 idx_t ai = adim - i - 1;
@@ -88,7 +87,7 @@ namespace nmtools::index
             // one of the shape is none (from shape of num type):
             // just copy the other shape, bshape in this case
             auto bdim = len(bshape);
-            if constexpr (meta::is_resizeable_v<return_t>)
+            if constexpr (meta::is_resizeable_v<result_t>)
                 res.resize(bdim);
             for (size_t i=0; i<bdim; i++)
                 at(res,i) = at(bshape,i);
@@ -96,7 +95,7 @@ namespace nmtools::index
         else if constexpr (is_none_v<bshape_t> && !is_none_v<ashape_t>) {
             // similar to above case, but ashape is index array instead of bshape
             auto adim = len(ashape);
-            if constexpr (meta::is_resizeable_v<return_t>)
+            if constexpr (meta::is_resizeable_v<result_t>)
                 res.resize(adim);
             for (size_t i=0; i<adim; i++)
                 at(res,i) = at(ashape,i);
@@ -105,7 +104,8 @@ namespace nmtools::index
         }
 
         // TODO: use optional
-        return std::tuple{success, res};
+        using return_t = meta::make_tuple_type_t<bool,result_t>;
+        return return_t{success, res};
     } // broadcast_shape
 
     template <typename ashape_t, typename bshape_t, typename cshape_t, typename...other_shapes_t>
@@ -114,7 +114,8 @@ namespace nmtools::index
         // TODO: use optional
         auto [success_,shape_] = broadcast_shape(ashape,bshape);
         auto [success, shape]  = broadcast_shape(shape_,cshape,other_shapes...);
-        return std::tuple{success && success_, shape};
+        using return_t = meta::make_tuple_type_t<bool,meta::remove_cvref_t<decltype(shape)>>;
+        return return_t{success && success_, shape};
     } // broadcast_shape
 
 } // namespace nmtools::index
@@ -152,13 +153,14 @@ namespace nmtools::meta
                     // convert back from value to type
                     constexpr auto shape = at(broadcasted,meta::ct_v<1>);
                     constexpr auto s0 = at(shape,0);
+                    using init_type = make_tuple_type_t<ct<s0>>;
                     return template_reduce<::nmtools::len(shape)-1>([&](auto init, auto index){
                         // init should be as_value<sometype>
                         using init_t = type_t<decltype(init)>;
                         constexpr auto s_i1 = at(shape,index+1);
-                        using type = append_type_t<init_t,meta::ct<s_i1>>;
+                        using type = append_type_t<init_t,ct<s_i1>>;
                         return as_value_v<type>;
-                    }, meta::as_value_v<std::tuple<ct<s0>>>);
+                    }, meta::as_value_v<init_type>);
                 } else {
                     return as_value_v<error::BROADCAST_SHAPE_ERROR>;
                 }

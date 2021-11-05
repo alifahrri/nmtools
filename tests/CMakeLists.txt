@@ -67,7 +67,6 @@ if (NMTOOLS_TEST_ALL)
 endif (NMTOOLS_TEST_ALL)
 
 set(ARRAY_INDEX_TEST_SOURCES
-    src/doctest/array/index/argfilter.cpp
     src/doctest/array/index/argsort.cpp
     src/doctest/array/index/broadcast_shape.cpp
     src/doctest/array/index/broadcast_to.cpp
@@ -506,6 +505,7 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/view/repeat.cpp
     src/doctest/meta/array/view/reshape.cpp
     src/doctest/meta/array/view/take.cpp
+    src/doctest/meta/array/view/transpose.cpp
     src/doctest/meta/array/view/ufunc.cpp
     src/doctest/meta/array/view/var.cpp
     src/doctest/meta/array/eval/arange.cpp
@@ -528,17 +528,24 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/array/eval/var.cpp
     src/doctest/meta/array/eval/where.cpp
     src/doctest/meta/array/eval/zeros.cpp
-    src/doctest/meta/array/index/argfilter.cpp
     src/doctest/meta/array/index/broadcast_shape.cpp
     src/doctest/meta/array/index/broadcast_to.cpp
+    src/doctest/meta/array/index/argsort.cpp
     src/doctest/meta/array/index/choose.cpp
     src/doctest/meta/array/index/compute_indices.cpp
+    src/doctest/meta/array/index/compute_strides.cpp
     src/doctest/meta/array/index/concatenate.cpp
     src/doctest/meta/array/index/expand_dims.cpp
     src/doctest/meta/array/index/gather.cpp
+    src/doctest/meta/array/index/logical_not.cpp
     src/doctest/meta/array/index/nonzero.cpp
+    src/doctest/meta/array/index/remove_dims.cpp
+    src/doctest/meta/array/index/remove_single_dims.cpp
     src/doctest/meta/array/index/repeat.cpp
+    src/doctest/meta/array/index/reverse.cpp
+    src/doctest/meta/array/index/scatter.cpp
     src/doctest/meta/array/index/slice.cpp
+    src/doctest/meta/array/index/sum.cpp
     src/doctest/meta/array/index/where.cpp
     src/doctest/meta/traits/ndarray.cpp
     src/doctest/meta/traits/has_template_get.cpp

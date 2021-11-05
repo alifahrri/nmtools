@@ -34,7 +34,7 @@ namespace nmtools::meta
      */
     template <typename T>
     struct nested_array_size<T
-        , std::enable_if_t<has_tuple_size_v<T> && has_value_type_v<T>>
+        , enable_if_t<has_tuple_size_v<T> && has_value_type_v<T>>
     > {
         static constexpr auto value = std::tuple_size_v<T>;
     }; // nested_array_size
@@ -74,7 +74,7 @@ namespace nmtools::meta
      * @see has_square_bracket
      */
     template <typename T>
-    struct nested_array_dim<T,std::enable_if_t<has_square_bracket_v<T,size_t>>>
+    struct nested_array_dim<T,enable_if_t<has_square_bracket_v<T,size_t>>>
     {
         using value_type = std::remove_reference_t<expr::square_bracket<T,size_t>>;
         static constexpr auto value = 1 + nested_array_dim<value_type>::value;
@@ -204,7 +204,7 @@ namespace nmtools::meta
      * @see meta::has_square_bracket
      */
     template <typename T>
-    struct remove_all_nested_array_dim<T,std::enable_if_t<has_square_bracket_v<T,size_t>>>
+    struct remove_all_nested_array_dim<T,enable_if_t<has_square_bracket_v<T,size_t>>>
     {
         // recursively call itself until it reach default case
         using value_type = remove_cvref_t<expr::square_bracket<T,size_t>>;
@@ -255,6 +255,7 @@ namespace nmtools::meta
     template <typename T>
     inline constexpr bool is_array3d_v = is_array3d<T>::value;
 
+    // TODO: remove
     /**
      * @brief check if T t{} are:
      * - t[0][0] is valid
@@ -285,6 +286,7 @@ namespace nmtools::meta
     template <typename T>
     inline constexpr bool is_array2d_v = is_array2d<T>::value;
 
+    // TODO: remove
     /**
      * @brief check if T t{} are:
      * - t[0] is valid
@@ -407,7 +409,7 @@ namespace nmtools::meta
             using fixed_size_t = fixed_ndarray_shape<T>;
             using value_type   = typename fixed_size_t::value_type;
             // TODO: use fail type instead of void
-            if constexpr (!std::is_same_v<value_type,void>)
+            if constexpr (!is_void_v<value_type>)
                 return true;
             else return false;
         }();
@@ -463,14 +465,14 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct is_hybrid_ndarray
     {
-        using value_type = std::conditional_t<
-            std::is_same_v<
-                detail::fail_t,
-                type_t<hybrid_ndarray_max_size<T>>
-            >,
-            std::false_type, std::true_type
-        >;
-        static constexpr auto value = value_type::value;
+        static constexpr auto value = [](){
+            using hybrid_max_type = type_t<hybrid_ndarray_max_size<T>>;
+            if constexpr (is_same_v<detail::fail_t,hybrid_max_type>) {
+                return false;
+            } else {
+                return true;
+            }
+        }();
     }; // is_hybrid_ndarray
 
     template <typename T>
@@ -587,6 +589,7 @@ namespace nmtools::meta
     template <typename T>
     inline static constexpr auto fixed_ndarray_dim_v = fixed_ndarray_dim<T>::value;
 
+    // TODO: cleanup
     /**
      * @brief check if type T has fixed-dimension
      * 
@@ -599,20 +602,19 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct fixed_dim
     {
-        static constexpr auto _get() {
+        static constexpr auto value = [](){
             // for fixed-size ndarray, read dimension from fixed_ndarray_dim,
             // which simply count the number of shape
             using dim_t = fixed_ndarray_dim<T>;
             using value_type = typename dim_t::value_type;
-            if constexpr (!std::is_same_v<value_type,void>)
+            if constexpr (!is_void_v<value_type>)
                 return dim_t::value;
             // for nested array, while the shape may only known at runtime,
-            // the dimension can be known at compilet time
+            // the dimension can be known at compile time
             else if constexpr (nested_array_dim_v<T> > 0)
                 return nested_array_dim_v<T>;
-            else return detail::fail_t{};
-        } // _get()
-        static constexpr auto value = _get();
+            else return detail::Fail;
+        }();
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     }; // fixed_dim
 
@@ -644,7 +646,7 @@ namespace nmtools::meta
             using dim_t = fixed_dim<T>;
             using value_type = typename dim_t::value_type;
             // TODO: use fail type instead of void
-            if constexpr (!std::is_same_v<value_type,void>)
+            if constexpr (!is_void_v<value_type>)
                 return true;
             else return false;
         } // _check()
@@ -673,24 +675,18 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct is_ndarray
     {
-        static constexpr auto _check()
-        {
-            // @note this will try to instantiate all the following traits
-            // this is troublesome if any of the following traits is not well-formed for some T
-            // return is_fixed_size_ndarray_v<T>
-            //     || is_array1d_v<T>
-            //     || is_array2d_v<T>;
+        static constexpr auto value = [](){
 
-            // use short circuit instead
             if constexpr (is_fixed_size_ndarray_v<T>)
                 return true;
+            // TODO: remove
             else if constexpr (is_array2d_v<T>)
                 return true;
+            // TODO: remove
             else if constexpr (is_array1d_v<T>)
                 return true;
             else return false;
-        } // _check()
-        static constexpr auto value = _check();
+        }();
     }; // is_ndarray
 
     /**
@@ -701,13 +697,6 @@ namespace nmtools::meta
     template <typename T>
     inline constexpr bool is_ndarray_v = is_ndarray<T>::value;
 
-
-    /** @} */ // end group traits
-
-    /**
-     * @addtogroup traits
-     * @{
-     */
 
     /** @} */ // end group traits
 

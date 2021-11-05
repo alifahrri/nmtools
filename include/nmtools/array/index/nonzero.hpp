@@ -60,8 +60,8 @@ namespace nmtools::index
             }
         }; // nonzero_impl
         
-        if constexpr (meta::has_tuple_size_v<array_t>)
-            meta::template_for<std::tuple_size_v<array_t>>([&](auto idx){
+        if constexpr (meta::is_fixed_index_array_v<array_t>)
+            meta::template_for<meta::len_v<array_t>>([&](auto idx){
                 nonzero_impl(idx);
             });
         else

@@ -58,6 +58,7 @@ namespace nmtools::array
             if (!::nmtools::utils::isequal(out_shape,inp_shape))
                 return;
 
+            using ::nmtools::index::ndindex;
             auto out_index = ndindex(out_shape);
             auto inp_index = ndindex(inp_shape);
 

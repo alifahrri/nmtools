@@ -21,8 +21,8 @@ namespace nmtools::index
             res += static_cast<bool>(f(at(array,i))) ? 1 : 0;
         };
 
-        if constexpr (meta::has_tuple_size_v<array_t>) {
-            constexpr auto N = std::tuple_size_v<array_t>;
+        if constexpr (meta::is_fixed_index_array_v<array_t>) {
+            constexpr auto N = meta::len_v<array_t>;
             meta::template_for<N>(count_impl);
         }
         else {

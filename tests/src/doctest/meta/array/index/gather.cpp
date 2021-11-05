@@ -175,9 +175,12 @@ TEST_CASE("gather(tuple;tuple)" * doctest::test_suite("index::gather"))
     }
 }
 
+using nm::index::gather_t;
+using namespace nm::literals;
+using std::tuple;
+
 TEST_CASE("gather" * doctest::test_suite("index"))
 {
-    SUBCASE("integral_constant")
     {
         using vector_t  = std::tuple<std::integral_constant<size_t,10>>;
         using indices_t = na::hybrid_ndarray<size_t,1,1>;
@@ -185,5 +188,48 @@ TEST_CASE("gather" * doctest::test_suite("index"))
         using expected_t = na::hybrid_ndarray<size_t,1,1>;
         static_assert( meta::is_constant_index_array_v<vector_t> && meta::is_hybrid_index_array_v<indices_t> );
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
+    }
+
+    {
+        using vector_t  = decltype(tuple{1_ct,2_ct,3_ct});
+        using indices_t = decltype(tuple{0_ct,1_ct,2_ct});
+        using result_t  = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+        using expect_t  = decltype(tuple{1_ct,2_ct,3_ct});
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+    }
+    {
+        using vector_t  = decltype(tuple{1_ct,2_ct,3_ct});
+        using indices_t = decltype(tuple{1_ct,0_ct,2_ct});
+        using result_t  = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+        using expect_t  = decltype(tuple{2_ct,1_ct,3_ct});
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+    }
+    {
+        using vector_t  = decltype(tuple{1_ct,2_ct,3_ct});
+        using indices_t = decltype(tuple{1_ct,2_ct,0_ct});
+        using result_t  = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+        using expect_t  = decltype(tuple{2_ct,3_ct,1_ct});
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+    }
+    {
+        using vector_t  = decltype(tuple{1_ct,2_ct,3_ct});
+        using indices_t = decltype(tuple{2_ct,0_ct,1_ct});
+        using result_t  = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+        using expect_t  = decltype(tuple{3_ct,1_ct,2_ct});
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+    }
+    {
+        using vector_t  = decltype(tuple{1_ct,2_ct,3_ct});
+        using indices_t = decltype(tuple{2_ct,1_ct,0_ct});
+        using result_t  = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+        using expect_t  = decltype(tuple{3_ct,2_ct,1_ct});
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+    }
+    {
+        using vector_t  = decltype(tuple{1_ct,2_ct,3_ct,4_ct,5_ct});
+        using indices_t = decltype(tuple{2_ct,1_ct,0_ct});
+        using result_t  = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+        using expect_t  = decltype(tuple{3_ct,2_ct,1_ct});
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
 }

@@ -7,7 +7,6 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/flatten.hpp"
 
-#include "nmtools/array/detail.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
