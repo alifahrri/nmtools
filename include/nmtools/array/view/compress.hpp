@@ -25,15 +25,8 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            using ::nmtools::detail::make_array;
             auto shape_ = ::nmtools::shape(array);
-            auto ashape = [&](){
-                using shape_t = meta::remove_cvref_t<decltype(shape_)>;
-                if constexpr (meta::is_specialization_v<shape_t, std::tuple>)
-                    return make_array<std::array>(shape_);
-                else return shape_;
-            }();
-            return ::nmtools::index::shape_compress(condition, ashape, axis);
+            return ::nmtools::index::shape_compress(condition, shape_, axis);
         } // shape
 
         constexpr auto dim() const
@@ -44,29 +37,10 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            using ::nmtools::detail::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for compress view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto indices_ = pack_indices(indices...);
 
             auto shape_ = ::nmtools::shape(array);
-            auto ashape = [&](){
-                using shape_t = meta::remove_cvref_t<decltype(shape_)>;
-                if constexpr (meta::is_specialization_v<shape_t, std::tuple>)
-                    return make_array<std::array>(shape_);
-                else return shape_;
-            }();
-            return ::nmtools::index::compress(indices_,condition,ashape,axis);
+            return ::nmtools::index::compress(indices_,condition,shape_,axis);
         } // index
     }; // compress_t
 

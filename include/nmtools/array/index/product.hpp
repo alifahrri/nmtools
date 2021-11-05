@@ -38,11 +38,11 @@ namespace nmtools::index
         else {
             using element_t = meta::get_element_or_common_type_t<array_t>;
             auto ret = element_t{1};
-            if constexpr (meta::has_tuple_size_v<array_t>) {
-                constexpr auto n = std::tuple_size_v<array_t>;
+            if constexpr (meta::is_fixed_index_array_v<array_t>) {
+                constexpr auto n = meta::len_v<array_t>;
                 meta::template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
-                    ret *= std::get<i>(vec);
+                    ret *= at<i>(vec);
                 });
             }
             else

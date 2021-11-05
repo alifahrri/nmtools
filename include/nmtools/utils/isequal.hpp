@@ -14,7 +14,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/assert.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/array/index.hpp"
+#include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 
 #include <type_traits>
@@ -136,6 +136,7 @@ namespace nmtools::utils
         template <typename T, typename U>
         constexpr auto isequal(const T& t, const U& u)
         {
+            using ::nmtools::index::ndindex;
             // treat T & U as value
             constexpr auto t1 = meta::as_value_v<T>;
             constexpr auto t2 = meta::as_value_v<U>;
@@ -228,7 +229,7 @@ namespace nmtools::utils
                 using trhs_t = meta::get_either_right_t<T>;
                 using ulhs_t = meta::get_either_left_t<U>;
                 using urhs_t = meta::get_either_right_t<U>;
-                // TODO(wrap std metafunctions): make default tuple type configurable, e.g. meta::make_tuple_t
+                // TODO(wrap std metafunctions): make default tuple type configurable, e.g. meta::make_tuple_type_t
                 using std::tuple;
                 auto same = false;
                 // under the hood, recursively call isclose to properly handle view type

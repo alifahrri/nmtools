@@ -7,7 +7,6 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
 
-#include "nmtools/array/detail.hpp"
 #include "nmtools/array/index/scatter.hpp"
 #include "nmtools/array/index/gather.hpp"
 #include "nmtools/array/index/reverse.hpp"
@@ -107,8 +106,6 @@ namespace nmtools::view
 
 namespace nmtools
 {
-    using std::get;
-    using std::make_pair;
 
     /**
      * @brief Specialization of fixed_ndarray_shape for transpose view.

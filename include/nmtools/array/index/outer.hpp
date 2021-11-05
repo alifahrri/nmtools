@@ -36,8 +36,10 @@ namespace nmtools::index
     template <typename indices_t, typename ashape_t, typename bshape_t>
     constexpr auto outer(const indices_t& indices, const ashape_t& ashape, const bshape_t& bshape)
     {
-        auto aidx = meta::tuple_to_array_t<meta::transform_bounded_array_t<ashape_t>> {};
-        auto bidx = meta::tuple_to_array_t<meta::transform_bounded_array_t<bshape_t>> {};
+        using aidx_t = meta::tuple_to_array_t<meta::transform_bounded_array_t<ashape_t>>;
+        using bidx_t = meta::tuple_to_array_t<meta::transform_bounded_array_t<bshape_t>>;
+        auto aidx = aidx_t {};
+        auto bidx = bidx_t {};
 
         auto adim = len(ashape);
         auto bdim = len(bshape);
@@ -52,7 +54,8 @@ namespace nmtools::index
         for (size_t i=0; i<bdim; i++)
             at(bidx,i) = at(indices,i+adim);
         
-        return std::tuple{aidx,bidx};
+        using return_t = meta::make_tuple_type_t<aidx_t,bidx_t>;
+        return return_t{aidx,bidx};
     }
 } // namespace nmtools::index
 

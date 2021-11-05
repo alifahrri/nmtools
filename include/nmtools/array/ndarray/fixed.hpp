@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_NDARRAY_FIXED_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/detail.hpp"
+#include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 
@@ -82,7 +82,7 @@ namespace nmtools::array {
         {
             auto stride = std::array<size_t,dim()>{};
             for (size_t i=0; i<dim(); i++)
-                stride[i] = detail::stride(shape_,i);
+                stride[i] = ::nmtools::index::stride(shape_,i);
             return stride;
         }
         static inline constexpr auto strides_ = strides();

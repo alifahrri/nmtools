@@ -26,8 +26,8 @@ namespace nmtools::index
      * @tparam bshape_t 
      * @tparam indices_t 
      * @tparam axis_t 
-     * @param ashape shape of orignal lhs array
-     * @param bshape shape of orignal rhs array
+     * @param ashape shape of original lhs array
+     * @param bshape shape of original rhs array
      * @param indices indices of dst (concatenated) array
      * @param axis The axis along which the arrays joined. If axis is None, arrays are flattened before use.
      * @return constexpr auto 
@@ -104,7 +104,8 @@ namespace nmtools::index
         }
 
         // TODO: use optional instead
-        return std::tuple{aflag,bflag,a_indices,b_indices};
+        using return_t = meta::make_tuple_type_t<bool,bool,a_indices_t,b_indices_t>;
+        return return_t{aflag,bflag,a_indices,b_indices};
     } // concatenate
 } // namespace nmtools::index
 
@@ -132,8 +133,7 @@ namespace nmtools::meta
                 // tuple<int,..> is also belong to this category
                 constexpr auto N = fixed_index_array_size_v<shape_t>;
                 using elem_t = remove_cvref_t<get_element_or_common_type_t<shape_t>>;
-                // TODO: create make_array_t metafunction
-                return as_value_v<std::array<elem_t,N>>;
+                return as_value_v<make_array_type_t<elem_t,N>>;
             } else if constexpr (is_index_array_v<shape_t>) {
                 return as_value_v<shape_t>;
             } else {
@@ -168,15 +168,15 @@ namespace nmtools::index
     constexpr auto shape_concatenate(const ashape_t& ashape, const bshape_t& bshape, [[maybe_unused]] axis_t axis)
     {
         // TODO: allow negative axis
-        using return_t = meta::resolve_optype_t<shape_concatenate_t,ashape_t,bshape_t,axis_t>;
+        using result_t = meta::resolve_optype_t<shape_concatenate_t,ashape_t,bshape_t,axis_t>;
 
-        auto ret = return_t {};
+        auto ret = result_t {};
         bool suc = true;
 
         [[maybe_unused]] auto ad = len(ashape);
         [[maybe_unused]] auto bd = len(bshape);
 
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizeable_v<result_t>)
             ret.resize(ad); // ad must be == bd
 
         if constexpr (is_none_v<axis_t>)
@@ -206,7 +206,8 @@ namespace nmtools::index
         else suc = false;
         
         // TODO: use optional instead
-        return std::tuple{suc,ret};
+        using return_t = meta::make_tuple_type_t<bool,result_t>;
+        return return_t{suc,ret};
     } // shape_concatenate
 } // namespace nmtools::index
 
@@ -229,7 +230,7 @@ namespace nmtools::meta
         void, index::shape_concatenate_t, ashape_t, bshape_t, axis_t
     >
     {
-        // @todo enforce same dim
+        // TODO: compute at compile time when possible (ashape & bshape is constant index array, axis constant index)
         static constexpr auto vtype = [](){
             if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
                 return as_value_v<error::SHAPE_CONCATENATE_UNSUPPORTED>;
@@ -260,8 +261,8 @@ namespace nmtools::meta
         // for shape_concatenate, when axis is none, the arrays are flattened before concatenated
         static constexpr auto vtype = [](){
             if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t>)
-                return as_value<std::array<size_t,1>>{};
-            else return as_value<void>{};
+                return as_value_v<make_array_type_t<size_t,1>>;
+            else return as_value_v<error::SHAPE_CONCATENATE_UNSUPPORTED>;
         }();
 
         using type = type_t<decltype(vtype)>;

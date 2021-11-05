@@ -56,18 +56,7 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto operator()(size_types...indices)
         {
-            auto indices_ = [&](){
-                using index::make_array;
-                using common_t = std::common_type_t<size_types...>;
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for transpose view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto indices_ = pack_indices(indices...);
             const auto& [lhs, rhs] = array;
             // @todo do not always request shape! e.g. for fixed size array, or provide options to turn this off
             auto ashape = ::nmtools::shape(lhs);
@@ -88,18 +77,7 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
-            auto indices_ = [&](){
-                using index::make_array;
-                using common_t = std::common_type_t<size_types...>;
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for transpose view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto indices_ = pack_indices(indices...);
             const auto& [lhs, rhs] = array;
             // @todo do not always request shape! e.g. for fixed size array, or provide options to turn this off
             auto ashape = ::nmtools::shape(lhs);

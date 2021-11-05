@@ -5,7 +5,6 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/index/tile.hpp"
 #include "nmtools/array/index/shape_tile.hpp"
-#include "nmtools/array/index/make_array.hpp"
 #include "nmtools/array/shape.hpp"
 
 namespace nmtools::view

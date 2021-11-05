@@ -7,10 +7,9 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/index/product.hpp"
+#include "nmtools/array/index/compute_indices.hpp"
 
 #include "nmtools/array/meta.hpp"
-#include "nmtools/array/detail.hpp"
-#include "nmtools/array/index.hpp"
 
 #include <cassert>
 
@@ -52,7 +51,7 @@ namespace nmtools::view
         template <typename size_type>
         constexpr auto index(size_type i) const
         {
-            using ::nmtools::array::detail::compute_indices;
+            using ::nmtools::index::compute_indices;
             using index_t = meta::get_index_type_t<array_t>;
             auto shape_   = detail::shape(array);
             auto indices  = compute_indices(static_cast<index_t>(i),shape_);

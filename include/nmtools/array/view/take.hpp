@@ -4,7 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/index/take.hpp"
-#include "nmtools/array/index/make_array.hpp"
 #include "nmtools/array/shape.hpp"
 
 namespace nmtools::view
@@ -25,15 +24,8 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            using ::nmtools::index::make_array;
             auto shape_ = ::nmtools::shape(array);
-            auto ashape = [&](){
-                using shape_t = meta::remove_cvref_t<decltype(shape_)>;
-                if constexpr (meta::is_specialization_v<shape_t, std::tuple>)
-                    return make_array<std::array>(shape_);
-                else return shape_;
-            }();
-            return ::nmtools::index::shape_take(ashape, indices, axis);
+            return ::nmtools::index::shape_take(shape_, indices, axis);
         } // shape
 
         constexpr auto dim() const
@@ -44,29 +36,10 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            using ::nmtools::index::make_array;
-            using common_t = std::common_type_t<size_types...>;
-            auto indices_ = [&](){
-                // handle non-packed indices
-                if constexpr (std::is_integral_v<common_t>)
-                    return make_array<std::array>(indices...);
-                // handle packed indices, number of indices must be 1
-                else {
-                    static_assert (sizeof...(indices)==1
-                        , "unsupported index for compress view"
-                    );
-                    return std::get<0>(std::tuple{indices...});
-                }
-            }();
+            auto indices_ = pack_indices(indices...);
 
             auto shape_ = ::nmtools::shape(array);
-            auto ashape = [&](){
-                using shape_t = meta::remove_cvref_t<decltype(shape_)>;
-                if constexpr (meta::is_specialization_v<shape_t, std::tuple>)
-                    return make_array<std::array>(shape_);
-                else return shape_;
-            }();
-            return ::nmtools::index::take(indices_,ashape,this->indices,axis);
+            return ::nmtools::index::take(indices_,shape_,this->indices,axis);
         } // index
     }; // take_t
 

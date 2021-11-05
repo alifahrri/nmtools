@@ -8,8 +8,8 @@
 #include "nmtools/array/view/decorator.hpp"
 
 #include "nmtools/array/meta.hpp"
-#include "nmtools/array/detail.hpp"
-#include "nmtools/array/index.hpp"
+#include "nmtools/array/index/product.hpp"
+#include "nmtools/array/index/compute_indices.hpp"
 
 #include <cassert>
 
@@ -63,8 +63,8 @@ namespace nmtools::view
         template <typename size_type>
         constexpr auto index(size_type i) const
         {
-            using ::nmtools::array::detail::compute_indices;
-            auto shape_ = ::nmtools::shape(array);
+            using ::nmtools::index::compute_indices;
+            auto shape_  = ::nmtools::shape(array);
             auto indices = compute_indices(i,shape_);
             return indices;
         } // index
@@ -73,8 +73,6 @@ namespace nmtools::view
     template <typename array_t>
     constexpr auto mutable_flatten(array_t& array)
     {
-        // @note using aggregate initialization
-        // since decorator_t doesn't provide constructor
         return decorator_t<mutable_flatten_t,array_t>{array};
     } // mutable_flatten
 

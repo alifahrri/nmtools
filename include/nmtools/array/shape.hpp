@@ -1,7 +1,6 @@
 #ifndef NMTOOLS_ARRAY_UTILITY_SHAPE_HPP
 #define NMTOOLS_ARRAY_UTILITY_SHAPE_HPP
 
-#include "nmtools/array/index/make_array.hpp"
 #include "nmtools/array/meta.hpp"
 #include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
@@ -170,24 +169,6 @@ namespace nmtools
     } // shape
 
     /**
-     * @brief get the shape of an array, and convert it to given shape-type
-     *
-     * May be useful to convert tuple shape info to array.
-     * 
-     * @tparam shape_t desired shape type
-     * @tparam array_t array type
-     * @param array 
-     * @return constexpr decltype(auto) 
-     * @todo remove
-     */
-    template <template<typename,size_t> typename shape_t, typename array_t>
-    constexpr decltype(auto) shape(const array_t& array)
-    {
-        auto shape_ = shape(array);
-        return index::make_array<shape_t>(shape_);
-    } // shape
-
-    /**
      * @brief Get the length of array.
      *
      * Mimics python's len.
@@ -204,7 +185,7 @@ namespace nmtools
         return at(shape_, std::integral_constant<size_t,0>{});
     } // len
 
-    // TODO (wrap std metafunctions): wrap as meta::make_tuple_t
+    // TODO (wrap std metafunctions): wrap as meta::make_tuple_type_t
     template <typename...size_types>
     constexpr auto len(const std::tuple<size_types...>&)
     {

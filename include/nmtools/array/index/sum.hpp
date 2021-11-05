@@ -12,7 +12,9 @@
 
 namespace nmtools::index
 {
-    // TODO: cleanup index functions
+    // tag to resolve sum return type
+    struct sum_t {};
+
     /**
      * @brief compute sum of 1D array
      *
@@ -25,36 +27,45 @@ namespace nmtools::index
     template <typename array_t>
     constexpr auto sum(const array_t& vec)
     {
-        using element_t = meta::get_element_type_t<array_t>;
-        using common_t  = std::conditional_t<
-            std::is_void_v<element_t>,
-            meta::apply_t<std::common_type,array_t>,
-            element_t
-        >;
-        // handle type vector
-        if constexpr (meta::is_constant_index_array_v<array_t>) {
-            // TODO: move constant index handling at higher level, see remove_dims for example
-            constexpr auto vec_ = meta::to_value_v<array_t>;
-            constexpr auto ret  = sum(vec_);
-            // TODO: convert back to type
-            return ret;
+        using result_t = meta::resolve_optype_t<sum_t,array_t>;
+        auto res = result_t{};
+        // res already calculated if it is a constant index, see meta below
+        if constexpr (!meta::is_constant_index_v<result_t>) {
+            res = 0;
+            for (size_t i=0; i<(size_t)len(vec); i++)
+                res += at(vec,i);
         }
-        else {
-            auto ret = common_t{0};
-            if constexpr (meta::has_tuple_size_v<array_t>) {
-                constexpr auto n = std::tuple_size_v<array_t>;
-                meta::template_for<n>([&](auto index){
-                    constexpr auto i = decltype(index)::value;
-                    ret += std::get<i>(vec);
-                });
-                return ret;
-            }
-            else
-                for (size_t i=0; i<len(vec); i++)
-                    ret += at(vec,i);
-            return ret;
-        }
+        return res;
     } // sum
 } // namespace nmtools::index
+
+namespace nmtools::meta
+{
+    namespace error
+    {
+        struct INDEX_SUM_UNSUPPORTED : detail::fail_t {};
+    }
+
+    template <typename array_t>
+    struct resolve_optype<
+        void, index::sum_t, array_t
+    >
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_constant_index_array_v<array_t>) {
+                constexpr auto array = to_value_v<array_t>;
+                constexpr auto sum   = index::sum(array);
+                using result = ct<sum>;
+                return as_value_v<result>;
+            } else if constexpr (is_index_array_v<array_t>) {
+                using element_t = get_element_or_common_type_t<array_t>;
+                return as_value_v<element_t>;
+            } else {
+                return as_value_v<error::INDEX_SUM_UNSUPPORTED>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_SUM_HPP

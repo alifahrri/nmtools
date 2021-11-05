@@ -24,7 +24,6 @@
 #include "nmtools/array/utility.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/ndindex.hpp"
-#include "nmtools/array/detail.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 
 #include <type_traits>
@@ -48,6 +47,7 @@ namespace nmtools::utils
     auto to_string(const T& array)
     {
         std::string str;
+        using ::nmtools::index::ndindex;
 
         if constexpr (is_none_v<T>)
             str += "None";
@@ -86,39 +86,48 @@ namespace nmtools::utils
             str += to_string(T::value);
         } // is_integral_constant
         else if constexpr (meta::is_ndarray_v<T>) {
-            using std::to_string;
-            using ::nmtools::detail::make_array;
-            auto s = [&](){
-                auto shape_ = shape(array);
+            /**
+             * @brief helper lambda to make sure to return array (instead of tuple)
+             * this simplify indexing, since tuple must be unrolled (can't use runtime index)
+             * 
+             */
+            auto as_array = [](auto shape_){
                 using shape_t = decltype(shape_);
-                if constexpr (meta::is_specialization_v<shape_t,std::tuple>
-                    || meta::is_specialization_v<shape_t,std::pair>)
-                    return make_array<std::array>(shape_);
-                else return shape_;
-            }();
+                using index_t = meta::get_element_or_common_type_t<shape_t>;
+                if constexpr (meta::is_constant_index_array_v<shape_t>) {
+                    return meta::to_value_v<shape_t>;
+                } else if constexpr (meta::is_tuple_v<shape_t>) {
+                    constexpr auto N = meta::len_v<shape_t>;
+                    using array_t = meta::make_array_type_t<index_t,N>;
+                    auto array = array_t{};
+                    meta::template_for<N>([&](auto i){
+                        at(array,i) = at(shape_,i);
+                    });
+                    return array;
+                } else {
+                    return shape_;
+                }
+            };
+
+            using std::to_string;
+            auto shape_ = shape(array);
+            auto s = as_array(shape_);
             auto indices = ndindex(s);
 
             // print empty ndarray
-            if (!size(indices))
+            if (!len(indices))
                 str = "[]";
             
             for (size_t i=0; i<(size_t)len(indices); i++) {
-                auto idx = [&](){
-                    auto idx = indices[i];
-                    using idx_t = decltype(idx);
-                    if constexpr (meta::is_specialization_v<idx_t,std::tuple>
-                        || meta::is_specialization_v<idx_t,std::pair>) {
-                            return make_array<std::array>(idx);
-                    }
-                    else return idx;
-                }();
+                auto idx_ = indices[i];
+                auto idx  = as_array(idx_);
                 // TODO: support tuple for apply_at
                 auto a = apply_at(array, idx);
 
                 // check if we should print open bracket
                 // only add open bracket up to axis n
                 // that is equal to zero, starting from last axis
-                for (int ii=size(idx)-1; ii>=0; ii--) {
+                for (int ii=len(idx)-1; ii>=0; ii--) {
                     if (at(idx,ii)==0)
                         str += "[";
                     else break;
@@ -131,7 +140,7 @@ namespace nmtools::utils
                 // check if we should print closing bracket
                 // only add open bracket up to axis n
                 // that is equal to shape[n]-1, starting from last axis
-                for (int ii=(int)size(idx)-1; ii>=0; ii--) {
+                for (int ii=(int)len(idx)-1; ii>=0; ii--) {
                     // for simplicity just use int
                     if ((int)at(idx,ii)==(int)(at(s,ii)-1)) {
                         str += "]";
@@ -140,7 +149,7 @@ namespace nmtools::utils
                     }
                     else break;
                 }
-                if (print_comma && i<size(indices)-1) {
+                if (print_comma && i<len(indices)-1) {
                     str += ",";
                     for (int ii=0; ii<print_comma; ii++)
                         str += "\n";

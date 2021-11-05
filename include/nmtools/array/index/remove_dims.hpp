@@ -86,7 +86,6 @@ namespace nmtools::index
         // use the same type as axis_t for loop index
         constexpr auto idx_vtype = [](){
             if constexpr (meta::is_constant_index_array_v<axis_t>) {
-                // std::commont_type can't handle constant index array :|
                 // shortcut for now, just use int
                 return meta::as_value_v<int>;
             } else if constexpr (meta::is_index_array_v<axis_t>) {
@@ -155,13 +154,14 @@ namespace nmtools::meta
                 constexpr auto newshape = index::remove_dims(shape,axis,keepdims);
                 constexpr auto N = ::nmtools::len(newshape);
                 constexpr auto initial = ::nmtools::at(newshape,0);
+                using init_type = make_tuple_type_t<ct<initial>>;
                 // convert back from value to type
                 constexpr auto result = meta::template_reduce<N-1>([&](auto init, auto index){
                     using init_t = type_t<remove_cvref_t<decltype(init)>>;
                     constexpr auto s_i1 = ::nmtools::at(newshape,index+1);
                     using r_t = append_type_t<init_t,ct<s_i1>>;
                     return as_value_v<r_t>;
-                }, as_value_v<std::tuple<ct<initial>>>);
+                }, as_value_v<init_type>);
                 return result;
             } else if constexpr (
                 is_constant_index_array_v<shape_t>
@@ -183,17 +183,13 @@ namespace nmtools::meta
                 if constexpr (keepdims) {
                     return as_value_v<shape_t>;
                 } else if constexpr (is_index_v<axis_t>) {
-                    // TODO: resize shape_t instead of using std::array
-                    // TODO: create and/or use meta::make_array
                     constexpr auto N = fixed_index_array_size_v<shape_t>;
-                    using type = std::array<size_t,N-1>;
+                    using type = make_array_type_t<size_t,N-1>;
                     return as_value_v<type>;
                 } else if constexpr (is_fixed_index_array_v<axis_t>) {
-                    // TODO: resize shape_t instead of using std::array
-                    // TODO: create and/or use meta::make_array
                     constexpr auto N = fixed_index_array_size_v<shape_t>;
                     constexpr auto M = fixed_index_array_size_v<axis_t>;
-                    using type = std::array<size_t,N-M>;
+                    using type = make_array_type_t<size_t,N-M>;
                     return as_value_v<type>;
                 } else if constexpr (is_index_array_v<axis_t>) {
                     // TODO: consider to provide metafunction make_hybrid_index_array

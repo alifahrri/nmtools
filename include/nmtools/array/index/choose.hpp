@@ -1,15 +1,12 @@
 #ifndef NMTOOLS_ARRAY_INDEX_EXTRACT_HPP
 #define NMTOOLS_ARRAY_INDEX_EXTRACT_HPP
 
-#include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/at.hpp"
+#include "nmtools/array/shape.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
-
-#include <type_traits>
-#include <cstddef>
-#include <utility>
+#include "nmtools/meta.hpp"
 
 namespace nmtools::index
 {
@@ -37,7 +34,7 @@ namespace nmtools::index
         auto res = return_t{};
 
         if constexpr (meta::is_resizeable_v<return_t>)
-            res.resize(tuple_size(indices));
+            res.resize(len(indices));
 
         // actual implementation of choose
         auto choose_impl = [&](auto i){
@@ -100,7 +97,7 @@ namespace nmtools::meta
             ) {
                 // TODO: compute at compile-time here, then maps back to type
                 constexpr auto N = fixed_index_array_size_v<indices_t>;
-                using type = make_fixed_ndarray_t<element_t,std::tuple<ct<N>>>;
+                using type = make_fixed_ndarray_t<element_t,make_tuple_type_t<ct<N>>>;
                 return as_value_v<type>;
             } else if constexpr (
                    is_hybrid_index_array_v<indices_t>

@@ -29,11 +29,11 @@ namespace nmtools::index
     template <typename bshape_t>
     constexpr auto shape_broadcast_to(const none_t&, const bshape_t& bshape)
     {
-        using return_t = meta::tuple_to_array_t<
+        using result_t = meta::tuple_to_array_t<
             meta::transform_bounded_array_t<bshape_t>
         >;
 
-        auto ret = return_t {};
+        auto ret = result_t {};
         auto dim = len(bshape);
 
         if constexpr (meta::is_tuple_v<bshape_t>) {
@@ -47,7 +47,8 @@ namespace nmtools::index
                 at(ret,i) = at(bshape,i);
         }
 
-        return std::tuple{true,ret,None};
+        using return_t = meta::make_tuple_type_t<bool,result_t,none_t>;
+        return return_t{true,ret,None};
     } // shape_broadcast_to
 
     /**
@@ -64,10 +65,10 @@ namespace nmtools::index
     template <typename ashape_t, typename bshape_t>
     constexpr auto shape_broadcast_to(const ashape_t& ashape, const bshape_t& bshape)
     {
-        using return_t = meta::resolve_optype_t<shape_broadcast_to_t,ashape_t,bshape_t>;
-        using free_axes_t = meta::replace_element_type_t<return_t,bool>;
+        using result_t = meta::resolve_optype_t<shape_broadcast_to_t,ashape_t,bshape_t>;
+        using free_axes_t = meta::replace_element_type_t<result_t,bool>;
 
-        auto res = return_t{};
+        auto res = result_t{};
 
         auto adim = len(ashape);
         auto bdim = len(bshape);
@@ -81,13 +82,13 @@ namespace nmtools::index
         // np.shape_broadcast_to(np.array([[1],[2],[3]]), (3,))
         // ValueError: input operand has more dimensions than allowed by the axis remapping
         // TODO: error handling for unsupported shape_broadcast_to dimension
-        if constexpr (meta::is_resizeable_v<return_t>) {
+        if constexpr (meta::is_resizeable_v<result_t>) {
             res.resize(bdim);
             free_axes.resize(bdim);
         }
         
         auto shape_broadcast_to_impl = [&](auto i){
-            using idx_t = std::make_signed_t<decltype(adim-i-1)>;
+            using idx_t = meta::make_signed_t<decltype(adim-i-1)>;
             idx_t ai = adim - i - 1;
             idx_t bi = bdim - i - 1;
             // handle bshape if constant index array;
@@ -137,7 +138,8 @@ namespace nmtools::index
         // - free_axes value indicates wether the corresponding indices are free (either empty or 1).
         // - free_axes is useful to perform the reverse operation.
         // TODO: use optional instead
-        return std::tuple{success, res, free_axes};
+        using return_t = meta::make_tuple_type_t<bool,result_t,free_axes_t>;
+        return return_t{success, res, free_axes};
     } // shape_broadcast_to
 
     /**
@@ -155,7 +157,8 @@ namespace nmtools::index
     constexpr auto shape_broadcast_to<none_t,none_t>(const none_t&, const none_t&)
     {
         // TODO: use optional instead
-        return std::tuple{true,None,None};
+        using return_t = meta::make_tuple_type_t<bool,none_t,none_t>;
+        return return_t{true,None,None};
     } // shape_broadcast_to
 
     template <typename indices_t, typename src_shape_t, typename dst_shape_t, typename origin_axes_t>
@@ -222,12 +225,13 @@ namespace nmtools::meta
                 constexpr auto M = len_v<bshape_t>;
                 using new_type_t = element_t;
                 if constexpr (is_constant_index_v<new_type_t>) {
-                    using return_t = std::array<typename new_type_t::value_type,M>;
-                    return as_value_v<return_t>;
+                    using result_t = make_array_type_t<typename new_type_t::value_type,M>;
+                    return as_value_v<result_t>;
                 }
                 else {
-                    using return_t = std::array<new_type_t,M>;
-                    return as_value_v<return_t>;
+                    // TODO: when does this happen?
+                    using result_t = make_array_type_t<new_type_t,M>;
+                    return as_value_v<result_t>;
                 }
             }
             // make sure the resulting type's element type is not contant index

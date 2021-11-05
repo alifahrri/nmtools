@@ -26,24 +26,23 @@ namespace nmtools::index
     template <typename indices_t, typename strides_t>
     constexpr auto compute_offset(const indices_t& indices, const strides_t& strides)
     {
-        constexpr auto indices_is_fixed = meta::has_tuple_size_v<indices_t> || meta::has_tuple_size_v<indices_t>;
-        constexpr auto strides_is_fixed = meta::has_tuple_size_v<strides_t> || meta::has_tuple_size_v<strides_t>;
         size_t offset = 0;
         auto m = len(indices);
         auto n = len(strides);
-        // @todo static_assert whenever possible
+        // TODO: use optional instead
+        // TODO: static_assert whenever possible
         assert (m==n
             // , "unsupported compute_offset, mismatched shape for indices and strides"
         );
-        if constexpr (indices_is_fixed || strides_is_fixed)
+        if constexpr (meta::is_fixed_index_array_v<indices_t> || meta::is_fixed_index_array_v<strides_t>)
         {
             constexpr auto n = [&](){
-                if constexpr (indices_is_fixed)
-                    return std::tuple_size_v<meta::remove_cvref_t<decltype(indices)>>;
-                else return std::tuple_size_v<meta::remove_cvref_t<decltype(strides)>>;
+                if constexpr (meta::is_fixed_index_array_v<indices_t>)
+                    return meta::len_v<meta::remove_cvref_t<decltype(indices)>>;
+                else return meta::len_v<meta::remove_cvref_t<decltype(strides)>>;
             }();
             meta::template_for<n>([&](auto index){
-                offset += tuple_at(strides,index) * tuple_at(indices,index);
+                offset += at(strides,index) * at(indices,index);
             });
         }
         else

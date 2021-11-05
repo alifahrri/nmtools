@@ -7,7 +7,7 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/index/argfilter.hpp"
+#include "nmtools/array/index/where.hpp"
 #include "nmtools/array/index/cumsum.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/sum.hpp"
@@ -106,28 +106,23 @@ namespace nmtools::meta
         void, index::shape_repeat_t, shape_t, repeats_t, axis_t
     >
     {
-        using type = tuple_to_array_t<shape_t>;
-    }; // resolve_optype
-
-    /**
-     * @brief resolve return type for index::shape_repeat op
-     * 
-     * @tparam shape_t 
-     * @tparam repeats_t 
-     */
-    template <typename shape_t, typename repeats_t>
-    struct resolve_optype <
-        void, index::shape_repeat_t, shape_t, repeats_t, none_t
-    >
-    {
-        using type = std::array<size_t,1>;
+        static constexpr auto vtype = [](){
+            if constexpr (is_none_v<axis_t>) {
+                using type = make_array_type_t<size_t,1>;
+                return as_value_v<type>;
+            } else {
+                using type = tuple_to_array_t<shape_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     }; // resolve_optype
 } // namespace nmtools::meta
 
 namespace nmtools::index
 {
     /**
-     * @brief specific tag to resolve returnt type of repeat op
+     * @brief specific tag to resolve return type of repeat op
      * 
      */
     struct repeat_t {};
@@ -157,13 +152,13 @@ namespace nmtools::index
         // and indices must be integral type or array with size exactly 1
         if constexpr (is_none_v<axis_t>) {
             auto i = [&](){
-                if constexpr (std::is_integral_v<indices_t>)
+                if constexpr (meta::is_integral_v<indices_t>)
                     return indices / repeats;
                 else {
-                    static_assert (std::tuple_size_v<indices_t> == 1
+                    static_assert (meta::len_v<indices_t> == 1
                         , "unsupported index::repeat, expect array with size of 1 when axis is None"
                     );
-                    return std::get<0>(indices) / repeats;
+                    return at<0>(indices) / repeats;
                 }
             }();
             ret = compute_indices(i,shape);
@@ -175,7 +170,7 @@ namespace nmtools::index
             for (size_t i=0; i<n; i++) {
                 using common_t = meta::promote_index_t<size_t,axis_t>;
                 auto idx = at(indices,i);
-                if constexpr (std::is_integral_v<repeats_t>) {
+                if constexpr (meta::is_integral_v<repeats_t>) {
                     at(ret,i) = (static_cast<common_t>(i)==static_cast<common_t>(axis) ? idx / repeats : idx);
                 } else {
                     auto csum = cumsum(repeats);
@@ -186,7 +181,7 @@ namespace nmtools::index
                             using common_t = meta::promote_index_t<decltype(idx),decltype(a)>;
                             return (common_t)idx<(common_t)a;
                         };
-                        auto arg = argfilter(f, csum);
+                        auto arg = where(f, csum);
                         at(ret,i) = at(arg,0); // take first
                     }
                     else at(ret,i) = idx;

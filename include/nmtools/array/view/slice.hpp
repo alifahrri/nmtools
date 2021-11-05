@@ -6,7 +6,6 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/index/make_array.hpp"
 #include "nmtools/array/index/slice.hpp"
 
 #include <cassert>
@@ -33,18 +32,8 @@ namespace nmtools::view
 
         constexpr auto shape() const
         {
-            using ::nmtools::index::make_array;
             auto shape_ = detail::shape(array);
-            // TODO: no need to transform to array
-            auto ashape = [&](){
-                using index::make_array;
-                using shape_t = meta::remove_cvref_t<decltype(shape_)>;
-                // TODO: make proper generalization of `index_array`
-                if constexpr (meta::is_specialization_v<shape_t, std::tuple> || meta::is_specialization_v<shape_t, std::pair>)
-                    return make_array<std::array>(shape_);
-                else return shape_;
-            }();
-            return shape(ashape, std::make_index_sequence<sizeof...(slices_t)>{});
+            return shape(shape_, std::make_index_sequence<sizeof...(slices_t)>{});
         } // shape
 
         constexpr auto dim() const
@@ -64,16 +53,7 @@ namespace nmtools::view
             auto indices_ = pack_indices(indices...);
 
             auto shape_ = detail::shape(array);
-            // TODO: no need to transform to array
-            auto ashape = [&](){
-                using index::make_array;
-                using shape_t = meta::remove_cvref_t<decltype(shape_)>;
-                // TODO: make proper generalization of `index_array`
-                if constexpr (meta::is_specialization_v<shape_t, std::tuple> || meta::is_specialization_v<shape_t, std::pair>)
-                    return make_array<std::array>(shape_);
-                else return shape_;
-            }();
-            return index_impl(indices_,ashape,std::make_index_sequence<sizeof...(slices_t)>{});
+            return index_impl(indices_,shape_,std::make_index_sequence<sizeof...(slices_t)>{});
         } // index
     }; // slice_t
 

@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_COMPUTE_INDICES_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
@@ -26,19 +26,19 @@ namespace nmtools::index
         template <typename indices_t, typename offset_t, typename shape_t, typename strides_t>
         constexpr auto compute_indices(indices_t& indices, const offset_t& offset, const shape_t& shape, const strides_t& strides)
         {
-            constexpr auto shape_has_tuple_size = meta::has_tuple_size_v<shape_t>;
-            constexpr auto strides_has_tuple_size = meta::has_tuple_size_v<strides_t>;
+            constexpr auto shape_has_tuple_size = meta::is_fixed_index_array_v<shape_t>;
+            constexpr auto strides_has_tuple_size = meta::is_fixed_index_array_v<strides_t>;
 
             if constexpr (shape_has_tuple_size && strides_has_tuple_size)
             {
-                constexpr auto n = std::tuple_size_v<shape_t>;
-                constexpr auto m = std::tuple_size_v<strides_t>;
+                constexpr auto n = meta::len_v<shape_t>;
+                constexpr auto m = meta::len_v<strides_t>;
                 static_assert (m==n
                     , "unsupported compute_indices, mismatched shape for shape and strides"
                 );
                 meta::template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
-                    std::get<i>(indices) = (offset / std::get<i>(strides)) % std::get<i>(shape);
+                    at<i>(indices) = (offset / at<i>(strides)) % at<i>(shape);
                 });
             }
             else
@@ -60,7 +60,7 @@ namespace nmtools::index
     constexpr auto compute_indices(const offset_t& offset, const shape_t& shape, const strides_t& strides)
     {
         using return_t = meta::resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
-        static_assert( !std::is_void_v<return_t>
+        static_assert( !meta::is_void_v<return_t>
             , "unsupported return type for compute_indices" );
         auto indices = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
@@ -107,7 +107,7 @@ namespace nmtools::meta
             // especially when shape is tuple with single element
             if constexpr (is_constant_index_array_v<shape_t>) {
                 constexpr auto N = fixed_index_array_size_v<shape_t>;
-                using result_t = std::array<size_t,N>;
+                using result_t = make_array_type_t<size_t,N>;
                 return as_value_v<result_t>;
             }
             else return as_value_v<type>;

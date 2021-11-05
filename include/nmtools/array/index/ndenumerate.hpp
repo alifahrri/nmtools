@@ -2,7 +2,6 @@
 #define NMTOOLS_ARRAY_INDEX_NDENUMERATE_HPP
 
 #include "nmtools/array/index/ndindex.hpp"
-#include "nmtools/array/detail.hpp"
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/utility/at.hpp"
@@ -23,10 +22,15 @@ namespace nmtools::index
     struct ndenumerate_t
     {
         using array_type = const array_t&;
-        using shape_type = meta::remove_cvref_t<decltype(nmtools::shape(std::declval<array_t>()))>;
+        // TODO: implement meta::declval
+        // declval is utilized to avoid constructor, for now assume array_t has default constructor
+        // using shape_type = meta::remove_cvref_t<decltype(nmtools::shape(std::declval<array_t>()))>;
+        using shape_type = meta::remove_cvref_t<decltype(nmtools::shape(array_t{}))>;
         using ndindex_type = ndindex_t<shape_type>;
         using element_type = meta::get_element_type_t<array_t>;
-        using index_type   = meta::remove_cvref_t<decltype(std::declval<ndindex_type>()[0])>;
+        // declval is utilized to avoid constructor, for now assume shape_type has default constructor
+        // using index_type   = meta::remove_cvref_t<decltype(std::declval<ndindex_type>()[0])>;
+        using index_type   = meta::remove_cvref_t<decltype(ndindex_type{shape_type{}}[0])>;
 
         array_type array;
         shape_type shape;
@@ -42,7 +46,7 @@ namespace nmtools::index
         } // size
 
         constexpr inline auto operator[](size_t i) const
-            -> std::tuple<index_type,const element_type&>
+            -> meta::make_tuple_type_t<index_type,const element_type&>
         {
             auto idx = ndindex_[i];
             const auto& val = apply_at(array,idx);

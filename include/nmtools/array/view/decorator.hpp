@@ -6,7 +6,6 @@
 #include "nmtools/array/meta.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
-#include "nmtools/array/index/make_array.hpp"
 
 #include "nmtools/assert.hpp"
 
@@ -83,18 +82,18 @@ namespace nmtools::view
      * @param indices 
      * @return constexpr auto 
      */
-    template <typename...size_types>
-    constexpr auto pack_indices(size_types...indices)
+    template <typename size_type, typename...size_types>
+    constexpr auto pack_indices(size_type index_, size_types...indices)
     {
-        using index::make_array;
-        using common_t = std::common_type_t<size_types...>;
-        if constexpr (std::is_integral_v<common_t>) {
-            return make_array<std::array>(indices...);
-        } else {
-            static_assert (sizeof...(indices)==1
+        using common_t = std::common_type_t<size_type,size_types...>;
+        if constexpr (meta::is_integral_v<common_t>) {
+            using array_t = meta::make_array_type_t<common_t,1+sizeof...(indices)>;
+            return array_t{index_,indices...};
+        } else /* if constexpr (meta::is_index_array_v<size_type>) */ {
+            static_assert (sizeof...(indices)==0
                 , "unsupported indices for pack"
             );
-            return std::get<0>(std::tuple{indices...});
+            return index_;
         }
     } // pack_indices
 

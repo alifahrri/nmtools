@@ -33,18 +33,18 @@ namespace nmtools::index
     constexpr auto where(const F& f, const array_t& array)
     {
         using return_t = meta::resolve_optype_t<where_t,array_t,index_t>;
-        static_assert (!std::is_void_v<return_t>
+        static_assert (!meta::is_void_v<return_t>
             , "unsupported index::where, couldn't deduce return type" );
         auto res = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
             res.resize(len(array));
-        auto n = size_t{0};
+        auto n = index_t{0};
         auto where_impl = [&](auto i){
             if (f(tuple_at(array,i)))
-                at(res,n++) = static_cast<size_t>(i);
+                at(res,n++) = static_cast<index_t>(i);
         };
-        if constexpr (meta::has_tuple_size_v<array_t>)
-            meta::template_for<std::tuple_size_v<array_t>>([&](auto i){
+        if constexpr (meta::is_fixed_index_array_v<array_t>)
+            meta::template_for<meta::len_v<array_t>>([&](auto i){
                 where_impl(i);
             });
         else

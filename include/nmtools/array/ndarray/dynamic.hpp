@@ -2,7 +2,8 @@
 #define NMTOOLS_ARRAY_NDARRAY_DYNAMIC_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/detail.hpp"
+#include "nmtools/array/index/compute_offset.hpp"
+#include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
@@ -169,7 +170,7 @@ namespace nmtools::array
             auto stride = stride_type{};
             stride.resize(dim());
             for (size_t i=0; i<dim(); i++)
-                stride[i] = detail::stride(shape_,i);
+                stride[i] = ::nmtools::index::stride(shape_,i);
             return stride;
         } // strides
 
@@ -225,7 +226,7 @@ namespace nmtools::array
                 n, static_cast<common_size_t>(ns)...
             };
             assert (dim()==indices.size());
-            auto offset = detail::compute_offset(strides_, indices);
+            auto offset = ::nmtools::index::compute_offset(strides_, indices);
             return data[offset];
         } // operator()
 
@@ -246,7 +247,7 @@ namespace nmtools::array
                 n, static_cast<common_size_t>(ns)...
             };
             assert (dim()==indices.size());
-            auto offset = detail::compute_offset(strides_, indices);
+            auto offset = ::nmtools::index::compute_offset(strides_, indices);
             return data[offset];
         } // operator()
 
@@ -258,13 +259,13 @@ namespace nmtools::array
          */
         decltype(auto) at(shape_type i) const
         {
-            auto offset = detail::compute_offset(strides_, i);
+            auto offset = ::nmtools::index::compute_offset(strides_, i);
             return data[offset];
         } // at
 
         decltype(auto) at(shape_type i)
         {
-            auto offset = detail::compute_offset(strides_, i);
+            auto offset = ::nmtools::index::compute_offset(strides_, i);
             return data[offset];
         } // at
 
@@ -276,7 +277,7 @@ namespace nmtools::array
             // somehow storage_type is deduced as std::vector while
             // provided index array (std::vector defined outside) deduced
             // as std::__ndk1::vector
-            auto offset = detail::compute_offset(strides_, i);
+            auto offset = ::nmtools::index::compute_offset(strides_, i);
             return data[offset];
         } // at
 
@@ -288,7 +289,7 @@ namespace nmtools::array
             // somehow storage_type is deduced std::vector while
             // provided index array (std::vector defined outside) deduced
             // as std::__ndk1::vector
-            auto offset = detail::compute_offset(strides_, i);
+            auto offset = ::nmtools::index::compute_offset(strides_, i);
             return data[offset];
         } // at
 

@@ -61,8 +61,8 @@ namespace nmtools::index
                 at(res,i) = ((idx_t)i == (idx_t)axis) ? c_dim : at(shape,i);
             };
 
-            if constexpr (meta::has_tuple_size_v<shape_t>) {
-                constexpr auto N = std::tuple_size_v<shape_t>;
+            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
+                constexpr auto N = meta::len_v<shape_t>;
                 meta::template_for<N>(shape_compress_impl);
             }
             else {
@@ -78,7 +78,7 @@ namespace nmtools::index
     constexpr auto compress(const indices_t& indices, const condition_t& condition, const shape_t& shape, axis_t axis)
     {
         using return_t = meta::resolve_optype_t<compress_t,indices_t,condition_t,shape_t,axis_t>;
-        static_assert (!std::is_void_v<return_t>
+        static_assert (!meta::is_void_v<return_t>
             , "unsupported index::compress, couldn't deduce return type");
 
         auto res = return_t{};
@@ -139,8 +139,8 @@ namespace nmtools::index
         }
         else {
             // assume len(indices) == len(shape) == len(res)
-            if constexpr (meta::has_tuple_size_v<indices_t>) {
-                constexpr auto N = std::tuple_size_v<indices_t>;
+            if constexpr (meta::is_fixed_index_array_v<indices_t>) {
+                constexpr auto N = meta::len_v<indices_t>;
                 meta::template_for<N>(compress_impl);
             }
             else {
@@ -174,7 +174,7 @@ namespace nmtools::meta
     {
         // TODO: use meta::make_array_type
         // when working on flattened array, shape is single element 1D array
-        using type = std::array<size_t,1>;
+        using type = make_array_type_t<size_t,1>;
     }; // shape_compress_t
 
     // TODO: cleanup index metafunctions
