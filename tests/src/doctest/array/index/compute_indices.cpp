@@ -1,4 +1,4 @@
-#include "nmtools/array/index.hpp"
+#include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/as_tuple.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/constants.hpp"

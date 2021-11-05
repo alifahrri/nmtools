@@ -19,8 +19,6 @@ namespace meta = nmtools::meta;
 using meta::merge_t;
 using meta::pop_first_t;
 using meta::pop_last_t;
-using meta::type_reverse_t;
-using meta::make_reversed_index_sequence;
 
 TEST_CASE("meta" * doctest::skip(true))
 {
@@ -36,12 +34,6 @@ TEST_CASE("meta" * doctest::skip(true))
     // pop_last test
     STATIC_CHECK(( std::is_same_v<pop_last_t<std::tuple<int,char>>,std::tuple<int>> ));
     STATIC_CHECK(( std::is_same_v<pop_last_t<std::tuple<int,char,double>>,std::tuple<int,char>> ));
-
-    // type_reverse test
-    STATIC_CHECK(( std::is_same_v<type_reverse_t<std::tuple<int,char,double>>,std::tuple<double,char,int>> ));
-
-    // make_reversed_index_sequence test
-    STATIC_CHECK(( std::is_same_v<make_reversed_index_sequence<3>,std::index_sequence<2,1,0>> ));
 }
 
 TEST_CASE("meta" * doctest::skip(true))
