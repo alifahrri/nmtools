@@ -37,10 +37,14 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
 
 #define declval(type) std::declval<type>()
 
+using std::tuple;
+
 TEST_CASE("broadcast_arrays" * doctest::test_suite("view"))
 {
     using lhs_t = int[2][3][2];
     using rhs_t = int;
+    static_assert( meta::is_constant_index_v<decltype(2_ct,3_ct,2_ct)> );
+    static_assert( meta::is_fixed_index_array_v<std::array<bool,3>> );
     using broadcasted_t = decltype(view::broadcast_arrays(declval(lhs_t),declval(rhs_t)));
     constexpr auto len  = meta::len_v<broadcasted_t>;
     // static_assert( meta::len_v<broadcasted_t> == 2 );
