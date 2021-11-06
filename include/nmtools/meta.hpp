@@ -9,6 +9,7 @@
 // such as maybe (meta::make_maybe_type...)
 
 #include "nmtools/meta/stl/traits.hpp"
+#include "nmtools/meta/stl/array.hpp"
 #include "nmtools/meta/stl/transform.hpp"
 
 #endif // NMTOOLS_META_HPP
