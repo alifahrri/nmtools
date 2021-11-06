@@ -66,6 +66,25 @@ namespace nmtools::meta
 
     template <typename T, typename U>
     constexpr inline auto is_same_v = is_same<T,U>::value;
+
+    /**
+     * @brief Type as value
+     * 
+     * @tparam T type to wrap
+     */
+    template <typename T>
+    struct as_value
+    {
+        using type = T;
+    };
+
+    /**
+     * @brief helper inline variable for as_value
+     * 
+     * @tparam T type to wrap
+     */
+    template <typename T>
+    constexpr inline auto as_value_v = as_value<T>{};
 } // nmtools::meta
 
 namespace nmtools::meta
