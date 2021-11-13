@@ -1,11 +1,7 @@
 #ifndef NMTOOLS_META_COMMON_HPP
 #define NMTOOLS_META_COMMON_HPP
 
-namespace nmtools
-{
-    // TODO: properly declare this alias somewhere else and make sure compatible with std
-    using size_t = unsigned long;
-}
+#include "nmtools/def.hpp"
 
 namespace nmtools::meta
 {
