@@ -617,30 +617,6 @@ namespace nmtools::meta
     template <template<typename...> typename view_t, typename...Ts>
     struct is_array1d<view::decorator_t<view_t,Ts...>,void>
         : is_array1d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
-    
-    // TODO: remove
-    /**
-     * @brief specialization of is_array2d for view type
-     * 
-     * @tparam view_t template template parameter corresponding to the underlying view
-     * @tparam Ts template parameter(s) to the underlying view
-     * @note for specific view that may requires to specialize this, it is possible to do so by specialize "view_t" for the desired view
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct is_array2d<view::decorator_t<view_t,Ts...>>
-        : is_array2d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
-    
-    // TODO: remove
-    /**
-     * @brief specialization of is_array3d for view type
-     * 
-     * @tparam view_t template template parameter corresponding to the underlying view
-     * @tparam Ts template parameter(s) to the underlying view
-     * @note for specific view that may requires to specialize this, it is possible to do so by specialize "view_t" for the desired view
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct is_array3d<view::decorator_t<view_t,Ts...>>
-        : is_array3d<meta::remove_cvref_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
 } // namespace nmtools::meta
 
 namespace nmtools

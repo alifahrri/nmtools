@@ -4,6 +4,7 @@
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/constants.hpp"
 
 #include <array>
 #include <vector>
@@ -12,6 +13,33 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
+
+namespace nmtools 
+{
+    struct Foo {};
+
+    inline constexpr auto foo = Foo {};
+}
+
+// static_assert( std::is_same_v<decltype(std::get<0>(std::declval<std::tuple<nm::elipsis_t,nm::elipsis_t>>())),nm::elipsis_t> );
+// static_assert( std::is_same_v<decltype(std::get<0>(meta::declval<std::tuple<nm::elipsis_t,nm::elipsis_t>>())),nm::elipsis_t> );
+// static_assert( std::is_same_v<decltype(nm::get<0>(meta::declval<std::tuple<nm::elipsis_t,nm::elipsis_t>>())),nm::elipsis_t> );
+// static_assert( std::is_same_v<decltype(std::get<0>(std::declval<std::tuple<nm::Foo,nm::Foo>>())),nm::Foo> );
+
+// static_assert( std::is_same_v<meta::expr::template_get<std::tuple<nm::elipsis_t,nm::elipsis_t>,meta::index_sequence<0>>,nm::elipsis_t> );
+// static_assert( std::is_same_v<meta::expr::template_get<std::tuple<nm::Foo,nm::Foo>,meta::index_sequence<0>>,nm::elipsis_t> );
+
+// static_assert( meta::has_template_get_v<std::tuple<int,int>,0> );
+// static_assert( meta::has_template_get_v<const std::tuple<int,int>,0> );
+// static_assert( meta::has_template_get_v<const std::tuple<int,int>&,0> );
+// static_assert( meta::has_template_get_v<const std::tuple<std::array<int,1>,int>&,0> );
+// static_assert( meta::has_template_get_v<std::tuple<nm::elipsis_t,nm::elipsis_t>,0> );
+// static_assert( meta::has_template_get_v<std::tuple<const nm::elipsis_t&,const nm::elipsis_t&>,0> );
+// static_assert( meta::has_template_get_v<const std::tuple<nm::elipsis_t,nm::elipsis_t>&,0> );
+// static_assert( meta::has_template_get_v<std::tuple<nm::Foo,nm::Foo>,0> );
+// static_assert( meta::has_template_get_v<std::tuple<decltype(nm::foo),decltype(nm::foo)>,0> );
+// static_assert( meta::has_template_get_v<const std::tuple<nm::Foo,nm::Foo>&,0> );
+// static_assert( meta::has_template_get_v<const std::tuple<decltype(nm::foo),decltype(nm::foo)>&,0> );
 
 TEST_CASE("is_ndarray" * doctest::test_suite("view"))
 {

@@ -130,18 +130,7 @@ namespace nmtools
     template <typename array_t, typename shape_t>
     struct meta::is_ndarray< view::decorator_t<view::reshape_t, array_t, shape_t> >
     {
-        static constexpr auto get()
-        {
-            using view_type  = view::decorator_t<view::reshape_t, array_t, shape_t>;
-            using array_type = typename view_type::array_type;
-            if constexpr (meta::is_array2d_v<view_type>)
-                return true;
-            else if constexpr (meta::is_array1d_v<view_type>)
-                return true;
-            else return meta::is_ndarray_v<meta::remove_cvref_t<array_type>>;
-        } // get()
-
-        static inline constexpr auto value = get();
+        static constexpr auto value = meta::is_ndarray_v<meta::remove_cvref_t<array_t>>;
         using value_type = decltype(value);
     }; // is_ndarray
 

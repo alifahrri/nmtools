@@ -2,9 +2,10 @@
 #define NMTOOLS_META_BITS_ARRAY_FIXED_DIM_HPP
 
 #include "nmtools/meta/bits/traits/is_fixed_size_ndarray.hpp"
-#include "nmtools/meta/bits/array/fixed_ndarray_shape.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
+#include "nmtools/meta/bits/transform/len.hpp"
 #include "nmtools/meta/bits/array/nested_array_dim.hpp"
+#include "nmtools/meta/bits/array/fixed_ndarray_shape.hpp"
 #include "nmtools/meta/bits/traits/is_void.hpp"
 
 namespace nmtools::meta
@@ -30,7 +31,7 @@ namespace nmtools::meta
         {
             if constexpr (is_fixed_size_ndarray_v<T>) {
                 auto shape = fixed_ndarray_shape_v<T>;
-                auto dim   = std::tuple_size_v<decltype(shape)>;
+                auto dim   = len_v<decltype(shape)>;
                 return dim;
             }
             else return detail::fail_t{};

@@ -34,25 +34,26 @@ namespace nmtools::meta
          * 
          * @return constexpr auto 
          */
-        static constexpr auto _get()
-        {
+        static constexpr auto value = [](){
             // check for fixed-size array (that has tuple_size_v)
             if constexpr (nested_array_size_v<T> > 0) {
                 // nested_array_dim_v mimics std::rank_v
                 // nested_array_size_v mimics std::extent_v
                 constexpr auto dim = nested_array_dim_v<T>;
-                auto shape = std::array<size_t,dim>{};
+                using array_t = typename make_array_type<size_t,dim>::type;
+                auto shape = array_t{};
                 template_for<dim>([&](auto index){
                     constexpr auto i = decltype(index)::value;
                     using nested_t = remove_nested_array_dim_t<T,i>;
-                    std::get<i>(shape) = nested_array_size_v<nested_t>;
+                    get<i>(shape) = nested_array_size_v<nested_t>;
                 });
                 return shape;
             }
             // check for bounded-array (e.g. double[1][2][3]...)
             else if constexpr (is_bounded_array_v<T>) {
                 constexpr auto rank = std::rank_v<T>;
-                auto shape = std::array<size_t,rank>{};
+                using array_t = typename make_array_type<size_t,rank>::type;
+                auto shape = array_t{};
                 template_for<rank>([&](auto index) {
                     constexpr auto i = decltype(index)::value;
                     constexpr auto n = std::extent_v<T,i>;
@@ -62,8 +63,7 @@ namespace nmtools::meta
             }
             // fail otherwise
             else return detail::fail_t{};
-        } // _get()
-        static inline constexpr auto value = _get();
+        }();
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     };
 

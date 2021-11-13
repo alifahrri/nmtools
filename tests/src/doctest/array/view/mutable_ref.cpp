@@ -19,10 +19,14 @@
 #include <vector>
 
 namespace view = nmtools::view;
+namespace meta = nmtools::meta;
+
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
 using nmtools::array::fixed_ndarray;
 using nmtools::array::dynamic_ndarray;
+
+static_assert( meta::is_ndarray_v<std::array<double,3>> );
 
 /**
  * @test test case for mutable ref view to 1D std::array

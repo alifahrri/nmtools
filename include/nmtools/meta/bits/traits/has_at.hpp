@@ -3,6 +3,8 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/expr.hpp"
+#include "nmtools/meta/bits/transform/add_reference.hpp"
+
 #include <type_traits>
 
 namespace nmtools::meta
@@ -28,7 +30,7 @@ namespace nmtools::meta
      */
     template <typename T, typename size_type>
     struct has_at<T,size_type,
-        std::void_t<decltype(std::declval<T>().at(std::declval<size_type>()))>
+        void_t<decltype(declval<T>().at(declval<size_type>()))>
     > : true_type {};
 
     /**

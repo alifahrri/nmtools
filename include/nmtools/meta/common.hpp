@@ -1,8 +1,13 @@
 #ifndef NMTOOLS_META_COMMON_HPP
 #define NMTOOLS_META_COMMON_HPP
 
+#include "nmtools/def.hpp"
+
 namespace nmtools::meta
 {
+    template <typename...>
+    using void_t = void;
+
     /**
      * @brief helper alias template to get public member type `type` from type T
      * 
@@ -39,6 +44,17 @@ namespace nmtools::meta
         }
     };
 
+    template <typename T, T v>
+    struct integral_constant
+    {
+        using value_type = T;
+        static constexpr auto value = v;
+        constexpr operator value_type() const noexcept
+        {
+            return value;
+        }
+            constexpr value_type operator()() const noexcept { return value; }
+    };
 
     /**
      * @brief To provide enable_if without depends to stl
@@ -85,6 +101,57 @@ namespace nmtools::meta
      */
     template <typename T>
     constexpr inline auto as_value_v = as_value<T>{};
+
+    template <typename T, T...Ints>
+    struct integer_sequence
+    {
+        using value_type = T;
+        static constexpr auto size() noexcept
+        {
+            return sizeof...(Ints);
+        } 
+    };
+
+    template <size_t...Ints>
+    struct index_sequence : integer_sequence<size_t,Ints...> {};
+
+    namespace detail
+    {
+        template <typename lhs_t, typename rhs_t>
+        struct merge_ix {};
+
+        template<size_t...M, size_t...N>
+        struct merge_ix< index_sequence<M...>, index_sequence<N...> >
+        {
+            using type = index_sequence<M...,N...>;
+        };
+
+        template <size_t, typename=void>
+        struct make_index_sequence {};
+
+        template <size_t N>
+        struct make_index_sequence<N,enable_if_t<(N>0)>>
+        {
+            static constexpr auto vtype = [](){
+                if constexpr (N==1) {
+                    using type = index_sequence<0>;
+                    return as_value_v<type>;
+                } else if constexpr (N==2) {
+                    using type = index_sequence<0,1>;
+                    return as_value_v<type>;
+                } else if constexpr (N>2) {
+                    using lhs_t = typename make_index_sequence<N-1>::type;
+                    using rhs_t = index_sequence<N-1>;
+                    using type  = typename merge_ix< lhs_t, rhs_t >::type;
+                    return as_value_v<type>;
+                }
+            }();
+            using type = type_t<decltype(vtype)>;
+        };
+    }
+
+    template <size_t N>
+    using make_index_sequence = type_t<detail::make_index_sequence<N>>;
 } // nmtools::meta
 
 namespace nmtools::meta
@@ -226,6 +293,106 @@ namespace nmtools::meta::detail
     {
         return false;
     } // fail_to_false
+} // namespace nmtools::meta
+
+namespace nmtools::meta
+{
+    namespace error
+    {
+        template <typename>
+        struct TEMPLATE_GET_UNSUPPORTED : detail::fail_t {};
+    }
+}
+
+namespace nmtools
+{
+    template <size_t I, typename T>
+    struct get_t
+    {
+        using type = meta::error::TEMPLATE_GET_UNSUPPORTED<T>;
+
+        constexpr type operator()([[maybe_unused]] const T& t) const noexcept
+        {
+            return type{};
+        }
+    };
+
+    // NOTE: gcc(9.3) failed when using auto, must use size_t, while clang(10.0) accepts happily
+    template <size_t I, typename T>
+    constexpr meta::type_t<get_t<I,const T&>>
+    get(const T& t) noexcept
+    {
+        return get_t<I,const T&>{}(t);
+    }
+
+    template <size_t I, typename T>
+    constexpr meta::type_t<get_t<I,T&>>
+    get(T& t) noexcept
+    {
+        return get_t<I,T&>{}(t);
+    }
+}
+
+// collections of reserved metafunctions
+namespace nmtools::meta
+{
+    /**
+     * @brief Reserved metafunction to make type T unsigned
+     * 
+     * @tparam T 
+     * @note implementation should use macro NMTOOLS_META_MAKE_UNSIGNED
+     */
+    template <typename T>
+    struct make_unsigned;
+
+    /**
+     * @brief Reserved metafunction to make type T signed
+     * 
+     * @tparam T 
+     * @note implementation should use macro NMTOOLS_META_MAKE_SIGNED
+     */
+    template <typename T>
+    struct make_signed;
+
+    /**
+     * @brief Reserved metafunction to create a tuple type
+     * 
+     * @tparam Ts 
+     * @note implementation should use macro NMTOOLS_META_MAKE_TUPLE
+     */
+    template <typename...Ts>
+    struct make_tuple;
+
+    /**
+     * @brief Reserved metafunction to create maybe type
+     * 
+     * @tparam T 
+     * @note implementation should use macro NMTOOLS_META_MAKE_MAYBE_TYPE
+     */
+    template <typename T, typename=void>
+    struct make_maybe_type;
+
+    /**
+     * @brief Reserved metafunction to create an array type
+     * 
+     * @tparam T element type
+     * @tparam N desired length
+     * @tparam typename 
+     * @note implementation should use macro NMTOOLS_META_MAKE_ARRAY_TYPE
+     */
+    template <typename T, size_t N, typename=void>
+    struct make_array_type;
+
+    /**
+     * @brief Reserved metafunction to create a vector type
+     * 
+     * Preferred macro is NMTOOLS_META_MAKE_VECTOR
+     * 
+     * @tparam T 
+     * @tparam typename 
+     */
+    template <typename T, typename=void>
+    struct make_vector;
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_COMMON_HPP

@@ -173,6 +173,8 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
+static_assert( nmtools::meta::is_ndarray_v<int[3][2]> );
+
 TEST_CASE("pad(case1)" * doctest::test_suite("view::pad"))
 {
     PAD_SUBCASE( case1, array, pad_width );

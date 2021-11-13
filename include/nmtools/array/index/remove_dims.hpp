@@ -184,8 +184,13 @@ namespace nmtools::meta
                     return as_value_v<shape_t>;
                 } else if constexpr (is_index_v<axis_t>) {
                     constexpr auto N = fixed_index_array_size_v<shape_t>;
-                    using type = make_array_type_t<size_t,N-1>;
-                    return as_value_v<type>;
+                    if constexpr (N>1) {
+                        using type = make_array_type_t<size_t,N-1>;
+                        return as_value_v<type>;
+                    } else {
+                        // should be None ?
+                        return as_value_v<error::REMOVE_DIMS_UNSUPPORTED>;
+                    }
                 } else if constexpr (is_fixed_index_array_v<axis_t>) {
                     constexpr auto N = fixed_index_array_size_v<shape_t>;
                     constexpr auto M = fixed_index_array_size_v<axis_t>;

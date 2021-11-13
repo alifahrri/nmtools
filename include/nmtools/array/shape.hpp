@@ -22,8 +22,6 @@ namespace nmtools
     * @{
     */
 
-    using std::get;
-
     namespace detail
     {
         /**

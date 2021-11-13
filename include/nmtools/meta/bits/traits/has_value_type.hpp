@@ -23,7 +23,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
-    struct has_value_type<T, std::void_t<typename T::value_type> > : true_type {};
+    struct has_value_type<T, void_t<typename T::value_type> > : true_type {};
 
     /**
      * @brief helper variable template to check if T has member type value_type

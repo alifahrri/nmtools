@@ -35,6 +35,17 @@ namespace nmtools::meta
         static constexpr auto value = 1 + nested_array_dim<value_type>::value;
     }; // nested_array_dim
 
+    template <typename T, size_t N>
+    struct len<std::array<T,N>>
+    {
+        static constexpr auto value = N;
+    };
+
+    template <typename...Ts>
+    struct len<std::tuple<Ts...>>
+    {
+        static constexpr auto value = sizeof...(Ts);
+    };
 } // namespace nmtools::meta
 
 #endif 

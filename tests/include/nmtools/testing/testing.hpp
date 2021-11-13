@@ -29,19 +29,6 @@ boost::typeindex::type_id<type>().pretty_name()
 typeid(type).name()
 #endif
 
-#if defined(__clang__)
-#define NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH() \
-        _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wunused-value\"")
-#define NMTOOLS_IGNORE_WUNUSED_VALUE_POP() _Pragma("clang diagnostic pop")
-#elif defined(__GNUC__)
-#define NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH() \
-        _Pragma("clang diagnostic push") _Pragma("GCC diagnostic ignored \"-Wunused-value\"")
-#define NMTOOLS_IGNORE_WUNUSED_VALUE_POP() _Pragma("GCC diagnostic pop")
-#else
-#define NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH()
-#define NMTOOLS_IGNORE_WUNUSED_VALUE_POP()
-#endif
-
 // allow to test on platform without RTTI support,
 #if defined(__clang__)
   #if __has_feature(cxx_rtti)
@@ -150,6 +137,7 @@ namespace nmtools::array::kind
     struct fixed_vec_t {};
     struct dynamic_vec_t {};
 
+    // TODO: rename to vector, drop nested vector support
     inline constexpr auto nested_vec  = nested_vector_t {};
     inline constexpr auto nested_arr  = nested_array_t {};
     inline constexpr auto fixed_vec   = fixed_vec_t {};
@@ -160,65 +148,58 @@ namespace nmtools
 {
     struct cast_kind_t {};
 
-    template <typename src_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
-        cast_kind_t, src_t, array::kind::fixed_t
-    >
+    namespace meta::error
     {
-        using element_t = get_element_type_t<src_t>;
-        // start with arbitrary shaped fixed_ndarray, then resize with src
-        using fixed_kind_t = array::fixed_ndarray<element_t,1>;
-        using type = resize_fixed_ndarray_t<fixed_kind_t,src_t>;
-    }; // resolve_optype
+        struct CAST_KIND_UNSUPPORTED : detail::fail_t {};
+    }
 
-    template <typename src_t>
+    template <typename src_t, typename kind_t>
     struct meta::resolve_optype<
-        void, cast_kind_t, src_t, array::kind::dynamic_t
+        void, cast_kind_t, src_t, kind_t
     >
     {
-        using element_t = get_element_type_t<src_t>;
-        using type = array::dynamic_ndarray<element_t>;
-    }; // resolve_optype
-
-    template <typename src_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
-        cast_kind_t, src_t, array::kind::hybrid_t
-    >
-    {
-        using element_t = get_element_type_t<src_t>;
-        static constexpr auto shape = fixed_ndarray_shape_v<src_t>;
-        static constexpr auto numel = index::product(shape);
-        static constexpr auto dim = fixed_ndarray_dim_v<src_t>;
-        using type = array::hybrid_ndarray<element_t,numel,dim>;
-    }; // resolve_optype
-
-    template <typename src_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
-        cast_kind_t, src_t, array::kind::nested_vector_t
-    >
-    {
-        using element_t = get_element_type_t<src_t>;
-        static constexpr auto dim = fixed_ndarray_dim_v<src_t>;
-        using type = meta::make_nested_dynamic_array_t<std::vector,element_t,dim>;
-    }; // resolve_optype
-
-    template <typename src_t>
-    struct meta::resolve_optype<
-        std::enable_if_t<meta::is_fixed_size_ndarray_v<src_t>>,
-        cast_kind_t, src_t, array::kind::nested_array_t
-    >
-    {
-        using type = meta::transform_bounded_array_t<src_t>;
+        static constexpr auto vtype = [](){
+            if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::fixed_t>) {
+                using element_t = get_element_type_t<src_t>;
+                // start with arbitrary shaped fixed_ndarray, then resize with src
+                using fixed_kind_t = array::fixed_ndarray<element_t,1>;
+                using type = resize_fixed_ndarray_t<fixed_kind_t,src_t>;
+                return meta::as_value_v<type>;
+            }
+            else if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::hybrid_t>) {
+                using element_t = get_element_type_t<src_t>;
+                constexpr auto shape = fixed_ndarray_shape_v<src_t>;
+                constexpr auto numel = index::product(shape);
+                constexpr auto dim = fixed_ndarray_dim_v<src_t>;
+                using type = array::hybrid_ndarray<element_t,numel,dim>;
+                return as_value_v<type>;
+            }
+            else if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::nested_array_t>) {
+                using type = meta::transform_bounded_array_t<src_t>;
+                return as_value_v<type>;
+            }
+            else if constexpr (meta::is_same_v<kind_t,array::kind::dynamic_t>) {
+                using element_t = get_element_type_t<src_t>;
+                using type = array::dynamic_ndarray<element_t>;
+                return meta::as_value_v<type>;
+            }
+            else if constexpr (meta::is_same_v<kind_t,array::kind::nested_vector_t>) {
+                using element_t = get_element_type_t<src_t>;
+                constexpr auto dim = fixed_dim_v<src_t>;
+                using type = meta::make_nested_dynamic_array_t<std::vector,element_t,dim>;
+                return as_value_v<type>;
+            } else /* */ {
+                return as_value_v<error::CAST_KIND_UNSUPPORTED>;
+            }
+        }();
+        using type = meta::type_t<decltype(vtype)>;
     }; // resolve_optype
 
     template <typename src_t, typename kind_t>
     constexpr auto cast(const src_t& src, const kind_t&)
     {
         using ret_t = meta::resolve_optype_t<cast_kind_t,src_t,kind_t>;
-        return cast<ret_t>(src);
+        return cast(src, meta::as_value_v<ret_t>);
     } // cast
 } // namespace nmtools
 
@@ -588,10 +569,8 @@ namespace subcase::expect
  */
 #define STATIC_CHECK(expr) \
 { \
-    NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH() \
     NMTOOLS_STATIC_ASSERT(expr); \
     CHECK_MESSAGE(expr, #expr); \
-    NMTOOLS_IGNORE_WUNUSED_VALUE_POP() \
 } \
 
 /**
@@ -633,10 +612,8 @@ namespace subcase::expect
 
 #define NMTOOLS_STATIC_CHECK( expr ) \
 { \
-    NMTOOLS_IGNORE_WUNUSED_VALUE_PUSH() \
     NMTOOLS_STATIC_ASSERT( expr ); \
     NMTOOLS_CHECK_MESSAGE( expr, #expr ); \
-    NMTOOLS_IGNORE_WUNUSED_VALUE_POP() \
 }
 
 #define NMTOOLS_STATIC_CHECK_TRAIT_TRUE  STATIC_CHECK_TRAIT_TRUE
@@ -657,6 +634,24 @@ namespace subcase::expect
  */
 #define STATIC_CHECK_TRAIT STATIC_CHECK_TRAIT_TRUE
 
+#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
+
+#if !defined(NMTOOLS_CAST_ARRAYS) && !defined(PLATFORMIO)
+#define NMTOOLS_CAST_ARRAYS(name) \
+inline auto name##_a = nmtools::cast(name, nmtools::array::kind::nested_arr); \
+inline auto name##_f = nmtools::cast(name, nmtools::array::kind::fixed); \
+inline auto name##_d = nmtools::cast(name, nmtools::array::kind::dynamic); \
+inline auto name##_h = nmtools::cast(name, nmtools::array::kind::hybrid);
+#endif // !defined(NMTOOLS_CAST_ARRAYS) && !defined(PLATFORMIO)
+
+#if !defined(NMTOOLS_CAST_ARRAYS) && defined(PLATFORMIO)
+#define NMTOOLS_CAST_ARRAYS(name) \
+inline auto name##_a = nmtools::cast(name, nmtools::array::kind::nested_arr); \
+inline auto name##_f = nmtools::cast(name, nmtools::array::kind::fixed); \
+inline auto name##_h = nmtools::cast(name, nmtools::array::kind::hybrid);
+#endif // !defined(NMTOOLS_CAST_ARRAYS) && defined(PLATFORMIO)
 /** @} */ // end groupt testing
 
 #endif // NMTOOLS_TESTING_HPP

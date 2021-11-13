@@ -28,8 +28,6 @@ namespace nmtools
     template <auto i, typename array_t>
     constexpr decltype(auto) at(const array_t& a)
     {
-        // TODO: provide wrapper function nmtools::get, instead of directly use std
-        using std::get;
         using index_type = decltype(i);
 
         static_assert(
@@ -40,7 +38,8 @@ namespace nmtools
         );
 
         if constexpr (meta::has_template_get_v<const array_t&,i>) {
-            return get<i>(a);
+            // use nmtools::get to avoid ambiguous call with std::get
+            return nmtools::get<i>(a);
         } else if constexpr (meta::has_square_bracket_v<const array_t&,index_type>) {
             return a[i];
         } else if constexpr (meta::has_bracket_v<const array_t&,index_type>) {
@@ -54,8 +53,6 @@ namespace nmtools
     template <auto i, typename array_t>
     constexpr decltype(auto) at(array_t& a)
     {
-        // TODO: provide wrapper function nmtools::get, instead of directly use std
-        using std::get;
         using index_type = decltype(i);
 
         static_assert(
@@ -66,7 +63,7 @@ namespace nmtools
         );
 
         if constexpr (meta::has_template_get_v<array_t&,i>) {
-            return get<i>(a);   
+            return nmtools::get<i>(a);   
         } else if constexpr (meta::has_square_bracket_v<array_t&,index_type>) {
             return a[i];
         } else if constexpr (meta::has_bracket_v<array_t&,index_type>) {
@@ -239,8 +236,6 @@ namespace nmtools
     template <auto i, auto j, typename array_t>
     constexpr decltype(auto) at(const array_t& a)
     {
-        // TODO: provide wrapper function nmtools::get, instead of directly use std
-        using std::get;
         // TODO (wrap std metafunctions): wrap as meta::common_type_t
         using index_type = std::common_type_t<decltype(i),decltype(j)>;
         if constexpr (meta::has_square_bracket2d_v<const array_t&,index_type>) {
@@ -303,7 +298,7 @@ namespace nmtools
         template <typename array_t, typename type_list, size_t...Is>
         constexpr decltype(auto) apply_at_impl(array_t&& array, const type_list& indices, std::index_sequence<Is...>)
         {
-            return nmtools::at(std::forward<array_t>(array), std::get<Is>(indices)...);
+            return nmtools::at(std::forward<array_t>(array), nmtools::get<Is>(indices)...);
         } // apply_at_impl
     } //  namespace detail
 

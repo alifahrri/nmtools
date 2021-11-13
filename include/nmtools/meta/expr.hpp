@@ -2,6 +2,7 @@
 #define NMTOOLS_META_EXPR_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/transform/add_reference.hpp"
 
 #include <type_traits>
 
@@ -9,8 +10,6 @@ namespace nmtools::meta
 {
     namespace expr
     {
-        // TODO: do not directly use std::declval
-        using std::declval;
         /**
          * @brief helper alias template to check if given type T has member function `at`
          * taking size_types as parameters.
@@ -98,13 +97,8 @@ namespace nmtools::meta
         template <typename T, typename Is, typename=void>
         struct template_get_helper {};
 
-        // TODO: do not directly use std::get and std::void_t
-        // TODO: remove
-        using std::get;
-        using std::void_t;
-
         template <typename T, auto...Is>
-        struct template_get_helper<T,std::index_sequence<Is...>,
+        struct template_get_helper<T,index_sequence<Is...>,
             void_t<decltype(get<Is...>(declval<T>()))>>
         {
             using type = decltype(get<Is...>(declval<T>()));
@@ -116,7 +110,6 @@ namespace nmtools::meta
 
     namespace detail
     {
-        using std::void_t;
         /**
          * @brief helper traits to check if given expression
          * (provided as alias template that takes T and tparams...)

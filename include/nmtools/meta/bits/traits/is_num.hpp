@@ -1,10 +1,25 @@
 #ifndef NMTOOLS_META_BITS_TRAITS_IS_NUM_HPP
 #define NMTOOLS_META_BITS_TRAITS_IS_NUM_HPP
 
-#include <type_traits>
+#include "nmtools/meta/bits/traits/is_integer.hpp"
 
 namespace nmtools::meta
 {
+    template <typename T, typename=void>
+    struct is_floating_point : false_type {};
+
+    template <typename T>
+    constexpr inline auto is_floating_point_v = is_floating_point<T>::value;
+
+#define NMTOOLS_IS_FLOATING_POINT_TRAIT(type) \
+    template <> \
+    struct is_floating_point<type> : true_type {};
+
+    NMTOOLS_IS_FLOATING_POINT_TRAIT(double)
+    NMTOOLS_IS_FLOATING_POINT_TRAIT(float)
+
+#undef NMTOOLS_IS_FLOATING_POINT_TRAIT
+
     /**
      * @brief Check if type T is num type.
      * 
@@ -17,7 +32,10 @@ namespace nmtools::meta
      * @tparam typename 
      */
     template <typename T, typename=void>
-    struct is_num : std::is_arithmetic<T> {};
+    struct is_num
+    {
+        static constexpr auto value = is_integer_v<T> || is_floating_point_v<T>;
+    };
 
     template <typename T>
     constexpr inline auto is_num_v = is_num<T>::value;

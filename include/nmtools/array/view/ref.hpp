@@ -12,8 +12,6 @@
 
 namespace nmtools::view
 {
-    using meta::is_array1d_v;
-    using meta::is_array2d_v;
     using meta::is_ndarray_v;
     using meta::is_fixed_size_ndarray_v;
     using meta::has_shape_v;
@@ -122,5 +120,14 @@ namespace nmtools
         , std::enable_if_t< meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>> >
     > : meta::fixed_ndarray_shape<meta::remove_cvref_t<array_t>> {};
 } // namespace nmtools
+
+namespace nmtools::meta
+{
+    template <typename array_t>
+    struct is_ndarray< view::decorator_t<view::ref_t, array_t> >
+    {
+        static constexpr auto value = is_ndarray_v<array_t>;
+    };
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_REF_HPP
