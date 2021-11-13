@@ -47,7 +47,8 @@ TEST_CASE("cumsum(case1)" * doctest::test_suite("view::cumsum"))
 {
     CUMSUM_SUBCASE( case1,   a, axis );
     CUMSUM_SUBCASE( case1, a_a, axis );
-    CUMSUM_SUBCASE( case1, a_v, axis );
+    // TODO: drop support for nested vector
+    // CUMSUM_SUBCASE( case1, a_v, axis );
     CUMSUM_SUBCASE( case1, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet
@@ -59,7 +60,7 @@ TEST_CASE("cumsum(case2)" * doctest::test_suite("view::cumsum"))
 {
     CUMSUM_SUBCASE( case2,   a, axis );
     CUMSUM_SUBCASE( case2, a_a, axis );
-    CUMSUM_SUBCASE( case2, a_v, axis );
+    // CUMSUM_SUBCASE( case2, a_v, axis );
     CUMSUM_SUBCASE( case2, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet
@@ -71,7 +72,7 @@ TEST_CASE("cumsum(case3)" * doctest::test_suite("view::cumsum"))
 {
     CUMSUM_SUBCASE( case3,   a, axis );
     CUMSUM_SUBCASE( case3, a_a, axis );
-    CUMSUM_SUBCASE( case3, a_v, axis );
+    // CUMSUM_SUBCASE( case3, a_v, axis );
     CUMSUM_SUBCASE( case3, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet

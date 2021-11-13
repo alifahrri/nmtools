@@ -494,6 +494,8 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     ## metafunctions
     src/doctest/meta.cpp
     src/doctest/meta/loop.cpp
+    src/doctest/meta/make_index_sequence.cpp
+    src/doctest/meta/array/cast_kind.cpp
     src/doctest/meta/array/view/broadcast_to.cpp
     src/doctest/meta/array/view/compress.cpp
     src/doctest/meta/array/view/concatenate.cpp
@@ -553,6 +555,8 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/traits/has_square_bracket.cpp
     src/doctest/meta/traits/is_index.cpp
     src/doctest/meta/traits/is_index_array.cpp
+    src/doctest/meta/traits/is_num.cpp
+    src/doctest/meta/transform/add_reference.cpp
     src/doctest/meta/transform/apply.cpp
     src/doctest/meta/transform/get_element_type.cpp
     src/doctest/meta/transform/get_underlying_array_type.cpp
@@ -562,8 +566,6 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/transform/remove_nested_array_extents.cpp
     src/doctest/meta/transform/resize_fixed_ndarray.cpp
     src/doctest/meta/transform/resize_hybrid_ndarray_max_size.cpp
-    src/doctest/meta/transform/sequence.cpp
-    src/doctest/meta/transform/split_at.cpp
     src/doctest/meta/transform/transform_bounded_array.cpp
 )
 # omg

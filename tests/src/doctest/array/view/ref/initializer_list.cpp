@@ -48,8 +48,6 @@ TEST_CASE("initializer_list[2]" * doctest::test_suite("view::ref"))
     NMTOOLS_ASSERT_EQUAL( view.shape(), (std::array{1,5}) );
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK( nmtools::meta::is_array2d_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
     {
@@ -78,8 +76,6 @@ TEST_CASE("initializer_list[2]" * doctest::test_suite("view::ref"))
     NMTOOLS_ASSERT_EQUAL( view.shape(), (std::array{2,5}) );
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(view)>);
-    STATIC_CHECK(!nmtools::meta::is_array1d_v<decltype(view)>);
-    STATIC_CHECK( nmtools::meta::is_array2d_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_ndarray_v<decltype(view)>);
     STATIC_CHECK( nmtools::meta::is_view_v<decltype(view)>);
     {
