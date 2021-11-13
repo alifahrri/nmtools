@@ -66,8 +66,6 @@ namespace nmtools::meta {
     * @{ 
     */
 
-    using std::declval;
-    using std::void_t;
 
     // TODO: cleanup metafunctions
     /**
@@ -80,7 +78,7 @@ namespace nmtools::meta {
     struct is_callable {
     private:
         template <typename FN>
-        constexpr static auto test(int) -> decltype(std::declval<FN>()(std::declval<Args>()...), bool()) {
+        constexpr static auto test(int) -> decltype(declval<FN>()(declval<Args>()...), bool()) {
             return true;
         }
         template <typename>
@@ -99,14 +97,6 @@ namespace nmtools::meta {
      */
     template <typename F, typename...Args>
     inline constexpr bool is_callable_v = is_callable<F,Args...>::value;
-
-    // TODO: remove metafunctions
-    /* TODO : move (?) */
-    using std::begin;
-    using std::end;
-
-    // TODO: remove
-    using std::tuple;
 
     /** @} */ // end group traits
 

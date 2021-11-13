@@ -24,18 +24,6 @@ namespace nmtools::meta
 
     template <typename T>
     inline constexpr auto is_index_v = is_index<T>::value;
-
-    // this allow bool to be considered as "index"
-    // TODO: remove
-    /**
-     * @brief 
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    struct is_index<T, enable_if_t<
-        std::is_integral_v<T> || is_integral_constant_v<T>
-    > > : true_type {};
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_INDEX_HPP

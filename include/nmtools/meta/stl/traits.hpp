@@ -4,6 +4,12 @@
 #include "nmtools/meta/traits.hpp"
 
 #include <optional>
+#if __has_include(<vector>)
+    #include <vector>
+    #define NMTOOLS_HAS_STL_VECTOR 1
+#else
+    #define NMTOOLS_HAS_STL_VECTOR 0
+#endif
 
 namespace nmtools::meta
 {
@@ -27,11 +33,6 @@ namespace nmtools::meta
      */
     template <typename T, auto N>
     struct is_integral_constant<std::integral_constant<T,N>> : true_type {};
-
-#if defined(NMTOOLS_HAS_VECTOR) && (NMTOOLS_HAS_VECTOR)
-    template <>
-    struct is_bit_reference<std::vector<bool>::reference> : std::true_type {};
-#endif
 
     template <typename T, size_t N>
     struct fixed_index_array_size<std::array<T,N>,std::enable_if_t<is_index_v<T>>>
@@ -58,11 +59,6 @@ namespace nmtools::meta
     template <typename T, size_t N>
     struct is_constant_index_array<std::array<T,N>,std::enable_if_t<is_constant_index_v<T>>> : std::true_type {};
 
-#if defined(NMTOOLS_HAS_VECTOR) && (NMTOOLS_HAS_VECTOR)
-    template <typename T>
-    struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
-#endif // NMTOOLS_HAS_VECTOR
-
     template <typename T>
     struct get_maybe_type<std::optional<T>>
     {
@@ -74,6 +70,42 @@ namespace nmtools::meta
 
     template <size_t value>
     struct is_signed<std::integral_constant<size_t,value>> : std::false_type {};
+
+    /**
+     * @brief specialization of has_tuple_size when tuple_size<T> is well-formed
+     * 
+     * @tparam T type to check
+     */
+    template <typename T>
+    struct has_tuple_size<T, void_t<typename std::tuple_size<T>::type>> : true_type {};
+
+    // this allow bool to be considered as "index"
+    // TODO: remove
+    /**
+     * @brief 
+     * 
+     * @tparam T 
+     */
+    template <typename T>
+    struct is_index<T, enable_if_t<
+        std::is_integral_v<T> || is_integral_constant_v<T>
+    > > : true_type {};
+
+#if defined(NMTOOLS_HAS_STL_VECTOR) && (NMTOOLS_HAS_STL_VECTOR)
+    template <>
+    struct is_bit_reference<std::vector<bool>::reference> : std::true_type {};
+
+    template <typename T>
+    struct is_ndarray<std::vector<T>>
+    {
+        // temporarily allow nested vector
+        // TODO: drop nested vector support
+        static constexpr auto value = is_num_v<T> || is_ndarray_v<T>;
+    };
+
+    template <typename T>
+    struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
+#endif // NMTOOLS_HAS_VECTOR
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRAITS_HPP

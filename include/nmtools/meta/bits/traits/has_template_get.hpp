@@ -6,8 +6,14 @@
 
 namespace nmtools::meta
 {
-    template <typename T, auto...Is>
-    struct has_template_get : detail::expression_check<void,expr::template_get,T,std::index_sequence<Is...>> {};
+    template <typename T, auto I>
+    struct has_template_get
+    {
+        static constexpr auto value = [](){
+            using get_type = type_t<nmtools::get_t<I,T>>;
+            return !is_same_v<get_type,error::TEMPLATE_GET_UNSUPPORTED<T>>;
+        }();
+    }; // has_template_get
 
     template <typename T, auto...Is>
     inline constexpr bool has_template_get_v = has_template_get<T,Is...>::value;

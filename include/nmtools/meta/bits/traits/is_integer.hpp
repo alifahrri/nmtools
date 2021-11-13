@@ -30,6 +30,13 @@ namespace nmtools::meta
     template <> \
     struct is_integer<type> : true_type {};
 
+    // following stl, boolean is also integer
+    NMTOOLS_IS_INTEGER_TRAIT(bool)
+
+    NMTOOLS_IS_INTEGER_TRAIT(char)
+    NMTOOLS_IS_INTEGER_TRAIT(signed char)
+    NMTOOLS_IS_INTEGER_TRAIT(unsigned char)
+
     NMTOOLS_IS_INTEGER_TRAIT(short int)
     NMTOOLS_IS_INTEGER_TRAIT(unsigned short int)
 

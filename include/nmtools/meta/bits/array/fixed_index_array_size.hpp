@@ -6,6 +6,7 @@
 
 namespace nmtools::meta
 {
+    // TODO: maybe simplify this trait using len_v
     // TODO: do not directly use detail::fail_t,
     // define specific error type instead
     /**

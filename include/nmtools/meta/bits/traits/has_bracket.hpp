@@ -2,6 +2,8 @@
 #define NMTOOLS_META_BITS_TRAITS_HAS_BRACKET_HPP
 
 #include "nmtools/meta/expr.hpp"
+#include "nmtools/meta/bits/transform/add_reference.hpp"
+
 #include <type_traits>
 
 namespace nmtools::meta
@@ -83,7 +85,7 @@ namespace nmtools::meta
     struct has_square_bracket2d<T,size_type,
         /* note: use .operator[](i,i) so that 
             it doesn't implicitly call [] with comma operator .operator[](operator,(i,i))*/
-        std::void_t<decltype(std::declval<T>().operator[](std::declval<size_type>(),std::declval<size_type>()))>
+        void_t<decltype(declval<T>().operator[](declval<size_type>(),declval<size_type>()))>
     > : true_type {};
 
     /**
@@ -115,7 +117,7 @@ namespace nmtools::meta
      */
     template <typename T, typename size_type>
     struct has_bracket2d<T,size_type,
-        std::void_t<decltype(std::declval<T>()(std::declval<size_type>(),std::declval<size_type>()))>
+        void_t<decltype(declval<T>()(declval<size_type>(),declval<size_type>()))>
     > : true_type {};
 
     /**

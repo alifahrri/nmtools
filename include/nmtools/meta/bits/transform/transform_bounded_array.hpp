@@ -4,10 +4,8 @@
 namespace nmtools::meta
 {
     /**
-     * @brief transform (bounded) raw array to std::array
-     * should have member type `type` with type of std::array
-     * if given T is bounded (1D or 2D) raw array, 
-     * `type` has type of T otherwise
+     * @brief transform (bounded) raw array to array
+     * should have member type `type` with type of array
      * 
      * @tparam T 
      */
@@ -18,7 +16,7 @@ namespace nmtools::meta
     };
 
     /**
-     * @brief helper alias template to transform (bounded) raw array to std::array
+     * @brief helper alias template to transform (bounded) raw array to array
      * 
      * @tparam T (bounded) array
      */

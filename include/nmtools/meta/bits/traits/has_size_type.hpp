@@ -23,7 +23,7 @@ namespace nmtools::meta
      */
     template <typename T>
     struct has_size_type<T,
-        std::void_t<typename T::size_type>
+        void_t<typename T::size_type>
     > : true_type {};
 
     // TODO: remove metafunctions

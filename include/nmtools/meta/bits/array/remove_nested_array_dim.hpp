@@ -47,15 +47,6 @@ namespace nmtools::meta
             using type = typename detail::remove_nested_array_dim<nested_type,N-1>::type;
         }; // remove_nested_array_dim
 
-        // @note providing this specialization while also providing specializaiton for N==0
-        // will cause error: ambiguous template instantiation
-        // template <typename T, size_t N>
-        // struct remove_nested_array_dim<T,N,std::enable_if_t<has_square_bracket_v<T,size_t>>>
-        // {
-        //     using nested_type = remove_cvref_t<expr::square_bracket<T,size_t>>;
-        //     using type = typename detail::remove_nested_array_dim<nested_type,N-1>::type;
-        // };
-
         /**
          * @brief terminal case for remove_nested_array_dim
          * 

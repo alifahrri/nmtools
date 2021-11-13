@@ -2,6 +2,7 @@
 #define NMTOOLS_META_STL_TRANSFORM_HPP
 
 #include "nmtools/meta/transform.hpp"
+#include "nmtools/meta/stl/traits.hpp"
 
 #include <optional>
 
@@ -424,6 +425,87 @@ namespace nmtools::meta
         using type = std::variant<Left,Right>;
     };
 
+    template <typename...Ts>
+    struct get_common_type<std::tuple<Ts...>>
+    {
+        // we do not want this because it trigger compile error when failing
+        // using type = std::common_type_t<Ts...>;
+
+        static constexpr auto vtype = [](){
+            using type = std::common_type<Ts...>;
+            if constexpr (has_type_v<type>) {
+                return as_value_v<type_t<type>>;
+            } else {
+                return as_value_v<error::GET_COMMON_TYPE_UNSUPPORTED<std::tuple<Ts...>>>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
+#if !defined(NMTOOLS_META_MAKE_VECTOR) && defined(NMTOOLS_HAS_STL_VECTOR) && (NMTOOLS_HAS_STL_VECTOR)
+#define NMTOOLS_META_MAKE_VECTOR
+
+    template <typename T, typename>
+    struct make_vector
+    {
+        using type = std::vector<T>;
+    }; // make_vector
+
+    template <typename T>
+    using make_vector_t = type_t<make_vector<T>>;
+
+#endif // NMTOOLS_META_MAKE_VECTOR
 } // namespace nmtools::meta
+
+namespace nmtools
+{
+    template <size_t I, typename...Ts>
+    struct get_t<I,const std::tuple<Ts...>& >
+    {
+        using tuple_t = std::tuple<Ts...>;
+        using type = decltype(std::get<I>(std::declval<const tuple_t&>()));
+
+        constexpr type operator()(const tuple_t& t) const noexcept
+        {
+            return std::get<I>(t);
+        }
+    };
+
+    template <size_t I, typename...Ts>
+    struct get_t<I,std::tuple<Ts...>& >
+    {
+        using tuple_t = std::tuple<Ts...>;
+        using type = decltype(std::get<I>(std::declval<tuple_t&>()));
+
+        constexpr type operator()(tuple_t& t) noexcept
+        {
+            return std::get<I>(t);
+        }
+    };
+
+    template <size_t I, typename T, size_t N>
+    struct get_t<I,const std::array<T,N>& >
+    {
+        using array_t = std::array<T,N>;
+        using type = decltype(std::get<I>(std::declval<const array_t&>()));
+
+        constexpr type operator()(const array_t& t) const noexcept
+        {
+            return std::get<I>(t);
+        }
+    };
+
+    template <size_t I, typename T, size_t N>
+    struct get_t<I,std::array<T,N>& >
+    {
+        using array_t = std::array<T,N>;
+        using type = decltype(std::get<I>(std::declval<array_t&>()));
+
+        constexpr type operator()(array_t& t) noexcept
+        {
+            return std::get<I>(t);
+        }
+    };
+}
 
 #endif // NMTOOLS_META_STL_TRANSFORM_HPP
