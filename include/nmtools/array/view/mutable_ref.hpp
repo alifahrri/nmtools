@@ -13,7 +13,6 @@
 namespace nmtools::view
 {
     using meta::is_array1d_v;
-    using meta::is_array2d_v;
     using meta::is_ndarray_v;
     using meta::is_fixed_size_ndarray_v;
     using meta::has_shape_v;
@@ -33,22 +32,18 @@ namespace nmtools::view
      * but specialized for 1D/2D/ND fixed/resizeable array with random access and numpy-like
      * array shape information (dim(), shape())
      * 
-     * @tparam Array non-cvref type of array to be referenced, should be deducable via CTAD
+     * @tparam Array_t non-cvref type of array to be referenced, should be deducable via CTAD
      */
-    template <typename Array>
+    template <typename Array_t>
     struct mutable_ref_t
     {
-        static_assert(
-            is_array1d_v<Array> || is_array2d_v<Array> || is_ndarray_v<Array>,
-            "mutable_ref_t only support 1D, 2D, or ndarray for now"
-        );
         // get_element_type metafunction should be able to handle
         // ndarray, array2d, array1d etc
-        using value_type = meta::get_element_type_t<Array>;
+        using value_type = meta::get_element_type_t<Array_t>;
         using const_reference = const value_type&;
 
         // array type as required by decorator
-        using array_type = Array&;
+        using array_type = Array_t&;
 
         // const reference to actual array type
         array_type array;
@@ -109,6 +104,15 @@ namespace nmtools
     struct meta::fixed_ndarray_shape< view::mutable_ref_t<array_t>
         , std::enable_if_t< meta::is_fixed_size_ndarray_v< meta::remove_cvref_t<array_t> > >
     > : meta::fixed_ndarray_shape< meta::remove_cvref_t<array_t> > {};
-} // namespace nmtool
+} // namespace nmtools
+
+namespace nmtools::meta
+{
+    template <typename array_t>
+    struct is_ndarray< view::decorator_t<view::mutable_ref_t,array_t> >
+    {
+        static constexpr auto value = is_ndarray_v<remove_cvref_t<array_t>>;
+    };
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_MUTABLE_REF_HPP

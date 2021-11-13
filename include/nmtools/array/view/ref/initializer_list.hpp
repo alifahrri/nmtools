@@ -166,51 +166,12 @@ namespace nmtools
     }; // ref_t
 
     /**
-     * @brief specialize trait for ref view on initializer list
-     * 
-     * @tparam T element type of initializer list
-     */
-    template <typename T>
-    struct meta::is_array1d< view::decorator_t<view::ref_t,std::initializer_list<T>>
-        // @note needs pass view::decorator_t<view::ref_t,std::initializer_list<T>> to void_t, 
-        // omitting such resulting in an ambiguous specialization 
-        , std::void_t<
-            view::decorator_t<view::ref_t,std::initializer_list<T>>
-            , std::enable_if_t<std::is_arithmetic_v<T>>
-        >
-    > : std::true_type {};
-
-    /**
-     * @brief specializer is_array2d trait for ref view on 2d initializer_list
-     * 
-     * @tparam T element type of initializer list, another initializer list in this case
-     */
-    template <typename T>
-    struct meta::is_array2d< view::decorator_t<view::ref_t,std::initializer_list<T>>
-        , std::void_t<
-            view::decorator_t<view::ref_t,std::initializer_list<T>>
-            , std::enable_if_t<meta::is_specialization_v<T,std::initializer_list>
-                && meta::nested_array_dim_v<T> == 1
-            >
-        >
-    > : std::true_type {};
-
-    /**
      * @brief specializer is_array2d trait for ref view on nd initializer_list
      * 
      * @tparam T element type of initializer list, another initializer list in this case
      */
     template <typename T>
-    struct meta::is_ndarray< view::decorator_t<view::ref_t,T>
-        , std::enable_if_t<
-            // ref_t with initializer_list
-            (meta::is_specialization_v<meta::remove_cvref_t<T>,std::initializer_list>)
-            // for nested view to initializer_list, nested dim must be > 0; also needs to remove-cvref since metafunctions doesnt really aware of it
-            || (meta::is_view_v<meta::remove_cvref_t<meta::remove_cvref_t<T>>>
-                && (meta::nested_array_dim_v<meta::remove_cvref_t<meta::get_underlying_array_type_t<meta::remove_cvref_t<T>>>> > 0)
-            )
-        >
-    > : std::true_type {};
+    struct meta::is_ndarray< view::decorator_t<view::ref_t,std::initializer_list<T>>> : std::true_type {};
 
     /**
      * @brief specialize metafunction meta::remove_nested_array_dim for initializer_list
@@ -263,9 +224,6 @@ namespace nmtools
 
     template <typename T>
     struct meta::is_array1d<std::initializer_list<T>> : std::false_type {};
-
-    template <typename T>
-    struct meta::is_array2d<std::initializer_list<T>> : std::false_type {};
 
     template <typename T>
     struct meta::is_ndarray<std::initializer_list<T>> : std::false_type {};

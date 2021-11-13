@@ -88,22 +88,6 @@ namespace nmtools::meta
      */
     template <typename array_t>
     struct is_array1d<view::decorator_t<view::mutable_flatten_t,array_t>> : std::true_type {};
-
-    /**
-     * @brief mutable_flatten view is 1D
-     * 
-     * @tparam array_t 
-     */
-    template <typename array_t>
-    struct is_array2d<view::decorator_t<view::mutable_flatten_t,array_t>> : std::false_type {};
-
-    /**
-     * @brief mutable_flatten view is 1D
-     * 
-     * @tparam array_t 
-     */
-    template <typename array_t>
-    struct is_array3d<view::decorator_t<view::mutable_flatten_t,array_t>> : std::false_type {};
 } // namespace nmtools::meta
 
 namespace nmtools
@@ -128,5 +112,14 @@ namespace nmtools
         using value_type = remove_cvref_t<decltype(value)>;
     };
 } // nmtools
+
+namespace nmtools::meta
+{
+    template <typename array_t>
+    struct is_ndarray< view::decorator_t<view::mutable_flatten_t,array_t> >
+    {
+        static constexpr auto value = is_ndarray_v<array_t>;
+    };
+}
 
 #endif // NMTOOLS_ARRAY_VIEW_MUTABLE_FLATTEN_HPP

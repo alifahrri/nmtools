@@ -318,6 +318,11 @@ namespace nmtools::meta
         using type = value_type;
     }; // fixed_dim
     
+    template <typename array_t, typename pad_width_t, typename value_t>
+    struct is_ndarray< view::decorator_t<view::pad_t, array_t, pad_width_t, value_t> >
+    {
+        static constexpr auto value = is_ndarray_v<array_t>;
+    };
 } // namespace nmtools::meta
 
 

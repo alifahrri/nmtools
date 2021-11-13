@@ -327,10 +327,10 @@ namespace nmtools::view
         template <typename result_t, typename array_t>
         constexpr auto operator()(const array_t& array) const
         {
-            using index_t = meta::remove_cvref_t<meta::get_index_type_t<array_t>>;
+            using index_t = size_t;
             auto initial = static_cast<result_t>(at(array,0));
             auto size = len(array);
-            for (index_t i=1; i<size; i++)
+            for (index_t i=1; i<(index_t)size; i++)
                 initial = op(initial,at(array,i));
             return initial;
         } // operator()
