@@ -39,18 +39,27 @@ namespace nmtools::view::detail::fn
         // map type to value, and actually call broadcast_shape implementation
         constexpr auto result  = index::broadcast_shape(fixed_shape_or_none(arrays)...);
         constexpr auto success = std::get<0>(result);
-        constexpr auto bshape = std::get<1>(result);
+        constexpr auto bshape  = std::get<1>(result);
         using bshape_t = meta::remove_cvref_t<decltype(bshape)>;
         if constexpr (success && is_none_v<bshape_t>) {
             // Note broadcasting numbers return none
             return None;
         } else if constexpr (success && !is_none_v<bshape_t>) {
-            // then map back to type
-            constexpr auto shape  = meta::template_map<len(bshape)>([&](auto i){
-                constexpr auto ts = at(bshape,i);
-                return std::integral_constant<size_t,ts>{};
-            });
-            return shape;
+            constexpr auto vtype = meta::template_reduce<len(bshape)>([&](auto init, auto index){
+                using init_t = meta::type_t<decltype(init)>;
+                constexpr auto i = decltype(index)::value;
+                constexpr auto shape_i = at(bshape,i);
+                using shape_t = meta::ct<shape_i>;
+                if constexpr (i==0) {
+                    using type = meta::make_tuple_type_t<shape_t>;
+                    return meta::as_value_v<type>;
+                } else {
+                    using type = meta::append_type_t<init_t,shape_t>;
+                    return meta::as_value_v<type>;
+                }
+            }, meta::as_value_v<void>);
+            using type = meta::type_t<decltype(vtype)>;
+            return type{};
         } else {
             // since this value is expected to be called at compile time,
             // return fail type when fail
