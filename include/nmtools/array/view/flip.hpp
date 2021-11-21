@@ -58,7 +58,8 @@ namespace nmtools::view
         template <size_t DIM, typename axes_t>
         constexpr auto get_flip_slices(const axes_t& axes)
         {
-            using slices_type = std::array<std::tuple<none_t,none_t,int>,DIM>;
+            using tuple_t = meta::make_tuple_type_t<none_t,none_t,int>;
+            using slices_type = meta::make_array_type_t<tuple_t,DIM>;
             auto slices = slices_type {};
 
             for (size_t i=0; i<DIM; i++) {
@@ -70,7 +71,7 @@ namespace nmtools::view
                 );
                 // note that None is not assignable (yet?)
                 // at(slices,i) = {None,None, in_axis ? -1 : 1};
-                std::get<2>(at(slices,i)) = in_axis ? -1 : 1;
+                nmtools::get<2>(at(slices,i)) = in_axis ? -1 : 1;
             }
             
             return slices;
@@ -110,23 +111,23 @@ namespace nmtools::view
         using axis_type = const axis_t&;
         // deduce shape_type from fn call
         using shape_type = meta::tuple_to_array_t<
-            meta::remove_cvref_t<decltype(::nmtools::shape(std::declval<array_t>()))>
+            meta::remove_cvref_t<decltype(::nmtools::shape(meta::declval<array_t>()))>
         >;
         // axes_type should be index_array
         static constexpr auto axes_vtype = [](){
             if constexpr (meta::is_index_array_v<axis_t>)
-                return meta::as_value<axis_t>{};
+                return meta::as_value_v<axis_t>;
             else if constexpr (meta::is_index_v<axis_t>)
-                return meta::as_value<std::array<axis_t,1>>{};
+                return meta::as_value_v<meta::make_array_type_t<axis_t,1>>;
             // for none type, simply use array shape type
             else if constexpr (is_none_v<axis_t>)
-                return meta::as_value<shape_type>{};
+                return meta::as_value_v<shape_type>;
         }();
         using axes_type = meta::transform_bounded_array_t<
             meta::type_t<meta::remove_cvref_t<decltype(axes_vtype)>>
         >;
         // deduce slice type from fn call
-        using slices_type = meta::remove_cvref_t<decltype(detail::get_flip_slices<array_t>(std::declval<axes_type>()))>;
+        using slices_type = meta::remove_cvref_t<decltype(detail::get_flip_slices<array_t>(meta::declval<axes_type>()))>;
 
         // the underlying array
         array_type array;

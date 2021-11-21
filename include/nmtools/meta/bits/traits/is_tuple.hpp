@@ -8,7 +8,7 @@ namespace nmtools::meta
     /**
      * @brief check if given type is tuple kind.
      *
-     * Note that this is not necessarily std::tuple,
+     * Note that this is not necessarily std tuple,
      * this is intended to be more like tuple in concept.
      * The choice of the name, tuple, is from haskell Tuple.
      */
@@ -18,10 +18,6 @@ namespace nmtools::meta
     /**
      * @brief helper variable template to check if given type is tuple
      * 
-     * @tparam Args automatically deduced
-     * @example 
-     *  static_assert(is_tuple_v<std::tuple<int,double>> == true);
-     *  static_assert(is_tuple_v<double> == false);
      */
     template <typename ...Args>
     inline constexpr bool is_tuple_v = is_tuple<Args...>::value;

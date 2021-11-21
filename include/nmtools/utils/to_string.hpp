@@ -55,12 +55,10 @@ namespace nmtools::utils
             using lhs_t = meta::get_either_left_t<T>;
             using rhs_t = meta::get_either_right_t<T>;
             // assume get_if<type>(&array) is available for either type
-            // which is supported by std::variant
-            using std::get_if;
-            if (auto l_ptr = get_if<lhs_t>(&array)) {
+            if (auto l_ptr = nmtools::get_if<lhs_t>(&array)) {
                 str += to_string(*l_ptr);
             } else {
-                auto r_ptr = get_if<rhs_t>(&array);
+                auto r_ptr = nmtools::get_if<rhs_t>(&array);
                 str += to_string(*r_ptr);
             }
         }
@@ -156,13 +154,14 @@ namespace nmtools::utils
                 }
             }
         } // meta::is_ndarray_v<T>
+        // TODO: remove tuple_size metafunctions
         // handle packed type (e.g. tuple), recursively call to_string for each elements
         else if constexpr (meta::has_tuple_size_v<T>) {
-            constexpr auto N = std::tuple_size_v<T>;
+            constexpr auto N = meta::len_v<T>;
             str += "(";
             meta::template_for<N>([&](auto index){
                 constexpr auto i = decltype(index)::value;
-                const auto& a = std::get<i>(array);
+                const auto& a = nmtools::get<i>(array);
                 str += to_string(a);
                 if constexpr (i<(N-1))
                     str += ",\t";

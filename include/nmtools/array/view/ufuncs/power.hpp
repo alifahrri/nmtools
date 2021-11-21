@@ -2,8 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_POWER_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -16,13 +15,14 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t, const U& u) const
         {
-            return std::pow(t,u);
+            return math::pow(t,u);
         } // operator()
     }; // power_t
 
+    // TODO: unify with primary template, use static cast to res_t
     template <typename res_t>
     struct power_t<none_t,none_t,res_t,
-        std::enable_if_t<(!is_none_v<res_t>)>
+        meta::enable_if_t<(!is_none_v<res_t>)>
     >
     {
         using result_type = res_t;
@@ -31,12 +31,13 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t, const U& u) const -> res_t
         {
-            return std::pow(t,u);
+            return math::pow(t,u);
         } // operator()
     }; // power_t
 
+    // TODO: unify with primary template, use static cast to lhs_t, rhs_t, res_t
     template <typename lhs_t, typename rhs_t, typename res_t>
-    struct power_t<lhs_t,rhs_t,res_t,std::enable_if_t<
+    struct power_t<lhs_t,rhs_t,res_t,meta::enable_if_t<
         (!is_none_v<lhs_t>) && (!is_none_v<rhs_t>) && (!is_none_v<res_t>)
     >>
     {
@@ -45,7 +46,7 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const lhs_t& t, const rhs_t& u) const -> res_t
         {
-            return std::pow(t,u);
+            return math::pow(t,u);
         } // operator()
     }; // power_t
 
@@ -60,7 +61,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_power(const left_t& a, const axis_t& axis, dtype_t, initial_t initial, keepdims_t keepdims)
     {
-        static_assert( std::is_integral_v<axis_t>
+        static_assert( meta::is_integral_v<axis_t>
             , "reduce_power only support single axis with integral type"
         );
         using res_t = get_dtype_t<dtype_t>;
@@ -72,7 +73,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_power(const left_t& a, const axis_t& axis, dtype_t, initial_t initial)
     {
-        static_assert( std::is_integral_v<axis_t>
+        static_assert( meta::is_integral_v<axis_t>
             , "reduce_power only support single axis with integral type"
         );
         using res_t = get_dtype_t<dtype_t>;
@@ -84,7 +85,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_power(const left_t& a, const axis_t& axis, dtype_t)
     {
-        static_assert( std::is_integral_v<axis_t>
+        static_assert( meta::is_integral_v<axis_t>
             , "reduce_power only support single axis with integral type"
         );
         using res_t = get_dtype_t<dtype_t>;
@@ -92,6 +93,7 @@ namespace nmtools::view
         return reduce(op_t{},a,axis,None);
     } // reduce_power
 
+    // TODO: use default args, instead of overload!
     template <typename left_t, typename axis_t>
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_power(const left_t& a, const axis_t& axis)

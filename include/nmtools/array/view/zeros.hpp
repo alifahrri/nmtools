@@ -111,7 +111,7 @@ namespace nmtools::meta
     template <typename shape_t, typename T>
     struct is_ndarray< view::decorator_t< view::zeros_t, shape_t, T >>
     {
-        static constexpr auto value = std::is_arithmetic_v<T>;
+        static constexpr auto value = is_num_v<T>;
     };
 } // namespace nmtools::meta
 

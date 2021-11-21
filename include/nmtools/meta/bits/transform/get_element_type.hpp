@@ -60,7 +60,7 @@ namespace nmtools::meta
                 using element_t = remove_all_nested_array_dim_t<T>;
                 // TODO: maybe specialize on bool instead of using bit ref to bool
                 // note that remove_all_nested_array_dim_t using expression to deduce the type
-                // causing vector<bool> deduced to std::_Bit_reference instead of bool
+                // causing vector<bool> deduced to std _Bit_reference instead of bool
                 using type = bit_reference_to_bool_t<element_t>;
                 return as_value_v<type>;
             }

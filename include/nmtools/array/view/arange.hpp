@@ -24,7 +24,7 @@ namespace nmtools::view
         constexpr auto arange_shape(start_t start, stop_t stop, step_t step)
         {
             size_t d = ceil_(float(stop - start) / step);
-            return std::array{d};
+            return meta::make_array_type_t<size_t,1>{d};
         } // arange_shape
     } // namespace detail
 
@@ -134,7 +134,7 @@ namespace nmtools::meta
     template <typename start_t, typename stop_t, typename step_t, typename T>
     struct is_ndarray< view::decorator_t< view::arange_t, start_t, stop_t, step_t, T >>
     {
-        static constexpr auto value = std::is_arithmetic_v<T> && is_index_v<start_t>
+        static constexpr auto value = is_num_v<T> && is_index_v<start_t>
             && is_index_v<stop_t> && is_index_v<step_t>;
     };
 } // namespace nmtools::meta

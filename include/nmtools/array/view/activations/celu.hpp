@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_CELU_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -21,7 +21,7 @@ namespace nmtools::view
         auto operator()(const T& t) const
         {
             constexpr auto zero = static_cast<T>(0);
-            return std::max(zero,t) + std::min(zero,alpha*(std::exp(t / alpha)-1));
+            return math::max(zero,t) + math::min(zero,alpha*(math::exp(t / alpha)-1));
         } // operator()
     }; // celu_t
 

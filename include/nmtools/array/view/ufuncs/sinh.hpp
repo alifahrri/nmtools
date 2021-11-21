@@ -2,8 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_SINH_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -13,7 +12,7 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
-            return std::sinh(t);
+            return math::sinh(t);
         } // operator()
     }; // sinh_t
 

@@ -35,8 +35,10 @@ namespace nmtools::view
         constexpr auto shape() const
         {
             // arithmetic type
-            if constexpr (std::is_arithmetic_v<array_t>)
-                return std::array{1ul,1ul};
+            if constexpr (meta::is_num_v<array_t>) {
+                using array_type = meta::make_array_type_t<size_t,2>;
+                return array_type{1ul,1ul};
+            }
             // check if fixed 1d array
             else if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
                 using namespace nmtools::literals;
@@ -50,7 +52,7 @@ namespace nmtools::view
             // assume dynamic dim
             else {
                 // TODO: create metafunction "make_sequence_type" to create vector
-                // assume std::vector is available
+                // assume std vector is available
                 static_assert (NMTOOLS_HAS_VECTOR);
                 auto shape_ = detail::shape(array);
                 // prepend
@@ -72,7 +74,7 @@ namespace nmtools::view
             // they are within range
             // TODO: check shape
             // TODO: move to "index" member function
-            if constexpr (std::is_arithmetic_v<array_t>) {
+            if constexpr (meta::is_num_v<array_t>) {
                 return array;
             } else {
                 auto indices_ = pack_indices(indices...);
@@ -82,7 +84,7 @@ namespace nmtools::view
                 auto shape_     = detail::shape(array);
                 auto offset     = index::compute_offset(indices_,squeezed_strides);
                 auto tf_indices = index::compute_indices(offset,shape_);
-                if constexpr (std::is_pointer_v<array_type>) {
+                if constexpr (meta::is_pointer_v<array_type>) {
                     return apply_at(*array,tf_indices);
                 } else {
                     return apply_at(array,tf_indices);
@@ -113,19 +115,24 @@ namespace nmtools::meta
     template <typename array_t>
     struct get_element_type< view::decorator_t<view::atleast_2d_t, array_t> >
     {
-        using type = std::conditional_t<
-            std::is_arithmetic_v<array_t>, array_t,
-            get_element_type_t<array_t>
-        >;
+        static constexpr auto vtype = [](){
+            if constexpr (is_num_v<array_t>) {
+                return as_value_v<array_t>;
+            } else {
+                return as_value_v<get_element_type_t<array_t>>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     };
 
     template <typename array_t>
     struct fixed_ndarray_shape< view::atleast_2d_t<array_t> >
     {
         static inline constexpr auto value = [](){
-            if constexpr (std::is_arithmetic_v<array_t>)
-                return std::array{1ul,1ul};
-            else if constexpr (is_fixed_size_ndarray_v<array_t>) {
+            if constexpr (meta::is_num_v<array_t>) {
+                using array_type = make_array_type_t<size_t,2>;
+                return array_type{1ul,1ul};
+            } else if constexpr (is_fixed_size_ndarray_v<array_t>) {
                 if constexpr (fixed_ndarray_dim_v<array_t> == 1) {
                     constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
                     return index::expand_dims(shape_,0);
@@ -140,7 +147,7 @@ namespace nmtools::meta
     template <typename array_t>
     struct is_ndarray< view::decorator_t< view::atleast_2d_t, array_t >>
     {
-        static constexpr auto value = std::is_arithmetic_v<array_t> || is_ndarray_v<array_t>;
+        static constexpr auto value = meta::is_num_v<array_t> || is_ndarray_v<array_t>;
     };
 
     /**
@@ -158,7 +165,7 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (is_num_v<array_t>) {
-                using shape_t = std::tuple<ct<1>,ct<1>>;
+                using shape_t = make_tuple_type_t<ct<1>,ct<1>>;
                 using type = make_fixed_ndarray_t<array_t,shape_t>;
                 return as_value_v<type>;
             } else if constexpr (is_fixed_size_ndarray_v<array_t>) {
@@ -167,7 +174,6 @@ namespace nmtools::meta
                     // use arbitrary fixed-shape type to 
                     // match resize_fixed_ndarray signature
                     // (needs type instead of value)
-                    // using some_array_t = std::array<std::array<int,at(shape_,0)>,1>;
                     using some_array_t = int[1][nmtools::at(shape_,0)];
                     using tf_array_t   = transform_bounded_array_t<array_t>;
                     using type = resize_fixed_ndarray_t<tf_array_t,some_array_t>;

@@ -8,6 +8,7 @@
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/array/utility/apply_resize.hpp"
+#include "nmtools/array/shape.hpp"
 
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
@@ -43,7 +44,7 @@ namespace nmtools::array
 
         template <typename output_t>
         constexpr auto operator()(output_t& output) const
-            -> std::enable_if_t<meta::is_ndarray_v<output_t>>
+            -> meta::enable_if_t<meta::is_ndarray_v<output_t>>
         {
             auto out_shape = ::nmtools::shape(output);
             auto inp_shape = ::nmtools::shape(view);
@@ -74,12 +75,12 @@ namespace nmtools::array
 
         template <typename output_t>
         constexpr auto operator()(output_t& output) const
-            -> std::enable_if_t<meta::is_num_v<output_t>>
+            -> meta::enable_if_t<meta::is_num_v<output_t>>
         {
             output = static_cast<output_t>(view);
         } // operator()
 
-        template <typename output_t=output_type, std::enable_if_t<!std::is_void_v<output_t>,int> = 0>
+        template <typename output_t=output_type, meta::enable_if_t<!meta::is_void_v<output_t>,int> = 0>
         constexpr auto operator()() const
         {
             using result_t = meta::transform_bounded_array_t<output_t>;
@@ -130,21 +131,18 @@ namespace nmtools::array
     {
         // TODO: support maybe type
         if constexpr (meta::is_either_v<view_t>) {
-            // for now, assume either type is std::variant
-            // TODO: add support for other either type
-            using std::get_if;
             using left_t   = meta::get_either_left_t<view_t>;
             using right_t  = meta::get_either_right_t<view_t>;
             // deduce return type for each type
-            using rleft_t  = decltype(eval(std::declval<left_t>(),context,output));
-            using rright_t = decltype(eval(std::declval<right_t>(),context,output));
+            using rleft_t  = decltype(eval(meta::declval<left_t>(),context,output));
+            using rright_t = decltype(eval(meta::declval<right_t>(),context,output));
             // TODO: make default either type configurable
-            using either_t = std::variant<rleft_t,rright_t>;
+            using either_t = meta::make_either_type_t<rleft_t,rright_t>;
             // match either type at runtime
-            if (auto view_ptr = get_if<left_t>(&view)) {
+            if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
                 return either_t{eval(*view_ptr,context,output)};
             } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
-                auto view_rptr = get_if<right_t>(&view);
+                auto view_rptr = nmtools::get_if<right_t>(&view);
                 return either_t{eval(*view_rptr,context,output)};
             }
         } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
@@ -199,7 +197,7 @@ namespace nmtools::meta
             // such as view::zeros,ones...
             constexpr auto shape = fixed_ndarray_shape_v<view_type>;
             constexpr auto dim   = fixed_ndarray_dim_v<view_type>;
-            // convert to std::tuple of integral constant
+            // convert to tuple of integral constant
             // since default impl of make_fixed_ndarray (defined in ndarray/fixed.hpp)
             // only support such type
             constexpr auto vshape = template_reduce<dim>([&](auto init, auto index){
@@ -210,8 +208,8 @@ namespace nmtools::meta
                 using type = type_t<decltype(init)>;
                 // default impl of make_fixed_ndarray only support integral constant for now
                 using stype = ct<s>;
-                if constexpr (std::is_void_v<type>) {
-                    using type = std::tuple<stype>;
+                if constexpr (is_void_v<type>) {
+                    using type = make_tuple_type_t<stype>;
                     return as_value_v<type>;
                 } else {
                     using type = append_type_t<type,stype>;
@@ -255,8 +253,8 @@ namespace nmtools::meta
                 using type = type_t<decltype(init)>;
                 // default impl of make_fixed_ndarray only support integral constant for now
                 using stype = ct<s>;
-                if constexpr (std::is_void_v<type>) {
-                    using type = std::tuple<stype>;
+                if constexpr (is_void_v<type>) {
+                    using type = make_tuple_type_t<stype>;
                     return as_value_v<type>;
                 } else {
                     using type = append_type_t<type,stype>;
@@ -470,12 +468,10 @@ namespace nmtools::meta
                 return resolve_unary_array_type(as_value_v<array_t>, as_value_v<view_t>);
             } else if constexpr (is_tuple_v<nocv_arrays_t> && len_v<arrays_t> == 1) {
                 // packed single array, can be found in views that accepts variadic such as ufunc
-                // TODO: use meta::at_t
-                using array_t = remove_cvref_pointer_t<std::tuple_element_t<0,arrays_t>>;
+                using array_t = remove_cvref_pointer_t<at_t<arrays_t,0>>;
                 return resolve_unary_array_type(as_value_v<array_t>, as_value_v<view_t>);
             } else if constexpr (is_tuple_v<nocv_arrays_t> && len_v<arrays_t> == 2) {
                 // binary array
-                // TODO: use meta::at_t
                 using lhs_t = remove_cvref_pointer_t<at_t<arrays_t,0>>;
                 using rhs_t = remove_cvref_pointer_t<at_t<arrays_t,1>>;
                 return resolve_binary_array_type(as_value_v<lhs_t>, as_value_v<rhs_t>, as_value_v<view_t>);
@@ -485,11 +481,10 @@ namespace nmtools::meta
                 return template_reduce<N-1>([](auto init, auto index){
                     constexpr auto i = decltype(index)::value;
                     using init_t = type_t<decltype(init)>;
-                    // TODO: use meta::at_t
                     using lhs_t = remove_cvref_pointer_t<at_t<arrays_t,i>>;
                     using rhs_t = remove_cvref_pointer_t<at_t<arrays_t,i+1>>;
                     // we start from void type
-                    if constexpr (std::is_void_v<init_t>) {
+                    if constexpr (is_void_v<init_t>) {
                         return resolve_binary_array_type(as_value_v<lhs_t>, as_value_v<rhs_t>, as_value_v<view_t>);
                     } else {
                         return resolve_binary_array_type(as_value_v<init_t>, as_value_v<rhs_t>, as_value_v<view_t>);

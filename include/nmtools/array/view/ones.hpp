@@ -55,7 +55,7 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            // may transform raw array to std::array
+            // may transform raw array to array
             return detail::get_ones_shape(shape_);
         } // shape
 
@@ -114,7 +114,7 @@ namespace nmtools::meta
     template <typename shape_t, typename T>
     struct is_ndarray< view::decorator_t< view::ones_t, shape_t, T >>
     {
-        static constexpr auto value = std::is_arithmetic_v<T>;
+        static constexpr auto value = is_num_v<T>;
     };
 } // namespace nmtools::meta
 

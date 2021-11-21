@@ -18,8 +18,8 @@ namespace nmtools::view
         using rhs_type = const rhs_array_t&;
         using lhs_value_type = meta::get_element_type_t<lhs_array_t>;
         using rhs_value_type = meta::get_element_type_t<rhs_array_t>;
-        using value_type = std::common_type_t<lhs_value_type,rhs_value_type>;
-        using array_type = std::tuple<lhs_type,rhs_type>;
+        using value_type = meta::common_type_t<lhs_value_type,rhs_value_type>;
+        using array_type = meta::make_tuple_type_t<lhs_type,rhs_type>;
         using axis_type  = axis_t;
 
         // lhs_type  lhs;
@@ -116,8 +116,8 @@ namespace nmtools::view
         assert (success
             // , "unsupported concatenate, mismatched shape"
         );
-        // note must pass as cref to make tuple properly deduce to const ref
-        auto array = std::tuple{std::cref(lhs),std::cref(rhs)};
+        using array_t = meta::make_tuple_type_t<const lhs_array_t&,const rhs_array_t&>;
+        auto array = array_t{lhs,rhs};
         return decorator_t<concatenate_t,lhs_array_t,rhs_array_t,axis_t>{{array,axis}};
     } // concatenate
 } // namespace nmtools::view
@@ -164,9 +164,9 @@ namespace nmtools::meta
                 constexpr auto bshape  = fixed_ndarray_shape_v<rhs_t>;
                 constexpr auto axis    = axis_t{};
                 constexpr auto result  = index::shape_concatenate(ashape,bshape,axis);
-                constexpr auto success = std::get<0>(result);
+                constexpr auto success = nmtools::get<0>(result);
                 if constexpr (success) {
-                    constexpr auto shape = std::get<1>(result);
+                    constexpr auto shape = nmtools::get<1>(result);
                     return shape;
                 } else {
                     return detail::Fail;

@@ -36,12 +36,16 @@ namespace nmtools
     struct meta::resolve_optype<void,cast_t,dst_t,src_t>
     {
         using source_t = meta::transform_bounded_array_t<src_t>;
-        using array_type = std::conditional_t<
-            std::is_arithmetic_v<dst_t>,
-            meta::replace_element_type_t<source_t,dst_t>,
-            dst_t
-        >;
-        using type = meta::transform_bounded_array_t<array_type>;
+        static constexpr auto vtype = [](){
+            if constexpr (meta::is_num_v<dst_t>) {
+                using type = meta::replace_element_type_t<source_t,dst_t>;
+                return meta::as_value_v<type>;
+            } else {
+                using type = dst_t;
+                return meta::as_value_v<type>;
+            }
+        }();
+        using type = meta::transform_bounded_array_t<meta::type_t<decltype(vtype)>>;
     }; // resolve_optype
 
     /**
@@ -55,17 +59,17 @@ namespace nmtools
     template <typename dst_t, typename src_t>
     constexpr auto cast(const src_t& array)
     {
-        static_assert (meta::is_ndarray_v<src_t> || std::is_arithmetic_v<src_t>
+        static_assert (meta::is_ndarray_v<src_t> || meta::is_num_v<src_t>
             , "unsupported cast, expects source type to be ndarray or arithmetic"
         );
-        static_assert (meta::is_ndarray_v<dst_t> || std::is_arithmetic_v<dst_t>
+        static_assert (meta::is_ndarray_v<dst_t> || meta::is_num_v<dst_t>
             , "unsupported cast, expects destination type to be ndarray or arithmetic"
         );
-        static_assert ((std::is_arithmetic_v<src_t> == std::is_arithmetic_v<dst_t>) || (meta::is_ndarray_v<src_t>)
+        static_assert ((meta::is_num_v<src_t> == meta::is_num_v<dst_t>) || (meta::is_ndarray_v<src_t>)
             , "unsupported cast, expects destination type to be arithmetic when source type is arithmetic"
         );
 
-        if constexpr (std::is_arithmetic_v<src_t> && std::is_arithmetic_v<dst_t>)
+        if constexpr (meta::is_num_v<src_t> && meta::is_num_v<dst_t>)
             return static_cast<dst_t>(array);
         else {
             using detail::cast_impl;

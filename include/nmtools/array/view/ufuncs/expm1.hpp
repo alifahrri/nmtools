@@ -2,8 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_EXPM1_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -13,7 +12,7 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
-            return std::expm1(t);
+            return math::expm1(t);
         } // operator()
     }; // expm1_t
 

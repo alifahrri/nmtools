@@ -45,7 +45,7 @@ namespace nmtools::view
             auto shape_ = detail::shape(array);
             auto N = index::product(shape_);
             // flattened array is strictly 1D
-            return std::tuple{N};
+            return meta::make_tuple_type_t<size_t>{N};
         } // shape
 
         template <typename size_type>
@@ -78,7 +78,7 @@ namespace nmtools::meta
      * @tparam array_t 
      */
     template <typename array_t>
-    struct is_array1d<view::decorator_t<view::flatten_t,array_t>> : std::true_type {};
+    struct is_array1d<view::decorator_t<view::flatten_t,array_t>> : meta::true_type {};
 } // namespace nmtools::meta
 
 namespace nmtools
@@ -95,7 +95,7 @@ namespace nmtools
             if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
                 constexpr auto shape = fixed_ndarray_shape_v<array_t>;
                 constexpr auto N     = index::product(shape);
-                return std::tuple{N};
+                return meta::make_tuple_type_t<size_t>{N};
             } else {
                 return detail::Fail;
             }

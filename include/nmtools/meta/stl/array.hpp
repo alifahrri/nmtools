@@ -46,6 +46,24 @@ namespace nmtools::meta
     {
         static constexpr auto value = sizeof...(Ts);
     };
+
+    // TODO: move to primary template
+    template <typename T>
+    struct fixed_ndarray_shape<T,enable_if_t<is_bounded_array_v<T>>>
+    {
+        static constexpr auto value = [](){
+             constexpr auto rank = std::rank_v<T>;
+            using array_t = typename make_array_type<size_t,rank>::type;
+            auto shape = array_t{};
+            template_for<rank>([&](auto index) {
+                constexpr auto i = decltype(index)::value;
+                constexpr auto n = std::extent_v<T,i>;
+                shape[i] = n;
+            });
+            return shape;
+        }();
+        using value_type = decltype(value);
+    };
 } // namespace nmtools::meta
 
 #endif 

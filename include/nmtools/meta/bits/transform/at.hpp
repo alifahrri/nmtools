@@ -5,6 +5,11 @@
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        struct TYPE_AT_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief Helper metafunction to get type at index I from type list T.
      * 
@@ -14,7 +19,7 @@ namespace nmtools::meta
     template <typename T, size_t I>
     struct type_at
     {
-        using type = detail::fail_t;
+        using type = error::TYPE_AT_UNSUPPORTED;
     }; // at
 
     /**

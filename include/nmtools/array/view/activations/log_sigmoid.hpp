@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_LOG_SIGMOID_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -17,7 +17,7 @@ namespace nmtools::view
         auto operator()(const T& t) const
         {
             auto one = static_cast<T>(1);
-            return std::log(one / (one + std::exp(-t)));
+            return math::log(one / (one + math::exp(-t)));
         } // operator()
     }; // log_sigmoid_t
 

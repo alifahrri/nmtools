@@ -13,6 +13,37 @@
 
 namespace nmtools::view::detail
 {
+    template <template<typename...>typename tuple_t, typename...args_t, typename value_t, template<auto...>typename sequence, auto...Is>
+    constexpr auto tuple_append(const tuple_t<args_t...>& tuple, const value_t& val, sequence<Is...>)
+    {
+        using result_t = tuple_t<args_t...,value_t>;
+        return result_t{nmtools::get<Is>(tuple)...,val};
+    }
+
+    /**
+     * @brief Helper function to join two tuple,
+     * Used by matmul and ufuncs.
+     * 
+     * @tparam left_t 
+     * @tparam l_args_t 
+     * @tparam right_t 
+     * @tparam r_args_t 
+     * @param left 
+     * @param right 
+     * @return constexpr auto 
+     */
+    template <template<typename...>typename left_t, typename...l_args_t
+        , template<typename...>typename right_t, typename...r_args_t>
+    constexpr auto tuple_cat(const left_t<l_args_t...>& left, const right_t<r_args_t...>& right)
+    {
+        constexpr auto N = sizeof...(r_args_t);
+        return meta::template_reduce<N>([&](auto init, auto index){
+            constexpr auto i = decltype(index)::value;
+            constexpr auto M = meta::len_v<decltype(init)>;
+            return tuple_append(init,nmtools::get<i>(right),meta::make_index_sequence_v<M>);
+        }, left);
+    } // tuple_cat
+
     /**
      * @brief Helper shape function that is pointer-aware.
      * 
@@ -25,7 +56,7 @@ namespace nmtools::view::detail
     template <typename array_t>
     constexpr auto shape(const array_t& array)
     {
-        if constexpr (std::is_pointer_v<array_t>) {
+        if constexpr (meta::is_pointer_v<array_t>) {
             return ::nmtools::shape(*array);
         } else {
             return ::nmtools::shape(array);
@@ -42,7 +73,7 @@ namespace nmtools::view::detail
     template <typename array_t>
     constexpr auto dim(const array_t& array)
     {
-        if constexpr (std::is_pointer_v<array_t>) {
+        if constexpr (meta::is_pointer_v<array_t>) {
             return ::nmtools::dim(*array);
         } else {
             return ::nmtools::dim(array);
@@ -61,7 +92,7 @@ namespace nmtools::view::detail
     template <typename array_t, typename indices_t>
     constexpr auto apply_at(const array_t& array, const indices_t& indices)
     {
-        if constexpr (std::is_pointer_v<array_t>) {
+        if constexpr (meta::is_pointer_v<array_t>) {
             return ::nmtools::apply_at(*array,indices);
         } else {
             return ::nmtools::apply_at(array,indices);
@@ -85,7 +116,9 @@ namespace nmtools::view
     template <typename size_type, typename...size_types>
     constexpr auto pack_indices(size_type index_, size_types...indices)
     {
-        using common_t = std::common_type_t<size_type,size_types...>;
+        // error: pack expansion used as argument for non-pack parameter of alias template :|
+        // using common_t = meta::promote_index_t<size_types...>;
+        using common_t = meta::type_t<meta::promote_index<size_type,size_types...>>;
         if constexpr (meta::is_integral_v<common_t>) {
             using array_t = meta::make_array_type_t<common_t,1+sizeof...(indices)>;
             return array_t{index_,indices...};
@@ -168,7 +201,9 @@ namespace nmtools::view
             // @note either using auto& or decltype(auto) for return type
             // since at(...) return auto&
 
-            using common_t = std::common_type_t<size_types...>;
+            // error: pack expansion used as argument for non-pack parameter of alias template :|
+            // using common_t = meta::promote_index_t<size_types...>;
+            using common_t = meta::type_t<meta::promote_index<size_types...>>;
             using meta::has_funcnd_v;
             if constexpr (has_funcnd_v<view_type,size_types...>)
                 return view_type::operator()(indices...);
@@ -179,7 +214,7 @@ namespace nmtools::view
                 // otherwise assume indices is packed and pass to apply_at
                 // to allow access from packed indices
                 // TODO: better error handling
-                if constexpr (std::is_integral_v<common_t>) {
+                if constexpr (meta::is_integral_v<common_t>) {
                     constexpr auto n = sizeof...(size_types);
                     // TODO: static_assert whenever possible
                     nmtools_cassert ( (common_t)dim()==(common_t)n
@@ -189,7 +224,7 @@ namespace nmtools::view
 
                 // call at to referred object, not to this.
                 // the array_type from the view may be pointer
-                if constexpr (std::is_pointer_v<array_type>) {
+                if constexpr (meta::is_pointer_v<array_type>) {
                     return apply_at(*view_type::array, transformed_indices);
                 } else {
                     return apply_at(view_type::array, transformed_indices);
@@ -214,7 +249,9 @@ namespace nmtools::view
             // @note either using auto& or decltype(auto) for return type
             // since at(...) return auto&
 
-            using common_t = std::common_type_t<size_types...>;
+            // error: pack expansion used as argument for non-pack parameter of alias template :|
+            // using common_t = meta::promote_index_t<size_types...>;
+            using common_t = meta::type_t<meta::promote_index<size_types...>>;
             using meta::has_funcnd_v;
             if constexpr (has_funcnd_v<view_type,size_types...>)
                 return view_type::operator()(indices...);
@@ -225,7 +262,7 @@ namespace nmtools::view
                 // only perform assert if integral type is passed
                 // otherwise assume indices is packed and pass to apply_at
                 // to allow access from packed indices
-                if constexpr (std::is_integral_v<common_t>)
+                if constexpr (meta::is_integral_v<common_t>)
                     // @todo static_assert whenever possible
                     assert (dim()==n); // tmp assertion
 
@@ -237,7 +274,7 @@ namespace nmtools::view
                 //     assert (dim()==n);
 
                 // call at to referred object, not to this
-                if constexpr (std::is_pointer_v<array_type>) {
+                if constexpr (meta::is_pointer_v<array_type>) {
                     return apply_at(*view_type::array, transformed_indices);
                 } else {
                     return apply_at(view_type::array, transformed_indices);
@@ -273,7 +310,7 @@ namespace nmtools::view
      * @tparam typename sfinae/customization point
      */
     template <typename T, typename=void>
-    struct is_view : std::false_type {};
+    struct is_view : meta::false_type {};
 
     /**
      * @brief true case for helper trait to check if type T is view
@@ -282,7 +319,7 @@ namespace nmtools::view
      * @tparam Ts template parameters to actual view
      */
     template <template<typename...> typename view_t, typename...Ts>
-    struct is_view<decorator_t<view_t,Ts...>> : std::true_type {};
+    struct is_view<decorator_t<view_t,Ts...>> : meta::true_type {};
 
     /**
      * @brief helper variable template to check if type T is view
@@ -378,16 +415,22 @@ namespace nmtools::view
                     using array_i = meta::at_t<array_type,i>;
                     // array_i may be cvref or even a pointer
                     using nocv_array_i = meta::remove_cvref_pointer_t<array_i>;
-                    using array_t = std::conditional_t<is_view_v<nocv_array_i>,
-                        get_underlying_array_type_t<nocv_array_i>, array_i
-                    >;
+                    constexpr auto array_vtype = [](){
+                        if constexpr (is_view_v<nocv_array_i>) {
+                            using type = get_underlying_array_type_t<nocv_array_i>;
+                            return meta::as_value_v<type>;
+                        } else {
+                            return meta::as_value_v<array_i>;
+                        }
+                    }();
+                    using array_t = meta::type_t<decltype(array_vtype)>;
                     // at this point array_t (which may be the result of recursively calling get_underlying_array_type)
                     // may be tuple may be array may be num. must call meta::concat if it is tuple, meta::append otherwise.
 
                     if constexpr (is_none_v<type_i> && !meta::is_tuple_v<array_t>) {
-                        // init typelist, use std::tuple for now,
+                        // init typelist, use tuple for now,
                         // TODO: deduce template template of nocv_array_t if possible
-                        using type = std::tuple<array_t>;
+                        using type = meta::make_tuple_type_t<array_t>;
                         return meta::as_value_v<type>;
                     } else if constexpr (is_none_v<type_i> && meta::is_tuple_v<array_t>) {
                         return meta::as_value_v<array_t>;
@@ -421,10 +464,10 @@ namespace nmtools::view
     }; // noref_t
 
     template <typename array_t>
-    struct is_noref : std::false_type {};
+    struct is_noref : meta::false_type {};
 
     template <typename array_t>
-    struct is_noref<noref_t<array_t>> : std::true_type {};
+    struct is_noref<noref_t<array_t>> : meta::true_type {};
 
     template <typename array_t>
     inline constexpr auto is_noref_v = is_noref<array_t>::value;
@@ -496,7 +539,7 @@ namespace nmtools::view
     template <typename array_type, typename array_t>
     constexpr array_type initialize(const array_t& array)
     {
-        if constexpr (std::is_pointer_v<array_type>) {
+        if constexpr (meta::is_pointer_v<array_type>) {
             return &array;
         } else {
             return array;

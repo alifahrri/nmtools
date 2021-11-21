@@ -21,8 +21,8 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            if constexpr (std::is_arithmetic_v<array_t>)
-                return std::array{1};
+            if constexpr (meta::is_num_v<array_t>)
+                return meta::make_array_type_t<size_t,1>{1ul};
             else return detail::shape(array);
         } // shape
 
@@ -38,11 +38,11 @@ namespace nmtools::view
             // they are within range
             // TODO: move to "index" member function
             // TODO: check shape
-            if constexpr (std::is_arithmetic_v<array_t>) {
+            if constexpr (meta::is_num_v<array_t>) {
                 return array;
             } else {
                 auto indices_ = pack_indices(indices...);
-                if constexpr (std::is_pointer_v<array_type>) {
+                if constexpr (meta::is_pointer_v<array_type>) {
                     return apply_at(*array, indices_);
                 } else {
                     return apply_at(array, indices_);
@@ -73,18 +73,22 @@ namespace nmtools::meta
     template <typename array_t>
     struct get_element_type< view::decorator_t<view::atleast_1d_t, array_t> >
     {
-        using type = std::conditional_t<
-            std::is_arithmetic_v<array_t>, array_t,
-            get_element_type_t<array_t>
-        >;
+        static constexpr auto vtype = [](){
+            if constexpr (is_num_v<array_t>) {
+                return as_value_v<array_t>;
+            } else {
+                return as_value_v<get_element_type_t<array_t>>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     };
 
     template <typename array_t>
     struct fixed_ndarray_shape< view::atleast_1d_t<array_t> >
     {
         static inline constexpr auto value = [](){
-            if constexpr (std::is_arithmetic_v<array_t>)
-                return std::array{1};
+            if constexpr (is_num_v<array_t>)
+                return meta::make_array_type_t<size_t,1>{1ul};
             else return fixed_ndarray_shape_v<array_t>;
         }();
         using value_type = decltype(value);
@@ -110,7 +114,7 @@ namespace nmtools::meta
     template <typename array_t>
     struct is_ndarray< view::decorator_t< view::atleast_1d_t, array_t >>
     {
-        static constexpr auto value = std::is_arithmetic_v<array_t> || is_ndarray_v<array_t>;
+        static constexpr auto value = is_num_v<array_t> || is_ndarray_v<array_t>;
     };
 } // namespace nmtools::meta
 

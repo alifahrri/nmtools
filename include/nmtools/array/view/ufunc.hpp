@@ -44,7 +44,7 @@ namespace nmtools::view::detail
     {
         static_assert( sizeof...(arrays_t) > 0, "nmtools internal error" );
         static constexpr auto vtype = [](){
-            using arrays_type = std::tuple<arrays_t...>;
+            using arrays_type = meta::make_tuple_type_t<arrays_t...>;
             // for view / num type: simply copy (take value),
             // otherwise take reference
             return meta::template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
@@ -52,8 +52,8 @@ namespace nmtools::view::detail
                 using array_t    = meta::at_t<arrays_type,i>;
                 using operand_t  = view::resolve_array_type_t<array_t>;
                 using init_t = meta::type_t<decltype(init)>; 
-                if constexpr (std::is_void_v<init_t>) {
-                    return meta::as_value_v<std::tuple<operand_t>>;
+                if constexpr (meta::is_void_v<init_t>) {
+                    return meta::as_value_v<meta::make_tuple_type_t<operand_t>>;
                 } else {
                     return meta::as_value_v<meta::append_type_t<init_t,operand_t>>;
                 }
@@ -72,10 +72,10 @@ namespace nmtools::view::detail
      * @tparam typename 
      */
     template <typename T, typename=void>
-    struct has_result_type : std::false_type {};
+    struct has_result_type : meta::false_type {};
 
     template <typename T>
-    struct has_result_type<T,std::void_t<typename T::result_type>> : std::true_type {};
+    struct has_result_type<T,meta::void_t<typename T::result_type>> : meta::true_type {};
 
     template <typename T>
     constexpr inline auto has_result_type_v = has_result_type<T>::value;
@@ -90,12 +90,12 @@ namespace nmtools::view::detail
     template <typename always_void, typename op_t, typename...args_t>
     struct get_ufunc_result_type
     {
-        using type = decltype(std::declval<op_t>()(std::declval<args_t>()...));
+        using type = decltype(meta::declval<op_t>()(meta::declval<args_t>()...));
     }; // get_ufunc_result_type
 
     template <typename op_t, typename...args_t>
     struct get_ufunc_result_type<
-        std::void_t<typename op_t::result_type>,
+        meta::void_t<typename op_t::result_type>,
         op_t, args_t...
     >
     {
@@ -120,7 +120,7 @@ namespace nmtools::view::detail
 
     template <typename reducer_t, typename element_t>
     struct get_reducer_result_type< reducer_t, element_t,
-        std::void_t<typename reducer_t::result_type>
+        meta::void_t<typename reducer_t::result_type>
     >
     {
         using type = typename reducer_t::result_type;
@@ -183,7 +183,7 @@ namespace nmtools::view
     {
         // dont take reference for the operands, a Num type should be copied
         // and view type should be cheap to copy
-        using operands_type = std::tuple<arrays_t...>;
+        using operands_type = meta::make_tuple_type_t<arrays_t...>;
         using array_type    = operands_type;
         using op_type       = op_t;
         using result_type   = detail::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
@@ -205,15 +205,15 @@ namespace nmtools::view
         } // shape
 
         template <size_t...Is>
-        static constexpr auto apply_at(op_type op, const operands_type& operands, std::index_sequence<Is...>)
+        static constexpr auto apply_at(op_type op, const operands_type& operands, meta::index_sequence<Is...>)
         {
-            return op(std::get<Is>(operands)...);
+            return op(nmtools::get<Is>(operands)...);
         } // apply_at
 
         constexpr operator result_type() const
         {
             constexpr auto N = sizeof...(arrays_t);
-            return apply_at(op, operands, std::make_index_sequence<N>{});
+            return apply_at(op, operands, meta::make_index_sequence<N>{});
         } // operator result_type()
     }; // scalar_ufunc_t
 
@@ -241,7 +241,11 @@ namespace nmtools::view
         static constexpr auto initialize_operands(const arrays_t&...arrays)
         {
             if constexpr (sizeof...(arrays) > 1) {
-                auto tuple = std::tuple{std::cref(arrays)...};
+                // take the original referenced array as const ref,
+                // may be transformed to pointer later
+                using tuple_t = meta::make_tuple_type_t<const arrays_t&...>;
+                auto tuple = tuple_t{arrays...};
+                // the following may transform to tuple of pointer / tuple of value
                 return meta::template_reduce<sizeof...(arrays)>([&](auto init, auto index){
                     constexpr auto i = decltype(index)::value;
                     using arg_t  = meta::at_t<operands_type,i>;
@@ -249,21 +253,23 @@ namespace nmtools::view
                     // for each element in operands,
                     // dispatch based on take ref or not
                     auto arg = [&]() -> arg_t {
-                        if constexpr (std::is_pointer_v<arg_t>) {
-                            return &std::get<i>(tuple);
+                        if constexpr (meta::is_pointer_v<arg_t>) {
+                            return &nmtools::get<i>(tuple);
                         } else {
-                            return std::get<i>(tuple);
+                            return nmtools::get<i>(tuple);
                         }
                     }();
                     if constexpr (is_none_v<init_t>) {
-                        return std::tuple{arg};
+                        using tuple = meta::make_tuple_type_t<arg_t>;
+                        return tuple{arg};
                     } else {
-                        return std::tuple_cat(init,std::tuple<arg_t>{arg});
+                        using tuple = meta::make_tuple_type_t<arg_t>;
+                        return detail::tuple_cat(init,tuple{arg});
                     }
                 }, None);
             } else {
                 using array_t = meta::at_t<operands_type,0>;
-                if constexpr (std::is_pointer_v<array_t>) {
+                if constexpr (meta::is_pointer_v<array_t>) {
                     return operands_type{&arrays...};
                 } else {
                     return operands_type{arrays...};
@@ -277,20 +283,20 @@ namespace nmtools::view
         constexpr auto shape() const
         {
             // assume arrays is already broadcasted together
-            return detail::shape(std::get<0>(operands));
+            return detail::shape(nmtools::get<0>(operands));
         } // shape
 
         constexpr auto dim() const
         {
             // assume arrays is already broadcasted together
-            return detail::dim(std::get<0>(operands));
+            return detail::dim(nmtools::get<0>(operands));
         } // dim
 
         template <typename indices_t, size_t...Is>
-        static constexpr auto apply_at(op_type op, const operands_type& operands, const indices_t& indices, std::index_sequence<Is...>)
+        static constexpr auto apply_at(op_type op, const operands_type& operands, const indices_t& indices, meta::index_sequence<Is...>)
         {
             using view::detail::apply_at;
-            return op(apply_at(std::get<Is>(operands),indices)...);
+            return op(detail::apply_at(nmtools::get<Is>(operands),indices)...);
         } // apply_at
 
         template <typename...size_types>
@@ -300,7 +306,7 @@ namespace nmtools::view
             // instead of returning (transformed) index only
             auto indices_ = pack_indices(indices...);
             constexpr auto N = sizeof...(arrays_t);
-            return apply_at(op, operands, indices_, std::make_index_sequence<N>{});
+            return apply_at(op, operands, indices_, meta::make_index_sequence<N>{});
         } // operator()
     }; // ufunc_t
 
@@ -399,7 +405,7 @@ namespace nmtools::view
             auto shape_ = detail::shape(array);
             // NOTE: can't provide convenience function
             // without causing bounded array to decay to pointer
-            if constexpr (std::is_pointer_v<axis_type>) {
+            if constexpr (meta::is_pointer_v<axis_type>) {
                 return index::remove_dims(shape_,*axis,keepdims);
             } else {
                 return index::remove_dims(shape_,axis,keepdims);
@@ -443,13 +449,13 @@ namespace nmtools::view
             // TODO: support reduce on dynamic dim array
             constexpr auto DIM = meta::fixed_dim_v<array_t>;
             // type for slicing is DIMx2 where 2 represent start and stop
-            using slices_type = std::array<std::array<size_t,2>,DIM>;
+            using slices_type = meta::make_array_type_t<meta::make_array_type_t<size_t,2>,DIM>;
             auto slices = slices_type {};
             auto shape_ = detail::shape(array);
 
             // helper lambda to check if axis i is in the specified axis for reduction
             auto in_axis = [&](auto i){
-                if constexpr (meta::is_index_v<axis_t> && std::is_pointer_v<axis_type>) {
+                if constexpr (meta::is_index_v<axis_t> && meta::is_pointer_v<axis_type>) {
                     return i==*axis;
                 } else if constexpr (meta::is_index_v<axis_t>) {
                     using common_t = meta::promote_index_t<axis_t,decltype(i)>;
@@ -462,7 +468,7 @@ namespace nmtools::view
                     // axis is index array (reducing on multiple axes),
                     // axis may be pointer, but can't provide convenience function
                     // since may decay bounded array to pointer
-                    if constexpr (std::is_pointer_v<axis_type>) {
+                    if constexpr (meta::is_pointer_v<axis_type>) {
                         auto found = index::where(f_predicate, *axis);
                         return static_cast<bool>(len(found));
                     } else {
@@ -475,7 +481,6 @@ namespace nmtools::view
             // use the same type as axis_t for loop index
             constexpr auto idx_vtype = [](){
                 if constexpr (meta::is_constant_index_array_v<axis_t>) {
-                    // std::commont_type can't handle constant index array :|
                     // shortcut for now, just use int
                     return meta::as_value_v<int>;
                 } else if constexpr (meta::is_index_array_v<axis_t>) {
@@ -488,7 +493,7 @@ namespace nmtools::view
                 }
             }();
             using index_t = meta::get_index_type_t<array_t>;
-            using idx_t   = std::common_type_t<index_t,meta::type_t<decltype(idx_vtype)>>;
+            using idx_t   = meta::type_t<meta::promote_index<index_t,meta::type_t<decltype(idx_vtype)>>>;
 
             // indices and the referenced array may have different dim,
             // this variable track index for indices_
@@ -515,7 +520,7 @@ namespace nmtools::view
             auto sliced = [&](){
                 // this slice operates directly with the underlying array
                 // which may be pointer
-                if constexpr (std::is_pointer_v<array_type>) {
+                if constexpr (meta::is_pointer_v<array_type>) {
                     return apply_slice(*array,slices);
                 } else {
                     return apply_slice(array, slices);
@@ -578,10 +583,11 @@ namespace nmtools::view
                     // special case: shape is compile-time value,
                     // can't access and modify at runtime
                     constexpr auto N   = meta::len_v<m_shape_t>;
-                    constexpr auto val = meta::ct_v<1>;
+                    using val_t = meta::ct<1>;
+                    constexpr auto val = val_t{};
                     auto res = meta::template_reduce<N-1>([&](auto init, auto /*index*/){
-                        return std::tuple_cat(init,std::tuple{val});
-                    }, /*init=*/std::tuple{val});
+                        return detail::tuple_cat(init,meta::make_tuple_type_t<val_t>{val});
+                    }, /*init=*/meta::make_tuple_type_t<val_t>{val});
                     return res;
                 } else {
                     for (size_t i=0; i<len(shape_); i++)
@@ -594,13 +600,6 @@ namespace nmtools::view
                     return f_shape();
                 else return None;
             }
-            // use variant since it can be none or the shape
-            // else if constexpr (meta::is_boolean_v<keepdims_t>) {
-            //     using shape_t  = decltype(nmtools::shape(array));
-            //     // use none_t as first alternative, since it is must be default constructible
-            //     using return_t = std::variant<none_t,shape_t>;
-            //     return (keepdims ? return_t{f_shape()} : return_t{None});
-            // }
             else // if (is_none_v<keepdims_t>)
                 return None;
         } // shape
@@ -621,7 +620,7 @@ namespace nmtools::view
             // must check if array is pointer or not since
             // flatten (and view in general) doesn't accept pointer
             auto flattened = [&](){
-                if constexpr (std::is_pointer_v<array_type>) {
+                if constexpr (meta::is_pointer_v<array_type>) {
                     return flatten(*array);
                 } else {
                     return flatten(array);
@@ -639,7 +638,7 @@ namespace nmtools::view
         {
             // reduce the whole array
             auto flattened = [&](){
-                if constexpr (std::is_pointer_v<array_type>) {
+                if constexpr (meta::is_pointer_v<array_type>) {
                     return flatten(*array);
                 } else {
                     return flatten(array);
@@ -666,7 +665,14 @@ namespace nmtools::view
     struct accumulate_t
     {
         // if given array is a view, just use value instead of reference
-        using operands_type = std::conditional_t<is_view_v<array_t>,array_t,const array_t&>;
+        static constexpr auto operands_vtype = [](){
+            if constexpr (is_view_v<array_t>) {
+                return meta::as_value_v<array_t>;
+            } else {
+                return meta::as_value_v<const array_t&>;
+            }
+        }();
+        using operands_type = meta::type_t<decltype(operands_vtype)>;
         using array_type    = operands_type;
         using axis_type     = axis_t;
         using op_type       = op_t;
@@ -702,7 +708,7 @@ namespace nmtools::view
             // for now, assume axis is int and array is fixed_dim
             constexpr auto DIM = meta::fixed_dim_v<array_t>;
             // type for slicing is DIMx2 where 2 represent start and stop
-            using slices_type = std::array<std::array<size_t,2>,DIM>;
+            using slices_type = meta::make_array_type_t<meta::make_array_type_t<size_t,2>,DIM>;
             auto slices = slices_type {};
             // here, len(slices) already matched the dimension of source array
             auto dim = len(slices);
@@ -750,11 +756,11 @@ namespace nmtools::view
         {
             using op_lhs_t = meta::at_t<operands_type,0>;
             using op_rhs_t = meta::at_t<operands_type,1>;
-            if constexpr (std::is_pointer_v<op_lhs_t> && std::is_pointer_v<op_rhs_t>) {
+            if constexpr (meta::is_pointer_v<op_lhs_t> && meta::is_pointer_v<op_rhs_t>) {
                 return operands_type{&lhs,&rhs};
-            } else if constexpr (std::is_pointer_v<op_lhs_t>) {
+            } else if constexpr (meta::is_pointer_v<op_lhs_t>) {
                 return operands_type{&lhs,rhs};
-            } else if constexpr (std::is_pointer_v<op_rhs_t>) {
+            } else if constexpr (meta::is_pointer_v<op_rhs_t>) {
                 return operands_type{lhs,&rhs};
             } else {
                 return operands_type{lhs,rhs};
@@ -766,8 +772,8 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            auto ashape = detail::shape(std::get<0>(operands));
-            auto bshape = detail::shape(std::get<1>(operands));
+            auto ashape = detail::shape(nmtools::get<0>(operands));
+            auto bshape = detail::shape(nmtools::get<1>(operands));
             return index::shape_outer(ashape,bshape);
         } // shape
 
@@ -782,8 +788,8 @@ namespace nmtools::view
             // here we directly provide operator() to actually performing operations,
             // instead of returning (transformed) index only
             auto indices_ = pack_indices(indices...);
-            const auto& a = std::get<0>(operands);
-            const auto& b = std::get<1>(operands);
+            const auto& a = nmtools::get<0>(operands);
+            const auto& b = nmtools::get<1>(operands);
             auto ashape = detail::shape(a);
             auto bshape = detail::shape(b);
             auto [aidx, bidx] = index::outer(indices_,ashape,bshape);
@@ -794,20 +800,20 @@ namespace nmtools::view
     // provide user defined CTAD with tuple of arrays as args
     // here, expect the second arg (tuple{arrays...}) to be view (from broadcasting)
     // NOTE: somehow doesn't work, deduce using _ufunc for now
-    template <typename op_t, typename...arrays_t>
-    ufunc_t(op_t, std::tuple<arrays_t...>) -> ufunc_t<op_t,arrays_t...>;
+    template <template<typename...>typename tuple, typename op_t, typename...arrays_t>
+    ufunc_t(op_t, tuple<arrays_t...>) -> ufunc_t<op_t,arrays_t...>;
 
     template <typename op_t, template<typename...> typename tuple, typename...arrays_t, size_t...Is>
-    constexpr auto _ufunc(op_t op, const tuple<arrays_t...>& func, std::index_sequence<Is...>)
+    constexpr auto _ufunc(op_t op, const tuple<arrays_t...>& func, meta::index_sequence<Is...>)
     {
         // help deduction
-        return decorator_t<ufunc_t,op_t,arrays_t...>{{op, std::get<Is>(func)...}};
+        return decorator_t<ufunc_t,op_t,arrays_t...>{{op, nmtools::get<Is>(func)...}};
     }; // _ufunc
 
     template <typename op_t, template<typename...> typename tuple, typename...arrays_t>
     constexpr auto _ufunc(op_t op, const tuple<arrays_t...>& func)
     {
-        return _ufunc(op,func,std::make_index_sequence<sizeof...(arrays_t)>{});
+        return _ufunc(op,func,meta::make_index_sequence<sizeof...(arrays_t)>{});
     }; // _ufunc
 
     /**
@@ -829,18 +835,17 @@ namespace nmtools::view
             // such case can happen for reduce ufunc with runtime keepdims.
             // TODO: also handle any either type in arrays...
             // TODO: generalize get_if, declval
-            using std::get_if; // assume either type is variant
             using lhs_t = meta::get_either_left_t<array_t>;
             using rhs_t = meta::get_either_right_t<array_t>;
-            using lhs_ufunc_t = decltype(ufunc(op,std::declval<lhs_t>(),arrays...));
-            using rhs_ufunc_t = decltype(ufunc(op,std::declval<rhs_t>(),arrays...));
+            using lhs_ufunc_t = decltype(ufunc(op,meta::declval<lhs_t>(),arrays...));
+            using rhs_ufunc_t = decltype(ufunc(op,meta::declval<rhs_t>(),arrays...));
             using result_t = meta::replace_either_t<array_t,lhs_ufunc_t,rhs_ufunc_t>;
-            if (auto lptr = get_if<lhs_t>(&array)) {
+            if (auto lptr = nmtools::get_if<lhs_t>(&array)) {
                 return result_t{ufunc(op,*lptr,arrays...)};
             } else /* if (auto rptr = get_if<rhs_t>(&array)) */ {
                 // must be true,
                 // use else to avoid warnings
-                auto rptr = get_if<rhs_t>(&array);
+                auto rptr = nmtools::get_if<rhs_t>(&array);
                 return result_t{ufunc(op,*rptr,arrays...)};
             }
         } else if constexpr (meta::is_num_v<array_t> && (meta::is_num_v<arrays_t> && ...)) {
@@ -877,7 +882,7 @@ namespace nmtools::view
      * @param keepdims keep reduced axes in the result as dimensions with size one.
      * @return constexpr auto 
      */
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t=std::false_type>
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t=meta::false_type>
     constexpr auto reduce(op_t op, const array_t& array, const axis_t& axis, initial_t initial, keepdims_t keepdims=keepdims_t{})
     {
         // note: here, axis as reference to prevent array decays
@@ -887,10 +892,10 @@ namespace nmtools::view
         // use variant to tell that the return value may be scalar or ndarray,
         // depending on the value of keepdims at runtime
         if constexpr (is_none_v<axis_t> && meta::is_boolean_v<keepdims_t>) {
-            using scalar_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,std::false_type>;
-            using ndarray_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,std::true_type>;
+            using scalar_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,meta::false_type>;
+            using ndarray_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,meta::true_type>;
             // TODO: make default either type configurable
-            using either_t = std::variant<scalar_t,ndarray_t>;
+            using either_t = meta::make_either_type_t<scalar_t,ndarray_t>;
             return (keepdims ?
                     either_t{ndarray_t{{op,array,axis,initial,True}}}
                 : either_t{scalar_t{{op,array,axis,initial,False}}});
@@ -985,7 +990,7 @@ namespace nmtools::meta
     {
         static inline constexpr auto value = [](){
             if constexpr ((is_hybrid_ndarray_v<arrays_t> && ...)) {
-                using types = std::tuple<arrays_t...>;
+                using types = meta::make_tuple_type_t<arrays_t...>;
                 return template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
                     constexpr auto i = decltype(index)::value;
                     using type = at_t<types,i>;
@@ -1013,7 +1018,7 @@ namespace nmtools::meta
             if constexpr ((is_fixed_dim_ndarray_v<arrays_t> && ...)) {
                 constexpr auto all_same_dim = (fixed_dim_v<arrays_t> == ...);
                 if constexpr (static_cast<bool>(all_same_dim)) {
-                    using types = std::tuple<arrays_t...>;
+                    using types = meta::make_tuple_type_t<arrays_t...>;
                     auto ref_dim  = fixed_dim_v<at_t<types,0>>;
                     return ref_dim;
                 }
@@ -1125,7 +1130,7 @@ namespace nmtools::meta
                             // reduce on all axis and keepdims.
                             // use std array for now
                             constexpr auto dim = ::nmtools::len(shape);
-                            using axis_type = std::array<size_t,dim>;
+                            using axis_type = meta::make_array_type_t<size_t,dim>;
                             auto axes = axis_type{};
                             for (size_t i=0; i<dim; i++)
                                 at(axes,i) = i; // on all axis
@@ -1136,12 +1141,7 @@ namespace nmtools::meta
                     }();
                     constexpr auto shape_ = index::remove_dims(shape, axes, keepdims);
                     constexpr auto dim_   = ::nmtools::len(shape_);
-                    // here, shape_ may be hybrid index array
-                    // convert to something that makes std::tuple_size_v is well-formed
-                    // as needed by resize_fixed_ndarray on std::array.
-                    // convert to std::array
-                    // TODO: consider to add make_fixed_index_array metafunction
-                    using result_t = std::array<size_t,dim_>;
+                    using result_t = meta::make_array_type_t<size_t,dim_>;
                     auto result = result_t{};
                     for (size_t i=0; i<dim_; i++)
                         at(result,i) = at(shape_,i);

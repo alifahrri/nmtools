@@ -3,8 +3,9 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/array/at.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/utility/forward.hpp"
 
 #include <array>
 #include <tuple>
@@ -53,7 +54,7 @@ namespace nmtools::array {
          */
         static constexpr auto shape()
         {
-            return std::array<size_t,dim_>{Shape1,ShapeN...};
+            return meta::make_array_type_t<size_t,dim_>{Shape1,ShapeN...};
         }
         static inline constexpr auto shape_ = shape();
 
@@ -80,7 +81,7 @@ namespace nmtools::array {
          */
         static constexpr auto strides()
         {
-            auto stride = std::array<size_t,dim()>{};
+            auto stride = meta::make_array_type_t<size_t,dim()>{};
             for (size_t i=0; i<dim(); i++)
                 stride[i] = ::nmtools::index::stride(shape_,i);
             return stride;
@@ -111,7 +112,7 @@ namespace nmtools::array {
          */
         template <typename...size>
         constexpr auto operator()(size_type n, size...ns)
-            -> std::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),reference>
+            -> meta::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),reference>
         {
             return at(data, n, ns...);
         } // operator()
@@ -128,7 +129,7 @@ namespace nmtools::array {
          */
         template <typename...size>
         constexpr auto operator()(size_type n, size...ns) const
-            -> std::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),const_reference>
+            -> meta::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),const_reference>
         {
             return at(data, n, ns...);
         } // operator()
@@ -139,11 +140,11 @@ namespace nmtools::array {
         //     return *this;
         // }
 
-        template <typename ndarray_t, typename=std::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
+        template <typename ndarray_t, typename=meta::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         constexpr decltype(auto) operator=(ndarray_t&& rhs);
 
         /**
-         * @brief provides assignment operator from nested std::array
+         * @brief provides assignment operator from nested array
          * 
          * @param rhs nested std array to be copied
          * @return constexpr decltype(auto) 
@@ -151,7 +152,7 @@ namespace nmtools::array {
         constexpr decltype(auto) operator=(meta::make_nested_raw_array_t<T,Shape1,ShapeN...>&& rhs)
         {
             using nested_t = meta::make_nested_raw_array_t<T,Shape1,ShapeN...>;
-            return this->template operator=<nested_t>(std::forward<nested_t>(rhs));
+            return this->template operator=<nested_t>(nmtools::forward<nested_t>(rhs));
         }
     }; // struct fixed_ndarray
 
@@ -241,23 +242,23 @@ namespace nmtools
     template <typename T, size_t Shape1, size_t...ShapeN>
     struct meta::fixed_ndarray_shape<array::fixed_ndarray<T,Shape1,ShapeN...>>
     {
-        static inline constexpr auto value = std::array{Shape1,ShapeN...};
+        static inline constexpr auto value = meta::make_array_type_t<size_t,sizeof...(ShapeN)+1>{Shape1,ShapeN...};
         using value_type = decltype(value);
     };
 
     template <typename T, size_t N>
     struct meta::is_index_array< array::fixed_ndarray<T,N>
-        , std::enable_if_t<meta::is_index_v<T>>
-    > : std::true_type {};
+        , meta::enable_if_t<meta::is_index_v<T>>
+    > : meta::true_type {};
 
     template <typename T, size_t N>
     struct meta::is_fixed_index_array< array::fixed_ndarray<T,N>
-        , std::enable_if_t<meta::is_index_v<T>>
-    > : std::true_type {};
+        , meta::enable_if_t<meta::is_index_v<T>>
+    > : meta::true_type {};
 
     template <typename T, size_t N>
     struct meta::fixed_index_array_size< array::fixed_ndarray<T,N>
-        , std::enable_if_t<meta::is_index_v<T>>
+        , meta::enable_if_t<meta::is_index_v<T>>
     >
     {
         static constexpr auto value = N;
@@ -279,7 +280,7 @@ namespace nmtools
      * @tparam ShapeN 
      */
     template <typename T, typename U, size_t Shape1, size_t...ShapeN>
-    struct meta::replace_element_type<array::fixed_ndarray<T,Shape1,ShapeN...>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    struct meta::replace_element_type<array::fixed_ndarray<T,Shape1,ShapeN...>,U,meta::enable_if_t<meta::is_num_v<U>>>
     {
         using type = array::fixed_ndarray<U,Shape1,ShapeN...>;
     }; // replace_element_type
@@ -340,17 +341,15 @@ namespace nmtools::meta
     template <typename T, auto...Shapes, typename U>
     struct resize_fixed_ndarray<
         array::fixed_ndarray<T,Shapes...>, U,
-        std::enable_if_t<is_fixed_size_ndarray_v<U> && is_num_v<T>>
+        meta::enable_if_t<is_fixed_size_ndarray_v<U> && is_num_v<T>>
     >
     {
         // convert shape value of U (a fixed ndarray type) to type
         static constexpr auto vshape = [](){
             constexpr auto shape = fixed_ndarray_shape_v<U>;
             constexpr auto dim = fixed_ndarray_dim_v<U>;
-            // dummy type, template_reduce call std::get
-            using array = std::array<size_t,dim>;
 
-            constexpr auto vshape = template_reduce<dim>([&](auto lhs, auto /*rhs*/, auto index){
+            constexpr auto vshape = template_reduce<dim>([&](auto lhs, auto index){
                 using lhs_t = remove_cvref_t<decltype(lhs)>;
                 constexpr auto i = decltype(index)::value;
                 // somehow the order is reversed, don't know why
@@ -375,7 +374,7 @@ namespace nmtools::meta
                     using type  = append_value_t<vtype,I>;
                     return as_value_v<type>;
                 }
-            }, /*init=*/None, array{});
+            }, /*init=*/None);
             return vshape;
         }();
         using type = resize_fixed_ndarray_t<
@@ -478,7 +477,7 @@ namespace nmtools::array
             );
         }
 
-        auto flat_rhs  = view::flatten(std::forward<ndarray_t>(rhs));
+        auto flat_rhs  = view::flatten(nmtools::forward<ndarray_t>(rhs));
         auto flat_data = view::mutable_flatten(this->data);
         constexpr auto n_rhs = nmtools::at(meta::fixed_ndarray_shape_v<decltype(flat_rhs)>,meta::ct_v<0>);
         static_assert (numel_==n_rhs

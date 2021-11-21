@@ -2,8 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_FMAX_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -19,13 +18,14 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t, const U& u) const
         {
-            return std::fmax(t,u);
+            return math::fmax(t,u);
         } // operator()
     }; // fmax_t
 
+    // TODO: unify with primary template, use static cast to rhs_t
     template <typename rhs_t>
     struct fmax_t<none_t,none_t,rhs_t,
-        std::enable_if_t<std::is_arithmetic_v<rhs_t>>
+        meta::enable_if_t<meta::is_num_v<rhs_t>>
     >
     {
         using result_type = rhs_t;
@@ -34,7 +34,7 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t, const U& u) const -> rhs_t
         {
-            return std::fmax(t,u);
+            return math::fmax(t,u);
         } // operator()
     }; // fmax_t
 
@@ -70,6 +70,7 @@ namespace nmtools::view
         return reduce_fmax(a,axis,dtype,None);
     } // reduce_fmax
 
+    // TODO: use default args instead of overload
     template <typename left_t, typename axis_t>
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmax(const left_t& a, const axis_t& axis)

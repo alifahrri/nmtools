@@ -77,23 +77,23 @@ namespace nmtools
                 else return f{}(array,i);
             } // operator()
 
-            template <typename array_t, typename indices_t, size_t ...Is>
-            constexpr decltype(auto) operator()(array_t& array, indices_t is, std::index_sequence<Is...>)
+            template <template<auto...>typename index_sequence, typename array_t, typename indices_t, size_t ...Is>
+            constexpr decltype(auto) operator()(array_t& array, indices_t is, index_sequence<Is...>)
             {
-                return g{}(array, std::get<Is>(is)...);
+                return g{}(array, nmtools::get<Is>(is)...);
             } // operator()
 
             template <typename array_t, template<typename...>typename type_list, typename...size_types>
             constexpr decltype(auto) operator()(array_t& array, type_list<size_types...> is)
             {
-                using sequence_t = std::make_index_sequence<sizeof...(size_types)>;
+                using sequence_t = meta::make_index_sequence<sizeof...(size_types)>;
                 return g{}(array, is, sequence_t{});
             } // operator()
 
             template <typename array_t, template<typename,size_t>typename type_list, typename size_type, size_t N>
             constexpr decltype(auto) operator()(array_t& array, type_list<size_type,N> is)
             {
-                using sequence_t = std::make_index_sequence<N>;
+                using sequence_t = meta::make_index_sequence<N>;
                 return g{}(array, is, sequence_t{});
             } // operator()
         }; // g
@@ -115,7 +115,7 @@ namespace nmtools
          */
         constexpr auto shape() const
         {
-            auto shape_ = std::array<size_t,dim_>{};
+            auto shape_ = meta::make_array_type_t<size_t,dim_>{};
             // get the size for each 'nested' list, dimension known at compile time
             // assuming each element on each 'axis' has the same size
             // this techniques is similar with nmtools::shape, but since
@@ -125,14 +125,14 @@ namespace nmtools
                 // first axis, simply take the size of referenced array
                 if constexpr (i==0) {
                     auto s = array.size();
-                    std::get<i>(shape_) = s;
+                    nmtools::get<i>(shape_) = s;
                 }
                 // for the rest of axes, construct nested indices up to i times
                 // then apply at to get the element at i-th axis and get the size
                 else {
-                    auto indices = ::nmtools::detail::repeat<i>(0ul);
+                    auto indices = ::nmtools::impl::detail::repeat<i>(0ul);
                     auto a = g{}(array, indices);
-                    std::get<i>(shape_) = a.size();
+                    nmtools::get<i>(shape_) = a.size();
                 }
             });
             return shape_;
@@ -143,11 +143,11 @@ namespace nmtools
          * 
          * @tparam size_types 
          * @param Is 
-         * @return std::enable_if_t<sizeof...(size_types)==dim_,value_type> 
+         * @return 
          */
         template <typename...size_types>
         constexpr auto operator()(size_types...Is) const
-            -> std::enable_if_t<sizeof...(size_types)==dim_,value_type>
+            -> meta::enable_if_t<sizeof...(size_types)==dim_,value_type>
         {
             // @note that this recursive lambda is not allowed
             // gcc internal compiler error: trying to capture ‘g’ in instantiation of generic lambda
@@ -171,7 +171,7 @@ namespace nmtools
      * @tparam T element type of initializer list, another initializer list in this case
      */
     template <typename T>
-    struct meta::is_ndarray< view::decorator_t<view::ref_t,std::initializer_list<T>>> : std::true_type {};
+    struct meta::is_ndarray< view::decorator_t<view::ref_t,std::initializer_list<T>>> : meta::true_type {};
 
     /**
      * @brief specialize metafunction meta::remove_nested_array_dim for initializer_list
@@ -180,7 +180,7 @@ namespace nmtools
      * @tparam N 
      */
     template <typename T, size_t N>
-    struct meta::remove_nested_array_dim<T,N,std::enable_if_t< (N > 0) && meta::is_specialization_v<T,std::initializer_list>>>
+    struct meta::remove_nested_array_dim<T,N,meta::enable_if_t< (N > 0) && meta::is_specialization_v<T,std::initializer_list>>>
     {
         using type = typename remove_nested_array_dim<typename T::value_type,N-1>::type;
     }; // remove_nested_array_dim
@@ -192,7 +192,7 @@ namespace nmtools
      * @tparam N 
      */
     template <typename T, size_t N>
-    struct meta::remove_nested_array_dim<T,N,std::enable_if_t<N == 0 && meta::is_specialization_v<T,std::initializer_list>>>
+    struct meta::remove_nested_array_dim<T,N,meta::enable_if_t<N == 0 && meta::is_specialization_v<T,std::initializer_list>>>
     {
         using type = T;
     }; // remove_nested_array_dim
@@ -203,7 +203,7 @@ namespace nmtools
      * @tparam T 
      */
     template <typename T>
-    struct meta::nested_array_dim<T,std::enable_if_t<meta::is_specialization_v<T,std::initializer_list>>>
+    struct meta::nested_array_dim<T,meta::enable_if_t<meta::is_specialization_v<T,std::initializer_list>>>
     {
         using value_type = remove_cvref_t<typename T::value_type>;
         static constexpr auto value = 1 + nested_array_dim<value_type>::value;
@@ -223,10 +223,10 @@ namespace nmtools
     // disable various array traits for plain initializer list, must be via view::ref
 
     template <typename T>
-    struct meta::is_array1d<std::initializer_list<T>> : std::false_type {};
+    struct meta::is_array1d<std::initializer_list<T>> : meta::false_type {};
 
     template <typename T>
-    struct meta::is_ndarray<std::initializer_list<T>> : std::false_type {};
+    struct meta::is_ndarray<std::initializer_list<T>> : meta::false_type {};
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_REF_INITIALIZER_LIST_HPP

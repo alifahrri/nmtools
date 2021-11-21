@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SELU_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -19,7 +19,7 @@ namespace nmtools::view
             constexpr auto alpha = static_cast<T>(1.6732632423543772848170429916717);
             constexpr auto scale = static_cast<T>(1.0507009873554804934193349852946);
             constexpr auto zero  = static_cast<T>(0);
-            return scale * (std::max(t,zero) + std::min(alpha * (std::exp(t) - 1), zero));
+            return scale * (math::max(t,zero) + math::min(alpha * (math::exp(t) - 1), zero));
         } // operator()
     }; // selu_t
 

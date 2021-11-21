@@ -38,8 +38,8 @@ namespace nmtools::view::detail::fn
     {
         // map type to value, and actually call broadcast_shape implementation
         constexpr auto result  = index::broadcast_shape(fixed_shape_or_none(arrays)...);
-        constexpr auto success = std::get<0>(result);
-        constexpr auto bshape  = std::get<1>(result);
+        constexpr auto success = nmtools::get<0>(result);
+        constexpr auto bshape  = nmtools::get<1>(result);
         using bshape_t = meta::remove_cvref_t<decltype(bshape)>;
         if constexpr (success && is_none_v<bshape_t>) {
             // Note broadcasting numbers return none
@@ -89,19 +89,44 @@ namespace nmtools::view
             constexpr auto bshape = detail::fn::broadcast_shape(meta::as_value_v<arrays_t>...);
             static_assert( !meta::is_fail_v<decltype(bshape)>
                 , "cannot broadcast arrays together" );
-            return std::tuple{broadcast_to(arrays,bshape)...};
+            
+            // deduce the resulting tuple.
+            // without assuming some specific tuple type, can't use CTAD
+            using types  = meta::type_list<const arrays_t&...>;
+            using i_type = meta::make_tuple_type_t<decltype(broadcast_to(meta::declval<meta::at_t<types,0>>(),bshape))>;
+            constexpr auto vtype = meta::template_reduce<sizeof...(arrays)-1>([&](auto init, auto index){
+                constexpr auto i = decltype(index)::value + 1;
+                using init_t = meta::type_t<decltype(init)>;
+                using type_i = meta::at_t<types,i>;
+                using b_type = decltype(broadcast_to(meta::declval<type_i>(),bshape));
+                using r_type = meta::append_type_t<init_t,b_type>;
+                return meta::as_value_v<r_type>;
+            }, meta::as_value_v<i_type>);
+            using result_t = meta::type_t<decltype(vtype)>;
+            return result_t{broadcast_to(arrays,bshape)...};
         }
         // otherwise call runtime version,
         // the return type can be maybe type, and may throw if not maybe type
         else {
-            auto [success, broadcasted_shape] = index::broadcast_shape(::nmtools::shape(arrays)...);
+            auto [success, bshape] = index::broadcast_shape(::nmtools::shape(arrays)...);
+            using bshape_t = decltype(bshape);
 
-            // easiest way to get result type
-            using result_t = decltype(std::tuple{broadcast_to(arrays,broadcasted_shape)...});
+            using types  = meta::type_list<const arrays_t&...>;
+            using i_type = meta::make_tuple_type_t<decltype(broadcast_to(meta::declval<meta::at_t<types,0>>(),bshape))>;
+            constexpr auto vtype = meta::template_reduce<sizeof...(arrays)-1>([&](auto init, auto index){
+                constexpr auto i = decltype(index)::value + 1;
+                using init_t = meta::type_t<decltype(init)>;
+                using type_i = meta::at_t<types,i>;
+                // can't reference local binding on clang, use declval
+                using b_type = decltype(broadcast_to(meta::declval<type_i>(),meta::declval<bshape_t>()));
+                using r_type = meta::append_type_t<init_t,b_type>;
+                return meta::as_value_v<r_type>;
+            }, meta::as_value_v<i_type>);
+            using result_t = meta::type_t<decltype(vtype)>;
             nmtools_assert_prepare_type (return_t, result_t);
             nmtools_assert (success, "cannot broadcast arrays together", return_t);
 
-            return return_t{std::tuple{broadcast_to(arrays,broadcasted_shape)...}};
+            return return_t{result_t{broadcast_to(arrays,bshape)...}};
         }
     } // broadcast_arrays
 } // namespace nmtools::view

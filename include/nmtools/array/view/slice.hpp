@@ -16,7 +16,7 @@ namespace nmtools::view
     struct slice_t
     {
         using array_type  = resolve_array_type_t<array_t>;
-        using slices_type = std::tuple<meta::remove_cvref_t<slices_t>...>;
+        using slices_type = meta::make_tuple_type_t<meta::remove_cvref_t<slices_t>...>;
 
         array_type array;
         slices_type slices;
@@ -24,16 +24,16 @@ namespace nmtools::view
         constexpr slice_t(const array_t& array, slices_t...slices)
             : array(initialize<array_type>(array)), slices({slices...}) {}
 
-        template <typename shape_t, size_t...Is>
-        constexpr auto shape(const shape_t& ashape, std::index_sequence<Is...>) const
+        template <template<auto...>typename index_sequence, typename shape_t, size_t...Is>
+        constexpr auto shape(const shape_t& ashape, index_sequence<Is...>) const
         {
-            return ::nmtools::index::shape_slice(ashape, std::get<Is>(slices)...);
+            return ::nmtools::index::shape_slice(ashape, nmtools::get<Is>(slices)...);
         } // shape_impl
 
         constexpr auto shape() const
         {
             auto shape_ = detail::shape(array);
-            return shape(shape_, std::make_index_sequence<sizeof...(slices_t)>{});
+            return shape(shape_, meta::make_index_sequence<sizeof...(slices_t)>{});
         } // shape
 
         constexpr auto dim() const
@@ -41,10 +41,10 @@ namespace nmtools::view
             return len(shape());
         } // dim
 
-        template <typename indices_t, typename shape_t, size_t...Is>
-        constexpr auto index_impl(const indices_t& indices_, const shape_t& ashape,std::index_sequence<Is...>) const
+        template <template<auto...>typename index_sequence, typename indices_t, typename shape_t, size_t...Is>
+        constexpr auto index_impl(const indices_t& indices_, const shape_t& ashape,index_sequence<Is...>) const
         {
-            return ::nmtools::index::slice(indices_,ashape,std::get<Is>(slices)...);
+            return ::nmtools::index::slice(indices_,ashape,nmtools::get<Is>(slices)...);
         } // index_impl
 
         template <typename...size_types>
@@ -53,7 +53,7 @@ namespace nmtools::view
             auto indices_ = pack_indices(indices...);
 
             auto shape_ = detail::shape(array);
-            return index_impl(indices_,shape_,std::make_index_sequence<sizeof...(slices_t)>{});
+            return index_impl(indices_,shape_,meta::make_index_sequence<sizeof...(slices_t)>{});
         } // index
     }; // slice_t
 
@@ -64,8 +64,8 @@ namespace nmtools::view
         return view_t{{array, slices...}};
     } // slice
 
-    template <typename array_t, typename slices_t, size_t...Is>
-    constexpr auto apply_slice(const array_t& array, const slices_t& slices, std::index_sequence<Is...>)
+    template <template<auto...>typename index_sequence, typename array_t, typename slices_t, size_t...Is>
+    constexpr auto apply_slice(const array_t& array, const slices_t& slices, index_sequence<Is...>)
     {
         return slice(array,at(slices,meta::ct_v<Is>)...);
     } // apply_slice
@@ -73,8 +73,8 @@ namespace nmtools::view
     template <typename array_t, typename slices_t>
     constexpr auto apply_slice(const array_t& array, const slices_t& slices)
     {
-        constexpr auto N = std::tuple_size_v<slices_t>;
-        return apply_slice(array, slices, std::make_index_sequence<N>{});
+        constexpr auto N = meta::len_v<slices_t>;
+        return apply_slice(array, slices, meta::make_index_sequence<N>{});
     } // apply_slice
 } // namespace nmtools::view
 

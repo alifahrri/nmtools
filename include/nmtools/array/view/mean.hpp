@@ -34,11 +34,11 @@ namespace nmtools::meta
                 // mean op involves division, return float
                 using type = dtype::float32_t;
                 return as_value_v<type>;
-            } else if constexpr (std::is_same_v<reduced_t,double>) {
+            } else if constexpr (meta::is_same_v<reduced_t,double>) {
                 // for double, just return double
                 using type = dtype::float64_t;
                 return as_value_v<type>;
-            } else if constexpr (std::is_same_v<reduced_t,float>) {
+            } else if constexpr (meta::is_same_v<reduced_t,float>) {
                 using type = dtype::float32_t;
                 return as_value_v<type>;
             } else {
@@ -105,7 +105,7 @@ namespace nmtools::view
      * @param keepdims  set if the reduced axis are to be kept.
      * @return constexpr auto 
      */
-    template <typename array_t, typename axis_t, typename dtype_t=none_t, typename keepdims_t=std::false_type>
+    template <typename array_t, typename axis_t, typename dtype_t=none_t, typename keepdims_t=meta::false_type>
     constexpr auto mean(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, keepdims_t keepdims=keepdims_t{})
     {
         // note that this mean view is created not by create new view type,

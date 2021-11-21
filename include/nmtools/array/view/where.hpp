@@ -13,17 +13,13 @@ namespace nmtools::view
     struct where_t
     {
         // deduce array types, copy if view, take const ref if concrete array
-        using condition_type = std::conditional_t<
-            meta::is_view_v<condition_t>,
-            condition_t, const condition_t&>;
-        using x_type = std::conditional_t<
-            meta::is_view_v<x_t>, x_t, const x_t&>;
-        using y_type = std::conditional_t<
-            meta::is_view_v<y_t>, y_t, const y_t&>;
+        using condition_type = resolve_array_type_t<condition_t>;
+        using x_type = resolve_array_type_t<x_t>;
+        using y_type = resolve_array_type_t<y_t>;
         // needed by decorator_t, also used to deduce underlying array type
-        using array_type = std::tuple<condition_type,x_type,y_type>;
+        using array_type = meta::make_tuple_type_t<condition_type,x_type,y_type>;
         // result type, use common type for now
-        using element_type = std::common_type_t<
+        using element_type = meta::common_type_t<
             meta::get_element_type_t<condition_t>,
             meta::get_element_type_t<x_t>, meta::get_element_type_t<y_t>
         >;

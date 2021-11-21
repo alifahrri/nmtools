@@ -41,23 +41,10 @@ namespace nmtools::view
 
         constexpr auto shape() const noexcept
         {
-            // assuming fixed dim array
-            auto shape_ = ::nmtools::shape(array);
-            // compute product
-            auto identity = 1;
-            if constexpr (meta::is_specialization_v<decltype(shape_),std::tuple> || meta::is_specialization_v<decltype(shape_),std::pair>)
-            {
-                constexpr auto n = std::tuple_size_v<decltype(shape_)>;
-                meta::template_for<n>([&](auto index){
-                    constexpr auto i = decltype(index)::value;
-                    identity *= std::get<i>(shape_);
-                });
-            }
-            else
-                for (size_t i=0; i<shape_.size(); i++)
-                    identity *= shape_[i];
+            auto shape_ = detail::shape(array);
+            auto N = index::product(shape_);
             // flattened array is strictly 1D
-            return std::tuple{identity};
+            return meta::make_tuple_type_t<size_t>{N};
         } // shape
 
         template <typename size_type>
@@ -87,14 +74,14 @@ namespace nmtools::meta
      * @tparam array_t 
      */
     template <typename array_t>
-    struct is_array1d<view::decorator_t<view::mutable_flatten_t,array_t>> : std::true_type {};
+    struct is_array1d<view::decorator_t<view::mutable_flatten_t,array_t>> : meta::true_type {};
 } // namespace nmtools::meta
 
 namespace nmtools
 {
     template <typename array_t>
     struct meta::fixed_ndarray_shape< view::mutable_flatten_t<array_t>
-        , std::enable_if_t<
+        , meta::enable_if_t<
             meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>>
         > 
     >
@@ -103,8 +90,7 @@ namespace nmtools
             if constexpr (is_fixed_size_ndarray_v<array_t>) {
                 constexpr auto shape = fixed_ndarray_shape_v<array_t>;
                 constexpr auto N = index::product(shape);
-                // TODO: wrap metafunction to create array type
-                return std::array{N};
+                return meta::make_array_type_t<size_t,1>{N};
             } else {
                 return detail::Fail;
             }

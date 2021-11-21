@@ -4,11 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
 
-/* TODO: should we include array and std::array specialization here? */
-#include <array>
-#include <tuple>
-#include <type_traits>
-
 namespace nmtools
 {
 
@@ -38,7 +33,7 @@ namespace nmtools
         );
 
         if constexpr (meta::has_template_get_v<const array_t&,i>) {
-            // use nmtools::get to avoid ambiguous call with std::get
+            // use nmtools::get to avoid ambiguous call with stl get
             return nmtools::get<i>(a);
         } else if constexpr (meta::has_square_bracket_v<const array_t&,index_type>) {
             return a[i];
@@ -97,12 +92,12 @@ namespace nmtools
             || meta::has_square_bracket_v<const array_t&,index_type>
             || meta::has_bracket_v<const array_t&,index_type>
             || meta::is_integral_constant_v<index_type>
-            || std::is_same_v<index_type,last_type>
+            || meta::is_same_v<index_type,last_type>
             , "unsupported type array_t for at"
         );
 
         // TODO (wrap std metafunctions): wrap as meta::is_same_v
-        if constexpr (std::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
+        if constexpr (meta::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
             const auto N = len(a);
             const auto index = N - 1;
             return at(a,index);
@@ -115,11 +110,9 @@ namespace nmtools
             } else {
                 return at<index>(a);
             }
-        // TODO (wrap std metafunctions): wrap as meta::is_signed_v
-        } else if constexpr (std::is_signed_v<index_type>) {
+        } else if constexpr (meta::is_signed_v<index_type>) {
             // NOTE: make index to be unsigned to avoid infinite recursion
-            // TODO(wrap std metafunctions): consider to wrap std::make_unsigned_t to meta::make_unsigned_t
-            using index_t = std::make_unsigned_t<index_type>;
+            using index_t = meta::make_unsigned_t<index_type>;
             if (i < 0) {
                 const auto N = len(a);
                 // N should be usigned at this point so no infinite recursion,
@@ -163,12 +156,12 @@ namespace nmtools
             || meta::has_square_bracket_v<array_t&,index_type>
             || meta::has_bracket_v<array_t&,index_type>
             || meta::is_integral_constant_v<index_type>
-            || std::is_same_v<index_type,last_type>
+            || meta::is_same_v<index_type,last_type>
             , "unsupported type array_t for at"
         );
 
         // TODO (wrap std metafunctions): wrap as meta::is_same_v
-        if constexpr (std::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
+        if constexpr (meta::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
             const auto N = len(a);
             const auto index = N - 1;
             return at(a,index);
@@ -181,10 +174,8 @@ namespace nmtools
             } else {
                 return at<index>(a);
             }
-        // TODO (wrap std metafunctions): wrap as meta::is_signed_v
-        } else if constexpr (std::is_signed_v<index_type>) {
-            // TODO(wrap std metafunctions): consider to wrap std::make_unsigned_t to meta::make_unsigned_t
-            using index_t = std::make_unsigned_t<index_type>;
+        } else if constexpr (meta::is_signed_v<index_type>) {
+            using index_t = meta::make_unsigned_t<index_type>;
             if (i < 0) {
                 const auto N = len(a);
                 const auto index = N + i; // i < 0
@@ -237,7 +228,7 @@ namespace nmtools
     constexpr decltype(auto) at(const array_t& a)
     {
         // TODO (wrap std metafunctions): wrap as meta::common_type_t
-        using index_type = std::common_type_t<decltype(i),decltype(j)>;
+        using index_type = meta::promote_index_t<decltype(i),decltype(j)>;
         if constexpr (meta::has_square_bracket2d_v<const array_t&,index_type>) {
             return a[{i,j}];
         } else if constexpr (meta::has_bracket2d_v<const array_t&,index_type>) {
@@ -295,10 +286,17 @@ namespace nmtools
          * @param indices packed indices to access array
          * @return constexpr decltype(auto) 
          */
-        template <typename array_t, typename type_list, size_t...Is>
-        constexpr decltype(auto) apply_at_impl(array_t&& array, const type_list& indices, std::index_sequence<Is...>)
+        template <typename array_t, typename type_list, size_t...Is, template <auto...> typename sequence>
+        constexpr decltype(auto) apply_at_impl(const array_t& array, const type_list& indices, sequence<Is...>)
         {
-            return nmtools::at(std::forward<array_t>(array), nmtools::get<Is>(indices)...);
+            return nmtools::at(array, nmtools::get<Is>(indices)...);
+        } // apply_at_impl
+
+        // NOTE: avoid forwarding reference to avoid using stl forward
+        template <typename array_t, typename type_list, size_t...Is, template <auto...> typename sequence>
+        constexpr decltype(auto) apply_at_impl(array_t& array, const type_list& indices, sequence<Is...>)
+        {
+            return nmtools::at(array, nmtools::get<Is>(indices)...);
         } // apply_at_impl
     } //  namespace detail
 
@@ -306,23 +304,40 @@ namespace nmtools
      * @brief given indices packed as tuple, unpacks and call at
      * 
      * @tparam array_t 
-     * @tparam type_list template template parameter, e.g. std::tuple
+     * @tparam type_list template template parameter, e.g. tuple
      * @tparam size_types template parameter to type_list
      * @param array array to be accessed
      * @param indices packed indices to access array
      * @return constexpr decltype(auto) 
      */
     template <typename array_t, typename indices_t>
-    constexpr decltype(auto) apply_at(array_t&& array, const indices_t& indices)
+    constexpr decltype(auto) apply_at(const array_t& array, const indices_t& indices)
     {
-        if constexpr (meta::has_tuple_size_v<indices_t>) {
+        if constexpr (meta::len_v<indices_t> > 0) {
             // TODO (wrap std metafunctions): wrap as meta::len_v
             // TODO (wrap std metafunctions): wrap as meta::make_index_sequence
-            constexpr auto N = std::tuple_size_v<indices_t>;
-            using sequence_t = std::make_index_sequence<N>;
-            return detail::apply_at_impl(std::forward<array_t>(array),indices,sequence_t{});
+            constexpr auto N = meta::len_v<indices_t>;
+            using sequence_t = meta::make_index_sequence<N>;
+            return detail::apply_at_impl(array,indices,sequence_t{});
         }
-        else return at(std::forward<array_t>(array), indices);
+        else {
+            return at(array, indices);
+        }
+    } // apply_at
+
+    template <typename array_t, typename indices_t>
+    constexpr decltype(auto) apply_at(array_t& array, const indices_t& indices)
+    {
+        if constexpr (meta::len_v<indices_t> > 0) {
+            // TODO (wrap std metafunctions): wrap as meta::len_v
+            // TODO (wrap std metafunctions): wrap as meta::make_index_sequence
+            constexpr auto N = meta::len_v<indices_t>;
+            using sequence_t = meta::make_index_sequence<N>;
+            return detail::apply_at_impl(array,indices,sequence_t{});
+        }
+        else {
+            return at(array, indices);
+        }
     } // apply_at
 } // namespace nmtools
 

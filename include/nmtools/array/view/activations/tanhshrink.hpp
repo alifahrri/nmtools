@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_TANHSHRINK_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -16,7 +16,7 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& x) const
         {
-            return x - std::tanh(x);
+            return x - math::tanh(x);
         } // operator()
     }; // tanhshrink_t
 

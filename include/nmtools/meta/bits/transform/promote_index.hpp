@@ -14,6 +14,7 @@ namespace nmtools::meta
 {
     namespace error
     {
+        template <typename...>
         struct PROMOTE_INDEX_UNSUPPORTED : detail::fail_t {};
     } // namespace error
 
@@ -23,7 +24,7 @@ namespace nmtools::meta
      * @tparam lhs_t 
      * @tparam rhs_t 
      */
-    template <typename first_t, typename second_t, typename...rest_t>
+    template <typename first_t, typename...rest_t>
     struct promote_index
     {
         template <typename left_t, typename right_t>
@@ -66,13 +67,13 @@ namespace nmtools::meta
                 auto non_const = make_non_constant(signed_);
                 return non_const;
             } else {
-                return as_value_v<error::PROMOTE_INDEX_UNSUPPORTED>;
+                return as_value_v<error::PROMOTE_INDEX_UNSUPPORTED<lhs_t,rhs_t>>;
             }
         }
 
         static constexpr auto vtype = [](){
             using types = type_list<rest_t...>;
-            constexpr auto init_ = binary_vtype(as_value_v<remove_cvref_t<first_t>>,as_value_v<remove_cvref_t<second_t>>);
+            constexpr auto init_ = as_value_v<remove_cvref_t<first_t>>;
             return template_reduce<sizeof...(rest_t)>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 using type_i = remove_cvref_t<at_t<types,i>>;
@@ -82,8 +83,8 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     }; // promote_index
 
-    template <typename lhs_t, typename rhs_t, typename...rest_t>
-    using promote_index_t = type_t<promote_index<lhs_t,rhs_t,rest_t...>>;
+    template <typename lhs_t, typename...rest_t>
+    using promote_index_t = type_t<promote_index<lhs_t,rest_t...>>;
 } // namespace nmtools::meta
 
 

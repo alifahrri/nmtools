@@ -35,8 +35,8 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto identity(size_types...indices)
         {
-            using common_size_t = std::common_type_t<size_types...>;
-            using indices_t = std::array<common_size_t,sizeof...(indices)>;
+            using common_size_t = meta::type_t<meta::promote_index<size_types...>>;
+            using indices_t = meta::make_array_type_t<common_size_t,sizeof...(indices)>;
             auto ndindex = indices_t{static_cast<common_size_t>(indices)...};
             return ndindex;
         } // identity
@@ -117,7 +117,7 @@ namespace nmtools
      */
     template <typename array_t>
     struct meta::fixed_ndarray_shape< view::ref_t<array_t>
-        , std::enable_if_t< meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>> >
+        , meta::enable_if_t< meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>> >
     > : meta::fixed_ndarray_shape<meta::remove_cvref_t<array_t>> {};
 } // namespace nmtools
 
