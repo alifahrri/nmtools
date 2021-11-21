@@ -2,8 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_ARCTANH_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -12,7 +11,7 @@ namespace nmtools::view
         template <typename T>
         constexpr auto operator()(const T& t) const
         {
-            return std::atanh(t);
+            return math::atanh(t);
         } // operator()
     }; // arctanh_t
 

@@ -22,7 +22,7 @@ namespace nmtools::view
      * @param keepdims  set to true if the reduced axis are to be kept
      * @return constexpr auto 
      */
-    template <typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=std::false_type>
+    template <typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
     constexpr auto amax(const array_t& a, const axis_t& axis=None, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=False)
     {
         return reduce_maximum(a,axis,dtype,initial,keepdims);

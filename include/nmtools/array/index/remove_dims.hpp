@@ -7,6 +7,7 @@
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/array/index/ref.hpp"
+#include "nmtools/array/index/where.hpp"
 
 #include <cstddef>
 #include <utility>

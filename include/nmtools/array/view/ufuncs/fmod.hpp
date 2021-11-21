@@ -3,8 +3,7 @@
 
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/constants.hpp"
-
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -20,12 +19,13 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t, const U& u) const
         {
-            return std::fmod(t,u);
+            return math::fmod(t,u);
         } // operator()
     }; // fmod_t
 
+    // TODO; unify with primary template, use static cast to res_t
     template <typename res_t>
-    struct fmod_t<none_t,none_t,res_t,std::enable_if_t<std::is_arithmetic_v<res_t>>>
+    struct fmod_t<none_t,none_t,res_t,meta::enable_if_t<meta::is_num_v<res_t>>>
     {
         using result_type = res_t;
 
@@ -33,7 +33,7 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t, const U& u) const -> res_t
         {
-            return std::fmod(t,u);
+            return math::fmod(t,u);
         } // operator()
     }; // fmod_t
 
@@ -48,7 +48,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmod(const left_t& a, const axis_t& axis, dtype_t, initial_t initial, keepdims_t keepdims)
     {
-        static_assert( std::is_integral_v<axis_t>
+        static_assert( meta::is_integral_v<axis_t>
             , "reduce_fmod only support single axis with integral type"
         );
         // note that reduce_t takes reference, to support multiple axis
@@ -63,7 +63,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmod(const left_t& a, const axis_t& axis, dtype_t, initial_t initial)
     {
-        static_assert( std::is_integral_v<axis_t>
+        static_assert( meta::is_integral_v<axis_t>
             , "reduce_fmod only support single axis with integral type"
         );
         // note that reduce_t takes reference, to support multiple axis
@@ -81,6 +81,7 @@ namespace nmtools::view
         return reduce_fmod(a,axis,dtype,None);
     } // reduce_fmod
 
+    // TODO: use default args instead of overloads!
     template <typename left_t, typename axis_t>
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmod(const left_t& a, const axis_t& axis)

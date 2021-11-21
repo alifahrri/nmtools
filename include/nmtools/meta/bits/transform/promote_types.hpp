@@ -2,12 +2,14 @@
 #define NMTOOLS_META_BITS_TRANSFORM_PROMOTE_TYPES_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/dtypes.hpp"
 
 namespace nmtools::meta
 {
     namespace error
     {
         // default type (error-type) for promote_types metafunction
+        template <typename...>
         struct PROMOTE_TYPE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
     
@@ -22,7 +24,7 @@ namespace nmtools::meta
     template <typename tag_t, typename lhs_t, typename rhs_t, typename=void>
     struct promote_types
     {
-        using type = error::PROMOTE_TYPE_UNSUPPORTED;
+        using type = error::PROMOTE_TYPE_UNSUPPORTED<tag_t,lhs_t,rhs_t>;
     }; // promote_types
 
     template <typename tag_t, typename lhs_t, typename rhs_t>

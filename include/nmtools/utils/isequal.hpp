@@ -27,6 +27,7 @@
 namespace nmtools::utils
 {
     namespace detail {
+        // TODO: cleanup equality check for boolean type
 #if NMTOOLS_HAS_VECTOR
         // vector of bool madness
 
@@ -184,10 +185,6 @@ namespace nmtools::utils
                 , "unsupported isequal; only support integer scalar type or integer ndarray"
             );
 
-            // assume either type is variant
-            // TODO(wrap std metafunctions): provide nmtools::get_if, or other customization point objects
-            using std::get_if;
-
             if constexpr (is_none_v<T> && is_none_v<U>)
                 return true;
             // both type is maybe type, when both is empty, this also return true
@@ -229,13 +226,19 @@ namespace nmtools::utils
                 using trhs_t = meta::get_either_right_t<T>;
                 using ulhs_t = meta::get_either_left_t<U>;
                 using urhs_t = meta::get_either_right_t<U>;
-                // TODO(wrap std metafunctions): make default tuple type configurable, e.g. meta::make_tuple_type_t
-                using std::tuple;
+
+                using nmtools::get_if;
+                using tlhs_ptr_t  = decltype(get_if<tlhs_t>(&t));
+                using ulhs_ptr_t  = decltype(get_if<ulhs_t>(&u));
+                using trhs_ptr_t  = decltype(get_if<trhs_t>(&t));
+                using urhs_ptr_t  = decltype(get_if<urhs_t>(&u));
+                using tuple_lhs_t = meta::make_tuple_type_t<tlhs_ptr_t,ulhs_ptr_t>;
+                using tuple_rhs_t = meta::make_tuple_type_t<trhs_ptr_t,urhs_ptr_t>;
                 auto same = false;
                 // under the hood, recursively call isclose to properly handle view type
-                if (auto [tptr, uptr] = tuple{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
+                if (auto [tptr, uptr] = tuple_lhs_t{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
                     same = isequal(*tptr,*uptr);
-                else if (auto [tptr, uptr] = tuple{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
+                else if (auto [tptr, uptr] = tuple_rhs_t{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
                     same = isequal(*tptr,*uptr);
                 return same;
             }
@@ -248,7 +251,7 @@ namespace nmtools::utils
                 auto rhs = meta::as_value_v<rhs_t>;
                 auto t_same = detail::select_same(lhs, rhs, t2);
                 using same_t = meta::type_t<decltype(t_same)>;
-                static_assert( !std::is_void_v<same_t>
+                static_assert( !meta::is_void_v<same_t>
                     , "couldn't find matching left / right concept in either type"
                 );
 
@@ -275,13 +278,13 @@ namespace nmtools::utils
             // assume both T and U is integer
             else if constexpr (meta::is_num_v<T>) {
                 // TODO(wrap std metafunctions): consider to use meta::promote_types_t with index_t as tag
-                using value_type = std::common_type_t<T,U>;
+                using value_type = meta::common_type_t<T,U>;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
             // assume both T and U is integral constant
             else if constexpr (meta::is_integral_constant_v<T>) {
                 // TODO(wrap std metafunctions): consider to use meta::promote_types_t with index_t as tag
-                using value_type = std::common_type_t<typename T::value_type,U>;
+                using value_type = meta::common_type_t<typename T::value_type,U>;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
             // "specialize" on index array, avoid using ndindex
@@ -378,14 +381,15 @@ namespace nmtools::utils
     template <typename T, typename U>
     constexpr auto isequal(const T& t, const U& u)
     {
+        // TODO: remove tuple_size metafunctions
         // check if tuple_size for T & U is available
         constexpr auto is_packed_T = meta::has_tuple_size_v<T>;
         constexpr auto is_packed_U = meta::has_tuple_size_v<U>;
 
         if constexpr (is_packed_T && is_packed_U) {
-            // TODO(wrap std metafunctions): use meta::len_v
-            constexpr auto nt = std::tuple_size_v<T>;
-            constexpr auto nu = std::tuple_size_v<U>;
+            // TODO: use better/consistent/appropriate metafunctions
+            constexpr auto nt = meta::len_v<T>;
+            constexpr auto nu = meta::len_v<U>;
             static_assert (nt==nu
                 , "unsupported isequal, mismatched size for packed type"
             );
@@ -393,8 +397,8 @@ namespace nmtools::utils
             meta::template_for<nt>([&](auto index){
                 constexpr auto i = decltype(index)::value;
                 // TODO(wrap std metafunctions): provide nmtools::get (or using at)
-                const auto& t_ = std::get<i>(t);
-                const auto& u_ = std::get<i>(u);
+                const auto& t_ = nmtools::get<i>(t);
+                const auto& u_ = nmtools::get<i>(u);
                 equal = equal && isequal(t_,u_);
             });
             return equal;

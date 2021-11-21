@@ -21,7 +21,7 @@ namespace nmtools::view
      * @param keepdims  keep the dimension of the result, makes broadcasting with original array work properly
      * @return constexpr auto 
      */
-    template <typename array_t, typename axis_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=std::false_type>
+    template <typename array_t, typename axis_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
     constexpr auto stddev(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{})
     {
         auto a = view::var(array,axis,dtype,ddof,keepdims);

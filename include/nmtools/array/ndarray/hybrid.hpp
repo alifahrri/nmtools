@@ -93,11 +93,11 @@ namespace nmtools::array
         static inline constexpr auto dim_ = dimension;
 
         // use std array to make it easier to support constexpr
-        using data_type     = std::array<T,max_elements>;
+        using data_type     = meta::make_array_type_t<T,max_elements>;
         using value_type    = T;
         using size_type     = size_t;
-        using shape_type    = std::array<size_t,dim_>;
-        using stride_type   = std::array<size_t,dim_>;
+        using shape_type    = meta::make_array_type_t<size_t,dim_>;
+        using stride_type   = meta::make_array_type_t<size_t,dim_>;
         using reference     = value_type&;
         using const_reference = const value_type&;
 
@@ -131,7 +131,7 @@ namespace nmtools::array
         // explicit hybrid_ndarray(const shape_type& shape) { resize(shape); }
 
         // @note explicit required here, somehow related to operator=
-        template <typename array_t, typename=std::enable_if_t<meta::is_ndarray_v<array_t>>>
+        template <typename array_t, typename=meta::enable_if_t<meta::is_ndarray_v<array_t>>>
         constexpr explicit hybrid_ndarray(array_t&& a) :
             data(detail::init_data<data_type>(a)),
             shape_(detail::init_shape<max_elements,shape_type>(::nmtools::shape(a))),
@@ -177,7 +177,7 @@ namespace nmtools::array
         } // shape
 
         // doesn't work, not ignored when dimension != 1
-        // auto size() const -> std::enable_if_t<dimension==1,size_t>
+        // auto size() const -> meta::enable_if_t<dimension==1,size_t>
         // {
         //     return shape_[0];
         // } // size
@@ -190,11 +190,12 @@ namespace nmtools::array
 
         template <typename...size_types>
         constexpr auto resize(size_types...shape)
-            -> std::enable_if_t<(meta::is_index_v<size_types> && ...)>
+            -> meta::enable_if_t<(meta::is_index_v<size_types> && ...)>
         {
+            using tuple_t = meta::make_tuple_type_t<size_types...>;
             meta::template_for<sizeof...(shape)>([&](auto index){
                 constexpr auto i = decltype(index)::value;
-                shape_.at(i) = std::get<i>(std::tuple{shape...});
+                shape_.at(i) = nmtools::get<i>(tuple_t{shape...});
             });
             strides_ = strides();
             // numel_   = numel();
@@ -211,14 +212,16 @@ namespace nmtools::array
 
         template <typename ...size_types>
         constexpr auto operator()(size_types...ns)
-            -> std::enable_if_t<
+            -> meta::enable_if_t<
                    (sizeof...(ns)==dimension)
                 && (meta::is_index_v<size_types> && ...),
                 reference
             >
         {
-            using common_size_t = std::common_type_t<size_types...>;
-            auto indices = std::array<common_size_t,sizeof...(ns)>{
+            // using common_size_t = meta::promote_index_t<size_types...>;
+            using promoted_t = meta::promote_index<size_types...>;
+            using common_size_t = meta::type_t<promoted_t>;
+            auto indices = meta::make_array_type_t<common_size_t,sizeof...(ns)>{
                 static_cast<common_size_t>(ns)...
             };
             static_assert ( dimension == sizeof...(ns)
@@ -230,14 +233,16 @@ namespace nmtools::array
 
         template <typename ...size_types>
         constexpr auto operator()(size_types...ns) const
-            -> std::enable_if_t<
+            -> meta::enable_if_t<
                    (sizeof...(ns)==dimension)
                 && (meta::is_index_v<size_types> && ...),
                 const_reference
             >
         {
-            using common_size_t = std::common_type_t<size_types...>;
-            auto indices = std::array<common_size_t,sizeof...(ns)>{
+            // using common_size_t = meta::promote_index_t<size_types...>;
+            using promoted_t = meta::promote_index<size_types...>;
+            using common_size_t = meta::type_t<promoted_t>;
+            auto indices = meta::make_array_type_t<common_size_t,sizeof...(ns)>{
                 static_cast<common_size_t>(ns)...
             };
             static_assert ( dimension == sizeof...(ns)
@@ -259,7 +264,7 @@ namespace nmtools::array
             return data[offset];
         } // at
 
-        template <typename ndarray_t, typename=std::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
+        template <typename ndarray_t, typename=meta::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         auto operator=(const ndarray_t& rhs);
 
         #define NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(N) \
@@ -323,10 +328,10 @@ namespace nmtools::array
 
 
     template <typename T>
-    struct is_hybrid_ndarray : std::false_type {};
+    struct is_hybrid_ndarray : meta::false_type {};
 
     template <typename T, size_t max_elements, size_t dimension>
-    struct is_hybrid_ndarray<hybrid_ndarray<T,max_elements,dimension>> : std::true_type {};
+    struct is_hybrid_ndarray<hybrid_ndarray<T,max_elements,dimension>> : meta::true_type {};
 
     template <typename T>
     static inline constexpr auto is_hybrid_ndarray_v = is_hybrid_ndarray<T>::value;
@@ -395,6 +400,21 @@ namespace nmtools
 
 } // namespace nmtools
 
+namespace nmtools::impl
+{
+    template <typename T, size_t max_elements, size_t dimension>
+    struct len_t<array::hybrid_ndarray<T,max_elements,dimension>>
+    {
+        using array = const array::hybrid_ndarray<T,max_elements,dimension>&;
+
+        constexpr auto operator()(array a) const
+        {
+            return at(a.shape(),0);
+        }
+    };
+} // namespace nmtools::impl
+
+
 namespace nmtools::meta
 {
     /**
@@ -404,17 +424,17 @@ namespace nmtools::meta
 
     template <typename T, size_t max_elements, size_t dimension>
     struct is_index_array< array::hybrid_ndarray<T,max_elements,dimension>
-        , std::enable_if_t<is_index_v<T> && (dimension==1)>
-    > : std::true_type {};
+        , meta::enable_if_t<is_index_v<T> && (dimension==1)>
+    > : meta::true_type {};
 
     template <typename T, size_t max_elements>
     struct is_hybrid_index_array< array::hybrid_ndarray<T,max_elements,1>
-        , std::enable_if_t<is_index_v<T>>
-    > : std::true_type {};
+        , meta::enable_if_t<is_index_v<T>>
+    > : meta::true_type {};
 
     template <typename T, size_t max_elements>
     struct hybrid_index_array_max_size< array::hybrid_ndarray<T,max_elements,1>
-        , std::enable_if_t<is_index_v<T>>
+        , meta::enable_if_t<is_index_v<T>>
     >
     {
         static constexpr auto value = max_elements;
@@ -423,7 +443,7 @@ namespace nmtools::meta
 
     template <typename T, size_t max_elements, size_t new_max_elements>
     struct resize_hybrid_index_array_max_size< array::hybrid_ndarray<T,max_elements,1>
-        , new_max_elements, std::enable_if_t<is_index_v<T>>
+        , new_max_elements, meta::enable_if_t<is_index_v<T>>
     >
     {
         using type = array::hybrid_ndarray<T,new_max_elements,1>;
@@ -492,7 +512,7 @@ namespace nmtools::meta
      * @tparam shape_storage_type 
      */
     template <typename T, typename U, size_t max_elements, size_t dimension>
-    struct replace_element_type<array::hybrid_ndarray<T,max_elements,dimension>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    struct replace_element_type<array::hybrid_ndarray<T,max_elements,dimension>,U,meta::enable_if_t<meta::is_num_v<U>>>
     {
         using type = array::hybrid_ndarray<U,max_elements,dimension>;
     }; // replace_element_type

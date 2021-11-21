@@ -17,7 +17,6 @@ namespace nmtools::index
     /**
      * @brief access tuple with runtime value
      *
-     * Also works with std::array or std::vector.
      * 
      * @tparam vector_t 
      * @tparam idx_t 
@@ -30,7 +29,7 @@ namespace nmtools::index
     constexpr auto tuple_at(const vector_t& vec, idx_t idx)
     {
         using value_t = meta::get_element_or_common_type_t<vector_t>;
-        static_assert( std::is_arithmetic_v<value_t> || meta::is_index_v<value_t>
+        static_assert( meta::is_num_v<value_t> || meta::is_index_v<value_t>
             , "unsupported tuple_at, element_type / common_type is not arithmentic"
         );
         auto value = value_t{};
@@ -61,7 +60,7 @@ namespace nmtools::index
     constexpr auto tuple_size(const vector_t& vec)
     {
         if constexpr (meta::has_tuple_size_v<vector_t>)
-            return std::tuple_size_v<vector_t>;
+            return meta::len_v<vector_t>;
         else return len(vec);
     } // size
 } // namespace nmtools::index

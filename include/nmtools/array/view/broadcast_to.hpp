@@ -42,13 +42,17 @@ namespace nmtools::view::detail::fn
         // actually call broadcast to
         constexpr auto result    = index::shape_broadcast_to(src_shape,dst_shape);
         // TODO: use optional
-        constexpr auto success   = std::get<0>(result);
+        constexpr auto success   = nmtools::get<0>(result);
         if constexpr (success) {
-            constexpr auto shape_ = std::get<1>(result);
-            constexpr auto free   = std::get<2>(result);
+            constexpr auto shape_ = nmtools::get<1>(result);
+            constexpr auto free   = nmtools::get<2>(result);
             constexpr auto not_free    = index::logical_not(free);
             constexpr auto origin_axes = index::nonzero(not_free);
-            return std::tuple{shape_, origin_axes};
+            using mshape_t = decltype(shape_);
+            using origin_t = decltype(origin_axes);
+            using return_t = meta::make_tuple_type_t<mshape_t,origin_t>;
+            // not really need to pass value since they are "value-less" type?
+            return return_t{shape_, origin_axes};
         }
         else return meta::detail::Fail;
     }
@@ -113,7 +117,7 @@ namespace nmtools::view
                 auto src_shape = detail::shape(array);
 
                 auto tf_indices = ::nmtools::index::broadcast_to(indices_,src_shape,shape_,origin_axes);
-                if constexpr (std::is_pointer_v<array_type>) {
+                if constexpr (meta::is_pointer_v<array_type>) {
                     return apply_at(*array,tf_indices);
                 } else {
                     return apply_at(array,tf_indices);
@@ -181,7 +185,7 @@ namespace nmtools::view
     constexpr auto broadcast_to(const array_t& array, shape_t shape)
     {
         // bypass broadcasting index logic if array_t is simply scalar type
-        if constexpr (std::is_arithmetic_v<array_t>) {
+        if constexpr (meta::is_num_v<array_t>) {
             using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t>;
             return view_t{{array, shape, None}};
         }
@@ -192,7 +196,7 @@ namespace nmtools::view
             constexpr auto result  = detail::fn::shape_broadcast_to(array_v,shape_v);
             using result_t = decltype(result);
             if constexpr (!meta::is_fail_v<result_t>) {
-                constexpr auto origin_axes = std::get<1>(result);
+                constexpr auto origin_axes = nmtools::get<1>(result);
                 using origin_axes_t = meta::remove_cvref_t<decltype(origin_axes)>;
                 using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>;
                 return view_t{{array,shape,origin_axes}};
@@ -300,7 +304,7 @@ namespace nmtools::meta
                 // hence it is actually redundant to check here
                 // TODO: skip checking)
                 constexpr auto result = index::shape_broadcast_to(src_shape,dst_shape);
-                constexpr auto success = std::get<0>(result);
+                constexpr auto success = nmtools::get<0>(result);
                 if constexpr (success)
                     return dst_shape;
                 else return detail::fail_t{};

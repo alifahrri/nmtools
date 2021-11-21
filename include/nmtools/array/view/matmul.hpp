@@ -193,9 +193,13 @@ namespace nmtools::view::detail
                 auto b_shape   = at(shape_,meta::ct_v<0>);
                 auto l_indices = broadcast_matmul_indices(b_indices,lshape,b_shape);
                 auto r_indices = broadcast_matmul_indices(b_indices,rshape,b_shape);
-                return std::tuple{l_indices,r_indices};
+                using l_indices_t = decltype(l_indices);
+                using r_indices_t = decltype(r_indices);
+                using tuple_t = meta::make_tuple_type_t<l_indices_t,r_indices_t>;
+                return tuple_t{l_indices,r_indices};
             } else {
-                return std::tuple{Elipsis,Elipsis};
+                using tuple_t = meta::make_tuple_type_t<elipsis_t,elipsis_t>;
+                return tuple_t{Elipsis,Elipsis};
             }
         }();
         const auto l_indices = at(lr_indices,meta::ct_v<0>);
@@ -206,39 +210,50 @@ namespace nmtools::view::detail
         /**
          * @brief Join broadcasted indices with non-broadcasted matmul indices.
          * 
+         * This is necessary because matmul broadcasting only happened at axis 0 upto -2.
+         * Can not use meta::append_type because indices is not guaranteed to be known at compile-time.
+         * 
          */
         constexpr auto concat_indices = [&](const auto& indices, const auto& tuple) {
             using m_indices_t = meta::remove_cvref_t<decltype(indices)>;
             constexpr auto n_index = meta::len_v<m_indices_t>;
+            auto i0   = at(indices,meta::ct_v<0>);
+            auto init = meta::make_tuple_type_t<decltype(i0)>{i0};
             auto joined = meta::template_reduce<n_index>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 if constexpr (i<(n_index-1)) {
-                    return std::tuple_cat(init,std::tuple{at(indices,meta::ct_v<i+1>)});
+                    auto index_i = at(indices,meta::ct_v<i+1>);
+                    using tuple_t = meta::make_tuple_type_t<decltype(index_i)>;
+                    return tuple_cat(init,tuple_t{index_i});
                 } else {
-                    return std::tuple_cat(init,tuple);
+                    return tuple_cat(init,tuple);
                 }
-            }, /*init=*/std::tuple{at(indices,meta::ct_v<0>)});
+            }, /*init=*/init);
             return joined;
         }; // concat_indices
 
+        using all_slice_t = meta::make_tuple_type_t<none_t,none_t>;
         auto lslice_indices = [&](){
+            using tuple_t = meta::make_tuple_type_t<decltype(row),all_slice_t>;
             if constexpr (is_elipsis_v<l_indices_t>) {
-                // return std::tuple{l_indices, row, std::tuple{None,None}};
-                return std::tuple{row, std::tuple{None,None}};
+                return tuple_t{row, all_slice_t{None,None}};
             } else {
-                return concat_indices(l_indices, std::tuple{row, std::tuple{None,None}});
+                return concat_indices(l_indices, tuple_t{row, all_slice_t{None,None}});
             }
         }();
         auto rslice_indices = [&](){
+            using tuple_t = meta::make_tuple_type_t<all_slice_t,decltype(col)>;
             if constexpr (is_elipsis_v<r_indices_t>) {
-                // return std::tuple{r_indices, std::tuple{std::tuple{None,None}, col}};
-                return std::tuple{std::tuple{None,None}, col};
+                return tuple_t{all_slice_t{None,None}, col};
             } else {
-                return concat_indices(r_indices, std::tuple{std::tuple{None,None}, col});
+                return concat_indices(r_indices, tuple_t{all_slice_t{None,None}, col});
             }
         }();
     
-        return std::tuple{lslice_indices,rslice_indices};        
+        using lslice_indices_t = decltype(lslice_indices);
+        using rslice_indices_t = decltype(rslice_indices);
+        using return_t = meta::make_tuple_type_t<lslice_indices_t,rslice_indices_t>;
+        return return_t{lslice_indices,rslice_indices};        
     } // matmul
 } // namespace nmtools::view
 
@@ -257,8 +272,7 @@ namespace nmtools::view
         using array_type    = operands_type;
         using lhs_elem_type = meta::get_element_type_t<lhs_t>;
         using rhs_elem_type = meta::get_element_type_t<rhs_t>;
-        // TODO: provie promot type metafunction for matmul
-        using result_type   = std::common_type_t<lhs_elem_type,rhs_elem_type>;
+        using result_type   = meta::common_type_t<lhs_elem_type,rhs_elem_type>;
 
         operands_type operands;
 
@@ -268,11 +282,11 @@ namespace nmtools::view
         {
             using op_lhs_t = meta::at_t<operands_type,0>;
             using op_rhs_t = meta::at_t<operands_type,1>;
-            if constexpr (std::is_pointer_v<op_lhs_t> && std::is_pointer_v<op_rhs_t>) {
+            if constexpr (meta::is_pointer_v<op_lhs_t> && meta::is_pointer_v<op_rhs_t>) {
                 return operands_type{&lhs,&rhs};
-            } else if constexpr (std::is_pointer_v<op_lhs_t>) {
+            } else if constexpr (meta::is_pointer_v<op_lhs_t>) {
                 return operands_type{&lhs,rhs};
-            } else if constexpr (std::is_pointer_v<op_rhs_t>) {
+            } else if constexpr (meta::is_pointer_v<op_rhs_t>) {
                 return operands_type{lhs,&rhs};
             } else {
                 return operands_type{lhs,rhs};
@@ -284,8 +298,8 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            const auto ashape = detail::shape(std::get<0>(operands));
-            const auto bshape = detail::shape(std::get<1>(operands));
+            const auto ashape = detail::shape(nmtools::get<0>(operands));
+            const auto bshape = detail::shape(nmtools::get<1>(operands));
             // must has value
             return *detail::shape_matmul(ashape,bshape);
         } // shape
@@ -295,11 +309,11 @@ namespace nmtools::view
             return len(shape());
         } // dim
 
-        template <typename...size_types, std::enable_if_t<(sizeof...(size_types)>=2),int> =0 >
+        template <typename...size_types, meta::enable_if_t<(sizeof...(size_types)>=2),int> =0 >
         constexpr auto view_at(size_types...indices) const
         {
-            const auto& lhs = std::get<0>(operands);
-            const auto& rhs = std::get<1>(operands);
+            const auto& lhs = nmtools::get<0>(operands);
+            const auto& rhs = nmtools::get<1>(operands);
             using lhs_type  = meta::remove_cvref_t<decltype(lhs)>;
             using rhs_type  = meta::remove_cvref_t<decltype(rhs)>;
 
@@ -311,14 +325,14 @@ namespace nmtools::view
             auto rslice_indices = at(indices_,meta::ct_v<1>);
 
             auto lslice = [&](){
-                if constexpr (std::is_pointer_v<lhs_type>) {
+                if constexpr (meta::is_pointer_v<lhs_type>) {
                     return apply_slice(*lhs, lslice_indices);
                 } else {
                     return apply_slice(lhs, lslice_indices);
                 }
             }();
             auto rslice = [&](){
-                if constexpr (std::is_pointer_v<rhs_type>) {
+                if constexpr (meta::is_pointer_v<rhs_type>) {
                     return apply_slice(*rhs, rslice_indices);
                 } else {
                     return apply_slice(rhs, rslice_indices);
@@ -330,7 +344,7 @@ namespace nmtools::view
             return reduced;
         } // view_at
 
-        template <typename...size_types, std::enable_if_t<(sizeof...(size_types)>=2),int> =0 >
+        template <typename...size_types, meta::enable_if_t<(sizeof...(size_types)>=2),int> =0 >
         constexpr auto operator()(size_types...indices) const
         {
             auto reduced = view_at(indices...);

@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SIGMOID_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -17,7 +17,7 @@ namespace nmtools::view
         static auto sigmoid(const T& t)
         {
             auto one = static_cast<T>(1);
-            return one / (one + std::exp(-t));
+            return one / (one + math::exp(-t));
         } // sigmoid
 
         template <typename T>

@@ -6,9 +6,9 @@
 namespace nmtools::meta
 {
     /**
-     * @brief check if type T is std::_Bit_reference
+     * @brief check if type T is std _Bit_reference
      * 
-     * This trait is added since std::vector<bool> access return std::_Bit_reference
+     * This trait is added since std vector<bool> access return std _Bit_reference
      * and specializing is_integral is undefined behaviour
      * 
      * @tparam T 

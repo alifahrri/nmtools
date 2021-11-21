@@ -24,37 +24,20 @@ namespace nmtools::meta
     template <typename T>
     static inline constexpr auto value_v = T::value;
 
-    struct false_type
-    {
-        using value_type = bool;
-        static constexpr auto value = false;
-        operator value_type()
-        {
-            return value;
-        }
-    };
-
-    struct true_type
-    {
-        using value_type = bool;
-        static constexpr auto value = true;
-        operator value_type()
-        {
-            return value;
-        }
-    };
-
     template <typename T, T v>
     struct integral_constant
     {
         using value_type = T;
-        static constexpr auto value = v;
+        static constexpr value_type value = v;
         constexpr operator value_type() const noexcept
         {
             return value;
         }
-            constexpr value_type operator()() const noexcept { return value; }
+        constexpr value_type operator()() const noexcept { return value; }
     };
+
+    struct true_type : integral_constant<bool,true> {};
+    struct false_type : integral_constant<bool,false> {};
 
     /**
      * @brief To provide enable_if without depends to stl
@@ -152,6 +135,9 @@ namespace nmtools::meta
 
     template <size_t N>
     using make_index_sequence = type_t<detail::make_index_sequence<N>>;
+
+    template <size_t N>
+    constexpr inline auto make_index_sequence_v = make_index_sequence<N>{};
 } // nmtools::meta
 
 namespace nmtools::meta
@@ -361,7 +347,7 @@ namespace nmtools::meta
      * @note implementation should use macro NMTOOLS_META_MAKE_TUPLE
      */
     template <typename...Ts>
-    struct make_tuple;
+    struct make_tuple_type;
 
     /**
      * @brief Reserved metafunction to create maybe type
@@ -393,6 +379,9 @@ namespace nmtools::meta
      */
     template <typename T, typename=void>
     struct make_vector;
+
+    template <typename Left, typename Right, typename=void>
+    struct make_either_type;
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_COMMON_HPP

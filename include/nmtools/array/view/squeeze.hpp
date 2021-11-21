@@ -103,19 +103,19 @@ namespace nmtools::meta
                     constexpr auto idx = decltype(index)::value;
                     constexpr auto dim = at(shape,idx);
                     using init_t = type_t<decltype(init)>;
-                    if constexpr (std::is_void_v<init_t> && (n_dim == 1)) {
+                    if constexpr (meta::is_void_v<init_t> && (n_dim == 1)) {
                         // for now, return as value-less type for the shape.
                         // note that in numpy, when the shape is 1D and the dim at axis=0 is 1,
                         // np.shape returns empty tuple,
                         // at the moment, empty tuple as shape is not supported yet.
                         // TODO: deduce as scalar or consider to support empty shape.
-                        using type = std::tuple<ct<dim>>;
+                        using type = make_tuple_type_t<ct<dim>>;
                         return as_value_v<type>;
-                    } else if constexpr (std::is_void_v<init_t> && (dim > 1)) {
+                    } else if constexpr (meta::is_void_v<init_t> && (dim > 1)) {
                         // here, we are still initializing,
                         // but the number of dimension should be > 1,
                         // for such case, also filter dimension > 1.
-                        using type = std::tuple<ct<dim>>;
+                        using type = make_tuple_type_t<ct<dim>>;
                         return as_value_v<type>;
                     } else if constexpr (dim > 1) {
                         using type = append_type_t<init_t,ct<dim>>;

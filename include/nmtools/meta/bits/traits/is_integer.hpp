@@ -8,7 +8,7 @@ namespace nmtools::meta
     /**
      * @brief Check if type T is integer type.
      * 
-     * Note that specializing std::is_integral is undefined behaviour.
+     * Note that specializing std's is_integral is undefined behaviour.
      * This traits exists to avoid UB while specializing similar concept is allowed.
      * 
      * @tparam T 
@@ -16,6 +16,12 @@ namespace nmtools::meta
      */
     template <typename T, typename=void>
     struct is_integer : false_type {};
+
+    template <typename T>
+    struct is_integer<const T> : is_integer<T> {};
+
+    template <typename T>
+    struct is_integer<T&> : is_integer<T> {};
 
     template <typename T>
     constexpr inline auto is_integer_v = is_integer<T>::value;

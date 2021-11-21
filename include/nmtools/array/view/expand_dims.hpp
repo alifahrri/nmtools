@@ -98,8 +98,8 @@ namespace nmtools::meta
                 constexpr auto shape = fixed_ndarray_shape_v<array_t>;
                 constexpr auto axis  = [](){
                     if constexpr (is_constant_index_v<axis_t>) {
-                        // use std::tuple for now
-                        return std::tuple{axis_t{}};
+                        // use tuple for now
+                        return make_tuple_type_t<axis_t>{axis_t{}};
                     } else {
                         return axis_t{};
                     }

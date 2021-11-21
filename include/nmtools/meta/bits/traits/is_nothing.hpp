@@ -6,7 +6,7 @@
 namespace nmtools::meta
 {
     /**
-     * @brief Check if type T is Nothing type (std::nullopt,..)
+     * @brief Check if type T is Nothing type (std nullopt,..)
      * 
      * The name Nothing is from haskell maybe type
      * 

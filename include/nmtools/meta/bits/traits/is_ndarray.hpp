@@ -20,21 +20,17 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct is_array1d
     {
-        static constexpr inline auto _check()
-        {
+        static constexpr inline auto value = [](){
             if constexpr (has_atnd_v<T,size_t>)
                 return true;
             else if constexpr (has_funcnd_v<T,size_t>)
                 return true;
             else if constexpr (has_square_bracket_v<T,size_t>)
                 return true;
-            else if constexpr (std::is_array_v<T> && std::rank_v<T> == 1)
-                return true;
             else if constexpr (nested_array_dim_v<T> == 1)
                 return true;
             else return false;
-        } // _check
-        static constexpr inline auto value = _check();
+        }();
     }; // is_array1d
 
     /**

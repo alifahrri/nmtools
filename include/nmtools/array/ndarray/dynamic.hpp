@@ -63,7 +63,7 @@ namespace nmtools::array
         // explicit dynamic_ndarray(const shape_type& shape) { resize(shape); }
 
         // @note explicit required here, somehow related to operator=
-        template <typename array_t, typename=std::enable_if_t<meta::is_ndarray_v<array_t>>>
+        template <typename array_t, typename=meta::enable_if_t<meta::is_ndarray_v<array_t>>>
         explicit dynamic_ndarray(array_t&& a) { init(a); }
 
         #define NMTOOLS_DYNAMIC_NDARRAY_CONSTRUCTOR(N) \
@@ -175,13 +175,14 @@ namespace nmtools::array
         } // strides
 
         template <typename...size_types>
-        auto resize(size_types...shape) -> std::enable_if_t<(meta::is_index_v<size_types> &&...)>
+        auto resize(size_types...shape) -> meta::enable_if_t<(meta::is_index_v<size_types> &&...)>
         {
             // NOTE: use meta::is_index_v to allow constant index
             shape_.resize(sizeof...(shape));
             meta::template_for<sizeof...(shape)>([&](auto index){
                 constexpr auto i = decltype(index)::value;
-                shape_.at(i) = std::get<i>(std::tuple{shape...});
+                using tuple_t = meta::make_tuple_type_t<decltype(shape)...>;
+                shape_.at(i) = nmtools::get<i>(tuple_t{shape...});
             });
             strides_ = strides();
             numel_   = numel();
@@ -198,7 +199,7 @@ namespace nmtools::array
 
         template <typename shape_t>
         auto resize(const shape_t& shape)
-            -> std::enable_if_t<meta::is_index_array_v<shape_t>>
+            -> meta::enable_if_t<meta::is_index_array_v<shape_t>>
         {
             auto n = len(shape);
             shape_.resize(n);
@@ -221,9 +222,9 @@ namespace nmtools::array
         template <typename ...size_types>
         constexpr decltype(auto) operator()(size_type n, size_types...ns)
         {
-            using common_size_t = std::common_type_t<size_type,size_types...>;
-            auto indices = std::array<common_size_t,sizeof...(ns)+1>{
-                n, static_cast<common_size_t>(ns)...
+            using common_size_t = meta::promote_index_t<size_type,size_types...>;
+            auto indices = meta::make_array_type_t<common_size_t,sizeof...(ns)+1>{
+                static_cast<common_size_t>(n), static_cast<common_size_t>(ns)...
             };
             assert (dim()==indices.size());
             auto offset = ::nmtools::index::compute_offset(strides_, indices);
@@ -242,9 +243,9 @@ namespace nmtools::array
         template <typename ...size_types>
         constexpr decltype(auto) operator()(size_type n, size_types...ns) const
         {
-            using common_size_t = std::common_type_t<size_type,size_types...>;
-            auto indices = std::array<common_size_t,sizeof...(ns)+1>{
-                n, static_cast<common_size_t>(ns)...
+            using common_size_t = meta::promote_index_t<size_type,size_types...>;
+            auto indices = meta::make_array_type_t<common_size_t,sizeof...(ns)+1>{
+                static_cast<common_size_t>(n), static_cast<common_size_t>(ns)...
             };
             assert (dim()==indices.size());
             auto offset = ::nmtools::index::compute_offset(strides_, indices);
@@ -271,7 +272,7 @@ namespace nmtools::array
 
         template <typename shape_t>
         auto at(const shape_t& i) const
-            -> std::enable_if_t<meta::is_index_array_v<shape_t>, const value_type&>
+            -> meta::enable_if_t<meta::is_index_array_v<shape_t>, const value_type&>
         {
             // this function is provided to support cross-compile for android
             // somehow storage_type is deduced as std::vector while
@@ -283,7 +284,7 @@ namespace nmtools::array
 
         template <typename shape_t>
         auto at(const shape_t& i)
-            -> std::enable_if_t<meta::is_index_array_v<shape_t>, value_type&>
+            -> meta::enable_if_t<meta::is_index_array_v<shape_t>, value_type&>
         {
             // this function is provided to support cross-compile for android
             // somehow storage_type is deduced std::vector while
@@ -293,7 +294,7 @@ namespace nmtools::array
             return data[offset];
         } // at
 
-        template <typename ndarray_t, typename=std::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
+        template <typename ndarray_t, typename=meta::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         constexpr auto operator=(const ndarray_t& rhs);
 
         #define NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(N) \
@@ -323,6 +324,22 @@ namespace nmtools::array
     /** @} */ // end group dynamic
     
 } // namespace nmtools::array
+
+namespace nmtools::impl
+{
+    template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
+    struct len_t<array::dynamic_ndarray<T,storage_type,shape_storage_type>>
+    {
+        using array = const array::dynamic_ndarray<T,storage_type,shape_storage_type>&;
+        using type = size_t;
+
+        auto operator()(array a) const
+        {
+            return at(a.shape(),0);
+        }
+    };
+} // namespace nmtools::impl
+
 
 namespace nmtools
 {
@@ -390,7 +407,7 @@ namespace nmtools::meta
      * @tparam shape_storage_type 
      */
     template <typename T, typename U, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    struct replace_element_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    struct replace_element_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>,U,meta::enable_if_t<meta::is_num_v<U>>>
     {
         using type = array::dynamic_ndarray<U,storage_type,shape_storage_type>;
     }; // replace_element_type

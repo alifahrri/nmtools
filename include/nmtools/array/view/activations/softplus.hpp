@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SOFTPLUS_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -26,7 +26,7 @@ namespace nmtools::view
             if (t_times_beta > threshold) {
                 return x;
             } else {
-                return std::log(1 + std::exp(t_times_beta)) / beta;
+                return math::log(1 + math::exp(t_times_beta)) / beta;
             }
         } // softplus
 

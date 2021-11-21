@@ -25,6 +25,9 @@ namespace nmtools::meta
 
 #undef NMTOOLS_META_REGISTER_IS_SIGNED
 
+    template <typename T, T v>
+    struct is_signed<integral_constant<T,v>> : is_signed<T> {};
+
     template <typename T>
     inline constexpr auto is_signed_v = is_signed<T>::value;
 } // namespace nmtools::meta

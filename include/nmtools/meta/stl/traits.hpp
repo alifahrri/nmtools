@@ -106,6 +106,14 @@ namespace nmtools::meta
     template <typename T>
     struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
 #endif // NMTOOLS_HAS_VECTOR
+
+#ifndef NMTOOLS_META_IS_UNION
+    template <typename T>
+    struct is_union : std::is_union<T> {};
+
+    template <typename T>
+    constexpr inline auto is_union_v = is_union<T>::value;
+#endif // NMTOOLS_META_IS_UNION
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRAITS_HPP

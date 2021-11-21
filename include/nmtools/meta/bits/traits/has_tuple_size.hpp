@@ -8,8 +8,8 @@ namespace nmtools::meta
 {
     // TODO: remove, use len instead
     /**
-     * @brief check if std::tuple_size<T> is valid for T
-     * should be true for std::array, std::tuple, std::pair
+     * @brief check if std tuple_size<T> is valid for T
+     * should be true for array, tuple, pair
      * 
      * @tparam T 
      * @tparam typename=void 
@@ -18,7 +18,7 @@ namespace nmtools::meta
     struct has_tuple_size : false_type {};
 
     /**
-     * @brief helper variable template to check if std::tuple_size<T> is valid
+     * @brief helper variable template to check if std tuple_size<T> is valid
      * 
      * @todo test
      * @tparam T type to check

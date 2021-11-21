@@ -23,7 +23,7 @@ namespace nmtools::meta
     /**
      * @brief Check if type T is num type.
      * 
-     * Note that specializing std::is_arithmetic is undefined behaviour.
+     * Note that specializing std is_arithmetic is undefined behaviour.
      * This traits exists to avoid UB while specializing similar concept is allowed.
      * THis is useful to allow reduce view that reduce the elements to single num.
      * The name "num" is inspired from haskell's `Num`.

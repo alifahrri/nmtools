@@ -3,7 +3,7 @@
 
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/array/view/activations/softplus.hpp"
-#include <cmath>
+#include "nmtools/math.hpp"
 
 namespace nmtools::view
 {
@@ -17,7 +17,7 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
-            return t * std::tanh(softplus_t<>::softplus(t));
+            return t * math::tanh(softplus_t<>::softplus(t));
         } // operator()
     }; // mish_t
 

@@ -54,3 +54,7 @@ https://godbolt.org/z/T99cWj
 gcc 8 lambda capture variable doesnt keep constexpr-ness: error: '__closure' is not a constant expression
 supported on clang, fixed in gcc 9
 https://godbolt.org/z/Tdn6Yvf3f
+
+gcc and clang disagree on partial specialization & auto template parameter
+compiles on clang, failed on gcc
+https://godbolt.org/z/vjjMe588z

@@ -26,7 +26,7 @@ namespace nmtools::array
      * @return constexpr auto 
      */
     template <typename output_t=none_t, typename context_t=none_t,
-        typename array_t, typename axis_t, typename dtype_t=none_t, typename keepdims_t=std::false_type>
+        typename array_t, typename axis_t, typename dtype_t=none_t, typename keepdims_t=meta::false_type>
     constexpr auto mean(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, keepdims_t keepdims=keepdims_t{},
         context_t&& context=context_t{}, output_t&& output=output_t{})
     {

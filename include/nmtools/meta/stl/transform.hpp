@@ -5,6 +5,13 @@
 #include "nmtools/meta/stl/traits.hpp"
 
 #include <optional>
+#include <tuple>
+#include <array>
+#include <utility>
+#include <type_traits>
+#include <cassert>
+#include <iterator>
+#include <cmath>
 
 namespace nmtools::meta
 {
@@ -293,29 +300,6 @@ namespace nmtools::meta
         using type = std::array<remove_cvref_t<value_type>,N>;
     };
 
-#ifndef NMTOOLS_META_MAKE_CT
-#define NMTOOLS_META_MAKE_CT
-    template <auto I, auto...Is>
-    struct make_ct
-    {
-        static constexpr auto vtype = [](){
-            if constexpr (static_cast<bool>(sizeof...(Is))) {
-                using type = std::integer_sequence<decltype(I),I,Is...>;
-                return as_value_v<type>;
-            } else {
-                return as_value_v<std::integral_constant<decltype(I),I>>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    };
-
-    template <auto I, auto...Is>
-    using ct = type_t<make_ct<I,Is...>>;
-
-    template <auto I, auto...Is>
-    constexpr inline auto ct_v = ct<I,Is...>{};
-#endif // NMTOOLS_META_MAKE_CT
-
     /**
      * @brief Replace element type of std::array
      * 
@@ -455,6 +439,59 @@ namespace nmtools::meta
     using make_vector_t = type_t<make_vector<T>>;
 
 #endif // NMTOOLS_META_MAKE_VECTOR
+
+#ifndef NMTOOLS_META_MAKE_EITHER
+#define NMTOOLS_META_MAKE_EITHER
+
+    template <typename Left, typename Right, typename>
+    struct make_either_type
+    {
+        using type = std::variant<Left,Right>;
+    };
+
+    template <typename Left, typename Right>
+    using make_either_type_t = type_t<make_either_type<Left,Right>>;
+#endif // NMTOOLS_META_MAKE_EITHER
+
+    // TODO: remove metafunctions
+    /**
+     * @brief specialization for replace_template_parameter for std array, 
+     * since we can't mix non-type & type as variadic template parameter.
+     * The new size of new array should be supplied via std integral_constant,
+     * since we expects type here.
+     * 
+     * @tparam value_t origin value_type
+     * @tparam N origin size
+     * @tparam subs_value_t value_type for substitution
+     * @tparam subs_N substitution size
+     */
+    template <typename value_t, auto N, typename subs_value_t, auto subs_N, typename size_type>
+    struct replace_template_parameter<std::array<value_t,N>,subs_value_t,std::integral_constant<size_type,subs_N>>
+    {
+        using origin_tparams = std::tuple<value_t>;
+        using type = std::array<subs_value_t,subs_N>;
+    };
+
+    // TODO: remove metafunctions
+    /**
+     * @brief replace_template_parameter of class T with parameter(s) packed as tuple.
+     *
+     * @example 
+     * @tparam T template template parameter, deduced automatically
+     * @tparam Origin template parameter(s) of T, deduced automatically
+     * @tparam Subs substitute for Origin, deduced automatically
+     */
+    template <template <typename...> typename T, typename...Origin, typename...Subs>
+    struct replace_template_parameter_from_typelist<T<Origin...>,std::tuple<Subs...>>
+    {
+        /**
+         * @brief call replace_template_parameter here so that any existing specialization
+         * can be used, e.g. specialization of std array which unpacks integral_constant<...>
+         * to size_t as template parameter.
+         * 
+         */
+        using type = replace_template_parameter_t<T<Origin...>,Subs...>;
+    };
 } // namespace nmtools::meta
 
 namespace nmtools

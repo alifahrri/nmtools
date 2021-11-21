@@ -31,6 +31,7 @@ namespace nmtools::utils
     using std::fabs;
 
     namespace detail {
+        // TODO: cleanup isclose for boolean
 #if NMTOOLS_HAS_VECTOR
         // vector of bool madness
 
@@ -144,15 +145,13 @@ namespace nmtools::utils
                 , "unsupported isclose; only support scalar type or ndarray"
             );
 
-            using std::get_if;
-
             if constexpr (is_none_v<T> && is_none_v<U>)
                 return true;
             // both type is maybe type, when both is empty, this also return true
             else if constexpr (meta::is_maybe_v<T> && meta::is_maybe_v<U>) {
                 // for maybe type,
                 // assume casting to bool checks if the objects contains a value
-                // which is supported by std::optional
+                // which is supported by std optional
                 auto hast = static_cast<bool>(t);
                 auto hasu = static_cast<bool>(u);
                 auto same = hast == hasu;
@@ -180,12 +179,19 @@ namespace nmtools::utils
                 using trhs_t = meta::get_either_right_t<T>;
                 using ulhs_t = meta::get_either_left_t<U>;
                 using urhs_t = meta::get_either_right_t<U>;
-                using std::tuple;
+                
+                using nmtools::get_if;
+                using tlhs_ptr_t  = decltype(get_if<tlhs_t>(&t));
+                using ulhs_ptr_t  = decltype(get_if<ulhs_t>(&u));
+                using trhs_ptr_t  = decltype(get_if<trhs_t>(&t));
+                using urhs_ptr_t  = decltype(get_if<urhs_t>(&u));
+                using tuple_lhs_t = meta::make_tuple_type_t<tlhs_ptr_t,ulhs_ptr_t>;
+                using tuple_rhs_t = meta::make_tuple_type_t<trhs_ptr_t,urhs_ptr_t>;
                 auto close = false;
                 // under the hood, recursively call isclose to properly handle view type
-                if (auto [tptr, uptr] = tuple{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
+                if (auto [tptr, uptr] = tuple_lhs_t{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
                     close = isclose(*tptr,*uptr,eps);
-                else if (auto [tptr, uptr] = tuple{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
+                else if (auto [tptr, uptr] = tuple_rhs_t{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
                     close = isclose(*tptr,*uptr,eps);
                 return close;
             }
@@ -223,7 +229,7 @@ namespace nmtools::utils
                 // use get_element_type to allow view
                 using t_type = meta::get_element_type_t<T>;
                 using u_type = meta::get_element_type_t<U>;
-                using common_t = std::common_type_t<t_type,u_type,E>;
+                using common_t = meta::common_type_t<t_type,u_type,E>;
                 return fabs(static_cast<t_type>(t)-static_cast<u_type>(u))
                     < static_cast<common_t>(eps);
             }
@@ -265,21 +271,23 @@ namespace nmtools::utils
     template <typename T, typename U, typename E=double>
     constexpr auto isclose(const T& t, const U& u, E eps=static_cast<E>(1e-6))
     {
+        // TODO: remove tuple_size metafunctions
         // check if tuple_size for T & U is available
         constexpr auto is_packed_T = meta::has_tuple_size_v<T>;
         constexpr auto is_packed_U = meta::has_tuple_size_v<U>;
 
         if constexpr (is_packed_T && is_packed_U) {
-            constexpr auto nt = std::tuple_size_v<T>;
-            constexpr auto nu = std::tuple_size_v<U>;
+            // TODO: use better/consistent/appropriate metafunctions
+            constexpr auto nt = meta::len_v<T>;
+            constexpr auto nu = meta::len_v<U>;
             static_assert (nt==nu
                 , "unsupported isclose, mismatched size for packed type"
             );
             auto equal = true; // conjuction identity
             meta::template_for<nt>([&](auto index){
                 constexpr auto i = decltype(index)::value;
-                const auto& t_ = std::get<i>(t);
-                const auto& u_ = std::get<i>(u);
+                const auto& t_ = nmtools::get<i>(t);
+                const auto& u_ = nmtools::get<i>(u);
                 equal = equal && isclose(t_,u_,eps);
             });
             return equal;

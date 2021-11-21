@@ -102,7 +102,7 @@ namespace nmtools
      */
     template <typename array_t>
     struct meta::fixed_ndarray_shape< view::mutable_ref_t<array_t>
-        , std::enable_if_t< meta::is_fixed_size_ndarray_v< meta::remove_cvref_t<array_t> > >
+        , meta::enable_if_t< meta::is_fixed_size_ndarray_v< meta::remove_cvref_t<array_t> > >
     > : meta::fixed_ndarray_shape< meta::remove_cvref_t<array_t> > {};
 } // namespace nmtools
 

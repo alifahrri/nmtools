@@ -5,6 +5,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/math.hpp"
 
 namespace nmtools::index
 {
@@ -141,9 +142,6 @@ namespace nmtools::index
                 // (5) a[2::-2]
                 // (6) a[1::-2]
 
-                using std::ceil;
-                using std::floor;
-
                 /**
                  * @brief Compute the allowed range for this axis/slice, independent to the step,
                  * should handle various case, e.g. None, postive, negative start & stop
@@ -164,7 +162,7 @@ namespace nmtools::index
                         }
                     }();
 
-                    // workaround to ambiguous call to std::abs, mostly because need to refactor avoiding
+                    // workaround to ambiguous call to std abs, mostly because need to refactor avoiding
                     // gcc 8 internal compiler error :|
                     // gcc 8 no longer supported, maybe cleanup this code
                     [[maybe_unused]] auto abs_ = [](auto v) { return v < 0 ? -v : v; };
@@ -210,7 +208,6 @@ namespace nmtools::index
                     else if constexpr (meta::is_unsigned_v<step_t>)
                         return step_;
                     else {
-                        // return std::abs(step_);
                         return [&](){
                             if (step_ < 0) {
                                 return -step_;
@@ -223,7 +220,7 @@ namespace nmtools::index
 
                 // finally the resulting shape for corresponding indices
                 // is simply the range divided by the step
-                at(res,r_i++) = static_cast<size_type>(ceil(static_cast<float>(s) / step));
+                at(res,r_i++) = static_cast<size_type>(math::ceil(static_cast<float>(s) / step));
             } else /* if constexpr (meta::is_index_v<slice_t>) */ {
                 // only reduce the dimension,
                 // doesn't contributes to shape computation
@@ -238,17 +235,17 @@ namespace nmtools::index
         return res;
     } // shape_slice
 
-    template <typename shape_t, typename slices_t, size_t...Is>
-    constexpr auto apply_shape_slice(const shape_t& shape, const slices_t& slices, std::index_sequence<Is...>)
+    template <template <auto...> typename index_sequence, typename shape_t, typename slices_t, size_t...Is>
+    constexpr auto apply_shape_slice(const shape_t& shape, const slices_t& slices, index_sequence<Is...>)
     {
-        return shape_slice(shape, std::get<Is>(slices)...);
+        return shape_slice(shape, nmtools::get<Is>(slices)...);
     } // apply_shape_slice
 
     template <typename shape_t, typename slices_t>
     constexpr auto apply_shape_slice(const shape_t& shape, const slices_t& slices)
     {
         constexpr auto N = meta::len_v<slices_t>;
-        return apply_shape_slice(shape, slices, std::make_index_sequence<N>{});
+        return apply_shape_slice(shape, slices, meta::make_index_sequence<N>{});
     } // apply_shape_slice
 
     template <typename indices_t, typename shape_t, typename...slices_t>
@@ -530,17 +527,17 @@ namespace nmtools::index
         return res;
     } // slice
 
-    template <typename indices_t, typename shape_t, typename slices_t, size_t...Is>
-    constexpr auto apply_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices, std::index_sequence<Is...>)
+    template <template <auto...> typename index_sequence, typename indices_t, typename shape_t, typename slices_t, size_t...Is>
+    constexpr auto apply_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices, index_sequence<Is...>)
     {
-        return slice(indices, shape, std::get<Is>(slices)...);
+        return slice(indices, shape, nmtools::get<Is>(slices)...);
     } // apply_slice
 
     template <typename indices_t, typename shape_t, typename slices_t>
     constexpr auto apply_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices)
     {
         constexpr auto N = meta::len_v<slices_t>;
-        return apply_slice(indices,shape,slices,std::make_index_sequence<N>{});
+        return apply_slice(indices,shape,slices,meta::make_index_sequence<N>{});
     } // apply_slice
 
 } // namespace nmtools::index

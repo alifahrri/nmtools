@@ -21,9 +21,10 @@ namespace nmtools::view
         } // operator()
     }; // maximum_t
 
+    // TODO: unify with primary template, use static cast ot res_t
     template <typename res_t>
     struct maximum_t<none_t,none_t,res_t
-        , std::enable_if_t<std::is_arithmetic_v<res_t>>
+        , meta::enable_if_t<meta::is_num_v<res_t>>
     >
     {
         using result_type = res_t;
@@ -63,6 +64,7 @@ namespace nmtools::view
         return reduce_maximum(a,axis,dtype,None);
     } // reduce_maximum
 
+    // TODO: use default args instead of overload
     template <typename left_t, typename axis_t>
     constexpr auto reduce_maximum(const left_t& a, const axis_t& axis)
     {

@@ -493,6 +493,8 @@ endif()
 add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
     ## metafunctions
     src/doctest/meta.cpp
+    src/doctest/meta/forward.cpp
+    src/doctest/meta/integral_constant.cpp
     src/doctest/meta/loop.cpp
     src/doctest/meta/make_index_sequence.cpp
     src/doctest/meta/array/cast_kind.cpp
@@ -555,12 +557,16 @@ add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp
     src/doctest/meta/traits/has_square_bracket.cpp
     src/doctest/meta/traits/is_index.cpp
     src/doctest/meta/traits/is_index_array.cpp
+    src/doctest/meta/traits/is_integer.cpp
     src/doctest/meta/traits/is_num.cpp
+    src/doctest/meta/traits/is_reference.cpp
     src/doctest/meta/transform/add_reference.cpp
     src/doctest/meta/transform/apply.cpp
+    src/doctest/meta/transform/common_type.cpp
     src/doctest/meta/transform/get_element_type.cpp
     src/doctest/meta/transform/get_underlying_array_type.cpp
     src/doctest/meta/transform/hybrid_ndarray_max_size.cpp
+    src/doctest/meta/transform/remove_reference.cpp
     src/doctest/meta/transform/replace_element_type.cpp
     src/doctest/meta/transform/nested_array_dim.cpp
     src/doctest/meta/transform/remove_nested_array_extents.cpp

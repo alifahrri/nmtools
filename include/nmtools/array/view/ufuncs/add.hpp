@@ -22,7 +22,7 @@ namespace nmtools::view
 
     template <typename res_t>
     struct add_t<none_t,none_t,res_t
-        , std::enable_if_t<std::is_arithmetic_v<res_t>> 
+        , meta::enable_if_t<meta::is_num_v<res_t>> 
     >
     {
         using result_type = res_t;

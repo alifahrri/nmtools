@@ -21,9 +21,10 @@ namespace nmtools::view
         } // operator()
     }; // right_shift_t
 
+    // TODO: unify with primary template, use static cast to res_t
     template <typename res_t>
     struct right_shift_t<none_t,none_t,res_t,
-        std::enable_if_t<std::is_arithmetic_v<res_t>>
+        meta::enable_if_t<meta::is_num_v<res_t>>
     >
     {
         using result_type = res_t;
@@ -44,7 +45,7 @@ namespace nmtools::view
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
     constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis, dtype_t, initial_t initial, keepdims_t keepdims)
     {
-        static_assert( std::is_integral_v<axis_t>
+        static_assert( meta::is_integral_v<axis_t>
             , "reduce_right_shift only support single axis with integral type"
         );
         // note that reduce_t takes reference, to support multiple axis
@@ -58,7 +59,7 @@ namespace nmtools::view
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
     constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis, dtype_t, initial_t initial)
     {
-        static_assert( std::is_integral_v<axis_t>
+        static_assert( meta::is_integral_v<axis_t>
             , "reduce_right_shift only support single axis with integral type"
         );
         // note that reduce_t takes reference, to support multiple axis
@@ -75,6 +76,7 @@ namespace nmtools::view
         return reduce_right_shift(a,axis,dtype,None);
     } // reduce_right_shift
 
+    // TODO: use default args instead of overloads!
     template <typename left_t, typename axis_t>
     constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis)
     {
