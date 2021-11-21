@@ -10,8 +10,6 @@
 
 #include "nmtools/meta/loop.hpp"
 
-#include <array>
-
 namespace nmtools::meta
 {
     /**
@@ -37,8 +35,8 @@ namespace nmtools::meta
         static constexpr auto value = [](){
             // check for fixed-size array (that has tuple_size_v)
             if constexpr (nested_array_size_v<T> > 0) {
-                // nested_array_dim_v mimics std::rank_v
-                // nested_array_size_v mimics std::extent_v
+                // nested_array_dim_v mimics std rank_v
+                // nested_array_size_v mimics std extent_v
                 constexpr auto dim = nested_array_dim_v<T>;
                 using array_t = typename make_array_type<size_t,dim>::type;
                 auto shape = array_t{};
@@ -46,18 +44,6 @@ namespace nmtools::meta
                     constexpr auto i = decltype(index)::value;
                     using nested_t = remove_nested_array_dim_t<T,i>;
                     get<i>(shape) = nested_array_size_v<nested_t>;
-                });
-                return shape;
-            }
-            // check for bounded-array (e.g. double[1][2][3]...)
-            else if constexpr (is_bounded_array_v<T>) {
-                constexpr auto rank = std::rank_v<T>;
-                using array_t = typename make_array_type<size_t,rank>::type;
-                auto shape = array_t{};
-                template_for<rank>([&](auto index) {
-                    constexpr auto i = decltype(index)::value;
-                    constexpr auto n = std::extent_v<T,i>;
-                    shape[i] = n;
                 });
                 return shape;
             }

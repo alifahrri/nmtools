@@ -6,6 +6,7 @@
 #include "nmtools/meta/bits/transform/append_value.hpp"
 #include "nmtools/meta/bits/transform/at.hpp"
 #include "nmtools/meta/bits/transform/bit_reference_to_bool.hpp"
+#include "nmtools/meta/bits/transform/common_type.hpp"
 #include "nmtools/meta/bits/transform/concat_type.hpp"
 #include "nmtools/meta/bits/transform/get_either.hpp"
 #include "nmtools/meta/bits/transform/get_element_type.hpp"
@@ -27,13 +28,6 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/traits.hpp"
 #include "nmtools/meta/array.hpp"
-
-#include <type_traits>
-#include <cassert>
-#include <iterator>
-#include <cmath>
-#include <tuple>
-#include <array>
 
 namespace nmtools::meta
 {
@@ -269,6 +263,26 @@ namespace nmtools::meta
      */
     template <typename array_t>
     using remove_cvref_pointer_t = remove_cvref_t<remove_pointer_t<array_t>>;
+
+    template <auto I, auto...Is>
+    struct make_ct
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (static_cast<bool>(sizeof...(Is))) {
+                using type = integer_sequence<decltype(I),I,Is...>;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<integral_constant<decltype(I),I>>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
+    template <auto I, auto...Is>
+    using ct = type_t<make_ct<I,Is...>>;
+
+    template <auto I, auto...Is>
+    constexpr inline auto ct_v = ct<I,Is...>{};
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

@@ -49,6 +49,7 @@
 #include "nmtools/meta/bits/traits/is_ndarray.hpp"
 #include "nmtools/meta/bits/traits/is_nothing.hpp"
 #include "nmtools/meta/bits/traits/is_num.hpp"
+#include "nmtools/meta/bits/traits/is_pointer.hpp"
 #include "nmtools/meta/bits/traits/is_resizeable.hpp"
 #include "nmtools/meta/bits/traits/is_signed.hpp"
 #include "nmtools/meta/bits/traits/is_specialization.hpp"
