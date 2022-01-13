@@ -7,6 +7,7 @@ namespace nmtools::meta
 {
     namespace error
     {
+        template <typename...>
         struct TYPE_AT_UNSUPPORTED : detail::fail_t {};
     }
 
@@ -19,7 +20,7 @@ namespace nmtools::meta
     template <typename T, size_t I>
     struct type_at
     {
-        using type = error::TYPE_AT_UNSUPPORTED;
+        using type = error::TYPE_AT_UNSUPPORTED<T>;
     }; // at
 
     /**

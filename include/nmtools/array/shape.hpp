@@ -8,6 +8,7 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/constants.hpp"
+#include "nmtools/utility.hpp"
 
 namespace nmtools::impl::error
 {
@@ -19,9 +20,6 @@ namespace nmtools::impl::error
 
     template <typename...>
     struct DIM_UNSUPPORTED : meta::detail::fail_t {};
-
-    template <typename...>
-    struct GET_IF_UNSUPPORTED : meta::detail::fail_t {};
 } // namespace nmtools::impl::error
 
 namespace nmtools::impl
@@ -167,38 +165,8 @@ namespace nmtools::impl
     inline constexpr auto shape = shape_t<T>{};
 } // namespace nmtools::impl
 
-namespace nmtools::impl
-{
-    template <typename T, typename=void>
-    struct get_if_t
-    {
-        template <typename U>
-        constexpr auto operator()(const T*) const noexcept
-        {
-            return error::GET_IF_UNSUPPORTED<T>{};
-        }
-    }; // get_if_t
-
-    template <typename T>
-    constexpr inline auto get_if = get_if_t<T>{};
-} // namespace nmtools::impl
-
 namespace nmtools
 {
-
-    /**
-     * @brief Helper function to return the value of Either object.
-     * 
-     * @tparam T 
-     * @param t 
-     * @return constexpr auto 
-     */
-    template <typename U, typename T>
-    constexpr auto get_if(const T* t)
-    {
-        constexpr auto get_if = impl::get_if<T>;
-        return get_if.template operator()<U>(t);
-    } // get_if
 
     /**
      * @brief return the shape of an array
@@ -301,7 +269,14 @@ namespace nmtools::meta
     }; // get_index_type
 } // namespace nmtools::meta
 
+// try to automatically detect platform, which may disable STL
+#include "nmtools/platform.hpp"
+
+#ifndef NMTOOLS_DISABLE_STL
+#include "nmtools/array/impl/stl.hpp"
+#endif
+
+// UTL should be available on any platform
+#include "nmtools/array/impl/utl.hpp"
 
 #endif // NMTOOLS_ARRAY_UTILITY_SHAPE_HPP
-
-#include "nmtools/array/impl/stl.hpp"

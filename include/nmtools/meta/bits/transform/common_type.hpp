@@ -1,12 +1,14 @@
 #ifndef NMTOOLS_META_BITS_TRANSFORM_COMMON_TYPE_HPP
 #define NMTOOLS_META_BITS_TRANSFORM_COMMON_TYPE_HPP
 
+#include "nmtools/meta/loop.hpp"
 #include "nmtools/meta/bits/traits/is_integer.hpp"
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
 #include "nmtools/meta/bits/traits/is_num.hpp"
-#include "nmtools/meta/loop.hpp"
+#include "nmtools/meta/bits/traits/is_signed.hpp"
 #include "nmtools/meta/bits/transform/at.hpp"
 #include "nmtools/meta/bits/transform/type_list_at.hpp"
+#include "nmtools/meta/bits/transform/make_signed.hpp"
 
 namespace nmtools::meta
 {
@@ -32,6 +34,7 @@ namespace nmtools::meta
     template <typename T, typename U>
     constexpr inline auto can_cast_v = can_cast<T,U>::value;
 
+    // TODO: make the behaviour like numpy (safe)
     /**
      * @brief Deduce common type of numeric type lhs_t with the rest rest_t...
      * 
@@ -50,6 +53,10 @@ namespace nmtools::meta
                 return as_value_v<right_t>;
             } else if constexpr (is_floating_point_v<left_t> && is_integer_v<right_t>) {
                 return as_value_v<left_t>;
+            } else if constexpr (is_integral_constant_v<left_t> && is_integral_constant_v<right_t>) {
+                using l_value_type = typename left_t::value_type;
+                using r_value_type = typename right_t::value_type;
+                return cast(as_value_v<l_value_type>,as_value_v<r_value_type>);
             } else if constexpr (is_integral_constant_v<left_t> && is_num_v<right_t>) {
                 // also check if we can cast right to left's value_type
                 using value_type = typename left_t::value_type;
@@ -91,7 +98,14 @@ namespace nmtools::meta
             return template_reduce<sizeof...(rest_t)>([](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 using type_i = at_t<types,i>;
-                return cast(init,as_value_v<type_i>);
+                using init_t = type_t<decltype(init)>;
+                auto casted  = cast(init,as_value_v<type_i>);
+                using casted_t = type_t<decltype(casted)>;
+                if constexpr (is_signed_v<init_t> || is_signed_v<type_i>) {
+                    return as_value_v<make_signed_t<casted_t>>;
+                } else {
+                    return as_value_v<casted_t>;
+                }
             }, as_value_v<lhs_t>);
         }();
         

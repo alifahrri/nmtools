@@ -3,8 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/transform/add_reference.hpp"
-
-#include <type_traits>
+#include "nmtools/utility/get.hpp"
 
 namespace nmtools::meta
 {
@@ -137,6 +136,9 @@ namespace nmtools::meta
         template <template<typename...> typename expression, typename T, typename...tparams>
         struct expression_check<void_t<expression<T,tparams...>>, expression, T, tparams...> : true_type {};
     } // namespace detail
+
+    template <template<typename...> typename expression, typename T, typename...tparams>
+    constexpr inline auto expression_check_v = detail::expression_check<void,expression,T,tparams...>::value;
 } // namespace nmtools::meta
 
 

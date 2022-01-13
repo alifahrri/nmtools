@@ -9,17 +9,17 @@
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
-#include "nmtools/array/view/ref/initializer_list.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/assert.hpp"
 
-#include <cassert>
-#include <vector>
-#include <initializer_list>
+#include "nmtools/platform.hpp"
+
+#ifndef NMTOOLS_DISABLE_STL
+#include "nmtools/array/view/ref/initializer_list.hpp"
+#endif
 
 namespace nmtools::array
 {
-    using std::initializer_list;
 
     namespace detail
     {
@@ -275,6 +275,7 @@ namespace nmtools::array
             return this->template operator=<nested_t>(rhs_view);         \
         } // operator=
         
+        #ifndef NMTOOLS_DISABLE_STL
         NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(1)
         NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(2)
         NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(3)
@@ -286,6 +287,7 @@ namespace nmtools::array
         NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(9)
         NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(10)
         NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(11)
+        #endif // NMTOOLS_DISABLE_STL
 
         #undef NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT
 
@@ -380,7 +382,7 @@ namespace nmtools
      * @return auto 
      */
     template <typename T, size_t max_elements, size_t dimension>
-    auto shape(const array::hybrid_ndarray<T,max_elements,dimension>& a)
+    constexpr auto shape(const array::hybrid_ndarray<T,max_elements,dimension>& a)
     {
         return a.shape();
     } // shape
@@ -393,7 +395,7 @@ namespace nmtools
      * @return auto 
      */
     template <typename T, size_t max_elements, size_t dimension>
-    auto dim(const array::hybrid_ndarray<T,max_elements,dimension>& a)
+    constexpr auto dim(const array::hybrid_ndarray<T,max_elements,dimension>& a)
     {
         return a.dim();
     } // dim

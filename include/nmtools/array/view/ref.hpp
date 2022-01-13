@@ -8,8 +8,6 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
 
-#include <cassert>
-
 namespace nmtools::view
 {
     using meta::is_ndarray_v;

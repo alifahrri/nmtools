@@ -1,19 +1,19 @@
 #ifndef NMTOOLS_META_BITS_TRANSFORM_LEN_HPP
 #define NMTOOLS_META_BITS_TRANSFORM_LEN_HPP
 
-#include "nmtools/meta/bits/traits/has_tuple_size.hpp"
-#include "nmtools/meta/bits/traits/is_fixed_size_ndarray.hpp"
 #include "nmtools/meta/bits/array/fixed_ndarray_shape.hpp"
+#include "nmtools/meta/bits/traits/has_tuple_size.hpp"
 #include "nmtools/meta/bits/traits/has_square_bracket.hpp"
 #include "nmtools/meta/bits/traits/has_bracket.hpp"
 #include "nmtools/meta/bits/traits/has_template_get.hpp"
-
-// TODO: remove, minimize dependencies to stl
-#include <type_traits>
-#include <utility>
+#include "nmtools/meta/bits/traits/is_fixed_size_ndarray.hpp"
+#include "nmtools/meta/bits/traits/is_num.hpp"
 
 namespace nmtools::meta
 {
+    // TODO: minimize dependencies to other metafunctions,
+    // this metafunctions should be simple.
+    // reverse the dependency between len and fixed_ndarray_shape
     /**
      * @brief Helper metafunction for convinient tuple-size
      * 
@@ -46,6 +46,12 @@ namespace nmtools::meta
 
     template <typename T>
     struct len<const T&> : len<T> {};
+
+    template <typename T, size_t N>
+    struct len<T[N]>
+    {
+        static constexpr auto value = N;
+    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_LEN_HPP

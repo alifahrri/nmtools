@@ -5,12 +5,6 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 
-#include <type_traits>
-#include <cstddef> // size_t
-#include <utility> // integer_sequence
-#include <array>
-#include <tuple>
-
 namespace nmtools::index
 {
     // TODO: remove

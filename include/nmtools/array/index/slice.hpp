@@ -76,7 +76,7 @@ namespace nmtools::index
                 // TODO (wrap std metafunctions): use meta::len_v
                 constexpr auto NS = meta::len_v<decltype(slice)>;
                 if constexpr (NS==2) {
-                    auto [start, stop] = slice;
+                    const auto [start, stop] = slice;
                     using start_t = decltype(start);
                     using stop_t  = decltype(stop);
                     // TODO (wrap std metafunctions): create meta::make_tuple_type_t<...>;
@@ -123,7 +123,7 @@ namespace nmtools::index
                 //     else if constexpr (NS==3)
                 //         return slice;
                 // }();
-                auto [start_,stop_,step_] = decompose(slice);
+                const auto [start_,stop_,step_] = decompose(slice);
                 using start_t = meta::remove_cvref_t<decltype(start_)>;
                 using stop_t  = meta::remove_cvref_t<decltype(stop_)>;
                 using step_t  = meta::remove_cvref_t<decltype(step_)>;
@@ -321,11 +321,11 @@ namespace nmtools::index
                 s_i += (n-1);
                 i_i += (n);
             } else {
-                auto [start_, stop_, step_] = [&](){
+                const auto [start_, stop_, step_] = [&](){
                     // assume slice has tuple_size
                     constexpr auto NS = meta::len_v<decltype(slice)>;
                     if constexpr (NS==2) {
-                        auto [start, stop] = slice;
+                        const auto [start, stop] = slice;
                         using mresult_t = meta::make_tuple_type_t<decltype(start),decltype(stop),none_t>;
                         return mresult_t{start,stop,None};
                     }

@@ -1,8 +1,11 @@
 #ifndef NMTOOLS_META_BITS_ARRAY_NESTED_ARRAY_SIZE_HPP
 #define NMTOOLS_META_BITS_ARRAY_NESTED_ARRAY_SIZE_HPP
 
+#include "nmtools/meta/bits/traits/is_num.hpp"
+
 namespace nmtools::meta
 {
+    // TODO: remove, use len
     /**
      * @brief returns the number of elements of fixed shape at its 1st axis.
      *

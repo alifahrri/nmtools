@@ -8,9 +8,7 @@
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/eval.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
@@ -55,7 +53,7 @@ namespace nmtools::view
             else {
                 // TODO: create metafunction "make_sequence_type" to create vector
                 // assume std vector is available
-                static_assert (NMTOOLS_HAS_VECTOR);
+                // static_assert (NMTOOLS_HAS_VECTOR);
                 auto shape_ = detail::shape(array);
                 auto dim_   = detail::dim(array);
 

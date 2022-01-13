@@ -5,6 +5,7 @@
 
 namespace nmtools::meta
 {
+    // TODO: cleanup
     /**
      * @brief specialization of nested_array_size for type that has tuple_size and value_type.
      * 
@@ -16,24 +17,6 @@ namespace nmtools::meta
     > {
         static constexpr auto value = std::tuple_size_v<T>;
     }; // nested_array_size
-
-    /**
-     * @brief specialization of nested_array_dim
-     *
-     * Sepcialized when T square bracket expression with size_t is well-formed,
-     * checked using has_square_bracket. Recursively instantiate nested_array_dim
-     * with decreasing dimension.
-     * 
-     * @tparam T type to check
-     * @see expr::square_bracket
-     * @see has_square_bracket
-     */
-    template <typename T>
-    struct nested_array_dim<T,enable_if_t<has_square_bracket_v<T,size_t>>>
-    {
-        using value_type = std::remove_reference_t<expr::square_bracket<T,size_t>>;
-        static constexpr auto value = 1 + nested_array_dim<value_type>::value;
-    }; // nested_array_dim
 
     template <typename T, size_t N>
     struct len<std::array<T,N>>
@@ -52,7 +35,7 @@ namespace nmtools::meta
     struct fixed_ndarray_shape<T,enable_if_t<is_bounded_array_v<T>>>
     {
         static constexpr auto value = [](){
-             constexpr auto rank = std::rank_v<T>;
+            constexpr auto rank = std::rank_v<T>;
             using array_t = typename make_array_type<size_t,rank>::type;
             auto shape = array_t{};
             template_for<rank>([&](auto index) {

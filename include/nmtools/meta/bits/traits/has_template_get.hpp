@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/expr.hpp"
+#include "nmtools/meta/bits/traits/is_fail.hpp"
 
 namespace nmtools::meta
 {
@@ -10,8 +11,8 @@ namespace nmtools::meta
     struct has_template_get
     {
         static constexpr auto value = [](){
-            using get_type = type_t<nmtools::get_t<I,T>>;
-            return !is_same_v<get_type,error::TEMPLATE_GET_UNSUPPORTED<T>>;
+            using get_type = decltype(declval<nmtools::get_t<I,T>>()(declval<T>()));
+            return !is_fail_v<get_type>;
         }();
     }; // has_template_get
 

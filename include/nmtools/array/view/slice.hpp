@@ -8,8 +8,6 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/index/slice.hpp"
 
-#include <cassert>
-
 namespace nmtools::view
 {
     template <typename array_t, typename...slices_t>
@@ -22,7 +20,7 @@ namespace nmtools::view
         slices_type slices;
 
         constexpr slice_t(const array_t& array, slices_t...slices)
-            : array(initialize<array_type>(array)), slices({slices...}) {}
+            : array(initialize<array_type>(array)), slices{slices...} {}
 
         template <template<auto...>typename index_sequence, typename shape_t, size_t...Is>
         constexpr auto shape(const shape_t& ashape, index_sequence<Is...>) const

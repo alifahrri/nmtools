@@ -7,6 +7,7 @@ namespace nmtools::meta
 {
     namespace error
     {
+        template <typename...>
         struct APPEND_TYPE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
 
@@ -19,7 +20,7 @@ namespace nmtools::meta
     template <typename T, typename new_type>
     struct append_type
     {
-        using type = error::APPEND_TYPE_UNSUPPORTED;
+        using type = error::APPEND_TYPE_UNSUPPORTED<T,new_type>;
     }; // append_type
 
 

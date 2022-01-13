@@ -8,8 +8,7 @@
 #include "nmtools/meta/bits/traits/is_ndarray.hpp"
 #include "nmtools/meta/bits/traits/is_num.hpp"
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
-
-#include <type_traits>
+#include "nmtools/meta/bits/traits/has_value_type.hpp"
 
 namespace nmtools::meta
 {
@@ -36,6 +35,7 @@ namespace nmtools::meta
 
     namespace error
     {
+        template <typename...>
         struct GET_ELEMENT_TYPE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
 
@@ -81,7 +81,7 @@ namespace nmtools::meta
             }
             else if constexpr (is_num_v<T>)
                 return as_value_v<T>;
-            else return as_value_v<error::GET_ELEMENT_TYPE_UNSUPPORTED>;
+            else return as_value_v<error::GET_ELEMENT_TYPE_UNSUPPORTED<T>>;
         }();
         using type = type_t<decltype(vtype)>;
     }; // get_element_type

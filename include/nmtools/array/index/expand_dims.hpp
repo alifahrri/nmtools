@@ -8,9 +8,6 @@
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 
-#include <array>
-#include <tuple>
-
 namespace nmtools::index
 {
     /**

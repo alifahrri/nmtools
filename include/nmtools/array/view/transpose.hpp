@@ -11,8 +11,6 @@
 #include "nmtools/array/index/gather.hpp"
 #include "nmtools/array/index/reverse.hpp"
 
-#include <cassert>
-
 namespace nmtools::view
 {
 

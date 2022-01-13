@@ -6,8 +6,27 @@
 namespace nmtools::meta
 {
     template <typename T>
-    struct is_signed : false_type {};
+    struct is_signed
+    {
+        using value_type = bool;
+        static constexpr bool value = [](){
+            return is_same_v<T,::nmtools::int8_t>
+                || is_same_v<T,::nmtools::int16_t>
+                || is_same_v<T,::nmtools::int32_t>
+                || is_same_v<T,::nmtools::int64_t>
+                || is_same_v<T,int>
+                || is_same_v<T,short int>
+                || is_same_v<T,long int>
+                || is_same_v<T,signed char>;
+        }();
+        constexpr operator value_type() const noexcept
+        {
+            return value;
+        }
+        constexpr value_type operator()() const noexcept { return value; }
+    };
 
+/*
 // TODO: do not use true_type / false_type, define value instead
 #define NMTOOLS_META_REGISTER_IS_SIGNED(type, signed) \
     template <> \
@@ -24,6 +43,7 @@ namespace nmtools::meta
     NMTOOLS_META_REGISTER_IS_SIGNED(uint8_t, false);
 
 #undef NMTOOLS_META_REGISTER_IS_SIGNED
+*/
 
     template <typename T, T v>
     struct is_signed<integral_constant<T,v>> : is_signed<T> {};

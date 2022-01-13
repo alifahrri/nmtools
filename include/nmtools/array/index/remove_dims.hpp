@@ -9,9 +9,6 @@
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/index/where.hpp"
 
-#include <cstddef>
-#include <utility>
-
 namespace nmtools::index
 {
     struct remove_dims_t {};

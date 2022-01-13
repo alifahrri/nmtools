@@ -72,10 +72,12 @@ namespace nmtools::view
         // while the maximum size is known at compile-time,
         // the size itself is a runtime value, hence may be incompatible.
         // the next question is when/where to check and handle error
-        auto [condition_, x_, y_] = broadcast_arrays(condition, x, y);
-        using bcondition_t = decltype(condition_);
-        using bx_t = decltype(x_);
-        using by_t = decltype(y_);
+        // NOTE: using const since atm: the following use utl tuple for arduino,
+        //      and decomposing results reference type and without const, it discards qualifier
+        const auto [condition_, x_, y_] = broadcast_arrays(condition, x, y);
+        using bcondition_t = meta::remove_cvref_t<decltype(condition_)>;
+        using bx_t = meta::remove_cvref_t<decltype(x_)>;
+        using by_t = meta::remove_cvref_t<decltype(y_)>;
 
         return decorator_t<where_t,bcondition_t,bx_t,by_t>{{condition_,x_,y_}};
     } // where

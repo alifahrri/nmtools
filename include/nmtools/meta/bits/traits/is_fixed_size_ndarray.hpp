@@ -5,6 +5,7 @@
 
 #include "nmtools/meta/bits/array/fixed_ndarray_shape.hpp"
 #include "nmtools/meta/bits/traits/is_void.hpp"
+#include "nmtools/meta/bits/traits/is_fail.hpp"
 
 namespace nmtools::meta
 {
@@ -25,7 +26,7 @@ namespace nmtools::meta
             using fixed_size_t = fixed_ndarray_shape<T>;
             using value_type   = typename fixed_size_t::value_type;
             // TODO: use fail type instead of void
-            if constexpr (!is_void_v<value_type>)
+            if constexpr (!is_void_v<value_type> && !is_fail_v<value_type>)
                 return true;
             else return false;
         }();

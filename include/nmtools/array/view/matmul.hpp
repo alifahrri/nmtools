@@ -36,11 +36,12 @@ namespace nmtools::view::detail
 
         auto dim  = len(shape);
         auto axis = dim;
+        using axis_t [[maybe_unused]] = decltype(axis);
 
         if constexpr (meta::is_signed_v<index_t>) {
             axis = (N<0) ? (dim+N) : N;
         } else {
-            // unsigne, no need to check
+            // unsigned, no need to check
             axis = N;
         }
 
@@ -88,8 +89,8 @@ namespace nmtools::view::detail
         constexpr auto i1 = idx1_t{};
         constexpr auto i2 = idx2_t{};
 
-        auto [b_ashape, m_ashape] = split(ashape,-2);
-        auto [b_bshape, m_bshape] = split(bshape,-2);
+        const auto [b_ashape, m_ashape] = split(ashape,-2);
+        const auto [b_bshape, m_bshape] = split(bshape,-2);
 
         auto l1 = at(ashape,i1);
         // auto l2 = at(ashape,i2);
@@ -100,12 +101,12 @@ namespace nmtools::view::detail
         auto bdim = len(bshape);
         using dim_t   = decltype(adim);
         using tuple_t = meta::make_tuple_type_t<dim_t,dim_t>;
-        auto [h_dim, l_dim] = (adim > bdim) ? tuple_t{adim,bdim} : tuple_t{bdim,adim};
+        const auto [h_dim, l_dim] = (adim > bdim) ? tuple_t{adim,bdim} : tuple_t{bdim,adim};
 
         // check matrix shape
         auto valid_shape = l1 == r2;
         // broadcast shape, if possible
-        auto [success, b_shape] = index::broadcast_shape(b_ashape,b_bshape);
+        const auto [success, b_shape] = index::broadcast_shape(b_ashape,b_bshape);
 
         valid_shape = valid_shape && success;
 
@@ -122,7 +123,7 @@ namespace nmtools::view::detail
             at(result,i2) = at(ashape,i2);
             return return_t{result};
         } else {
-            return return_t{meta::nothing};
+            return return_t{meta::Nothing};
         }
     } // shape_matmul
 
@@ -405,7 +406,7 @@ namespace nmtools::meta
                 constexpr auto adim = len_v<lhs_shape_t>;
                 constexpr auto bdim = len_v<rhs_shape_t>;
                 constexpr auto size = adim > bdim ? adim : bdim;
-                using type = resize_fixed_index_array_t<lhs_shape_t,size>;
+                using type = resize_fixed_index_array_t<transform_bounded_array_t<lhs_shape_t>,size>;
                 return as_value_v<type>;
             } else if constexpr (is_dynamic_index_array_v<lhs_shape_t>) {
                 return as_value_v<lhs_shape_t>;

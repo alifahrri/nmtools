@@ -20,11 +20,4 @@
 #include "nmtools/meta/bits/array/resize_hybrid_ndarray_dim.hpp"
 #include "nmtools/meta/bits/array/resize_hybrid_ndarray_max_size.hpp"
 
-#include <type_traits>
-#include <tuple>
-
-
-
-
-
 #endif // NMTOOLS_META_ARRAY_HPP

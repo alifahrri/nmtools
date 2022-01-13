@@ -10,8 +10,8 @@ namespace nmtools::meta
     struct is_hybrid_ndarray
     {
         static constexpr auto value = [](){
-            using hybrid_max_type = type_t<hybrid_ndarray_max_size<T>>;
-            if constexpr (is_same_v<detail::fail_t,hybrid_max_type>) {
+            using hybrid_max_type = remove_cvref_t<decltype(hybrid_ndarray_max_size_v<T>)>;
+            if constexpr (is_same_v<detail::fail_t,hybrid_max_type> || is_fail_v<hybrid_max_type>) {
                 return false;
             } else {
                 return true;

@@ -2,9 +2,9 @@
 #define NMTOOLS_DTYPES_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/transform/remove_cvref.hpp"
 
-// assume has cstdint
-#include <cstdint>
+#include "nmtools/def.hpp"
 
 namespace nmtools
 {
@@ -25,16 +25,16 @@ namespace nmtools
     constexpr inline auto is_dtype_v = is_dtype<T>::value;
 
     namespace dtype {
-        using float32_t = dtype_t<float>;
-        using float64_t = dtype_t<double>;
-        using int8_t    = dtype_t<std::int8_t>;
-        using int16_t   = dtype_t<std::int16_t>;
-        using int32_t   = dtype_t<std::int32_t>;
-        using int64_t   = dtype_t<std::int64_t>;
-        using uint8_t   = dtype_t<std::uint8_t>;
-        using uint16_t  = dtype_t<std::uint16_t>;
-        using uint32_t  = dtype_t<std::uint32_t>;
-        using uint64_t  = dtype_t<std::uint64_t>;
+        using float32_t = dtype_t<::nmtools::float32_t>;
+        using float64_t = dtype_t<::nmtools::float64_t>;
+        using int8_t    = dtype_t<::nmtools::int8_t>;
+        using int16_t   = dtype_t<::nmtools::int16_t>;
+        using int32_t   = dtype_t<::nmtools::int32_t>;
+        using int64_t   = dtype_t<::nmtools::int64_t>;
+        using uint8_t   = dtype_t<::nmtools::uint8_t>;
+        using uint16_t  = dtype_t<::nmtools::uint16_t>;
+        using uint32_t  = dtype_t<::nmtools::uint32_t>;
+        using uint64_t  = dtype_t<::nmtools::uint64_t>;
     } // dtype
 
     // inline variables

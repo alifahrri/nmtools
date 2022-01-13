@@ -5,8 +5,6 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 
-#include <tuple>
-
 namespace nmtools::index
 {
     struct shape_outer_t {};

@@ -1,65 +1,12 @@
 #ifndef NMTOOLS_MATH_HPP
 #define NMTOOLS_MATH_HPP
 
-#include <cmath>
-
-// under math namespace to not collide with array/ufunc
-namespace nmtools::math
-{
-
-#define NMTOOLS_UNARY_MATH_FWD_STL(fn) \
-    template <typename T> \
-    constexpr auto fn(T t) \
-    { return std::fn(t); }
-
-#define NMTOOLS_BINARY_MATH_FWD_STL(fn) \
-    template <typename T, typename U> \
-    constexpr auto fn(T t, U u) \
-    { return std::fn(t,u); }
-
-    NMTOOLS_UNARY_MATH_FWD_STL(exp)
-    NMTOOLS_UNARY_MATH_FWD_STL(log)
-    NMTOOLS_UNARY_MATH_FWD_STL(cos)
-    NMTOOLS_UNARY_MATH_FWD_STL(sin)
-    NMTOOLS_UNARY_MATH_FWD_STL(tan)
-    NMTOOLS_UNARY_MATH_FWD_STL(cosh)
-    NMTOOLS_UNARY_MATH_FWD_STL(sinh)
-    NMTOOLS_UNARY_MATH_FWD_STL(tanh)
-    NMTOOLS_UNARY_MATH_FWD_STL(exp2)
-    NMTOOLS_UNARY_MATH_FWD_STL(acos)
-    NMTOOLS_UNARY_MATH_FWD_STL(asin)
-    NMTOOLS_UNARY_MATH_FWD_STL(atan)
-    NMTOOLS_UNARY_MATH_FWD_STL(fabs)
-    NMTOOLS_UNARY_MATH_FWD_STL(rint)
-    NMTOOLS_UNARY_MATH_FWD_STL(log2)
-    NMTOOLS_UNARY_MATH_FWD_STL(sqrt)
-    NMTOOLS_UNARY_MATH_FWD_STL(cbrt)
-    NMTOOLS_UNARY_MATH_FWD_STL(ceil)
-    NMTOOLS_UNARY_MATH_FWD_STL(trunc)
-    NMTOOLS_UNARY_MATH_FWD_STL(floor)
-    NMTOOLS_UNARY_MATH_FWD_STL(atanh)
-    NMTOOLS_UNARY_MATH_FWD_STL(acosh)
-    NMTOOLS_UNARY_MATH_FWD_STL(asinh)
-    NMTOOLS_UNARY_MATH_FWD_STL(expm1)
-    NMTOOLS_UNARY_MATH_FWD_STL(isinf)
-    NMTOOLS_UNARY_MATH_FWD_STL(isnan)
-    NMTOOLS_UNARY_MATH_FWD_STL(log1p)
-    NMTOOLS_UNARY_MATH_FWD_STL(log10)
-    NMTOOLS_UNARY_MATH_FWD_STL(signbit)
-    NMTOOLS_UNARY_MATH_FWD_STL(isfinite)
-
-    NMTOOLS_BINARY_MATH_FWD_STL(max)
-    NMTOOLS_BINARY_MATH_FWD_STL(min)
-    NMTOOLS_BINARY_MATH_FWD_STL(pow)
-    NMTOOLS_BINARY_MATH_FWD_STL(fmax)
-    NMTOOLS_BINARY_MATH_FWD_STL(fmin)
-    NMTOOLS_BINARY_MATH_FWD_STL(fmod)
-    NMTOOLS_BINARY_MATH_FWD_STL(atan2)
-    NMTOOLS_BINARY_MATH_FWD_STL(hypot)
-    NMTOOLS_BINARY_MATH_FWD_STL(ldexp)
-
-#undef NMTOOLS_UNARY_MATH_FWD_STL
-#undef NMTOOLS_BINARY_MATH_FWD_STL
-}
+// Most Arduino doesn't have stl, and no math available from std:: namespace
+// ARDUINO macro is defined at least when using PlatformIO
+#ifdef ARDUINO
+#include "nmtools/platform/math/arduino.hpp"
+#else
+#include "nmtools/platform/math/stl.hpp"
+#endif
 
 #endif // NMTOOLS_MATH_HPP

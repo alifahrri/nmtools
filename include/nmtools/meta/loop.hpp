@@ -1,12 +1,9 @@
 #ifndef NMTOOLS_META_LOOP_HPP
 #define NMTOOLS_META_LOOP_HPP
 
-#include <type_traits>
-#include <tuple>
-#include <utility>
-#include <functional>
-
 #include "nmtools/meta/common.hpp"
+#include "nmtools/utility/get.hpp"
+#include "nmtools/meta/bits/transform/add_reference.hpp"
 
 namespace nmtools::meta
 {

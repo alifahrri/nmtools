@@ -11,8 +11,6 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 
-#include <cassert>
-
 namespace nmtools::view
 {
     /**

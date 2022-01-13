@@ -7,9 +7,6 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
 
-#include <algorithm>
-#include <cstdlib>
-
 namespace nmtools::index
 {
     /**

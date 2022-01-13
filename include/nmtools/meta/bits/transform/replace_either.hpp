@@ -1,8 +1,15 @@
 #ifndef NMTOOLS_META_BITS_TRANSFORM_REPLACE_EITHER_HPP
 #define NMTOOLS_META_BITS_TRANSFORM_REPLACE_EITHER_HPP
 
+#include "nmtools/meta/common.hpp"
 namespace nmtools::meta
 {
+    namespace error
+    {
+        template <typename...>
+        struct REPLACE_EITHER_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief Replace existing Left and Right from given either type
      * with new Left and Right.
@@ -15,7 +22,7 @@ namespace nmtools::meta
     template <typename either_t, typename Left, typename Right>
     struct replace_either
     {
-        using type = either_t;
+        using type = error::REPLACE_EITHER_UNSUPPORTED<either_t,Left,Right>;
     };
 
     template <typename either_t, typename Left, typename Right>

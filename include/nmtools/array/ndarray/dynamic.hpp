@@ -412,6 +412,8 @@ namespace nmtools::meta
         using type = array::dynamic_ndarray<U,storage_type,shape_storage_type>;
     }; // replace_element_type
 
+#ifndef NMTOOLS_MAKE_DYNAMIC_NDARRAY
+#define NMTOOLS_MAKE_DYNAMIC_NDARRAY
     /**
      * @brief Default definition of make_dynamic_ndarray,
      * returns nmtools::array::dynamic_ndarray.
@@ -427,6 +429,7 @@ namespace nmtools::meta
 
     template <typename element_t>
     using make_dynamic_ndarray_t = type_t<make_dynamic_ndarray<element_t>>;
+#endif // NMTOOLS_MAKE_DYNAMIC_NDARRAY
 
     /** @} */ // end group traits
     

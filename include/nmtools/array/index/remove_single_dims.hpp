@@ -6,10 +6,6 @@
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/index/filter.hpp"
 
-#include <type_traits>
-#include <cstddef> // size_t
-#include <utility> // integer_sequence
-
 namespace nmtools::index
 {
     /**

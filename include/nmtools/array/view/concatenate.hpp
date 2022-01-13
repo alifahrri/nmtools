@@ -6,9 +6,6 @@
 #include "nmtools/array/index/concatenate.hpp"
 #include "nmtools/array/shape.hpp"
 
-#include <tuple>
-#include <functional>
-
 namespace nmtools::view
 {
     template <typename lhs_array_t, typename rhs_array_t, typename axis_t>
@@ -39,7 +36,7 @@ namespace nmtools::view
             auto ashape = ::nmtools::shape(lhs);
             auto bshape = ::nmtools::shape(rhs);
             // @todo deal with dynamically changing array
-            auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
+            const auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
             return shape;
         } // shape
 
@@ -61,7 +58,7 @@ namespace nmtools::view
             // @todo do not always request shape! e.g. for fixed size array, or provide options to turn this off
             auto ashape = ::nmtools::shape(lhs);
             auto bshape = ::nmtools::shape(rhs);
-            auto [aflag, bflag, a_idx, b_idx] = index::concatenate(ashape,bshape,indices_,axis);
+            const auto [aflag, bflag, a_idx, b_idx] = index::concatenate(ashape,bshape,indices_,axis);
             // @todo better error handling
             assert ( aflag || bflag
                 // , "out of bound access"
@@ -80,9 +77,9 @@ namespace nmtools::view
             auto indices_ = pack_indices(indices...);
             const auto& [lhs, rhs] = array;
             // @todo do not always request shape! e.g. for fixed size array, or provide options to turn this off
-            auto ashape = ::nmtools::shape(lhs);
-            auto bshape = ::nmtools::shape(rhs);
-            auto [aflag, bflag, a_idx, b_idx] = index::concatenate(ashape,bshape,indices_,axis);
+            const auto ashape = ::nmtools::shape(lhs);
+            const auto bshape = ::nmtools::shape(rhs);
+            const auto [aflag, bflag, a_idx, b_idx] = index::concatenate(ashape,bshape,indices_,axis);
             // @todo better error handling
             assert ( aflag || bflag
                 // , "out of bound access"
@@ -112,7 +109,8 @@ namespace nmtools::view
     {
         auto ashape = shape(lhs);
         auto bshape = shape(rhs);
-        auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
+        const auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
+        // TODO: use nmtools_assert macro
         assert (success
             // , "unsupported concatenate, mismatched shape"
         );
@@ -193,7 +191,7 @@ namespace nmtools::meta
         static constexpr auto value = [](){
             using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
             if constexpr (is_fixed_size_ndarray_v<view_t>) {
-                return len(fixed_ndarray_shape_v<view_t>);
+                return nmtools::len(fixed_ndarray_shape_v<view_t>);
             } else if constexpr (is_none_v<axis_t>) {
                 return 1;
             } else if constexpr (
