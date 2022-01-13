@@ -1,4 +1,4 @@
-name: mbed-platformio
+name: arduino-platformio
 
 on:
   push:
@@ -17,10 +17,11 @@ jobs:
 
     strategy:
       matrix:
-        test: [manip, ufuncs]
+        test: [manip, ufuncs, meta, utl]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Cache pip
       uses: actions/cache@v2
       with:
@@ -41,8 +42,10 @@ jobs:
     - name: Run PlatformIO CI
       run: |
         pio package pack --output nmtools.tar.gz
-        cp nmtools.tar.gz tests/platformio/mbed/${{ matrix.test }}
-        cd tests/platformio/mbed/${{ matrix.test }}
+        cp nmtools.tar.gz tests/platformio/arduino/${{ matrix.test }}
+        cd tests/platformio/arduino/${{ matrix.test }}
+        bash download-toolchain.sh
+        cd ${{ matrix.test }}
         mkdir -p lib
         cd lib
         tar -zxvf ../nmtools.tar.gz
