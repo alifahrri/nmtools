@@ -43,7 +43,7 @@ jobs:
       run: |
         pio package pack --output nmtools.tar.gz
         cp nmtools.tar.gz tests/platformio/arduino/${{ matrix.test }}
-        cd tests/platformio/arduino/${{ matrix.test }}
+        cd tests/platformio/arduino
         bash download-toolchain.sh
         cd ${{ matrix.test }}
         mkdir -p lib
