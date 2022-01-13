@@ -489,99 +489,6 @@ if (NMTOOLS_ENABLE_TEST_BENCHMARKS)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
 endif()
 
-# TODO: move to separate cmakelist.txt
-add_executable(${PROJECT_NAME}-doctest-meta src/doctest/tests.cpp 
-    ## metafunctions
-    src/doctest/meta.cpp
-    src/doctest/meta/forward.cpp
-    src/doctest/meta/integral_constant.cpp
-    src/doctest/meta/loop.cpp
-    src/doctest/meta/make_index_sequence.cpp
-    src/doctest/meta/array/cast_kind.cpp
-    src/doctest/meta/array/view/broadcast_to.cpp
-    src/doctest/meta/array/view/compress.cpp
-    src/doctest/meta/array/view/concatenate.cpp
-    src/doctest/meta/array/view/flatten.cpp
-    src/doctest/meta/array/view/matmul.cpp
-    src/doctest/meta/array/view/mean.cpp
-    src/doctest/meta/array/view/pad.cpp
-    src/doctest/meta/array/view/prod.cpp
-    src/doctest/meta/array/view/repeat.cpp
-    src/doctest/meta/array/view/reshape.cpp
-    src/doctest/meta/array/view/take.cpp
-    src/doctest/meta/array/view/transpose.cpp
-    src/doctest/meta/array/view/ufunc.cpp
-    src/doctest/meta/array/view/var.cpp
-    src/doctest/meta/array/eval/arange.cpp
-    src/doctest/meta/array/eval/atleast_1d.cpp
-    src/doctest/meta/array/eval/atleast_2d.cpp
-    src/doctest/meta/array/eval/atleast_3d.cpp
-    src/doctest/meta/array/eval/broadcast_to.cpp
-    src/doctest/meta/array/eval/concatenate.cpp
-    src/doctest/meta/array/eval/flip.cpp
-    src/doctest/meta/array/eval/full.cpp
-    src/doctest/meta/array/eval/matmul.cpp
-    src/doctest/meta/array/eval/mean.cpp
-    src/doctest/meta/array/eval/ones.cpp
-    src/doctest/meta/array/eval/prod.cpp
-    src/doctest/meta/array/eval/reduce.cpp
-    src/doctest/meta/array/eval/repeat.cpp
-    src/doctest/meta/array/eval/take.cpp
-    src/doctest/meta/array/eval/tile.cpp
-    src/doctest/meta/array/eval/ufunc.cpp
-    src/doctest/meta/array/eval/var.cpp
-    src/doctest/meta/array/eval/where.cpp
-    src/doctest/meta/array/eval/zeros.cpp
-    src/doctest/meta/array/index/broadcast_shape.cpp
-    src/doctest/meta/array/index/broadcast_to.cpp
-    src/doctest/meta/array/index/argsort.cpp
-    src/doctest/meta/array/index/choose.cpp
-    src/doctest/meta/array/index/compute_indices.cpp
-    src/doctest/meta/array/index/compute_strides.cpp
-    src/doctest/meta/array/index/concatenate.cpp
-    src/doctest/meta/array/index/expand_dims.cpp
-    src/doctest/meta/array/index/gather.cpp
-    src/doctest/meta/array/index/logical_not.cpp
-    src/doctest/meta/array/index/nonzero.cpp
-    src/doctest/meta/array/index/remove_dims.cpp
-    src/doctest/meta/array/index/remove_single_dims.cpp
-    src/doctest/meta/array/index/repeat.cpp
-    src/doctest/meta/array/index/reverse.cpp
-    src/doctest/meta/array/index/scatter.cpp
-    src/doctest/meta/array/index/slice.cpp
-    src/doctest/meta/array/index/sum.cpp
-    src/doctest/meta/array/index/where.cpp
-    src/doctest/meta/traits/ndarray.cpp
-    src/doctest/meta/traits/has_template_get.cpp
-    src/doctest/meta/traits/has_type.cpp
-    src/doctest/meta/traits/has_square_bracket.cpp
-    src/doctest/meta/traits/is_index.cpp
-    src/doctest/meta/traits/is_index_array.cpp
-    src/doctest/meta/traits/is_integer.cpp
-    src/doctest/meta/traits/is_num.cpp
-    src/doctest/meta/traits/is_reference.cpp
-    src/doctest/meta/transform/add_reference.cpp
-    src/doctest/meta/transform/apply.cpp
-    src/doctest/meta/transform/common_type.cpp
-    src/doctest/meta/transform/get_element_type.cpp
-    src/doctest/meta/transform/get_underlying_array_type.cpp
-    src/doctest/meta/transform/hybrid_ndarray_max_size.cpp
-    src/doctest/meta/transform/remove_reference.cpp
-    src/doctest/meta/transform/replace_element_type.cpp
-    src/doctest/meta/transform/nested_array_dim.cpp
-    src/doctest/meta/transform/remove_nested_array_extents.cpp
-    src/doctest/meta/transform/resize_fixed_ndarray.cpp
-    src/doctest/meta/transform/resize_hybrid_ndarray_max_size.cpp
-    src/doctest/meta/transform/transform_bounded_array.cpp
-)
-# omg
-if ((NOT EMSCRIPTEN) AND (NOT ANDROID))
-    target_compile_features(${PROJECT_NAME}-doctest-meta PRIVATE cxx_std_17)
-    if (doctest_FOUND)
-        target_link_libraries(${PROJECT_NAME}-doctest-meta PRIVATE doctest::doctest)
-    endif()
-endif()
-
 apply_nmtools(
     TARGET ${PROJECT_NAME}-doctest
     COMPILE_OPTIONS -g
@@ -611,25 +518,6 @@ apply_nmtools(
 target_include_directories(
     ${PROJECT_NAME}-doctest-optional PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-apply_nmtools(
-    TARGET ${PROJECT_NAME}-doctest-meta
-    COMPILE_OPTIONS -g
-)
-target_include_directories(
-    ${PROJECT_NAME}-doctest-meta PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-# for now, force metafunctions test to defer static check
-target_compile_definitions(
-    ${PROJECT_NAME}-doctest-meta PRIVATE
-    DEFER_STATIC_CHECK
-)
-# useful for debugging metafunctions
-# TODO: this may not be portable across compiler, detect compiler
-target_compile_options(${PROJECT_NAME}-doctest-meta PRIVATE
-    -ftemplate-backtrace-limit=0
 )
 
 option(NMTOOLS_DEFER_STATIC_CHECK "defer static check to runtime for testing purpose" OFF)
@@ -684,7 +572,6 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
         set(CMAKE_EXECUTABLE_SUFFIX ".js")
         set_target_properties(
             ${PROJECT_NAME}-doctest
-            ${PROJECT_NAME}-doctest-meta
             PROPERTIES LINK_FLAGS "--emrun -s EXPORTED_FUNCTIONS='[_main]'"
         )
     else(JS_ONLY)
@@ -692,8 +579,21 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
         set(CMAKE_EXECUTABLE_SUFFIX ".wasm.js")
         set_target_properties(
             ${PROJECT_NAME}-doctest
-            ${PROJECT_NAME}-doctest-meta
             PROPERTIES LINK_FLAGS "--emrun -s WASM=1 -s BINARYEN_METHOD='native-wasm' -s EXPORTED_FUNCTIONS='[_main]' -s NO_EXIT_RUNTIME=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']"
         )
     endif(JS_ONLY)
 endif()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
+if (NMTOOLS_BUILD_META_TESTS)
+    add_subdirectory(src/meta)
+endif (NMTOOLS_BUILD_META_TESTS)
+
+option(NMTOOLS_BUILD_UTL_TESTS "build utl tests programs" OFF)
+if (NMTOOLS_BUILD_UTL_TESTS)
+    add_subdirectory(src/utl/utl)
+    add_subdirectory(src/utl/meta)
+    add_subdirectory(src/utl/array)
+endif (NMTOOLS_BUILD_UTL_TESTS)

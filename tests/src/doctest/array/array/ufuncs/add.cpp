@@ -221,13 +221,14 @@ TEST_CASE("add.reduce(case4)" * doctest::test_suite("array::add.reduce"))
     REDUCE_ADD_SUBCASE( case4, a_a, axis_a );
     // REDUCE_ADD_SUBCASE( case4, a_v, axis_v );
     REDUCE_ADD_SUBCASE( case4, a_f, axis_f );
-    REDUCE_ADD_SUBCASE( case4, a_h, axis_h );
+    // NOTE: hybrid index not supported
+    REDUCE_ADD_SUBCASE( case4, a_h, axis );
 
     REDUCE_ADD_SUBCASE( case4,   a,   axis, None, None, False, context, output );
     REDUCE_ADD_SUBCASE( case4, a_a, axis_a, None, None, False, context, output );
     // REDUCE_ADD_SUBCASE( case4, a_v, axis_v, None, None, False, context, output );
     REDUCE_ADD_SUBCASE( case4, a_f, axis_f, None, None, False, context, output );
-    REDUCE_ADD_SUBCASE( case4, a_h, axis_h, None, None, False, context, output );
+    REDUCE_ADD_SUBCASE( case4, a_h, axis, None, None, False, context, output );
 }
 
 TEST_CASE("add.reduce(case5)" * doctest::test_suite("array::add.reduce"))
@@ -240,13 +241,13 @@ TEST_CASE("add.reduce(case5)" * doctest::test_suite("array::add.reduce"))
     REDUCE_ADD_SUBCASE( case5, a_a, axis_a );
     // REDUCE_ADD_SUBCASE( case5, a_v, axis_v );
     REDUCE_ADD_SUBCASE( case5, a_f, axis_f );
-    REDUCE_ADD_SUBCASE( case5, a_h, axis_h );
+    REDUCE_ADD_SUBCASE( case5, a_h, axis );
 
     REDUCE_ADD_SUBCASE( case5,   a,   axis, None, None, False, context, output );
     REDUCE_ADD_SUBCASE( case5, a_a, axis_a, None, None, False, context, output );
     // REDUCE_ADD_SUBCASE( case5, a_v, axis_v, None, None, False, context, output );
     REDUCE_ADD_SUBCASE( case5, a_f, axis_f, None, None, False, context, output );
-    REDUCE_ADD_SUBCASE( case5, a_h, axis_h, None, None, False, context, output );
+    REDUCE_ADD_SUBCASE( case5, a_h, axis, None, None, False, context, output );
 }
 
 TEST_CASE("add.reduce(case6)" * doctest::test_suite("array::add.reduce"))
@@ -259,13 +260,13 @@ TEST_CASE("add.reduce(case6)" * doctest::test_suite("array::add.reduce"))
     REDUCE_ADD_SUBCASE( case6, a_a, axis_a );
     // REDUCE_ADD_SUBCASE( case6, a_v, axis_v );
     REDUCE_ADD_SUBCASE( case6, a_f, axis_f );
-    REDUCE_ADD_SUBCASE( case6, a_h, axis_h );
+    REDUCE_ADD_SUBCASE( case6, a_h, axis );
 
     REDUCE_ADD_SUBCASE( case6,   a,   axis, None, None, False, context, output );
     REDUCE_ADD_SUBCASE( case6, a_a, axis_a, None, None, False, context, output );
     // REDUCE_ADD_SUBCASE( case6, a_v, axis_v, None, None, False, context, output );
     REDUCE_ADD_SUBCASE( case6, a_f, axis_f, None, None, False, context, output );
-    REDUCE_ADD_SUBCASE( case6, a_h, axis_h, None, None, False, context, output );
+    REDUCE_ADD_SUBCASE( case6, a_h, axis, None, None, False, context, output );
 }
 
 TEST_CASE("add.reduce(case7)" * doctest::test_suite("array::add.reduce"))

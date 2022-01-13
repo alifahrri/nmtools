@@ -1,207 +1,11 @@
 #ifndef NMTOOLS_TESTING_HPP
 #define NMTOOLS_TESTING_HPP
 
+#include "nmtools/platform.hpp"
 #include "nmtools/utils/isclose.hpp"
 #include "nmtools/utils/isequal.hpp"
-#include "nmtools/utils/to_string.hpp"
-#include "nmtools/array/kind.hpp"
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/utility/cast.hpp"
-#include "nmtools/array/index/product.hpp"
-#include <type_traits>
-#include <array>
-#include <sstream>
-#include <string>
-// when using emscripten, compiler complains about 'boost/type_index.hpp' file not found
-// while cmake find boost is success, for now fallback to typeid
-#if __has_include(<boost/type_index.hpp>)
-    #include <boost/type_index.hpp>
-    #define _NMTOOLS_TESTING_HAS_TYPE_INDEX
-#endif
-
-#ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
-#define NMTOOLS_TESTING_GET_TYPENAME(type) \
-boost::typeindex::type_id<type>().pretty_name()
-#else
-#define NMTOOLS_TESTING_GET_TYPENAME(type) \
-typeid(type).name()
-#endif
-
-// allow to test on platform without RTTI support,
-#if defined(__clang__)
-  #if __has_feature(cxx_rtti)
-    #define NMTOOLS_RTTI_ENABLED
-  #endif
-#elif defined(__GNUC__)
-  #if defined(__GXX_RTTI)
-    #define NMTOOLS_RTTI_ENABLED
-  #endif
-#elif defined(_MSC_VER)
-  #if defined(_CPPRTTI)
-    #define NMTOOLS_RTTI_ENABLED
-  #endif
-#endif
-
-/**
- * @defgroup testing
- * collections of helper functions and macros for testing purpose.
- * 
- */
-
-namespace nmtools::testing
-{
-    using std::integer_sequence;
-    template <size_t...I>
-    using index_sequence = integer_sequence<size_t,I...>;
-
-    /**
-     * @ingroup testing
-     * @{
-     */
-
-    /**
-     * @brief overloaded version of make_func_args
-     * 
-     * @tparam Args non-type template parameters passed that should be passed to func
-     * @param func function name
-     * @param args arguments that should be passed to func
-     * @return auto string formated with `func<tparams(s)...>(typename(s)...)`
-     */
-    template <typename...Args>
-    auto make_func_args(std::string func, const Args&...args)
-    {
-        std::stringstream ss;
-        constexpr auto n = (sizeof...(args));
-        #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
-        auto typenames = std::array<std::string,n>{
-            {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
-        };
-        #elif defined(NMTOOLS_RTTI_ENABLED)
-        auto typenames = std::array<std::string,n>{
-            {typeid(decltype(args)).name()...}
-        };
-        #else
-        // empty
-        auto typenames = std::array<std::string,n>{};
-        #endif
-        ss << func;
-        ss << '(';
-        for (size_t i=0; i<n; i++) {
-            ss << typenames[i];
-            if (i!=(n-1))
-                ss << ",";
-        }
-        ss << ')';
-        return ss.str();
-    } // auto make_func_args
-
-    template <typename...Args>
-    auto make_func_args(std::string func, std::string result_type, const Args&...args)
-    {
-        std::stringstream ss;
-        constexpr auto n = (sizeof...(args));
-        #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
-        auto typenames = std::array<std::string,n>{
-            {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
-        };
-        #elif defined(NMTOOLS_RTTI_ENABLED)
-        auto typenames = std::array<std::string,n>{
-            {typeid(decltype(args)).name()...}
-        };
-        #else
-        // empty
-        auto typenames = std::array<std::string,n>{};
-        #endif
-        ss << func;
-        ss << '(';
-        for (size_t i=0; i<n; i++) {
-            ss << typenames[i];
-            if (i!=(n-1))
-                ss << ",";
-        }
-        ss << ") -> " << result_type;
-        return ss.str();
-    } // auto make_func_args
-
-    /** @} */ // end groupt testing
-} // nmtools::testing
-
-namespace nmtools::array::kind
-{
-    // for testing purpose only
-    struct nested_vector_t {};
-    struct nested_array_t {};
-
-    struct fixed_vec_t {};
-    struct dynamic_vec_t {};
-
-    // TODO: rename to vector, drop nested vector support
-    inline constexpr auto nested_vec  = nested_vector_t {};
-    inline constexpr auto nested_arr  = nested_array_t {};
-    inline constexpr auto fixed_vec   = fixed_vec_t {};
-    inline constexpr auto dynamic_vec = dynamic_vec_t {};
-} // namespace nmtools::array::kind
-
-namespace nmtools
-{
-    struct cast_kind_t {};
-
-    namespace meta::error
-    {
-        struct CAST_KIND_UNSUPPORTED : detail::fail_t {};
-    }
-
-    template <typename src_t, typename kind_t>
-    struct meta::resolve_optype<
-        void, cast_kind_t, src_t, kind_t
-    >
-    {
-        static constexpr auto vtype = [](){
-            if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::fixed_t>) {
-                using element_t = get_element_type_t<src_t>;
-                // start with arbitrary shaped fixed_ndarray, then resize with src
-                using fixed_kind_t = array::fixed_ndarray<element_t,1>;
-                using type = resize_fixed_ndarray_t<fixed_kind_t,src_t>;
-                return meta::as_value_v<type>;
-            }
-            else if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::hybrid_t>) {
-                using element_t = get_element_type_t<src_t>;
-                constexpr auto shape = fixed_ndarray_shape_v<src_t>;
-                constexpr auto numel = index::product(shape);
-                constexpr auto dim = fixed_ndarray_dim_v<src_t>;
-                using type = array::hybrid_ndarray<element_t,numel,dim>;
-                return as_value_v<type>;
-            }
-            else if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::nested_array_t>) {
-                using type = meta::transform_bounded_array_t<src_t>;
-                return as_value_v<type>;
-            }
-            else if constexpr (meta::is_same_v<kind_t,array::kind::dynamic_t>) {
-                using element_t = get_element_type_t<src_t>;
-                using type = array::dynamic_ndarray<element_t>;
-                return meta::as_value_v<type>;
-            }
-            else if constexpr (meta::is_same_v<kind_t,array::kind::nested_vector_t>) {
-                using element_t = get_element_type_t<src_t>;
-                constexpr auto dim = fixed_dim_v<src_t>;
-                using type = meta::make_nested_dynamic_array_t<std::vector,element_t,dim>;
-                return as_value_v<type>;
-            } else /* */ {
-                return as_value_v<error::CAST_KIND_UNSUPPORTED>;
-            }
-        }();
-        using type = meta::type_t<decltype(vtype)>;
-    }; // resolve_optype
-
-    template <typename src_t, typename kind_t>
-    constexpr auto cast(const src_t& src, const kind_t&)
-    {
-        using ret_t = meta::resolve_optype_t<cast_kind_t,src_t,kind_t>;
-        return cast(src, meta::as_value_v<ret_t>);
-    } // cast
-} // namespace nmtools
+#include "nmtools/testing/string.hpp"
+#include "nmtools/testing/array_cast.hpp"
 
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
@@ -361,7 +165,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
 #define NMTOOLS_TESTING_TYPECHECK_ISCLOSE_TEST(func, expect, type, ...) \
 {  \
     auto result = func(__VA_ARGS__); \
-    static_assert(std::is_same_v<decltype(result),type>); \
+    static_assert(nmtools::meta::is_same_v<decltype(result),type>); \
     NMTOOLS_TESTING_LOG_TYPEINFO(func,__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE(result,expect); \
     /* TODO: check return type! */ \
@@ -397,7 +201,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
 #define NMTOOLS_TESTING_TYPECHECK_ISEQUAL_TEST(func, expect, type, ...) \
 {  \
     auto result = func(__VA_ARGS__); \
-    static_assert(std::is_same_v<decltype(result),type>); \
+    static_assert(nmtools::meta::is_same_v<decltype(result),type>); \
     NMTOOLS_TESTING_LOG_TYPEINFO(func,__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL(result,expect); \
     /* TODO: check return type! */ \
@@ -634,24 +438,6 @@ namespace subcase::expect
  */
 #define STATIC_CHECK_TRAIT STATIC_CHECK_TRAIT_TRUE
 
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
-
-#if !defined(NMTOOLS_CAST_ARRAYS) && !defined(PLATFORMIO)
-#define NMTOOLS_CAST_ARRAYS(name) \
-inline auto name##_a = nmtools::cast(name, nmtools::array::kind::nested_arr); \
-inline auto name##_f = nmtools::cast(name, nmtools::array::kind::fixed); \
-inline auto name##_d = nmtools::cast(name, nmtools::array::kind::dynamic); \
-inline auto name##_h = nmtools::cast(name, nmtools::array::kind::hybrid);
-#endif // !defined(NMTOOLS_CAST_ARRAYS) && !defined(PLATFORMIO)
-
-#if !defined(NMTOOLS_CAST_ARRAYS) && defined(PLATFORMIO)
-#define NMTOOLS_CAST_ARRAYS(name) \
-inline auto name##_a = nmtools::cast(name, nmtools::array::kind::nested_arr); \
-inline auto name##_f = nmtools::cast(name, nmtools::array::kind::fixed); \
-inline auto name##_h = nmtools::cast(name, nmtools::array::kind::hybrid);
-#endif // !defined(NMTOOLS_CAST_ARRAYS) && defined(PLATFORMIO)
 /** @} */ // end groupt testing
 
 #endif // NMTOOLS_TESTING_HPP

@@ -17,6 +17,16 @@ namespace composition
         return b;
     } // square_sum
 
+    // template <typename lhs_t, typename axis_t
+    //     , typename dtype_t=nmtools::none_t, typename keepdims_t=std::false_type>
+    // constexpr auto sum_divide(const lhs_t& lhs, const rhs_t& rhs, const axis_t& axis
+    //     , const dtype_t dtype=dtype_t{}, const keepdims_t keepdims=keepdims_t{})
+    // {
+    //     auto a = view::sum(a,axis,dtype,/*initial=*/nmtools::None,keepdims);
+    //     auto b = view::divide(a,rhs);
+    //     return b;
+    // }
+
     template <typename lhs_t, typename rhs_t, typename axis_t
         , typename dtype_t=nmtools::none_t, typename keepdims_t=std::false_type>
     constexpr auto square_sum_divide(const lhs_t& lhs, const rhs_t& rhs, const axis_t& axis
@@ -248,6 +258,66 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum_divide)
             {{11.916666666666666}}
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        inline int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        inline int axis[3] = {0,1,2};
+        inline auto keepdims = True;
+        inline auto N = 12;
+        inline auto dtype = None;
+        CAST_ARRAYS(array);
+        CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        inline float result[1][1][1] = {
+            {
+                {42.f},
+            },
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        inline int array[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        inline int axis[3] = {0,1,2};
+        inline auto keepdims = true;
+        inline auto N = 12;
+        inline auto dtype = None;
+        CAST_ARRAYS(array);
+        CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        inline float result[1][1][1] = {
+            {
+                {42.f},
+            },
+        };
+    }
 }
 
 #define RUN_square_sum_divide_impl(...) \
@@ -335,4 +405,22 @@ TEST_CASE("square_sum_divide(case5)" * doctest::test_suite("composition::square_
     SQUARE_SUM_DIVIDE_SUBCASE( case5, a_f, N, axis, dtype, keepdims );
     SQUARE_SUM_DIVIDE_SUBCASE( case5, a_h, N, axis, dtype, keepdims );
     // SQUARE_SUM_DIVIDE_SUBCASE( case5, a_d, N, axis, dtype, keepdims );
+}
+
+TEST_CASE("square_sum_divide(case6)" * doctest::test_suite("composition::square_sum_divide"))
+{
+    SQUARE_SUM_DIVIDE_SUBCASE( case6, array, N, axis, dtype, keepdims );
+    SQUARE_SUM_DIVIDE_SUBCASE( case6, array_a, N, axis, dtype, keepdims );
+    SQUARE_SUM_DIVIDE_SUBCASE( case6, array_f, N, axis, dtype, keepdims );
+    SQUARE_SUM_DIVIDE_SUBCASE( case6, array_h, N, axis, dtype, keepdims );
+    // SQUARE_SUM_DIVIDE_SUBCASE( case6, a_d, N, axis, dtype, keepdims );
+}
+
+TEST_CASE("square_sum_divide(case7)" * doctest::test_suite("composition::square_sum_divide"))
+{
+    SQUARE_SUM_DIVIDE_SUBCASE( case7, array, N, axis, dtype, keepdims );
+    // SQUARE_SUM_DIVIDE_SUBCASE( case7, array_a, N, axis, dtype, keepdims );
+    // SQUARE_SUM_DIVIDE_SUBCASE( case7, array_f, N, axis, dtype, keepdims );
+    // SQUARE_SUM_DIVIDE_SUBCASE( case7, array_h, N, axis, dtype, keepdims );
+    // SQUARE_SUM_DIVIDE_SUBCASE( case7, a_d, N, axis, dtype, keepdims );
 }

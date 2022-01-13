@@ -32,7 +32,10 @@ set -e
 NMTOOLS_TESTBENCH_EPOCHS=3 NMTOOLS_TESTBENCH_WARMUP=1 NMTOOLS_TESTBENCH_QUIET=1 $BUILD_DIR/tests/numeric-tests-doctest \
     && $BUILD_DIR/tests/numeric-tests-doctest-optional \
     && $BUILD_DIR/tests/numeric-tests-doctest-exception \
-    && $BUILD_DIR/tests/numeric-tests-doctest-meta
+    && $BUILD_DIR/tests/src/meta/numeric-tests-doctest-meta \
+    && $BUILD_DIR/tests/src/utl/meta/numeric-tests-utl-meta \
+    && $BUILD_DIR/tests/src/utl/array/numeric-tests-utl-array \
+    && $BUILD_DIR/tests/src/utl/utl/numeric-tests-utl
 
 gcovr -r $DIR/../include/ $BUILD_DIR --html-details=build/nmtools-coverage.html
 

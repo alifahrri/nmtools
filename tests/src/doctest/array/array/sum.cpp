@@ -79,7 +79,8 @@ TEST_CASE("sum(case4)" * doctest::test_suite("array::sum"))
     SUM_SUBCASE( case4, a_a, axis_a );
     // SUM_SUBCASE( case4, a_v, axis_v );
     SUM_SUBCASE( case4, a_f, axis_f );
-    SUM_SUBCASE( case4, a_h, axis_h );
+    // NOTE: hybrid index not supported
+    SUM_SUBCASE( case4, a_h, axis );
 }
 
 TEST_CASE("sum(case5)" * doctest::test_suite("array::sum"))
@@ -88,7 +89,7 @@ TEST_CASE("sum(case5)" * doctest::test_suite("array::sum"))
     SUM_SUBCASE( case5, a_a, axis_a );
     // SUM_SUBCASE( case5, a_v, axis_v );
     SUM_SUBCASE( case5, a_f, axis_f );
-    SUM_SUBCASE( case5, a_h, axis_h );
+    SUM_SUBCASE( case5, a_h, axis );
 }
 
 TEST_CASE("sum(case6)" * doctest::test_suite("array::sum"))
@@ -97,7 +98,7 @@ TEST_CASE("sum(case6)" * doctest::test_suite("array::sum"))
     SUM_SUBCASE( case6, a_a, axis_a );
     // SUM_SUBCASE( case6, a_v, axis_v );
     SUM_SUBCASE( case6, a_f, axis_f );
-    SUM_SUBCASE( case6, a_h, axis_h );
+    SUM_SUBCASE( case6, a_h, axis );
 }
 
 TEST_CASE("sum(case7)" * doctest::test_suite("array::sum"))
