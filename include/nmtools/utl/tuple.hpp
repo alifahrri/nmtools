@@ -269,7 +269,10 @@ namespace nmtools::utl
 // on emscripten it is 'std::__2::tuple_size' 🤦,
 // which triggers ambiguous reference when trying to specialize
 
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+// make sure to follow stl tuple, if has stl
+#if __has_include(<tuple>)
+#include <tuple>
+#else
 namespace std
 {
     template <typename T>
@@ -278,7 +281,7 @@ namespace std
     template <size_t I, typename T>
     struct tuple_element;
 } // namespace std
-#endif // __ANDROID__ __EMSCRIPTEN__
+#endif // <tuple>
 
 #define NMTOOLS_UTL_STD_TUPLE_SIZE(tuple) \
     template <typename...Args> \
