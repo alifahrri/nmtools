@@ -591,7 +591,7 @@ if (NMTOOLS_BUILD_META_TESTS)
     add_subdirectory(src/meta)
 endif (NMTOOLS_BUILD_META_TESTS)
 
-option(NMTOOLS_BUILD_UTL_TESTS "build utl tests programs" OFF)
+option(NMTOOLS_BUILD_UTL_TESTS "build utl tests programs" ON)
 if (NMTOOLS_BUILD_UTL_TESTS)
     add_subdirectory(src/utl/utl)
     add_subdirectory(src/utl/meta)
