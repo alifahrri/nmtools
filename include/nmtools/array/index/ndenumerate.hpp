@@ -7,10 +7,6 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 
-#include <array>
-#include <tuple>
-#include <type_traits>
-
 namespace nmtools::index
 {
     /**

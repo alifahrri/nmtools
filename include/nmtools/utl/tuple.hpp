@@ -264,6 +264,12 @@ namespace nmtools::utl
 // and based on current implementation of utl::tuple,
 // must expose some of metafunction to std namespace 🤦
 
+// NOTE: to avoid ambiguous on clang with libc++,
+// apparently on android NDK, the struct is located at std::__ndk1::tuple_size 🤦,
+// on emscripten it is 'std::__2::tuple_size' 🤦,
+// which triggers ambiguous reference when trying to specialize
+
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 namespace std
 {
     template <typename T>
@@ -271,56 +277,57 @@ namespace std
 
     template <size_t I, typename T>
     struct tuple_element;
+} // namespace std
+#endif // __ANDROID__ __EMSCRIPTEN__
 
 #define NMTOOLS_UTL_STD_TUPLE_SIZE(tuple) \
     template <typename...Args> \
-    struct tuple_size<nmtools::utl::tuple<Args...>> \
+    struct std::tuple_size<nmtools::utl::tuple<Args...>> \
     { \
         using tuple_type = nmtools::utl::tuple<Args...>; \
         static constexpr auto value = nmtools::utl::tuple_size_v<tuple_type>; \
     }; \
     template <typename...Args> \
-    struct tuple_size<const nmtools::utl::tuple<Args...>> : tuple_size<nmtools::utl::tuple<Args...>>{}; \
+    struct std::tuple_size<const nmtools::utl::tuple<Args...>> : std::tuple_size<nmtools::utl::tuple<Args...>>{}; \
 
 #define NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple) \
     template <size_t I, typename...Args> \
-    struct tuple_element<I,nmtools::utl::tuple<Args...>> \
+    struct std::tuple_element<I,nmtools::utl::tuple<Args...>> \
     { \
         using tuple_type = nmtools::utl::tuple<Args...>; \
         using type = nmtools::utl::tuple_element_t<I,tuple_type>; \
     }; \
     template <size_t I, typename...Args> \
-    struct tuple_element<I,const nmtools::utl::tuple<Args...>> \
+    struct std::tuple_element<I,const nmtools::utl::tuple<Args...>> \
     { \
         using tuple_type = nmtools::utl::tuple<Args...>; \
         using type = const nmtools::utl::tuple_element_t<I,tuple_type>; \
     };
 
-    // NOTE: to allow avr-gcc, the base class must be defined as well
+// NOTE: to allow avr-gcc, the base class must be defined as well
 
-    NMTOOLS_UTL_STD_TUPLE_SIZE(tuple)
-    NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple)
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple)
 
-    NMTOOLS_UTL_STD_TUPLE_SIZE(tuple1)
-    NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple1)
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple1)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple1)
 
-    NMTOOLS_UTL_STD_TUPLE_SIZE(tuple2)
-    NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple2)
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple2)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple2)
 
-    NMTOOLS_UTL_STD_TUPLE_SIZE(tuple3)
-    NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple3)
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple3)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple3)
 
-    NMTOOLS_UTL_STD_TUPLE_SIZE(tuple4)
-    NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple4)
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple4)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple4)
 
-    NMTOOLS_UTL_STD_TUPLE_SIZE(tuple5)
-    NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple5)
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple5)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple5)
 
-    NMTOOLS_UTL_STD_TUPLE_SIZE(tuple6)
-    NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple6)
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple6)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple6)
 
-    #undef NMTOOLS_UTL_STD_TUPLE_SIZE
-    #undef NMTOOLS_UTL_STD_TUPLE_ELEMENT
-} // namespace std
+#undef NMTOOLS_UTL_STD_TUPLE_SIZE
+#undef NMTOOLS_UTL_STD_TUPLE_ELEMENT
 
 #endif // NMTOOLS_UTL_TUPLE_HPP
