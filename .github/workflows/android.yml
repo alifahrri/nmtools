@@ -18,18 +18,34 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: android-arm
-            arch: armeabi-v7a
-          - name: android-arm64
-            arch: arm64-v8a
-          - name: android-x86
-            arch: x86
-          - name: android-x86_64
-            arch: x86_64
+          - name: android-arm-2020
+            image: android-arm
+            tag: 20201222-0217db3
+          - name: android-arm64-2020
+            image: android-arm64
+            tag: 20201222-0217db3
+          - name: android-x86-2020
+            image: android-x86
+            tag: 20201222-0217db3
+          - name: android-x86_64-2020
+            image: android-x86_64
+            tag: 20201222-0217db3
+          - name: android-arm-latest
+            image: android-arm
+            tag: latest
+          - name: android-arm64-latest
+            image: android-arm64
+            tag: latest
+          - name: android-x86-latest
+            image: android-x86
+            tag: latest
+          - name: android-x86_64-latest
+            image: android-x86_64
+            tag: latest
     steps:
       - uses: actions/checkout@v2
       - name: setup dockcross
-        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+        run: docker run --rm dockcross/${{ matrix.image }}:${{ matrix.tag }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
       - uses: actions/cache@v2
         id: cache
         with:
