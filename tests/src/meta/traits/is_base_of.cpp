@@ -11,7 +11,7 @@ struct D : private B1, private B2 {};
 struct E : private B1 {};
 struct I0; // incomplete
 
-TEST_CASE("is_base_of" * doctest::test_suite("meta"))
+TEST_CASE("is_base_of" * doctest::test_suite("meta") * doctest::may_fail(true))
 {
     {
         using Base = B;

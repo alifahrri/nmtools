@@ -37,7 +37,7 @@ struct incomplete_type;
 
 typedef void (*FunctionPtr)();
 
-TEST_CASE("is_class" * doctest::test_suite("meta"))
+TEST_CASE("is_class" * doctest::test_suite("meta") * doctest::may_fail(true))
 {
     {
         using type = Empty;

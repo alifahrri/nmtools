@@ -27,7 +27,7 @@ TEST_CASE("eval(reduce)" * doctest::test_suite("eval"))
         {
             using view_t = view::decorator_t< view::reduce_t, view::add_t<>, int[2][3], int, none_t, none_t>;
             using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = na::dynamic_ndarray<int>;
+            using expected_t = na::hybrid_ndarray<int,6,1>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
         {
@@ -39,7 +39,7 @@ TEST_CASE("eval(reduce)" * doctest::test_suite("eval"))
         {
             using view_t = view::decorator_t< view::reduce_t, view::add_t<>, na::hybrid_ndarray<int,6,2>, int, none_t, none_t >;
             using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = na::dynamic_ndarray<int>;
+            using expected_t = na::hybrid_ndarray<int,6,1>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
 
@@ -73,7 +73,7 @@ TEST_CASE("eval(reduce)" * doctest::test_suite("eval"))
             using axis_t  = decltype(0_ct);
             using view_t  = view::decorator_t< view::reduce_t, view::add_t<>, array_t, axis_t, none_t, none_t >;
             using eval_t  = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = na::dynamic_ndarray<int>;
+            using expected_t = na::hybrid_ndarray<int,6,1>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
         {
