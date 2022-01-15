@@ -24,12 +24,12 @@ jobs:
           - name: android-arm64-2020
             image: android-arm64
             tag: 20201222-0217db3
-          - name: android-x86-2020
+          - name: android-x86-2021
             image: android-x86
-            tag: 20201222-0217db3
+            tag: 20210127-0c1f2c9
           - name: android-x86_64-2021
             image: android-x86_64
-            tag: 20211222-f096312
+            tag: 20210127-0c1f2c9
           - name: android-arm-latest
             image: android-arm
             tag: latest

@@ -2,6 +2,7 @@
 #define NMTOOLS_PLATFORM_MATH_HPP
 
 #include <cmath>
+#include <algorithm> // min, max
 
 // under math namespace to not collide with array/ufunc
 namespace nmtools::math

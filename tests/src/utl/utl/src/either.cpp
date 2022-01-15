@@ -32,8 +32,13 @@ TEST_CASE("either" * doctest::test_suite("utl"))
             CHECK( either.index() == 1 );
         }
         {
-            using either_t = utl::either<none_t,nmtools_array<size_t,3>>;
-            auto either = either_t(nmtools_array{1ul,1ul,1ul});
+            // NOTE: fail on 32-bit platform (android 32bit,)
+            // using either_t = utl::either<none_t,nmtools_array<size_t,3>>;
+            // auto either = either_t(nmtools_array{1ul,1ul,1ul});
+
+            using array_t  = nmtools_array<size_t,3>;
+            using either_t = utl::either<none_t,array_t>;
+            auto either = either_t(array_t{1,1,1});
 
             CHECK( either.index() == 1 );
         }
