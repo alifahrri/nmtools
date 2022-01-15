@@ -6,7 +6,7 @@
 ### Requirements
 - [platformio](https://platformio.org/install)
 - [simavr](https://github.com/buserror/simavr) (optional, for arduino simulation)
-- [avr-gcc 9+](https://github.com/alifahrri/toolchain-avr-gcc/releases/download/v9.2.0/), required to override the default AVR toolchain which doesn't have complete core C++17 language features.
+- [avr-gcc 9+](https://github.com/alifahrri/toolchain-avr-gcc/releases/tag/v9.2.0), required to override the default AVR toolchain which doesn't have complete core C++17 language features.
 
 ### Running the examples
 
