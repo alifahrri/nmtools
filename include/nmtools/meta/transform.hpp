@@ -10,9 +10,13 @@
 #include "nmtools/meta/bits/transform/concat_type.hpp"
 #include "nmtools/meta/bits/transform/get_either.hpp"
 #include "nmtools/meta/bits/transform/get_element_type.hpp"
+#include "nmtools/meta/bits/transform/get_common_type.hpp"
+#include "nmtools/meta/bits/transform/get_element_or_common_type.hpp"
 #include "nmtools/meta/bits/transform/get_index_type.hpp"
 #include "nmtools/meta/bits/transform/get_maybe_type.hpp"
 #include "nmtools/meta/bits/transform/len.hpp"
+#include "nmtools/meta/bits/transform/make_signed.hpp"
+#include "nmtools/meta/bits/transform/make_unsigned.hpp"
 #include "nmtools/meta/bits/transform/promote_index.hpp"
 #include "nmtools/meta/bits/transform/promote_types.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
@@ -168,22 +172,6 @@ namespace nmtools::meta
         }; // apply_helper
     } // namespace detail
 
-    namespace error
-    {
-        template <typename T>
-        struct GET_COMMON_TYPE_UNSUPPORTED : detail::fail_t {};
-    } // namespace error
-    
-
-    template <typename T>
-    struct get_common_type
-    {
-        using type = error::GET_COMMON_TYPE_UNSUPPORTED<T>;
-    };
-
-    template <typename T>
-    using get_common_type_t = type_t<get_common_type<T>>;
-
     // TODO: remove metafunctions
     /**
      * @brief apply template template parameter T on type list T
@@ -206,24 +194,6 @@ namespace nmtools::meta
      */
     template <template<typename...>typename TT, typename T>
     using apply_t = typename apply<TT,T>::type;
-
-    template <typename array_t>
-    struct get_element_or_common_type
-    {
-        static constexpr auto vtype = [](){
-            using element_t = get_element_type_t<array_t>;
-            if constexpr (is_void_v<element_t> || is_fail_v<element_t>) {
-                using common_t = get_common_type_t<array_t>;
-                return as_value_v<common_t>;
-            } else /* if constexpr (is_num_v<element_t>) */ {
-                return as_value_v<element_t>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    }; // get_element_or_common_type
-
-    template <typename array_t>
-    using get_element_or_common_type_t = type_t<get_element_or_common_type<array_t>>;
 
     /**
      * @brief metafunction to resize fixed vector.

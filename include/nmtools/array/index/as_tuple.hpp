@@ -1,12 +1,6 @@
 #ifndef NMTOOLS_ARRAY_INDEX_AS_TUPLE_HPP
 #define NMTOOLS_ARRAY_INDEX_AS_TUPLE_HPP
 
-#include <type_traits>
-#include <cstddef> // size_t
-#include <utility> // integer_sequence
-#include <array>
-#include <tuple>
-
 #include "nmtools/meta.hpp"
 
 namespace nmtools::index
@@ -20,15 +14,16 @@ namespace nmtools::index
     /**
      * @brief create tuple from array
      * 
-     * @tparam array_t array type, `std::get<Is>(array)` must be well-formed
+     * @tparam array_t array type,
      * @tparam Is index sequence
      * @param array array to be converted
      * @return constexpr decltype(auto) 
      */
-    template <typename array_t, size_t...Is>
-    constexpr decltype(auto) as_tuple(const array_t& array, std::index_sequence<Is...>)
+    template <template<auto...>typename index_sequence, typename array_t, size_t...Is>
+    constexpr decltype(auto) as_tuple(const array_t& array, index_sequence<Is...>)
     {
-        return std::tuple{std::get<Is>(array)...};
+        using tuple_t = meta::make_tuple_type_t<meta::remove_cvref_t<decltype(nmtools::get<Is>(array))>...>;
+        return tuple_t{nmtools::get<Is>(array)...};
     } // as_tuple
 
     /**
@@ -43,7 +38,7 @@ namespace nmtools::index
     template <template <typename,size_t> typename array_t, typename T, size_t N>
     constexpr auto as_tuple(const array_t<T,N>& array)
     {
-        using indices_t = std::make_index_sequence<N>;
+        using indices_t = meta::make_index_sequence<N>;
         return as_tuple(array,indices_t{});
     } // as_tuple
     

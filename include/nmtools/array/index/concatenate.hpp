@@ -9,8 +9,6 @@
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/shape.hpp"
 
-#include <tuple>
-
 namespace nmtools::index
 {
     /**

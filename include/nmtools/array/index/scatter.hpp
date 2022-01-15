@@ -11,10 +11,6 @@
 
 #include "nmtools/assert.hpp"
 
-#include <array>
-#include <tuple>
-#include <type_traits>
-
 namespace nmtools::index
 {
     // tag to resolve scatter return type

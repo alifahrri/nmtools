@@ -1,110 +1,109 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_RESHAPE_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_RESHAPE_HPP
 
-#include "nmtools/constants.hpp"
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
-#include "nmtools/array/index/as_tuple.hpp"
 #include "nmtools/testing/testing.hpp"
-
-#include <array>
-#include <tuple>
-#include <vector>
+#include "nmtools/testing/array_cast.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
 namespace kind = na::kind;
-using namespace nm::literals;
-
-#ifndef PLATFORMIO
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid);
-#else
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_h = cast(name, kind::hybrid);
-#endif // PLATFORMIO
 
 NMTOOLS_TESTING_DECLARE_CASE(reshape)
 {
+    using namespace nm::literals;
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        inline double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        inline int newshape[2] = {12,1};
-        CAST_ARRAYS(array)
-        CAST_ARRAYS(newshape)
-        inline auto newshape_ct = std::tuple{12_ct, 1_ct};
+        inline int8_t array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        inline int8_t newshape[2] = {12,1};
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_ARRAYS(newshape)
+        inline auto newshape_ct = nmtools_tuple{12_ct, 1_ct};
+        // TODO: remove this tuple
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
         // isclose doesn't support tuple and raw yet
-        inline int shape_[2] = {12,1};
-        inline auto shape = cast<int>(shape_);
-        inline double expected[12][1] = {
-            {1.}, {2.}, {3.}, {4.}, {5.}, {6.}, {7.}, {8.}, {9.}, {10.}, {11.}, {12.}
+        inline int8_t shape_[2] = {12,1};
+        inline auto shape = cast<int8_t>(shape_);
+        inline int8_t expected[12][1] = {
+            {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}
         };
     }
 
+#ifndef NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        inline double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        inline int newshape[2] = {3,4};
-        CAST_ARRAYS(array)
-        CAST_ARRAYS(newshape)
-        inline auto newshape_ct = std::tuple{3_ct, 4_ct};
+        inline int8_t array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        inline int8_t newshape[2] = {3,4};
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_ARRAYS(newshape)
+        inline auto newshape_ct = nmtools_tuple{3_ct, 4_ct};
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
         // isclose doesn support tuple and raw yet
-        inline int shape_[2] = {3,4};
-        inline auto shape = cast<int>(shape_);
-        inline double expected[3][4] = {
-            {1.,  2.,  3.,  4.},
-            {5.,  6.,  7.,  8.},
-            {9., 10., 11., 12.}
+        inline int8_t shape_[2] = {3,4};
+        inline auto shape = cast<int8_t>(shape_);
+        inline int8_t expected[3][4] = {
+            {1,  2,  3,  4},
+            {5,  6,  7,  8},
+            {9, 10, 11, 12}
         };
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        inline double array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
-        inline int newshape[4] = {1,2,3,2};
-        CAST_ARRAYS(array)
-        CAST_ARRAYS(newshape)
-        inline auto newshape_ct = std::tuple{1_ct, 2_ct, 3_ct, 2_ct};
+        inline int8_t array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        inline int8_t newshape[4] = {1,2,3,2};
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_ARRAYS(newshape)
+        inline auto newshape_ct = nmtools_tuple{1_ct, 2_ct, 3_ct, 2_ct};
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
         // isclose doesn support tuple and raw yet
-        inline int shape_[4] = {1,2,3,2};
-        inline auto shape = cast<int>(shape_);
-        inline double expected[1][2][3][2] = {
+        inline int8_t shape_[4] = {1,2,3,2};
+        inline auto shape = cast<int8_t>(shape_);
+        inline int8_t expected[1][2][3][2] = {
             {
                 {
-                    {1., 2.},
-                    {3., 4.},
-                    {5., 6.}
+                    {1, 2},
+                    {3, 4},
+                    {5, 6}
                 },
                 {
-                    {7.,  8.},
-                    {9., 10.},
-                    {11.,12.}
+                    {7,  8},
+                    {9, 10},
+                    {11,12}
                 }
             }
         };
     }
+#endif // NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
 }
 
-#undef CAST_ARRAYS
+NMTOOLS_TESTING_DECLARE_CASE(constexpr_reshape)
+{
+    using namespace nm::literals;
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        constexpr inline int8_t array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        constexpr inline int8_t newshape[2] = {12,1};
+        constexpr inline auto newshape_ct = nmtools_tuple{12_ct, 1_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(array)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        constexpr inline int8_t expected[12][1] = {
+            {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}
+        };
+    }
+}
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_RESHAPE_HPP

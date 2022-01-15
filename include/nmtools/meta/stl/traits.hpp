@@ -3,7 +3,11 @@
 
 #include "nmtools/meta/traits.hpp"
 
+#include <type_traits>
+#include <variant>
+#include <tuple>
 #include <optional>
+// TODO: remove, no need to check for include
 #if __has_include(<vector>)
     #include <vector>
     #define NMTOOLS_HAS_STL_VECTOR 1
@@ -106,14 +110,6 @@ namespace nmtools::meta
     template <typename T>
     struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
 #endif // NMTOOLS_HAS_VECTOR
-
-#ifndef NMTOOLS_META_IS_UNION
-    template <typename T>
-    struct is_union : std::is_union<T> {};
-
-    template <typename T>
-    constexpr inline auto is_union_v = is_union<T>::value;
-#endif // NMTOOLS_META_IS_UNION
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRAITS_HPP

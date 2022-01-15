@@ -2,7 +2,6 @@
 #define NMTOOLS_META_BITS_TRAITS_HAS_VALUE_TYPE_HPP
 
 #include "nmtools/meta/common.hpp"
-#include <type_traits>
 
 namespace nmtools::meta
 {

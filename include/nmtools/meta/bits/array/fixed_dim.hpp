@@ -19,7 +19,7 @@ namespace nmtools::meta
      * accordingly, otherwise value_type is void and value is fail_t{}.
      * 
      * @tparam T type to check
-     * @tparam typename customization poit
+     * @tparam typename customization point
      * @see is_fixed_size_ndarray
      * @see fixed_ndarray_shape
      * @note not to be confused with fixed_dim, in which *may* return the number of dimension for runtime array
@@ -37,6 +37,7 @@ namespace nmtools::meta
             else return detail::fail_t{};
         } // _get()
         static constexpr auto value = _get();
+        // TODO: use specific error type
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     }; // fixed_ndarray_dim
 
@@ -48,6 +49,7 @@ namespace nmtools::meta
     template <typename T>
     inline static constexpr auto fixed_ndarray_dim_v = fixed_ndarray_dim<T>::value;
 
+    // TODO: maybe rename to dim instead
     // TODO: cleanup
     /**
      * @brief check if type T has fixed-dimension
@@ -74,6 +76,7 @@ namespace nmtools::meta
                 return nested_array_dim_v<T>;
             else return detail::Fail;
         }();
+        // TODO: use specific error type
         using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
     }; // fixed_dim
 

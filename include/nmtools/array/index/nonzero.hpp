@@ -5,8 +5,6 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 
-#include <tuple>
-
 namespace nmtools::index
 {
     /**

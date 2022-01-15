@@ -1,9 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_HPP
 #define NMTOOLS_ARRAY_EVAL_HPP
 
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ndarray.hpp"
 
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
@@ -37,6 +35,7 @@ namespace nmtools::array
     {
         using view_type    = const view_t&;
         using context_type = const none_t&;
+        // TODO: move output type as template params
         using output_type  = meta::resolve_optype_t<eval_t,view_t,none_t>;
 
         view_type view;
@@ -110,6 +109,7 @@ namespace nmtools::array
     template <typename view_t, typename context_t>
     constexpr auto evaluator(const view_t& view, context_t&& context)
     {
+        // TODO: perfect forwarding for context
         using ctx_t = meta::remove_cvref_t<context_t>;
         using evaluator_type = evaluator_t<view_t,ctx_t>;
         return evaluator_type{view,context};
@@ -129,6 +129,7 @@ namespace nmtools::array
     template <typename output_t=none_t, typename context_t=none_t, typename view_t>
     constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{})
     {
+        // TODO: perfect forwarding for eval context
         // TODO: support maybe type
         if constexpr (meta::is_either_v<view_t>) {
             using left_t   = meta::get_either_left_t<view_t>;
@@ -136,14 +137,21 @@ namespace nmtools::array
             // deduce return type for each type
             using rleft_t  = decltype(eval(meta::declval<left_t>(),context,output));
             using rright_t = decltype(eval(meta::declval<right_t>(),context,output));
-            // TODO: make default either type configurable
-            using either_t = meta::make_either_type_t<rleft_t,rright_t>;
+            constexpr auto vtype = [](){
+                if constexpr (meta::is_same_v<rleft_t,rright_t>) {
+                    return meta::as_value_v<rleft_t>;
+                } else {
+                    using either_t = meta::replace_either_t<view_t,rleft_t,rright_t>;
+                    return meta::as_value_v<either_t>;
+                }
+            }();
+            using return_t = meta::type_t<decltype(vtype)>;
             // match either type at runtime
             if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
-                return either_t{eval(*view_ptr,context,output)};
+                return return_t{eval(*view_ptr,context,output)};
             } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
                 auto view_rptr = nmtools::get_if<right_t>(&view);
-                return either_t{eval(*view_rptr,context,output)};
+                return return_t{eval(*view_rptr,context,output)};
             }
         } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
             auto evaluator_ = evaluator(view,context);
@@ -187,7 +195,7 @@ namespace nmtools::meta
                is_none_v<array_t>
             && is_dynamic_ndarray_v<view_type>
         ) {
-            using type = make_dynamic_ndarray_t<element_t>;
+            using type = meta::type_t<make_dynamic_ndarray<element_t>>;
             return as_value_v<type>;
         } else if constexpr (
                is_none_v<array_t>
@@ -221,7 +229,7 @@ namespace nmtools::meta
             return as_value_v<type>;
         } else if constexpr (
                 is_num_v<view_type>
-            && (is_ndarray_v<array_t>)
+            /* && (is_ndarray_v<array_t>) */
         ) {
             // no matter what the array type is,
             // if the resulting view is num then return num
@@ -239,7 +247,7 @@ namespace nmtools::meta
                is_num_v<array_t>
             && is_dynamic_ndarray_v<view_type>
         ) {
-            using type = make_dynamic_ndarray_t<element_t>;
+            using type = type_t<make_dynamic_ndarray<element_t>>;
             return as_value_v<type>;
         } else if constexpr (
                is_num_v<array_t>
@@ -301,7 +309,7 @@ namespace nmtools::meta
                 using type = replace_element_type_t<array_t,element_t>;
                 return as_value_v<type>;
             } else {
-                using type = make_dynamic_ndarray_t<element_t>;
+                using type = type_t<make_dynamic_ndarray<element_t>>;
                 return as_value_v<type>;
                 // return as_value_v<error::EVAL_MISMATCHED_DIM>;
             }
@@ -311,7 +319,7 @@ namespace nmtools::meta
         ) {
             // here, either view_type or array_t is fixed-dim, but not both,
             // for now use default dynamic ndarray
-            using type = make_dynamic_ndarray_t<element_t>;
+            using type = type_t<make_dynamic_ndarray<element_t>>;
             return as_value_v<type>;
         } else if constexpr (
                is_fixed_size_ndarray_v<view_type>
@@ -325,7 +333,7 @@ namespace nmtools::meta
                 is_dynamic_ndarray_v<view_type>
             && (is_hybrid_ndarray_v<array_t> || is_fixed_size_ndarray_v<array_t>)
         ) {
-            using type = make_dynamic_ndarray_t<element_t>;
+            using type = type_t<make_dynamic_ndarray<element_t>>;
             return as_value_v<type>;
         } else if constexpr (
                is_hybrid_ndarray_v<view_type>
@@ -354,7 +362,10 @@ namespace nmtools::meta
      * @return constexpr auto 
      */
     template <typename lhs_t, typename rhs_t, typename view_type>
-    constexpr auto resolve_binary_array_type([[maybe_unused]] as_value<lhs_t> lhs, [[maybe_unused]] as_value<rhs_t> rhs, [[maybe_unused]] as_value<view_type> view)
+    constexpr auto resolve_binary_array_type(
+        [[maybe_unused]] as_value<lhs_t> lhs,
+        [[maybe_unused]] as_value<rhs_t> rhs,
+        [[maybe_unused]] as_value<view_type> view)
     {
         using element_t = get_element_type_t<view_type>;
         if constexpr (
@@ -405,7 +416,7 @@ namespace nmtools::meta
             && (is_hybrid_ndarray_v<rhs_t> || is_fixed_size_ndarray_v<rhs_t>)
             && is_dynamic_ndarray_v<view_type>
         ) {
-            using type = make_dynamic_ndarray_t<element_t>;
+            using type = type_t<make_dynamic_ndarray<element_t>>;
             return as_value_v<type>;
         } else if constexpr (
                is_dynamic_ndarray_v<lhs_t>

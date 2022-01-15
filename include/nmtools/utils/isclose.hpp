@@ -18,17 +18,11 @@
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/utils/isequal.hpp"
-
-#include <type_traits>
-#include <cassert>
-#include <iterator>
-#include <cmath>
-#include <tuple>
-#include <array>
+#include "nmtools/math.hpp"
 
 namespace nmtools::utils
 {
-    using std::fabs;
+    using nmtools::math::fabs;
 
     namespace detail {
         // TODO: cleanup isclose for boolean
@@ -200,14 +194,37 @@ namespace nmtools::utils
             else if constexpr (meta::is_either_v<T>) {
                 using lhs_t = meta::get_either_left_t<T>;
                 using rhs_t = meta::get_either_right_t<T>;
-                auto lhs = meta::as_value<lhs_t>{};
-                auto rhs = meta::as_value<rhs_t>{};
-                auto tsame = detail::select_same(lhs, rhs, t2);
-                using same_t = meta::type_t<decltype(tsame)>;
+                constexpr auto ref = meta::as_value_v<U>;
 
                 auto close = false;
-                if (auto ptr = get_if<same_t>(&t); ptr)
-                    close = isclose(*ptr,u);
+                if (auto l_ptr = get_if<lhs_t>(&t); l_ptr) {
+                    constexpr auto lhs = meta::as_value_v<lhs_t>;
+                    if constexpr (meta::is_either_v<lhs_t>) {
+                        // maybe nested either
+                        // should be okay to instantiate since *ptr is either
+                        close = isclose(*l_ptr,u);
+                    } else if constexpr (same_concept(lhs,ref)) {
+                        // avoid instantiate if not the same concept
+                        close = isclose(*l_ptr,u);
+                    } else {
+                        // maybe encountered in nested either
+                        // ignore, maybe this path doesn't have matched concept
+                    }
+                } else {
+                    constexpr auto rhs = meta::as_value_v<rhs_t>;
+                    [[maybe_unused]] auto r_ptr = get_if<rhs_t>(&t);
+                    if constexpr (meta::is_either_v<rhs_t>) {
+                        // maybe nested either
+                        // should be okay to instantiate since *ptr is either
+                        close = isclose(*r_ptr,u);
+                    } else if constexpr (same_concept(rhs,ref)) {
+                        // avoid instantiate if not the same concept
+                        close = isclose(*r_ptr,u);
+                    } else {
+                        // maybe encountered in nested either
+                        // ignore, maybe this path doesn't have matched concept
+                    }
+                }
                 return close;
             }
             // only U is either type
@@ -215,14 +232,21 @@ namespace nmtools::utils
             else if constexpr (meta::is_either_v<U>) {
                 using lhs_t = meta::get_either_left_t<U>;
                 using rhs_t = meta::get_either_right_t<U>;
-                auto lhs = meta::as_value<lhs_t>{};
-                auto rhs = meta::as_value<rhs_t>{};
-                auto tsame = detail::select_same(lhs, rhs, t1);
-                using same_t = meta::type_t<decltype(tsame)>;
+                constexpr auto ref = meta::as_value_v<T>;
 
                 auto close = false;
-                if (auto ptr = get_if<same_t>(&u); ptr)
-                    close = isequal(t,*ptr);
+                if (auto l_ptr = get_if<lhs_t>(&u); l_ptr) {
+                    constexpr auto lhs = meta::as_value_v<lhs_t>;
+                    if constexpr (same_concept(lhs,ref)) {
+                        close = isclose(t,*l_ptr);
+                    }
+                } else /* if (auto r_ptr = get_if<rhs_t>(&u); r_ptr) */ {
+                    [[maybe_unused]] auto r_ptr = get_if<rhs_t>(&u);
+                    constexpr auto rhs = meta::as_value_v<rhs_t>;
+                    if constexpr (same_concept(rhs,ref)) {
+                        close = isclose(t,*r_ptr);
+                    }
+                }
                 return close;
             }
             else if constexpr (meta::is_num_v<T>) {
@@ -293,7 +317,7 @@ namespace nmtools::utils
             return equal;
         }
         else return detail::isclose(t,u,eps);
-    } // islcose
+    } // isclose
 } // namespace nmtools::utils
 
 #endif // NMTOOLS_UTILS_ISCLOSE_HPP

@@ -281,65 +281,9 @@ namespace nmtools::meta::detail
     } // fail_to_false
 } // namespace nmtools::meta
 
-namespace nmtools::meta
-{
-    namespace error
-    {
-        template <typename>
-        struct TEMPLATE_GET_UNSUPPORTED : detail::fail_t {};
-    }
-}
-
-namespace nmtools
-{
-    template <size_t I, typename T>
-    struct get_t
-    {
-        using type = meta::error::TEMPLATE_GET_UNSUPPORTED<T>;
-
-        constexpr type operator()([[maybe_unused]] const T& t) const noexcept
-        {
-            return type{};
-        }
-    };
-
-    // NOTE: gcc(9.3) failed when using auto, must use size_t, while clang(10.0) accepts happily
-    template <size_t I, typename T>
-    constexpr meta::type_t<get_t<I,const T&>>
-    get(const T& t) noexcept
-    {
-        return get_t<I,const T&>{}(t);
-    }
-
-    template <size_t I, typename T>
-    constexpr meta::type_t<get_t<I,T&>>
-    get(T& t) noexcept
-    {
-        return get_t<I,T&>{}(t);
-    }
-}
-
 // collections of reserved metafunctions
 namespace nmtools::meta
 {
-    /**
-     * @brief Reserved metafunction to make type T unsigned
-     * 
-     * @tparam T 
-     * @note implementation should use macro NMTOOLS_META_MAKE_UNSIGNED
-     */
-    template <typename T>
-    struct make_unsigned;
-
-    /**
-     * @brief Reserved metafunction to make type T signed
-     * 
-     * @tparam T 
-     * @note implementation should use macro NMTOOLS_META_MAKE_SIGNED
-     */
-    template <typename T>
-    struct make_signed;
-
     /**
      * @brief Reserved metafunction to create a tuple type
      * 

@@ -17,13 +17,6 @@
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 
-#include <type_traits>
-#include <cassert>
-#include <iterator>
-#include <cmath>
-#include <tuple>
-#include <array>
-
 namespace nmtools::utils
 {
     namespace detail {
@@ -88,6 +81,39 @@ namespace nmtools::utils
                 return meta::as_value_v<void>;
             }
         } // select_same
+
+        // check if T1 & T2 has the same concept
+        // but be strict on fixed-shape & dim without triggering compile-time error
+        template <typename t1, typename t2>
+        constexpr auto same_concept(meta::as_value<t1>, meta::as_value<t2>){
+            constexpr auto same_ndarray = [](){
+                // fixed index array must be handled specifically since some index array (tuple of int constant) is not ndarray
+                if constexpr (meta::is_fixed_index_array_v<t1> && meta::is_fixed_index_array_v<t2>) {
+                    return meta::len_v<t1> == meta::len_v<t2>;
+                }
+                // use constexpr to avoid instantiating isequal on fail type because t1/t2 is not fixed ndarray
+                else if constexpr (meta::is_fixed_size_ndarray_v<t1> && meta::is_fixed_size_ndarray_v<t2>) {
+                    // avoid call to isequal since we want to be permissive
+                    // return isequal(meta::fixed_ndarray_shape_v<t1>, meta::fixed_ndarray_shape_v<t2>);
+                    constexpr auto shape1 = meta::fixed_ndarray_shape_v<t1>;
+                    constexpr auto shape2 = meta::fixed_ndarray_shape_v<t2>;
+                    if constexpr (len(shape1)==len(shape2)) {
+                        constexpr auto n = len(shape1);
+                        return meta::template_reduce<n>([&](auto init, auto index){
+                            return init && (at(shape1,index)==at(shape2,index));
+                        }, true);
+                    } else {
+                        return false;
+                    }
+                } else if constexpr (meta::is_fixed_dim_ndarray_v<t1> && meta::is_fixed_dim_ndarray_v<t2>) {
+                    return (meta::fixed_dim_v<t1> == meta::fixed_dim_v<t2>);
+                } else {
+                    return meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>;
+                }
+            }();
+            return (meta::is_num_v<t1> && meta::is_num_v<t2>)
+                || (is_none_v<t1> && is_none_v<t2>) || same_ndarray;
+        };
 
         template <typename t1>
         constexpr auto constrained(meta::as_value<t1>)
@@ -247,6 +273,27 @@ namespace nmtools::utils
             else if constexpr (meta::is_either_v<T>) {
                 using lhs_t = meta::get_either_left_t<T>;
                 using rhs_t = meta::get_either_right_t<T>;
+                constexpr auto ref = meta::as_value_v<U>;
+
+                auto equal = false;
+                if (auto l_ptr = get_if<lhs_t>(&t); l_ptr) {
+                    constexpr auto lhs = meta::as_value_v<lhs_t>;
+                    // TODO: implement nested either
+                    // avoid instantiation if not the same concept
+                    if constexpr (same_concept(lhs,ref)) {
+                        equal = detail::isequal(*l_ptr,u);
+                    }
+                } else {
+                    constexpr auto rhs = meta::as_value_v<rhs_t>;
+                    [[maybe_unused]] auto r_ptr = get_if<rhs_t>(&t);
+                    // TODO: implement nested either
+                    // avoid instantiation if not the same concept
+                    if constexpr (same_concept(rhs,ref)) {
+                        equal = detail::isequal(*r_ptr,u);
+                    }
+                }
+                return equal;
+                /*
                 auto lhs = meta::as_value_v<lhs_t>;
                 auto rhs = meta::as_value_v<rhs_t>;
                 auto t_same = detail::select_same(lhs, rhs, t2);
@@ -259,12 +306,33 @@ namespace nmtools::utils
                 if (auto ptr = get_if<same_t>(&t); ptr)
                     same = isequal(*ptr,u);
                 return same;
+                */
             }
             // only U is either type
             // select left or right that has same concept with T
             else if constexpr (meta::is_either_v<U>) {
                 using lhs_t = meta::get_either_left_t<U>;
                 using rhs_t = meta::get_either_right_t<U>;
+                constexpr auto ref = meta::as_value_v<T>;
+
+                auto equal = false;
+                if (auto l_ptr = get_if<lhs_t>(&u)) {
+                    constexpr auto lhs = meta::as_value_v<lhs_t>;
+                    // TODO: implement nested either
+                    // avoid instantiation if not the same concept
+                    if constexpr (same_concept(lhs,ref)) {
+                        equal = detail::isequal(t,*l_ptr);
+                    }
+                } else {
+                    [[maybe_unused]] auto r_ptr = get_if<rhs_t>(&u);
+                    constexpr auto rhs = meta::as_value_v<rhs_t>;
+                    if constexpr (same_concept(rhs,ref)) {
+                        equal = detail::isequal(t,*r_ptr);
+                    }
+                }
+                return equal;
+
+                /*
                 auto lhs = meta::as_value_v<lhs_t>;
                 auto rhs = meta::as_value_v<rhs_t>;
                 auto tsame = detail::select_same(lhs, rhs, t1);
@@ -274,6 +342,7 @@ namespace nmtools::utils
                 if (auto ptr = get_if<same_t>(&u); ptr)
                     same = isequal(t,*ptr);
                 return same;
+                */
             }
             // assume both T and U is integer
             else if constexpr (meta::is_num_v<T>) {
@@ -396,7 +465,6 @@ namespace nmtools::utils
             auto equal = true; // conjuction identity
             meta::template_for<nt>([&](auto index){
                 constexpr auto i = decltype(index)::value;
-                // TODO(wrap std metafunctions): provide nmtools::get (or using at)
                 const auto& t_ = nmtools::get<i>(t);
                 const auto& u_ = nmtools::get<i>(u);
                 equal = equal && isequal(t_,u_);

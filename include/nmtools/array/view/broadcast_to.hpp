@@ -12,8 +12,7 @@
 #include "nmtools/array/index/compute_offset.hpp"
 
 // to get make_dynamic_ndarray & make_fixed_ndarray defn.
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/eval.hpp"
 
 #include "nmtools/constants.hpp"
@@ -184,8 +183,21 @@ namespace nmtools::view
     template <typename array_t, typename shape_t>
     constexpr auto broadcast_to(const array_t& array, shape_t shape)
     {
+        if constexpr (meta::is_either_v<array_t>) {
+            using left_t  = meta::get_either_left_t<array_t>;
+            using right_t = meta::get_either_right_t<array_t>;
+            using ret_left_t  = decltype(broadcast_to(meta::declval<left_t>(),shape));
+            using ret_right_t = decltype(broadcast_to(meta::declval<right_t>(),shape));
+            using either_t = meta::replace_either_t<array_t,ret_left_t,ret_right_t>;
+            if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
+                return either_t{broadcast_to(*l_ptr,shape)};
+            } else /* if (auto r_ptr = nmtools::get_if<right_t>(&array)) */ {
+                auto r_ptr = nmtools::get_if<right_t>(&array);
+                return either_t{broadcast_to(*r_ptr,shape)};
+            }
+        }
         // bypass broadcasting index logic if array_t is simply scalar type
-        if constexpr (meta::is_num_v<array_t>) {
+        else if constexpr (meta::is_num_v<array_t>) {
             using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t>;
             return view_t{{array, shape, None}};
         }
@@ -207,7 +219,9 @@ namespace nmtools::view
         // assume array_t is ndarray
         else {
             auto ashape = ::nmtools::shape(array);
-            auto [success, shape_, free] = index::shape_broadcast_to(ashape,shape);
+            // NOTE: must declare as const since utl::tuple takes reference (?)
+            // TODO: revisit this case
+            const auto [success, shape_, free] = index::shape_broadcast_to(ashape,shape);
             auto origin_axes = [](auto free){
                 // NOTE: can't use capture because clang complains something local binding
 

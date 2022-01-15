@@ -12,8 +12,20 @@
 #define NMTOOLS_UTILS_TO_STRING_HPP
 
 #if __has_include(<string>)
-#define HAS_STRING true
+    #define HAS_STRING true
     #include <string>
+    #define nmtools_string std::string
+    // NOTE: quick hack, arduino (esp. atmel avr) doesn't have std::to_string
+    // TODO: find better alternative
+    #define nmtools_to_string std::to_string
+#elif defined(ARDUINO)
+    // TODO: do not include arduino here (?)
+    #include <Arduino.h>
+    #define HAS_STRING true
+    #define nmtools_string String
+    // NOTE: quick hack
+    // TODO: find better alternative
+    #define nmtools_to_string String
 #else
 #define HAS_STRING false
 #endif
@@ -26,27 +38,27 @@
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 
-#include <type_traits>
-#include <cassert>
-#include <cmath>
-#include <tuple>
-#include <array>
-#include <variant>
-
 namespace nmtools::utils
 {
-    /**
-     * @brief to_string given array to given stream type.
-     * 
-     * @tparam stream_t stream type, e.g. std::stringstream,
-     * @tparam T array-like, 2d, 1d, or scalar
-     * @param array array to to_string
-     * @return auto stream with type of stream_t
-     */
-    template <typename T>
-    auto to_string(const T& array)
+    // NOTE: forward declare function here to allow function object to_string_t to
+    // call the function,
+    // this is because to_string_t can't deduce template args automatically (no constructor, and operator() cant be static)
+    // TODO: revisit this and maybe refactor
+    template <typename formatter_t=none_t, typename T>
+    auto to_string(const T& array, formatter_t=formatter_t{});
+}
+
+namespace nmtools::utils::impl
+{
+template <typename T, typename formatter_t, typename=void>
+struct to_string_t;
+
+template <typename T>
+struct to_string_t<T,none_t,void>
+{
+    auto operator()(const T& array) const noexcept
     {
-        std::string str;
+        nmtools_string str;
         using ::nmtools::index::ndindex;
 
         if constexpr (is_none_v<T>)
@@ -56,6 +68,7 @@ namespace nmtools::utils
             using rhs_t = meta::get_either_right_t<T>;
             // assume get_if<type>(&array) is available for either type
             if (auto l_ptr = nmtools::get_if<lhs_t>(&array)) {
+                // NOTE: this call require forward declaration of to_string above
                 str += to_string(*l_ptr);
             } else {
                 auto r_ptr = nmtools::get_if<rhs_t>(&array);
@@ -71,17 +84,15 @@ namespace nmtools::utils
             // which is supported by std::optional
             if (static_cast<bool>(array))
                 str += to_string(*array);
-            else str+= "Nothing";
+            else str += "Nothing";
         }
         else if constexpr (meta::is_num_v<T>) {
-            using std::to_string;
             // allow view type
             using type_t = meta::get_element_type_t<T>;
-            str += to_string(static_cast<type_t>(array));
+            str += nmtools_to_string(static_cast<type_t>(array));
         }
         else if constexpr (meta::is_integral_constant_v<T>) {
-            using std::to_string;
-            str += to_string(T::value);
+            str += nmtools_to_string(T::value);
         } // is_integral_constant
         else if constexpr (meta::is_ndarray_v<T>) {
             /**
@@ -107,7 +118,6 @@ namespace nmtools::utils
                 }
             };
 
-            using std::to_string;
             auto shape_ = shape(array);
             auto s = as_array(shape_);
             auto indices = ndindex(s);
@@ -132,7 +142,7 @@ namespace nmtools::utils
                 }
 
                 str += "\t";
-                str += to_string(a);
+                str += nmtools_to_string(a);
 
                 int print_comma = 0;
                 // check if we should print closing bracket
@@ -169,6 +179,27 @@ namespace nmtools::utils
             str += ")";
         } // is_packed
         return str;
+    } // operator()
+}; // struct to_string_t
+
+template <typename T, typename formatter_t>
+inline constexpr auto to_string_v = to_string_t<T,formatter_t>{};
+}
+namespace nmtools::utils
+{
+    /**
+     * @brief to_string given array to given stream type.
+     * 
+     * @tparam stream_t stream type, e.g. std::stringstream,
+     * @tparam T array-like, 2d, 1d, or scalar
+     * @param array array to to_string
+     * @return auto stream with type of stream_t
+     */
+    template <typename formatter_t, typename T>
+    auto to_string(const T& array, formatter_t)
+    {
+        constexpr auto to_string = impl::to_string_v<T,formatter_t>;
+        return to_string(array);
     } // auto to_string
 } // namespace nmtools::utils
 

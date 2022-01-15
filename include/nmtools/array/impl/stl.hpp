@@ -1,6 +1,8 @@
 #ifndef NMTOOLS_ARRAY_IMPL_STL_HPP
 #define NMTOOLS_ARRAY_IMPL_STL_HPP
 
+// Actual implementations for various customization point in nmtools for STL
+
 #include "nmtools/array/shape.hpp"
 
 #include <array>
@@ -94,18 +96,6 @@ namespace nmtools::impl
             return std::array{vector.size(),vector.at(0).size(),vector.at(0).at(0).size()};
         }
     }; // shape_t<std::vector<std::vector<T>>>
-    
-    template <typename...Ts>
-    struct get_if_t<std::variant<Ts...>>
-    {
-        using variant_t = const std::variant<Ts...>*;
-
-        template <typename U>
-        constexpr auto operator()(variant_t variant) const noexcept
-        {
-            return std::get_if<U>(variant);
-        }
-    }; // get_if_t
 } // namespace nmtools::impl
 
 #endif // NMTOOLS_ARRAY_IMPL_STL_HPP

@@ -11,4 +11,6 @@ dockcross-*
 cmake/toolchains
 *.db
 *.tar.gz
+*.tar.bz2
 include/library.json
+include/etl*

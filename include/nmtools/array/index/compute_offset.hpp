@@ -4,12 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
-
-#include <type_traits>
-#include <cstddef> // size_t
-#include <utility> // integer_sequence
-#include <array>
-#include <tuple>
+#include "nmtools/assert.hpp"
 
 namespace nmtools::index
 {
@@ -31,8 +26,11 @@ namespace nmtools::index
         auto n = len(strides);
         // TODO: use optional instead
         // TODO: static_assert whenever possible
-        assert (m==n
-            // , "unsupported compute_offset, mismatched shape for indices and strides"
+        nmtools_make_optional( return_t, size_t );
+        nmtools_cassert(
+            m == n
+            , "unsupported compute_offset, mismatched shape for indices and strides"
+            , return_t
         );
         if constexpr (meta::is_fixed_index_array_v<indices_t> || meta::is_fixed_index_array_v<strides_t>)
         {

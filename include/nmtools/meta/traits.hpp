@@ -1,21 +1,6 @@
 #ifndef NMTOOLS_META_TRAITS_HPP
 #define NMTOOLS_META_TRAITS_HPP
 
-#include <type_traits>
-/** @todo use __has_include */
-#include <array>
-#if __has_include(<vector>)
-    #include <vector> // @todo remove
-    #define NMTOOLS_HAS_VECTOR 1
-#else
-    #define NMTOOLS_HAS_VECTOR 0
-#endif
-#include <complex> // @todo remove
-#include <tuple>
-#include <utility>
-#include <variant>
-#include <optional>
-
 #include "nmtools/meta/bits/traits/has_at.hpp"
 #include "nmtools/meta/bits/traits/has_bracket.hpp"
 #include "nmtools/meta/bits/traits/has_dim.hpp"

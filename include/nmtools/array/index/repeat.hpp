@@ -14,9 +14,6 @@
 
 #include "nmtools/assert.hpp"
 
-#include <type_traits>
-#include <array>
-
 namespace nmtools::index
 {
     /**

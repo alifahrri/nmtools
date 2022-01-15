@@ -10,8 +10,6 @@
 #include "nmtools/array/index/sum.hpp"
 #include "nmtools/array/index/where.hpp"
 
-#include <optional>
-
 namespace nmtools::index
 {
     /**
@@ -68,10 +66,12 @@ namespace nmtools::index
                     at(res,si) = (common_t)a > (common_t)b ? a : b;
                 }
                 else if (bi<0) {
+                    // TODO: do not use tuple_at
                     auto a = tuple_at(ashape,ai);
                     at(res,si) = a;
                 }
                 else if (ai<0) {
+                    // TODO: do not use tuple_at
                     auto b = tuple_at(bshape,bi);
                     at(res,si) = b;
                 }
@@ -112,8 +112,8 @@ namespace nmtools::index
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape, const cshape_t& cshape, const other_shapes_t&...other_shapes)
     {
         // TODO: use optional
-        auto [success_,shape_] = broadcast_shape(ashape,bshape);
-        auto [success, shape]  = broadcast_shape(shape_,cshape,other_shapes...);
+        const auto [success_,shape_] = broadcast_shape(ashape,bshape);
+        const auto [success, shape]  = broadcast_shape(shape_,cshape,other_shapes...);
         using return_t = meta::make_tuple_type_t<bool,meta::remove_cvref_t<decltype(shape)>>;
         return return_t{success && success_, shape};
     } // broadcast_shape

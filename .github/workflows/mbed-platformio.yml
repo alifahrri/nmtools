@@ -34,6 +34,8 @@ jobs:
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
     - name: Set up Python
       uses: actions/setup-python@v2
+      with:
+        python-version: '3.8.10'
     - name: Install PlatformIO
       run: |
         python -m pip install --upgrade pip
@@ -41,8 +43,8 @@ jobs:
     - name: Run PlatformIO CI
       run: |
         pio package pack --output nmtools.tar.gz
-        cp nmtools.tar.gz tests/src/platformio/mbed/${{ matrix.test }}
-        cd tests/src/platformio/mbed/${{ matrix.test }}
+        cp nmtools.tar.gz tests/platformio/mbed/${{ matrix.test }}
+        cd tests/platformio/mbed/${{ matrix.test }}
         mkdir -p lib
         cd lib
         tar -zxvf ../nmtools.tar.gz

@@ -15,7 +15,6 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS( transpose, case_name ); \
     auto array_ref = view::transpose(args::array, args::axes); \
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
 

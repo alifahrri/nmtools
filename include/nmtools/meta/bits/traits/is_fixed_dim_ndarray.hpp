@@ -22,12 +22,9 @@ namespace nmtools::meta
         static constexpr auto value = [](){
             // for fixed-size ndarray, read dimension from fixed_dim,
             // which simply count the number of shape
-            using dim_t = fixed_dim<T>;
-            using value_type = typename dim_t::value_type;
-            // TODO: use fail type instead of void
-            if constexpr (!is_void_v<value_type>)
-                return true;
-            else return false;
+            constexpr auto value = fixed_dim_v<T>;
+            using value_type = remove_cvref_t<decltype(value)>;
+            return !(is_void_v<value_type> || is_fail_v<value_type>);
         }();
     }; // is_fixed_dim_ndarray
 

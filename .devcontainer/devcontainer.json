@@ -8,7 +8,16 @@
 	"context": "..",
 
 	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+
+	// xeus-cling:
 	"dockerFile": "../docker/dev.dockerfile",
+
+	// ubuntu eoan (for gcc 9.2.1)
+	// "dockerFile": "../docker/eoan.dockerfile",
+
+	"build": { 
+		"args": { "USERNAME": "${localEnv:USER}" }
+	},
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},

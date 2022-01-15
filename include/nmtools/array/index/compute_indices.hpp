@@ -7,12 +7,6 @@
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 
-#include <type_traits>
-#include <cstddef> // size_t
-#include <utility> // integer_sequence
-#include <array>
-#include <tuple>
-
 namespace nmtools::index
 {
     /**

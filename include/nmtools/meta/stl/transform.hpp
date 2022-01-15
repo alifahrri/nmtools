@@ -36,39 +36,12 @@ namespace nmtools::meta
 
     // useful for detect nothing
     using nothing_t = meta::remove_cvref_t<decltype(nothing)>;
+
+    // alias template doesn't have ctad:
+    // https://godbolt.org/z/51zMTrEGK
+    // so use macro for now
+    #define nmtools_maybe ::std::optional
 #endif // NMTOOLS_META_MAKE_MAYBE_TYPE
-
-
-#ifndef NMTOOLS_META_MAKE_UNSIGNED
-#define NMTOOLS_META_MAKE_UNSIGNED
-
-    /**
-     * @brief define make_unsigned to use std::make_unsigned
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    struct make_unsigned : ::std::make_unsigned<T> {};
-
-    template <typename T>
-    using make_unsigned_t = type_t<make_unsigned<T>>;
-#endif // NMTOOLS_META_MAKE_UNSIGNED
-
-#ifndef NMTOOLS_META_MAKE_SIGNED
-#define NMTOOLS_META_MAKE_SIGNED
-
-    /**
-     * @brief define make_signed to use std::make_signed
-     * 
-     * @tparam T type to be transformed
-     */
-    template<typename T>
-    struct make_signed : ::std::make_signed<T> {};
-
-    template <typename T>
-    using make_signed_t = type_t<make_signed<T>>;
-#endif // NMTOOLS_META_MAKE_SIGNED
-
 
 #ifndef NMTOOLS_META_MAKE_TUPLE
 #define NMTOOLS_META_MAKE_TUPLE
@@ -86,6 +59,11 @@ namespace nmtools::meta
 
     template <typename...Ts>
     using make_tuple_type_t = type_t<make_tuple<Ts...>>;
+
+    // alias template doesn't have ctad:
+    // https://godbolt.org/z/51zMTrEGK
+    // so use macro for now
+    #define nmtools_tuple ::std::tuple
 #endif // NMTOOLS_META_MAKE_TUPLE
 
     // TODO: add make_tuple, make_either...
@@ -134,7 +112,7 @@ namespace nmtools::meta
         using error_type = error::TO_VALUE_UNSUPPORTED<std::tuple<Ts...>>;
         static constexpr auto value = [](){
             constexpr auto N = sizeof...(Ts);
-            // this can't compile: clang 10 & gcc 9.3
+            // the following alias decl. can't compile on clang 10 & gcc 9.3
             // gcc error: pack expansion argument for non-pack parameter
             // clang error: pack expansion used as argument for non-pack parameter of alias template
             // seems like related:
@@ -212,6 +190,9 @@ namespace nmtools::meta
 
     template <typename T, size_t N>
     using make_array_type_t = type_t<make_array_type<T,N>>;
+
+    // alias template doesn't have ctad, use macro
+    #define nmtools_array std::array
 #endif // NMTOOLS_META_MAKE_ARRAY_TYPE
 
     template <typename left_t, typename right_t>
@@ -286,19 +267,6 @@ namespace nmtools::meta
         using common_t = std::common_type_t<first,second>;
         using type = std::array<common_t,2>;
     }; // tuple_to_array
-
-    /**
-     * @brief overloaded version of transform_bounded_array for T[N]
-     * 
-     * @tparam T element type
-     * @tparam N number of elements
-     */
-    template <typename T, std::size_t N>
-    struct transform_bounded_array<T[N]>
-    {
-        using value_type = typename transform_bounded_array<remove_cvref_t<T>>::type;
-        using type = std::array<remove_cvref_t<value_type>,N>;
-    };
 
     /**
      * @brief Replace element type of std::array
@@ -409,6 +377,8 @@ namespace nmtools::meta
         using type = std::variant<Left,Right>;
     };
 
+#if 0
+    // TODO: remove, add more generic specialization with sfinae on is_tuple
     template <typename...Ts>
     struct get_common_type<std::tuple<Ts...>>
     {
@@ -425,6 +395,7 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     };
+#endif
 
 #if !defined(NMTOOLS_META_MAKE_VECTOR) && defined(NMTOOLS_HAS_STL_VECTOR) && (NMTOOLS_HAS_STL_VECTOR)
 #define NMTOOLS_META_MAKE_VECTOR
@@ -493,56 +464,5 @@ namespace nmtools::meta
         using type = replace_template_parameter_t<T<Origin...>,Subs...>;
     };
 } // namespace nmtools::meta
-
-namespace nmtools
-{
-    template <size_t I, typename...Ts>
-    struct get_t<I,const std::tuple<Ts...>& >
-    {
-        using tuple_t = std::tuple<Ts...>;
-        using type = decltype(std::get<I>(std::declval<const tuple_t&>()));
-
-        constexpr type operator()(const tuple_t& t) const noexcept
-        {
-            return std::get<I>(t);
-        }
-    };
-
-    template <size_t I, typename...Ts>
-    struct get_t<I,std::tuple<Ts...>& >
-    {
-        using tuple_t = std::tuple<Ts...>;
-        using type = decltype(std::get<I>(std::declval<tuple_t&>()));
-
-        constexpr type operator()(tuple_t& t) noexcept
-        {
-            return std::get<I>(t);
-        }
-    };
-
-    template <size_t I, typename T, size_t N>
-    struct get_t<I,const std::array<T,N>& >
-    {
-        using array_t = std::array<T,N>;
-        using type = decltype(std::get<I>(std::declval<const array_t&>()));
-
-        constexpr type operator()(const array_t& t) const noexcept
-        {
-            return std::get<I>(t);
-        }
-    };
-
-    template <size_t I, typename T, size_t N>
-    struct get_t<I,std::array<T,N>& >
-    {
-        using array_t = std::array<T,N>;
-        using type = decltype(std::get<I>(std::declval<array_t&>()));
-
-        constexpr type operator()(array_t& t) noexcept
-        {
-            return std::get<I>(t);
-        }
-    };
-}
 
 #endif // NMTOOLS_META_STL_TRANSFORM_HPP

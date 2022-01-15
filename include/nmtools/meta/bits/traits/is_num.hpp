@@ -15,8 +15,8 @@ namespace nmtools::meta
     template <> \
     struct is_floating_point<type> : true_type {};
 
-    NMTOOLS_IS_FLOATING_POINT_TRAIT(double)
-    NMTOOLS_IS_FLOATING_POINT_TRAIT(float)
+    NMTOOLS_IS_FLOATING_POINT_TRAIT(float32_t)
+    NMTOOLS_IS_FLOATING_POINT_TRAIT(float64_t)
 
 #undef NMTOOLS_IS_FLOATING_POINT_TRAIT
 

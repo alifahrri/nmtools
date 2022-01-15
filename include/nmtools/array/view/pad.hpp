@@ -52,8 +52,8 @@ namespace nmtools::index
             // ret = res;
             return return_t{res};
         } else {
-            // ret = meta::nothing;
-            return return_t{meta::nothing};
+            // ret = meta::Nothing;
+            return return_t{meta::Nothing};
         }
 
         // return ret;
@@ -115,7 +115,7 @@ namespace nmtools::index
         if (!out_of_bound) {
             ret = res;
         } else {
-            ret = meta::nothing;
+            ret = meta::Nothing;
         }
 
         return ret;

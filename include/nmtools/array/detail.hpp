@@ -3,12 +3,6 @@
 
 // TODO: remove this file
 
-#include <type_traits>
-#include <cstddef> // size_t
-#include <utility> // integer_sequence
-#include <array>
-#include <tuple>
-
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 

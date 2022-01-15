@@ -5,8 +5,6 @@
 #include "nmtools/meta/expr.hpp"
 #include "nmtools/meta/bits/transform/add_reference.hpp"
 
-#include <type_traits>
-
 namespace nmtools::meta
 {
     /**

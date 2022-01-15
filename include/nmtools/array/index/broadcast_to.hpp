@@ -29,6 +29,8 @@ namespace nmtools::index
     template <typename bshape_t>
     constexpr auto shape_broadcast_to(const none_t&, const bshape_t& bshape)
     {
+        // TODO: create specific type resolver
+        // TODO: only call transform array when necessary
         using result_t = meta::tuple_to_array_t<
             meta::transform_bounded_array_t<bshape_t>
         >;
@@ -194,7 +196,7 @@ namespace nmtools::index
     template <typename indices_t, typename src_shape_t, typename dst_shape_t>
     constexpr auto broadcast_to(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
-        auto [success, shape_, free] = shape_broadcast_to(src_shape,dst_shape);
+        const auto [success, shape_, free] = shape_broadcast_to(src_shape,dst_shape);
         auto not_free    = logical_not(free);
         auto origin_axes = nonzero(not_free);
 

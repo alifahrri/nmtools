@@ -4,12 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 
-#include <type_traits>
-#include <cstddef> // size_t
-#include <utility> // integer_sequence
-#include <array>
-#include <tuple>
-
 namespace nmtools::index
 {
     // tag to resolve sum return type

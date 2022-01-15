@@ -7,9 +7,6 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/utility/forward.hpp"
 
-#include <array>
-#include <tuple>
-
 /**
  * @defgroup array 
  * collections of array functions and structs.

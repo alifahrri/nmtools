@@ -12,6 +12,12 @@
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        template <typename...>
+        struct FIXED_SHAPE_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief get fixed-array size at compile-time.
      * well-formed specialization should have `value` and `value_type`.
@@ -43,7 +49,7 @@ namespace nmtools::meta
                 template_for<dim>([&](auto index){
                     constexpr auto i = decltype(index)::value;
                     using nested_t = remove_nested_array_dim_t<T,i>;
-                    get<i>(shape) = nested_array_size_v<nested_t>;
+                    shape[i] = nested_array_size_v<nested_t>;
                 });
                 return shape;
             }

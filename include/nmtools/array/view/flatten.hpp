@@ -11,8 +11,6 @@
 
 #include "nmtools/array/meta.hpp"
 
-#include <cassert>
-
 namespace nmtools::view
 {
     /**

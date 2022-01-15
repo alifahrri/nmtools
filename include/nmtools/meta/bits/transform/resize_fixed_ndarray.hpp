@@ -5,6 +5,13 @@
 
 namespace nmtools::meta
 {
+
+    namespace error
+    {
+        template <typename...>
+        struct RESIZE_FIXED_NDARRAY_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief resize fixed array
      * 
@@ -15,6 +22,7 @@ namespace nmtools::meta
     template <typename T, typename U, typename=void>
     struct resize_fixed_ndarray
     {
+        // TODO: use error type
         using type = T;
     }; // resize_fixed_ndarray
 

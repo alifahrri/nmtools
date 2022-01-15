@@ -9,10 +9,6 @@
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/shape.hpp"
 
-#include <array>
-#include <tuple>
-#include <type_traits>
-
 namespace nmtools
 {
     namespace index
@@ -37,10 +33,28 @@ namespace nmtools
          * @see scatter
          */
         template <typename vector_t, typename indices_t>
-        constexpr auto gather(const vector_t& vec, const indices_t& indices)
+        constexpr auto gather(const vector_t& vector, const indices_t& indices)
         {
             // get the size of indices
             [[maybe_unused]] auto m = len(indices);
+
+            // convert to array, avoid tuple_at
+            [[maybe_unused]] auto vec = [&](){
+                if constexpr (meta::is_constant_index_array_v<vector_t>) {
+                    return meta::to_value_v<vector_t>;
+                } else if constexpr (meta::is_fixed_index_array_v<vector_t>) {
+                    using element_t  = meta::get_element_or_common_type_t<vector_t>;
+                    constexpr auto N = meta::fixed_index_array_size_v<vector_t>;
+                    using type = meta::make_array_type_t<element_t,N>;
+                    auto vec   = type{};
+                    meta::template_for<N>([&](auto i){
+                        at(vec,i) = at(vector,i);
+                    });
+                    return vec;
+                } else {
+                    return vector;
+                }
+            }();
 
             using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
             auto ret = return_t{};
@@ -51,7 +65,7 @@ namespace nmtools
             [[maybe_unused]] auto gather_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
                 auto idx   = at(indices,i);
                 // TODO: drop tuple w/ runtime value, do not use tuple_at
-                auto value = tuple_at(vec,idx);
+                auto value = at(vec,idx);
                 at(ret,i)  = value;
             }; // gather_impl
 
@@ -75,6 +89,7 @@ namespace nmtools::meta
 {
     namespace error
     {
+        template <typename...>
         struct GATHER_UNSUPPORTED : detail::fail_t {};
     }
 
@@ -85,7 +100,15 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            using element_t = remove_cvref_t<get_element_or_common_type_t<vector_t>>;
+            constexpr auto element_vtype = [](){
+                using element_t = remove_cvref_t<get_element_or_common_type_t<vector_t>>;
+                if constexpr (is_integral_constant_v<element_t>) {
+                    return as_value_v<typename element_t::value_type>;
+                } else {
+                    return as_value_v<element_t>;
+                }
+            }();
+            using element_t = type_t<decltype(element_vtype)>;
             if constexpr (is_constant_index_array_v<vector_t>
                 && is_constant_index_array_v<indices_t>
             ) {
@@ -109,7 +132,8 @@ namespace nmtools::meta
             else if constexpr (
                 is_constant_index_array_v<vector_t> && is_hybrid_index_array_v<indices_t>
             ) /* exactly follow indices */ {
-                return as_value_v<indices_t>;
+                using type = replace_element_type_t<indices_t,element_t>;
+                return as_value_v<type>;
             }
             else if constexpr (
                 is_dynamic_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>
@@ -151,8 +175,9 @@ namespace nmtools::meta
             }
             else if constexpr (
                 is_fixed_size_ndarray_v<vector_t> && is_dynamic_index_array_v<indices_t>
-            ) /* prefer indices */
+            ) /* prefer indices */ {
                 return as_value_v<replace_element_type_t<indices_t,element_t>>;
+            }
             else if constexpr (
                 is_fixed_size_ndarray_v<vector_t> && is_fixed_index_array_v<indices_t>
             ) /* prefer indices */ {
@@ -162,7 +187,7 @@ namespace nmtools::meta
                 return as_value_v<replace_element_type_t<return_t,element_t>>;
             }
             else {
-                return as_value_v<error::GATHER_UNSUPPORTED>;
+                return as_value_v<error::GATHER_UNSUPPORTED<vector_t,indices_t>>;
             }
         }();
 

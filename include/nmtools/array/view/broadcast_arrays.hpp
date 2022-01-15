@@ -103,16 +103,19 @@ namespace nmtools::view
                 return meta::as_value_v<r_type>;
             }, meta::as_value_v<i_type>);
             using result_t = meta::type_t<decltype(vtype)>;
+            static_assert( !meta::is_fail_v<result_t>, "nmtools meta unexpected error" );
             return result_t{broadcast_to(arrays,bshape)...};
         }
         // otherwise call runtime version,
         // the return type can be maybe type, and may throw if not maybe type
         else {
-            auto [success, bshape] = index::broadcast_shape(::nmtools::shape(arrays)...);
+            // TODO: use maybe type instead
+            const auto [success, bshape] = index::broadcast_shape(::nmtools::shape(arrays)...);
             using bshape_t = decltype(bshape);
 
             using types  = meta::type_list<const arrays_t&...>;
-            using i_type = meta::make_tuple_type_t<decltype(broadcast_to(meta::declval<meta::at_t<types,0>>(),bshape))>;
+            using type0  = meta::at_t<types,0>;
+            using i_type = meta::make_tuple_type_t<decltype(broadcast_to(meta::declval<type0>(),bshape))>;
             constexpr auto vtype = meta::template_reduce<sizeof...(arrays)-1>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value + 1;
                 using init_t = meta::type_t<decltype(init)>;

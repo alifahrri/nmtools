@@ -20,6 +20,7 @@ inline auto name##_f = cast(name, kind::fixed); \
 inline auto name##_d = cast(name, kind::dynamic); \
 inline auto name##_h = cast(name, kind::hybrid);
 
+// split for matmul
 NMTOOLS_TESTING_DECLARE_CASE(array, split)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)

@@ -9,8 +9,6 @@
 
 #include "nmtools/assert.hpp"
 
-#include <cassert>
-
 namespace nmtools::view::detail
 {
     template <template<typename...>typename tuple_t, typename...args_t, typename value_t, template<auto...>typename sequence, auto...Is>
@@ -376,6 +374,7 @@ namespace nmtools::view
     template <typename T, typename=void>
     struct get_underlying_array_type
     {
+        // TODO: use error type
         using type = void;
     }; // get_underlying_array_type
 
@@ -555,6 +554,7 @@ namespace nmtools::view
     namespace error
     {
         // error type for resolve_attribute_type metafunction
+        template <typename...>
         struct RESOLVE_ATTRIBUTE_TYPE_UNSUPPORTED : meta::detail::fail_t {};
     }
 
@@ -581,7 +581,7 @@ namespace nmtools::view
             {
                 return meta::as_value_v<const attribute_t>;
             } else {
-                return meta::as_value_v<error::RESOLVE_ATTRIBUTE_TYPE_UNSUPPORTED>;
+                return meta::as_value_v<error::RESOLVE_ATTRIBUTE_TYPE_UNSUPPORTED<attribute_t>>;
             }
         }();
         using type = meta::type_t<decltype(vtype)>;
