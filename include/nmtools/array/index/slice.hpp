@@ -327,7 +327,7 @@ namespace nmtools::index
             }
         };
 
-        auto apply_index_array = [&](const auto& slice, auto shape_i){
+        [[maybe_unused]] auto apply_index_array = [&](const auto& slice, auto shape_i){
             auto start = at(slice,0_ct);
             auto stop  = at(slice,1_ct);
             // NOTE: can not explicitly capture only slice, clang may triggers warning
@@ -377,7 +377,6 @@ namespace nmtools::index
         // len(slices) != len(shape)
         size_t shp_i = 0;
         for (size_t slc_i=0; slc_i<n_slices; slc_i++) {
-            auto shape_i = at(shape,shp_i);
             auto slice = at(slices_pack,slc_i);
             // fill up
             if (is_elipsis(slice)) {
@@ -402,6 +401,7 @@ namespace nmtools::index
                     // on elipsis which triggers compile error.
                     // should be unreachable at runtime
                 } else {
+                    auto shape_i = at(shape,shp_i);
                     at(res,res_i) = apply_index_array(slice_,shape_i);
                     res_i++;
                     shp_i++;
