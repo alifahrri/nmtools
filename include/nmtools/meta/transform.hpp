@@ -14,6 +14,7 @@
 #include "nmtools/meta/bits/transform/get_element_or_common_type.hpp"
 #include "nmtools/meta/bits/transform/get_index_type.hpp"
 #include "nmtools/meta/bits/transform/get_maybe_type.hpp"
+#include "nmtools/meta/bits/transform/get_list_value_type.hpp"
 #include "nmtools/meta/bits/transform/len.hpp"
 #include "nmtools/meta/bits/transform/make_signed.hpp"
 #include "nmtools/meta/bits/transform/make_unsigned.hpp"
@@ -23,6 +24,7 @@
 #include "nmtools/meta/bits/transform/remove_pointer.hpp"
 #include "nmtools/meta/bits/transform/replace_either.hpp"
 #include "nmtools/meta/bits/transform/replace_element_type.hpp"
+#include "nmtools/meta/bits/transform/replace_list_value_type.hpp"
 #include "nmtools/meta/bits/transform/resize_fixed_ndarray.hpp"
 #include "nmtools/meta/bits/transform/to_value.hpp"
 #include "nmtools/meta/bits/transform/transform_bounded_array.hpp"
@@ -234,6 +236,7 @@ namespace nmtools::meta
     template <typename array_t>
     using remove_cvref_pointer_t = remove_cvref_t<remove_pointer_t<array_t>>;
 
+    // TODO: rename, ct_t maybe
     template <auto I, auto...Is>
     struct make_ct
     {

@@ -95,6 +95,7 @@ namespace nmtools::meta
         std::is_integral_v<T> || is_integral_constant_v<T>
     > > : true_type {};
 
+// TODO: no need to use ifdef, can safely assume already have vector
 #if defined(NMTOOLS_HAS_STL_VECTOR) && (NMTOOLS_HAS_STL_VECTOR)
     template <>
     struct is_bit_reference<std::vector<bool>::reference> : std::true_type {};
@@ -109,6 +110,9 @@ namespace nmtools::meta
 
     template <typename T>
     struct is_dynamic_index_array<std::vector<T>,std::enable_if_t<is_index_v<T>>> : std::true_type {};
+
+    template <typename T, typename Allocator>
+    struct is_list<std::vector<T,Allocator>> : true_type {};
 #endif // NMTOOLS_HAS_VECTOR
 } // namespace nmtools::meta
 
