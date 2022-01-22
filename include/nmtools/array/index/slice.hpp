@@ -82,7 +82,7 @@ namespace nmtools::index
         }
     };
 
-    auto compute_index = [](const auto& indices, auto si, auto start_, auto stop_, auto step_, auto i_i) {
+    constexpr inline auto compute_index = [](const auto& indices, auto si, auto start_, auto stop_, auto step_, auto i_i) {
         using start_t = meta::remove_cvref_t<decltype(start_)>;
         using stop_t  = meta::remove_cvref_t<decltype(stop_)>;
         using step_t  = meta::remove_cvref_t<decltype(step_)>;
