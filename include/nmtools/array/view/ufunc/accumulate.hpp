@@ -76,12 +76,26 @@ namespace nmtools::view
             // instead of returning (transformed) index only
             auto indices_ = pack_indices(indices...);
             // for now, assume axis is int and array is fixed_dim
-            constexpr auto DIM = meta::fixed_dim_v<array_t>;
+            [[maybe_unused]] constexpr auto DIM = meta::fixed_dim_v<array_t>;
             // type for slicing is DIMx2 where 2 represent start and stop
-            using slices_type = meta::make_array_type_t<meta::make_array_type_t<size_t,2>,DIM>;
+            constexpr auto slices_vtype = [](){
+                using slice_type = nmtools_array<size_t,2>;
+                if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
+                    using slices_type = nmtools_array<slice_type,DIM>;
+                    return meta::as_value_v<slices_type>;
+                } else {
+                    using slices_type = nmtools_list<slice_type>;
+                    return meta::as_value_v<slices_type>;
+                }
+            }();
+            using slices_type = meta::type_t<decltype(slices_vtype)>;
             auto slices = slices_type {};
+            // TODO: consider to unroll when dim is fixed
             // here, len(slices) already matched the dimension of source array
-            auto dim = len(slices);
+            auto dim = detail::dim(array);
+            if constexpr (meta::is_resizeable_v<slices_type>) {
+                slices.resize(dim);
+            }
             for (size_t i=0; i<dim; i++) {
                 // index at axis i
                 auto s = at(indices_,i);
@@ -90,8 +104,6 @@ namespace nmtools::view
                 auto stop  = s + 1;
                 at(slices,i) = {start,stop};
             }
-            // apply slice only works with fixed dim ndarray for now
-            // TODO: support dynamic dim ndarray
             auto sliced = apply_slice(array, slices);
             auto flattened = flatten(sliced);
             return reducer.template operator()<result_type>(flattened);

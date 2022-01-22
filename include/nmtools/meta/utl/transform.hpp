@@ -185,6 +185,30 @@ namespace nmtools::meta
     #define nmtools_either ::nmtools::utl::either
 #endif // NMTOOLS_META_MAKE_EITHER
 
+#ifndef NMTOOLS_META_MAKE_SEQUENCE
+#define NMTOOLS_META_MAKE_SEQUENCE
+
+    namespace error
+    {
+        template <typename...>
+        struct UTL_SEQUENCE_UNSUPPORTED : detail::fail_t {};
+    }
+
+    // TODO: support sequence type by adding utl::vector
+    template <typename T, typename Allocator>
+    struct make_sequence_type
+    {
+        using type = error::UTL_SEQUENCE_UNSUPPORTED<T,Allocator>;
+    };
+
+    template <typename T, typename Allocator=none_t>
+    using make_sequence_type_t = type_t<make_sequence_type<T,Allocator>>;
+
+    // TODO: support sequence type by adding utl::vector
+    #define nmtools_list ::nmtools::meta::error::UTL_SEQUENCE_UNSUPPORTED
+
+#endif // NMTOOLS_META_MAKE_SEQUENCE
+
     template <typename left_t, typename right_t>
     struct get_either_left<utl::either<left_t,right_t>>
     {

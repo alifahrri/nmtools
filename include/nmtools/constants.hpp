@@ -3,6 +3,8 @@
 
 #include "nmtools/meta.hpp"
 
+// TODO: rename this file to "literals.hpp", use constant.hpp only to define None, Elipsis...
+
 namespace nmtools::detail
 {
     /**
@@ -63,85 +65,5 @@ namespace nmtools::literals
         return type{};
     } // _ct
 } // namespace nmtools::literals
-
-namespace nmtools
-{
-    /**
-     * @brief specific tag to represents "None" type
-     * 
-     */
-    struct none_t {};
-
-    /**
-     * @brief special inline variable to represent "None" value
-     * 
-     */
-    inline constexpr auto None = none_t {};
-
-    /**
-     * @brief Special tag to represents "..." a.k.a. "Elipsis" type
-     * 
-     */
-    struct elipsis_t {};
-
-    inline constexpr auto Elipsis = elipsis_t {};
-
-    /**
-     * @brief special constant for true_type
-     * 
-     */
-    inline constexpr auto True  = meta::true_type {};
-
-    /**
-     * @brief sepcial constant for false_type
-     * 
-     */
-    inline constexpr auto False = meta::false_type {};
-
-    /**
-     * @brief Special constant to represents "-1"
-     * 
-     */
-    inline constexpr auto Last = meta::integral_constant<int,-1>{};
-
-    /**
-     * @brief helper traits to check for "None" type
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    struct is_none : meta::false_type {};
-
-    template <>
-    struct is_none<none_t> : meta::true_type {};
-
-    template <>
-    struct is_none<const none_t> : meta::true_type {};
-    template <>
-    struct is_none<const none_t&> : meta::true_type {};
-
-    /**
-     * @brief helper inline variable template to check for "None" type
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    inline constexpr auto is_none_v = is_none<T>::value;
-
-    template <typename T>
-    struct is_elipsis : meta::false_type {};
-
-    template <typename T>
-    struct is_elipsis<const T> : is_elipsis<T> {};
-
-    template <typename T>
-    struct is_elipsis<const T&> : is_elipsis<T> {};
-
-    template <>
-    struct is_elipsis<elipsis_t> : meta::true_type {};
-
-    template <typename T>
-    inline constexpr auto is_elipsis_v = is_elipsis<T>::value;
-} // namespace nmtools
 
 #endif // NMTOOLS_CONSTANTS_HPP

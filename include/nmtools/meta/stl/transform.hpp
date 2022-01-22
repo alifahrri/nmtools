@@ -66,8 +66,6 @@ namespace nmtools::meta
     #define nmtools_tuple ::std::tuple
 #endif // NMTOOLS_META_MAKE_TUPLE
 
-    // TODO: add make_tuple, make_either...
-
 // the following code breaks gcc: "internal compiler error: in finish_member_declaration, at cp/semantics.c:3237"
 // (even in newest version: 11.2), works fine on clang, check the else block for workaround
 // https://github.com/alifahrri/nmtools/runs/3708887742?check_suite_focus=true
@@ -422,7 +420,47 @@ namespace nmtools::meta
 
     template <typename Left, typename Right>
     using make_either_type_t = type_t<make_either_type<Left,Right>>;
+
+    // doesn't support CTAD
+    #define nmtools_either ::nmtools::meta::make_either_type_t
 #endif // NMTOOLS_META_MAKE_EITHER
+
+#ifndef NMTOOLS_META_MAKE_SEQUENCE
+#define NMTOOLS_META_MAKE_SEQUENCE
+
+    template <typename T, typename Allocator>
+    struct make_sequence_type
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_none_v<Allocator>) {
+                using type = std::vector<T>;
+                return as_value_v<type>;
+            } else {
+                using type = std::vector<T,Allocator>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
+    template <typename T, typename Allocator=none_t>
+    using make_sequence_type_t = type_t<make_sequence_type<T,Allocator>>;
+
+    #define nmtools_list ::std::vector
+
+#endif // NMTOOLS_META_MAKE_SEQUENCE
+
+    template <typename T, typename Allocator>
+    struct get_list_value_type<std::vector<T,Allocator>>
+    {
+        using type = T;
+    };
+
+    template <typename T, template<typename...>typename Allocator, typename value_type>
+    struct replace_list_value_type<std::vector<T,Allocator<T>>,value_type>
+    {
+        using type = std::vector<value_type,Allocator<value_type>>;
+    };
 
     // TODO: remove metafunctions
     /**

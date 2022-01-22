@@ -58,3 +58,6 @@ https://godbolt.org/z/Tdn6Yvf3f
 gcc and clang disagree on partial specialization & auto template parameter
 compiles on clang, failed on gcc
 https://godbolt.org/z/vjjMe588z
+
+clang warns unused variable on "if constexpr" inside lambda, while gcc doesn't
+https://godbolt.org/z/fWd7YsfTj

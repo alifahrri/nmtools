@@ -65,7 +65,7 @@ namespace nmtools::benchmarks
             template <bool dont_optimize=true, typename F>
             static auto run(const std::string& title, const std::string& name, F& f)
             {
-                auto bench = nm::benchmarks::TrackedBench::get_instance().get_bench(title);
+                auto bench = benchmarks::TrackedBench::get_instance().get_bench(title);
                 bench->run(name, [&](){
                     [[maybe_unused]] auto x = f();
                     if constexpr (dont_optimize)

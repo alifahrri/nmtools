@@ -119,7 +119,7 @@ TEST_CASE("reduce_add(case1)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case1, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet
-    // REDUCE_ADD_SUBCASE( case1, a_d, axis );
+    REDUCE_ADD_SUBCASE( case1, a_d, axis );
     REDUCE_ADD_SUBCASE( case1, a_h, axis );
 }
 
@@ -129,6 +129,7 @@ TEST_CASE("reduce_add(case2)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case2, a_a, axis );
     // REDUCE_ADD_SUBCASE( case2, a_v, axis );
     REDUCE_ADD_SUBCASE( case2, a_f, axis );
+    REDUCE_ADD_SUBCASE( case2, a_d, axis );
     REDUCE_ADD_SUBCASE( case2, a_h, axis );
 }
 
@@ -138,6 +139,7 @@ TEST_CASE("reduce_add(case3)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case3, a_a, axis );
     // REDUCE_ADD_SUBCASE( case3, a_v, axis );
     REDUCE_ADD_SUBCASE( case3, a_f, axis );
+    REDUCE_ADD_SUBCASE( case3, a_d, axis );
     REDUCE_ADD_SUBCASE( case3, a_h, axis );
 }
 
@@ -147,6 +149,7 @@ TEST_CASE("reduce_add(case4)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case4, a_a, axis_a );
     // REDUCE_ADD_SUBCASE( case4, a_v, axis_v );
     REDUCE_ADD_SUBCASE( case4, a_f, axis_f );
+    REDUCE_ADD_SUBCASE( case4, a_d, axis_f );
     REDUCE_ADD_SUBCASE( case4, a_h, axis_h );
 }
 
@@ -156,6 +159,7 @@ TEST_CASE("reduce_add(case5)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case5, a_a, axis_a );
     // REDUCE_ADD_SUBCASE( case5, a_v, axis_v );
     REDUCE_ADD_SUBCASE( case5, a_f, axis_f );
+    REDUCE_ADD_SUBCASE( case5, a_d, axis_f );
     REDUCE_ADD_SUBCASE( case5, a_h, axis_h );
 }
 
@@ -165,6 +169,7 @@ TEST_CASE("reduce_add(case6)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case6, a_a, axis_a );
     // REDUCE_ADD_SUBCASE( case6, a_v, axis_v );
     REDUCE_ADD_SUBCASE( case6, a_f, axis_f );
+    REDUCE_ADD_SUBCASE( case6, a_d, axis_f );
     REDUCE_ADD_SUBCASE( case6, a_h, axis_h );
 }
 
@@ -174,6 +179,7 @@ TEST_CASE("reduce_add(case7)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case7, a_a, axis, dtype );
     // REDUCE_ADD_SUBCASE( case7, a_v, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_f, axis, dtype );
+    REDUCE_ADD_SUBCASE( case7, a_d, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_h, axis, dtype );
 }
 
@@ -183,6 +189,7 @@ TEST_CASE("reduce_add(case8)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case8, a_a, axis, dtype, initial );
     // REDUCE_ADD_SUBCASE( case8, a_v, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_f, axis, dtype, initial );
+    REDUCE_ADD_SUBCASE( case8, a_d, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_h, axis, dtype, initial );
 }
 
@@ -192,6 +199,7 @@ TEST_CASE("reduce_add(case9)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case9, a_a, axis, dtype, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case9, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case9, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_h, axis, dtype, initial, keepdims );
 }
 
@@ -201,6 +209,7 @@ TEST_CASE("reduce_add(case10)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case10, a_a, axis, dtype, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case10, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case10, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_h, axis, dtype, initial, keepdims );
 }
 
@@ -210,6 +219,7 @@ TEST_CASE("reduce_add(case11)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case11, a_a, axis, dtype, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case11, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case11, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_h, axis, dtype, initial, keepdims );
 }
 
@@ -219,6 +229,7 @@ TEST_CASE("reduce_add(case12)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case12, a_a, axis, dtype, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case12, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case12, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_h, axis, dtype, initial, keepdims );
 }
 
@@ -228,6 +239,7 @@ TEST_CASE("reduce_add(case13)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case13, a_a, axis, dtype, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case13, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case13, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_h, axis, dtype, initial, keepdims );
 }
 
@@ -237,6 +249,7 @@ TEST_CASE("reduce_add(case14)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case14, a_a, axis, dtype, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case14, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case14, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_h, axis, dtype, initial, keepdims );
 }
 
@@ -246,6 +259,7 @@ TEST_CASE("reduce_add(case15)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case15, a_a, axis );
     // REDUCE_ADD_SUBCASE( case15, a_v, axis );
     REDUCE_ADD_SUBCASE( case15, a_f, axis );
+    REDUCE_ADD_SUBCASE( case15, a_d, axis );
     REDUCE_ADD_SUBCASE( case15, a_h, axis );
 }
 
@@ -255,6 +269,7 @@ TEST_CASE("reduce_add(case16)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case16, a_a, axis, nmtools::None, initial );
     // REDUCE_ADD_SUBCASE( case16, a_v, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_f, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case16, a_d, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_h, axis, nmtools::None, initial );
 }
 
@@ -264,6 +279,7 @@ TEST_CASE("reduce_add(case17)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case17, a_a, axis, nmtools::None, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case17, a_v, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case17, a_f, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case17, a_d, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case17, a_h, axis, nmtools::None, initial, keepdims );
 }
 
@@ -273,6 +289,7 @@ TEST_CASE("reduce_add(case18)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case18, a_a, axis, nmtools::None, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case18, a_v, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_f, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case18, a_d, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_h, axis, nmtools::None, initial, keepdims );
 }
 
@@ -282,6 +299,7 @@ TEST_CASE("reduce_add(case19)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case19, a_a, axis, nmtools::None, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case19, a_v, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_f, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case19, a_d, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_h, axis, nmtools::None, initial, keepdims );
 }
 
@@ -291,6 +309,7 @@ TEST_CASE("reduce_add(case20)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case20, a_a, axis, nmtools::None, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case20, a_v, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_f, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case20, a_d, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_h, axis, nmtools::None, initial, keepdims );
 }
 
@@ -301,6 +320,7 @@ TEST_CASE("reduce_add(case21)" * doctest::test_suite("view::reduce_add"))
     // TODO: remove support for nested std::vector
     // REDUCE_ADD_SUBCASE( case21, a_v, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_f, axis, dtype );
+    REDUCE_ADD_SUBCASE( case21, a_d, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_h, axis, dtype );
 }
 
@@ -311,6 +331,7 @@ TEST_CASE("reduce_add(case22)" * doctest::test_suite("view::reduce_add"))
     // TODO: remove support for nested std::vector
     // REDUCE_ADD_SUBCASE( case22, a_v, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_f, axis, dtype );
+    REDUCE_ADD_SUBCASE( case22, a_d, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_h, axis, dtype );
 }
 
@@ -323,6 +344,7 @@ TEST_CASE("reduce_add(case23)" * doctest::test_suite("view::reduce_add"))
     // TODO: remove support for nested std::vector
     // REDUCE_ADD_SUBCASE( case23, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case23, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_h, axis, dtype, initial, keepdims );
 }
 
@@ -335,6 +357,7 @@ TEST_CASE("reduce_add(case24)" * doctest::test_suite("view::reduce_add"))
     // TODO: remove support for nested std::vector
     // REDUCE_ADD_SUBCASE( case24, a_v, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case24, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_h, axis, dtype, initial, keepdims );
 }
 
@@ -379,7 +402,7 @@ TEST_CASE("accumulate_add(case1)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case1, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet
-    // ACCUMULATE_ADD_SUBCASE( case1, a_d, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_h, axis );
 }
 
@@ -391,7 +414,7 @@ TEST_CASE("accumulate_add(case2)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case2, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet
-    // ACCUMULATE_ADD_SUBCASE( case2, a_d, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_h, axis );
 }
 
@@ -403,7 +426,7 @@ TEST_CASE("accumulate_add(case3)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case3, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet
-    // ACCUMULATE_ADD_SUBCASE( case3, a_d, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_h, axis );
 }
 

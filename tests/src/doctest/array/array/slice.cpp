@@ -2,6 +2,9 @@
 #include "nmtools/testing/data/array/slice.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+namespace nm = nmtools;
+namespace na = nm::array;
+
 #define RUN_slice_impl(...) \
 nm::array::slice(__VA_ARGS__);
 
@@ -38,6 +41,7 @@ TEST_CASE("slice(case1)" * doctest::test_suite("array::slice"))
 {
     SLICE_SUBCASE(case1,   array, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, array_a, slice0, slice1, slice2);
+    // TODO: remove nested vector support
     // SLICE_SUBCASE(case1, array_v, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, array_f, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, array_d, slice0, slice1, slice2);

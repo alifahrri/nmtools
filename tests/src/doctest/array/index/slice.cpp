@@ -781,6 +781,297 @@ TEST_CASE("shape_slice(case32)" * doctest::test_suite("index::shape_slice"))
     SHAPE_SLICE_SUBCASE(case32, shape_h, slice0, slice1);
 }
 
+NMTOOLS_TESTING_DECLARE_CASE(index, shape_dynamic_slice)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        using slice_t  = std::array<int,3>;
+        using slices_t = meta::make_sequence_type_t<slice_t>;
+        inline auto shape  = nmtools_list{2,3,2};
+        inline auto slices = slices_t{{0,2,1},{0,1,1},{0,2,1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline auto result = nmtools_list{2,1,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        using slice_t  = std::array<int,2>;
+        using slices_t = meta::make_sequence_type_t<slice_t>;
+        inline auto shape  = nmtools_list{2,3,2};
+        inline auto slices = slices_t{{0,2},{0,1},{0,2}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline auto result = nmtools_list{2,1,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        using slice_t  = nmtools_tuple<none_t,int>;
+        using slices_t = meta::make_sequence_type_t<slice_t>;
+        inline auto shape  = nmtools_list{2,3,2};
+        inline auto slices = slices_t{{None,2},{None,1},{None,2}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline auto result = nmtools_list{2,1,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        using slice_t  = nmtools_tuple<none_t,none_t>;
+        using slices_t = meta::make_sequence_type_t<slice_t>;
+        inline auto shape  = nmtools_list{2,3,2};
+        inline auto slices = slices_t{{None,None},{None,None},{None,None}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline auto result = nmtools_list{2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        using slice_t  = nmtools_tuple<none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape  = nmtools_list{2,3,2};
+        inline auto slices = slices_t{{None,2},{None,2},{None,-1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        inline auto result = nmtools_list{2,2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        using slice_t  = nmtools_tuple<none_t,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape  = nmtools_list{2,3,2};
+        inline auto slices = slices_t{{None,None,1},{None,None,-1},{None,None,1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        inline auto result = nmtools_list{2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        using slice_t  = nmtools_tuple<none_t,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape  = nmtools_list{4,2};
+        inline auto slices = slices_t{{None,None,2},{None,None,1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        inline auto result = nmtools_list{2,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        using slice_t  = nmtools_tuple<int,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape  = nmtools_list{4,2};
+        inline auto slices = slices_t{{0,None,-2},{1,None,-2}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        inline auto result = nmtools_list{1,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        using slice_t  = nmtools_tuple<int,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape = nmtools_list{4,2};
+        inline auto slices = slices_t{{3,None,-2},{1,None,-2}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        inline auto result = nmtools_list{2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        using slice_t  = nmtools_tuple<int,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape = nmtools_list{4,2};
+        inline auto slices = slices_t{{3,None,2},{1,None,-2}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        inline auto result = nmtools_list{1,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        using slice_t  = nmtools_tuple<int,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape = nmtools_list{4,2};
+        inline auto slices = slices_t{{2,None,-2},{1,None,-2}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        inline auto result = nmtools_list{2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        using slice_t  = nmtools_either<int,nmtools_tuple<none_t,none_t>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{nmtools_tuple{None,None},0,0};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
+    {
+        inline auto result = nmtools_list{2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case13)
+    {
+        using slice_t  = nmtools_either<int,nmtools_tuple<none_t,int>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{nmtools_tuple{None,2},0,nmtools_tuple{None,-1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case13)
+    {
+        inline auto result = nmtools_list{2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case14)
+    {
+        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{Elipsis,nmtools_tuple{None,None}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case14)
+    {
+        inline auto result = nmtools_list{2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case15)
+    {
+        using slice_t  = nmtools_either<int,elipsis_t>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto shape  = nmtools_list{2,3,2};
+        inline auto slices = slices_t{0,Elipsis};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case15)
+    {
+        inline auto result = nmtools_list{3,2};
+    }
+}
+
+#define RUN_shape_dynamic_slice_impl(...) \
+nm::index::shape_dynamic_slice(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs shape_dynamic_slice fn to callable lambda
+#define RUN_shape_dynamic_slice(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("shape_dynamic_slice-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_shape_dynamic_slice_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_shape_dynamic_slice(case_name, ...) \
+RUN_shape_dynamic_slice_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define SHAPE_DYNAMIC_SLICE_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, shape_dynamic_slice, case_name); \
+    using namespace args; \
+    auto result = RUN_shape_dynamic_slice(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+TEST_CASE("shape_dynamic_slice(case1)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case1, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case2)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case2, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case3)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case3, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case4)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case4, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case5)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case5, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case6)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case6, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case7)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case7, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case8)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case8, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case9)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case9, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case10)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case10, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case11)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case11, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case12)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case12, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case13)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case13, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case14)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case14, shape, slices);
+}
+
+TEST_CASE("shape_dynamic_slice(case15)" * doctest::test_suite("index::shape_dynamic_slice"))
+{
+    SHAPE_DYNAMIC_SLICE_SUBCASE(case15, shape, slices);
+}
+
+
 NMTOOLS_TESTING_DECLARE_CASE(index, slice)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -795,7 +1086,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        // int result[3] = {2,1,2};
         int result[3] = {0,0,1};
     }
 
@@ -811,7 +1101,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        // int result[3] = {2,3,2};
         int result[3] = {1,2,0};
     }
 
@@ -827,7 +1116,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        // int result[3] = {1,1,2};
         int result[3] = {1,0,1};
     }
 
@@ -843,7 +1131,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        // int result[3] = {1,1,2};
         int result[3] = {1,0,1};
     }
 
@@ -859,7 +1146,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        // int result[3] = {2,2,1};
         int result[3] = {1,1,0};
     }
 
@@ -875,7 +1161,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        // int result[1] = {2};
         int result[3] = {1,0,0};
     }
 
@@ -891,7 +1176,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        // int result[2] = {2,1};
         int result[3] = {1,0,0};
     }
 
@@ -1906,4 +2190,147 @@ TEST_CASE("slice(case44)" * doctest::test_suite("index::slice"))
     SLICE_SUBCASE(case44, indices_f, shape_f, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case44, indices_d, shape_d, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case44, indices_h, shape_h, slice0, slice1, slice2, slice3);
+}
+
+NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        using slice_t  = nmtools_array<int,2>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto indices = nmtools_list{0,0,1};
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{{0,2},{0,1},{0,2}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline auto result = nmtools_list{0,0,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        using slice_t  = nmtools_tuple<none_t,none_t>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto indices = nmtools_list{1,2,0};
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{{None,None},{None,None},{None,None}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline auto result = nmtools_list{1,2,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        using slice_t  = nmtools_tuple<none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto indices = nmtools_list{1,1,0};
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{{None,2},{None,2},{None,-1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline auto result = nmtools_list{1,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        using slice_t  = nmtools_tuple<none_t,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto indices = nmtools_list{1,1,0};
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{{None,None,-1},{None,None,1},{None,None,1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline auto result = nmtools_list{0,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        using slice_t  = nmtools_tuple<none_t,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto indices = nmtools_list{0,0,0};
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{{None,None,1},{None,None,-1},{None,None,1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        inline auto result = nmtools_list{0,2,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        using slice_t  = nmtools_tuple<int,none_t,int>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto indices = nmtools_list{0,0,0};
+        inline auto shape   = nmtools_list{2,3,2};
+        inline auto slices  = slices_t{{0,None,1},{2,None,-1},{0,None,1}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        inline auto result = nmtools_list{0,2,0};
+    }
+}
+
+#define RUN_dynamic_slice_impl(...) \
+nm::index::dynamic_slice(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs dynamic_slice fn to callable lambda
+#define RUN_dynamic_slice(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("dynamic_slice-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_dynamic_slice_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_dynamic_slice(case_name, ...) \
+RUN_dynamic_slice_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define DYNAMIC_SLICE_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, dynamic_slice, case_name); \
+    using namespace args; \
+    auto result = RUN_dynamic_slice(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+TEST_CASE("dynamic_slice(case1)" * doctest::test_suite("index::dynamic_slice"))
+{
+    DYNAMIC_SLICE_SUBCASE( case1, indices, shape, slices );
+}
+
+TEST_CASE("dynamic_slice(case2)" * doctest::test_suite("index::dynamic_slice"))
+{
+    DYNAMIC_SLICE_SUBCASE( case2, indices, shape, slices );
+}
+
+TEST_CASE("dynamic_slice(case3)" * doctest::test_suite("index::dynamic_slice"))
+{
+    DYNAMIC_SLICE_SUBCASE( case3, indices, shape, slices );
+}
+
+TEST_CASE("dynamic_slice(case4)" * doctest::test_suite("index::dynamic_slice"))
+{
+    DYNAMIC_SLICE_SUBCASE( case4, indices, shape, slices );
+}
+
+TEST_CASE("dynamic_slice(case5)" * doctest::test_suite("index::dynamic_slice"))
+{
+    DYNAMIC_SLICE_SUBCASE( case5, indices, shape, slices );
+}
+
+TEST_CASE("dynamic_slice(case6)" * doctest::test_suite("index::dynamic_slice"))
+{
+    DYNAMIC_SLICE_SUBCASE( case6, indices, shape, slices );
 }

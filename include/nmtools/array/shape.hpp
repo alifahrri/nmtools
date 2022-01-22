@@ -186,7 +186,19 @@ namespace nmtools
             using right_t = meta::get_either_right_t<array_t>;
             using left_shape_t  = decltype(shape(meta::declval<left_t>()));
             using right_shape_t = decltype(shape(meta::declval<right_t>()));
-            using shape_t = meta::replace_either_t<array_t,left_shape_t,right_shape_t>;
+            constexpr auto shape_vtype = [](){
+                // in c++ stl, while variant can hold the same type more than once,
+                // it is rather cumbersome so just skip variant if left and right
+                // result the same type (for example: reduction on dynamic ndarray)
+                if constexpr (meta::is_same_v<left_shape_t,right_shape_t>) {
+                    using shape_t = left_shape_t;
+                    return meta::as_value_v<shape_t>;
+                } else {
+                    using shape_t = meta::replace_either_t<array_t,left_shape_t,right_shape_t>;
+                    return meta::as_value_v<shape_t>;
+                }
+            }();
+            using shape_t = meta::type_t<decltype(shape_vtype)>;
             if (auto lptr = nmtools::get_if<left_t>(&array)) {
                 return shape_t{shape(*lptr)};
             } else /* if (auto ptr = nmtools::get_if<right_t>(&array)) */ {
