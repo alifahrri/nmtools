@@ -2,6 +2,9 @@
 #include "nmtools/testing/data/array/slice.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+namespace nm = nmtools;
+namespace na = nmtools::array;
+
 #define RUN_slice_impl(...) \
 nm::view::slice(__VA_ARGS__);
 
@@ -511,4 +514,127 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
         };
         NMTOOLS_ASSERT_EQUAL( sliced, expected );
     }
+}
+
+
+#define RUN_apply_slice_impl(...) \
+nm::view::apply_slice(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs apply_slice fn to callable lambda
+#define RUN_apply_slice(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("apply_slice-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_apply_slice_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_apply_slice(case_name, ...) \
+RUN_apply_slice_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define APPLY_SLICE_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
+    using namespace args; \
+    auto result = RUN_apply_slice(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+TEST_CASE("apply_slice(case1)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case1, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case2)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case2, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case3)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case3, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case4)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case4, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case5)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case5, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case8)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case8, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case9)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case9, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case10)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case10, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case11)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case11, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case12)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case12, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case13)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case13, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case14)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case14, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case15)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case15, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case16)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case16, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case17)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case17, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case18)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case18, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case19)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case19, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case20)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case20, array_d, dslices);
 }
