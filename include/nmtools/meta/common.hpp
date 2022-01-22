@@ -408,6 +408,7 @@ namespace nmtools::meta
     template <typename Left, typename Right, typename=void>
     struct make_either_type;
 
+    // TODO: consider if Allocator should be template-template parameter
     /**
      * @brief Reserved metafunction to create a sequence type (std::vector)
      * 
