@@ -99,9 +99,7 @@ namespace nmtools::view::detail
 
         auto adim = len(ashape);
         auto bdim = len(bshape);
-        using dim_t   = decltype(adim);
-        using tuple_t = meta::make_tuple_type_t<dim_t,dim_t>;
-        const auto [h_dim, l_dim] = (adim > bdim) ? tuple_t{adim,bdim} : tuple_t{bdim,adim};
+        const auto [h_dim, l_dim] = (adim > bdim) ? nmtools_tuple{adim,bdim} : nmtools_tuple{bdim,adim};
 
         // check matrix shape
         auto valid_shape = l1 == r2;
@@ -128,46 +126,20 @@ namespace nmtools::view::detail
     } // shape_matmul
 
     /**
-     * @brief Computes the left and right indices for corresponding original array given
-     * the resulting matmul indices, src (original) shape, and dst (matmul) shape.
+     * @brief Computes src indices corresponding to src shape, given dst (matmul) indices.
      * 
-     * The indices are expected to be used by apply_slice.
+     * The src_shape is expected to be full shape (not splitted).
+     * The indices are expected to be broadcast indices only (splitted).
+     * The dst_shape is expected to be broadcast indices only (splitted).
      * 
-     * @tparam indices_t 
-     * @tparam lshape_t 
-     * @tparam rshape_t 
-     * @tparam shape_t 
-     * @param indices 
-     * @param lshape 
-     * @param rshape 
-     * @param shape 
-     * @return constexpr auto 
+     * Only fixed index arrays are supported for now.
+     * 
      */
-    template <typename indices_t, typename lshape_t, typename rshape_t, typename shape_t>
-    constexpr auto matmul(const indices_t& indices, const lshape_t& lshape, const rshape_t& rshape, const shape_t& shape)
+    template <typename indices_t, typename src_shape_t, typename dst_shape_t>
+    constexpr auto broadcast_matmul_indices(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
-        const auto row = at(indices,meta::ct_v<-2>);
-        const auto col = at(indices,meta::ct_v<-1>);
-
-        const auto split_indices = detail::split(indices,meta::ct_v<-2>);
-        const auto b_indices     = at(split_indices,meta::ct_v<0>);
-
-        // assume fixed shape
-        constexpr auto dim = meta::len_v<indices_t>;
-
-        /**
-         * @brief Computes src indices corresponding to src shape, given dst (matmul) indices.
-         * 
-         * The src_shape is expected to be full shape (not splitted).
-         * The indices are expected to be broadcast indices only (splitted).
-         * The dst_shape ise expected to be broadcast indices only (splitted).
-         * 
-         * Only fixed index arrays are supported for now.
-         * 
-         */
-        [[maybe_unused]]
-        constexpr auto broadcast_matmul_indices = [](const auto& indices, const auto& src_shape, const auto& dst_shape) {
-            using src_shape_t  = meta::remove_cvref_t<decltype(src_shape)>;
+        [[maybe_unused]] auto b_src_shape = at(split(src_shape,meta::ct_v<-2>),meta::ct_v<0>);
+        if constexpr (meta::is_fixed_index_array_v<src_shape_t>) {
             // assume src_shape is fixed index array
             constexpr auto dim = meta::len_v<src_shape_t>;
             // the result of broadcasting 
@@ -178,83 +150,206 @@ namespace nmtools::view::detail
             if constexpr (dim<=2) {
                 return Elipsis;
             } else {
-                auto b_src_shape = at(split(src_shape,meta::ct_v<-2>),meta::ct_v<0>);
                 return ::nmtools::index::broadcast_to(indices,b_src_shape,dst_shape);
             }
-        }; // broadcast_matmul_indices
-
-        /**
-         * @brief Computes broadcasted left and right indices to corresponding original shape.
-         * 
-         */
-        const auto lr_indices = [&](){
-            if constexpr (dim > 2) {
-                // broadcasted shape
-                auto shape_    = split(shape,meta::ct_v<-2>);
-                auto b_shape   = at(shape_,meta::ct_v<0>);
-                auto l_indices = broadcast_matmul_indices(b_indices,lshape,b_shape);
-                auto r_indices = broadcast_matmul_indices(b_indices,rshape,b_shape);
-                using l_indices_t = decltype(l_indices);
-                using r_indices_t = decltype(r_indices);
-                using tuple_t = meta::make_tuple_type_t<l_indices_t,r_indices_t>;
-                return tuple_t{l_indices,r_indices};
+        } else {
+            auto dim = len(src_shape);
+            auto broadcasted = index::broadcast_to(indices,b_src_shape,dst_shape);
+            using broadcasted_t = decltype(broadcasted);
+            using result_t = nmtools_either<elipsis_t,broadcasted_t>;
+            if (dim <= 2) {
+                return result_t{Elipsis};
             } else {
-                using tuple_t = meta::make_tuple_type_t<elipsis_t,elipsis_t>;
-                return tuple_t{Elipsis,Elipsis};
+                return result_t{broadcasted};
             }
-        }();
-        const auto l_indices = at(lr_indices,meta::ct_v<0>);
-        const auto r_indices = at(lr_indices,meta::ct_v<1>);
-        using l_indices_t = meta::remove_cvref_t<decltype(l_indices)>;
-        using r_indices_t = meta::remove_cvref_t<decltype(r_indices)>;
+        }
+    } // broadcast_matmul_indices
 
-        /**
-         * @brief Join broadcasted indices with non-broadcasted matmul indices.
-         * 
-         * This is necessary because matmul broadcasting only happened at axis 0 upto -2.
-         * Can not use meta::append_type because indices is not guaranteed to be known at compile-time.
-         * 
-         */
-        constexpr auto concat_indices = [&](const auto& indices, const auto& tuple) {
-            using m_indices_t = meta::remove_cvref_t<decltype(indices)>;
-            constexpr auto n_index = meta::len_v<m_indices_t>;
+    /**
+     * @brief Join broadcasted indices with non-broadcasted matmul indices.
+     * 
+     * This is necessary because matmul broadcasting only happened at axis 0 upto -2.
+     * Can not use meta::append_type because indices is not guaranteed to be known at compile-time.
+     * 
+     */
+    template <typename indices_t, typename tuple_t>
+    constexpr auto concat_indices(const indices_t& indices, const tuple_t& tuple)
+    {
+        if constexpr (meta::is_fixed_index_array_v<indices_t>) {
+            constexpr auto n_index = meta::len_v<indices_t>;
             auto i0   = at(indices,meta::ct_v<0>);
-            auto init = meta::make_tuple_type_t<decltype(i0)>{i0};
+            auto init = nmtools_tuple{i0};
             auto joined = meta::template_reduce<n_index>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 if constexpr (i<(n_index-1)) {
                     auto index_i = at(indices,meta::ct_v<i+1>);
-                    using tuple_t = meta::make_tuple_type_t<decltype(index_i)>;
-                    return tuple_cat(init,tuple_t{index_i});
+                    return tuple_cat(init,nmtools_tuple{index_i});
                 } else {
                     return tuple_cat(init,tuple);
                 }
             }, /*init=*/init);
             return joined;
-        }; // concat_indices
+        } else {
+            // assume dynamic shape
+            using value_t = meta::get_list_value_type_t<indices_t>;
+            // specific for matmul
+            // if tuple is indeed tuple, assume its element is either integer or {None,None}
+            using either_t = nmtools_either<value_t,nmtools_tuple<none_t,none_t>>;
+            using result_t = meta::replace_list_value_type_t<indices_t,either_t>;
 
-        using all_slice_t = meta::make_tuple_type_t<none_t,none_t>;
-        auto lslice_indices = [&](){
-            using tuple_t = meta::make_tuple_type_t<decltype(row),all_slice_t>;
-            if constexpr (is_elipsis_v<l_indices_t>) {
-                return tuple_t{row, all_slice_t{None,None}};
-            } else {
-                return concat_indices(l_indices, tuple_t{row, all_slice_t{None,None}});
+            auto res = result_t {};
+            auto n_index = len(indices);
+            // assume tuple is tuple
+            constexpr auto n_tuple = meta::len_v<tuple_t>;
+            if constexpr (meta::is_resizeable_v<result_t>) {
+                res.resize(n_index+n_tuple);
             }
-        }();
-        auto rslice_indices = [&](){
-            using tuple_t = meta::make_tuple_type_t<all_slice_t,decltype(col)>;
-            if constexpr (is_elipsis_v<r_indices_t>) {
-                return tuple_t{all_slice_t{None,None}, col};
-            } else {
-                return concat_indices(r_indices, tuple_t{all_slice_t{None,None}, col});
+
+            for (size_t i=0; i<n_index; i++) {
+                at(res,i) = at(indices,i);
             }
-        }();
-    
-        using lslice_indices_t = decltype(lslice_indices);
-        using rslice_indices_t = decltype(rslice_indices);
-        using return_t = meta::make_tuple_type_t<lslice_indices_t,rslice_indices_t>;
-        return return_t{lslice_indices,rslice_indices};        
+
+            meta::template_for<n_tuple>([&](auto index){
+                at(res,index+n_index) = at(tuple,index);
+            });
+
+            return res;
+        }
+        // TODO: error handling (compile-time and runtime)
+    } // concat_indices
+
+    /**
+     * @brief Computes the left and right indices for corresponding original array given
+     * the resulting matmul indices, src (original) shape, and dst (matmul) shape.
+     * 
+     * The indices are expected to be used by apply_slice.
+     * 
+     * @tparam indices_t 
+     * @tparam lshape_t 
+     * @tparam rshape_t 
+     * @tparam shape_t 
+     * @param indices indices from dst (matmul) shape
+     * @param lshape  shape from src (original) left operands
+     * @param rshape  shape from src (original) right operands
+     * @param shape   resulting matmul shape (from shape_matmul)
+     * @return constexpr auto slicing args for left and right operands
+     */
+    template <typename indices_t, typename lshape_t, typename rshape_t, typename shape_t>
+    constexpr auto matmul(const indices_t& indices, const lshape_t& lshape, const rshape_t& rshape, const shape_t& shape)
+    {
+        if constexpr (meta::is_dynamic_index_array_v<indices_t>
+            && meta::is_dynamic_index_array_v<lshape_t>
+            && meta::is_dynamic_index_array_v<rshape_t>
+        ) {
+            using index_t  = meta::get_element_type_t<indices_t>;
+            using slice_t  = nmtools_either<index_t,nmtools_tuple<none_t,none_t>>;
+            // assume indices, lshape, rshape, shape is dynamic index array
+            using result_t = nmtools_list<slice_t>;
+            auto l_slices = result_t {};
+            auto r_slices = result_t {};
+
+            auto ldim = len(lshape);
+            auto rdim = len(rshape);
+            [[maybe_unused]] auto matmul_dim = len(shape);
+            if constexpr (meta::is_resizeable_v<result_t>) {
+                l_slices.resize(ldim);
+                r_slices.resize(rdim);
+            }
+
+            constexpr auto all = nmtools_tuple{None,None};
+
+            // matmul slices
+            // for example left  -> [?,::]
+            //             right -> [::,?]
+            at(l_slices,meta::ct_v<-1>) = all;
+            at(r_slices,meta::ct_v<-2>) = all;
+
+            // active col/row slices
+            // for example left  -> [i_{-2},::]
+            //             right -> [::,i_{-1}]
+            at(l_slices,meta::ct_v<-2>) = at(indices,meta::ct_v<-2>);
+            at(r_slices,meta::ct_v<-1>) = at(indices,meta::ct_v<-1>);
+
+            // broadcasted indices
+
+            auto l_offset = matmul_dim - ldim;
+            for (size_t i=0; (ldim > 2) && (i<(ldim-2)); i++) {
+                // broadcasted indices can only same or 1
+                auto si = at(lshape,i);
+                at(l_slices,i) = (si == 1 ? 0 : at(indices,i+l_offset));
+            }
+
+            auto r_offset = matmul_dim - rdim;
+            for (size_t i=0; (rdim > 2) && (i<(rdim-2)); i++) {
+                // broadcasted indices can only same or 1
+                auto si = at(rshape,i);
+                at(r_slices,i) = (si == 1 ? 0 : at(indices,i+r_offset));
+            }
+
+            return nmtools_tuple{l_slices,r_slices};
+        } else {
+            const auto row = at(indices,meta::ct_v<-2>);
+            const auto col = at(indices,meta::ct_v<-1>);
+
+            const auto split_indices = detail::split(indices,meta::ct_v<-2>);
+            const auto b_indices     = at(split_indices,meta::ct_v<0>);
+
+            [[maybe_unused]] auto all_slices = nmtools_tuple{None,None};
+            using all_slices_t [[maybe_unused]] = nmtools_tuple<none_t,none_t>;
+
+            [[maybe_unused]] auto all_elipsis = nmtools_tuple{Elipsis,Elipsis};
+            using all_elipsis_t [[maybe_unused]] = nmtools_tuple<elipsis_t,elipsis_t>;
+
+            /**
+             * @brief Computes broadcasted left and right indices to corresponding original shape.
+             * 
+             */
+            const auto lr_indices = [&](){
+                constexpr auto dim = meta::len_v<indices_t>;
+                if constexpr (dim > 2) {
+                    // broadcasted shape
+                    auto shape_    = split(shape,meta::ct_v<-2>);
+                    auto b_shape   = at(shape_,meta::ct_v<0>);
+                    // need to compute broadcast indices
+                    auto l_indices = broadcast_matmul_indices(b_indices,lshape,b_shape);
+                    auto r_indices = broadcast_matmul_indices(b_indices,rshape,b_shape);
+                    return nmtools_tuple{l_indices,r_indices};
+                } else {
+                    return all_elipsis;
+                }
+            }();
+
+            auto get_lslice_indices = [&](const auto& l_indices){
+                // here l_indices maybe elipsis, index array, or either (elipsis/index array)
+                using l_indices_t = meta::remove_cvref_t<decltype(l_indices)>;
+                // matmul slices for left operands, [...,row,:]
+                auto matmul_indices = nmtools_tuple{row, all_slices};
+                if constexpr (is_elipsis_v<l_indices_t>) {
+                    return matmul_indices;
+                } else {
+                    return concat_indices(l_indices, matmul_indices);
+                }
+            };
+
+            auto get_rslice_indices = [&](const auto& r_indices){
+                using r_indices_t = meta::remove_cvref_t<decltype(r_indices)>;
+                // matmul slices for right operands [...,:,col]
+                auto matmul_indices = nmtools_tuple{all_slices, col};
+                if constexpr (is_elipsis_v<r_indices_t>) {
+                    return matmul_indices;
+                } else {
+                    return concat_indices(r_indices, matmul_indices);
+                }
+            };
+
+            using namespace nmtools::literals;
+
+            const auto l_indices = at(lr_indices,0_ct);
+            const auto r_indices = at(lr_indices,1_ct);
+            auto lslice_indices = get_lslice_indices(l_indices);
+            auto rslice_indices = get_rslice_indices(r_indices);
+            return nmtools_tuple{lslice_indices,rslice_indices};
+        }
     } // matmul
 } // namespace nmtools::view
 
@@ -310,8 +405,8 @@ namespace nmtools::view
             return len(shape());
         } // dim
 
-        template <typename...size_types, meta::enable_if_t<(sizeof...(size_types)>=2),int> =0 >
-        constexpr auto view_at(size_types...indices) const
+        template <typename...size_types>
+        constexpr auto view_at(const size_types&...indices) const
         {
             const auto& lhs = nmtools::get<0>(operands);
             const auto& rhs = nmtools::get<1>(operands);
@@ -345,8 +440,8 @@ namespace nmtools::view
             return reduced;
         } // view_at
 
-        template <typename...size_types, meta::enable_if_t<(sizeof...(size_types)>=2),int> =0 >
-        constexpr auto operator()(size_types...indices) const
+        template <typename...size_types>
+        constexpr auto operator()(const size_types&...indices) const
         {
             auto reduced = view_at(indices...);
             // reduced must be num type
@@ -439,6 +534,7 @@ namespace nmtools::meta
 
     namespace error
     {
+        template <typename...>
         struct SPLIT_INDEX_UNSUPPORTED : detail::fail_t {};
     }
 
@@ -462,7 +558,8 @@ namespace nmtools::meta
                 return as_value_v<type>;
             } else if constexpr (is_constant_index_array_v<shape_t>) {
                 // not supported yet
-                return as_value_v<error::SPLIT_INDEX_UNSUPPORTED>;
+                using type = error::SPLIT_INDEX_UNSUPPORTED<shape_t,split_t>;
+                return as_value_v<type>;
             } else if constexpr (is_fixed_index_array_v<shape_t> && !is_constant_index_v<split_t>) {
                 // shape is fixed size but the index to split is runtime value
                 constexpr auto max_elements = fixed_index_array_size_v<shape_t>;
@@ -491,7 +588,9 @@ namespace nmtools::meta
                 using type    = make_tuple_type_t<left_t,right_t>;
                 return as_value_v<type>;
             } else {
-                return as_value_v<error::SPLIT_INDEX_UNSUPPORTED>;
+                // unhandled type
+                using type = error::SPLIT_INDEX_UNSUPPORTED<shape_t,split_t>;
+                return as_value_v<type>;
             }
         }();
         using type = type_t<decltype(vtype)>;
