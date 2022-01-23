@@ -638,3 +638,87 @@ TEST_CASE("apply_slice(case20)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case20, array_d, dslices);
 }
+
+TEST_CASE("apply_slice(case21)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case21, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case22)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case22, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case23)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case23, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case24)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case24, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case25)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case25, array_d, dslices);
+}
+
+// not supported yet
+// TODO: fix dynamic slicing for this case
+// TEST_CASE("apply_slice(case26)" * doctest::test_suite("view::apply_slice"))
+// {
+//     APPLY_SLICE_SUBCASE(case26, array_d, dslices);
+// }
+
+TEST_CASE("apply_slice(case27)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case27, array_d, dslices);
+}
+
+// not supported yet
+// TODO: fix dynamic slicing for this case
+// TEST_CASE("apply_slice(case28)" * doctest::test_suite("view::apply_slice"))
+// {
+//     APPLY_SLICE_SUBCASE(case28, array_d, dslices);
+// }
+
+// not supported yet
+// TODO: fix dynamic slicing for this case
+// TEST_CASE("apply_slice(case29)" * doctest::test_suite("view::apply_slice"))
+// {
+//     APPLY_SLICE_SUBCASE(case29, array_d, dslices);
+// }
+
+TEST_CASE("apply_slice(case30)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case30, array_d, dslices);
+}
+
+// NOTE: triggers ASAN
+// TODO: fix runtime
+TEST_CASE("apply_slice(case33)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+{
+    APPLY_SLICE_SUBCASE(case33, array_d, dslices);
+}
+
+// not supported yet
+// TODO: fix dynamic slicing for this case
+// TEST_CASE("apply_slice(case34)" * doctest::test_suite("view::apply_slice"))
+// {
+//     APPLY_SLICE_SUBCASE(case34, array_d, dslices);
+// }
+
+// not supported yet
+// TODO: fix dynamic slicing for this case
+// TEST_CASE("apply_slice(case35)" * doctest::test_suite("view::apply_slice"))
+// {
+//     APPLY_SLICE_SUBCASE(case35, array_d, dslices);
+// }
+
+// NOTE: triggers ASAN
+// TODO: fix runtime
+TEST_CASE("apply_slice(case36)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+{
+    APPLY_SLICE_SUBCASE(case36, array_d, dslices);
+}

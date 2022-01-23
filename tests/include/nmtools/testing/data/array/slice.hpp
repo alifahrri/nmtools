@@ -586,6 +586,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice0 = Elipsis;
         inline auto slice1 = nmtools_tuple{None,None};
         NMTOOLS_CAST_ARRAYS(array);
+        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case21)
     {
@@ -620,6 +623,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice0 = Elipsis;
         inline auto slice1 = nmtools_tuple{None,Last};
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case22)
     {
@@ -654,6 +660,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice0 = Elipsis;
         inline auto slice1 = nmtools_tuple{0,Last};
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case23)
     {
@@ -688,6 +697,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice0 = nmtools_tuple{0ul,Last};
         inline auto slice1 = Elipsis;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case24)
     {
@@ -717,6 +729,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice0 = 0ul;
         inline auto slice1 = Elipsis;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case25)
     {
@@ -744,6 +759,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice0 = Elipsis;
         inline auto slice1 = 0;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case26)
     {
@@ -771,6 +789,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice1 = Elipsis;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case27)
     {
@@ -798,6 +819,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice0 = Elipsis;
         inline auto slice1 = 0;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case28)
     {
@@ -833,6 +857,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice1 = 1;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case29)
     {
@@ -864,6 +891,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice1 = Elipsis;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case30)
     {
@@ -944,6 +974,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice1 = Elipsis;
         inline auto slice2 = -1;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case33)
     {
@@ -971,6 +1004,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice0 = Elipsis;
         inline auto slice1 = -1;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case34)
     {
@@ -1006,6 +1042,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice1 = -1;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case35)
     {
@@ -1037,6 +1076,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice1 = Elipsis;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case36)
     {

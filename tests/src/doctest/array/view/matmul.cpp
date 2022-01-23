@@ -213,6 +213,91 @@ TEST_CASE("shape_matmul(case9)" * doctest::test_suite("view::detail::shape_matmu
     // SHAPE_MATMUL_SUBCASE( case9, lshape_d, rshape_d );
 }
 
+#define RUN_broadcast_matmul_indices_impl(...) \
+nmtools::view::detail::broadcast_matmul_indices(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs matmul fn to callable lambda
+#define RUN_broadcast_matmul_indices(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("index-broadcast_matmul_indices-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_broadcast_matmul_indices_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_broadcast_matmul_indices(case_name, ...) \
+RUN_broadcast_matmul_indices_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define BROADCAST_MATMUL_INDICES_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, broadcast_matmul_indices, case_name); \
+    using namespace args; \
+    auto result = RUN_broadcast_matmul_indices(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+TEST_CASE("broadcast_matmul_indices(case1)" * doctest::test_suite("index::broadcast_matmul_indices"))
+{
+    BROADCAST_MATMUL_INDICES_SUBCASE(case1, indices, shape, bshape);
+    BROADCAST_MATMUL_INDICES_SUBCASE(case1, indices_v, shape_v, bshape_v);
+}
+
+#define RUN_concat_indices_impl(...) \
+nmtools::view::detail::concat_indices(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs matmul fn to callable lambda
+#define RUN_concat_indices(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("index-concat_indices-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_concat_indices_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_concat_indices(case_name, ...) \
+RUN_concat_indices_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define CONCAT_INDICES_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, concat_indices, case_name); \
+    using namespace args; \
+    auto result = RUN_concat_indices(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+TEST_CASE("concat_indices(case1)" * doctest::test_suite("index::concat_indices"))
+{
+    CONCAT_INDICES_SUBCASE(case1, indices, tuple);
+    // isequal/isclose doesn't support either<int,tuple{None,None}>
+    // CONCAT_INDICES_SUBCASE(case1, indices_v, tuple);
+    SUBCASE("case1")
+    {
+        NMTOOLS_TESTING_DECLARE_NS(index, concat_indices, case1);
+        using namespace args;
+        auto result = RUN_concat_indices(case1, indices_v, tuple);
+        NMTOOLS_ASSERT_EQUAL( nm::dim(result), nm::dim(expect::result_list) );
+    }
+}
+
+
 #define RUN_index_matmul_impl(...) \
 nmtools::view::detail::matmul(__VA_ARGS__);
 
@@ -236,7 +321,7 @@ using nm::benchmarks::TrackedBench;
 RUN_index_matmul_impl(__VA_ARGS__);
 #endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
-#define INDEX_MATMUL_SUBCASE(case_name, ...) \
+#define INDEX_MATMUL_SUBCASE(case_name, res_left, res_right, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(index, matmul, case_name); \
@@ -244,59 +329,73 @@ SUBCASE(#case_name) \
     auto result = RUN_index_matmul(case_name, __VA_ARGS__); \
     auto left   = std::get<0>(result); \
     auto right  = std::get<1>(result); \
-    NMTOOLS_ASSERT_EQUAL( left, expect::left ); \
-    NMTOOLS_ASSERT_EQUAL( right, expect::right ); \
+    NMTOOLS_ASSERT_EQUAL( left, expect::res_left ); \
+    NMTOOLS_ASSERT_EQUAL( right, expect::res_right ); \
+}
+
+// NOTE: isequal can't handle list with either
+#define DYNAMIC_INDEX_MATMUL_SUBCASE(case_name, res_left, res_right, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, matmul, case_name); \
+    using namespace args; \
+    auto result = RUN_index_matmul(case_name, __VA_ARGS__); \
+    auto left   = std::get<0>(result); \
+    auto right  = std::get<1>(result); \
+    NMTOOLS_ASSERT_EQUAL( nm::dim(left), nm::dim(expect::res_left) ); \
+    NMTOOLS_ASSERT_EQUAL( nm::dim(right), nm::dim(expect::res_right) ); \
 }
 
 TEST_CASE("matmul(case1)" * doctest::test_suite("view::detail::matmul"))
 {
-    INDEX_MATMUL_SUBCASE(case1, indices, lshape, rshape, shape);
-    INDEX_MATMUL_SUBCASE(case1, indices_a, lshape_a, rshape_a, shape_a);
-    INDEX_MATMUL_SUBCASE(case1, indices_f, lshape_f, rshape_f, shape_f);
-    INDEX_MATMUL_SUBCASE(case1, indices_h, lshape_h, rshape_h, shape_h);
-    INDEX_MATMUL_SUBCASE(case1, indices_v, lshape_v, rshape_v, shape_v);
+    INDEX_MATMUL_SUBCASE(case1, left, right, indices, lshape, rshape, shape);
+    INDEX_MATMUL_SUBCASE(case1, left, right, indices_a, lshape_a, rshape_a, shape_a);
+    INDEX_MATMUL_SUBCASE(case1, left, right, indices_f, lshape_f, rshape_f, shape_f);
+    // INDEX_MATMUL_SUBCASE(case1, indices_h, lshape_h, rshape_h, shape_h);
+    // NOTE: isequal can't handle list with either
+    DYNAMIC_INDEX_MATMUL_SUBCASE(case1, left_v, right_v, indices_v, lshape_v, rshape_v, shape_v);
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("view::detail::matmul"))
 {
-    INDEX_MATMUL_SUBCASE(case2, indices, lshape, rshape, shape);
-    INDEX_MATMUL_SUBCASE(case2, indices_a, lshape_a, rshape_a, shape_a);
-    INDEX_MATMUL_SUBCASE(case2, indices_f, lshape_f, rshape_f, shape_f);
-    INDEX_MATMUL_SUBCASE(case2, indices_h, lshape_h, rshape_h, shape_h);
-    INDEX_MATMUL_SUBCASE(case2, indices_v, lshape_v, rshape_v, shape_v);
+    INDEX_MATMUL_SUBCASE(case2, left, right, indices, lshape, rshape, shape);
+    INDEX_MATMUL_SUBCASE(case2, left, right, indices_a, lshape_a, rshape_a, shape_a);
+    INDEX_MATMUL_SUBCASE(case2, left, right, indices_f, lshape_f, rshape_f, shape_f);
+    // INDEX_MATMUL_SUBCASE(case2, indices_h, lshape_h, rshape_h, shape_h);
+    DYNAMIC_INDEX_MATMUL_SUBCASE(case2, left_v, right_v, indices_v, lshape_v, rshape_v, shape_v);
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("view::detail::matmul"))
 {
-    INDEX_MATMUL_SUBCASE(case3, indices, lshape, rshape, shape);
-    INDEX_MATMUL_SUBCASE(case3, indices_a, lshape_a, rshape_a, shape_a);
-    INDEX_MATMUL_SUBCASE(case3, indices_f, lshape_f, rshape_f, shape_f);
+    INDEX_MATMUL_SUBCASE(case3, left, right, indices, lshape, rshape, shape);
+    INDEX_MATMUL_SUBCASE(case3, left, right, indices_a, lshape_a, rshape_a, shape_a);
+    INDEX_MATMUL_SUBCASE(case3, left, right, indices_f, lshape_f, rshape_f, shape_f);
     // NOT supported yet, calculating indices for slicing requires fixed index array
     // TODO: suppor index matmul with dynamic index array
     // INDEX_MATMUL_SUBCASE(case3, indices_h, lshape_h, rshape_h, shape_h);
-    // INDEX_MATMUL_SUBCASE(case3, indices_v, lshape_v, rshape_v, shape_v);
+    DYNAMIC_INDEX_MATMUL_SUBCASE(case3, left_v, right_v, indices_v, lshape_v, rshape_v, shape_v);
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("view::detail::matmul"))
 {
-    INDEX_MATMUL_SUBCASE(case4, indices, lshape, rshape, shape);
-    INDEX_MATMUL_SUBCASE(case4, indices_a, lshape_a, rshape_a, shape_a);
-    INDEX_MATMUL_SUBCASE(case4, indices_f, lshape_f, rshape_f, shape_f);
+    INDEX_MATMUL_SUBCASE(case4, left, right, indices, lshape, rshape, shape);
+    INDEX_MATMUL_SUBCASE(case4, left, right, indices_a, lshape_a, rshape_a, shape_a);
+    INDEX_MATMUL_SUBCASE(case4, left, right, indices_f, lshape_f, rshape_f, shape_f);
     // NOT supported yet, calculating indices for slicing requires fixed index array
     // TODO: suppor index matmul with dynamic index array
     // INDEX_MATMUL_SUBCASE(case4, indices_h, lshape_h, rshape_h, shape_h);
-    // INDEX_MATMUL_SUBCASE(case4, indices_v, lshape_v, rshape_v, shape_v);
+    DYNAMIC_INDEX_MATMUL_SUBCASE(case4, left_v, right_v, indices_v, lshape_v, rshape_v, shape_v);
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("view::detail::matmul"))
 {
-    INDEX_MATMUL_SUBCASE(case5, indices, lshape, rshape, shape);
-    INDEX_MATMUL_SUBCASE(case5, indices_a, lshape_a, rshape_a, shape_a);
-    INDEX_MATMUL_SUBCASE(case5, indices_f, lshape_f, rshape_f, shape_f);
+    INDEX_MATMUL_SUBCASE(case5, left, right, indices, lshape, rshape, shape);
+    INDEX_MATMUL_SUBCASE(case5, left, right, indices_a, lshape_a, rshape_a, shape_a);
+    INDEX_MATMUL_SUBCASE(case5, left, right, indices_f, lshape_f, rshape_f, shape_f);
     // NOT supported yet, calculating indices for slicing requires fixed index array
     // TODO: suppor index matmul with dynamic index array
     // INDEX_MATMUL_SUBCASE(case5, indices_h, lshape_h, rshape_h, shape_h);
-    // INDEX_MATMUL_SUBCASE(case5, indices_v, lshape_v, rshape_v, shape_v);
+    DYNAMIC_INDEX_MATMUL_SUBCASE(case5, left_v, right_v, indices_v, lshape_v, rshape_v, shape_v);
 }
 
 #define RUN_matmul_impl(...) \
@@ -337,8 +436,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case1, lhs_a, rhs_a );
     MATMUL_SUBCASE( case1, lhs_f, rhs_f );
     MATMUL_SUBCASE( case1, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case1, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case1, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("view::matmul"))
@@ -347,8 +445,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case2, lhs_a, rhs_a );
     MATMUL_SUBCASE( case2, lhs_f, rhs_f );
     MATMUL_SUBCASE( case2, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case2, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case2, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("view::matmul"))
@@ -357,8 +454,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case3, lhs_a, rhs_a );
     MATMUL_SUBCASE( case3, lhs_f, rhs_f );
     MATMUL_SUBCASE( case3, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case3, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case3, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("view::matmul"))
@@ -367,8 +463,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case4, lhs_a, rhs_a );
     MATMUL_SUBCASE( case4, lhs_f, rhs_f );
     MATMUL_SUBCASE( case4, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case4, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case4, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("view::matmul"))
@@ -377,8 +472,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case5, lhs_a, rhs_a );
     MATMUL_SUBCASE( case5, lhs_f, rhs_f );
     MATMUL_SUBCASE( case5, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case5, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case5, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("view::matmul"))
@@ -387,8 +481,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case6, lhs_a, rhs_a );
     MATMUL_SUBCASE( case6, lhs_f, rhs_f );
     MATMUL_SUBCASE( case6, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case6, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case6, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(view_at)" * doctest::test_suite("view::matmul"))
