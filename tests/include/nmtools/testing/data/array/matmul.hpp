@@ -246,6 +246,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
     {
         inline auto  left = std::tuple{0,std::tuple{None,None}};
         inline auto right = std::tuple{std::tuple{None,None},0};
+        using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto left_v  = slices_t{size_t{0},nmtools_tuple{None,None}};
+        inline auto right_v = slices_t{nmtools_tuple{None,None},size_t{0}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -263,6 +267,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
     {
         inline auto  left = std::tuple{3,std::tuple{None,None}};
         inline auto right = std::tuple{std::tuple{None,None},2};
+        using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto left_v  = slices_t{size_t{3},nmtools_tuple{None,None}};
+        inline auto right_v = slices_t{nmtools_tuple{None,None},size_t{2}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -280,6 +288,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
     {
         inline auto  left = std::tuple{0,0,std::tuple{None,None}};
         inline auto right = std::tuple{std::tuple{None,None},0};
+        using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto left_v  = slices_t{size_t{0},size_t{0},nmtools_tuple{None,None}};
+        inline auto right_v = slices_t{nmtools_tuple{None,None},size_t{0}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -297,6 +309,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
     {
         inline auto  left = std::tuple{0,3,std::tuple{None,None}};
         inline auto right = std::tuple{std::tuple{None,None},2};
+        using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto left_v  = slices_t{size_t{0},size_t{3},nmtools_tuple{None,None}};
+        inline auto right_v = slices_t{nmtools_tuple{None,None},size_t{2}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -314,6 +330,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
     {
         inline auto  left = std::tuple{1,std::tuple{None,None}};
         inline auto right = std::tuple{1,std::tuple{None,None},0};
+        using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto left_v  = slices_t{size_t{1},nmtools_tuple{None,None}};
+        inline auto right_v = slices_t{size_t{1},nmtools_tuple{None,None},size_t{0}};
     }
 }
 

@@ -40,8 +40,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("array::matmul"))
     MATMUL_SUBCASE( case1, lhs_a, rhs_a );
     MATMUL_SUBCASE( case1, lhs_f, rhs_f );
     MATMUL_SUBCASE( case1, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case1, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case1, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("array::matmul"))
@@ -50,8 +49,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("array::matmul"))
     MATMUL_SUBCASE( case2, lhs_a, rhs_a );
     MATMUL_SUBCASE( case2, lhs_f, rhs_f );
     MATMUL_SUBCASE( case2, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case2, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case2, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("array::matmul"))
@@ -60,8 +58,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("array::matmul"))
     MATMUL_SUBCASE( case3, lhs_a, rhs_a );
     MATMUL_SUBCASE( case3, lhs_f, rhs_f );
     MATMUL_SUBCASE( case3, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case3, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case3, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("array::matmul"))
@@ -70,8 +67,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("array::matmul"))
     MATMUL_SUBCASE( case4, lhs_a, rhs_a );
     MATMUL_SUBCASE( case4, lhs_f, rhs_f );
     MATMUL_SUBCASE( case4, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case4, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case4, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("array::matmul"))
@@ -80,8 +76,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("array::matmul"))
     MATMUL_SUBCASE( case5, lhs_a, rhs_a );
     MATMUL_SUBCASE( case5, lhs_f, rhs_f );
     MATMUL_SUBCASE( case5, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case5, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case5, lhs_d, rhs_d );
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("array::matmul"))
@@ -90,6 +85,5 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("array::matmul"))
     MATMUL_SUBCASE( case6, lhs_a, rhs_a );
     MATMUL_SUBCASE( case6, lhs_f, rhs_f );
     MATMUL_SUBCASE( case6, lhs_h, rhs_h );
-    // TODO: support slice for dynamic ndarray
-    // MATMUL_SUBCASE( case6, lhs_d, rhs_d );
+    MATMUL_SUBCASE( case6, lhs_d, rhs_d );
 }
