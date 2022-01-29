@@ -150,10 +150,10 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(array, split, case_name); \
     using namespace args; \
     auto result = RUN_split(case_name, __VA_ARGS__); \
-    auto msg1 = std::string("Expected:\n") + nm::testing::apply_to_string(expect::result); \
-    auto msg2 = std::string("Actual:\n") + nm::testing::apply_to_string(result); \
+    auto msg1 = std::string("Expected:\n") + nm::utils::apply_to_string(expect::result); \
+    auto msg2 = std::string("Actual:\n") + nm::utils::apply_to_string(result); \
     auto msg = msg1 + "\n" + msg2; \
-    CHECK_MESSAGE(( nmtools::testing::apply_isequal(result, expect::result) ), msg); \
+    CHECK_MESSAGE(( nmtools::utils::apply_isequal(result, expect::result) ), msg); \
 }
 
 TEST_CASE("split(case1)" * doctest::test_suite("view::split"))
