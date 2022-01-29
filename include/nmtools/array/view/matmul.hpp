@@ -191,11 +191,11 @@ namespace nmtools::view::detail
             return joined;
         } else {
             // assume dynamic shape
-            using value_t = meta::get_list_value_type_t<indices_t>;
+            using value_t = meta::get_value_type_t<indices_t>;
             // specific for matmul
             // if tuple is indeed tuple, assume its element is either integer or {None,None}
             using either_t = nmtools_either<value_t,nmtools_tuple<none_t,none_t>>;
-            using result_t = meta::replace_list_value_type_t<indices_t,either_t>;
+            using result_t = meta::replace_value_type_t<indices_t,either_t>;
 
             auto res = result_t {};
             auto n_index = len(indices);
