@@ -69,8 +69,13 @@ TEST_CASE("choose(vector,any)" * doctest::test_suite("meta::choose"))
         using ind_t = std::vector<size_t>;
         using arr_t = std::tuple<size_t,int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = std::vector<long>;
-        STATIC_CHECK_IS_SAME( res_t, exp_t );
+        #ifdef __EMSCRIPTEN__
+            using exp_t = std::vector<int>;
+            NMTOOLS_STATIC_CHECK_IS_SAME( res_t, exp_t );
+        #else
+            using exp_t = std::vector<long>;
+            NMTOOLS_STATIC_CHECK_IS_SAME( res_t, exp_t );
+        #endif
     }
     {
         using ind_t = std::vector<size_t>;

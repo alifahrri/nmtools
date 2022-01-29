@@ -20,18 +20,20 @@
 #include "nmtools/array/array/atleast_2d.hpp"
 #include "nmtools/array/array/atleast_1d.hpp"
 #include "nmtools/array/array/arange.hpp"
+#include "nmtools/array/array/split.hpp"
 
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/array/flatten.hpp"
 
 #include "nmtools/utils/to_string.hpp"
+#include "nmtools/utils/apply_to_string.hpp"
 
 #include <Arduino.h>
 
 namespace nm = nmtools;
 namespace view = nm::view;
 
-using nm::utils::to_string, nm::None, nm::shape;
+using nm::utils::to_string, nm::None, nm::shape, nm::utils::apply_to_string;
 
 #ifndef LED_BUILTIN
 #define LED_BUILTIN PC13
@@ -64,6 +66,8 @@ int a[2][3][2] = {
 };
 int b = 13;
 
+using namespace nmtools::literals;
+
 // demonstrate the laziness of array view
 auto flattened  = view::flatten(a);
 auto transposed = view::transpose(a);
@@ -76,6 +80,8 @@ auto atleast1d  = view::atleast_1d(b);
 auto bcasted    = view::broadcast_to(b, nmtools_array{2,3,1});
 // concat arrays must have same dim
 auto concat     = view::concatenate(a,bcasted,2);
+// split
+auto split = view::split(a,3_ct,1_ct);
 
 // mutable view has prefix mutable_*
 auto mut_flat = view::mutable_flatten(a); 
@@ -103,6 +109,8 @@ void loop()
     Serial.print("concat:     \nshape: ");
     Serial.println(to_string(shape(concat)).c_str());
     Serial.println(to_string(concat).c_str());
+    Serial.print("split: ");
+    Serial.println(apply_to_string(split).c_str());
     Serial.println("========================\n\n");
 
     // increment first element

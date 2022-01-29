@@ -451,15 +451,21 @@ namespace nmtools::meta
 #endif // NMTOOLS_META_MAKE_SEQUENCE
 
     template <typename T, typename Allocator>
-    struct get_list_value_type<std::vector<T,Allocator>>
+    struct get_value_type<std::vector<T,Allocator>>
     {
         using type = T;
     };
 
     template <typename T, template<typename...>typename Allocator, typename value_type>
-    struct replace_list_value_type<std::vector<T,Allocator<T>>,value_type>
+    struct replace_value_type<std::vector<T,Allocator<T>>,value_type>
     {
         using type = std::vector<value_type,Allocator<value_type>>;
+    };
+
+    template <typename T, size_t N, typename value_type>
+    struct replace_value_type<std::array<T,N>,value_type>
+    {
+        using type = std::array<value_type,N>;
     };
 
     // TODO: remove metafunctions

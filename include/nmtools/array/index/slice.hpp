@@ -266,7 +266,7 @@ namespace nmtools::index
     {
         using result_t  = meta::resolve_optype_t<shape_dynamic_slice_t,shape_t,slices_t>;
         using size_type = meta::get_element_type_t<result_t>;
-        using slice_t [[maybe_unused]] = meta::get_list_value_type_t<slices_t>;
+        using slice_t [[maybe_unused]] = meta::get_value_type_t<slices_t>;
         using namespace literals;
 
         // TODO: support int index
@@ -491,7 +491,7 @@ namespace nmtools::index
     constexpr auto dynamic_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices)
     {
         using result_t = meta::resolve_optype_t<dynamic_slice_t,indices_t,shape_t,slices_t>;
-        using slice_t [[maybe_unused]] = meta::get_list_value_type_t<slices_t>;
+        using slice_t [[maybe_unused]] = meta::get_value_type_t<slices_t>;
         using namespace literals;
 
         auto res = result_t {};
