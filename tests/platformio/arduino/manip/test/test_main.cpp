@@ -8,6 +8,7 @@
 #include "nmtools/array/array/flatten.hpp"
 #include "nmtools/array/array/concatenate.hpp"
 #include "nmtools/array/array/broadcast_to.hpp"
+#include "nmtools/array/array/split.hpp"
 
 #include "nmtools/testing/data/array/transpose.hpp"
 #include "nmtools/testing/data/array/where.hpp"
@@ -17,9 +18,11 @@
 #include "nmtools/testing/data/array/flatten.hpp"
 #include "nmtools/testing/data/array/concatenate.hpp"
 #include "nmtools/testing/data/array/broadcast_to.hpp"
+#include "nmtools/testing/data/array/split.hpp"
 
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/apply_isequal.hpp"
 
 #include <Arduino.h>
 #include <unity.h>
@@ -35,6 +38,14 @@ using nm::utils::isclose, nm::utils::isequal;
     using namespace args; \
     auto res = function(__VA_ARGS__); \
     auto success = isclose(res, expect::expected); \
+    TEST_ASSERT_TRUE( success ); \
+}
+
+#define NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL(case_name, expected, function, ...) \
+{ \
+    using namespace args; \
+    auto res = function(__VA_ARGS__); \
+    auto success = nm::utils::apply_isequal(res, expect::expected); \
     TEST_ASSERT_TRUE( success ); \
 }
 
@@ -467,6 +478,71 @@ NM_TEST_SUBCASE(constexpr_broadcast_to, case10)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case10, expected, view::broadcast_to, x, shape );
 }
 
+// list not supported yet on arduino
+// NM_TEST_SUBCASE(split, case1)
+// {
+//     NMTOOLS_TESTING_DECLARE_NS( array, split, case1 );
+//     NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case1, result, view::split, a, indices_or_sections, axis );
+// }
+
+NM_TEST_SUBCASE(split, case2)
+{
+    NMTOOLS_TESTING_DECLARE_NS( array, split, case2 );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case2, result, view::split, a, indices_or_sections, axis );
+    // NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case2, result, view::split, a_f, indices_or_sections, axis );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case2, result, view::split, a_a, indices_or_sections, axis );
+}
+
+NM_TEST_SUBCASE(split, case3)
+{
+    NMTOOLS_TESTING_DECLARE_NS( array, split, case3 );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case3, result, view::split, a, indices_or_sections, axis );
+    // NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case3, result, view::split, a_f, indices_or_sections, axis );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case3, result, view::split, a_a, indices_or_sections, axis );
+}
+
+NM_TEST_SUBCASE(split, case4)
+{
+    NMTOOLS_TESTING_DECLARE_NS( array, split, case4 );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case4, result, view::split, a, indices_or_sections, axis );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case4, result, view::split, a_a, indices_or_sections, axis );
+}
+
+NM_TEST_SUBCASE(split, case5)
+{
+    NMTOOLS_TESTING_DECLARE_NS( array, split, case5 );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case5, result, view::split, a, indices_or_sections, axis );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case5, result, view::split, a_a, indices_or_sections, axis );
+}
+
+NM_TEST_SUBCASE(split, case6)
+{
+    NMTOOLS_TESTING_DECLARE_NS( array, split, case6 );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case6, result, view::split, a, indices_or_sections, axis );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case6, result, view::split, a_a, indices_or_sections, axis );
+}
+
+// list not supported on arduino yet
+// NM_TEST_SUBCASE(split, case7)
+// {
+//     NMTOOLS_TESTING_DECLARE_NS( array, split, case7 );
+//     NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case7, result, view::split, a, indices_or_sections, axis );
+// }
+
+NM_TEST_SUBCASE(split, case12)
+{
+    NMTOOLS_TESTING_DECLARE_NS( array, split, case12 );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case12, result, view::split, a, indices_or_sections, axis );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case12, result, view::split, a_a, indices_or_sections, axis );
+}
+
+NM_TEST_SUBCASE(split, case13)
+{
+    NMTOOLS_TESTING_DECLARE_NS( array, split, case13 );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case13, result, view::split, a, indices_or_sections, axis );
+    NMTOOLS_PIO_SUBCASE_APPLY_ISEQUAL( case13, result, view::split, a_a, indices_or_sections, axis );
+}
+
 /* ========================================================================= */
 
 /* ========================================================================= */
@@ -689,6 +765,14 @@ void setup()
     NMTOOLS_PIO_RUN(constexpr_broadcast_to, case1)
     NMTOOLS_PIO_RUN(constexpr_broadcast_to, case7)
     NMTOOLS_PIO_RUN(constexpr_broadcast_to, case10)
+
+    NMTOOLS_PIO_RUN(split, case2)
+    NMTOOLS_PIO_RUN(split, case3)
+    NMTOOLS_PIO_RUN(split, case4)
+    NMTOOLS_PIO_RUN(split, case5)
+    NMTOOLS_PIO_RUN(split, case6)
+    NMTOOLS_PIO_RUN(split, case12)
+    NMTOOLS_PIO_RUN(split, case13)
 
 #ifndef NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
     NMTOOLS_PIO_RUN(transpose, case3)

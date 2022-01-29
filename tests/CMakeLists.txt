@@ -154,6 +154,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/repeat.cpp
     src/doctest/array/view/reshape.cpp
     src/doctest/array/view/slice.cpp
+    src/doctest/array/view/split.cpp
     src/doctest/array/view/squeeze.cpp
     src/doctest/array/view/stddev.cpp
     src/doctest/array/view/take.cpp
@@ -297,6 +298,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/squeeze.cpp
     src/doctest/array/array/stddev.cpp
     src/doctest/array/array/sum.cpp
+    src/doctest/array/array/split.cpp
     src/doctest/array/array/take.cpp
     src/doctest/array/array/tile.cpp
     src/doctest/array/array/transpose.cpp

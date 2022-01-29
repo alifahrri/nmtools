@@ -60,6 +60,7 @@ set( META_INDEX_TEST_SOURCES
     array/index/reverse.cpp
     array/index/scatter.cpp
     array/index/slice.cpp
+    array/index/split.cpp
     array/index/sum.cpp
     array/index/where.cpp
 )
