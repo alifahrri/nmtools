@@ -86,6 +86,7 @@ set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/nonzero.cpp
     src/doctest/array/index/normalize_axis.cpp
     src/doctest/array/index/outer.cpp
+    src/doctest/array/index/pooling.cpp
     src/doctest/array/index/remove_dims.cpp
     src/doctest/array/index/remove_single_dims.cpp
     src/doctest/array/index/repeat.cpp
@@ -149,6 +150,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/mutable_ref.cpp
     src/doctest/array/view/ones.cpp
     src/doctest/array/view/pad.cpp
+    src/doctest/array/view/pooling.cpp
     src/doctest/array/view/ref.cpp
     src/doctest/array/view/ref/initializer_list.cpp
     src/doctest/array/view/repeat.cpp
@@ -292,6 +294,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     src/doctest/array/array/ones.cpp
     src/doctest/array/array/pad.cpp
     src/doctest/array/array/prod.cpp
+    src/doctest/array/array/pooling.cpp
     src/doctest/array/array/repeat.cpp
     src/doctest/array/array/reshape.cpp
     src/doctest/array/array/slice.cpp
