@@ -16,7 +16,7 @@ namespace nmtools::index
     struct dynamic_slice_t {};
 
     template <typename si_t, typename start_t, typename stop_t, typename step_t>
-    constexpr inline auto compute_range(si_t si, start_t start, stop_t stop_, [[maybe_unused]] step_t step_) // -> size_type
+    constexpr inline auto compute_range(si_t si, [[maybe_unused]] start_t start, stop_t stop_, [[maybe_unused]] step_t step_) // -> size_type
     {
         // following numpy, stop is actually max(stop,shape_i)
         [[maybe_unused]] auto stop = [&](){
