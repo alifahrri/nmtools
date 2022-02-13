@@ -1110,6 +1110,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice2 = nmtools_tuple{None,None,-1};
         inline auto slice3 = 0;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t,int>>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2,slice3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case37)
     {
@@ -1141,11 +1144,82 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slice2 = nmtools_tuple{None,None,1};
         inline auto slice3 = 1;
         NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t,int>>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2,slice3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case38)
     {
         inline int result[1][3] = {
             {7,9,11}
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case39)
+    {
+        inline int array[2][1][3][2] = {
+            {
+                {
+                    {0,1},
+                    {2,3},
+                    {4,5},
+                }
+            },
+            {
+                {
+                    {6,7},
+                    {8,9},
+                    {10,11},
+                }
+            }
+        };
+        inline auto slice0 = 1;
+        inline auto slice1 = Elipsis;
+        inline auto slice2 = nmtools_array{2,0,-1};
+        inline auto slice3 = 0;
+        NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_array<int,3>>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2,slice3};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case39)
+    {
+        inline int result[1][2] = {
+            {10,8}
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case40)
+    {
+        inline int array[2][1][3][2] = {
+            {
+                {
+                    {0,1},
+                    {2,3},
+                    {4,5},
+                }
+            },
+            {
+                {
+                    {6,7},
+                    {8,9},
+                    {10,11},
+                }
+            }
+        };
+        inline auto slice0 = 1;
+        inline auto slice1 = Elipsis;
+        inline auto slice2 = nmtools_array{0,2,1};
+        inline auto slice3 = 0;
+        NMTOOLS_CAST_ARRAYS(array)
+        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_array<int,3>>>;
+        using slices_t = nmtools_list<slice_t>;
+        inline auto dslices = slices_t{slice0,slice1,slice2,slice3};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case40)
+    {
+        inline int result[1][2] = {
+            {6,8}
         };
     }
 }
