@@ -420,7 +420,7 @@ TEST_CASE("slice(case38)" * doctest::test_suite("view::slice"))
 namespace meta = nmtools::meta;
 namespace view = nmtools::view;
 
-using std::tuple;
+using nmtools_tuple;
 
 TEST_CASE("slice" * doctest::test_suite("view::slice"))
 {
@@ -721,4 +721,27 @@ TEST_CASE("apply_slice(case33)" * doctest::test_suite("view::apply_slice") * doc
 TEST_CASE("apply_slice(case36)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
 {
     APPLY_SLICE_SUBCASE(case36, array_d, dslices);
+}
+
+// NOTE: known to be incorrect when tuple{None,None,-1}
+// TODO: fix for negative step
+TEST_CASE("apply_slice(case37)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+{
+    APPLY_SLICE_SUBCASE(case37, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case38)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case38, array_d, dslices);
+}
+
+// TODO: fix for negative step
+TEST_CASE("apply_slice(case39)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+{
+    APPLY_SLICE_SUBCASE(case39, array_d, dslices);
+}
+
+TEST_CASE("apply_slice(case40)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case40, array_d, dslices);
 }
