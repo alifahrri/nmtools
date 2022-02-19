@@ -7,13 +7,13 @@ nmtools::view::conv2d(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
+using nmtools::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs conv2d fn to callable lambda
 #define RUN_conv2d(case_name, ...) \
 [](auto&&...args){ \
     auto title = std::string("view::conv2d-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
+    auto name  = nmtools::testing::make_func_args("", args...); \
     auto fn    = [&](){ \
         return RUN_conv2d_impl(args...); \
     }; \
