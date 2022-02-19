@@ -546,7 +546,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,4>;
-        inline auto result = slices_t{0,array_t{0,3,1},array_t{0,3,1},array_t{0,3,1}};
+        inline auto result = slices_t{size_t{0},array_t{0,3,1},array_t{0,3,1},array_t{0,3,1}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case10)
@@ -573,7 +573,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,4>;
-        inline auto result = slices_t{0,2,array_t{2,5,1},array_t{2,5,1}};
+        inline auto result = slices_t{size_t{0},size_t{2},array_t{2,5,1},array_t{2,5,1}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case11)
@@ -600,7 +600,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,4>;
-        inline auto result = slices_t{0,array_t{0,3,1},array_t{0,3,1},array_t{0,3,1}};
+        inline auto result = slices_t{size_t{0},array_t{0,3,1},array_t{0,3,1},array_t{0,3,1}};
     }
 }
 
