@@ -5,6 +5,7 @@
 #include "nmtools/array/at.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/math.hpp"
+#include "nmtools/array/ndarray.hpp"
 
 namespace nmtools::index
 {
@@ -760,11 +761,16 @@ namespace nmtools::meta
     struct resolve_optype<void,index::shape_dynamic_slice_t,shape_t,slice_t>
     {
         static constexpr auto vtype = [](){
-            // only accept dynamic slice on dynamic shape and slice args for now
             if constexpr (is_dynamic_index_array_v<shape_t> && is_list_v<slice_t>) {
                 using index_t = get_element_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 using type = replace_element_type_t<shape_t,elem_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_fixed_index_array_v<shape_t> && is_list_v<slice_t>) {
+                using index_t = get_element_type_t<shape_t>;
+                using elem_t  = make_unsigned_t<index_t>;
+                constexpr auto src_dim = len_v<shape_t>;
+                using type = make_hybrid_ndarray_t<elem_t,src_dim,1>;
                 return as_value_v<type>;
             } else {
                 using type = error::SHAPE_DYNAMIC_SLICE_UNSUPPORTED<shape_t,slice_t>;
@@ -779,8 +785,8 @@ namespace nmtools::meta
     {
         static constexpr auto vtype  = [](){
             // index computation follow shape
-            // only support dynamic shape for now
-            if constexpr (is_dynamic_index_array_v<shape_t> && is_list_v<slice_t>) {
+            if constexpr (is_index_array_v<shape_t>) {
+                // TODO: handle raw array
                 using index_t = get_element_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 using type = replace_element_type_t<shape_t,elem_t>;
