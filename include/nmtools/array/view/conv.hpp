@@ -4,6 +4,7 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/slice.hpp"
 #include "nmtools/array/view/pad.hpp"
+#include "nmtools/array/view/reshape.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"
 #include "nmtools/array/index/conv.hpp"
@@ -167,7 +168,11 @@ namespace nmtools::view
 
         if constexpr (!is_none_v<bias_t>) {
             auto conv_ = view::conv2d(input,weight,None,stride_,padding,dilation_);
-            return add(conv_,bias); 
+            // assume NCHW
+            // assume bias is 1D
+            auto C = at(shape(bias),0);
+            auto bias_ = view::reshape(bias,nmtools_array<size_t,3>{C,1,1});
+            return view::add(conv_,bias_); 
         } else if constexpr (is_none_v<padding_t>) {
             using view_t = decorator_t<conv2d_t,input_t,weight_t,stride_type,dilation_type>;
             return view_t{{input,weight,stride_,dilation_}};
