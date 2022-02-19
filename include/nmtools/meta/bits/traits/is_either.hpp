@@ -17,6 +17,12 @@ namespace nmtools::meta
     struct is_either : false_type{};
 
     template <typename T>
+    struct is_either<const T> : is_either<T> {};
+
+    template <typename T>
+    struct is_either<T&> : is_either<T> {};
+
+    template <typename T>
     constexpr inline auto is_either_v = is_either<T>::value;
 } // namespace nmtools::meta
 

@@ -1,11 +1,11 @@
 #ifndef NMTOOLS_ARRAY_VIEW_DECORATOR_HPP
 #define NMTOOLS_ARRAY_VIEW_DECORATOR_HPP
 
-#include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/meta.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/array/index/ref.hpp"
 
 #include "nmtools/assert.hpp"
 
@@ -589,6 +589,19 @@ namespace nmtools::view
 
     template <typename attribute_t>
     using resolve_attribute_type_t = meta::type_t<resolve_attribute_type<attribute_t>>;
+
+    /**
+     * @brief Specialize index::ref
+     * 
+     * Recurse to referenced array.
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    struct resolve_attribute_type<::nmtools::index::ref<array_t>>
+    {
+        using type = resolve_attribute_type_t<array_t>;
+    }; // resolve_attribute_type
 
     /**
      * @brief Initialize attribute

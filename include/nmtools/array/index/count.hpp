@@ -27,7 +27,7 @@ namespace nmtools::index
         }
         else {
             auto n = len(array);
-            for (size_t i=0; i<n; i++)
+            for (size_t i=0; i<(size_t)n; i++)
                 count_impl(i);
         }
 

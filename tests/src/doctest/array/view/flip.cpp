@@ -45,6 +45,7 @@ TEST_CASE("flip(case1)" * doctest::test_suite("view::flip"))
     // FLIP_SUBCASE(case1, array_v, axis );
     FLIP_SUBCASE(case1, array_f, axis );
     FLIP_SUBCASE(case1, array_h, axis );
+    // TODO: support flip for dynamic ndarray
     // FLIP_SUBCASE(case1, array_d, axis );
 }
 

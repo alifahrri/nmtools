@@ -50,6 +50,7 @@ set( META_INDEX_TEST_SOURCES
     array/index/compute_indices.cpp
     array/index/compute_strides.cpp
     array/index/concatenate.cpp
+    array/index/conv.cpp
     array/index/expand_dims.cpp
     array/index/gather.cpp
     array/index/logical_not.cpp
@@ -98,6 +99,10 @@ set( META_TRANSFORM_TEST_SOURCES
     transform/transform_bounded_array.cpp
 )
 
+set( META_UTILITY_TEST_SOURCES
+    utility/flatten_either.cpp
+)
+
 add_executable(${PROJECT_NAME} tests.cpp 
     ## metafunctions
     forward.cpp
@@ -110,6 +115,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     ${META_INDEX_TEST_SOURCES}
     ${META_TRAIT_TEST_SOURCES}
     ${META_TRANSFORM_TEST_SOURCES}
+    ${META_UTILITY_TEST_SOURCES}
 )
 # omg
 if ((NOT EMSCRIPTEN) AND (NOT ANDROID))

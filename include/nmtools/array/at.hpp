@@ -168,16 +168,6 @@ namespace nmtools
     template <typename array_t, typename index_type>
     constexpr decltype(auto) at(array_t& a, [[maybe_unused]] index_type i)
     {
-        static_assert(
-            meta::has_at_v<array_t&,index_type>
-            || meta::has_square_bracket_v<array_t&,index_type>
-            || meta::has_bracket_v<array_t&,index_type>
-            || meta::is_integral_constant_v<index_type>
-            || meta::is_same_v<index_type,last_type>
-            , "unsupported type array_t for at"
-        );
-
-        // TODO (wrap std metafunctions): wrap as meta::is_same_v
         if constexpr (meta::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
             const auto N = len(a);
             const auto index = N - 1;

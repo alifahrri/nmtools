@@ -532,6 +532,9 @@ namespace nmtools::meta
         using type = T;
     }; // get_element_type
 
+#ifndef NMTOOLS_HYBRID_NDARRAY
+#define NMTOOLS_HYBRID_NDARRAY
+
     /**
      * @brief Default impl for make_hybrid_ndarray
      * 
@@ -548,6 +551,10 @@ namespace nmtools::meta
 
     template <typename element_t, auto max_elements, auto dim>
     using make_hybrid_ndarray_t = type_t<make_hybrid_ndarray<element_t,max_elements,dim>>;
+
+    #define nmtools_hybrid_ndarray ::nmtools::array::hybrid_ndarray
+
+#endif // NMTOOLS_HYBRID_NDARRAY
 
     /** @} */ // end group traits
     

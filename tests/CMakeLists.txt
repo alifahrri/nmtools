@@ -72,10 +72,11 @@ set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/broadcast_to.cpp
     src/doctest/array/index/choose.cpp
     src/doctest/array/index/compress.cpp
-    src/doctest/array/index/concatenate.cpp
     src/doctest/array/index/compute_indices.cpp
     src/doctest/array/index/compute_offset.cpp
     src/doctest/array/index/compute_strides.cpp
+    src/doctest/array/index/concatenate.cpp
+    src/doctest/array/index/conv.cpp
     src/doctest/array/index/expand_dims.cpp
     src/doctest/array/index/filter.cpp
     src/doctest/array/index/free_axes.cpp
@@ -116,6 +117,7 @@ set(ARRAY_UTILITY_TEST_SOURCES
     src/doctest/array/utility/at.cpp
     src/doctest/array/utility/apply_at.cpp
     src/doctest/array/utility/cast.cpp
+    src/doctest/array/utility/flatten_either.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_UTILITY)
     set (ARRAY_UTILITY_TEST_SOURCES "")
@@ -397,6 +399,7 @@ set(VIEW_NN_TEST_SOURCES
     src/doctest/array/view/activations/softshrink.cpp
     src/doctest/array/view/activations/softsign.cpp
     src/doctest/array/view/activations/tanhshrink.cpp
+    src/doctest/array/view/conv.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_VIEW_NN)
     set (VIEW_NN_TEST_SOURCES "")
@@ -421,6 +424,7 @@ set(EVAL_NN_TEST_SOURCES
     src/doctest/array/array/activations/softsign.cpp
     src/doctest/array/array/activations/softshrink.cpp
     src/doctest/array/array/activations/tanhshrink.cpp
+    src/doctest/array/array/conv.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_NN_EVAL)
     set (EVAL_NN_TEST_SOURCES "")

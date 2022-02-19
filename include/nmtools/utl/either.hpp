@@ -39,7 +39,10 @@ namespace nmtools::utl
             , "left_type and right_type can't be the same"
         );
 
-        // not default constructible
+        // assume left is default constructible,
+        // following std variant, default-constructed use first type (left)
+        constexpr either() noexcept
+            : left{}, tag{LEFT} {}
 
         constexpr explicit either(const left_t& val) noexcept
             : left(val), tag{LEFT} {}
