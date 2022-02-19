@@ -52,21 +52,21 @@ namespace nmtools::index
         // TODO: shape_conv2d: generalize "channel" axis
         constexpr auto i_out_channel  = meta::ct_v<-3>;
 
-        auto padding_ = [&padding](){
+        auto padding_ = [&](){
             if constexpr (is_none_v<padding_t>) {
                 return nmtools_array<size_t,2>{0,0};
             } else {
                 return ref(padding);
             }
         }();
-        auto dilation_ = [&dilation](){
+        auto dilation_ = [&](){
             if constexpr (is_none_v<dilation_t>) {
                 return nmtools_array<size_t,2>{1,1};
             } else {
                 return ref(dilation);
             }
         }();
-        auto stride_ = [&stride](){
+        auto stride_ = [&](){
             if constexpr (is_none_v<stride_t>) {
                 return nmtools_array<size_t,2>{1,1};
             } else {
@@ -187,14 +187,14 @@ namespace nmtools::index
             // "depth-wise" conv
             at(res,i_out_channel) = static_cast<index_t>(at(indices,i_out_channel));
         }
-        auto dilations_ = [&dilations](){
+        auto dilations_ = [&](){
             if constexpr (is_none_v<dilation_t>) {
                 return nmtools_array<size_t,2>{1,1};
             } else {
                 return ref(dilations);
             }
         }();
-        auto stride_ = [&stride](){
+        auto stride_ = [&](){
             if constexpr (is_none_v<stride_t>) {
                 return nmtools_array<size_t,2>{1,1};
             } else {
