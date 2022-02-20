@@ -400,6 +400,9 @@ set(VIEW_NN_TEST_SOURCES
     src/doctest/array/view/activations/softsign.cpp
     src/doctest/array/view/activations/tanhshrink.cpp
     src/doctest/array/view/conv.cpp
+    src/doctest/array/view/batch_norm.cpp
+    src/doctest/array/view/softmax.cpp
+    src/doctest/array/view/softmin.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_VIEW_NN)
     set (VIEW_NN_TEST_SOURCES "")
@@ -425,6 +428,9 @@ set(EVAL_NN_TEST_SOURCES
     src/doctest/array/array/activations/softshrink.cpp
     src/doctest/array/array/activations/tanhshrink.cpp
     src/doctest/array/array/conv.cpp
+    src/doctest/array/array/batch_norm.cpp
+    src/doctest/array/array/softmax.cpp
+    src/doctest/array/array/softmin.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_NN_EVAL)
     set (EVAL_NN_TEST_SOURCES "")
