@@ -10,6 +10,7 @@ endif()
 
 include(nmtools)
 
+# TODO: cleanup
 # handle emscripten
 if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     set (EMSCRIPTEN)
@@ -26,6 +27,7 @@ endif()
 
 enable_testing()
 
+# TODO: remove, trye to detect constexpr math from stdlib
 ## defer static check to runtime for clang
 ## since constexpr math not supported
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR EMSCRIPTEN OR ANDROID OR MSYS)
@@ -68,6 +70,7 @@ endif (NMTOOLS_TEST_ALL)
 
 set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/argsort.cpp
+    src/doctest/array/index/array_slice.cpp
     src/doctest/array/index/broadcast_shape.cpp
     src/doctest/array/index/broadcast_to.cpp
     src/doctest/array/index/choose.cpp
@@ -134,6 +137,7 @@ endif ()
 
 set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/arange.cpp
+    src/doctest/array/view/array_slice.cpp
     src/doctest/array/view/atleast_1d.cpp
     src/doctest/array/view/atleast_2d.cpp
     src/doctest/array/view/atleast_3d.cpp
