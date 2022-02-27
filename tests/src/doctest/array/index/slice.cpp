@@ -278,7 +278,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     NMTOOLS_TESTING_DECLARE_ARGS(case21)
     {
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = tuple{None,None};
         CAST_ARRAYS(shape);
     }
@@ -290,7 +290,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     NMTOOLS_TESTING_DECLARE_ARGS(case22)
     {
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = tuple{None,Last};
         CAST_ARRAYS(shape);
     }
@@ -303,7 +303,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     NMTOOLS_TESTING_DECLARE_ARGS(case23)
     {
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = tuple{0,Last};
         CAST_ARRAYS(shape);
     }
@@ -316,7 +316,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     {
         int shape[3] = {2,3,2};
         auto slice0  = tuple{0ul,Last};
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         CAST_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case24)
@@ -328,7 +328,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     {
         int shape[3] = {2,3,2};
         auto slice0  = 0;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         CAST_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case25)
@@ -339,7 +339,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     NMTOOLS_TESTING_DECLARE_ARGS(case26)
     {
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = 0;
         CAST_ARRAYS(shape);
     }
@@ -352,7 +352,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     {
         int shape[3] = {2,3,2};
         auto slice0  = 0;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
     }
@@ -364,7 +364,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     NMTOOLS_TESTING_DECLARE_ARGS(case28)
     {
         int shape[4] = {2,1,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = 1;
         CAST_ARRAYS(shape);
     }
@@ -376,7 +376,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     NMTOOLS_TESTING_DECLARE_ARGS(case29)
     {
         int shape[4] = {2,1,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = 1;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
@@ -390,7 +390,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     {
         int shape[4] = {2,1,3,2};
         auto slice0  = 1;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
     }
@@ -403,7 +403,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     {
         int shape[4] = {2,1,3,2};
         auto slice0  = Last;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
     }
@@ -416,7 +416,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     NMTOOLS_TESTING_DECLARE_ARGS(case32)
     {
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = tuple{0,Last,-1};
         CAST_ARRAYS(shape);
     }
@@ -941,10 +941,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case14)
     {
-        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{Elipsis,nmtools_tuple{None,None}};
+        inline auto slices  = slices_t{Ellipsis,nmtools_tuple{None,None}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case14)
     {
@@ -953,10 +953,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case15)
     {
-        using slice_t  = nmtools_either<int,elipsis_t>;
+        using slice_t  = nmtools_either<int,ellipsis_t>;
         using slices_t = nmtools_list<slice_t>;
         inline auto shape  = nmtools_list{2,3,2};
-        inline auto slices = slices_t{0,Elipsis};
+        inline auto slices = slices_t{0,Ellipsis};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case15)
     {
@@ -1028,7 +1028,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_dynamic_slice)
         using index_t  = int;
         using array_t  = nmtools_array<int,2>;
         using tuple_t  = nmtools_tuple<none_t,int>;
-        using slice_t  = nmtools_either<nmtools_either<array_t,nmtools_either<tuple_t,elipsis_t>>,index_t>;
+        using slice_t  = nmtools_either<nmtools_either<array_t,nmtools_either<tuple_t,ellipsis_t>>,index_t>;
         using slices_t = nmtools_list<slice_t>;
         inline auto shape  = nmtools_list{1,3,5,5};
         inline auto slices = slices_t{0,0,array_t{0,3},tuple_t{None,2}};
@@ -1043,10 +1043,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_dynamic_slice)
         using index_t  = int;
         using array_t  = nmtools_array<int,2>;
         using tuple_t  = nmtools_tuple<none_t,int>;
-        using slice_t  = nmtools_either<nmtools_either<array_t,nmtools_either<tuple_t,elipsis_t>>,index_t>;
+        using slice_t  = nmtools_either<nmtools_either<array_t,nmtools_either<tuple_t,ellipsis_t>>,index_t>;
         using slices_t = nmtools_list<slice_t>;
         inline auto shape  = nmtools_list{1,3,5,5};
-        inline auto slices = slices_t{Elipsis,0,0,array_t{0,3},tuple_t{None,2}};
+        inline auto slices = slices_t{Ellipsis,0,0,array_t{0,3},tuple_t{None,2}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case21)
     {
@@ -1535,7 +1535,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[3] = {0,1,0};
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = tuple{None,None};
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1549,7 +1549,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[3] = {0,1,0};
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = tuple{None,Last};
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1563,7 +1563,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[3] = {0,1,0};
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = tuple{0,Last};
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1578,7 +1578,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[3] = {0,1,0};
         int shape[3] = {2,3,2};
         auto slice0  = tuple{0ul,Last};
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
     }
@@ -1592,7 +1592,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[2] = {1,0};
         int shape[3] = {2,3,2};
         auto slice0  = 0;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
     }
@@ -1606,7 +1606,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[2] = {1,1};
         int shape[3] = {2,3,2};
         auto slice0  = 0;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
     }
@@ -1619,7 +1619,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[2] = {1,0};
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = 0;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1633,7 +1633,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[2] = {1,1};
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = 0;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1648,7 +1648,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[1] = {2};
         int shape[3] = {2,3,2};
         auto slice0  = 0;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1662,7 +1662,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[3] = {0,0,0};
         int shape[4] = {2,1,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = 1;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1676,7 +1676,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[2] = {0,0};
         int shape[4] = {2,1,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = 1;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
@@ -1692,7 +1692,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[2] = {0,0};
         int shape[4] = {2,1,3,2};
         auto slice0  = 1;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1707,7 +1707,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[2] = {0,2};
         int shape[4] = {2,1,3,2};
         auto slice0  = 1;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1721,7 +1721,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[2] = {1,0};
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = -1;
         auto slice2  = tuple{None,None,-1};
         CAST_ARRAYS(shape);
@@ -1736,7 +1736,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[2] = {1,1};
         int shape[3] = {2,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = -2;
         auto slice2  = tuple{None,None,-1};
         CAST_ARRAYS(shape);
@@ -1752,7 +1752,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[1] = {2};
         int shape[3] = {2,3,2};
         auto slice0  = 0;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = -1;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1766,7 +1766,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[3] = {0,0,-1};
         int shape[4] = {2,1,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = -1;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1780,7 +1780,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
     {
         int indices[2] = {1,0};
         int shape[4] = {2,1,3,2};
-        auto slice0  = Elipsis;
+        auto slice0  = Ellipsis;
         auto slice1  = -1;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
@@ -1796,7 +1796,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[2] = {0,-1};
         int shape[4] = {2,1,3,2};
         auto slice0  = -1;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = 0;
         CAST_ARRAYS(shape);
         CAST_ARRAYS(indices);
@@ -1811,7 +1811,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[2] = {0,0};
         int shape[4] = {2,1,3,2};
         auto slice0  = 1;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = tuple{None,None,-1};
         auto slice3  = 1;
         CAST_ARRAYS(shape);
@@ -1827,7 +1827,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         int indices[2] = {0,2};
         int shape[4] = {2,1,3,2};
         auto slice0  = 1;
-        auto slice1  = Elipsis;
+        auto slice1  = Ellipsis;
         auto slice2  = tuple{None,None,1};
         auto slice3  = 1;
         CAST_ARRAYS(shape);
@@ -2475,11 +2475,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case13)
     {
-        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{0,1,0};
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{Elipsis,nmtools_tuple{None,None}};
+        inline auto slices  = slices_t{Ellipsis,nmtools_tuple{None,None}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13)
     {
@@ -2488,11 +2488,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case14)
     {
-        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<none_t,int>>;
+        using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<none_t,int>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{0,1,0};
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{Elipsis,nmtools_tuple{None,-1}};
+        inline auto slices  = slices_t{Ellipsis,nmtools_tuple{None,-1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case14)
     {
@@ -2501,11 +2501,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case15)
     {
-        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<int,none_t>>;
+        using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<int,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{0,1,0};
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{Elipsis,nmtools_tuple{0,None}};
+        inline auto slices  = slices_t{Ellipsis,nmtools_tuple{0,None}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case15)
     {
@@ -2514,11 +2514,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case16)
     {
-        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<int,int>>;
+        using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<int,int>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{0,1,0};
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{nmtools_tuple{0,-1},Elipsis};
+        inline auto slices  = slices_t{nmtools_tuple{0,-1},Ellipsis};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case16)
     {
@@ -2527,11 +2527,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case17)
     {
-        using slice_t  = nmtools_either<elipsis_t,int>;
+        using slice_t  = nmtools_either<ellipsis_t,int>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{1,0};
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{0,Elipsis};
+        inline auto slices  = slices_t{0,Ellipsis};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case17)
     {
@@ -2540,11 +2540,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case18)
     {
-        using slice_t  = nmtools_either<elipsis_t,int>;
+        using slice_t  = nmtools_either<ellipsis_t,int>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{1,1};
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{0,Elipsis};
+        inline auto slices  = slices_t{0,Ellipsis};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case18)
     {
@@ -2553,11 +2553,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case19)
     {
-        using slice_t  = nmtools_either<elipsis_t,int>;
+        using slice_t  = nmtools_either<ellipsis_t,int>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{1,0};
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{Elipsis,0};
+        inline auto slices  = slices_t{Ellipsis,0};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case19)
     {
@@ -2566,11 +2566,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case20)
     {
-        using slice_t  = nmtools_either<elipsis_t,int>;
+        using slice_t  = nmtools_either<ellipsis_t,int>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{2};
         inline auto shape   = nmtools_list{2,3,2};
-        inline auto slices  = slices_t{0,Elipsis,0};
+        inline auto slices  = slices_t{0,Ellipsis,0};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case20)
     {
@@ -2579,11 +2579,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case21)
     {
-        using slice_t  = nmtools_either<elipsis_t,int>;
+        using slice_t  = nmtools_either<ellipsis_t,int>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{0,0,0};
         inline auto shape   = nmtools_list{2,1,3,2};
-        inline auto slices  = slices_t{Elipsis,1};
+        inline auto slices  = slices_t{Ellipsis,1};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case21)
     {
@@ -2592,11 +2592,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case22)
     {
-        using slice_t  = nmtools_either<elipsis_t,int>;
+        using slice_t  = nmtools_either<ellipsis_t,int>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{0,0,0};
         inline auto shape   = nmtools_list{2,1,3,2};
-        inline auto slices  = slices_t{1,Elipsis};
+        inline auto slices  = slices_t{1,Ellipsis};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case22)
     {
@@ -2656,13 +2656,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
         using index_t  = int;
         using array_t  = nmtools_array<int,2>;
         using tuple_t  = nmtools_tuple<none_t,int>;
-        using slice_t  = nmtools_either<nmtools_either<array_t,nmtools_either<tuple_t,elipsis_t>>,index_t>;
+        using slice_t  = nmtools_either<nmtools_either<array_t,nmtools_either<tuple_t,ellipsis_t>>,index_t>;
         using slices_t = nmtools_list<slice_t>;
         inline auto indices = nmtools_list{0,1};
         inline auto shape   = nmtools_list{1,3,5,5};
         // negative index not supported yet
         // TODO: support negative index slice
-        inline auto slices  = slices_t{Elipsis,0,2,array_t{0,3},tuple_t{None,2}};
+        inline auto slices  = slices_t{Ellipsis,0,2,array_t{0,3},tuple_t{None,2}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case26)
     {
