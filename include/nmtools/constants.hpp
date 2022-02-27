@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 
-// TODO: rename this file to "literals.hpp", use constant.hpp only to define None, Elipsis...
+// TODO: rename this file to "literals.hpp", use constant.hpp only to define None, Ellipsis...
 
 namespace nmtools::detail
 {

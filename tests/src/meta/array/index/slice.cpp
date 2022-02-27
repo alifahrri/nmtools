@@ -16,13 +16,13 @@ extern char *index (const char *__s, int __c)
 */
 namespace ix = nm::index;
 
-using nm::Elipsis, nm::None, nm::none_t, nm::elipsis_t;
+using nm::Ellipsis, nm::None, nm::none_t, nm::ellipsis_t;
 
 TEST_CASE("shape_slice" * doctest::test_suite("meta::index"))
 {
     {
         using shape_t  = int[3];
-        using slice0_t = decltype(Elipsis);
+        using slice0_t = decltype(Ellipsis);
         using slice1_t = decltype(std::tuple{None,None});
         using result_t = meta::resolve_optype_t<nm::index::shape_slice_t,shape_t,slice0_t,slice1_t>;
         using expected_t = std::array<int,3>;
@@ -30,7 +30,7 @@ TEST_CASE("shape_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = std::array<int,3>;
-        using slice0_t = decltype(Elipsis);
+        using slice0_t = decltype(Ellipsis);
         using slice1_t = decltype(std::tuple{None,None});
         using result_t = meta::resolve_optype_t<nm::index::shape_slice_t,shape_t,slice0_t,slice1_t>;
         using expected_t = std::array<int,3>;
@@ -38,7 +38,7 @@ TEST_CASE("shape_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = std::vector<int>;
-        using slice0_t = decltype(Elipsis);
+        using slice0_t = decltype(Ellipsis);
         using slice1_t = decltype(std::tuple{None,None});
         using result_t = meta::resolve_optype_t<nm::index::shape_slice_t,shape_t,slice0_t,slice1_t>;
         using expected_t = std::vector<int>;
@@ -46,7 +46,7 @@ TEST_CASE("shape_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = na::fixed_ndarray<int,3>;
-        using slice0_t = decltype(Elipsis);
+        using slice0_t = decltype(Ellipsis);
         using slice1_t = decltype(std::tuple{None,None});
         using result_t = meta::resolve_optype_t<nm::index::shape_slice_t,shape_t,slice0_t,slice1_t>;
         using expected_t = na::fixed_ndarray<int,3>;
@@ -110,7 +110,7 @@ TEST_CASE("shape_dynamic_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = nmtools_list<size_t>;
-        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         using result_t = meta::resolve_optype_t<ix::shape_dynamic_slice_t,shape_t,slices_t>;
         using expect_t = nmtools_list<size_t>;
@@ -118,7 +118,7 @@ TEST_CASE("shape_dynamic_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = nmtools_list<size_t>;
-        using slice_t  = nmtools_tuple<elipsis_t,int>;
+        using slice_t  = nmtools_tuple<ellipsis_t,int>;
         using slices_t = nmtools_list<slice_t>;
         using result_t = meta::resolve_optype_t<ix::shape_dynamic_slice_t,shape_t,slices_t>;
         using expect_t = nmtools_list<size_t>;
@@ -126,7 +126,7 @@ TEST_CASE("shape_dynamic_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = nmtools_list<size_t>;
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t,int>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t,int>>>;
         using slices_t = nmtools_list<slice_t>;
         using result_t = meta::resolve_optype_t<ix::shape_dynamic_slice_t,shape_t,slices_t>;
         using expect_t = nmtools_list<size_t>;
@@ -134,7 +134,7 @@ TEST_CASE("shape_dynamic_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = nmtools_list<size_t>;
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_array<int,3>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_array<int,3>>>;
         using slices_t = nmtools_list<slice_t>;
         using result_t = meta::resolve_optype_t<ix::shape_dynamic_slice_t,shape_t,slices_t>;
         using expect_t = nmtools_list<size_t>;
@@ -185,7 +185,7 @@ TEST_CASE("shape_dynamic_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = nmtools_array<size_t,3>;
-        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         using result_t = meta::resolve_optype_t<ix::shape_dynamic_slice_t,shape_t,slices_t>;
         using expect_t = nmtools_hybrid_ndarray<size_t,3,1>;
@@ -193,7 +193,7 @@ TEST_CASE("shape_dynamic_slice" * doctest::test_suite("meta::index"))
     }
         {
         using shape_t  = nmtools_array<size_t,3>;
-        using slice_t  = nmtools_tuple<elipsis_t,int>;
+        using slice_t  = nmtools_tuple<ellipsis_t,int>;
         using slices_t = nmtools_list<slice_t>;
         using result_t = meta::resolve_optype_t<ix::shape_dynamic_slice_t,shape_t,slices_t>;
         using expect_t = nmtools_hybrid_ndarray<size_t,3,1>;
@@ -201,7 +201,7 @@ TEST_CASE("shape_dynamic_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = nmtools_array<size_t,3>;
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t,int>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t,int>>>;
         using slices_t = nmtools_list<slice_t>;
         using result_t = meta::resolve_optype_t<ix::shape_dynamic_slice_t,shape_t,slices_t>;
         using expect_t = nmtools_hybrid_ndarray<size_t,3,1>;
@@ -209,7 +209,7 @@ TEST_CASE("shape_dynamic_slice" * doctest::test_suite("meta::index"))
     }
     {
         using shape_t  = nmtools_array<size_t,3>;
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_array<int,3>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_array<int,3>>>;
         using slices_t = nmtools_list<slice_t>;
         using result_t = meta::resolve_optype_t<ix::shape_dynamic_slice_t,shape_t,slices_t>;
         using expect_t = nmtools_hybrid_ndarray<size_t,3,1>;
@@ -276,7 +276,7 @@ TEST_CASE("dynamic_slice" * doctest::test_suite("meta::index"))
     {
         using indices_t = nmtools_list<size_t>;
         using shape_t   = nmtools_list<size_t>;
-        using slice_t   = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slice_t   = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t>>;
         using slices_t  = nmtools_list<slice_t>;
         using result_t  = meta::resolve_optype_t<ix::dynamic_slice_t,indices_t,shape_t,slices_t>;
         using expect_t  = shape_t;
@@ -285,7 +285,7 @@ TEST_CASE("dynamic_slice" * doctest::test_suite("meta::index"))
     {
         using indices_t = nmtools_list<size_t>;
         using shape_t   = nmtools_list<size_t>;
-        using slice_t   = nmtools_tuple<elipsis_t,int>;
+        using slice_t   = nmtools_tuple<ellipsis_t,int>;
         using slices_t  = nmtools_list<slice_t>;
         using result_t  = meta::resolve_optype_t<ix::dynamic_slice_t,indices_t,shape_t,slices_t>;
         using expect_t  = shape_t;
@@ -294,7 +294,7 @@ TEST_CASE("dynamic_slice" * doctest::test_suite("meta::index"))
     {
         using indices_t = nmtools_list<size_t>;
         using shape_t   = nmtools_list<size_t>;
-        using slice_t   = nmtools_either<int,nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t,int>>>;
+        using slice_t   = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t,int>>>;
         using slices_t  = nmtools_list<slice_t>;
         using result_t  = meta::resolve_optype_t<ix::dynamic_slice_t,indices_t,shape_t,slices_t>;
         using expect_t  = shape_t;
@@ -303,7 +303,7 @@ TEST_CASE("dynamic_slice" * doctest::test_suite("meta::index"))
     {
         using indices_t = nmtools_list<size_t>;
         using shape_t   = nmtools_list<size_t>;
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_array<int,3>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_array<int,3>>>;
         using slices_t  = nmtools_list<slice_t>;
         using result_t  = meta::resolve_optype_t<ix::dynamic_slice_t,indices_t,shape_t,slices_t>;
         using expect_t  = shape_t;
@@ -359,7 +359,7 @@ TEST_CASE("dynamic_slice" * doctest::test_suite("meta::index"))
     {
         using indices_t = nmtools_hybrid_ndarray<size_t,3,1>;
         using shape_t   = nmtools_array<size_t,3>;
-        using slice_t   = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slice_t   = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t>>;
         using slices_t  = nmtools_list<slice_t>;
         using result_t  = meta::resolve_optype_t<ix::dynamic_slice_t,indices_t,shape_t,slices_t>;
         using expect_t  = shape_t;
@@ -368,7 +368,7 @@ TEST_CASE("dynamic_slice" * doctest::test_suite("meta::index"))
     {
         using indices_t = nmtools_hybrid_ndarray<size_t,3,1>;
         using shape_t   = nmtools_array<size_t,3>;
-        using slice_t   = nmtools_tuple<elipsis_t,int>;
+        using slice_t   = nmtools_tuple<ellipsis_t,int>;
         using slices_t  = nmtools_list<slice_t>;
         using result_t  = meta::resolve_optype_t<ix::dynamic_slice_t,indices_t,shape_t,slices_t>;
         using expect_t  = shape_t;
@@ -377,7 +377,7 @@ TEST_CASE("dynamic_slice" * doctest::test_suite("meta::index"))
     {
         using indices_t = nmtools_hybrid_ndarray<size_t,3,1>;
         using shape_t   = nmtools_array<size_t,3>;
-        using slice_t   = nmtools_either<int,nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t,int>>>;
+        using slice_t   = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t,int>>>;
         using slices_t  = nmtools_list<slice_t>;
         using result_t  = meta::resolve_optype_t<ix::dynamic_slice_t,indices_t,shape_t,slices_t>;
         using expect_t  = shape_t;
@@ -386,7 +386,7 @@ TEST_CASE("dynamic_slice" * doctest::test_suite("meta::index"))
     {
         using indices_t = nmtools_hybrid_ndarray<size_t,3,1>;
         using shape_t   = nmtools_array<size_t,3>;
-        using slice_t   = nmtools_either<int,nmtools_either<elipsis_t,nmtools_array<int,3>>>;
+        using slice_t   = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_array<int,3>>>;
         using slices_t  = nmtools_list<slice_t>;
         using result_t  = meta::resolve_optype_t<ix::dynamic_slice_t,indices_t,shape_t,slices_t>;
         using expect_t  = shape_t;

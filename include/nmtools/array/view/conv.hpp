@@ -96,9 +96,9 @@ namespace nmtools::view
             // assume weight dim == 4, and output channel is at axis 0
             auto filter = [&](){
                 if constexpr (meta::is_pointer_v<weight_type>) {
-                    return slice(*weight,filter_i,Elipsis);
+                    return slice(*weight,filter_i,Ellipsis);
                 } else {
-                    return slice(weight,filter_i,Elipsis);
+                    return slice(weight,filter_i,Ellipsis);
                 }
             }();
             auto filtered = multiply(sliced,filter);

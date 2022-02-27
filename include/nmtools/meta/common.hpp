@@ -297,12 +297,12 @@ namespace nmtools
     inline constexpr auto None = none_t {};
 
     /**
-     * @brief Special tag to represents "..." a.k.a. "Elipsis" type
+     * @brief Special tag to represents "..." a.k.a. "Ellipsis" type
      * 
      */
-    struct elipsis_t {};
+    struct ellipsis_t {};
 
-    inline constexpr auto Elipsis = elipsis_t {};
+    inline constexpr auto Ellipsis = ellipsis_t {};
 
     /**
      * @brief special constant for true_type
@@ -347,19 +347,19 @@ namespace nmtools
     inline constexpr auto is_none_v = is_none<T>::value;
 
     template <typename T>
-    struct is_elipsis : meta::false_type {};
+    struct is_ellipsis : meta::false_type {};
 
     template <typename T>
-    struct is_elipsis<const T> : is_elipsis<T> {};
+    struct is_ellipsis<const T> : is_ellipsis<T> {};
 
     template <typename T>
-    struct is_elipsis<const T&> : is_elipsis<T> {};
+    struct is_ellipsis<const T&> : is_ellipsis<T> {};
 
     template <>
-    struct is_elipsis<elipsis_t> : meta::true_type {};
+    struct is_ellipsis<ellipsis_t> : meta::true_type {};
 
     template <typename T>
-    inline constexpr auto is_elipsis_v = is_elipsis<T>::value;
+    inline constexpr auto is_ellipsis_v = is_ellipsis<T>::value;
 } // namespace nmtools
 
 // collections of reserved metafunctions

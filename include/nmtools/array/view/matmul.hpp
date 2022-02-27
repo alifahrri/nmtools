@@ -144,11 +144,11 @@ namespace nmtools::view::detail
             constexpr auto dim = meta::len_v<src_shape_t>;
             // the result of broadcasting 
             // may be zero for src_shape when len(indices) > len(src_shape),
-            // for such case: return elipsis
+            // for such case: return ellipsis
             // NOTE: this may produce wrong result for dynamic dimension
             // TODO: also support dynamic dimension
             if constexpr (dim<=2) {
-                return Elipsis;
+                return Ellipsis;
             } else {
                 return ::nmtools::index::broadcast_to(indices,b_src_shape,dst_shape);
             }
@@ -156,9 +156,9 @@ namespace nmtools::view::detail
             auto dim = len(src_shape);
             auto broadcasted = index::broadcast_to(indices,b_src_shape,dst_shape);
             using broadcasted_t = decltype(broadcasted);
-            using result_t = nmtools_either<elipsis_t,broadcasted_t>;
+            using result_t = nmtools_either<ellipsis_t,broadcasted_t>;
             if (dim <= 2) {
-                return result_t{Elipsis};
+                return result_t{Ellipsis};
             } else {
                 return result_t{broadcasted};
             }
@@ -297,8 +297,8 @@ namespace nmtools::view::detail
             [[maybe_unused]] auto all_slices = nmtools_tuple{None,None};
             using all_slices_t [[maybe_unused]] = nmtools_tuple<none_t,none_t>;
 
-            [[maybe_unused]] auto all_elipsis = nmtools_tuple{Elipsis,Elipsis};
-            using all_elipsis_t [[maybe_unused]] = nmtools_tuple<elipsis_t,elipsis_t>;
+            [[maybe_unused]] auto all_ellipsis = nmtools_tuple{Ellipsis,Ellipsis};
+            using all_ellipsis_t [[maybe_unused]] = nmtools_tuple<ellipsis_t,ellipsis_t>;
 
             /**
              * @brief Computes broadcasted left and right indices to corresponding original shape.
@@ -315,16 +315,16 @@ namespace nmtools::view::detail
                     auto r_indices = broadcast_matmul_indices(b_indices,rshape,b_shape);
                     return nmtools_tuple{l_indices,r_indices};
                 } else {
-                    return all_elipsis;
+                    return all_ellipsis;
                 }
             }();
 
             auto get_lslice_indices = [&](const auto& l_indices){
-                // here l_indices maybe elipsis, index array, or either (elipsis/index array)
+                // here l_indices maybe ellipsis, index array, or either (ellipsis/index array)
                 using l_indices_t = meta::remove_cvref_t<decltype(l_indices)>;
                 // matmul slices for left operands, [...,row,:]
                 auto matmul_indices = nmtools_tuple{row, all_slices};
-                if constexpr (is_elipsis_v<l_indices_t>) {
+                if constexpr (is_ellipsis_v<l_indices_t>) {
                     return matmul_indices;
                 } else {
                     return concat_indices(l_indices, matmul_indices);
@@ -335,7 +335,7 @@ namespace nmtools::view::detail
                 using r_indices_t = meta::remove_cvref_t<decltype(r_indices)>;
                 // matmul slices for right operands [...,:,col]
                 auto matmul_indices = nmtools_tuple{all_slices, col};
-                if constexpr (is_elipsis_v<r_indices_t>) {
+                if constexpr (is_ellipsis_v<r_indices_t>) {
                     return matmul_indices;
                 } else {
                     return concat_indices(r_indices, matmul_indices);

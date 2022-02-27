@@ -285,7 +285,7 @@ namespace nmtools::index
      * @return auto 
      */
     template <typename value_t>
-    auto is_elipsis(const value_t& value)
+    auto is_ellipsis(const value_t& value)
     {
         if constexpr (meta::is_either_v<value_t>) {
             using left_t  = meta::get_either_left_t<value_t>;
@@ -293,12 +293,12 @@ namespace nmtools::index
             auto l_ptr = nmtools::get_if<left_t>(&value);
             auto r_ptr = nmtools::get_if<right_t>(&value);
             if (l_ptr) {
-                return is_elipsis(*l_ptr);
+                return is_ellipsis(*l_ptr);
             } else {
-                return is_elipsis(*r_ptr);
+                return is_ellipsis(*r_ptr);
             }
         } else {
-            return is_elipsis_v<value_t>;
+            return is_ellipsis_v<value_t>;
         }
     }
 
@@ -458,13 +458,13 @@ namespace nmtools::index
             return n_int;
         }();
 
-        // slicing with elipsis allows len(slices) != len(shape)
-        [[maybe_unused]] auto n_elipsis = [&](){
-            auto n_elipsis = 0;
+        // slicing with ellipsis allows len(slices) != len(shape)
+        [[maybe_unused]] auto n_ellipsis = [&](){
+            auto n_ellipsis = 0;
             for (size_t i=0; i<n_slices; i++) {
-                n_elipsis += (is_elipsis(at(slices,i)) ? 1 : 0);
+                n_ellipsis += (is_ellipsis(at(slices,i)) ? 1 : 0);
             }
-            return n_elipsis;
+            return n_ellipsis;
         }();
         // TODO: error handling for ellipsis > 1
 
@@ -483,8 +483,8 @@ namespace nmtools::index
         for (size_t slc_i=0; slc_i<n_slices; slc_i++) {
             auto slice = at(slices_pack,slc_i);
             // fill up
-            if (is_elipsis(slice)) {
-                // number of shape to be filled by elipsis
+            if (is_ellipsis(slice)) {
+                // number of shape to be filled by ellipsis
                 auto n = (dim - (n_slices-1));
                 for (size_t i=0; i<n; i++) {
                     at(res,res_i++) = at(shape,shp_i++);
@@ -568,7 +568,7 @@ namespace nmtools::index
                         return static_cast<index_t>(dynamic_slice_compute_index(indices, shape_i, *r_ptr, indices_i));
                     }
                 }
-            } else if constexpr (is_elipsis_v<slice_t>) {
+            } else if constexpr (is_ellipsis_v<slice_t>) {
                 // ignore, assume already handled before calling this fn,
                 // this constexpr-if branch is just to avoid compile-time error
                 return 0;
@@ -686,9 +686,9 @@ namespace nmtools::index
         for (; slice_i<n_slices;) {
             auto slice = at(slices_pack,slice_i);
             // TODO: consider to use flatten_either
-            if (is_elipsis(slice)) {
+            if (is_ellipsis(slice)) {
                 // 1 refers to the fact that:
-                // there should be only 1 elipsis in slices
+                // there should be only 1 ellipsis in slices
                 auto n = (dim - (n_slices - 1));
                 for (size_t i=0; i<n; i++) {
                     auto index    = at(indices,index_i++);
@@ -712,13 +712,13 @@ namespace nmtools::index
                 using tuple_t = meta::remove_cvref_t<decltype(*tuple_ptr)>;
                 using slice_t = meta::remove_cvref_t<decltype(slice)>;
                 if (index_ptr) {
-                    if constexpr (!meta::is_index_v<index_t> && !is_elipsis_v<index_t>) {
+                    if constexpr (!meta::is_index_v<index_t> && !is_ellipsis_v<index_t>) {
                         auto si = at(shape,shape_i);
                         auto index = detail::dynamic_slice_compute_index(indices,si,*index_ptr,index_i);
                         at(res,result_i) = index;
                     }
                 } else if (tuple_ptr) {
-                    if constexpr (!meta::is_index_v<tuple_t> && !is_elipsis_v<tuple_t>) {
+                    if constexpr (!meta::is_index_v<tuple_t> && !is_ellipsis_v<tuple_t>) {
                         auto si = at(shape,shape_i);
                         auto index = detail::dynamic_slice_compute_index(indices,si,*tuple_ptr,index_i);
                         at(res,result_i) = index;
@@ -731,7 +731,7 @@ namespace nmtools::index
                 #if 0
                 // TODO: consider to create helper "get_index_array" which return maybe type (see get_int)
                 using m_slice_t = meta::remove_cvref_t<decltype(slice)>;
-                if constexpr (!meta::is_index_v<m_slice_t> && !is_elipsis_v<m_slice_t>) {
+                if constexpr (!meta::is_index_v<m_slice_t> && !is_ellipsis_v<m_slice_t>) {
                     auto si = at(shape,shape_i);
                     auto index = detail::dynamic_slice_compute_index(indices,si,slice,index_i);
                     at(res,result_i) = index;
@@ -839,15 +839,15 @@ namespace nmtools::index
             }
         }();
 
-        // computes the number of elipsis provided in slices_t...
-        // note that the only valid number of elipsis should be either 0 or 1
-        constexpr auto NUM_ELIPSIS = (static_cast<size_t>(is_elipsis_v<slices_t>) + ...);
-        static_assert( (NUM_ELIPSIS <= 1)
-            , "only exactly zero or one elipsis are allowed"
+        // computes the number of ellipsis provided in slices_t...
+        // note that the only valid number of ellipsis should be either 0 or 1
+        constexpr auto NUM_ELLIPSIS = (static_cast<size_t>(is_ellipsis_v<slices_t>) + ...);
+        static_assert( (NUM_ELLIPSIS <= 1)
+            , "only exactly zero or one ellipsis are allowed"
         );
 
         auto res = return_t {};
-        // Elipsis doesn't contribute to dimension reduction.
+        // Ellipsis doesn't contribute to dimension reduction.
         // Not all constexpr branches are using dim
         [[maybe_unused]] auto dim = len(shape) - N_INT;
         if constexpr (meta::is_resizeable_v<return_t>) {
@@ -864,7 +864,7 @@ namespace nmtools::index
         auto r_i = size_t{0};
         // to keep track of the active shape index,
         // note that the active shape index may not be the same as
-        // i (index of slices) because of elipsis
+        // i (index of slices) because of ellipsis
         auto s_i = size_t{0};
         constexpr auto N_SLICES = sizeof...(slices);
         meta::template_for<N_SLICES>([&](auto i){
@@ -890,13 +890,13 @@ namespace nmtools::index
                 }
             };
 
-            // when we found elipsis,
+            // when we found ellipsis,
             // fill up res with ":" aka tuple{None,None}
             // which is simply copy shape at the corresponding axis
-            if constexpr (is_elipsis_v<slice_t>) {
-                // elipsis takes src dim, not dst dim
+            if constexpr (is_ellipsis_v<slice_t>) {
+                // ellipsis takes src dim, not dst dim
                 auto dim = len(shape);
-                // number of shape to be filled (by elipsis):
+                // number of shape to be filled (by ellipsis):
                 auto n = (dim-(N_SLICES-1));
                 for (size_t j=0; j<n; j++) {
                     at(res,r_i++) = at(shape,j+s_i);
@@ -968,8 +968,8 @@ namespace nmtools::index
                 // doesn't contributes to shape computation
             }
             // increment the active shape index here
-            // to make sure that it handled all the case (elipsis,tuple,integral).
-            // note that elipsis may cause both active shape index and active result index
+            // to make sure that it handled all the case (ellipsis,tuple,integral).
+            // note that ellipsis may cause both active shape index and active result index
             // to be incremented.
             s_i++;
         });
@@ -1036,10 +1036,10 @@ namespace nmtools::index
                 } else {
                     at(res,r_i) = slice;
                 }
-            } else if constexpr (is_elipsis_v<slice_t>) {
+            } else if constexpr (is_ellipsis_v<slice_t>) {
                 auto n = (dim-(N_SLICES-1));
                 for (size_t j=0; j<n; j++) {
-                    // we're on elipsis, active shape index may also shifted
+                    // we're on ellipsis, active shape index may also shifted
                     auto index = at(indices,i_i+j);
                     using index_t = meta::remove_cvref_t<decltype(index)>;
                     if constexpr (meta::is_signed_v<index_t>) {
@@ -1054,7 +1054,7 @@ namespace nmtools::index
                 // effectively increment for any case of slice_t
                 // (index, elpsis, tuple).
                 // while i_i should only be incremented
-                // for elipsis and tuple case of slice_t.
+                // for ellipsis and tuple case of slice_t.
                 // so here r_i and s_i are incremented by (n-1)
                 // while i_i is incremented by n.
                 r_i += (n-1);

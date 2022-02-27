@@ -583,10 +583,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 {10,11},
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = nmtools_tuple{None,None};
         NMTOOLS_CAST_ARRAYS(array);
-        using slice_t  = nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t>>;
+        using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto dslices = slices_t{slice0,slice1};
     }
@@ -620,7 +620,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 {10,11},
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = nmtools_tuple{None,Last};
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -657,7 +657,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 {10,11},
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = nmtools_tuple{0,Last};
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -695,7 +695,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = nmtools_tuple{0ul,Last};
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
@@ -727,7 +727,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = 0ul;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
@@ -756,7 +756,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 {10,11},
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = 0;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -786,7 +786,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = 0;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -816,7 +816,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 }
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = 0;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -853,7 +853,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 }
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = 1;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
@@ -888,7 +888,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = 1;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -916,7 +916,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 {10,11},
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = -1;
         inline auto slice2 = nmtools_tuple{None,None,-1};
         NMTOOLS_CAST_ARRAYS(array)
@@ -943,7 +943,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 {10,11},
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = -2;
         inline auto slice2 = nmtools_tuple{None,None,-1};
         NMTOOLS_CAST_ARRAYS(array)
@@ -971,7 +971,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = 0;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         inline auto slice2 = -1;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -1001,7 +1001,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 }
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = -1;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -1038,7 +1038,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
                 }
             }
         };
-        inline auto slice0 = Elipsis;
+        inline auto slice0 = Ellipsis;
         inline auto slice1 = -1;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1073,7 +1073,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = -1;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         inline auto slice2 = 0;
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
@@ -1106,11 +1106,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = 1;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         inline auto slice2 = nmtools_tuple{None,None,-1};
         inline auto slice3 = 0;
         NMTOOLS_CAST_ARRAYS(array)
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t,int>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t,int>>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto dslices = slices_t{slice0,slice1,slice2,slice3};
     }
@@ -1140,11 +1140,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = 1;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         inline auto slice2 = nmtools_tuple{None,None,1};
         inline auto slice3 = 1;
         NMTOOLS_CAST_ARRAYS(array)
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_tuple<none_t,none_t,int>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t,int>>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto dslices = slices_t{slice0,slice1,slice2,slice3};
     }
@@ -1174,11 +1174,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = 1;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         inline auto slice2 = nmtools_array{2,0,-1};
         inline auto slice3 = 0;
         NMTOOLS_CAST_ARRAYS(array)
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_array<int,3>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_array<int,3>>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto dslices = slices_t{slice0,slice1,slice2,slice3};
     }
@@ -1208,11 +1208,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
             }
         };
         inline auto slice0 = 1;
-        inline auto slice1 = Elipsis;
+        inline auto slice1 = Ellipsis;
         inline auto slice2 = nmtools_array{0,2,1};
         inline auto slice3 = 0;
         NMTOOLS_CAST_ARRAYS(array)
-        using slice_t  = nmtools_either<int,nmtools_either<elipsis_t,nmtools_array<int,3>>>;
+        using slice_t  = nmtools_either<int,nmtools_either<ellipsis_t,nmtools_array<int,3>>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto dslices = slices_t{slice0,slice1,slice2,slice3};
     }
