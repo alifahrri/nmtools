@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_TRAITS_HPP
 #define NMTOOLS_META_TRAITS_HPP
 
+#include "nmtools/meta/bits/traits/has_array_type.hpp"
 #include "nmtools/meta/bits/traits/has_at.hpp"
 #include "nmtools/meta/bits/traits/has_bracket.hpp"
 #include "nmtools/meta/bits/traits/has_dim.hpp"

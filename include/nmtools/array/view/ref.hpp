@@ -79,7 +79,7 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            return detail::identity(indices...);
+            return pack_indices(indices...);
         } // index
     }; // ref_t
 

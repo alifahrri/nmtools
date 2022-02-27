@@ -327,6 +327,13 @@ namespace nmtools::view
     template <typename T>
     static inline constexpr bool is_view_v = is_view<T>::value;
 
+    namespace error
+    {
+        template <typename...>
+        struct GET_ARRAY_TYPE_UNSUPPORTED : meta::detail::fail_t {};
+    }
+
+    // TODO: consider to move to meta, to allow decrete_t to access/specialize
     /**
      * @brief get array_type
      * 
@@ -336,20 +343,17 @@ namespace nmtools::view
     template <typename T, typename=void>
     struct get_array_type
     {
-        using type = void;
-    }; // get_array_type
-
-    /**
-     * @brief specialization of get_array_type for view_type
-     * 
-     * @tparam view_t 
-     * @tparam Ts 
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct get_array_type<decorator_t<view_t,Ts...>>
-    {
-        using view_type = decorator_t<view_t,Ts...>;
-        using type = typename view_type::array_type;
+        // more generic implementation to allow decorator_t and discrete_t
+        static constexpr auto vtype = [](){
+            if constexpr (meta::has_array_type_v<T>) {
+                using type = typename T::array_type;
+                return meta::as_value_v<type>;
+            } else {
+                using type = error::GET_ARRAY_TYPE_UNSUPPORTED<T>;
+                return meta::as_value_v<type>;
+            }
+        }();
+        using type = meta::type_t<decltype(vtype)>;
     }; // get_array_type
 
     /**
@@ -361,6 +365,7 @@ namespace nmtools::view
     template <typename T>
     using get_array_type_t = typename get_array_type<T>::type;
 
+    // TODO: consider to move to meta, to allow decrete_t to access/specialize
     /**
      * @brief get array_type of possibly nested view
      *
@@ -447,9 +452,16 @@ namespace nmtools::view
             } else if constexpr (is_view_v<nocv_array_t>) {
                 using type = get_underlying_array_type_t<nocv_array_t>;
                 return meta::as_value_v<type>;
-            } else /* if constexpr (meta::is_ndarray_v<nocv_array_t>) */ {
-                // assume concrete array already
-                return meta::as_value_v<array_type>;
+            } else {
+                // try to check if the type has array_type (for discrete_t)
+                using m_array_type = get_array_type_t<nocv_array_t>;
+                if constexpr (!meta::is_fail_v<m_array_type>) {
+                    using type = get_underlying_array_type_t<typename nocv_array_t::array_type>;
+                    return meta::as_value_v<type>;
+                } else /* if constexpr (meta::is_ndarray_v<nocv_array_t>) */ {
+                    // assume concrete array already
+                    return meta::as_value_v<array_type>;
+                }
             }
         }();
         using type = meta::type_t<decltype(vtype)>;

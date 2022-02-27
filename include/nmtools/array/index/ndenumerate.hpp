@@ -18,12 +18,10 @@ namespace nmtools::index
     struct ndenumerate_t
     {
         using array_type = const array_t&;
-        // TODO: implement meta::declval
-        // declval is utilized to avoid constructor, for now assume array_t has default constructor
         using shape_type = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
+        // for now assume array_t has default constructor
         using ndindex_type = ndindex_t<shape_type>;
         using element_type = meta::get_element_type_t<array_t>;
-        // declval is utilized to avoid constructor, for now assume shape_type has default constructor
         using index_type   = meta::remove_cvref_t<decltype(meta::declval<ndindex_type>()[0])>;
 
         array_type array;

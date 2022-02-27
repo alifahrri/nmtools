@@ -380,6 +380,9 @@ namespace nmtools::meta
         >;
     }; // resize_fixed_ndarray
 
+#ifndef NMTOOLS_MAKE_FIXED_NDARRAY
+#define NMTOOLS_MAKE_FIXED_NDARRAY
+
     /**
      * @brief Default definition of make_fixed_ndarray.
      * returns nmtools::array::fixed_ndarray.
@@ -428,6 +431,10 @@ namespace nmtools::meta
 
     template <typename element_t, typename shape_t>
     using make_fixed_ndarray_t = type_t<make_fixed_ndarray<element_t,shape_t>>;
+
+    #define nmtools_fixed_ndarray ::nmtools::array::fixed_ndarray
+
+#endif // NMTOOLS_MAKE_FIXED_NDARRAY
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

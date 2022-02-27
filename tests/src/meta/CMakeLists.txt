@@ -46,6 +46,7 @@ set( META_INDEX_TEST_SOURCES
     array/index/broadcast_shape.cpp
     array/index/broadcast_to.cpp
     array/index/argsort.cpp
+    array/index/array_slice.cpp
     array/index/choose.cpp
     array/index/compute_indices.cpp
     array/index/compute_strides.cpp
