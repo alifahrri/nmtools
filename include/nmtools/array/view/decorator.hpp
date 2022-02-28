@@ -88,14 +88,33 @@ namespace nmtools::view::detail
      * @return constexpr auto 
      */
     template <typename array_t, typename indices_t>
-    constexpr auto apply_at(const array_t& array, const indices_t& indices)
+    constexpr decltype(auto) apply_at(const array_t& array, const indices_t& indices)
     {
         if constexpr (meta::is_pointer_v<array_t>) {
             return ::nmtools::apply_at(*array,indices);
         } else {
             return ::nmtools::apply_at(array,indices);
         }
-    }
+    } // apply_at
+
+    /**
+     * @brief Overloaded version of apply_at that takes mutable array
+     * 
+     * @tparam array_t 
+     * @tparam indices_t 
+     * @param array         mutable array
+     * @param indices       indices pack
+     * @return constexpr auto 
+     */
+    template <typename array_t, typename indices_t>
+    constexpr decltype(auto) apply_at(array_t& array, const indices_t& indices)
+    {
+        if constexpr (meta::is_pointer_v<array_t>) {
+            return ::nmtools::apply_at(*array,indices);
+        } else {
+            return ::nmtools::apply_at(array,indices);
+        }
+    } // apply_at
 } // nmtools::view::detail
 
 namespace nmtools::view
@@ -279,6 +298,20 @@ namespace nmtools::view
                 }
             }
         } // operator()
+
+        /**
+         * @brief Perform assignment if supported by the underlying view
+         * 
+         * @tparam other_t 
+         * @param other 
+         * @return constexpr auto 
+         */
+        template <typename other_t, meta::enable_if_t< meta::is_assignable_v<view_type,other_t>, int> =0 >
+        constexpr auto operator=(const other_t& other)
+        {
+            static_cast<view_type>(*this) = other;
+            return *this;
+        } // operator=
 
     }; // decorator_t
 
@@ -522,6 +555,27 @@ namespace nmtools::view
         using type = meta::type_t<decltype(vtype)>;
     }; // resolve_array_type
 
+    // TODO: use meta::remove_const
+    template <typename array_t>
+    struct resolve_mutable_array_type
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_view_v<array_t>
+                || meta::is_num_v<array_t>
+                || is_none_v<array_t>
+                || meta::is_constant_index_array_v<array_t>
+                || meta::is_constant_index_v<array_t>
+            ) {
+                return meta::as_value_v<array_t>;
+            } else if constexpr (meta::is_bounded_array_v<array_t>) {
+                return meta::as_value_v<array_t&>;
+            } else {
+                return meta::as_value_v<array_t*>;
+            }
+        }();
+        using type = meta::type_t<decltype(vtype)>;
+    }; // resolve_array_type
+
     template <typename array_t>
     struct resolve_array_type<noref_t<array_t>>
     {
@@ -537,6 +591,9 @@ namespace nmtools::view
     template <typename array_t>
     using resolve_array_type_t = meta::type_t<resolve_array_type<array_t>>;
 
+    template <typename array_t>
+    using resolve_mutable_array_type_t = meta::type_t<resolve_mutable_array_type<array_t>>;
+
     /**
      * @brief Helper function to initialize array for view constructor.
      * 
@@ -549,6 +606,16 @@ namespace nmtools::view
      */
     template <typename array_type, typename array_t>
     constexpr array_type initialize(const array_t& array)
+    {
+        if constexpr (meta::is_pointer_v<array_type>) {
+            return &array;
+        } else {
+            return array;
+        }
+    } // initialize
+
+    template <typename array_type, typename array_t>
+    constexpr array_type initialize(array_t& array)
     {
         if constexpr (meta::is_pointer_v<array_type>) {
             return &array;
