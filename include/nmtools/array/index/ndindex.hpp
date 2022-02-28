@@ -1,7 +1,6 @@
 #ifndef NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
 #define NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
 
-#include "nmtools/array/index/as_tuple.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
@@ -56,12 +55,10 @@ namespace nmtools::index
          */
         constexpr inline decltype(auto) operator[](size_t i) const
         {
-            // TODO: do not use as_tuple
-            using index::as_tuple;
             using index::compute_indices;
             if constexpr (meta::is_fixed_index_array_v<shape_t>) {
                 // map offset (flat index) back to indices
-                return as_tuple(compute_indices(i,shape,stride));
+                return compute_indices(i,shape,stride);
             }
             else {
                 // map offset (flat index) back to indices

@@ -20,6 +20,7 @@
 #include "nmtools/meta/bits/transform/make_unsigned.hpp"
 #include "nmtools/meta/bits/transform/promote_index.hpp"
 #include "nmtools/meta/bits/transform/promote_types.hpp"
+#include "nmtools/meta/bits/transform/remove_const.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
 #include "nmtools/meta/bits/transform/remove_pointer.hpp"
 #include "nmtools/meta/bits/transform/replace_either.hpp"

@@ -154,6 +154,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/moveaxis.cpp
     src/doctest/array/view/mutable_flatten.cpp
     src/doctest/array/view/mutable_ref.cpp
+    src/doctest/array/view/mutable_slice.cpp
     src/doctest/array/view/ones.cpp
     src/doctest/array/view/pad.cpp
     src/doctest/array/view/pooling.cpp
