@@ -761,12 +761,12 @@ namespace nmtools::meta
     struct resolve_optype<void,index::shape_dynamic_slice_t,shape_t,slice_t>
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_dynamic_index_array_v<shape_t> && is_list_v<slice_t>) {
+            if constexpr (is_dynamic_index_array_v<shape_t>) {
                 using index_t = get_element_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 using type = replace_element_type_t<shape_t,elem_t>;
                 return as_value_v<type>;
-            } else if constexpr (is_fixed_index_array_v<shape_t> && is_list_v<slice_t>) {
+            } else if constexpr (is_fixed_index_array_v<shape_t>) {
                 using index_t = get_element_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 constexpr auto src_dim = len_v<shape_t>;
@@ -1338,7 +1338,19 @@ namespace nmtools::index
     constexpr auto apply_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices)
     {
         constexpr auto N = meta::len_v<slices_t>;
-        if constexpr (N > 0) {
+        constexpr auto element_vtype = [](){
+            if constexpr (meta::is_tuple_v<slices_t>) {
+                using type = void;
+                return meta::as_value_v<type>;
+            } else {
+                // assume has value_type
+                using type = meta::get_value_type_t<slices_t>;
+                return meta::as_value_v<type>;
+            }
+        }();
+        using element_t = meta::type_t<decltype(element_vtype)>;
+        // NOTE: variadic version doesn't handle either type properly
+        if constexpr ((N > 0) && !meta::is_either_v<element_t>) {
             return apply_slice(indices,shape,slices,meta::make_index_sequence<N>{});
         } else {
             return dynamic_slice(indices,shape,slices);
@@ -1366,7 +1378,19 @@ namespace nmtools::index
     constexpr auto apply_shape_slice(const shape_t& shape, const slices_t& slices)
     {
         constexpr auto N = meta::len_v<slices_t>;
-        if constexpr (N > 0) {
+        constexpr auto element_vtype = [](){
+            if constexpr (meta::is_tuple_v<slices_t>) {
+                using type = void;
+                return meta::as_value_v<type>;
+            } else {
+                // assume has value_type
+                using type = meta::get_value_type_t<slices_t>;
+                return meta::as_value_v<type>;
+            }
+        }();
+        using element_t = meta::type_t<decltype(element_vtype)>;
+        // NOTE: variadic version doesn't handle either type properly
+        if constexpr ((N > 0) && !meta::is_either_v<element_t>) {
             return apply_shape_slice(shape,slices,meta::make_index_sequence<N>{});
         } else {
             return shape_dynamic_slice(shape,slices);
