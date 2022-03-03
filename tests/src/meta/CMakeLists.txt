@@ -54,6 +54,7 @@ set( META_INDEX_TEST_SOURCES
     array/index/conv.cpp
     array/index/expand_dims.cpp
     array/index/gather.cpp
+    array/index/insert_index.cpp
     array/index/logical_not.cpp
     array/index/nonzero.cpp
     array/index/pooling.cpp

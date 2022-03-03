@@ -84,6 +84,7 @@ set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/filter.cpp
     src/doctest/array/index/free_axes.cpp
     src/doctest/array/index/gather.cpp
+    src/doctest/array/index/insert_index.cpp
     src/doctest/array/index/logical_not.cpp
     src/doctest/array/index/ndenumerate.cpp
     src/doctest/array/index/ndindex.cpp
@@ -137,6 +138,7 @@ endif ()
 
 set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/arange.cpp
+    src/doctest/array/view/argsort.cpp
     src/doctest/array/view/array_slice.cpp
     src/doctest/array/view/atleast_1d.cpp
     src/doctest/array/view/atleast_2d.cpp
