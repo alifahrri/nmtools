@@ -130,7 +130,13 @@ namespace nmtools::meta
 {
     namespace error
     {
+        // unknown type
+        template <typename...>
         struct REMOVE_DIMS_UNSUPPORTED : detail::fail_t {};
+
+        // error
+        template <typename...>
+        struct REMOVE_DIMS_INVALID : detail::fail_t {};
     }
 
     template <typename shape_t, typename axis_t, typename keepdims_t>
@@ -187,7 +193,7 @@ namespace nmtools::meta
                         return as_value_v<type>;
                     } else {
                         // should be None ?
-                        return as_value_v<error::REMOVE_DIMS_UNSUPPORTED>;
+                        return as_value_v<error::REMOVE_DIMS_INVALID<shape_t,axis_t,keepdims_t>>;
                     }
                 } else if constexpr (is_fixed_index_array_v<axis_t>) {
                     constexpr auto N = fixed_index_array_size_v<shape_t>;
@@ -211,7 +217,7 @@ namespace nmtools::meta
                 using type = array::hybrid_ndarray<size_t,N,1>;
                 return as_value_v<type>;
             } else {
-                return as_value_v<error::REMOVE_DIMS_UNSUPPORTED>;
+                return as_value_v<error::REMOVE_DIMS_UNSUPPORTED<shape_t,axis_t,keepdims_t>>;
             }
         }();
         using type = transform_bounded_array_t<type_t<decltype(vtype)>>;

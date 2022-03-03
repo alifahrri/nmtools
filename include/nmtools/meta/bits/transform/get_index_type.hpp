@@ -8,13 +8,14 @@ namespace nmtools::meta
     namespace error
     {
         // default type (error-type) for get_index_type
+        template <typename...>
         struct GET_INDEX_TYPE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
 
     template <typename array_t, typename=void>
     struct get_index_type
     {
-        using type = error::GET_INDEX_TYPE_UNSUPPORTED;
+        using type = error::GET_INDEX_TYPE_UNSUPPORTED<array_t>;
     }; // get_index_type
 
     template <typename array_t>
