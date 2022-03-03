@@ -61,7 +61,9 @@ struct to_string_t<T,none_t,void>
         nmtools_string str;
         using ::nmtools::index::ndindex;
 
-        if constexpr (is_none_v<T>)
+        if constexpr (is_ellipsis_v<T>)
+            str += "...";
+        else if constexpr (is_none_v<T>)
             str += "None";
         else if constexpr (meta::is_either_v<T>) {
             using lhs_t = meta::get_either_left_t<T>;
@@ -95,6 +97,7 @@ struct to_string_t<T,none_t,void>
             str += nmtools_to_string(T::value);
         } // is_integral_constant
         else if constexpr (meta::is_ndarray_v<T>) {
+            // TODO: do not use as array
             /**
              * @brief helper lambda to make sure to return array (instead of tuple)
              * this simplify indexing, since tuple must be unrolled (can't use runtime index)
@@ -142,7 +145,7 @@ struct to_string_t<T,none_t,void>
                 }
 
                 str += "\t";
-                str += nmtools_to_string(a);
+                str += to_string(a);
 
                 int print_comma = 0;
                 // check if we should print closing bracket
@@ -177,7 +180,20 @@ struct to_string_t<T,none_t,void>
                     str += ",\t";
             });
             str += ")";
-        } // is_packed
+        }
+        else if constexpr (meta::is_list_v<T>) {
+            auto dim = len(array);
+            for (size_t i=0; i<(size_t)dim; i++) {
+                if (i==0) {
+                    str += "[";
+                }
+                str += "\t";
+                str += to_string(at(array,i));
+                if (i==(size_t)(dim-1)) {
+                    str += "]";
+                }
+            }
+        }
         return str;
     } // operator()
 }; // struct to_string_t
