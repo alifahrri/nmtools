@@ -127,7 +127,7 @@ namespace nmtools::utils
             auto is_num_or_array    = (meta::is_num_v<t1>) || (meta::is_ndarray_v<t1>);
             auto is_index_constant  =  meta::is_index_array_v<t1>;
             auto element_is_integer =  meta::is_integer_v<t1_t>;
-            return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none;
+            return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none || is_ellipsis_v<t1>;
         } // constrained(T1,T2)
 
         // check if T1 and T2 is both scalar or both ndarray
@@ -139,14 +139,15 @@ namespace nmtools::utils
 
             // allow none, integer, or ndarray
             // for ndarray, the element type must be integral
-            auto is_none = is_none_v<t1> && is_none_v<t1>;
+            auto is_none = is_none_v<t1> && is_none_v<t2>;
+            auto is_ellipsis = is_ellipsis_v<t1> && is_ellipsis_v<t2>;
             auto is_integer = (meta::is_integer_v<t1> || meta::is_integral_constant_v<t1>)
                 && (meta::is_integer_v<t2> || meta::is_integral_constant_v<t2>);
             auto is_num_or_array =  (meta::is_num_v<t1> && meta::is_num_v<t2>)
                 || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>);
             auto is_index_constant = meta::is_index_array_v<t1> && meta::is_index_array_v<t2>;
             auto element_is_integer = meta::is_integer_v<t1_t> && meta::is_integer_v<t2_t>;
-            return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none;
+            return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none || is_ellipsis;
         } // constrained(T1,T2)
 
         /**
@@ -211,7 +212,9 @@ namespace nmtools::utils
                 , "unsupported isequal; only support integer scalar type or integer ndarray"
             );
 
-            if constexpr (is_none_v<T> && is_none_v<U>)
+            if constexpr (is_ellipsis_v<T> && is_ellipsis_v<U>)
+                return true;
+            else if constexpr (is_none_v<T> && is_none_v<U>)
                 return true;
             // both type is maybe type, when both is empty, this also return true
             else if constexpr (meta::is_maybe_v<T> && meta::is_maybe_v<U>) {
