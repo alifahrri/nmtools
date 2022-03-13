@@ -520,6 +520,20 @@ namespace nmtools::meta
     }; // replace_element_type
 
     /**
+     * @brief Similar to replace_element_type but without restriction to be num type on U.
+     * 
+     * @tparam T 
+     * @tparam U 
+     * @tparam max_elements 
+     * @tparam dimension 
+     */
+    template <typename T, typename U, size_t max_elements, size_t dimension>
+    struct replace_value_type<array::hybrid_ndarray<T,max_elements,dimension>,U>
+    {
+        using type = array::hybrid_ndarray<U,max_elements,dimension>;
+    }; // replace_element_type
+
+    /**
      * @brief return the element type of hybrid_ndarray
      * 
      * @tparam T element type
