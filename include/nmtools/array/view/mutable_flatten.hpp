@@ -25,11 +25,13 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = array_t&;
+        using array_type = resolve_mutable_array_type_t<array_t>;
 
         array_type array;
 
-        constexpr mutable_flatten_t(array_type array) : array(array) {}
+        constexpr mutable_flatten_t(array_t& array)
+            : array(initialize<array_type>(array))
+        {}
 
         constexpr auto dim() const noexcept
         {
@@ -49,7 +51,7 @@ namespace nmtools::view
         constexpr auto index(size_type i) const
         {
             using ::nmtools::index::compute_indices;
-            auto shape_  = ::nmtools::shape(array);
+            auto shape_  = detail::shape(array);
             auto indices = compute_indices(i,shape_);
             return indices;
         } // index
