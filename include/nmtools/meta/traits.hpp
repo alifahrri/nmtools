@@ -40,6 +40,8 @@
 #include "nmtools/meta/bits/traits/is_resizeable.hpp"
 #include "nmtools/meta/bits/traits/is_list.hpp"
 #include "nmtools/meta/bits/traits/is_signed.hpp"
+#include "nmtools/meta/bits/traits/is_slice_index_array.hpp"
+#include "nmtools/meta/bits/traits/is_slice_index.hpp"
 #include "nmtools/meta/bits/traits/is_specialization.hpp"
 #include "nmtools/meta/bits/traits/is_unsigned.hpp"
 #include "nmtools/meta/bits/traits/is_tuple.hpp"
