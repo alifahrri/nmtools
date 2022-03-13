@@ -101,8 +101,9 @@ set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/shape_repeat.cpp
     src/doctest/array/index/shape_tile.cpp
     src/doctest/array/index/slice.cpp
-    src/doctest/array/index/tile.cpp
     src/doctest/array/index/take.cpp
+    src/doctest/array/index/take_along_axis.cpp
+    src/doctest/array/index/tile.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_INDEX)
     set(ARRAY_INDEX_TEST_SOURCES "")
@@ -168,6 +169,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/doctest/array/view/split.cpp
     src/doctest/array/view/squeeze.cpp
     src/doctest/array/view/stddev.cpp
+    src/doctest/array/view/take_along_axis.cpp
     src/doctest/array/view/take.cpp
     src/doctest/array/view/tile.cpp
     src/doctest/array/view/transpose.cpp

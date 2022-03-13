@@ -85,6 +85,88 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
     {
         inline auto result = meta::Nothing;
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        inline int indices[3] = {1,2,3};
+        inline int other[2] = {4,5};
+        inline int axis = 0;
+        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_ARRAYS(other)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        inline int result[5] = {4,5,1,2,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        inline int indices[3] = {1,2,3};
+        inline int other[2] = {4,5};
+        inline int axis = 1;
+        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_ARRAYS(other)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        inline int result[5] = {1,4,5,2,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        inline int indices[3] = {1,2,3};
+        inline int other[2] = {4,5};
+        inline int axis = 2;
+        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_ARRAYS(other)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        inline int result[5] = {1,2,4,5,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        inline int indices[3] = {1,2,3};
+        inline int other[2] = {4,5};
+        inline int axis = 3;
+        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_ARRAYS(other)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        inline int result[5] = {1,2,3,4,5};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        inline int indices[1] = {1};
+        inline auto other = Ellipsis;
+        inline auto axis = -1;
+        NMTOOLS_CAST_ARRAYS(indices);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        using slice_t  = nmtools_either<int,ellipsis_t>;
+        using slices_t = nmtools_array<slice_t,2>;
+        inline auto result = slices_t{1,Ellipsis};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        using slice_t  = nmtools_either<int,ellipsis_t>;
+        using slices_t = nmtools_array<slice_t,2>;
+        inline auto indices = slices_t{1,Ellipsis};
+        inline int other[1] = {0};
+        inline auto axis = -1;
+        NMTOOLS_CAST_ARRAYS(other)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
+    {
+        using slice_t  = nmtools_either<int,ellipsis_t>;
+        using slices_t = nmtools_array<slice_t,3>;
+        inline auto result = slices_t{1,Ellipsis,0};
+    }
 }
 
 namespace nm = nmtools;
@@ -166,4 +248,46 @@ TEST_CASE("insert_index(case6)" * doctest::test_suite("index::insert_index"))
     INSERT_INDEX_SUBCASE( case6, indices, idx, axis );
     INSERT_INDEX_SUBCASE( case6, indices_a, idx, axis );
     INSERT_INDEX_SUBCASE( case6, indices_v, idx, axis );
+}
+
+TEST_CASE("insert_index(case7)" * doctest::test_suite("index::insert_index"))
+{
+    INSERT_INDEX_SUBCASE( case7, indices, other, axis );
+    INSERT_INDEX_SUBCASE( case7, indices_a, other, axis );
+    INSERT_INDEX_SUBCASE( case7, indices_v, other, axis );
+}
+
+TEST_CASE("insert_index(case8)" * doctest::test_suite("index::insert_index"))
+{
+    INSERT_INDEX_SUBCASE( case8, indices, other, axis );
+    INSERT_INDEX_SUBCASE( case8, indices_a, other_a, axis );
+    INSERT_INDEX_SUBCASE( case8, indices_v, other_v, axis );
+}
+
+TEST_CASE("insert_index(case9)" * doctest::test_suite("index::insert_index"))
+{
+    INSERT_INDEX_SUBCASE( case9, indices, other, axis );
+    INSERT_INDEX_SUBCASE( case9, indices_a, other_a, axis );
+    INSERT_INDEX_SUBCASE( case9, indices_v, other_v, axis );
+}
+
+TEST_CASE("insert_index(case10)" * doctest::test_suite("index::insert_index"))
+{
+    INSERT_INDEX_SUBCASE( case10, indices, other, axis );
+    INSERT_INDEX_SUBCASE( case10, indices_a, other_a, axis );
+    INSERT_INDEX_SUBCASE( case10, indices_v, other_v, axis );
+}
+
+TEST_CASE("insert_index(case11)" * doctest::test_suite("index::insert_index"))
+{
+    INSERT_INDEX_SUBCASE( case11, indices, other, axis );
+    INSERT_INDEX_SUBCASE( case11, indices_a, other, axis );
+    INSERT_INDEX_SUBCASE( case11, indices_v, other, axis );
+}
+
+TEST_CASE("insert_index(case12)" * doctest::test_suite("index::insert_index"))
+{
+    INSERT_INDEX_SUBCASE( case12, indices, other, axis );
+    INSERT_INDEX_SUBCASE( case12, indices, other_a, axis );
+    INSERT_INDEX_SUBCASE( case12, indices, other_v, axis );
 }
