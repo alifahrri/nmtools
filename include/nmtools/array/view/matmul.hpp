@@ -16,58 +16,6 @@ namespace nmtools::view::detail
     // special tag to resolve shape_matmul return type
     struct shape_matmul_t {};
 
-    // special tag to resolve index array splitting
-    struct split_index_t {};
-
-    /**
-     * @brief Split an index array to two parts at index N.
-     * 
-     * @tparam shape_t 
-     * @param shape 
-     * @param N 
-     * @return constexpr auto 
-     */
-    template <typename shape_t, typename index_t>
-    constexpr auto split(const shape_t& shape, index_t N)
-    {
-        using result_t = meta::resolve_optype_t<split_index_t,shape_t,index_t>;
-        using left_t   = meta::at_t<result_t,0>;
-        using right_t  = meta::at_t<result_t,1>;
-
-        auto dim  = len(shape);
-        auto axis = dim;
-        using axis_t [[maybe_unused]] = decltype(axis);
-
-        if constexpr (meta::is_signed_v<index_t>) {
-            axis = (N<0) ? (dim+N) : N;
-        } else {
-            // unsigned, no need to check
-            axis = N;
-        }
-
-        
-        auto left  = left_t  {};
-        auto right = right_t {};
-        if constexpr (meta::is_resizeable_v<left_t>) {
-            auto ldim  = axis;
-            left.resize(ldim);
-        }
-        if constexpr (meta::is_resizeable_v<right_t>) {
-            auto rdim  = dim - axis;
-            right.resize(rdim);
-        }
-
-        for (size_t i=0; i<dim; i++) {
-            if (i<axis) {
-                at(left,i) = at(shape,i);
-            } else {
-                at(right,i-axis) = at(shape,i);
-            }
-        }
-
-        return result_t{left,right};
-    } // split
-
     /**
      * @brief Computes the resulting shape of matmul, following numpy rules.
      * 
@@ -164,59 +112,6 @@ namespace nmtools::view::detail
             }
         }
     } // broadcast_matmul_indices
-
-    /**
-     * @brief Join broadcasted indices with non-broadcasted matmul indices.
-     * 
-     * This is necessary because matmul broadcasting only happened at axis 0 upto -2.
-     * Can not use meta::append_type because indices is not guaranteed to be known at compile-time.
-     * 
-     */
-    template <typename indices_t, typename tuple_t>
-    constexpr auto concat_indices(const indices_t& indices, const tuple_t& tuple)
-    {
-        if constexpr (meta::is_fixed_index_array_v<indices_t>) {
-            constexpr auto n_index = meta::len_v<indices_t>;
-            auto i0   = at(indices,meta::ct_v<0>);
-            auto init = nmtools_tuple{i0};
-            auto joined = meta::template_reduce<n_index>([&](auto init, auto index){
-                constexpr auto i = decltype(index)::value;
-                if constexpr (i<(n_index-1)) {
-                    auto index_i = at(indices,meta::ct_v<i+1>);
-                    return tuple_cat(init,nmtools_tuple{index_i});
-                } else {
-                    return tuple_cat(init,tuple);
-                }
-            }, /*init=*/init);
-            return joined;
-        } else {
-            // assume dynamic shape
-            using value_t = meta::get_value_type_t<indices_t>;
-            // specific for matmul
-            // if tuple is indeed tuple, assume its element is either integer or {None,None}
-            using either_t = nmtools_either<value_t,nmtools_tuple<none_t,none_t>>;
-            using result_t = meta::replace_value_type_t<indices_t,either_t>;
-
-            auto res = result_t {};
-            auto n_index = len(indices);
-            // assume tuple is tuple
-            constexpr auto n_tuple = meta::len_v<tuple_t>;
-            if constexpr (meta::is_resizeable_v<result_t>) {
-                res.resize(n_index+n_tuple);
-            }
-
-            for (size_t i=0; i<n_index; i++) {
-                at(res,i) = at(indices,i);
-            }
-
-            meta::template_for<n_tuple>([&](auto index){
-                at(res,index+n_index) = at(tuple,index);
-            });
-
-            return res;
-        }
-        // TODO: error handling (compile-time and runtime)
-    } // concat_indices
 
     /**
      * @brief Computes the left and right indices for corresponding original array given
@@ -531,70 +426,6 @@ namespace nmtools::meta
 
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
-
-    namespace error
-    {
-        template <typename...>
-        struct SPLIT_INDEX_UNSUPPORTED : detail::fail_t {};
-    }
-
-    /**
-     * @brief Resolve return type for matmul split index (for partial broadcasting)
-     * 
-     * @tparam shape_t 
-     * @tparam split_t 
-     */
-    template <typename shape_t, typename split_t>
-    struct resolve_optype<
-        void, view::detail::split_index_t, shape_t, split_t
-    >
-    {
-        static constexpr auto vtype = [](){
-            if constexpr (is_dynamic_index_array_v<shape_t>) {
-                using type = make_tuple_type_t<shape_t,shape_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_hybrid_index_array_v<shape_t>) {
-                using type = make_tuple_type_t<shape_t,shape_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_constant_index_array_v<shape_t>) {
-                // not supported yet
-                using type = error::SPLIT_INDEX_UNSUPPORTED<shape_t,split_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_fixed_index_array_v<shape_t> && !is_constant_index_v<split_t>) {
-                // shape is fixed size but the index to split is runtime value
-                constexpr auto max_elements = fixed_index_array_size_v<shape_t>;
-                using element_t = get_element_type_t<shape_t>;
-                using hybrid_t  = make_hybrid_ndarray_t<element_t,max_elements,1>;
-                using type = make_tuple_type_t<hybrid_t,hybrid_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_fixed_index_array_v<shape_t> && is_constant_index_v<split_t>) {
-                // number of dimension of the array
-                constexpr auto N = fixed_index_array_size_v<shape_t>;
-                // split index (a.k.a. position) normalize negative value
-                constexpr auto i = [](){
-                    constexpr auto index = split_t::value;
-                    if constexpr (index < 0) {
-                        return N + index;
-                    } else {
-                        return index;
-                    }
-                }();
-                using element_t = get_element_type_t<shape_t>;
-
-                using left_size_t  = make_tuple_type_t<ct<i>>;
-                using right_size_t = make_tuple_type_t<ct<N-i>>;
-                using left_t  = make_fixed_ndarray_t<element_t,left_size_t>;
-                using right_t = make_fixed_ndarray_t<element_t,right_size_t>;
-                using type    = make_tuple_type_t<left_t,right_t>;
-                return as_value_v<type>;
-            } else {
-                // unhandled type
-                using type = error::SPLIT_INDEX_UNSUPPORTED<shape_t,split_t>;
-                return as_value_v<type>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    }; // resolve_optype<split_index_t>
 
     /**
      * @brief Infre return type of matmul

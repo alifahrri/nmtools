@@ -66,6 +66,7 @@ set( META_INDEX_TEST_SOURCES
     array/index/slice.cpp
     array/index/split.cpp
     array/index/sum.cpp
+    array/index/take_along_axis.cpp
     array/index/where.cpp
 )
 
@@ -81,6 +82,8 @@ set( META_TRAIT_TEST_SOURCES
     traits/is_integer.cpp
     traits/is_num.cpp
     traits/is_reference.cpp
+    traits/is_slice_index_array.cpp
+    traits/is_slice_index.cpp
 )
 
 set( META_TRANSFORM_TEST_SOURCES

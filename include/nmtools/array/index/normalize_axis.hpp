@@ -19,7 +19,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename axis_t, typename ndim_t>
-    constexpr auto normalize_axis(const axis_t& axis, const ndim_t ndim)
+    constexpr auto normalize_axis(const axis_t& axis, [[maybe_unused]] const ndim_t ndim)
     {
         using result_t = meta::resolve_optype_t<normalize_axis_t,axis_t,ndim_t>;
         using return_t = meta::make_maybe_type_t<result_t>;
@@ -50,7 +50,7 @@ namespace nmtools::index
             }
         } else if constexpr (meta::is_num_v<result_t>) {
             auto res = result_t{};
-            using idx_t = meta::promote_index_t<ndim_t,axis_t>;
+            using idx_t = meta::make_signed_t<meta::promote_index_t<ndim_t,axis_t>>;
             if ((-(idx_t)ndim <= (idx_t)axis) && ((idx_t)axis < (idx_t)ndim)) {
                 res = (axis < (axis_t)0)  ? (ndim + axis) : axis;
                 ret = res;

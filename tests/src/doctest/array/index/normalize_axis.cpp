@@ -80,6 +80,56 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline auto result = meta::Nothing;
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        inline auto axis = 0ul;
+        inline int ndim = 3;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        inline int result = 0;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        inline auto axis = 0ul;
+        inline auto ndim = 3ul;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        inline int result = 0;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        inline auto axis = 1ul;
+        inline auto ndim = 3ul;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        inline int result = 1;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        inline auto axis = 2ul;
+        inline auto ndim = 3ul;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        inline int result = 2;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        inline auto axis = 3ul;
+        inline auto ndim = 3ul;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        inline auto result = meta::Nothing;
+    }
 }
 
 #include "nmtools/array/index/normalize_axis.hpp"
@@ -136,6 +186,15 @@ TEST_CASE("normalize_axis(case2)" * doctest::test_suite("index::normalize_axis")
     NORMALIZE_AXIS_SUBCASE( case2, axis_h, ndim );
 }
 
+TEST_CASE("normalize_axis(case3)" * doctest::test_suite("index::normalize_axis"))
+{
+    NORMALIZE_AXIS_SUBCASE( case3, axis, ndim );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_a, ndim );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_v, ndim );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_f, ndim );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_h, ndim );
+}
+
 TEST_CASE("normalize_axis(case4)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case4, axis, ndim );
@@ -152,4 +211,29 @@ TEST_CASE("normalize_axis(case5)" * doctest::test_suite("index::normalize_axis")
     NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
     NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
     NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
+}
+
+TEST_CASE("normalize_axis(case6)" * doctest::test_suite("index::normalize_axis"))
+{
+    NORMALIZE_AXIS_SUBCASE( case6, axis, ndim );
+}
+
+TEST_CASE("normalize_axis(case7)" * doctest::test_suite("index::normalize_axis"))
+{
+    NORMALIZE_AXIS_SUBCASE( case7, axis, ndim );
+}
+
+TEST_CASE("normalize_axis(case8)" * doctest::test_suite("index::normalize_axis"))
+{
+    NORMALIZE_AXIS_SUBCASE( case8, axis, ndim );
+}
+
+TEST_CASE("normalize_axis(case9)" * doctest::test_suite("index::normalize_axis"))
+{
+    NORMALIZE_AXIS_SUBCASE( case9, axis, ndim );
+}
+
+TEST_CASE("normalize_axis(case10)" * doctest::test_suite("index::normalize_axis"))
+{
+    NORMALIZE_AXIS_SUBCASE( case10, axis, ndim );
 }

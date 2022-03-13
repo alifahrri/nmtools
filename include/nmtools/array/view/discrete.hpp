@@ -85,23 +85,15 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    using view::is_discrete_view;
-    using view::is_discrete_view_v;
-
     template <template<typename...>typename view_t, typename...Ts>
     struct get_element_type<
         view::discrete_t< view_t, Ts... >
     >
     {
         static constexpr auto vtype = [](){
-            using view_type = view_t<Ts...>;
-            if constexpr (has_array_type_v<view_type>) {
-                using type = get_element_type_t<typename view_type::array_type>;
-                return as_value_v<type>;
-            } else {
-                using type = error::GET_ELEMENT_TYPE_UNSUPPORTED<view::discrete_t< view_t, Ts... >>;
-                return as_value_v<type>;
-            }
+            using view_type = view::discrete_t< view_t, Ts... >;
+            using type = get_element_type_t<remove_cvref_pointer_t<typename view_type::array_type>>;
+            return as_value_v<type>;
         }();
         using type = type_t<decltype(vtype)>;
     }; // get_element_type
