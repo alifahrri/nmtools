@@ -51,6 +51,26 @@ namespace nmtools::testing
     using index_sequence = meta::integer_sequence<size_t,I...>;
 
     /**
+     * @brief Quick workaround to remove substring from string
+     * 
+     * @tparam string 
+     * @param str 
+     * @param substr 
+     * @return auto 
+     */
+    template <typename string>
+    inline auto remove_string(string& str, const string& substr)
+    {
+        auto start_pos = string::npos;
+        do {
+          start_pos = str.find(substr);
+          if (start_pos != string::npos) {
+            str.erase(start_pos, substr.size());
+          }
+        } while (start_pos != string::npos);
+    }
+
+    /**
      * @ingroup testing
      * @{
      */

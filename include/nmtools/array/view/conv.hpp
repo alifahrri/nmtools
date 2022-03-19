@@ -200,7 +200,7 @@ namespace nmtools::view
             auto spatial_i = dim_ - 2;
             // handle index array or num
             auto [pad_h,pad_w] = [&](){
-                if constexpr (meta::is_num_v<padding_t>) {
+                if constexpr (meta::is_index_v<padding_t>) {
                     return nmtools_tuple{padding,padding};
                 } else {
                     auto pad_h = at(padding,0);

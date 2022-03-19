@@ -830,6 +830,7 @@ namespace nmtools::view
                          is_none_v<attribute_t>
                 || meta::is_num_v<attribute_t>
                 || meta::is_index_array_v<attribute_t>
+                || meta::is_integral_constant_v<attribute_t>
                 || meta::is_ndarray_v<attribute_t>)
             {
                 return meta::as_value_v<const attribute_t>;

@@ -135,8 +135,8 @@ namespace nmtools::view
      * @param ceil_mode 
      * @return constexpr auto 
      */
-    template <typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode)
+    template <typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
+    constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{})
     {
         return pool2d(max_reducer_t{},array,kernel_size,stride,ceil_mode);
     }

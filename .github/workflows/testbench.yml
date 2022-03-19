@@ -1,0 +1,52 @@
+name: gcc
+
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+
+jobs:
+  testbench:
+    strategy:
+      matrix:
+        include:
+          - c_compiler: gcc-9
+            cxx_compiler: g++-9
+            compiler: gcc
+          - c_compiler: clang-10
+            cxx_compiler: clang++-10
+            compiler: clang
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: install dependencies
+        run: |
+          bash scripts/install_doctest.sh -d include
+          sudo bash scripts/install_nanobench.sh
+          sudo apt -y install libboost-dev zip python3-pip
+          sudo pip3 install pyperf
+      - name: build release
+        env:
+          CC: ${{ matrix.c_compiler }}
+          CXX: ${{ matrix.cxx_compiler }}
+        run: |
+          bash scripts/build_testbench.sh --build-dir build/${{ matrix.compiler }}-Release
+      - name: run testbench
+        run: |
+          mkdir -p ${{ matrix.compiler }}-testbench
+          sudo python3 -m pyperf system tune
+          sudo bash scripts/run_testbench.sh --build-dir build/${{ matrix.compiler }}-Release --output-dir ${{ matrix.compiler }}-testbench
+          cp build/${{ matrix.compiler }}-Release/compile_commands.json ${{ matrix.compiler }}-testbench
+          zip -r ${{ matrix.compiler }}-testbench.zip ${{ matrix.compiler }}-testbench
+      - name: upload testbench artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.compiler }}-testbench_results
+          path: |
+            ${{ matrix.compiler }}-testbench.zip

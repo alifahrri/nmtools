@@ -1,10 +1,9 @@
 #!/bin/bash
 
 CWD=$pwd
+version="v2.4.8"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" 
-doctest_url="https://github.com/onqtam/doctest/archive/2.4.6.tar.gz"
-doctest_file="2.4.6.tar.gz"
-doctest_dir="doctest-2.4.6"
+doctest_url="https://raw.githubusercontent.com/onqtam/doctest/${version}/doctest/doctest.h"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -26,14 +25,7 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [ -z "$DEST" -a "$DEST" != " " ]; then
-    DEST="$HOME/tmp"
-    mkdir -p $DEST
+    DEST="include/"
 fi
 
-wget -O $DEST/$doctest_file $doctest_url
-
-cd $DEST && tar -zxvf $doctest_file
-
-cd $doctest_dir && mkdir -p build && cd build && cmake -DDOCTEST_WITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/ .. && make install
-
-cd $CWD
+wget -O $DEST/doctest.h $doctest_url

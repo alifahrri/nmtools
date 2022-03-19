@@ -71,6 +71,7 @@ namespace nmtools
 
     namespace meta::error
     {
+        template <typename...>
         struct CAST_KIND_UNSUPPORTED : detail::fail_t {};
     }
 
@@ -119,7 +120,7 @@ namespace nmtools
         #endif // NMTOOLS_DISABLE_STL
                 return as_value_v<type>;
             } else /* */ {
-                return as_value_v<error::CAST_KIND_UNSUPPORTED>;
+                return as_value_v<error::CAST_KIND_UNSUPPORTED<src_t,kind_t>>;
             }
         }();
         using type = meta::type_t<decltype(vtype)>;

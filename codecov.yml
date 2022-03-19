@@ -8,11 +8,7 @@ coverage:
         # basic
         target: auto
         threshold: 1%
-    patch:
-      default:
-        # couldn't fix right config for coverage,
-        # lower target for now
-        target: 50%
+    patch: off
 
 parsers:
   gcov:
@@ -26,3 +22,4 @@ ignore:
   - "/usr/include/**/*"        # ignore system lib
   - "/usr/local/include/**/*"  # ignore 3rd parties
   - "tests/src/platformio"     # don't know how to check coverage with platformio yet
+  - "tests/testbench"

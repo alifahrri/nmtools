@@ -27,19 +27,34 @@ TEST_CASE("ndenumerate" * doctest::test_suite("index"))
     auto indices = ndindex(shape_);
     auto pack = ndenumerate(array);
     CHECK( pack.size() == 6 );
+    // newer doctest CHECK macro definition breaks the following :(
+    #ifdef __clang__
+    [[maybe_unused]] auto idx = std::get<0>(pack[3]);
+    auto val = std::get<1>(pack[3]);
+    #else
     auto [idx, val] = pack[3];
+    #endif
     CHECK( val == 3 );
 
     for (size_t i=0; i<pack.size(); i++) {
+        // newer doctest CHECK macro definition breaks the following :(
+        #ifdef __clang__
+        [[maybe_unused]] auto idx = std::get<0>(pack[i]);
+        auto value = std::get<1>(pack[i]);
+        #else
         auto [idx, value] = pack[i];
+        #endif
         auto v = apply_at(array,indices[i]);
         CHECK( value == v );
     }
 
+    // newer doctest CHECK macro definition breaks the following :(
+    #ifndef __clang__
     for (auto [idx,value] : pack) {
         auto v = apply_at(array,idx);
         CHECK( value == v );
     }
+    #endif
 
     {
         const auto& p = pack[2];

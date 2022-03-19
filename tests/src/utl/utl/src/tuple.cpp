@@ -107,7 +107,11 @@ TEST_CASE("tuple" * doctest::test_suite("utl"))
             NMTOOLS_ASSERT_EQUAL( utl::get<2>(tp), 2 );
             NMTOOLS_ASSERT_CLOSE( utl::get<3>(tp), 3.0 );
 
-            [[maybe_unused]] const auto& [a,b,c,d] = tp;
+            // #ifdef __clang__
+            [[maybe_unused]] const auto& a = utl::get<0>(tp);
+            // #else
+            // [[maybe_unused]] const auto& [a,b,c,d] = tp;
+            // #endif
 
             utl::get<0>(tp) = 2;
             utl::get<1>(tp) = 3;

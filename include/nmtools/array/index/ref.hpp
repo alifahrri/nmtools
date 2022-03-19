@@ -31,18 +31,34 @@ namespace nmtools::index
 
 namespace nmtools
 {
+    // TODO: remove
     template <typename array_t>
     constexpr auto len(const index::ref<array_t>& array)
     {
         return array.size();
     } // len
 
+    // TODO: remove
     template <typename array_t, typename index_t>
     constexpr auto at(const index::ref<array_t>& array, index_t i)
     {
         return at(array.array,i);
     } // len
 } // namespace nmtools
+
+namespace nmtools::impl
+{
+    template <typename array_t>
+    struct len_t<index::ref<array_t>>
+    {
+        using array = const index::ref<array_t>&;
+        using type  = decltype(meta::declval<array>().size());
+        constexpr auto operator()(array a) const
+        {
+            return a.size();
+        } // operator()
+    };
+}
 
 
 namespace nmtools::meta
