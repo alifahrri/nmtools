@@ -8,6 +8,8 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/math.hpp"
 
+#include "nmtools/array/index/ref.hpp"
+
 namespace nmtools::index
 {
     struct shape_pool2d_t {};
@@ -49,9 +51,25 @@ namespace nmtools::index
             // TODO: do not use i, check for batch_dim (that is not on spatial dim)
             at(res,i) = at(shape,i);
         }
+
+        // quick workaround to support fixed index array
+        auto kernel_size_ = [&](){
+            if constexpr (meta::is_constant_index_array_v<kernel_size_t>) {
+                return meta::to_value_v<kernel_size_t>;
+            } else {
+                return index::ref(kernel_size);
+            }
+        }();
+        auto stride_ = [&](){
+            if constexpr (meta::is_constant_index_array_v<stride_t>) {
+                return meta::to_value_v<stride_t>;
+            } else {
+                return index::ref(stride);
+            }
+        }();
         for (size_t i=0; i<n_spatial_dim; i++) {
             auto spatial_i = at(spatial_dim,i);
-            auto r_shape_i = float(at(shape,spatial_i) + pad - ((at(kernel_size,spatial_i) - 1) * dilations + 1)) / at(stride,spatial_i) + 1;
+            auto r_shape_i = float(at(shape,spatial_i) + pad - ((at(kernel_size_,spatial_i) - 1) * dilations + 1)) / at(stride_,spatial_i) + 1;
             if (static_cast<bool>(ceil_mode)) {
                 at(res,spatial_i) = math::ceil(r_shape_i);
             } else {
@@ -109,10 +127,26 @@ namespace nmtools::index
             at(res,i) = {(idx_t)at(indices,i),(idx_t)at(indices,i)+1,(idx_t)1};
         }
 
+        // quick workaround to support fixed index array
+        auto kernel_size_ = [&](){
+            if constexpr (meta::is_constant_index_array_v<kernel_size_t>) {
+                return meta::to_value_v<kernel_size_t>;
+            } else {
+                return index::ref(kernel_size);
+            }
+        }();
+        auto stride_ = [&](){
+            if constexpr (meta::is_constant_index_array_v<stride_t>) {
+                return meta::to_value_v<stride_t>;
+            } else {
+                return index::ref(stride);
+            }
+        }();
+
         for (size_t i=0; i<n_spatial_dim; i++) {
             auto spatial_i = at(spatial_dim,i);
-            auto start = at(stride,spatial_i) * at(indices,spatial_i);
-            auto stop  = at(stride,spatial_i) * at(indices,spatial_i) + at(kernel_size,spatial_i);
+            auto start = at(stride_,spatial_i) * at(indices,spatial_i);
+            auto stop  = at(stride_,spatial_i) * at(indices,spatial_i) + at(kernel_size_,spatial_i);
             at(res,spatial_i) = {(idx_t)start,(idx_t)stop,(idx_t)1};
         }
 
