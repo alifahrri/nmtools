@@ -26,8 +26,8 @@ namespace nmtools::array
      * @return constexpr auto 
      */
     template <typename output_t=none_t, typename context_t=none_t,
-        typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode,
+        typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
+    constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{},
         context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto pool = view::max_pool2d(array,kernel_size,stride,ceil_mode);
