@@ -1,19 +1,23 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.202.3/containers/docker-existing-dockerfile
 {
-	"name": "Existing Dockerfile",
-	"runArgs": ["--init"],
 
 	// Sets the run context to one level up instead of the .devcontainer folder.
 	"context": "..",
 
 	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
 
-	// xeus-cling:
-	"dockerFile": "../docker/dev.dockerfile",
+	// DOCKERFILE: xeus-cling:
+	// "name": "xeus-cling",
+	// "dockerFile": "../docker/dev.dockerfile",
 
-	// ubuntu eoan (for gcc 9.2.1)
+	// DOCKERFILE: ubuntu eoan (for gcc 9.2.1)
+	// "name": "GCC 9.2.1",
 	// "dockerFile": "../docker/eoan.dockerfile",
+
+	// DOCKERFILE: testbench
+	"name": "Testbench",
+	"dockerFile": "../docker/testbench.dockerfile",
 
 	"build": { 
 		"args": { "USERNAME": "${localEnv:USER}" }
@@ -23,7 +27,7 @@
 	"settings": {},
 	
 	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": []
+	"extensions": [],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -32,10 +36,10 @@
 	// "postCreateCommand": "apt-get update && apt-get install -y curl",
 
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
-	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined", "--env=DISPLAY", "--env=QT_X11_NO_MITSHM=1" ],
 
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
-	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+	"mounts": [ "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind" ],
 
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"

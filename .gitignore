@@ -14,3 +14,5 @@ cmake/toolchains
 *.tar.bz2
 include/library.json
 include/etl*
+models
+testbench_results
