@@ -24,7 +24,7 @@ jobs:
       - name: install dependencies
         run: |
           bash scripts/install_doctest.sh -d include
-          bash scripts/install_nanobench.sh -d include
+          sudo bash scripts/install_nanobench.sh
       - name: build release
         env:
           CC: ${{ matrix.compiler }}
