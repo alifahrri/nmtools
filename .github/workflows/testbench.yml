@@ -23,8 +23,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: install dependencies
         run: |
-          bash scripts/install_doctest.sh
-          bash scripts/install_nanobench.sh
+          bash scripts/install_doctest.sh -d include
+          bash scripts/install_nanobench.sh -d include
       - name: build release
         env:
           CC: ${{ matrix.compiler }}
