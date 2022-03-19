@@ -34,7 +34,13 @@ TEST_CASE("array" * doctest::test_suite("utl"))
         {
             constexpr auto array = utl::array{1,2,3};
 
+            #ifdef __clang__
+            const auto& a = utl::get<0>(array);
+            const auto& b = utl::get<1>(array);
+            const auto& c = utl::get<2>(array);
+            #else
             const auto& [a,b,c] = array;
+            #endif
             NMTOOLS_STATIC_ASSERT_EQUAL( array.size(), 3 );
             CHECK( a == 1 );
             CHECK( b == 2 );
@@ -45,7 +51,14 @@ TEST_CASE("array" * doctest::test_suite("utl"))
             auto array = utl::array<int,3>{1,2,3};
             auto new_array = utl::array{array};
 
+
+            #ifdef __clang__
+            const auto& a = utl::get<0>(new_array);
+            const auto& b = utl::get<1>(new_array);
+            const auto& c = utl::get<2>(new_array);
+            #else
             const auto& [a,b,c] = new_array;
+            #endif
             NMTOOLS_STATIC_ASSERT_EQUAL( array.size(), 3 );
             CHECK( a == 1 );
             CHECK( b == 2 );
