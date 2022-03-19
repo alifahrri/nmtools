@@ -8,11 +8,7 @@ coverage:
         # basic
         target: auto
         threshold: 1%
-    patch:
-      default:
-        # couldn't fix right config for coverage,
-        # lower target for now
-        target: 50%
+    patch: off
 
 parsers:
   gcov:
