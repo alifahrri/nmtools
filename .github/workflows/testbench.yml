@@ -30,7 +30,7 @@ jobs:
           CC: ${{ matrix.compiler }}
           CXX: ${{ matrix.compiler }}
         run: |
-          bash scripts/build_tesbench.sh --build-dir build/${{ matrix.compiler }}-Release
+          bash scripts/build_testbench.sh --build-dir build/${{ matrix.compiler }}-Release
       - name: run testbench
         run: |
           mkdir -p ${{ matrix.compiler }}-testbench
