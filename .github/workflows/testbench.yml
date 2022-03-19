@@ -30,7 +30,7 @@ jobs:
           bash scripts/install_doctest.sh -d include
           sudo bash scripts/install_nanobench.sh
           sudo apt -y install libboost-dev zip python3-pip
-          pip3 install pyperf
+          sudo pip3 install pyperf
       - name: build release
         env:
           CC: ${{ matrix.c_compiler }}
