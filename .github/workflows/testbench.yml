@@ -16,8 +16,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - compiler: g++-9
-          - compiler: clang++-10
+          - c_compiler: gcc-9
+            cxx_compiler: g++-9
+            compiler: gcc
+          - c_compiler: clang-10
+            cxx_compiler: clang++-10
+            compiler: clang
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -27,8 +31,8 @@ jobs:
           sudo bash scripts/install_nanobench.sh
       - name: build release
         env:
-          CC: ${{ matrix.compiler }}
-          CXX: ${{ matrix.compiler }}
+          CC: ${{ matrix.c_compiler }}
+          CXX: ${{ matrix.cxx_compiler }}
         run: |
           bash scripts/build_testbench.sh --build-dir build/${{ matrix.compiler }}-Release
       - name: run testbench
