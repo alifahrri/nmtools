@@ -1,0 +1,44 @@
+name: gcc
+
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+
+jobs:
+  testbench:
+    strategy:
+      matrix:
+        include:
+          - compiler: gcc
+          - compiler: clang
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: install dependencies
+        run: |
+          bash scripts/install_doctest.sh
+          bash scripts/install_nanobench.sh
+      - name: build release
+        env:
+          CC: ${{ matrix.compiler }}
+          CXX: ${{ matrix.compiler }}
+        run: |
+          bash scripts/build_tesbench.sh --build-dir build/${{ matrix.compiler }}-Release
+      - name: run testbench
+        run: |
+          mkdir -p ${{ matrix.compiler }}-testbench
+          sudo bash scripts/run_testbench.sh --build-dir build/${{ matrix.compiler }}-Release --output-dir ${{ matrix.compiler }}-testbench
+      - name: upload testbench artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.compiler }}-testbench_results
+          path: |
+            ${{ matrix.compiler }}-testbench
+            build/${{ matrix.compiler }}-Release/compile_commands.json
