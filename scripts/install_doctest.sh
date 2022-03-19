@@ -25,7 +25,7 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [ -z "$DEST" -a "$DEST" != " " ]; then
-    DEST="/usr/local/include/doctest"
+    DEST="/usr/local/include/"
 fi
 
 wget -O $DEST/doctest.h $doctest_url
