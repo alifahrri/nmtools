@@ -3,6 +3,8 @@
 
 #include "nmtools/array/view/ufuncs/exp.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
+#include "nmtools/array/view/ufuncs/maximum.hpp"
+#include "nmtools/array/view/ufuncs/subtract.hpp"
 #include "nmtools/array/view/ufuncs/divide.hpp"
 
 namespace nmtools::view
@@ -23,7 +25,9 @@ namespace nmtools::view
         static_assert( meta::is_index_v<dim_t>
             , "unsupported softmax, expect dim to be index"
         );
-        auto input_exp = view::exp(input);
+        // NOTE: this follow https://cs231n.github.io/linear-classify/#softmax for numerical stability
+        auto input_    = view::subtract(input,view::reduce_maximum(input,/*axis=*/dim,/*dtype=*/None,/*initial=*/None,/*keepdims=*/True));
+        auto input_exp = view::exp(input_);
         auto reduced   = view::reduce_add(input_exp,/*axis=*/dim,/*dtype=*/None,/*initial=*/None,/*keepdims=*/True);
         return view::divide(input_exp,reduced);
     } // softmax
