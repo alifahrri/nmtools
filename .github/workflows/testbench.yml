@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - compiler: gcc
-          - compiler: clang
+          - compiler: g++-9
+          - compiler: clang++-10
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
