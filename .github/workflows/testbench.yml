@@ -29,7 +29,8 @@ jobs:
         run: |
           bash scripts/install_doctest.sh -d include
           sudo bash scripts/install_nanobench.sh
-          sudo apt -y install libboost-dev zip
+          sudo apt -y install libboost-dev zip python3-pip
+          pip3 install pyperf
       - name: build release
         env:
           CC: ${{ matrix.c_compiler }}
@@ -39,6 +40,7 @@ jobs:
       - name: run testbench
         run: |
           mkdir -p ${{ matrix.compiler }}-testbench
+          sudo python3 -m pyperf system tune
           sudo bash scripts/run_testbench.sh --build-dir build/${{ matrix.compiler }}-Release --output-dir ${{ matrix.compiler }}-testbench
           cp build/${{ matrix.compiler }}-Release/compile_commands.json ${{ matrix.compiler }}-testbench
           zip -r ${{ matrix.compiler }}-testbench.zip ${{ matrix.compiler }}-testbench
