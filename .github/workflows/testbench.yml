@@ -29,6 +29,7 @@ jobs:
         run: |
           bash scripts/install_doctest.sh -d include
           sudo bash scripts/install_nanobench.sh
+          sudo apt -y install libboost-dev zip
       - name: build release
         env:
           CC: ${{ matrix.c_compiler }}
@@ -39,10 +40,11 @@ jobs:
         run: |
           mkdir -p ${{ matrix.compiler }}-testbench
           sudo bash scripts/run_testbench.sh --build-dir build/${{ matrix.compiler }}-Release --output-dir ${{ matrix.compiler }}-testbench
+          cp build/${{ matrix.compiler }}-Release/compile_commands.json ${{ matrix.compiler }}-testbench
+          zip -r ${{ matrix.compiler }}-testbench.zip ${{ matrix.compiler }}-testbench
       - name: upload testbench artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.compiler }}-testbench_results
           path: |
-            ${{ matrix.compiler }}-testbench
-            build/${{ matrix.compiler }}-Release/compile_commands.json
+            ${{ matrix.compiler }}-testbench.zip
