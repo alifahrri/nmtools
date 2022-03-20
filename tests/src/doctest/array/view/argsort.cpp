@@ -28,15 +28,6 @@ using nm::benchmarks::TrackedBench;
 RUN_argsort_impl(__VA_ARGS__);
 #endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
-// TODO: move to testing utility
-#define NMTOOLS_REQUIRE_EQUAL(lhs, rhs) \
-{ \
-    auto lhs_str = nmtools::utils::to_string(lhs); \
-    auto rhs_str = nmtools::utils::to_string(rhs); \
-    auto msg_str = nmtools_string("\nActual:\n") + lhs_str + nmtools_string("\nExpected:\n") + rhs_str; \
-    REQUIRE_MESSAGE( (nmtools::utils::isequal(lhs, rhs)), msg_str ); \
-}
-
 // TODO: properly deduce ndarray type
 #define ARGSORT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \

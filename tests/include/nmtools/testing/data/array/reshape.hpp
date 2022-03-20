@@ -86,6 +86,28 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         };
     }
 #endif // NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        inline int array[12] = {0,1,2,3,4,5,6,7,8,9,10,11};
+        inline auto shape_ct = nmtools_tuple{"-1"_ct,3_ct,2_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline uint8_t shape_[3] = {2,3,2};
+        inline int expected[2][3][2] = {
+            {
+                {1, 2},
+                {3, 4},
+                {5, 6}
+            },
+            {
+                {7,  8},
+                {9, 10},
+                {11,12}
+            }
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(constexpr_reshape)

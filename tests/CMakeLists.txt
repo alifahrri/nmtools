@@ -95,6 +95,7 @@ set(ARRAY_INDEX_TEST_SOURCES
     src/doctest/array/index/remove_dims.cpp
     src/doctest/array/index/remove_single_dims.cpp
     src/doctest/array/index/repeat.cpp
+    src/doctest/array/index/reshape.cpp
     src/doctest/array/index/reverse.cpp
     src/doctest/array/index/scatter.cpp
     src/doctest/array/index/shape_concatenate.cpp

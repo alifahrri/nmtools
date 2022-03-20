@@ -960,15 +960,6 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
-// TODO: move to testing utility
-#define NMTOOLS_REQUIRE_EQUAL(lhs, rhs) \
-{ \
-    auto lhs_str = nmtools::utils::to_string(lhs); \
-    auto rhs_str = nmtools::utils::to_string(rhs); \
-    auto msg_str = nmtools_string("\nActual:\n") + lhs_str + nmtools_string("\nExpected:\n") + rhs_str; \
-    REQUIRE_MESSAGE( (nmtools::utils::isequal(lhs, rhs)), msg_str ); \
-}
-
 #define MUTABLE_SLICE_SUBCASE(case_name, input, rhs, ...) \
 SUBCASE(#case_name) \
 { \
