@@ -40,11 +40,5 @@ target_compile_options(
 )
 
 if (NMTOOLS_CODE_COVERAGE)
-    include(CodeCoverage)
-    append_coverage_compiler_flags()
-    setup_target_for_coverage_gcovr_html(
-        NAME ${PROJECT_NAME}-coverage
-        EXECUTABLE ${PROJECT_NAME}
-        EXCLUDE "${PROJECT_SOURCE_DIR}/examples/*" "${PROJECT_SOURCE_DIR}/tests/*" "/usr/*"
-    )
+    target_link_libraries(numeric-tests-utl-meta     PRIVATE coverage_config)
 endif (NMTOOLS_CODE_COVERAGE)
