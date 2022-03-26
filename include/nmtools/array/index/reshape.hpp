@@ -11,14 +11,39 @@ namespace nmtools::index
 {
     struct shape_reshape_t {};
     
+    /**
+     * @brief Compute the resulting shape of reshape op.
+     * Folowing numpy, allow -1 shape value.
+     * 
+     * @tparam src_shape_t 
+     * @tparam dst_shape_t 
+     * @param src_shape 
+     * @param dst_shape 
+     * @return constexpr auto 
+     */
     template <typename src_shape_t, typename dst_shape_t>
     constexpr auto shape_reshape(const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
         using result_t = meta::resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_t>;
+        // currently, get_maybe_type return void by default
+        // TODO: update get_maybe_type default return type to distinct error type
+        using m_result_t = meta::get_maybe_type_t<result_t>;
 
         if constexpr (meta::is_fail_v<result_t>) {
             // let the caller decides what to do
             return result_t {};
+        } else if constexpr (meta::is_constant_index_array_v<m_result_t>) {
+            // already computed, but need to validate at runtime.
+            // this maybe path is useful to determine constant dst shape, but runtime shape
+            // simply make sure the numel is same
+            auto src_numel = index::product(src_shape);
+            auto dst_numel = index::product(m_result_t{});
+            using idx_t = meta::promote_index_t<decltype(src_numel),decltype(dst_numel)>;
+            if ((idx_t)src_numel == (idx_t)dst_numel) {
+                return result_t{m_result_t{}};
+            } else {
+                return result_t{meta::Nothing};
+            }
         } else if constexpr (meta::is_constant_index_array_v<result_t>) {
             // already computed
             return result_t {};
@@ -99,26 +124,60 @@ namespace nmtools::meta
     struct resolve_optype<void, index::shape_reshape_t, src_shape_t, dst_shape_t>
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<src_shape_t> && is_constant_index_array_v<dst_shape_t>) {
-                constexpr auto src_shape = to_value_v<src_shape_t>;
+            if constexpr (is_constant_index_array_v<dst_shape_t>) {
                 constexpr auto dst_shape = to_value_v<dst_shape_t>;
-                constexpr auto result = index::shape_reshape(src_shape,dst_shape);
-                // assume maybe type (see above)
-                if constexpr (static_cast<bool>(result)) {
-                    constexpr auto DIM = nmtools::len(*result);
-                    return template_reduce<DIM>([&](auto init, auto index_){
-                        using init_t = type_t<decltype(init)>;
-                        if constexpr (meta::is_same_v<init_t,none_t>) {
-                            using type = nmtools_tuple<ct<at(*result,index_)>>;
-                            return as_value_v<type>;
-                        } else {
-                            using type = append_type_t<init_t,ct<at(*result,index_)>>;
-                            return as_value_v<type>;
-                        }
-                    }, as_value_v<none_t>);
+                constexpr auto all_pos_int = [&](){
+                    auto all_pos_int = true;
+                    for (const auto& shape_ : dst_shape) {
+                        all_pos_int &= (shape_ > 0);
+                    }
+                    return all_pos_int;
+                }();
+                if constexpr (!all_pos_int && is_constant_index_array_v<src_shape_t>) {
+                    constexpr auto src_shape = to_value_v<src_shape_t>;
+                    // NOTE: using this triggers internal compiler error for gcc (9.4.0)
+                    // internal compiler error: in lookup_template_class_1, at cp/pt.c:9897
+                    // https://github.com/alifahrri/nmtools/runs/5617131903?check_suite_focus=true
+                    // TODO: properly enable compile-time shape inference for GCC
+                    #ifdef __clang__
+                    constexpr auto result = index::shape_reshape(src_shape,dst_shape);
+                    // assume maybe type (see above)
+                    if constexpr (static_cast<bool>(result)) {
+                        constexpr auto DIM = nmtools::len(*result);
+                        return template_reduce<DIM>([&](auto init, auto index_){
+                            using init_t = type_t<decltype(init)>;
+                            if constexpr (meta::is_same_v<init_t,none_t>) {
+                                using type = nmtools_tuple<ct<at(*result,index_)>>;
+                                return as_value_v<type>;
+                            } else {
+                                using type = append_type_t<init_t,ct<at(*result,index_)>>;
+                                return as_value_v<type>;
+                            }
+                        }, as_value_v<none_t>);
+                    } else {
+                        using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t>;
+                        return as_value_v<type>;
+                    }
+                    #else
+                    using m_src_shape_t = remove_cvref_t<decltype(src_shape)>;
+                    using m_dst_shape_t = remove_cvref_t<decltype(dst_shape)>;
+                    return as_value_v<resolve_optype_t<index::shape_reshape_t,m_src_shape_t,m_dst_shape_t>>;
+                    #endif
+                } else if constexpr (!all_pos_int) {
+                    using m_dst_shape_t = remove_cvref_t<decltype(dst_shape)>;
+                    return as_value_v<resolve_optype_t<index::shape_reshape_t,src_shape_t,m_dst_shape_t>>;
+                } else if constexpr (is_constant_index_array_v<src_shape_t>) {
+                    constexpr auto src_shape = to_value_v<src_shape_t>;
+                    constexpr auto src_numel = index::product(src_shape);
+                    constexpr auto dst_numel = index::product(dst_shape);
+                    if constexpr (src_numel == dst_numel) {
+                        return as_value_v<dst_shape_t>;
+                    } else {
+                        using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t>;
+                        return as_value_v<type>;
+                    }
                 } else {
-                    using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t>;
-                    return as_value_v<type>;
+                    return as_value_v<nmtools_maybe<dst_shape_t>>;
                 }
             } else if constexpr (is_index_array_v<src_shape_t> && is_constant_index_array_v<dst_shape_t>) {
                 constexpr auto dst_shape = to_value_v<dst_shape_t>;
