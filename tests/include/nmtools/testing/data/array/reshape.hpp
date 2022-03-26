@@ -86,6 +86,69 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         };
     }
 #endif // NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        inline int array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        inline auto newshape = nmtools_array{-1,3,2};
+        inline auto newshape_ct = nmtools_tuple{"-1"_ct,3_ct,2_ct};
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline uint8_t shape_[3] = {2,3,2};
+        inline int expected[2][3][2] = {
+            {
+                {1, 2},
+                {3, 4},
+                {5, 6}
+            },
+            {
+                {7,  8},
+                {9, 10},
+                {11,12}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        inline int array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        inline auto newshape = nmtools_array{2,-1,2};
+        inline auto newshape_ct = nmtools_tuple{2_ct,"-1"_ct,2_ct};
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        inline uint8_t shape_[3] = {2,3,2};
+        inline int expected[2][3][2] = {
+            {
+                {1, 2},
+                {3, 4},
+                {5, 6}
+            },
+            {
+                {7,  8},
+                {9, 10},
+                {11,12}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        inline int array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+        inline auto newshape = nmtools_array{-1,-1,2};
+        inline auto newshape_ct = nmtools_tuple{"-1"_ct,"-1"_ct,2_ct};
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        inline auto expected = meta::Nothing;
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(constexpr_reshape)

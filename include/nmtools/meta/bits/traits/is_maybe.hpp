@@ -17,6 +17,9 @@ namespace nmtools::meta
     struct is_maybe : false_type {};
 
     template <typename T>
+    struct is_maybe<const T> : is_maybe<T> {};
+
+    template <typename T>
     constexpr inline auto is_maybe_v = is_maybe<T>::value;
 } // namespace nmtools::meta
 

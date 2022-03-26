@@ -61,6 +61,7 @@ set( META_INDEX_TEST_SOURCES
     array/index/remove_dims.cpp
     array/index/remove_single_dims.cpp
     array/index/repeat.cpp
+    array/index/reshape.cpp
     array/index/reverse.cpp
     array/index/scatter.cpp
     array/index/slice.cpp

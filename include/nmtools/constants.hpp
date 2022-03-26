@@ -31,6 +31,19 @@ namespace nmtools::detail
         return ret;
     } // ct_impl
 
+    // for gcc extensions
+    template <typename always_void,typename T, T...Ts>
+    struct ct_impl_t;
+
+    template<>
+    struct ct_impl_t<void,char,'-','1'>
+    {
+        constexpr auto operator()() const noexcept
+        {
+            return meta::ct_v<-1>;
+        }
+    }; // ct_impl_t
+
 } // nmtools::detail
 
 namespace nmtools::literals
@@ -64,6 +77,14 @@ namespace nmtools::literals
 
         return type{};
     } // _ct
+
+#if defined(__GNUC__) or defined(__clang__)
+    template <typename T, T...cs>
+    constexpr auto operator ""_ct()
+    {
+        return detail::ct_impl_t<void,T,cs...>{}();
+    } // ""_ct
+#endif // __GNUC__ || __clang__
 } // namespace nmtools::literals
 
 #endif // NMTOOLS_CONSTANTS_HPP

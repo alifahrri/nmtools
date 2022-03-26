@@ -7,6 +7,7 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/flatten.hpp"
 
+#include "nmtools/array/index/reshape.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
@@ -66,7 +67,6 @@ namespace nmtools::view
          */
         constexpr decltype(auto) shape() const noexcept
         {
-            // TODO: support negative shape dimension
             // NOTE: must normalize raw bounded array
             return new_shape;
         } // shape
@@ -102,14 +102,59 @@ namespace nmtools::view
     template <typename array_t, typename shape_t>
     constexpr auto reshape(const array_t& array, const shape_t& new_shape)
     {
-        auto shape = ::nmtools::shape(array);
-        auto old_numel = index::product(shape);
-        auto new_numel = index::product(new_shape);
-        // TODO: better error handling
-        nmtools_assert( utils::isequal(old_numel,new_numel)
-            , "unsupported reshape, mismatched number of elements"
-        );
-        return decorator_t<reshape_t,array_t,shape_t>{{array,new_shape}};
+        auto new_shape_ = [&](){
+            if constexpr (meta::is_fixed_size_ndarray_v<array_t> && meta::is_constant_index_array_v<shape_t>) {
+                constexpr auto shape_ = meta::fixed_ndarray_shape_v<array_t>;
+                constexpr auto m_result = index::shape_reshape(shape_,shape_t{});
+                if constexpr (meta::is_maybe_v<decltype(m_result)>) {
+                    static_assert( static_cast<bool>(m_result), "cannot reshape array");
+                }
+                constexpr auto result = [&](){
+                    if constexpr (meta::is_maybe_v<decltype(m_result)>) {
+                        return *m_result;
+                    } else {
+                        return m_result;
+                    }
+                }();
+                // NOTE: using this triggers internal compiler error for gcc (9.4.0)
+                // internal compiler error: in lookup_template_class_1, at cp/pt.c:9897
+                // https://github.com/alifahrri/nmtools/runs/5617131903?check_suite_focus=true
+                // TODO: enable compile-time shape inference for GCC
+                #ifdef __clang__
+                {
+                    using nmtools::none_t;
+                    constexpr auto DIM = nmtools::len(result);
+                    using index_t = decltype(DIM);
+                    constexpr auto vtype = meta::template_reduce<DIM>([&](auto init, auto index){
+                        using init_t = meta::type_t<decltype(init)>;
+                        if constexpr (meta::is_same_v<init_t,none_t>) {
+                            using type = nmtools_tuple<meta::ct<(index_t)at(result,index)>>;
+                            return meta::as_value_v<type>;
+                        } else {
+                            using type = meta::append_type_t<init_t,meta::ct<(index_t)at(result,index)>>;
+                            return meta::as_value_v<type>;
+                        }
+                    }, meta::as_value_v<none_t>);
+                    return meta::type_t<decltype(vtype)>{};
+                }
+                #else
+                return result;
+                #endif
+            } else {
+                return index::shape_reshape(shape(array),new_shape);
+            }
+        }();
+        using new_shape_t = decltype(new_shape_);
+        if constexpr (meta::is_maybe_v<new_shape_t>) {
+            // TODO: better error handling
+            nmtools_assert( static_cast<bool>(new_shape_)
+                , "unsupported reshape, mismatched number of elements"
+            );
+            using m_shape_t = meta::get_maybe_type_t<new_shape_t>;
+            return decorator_t<reshape_t,array_t,m_shape_t>{{array,*new_shape_}};
+        } else {
+            return decorator_t<reshape_t,array_t,new_shape_t>{{array,new_shape_}};
+        }
     } // reshape
 
     /** @} */ // end group view
@@ -164,5 +209,44 @@ namespace nmtools
     }; // fixed_ndarray_shape
 
 } // namespace nmtools
+
+namespace nmtools::meta
+{
+    template <typename array_t, typename shape_t>
+    struct fixed_dim<
+        view::decorator_t<view::reshape_t, array_t, shape_t>
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (is_fixed_index_array_v<shape_t>) {
+                return len_v<shape_t>;
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = decltype(value);
+    };
+
+    template <typename array_t, typename shape_t>
+    struct hybrid_ndarray_max_size<
+        view::decorator_t< view::reshape_t, array_t, shape_t >
+    >
+    {
+        static constexpr auto value = [](){
+            // NOTE: reshape doesn't change number of elements, runtime error handled at runtime.
+            // only enable if fixed dim because of current eval type inference implementation
+            // TODO: also enable if not fixed dim
+            if constexpr (is_hybrid_ndarray_v<array_t> && is_fixed_index_array_v<shape_t>) {
+                return hybrid_ndarray_max_size_v<array_t>;
+            } else if constexpr (is_fixed_size_ndarray_v<array_t> && is_fixed_index_array_v<shape_t>) {
+                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
+                return index::product(shape);
+            } else {
+                return detail::Fail;
+            }
+        }();
+        using value_type = decltype(value);
+    };
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_RESHAPE_HPP
