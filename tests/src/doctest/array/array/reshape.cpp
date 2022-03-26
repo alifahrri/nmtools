@@ -8,7 +8,6 @@
 
 namespace nm = nmtools;
 namespace na = nm::array;
-namespace view = nm::view;
 namespace meta = nm::meta;
 
 #define RUN_impl(...) \
@@ -86,3 +85,52 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("array::reshape"))
     RESHAPE_SUBCASE(case3, array_d, newshape_ct );
     RESHAPE_SUBCASE(case3, array_h, newshape_ct );
 }
+
+TEST_CASE("reshape(case4)" * doctest::test_suite("array::reshape"))
+{
+    RESHAPE_SUBCASE(case4, array, newshape );
+    RESHAPE_SUBCASE(case4, array_a, newshape_a );
+    RESHAPE_SUBCASE(case4, array_f, newshape_a );
+    RESHAPE_SUBCASE(case4, array_d, newshape_v );
+    RESHAPE_SUBCASE(case4, array_h, newshape_h );
+
+    RESHAPE_SUBCASE(case4, array, newshape_ct );
+    RESHAPE_SUBCASE(case4, array_a, newshape_ct );
+    RESHAPE_SUBCASE(case4, array_f, newshape_ct );
+    RESHAPE_SUBCASE(case4, array_d, newshape_ct );
+    RESHAPE_SUBCASE(case4, array_h, newshape_ct );
+}
+
+TEST_CASE("reshape(case5)" * doctest::test_suite("array::reshape"))
+{
+    RESHAPE_SUBCASE(case5, array, newshape );
+    RESHAPE_SUBCASE(case5, array_a, newshape_a );
+    RESHAPE_SUBCASE(case5, array_f, newshape_a );
+    RESHAPE_SUBCASE(case5, array_d, newshape_v );
+    RESHAPE_SUBCASE(case5, array_h, newshape_h );
+
+    RESHAPE_SUBCASE(case5, array, newshape_ct );
+    RESHAPE_SUBCASE(case5, array_a, newshape_ct );
+    RESHAPE_SUBCASE(case5, array_f, newshape_ct );
+    RESHAPE_SUBCASE(case5, array_d, newshape_ct );
+    RESHAPE_SUBCASE(case5, array_h, newshape_ct );
+}
+
+// NOTE: currently reshape is not monadic
+// TODO: support monadic error handling for reshape
+#if 0
+TEST_CASE("reshape(case6)" * doctest::test_suite("array::reshape"))
+{
+    RESHAPE_SUBCASE(case6, array, newshape );
+    RESHAPE_SUBCASE(case6, array_a, newshape_a );
+    RESHAPE_SUBCASE(case6, array_f, newshape_a );
+    RESHAPE_SUBCASE(case6, array_d, newshape_v );
+    RESHAPE_SUBCASE(case6, array_h, newshape_h );
+
+    RESHAPE_SUBCASE(case6, array, newshape_ct );
+    RESHAPE_SUBCASE(case6, array_a, newshape_ct );
+    RESHAPE_SUBCASE(case6, array_f, newshape_ct );
+    RESHAPE_SUBCASE(case6, array_d, newshape_ct );
+    RESHAPE_SUBCASE(case6, array_h, newshape_ct );
+}
+#endif

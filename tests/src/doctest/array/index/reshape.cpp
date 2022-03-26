@@ -120,8 +120,9 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_reshape)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case9)
     {
-        inline int shape[1]    = {12};
-        inline int newshape[2] = {-1,-1};
+        inline int shape[1]     = {12};
+        inline int newshape[2]  = {-1,-1};
+        inline auto newshape_ct = nmtools_tuple{"-1"_ct,"-1"_ct};
         NMTOOLS_CAST_ARRAYS(shape)
         NMTOOLS_CAST_ARRAYS(newshape)
     }
@@ -132,8 +133,9 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_reshape)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case10)
     {
-        inline int shape[1]    = {12};
-        inline int newshape[2] = {7,-1};
+        inline int shape[1]     = {12};
+        inline int newshape[2]  = {7,-1};
+        inline auto newshape_ct = nmtools_tuple{7_ct,"-1"_ct};
         NMTOOLS_CAST_ARRAYS(shape)
         NMTOOLS_CAST_ARRAYS(newshape)
     }
@@ -144,12 +146,26 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_reshape)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case11)
     {
-        inline int shape[1]    = {12};
-        inline int newshape[4] = {1,9,-1,2};
+        inline int shape[1]     = {12};
+        inline int newshape[4]  = {1,9,-1,2};
+        inline auto newshape_ct = nmtools_tuple{1_ct,9_ct,"-1"_ct,2_ct};
         NMTOOLS_CAST_ARRAYS(shape)
         NMTOOLS_CAST_ARRAYS(newshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        inline auto result = meta::Nothing;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        inline int shape[1]     = {12};
+        inline int newshape[2]  = {12,12};
+        inline auto newshape_ct = nmtools_tuple{12_ct,12_ct};
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
         inline auto result = meta::Nothing;
     }
@@ -314,6 +330,12 @@ TEST_CASE("shape_reshape(case9)" * doctest::test_suite("index::shape_reshape"))
     SHAPE_RESHAPE_SUBCASE( case9, shape_f, newshape_f );
     SHAPE_RESHAPE_SUBCASE( case9, shape_v, newshape_v );
     SHAPE_RESHAPE_SUBCASE( case9, shape_h, newshape_h );
+
+    SHAPE_RESHAPE_SUBCASE( case9, shape, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case9, shape_a, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case9, shape_f, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case9, shape_v, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case9, shape_h, newshape_ct );
 }
 
 TEST_CASE("shape_reshape(case10)" * doctest::test_suite("index::shape_reshape"))
@@ -323,6 +345,12 @@ TEST_CASE("shape_reshape(case10)" * doctest::test_suite("index::shape_reshape"))
     SHAPE_RESHAPE_SUBCASE( case10, shape_f, newshape_f );
     SHAPE_RESHAPE_SUBCASE( case10, shape_v, newshape_v );
     SHAPE_RESHAPE_SUBCASE( case10, shape_h, newshape_h );
+
+    SHAPE_RESHAPE_SUBCASE( case10, shape, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case10, shape_a, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case10, shape_f, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case10, shape_v, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case10, shape_h, newshape_ct );
 }
 
 TEST_CASE("shape_reshape(case11)" * doctest::test_suite("index::shape_reshape"))
@@ -332,4 +360,25 @@ TEST_CASE("shape_reshape(case11)" * doctest::test_suite("index::shape_reshape"))
     SHAPE_RESHAPE_SUBCASE( case11, shape_f, newshape_f );
     SHAPE_RESHAPE_SUBCASE( case11, shape_v, newshape_v );
     SHAPE_RESHAPE_SUBCASE( case11, shape_h, newshape_h );
+
+    SHAPE_RESHAPE_SUBCASE( case11, shape, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case11, shape_a, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case11, shape_f, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case11, shape_v, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case11, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case12)" * doctest::test_suite("index::shape_reshape"))
+{
+    SHAPE_RESHAPE_SUBCASE( case12, shape, newshape );
+    SHAPE_RESHAPE_SUBCASE( case12, shape_a, newshape_a );
+    SHAPE_RESHAPE_SUBCASE( case12, shape_f, newshape_f );
+    SHAPE_RESHAPE_SUBCASE( case12, shape_v, newshape_v );
+    SHAPE_RESHAPE_SUBCASE( case12, shape_h, newshape_h );
+
+    SHAPE_RESHAPE_SUBCASE( case12, shape, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case12, shape_a, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case12, shape_f, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case12, shape_v, newshape_ct );
+    SHAPE_RESHAPE_SUBCASE( case12, shape_h, newshape_ct );
 }

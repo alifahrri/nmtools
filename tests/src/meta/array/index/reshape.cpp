@@ -10,6 +10,8 @@ namespace meta = nmtools::meta;
 
 using namespace nmtools::literals;
 
+#define declval(type) meta::declval<type>()
+
 TEST_CASE("shape_reshape" * doctest::test_suite("index"))
 {
     {
@@ -68,18 +70,37 @@ TEST_CASE("shape_reshape" * doctest::test_suite("index"))
         using expect_t = meta::error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
+    #ifdef __clang__
     {
         using src_shape_t = decltype(nmtools_tuple{12_ct});
         using dst_shape_t = decltype(nmtools_tuple{12_ct,"-1"_ct});
         using result_t = meta::resolve_optype_t<ix::shape_reshape_t,src_shape_t,dst_shape_t>;
-        using expect_t = decltype(nmtools_tuple{12_ct,1_ct});
+        using expect_t = nmtools_tuple<meta::ct<12u>,meta::ct<1u>>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
+    #else
+    {
+        using src_shape_t = decltype(nmtools_tuple{12_ct});
+        using dst_shape_t = decltype(nmtools_tuple{12_ct,"-1"_ct});
+        using result_t = meta::resolve_optype_t<ix::shape_reshape_t,src_shape_t,dst_shape_t>;
+        using expect_t = nmtools_array<unsigned int,2>;
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+    }
+    #endif
     {
         using src_shape_t = int[2];
         using dst_shape_t = decltype(nmtools_tuple{12_ct,1_ct});
         using result_t = meta::resolve_optype_t<ix::shape_reshape_t,src_shape_t,dst_shape_t>;
-        using expect_t = decltype(nmtools_tuple{12_ct,1_ct});
+        using expect_t = nmtools_maybe<decltype(nmtools_tuple{12_ct,1_ct})>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
+    #if 1
+    {
+        using src_shape_t = int[2];
+        using dst_shape_t = nmtools_array<size_t,1>;
+        using result_t = decltype(ix::shape_reshape(declval(src_shape_t),declval(dst_shape_t)));
+        using expect_t = nmtools_maybe<dst_shape_t>;
+        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+    }
+    #endif
 }

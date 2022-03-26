@@ -5,6 +5,14 @@
 #include "nmtools/testing/array_cast.hpp"
 #include "nmtools/array/array/reshape.hpp"
 
+#ifndef NMTOOLS_CAST_ARRAYS_FAILCHECK
+#define NMTOOLS_CAST_ARRAYS_FAILCHECK(name) \
+static_assert( !nmtools::meta::is_fail_v<decltype(name##_a)> ); \
+static_assert( !nmtools::meta::is_fail_v<decltype(name##_f)> ); \
+static_assert( !nmtools::meta::is_fail_v<decltype(name##_h)> ); \
+static_assert( !nmtools::meta::is_fail_v<decltype(name##_d)> );
+#endif
+
 NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
 {
     using namespace nmtools::literals;
@@ -20,6 +28,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = training_image_0;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_0_conv_relu_0)
     {
@@ -32,6 +41,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_0_conv_relu_0::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_0_pool2d_0)
     {
@@ -44,6 +54,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_0_pool2d_0::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_0_conv_relu_1)
     {
@@ -56,6 +67,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_0_conv_relu_1::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_0_pool2d_1)
     {
@@ -68,6 +80,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = training_image_1;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_1_conv_relu_0)
     {
@@ -80,6 +93,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_1_conv_relu_0::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_1_pool2d_0)
     {
@@ -92,6 +106,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_1_pool2d_0::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_1_conv_relu_1)
     {
@@ -104,6 +119,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_1_conv_relu_1::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_1_pool2d_1)
     {
@@ -116,6 +132,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = training_image_2;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_2_conv_relu_0)
     {
@@ -128,6 +145,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_2_conv_relu_0::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_2_pool2d_0)
     {
@@ -140,6 +158,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_2_pool2d_0::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_2_conv_relu_1)
     {
@@ -152,6 +171,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_2_conv_relu_1::expect::result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_2_pool2d_1)
     {
@@ -167,6 +187,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = training_image_0;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
         static_assert( !meta::is_dynamic_ndarray_v<decltype(input)> );
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_0_conv_relu_maxpool_0)
@@ -184,6 +205,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
         using image_0_conv_relu_maxpool_0::expect::result;
         inline auto input = result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_0_conv_relu_maxpool_1)
     {
@@ -197,6 +219,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
         using image_0_conv_relu_maxpool_1::expect::result;
         inline auto input = result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_0_matmul_add)
     {
@@ -209,6 +232,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_0_matmul_add::expect::Plus214_Output_0;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_0_softmax)
     {
@@ -220,6 +244,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = training_image_1;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_1_conv_relu_maxpool_0)
     {
@@ -236,6 +261,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
         using image_1_conv_relu_maxpool_0::expect::result;
         inline auto input = result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_1_conv_relu_maxpool_1)
     {
@@ -249,6 +275,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
         using image_1_conv_relu_maxpool_1::expect::result;
         inline auto input = result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_1_matmul_add)
     {
@@ -261,6 +288,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_1_matmul_add::expect::Plus214_Output_0;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_1_softmax)
     {
@@ -272,6 +300,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = training_image_2;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_2_conv_relu_maxpool_0)
     {
@@ -288,6 +317,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
         using image_2_conv_relu_maxpool_0::expect::result;
         inline auto input = result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_2_conv_relu_maxpool_1)
     {
@@ -301,6 +331,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
         using image_2_conv_relu_maxpool_1::expect::result;
         inline auto input = result;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_2_matmul_add)
     {
@@ -313,6 +344,7 @@ NMTOOLS_TESTING_DECLARE_CASE(testbench, mnist)
     {
         inline auto input = image_2_matmul_add::expect::Plus214_Output_0;
         NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS_FAILCHECK(input)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(image_2_softmax)
     {
