@@ -18,6 +18,7 @@ jobs:
     strategy:
       matrix:
         include:
+          # TODO: find out minimum wasm version that works
           # The following version (emcc 2.04 with clang 12) fails,
           # internal compiler error:
           # clang++: /b/s/w/ir/cache/builder/emscripten-releases/llvm-project/clang/lib/AST/ExprConstant.cpp:5963:
@@ -46,4 +47,4 @@ jobs:
           ./dockcross-${{ matrix.name }} bash -c "emcc -v"
           ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 VERBOSE=1'
       - name: run tests
-        run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.wasm.js
+        run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
