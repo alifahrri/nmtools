@@ -38,7 +38,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(flatten,case_name); \
     auto array_ref = RUN_flatten(case_name, args::array); \
-    NMTOOLS_ASSERT_EQUAL( array_ref.shape(), expect::shape ); \
+    NMTOOLS_REQUIRE_EQUAL( array_ref.shape(), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
 
@@ -80,6 +80,11 @@ TEST_CASE("flatten(case4)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case4, array_f );
     FLATTEN_SUBCASE( case4, array_d );
     FLATTEN_SUBCASE( case4, array_h );
+}
+
+TEST_CASE("flatten(case5)" * doctest::test_suite("view::flatten"))
+{
+    FLATTEN_SUBCASE( case5, array );
 }
 
 template <typename array_t>

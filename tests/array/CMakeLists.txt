@@ -47,6 +47,7 @@ option(NMTOOLS_TEST_ARRAY_EVAL      "test array evaluation"         OFF)
 option(NMTOOLS_TEST_ARRAY_VIEW_NN   "test array nn view modules"    OFF)
 option(NMTOOLS_TEST_ARRAY_NN_EVAL   "test array nn eval modules"    OFF)
 option(NMTOOLS_TEST_COMPOSITION     "test array view composition"   OFF)
+option(NMTOOLS_TEST_FUNCTIONAL      "test functional module"        OFF)
 option(NMTOOLS_TEST_MISC            "test other modules"            OFF)
 
 if (NMTOOLS_TEST_ALL)
@@ -60,6 +61,7 @@ if (NMTOOLS_TEST_ALL)
     SET(NMTOOLS_TEST_ARRAY_VIEW_NN   ON CACHE BOOL "test array nn view modules"    FORCE)
     SET(NMTOOLS_TEST_ARRAY_NN_EVAL   ON CACHE BOOL "test array nn eval modules"    FORCE)
     SET(NMTOOLS_TEST_COMPOSITION     ON CACHE BOOL "test array view composition"   FORCE)
+    SET(NMTOOLS_TEST_FUNCTIONAL      ON CACHE BOOL "test functional module"        FORCE)
     SET(NMTOOLS_TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
 endif (NMTOOLS_TEST_ALL)
 
@@ -430,6 +432,23 @@ if (NOT NMTOOLS_TEST_MISC)
     set (MISC_TEST_SOURCES "")
 endif()
 
+set(FUNCTIONAL_TEST_SOURCES
+    functional/conv.cpp
+    functional/composition/add_add.cpp
+    functional/composition/add_flatten.cpp
+    functional/composition/flatten_add.cpp
+    functional/flatten.cpp
+    functional/reshape.cpp
+    functional/matmul.cpp
+    functional/pooling.cpp
+    functional/softmax.cpp
+    functional/activations/relu.cpp
+    functional/ufuncs/add.cpp
+)
+if (NOT NMTOOLS_TEST_FUNCTIONAL)
+    set (NMTOOLS_TEST_FUNCTIONAL "")
+endif()
+
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     ## array detail
     ${ARRAY_INDEX_TEST_SOURCES}
@@ -451,6 +470,8 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${EVAL_NN_TEST_SOURCES}
     ## view composition
     ${COMPOSITION_TEST_SOURCES}
+    ## functional
+    ${FUNCTIONAL_TEST_SOURCES}
     ## misc
     ${MISC_TEST_SOURCES}
 )
