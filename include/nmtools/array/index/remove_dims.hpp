@@ -32,6 +32,7 @@ namespace nmtools::index
     {
         // note: axis as reference to prevent raw array to ptr
         using return_t = meta::resolve_optype_t<remove_dims_t,shape_t,axis_t,keepdims_t>;
+        // TODO: wrap result in maybe type if necessary
         auto res = return_t {};
 
         const auto shape = [&](){
