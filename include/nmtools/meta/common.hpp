@@ -131,6 +131,12 @@ namespace nmtools::meta
             }();
             using type = type_t<decltype(vtype)>;
         };
+
+        template <>
+        struct make_index_sequence<0,void>
+        {
+            using type = index_sequence<>;
+        };
     }
 
     template <size_t N>
