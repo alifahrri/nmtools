@@ -1,4 +1,4 @@
-some barking compiler madness I encountered from this project:
+notes on compiler differences 😭😭😭, gcc and clang
 
 template-template parameter
 https://stackoverflow.com/questions/49171036/why-clang-fails-to-take-default-template-arguments-of-template-template-paramete
@@ -44,14 +44,14 @@ clang and gcc disagree on if constexpr inside lambda
 https://godbolt.org/z/8qc13s
 https://stackoverflow.com/questions/59647445/if-constexpr-with-static-assert-in-lambda-which-compiler-is-correct
 
-clang and gcc disagree on partial specialization & sfinae, makes ambious instantiaton on gcc but no issue on clang
+clang and gcc disagree on partial specialization & sfinae, makes ambiguous instantiation on gcc but no issue on clang
 https://godbolt.org/z/sW3as8
 
 libc++ vs libstdc++
 vector of bool omg
 https://godbolt.org/z/T99cWj
 
-gcc 8 lambda capture variable doesnt keep constexpr-ness: error: '__closure' is not a constant expression
+gcc 8 lambda capture variable doesn't keep constexpr-ness: error: '__closure' is not a constant expression
 supported on clang, fixed in gcc 9
 https://godbolt.org/z/Tdn6Yvf3f
 
@@ -61,3 +61,13 @@ https://godbolt.org/z/vjjMe588z
 
 clang warns unused variable on "if constexpr" inside lambda, while gcc doesn't
 https://godbolt.org/z/fWd7YsfTj
+
+clang complains about "error: call to implicitly-deleted default constructor" while gcc happily accepts
+https://godbolt.org/z/f3hjnP9Tb
+
+similar to above, but now it is gcc that complains "error: uninitialized const member" while clang accepts happily
+https://godbolt.org/z/6Gc7cYjh4
+solution: https://godbolt.org/z/7Eccbqc9Y
+
+different warning on unused variables
+https://godbolt.org/z/WPfvEWPEv

@@ -16,4 +16,3 @@ include/library.json
 include/etl*
 models
 testbench_results
-**/functional
