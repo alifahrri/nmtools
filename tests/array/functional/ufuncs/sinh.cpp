@@ -2,6 +2,10 @@
 #include "nmtools/testing/data/array/sinh.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+// lower testing precision for sinh
+#undef  NMTOOLS_TESTING_OUTPUT_PRECISION
+#define NMTOOLS_TESTING_OUTPUT_PRECISION 7e-5
+
 namespace nm = nmtools;
 namespace fn = nm::functional;
 
