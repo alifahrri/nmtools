@@ -28,6 +28,7 @@ inline auto name##_f = cast(name, kind::fixed); \
 inline auto name##_h = cast(name, kind::hybrid);
 #endif // PLATFORMIO
 
+// TODO: rename namespace to (array, multiply)
 NMTOOLS_TESTING_DECLARE_CASE(view, multiply)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)

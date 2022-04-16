@@ -433,17 +433,95 @@ if (NOT NMTOOLS_TEST_MISC)
 endif()
 
 set(FUNCTIONAL_TEST_SOURCES
-    functional/conv.cpp
     functional/composition/add_add.cpp
     functional/composition/add_flatten.cpp
     functional/composition/flatten_add.cpp
+    functional/activations/celu.cpp
+    functional/activations/elu.cpp
+    functional/activations/hardshrink.cpp
+    functional/activations/hardswish.cpp
+    functional/activations/hardtanh.cpp
+    functional/activations/leaky_relu.cpp
+    functional/activations/log_sigmoid.cpp
+    functional/activations/mish.cpp
+    functional/activations/prelu.cpp
+    functional/activations/relu.cpp
+    functional/activations/relu6.cpp
+    functional/activations/selu.cpp
+    functional/activations/sigmoid.cpp
+    functional/activations/silu.cpp
+    functional/activations/softplus.cpp
+    functional/activations/softshrink.cpp
+    functional/activations/softsign.cpp
+    functional/activations/tanhshrink.cpp
+    functional/ufuncs/add.cpp
+    functional/ufuncs/arccos.cpp
+    functional/ufuncs/arccosh.cpp
+    functional/ufuncs/arcsin.cpp
+    functional/ufuncs/arcsinh.cpp
+    functional/ufuncs/arctan.cpp
+    functional/ufuncs/arctanh.cpp
+    functional/ufuncs/arctan2.cpp
+    functional/ufuncs/cbrt.cpp
+    functional/ufuncs/ceil.cpp
+    functional/ufuncs/clip.cpp
+    functional/ufuncs/cos.cpp
+    functional/ufuncs/cosh.cpp
+    functional/ufuncs/exp.cpp
+    functional/ufuncs/exp2.cpp
+    functional/ufuncs/expm1.cpp
+    functional/ufuncs/fabs.cpp
+    functional/ufuncs/floor.cpp
+    functional/ufuncs/invert.cpp
+    functional/ufuncs/isfinite.cpp
+    functional/ufuncs/isinf.cpp
+    functional/ufuncs/isnan.cpp
+    functional/ufuncs/log.cpp
+    functional/ufuncs/log1p.cpp
+    functional/ufuncs/log2.cpp
+    functional/ufuncs/log10.cpp
+    functional/ufuncs/multiply.cpp
+    functional/ufuncs/negative.cpp
+    functional/ufuncs/positive.cpp
+    functional/ufuncs/reciprocal.cpp
+    functional/ufuncs/rint.cpp
+    functional/ufuncs/signbit.cpp
+    functional/ufuncs/sin.cpp
+    functional/ufuncs/sinh.cpp
+    functional/ufuncs/sqrt.cpp
+    functional/ufuncs/tan.cpp
+    functional/ufuncs/tanh.cpp
+    functional/atleast_1d.cpp
+    functional/atleast_2d.cpp
+    functional/atleast_3d.cpp
+    functional/broadcast_to.cpp
+    functional/conv.cpp
+    functional/compress.cpp
+    functional/concatenate.cpp
+    functional/cumprod.cpp
+    functional/cumsum.cpp
+    functional/expand_dims.cpp
     functional/flatten.cpp
+    functional/flip.cpp
     functional/reshape.cpp
     functional/matmul.cpp
+    functional/mean.cpp
+    functional/moveaxis.cpp
+    functional/pad.cpp
+    functional/prod.cpp
     functional/pooling.cpp
+    functional/repeat.cpp
+    functional/slice.cpp
     functional/softmax.cpp
-    functional/activations/relu.cpp
-    functional/ufuncs/add.cpp
+    functional/softmin.cpp
+    functional/squeeze.cpp
+    functional/stddev.cpp
+    functional/sum.cpp
+    functional/take.cpp
+    functional/tile.cpp
+    functional/transpose.cpp
+    functional/var.cpp
+    functional/where.cpp
 )
 if (NOT NMTOOLS_TEST_FUNCTIONAL)
     set (NMTOOLS_TEST_FUNCTIONAL "")
