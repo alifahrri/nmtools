@@ -37,6 +37,7 @@ namespace nmtools::view::detail::fn
     constexpr auto broadcast_shape(meta::as_value<arrays_t>...arrays)
     {
         // map type to value, and actually call broadcast_shape implementation
+        // TODO: update broadcast_shape to use maybe type
         constexpr auto result  = index::broadcast_shape(fixed_shape_or_none(arrays)...);
         constexpr auto success = nmtools::get<0>(result);
         constexpr auto bshape  = nmtools::get<1>(result);
@@ -47,16 +48,54 @@ namespace nmtools::view::detail::fn
         } else if constexpr (success && !is_none_v<bshape_t>) {
             constexpr auto vtype = meta::template_reduce<len(bshape)>([&](auto init, auto index){
                 using init_t = meta::type_t<decltype(init)>;
-                constexpr auto i = decltype(index)::value;
-                constexpr auto shape_i = at(bshape,i);
-                using shape_t = meta::ct<shape_i>;
-                if constexpr (i==0) {
-                    using type = meta::make_tuple_type_t<shape_t>;
+                // NOTE: s_i maybe integral_constant
+                // NOTE: this triggers gcc internal-compiler error
+                // https://github.com/alifahrri/nmtools/tree/gcc-ice
+                // internal compiler error: in lookup_template_class_1, at cp/pt.c:9625
+                #if 0
+                constexpr auto s_i = at(bshape,index);
+                constexpr auto shape_vtype = [&](){
+                    if constexpr (meta::is_constant_index_v<decltype(s_i)>) {
+                        return meta::as_value_v<decltype(s_i)>;
+                    } else {
+                        using shape_t = meta::ct<s_i>;
+                        return meta::as_value_v<shape_t>;    
+                    }
+                }();
+                using shape_t = meta::type_t<decltype(shape_vtype)>;
+                if constexpr (meta::is_void_v<init_t>) {
+                    using type = nmtools_tuple<shape_t>;
                     return meta::as_value_v<type>;
                 } else {
                     using type = meta::append_type_t<init_t,shape_t>;
                     return meta::as_value_v<type>;
                 }
+                #else
+                // NOTE: quick workaround for gcc error above,
+                // simply duplicate if-else constexpr block
+                constexpr auto s_i = at(bshape,index);
+                using s_i_t = meta::remove_cvref_t<decltype(s_i)>;
+                if constexpr (meta::is_constant_index_v<s_i_t>) {
+                    using value_t = typename s_i_t::value_type;
+                    using shape_t = meta::ct<static_cast<value_t>(s_i)>;
+                    if constexpr (meta::is_void_v<init_t>) {
+                        using type = nmtools_tuple<shape_t>;
+                        return meta::as_value_v<type>;
+                    } else {
+                        using type = meta::append_type_t<init_t,shape_t>;
+                        return meta::as_value_v<type>;
+                    }
+                } else {
+                    using shape_t = meta::ct<s_i>;
+                    if constexpr (meta::is_void_v<init_t>) {
+                        using type = nmtools_tuple<shape_t>;
+                        return meta::as_value_v<type>;
+                    } else {
+                        using type = meta::append_type_t<init_t,shape_t>;
+                        return meta::as_value_v<type>;
+                    }
+                }
+                #endif
             }, meta::as_value_v<void>);
             using type = meta::type_t<decltype(vtype)>;
             return type{};

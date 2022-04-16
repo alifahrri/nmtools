@@ -80,6 +80,16 @@ NMTOOLS_TESTING_DECLARE_CASE(flatten)
         inline auto shape = cast<int8_t>(shape_);
         inline int8_t expected[12] = {1,6,2,7,3,8,3,9,4,10,5,11};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        inline int8_t array = 3;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        inline int8_t shape[1]    = {1};
+        inline int8_t expected[1] = {3};
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(constexpr_flatten)

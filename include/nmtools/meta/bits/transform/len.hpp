@@ -45,7 +45,10 @@ namespace nmtools::meta
     constexpr inline auto len_v = len<T>::value;
 
     template <typename T>
-    struct len<const T&> : len<T> {};
+    struct len<const T> : len<T> {};
+
+    template <typename T>
+    struct len<T&> : len<T> {};
 
     template <typename T, size_t N>
     struct len<T[N]>

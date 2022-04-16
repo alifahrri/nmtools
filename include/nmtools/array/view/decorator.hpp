@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_DECORATOR_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/utility.hpp"
 #include "nmtools/array/meta.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
@@ -11,36 +12,7 @@
 
 namespace nmtools::view::detail
 {
-    template <template<typename...>typename tuple_t, typename...args_t, typename value_t, template<auto...>typename sequence, auto...Is>
-    constexpr auto tuple_append(const tuple_t<args_t...>& tuple, const value_t& val, sequence<Is...>)
-    {
-        using result_t = tuple_t<args_t...,value_t>;
-        return result_t{nmtools::get<Is>(tuple)...,val};
-    }
-
-    /**
-     * @brief Helper function to join two tuple,
-     * Used by matmul and ufuncs.
-     * 
-     * @tparam left_t 
-     * @tparam l_args_t 
-     * @tparam right_t 
-     * @tparam r_args_t 
-     * @param left 
-     * @param right 
-     * @return constexpr auto 
-     */
-    template <template<typename...>typename left_t, typename...l_args_t
-        , template<typename...>typename right_t, typename...r_args_t>
-    constexpr auto tuple_cat(const left_t<l_args_t...>& left, const right_t<r_args_t...>& right)
-    {
-        constexpr auto N = sizeof...(r_args_t);
-        return meta::template_reduce<N>([&](auto init, auto index){
-            constexpr auto i = decltype(index)::value;
-            constexpr auto M = meta::len_v<decltype(init)>;
-            return tuple_append(init,nmtools::get<i>(right),meta::make_index_sequence_v<M>);
-        }, left);
-    } // tuple_cat
+    using utility::tuple_append, utility::tuple_cat;
 
     /**
      * @brief Helper shape function that is pointer-aware.
@@ -702,6 +674,7 @@ namespace nmtools::view
             } else {
                 return meta::as_value_v<const array_t*>;
             }
+            // TODO: use fail type for unsupported type
         }();
         using type = meta::type_t<decltype(vtype)>;
     }; // resolve_array_type
@@ -723,6 +696,7 @@ namespace nmtools::view
             } else {
                 return meta::as_value_v<array_t*>;
             }
+            // TODO: use fail type for unsupported type
         }();
         using type = meta::type_t<decltype(vtype)>;
     }; // resolve_array_type
@@ -738,6 +712,9 @@ namespace nmtools::view
 
     template <typename array_t>
     struct resolve_array_type<const array_t&> : resolve_array_type<array_t> {};
+
+    template <typename array_t>
+    struct resolve_array_type<const array_t*> : resolve_array_type<array_t> {};
 
     template <typename array_t>
     using resolve_array_type_t = meta::type_t<resolve_array_type<array_t>>;
@@ -758,7 +735,7 @@ namespace nmtools::view
     template <typename array_type, typename array_t>
     constexpr array_type initialize(const array_t& array)
     {
-        if constexpr (meta::is_pointer_v<array_type>) {
+        if constexpr (meta::is_pointer_v<array_type> && !meta::is_pointer_v<array_t>) {
             return &array;
         } else {
             return array;
@@ -803,16 +780,19 @@ namespace nmtools::view
                 using elem_t = meta::get_element_type_t<attribute_t>;
                 using type = meta::make_array_type_t<elem_t,N>;
                 return meta::as_value_v<const type>;
-            } else if constexpr (
-                         is_none_v<attribute_t>
+            } else /* if constexpr (
+                   is_none_v<attribute_t>
+                || is_dtype_v<attribute_t>
+                || meta::is_slice_index_v<attribute_t>
+                || meta::is_slice_index_array_v<attribute_t>
                 || meta::is_num_v<attribute_t>
                 || meta::is_index_array_v<attribute_t>
                 || meta::is_integral_constant_v<attribute_t>
-                || meta::is_ndarray_v<attribute_t>)
+                || meta::is_ndarray_v<attribute_t>) */
             {
+                // NOTE: simply return as value for presumably copyable type
+                // as quick workaround to allow arbitrary type for passing via functor's operator[]
                 return meta::as_value_v<const attribute_t>;
-            } else {
-                return meta::as_value_v<error::RESOLVE_ATTRIBUTE_TYPE_UNSUPPORTED<attribute_t>>;
             }
         }();
         using type = meta::type_t<decltype(vtype)>;

@@ -27,6 +27,7 @@ add_subdirectory(array)
 option(NMTOOLS_ADDRESS_SANITIZER "build with -fsanitize=address" OFF)
 message(STATUS "NMTOOLS_ADDRESS_SANITIZER ${ADDRESS_SANITIZER}")
 
+# TODO: remove, use toolchain instead
 # from https://gist.github.com/jlblancoc/44be9d4d466f0a973b1f3808a8e56782
 # TODO: findout if can be used for private target instead
 # TODO: find out if can be used with other compiler

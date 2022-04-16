@@ -11,30 +11,30 @@ namespace nmtools::view
     template <typename lhs_array_t, typename rhs_array_t, typename axis_t>
     struct concatenate_t
     {
-        using lhs_type = const lhs_array_t&;
-        using rhs_type = const rhs_array_t&;
+        using lhs_type = resolve_array_type_t<lhs_array_t>;
+        using rhs_type = resolve_array_type_t<rhs_array_t>;
         using lhs_value_type = meta::get_element_type_t<lhs_array_t>;
         using rhs_value_type = meta::get_element_type_t<rhs_array_t>;
         using value_type = meta::common_type_t<lhs_value_type,rhs_value_type>;
-        using array_type = meta::make_tuple_type_t<lhs_type,rhs_type>;
-        using axis_type  = axis_t;
+        using array_type = nmtools_tuple<lhs_type,rhs_type>;
+        using axis_type  = resolve_attribute_type_t<axis_t>;
 
         // lhs_type  lhs;
         // rhs_type  rhs;
         array_type array;
         axis_type axis;
 
-        // constexpr concatenate_t(lhs_type lhs, rhs_type rhs, axis_type axis)
-        //     : lhs(lhs), rhs(rhs), axis(axis) {}
-
-        constexpr concatenate_t(array_type array, axis_type axis)
-            : array(array), axis(axis) {}
+        constexpr concatenate_t(const lhs_array_t& lhs,  const rhs_array_t& rhs, const axis_t& axis)
+            : array({initialize<lhs_type>(lhs),initialize<rhs_type>(rhs)})
+            , axis(init_attribute<axis_type>(axis))
+        {}
         
         constexpr auto shape() const
         {
+            // TODO: do not recompute since shape is constant anyway
             const auto& [lhs, rhs] = array;
-            auto ashape = ::nmtools::shape(lhs);
-            auto bshape = ::nmtools::shape(rhs);
+            auto ashape = detail::shape(lhs);
+            auto bshape = detail::shape(rhs);
             // @todo deal with dynamically changing array
             const auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
             return shape;
@@ -42,22 +42,18 @@ namespace nmtools::view
 
         constexpr auto dim() const
         {
-            const auto& [lhs, rhs] = array;
-            auto ashape = ::nmtools::shape(lhs);
-            auto bshape = ::nmtools::shape(rhs);
-            // @todo deal with dynamically changing array
-            auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
-            return len(shape);
+            return len(shape());
         } // dim
 
+        // TODO: remove, add mutable_concatenate instead
         template <typename...size_types>
         constexpr auto operator()(size_types...indices)
         {
             auto indices_ = pack_indices(indices...);
             const auto& [lhs, rhs] = array;
             // @todo do not always request shape! e.g. for fixed size array, or provide options to turn this off
-            auto ashape = ::nmtools::shape(lhs);
-            auto bshape = ::nmtools::shape(rhs);
+            auto ashape = detail::shape(lhs);
+            auto bshape = detail::shape(rhs);
             const auto [aflag, bflag, a_idx, b_idx] = index::concatenate(ashape,bshape,indices_,axis);
             // @todo better error handling
             assert ( aflag || bflag
@@ -66,9 +62,9 @@ namespace nmtools::view
             // @todo maybe provide options/customization to select type casting
             using common_t = value_type;
             if (aflag)
-                return static_cast<common_t>(apply_at(lhs,a_idx));
+                return static_cast<common_t>(detail::apply_at(lhs,a_idx));
             else
-                return static_cast<common_t>(apply_at(rhs,b_idx));
+                return static_cast<common_t>(detail::apply_at(rhs,b_idx));
         } // operator()
 
         template <typename...size_types>
@@ -77,8 +73,8 @@ namespace nmtools::view
             auto indices_ = pack_indices(indices...);
             const auto& [lhs, rhs] = array;
             // @todo do not always request shape! e.g. for fixed size array, or provide options to turn this off
-            const auto ashape = ::nmtools::shape(lhs);
-            const auto bshape = ::nmtools::shape(rhs);
+            const auto ashape = detail::shape(lhs);
+            const auto bshape = detail::shape(rhs);
             const auto [aflag, bflag, a_idx, b_idx] = index::concatenate(ashape,bshape,indices_,axis);
             // @todo better error handling
             assert ( aflag || bflag
@@ -87,9 +83,9 @@ namespace nmtools::view
             // @todo maybe provide options/customization to select type casting
             using common_t = value_type;
             if (aflag)
-                return static_cast<common_t>(apply_at(lhs,a_idx));
+                return static_cast<common_t>(detail::apply_at(lhs,a_idx));
             else
-                return static_cast<common_t>(apply_at(rhs,b_idx));
+                return static_cast<common_t>(detail::apply_at(rhs,b_idx));
         } // operator()
     }; // concatenate_t
 
@@ -114,9 +110,7 @@ namespace nmtools::view
         assert (success
             // , "unsupported concatenate, mismatched shape"
         );
-        using array_t = meta::make_tuple_type_t<const lhs_array_t&,const rhs_array_t&>;
-        auto array = array_t{lhs,rhs};
-        return decorator_t<concatenate_t,lhs_array_t,rhs_array_t,axis_t>{{array,axis}};
+        return decorator_t<concatenate_t,lhs_array_t,rhs_array_t,axis_t>{{lhs,rhs,axis}};
     } // concatenate
 } // namespace nmtools::view
 

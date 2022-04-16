@@ -16,7 +16,7 @@ parsers:
       conditional: yes
       loop: yes
       method: no
-      macro: yes
+      macro: no
 
 ignore:
   - "/usr/include/**/*"        # ignore system lib

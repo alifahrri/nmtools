@@ -11,6 +11,26 @@
 
 #include "nmtools/array/meta.hpp"
 
+namespace nmtools::index
+{
+    // TODO: consider to move somewhere else
+    template <typename array_t>
+    constexpr auto shape_flatten(const array_t& array)
+    {
+        // TODO: return fixed index whenever possible
+        // TODO: use make_unsigned_t instead of size_t
+        if constexpr (meta::is_num_v<array_t>) {
+            // NOTE: use array since other module not handling tuple well
+            return nmtools_array{(size_t)1};
+        } else {
+            auto shape_ = view::detail::shape(array);
+            auto N = index::product(shape_);
+            // flattened array is strictly 1D
+            return nmtools_array{(size_t)N};   
+        }
+    } // shape_flatten
+} // namespace nmtools::index
+
 namespace nmtools::view
 {
     /**
@@ -19,18 +39,22 @@ namespace nmtools::view
      * @{
      */
     
-    template <typename array_t>
+    template <typename array_t, typename=void>
     struct flatten_t
     {
-        using value_type = meta::get_element_type_t<array_t>;
+        using value_type      = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = resolve_array_type_t<array_t>;
+        using array_type      = resolve_array_type_t<array_t>;
+        using dst_shape_type  = decltype(index::shape_flatten(meta::declval<array_t>()));
 
-        array_type array;
+        array_type     array;
+        dst_shape_type dst_shape;
 
         constexpr flatten_t(const array_t& array)
-            : array(initialize<array_type>(array)) {}
+            : array(initialize<array_type>(array))
+            , dst_shape(index::shape_flatten(array))
+        {}
 
         constexpr auto dim() const noexcept
         {
@@ -40,10 +64,7 @@ namespace nmtools::view
 
         constexpr auto shape() const noexcept
         {
-            auto shape_ = detail::shape(array);
-            auto N = index::product(shape_);
-            // flattened array is strictly 1D
-            return meta::make_tuple_type_t<size_t>{N};
+            return dst_shape;
         } // shape
 
         template <typename size_type>
@@ -57,12 +78,78 @@ namespace nmtools::view
         } // index
     }; // flatten_t
 
+    /**
+     * @brief Specialization of flatten view for num input to follows numpy.
+     * needs to support operator() which just return the value, while the default use index().
+     * 
+     * @tparam array_t 
+     */
+    template <typename array_t>
+    struct flatten_t<array_t,meta::enable_if_t<meta::is_num_v<array_t>>>
+    {
+        using value_type      = array_t;
+        using const_reference = const value_type&;
+        using array_type      = const array_t;
+        using dst_shape_type = decltype(index::shape_flatten(meta::declval<array_type>()));
+
+        array_type     array;
+        dst_shape_type dst_shape;
+
+        constexpr flatten_t(const array_t& array)
+            : array(initialize<array_type>(array))
+            , dst_shape(index::shape_flatten(array))
+        {}
+
+        constexpr auto dim() const noexcept
+        {
+            // flattened array is strictly 1D
+            return 1;
+        } // dim
+
+        constexpr auto shape() const noexcept
+        {
+            return dst_shape;
+        } // shape
+
+        template <typename...size_types>
+        constexpr auto operator()(size_types...) const noexcept
+        {
+            // TODO: assert if indices < shape
+
+            return array;
+        } // operator()
+    }; // flatten_t
+
     template <typename array_t>
     constexpr auto flatten(const array_t& array)
     {
-        // @note using aggregate initialization
-        // since decorator_t doesn't provide constructor
-        return decorator_t<flatten_t,array_t>{array};
+        if constexpr (meta::is_either_v<array_t>) {
+            // TODO: support flatten on scalar
+            using left_t  = meta::get_either_left_t<array_t>;
+            using right_t = meta::get_either_right_t<array_t>;
+            // deduce return type for each type
+            using res_left_t  = decltype(view::flatten(meta::declval<left_t>()));
+            using res_right_t = decltype(view::flatten(meta::declval<right_t>()));
+            // NOTE: the following meta snippet is the same with eval,
+            // TODO: consider to add this metafunction (check if the resulting either is the same)
+            constexpr auto vtype = [](){
+                if constexpr (meta::is_same_v<res_left_t,res_right_t>) {
+                    return meta::as_value_v<res_left_t>;
+                } else {
+                    using either_t = meta::replace_either_t<array_t,res_left_t,res_right_t>;
+                    return meta::as_value_v<either_t>;
+                }
+            }();
+            using return_t = meta::type_t<decltype(vtype)>;
+            if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
+                return return_t{view::flatten(*l_ptr)};
+            } else {
+                auto r_ptr = nmtools::get_if<right_t>(&array);
+                return return_t{view::flatten(*r_ptr)};
+            }
+        } else {
+            return decorator_t<flatten_t,array_t>{array};
+        }
     } // flatten
 
     /** @} */ // end group view
@@ -81,6 +168,7 @@ namespace nmtools::meta
 
 namespace nmtools
 {
+    // TODO: update this, to check for fixed dst_shape member type
     /**
      * @brief Infer the shape of flatten view at compile time.
      * 
@@ -90,10 +178,12 @@ namespace nmtools
     struct meta::fixed_ndarray_shape< view::flatten_t<array_t> >
     {
         static constexpr auto value = [](){
-            if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
+            if constexpr (meta::is_num_v<array_t>) {
+                return nmtools_array{(size_t)1};
+            } else if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
                 constexpr auto shape = fixed_ndarray_shape_v<array_t>;
                 constexpr auto N     = index::product(shape);
-                return meta::make_tuple_type_t<size_t>{N};
+                return nmtools_array{(size_t)N};
             } else {
                 return detail::Fail;
             }
@@ -119,7 +209,7 @@ namespace nmtools::meta
     template <typename array_t>
     struct is_ndarray< view::decorator_t< view::flatten_t, array_t > >
     {
-        static constexpr auto value = is_ndarray_v<array_t>;
+        static constexpr auto value = is_ndarray_v<array_t> || is_num_v<array_t>;
     }; 
 } // namespace nmtools::meta
 

@@ -80,3 +80,8 @@ TEST_CASE("flatten(case4)" * doctest::test_suite("array::flatten"))
     FLATTEN_SUBCASE( case4, array_d );
     FLATTEN_SUBCASE( case4, array_h );
 }
+
+TEST_CASE("flatten(case5)" * doctest::test_suite("array::flatten"))
+{
+    FLATTEN_SUBCASE( case5, array );
+}

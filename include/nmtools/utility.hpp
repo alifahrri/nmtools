@@ -20,4 +20,6 @@
 #include "nmtools/utility/utl/get.hpp"
 #include "nmtools/utility/utl/get_if.hpp"
 
+#include "nmtools/utility/tuple_cat.hpp"
+
 #endif // NMTOOLS_UTILITY_HPP

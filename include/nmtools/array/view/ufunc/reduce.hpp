@@ -132,7 +132,7 @@ namespace nmtools::view::detail
         }
         return slices;
     } // make_reduction_slices
-}
+} // namespace nmtools::view::detail
 
 namespace nmtools::view
 {
@@ -140,7 +140,8 @@ namespace nmtools::view
     {
         struct INVALID_NUM_REDUCE : meta::detail::fail_t {};
     } // namespace error
-    
+
+    // TODO: remove, use scalar reduce instead
     /**
      * @brief Type constructor to reduce single array given op.
      * 
@@ -208,7 +209,7 @@ namespace nmtools::view
         // if given array is a view, just use value instead of reference
         using operands_type = resolve_array_type_t<array_t>;
         using array_type    = operands_type;
-        using axis_type     = resolve_array_type_t<axis_t>;
+        using axis_type     = resolve_attribute_type_t<axis_t>;
         using op_type       = op_t;
         using initial_type  = initial_t;
         using reducer_type  = reducer_t<op_t>;
@@ -226,21 +227,16 @@ namespace nmtools::view
 
         constexpr reduce_t(op_type op, const array_t& array, const axis_t& axis, initial_type initial, keepdims_type keepdims)
             : op(op), array(initialize<array_type>(array))
-            , axis(initialize<axis_type>(axis))
+            , axis(init_attribute<axis_type>(axis))
             , initial(initial)
-            , reducer{op} // TODO: recurse to scalar reduce ufunc instead of using reducer
+            , reducer{op} // TODO: remove, recurse to scalar reduce ufunc instead of using reducer
             , keepdims(keepdims) {}
 
         constexpr auto shape() const
         {
+            // TODO: move shape computation to initialization since the src array is assumed not changing shape anyway
             auto shape_ = detail::shape(array);
-            // NOTE: can't provide convenience function
-            // without causing bounded array to decay to pointer
-            if constexpr (meta::is_pointer_v<axis_type>) {
-                return index::remove_dims(shape_,*axis,keepdims);
-            } else {
-                return index::remove_dims(shape_,axis,keepdims);
-            }
+            return index::remove_dims(shape_,axis,keepdims);
         } // shape
 
         constexpr auto dim() const
@@ -288,7 +284,8 @@ namespace nmtools::view
                     return apply_slice(array, slices);
                 }
             }();
-            auto flattened = flatten(sliced);
+            // NOTE: use view::flatten to avoid ambiguous call because of ADL
+            auto flattened = view::flatten(sliced);
             // TODO: instead of reduce using reducer_t, return reduce using None axis
             // doing so may simplify evaluation
             return [&](){
@@ -299,6 +296,8 @@ namespace nmtools::view
         } // operator()
 
         // NOTE: the following is to allow reducing to numeric type
+        // maybe encountered when reducing scalar type.
+        // following numpy, reducing scalar is allowed.
         static constexpr auto num_vtype = [](){
             using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >;
             if constexpr (meta::is_num_v<view_t>) {
@@ -369,6 +368,7 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
+            // TODO: move shape computation to initialization since the src array is assumed not changing shape anyway
             // None axis with keepdims True:
             // just get the original shape and then fill with one
             [[maybe_unused]]
@@ -659,40 +659,6 @@ namespace nmtools::meta
     {
         using type = typename view::reduce_t<op_t, array_t, axis_t, initial_t, keepdims_t>::result_type;
     };
-
-    /**
-     * @brief Specialization of eval return type resolver for reduce ufunc.
-     *
-     * Need to specialize eval resolver because reducer may produce num, ndarray, or either.
-     * 
-     * @tparam op_t 
-     * @tparam array_t 
-     * @tparam axis_t 
-     * @tparam initial_t 
-     * @tparam keepdims_t 
-     */
-    // template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
-    // struct resolve_optype<
-    //     void, array::eval_t, view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t>, none_t
-    // >
-    // {
-    //     static constexpr auto vtype = [](){
-    //         using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t>;
-    //         if constexpr (is_fixed_size_ndarray_v<view_t>) {
-    //             // NOTE: resolve_unary_array_type defined in eval.hpp
-    //             // only call on fixed_size_ndarray because axis_t may be runtime value otherwise
-    //             return resolve_unary_array_type(as_value_v<array_t>, as_value_v<view_t>);
-    //         } else if constexpr (is_num_v<view_t>) {
-    //             using type = get_element_type_t<view_t>;
-    //             return as_value_v<type>;
-    //         } else /* if constexpr (is_ndarray_v<view_t>) */ {
-    //             using element_t = get_element_type_t<view_t>;
-    //             using type = make_dynamic_ndarray_t<element_t>;
-    //             return as_value_v<type>;
-    //         }
-    //     }();
-    //     using type = type_t<decltype(vtype)>;
-    // }; // resolve_optype
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNC_REDUCE_HPP

@@ -47,6 +47,7 @@ option(NMTOOLS_TEST_ARRAY_EVAL      "test array evaluation"         OFF)
 option(NMTOOLS_TEST_ARRAY_VIEW_NN   "test array nn view modules"    OFF)
 option(NMTOOLS_TEST_ARRAY_NN_EVAL   "test array nn eval modules"    OFF)
 option(NMTOOLS_TEST_COMPOSITION     "test array view composition"   OFF)
+option(NMTOOLS_TEST_FUNCTIONAL      "test functional module"        OFF)
 option(NMTOOLS_TEST_MISC            "test other modules"            OFF)
 
 if (NMTOOLS_TEST_ALL)
@@ -60,6 +61,7 @@ if (NMTOOLS_TEST_ALL)
     SET(NMTOOLS_TEST_ARRAY_VIEW_NN   ON CACHE BOOL "test array nn view modules"    FORCE)
     SET(NMTOOLS_TEST_ARRAY_NN_EVAL   ON CACHE BOOL "test array nn eval modules"    FORCE)
     SET(NMTOOLS_TEST_COMPOSITION     ON CACHE BOOL "test array view composition"   FORCE)
+    SET(NMTOOLS_TEST_FUNCTIONAL      ON CACHE BOOL "test functional module"        FORCE)
     SET(NMTOOLS_TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
 endif (NMTOOLS_TEST_ALL)
 
@@ -430,6 +432,101 @@ if (NOT NMTOOLS_TEST_MISC)
     set (MISC_TEST_SOURCES "")
 endif()
 
+set(FUNCTIONAL_TEST_SOURCES
+    functional/composition/add_add.cpp
+    functional/composition/add_flatten.cpp
+    functional/composition/flatten_add.cpp
+    functional/activations/celu.cpp
+    functional/activations/elu.cpp
+    functional/activations/hardshrink.cpp
+    functional/activations/hardswish.cpp
+    functional/activations/hardtanh.cpp
+    functional/activations/leaky_relu.cpp
+    functional/activations/log_sigmoid.cpp
+    functional/activations/mish.cpp
+    functional/activations/prelu.cpp
+    functional/activations/relu.cpp
+    functional/activations/relu6.cpp
+    functional/activations/selu.cpp
+    functional/activations/sigmoid.cpp
+    functional/activations/silu.cpp
+    functional/activations/softplus.cpp
+    functional/activations/softshrink.cpp
+    functional/activations/softsign.cpp
+    functional/activations/tanhshrink.cpp
+    functional/ufuncs/add.cpp
+    functional/ufuncs/arccos.cpp
+    functional/ufuncs/arccosh.cpp
+    functional/ufuncs/arcsin.cpp
+    functional/ufuncs/arcsinh.cpp
+    functional/ufuncs/arctan.cpp
+    functional/ufuncs/arctanh.cpp
+    functional/ufuncs/arctan2.cpp
+    functional/ufuncs/cbrt.cpp
+    functional/ufuncs/ceil.cpp
+    functional/ufuncs/clip.cpp
+    functional/ufuncs/cos.cpp
+    functional/ufuncs/cosh.cpp
+    functional/ufuncs/exp.cpp
+    functional/ufuncs/exp2.cpp
+    functional/ufuncs/expm1.cpp
+    functional/ufuncs/fabs.cpp
+    functional/ufuncs/floor.cpp
+    functional/ufuncs/invert.cpp
+    functional/ufuncs/isfinite.cpp
+    functional/ufuncs/isinf.cpp
+    functional/ufuncs/isnan.cpp
+    functional/ufuncs/log.cpp
+    functional/ufuncs/log1p.cpp
+    functional/ufuncs/log2.cpp
+    functional/ufuncs/log10.cpp
+    functional/ufuncs/multiply.cpp
+    functional/ufuncs/negative.cpp
+    functional/ufuncs/positive.cpp
+    functional/ufuncs/reciprocal.cpp
+    functional/ufuncs/rint.cpp
+    functional/ufuncs/signbit.cpp
+    functional/ufuncs/sin.cpp
+    functional/ufuncs/sinh.cpp
+    functional/ufuncs/sqrt.cpp
+    functional/ufuncs/tan.cpp
+    functional/ufuncs/tanh.cpp
+    functional/atleast_1d.cpp
+    functional/atleast_2d.cpp
+    functional/atleast_3d.cpp
+    functional/broadcast_to.cpp
+    functional/conv.cpp
+    functional/compress.cpp
+    functional/concatenate.cpp
+    functional/cumprod.cpp
+    functional/cumsum.cpp
+    functional/expand_dims.cpp
+    functional/flatten.cpp
+    functional/flip.cpp
+    functional/reshape.cpp
+    functional/matmul.cpp
+    functional/mean.cpp
+    functional/moveaxis.cpp
+    functional/pad.cpp
+    functional/prod.cpp
+    functional/pooling.cpp
+    functional/repeat.cpp
+    functional/slice.cpp
+    functional/softmax.cpp
+    functional/softmin.cpp
+    functional/squeeze.cpp
+    functional/stddev.cpp
+    functional/sum.cpp
+    functional/take.cpp
+    functional/tile.cpp
+    functional/transpose.cpp
+    functional/var.cpp
+    functional/where.cpp
+)
+if (NOT NMTOOLS_TEST_FUNCTIONAL)
+    set (NMTOOLS_TEST_FUNCTIONAL "")
+endif()
+
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     ## array detail
     ${ARRAY_INDEX_TEST_SOURCES}
@@ -451,6 +548,8 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${EVAL_NN_TEST_SOURCES}
     ## view composition
     ${COMPOSITION_TEST_SOURCES}
+    ## functional
+    ${FUNCTIONAL_TEST_SOURCES}
     ## misc
     ${MISC_TEST_SOURCES}
 )

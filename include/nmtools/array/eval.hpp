@@ -256,8 +256,7 @@ namespace nmtools::meta
             constexpr auto shape = fixed_ndarray_shape_v<view_type>;
             constexpr auto dim   = fixed_ndarray_dim_v<view_type>;
             constexpr auto vshape = template_reduce<dim>([&](auto init, auto index){
-                constexpr auto i = decltype(index)::value;
-                constexpr auto s = at(shape,i);
+                constexpr auto s = at(shape,index);
                 using type = type_t<decltype(init)>;
                 // default impl of make_fixed_ndarray only support integral constant for now
                 using stype = ct<s>;
