@@ -9,27 +9,6 @@ namespace nmtools::meta
     struct empty_operands_t {};
     struct empty_attributes_t {};
 
-    // validate attributes is permissive
-    template <typename F, typename...attributes_t>
-    struct validate_attributes : meta::true_type {};
-
-    template <typename F, typename...attributes_t>
-    constexpr inline auto validate_attributes_v = validate_attributes<F,attributes_t...>::value;
-
-    template <typename F, typename...operands_t>
-    struct validate_operands
-    {
-        static constexpr auto value = [](){
-            // assume has arity
-            constexpr auto arity   = F::arity;
-            constexpr auto n_attrs = sizeof...(operands_t);
-            return (arity <= n_attrs && static_cast<bool>(n_attrs));
-        }();
-    };
-
-    template <typename F, typename...operands_t>
-    constexpr inline auto validate_operands_v = validate_operands<F,operands_t...>::value;
-
     using view::resolve_array_type;
     using view::resolve_array_type_t;
 
@@ -53,27 +32,6 @@ namespace nmtools::meta
 
     template <typename F, typename operands_t, typename...new_operands_t>
     using pack_operands_type_t = type_t<pack_operands_type<F,operands_t,new_operands_t...>>;
-
-    template <typename F, typename...attributes_t>
-    struct pack_attribute_type
-    {
-        using type = nmtools_tuple<resolve_attribute_type_t<attributes_t>...>;
-    }; // pack_operands_type
-
-    template <typename F, typename...attributes_t>
-    using pack_attribute_type_t = type_t<pack_attribute_type<F,attributes_t...>>;
-
-    template <typename T>
-    struct is_functor_composition : false_type {};
-
-    template <typename T>
-    struct is_functor : false_type {};
-
-    template <typename T>
-    constexpr inline auto is_functor_composition_v = is_functor_composition<T>::value;
-
-    template <typename T>
-    constexpr inline auto is_functor_v = is_functor<T>::value;
 } // namespace nmtools::meta
 
 namespace nmtools::functional
@@ -105,6 +63,16 @@ namespace nmtools::functional
     template <typename functors_t, typename operands_t=meta::empty_operands_t>
     struct functor_composition_t;
 
+    /**
+     * @brief Type constructor to compose functors.
+     * 
+     * Note that after composing, functor's attributes can't be specified.
+     * Can only specify operands, or further composing with another functor/composition.
+     * 
+     * @tparam tuple 
+     * @tparam functors_t 
+     * @tparam operands_t 
+     */
     template <template<typename...>typename tuple, typename...functors_t, typename operands_t>
     struct functor_composition_t<tuple<functors_t...>,operands_t>
     {
@@ -157,7 +125,6 @@ namespace nmtools::functional
                 return function;
             } else {
                 // apply
-                // TODO: starting from right-most functor, apply N operands then use the result to the next functor
                 // where N = arity_i for the right-most functor, and N-1 for the rest
                 using namespace literals;
                 constexpr auto N = meta::len_v<functors_type>;
@@ -200,6 +167,15 @@ namespace nmtools::functional
     template <template<typename...>typename tuple, typename...functors_t>
     functor_composition_t(const tuple<functors_t...>&) -> functor_composition_t<tuple<functors_t...>>;
 
+    /**
+     * @brief Type constructor for functor type.
+     * 
+     * Takes fmap, can curry operands and compose with another functors.
+     * 
+     * @tparam F 
+     * @tparam operands_t 
+     * @tparam attributes_t 
+     */
     template <typename F, typename operands_t, typename attributes_t>
     struct functor_t
     {
@@ -322,6 +298,304 @@ namespace nmtools::functional
         auto joined_functors = view::detail::tuple_append(left.functors,right);
         return functor_composition_t{joined_functors};
     } // operator*
+
+    /**
+     * @brief Type constructor for binary fmap.
+     * 
+     * @tparam F 
+     */
+    template <typename F>
+    struct binary_fmap_t
+    {
+        static constexpr auto arity = 2;
+        
+        F fn;
+
+        template <
+            template<auto...>typename sequence, auto...Is,
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename lhs_t, typename rhs_t
+        >
+        constexpr auto operator()(sequence<Is...>, const attr_tuple<attributes_t...>& attributes, const operand_tuple<lhs_t,rhs_t>& operands) const
+        {
+            const auto& [lhs, rhs] = operands;
+            if constexpr (meta::is_pointer_v<lhs_t> && meta::is_pointer_v<rhs_t>) {
+                return fn(*lhs,*rhs,nmtools::get<Is>(attributes)...);
+            } else if constexpr (meta::is_pointer_v<lhs_t>) {
+                return fn(*lhs,rhs,nmtools::get<Is>(attributes)...);
+            } else if constexpr (meta::is_pointer_v<rhs_t>) {
+                return fn(lhs,*rhs,nmtools::get<Is>(attributes)...);
+            } else {
+                return fn(lhs,rhs,nmtools::get<Is>(attributes)...);
+            }
+        } // operator()
+
+        template <
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename...arrays_t
+        >
+        constexpr auto operator()(const attr_tuple<attributes_t...>& attributes, const operand_tuple<arrays_t...>& operands) const
+        {
+            return (*this)(meta::make_index_sequence_v<sizeof...(attributes_t)>, attributes, operands);
+        } // operator()
+    }; // binary_fmap_t
+
+    /**
+     * @brief Type constructor for unary fmap.
+     * 
+     * @tparam F 
+     */
+    template <typename F>
+    struct unary_fmap_t
+    {
+        static constexpr auto arity = 1;
+
+        F fn;
+
+        template <
+            template<auto...>typename sequence, auto...Is,
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename array_t
+        >
+        constexpr auto operator()(sequence<Is...>, const attr_tuple<attributes_t...>& attributes, const operand_tuple<array_t>& operands) const
+        {
+            if constexpr (meta::is_pointer_v<array_t>) {
+                return fn(*nmtools::get<0>(operands),nmtools::get<Is>(attributes)...);
+            } else {
+                return fn(nmtools::get<0>(operands),nmtools::get<Is>(attributes)...);
+            }
+        } // operator()
+
+        template <
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename...arrays_t
+        >
+        constexpr auto operator()(const attr_tuple<attributes_t...>& attributes, const operand_tuple<arrays_t...>& operands) const
+        {
+            return (*this)(meta::make_index_sequence_v<sizeof...(attributes_t)>, attributes, operands);
+        } // operator()
+    }; // unary_fmap_t
+
+    /**
+     * @brief Type constructor for ternary (arity of 3) fmap.
+     * 
+     * @tparam F 
+     */
+    template <typename F>
+    struct ternary_fmap_t
+    {
+        static constexpr auto arity = 3;
+
+        F fn;
+
+        template <
+            template<auto...>typename sequence, auto...Is,
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename a_t, typename b_t, typename c_t>
+        constexpr auto operator()(sequence<Is...>, const attr_tuple<attributes_t...>& attributes, const operand_tuple<a_t,b_t,c_t>& operands) const
+        {
+            using meta::is_pointer_v;
+
+            const auto& [a, b, c] = operands;
+            if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<c_t>) {
+                return fn(*a, *b, *c,nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<c_t>) {
+                return fn(a,*b,*c,nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t>) {
+                return fn(*a, *b, c,nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<c_t>) {
+                return fn(*a, b, *c,nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t>) {
+                return fn(*a, b, c,nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t>) {
+                return fn(a, *b, c,nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<c_t>) {
+                return fn(a, b, *c,nmtools::get<Is>(attributes)...);
+            } else {
+                return fn(a, b, c,nmtools::get<Is>(attributes)...);
+            }
+        } // operator()
+
+        template <
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename...arrays_t
+        >
+        constexpr auto operator()(const attr_tuple<attributes_t...>& attributes, const operand_tuple<arrays_t...>& operands) const
+        {
+            return (*this)(meta::make_index_sequence_v<sizeof...(attributes_t)>, attributes, operands);
+        } // operator()
+    }; // ternary_fmap_t
+
+    /**
+     * @brief Type constructor for quaternary (arity of 4) fmap.
+     * 
+     * @tparam F 
+     */
+    template <typename F>
+    struct quaternary_fmap_t
+    {
+        static constexpr auto arity = 4;
+
+        F fn;
+
+        template <
+            template<auto...>typename sequence, auto...Is,
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename a_t, typename b_t, typename c_t, typename d_t>
+        constexpr auto operator()(sequence<Is...>, const attr_tuple<attributes_t...>& attributes, const operand_tuple<a_t,b_t,c_t,d_t>& operands) const
+        {
+            using meta::is_pointer_v;
+
+            const auto& [a, b, c, d] = operands;
+            if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<c_t> && is_pointer_v<d_t>) {
+                return fn(*a, *b, *c, *d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<c_t> && is_pointer_v<d_t>) {
+                return fn(a,*b,*c,*d,nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<d_t>) {
+                return fn(*a, *b, c, *d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<c_t> && is_pointer_v<d_t>) {
+                return fn(*a, b, *c, *d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<d_t>) {
+                return fn(*a, b, c, *d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<d_t>) {
+                return fn(a, *b, c, *d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<c_t> && is_pointer_v<d_t>) {
+                return fn(a, b, *c, *d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<c_t>) {
+                return fn(*a, *b, *c, d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<c_t>) {
+                return fn(a,*b,*c, d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t>) {
+                return fn(*a, *b, c, d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<c_t>) {
+                return fn(*a, b, *c, d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t>) {
+                return fn(*a, b, c, d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t>) {
+                return fn(a, *b, c, d, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<c_t>) {
+                return fn(a, b, *c, d, nmtools::get<Is>(attributes)...);
+            } else {
+                return fn(a, b, c, d, nmtools::get<Is>(attributes)...);
+            }
+        } // operator()
+
+        template <
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename...arrays_t
+        >
+        constexpr auto operator()(const attr_tuple<attributes_t...>& attributes, const operand_tuple<arrays_t...>& operands) const
+        {
+            return (*this)(meta::make_index_sequence_v<sizeof...(attributes_t)>, attributes, operands);
+        } // operator()
+    }; // quaternary_fmap_t
+
+    /**
+     * @brief Type constructor for quinary (arity of 5) fmap.
+     * 
+     * @tparam F 
+     */
+    template <typename F>
+    struct quinary_fmap_t
+    {
+        static constexpr auto arity = 5;
+
+        F fn;
+
+        template <
+            template<auto...>typename sequence, auto...Is,
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename a_t, typename b_t, typename c_t, typename d_t, typename e_t>
+        constexpr auto operator()(sequence<Is...>, const attr_tuple<attributes_t...>& attributes, const operand_tuple<a_t,b_t,c_t,d_t,e_t>& operands) const
+        {
+            using meta::is_pointer_v;
+
+            const auto& [a, b, c, d, e] = operands;
+            if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<c_t> && is_pointer_v<d_t> && is_pointer_v<e_t>) {
+                return fn(*a, *b, *c, *d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<c_t> && is_pointer_v<d_t> && is_pointer_v<e_t>) {
+                return fn(a,*b,*c,*d,*e,nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<d_t> && is_pointer_v<e_t>) {
+                return fn(*a, *b, c, *d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<c_t> && is_pointer_v<d_t> && is_pointer_v<e_t>) {
+                return fn(*a, b, *c, *d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<d_t> && is_pointer_v<e_t>) {
+                return fn(*a, b, c, *d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<d_t> && is_pointer_v<e_t>) {
+                return fn(a, *b, c, *d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<c_t> && is_pointer_v<d_t> && is_pointer_v<e_t>) {
+                return fn(a, b, *c, *d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<c_t> && is_pointer_v<e_t>) {
+                return fn(*a, *b, *c, d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<c_t> && is_pointer_v<e_t>) {
+                return fn(a,*b,*c, d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<e_t>) {
+                return fn(*a, *b, c, d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<c_t> && is_pointer_v<e_t>) {
+                return fn(*a, b, *c, d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<e_t>) {
+                return fn(*a, b, c, d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<e_t>) {
+                return fn(a, *b, c, d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<c_t> && is_pointer_v<e_t>) {
+                return fn(a, b, *c, d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<c_t> && is_pointer_v<d_t>) {
+                return fn(*a, *b, *c, *d, *e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<c_t> && is_pointer_v<d_t>) {
+                return fn(a,*b,*c,*d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<d_t>) {
+                return fn(*a, *b, c, *d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<c_t> && is_pointer_v<d_t>) {
+                return fn(*a, b, *c, *d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<d_t>) {
+                return fn(*a, b, c, *d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<d_t>) {
+                return fn(a, *b, c, *d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<c_t> && is_pointer_v<d_t>) {
+                return fn(a, b, *c, *d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t> && is_pointer_v<c_t>) {
+                return fn(*a, *b, *c, d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t> && is_pointer_v<c_t>) {
+                return fn(a,*b,*c, d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<b_t>) {
+                return fn(*a, *b, c, d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t> && is_pointer_v<c_t>) {
+                return fn(*a, b, *c, d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<a_t>) {
+                return fn(*a, b, c, d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<b_t>) {
+                return fn(a, *b, c, d, e, nmtools::get<Is>(attributes)...);
+            } else if constexpr (is_pointer_v<c_t>) {
+                return fn(a, b, *c, d, e, nmtools::get<Is>(attributes)...);
+            } else {
+                return fn(a, b, c, d, e, nmtools::get<Is>(attributes)...);
+            }
+        } // operator()
+
+        template <
+            template<typename...>typename attr_tuple, typename...attributes_t,
+            template<typename...>typename operand_tuple, typename...arrays_t
+        >
+        constexpr auto operator()(const attr_tuple<attributes_t...>& attributes, const operand_tuple<arrays_t...>& operands) const
+        {
+            return (*this)(meta::make_index_sequence_v<sizeof...(attributes_t)>, attributes, operands);
+        } // operator()
+    }; // quinary_fmap_t
+
+    template <typename F>
+    binary_fmap_t(F&&) -> binary_fmap_t<F>;
+
+    template <typename F>
+    unary_fmap_t(F&&) -> unary_fmap_t<F>;
+
+    template <typename F>
+    ternary_fmap_t(F&&) -> ternary_fmap_t<F>;
+
+    template <typename F>
+    quaternary_fmap_t(F&&) -> quaternary_fmap_t<F>;
+
+    template <typename F>
+    quinary_fmap_t(F&&) -> quinary_fmap_t<F>;
 
 } // namespace nmtools::functional
 
