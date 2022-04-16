@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/compress.hpp"
 #include "nmtools/array/index/product.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/array/view/decorator.hpp"
 
 namespace nmtools::view
 {
@@ -12,20 +12,23 @@ namespace nmtools::view
     template <typename condition_t, typename array_t, typename axis_t>
     struct compress_t
     {
-        using condition_type = const condition_t&;
-        using array_type = const array_t&;
-        using axis_type  = axis_t;
+        using condition_type = resolve_attribute_type_t<condition_t>;
+        using array_type = resolve_array_type_t<array_t>;
+        using axis_type  = resolve_attribute_type_t<axis_t>;
 
         condition_type condition;
         array_type array;
         axis_type axis;
 
-        constexpr compress_t(condition_type condition, array_type array, axis_type axis)
-            : condition(condition), array(array), axis(axis) {}
+        constexpr compress_t(const condition_t& condition, const array_t& array, const axis_t& axis)
+            : condition(init_attribute<condition_type>(condition))
+            , array(initialize<array_type>(array))
+            , axis(init_attribute<axis_type>(axis))
+        {}
         
         constexpr auto shape() const
         {
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
             return ::nmtools::index::shape_compress(condition, shape_, axis);
         } // shape
 
@@ -39,7 +42,7 @@ namespace nmtools::view
         {
             auto indices_ = pack_indices(indices...);
 
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
             return ::nmtools::index::compress(indices_,condition,shape_,axis);
         } // index
     }; // compress_t
@@ -47,7 +50,7 @@ namespace nmtools::view
     /**
      * @brief View selected slices of an array along given axis.
      * 
-     * @tparam condition_t 1-D array of bools
+     * @tparam condition_t 1-D array of booleans
      * @tparam array_t 
      * @tparam axis_t 
      * @param condition array that selects which entries to return 
