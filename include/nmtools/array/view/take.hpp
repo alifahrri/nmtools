@@ -11,20 +11,23 @@ namespace nmtools::view
     template <typename array_t, typename indices_t, typename axis_t>
     struct take_t
     {
-        using array_type = const array_t&;
-        using indices_type = const indices_t&;
-        using axis_type = axis_t;
+        using array_type   = resolve_array_type_t<array_t>;
+        using indices_type = resolve_attribute_type_t<indices_t>;
+        using axis_type    = resolve_attribute_type_t<axis_t>;
 
         array_type array;
         indices_type indices;
         axis_type axis;
 
-        constexpr take_t(array_type array, indices_type indices, axis_type axis)
-            : array(array), indices(indices), axis(axis) {}
+        constexpr take_t(const array_t& array, const indices_t& indices, const axis_t& axis)
+            : array(initialize<array_type>(array))
+            , indices(init_attribute<indices_type>(indices))
+            , axis(init_attribute<axis_type>(axis))
+        {}
         
         constexpr auto shape() const
         {
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
             return ::nmtools::index::shape_take(shape_, indices, axis);
         } // shape
 
@@ -38,7 +41,7 @@ namespace nmtools::view
         {
             auto indices_ = pack_indices(indices...);
 
-            auto shape_ = ::nmtools::shape(array);
+            auto shape_ = detail::shape(array);
             return ::nmtools::index::take(indices_,shape_,this->indices,axis);
         } // index
     }; // take_t
