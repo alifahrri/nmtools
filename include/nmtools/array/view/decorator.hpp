@@ -780,16 +780,19 @@ namespace nmtools::view
                 using elem_t = meta::get_element_type_t<attribute_t>;
                 using type = meta::make_array_type_t<elem_t,N>;
                 return meta::as_value_v<const type>;
-            } else if constexpr (
-                         is_none_v<attribute_t>
+            } else /* if constexpr (
+                   is_none_v<attribute_t>
+                || is_dtype_v<attribute_t>
+                || meta::is_slice_index_v<attribute_t>
+                || meta::is_slice_index_array_v<attribute_t>
                 || meta::is_num_v<attribute_t>
                 || meta::is_index_array_v<attribute_t>
                 || meta::is_integral_constant_v<attribute_t>
-                || meta::is_ndarray_v<attribute_t>)
+                || meta::is_ndarray_v<attribute_t>) */
             {
+                // NOTE: simply return as value for presumably copyable type
+                // as quick workaround to allow arbitrary type for passing via functor's operator[]
                 return meta::as_value_v<const attribute_t>;
-            } else {
-                return meta::as_value_v<error::RESOLVE_ATTRIBUTE_TYPE_UNSUPPORTED<attribute_t>>;
             }
         }();
         using type = meta::type_t<decltype(vtype)>;
