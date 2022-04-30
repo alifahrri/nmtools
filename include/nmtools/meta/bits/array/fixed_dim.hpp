@@ -10,6 +10,12 @@
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        template<typename...>
+        struct FIXED_DIM_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+    
     // TODO: remove, put the logic on fixed_dim instead
     /**
      * @brief get fixed-array dimension
@@ -70,6 +76,7 @@ namespace nmtools::meta
             using value_type = typename dim_t::value_type;
             if constexpr (!is_void_v<value_type>)
                 return dim_t::value;
+            // TODO: try to compute from fixed_shape
             // for nested array, while the shape may only known at runtime,
             // the dimension can be known at compile time
             else if constexpr (nested_array_dim_v<T> > 0)
