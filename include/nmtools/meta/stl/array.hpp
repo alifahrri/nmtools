@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/array.hpp"
 #include "nmtools/meta/traits.hpp"
+#include <array>
 
 namespace nmtools::meta
 {
