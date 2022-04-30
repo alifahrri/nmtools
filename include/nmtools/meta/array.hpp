@@ -19,5 +19,14 @@
 #include "nmtools/meta/bits/array/resize_hybrid_index_array_max_size.hpp"
 #include "nmtools/meta/bits/array/resize_hybrid_ndarray_dim.hpp"
 #include "nmtools/meta/bits/array/resize_hybrid_ndarray_max_size.hpp"
+#include "nmtools/meta/bits/array/fixed_shape.hpp"
+#include "nmtools/meta/bits/array/fixed_size.hpp"
+#include "nmtools/meta/bits/array/bounded_dim.hpp"
+#include "nmtools/meta/bits/array/bounded_size.hpp"
+#include "nmtools/meta/bits/array/resize_dim.hpp"
+#include "nmtools/meta/bits/array/resize_size.hpp"
+#include "nmtools/meta/bits/array/resize_shape.hpp"
+#include "nmtools/meta/bits/array/resize_bounded_dim.hpp"
+#include "nmtools/meta/bits/array/resize_bounded_size.hpp"
 
 #endif // NMTOOLS_META_ARRAY_HPP

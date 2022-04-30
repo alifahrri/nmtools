@@ -15,6 +15,12 @@ namespace nmtools::meta
     struct is_fail : internal::is_base_of<detail::fail_t,T> {};
 
     template <typename T>
+    struct is_fail<const T> : is_fail<T> {};
+
+    template <typename T>
+    struct is_fail<T&> : is_fail<T> {};
+
+    template <typename T>
     constexpr inline auto is_fail_v = is_fail<T>::value;
 } // namespace nmtools::meta
 

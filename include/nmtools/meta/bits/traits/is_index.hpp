@@ -5,6 +5,8 @@
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
 #include "nmtools/meta/bits/traits/is_integer.hpp"
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
+#include "nmtools/meta/bits/traits/is_reference.hpp"
+#include "nmtools/meta/bits/traits/is_const.hpp"
 
 namespace nmtools::meta
 {
@@ -21,6 +23,12 @@ namespace nmtools::meta
             return is_constant_index_v<T> || is_integer_v<T>;
         }();
     };
+
+    template <typename T>
+    struct is_index<const T,enable_if_t<!is_reference_v<T>>> : is_index<T> {};
+
+    template <typename T>
+    struct is_index<T&,enable_if_t<!is_const_v<T>>> : is_index<T> {};
 
     template <typename T>
     inline constexpr auto is_index_v = is_index<T>::value;

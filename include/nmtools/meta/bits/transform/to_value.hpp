@@ -19,11 +19,17 @@ namespace nmtools::meta
      * 
      * @tparam T 
      */
-    template <typename T>
+    template <typename T,typename=void>
     struct to_value
     {
         static inline constexpr auto value = error::TO_VALUE_UNSUPPORTED<T>{};
     }; // to_value
+
+    template <typename T>
+    struct to_value <const T> : to_value<T> {};
+
+    template <typename T>
+    struct to_value <T&> : to_value<T> {};
 
     template <typename T, T v>
     struct to_value<integral_constant<T,v>>
