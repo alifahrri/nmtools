@@ -22,5 +22,14 @@ namespace nmtools::meta
 
     template <typename T>
     constexpr inline auto is_rvalue_reference_v = is_rvalue_reference<T>::value;
+
+    template <typename T>
+    struct is_reference
+    {
+        static constexpr auto value = is_lvalue_reference_v<T> || is_rvalue_reference_v<T>;
+    };
+
+    template <typename T>
+    constexpr inline auto is_reference_v = is_reference<T>::value;
 }
 #endif // NMTOOLS_META_BITS_TRAITS_IS_REFERENCE_HPP
