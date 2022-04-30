@@ -31,22 +31,24 @@ jobs:
           sudo bash scripts/install_nanobench.sh
           sudo apt -y install libboost-dev zip python3-pip
           sudo pip3 install pyperf
-      - name: build release
-        env:
-          CC: ${{ matrix.c_compiler }}
-          CXX: ${{ matrix.cxx_compiler }}
-        run: |
-          bash scripts/build_testbench.sh --build-dir build/${{ matrix.compiler }}-Release
-      - name: run testbench
-        run: |
-          mkdir -p ${{ matrix.compiler }}-testbench
-          sudo python3 -m pyperf system tune
-          sudo bash scripts/run_testbench.sh --build-dir build/${{ matrix.compiler }}-Release --output-dir ${{ matrix.compiler }}-testbench
-          cp build/${{ matrix.compiler }}-Release/compile_commands.json ${{ matrix.compiler }}-testbench
-          zip -r ${{ matrix.compiler }}-testbench.zip ${{ matrix.compiler }}-testbench
-      - name: upload testbench artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.compiler }}-testbench_results
-          path: |
-            ${{ matrix.compiler }}-testbench.zip
+      # skip because to long to build on CI
+      # TODO: enable this
+      # - name: build release
+      #   env:
+      #     CC: ${{ matrix.c_compiler }}
+      #     CXX: ${{ matrix.cxx_compiler }}
+      #   run: |
+      #     bash scripts/build_testbench.sh --build-dir build/${{ matrix.compiler }}-Release
+      # - name: run testbench
+      #   run: |
+      #     mkdir -p ${{ matrix.compiler }}-testbench
+      #     sudo python3 -m pyperf system tune
+      #     sudo bash scripts/run_testbench.sh --build-dir build/${{ matrix.compiler }}-Release --output-dir ${{ matrix.compiler }}-testbench
+      #     cp build/${{ matrix.compiler }}-Release/compile_commands.json ${{ matrix.compiler }}-testbench
+      #     zip -r ${{ matrix.compiler }}-testbench.zip ${{ matrix.compiler }}-testbench
+      # - name: upload testbench artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ matrix.compiler }}-testbench_results
+      #     path: |
+      #       ${{ matrix.compiler }}-testbench.zip

@@ -85,6 +85,14 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto as_value_v = as_value<T>{};
 
+    /**
+     * @brief Generic value holder to wrap value as type.
+     * 
+     * @tparam Ts 
+     */
+    template <auto...Ts>
+    struct as_type {};
+
     template <typename T, T...Ints>
     struct integer_sequence
     {

@@ -116,6 +116,10 @@ add_executable(${PROJECT_NAME} tests.cpp
     loop.cpp
     make_index_sequence.cpp
     array/cast_kind.cpp
+    array/ndarray.cpp
+    array/boost.cpp
+    array/stl.cpp
+    array/error_type.cpp
     ${META_EVAL_TEST_SOURCES}
     ${META_VIEW_TEST_SOURCES}
     ${META_INDEX_TEST_SOURCES}

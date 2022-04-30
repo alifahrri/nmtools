@@ -21,6 +21,10 @@
 #include "nmtools/meta/utl/traits.hpp"
 #include "nmtools/meta/utl/transform.hpp"
 
+#ifdef NMTOOLS_ENABLE_BOOST
+#include "nmtools/meta/boost.hpp"
+#endif
+
 namespace nmtools::meta
 {
     // quick workaround to support fixed_shape for raw array.

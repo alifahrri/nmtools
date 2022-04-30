@@ -38,6 +38,12 @@ namespace nmtools::meta
     };
 
     template <typename T>
+    struct is_num<const T> : is_num<T> {};
+
+    template <typename T>
+    struct is_num<T&> : is_num<T> {};
+
+    template <typename T>
     constexpr inline auto is_num_v = is_num<T>::value;
 } // namespace nmtools::meta
 

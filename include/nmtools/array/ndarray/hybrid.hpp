@@ -190,22 +190,40 @@ namespace nmtools::array
 
         template <typename...size_types>
         constexpr auto resize(size_types...shape)
-            -> meta::enable_if_t<(meta::is_index_v<size_types> && ...)>
+            -> meta::enable_if_t<(meta::is_index_v<size_types> && ...),bool>
         {
             using tuple_t = meta::make_tuple_type_t<size_types...>;
+            // TODO: consider to trigger compile-error here
+            if (sizeof...(shape) != dim_) {
+                return false;
+            }
+            auto product = index::product(nmtools_tuple{shape...});
+            if ((size_t)product > max_elements) {
+                return false;
+            }
             meta::template_for<sizeof...(shape)>([&](auto index){
                 constexpr auto i = decltype(index)::value;
                 shape_.at(i) = nmtools::get<i>(tuple_t{shape...});
             });
             strides_ = strides();
+            return true;
             // numel_   = numel();
             // data.resize(numel_);
         } // resize
 
         constexpr auto resize(const shape_type& shape)
         {
+            // TODO: consider to trigger compile-error here
+            if (len(shape) != dim_) {
+                return false;
+            }
+            auto product = index::product(shape);
+            if ((size_t)product > max_elements) {
+                return false;
+            }
             shape_   = shape;
             strides_ = strides();
+            return true;
             // numel_   = numel();
             // data.resize(numel_);
         } // resize
@@ -434,6 +452,7 @@ namespace nmtools::meta
         , meta::enable_if_t<is_index_v<T>>
     > : meta::true_type {};
 
+    // TODO: remove
     template <typename T, size_t max_elements>
     struct hybrid_index_array_max_size< array::hybrid_ndarray<T,max_elements,1>
         , meta::enable_if_t<is_index_v<T>>
@@ -443,6 +462,7 @@ namespace nmtools::meta
         using type = size_t;
     }; // hybrid_index_array_max_size
 
+    // TODO: remove
     template <typename T, size_t max_elements, size_t new_max_elements>
     struct resize_hybrid_index_array_max_size< array::hybrid_ndarray<T,max_elements,1>
         , new_max_elements, meta::enable_if_t<is_index_v<T>>
@@ -470,12 +490,21 @@ namespace nmtools::meta
     };
 
     template <typename T, size_t max_elements, size_t dimension>
+    struct bounded_size<array::hybrid_ndarray<T,max_elements,dimension>>
+    {
+        static constexpr auto value = max_elements;
+        using value_type = size_t;
+    }; // bounded_size
+
+    // TODO: remove
+    template <typename T, size_t max_elements, size_t dimension>
     struct hybrid_ndarray_max_size<array::hybrid_ndarray<T,max_elements,dimension>>
     {
         static constexpr auto value = max_elements;
         using type = size_t;
     }; // hybrid_ndarray_max_size
 
+    // TODO: remove
     /**
      * @brief specialize metafunction resize_hybrid_ndarray_max_size for hybrid_ndarray
      * 
@@ -489,6 +518,7 @@ namespace nmtools::meta
         using type = array::hybrid_ndarray<T,N,dimension>;
     }; // resize_hybrid_ndarray_max_size
 
+    // TODO: remove
     /**
      * @brief Construct new hybrid_ndarray which its dimension are replaced with new dimension.
      * 

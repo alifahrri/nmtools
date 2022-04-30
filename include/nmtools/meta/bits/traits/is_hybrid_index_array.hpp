@@ -20,6 +20,12 @@ namespace nmtools::meta
     struct is_hybrid_index_array : false_type {};
 
     template <typename T>
+    struct is_hybrid_index_array<const T> : is_hybrid_index_array<T> {};
+
+    template <typename T>
+    struct is_hybrid_index_array<T&> : is_hybrid_index_array<T> {};
+
+    template <typename T>
     inline constexpr auto is_hybrid_index_array_v = is_hybrid_index_array<T>::value;
 } // namespace nmtools::meta
 

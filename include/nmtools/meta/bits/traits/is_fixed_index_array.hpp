@@ -3,6 +3,8 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
+#include "nmtools/meta/bits/traits/is_reference.hpp"
+#include "nmtools/meta/bits/traits/is_const.hpp"
 
 namespace nmtools::meta
 {
@@ -16,6 +18,12 @@ namespace nmtools::meta
      */
     template <typename T, typename=void>
     struct is_fixed_index_array : false_type {};
+
+    template <typename T>
+    struct is_fixed_index_array<const T> : is_fixed_index_array<T> {};
+
+    template <typename T>
+    struct is_fixed_index_array<T&> : is_fixed_index_array<T> {};
 
     template <typename T>
     inline constexpr auto is_fixed_index_array_v = is_fixed_index_array<T>::value;

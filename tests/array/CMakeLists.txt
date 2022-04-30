@@ -127,9 +127,10 @@ if (NOT NMTOOLS_TEST_ARRAY_UTILITY)
 endif ()
 
 set(NDARRAY_TEST_SOURCES
-    fixed/ndarray.cpp
-    hybrid/ndarray.cpp
-    dynamic/ndarray.cpp
+    ndarray/ndarray.cpp
+    ndarray/fixed.cpp
+    ndarray/dynamic.cpp
+    ndarray/hybrid.cpp
 )
 if (NOT NMTOOLS_TEST_NDARRAY)
     set(NDARRAY_TEST_SOURCES "")

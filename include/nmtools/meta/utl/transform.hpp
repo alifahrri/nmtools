@@ -231,6 +231,8 @@ namespace nmtools::meta
     template <typename T, size_t N, typename U>
     struct replace_element_type<utl::array<T,N>,U>
     {
+        // NOTE: this array maybe nested array
+        // so must resize back to the original shape
         using array_type = utl::array<T,N>;
         static constexpr auto vtype = [](){
             using array_t = utl::array<U,N>;

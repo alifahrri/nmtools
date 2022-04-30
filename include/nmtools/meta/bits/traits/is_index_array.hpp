@@ -25,6 +25,12 @@ namespace nmtools::meta
     };
 
     template <typename T>
+    struct is_index_array<const T> : is_index_array<T> {};
+
+    template <typename T>
+    struct is_index_array<T&> : is_index_array<T> {};
+
+    template <typename T>
     constexpr inline auto is_index_array_v = is_index_array<T>::value;
 } // namespace nmtools::meta
 

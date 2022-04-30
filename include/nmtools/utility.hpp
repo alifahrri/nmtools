@@ -22,4 +22,8 @@
 
 #include "nmtools/utility/tuple_cat.hpp"
 
+#ifdef NMTOOLS_ENABLE_BOOST
+#include "nmtools/utility/boost/get.hpp"
+#endif
+
 #endif // NMTOOLS_UTILITY_HPP

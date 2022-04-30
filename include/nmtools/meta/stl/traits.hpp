@@ -38,12 +38,14 @@ namespace nmtools::meta
     template <typename T, auto N>
     struct is_integral_constant<std::integral_constant<T,N>> : true_type {};
 
+    // TODO: move to array
     template <typename T, size_t N>
     struct fixed_index_array_size<std::array<T,N>,std::enable_if_t<is_index_v<T>>>
     {
         static constexpr auto value = N;
     };
 
+    // TODO: move to array
     template <typename...Ts>
     struct fixed_index_array_size<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>>
     {
@@ -63,6 +65,7 @@ namespace nmtools::meta
     template <typename T, size_t N>
     struct is_constant_index_array<std::array<T,N>,std::enable_if_t<is_constant_index_v<T>>> : std::true_type {};
 
+    // TODO: move to transform.hpp
     template <typename T>
     struct get_maybe_type<std::optional<T>>
     {
@@ -75,6 +78,7 @@ namespace nmtools::meta
     template <size_t value>
     struct is_signed<std::integral_constant<size_t,value>> : std::false_type {};
 
+    // TODO: remove
     /**
      * @brief specialization of has_tuple_size when tuple_size<T> is well-formed
      * 
@@ -82,18 +86,6 @@ namespace nmtools::meta
      */
     template <typename T>
     struct has_tuple_size<T, void_t<typename std::tuple_size<T>::type>> : true_type {};
-
-    // this allow bool to be considered as "index"
-    // TODO: remove
-    /**
-     * @brief 
-     * 
-     * @tparam T 
-     */
-    template <typename T>
-    struct is_index<T, enable_if_t<
-        std::is_integral_v<T> || is_integral_constant_v<T>
-    > > : true_type {};
 
 // TODO: no need to use ifdef, can safely assume already have vector
 #if defined(NMTOOLS_HAS_STL_VECTOR) && (NMTOOLS_HAS_STL_VECTOR)
