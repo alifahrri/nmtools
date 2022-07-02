@@ -694,7 +694,8 @@ TEST_CASE("shape_reshape(case9)" * doctest::test_suite("index::constexpr_shape_r
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_f, newshape_f );
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_h, newshape_h );
 
-    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_ct, newshape_ct );
+    // triggers compile time error, as it should be
+    // CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_ct, newshape_ct );
 
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape, newshape_ct );
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_a, newshape_ct );
@@ -709,7 +710,7 @@ TEST_CASE("shape_reshape(case10)" * doctest::test_suite("index::constexpr_shape_
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_f, newshape_f );
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_h, newshape_h );
 
-    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_ct, newshape_ct );
+    // CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_ct, newshape_ct );
 
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape, newshape_ct );
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_a, newshape_ct );
@@ -724,7 +725,7 @@ TEST_CASE("shape_reshape(case11)" * doctest::test_suite("index::constexpr_shape_
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_f, newshape_f );
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_h, newshape_h );
 
-    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_ct, newshape_ct );
+    // CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_ct, newshape_ct );
 
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape, newshape_ct );
     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_a, newshape_ct );

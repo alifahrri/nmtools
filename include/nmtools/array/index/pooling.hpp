@@ -6,7 +6,7 @@
 #include "nmtools/assert.hpp"
 
 #include "nmtools/meta.hpp"
-#include "nmtools/math.hpp"
+#include "nmtools/platform/math/constexpr.hpp"
 
 #include "nmtools/array/index/ref.hpp"
 
@@ -79,9 +79,9 @@ namespace nmtools::index
                 auto spatial_i = at(spatial_dim,i);
                 auto r_shape_i = float(at(shape,spatial_i) + pad - ((at(kernel_size_,spatial_i) - 1) * dilations + 1)) / at(stride_,spatial_i) + 1;
                 if (static_cast<bool>(ceil_mode)) {
-                    at(res,spatial_i) = math::ceil(r_shape_i);
+                    at(res,spatial_i) = math::constexpr_ceil(r_shape_i);
                 } else {
-                    at(res,spatial_i) = math::floor(r_shape_i);
+                    at(res,spatial_i) = math::constexpr_floor(r_shape_i);
                 }
             }
         }
