@@ -6,6 +6,7 @@
 #include "nmtools/array/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/utility/forward.hpp"
+#include "nmtools/array/index/product.hpp"
 
 /**
  * @defgroup array 
@@ -51,7 +52,11 @@ namespace nmtools::array {
          */
         static constexpr auto shape()
         {
-            return meta::make_array_type_t<size_t,dim_>{Shape1,ShapeN...};
+            #if 1
+            return nmtools_array<size_t,dim_>{Shape1,ShapeN...};
+            #else
+            return nmtools_tuple{meta::ct_v<Shape1>,meta::ct_v<ShapeN>...};
+            #endif
         }
         static inline constexpr auto shape_ = shape();
 
@@ -63,10 +68,7 @@ namespace nmtools::array {
          */
         static constexpr auto numel()
         {
-            size_t numel_ = 1;
-            for (auto s : shape_)
-                numel_ *= s;
-            return numel_;
+            return index::product(shape_);
         }
         static inline constexpr auto numel_ = numel();
 
@@ -191,6 +193,29 @@ namespace nmtools::array {
     /** @} */ // end group fixed array
 } // namespace nmtools::array
 
+namespace nmtools::meta
+{
+    template <typename T, size_t Shape1, size_t...ShapeN>
+    struct fixed_shape<
+        array::fixed_ndarray<T,Shape1,ShapeN...>
+    >
+    {
+        // calling fixed_shape should return constexpr value instead of constant runtime
+        static constexpr auto value = nmtools_array{Shape1,ShapeN...};
+        using value_type = decltype(value);
+    }; // fixed_shape
+
+    template <typename T, size_t Shape1, size_t...ShapeN, auto...new_shape>
+    struct resize_shape<
+        array::fixed_ndarray<T,Shape1,ShapeN...>
+        , as_type<new_shape...>
+    >
+    {
+        using type = array::fixed_ndarray<T,new_shape...>;
+    }; // resize_shape
+    
+} // namespace nmtools::meta
+
 namespace nmtools
 {
     /**
@@ -198,6 +223,7 @@ namespace nmtools
      * 
      */
 
+    // TODO: remove
     /**
      * @brief return the shape of fixed_ndarray, which is known at compile-time
      * 
@@ -213,6 +239,7 @@ namespace nmtools
         return a.shape();
     } // shape
 
+    // TODO: remove
     /**
      * @brief return the dimensionality of fixed_ndarray, which is known at compile-time
      * 
@@ -229,6 +256,7 @@ namespace nmtools
 
     /** @} */ // end group utility
 
+    // TODO: remove
     /**
      * @brief specialization of fixed_ndarray for meta::fixed_ndarray_shape array traits.
      * 
@@ -238,21 +266,27 @@ namespace nmtools
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
     struct meta::fixed_ndarray_shape<array::fixed_ndarray<T,Shape1,ShapeN...>>
+        : fixed_shape<array::fixed_ndarray<T,Shape1,ShapeN...>> {};
+    #if 0
     {
         static inline constexpr auto value = meta::make_array_type_t<size_t,sizeof...(ShapeN)+1>{Shape1,ShapeN...};
         using value_type = decltype(value);
     };
+    #endif
 
+    // TODO: remove
     template <typename T, size_t N>
     struct meta::is_index_array< array::fixed_ndarray<T,N>
         , meta::enable_if_t<meta::is_index_v<T>>
     > : meta::true_type {};
 
+    // TODO: remove
     template <typename T, size_t N>
     struct meta::is_fixed_index_array< array::fixed_ndarray<T,N>
         , meta::enable_if_t<meta::is_index_v<T>>
     > : meta::true_type {};
 
+    // TODO: remove
     template <typename T, size_t N>
     struct meta::fixed_index_array_size< array::fixed_ndarray<T,N>
         , meta::enable_if_t<meta::is_index_v<T>>
@@ -283,8 +317,6 @@ namespace nmtools
     }; // replace_element_type
 } // namespace nmtools
 
-#include "nmtools/meta.hpp"
-
 namespace nmtools::meta
 {
     /**
@@ -292,6 +324,7 @@ namespace nmtools::meta
      * @{
      */
 
+    // TODO: remove
     /**
      * @brief specialization of metafunction
      * nmtools::meta::get_ndarray_value_type for array::fixed_ndarray types
@@ -305,6 +338,7 @@ namespace nmtools::meta
         using type = T;
     };
 
+    // TODO: remove, use as_type
     /**
      * @brief helper type to pack values as type
      * 
@@ -322,6 +356,7 @@ namespace nmtools::meta
         using type = value_type<values..., new_value>;
     }; // append_value
 
+    // TODO: remove
     template <typename T, auto...Shapes, template<auto...> typename typelist, auto...NewShapes>
     struct resize_fixed_ndarray<array::fixed_ndarray<T,Shapes...>,typelist<NewShapes...>>
     {
@@ -380,6 +415,7 @@ namespace nmtools::meta
         >;
     }; // resize_fixed_ndarray
 
+// TODO: cleanup, use new generic ndarray
 #ifndef NMTOOLS_MAKE_FIXED_NDARRAY
 #define NMTOOLS_MAKE_FIXED_NDARRAY
 

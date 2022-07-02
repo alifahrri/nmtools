@@ -347,6 +347,9 @@ namespace nmtools::array
     hybrid_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10][Shape11]) -> hybrid_ndarray<T,Shape1*Shape2*Shape3*Shape4*Shape5*Shape6*Shape7*Shape8*Shape9*Shape10*Shape11,11>;
 
 
+    template <typename T, size_t max_size>
+    using static_vector = hybrid_ndarray<T,max_size,1>;
+
     template <typename T>
     struct is_hybrid_ndarray : meta::false_type {};
 
@@ -535,6 +538,31 @@ namespace nmtools::meta
         using type = array::hybrid_ndarray<T,max_elements,DIM>;
     }; // resize_hybrid_ndarray_dim
 
+    template <typename T, size_t max_elements, size_t dimension, auto new_dim>
+    struct resize_dim<
+        array::hybrid_ndarray<T,max_elements,dimension>, new_dim
+    >
+    {
+        using type = array::hybrid_ndarray<T,max_elements,new_dim>;
+    }; // resize_dim
+
+    // TODO: use resize_dim by default
+    template <typename T, size_t max_elements, size_t dimension, auto new_dim>
+    struct resize_bounded_dim<
+        array::hybrid_ndarray<T,max_elements,dimension>, new_dim
+    >
+    {
+        using type = array::hybrid_ndarray<T,max_elements,new_dim>;
+    };// resize_bounded_dim
+
+    template <typename T, size_t max_elements, size_t dimension, auto new_size>
+    struct resize_bounded_size<
+        array::hybrid_ndarray<T,max_elements,dimension>, new_size
+    >
+    {
+        using type = array::hybrid_ndarray<T,new_size,dimension>;
+    };
+
     /**
      * @brief specialize replace_element_type for array::hybrid_ndarray
      * 
@@ -611,6 +639,7 @@ namespace nmtools::meta
      * 
      */
 
+    // TODO: remove
     /**
      * @brief specialization of metafunction get_ndarray_value_type,
      * which tells the value/element type of hybrid_ndarray
