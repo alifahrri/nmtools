@@ -33,9 +33,9 @@ namespace nmtools::index
             auto src_dim  = len(shape);
             constexpr auto n_slices = sizeof...(slices_t) + 1;
 
-            auto dim = [&](){
+            auto dim = [&]()->size_t{ // quick workaround for error: inconsistent types
                 if (src_dim == n_slices) {
-                    auto dims = nmtools_array{len(slice),len(slices)...};
+                    auto dims = nmtools_array{(size_t)len(slice),(size_t)len(slices)...};
                     auto max  = at(dims,0);
                     for (size_t i=1; i<(size_t)dims.size(); i++) {
                         auto dim = at(dims,i);
@@ -54,7 +54,7 @@ namespace nmtools::index
                 result.resize(dim);
             }
 
-            auto [success, broadcasted] = [&](){
+            const auto [success, broadcasted] = [&](){
                 if constexpr (n_slices > 1) {
                     return broadcast_shape(slice,slices...);
                 } else {
@@ -124,13 +124,22 @@ namespace nmtools::meta
         , shape_t, slice0_t, slices_t...>
     {
         static constexpr auto vtype = [](){
+            auto index_vtype = [](){
+                using index_t = get_element_or_common_type_t<shape_t>;
+                if constexpr (is_constant_index_v<index_t>) {
+                    // force to runtime type
+                    return as_value_v<typename index_t::value_type>;
+                } else {
+                    return as_value_v<index_t>;
+                }
+            }();
+            using index_t [[maybe_unused]] = type_t<decltype(index_vtype)>;
             if constexpr (is_fixed_index_array_v<shape_t>
                 && is_fixed_index_array_v<slice0_t>
                 && (is_fixed_index_array_v<slices_t> && ...)
             ) {
                 constexpr auto DIM = len_v<shape_t>;
                 constexpr auto n_slices = sizeof...(slices_t) + 1;
-                using index_t = get_element_type_t<shape_t>;
                 using types_t = type_list<slice0_t,slices_t...>;
                 if constexpr (DIM == n_slices) {
                     // NOTE: for array_slice, full indexing
@@ -161,7 +170,6 @@ namespace nmtools::meta
                 &&  is_index_array_v<slice0_t>
                 && (is_index_array_v<slices_t> && ...)
             ) {
-                using index_t = get_element_type_t<shape_t>;
                 using type = nmtools_list<index_t>;
                 return as_value_v<type>;
             } else {
