@@ -37,7 +37,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename repeats_t, typename axis_t>
-    constexpr auto shape_repeat(const shape_t shape, const repeats_t& repeats, [[maybe_unused]] axis_t axis)
+    constexpr auto shape_repeat(const shape_t& shape, const repeats_t& repeats, [[maybe_unused]] axis_t axis)
     {
         using return_t = meta::resolve_optype_t<shape_repeat_t,shape_t,repeats_t,axis_t>;
         static_assert (meta::is_index_array_v<return_t>
@@ -45,44 +45,47 @@ namespace nmtools::index
         );
         auto ret = return_t {};
 
-        // when axis is None, repeat the flattened array
-        // so the resulting shape is 1-dimensional
-        if constexpr (is_none_v<axis_t>) {
-            auto p = product(shape);
-            at(ret,0) = p * repeats;
-        }
-        else {
-            auto n = len(shape);
-
-            if constexpr (meta::is_resizeable_v<return_t>)
-                ret.resize(n);
-            
-            for (size_t i=0; i<n; i++)
-                at(ret,i) = tuple_at(shape,i);
-
-            if constexpr (meta::is_index_array_v<repeats_t>) {
-                auto r_a = at(ret,axis);
-                auto n   = len(repeats);
-                using common_t = meta::promote_index_t<decltype(r_a),decltype(n)>;
-                // TODO: support optional
-                nmtools_assert ( (common_t)r_a == (common_t)n
-                    , "unsupported shape_repeat"
-                    // numpy: ValueError: operands could not be broadcast together with shape
-                );
-                // when axis is specified and repeats is index array,
-                // the number of element at the specified axis is simply the sum of the repeats
-                // for example:
-                // >>> x = np.array([[1,2],[3,4]])
-                // >>> np.repeat(x, [1, 2], axis=0)
-                // array([[1, 2],
-                //        [3, 4],
-                //        [3, 4]])
-                // at axis 0, first element x(axis,0) is not repeated (repeats(0)=1)
-                // while the second element x(axis,1) is repeated once (repeats(1)=2)
-                at(ret,axis) = sum(repeats);
+        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+            // when axis is None, repeat the flattened array
+            // so the resulting shape is 1-dimensional
+            if constexpr (is_none_v<axis_t>) {
+                auto p = product(shape);
+                at(ret,0) = p * repeats;
             }
-            else
-                at(ret,axis) = at(ret,axis) * repeats;
+            else {
+                auto n = len(shape);
+
+                if constexpr (meta::is_resizeable_v<return_t>)
+                    ret.resize(n);
+                
+                // TODO: do not use tuple_at
+                for (size_t i=0; i<n; i++)
+                    at(ret,i) = tuple_at(shape,i);
+
+                if constexpr (meta::is_index_array_v<repeats_t>) {
+                    auto r_a = at(ret,axis);
+                    auto n   = len(repeats);
+                    using common_t = meta::promote_index_t<decltype(r_a),decltype(n)>;
+                    // TODO: support optional
+                    nmtools_assert ( (common_t)r_a == (common_t)n
+                        , "unsupported shape_repeat"
+                        // numpy: ValueError: operands could not be broadcast together with shape
+                    );
+                    // when axis is specified and repeats is index array,
+                    // the number of element at the specified axis is simply the sum of the repeats
+                    // for example:
+                    // >>> x = np.array([[1,2],[3,4]])
+                    // >>> np.repeat(x, [1, 2], axis=0)
+                    // array([[1, 2],
+                    //        [3, 4],
+                    //        [3, 4]])
+                    // at axis 0, first element x(axis,0) is not repeated (repeats(0)=1)
+                    // while the second element x(axis,1) is repeated once (repeats(1)=2)
+                    at(ret,axis) = sum(repeats);
+                }
+                else
+                    at(ret,axis) = at(ret,axis) * repeats;
+            }
         }
 
         return ret;
@@ -91,6 +94,11 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        template <typename...>
+        struct SHAPE_REPEAT_UNSUPPORTED : detail::fail_t {};
+    }
     /**
      * @brief resolve return type for index::shape_repeat op
      * 
@@ -104,11 +112,32 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_none_v<axis_t>) {
+            if constexpr (
+                is_constant_index_array_v<shape_t>
+                && (is_constant_index_v<repeats_t> || is_constant_index_array_v<repeats_t>)
+                && (is_none_v<axis_t> || is_constant_index_v<axis_t>)
+            ) {
+                constexpr auto shape   = to_value_v<shape_t>;
+                constexpr auto repeats = to_value_v<repeats_t>;
+                constexpr auto axis    = to_value_v<axis_t>;
+                constexpr auto result  = index::shape_repeat(shape,repeats,axis);
+                return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
+                    using init_type = type_t<decltype(init)>;
+                    using result_t  = append_type_t<init_type,ct<nmtools::at(result,index+1)>>;
+                    return as_value_v<result_t>;
+                }, as_value_v<nmtools_tuple<ct<nmtools::at(result,0)>>>);
+            } else if constexpr (is_none_v<axis_t>) {
                 using type = make_array_type_t<size_t,1>;
                 return as_value_v<type>;
+            } else if constexpr (
+                is_index_array_v<shape_t>
+                && (is_index_v<repeats_t> || is_index_array_v<repeats_t>)
+                && (is_none_v<axis_t> || is_index_v<axis_t>)
+            ) {
+                using type = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
+                return as_value_v<type>;
             } else {
-                using type = tuple_to_array_t<shape_t>;
+                using type = error::SHAPE_REPEAT_UNSUPPORTED<shape_t,repeats_t,axis_t>;
                 return as_value_v<type>;
             }
         }();

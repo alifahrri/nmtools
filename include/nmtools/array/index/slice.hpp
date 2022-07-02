@@ -761,16 +761,16 @@ namespace nmtools::meta
     struct resolve_optype<void,index::shape_dynamic_slice_t,shape_t,slice_t>
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_dynamic_index_array_v<shape_t>) {
-                using index_t = get_element_type_t<shape_t>;
-                using elem_t  = make_unsigned_t<index_t>;
-                using type = replace_element_type_t<shape_t,elem_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_fixed_index_array_v<shape_t>) {
-                using index_t = get_element_type_t<shape_t>;
+            if constexpr (is_fixed_index_array_v<shape_t>) {
+                using index_t = get_element_or_common_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 constexpr auto src_dim = len_v<shape_t>;
                 using type = make_hybrid_ndarray_t<elem_t,src_dim,1>;
+                return as_value_v<type>;
+            } else if constexpr (is_dynamic_index_array_v<shape_t>) {
+                using index_t = get_element_or_common_type_t<shape_t>;
+                using elem_t  = make_unsigned_t<index_t>;
+                using type = replace_element_type_t<shape_t,elem_t>;
                 return as_value_v<type>;
             } else {
                 using type = error::SHAPE_DYNAMIC_SLICE_UNSUPPORTED<shape_t,slice_t>;
@@ -785,9 +785,12 @@ namespace nmtools::meta
     {
         static constexpr auto vtype  = [](){
             // index computation follow shape
-            if constexpr (is_index_array_v<shape_t>) {
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                using type = resolve_optype_t<index::dynamic_slice_t,indices_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,slice_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_index_array_v<shape_t>) {
                 // TODO: handle raw array
-                using index_t = get_element_type_t<shape_t>;
+                using index_t = get_element_or_common_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 using type = replace_element_type_t<shape_t,elem_t>;
                 return as_value_v<type>;
@@ -994,7 +997,7 @@ namespace nmtools::index
         using return_t = meta::resolve_optype_t<slice_t,indices_t,shape_t,slices_t...>;
         using index_t  = meta::remove_cvref_t<meta::get_element_type_t<return_t>>;
 
-        auto shape = [&](){
+        const auto shape = [&](){
             // convert constant_index_array of shape to easily allow element access with runtime index
             if constexpr (meta::is_constant_index_array_v<shape_t>) {
                 return meta::to_value_v<shape_t>;

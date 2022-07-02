@@ -29,8 +29,10 @@ namespace nmtools::index
     constexpr auto where(const F& f, const array_t& array)
     {
         using return_t = meta::resolve_optype_t<where_t,array_t,index_t>;
-        static_assert (!meta::is_void_v<return_t>
+        #if 0
+        static_assert (!meta::is_void_v<return_t> && !meta::is_fail_v<return_t>
             , "unsupported index::where, couldn't deduce return type" );
+        #endif
         auto res = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
             res.resize(len(array));
@@ -54,6 +56,12 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        template <typename...>
+        struct WHERE_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief resolve where return type for resizeable array type
      * 
@@ -76,7 +84,10 @@ namespace nmtools::meta
                 using type = array::hybrid_ndarray<index_t,N,1>;
                 return as_value_v<type>;
             }
-            else return as_value_v<void>;
+            else {
+                using type = error::WHERE_UNSUPPORTED<array_t, index_t>;
+                return as_value_v<type>;
+            }
         }();
         using type = type_t<remove_cvref_t<decltype(vtype)>>;
     }; // resolve_optype where_t

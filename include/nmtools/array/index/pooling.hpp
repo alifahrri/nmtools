@@ -29,51 +29,60 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
-    constexpr auto shape_pool2d(const shape_t& shape, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{})
+    constexpr auto shape_pool2d(const shape_t& shape_, const kernel_size_t& kernel_size, const stride_t& stride, [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
     {
         using result_t = meta::resolve_optype_t<shape_pool2d_t,shape_t,kernel_size_t,stride_t,ceil_mode_t>;
         // TODO: shape_pool2d error handling
         auto res = result_t {};
 
-        auto dim = len(shape);
-        if constexpr (meta::is_resizeable_v<result_t>) {
-            res.resize(dim);
-        }
-
-        // TODO: shape_pool2d generalize to arbitrary value
-        constexpr auto spatial_dim   = nmtools_array{-2,-1};
-        constexpr auto n_spatial_dim = len(spatial_dim);
-        constexpr auto dilations = 1;
-        constexpr auto pad = 0;
-
-        auto n_batch = (dim-n_spatial_dim);
-        for (size_t i=0; i<n_batch; i++) {
-            // TODO: do not use i, check for batch_dim (that is not on spatial dim)
-            at(res,i) = at(shape,i);
-        }
-
-        // quick workaround to support fixed index array
-        auto kernel_size_ = [&](){
-            if constexpr (meta::is_constant_index_array_v<kernel_size_t>) {
-                return meta::to_value_v<kernel_size_t>;
-            } else {
-                return index::ref(kernel_size);
+        if constexpr (!meta::is_constant_index_array_v<result_t>) {
+            auto shape = [&](){
+                if constexpr (meta::is_constant_index_array_v<shape_t>) {
+                    return meta::to_value_v<shape_t>;
+                } else {
+                    return index::ref(shape_);
+                }
+            }();
+            auto dim = len(shape);
+            if constexpr (meta::is_resizeable_v<result_t>) {
+                res.resize(dim);
             }
-        }();
-        auto stride_ = [&](){
-            if constexpr (meta::is_constant_index_array_v<stride_t>) {
-                return meta::to_value_v<stride_t>;
-            } else {
-                return index::ref(stride);
+
+            // TODO: shape_pool2d generalize to arbitrary value
+            constexpr auto spatial_dim   = nmtools_array{-2,-1};
+            constexpr auto n_spatial_dim = len(spatial_dim);
+            constexpr auto dilations = 1;
+            constexpr auto pad = 0;
+
+            auto n_batch = (dim-n_spatial_dim);
+            for (size_t i=0; i<n_batch; i++) {
+                // TODO: do not use i, check for batch_dim (that is not on spatial dim)
+                at(res,i) = at(shape,i);
             }
-        }();
-        for (size_t i=0; i<n_spatial_dim; i++) {
-            auto spatial_i = at(spatial_dim,i);
-            auto r_shape_i = float(at(shape,spatial_i) + pad - ((at(kernel_size_,spatial_i) - 1) * dilations + 1)) / at(stride_,spatial_i) + 1;
-            if (static_cast<bool>(ceil_mode)) {
-                at(res,spatial_i) = math::ceil(r_shape_i);
-            } else {
-                at(res,spatial_i) = math::floor(r_shape_i);
+
+            // quick workaround to support fixed index array
+            auto kernel_size_ = [&](){
+                if constexpr (meta::is_constant_index_array_v<kernel_size_t>) {
+                    return meta::to_value_v<kernel_size_t>;
+                } else {
+                    return index::ref(kernel_size);
+                }
+            }();
+            auto stride_ = [&](){
+                if constexpr (meta::is_constant_index_array_v<stride_t>) {
+                    return meta::to_value_v<stride_t>;
+                } else {
+                    return index::ref(stride);
+                }
+            }();
+            for (size_t i=0; i<n_spatial_dim; i++) {
+                auto spatial_i = at(spatial_dim,i);
+                auto r_shape_i = float(at(shape,spatial_i) + pad - ((at(kernel_size_,spatial_i) - 1) * dilations + 1)) / at(stride_,spatial_i) + 1;
+                if (static_cast<bool>(ceil_mode)) {
+                    at(res,spatial_i) = math::ceil(r_shape_i);
+                } else {
+                    at(res,spatial_i) = math::floor(r_shape_i);
+                }
             }
         }
 
@@ -170,6 +179,29 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (
+                is_constant_index_array_v<shape_t>
+                && is_constant_index_array_v<kernel_size_t>
+                && is_constant_index_array_v<stride_t>
+                && is_constant_index_v<ceil_mode_t>
+            ) {
+                constexpr auto shape       = to_value_v<shape_t>;
+                constexpr auto kernel_size = to_value_v<kernel_size_t>;
+                constexpr auto stride      = to_value_v<stride_t>;
+                constexpr auto ceil_mode   = to_value_v<ceil_mode_t>;
+                constexpr auto result = index::shape_pool2d(shape,kernel_size,stride,ceil_mode);
+                return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
+                    using type = type_t<decltype(init)>;
+                    return as_value_v<append_type_t<type,ct<nmtools::at(result,index+1)>>>;
+                }, as_value_v<nmtools_tuple<ct<nmtools::at(result,0)>>>);
+            } else if constexpr (
+                is_constant_index_array_v<shape_t>
+                && is_index_array_v<kernel_size_t>
+                && is_index_array_v<stride_t>
+                && is_index_v<ceil_mode_t>
+            ) {
+                using shape_type = decltype(to_value_v<shape_t>);
+                return as_value_v<resolve_optype_t<index::shape_pool2d_t,shape_type,kernel_size_t,stride_t,ceil_mode_t>>;
+            } else if constexpr (
                    is_index_array_v<shape_t>
                 && is_index_array_v<kernel_size_t>
                 && is_index_array_v<stride_t>

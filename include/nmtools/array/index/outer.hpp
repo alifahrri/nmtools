@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/ndarray.hpp"
 
 namespace nmtools::index
 {
@@ -16,17 +17,19 @@ namespace nmtools::index
         using return_t = meta::resolve_optype_t<shape_outer_t,ashape_t,bshape_t>;
         auto res = return_t {};
 
-        auto adim = len(ashape);
-        auto bdim = len(bshape);
-        if constexpr (meta::is_resizeable_v<return_t>) {
-            auto dim  = adim + bdim;
-            res.resize(dim);
+        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+            auto adim = len(ashape);
+            auto bdim = len(bshape);
+            if constexpr (meta::is_resizeable_v<return_t>) {
+                auto dim  = adim + bdim;
+                res.resize(dim);
+            }
+            
+            for (size_t i=0; i<adim; i++)
+                at(res,i) = at(ashape,i);
+            for (size_t i=0; i<bdim; i++)
+                at(res,i+adim) = at(bshape,i);
         }
-        
-        for (size_t i=0; i<adim; i++)
-            at(res,i) = at(ashape,i);
-        for (size_t i=0; i<bdim; i++)
-            at(res,i+adim) = at(bshape,i);
         
         return res;
     } // shape_outer
@@ -59,6 +62,11 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        template <typename...>
+        struct SHAPE_OUTER_UNSUPPORTED : detail::fail_t {};
+    }
     // TODO: cleanup index metafunctions, handling constant index array
     template <typename ashape_t, typename bshape_t>
     struct resolve_optype<
@@ -66,43 +74,67 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (
+            // TODO: fix is index array to include boost type
+            #if 0
+            if constexpr (!is_index_array_v<ashape_t> || !is_index_array_v<bshape_t>) {
+                return as_value_v<error::SHAPE_OUTER_UNSUPPORTED<ashape_t,bshape_t>>;
+            } else
+            #endif
+            if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                constexpr auto result = index::shape_outer(to_value_v<ashape_t>,to_value_v<bshape_t>);
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(result)-1>([&](auto init, auto index){
+                    using init_type = type_t<decltype(init)>;
+                    return as_value_v<append_type_t<init_type,ct<at(result,index+1)>>>;
+                }, as_value_v<nmtools_tuple<ct<at(result,0)>>>);
+            } else if constexpr (is_fixed_index_array_v<ashape_t> && is_fixed_index_array_v<bshape_t>) {
+                constexpr auto N = len_v<ashape_t> + len_v<bshape_t>;
+                using type = nmtools_array<get_element_type_t<ashape_t>,N>;
+                return as_value_v<type>;
+            } else if constexpr (is_hybrid_index_array_v<ashape_t> && is_hybrid_index_array_v<bshape_t>) {
+                constexpr auto N = bounded_size_v<ashape_t> + bounded_size_v<bshape_t>;
+                using type = array::static_vector<get_element_type_t<ashape_t>,N>;
+                return as_value_v<type>;
+            } else if constexpr (
                 is_dynamic_index_array_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
             ) // both are dynamic resizeable
                 return as_value<ashape_t>{};
             else if constexpr (
-                is_dynamic_index_array_v<ashape_t> && is_hybrid_ndarray_v<bshape_t>
+                is_dynamic_index_array_v<ashape_t> && is_bounded_size_v<bshape_t>
             ) // a is dynamic resizeable
                 return as_value<ashape_t>{};
             else if constexpr (
-                is_hybrid_ndarray_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
+                is_bounded_size_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
             ) // b is dynamic resizeable
                 return as_value<bshape_t>{};
             else if constexpr (
-                is_hybrid_ndarray_v<ashape_t> && is_hybrid_ndarray_v<bshape_t>
+                is_bounded_size_v<ashape_t> && is_bounded_size_v<bshape_t>
             ) /* both is hybrid */ {
-                constexpr auto amax = hybrid_ndarray_max_size_v<ashape_t>;
-                constexpr auto bmax = hybrid_ndarray_max_size_v<bshape_t>;
+                constexpr auto amax = bounded_size_v<ashape_t>;
+                constexpr auto bmax = bounded_size_v<bshape_t>;
                 constexpr auto rmax = amax + bmax;
-                using new_type = resize_hybrid_ndarray_max_size_t<ashape_t,rmax>;
+                using index_t = make_unsigned_t<get_element_or_common_type_t<ashape_t>>;
+                using new_type = array::static_vector<index_t,rmax>;
                 return as_value<new_type>{};
             }
             else if constexpr (
-                is_hybrid_ndarray_v<ashape_t> && is_fixed_index_array_v<bshape_t>
+                is_bounded_size_v<ashape_t> && is_fixed_index_array_v<bshape_t>
             ) /* a is hybrid & b is fixed, prefer a */ {
-                constexpr auto amax  = hybrid_ndarray_max_size_v<ashape_t>;
-                constexpr auto bsize = fixed_index_array_size_v<bshape_t>;
+                constexpr auto amax  = bounded_size_v<ashape_t>;
+                constexpr auto bsize = len_v<bshape_t>;
                 constexpr auto rmax = amax + bsize;
-                using new_type = resize_hybrid_ndarray_max_size_t<ashape_t,rmax>;
+                using index_t = make_unsigned_t<get_element_or_common_type_t<ashape_t>>;
+                using new_type = array::static_vector<index_t,rmax>;
                 return as_value<new_type>{};
             }
             else if constexpr (
-                is_fixed_index_array_v<ashape_t> && is_hybrid_ndarray_v<bshape_t>
+                is_fixed_index_array_v<ashape_t> && is_bounded_size_v<bshape_t>
             ) /* a is fixed & b is hybrid, prefer b */ {
-                constexpr auto asize = fixed_index_array_size_v<ashape_t>;
+                constexpr auto asize = len_v<ashape_t>;
                 constexpr auto bmax  = hybrid_ndarray_max_size_v<bshape_t>;
                 constexpr auto rmax  = asize + bmax;
-                using new_type = resize_hybrid_ndarray_max_size_t<bshape_t,rmax>;
+                using index_t = make_unsigned_t<get_element_or_common_type_t<ashape_t>>;
+                using new_type = array::static_vector<index_t,rmax>;
                 return as_value<new_type>{};
             }
             else if constexpr (
@@ -116,14 +148,16 @@ namespace nmtools::meta
             else if constexpr (
                 is_fixed_index_array_v<ashape_t> && is_fixed_index_array_v<bshape_t>
             ) /* both are fixed */ {
-                constexpr auto asize = fixed_index_array_size_v<ashape_t>;
-                constexpr auto bsize = fixed_index_array_size_v<bshape_t>;
+                constexpr auto asize = len_v<ashape_t>;
+                constexpr auto bsize = len_v<bshape_t>;
                 constexpr auto rsize = asize + bsize;
                 using new_type = transform_bounded_array_t<tuple_to_array_t<ashape_t>>;
                 using type = resize_fixed_index_array_t<new_type,rsize>;
                 return as_value<type>{};
             }
-            else return as_value<void>{};
+            else {
+                return as_value<error::SHAPE_OUTER_UNSUPPORTED<ashape_t,bshape_t>>{};
+            }
         }();
 
         using type = type_t<meta::remove_cvref_t<decltype(vtype)>>;

@@ -64,10 +64,12 @@ namespace nmtools::index
         // fn to check if given i is detected in axis
         // representing axis to be removed
         [[maybe_unused]]
-        auto in_axis = [&](auto i){
+        auto in_axis = [&]([[maybe_unused]] auto i){
             if constexpr (meta::is_index_v<axis_t>) {
                 using common_t = meta::promote_index_t<axis_t,decltype(i)>;
                 return (common_t)i==(common_t)axis;
+            } else if constexpr (is_none_v<axis_t>) {
+                return true;
             } else {
                 auto f_predicate = [i](auto axis){
                     using common_t = meta::promote_index_t<decltype(axis),decltype(i)>;
@@ -168,6 +170,16 @@ namespace nmtools::meta
                     return as_value_v<r_t>;
                 }, as_value_v<init_type>);
                 return result;
+            } else if constexpr (
+                is_fixed_index_array_v<shape_t>
+                && is_none_v<axis_t>
+                && is_true_type_v<keepdims_t>
+            ) {
+                constexpr auto size = len_v<shape_t>;
+                return template_reduce<size-1>([](auto init, auto){
+                    using init_type = type_t<decltype(init)>;
+                    return as_value_v<append_type_t<init_type,ct<1>>>;
+                }, as_value_v<nmtools_tuple<ct<1>>>);
             } else if constexpr (
                 is_constant_index_array_v<shape_t>
             ) {
