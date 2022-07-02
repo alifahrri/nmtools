@@ -11,6 +11,12 @@
 
 namespace nmtools::view
 {
+    /**
+     * @brief Type constructor for expand_dims view
+     * 
+     * @tparam array_t 
+     * @tparam axis_t 
+     */
     template <typename array_t, typename axis_t>
     struct expand_dims_t
     {
@@ -37,9 +43,7 @@ namespace nmtools::view
 
         constexpr auto dim() const noexcept
         {
-            auto shape_ = shape();
-            auto dim_   = ::nmtools::shape(shape_);
-            return at(dim_, 0);
+            return len(shape());
         } // dim
 
         template <typename...size_types>
@@ -81,6 +85,7 @@ namespace nmtools::meta
     using view::decorator_t;
     using view::expand_dims_t;
 
+    // TODO: remove
     /**
      * @brief Infer the shape of expand_dims view at compile-time.
      * 

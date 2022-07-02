@@ -132,6 +132,7 @@ namespace nmtools::meta
         using type = typename view_type::value_type;
     }; // get_element_type
 
+    // TODO: remove
     /**
      * @brief Infer the shape of concatenate view at compile-time.
      * 
@@ -208,6 +209,7 @@ namespace nmtools::meta
         using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
     }; // fixed_dim
 
+    // TODO: remove
     /**
      * @brief Infer the shape of hybrid ndarray maximum size at compile-time.
      * Successful call will make the view considered hybrid_ndarray.
@@ -235,6 +237,21 @@ namespace nmtools::meta
         using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
         using type = remove_cvref_t<decltype(value)>;
     }; // hybrid_ndarray_max_size
+
+    template <typename lhs_array_t, typename rhs_array_t>
+    struct fixed_shape<
+        view::decorator_t< view::concatenate_t, lhs_array_t, rhs_array_t, none_t >
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (is_fixed_size_v<lhs_array_t> && is_fixed_size_v<rhs_array_t>) {
+                return nmtools_array{fixed_size_v<lhs_array_t> + fixed_size_v<rhs_array_t>};
+            } else {
+                using type = view::decorator_t< view::concatenate_t, lhs_array_t, rhs_array_t, none_t >;
+                return error::FIXED_SIZE_UNSUPPORTED<type>{};
+            }
+        }();
+    };
 
     template <typename lhs_array_t, typename rhs_array_t, typename axis_t>
     struct is_ndarray< 

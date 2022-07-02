@@ -1,7 +1,6 @@
 #ifndef NMTOOLS_ARRAY_VIEW_FLATTEN_HPP
 #define NMTOOLS_ARRAY_VIEW_FLATTEN_HPP
 
-#include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
@@ -9,10 +8,13 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 
+// TODO: remove
 #include "nmtools/array/meta.hpp"
 
 namespace nmtools::index
 {
+    using namespace literals;
+
     // TODO: consider to move somewhere else
     template <typename array_t>
     constexpr auto shape_flatten(const array_t& array)
@@ -20,13 +22,16 @@ namespace nmtools::index
         // TODO: return fixed index whenever possible
         // TODO: use make_unsigned_t instead of size_t
         if constexpr (meta::is_num_v<array_t>) {
-            // NOTE: use array since other module not handling tuple well
-            return nmtools_array{(size_t)1};
+            return nmtools_tuple{1_ct};
         } else {
             auto shape_ = view::detail::shape(array);
             auto N = index::product(shape_);
             // flattened array is strictly 1D
-            return nmtools_array{(size_t)N};   
+            if constexpr (meta::is_constant_index_v<decltype(N)>) {
+                return nmtools_tuple{N};
+            } else {
+                return nmtools_array{N};
+            }
         }
     } // shape_flatten
 } // namespace nmtools::index
@@ -71,7 +76,15 @@ namespace nmtools::view
         constexpr auto index(size_type i) const
         {
             using ::nmtools::index::compute_indices;
-            using index_t = meta::get_index_type_t<array_t>;
+            constexpr auto index_vtype = [](){
+                using index_t = meta::get_index_type_t<array_t>;
+                if constexpr (meta::is_constant_index_v<index_t>) {
+                    return meta::as_value_v<typename index_t::value_type>;
+                } else {
+                    return meta::as_value_v<index_t>;
+                }
+            }();
+            using index_t = meta::type_t<decltype(index_vtype)>;
             auto shape_   = detail::shape(array);
             auto indices  = compute_indices(static_cast<index_t>(i),shape_);
             return indices;
@@ -90,7 +103,7 @@ namespace nmtools::view
         using value_type      = array_t;
         using const_reference = const value_type&;
         using array_type      = const array_t;
-        using dst_shape_type = decltype(index::shape_flatten(meta::declval<array_type>()));
+        using dst_shape_type  = const decltype(index::shape_flatten(meta::declval<array_type>()));
 
         array_type     array;
         dst_shape_type dst_shape;
@@ -168,6 +181,7 @@ namespace nmtools::meta
 
 namespace nmtools
 {
+    // TODO: remove
     // TODO: update this, to check for fixed dst_shape member type
     /**
      * @brief Infer the shape of flatten view at compile time.
@@ -191,6 +205,8 @@ namespace nmtools
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
 
+    // TODO: remove
+    #if 0
     /**
      * @brief Infer the dimension of flatten view at compile-time.
      * 
@@ -202,10 +218,27 @@ namespace nmtools
         static constexpr auto value = 1ul;
         using value_type = size_t;
     }; // fixed_dim
+    #endif
 } // nmtools
 
 namespace nmtools::meta
 {
+    template <typename array_t>
+    struct fixed_shape<
+        view::decorator_t< view::flatten_t, array_t >
+    >
+    {
+        static constexpr auto value = [](){
+            // flatten view is strictly 1D, only need the size to decide the resulting shape
+            constexpr auto fixed_size = fixed_size_v<array_t>;
+            if constexpr (is_index_v<decltype(fixed_size)>) {
+                return nmtools_array{fixed_size};
+            } else {
+                return fixed_size;
+            }
+        }();
+    }; // fixed_shape
+
     template <typename array_t>
     struct is_ndarray< view::decorator_t< view::flatten_t, array_t > >
     {

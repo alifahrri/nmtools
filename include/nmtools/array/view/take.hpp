@@ -14,21 +14,24 @@ namespace nmtools::view
         using array_type   = resolve_array_type_t<array_t>;
         using indices_type = resolve_attribute_type_t<indices_t>;
         using axis_type    = resolve_attribute_type_t<axis_t>;
+        using src_shape_type = decltype(nmtools::shape(meta::declval<array_t>()));
+        using shape_type     = meta::resolve_optype_t<index::shape_take_t,src_shape_type,indices_t,axis_t>;
 
-        array_type array;
+        array_type   array;
         indices_type indices;
-        axis_type axis;
+        axis_type    axis;
+        shape_type   shape_;
 
-        constexpr take_t(const array_t& array, const indices_t& indices, const axis_t& axis)
+        constexpr take_t(const array_t& array, const indices_t& indices_, const axis_t& axis)
             : array(initialize<array_type>(array))
-            , indices(init_attribute<indices_type>(indices))
+            , indices(init_attribute<indices_type>(indices_))
             , axis(init_attribute<axis_type>(axis))
+            , shape_(index::shape_take(detail::shape(array),indices_,axis))
         {}
         
         constexpr auto shape() const
         {
-            auto shape_ = detail::shape(array);
-            return ::nmtools::index::shape_take(shape_, indices, axis);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -60,6 +63,7 @@ namespace nmtools::view
     template <typename array_t, typename indices_t, typename axis_t>
     constexpr auto take(const array_t& array, const indices_t& indices, axis_t axis)
     {
+        // TODO: error handling for index error, e.g. any elements of "indices" is greater than "shape" at "axis"
         return decorator_t<take_t,array_t,indices_t,axis_t>{{array,indices,axis}};
     } // take
 } // namespace nmtools::view
@@ -94,6 +98,33 @@ namespace nmtools::meta
         }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
+
+    template <typename array_t, typename indices_t, typename axis_t>
+    struct fixed_size<
+        view::decorator_t< view::take_t, array_t, indices_t, axis_t >
+    >
+    {
+        using view_type  = view::decorator_t< view::take_t, array_t, indices_t, axis_t >;
+        using shape_type = typename view_type::shape_type;
+
+        static constexpr auto value = [](){
+            // indices and axis contributes to shape changes, may decrease/increase number of elements
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // fixed_size
+
+    // NOTE: we can not know the size bound with only src array shape,
+    // indices and axis contributes to shape changes, may decrease/increase number of elements
+    template <typename array_t, typename indices_t, typename axis_t>
+    struct bounded_size<
+        view::decorator_t< view::take_t, array_t, indices_t, axis_t >
+    > : fixed_size<
+        view::decorator_t< view::take_t, array_t, indices_t, axis_t >
+    > {};
 
     template <typename array_t, typename indices_t, typename axis_t>
     struct is_ndarray< view::decorator_t< view::take_t, array_t, indices_t, axis_t >>

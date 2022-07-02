@@ -58,8 +58,8 @@ namespace nmtools::view
         template <size_t DIM, typename axes_t>
         constexpr auto get_flip_slices(const axes_t& axes)
         {
-            using tuple_t = meta::make_tuple_type_t<none_t,none_t,int>;
-            using slices_type = meta::make_array_type_t<tuple_t,DIM>;
+            using tuple_type  = nmtools_tuple<none_t,none_t,int>;
+            using slices_type = nmtools_array<tuple_type,DIM>;
             auto slices = slices_type {};
 
             for (size_t i=0; i<DIM; i++) {
@@ -118,15 +118,12 @@ namespace nmtools::view
             if constexpr (meta::is_index_array_v<axis_t>)
                 return meta::as_value_v<axis_t>;
             else if constexpr (meta::is_index_v<axis_t>)
-                return meta::as_value_v<meta::make_array_type_t<axis_t,1>>;
+                return meta::as_value_v<nmtools_array<axis_t,1>>;
             // for none type, simply use array shape type
             else if constexpr (is_none_v<axis_t>)
                 return meta::as_value_v<shape_type>;
         }();
-        using axes_type = meta::transform_bounded_array_t<
-            meta::type_t<meta::remove_cvref_t<decltype(axes_vtype)>>
-        >;
-        // deduce slice type from fn call
+        using axes_type   = meta::transform_bounded_array_t<meta::type_t<decltype(axes_vtype)>>;
         using slices_type = meta::remove_cvref_t<decltype(detail::get_flip_slices<array_t>(meta::declval<axes_type>()))>;
 
         // the underlying array
@@ -140,7 +137,14 @@ namespace nmtools::view
         slices_type slices;
 
         constexpr flip_t(array_type array, axis_type axis) : array(array)
-            , shape_(::nmtools::shape(array))
+            , shape_([&](){
+                auto shape_ = ::nmtools::shape(array);
+                if constexpr (meta::is_constant_index_array_v<decltype(shape_)>) {
+                    return meta::to_value_v<decltype(shape_)>;
+                } else {
+                    return shape_;
+                }
+            }())
             , axes(detail::compute_flip_axis<axes_type>(shape_,axis))
             , slices(detail::get_flip_slices<array_t>(axes))
         {}

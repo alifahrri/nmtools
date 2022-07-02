@@ -12,6 +12,7 @@ namespace nmtools::view
 {
     namespace detail
     {
+        // TODO: remove
         template <typename shape_t>
         constexpr auto get_zeros_shape(const shape_t& shape)
         {
@@ -41,7 +42,7 @@ namespace nmtools::view
     template <typename shape_t, typename T>
     struct zeros_t
     {
-        using shape_type = const shape_t&;
+        using shape_type = resolve_attribute_type_t<shape_t>;
         using element_type = T;
 
         using array_type = none_t;
@@ -49,11 +50,11 @@ namespace nmtools::view
         shape_type shape_;
 
         constexpr zeros_t(const shape_t& shape)
-            : shape_(shape) {}
+            : shape_(init_attribute<shape_type>(shape)) {}
         
         constexpr auto shape() const
         {
-            return detail::get_zeros_shape(shape_);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -98,6 +99,9 @@ namespace nmtools::meta
 
     template <typename shape_t, typename T>
     struct fixed_ndarray_shape< view::zeros_t<shape_t, T> >
+        : fixed_shape<view::zeros_t<shape_t, T>> {};
+    // TODO: remove
+    #if 0
     {
         static inline constexpr auto value = [](){
             if constexpr (is_constant_index_array_v<shape_t>)
@@ -107,6 +111,7 @@ namespace nmtools::meta
         }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
+    #endif
 
     template <typename shape_t, typename T>
     struct is_ndarray< view::decorator_t< view::zeros_t, shape_t, T >>

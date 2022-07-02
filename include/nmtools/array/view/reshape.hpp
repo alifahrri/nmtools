@@ -145,6 +145,7 @@ namespace nmtools::view
             }
         }();
         using new_shape_t = decltype(new_shape_);
+        // TODO: consider to make the return type as maybe type instead, when runtime check is needed
         if constexpr (meta::is_maybe_v<new_shape_t>) {
             // TODO: better error handling
             nmtools_assert( static_cast<bool>(new_shape_)

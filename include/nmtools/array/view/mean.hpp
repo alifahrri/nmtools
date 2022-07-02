@@ -5,6 +5,7 @@
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/divide.hpp"
 #include "nmtools/array/index/product.hpp"
+#include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/dtypes.hpp"
 #include "nmtools/meta.hpp"
 
@@ -13,7 +14,9 @@ namespace nmtools::meta
     // specific tag to promote mean
     struct promote_mean {};
 
-    namespace error {
+    namespace error
+    {
+        template <typename...>
         struct PROMOTE_TYPE_MEAN_ERROR : detail::fail_t {};
     } // error
 
@@ -30,7 +33,7 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             // TODO: follow numpy type promotion rules
-            if constexpr (is_integer_v<reduced_t> && is_integer_v<divisor_t>) {
+            if constexpr (is_integer_v<reduced_t> && (is_integer_v<divisor_t> || is_integral_constant_v<divisor_t>)) {
                 // mean op involves division, return float
                 using type = dtype::float32_t;
                 return as_value_v<type>;
@@ -42,7 +45,7 @@ namespace nmtools::meta
                 using type = dtype::float32_t;
                 return as_value_v<type>;
             } else {
-                return as_value_v<error::PROMOTE_TYPE_MEAN_ERROR>;
+                return as_value_v<error::PROMOTE_TYPE_MEAN_ERROR<reduced_t,divisor_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;
@@ -65,6 +68,13 @@ namespace nmtools::view::detail
     template <typename shape_t, typename axis_t>
     constexpr auto mean_divisor(const shape_t& shape, const axis_t& axis)
     {
+        [[maybe_unused]] auto shape_ = [&](){
+            if constexpr (meta::is_constant_index_array_v<shape_t>) {
+                return meta::to_value_v<shape_t>;
+            } else {
+                return index::ref(shape);
+            }
+        }();
         if constexpr (is_none_v<axis_t>) {
             return index::product(shape);
         } else if constexpr (meta::is_index_array_v<axis_t>) {
@@ -75,17 +85,17 @@ namespace nmtools::view::detail
                 constexpr auto N = meta::len_v<axis_t>;
                 meta::template_for<N>([&](auto index){
                     auto idx = at(axis,index);
-                    divisor *= static_cast<index_t>(at(shape,idx));
+                    divisor *= static_cast<index_t>(at(shape_,idx));
                 });
             } else {
                 for (size_t i=0; i<len(axis); i++) {
                     auto idx = at(axis,i);
-                    divisor *= at(shape,idx);
+                    divisor *= at(shape_,idx);
                 }
             }
             return divisor;
         } else /* if constexpr (meta::is_num_v<axis_t>) */ {
-            return at(shape,axis);
+            return at(shape_,axis);
         }
     } // mean_divisor
 }

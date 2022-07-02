@@ -8,15 +8,11 @@
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
+#include "nmtools/array/index/atleast_nd.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/eval.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
-
-// nmtools/meta/traits may define NMTOOLS_HAS_VECTOR
-#if defined(NMTOOLS_HAS_VECTOR) && (NMTOOLS_HAS_VECTOR)
-    #include <vector>
-#endif
 
 namespace nmtools::view
 {
@@ -32,9 +28,16 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            // arithmetic type
-            if constexpr (meta::is_num_v<array_t>)
-                return meta::make_array_type_t<size_t,3>{1ul,1ul,1ul};
+            using namespace literals;
+            if constexpr (meta::is_num_v<array_t>) {
+                // arithmetic type
+                return nmtools_tuple{1_ct,1_ct,1_ct};
+            } else {
+                auto shape_ = detail::shape(array);
+                return index::shape_atleast_nd(shape_,3_ct);
+            }
+            // TODO: remove
+            #if 0
             // check if fixed 1d array
             else if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
                 using namespace nmtools::literals;
@@ -67,6 +70,7 @@ namespace nmtools::view
                 else r_shape = shape_;
                 return r_shape;
             }
+            #endif
         } // shape
 
         constexpr auto dim() const
@@ -133,6 +137,7 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
+    // TODO: remove
     template <typename array_t>
     struct fixed_ndarray_shape< view::atleast_3d_t<array_t> >
     {
@@ -159,6 +164,7 @@ namespace nmtools::meta
         static constexpr auto value = meta::is_num_v<array_t> || is_ndarray_v<array_t>;
     };
 
+    // TODO: remove
     /**
      * @brief specialization of eval type resolver for atleast_3d view.
      * 

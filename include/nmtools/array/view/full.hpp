@@ -11,6 +11,7 @@ namespace nmtools::view
 {
     namespace detail
     {
+        // TODO: remove
         template <typename shape_t>
         constexpr auto get_full_shape(const shape_t& shape)
         {
@@ -48,8 +49,8 @@ namespace nmtools::view
     template <typename shape_t, typename fill_value_t>
     struct full_t
     {
-        using shape_type = const shape_t&;
-        using fill_value_type = fill_value_t;
+        using shape_type      = resolve_attribute_type_t<shape_t>;
+        using fill_value_type = const fill_value_t;
         using element_type    = fill_value_type;
 
         using array_type = none_t;
@@ -58,12 +59,11 @@ namespace nmtools::view
         fill_value_type fill_value;
 
         constexpr full_t(const shape_t& shape, fill_value_type fill_value)
-            : shape_(shape), fill_value(fill_value) {}
+            : shape_(init_attribute<shape_type>(shape)), fill_value(fill_value) {}
         
         constexpr auto shape() const
         {
-            // may transform raw array to array
-            return detail::get_full_shape(shape_);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -107,6 +107,9 @@ namespace nmtools::meta
 
     template <typename shape_t, typename fill_value_t>
     struct fixed_ndarray_shape< view::full_t<shape_t, fill_value_t> >
+        : fixed_shape< view::full_t<shape_t, fill_value_t> > {};
+    // TODO: remove
+    #if 0
     {
         static inline constexpr auto value = [](){
             if constexpr (is_constant_index_array_v<shape_t>)
@@ -116,6 +119,7 @@ namespace nmtools::meta
         }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
+    #endif
 
     template <typename shape_t, typename fill_value_t>
     struct is_ndarray< view::decorator_t< view::full_t, shape_t, fill_value_t >>

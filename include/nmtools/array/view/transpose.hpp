@@ -7,6 +7,7 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
 
+#include "nmtools/array/index/transpose.hpp"
 #include "nmtools/array/index/scatter.hpp"
 #include "nmtools/array/index/gather.hpp"
 #include "nmtools/array/index/reverse.hpp"
@@ -55,11 +56,7 @@ namespace nmtools::view
         constexpr decltype(auto) shape() const noexcept
         {
             auto shape_ = detail::shape(array);
-            if constexpr (is_none_v<axes_type>) {
-                return nmtools::index::reverse(shape_);
-            } else {
-                return nmtools::index::gather(shape_, axes);
-            }
+            return index::shape_transpose(shape_,axes);
         } // shape
         
         /**
@@ -105,6 +102,7 @@ namespace nmtools::view
 namespace nmtools
 {
 
+    // TODO: remove
     /**
      * @brief Specialization of fixed_ndarray_shape for transpose view.
      * 
