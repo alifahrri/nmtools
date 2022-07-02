@@ -15,9 +15,13 @@
 	// "name": "GCC 9.2.1",
 	// "dockerFile": "../docker/eoan.dockerfile",
 
+    // DOCKERFILE: ubuntu jammy (22.04)
+    "name": "ubuntu jammy - GCC 11",
+	"dockerFile": "../docker/jammy.dockerfile",
+
 	// DOCKERFILE: testbench
-	"name": "Testbench",
-	"dockerFile": "../docker/testbench.dockerfile",
+	// "name": "Testbench",
+	// "dockerFile": "../docker/testbench.dockerfile",
 
 	"build": { 
 		"args": { "USERNAME": "${localEnv:USER}" }

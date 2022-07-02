@@ -72,3 +72,7 @@ solution: https://godbolt.org/z/7Eccbqc9Y
 
 different warning on unused variables
 https://godbolt.org/z/WPfvEWPEv
+
+incompatible warning on "unused" private field:
+clang rejects without [[maybe_unused]] -> https://godbolt.org/z/aMMzrbz4h
+gcc rejects with [[maybe_unused]] -> https://godbolt.org/z/K8zPdz7a4
