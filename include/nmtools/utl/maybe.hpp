@@ -42,6 +42,17 @@ namespace nmtools::utl
             return this->tag == base::LEFT;
         }
 
+        template <typename U>
+        /*constexpr*/ maybe& operator=(const U& val)
+        {
+            // NOTE: using current approach (using either which use union), assignment cant be constexpr
+            // since union can't be changed for constexpr call.
+            // other approach for example using placement-new doesn't interact well with constexpr
+            // 
+            base::operator=(val);
+            return *this;
+        }
+
         constexpr explicit operator bool() const noexcept
         {
             return has_value();
