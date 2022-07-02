@@ -12,15 +12,6 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
 
-template <typename result_t, typename expect_t>
-static constexpr auto check_equal_if_not_fail(const result_t& result, const expect_t& expect)
-{
-    // NOTE: Outside a template, a discarded statement is fully checked. 
-    if constexpr (!meta::is_fail_v<result_t>) {
-        NMTOOLS_ASSERT_EQUAL( result, expect );
-    }
-}
-
 using namespace nm::literals;
 using nm::none_t;
 
@@ -45,11 +36,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -73,11 +64,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{2,1,6});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{2,1,6});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -100,11 +91,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{2,1,6});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{2,1,6});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
     #endif
@@ -128,11 +119,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -155,11 +146,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 6);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -183,11 +174,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{2,1,6});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{2,1,6});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
     #endif
@@ -211,11 +202,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -238,11 +229,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -265,11 +256,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 #ifdef NMTOOLS_ENABLE_BOOST
@@ -292,11 +283,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -319,11 +310,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -346,11 +337,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -373,11 +364,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 
@@ -400,11 +391,11 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
             constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
             constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
             constexpr auto bounded_size = meta::bounded_size_v<view_type>;
-            check_equal_if_not_fail(fixed_shape, nmtools_array{6,2,1});
-            check_equal_if_not_fail(fixed_dim, 3);
-            check_equal_if_not_fail(fixed_size, 12);
-            check_equal_if_not_fail(bounded_dim, 3);
-            check_equal_if_not_fail(bounded_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, nmtools_array{6,2,1});
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 12);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
         }
     }
 #endif
