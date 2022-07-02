@@ -45,7 +45,7 @@ namespace nmtools::index
                 at(ret,i) = at(bshape,meta::ct_v<i>);
             });
         } else {
-            for (size_t i=0; i<dim; i++)
+            for (size_t i=0; i<(size_t)dim; i++)
                 at(ret,i) = at(bshape,i);
         }
 
@@ -53,6 +53,7 @@ namespace nmtools::index
         return return_t{true,ret,None};
     } // shape_broadcast_to
 
+    // TODO: refactor free_axes
     /**
      * @brief check if ashape can be broadcasted to bshape.
      *
@@ -140,8 +141,7 @@ namespace nmtools::index
         // - free_axes value indicates wether the corresponding indices are free (either empty or 1).
         // - free_axes is useful to perform the reverse operation.
         // TODO: use optional instead
-        using return_t = meta::make_tuple_type_t<bool,result_t,free_axes_t>;
-        return return_t{success, res, free_axes};
+        return nmtools_tuple{success, res, free_axes};
     } // shape_broadcast_to
 
     /**
@@ -159,16 +159,15 @@ namespace nmtools::index
     constexpr auto shape_broadcast_to<none_t,none_t>(const none_t&, const none_t&)
     {
         // TODO: use optional instead
-        using return_t = meta::make_tuple_type_t<bool,none_t,none_t>;
-        return return_t{true,None,None};
+        return nmtools_tuple{true,None,None};
     } // shape_broadcast_to
 
     template <typename indices_t, typename src_shape_t, typename dst_shape_t, typename origin_axes_t>
     constexpr auto broadcast_to(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape, const origin_axes_t& origin_axes)
     {
-        // compute the offste while ignoring "broadcasted axes"
+        // compute the offset while ignoring "broadcasted axes"
         // which is either 1 or empty according to the broadcasting rules
-        // then transform back the offset to with respect to orignal shape (src_shape).
+        // then transform back the offset to with respect to original shape (src_shape).
 
         // NOTE: the following are suspect to be hotspot
         // since broadcasting is almost used everywhere
