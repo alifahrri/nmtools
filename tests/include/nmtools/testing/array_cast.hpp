@@ -112,7 +112,7 @@ namespace nmtools
             }
             else if constexpr (meta::is_same_v<kind_t,array::kind::nested_vector_t>) {
                 using element_t [[maybe_unused]] = get_element_type_t<src_t>;
-                constexpr auto dim = fixed_dim_v<src_t>;
+                [[maybe_unused]] constexpr auto dim = fixed_dim_v<src_t>;
         #ifndef NMTOOLS_DISABLE_STL
                 using type = meta::make_nested_dynamic_array_t<std::vector,element_t,dim>;
         #else

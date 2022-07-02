@@ -1,23 +1,12 @@
 #include "nmtools/array/index/broadcast_shape.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/index/as_tuple.hpp"
 #include "nmtools/testing/doctest.hpp"
-
-#include <vector>
-#include <array>
-#include <tuple>
 
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
 namespace kind = na::kind;
-
-#define CAST_ARRAYS(name) \
-auto name##_a = cast(name, kind::nested_arr); \
-auto name##_v = cast(name, kind::nested_vec); \
-auto name##_f = cast(name, kind::fixed); \
-auto name##_d = cast(name, kind::dynamic); \
-auto name##_h = cast(name, kind::hybrid); \
 
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
 {
@@ -25,8 +14,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[2] = {5,4};
         int b[1] = {1};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -40,8 +29,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[1] = {1};
         int b[2] = {5,4};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -55,8 +44,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[1] = {4};
         int b[2] = {5,4};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -70,8 +59,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[4] = {8,1,6,1};
         int b[3] = {7,1,5};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -85,8 +74,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[3] = {256,256,3};
         int b[1] = {3};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -100,8 +89,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[1] = {5};
         int b[2] = {5,4};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -115,8 +104,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     {
         int a[2] = {2,1};
         int b[3] = {8,4,3};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
     }
@@ -131,9 +120,9 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
         int a[2] = {4,1};
         int b[3] = {8,1,3};
         int c[1] = {3};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
-        CAST_ARRAYS(c)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(c)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
         auto c_t = nm::index::as_tuple(c_a);
@@ -149,9 +138,9 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
         int a[2] = {4,1};
         int b[3] = {8,2,3};
         int c[1] = {3};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
-        CAST_ARRAYS(c)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(c)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
         auto c_t = nm::index::as_tuple(c_a);
@@ -168,10 +157,10 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
         int b[3] = {8,1,3};
         int c[1] = {3};
         int d[6] = {2,2,3,1,4,1};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
-        CAST_ARRAYS(c)
-        CAST_ARRAYS(d)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(c)
+        NMTOOLS_CAST_ARRAYS(d)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
         auto c_t = nm::index::as_tuple(c_a);
@@ -192,13 +181,13 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
         int e[1] =           {1};
         int f[4] =     {3,1,4,1};
         int g[6] = {2,1,1,1,1,1};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
-        CAST_ARRAYS(c)
-        CAST_ARRAYS(d)
-        CAST_ARRAYS(e)
-        CAST_ARRAYS(f)
-        CAST_ARRAYS(g)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(c)
+        NMTOOLS_CAST_ARRAYS(d)
+        NMTOOLS_CAST_ARRAYS(e)
+        NMTOOLS_CAST_ARRAYS(f)
+        NMTOOLS_CAST_ARRAYS(g)
         auto a_t = nm::index::as_tuple(a_a);
         auto b_t = nm::index::as_tuple(b_a);
         auto c_t = nm::index::as_tuple(c_a);
@@ -244,7 +233,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(broadcast_shape, case_name); \
     using namespace args; \
-    auto [success, newshape] = RUN_broadcast_shape(case_name,__VA_ARGS__); \
+    const auto [success, newshape] = RUN_broadcast_shape(case_name,__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
     if (expect::success) \
         NMTOOLS_ASSERT_EQUAL( newshape, expect::expected ); \

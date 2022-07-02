@@ -49,6 +49,8 @@ TEST_CASE("zeros(case1)" * doctest::test_suite("array::zeros"))
     ZEROS_SUBCASE(case1, shape_ct, dtype );
 }
 
+// TODO: remove
+#if 0
 TEST_CASE("zeros_traits(case1)" * doctest::test_suite("array::zeros_traits"))
 {
     {
@@ -68,3 +70,4 @@ TEST_CASE("zeros_traits(case1)" * doctest::test_suite("array::zeros_traits"))
         static_assert( is_fixed_shape );
     }
 }
+#endif

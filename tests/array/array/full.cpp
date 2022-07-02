@@ -50,6 +50,8 @@ TEST_CASE("full(case1)" * doctest::test_suite("array::full"))
     FULL_SUBCASE(case1, shape_ct, fill_value );
 }
 
+// TODO: remove
+#if 0
 TEST_CASE("full_traits(case1)" * doctest::test_suite("array::full_traits"))
 {
     {
@@ -71,3 +73,4 @@ TEST_CASE("full_traits(case1)" * doctest::test_suite("array::full_traits"))
         static_assert( is_fixed_shape );
     }
 }
+#endif

@@ -438,6 +438,16 @@ namespace subcase::expect
  */
 #define STATIC_CHECK_TRAIT STATIC_CHECK_TRAIT_TRUE
 
+// NOTE: use IILE to avoid checking discarded if constexpr branch
+#define NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(result, expect) \
+[](const auto& result_, const auto& expect_) \
+{ \
+    using result_t = nmtools::meta::remove_cvref_t<decltype(result_)>; \
+    if constexpr (!nmtools::meta::is_fail_v<result_t>) { \
+        NMTOOLS_ASSERT_EQUAL( result_, expect_ ); \
+    } \
+}(result, expect);
+
 /** @} */ // end groupt testing
 
 #endif // NMTOOLS_TESTING_HPP

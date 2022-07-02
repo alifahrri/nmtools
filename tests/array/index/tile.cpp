@@ -1,13 +1,7 @@
 #include "nmtools/array/index/tile.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ndarray.hpp"
 
-#include "testing/doctest.hpp"
-
-#include <vector>
-#include <array>
-#include <tuple>
+#include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -20,15 +14,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {1,5};
-        auto shape_a   = cast<int>(shape);
-        auto shape_v   = cast(shape,kind::nested_vec);
-        auto shape_h   = cast(shape,kind::hybrid);
-        auto reps_a    = cast<int>(reps);
-        auto reps_v    = cast(reps,kind::nested_vec);
-        auto reps_h    = cast(reps,kind::hybrid);
-        auto indices_a = cast<int>(indices);
-        auto indices_v = cast(indices,kind::nested_vec);
-        auto indices_h = cast(indices,kind::hybrid);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -40,15 +28,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {0,4};
-        auto shape_a   = cast<int>(shape);
-        auto shape_v   = cast(shape,kind::nested_vec);
-        auto shape_h   = cast(shape,kind::hybrid);
-        auto reps_a    = cast<int>(reps);
-        auto reps_v    = cast(reps,kind::nested_vec);
-        auto reps_h    = cast(reps,kind::hybrid);
-        auto indices_a = cast<int>(indices);
-        auto indices_v = cast(indices,kind::nested_vec);
-        auto indices_h = cast(indices,kind::hybrid);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -60,15 +42,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {1,3};
-        auto shape_a   = cast<int>(shape);
-        auto shape_v   = cast(shape,kind::nested_vec);
-        auto shape_h   = cast(shape,kind::hybrid);
-        auto reps_a    = cast<int>(reps);
-        auto reps_v    = cast(reps,kind::nested_vec);
-        auto reps_h    = cast(reps,kind::hybrid);
-        auto indices_a = cast<int>(indices);
-        auto indices_v = cast(indices,kind::nested_vec);
-        auto indices_h = cast(indices,kind::hybrid);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -80,15 +56,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {0,2};
-        auto shape_a   = cast<int>(shape);
-        auto shape_v   = cast(shape,kind::nested_vec);
-        auto shape_h   = cast(shape,kind::hybrid);
-        auto reps_a    = cast<int>(reps);
-        auto reps_v    = cast(reps,kind::nested_vec);
-        auto reps_h    = cast(reps,kind::hybrid);
-        auto indices_a = cast<int>(indices);
-        auto indices_v = cast(indices,kind::nested_vec);
-        auto indices_h = cast(indices,kind::hybrid);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -100,15 +70,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {1,1};
-        auto shape_a   = cast<int>(shape);
-        auto shape_v   = cast(shape,kind::nested_vec);
-        auto shape_h   = cast(shape,kind::hybrid);
-        auto reps_a    = cast<int>(reps);
-        auto reps_v    = cast(reps,kind::nested_vec);
-        auto reps_h    = cast(reps,kind::hybrid);
-        auto indices_a = cast<int>(indices);
-        auto indices_v = cast(indices,kind::nested_vec);
-        auto indices_h = cast(indices,kind::hybrid);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -120,15 +84,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[3] = {2,1,4};
         int reps[2]  = {2,2};
         int indices[3] = {0,1,7};
-        auto shape_a   = cast<int>(shape);
-        auto shape_v   = cast(shape,kind::nested_vec);
-        auto shape_h   = cast(shape,kind::hybrid);
-        auto reps_a    = cast<int>(reps);
-        auto reps_v    = cast(reps,kind::nested_vec);
-        auto reps_h    = cast(reps,kind::hybrid);
-        auto indices_a = cast<int>(indices);
-        auto indices_v = cast(indices,kind::nested_vec);
-        auto indices_h = cast(indices,kind::hybrid);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -140,15 +98,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[3] = {2,1,4};
         int reps[2]  = {2,2};
         int indices[3] = {1,0,4};
-        auto shape_a   = cast<int>(shape);
-        auto shape_v   = cast(shape,kind::nested_vec);
-        auto shape_h   = cast(shape,kind::hybrid);
-        auto reps_a    = cast<int>(reps);
-        auto reps_v    = cast(reps,kind::nested_vec);
-        auto reps_h    = cast(reps,kind::hybrid);
-        auto indices_a = cast<int>(indices);
-        auto indices_v = cast(indices,kind::nested_vec);
-        auto indices_h = cast(indices,kind::hybrid);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -160,15 +112,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[3] = {2,1,4};
         int reps[2]  = {2,2};
         int indices[3] = {0,1,3};
-        auto shape_a   = cast<int>(shape);
-        auto shape_v   = cast(shape,kind::nested_vec);
-        auto shape_h   = cast(shape,kind::hybrid);
-        auto reps_a    = cast<int>(reps);
-        auto reps_v    = cast(reps,kind::nested_vec);
-        auto reps_h    = cast(reps,kind::hybrid);
-        auto indices_a = cast<int>(indices);
-        auto indices_v = cast(indices,kind::nested_vec);
-        auto indices_h = cast(indices,kind::hybrid);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -209,56 +155,72 @@ SUBCASE(#case_name) \
 
 TEST_CASE("tile(case1)" * doctest::test_suite("index::tile"))
 {
+    TILE_SUBCASE( case1, shape, reps, indices );
     TILE_SUBCASE( case1, shape_a, reps_a, indices_a );
+    TILE_SUBCASE( case1, shape_f, reps_f, indices_f );
     TILE_SUBCASE( case1, shape_v, reps_v, indices_v );
     TILE_SUBCASE( case1, shape_h, reps_h, indices_h );
 }
 
 TEST_CASE("tile(case2)" * doctest::test_suite("index::tile"))
 {
+    TILE_SUBCASE( case2, shape, reps, indices );
     TILE_SUBCASE( case2, shape_a, reps_a, indices_a );
+    TILE_SUBCASE( case2, shape_f, reps_f, indices_f );
     TILE_SUBCASE( case2, shape_v, reps_v, indices_v );
     TILE_SUBCASE( case2, shape_h, reps_h, indices_h );
 }
 
 TEST_CASE("tile(case3)" * doctest::test_suite("index::tile"))
 {
+    TILE_SUBCASE( case3, shape, reps, indices );
     TILE_SUBCASE( case3, shape_a, reps_a, indices_a );
+    TILE_SUBCASE( case3, shape_f, reps_f, indices_f );
     TILE_SUBCASE( case3, shape_v, reps_v, indices_v );
     TILE_SUBCASE( case3, shape_h, reps_h, indices_h );
 }
 
 TEST_CASE("tile(case4)" * doctest::test_suite("index::tile"))
 {
+    TILE_SUBCASE( case4, shape, reps, indices );
     TILE_SUBCASE( case4, shape_a, reps_a, indices_a );
+    TILE_SUBCASE( case4, shape_f, reps_f, indices_f );
     TILE_SUBCASE( case4, shape_v, reps_v, indices_v );
     TILE_SUBCASE( case4, shape_h, reps_h, indices_h );
 }
 
 TEST_CASE("tile(case5)" * doctest::test_suite("index::tile"))
 {
+    TILE_SUBCASE( case5, shape, reps, indices );
     TILE_SUBCASE( case5, shape_a, reps_a, indices_a );
+    TILE_SUBCASE( case5, shape_f, reps_f, indices_f );
     TILE_SUBCASE( case5, shape_v, reps_v, indices_v );
     TILE_SUBCASE( case5, shape_h, reps_h, indices_h );
 }
 
 TEST_CASE("tile(case6)" * doctest::test_suite("index::tile"))
 {
+    TILE_SUBCASE( case6, shape, reps, indices );
     TILE_SUBCASE( case6, shape_a, reps_a, indices_a );
+    TILE_SUBCASE( case6, shape_f, reps_f, indices_f );
     TILE_SUBCASE( case6, shape_v, reps_v, indices_v );
     TILE_SUBCASE( case6, shape_h, reps_h, indices_h );
 }
 
 TEST_CASE("tile(case7)" * doctest::test_suite("index::tile"))
 {
+    TILE_SUBCASE( case7, shape, reps, indices );
     TILE_SUBCASE( case7, shape_a, reps_a, indices_a );
+    TILE_SUBCASE( case7, shape_f, reps_f, indices_f );
     TILE_SUBCASE( case7, shape_v, reps_v, indices_v );
     TILE_SUBCASE( case7, shape_h, reps_h, indices_h );
 }
 
 TEST_CASE("tile(case8)" * doctest::test_suite("index::tile"))
 {
+    TILE_SUBCASE( case8, shape, reps, indices );
     TILE_SUBCASE( case8, shape_a, reps_a, indices_a );
+    TILE_SUBCASE( case8, shape_f, reps_f, indices_f );
     TILE_SUBCASE( case8, shape_v, reps_v, indices_v );
     TILE_SUBCASE( case8, shape_h, reps_h, indices_h );
 }

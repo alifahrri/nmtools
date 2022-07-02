@@ -83,11 +83,13 @@ set(ARRAY_INDEX_TEST_SOURCES
     index/gather.cpp
     index/insert_index.cpp
     index/logical_not.cpp
+    index/moveaxis.cpp
     index/ndenumerate.cpp
     index/ndindex.cpp
     index/nonzero.cpp
     index/normalize_axis.cpp
     index/outer.cpp
+    index/pad.cpp
     index/pooling.cpp
     index/remove_dims.cpp
     index/remove_single_dims.cpp
@@ -96,7 +98,6 @@ set(ARRAY_INDEX_TEST_SOURCES
     index/reverse.cpp
     index/scatter.cpp
     index/shape_concatenate.cpp
-    index/shape_repeat.cpp
     index/shape_tile.cpp
     index/slice.cpp
     index/take.cpp
@@ -559,6 +560,29 @@ target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
+
+###################### NO STL ##################################
+option(NMTOOLS_ENABLE_TEST_NOSTL "build nostl tests" OFF)
+set(NMTOOLS_NOSTL_TEST_SOURCES
+    ${ARRAY_INDEX_TEST_SOURCES}
+)
+if (NOT NMTOOLS_ENABLE_TEST_NOSTL)
+    set (NMTOOLS_NOSTL_TEST_SOURCES "")
+endif()
+add_executable(${PROJECT_NAME}-doctest-nostl tests.cpp 
+    ${NMTOOLS_NOSTL_TEST_SOURCES}
+)
+
+target_compile_definitions(${PROJECT_NAME}-doctest-nostl PRIVATE
+    NMTOOLS_DISABLE_STL
+    NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
+)
+
+target_compile_features(${PROJECT_NAME}-doctest-nostl PRIVATE cxx_std_17)
+if (doctest_FOUND)
+    target_link_libraries(${PROJECT_NAME}-doctest-nostl PRIVATE doctest::doctest)
+endif()
+###################### NO STL ##################################
 
 option(NMTOOLS_ENABLE_TEST_BENCHMARKS "build benchmark programs" OFF)
 if (NMTOOLS_ENABLE_TEST_BENCHMARKS)

@@ -13,6 +13,11 @@
 #elif defined(ARDUINO)
 #include <Arduino.h>
 #define NMTOOLS_STRING String
+#elif __has_include(<string>)
+// Quick workaround to disable stl but enable std::string
+#include <sstream>
+#include <string>
+#define NMTOOLS_STRING std::string
 #endif // NMTOOLS_DISABLE_STL
 
 // when using emscripten, compiler complains about 'boost/type_index.hpp' file not found

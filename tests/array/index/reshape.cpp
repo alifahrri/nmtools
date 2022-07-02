@@ -122,6 +122,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_reshape)
     {
         inline int shape[1]     = {12};
         inline int newshape[2]  = {-1,-1};
+        inline auto shape_ct    = nmtools_tuple{12_ct};
         inline auto newshape_ct = nmtools_tuple{"-1"_ct,"-1"_ct};
         NMTOOLS_CAST_ARRAYS(shape)
         NMTOOLS_CAST_ARRAYS(newshape)
@@ -135,6 +136,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_reshape)
     {
         inline int shape[1]     = {12};
         inline int newshape[2]  = {7,-1};
+        inline auto shape_ct    = nmtools_tuple{12_ct};
         inline auto newshape_ct = nmtools_tuple{7_ct,"-1"_ct};
         NMTOOLS_CAST_ARRAYS(shape)
         NMTOOLS_CAST_ARRAYS(newshape)
@@ -148,6 +150,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_reshape)
     {
         inline int shape[1]     = {12};
         inline int newshape[4]  = {1,9,-1,2};
+        inline auto shape_ct    = nmtools_tuple{12_ct};
         inline auto newshape_ct = nmtools_tuple{1_ct,9_ct,"-1"_ct,2_ct};
         NMTOOLS_CAST_ARRAYS(shape)
         NMTOOLS_CAST_ARRAYS(newshape)
@@ -161,6 +164,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_reshape)
     {
         inline int shape[1]     = {12};
         inline int newshape[2]  = {12,12};
+        inline auto shape_ct    = nmtools_tuple{12_ct};
         inline auto newshape_ct = nmtools_tuple{12_ct,12_ct};
         NMTOOLS_CAST_ARRAYS(shape)
         NMTOOLS_CAST_ARRAYS(newshape)
@@ -168,6 +172,177 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_reshape)
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
         inline auto result = meta::Nothing;
+    }
+}
+
+NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_reshape)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        constexpr inline int shape[1]     = {12};
+        constexpr inline int newshape[2]  = {12,1};
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{12_ct,1_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        constexpr inline int result[2] = {12,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        constexpr inline int shape[1]    = {12};
+        constexpr inline int newshape[2] = {3,4};
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{3_ct,4_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        constexpr inline int result[2] = {3,4};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        constexpr inline int shape[1]    = {12};
+        constexpr inline int newshape[4] = {1,2,3,2};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{1_ct,2_ct,3_ct,2_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        constexpr inline int result[4] = {1,2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        constexpr inline int shape[2] = {12,1};
+        constexpr inline int newshape[4] = {2,1,3,2};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct,1_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{2_ct,1_ct,3_ct,2_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        constexpr inline int result[4] = {2,1,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        constexpr inline int shape[1]    = {12};
+        constexpr inline int newshape[2] = {12,-1};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{12_ct,"-1"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        constexpr inline int result[2] = {12,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        constexpr inline int shape[1]    = {12};
+        constexpr inline int newshape[2] = {3,-1};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{3_ct,"-1"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        constexpr inline int result[2] = {3,4};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        constexpr inline int shape[1]    = {12};
+        constexpr inline int newshape[4] = {1,2,-1,2};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{1_ct,2_ct,"-1"_ct,2_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        constexpr inline int result[4] = {1,2,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        constexpr inline int shape[2] = {12,1};
+        constexpr inline int newshape[4] = {-1,1,3,2};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct,1_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{"-1"_ct,1_ct,3_ct,2_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        constexpr inline int result[4] = {2,1,3,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        constexpr inline int shape[1]     = {12};
+        constexpr inline int newshape[2]  = {-1,-1};
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{"-1"_ct,"-1"_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        constexpr inline auto result = meta::Nothing;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        constexpr inline int shape[1]     = {12};
+        constexpr inline int newshape[2]  = {7,-1};
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{7_ct,"-1"_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        constexpr inline auto result = meta::Nothing;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        constexpr inline int shape[1]     = {12};
+        constexpr inline int newshape[4]  = {1,9,-1,2};
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{1_ct,9_ct,"-1"_ct,2_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        constexpr inline auto result = meta::Nothing;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        constexpr inline int shape[1]     = {12};
+        constexpr inline int newshape[2]  = {12,12};
+        constexpr inline auto shape_ct    = nmtools_tuple{12_ct};
+        constexpr inline auto newshape_ct = nmtools_tuple{12_ct,12_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(newshape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
+    {
+        constexpr inline auto result = meta::Nothing;
     }
 }
 
@@ -193,6 +368,15 @@ using nm::benchmarks::TrackedBench;
 #define RUN_shape_reshape(case_name, ...) \
 RUN_impl(__VA_ARGS__);
 #endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define CONSTEXPR_SHAPE_RESHAPE_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(constexpr_shape_reshape, case_name); \
+    using namespace args; \
+    constexpr auto result = RUN_impl(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
 
 #define SHAPE_RESHAPE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
@@ -382,3 +566,183 @@ TEST_CASE("shape_reshape(case12)" * doctest::test_suite("index::shape_reshape"))
     SHAPE_RESHAPE_SUBCASE( case12, shape_v, newshape_ct );
     SHAPE_RESHAPE_SUBCASE( case12, shape_h, newshape_ct );
 }
+
+TEST_CASE("shape_reshape(case1)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case1, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case2)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case2, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case3)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case3, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case4)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case4, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case5)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case5, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case6)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case6, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case7)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case7, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case8)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case8, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case9)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case9, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case10)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case10, shape_h, newshape_ct );
+}
+
+TEST_CASE("shape_reshape(case11)" * doctest::test_suite("index::constexpr_shape_reshape"))
+{
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape, newshape );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_a, newshape_a );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_f, newshape_f );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_h, newshape_h );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_ct, newshape_ct );
+
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_a, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_f, newshape_ct );
+    CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case11, shape_h, newshape_ct );
+}
+
+// TEST_CASE("shape_reshape(case12)" * doctest::test_suite("index::constexpr_shape_reshape"))
+// {
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape, newshape );
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape_a, newshape_a );
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape_f, newshape_f );
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape_h, newshape_h );
+
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape_ct, newshape_ct );
+
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape, newshape_ct );
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape_a, newshape_ct );
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape_f, newshape_ct );
+//     CONSTEXPR_SHAPE_RESHAPE_SUBCASE( case12, shape_h, newshape_ct );
+// }

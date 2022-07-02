@@ -1,7 +1,8 @@
+#if __has_include(<boost/array.hpp>)
+#define NMTOOLS_ENABLE_BOOST
+#endif
 #include "nmtools/array/view/concatenate.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -370,4 +371,723 @@ TEST_CASE("fixed_ndarray_shape" * doctest::test_suite("view::concatenate"))
         constexpr auto expected = std::array{3,2};
         NMTOOLS_STATIC_ASSERT_EQUAL( shape, expected );
     }
+}
+
+template <typename result_t, typename expect_t>
+static constexpr auto check_equal_if_not_fail(const result_t& result, const expect_t& expect)
+{
+    // NOTE: Outside a template, a discarded statement is fully checked. 
+    if constexpr (!meta::is_fail_v<result_t>) {
+        NMTOOLS_ASSERT_EQUAL( result, expect );
+    }
+}
+
+TEST_CASE("concatenate(case1)" * doctest::test_suite("meta::concatenate"))
+{
+    // None axis
+    {
+        using left_buffer_type  = nmtools_array<float,12>;
+        using left_shape_type   = nmtools_array<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_array<float,12>;
+        using right_shape_type  = nmtools_array<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs buffers are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_array<float,12>;
+        using left_shape_type   = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_array<float,12>;
+        using right_shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_list<float>;
+        using left_shape_type   = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_list<float>;
+        using right_shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed-shape, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_array<float,12>;
+        using left_shape_type   = nmtools_list<size_t>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_array<float,12>;
+        using right_shape_type  = nmtools_list<size_t>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs buffer are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_array<float,12>;
+        using left_shape_type   = na::static_vector<size_t,6>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_array<float,12>;
+        using right_shape_type  = na::static_vector<size_t,6>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = na::static_vector<float,12>;
+        using left_shape_type   = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = na::static_vector<float,12>;
+        using right_shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_list<float>;
+        using left_shape_type   = na::static_vector<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_list<float>;
+        using right_shape_type  = na::static_vector<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        // should be fixed dim because axis is none
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = na::static_vector<float,12>;
+        using left_shape_type   = na::static_vector<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = na::static_vector<float,12>;
+        using right_shape_type  = na::static_vector<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_list<float>;
+        using left_shape_type   = nmtools_list<size_t>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_list<float>;
+        using right_shape_type  = nmtools_list<size_t>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        // is fixed dim because none axis flatten then concat
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        // should be bounded dim because fixed dim
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+#ifdef NMTOOLS_ENABLE_BOOST
+    {
+        using left_buffer_type  = boost::array<float,12>;
+        using left_shape_type   = boost::array<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = boost::array<float,12>;
+        using right_shape_type  = boost::array<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = boost::container::static_vector<float,12>;
+        using left_shape_type   = boost::array<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = boost::container::static_vector<float,12>;
+        using right_shape_type  = boost::array<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = boost::container::small_vector<float,12>;
+        using left_shape_type   = boost::array<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = boost::container::small_vector<float,12>;
+        using right_shape_type  = boost::array<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = nm::none_t;
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{24});
+            check_equal_if_not_fail(fixed_dim, 1);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 1);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+#endif // NMTOOLS_ENABLE_BOOST
+}
+
+TEST_CASE("concatenate(case2)" * doctest::test_suite("meta::concatenate"))
+{
+    // compile-time axis
+    {
+        using left_buffer_type  = nmtools_array<float,12>;
+        using left_shape_type   = nmtools_array<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_array<float,12>;
+        using right_shape_type  = nmtools_array<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // not a fixed shape because shape is runtime
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        // should be fixed size because buffer is fixed size
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_dim, 3);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 3);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_array<float,12>;
+        using left_shape_type   = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_array<float,12>;
+        using right_shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{4,3,2});
+            check_equal_if_not_fail(fixed_dim, 3);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 3);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_list<float>;
+        using left_shape_type   = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_list<float>;
+        using right_shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed-shape, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{4,3,2});
+            check_equal_if_not_fail(fixed_dim, 3);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 3);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_array<float,12>;
+        using left_shape_type   = nmtools_list<size_t>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_array<float,12>;
+        using right_shape_type  = nmtools_list<size_t>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_array<float,12>;
+        using left_shape_type   = na::static_vector<size_t,6>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_array<float,12>;
+        using right_shape_type  = na::static_vector<size_t,6>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 6);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = na::static_vector<float,12>;
+        using left_shape_type   = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = na::static_vector<float,12>;
+        using right_shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_shape, nmtools_array{4,3,2});
+            check_equal_if_not_fail(fixed_dim, 3);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 3);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_list<float>;
+        using left_shape_type   = na::static_vector<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_list<float>;
+        using right_shape_type  = na::static_vector<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            check_equal_if_not_fail(bounded_dim, 3);
+        }
+    }
+
+    {
+        using left_buffer_type  = na::static_vector<float,12>;
+        using left_shape_type   = na::static_vector<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = na::static_vector<float,12>;
+        using right_shape_type  = na::static_vector<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(bounded_dim, 3);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = nmtools_list<float>;
+        using left_shape_type   = nmtools_list<size_t>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = nmtools_list<float>;
+        using right_shape_type  = nmtools_list<size_t>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+        }
+    }
+
+#ifdef NMTOOLS_ENABLE_BOOST
+    {
+        using left_buffer_type  = boost::array<float,12>;
+        using left_shape_type   = boost::array<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = boost::array<float,12>;
+        using right_shape_type  = boost::array<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_dim, 3);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 3);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = boost::container::static_vector<float,12>;
+        using left_shape_type   = boost::array<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = boost::container::static_vector<float,12>;
+        using right_shape_type  = boost::array<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_dim, 3);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 3);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+
+    {
+        using left_buffer_type  = boost::container::small_vector<float,12>;
+        using left_shape_type   = boost::array<size_t,3>;
+        using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
+        using right_buffer_type = boost::container::small_vector<float,12>;
+        using right_shape_type  = boost::array<size_t,3>;
+        using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
+        using axis_type         = decltype(0_ct);
+
+        using view_type = view::decorator_t< view::concatenate_t, left_array_type, right_array_type, axis_type >;
+        // NOTE: should be fixed shape because both lhs & rhs are fixed, and axis is None (means flattened)
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            check_equal_if_not_fail(fixed_dim, 3);
+            check_equal_if_not_fail(fixed_size, 24);
+            check_equal_if_not_fail(bounded_dim, 3);
+            check_equal_if_not_fail(bounded_size, 24);
+        }
+    }
+#endif // NMTOOLS_ENABLE_BOOST
 }

@@ -38,7 +38,16 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(index, shape_pool2d, case_name); \
     using namespace args; \
     auto result = RUN_shape_pool2d(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define CONSTEXPR_SHAPE_POOL2D_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, constexpr_shape_pool2d, case_name); \
+    using namespace args; \
+    constexpr auto result = RUN_shape_pool2d(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
 TEST_CASE("shape_pool2d(case1)" * doctest::test_suite("index"))
@@ -48,6 +57,10 @@ TEST_CASE("shape_pool2d(case1)" * doctest::test_suite("index"))
     SHAPE_POOL2D_SUBCASE( case1, shape_v, kernel_size_v, stride_v, ceil_mode );
     SHAPE_POOL2D_SUBCASE( case1, shape_f, kernel_size_f, stride_f, ceil_mode );
     SHAPE_POOL2D_SUBCASE( case1, shape_h, kernel_size_h, stride_h, ceil_mode );
+
+    static_assert( nm::meta::is_constant_index_v<decltype(nm::True)> );
+    static_assert( nm::meta::to_value_v<decltype(nm::True)> );
+    SHAPE_POOL2D_SUBCASE( case1, shape_ct, kernel_size_ct, stride_ct, ceil_mode_ct );
 }
 
 TEST_CASE("shape_pool2d(case2)" * doctest::test_suite("index"))
@@ -57,6 +70,8 @@ TEST_CASE("shape_pool2d(case2)" * doctest::test_suite("index"))
     SHAPE_POOL2D_SUBCASE( case2, shape_v, kernel_size_v, stride_v, ceil_mode );
     SHAPE_POOL2D_SUBCASE( case2, shape_f, kernel_size_f, stride_f, ceil_mode );
     SHAPE_POOL2D_SUBCASE( case2, shape_h, kernel_size_h, stride_h, ceil_mode );
+
+    SHAPE_POOL2D_SUBCASE( case2, shape_ct, kernel_size_ct, stride_ct, ceil_mode_ct );
 }
 
 TEST_CASE("shape_pool2d(case3)" * doctest::test_suite("index"))
@@ -93,6 +108,54 @@ TEST_CASE("shape_pool2d(case6)" * doctest::test_suite("index"))
     SHAPE_POOL2D_SUBCASE( case6, shape_v, kernel_size_v, stride_v );
     SHAPE_POOL2D_SUBCASE( case6, shape_f, kernel_size_f, stride_f );
     SHAPE_POOL2D_SUBCASE( case6, shape_h, kernel_size_h, stride_h );
+}
+
+TEST_CASE("shape_pool2d(case1)" * doctest::test_suite("index::constexpr_shape_pool2d"))
+{
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case1, shape, kernel_size, stride, ceil_mode );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case1, shape_a, kernel_size_a, stride_a, ceil_mode );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case1, shape_f, kernel_size_f, stride_f, ceil_mode );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case1, shape_h, kernel_size_h, stride_h, ceil_mode );
+}
+
+TEST_CASE("shape_pool2d(case2)" * doctest::test_suite("index::constexpr_shape_pool2d"))
+{
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case2, shape, kernel_size, stride, ceil_mode );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case2, shape_a, kernel_size_a, stride_a, ceil_mode );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case2, shape_f, kernel_size_f, stride_f, ceil_mode );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case2, shape_h, kernel_size_h, stride_h, ceil_mode );
+}
+
+TEST_CASE("shape_pool2d(case3)" * doctest::test_suite("index::constexpr_shape_pool2d"))
+{
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case3, shape, kernel_size, stride );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case3, shape_a, kernel_size_a, stride_a );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case3, shape_f, kernel_size_f, stride_f );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case3, shape_h, kernel_size_h, stride_h );
+}
+
+TEST_CASE("shape_pool2d(case4)" * doctest::test_suite("index::constexpr_shape_pool2d"))
+{
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case4, shape, kernel_size, stride );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case4, shape_a, kernel_size_a, stride_a );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case4, shape_f, kernel_size_f, stride_f );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case4, shape_h, kernel_size_h, stride_h );
+}
+
+TEST_CASE("shape_pool2d(case5)" * doctest::test_suite("index::constexpr_shape_pool2d"))
+{
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case5, shape, kernel_size, stride );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case5, shape_a, kernel_size_a, stride_a );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case5, shape_f, kernel_size_f, stride_f );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case5, shape_h, kernel_size_h, stride_h );
+}
+
+TEST_CASE("shape_pool2d(case6)" * doctest::test_suite("index::constexpr_shape_pool2d"))
+{
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case6, shape, kernel_size, stride );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case6, shape_a, kernel_size_a, stride_a );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case6, shape_f, kernel_size_f, stride_f );
+    CONSTEXPR_SHAPE_POOL2D_SUBCASE( case6, shape_h, kernel_size_h, stride_h );
 }
 
 #define RUN_slice_pool2d_impl(...) \
