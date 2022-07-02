@@ -62,7 +62,7 @@ namespace nmtools::index
             }();
 
             // number of "-1" in dst_shape
-            auto [minus_1_count, dst_numel] = [&](){
+            const auto [minus_1_count, dst_numel] = [&](){
                 auto minus_1_count = 0;
                 auto dst_numel = (size_t)0;
                 for (size_t i=0; i<len(dst_shape_); i++) {

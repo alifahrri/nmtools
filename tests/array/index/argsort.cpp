@@ -180,7 +180,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(index, constexpr_argsort, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_argsort(case_name, __VA_ARGS__); \
+    constexpr auto result = RUN_impl(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -261,35 +261,29 @@ TEST_CASE("argsort(case1)" * doctest::test_suite("index::constexpr_argsort"))
     // somehow doesn't work on clang 🤷, works fine on gcc
     // note: non-constexpr function 'operator()<int const (&)[3], const int &>' cannot be used in a constant expression
     // TODO: fix constexpr clang, seems like something to do with at customization point
-    #ifndef __clang__
     CONSTEXPR_ARGSORT_SUBCASE( case1, array );
     CONSTEXPR_ARGSORT_SUBCASE( case1, array_a );
     CONSTEXPR_ARGSORT_SUBCASE( case1, array_f );
     CONSTEXPR_ARGSORT_SUBCASE( case1, array_h );
     CONSTEXPR_ARGSORT_SUBCASE( case1, array_ct );
-    #endif // __clang__
 }
 
 TEST_CASE("argsort(case2)" * doctest::test_suite("index::constexpr_argsort"))
 {
-    #ifndef __clang__
     CONSTEXPR_ARGSORT_SUBCASE( case2, array );
     CONSTEXPR_ARGSORT_SUBCASE( case2, array_a );
     CONSTEXPR_ARGSORT_SUBCASE( case2, array_f );
     CONSTEXPR_ARGSORT_SUBCASE( case2, array_h );
     CONSTEXPR_ARGSORT_SUBCASE( case2, array_ct );
-    #endif // __clang__
 }
 
 TEST_CASE("argsort(case3)" * doctest::test_suite("index::constexpr_argsort"))
 {
-    #ifndef __clang__
     CONSTEXPR_ARGSORT_SUBCASE( case3, array );
     CONSTEXPR_ARGSORT_SUBCASE( case3, array_a );
     CONSTEXPR_ARGSORT_SUBCASE( case3, array_f );
     CONSTEXPR_ARGSORT_SUBCASE( case3, array_h );
     CONSTEXPR_ARGSORT_SUBCASE( case3, array_ct );
-    #endif // __clang__
 }
 
 TEST_CASE("argsort(case4)" * doctest::test_suite("index::constexpr_argsort"))
