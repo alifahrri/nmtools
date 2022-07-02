@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_BITS_TRAITS_IS_BASE_OF_HPP
 #define NMTOOLS_META_BITS_TRAITS_IS_BASE_OF_HPP
 
+#include "nmtools/meta/builtins.hpp"
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/expr.hpp"
 #include "nmtools/meta/bits/traits/is_class.hpp"
@@ -17,8 +18,13 @@ namespace nmtools::meta::internal
     struct is_base_of
     {
         static constexpr auto value = [](){
+            #ifdef NMTOOLS_IS_BASE_OF
+            return NMTOOLS_IS_BASE_OF(Base,Derived);
+            #else
+            // not 100% accurate:
             auto ptr_convertible = expression_check_v<expr::ptr_convertible,Base,Derived>;
             return (ptr_convertible && is_class_v<Base> && is_class_v<Derived>);
+            #endif
         }();
     };
     

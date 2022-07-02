@@ -45,6 +45,11 @@ namespace nmtools::meta
         using type = ::boost::container::static_vector<U,Capacity,Options>;
     }; // replace_value_type
 
+    template <typename T, std::size_t Capacity, typename Options, typename U>
+    struct replace_element_type<
+        ::boost::container::static_vector<T,Capacity,Options>, U, enable_if_t< is_num_v<T> && is_num_v<U> >
+    > : replace_value_type<::boost::container::static_vector<T,Capacity,Options>, U> {};
+
     template <typename T, std::size_t N, typename U>
     struct replace_value_type<
         ::boost::container::small_vector<T,N>, U
@@ -53,6 +58,11 @@ namespace nmtools::meta
         using type = ::boost::container::small_vector<U,N>;
     }; // replace_value_type
 
+    template <typename T, std::size_t N, typename U>
+    struct replace_element_type<
+        ::boost::container::small_vector<T,N>, U, enable_if_t< is_num_v<T> && is_num_v<U> >
+    > : replace_value_type<::boost::container::small_vector<T,N>, U> {};
+
     template <typename T, typename U>
     struct replace_value_type<
         ::boost::container::vector<T>, U
@@ -60,6 +70,11 @@ namespace nmtools::meta
     {
         using type = ::boost::container::vector<U>;
     }; // replace_value_type
+
+    template <typename T, typename U>
+    struct replace_element_type<
+        ::boost::container::vector<T>, U, enable_if_t< is_num_v<T> && is_num_v<U> >
+    > : replace_value_type<::boost::container::vector<T>, U> {};
     
 } // namespace nmtools::meta
 

@@ -252,12 +252,15 @@ namespace nmtools::meta
         using type = std::array<T,new_size>;
     };
 
+    // TODO: remove
+    #if 0
     template <typename...Ts>
     struct tuple_to_array<std::tuple<Ts...>>
     {
         using common_t = std::common_type_t<Ts...>;
         using type = std::array<common_t,sizeof...(Ts)>;
     }; // tuple_to_array
+    #endif
 
     template <typename first, typename second>
     struct tuple_to_array<std::pair<first,second>>

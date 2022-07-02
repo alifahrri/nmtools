@@ -2,6 +2,7 @@
 #define NMTOOLS_META_BITS_TRAITS_IS_NUM_HPP
 
 #include "nmtools/meta/bits/traits/is_integer.hpp"
+#include "nmtools/meta/bits/traits/is_integral_constant.hpp"
 
 namespace nmtools::meta
 {
@@ -34,7 +35,7 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct is_num
     {
-        static constexpr auto value = is_integer_v<T> || is_floating_point_v<T>;
+        static constexpr auto value = is_integer_v<T> || is_floating_point_v<T> || is_integral_constant_v<T>;
     };
 
     template <typename T>
