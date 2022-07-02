@@ -67,8 +67,7 @@ TEST_CASE("shape_reshape" * doctest::test_suite("index"))
         using src_shape_t = decltype(nmtools_tuple{12_ct});
         using dst_shape_t = decltype(nmtools_tuple{12_ct,12_ct});
         using result_t = meta::resolve_optype_t<ix::shape_reshape_t,src_shape_t,dst_shape_t>;
-        using expect_t = meta::error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t>;
-        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, result_t );
     }
     #ifdef __clang__
     {
