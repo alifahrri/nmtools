@@ -187,7 +187,7 @@ SUBCASE(#case_name) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(constexpr_shape_repeat, case_name); \
-    constexpr auto shape = RUN_shape_repeat(case_name, args::ashape, args::repeats, args::axis); \
+    constexpr auto shape = RUN_shape_repeat_impl( args::ashape, args::repeats, args::axis ); \
     NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
 }
 

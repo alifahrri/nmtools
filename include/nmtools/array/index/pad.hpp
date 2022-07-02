@@ -97,7 +97,6 @@ namespace nmtools::index
         using idx_t    = meta::get_element_type_t<result_t>;
         using s_idx_t  = meta::make_signed_t<idx_t>;
 
-        auto ret = return_t {};
         auto res = result_t {};
 
         auto idx_dim = len(index);
@@ -126,12 +125,10 @@ namespace nmtools::index
         }
 
         if (!out_of_bound) {
-            ret = res;
+            return return_t{res};
         } else {
-            ret = meta::Nothing;
+            return return_t{meta::Nothing};
         }
-
-        return ret;
     } // pad
 } // namespace nmtools::index
 
