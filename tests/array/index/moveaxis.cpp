@@ -528,7 +528,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(index, constexpr_moveaxis_to_transpose, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_moveaxis_to_transpose(case_name, __VA_ARGS__); \
+    constexpr auto result = RUN_moveaxis_to_transpose_impl(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 

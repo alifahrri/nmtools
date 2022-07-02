@@ -381,7 +381,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(index, constexpr_normalize_axis, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_normalize_axis(case_name, __VA_ARGS__); \
+    constexpr auto result = RUN_impl(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
