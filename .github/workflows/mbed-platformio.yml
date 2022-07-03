@@ -42,4 +42,4 @@ jobs:
         pip install --upgrade platformio
     - name: Run PlatformIO CI
       run: |
-        bash scripts/run_arduino_pio_test.sh -d mbed/${{ matrix.test }}
+        bash scripts/run_pio_test.sh -d mbed/${{ matrix.test }}
