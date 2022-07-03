@@ -220,6 +220,12 @@ namespace nmtools::utl
         // constexpr tuple(tuple&&) = default;
     };
 
+    template <>
+    struct tuple<>
+    {
+        constexpr tuple() {};
+    };
+
     #define HAS_VALUE_N(index) \
     template <typename T> \
     using has_value##index = decltype(meta::declval<T>().value##index);
