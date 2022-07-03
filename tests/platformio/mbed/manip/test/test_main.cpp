@@ -1,8 +1,3 @@
-// by default mbed declare using namespace std and mbed;
-#define MBED_NO_GLOBAL_USING_DIRECTIVE
-#include <mbed.h>
-#include <unity.h>
-
 #include "nmtools/array/array/transpose.hpp"
 #include "nmtools/array/array/zeros.hpp"
 #include "nmtools/array/array/where.hpp"
@@ -51,6 +46,11 @@
 
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/utils/isclose.hpp"
+
+// by default mbed declare using namespace std and mbed;
+#define MBED_NO_GLOBAL_USING_DIRECTIVE
+#include <mbed.h>
+#include <unity.h>
 
 namespace nm = nmtools;
 namespace na = nm::array;
