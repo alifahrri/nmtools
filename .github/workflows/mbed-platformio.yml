@@ -42,11 +42,4 @@ jobs:
         pip install --upgrade platformio
     - name: Run PlatformIO CI
       run: |
-        pio package pack --output nmtools.tar.gz
-        cp nmtools.tar.gz tests/platformio/mbed/${{ matrix.test }}
-        cd tests/platformio/mbed/${{ matrix.test }}
-        mkdir -p lib
-        cd lib
-        tar -zxvf ../nmtools.tar.gz
-        cd ..
-        pio test -v --without-uploading --without-testing
+        bash scripts/run_arduino_pio_test.sh -d mbed/${{ matrix.test }}

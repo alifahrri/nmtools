@@ -24,8 +24,8 @@ if [ -z "$DEST" -a "$DEST" != " " ]; then
 fi
 
 pio package pack --output nmtools.tar.gz
-cp nmtools.tar.gz tests/platformio/arduino/${DEST}
-cd tests/platformio/arduino/${DEST}
+cp nmtools.tar.gz tests/platformio/${DEST}
+cd tests/platformio/${DEST}
 bash ../download-toolchain.sh
 mkdir -p lib && cd lib && tar -zxvf ../nmtools.tar.gz && cd ..
 pio test -v --without-uploading --without-testing
