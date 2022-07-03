@@ -64,10 +64,11 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     else(JS_ONLY)
         message(STATUS "Setting compilation target to WASM")
         set(CMAKE_EXECUTABLE_SUFFIX ".wasm.js")
-        set_target_properties(
-            ${PROJECT_NAME}-doctest
-            PROPERTIES LINK_FLAGS "--emrun -s WASM=1 -s BINARYEN_METHOD='native-wasm' -s EXPORTED_FUNCTIONS='[_main]' -s NO_EXIT_RUNTIME=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']"
-        )
+        # note triggers error on newer version: em++: error: --emrun is only compatible with html output
+        # set_target_properties(
+        #     ${PROJECT_NAME}-doctest
+        #     PROPERTIES LINK_FLAGS "--emrun -s WASM=1 -s BINARYEN_METHOD='native-wasm' -s EXPORTED_FUNCTIONS='[_main]' -s NO_EXIT_RUNTIME=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']"
+        # )
     endif(JS_ONLY)
 endif()
 
