@@ -29,107 +29,109 @@ namespace nmtools::view
         constexpr auto split_args(const shape_t& shape, const indices_t& indices_or_sections, const axis_t& axis)
         {
             using result_t   = meta::resolve_optype_t<split_args_t,shape_t,indices_t,axis_t>;
-            using value_type = meta::remove_cvref_t<meta::get_value_type_t<result_t>>;
             auto res = result_t {};
 
-            [[maybe_unused]] auto dim = len(shape);
+            if constexpr (!meta::is_tuple_v<result_t>) {
+                using value_type = meta::remove_cvref_t<meta::get_value_type_t<result_t>>;
+                [[maybe_unused]] auto dim = len(shape);
 
-            auto n_split = [&](){
-                if constexpr (meta::is_index_array_v<indices_t>) {
-                    return len(indices_or_sections) + 1;
-                } else /* if constexpr (meta::is_index_v<indices_t>) */ {
-                    return indices_or_sections;
-                }
-            }();
-
-            if constexpr (meta::is_resizeable_v<result_t>) {
-                res.resize(n_split);
-            }
-
-            using namespace nmtools::literals;
-
-            // normalized axis
-            // axis_ should safely cast to size_t
-            auto axis_ = (axis >= 0 ? axis : dim + axis);
-            auto shape_axis = at(shape,axis_);
-
-            for (size_t i=0; i<(size_t)n_split; i++) {
-                auto& res_i = at(res,i);
-                // NOTE: for dynamic index array, dimension only known at runtime
-                // we must resize to dim for each split arg,
-                if constexpr (meta::is_resizeable_v<value_type>) {
-                    res_i.resize(dim);
-                }
-
-                if constexpr (meta::is_index_array_v<indices_t>) {
-                    const auto& indices = indices_or_sections;
-                    // To avoid instantiating tuple access with runtime value
-                    constexpr auto indices_ = meta::to_value_v<indices_t>;
-                    // fill for each axis
-                    for (size_t j=0; j<(size_t)dim; j++) {
-                        // TODO: deduce index type if possible
-                        using index_t = size_t;
-                        auto start = [&]() -> index_t {
-                            if (j!=axis_) {
-                                return 0;
-                            } else if (i>0) {
-                                if constexpr (meta::is_constant_index_array_v<indices_t>) {
-                                    return at(indices_,i-1);
-                                } else {
-                                    return at(indices,i-1);
-                                }
-                            } else /* if (i==0) */ {
-                                return 0;
-                            }
-                        }();
-                        auto stop  = [&]() -> index_t {
-                            if (j!=axis_) {
-                                return at(shape,j);
-                            } else if (i==(n_split-1)) {
-                                return shape_axis;
-                            } else /* if (i>0 && i<(n_split-1)) */ {
-                                if constexpr (meta::is_constant_index_array_v<indices_t>) {
-                                    return at(indices_,i);
-                                } else {
-                                    return at(indices,i);
-                                }
-                            }
-                        }();
-
-                        // assume inner container (for start,stop pair)
-                        // is fixed-size (see resolver metafunction below)
-                        // and it is exactly 2
-                        auto& res_i_j = at(res_i,j);
-                        at(res_i_j,0_ct) = start;
-                        at(res_i_j,1_ct) = stop;
+                auto n_split = [&](){
+                    if constexpr (meta::is_index_array_v<indices_t>) {
+                        return len(indices_or_sections) + 1;
+                    } else /* if constexpr (meta::is_index_v<indices_t>) */ {
+                        return indices_or_sections;
                     }
-                } else /* if constexpr (meta::is_index_v<indices_t>) */ {
-                    // fill for each axis
-                    for (size_t j=0; j<(size_t)dim; j++) {
-                        auto range = (j==(size_t)axis_ ? shape_axis / indices_or_sections : shape_axis);
-                        // TODO: deduce index type if possible
-                        using index_t = size_t;
-                        auto start = [&]() -> index_t {
-                            if (j!=axis_) {
-                                return 0;
-                            } else {
-                                return i * range;
-                            }
-                        }();
-                        auto stop  = [&]() -> index_t {
-                            if (j!=axis_) {
-                                return at(shape,j);
-                            } else {
-                                return start + range;
-                            }
-                        }();
+                }();
 
-                        // assume inner container (for start,stop pair)
-                        // is fixed-size (see resolver metafunction below)
-                        // and it is exactly 2
-                        auto& res_i_j = at(res_i,j);
-                        at(res_i_j,0_ct) = start;
-                        at(res_i_j,1_ct) = stop;
+                if constexpr (meta::is_resizeable_v<result_t>) {
+                    res.resize(n_split);
+                }
+
+                using namespace nmtools::literals;
+
+                // normalized axis
+                // axis_ should safely cast to size_t
+                auto axis_ = (axis >= 0 ? axis : dim + axis);
+                auto shape_axis = at(shape,axis_);
+
+                for (size_t i=0; i<(size_t)n_split; i++) {
+                    auto& res_i = at(res,i);
+                    // NOTE: for dynamic index array, dimension only known at runtime
+                    // we must resize to dim for each split arg,
+                    if constexpr (meta::is_resizeable_v<value_type>) {
+                        res_i.resize(dim);
+                    }
+
+                    if constexpr (meta::is_index_array_v<indices_t>) {
+                        const auto& indices = indices_or_sections;
+                        // To avoid instantiating tuple access with runtime value
+                        constexpr auto indices_ = meta::to_value_v<indices_t>;
+                        // fill for each axis
+                        for (size_t j=0; j<(size_t)dim; j++) {
+                            // TODO: deduce index type if possible
+                            using index_t = size_t;
+                            auto start = [&]() -> index_t {
+                                if (j!=axis_) {
+                                    return 0;
+                                } else if (i>0) {
+                                    if constexpr (meta::is_constant_index_array_v<indices_t>) {
+                                        return at(indices_,i-1);
+                                    } else {
+                                        return at(indices,i-1);
+                                    }
+                                } else /* if (i==0) */ {
+                                    return 0;
+                                }
+                            }();
+                            auto stop  = [&]() -> index_t {
+                                if (j!=axis_) {
+                                    return at(shape,j);
+                                } else if (i==(n_split-1)) {
+                                    return shape_axis;
+                                } else /* if (i>0 && i<(n_split-1)) */ {
+                                    if constexpr (meta::is_constant_index_array_v<indices_t>) {
+                                        return at(indices_,i);
+                                    } else {
+                                        return at(indices,i);
+                                    }
+                                }
+                            }();
+
+                            // assume inner container (for start,stop pair)
+                            // is fixed-size (see resolver metafunction below)
+                            // and it is exactly 2
+                            auto& res_i_j = at(res_i,j);
+                            at(res_i_j,0_ct) = start;
+                            at(res_i_j,1_ct) = stop;
+                        }
+                    } else /* if constexpr (meta::is_index_v<indices_t>) */ {
+                        // fill for each axis
+                        for (size_t j=0; j<(size_t)dim; j++) {
+                            auto range = (j==(size_t)axis_ ? shape_axis / indices_or_sections : shape_axis);
+                            // TODO: deduce index type if possible
+                            using index_t = size_t;
+                            auto start = [&]() -> index_t {
+                                if (j!=axis_) {
+                                    return 0;
+                                } else {
+                                    return i * range;
+                                }
+                            }();
+                            auto stop  = [&]() -> index_t {
+                                if (j!=axis_) {
+                                    return at(shape,j);
+                                } else {
+                                    return start + range;
+                                }
+                            }();
+
+                            // assume inner container (for start,stop pair)
+                            // is fixed-size (see resolver metafunction below)
+                            // and it is exactly 2
+                            auto& res_i_j = at(res_i,j);
+                            at(res_i_j,0_ct) = start;
+                            at(res_i_j,1_ct) = stop;
+                        }
                     }
                 }
             }
@@ -248,6 +250,9 @@ namespace nmtools::meta
                         return as_value_v<type>;
                     }
                 }, as_value_v<none_t>);
+            } else if constexpr (is_constant_index_array_v<shape_t>) {
+                using type = resolve_optype_t<view::detail::split_args_t,decltype(to_value_v<shape_t>),indices_t,axis_t>;
+                return as_value_v<type>;
             } else if constexpr (
                     is_fixed_index_array_v<shape_t>
                 && (is_constant_index_array_v<indices_t> || is_constant_index_v<indices_t>)

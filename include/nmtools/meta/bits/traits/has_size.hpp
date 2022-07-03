@@ -13,6 +13,12 @@ namespace nmtools::meta
     template <typename T>
     struct has_size : detail::expression_check<void,expr::size,T> {};
 
+    template <typename T>
+    struct has_size<const T> : has_size<T> {};
+
+    template <typename T>
+    struct has_size<T&> : has_size<T> {};
+
     /**
      * @brief helper variable template to check if type `T` has member function `size`.
      * 

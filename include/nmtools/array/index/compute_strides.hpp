@@ -91,7 +91,7 @@ namespace nmtools::meta
         static constexpr auto vtype = [](){
             // some fn may produce tuple of (runtime) index,
             // also shape may be raw array
-            using type = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
+            using type [[maybe_unused]] = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
             if constexpr (is_constant_index_array_v<shape_t>) {
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto strides = index::compute_strides(shape);

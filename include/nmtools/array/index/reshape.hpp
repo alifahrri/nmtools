@@ -62,7 +62,7 @@ namespace nmtools::index
             }();
 
             // number of "-1" in dst_shape
-            auto [minus_1_count, dst_numel] = [&](){
+            const auto [minus_1_count, dst_numel] = [&](){
                 auto minus_1_count = 0;
                 auto dst_numel = (size_t)0;
                 for (size_t i=0; i<len(dst_shape_); i++) {
@@ -124,7 +124,20 @@ namespace nmtools::meta
     struct resolve_optype<void, index::shape_reshape_t, src_shape_t, dst_shape_t>
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<dst_shape_t>) {
+            if constexpr (is_constant_index_array_v<src_shape_t> && is_constant_index_array_v<dst_shape_t>) {
+                constexpr auto result = index::shape_reshape(to_value_v<src_shape_t>,to_value_v<dst_shape_t>);
+                if constexpr (!static_cast<bool>(result)) {
+                    using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t,decltype(result)>;
+                    return as_value_v<type>;
+                } else {
+                    constexpr auto res = *result;
+                    using nmtools::at, nmtools::len;
+                    return template_reduce<len(res)-1>([&](auto init, auto index){
+                        using init_type = type_t<decltype(init)>;
+                        return as_value_v<append_type_t<init_type,ct<at(res,index+1)>>>;
+                    }, as_value_v<nmtools_tuple<ct<at(res,0)>>>);
+                }
+            } else if constexpr (is_constant_index_array_v<dst_shape_t>) {
                 constexpr auto dst_shape = to_value_v<dst_shape_t>;
                 constexpr auto all_pos_int = [&](){
                     auto all_pos_int = true;
@@ -155,7 +168,7 @@ namespace nmtools::meta
                             }
                         }, as_value_v<none_t>);
                     } else {
-                        using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t>;
+                        using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t,decltype(result)>;
                         return as_value_v<type>;
                     }
                     #else

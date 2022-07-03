@@ -49,15 +49,21 @@ namespace nmtools::view
         constexpr scalar_ufunc_t(op_type op, const arrays_t&...arrays)
             : op(op), operands{arrays...} {}
         
-        constexpr auto dim() const
+        constexpr auto dim() const noexcept
         {
+            // TODO: use constant index
             return 0;
         } // dim
 
-        constexpr auto shape() const
+        constexpr auto shape() const noexcept
         {
             return None;
         } // shape
+
+        constexpr auto size() const noexcept
+        {
+            return meta::ct_v<1ul>;
+        }
 
         template <size_t...Is>
         static constexpr auto apply_at(op_type op, const operands_type& operands, meta::index_sequence<Is...>)

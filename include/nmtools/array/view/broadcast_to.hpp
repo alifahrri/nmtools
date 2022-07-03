@@ -115,6 +115,7 @@ namespace nmtools::view
                 auto indices_  = pack_indices(indices...);
                 auto src_shape = detail::shape(array);
 
+                // TODO: refactor free_axes/origin_axes
                 auto tf_indices = ::nmtools::index::broadcast_to(indices_,src_shape,shape_,origin_axes);
                 if constexpr (meta::is_pointer_v<array_type>) {
                     return apply_at(*array,tf_indices);
@@ -171,6 +172,7 @@ namespace nmtools::view
         } // operator value_type()
     }; // broadcast_to_t
 
+    // TODO: refactor free_axes
     /**
      * @brief broadcast array to a new shape
      * 
@@ -260,6 +262,7 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    // TODO: remove
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct is_dynamic_ndarray< 
         view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
@@ -290,6 +293,7 @@ namespace nmtools::meta
         using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
     }; // fixed_dim
 
+    // TODO: remove
     /**
      * @brief Specialization of fixed_ndarray_shape for broadcast_to view.
      *
@@ -343,6 +347,7 @@ namespace nmtools::meta
         static constexpr auto value = is_num_v<array_t> && is_none_v<shape_t>;
     };
 
+    // TODO: remove
     /**
      * @brief Resolve optype for broadcast_to view evaluation.
      * 

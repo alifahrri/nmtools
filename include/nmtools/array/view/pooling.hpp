@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_POOLING_HPP
 
 #include "nmtools/array/index/pooling.hpp"
+#include "nmtools/array/index/product.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/slice.hpp"
 #include "nmtools/array/view/ufunc.hpp"
@@ -165,6 +166,32 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
+    struct fixed_size<
+        view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
+    >
+    {
+        using view_type  = view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>;
+        using shape_type = typename view_type::dst_shape_type;
+
+        static constexpr auto value = [](){
+            // the size can only be known if shape is constant, since
+            // kernel size, stride, and ceil mode change the resulting shape
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // fixed_size
+
+    template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
+    struct bounded_size<
+        view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
+    > : fixed_size<
+        view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
+    > {};
+
     template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
     struct is_ndarray<
         view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>

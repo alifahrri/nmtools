@@ -10,7 +10,7 @@ namespace meta = nm::meta;
 using namespace nm::literals;
 using nm::none_t;
 
-TEST_CASE("eval(full)" * doctest::test_suite("eval"))
+TEST_CASE("eval(full)" * doctest::test_suite("eval") * doctest::may_fail())
 {
     {
         using view_t = view::decorator_t< view::full_t, std::vector<int>, float >;

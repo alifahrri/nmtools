@@ -7,6 +7,12 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/array/index/ref.hpp"
+#include "nmtools/array/index/product.hpp"
+
+// TODO: move to shape.hpp
+#ifdef NMTOOLS_ENABLE_BOOST
+#include "nmtools/array/impl/boost.hpp"
+#endif
 
 #include "nmtools/assert.hpp"
 
@@ -107,7 +113,7 @@ namespace nmtools::view::detail
         using right_t  = meta::at_t<result_t,1>;
 
         auto dim  = len(shape);
-        auto axis = dim;
+        auto axis = (size_t)dim; // quick workaround to make axis runtime
         using axis_t [[maybe_unused]] = decltype(axis);
 
         if constexpr (meta::is_signed_v<index_t>) {
@@ -287,7 +293,6 @@ namespace nmtools::view
     struct decorator_t : view_t<Ts...>
     {
         using view_type = view_t<Ts...>;
-        // @note possibly const
         using array_type = typename view_type::array_type;
 
         /**
@@ -319,10 +324,27 @@ namespace nmtools::view
          */
         constexpr decltype(auto) shape() const noexcept
         {
-            if constexpr (meta::has_shape_v<meta::remove_cvref_t<view_type>>)
+            if constexpr (meta::has_shape_v<view_type>) {
                 return view_type::shape();
-            else return detail::shape(view_type::array);
+            }
+            else {
+                return detail::shape(view_type::array);
+            }
         } // shape
+
+        /**
+         * @brief Return the number of elements
+         * 
+         * @return constexpr auto 
+         */
+        constexpr auto size() const noexcept
+        {
+            if constexpr (meta::has_size_v<view_type>) {
+                return view_type::size();
+            } else {
+                return index::product(shape());
+            }
+        }
 
         /**
          * @brief immutable element acces to the referenced array
@@ -933,6 +955,164 @@ namespace nmtools::meta
     template <template<typename...> typename view_t, typename...Ts>
     struct get_element_type<view::decorator_t<view_t,Ts...>>
         : get_element_type<meta::remove_cvref_pointer_t<typename view::decorator_t<view_t,Ts...>::array_type>> {};
+
+    template <template<typename...>typename view_t, typename...Args>
+    struct fixed_shape<
+        view::decorator_t<view_t,Args...>
+    >
+    {
+        using view_type  = view::decorator_t<view_t,Args...>;
+
+        static constexpr auto value = [](){
+            using error_type [[maybe_unused]] = error::FIXED_SHAPE_UNSUPPORTED<view::decorator_t<view_t,Args...>>;
+            if constexpr (is_ndarray_v<view_type> && has_shape_v<view_type>) {
+                using shape_type = decltype(declval<view_type>().shape());
+                if constexpr (is_constant_index_array_v<shape_type>) {
+                    return shape_type {};
+                } else {
+                    return error_type {};
+                }
+            } else {
+                return error_type {};
+            }
+        }();
+    }; // fixed_shape
+
+    template <template<typename...>typename view_t, typename...Args>
+    struct fixed_dim<
+        view::decorator_t<view_t,Args...>
+    >
+    {
+        using view_type  = view::decorator_t<view_t,Args...>;
+
+        static constexpr auto value = [](){
+            using error_type [[maybe_unused]] = error::FIXED_DIM_UNSUPPORTED<view::decorator_t<view_t,Args...>>;
+            if constexpr (is_ndarray_v<view_type> && has_shape_v<view_type>) {
+                using shape_type = decltype(declval<view_type>().shape());
+                if constexpr (is_fixed_index_array_v<shape_type>) {
+                    return len_v<shape_type>;
+                } else {
+                    return error_type {};
+                }
+            } else {
+                return error_type {};
+            }
+        }();
+    }; // fixed_dim
+
+    template <template<typename...>typename view_t, typename...Args>
+    struct fixed_size<
+        view::decorator_t<view_t,Args...>
+    >
+    {
+        // the underlying array type (not from decorator)
+        using u_view_type = view_t<Args...>;
+        using view_type   = view::decorator_t<view_t,Args...>;
+        using array_type  = remove_cvref_pointer_t<typename view_type::array_type>;
+
+        static constexpr auto value = [](){
+            [[maybe_unused]] constexpr auto array_size = [](){
+                if constexpr (is_tuple_v<array_type>) {
+                    // simply use sum, should be overriden from the underlying view type
+                    return template_reduce<len_v<array_type>>([](auto init, auto index){
+                        using array_t = at_t<array_type, decltype(index)::value>;
+                        auto fixed_size = fixed_size_v<remove_cvref_pointer_t<array_t>>;
+                        if constexpr (is_fail_v<decltype(fixed_size)> || is_fail_v<decltype(init)>) {
+                            return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+                        } else {
+                            return init + fixed_size;
+                        }
+                    }, /*init=*/0);
+                } else {
+                    return fixed_size_v<array_type>;
+                }
+            }();
+            if constexpr (is_ndarray_v<view_type> && has_size_v<u_view_type>) {
+                using size_type = decltype(declval<view_type>().size());
+                if constexpr (is_constant_index_v<size_type>) {
+                    return size_type::value;
+                } else {
+                    return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+                }
+            } else if constexpr (is_ndarray_v<view_type> && has_shape_v<u_view_type>) {
+                using shape_type = decltype(declval<view_type>().shape());
+                if constexpr (is_constant_index_array_v<shape_type>) {
+                    auto product = index::product(shape_type{});
+                    return product;
+                } else {
+                    return array_size;
+                }
+            } else if constexpr (is_ndarray_v<view_type>) {
+                return array_size;
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // fixed_size
+
+    template <template<typename...>typename view_t, typename...Args>
+    struct bounded_dim<
+        view::decorator_t<view_t,Args...>
+    >
+    {
+        using view_type  = view::decorator_t<view_t,Args...>;
+        using array_type = remove_cvref_pointer_t<typename view_type::array_type>;
+
+        static constexpr auto value = [](){
+            [[maybe_unused]] auto array_bounded_dim = bounded_dim_v<array_type>;
+            if constexpr (is_ndarray_v<view_type> && has_shape_v<view_type>) {
+                using shape_type = decltype(declval<view_type>().shape());
+                return bounded_size_v<shape_type>;
+            } else if constexpr (is_ndarray_v<view_type>) {
+                return array_bounded_dim;
+            } else {
+                return error::BOUNDED_DIM_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // bounded_dim
+
+    template <template<typename...>typename view_t, typename...Args>
+    struct bounded_size<
+        view::decorator_t<view_t,Args...>
+    >
+    {
+        using view_type  = view::decorator_t<view_t,Args...>;
+        using array_type = remove_cvref_pointer_t<typename view_type::array_type>;
+
+        static constexpr auto value = [](){
+            [[maybe_unused]] constexpr auto array_bounded_size = [](){
+                if constexpr (is_tuple_v<array_type>) {
+                    // simply use sum, should be overriden from the underlying view type
+                    return template_reduce<len_v<array_type>>([](auto init, auto index){
+                        using array_t = at_t<array_type, decltype(index)::value>;
+                        auto bounded_size = bounded_size_v<remove_cvref_pointer_t<array_t>>;
+                        if constexpr (is_fail_v<decltype(bounded_size)> || is_fail_v<decltype(init)>) {
+                            return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+                        } else {
+                            return init + bounded_size;
+                        }
+                    }, /*init=*/0);
+                } else {
+                    return bounded_size_v<array_type>;
+                }
+            }();
+            constexpr auto fixed_size = fixed_size_v<view_type>;
+            if constexpr (!is_fail_v<decltype(fixed_size)>) {
+                return fixed_size;
+            } else if constexpr (is_ndarray_v<view_type> && has_shape_v<view_type>) {
+                using shape_type = decltype(declval<view_type>().shape());
+                if constexpr (is_constant_index_array_v<shape_type>) {
+                    return index::product(shape_type{});
+                } else {
+                    return array_bounded_size;
+                }
+            } else if constexpr (is_ndarray_v<view_type>) {
+                return array_bounded_size;
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // bounded_size
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_DECORATOR_HPP

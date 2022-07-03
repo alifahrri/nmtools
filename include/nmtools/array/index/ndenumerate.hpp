@@ -18,7 +18,15 @@ namespace nmtools::index
     struct ndenumerate_t
     {
         using array_type = const array_t&;
-        using shape_type = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
+        static constexpr auto shape_vtype = [](){
+            using shape_type = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
+            if constexpr (meta::is_constant_index_array_v<shape_type>) {
+                return meta::as_value_v<decltype(meta::to_value_v<shape_type>)>;
+            } else {
+                return meta::as_value_v<shape_type>;
+            }
+        }();
+        using shape_type = meta::type_t<decltype(shape_vtype)>;
         // for now assume array_t has default constructor
         using ndindex_type = ndindex_t<shape_type>;
         using element_type = meta::get_element_type_t<array_t>;
@@ -29,7 +37,17 @@ namespace nmtools::index
         ndindex_type ndindex_;
 
         constexpr ndenumerate_t(array_type array)
-            : array(array), shape(::nmtools::shape(array)), ndindex_(shape)
+            : array(array)
+            , shape([&](){
+                // TODO: use init_attribute_type
+                auto shape_ = ::nmtools::shape(array);
+                if constexpr (meta::is_constant_index_array_v<decltype(shape_)>) {
+                    return meta::to_value_v<decltype(shape_)>;
+                } else {
+                    return shape_;
+                }
+            }())
+            , ndindex_(shape)
         {}
 
         constexpr decltype(auto) size() const noexcept

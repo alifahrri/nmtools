@@ -79,6 +79,7 @@ namespace nmtools::meta
     using view::decorator_t;
     using view::squeeze_t;
 
+    // TODO: remove
     /**
      * @brief Infer squeeze view shape at compile time.
      * 
@@ -88,9 +89,26 @@ namespace nmtools::meta
      */
     template <typename array_t>
     struct fixed_ndarray_shape< squeeze_t<array_t> >
+    #if 0
+        : fixed_shape< view::decorator_t<view::squeeze_t,array_t> > {};
+    #else
     {
         static inline constexpr auto value = [](){
             if constexpr (is_fixed_size_ndarray_v<array_t>) {
+                #if 1
+                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
+                constexpr auto squeezed = index::remove_single_dims(shape);
+                if constexpr (is_constant_index_array_v<decltype(squeezed)>) {
+                    return squeezed;
+                } else {
+                    using nmtools::at;
+                    constexpr auto vtype = template_reduce<nmtools::len(squeezed)-1>([&](auto init, auto index){
+                        using init_type = type_t<decltype(init)>;
+                        return as_value_v<append_type_t<init_type,ct<at(squeezed,index+1)>>>;
+                    }, as_value_v<nmtools_tuple<ct<at(squeezed,0)>>>);
+                    return type_t<decltype(vtype)>{};
+                }
+                #else
                 constexpr auto shape = fixed_ndarray_shape_v<array_t>;
                 constexpr auto n_dim  = fixed_ndarray_dim_v<array_t>;
                 // remove_single_dims is not constexpr friendly yet
@@ -127,12 +145,14 @@ namespace nmtools::meta
                 using type = type_t<decltype(vtype)>;
                 // type should be value-less (at runtime) and default-constructible
                 return type{};
+                #endif
             } else {
                 return detail::Fail;
             }
         }();
         using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
     }; // fixed_ndarray_shape
+    #endif
 
     template <typename array_t>
     struct is_ndarray< decorator_t<squeeze_t,array_t> >

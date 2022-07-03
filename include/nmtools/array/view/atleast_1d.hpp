@@ -21,9 +21,12 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            if constexpr (meta::is_num_v<array_t>)
-                return meta::make_array_type_t<size_t,1>{1ul};
-            else return detail::shape(array);
+            using namespace literals;
+            if constexpr (meta::is_num_v<array_t>) {
+                return nmtools_tuple{1_ct};
+            } else {
+                return detail::shape(array);
+            }
         } // shape
 
         constexpr auto dim() const
@@ -83,6 +86,7 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
+    // TODO: remove
     template <typename array_t>
     struct fixed_ndarray_shape< view::atleast_1d_t<array_t> >
     {
@@ -94,6 +98,7 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
+    // TODO: remove
     template <typename array_t>
     struct fixed_dim<
         view::decorator_t< view::atleast_1d_t, array_t >
@@ -110,6 +115,22 @@ namespace nmtools::meta
         }();
         using value_type = decltype(value);
     }; // fixed_dim
+
+    template <typename array_t>
+    struct fixed_size<
+        view::decorator_t< view::atleast_1d_t, array_t >
+    >
+    {
+        static constexpr auto value = fixed_size_v<array_t>;
+    }; // fixed_size
+
+    template <typename array_t>
+    struct bounded_size<
+        view::decorator_t< view::atleast_1d_t, array_t >
+    >
+    {
+        static constexpr auto value = bounded_size_v<array_t>;
+    }; // bounded_size
 
     template <typename array_t>
     struct is_ndarray< view::decorator_t< view::atleast_1d_t, array_t >>

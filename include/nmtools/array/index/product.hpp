@@ -7,44 +7,100 @@
 
 namespace nmtools::index
 {
+    struct product_t {};
+
     // TODO: cleanup index functions
     /**
      * @brief compute product of 1D array
      *
      * Useful to compute number of elements.
      * 
-     * @tparam array_t 
-     * @param vec 
+     * @tparam shape_t 
+     * @param shape 
      * @return constexpr auto 
      */
-    template <typename array_t>
-    constexpr auto product(const array_t& vec)
+    template <typename shape_t>
+    constexpr auto product(const shape_t& shape)
     {
+        using result_t = meta::resolve_optype_t<product_t, shape_t>;
+        auto ret = result_t {};
+
+        if constexpr (! meta::is_constant_index_v<result_t>) {
+            using element_t = meta::get_element_or_common_type_t<shape_t>;
+            ret = element_t{1};
+            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
+                constexpr auto n = meta::len_v<shape_t>;
+                meta::template_for<n>([&](auto index){
+                    constexpr auto i = decltype(index)::value;
+                    ret *= at<i>(shape);
+                });
+            } else {
+                for (size_t i=0; i<len(shape); i++) {
+                    ret *= at(shape,i);
+                }
+            }
+        }
+
+        return ret;
+
+        // TODO: remove
+        #if 0
         // handle constant index array,
         // for now, simply convert to value and recurse
-        if constexpr (meta::is_constant_index_array_v<array_t>) {
+        if constexpr (meta::is_constant_index_array_v<shape_t>) {
             // TODO: move constant index handling at higher level, see remove_dims for example
-            constexpr auto vec_ = meta::to_value_v<array_t>;
-            constexpr auto ret  = product(vec_);
+            constexpr auto shape_ = meta::to_value_v<shape_t>;
+            constexpr auto ret  = product(shape_);
             // TODO: convert back to type
             return ret;
         }
         else {
-            using element_t = meta::get_element_or_common_type_t<array_t>;
+            using element_t = meta::get_element_or_common_type_t<shape_t>;
             auto ret = element_t{1};
-            if constexpr (meta::is_fixed_index_array_v<array_t>) {
-                constexpr auto n = meta::len_v<array_t>;
+            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
+                constexpr auto n = meta::len_v<shape_t>;
                 meta::template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
-                    ret *= at<i>(vec);
+                    ret *= at<i>(shape);
                 });
             }
             else
-                for (size_t i=0; i<len(vec); i++)
-                    ret *= at(vec,i);
+                for (size_t i=0; i<len(shape); i++)
+                    ret *= at(shape,i);
             return ret;
         }
+        #endif
     } // product
 } // namespace nmtools::index
+
+namespace nmtools::meta
+{
+    namespace error
+    {
+        template <typename...>
+        struct INDEX_PRODUCT_UNSUPPORTED : detail::fail_t {};
+    }
+    template <typename shape_t>
+    struct resolve_optype<
+        void, index::product_t, shape_t
+    >
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                constexpr auto shape = to_value_v<shape_t>;
+                constexpr auto N = index::product(shape);
+                return as_value_v<ct<N>>;
+            } else if constexpr (is_index_array_v<shape_t>) {
+                using type = get_element_or_common_type_t<shape_t>;
+                return as_value_v<type>;
+            } else {
+                using type = error::INDEX_PRODUCT_UNSUPPORTED<shape_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // resolve_optype
+} // namespace nmtools::meta
+
 
 #endif // NMTOOLS_ARRAY_INDEX_PRODUCT_HPP

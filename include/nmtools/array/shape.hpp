@@ -29,14 +29,14 @@ namespace nmtools::impl
     {
         constexpr auto operator()([[maybe_unused]] const T& a) const noexcept
         {
-            if constexpr (meta::is_fixed_size_ndarray_v<T>) {
+            if constexpr (meta::has_shape_v<T>) {
+                auto shape = a.shape();
+                return nmtools::at(shape,meta::ct_v<0>);
+            } else if constexpr (meta::is_fixed_size_ndarray_v<T>) {
                 constexpr auto shape = meta::fixed_ndarray_shape_v<T>;
                 return nmtools::at(shape,meta::ct_v<0>);
             } else if constexpr (is_none_v<T>) {
                 return 0;
-            } else if constexpr (meta::has_shape_v<T>) {
-                auto shape = a.shape();
-                return nmtools::at(shape,meta::ct_v<0>);
             } else {
                 using type = error::LEN_UNSUPPORTED<T>;
                 return type{};
@@ -96,7 +96,7 @@ namespace nmtools::impl
         constexpr auto operator()(const T& array) const noexcept
         {
             // allow scalar and ndarray
-            constexpr auto constrained = [](auto a){
+            [[maybe_unused]] constexpr auto constrained = [](auto a){
                 using type = meta::type_t<meta::remove_cvref_t<decltype(a)>>;
                 return meta::is_fixed_size_ndarray_v<type> || meta::has_shape_v<type>
                     || (meta::nested_array_dim_v<type> > 0)
@@ -104,13 +104,15 @@ namespace nmtools::impl
                     || (meta::is_num_v<type>)
                     || (meta::is_fixed_index_array_v<type>);
             };
-            constexpr auto t_array = meta::as_value_v<array_t>;
+            [[maybe_unused]] constexpr auto t_array = meta::as_value_v<array_t>;
             // static_assert (
             //     constrained(t_array) || constrained_either(t_array)
             //     , "unsupported shape; only support fixed-shape array or array has .shape() or scalar type"
             // );
-            if constexpr (!constrained(t_array)) {
-                return error::SHAPE_UNSUPPORTED<T>{};
+
+            // prefer .shape() since is is much more explicit
+            if constexpr (meta::has_shape_v<T>) {
+                return array.shape();
             }
             // for scalar type, simply return None
             else if constexpr (meta::is_num_v<array_t>)
@@ -156,10 +158,35 @@ namespace nmtools::impl
                 return shape_;
             }
             else {
-                return array.shape();
+                return error::SHAPE_UNSUPPORTED<T>{};
             }
         } // operator()
     }; // shape_t
+
+    #if 0
+    template <typename T, size_t N>
+    struct shape_t<T[N]>
+    {
+        using array_type = T[N];
+
+        constexpr static auto shape_vtype = [](){
+            if constexpr (meta::is_bounded_array_v<T>) {
+                using shape_type = typename shape_t<T>::shape_type;
+                return meta::as_value_v<meta::append_type_t<shape_type,meta::ct<N>>>;
+            } else if constexpr (meta::is_num_v<T>) {
+                return meta::as_value_v<nmtools_tuple<meta::ct<N>>>;
+            } else {
+                return meta::as_value_v<error::SHAPE_UNSUPPORTED<T[N]>>;
+            }
+        }();
+        using shape_type = meta::type_t<decltype(shape_vtype)>;
+
+        constexpr auto operator()(const array_type&) const noexcept
+        {
+            return shape_type{};
+        }
+    }; // shape_t
+    #endif
 
     template <typename T>
     inline constexpr auto shape = shape_t<T>{};
@@ -287,6 +314,11 @@ namespace nmtools::meta
 #ifndef NMTOOLS_DISABLE_STL
 #include "nmtools/array/impl/stl.hpp"
 #endif
+
+// NOTE: currently breaks ref view (maybe circular dependency)
+// #ifdef NMTOOLS_ENABLE_BOOST
+// #include "nmtools/array/impl/boost.hpp"
+// #endif
 
 // UTL should be available on any platform
 #include "nmtools/array/impl/utl.hpp"

@@ -3,7 +3,7 @@
 
 // Most Arduino doesn't have stl, and no math available from std:: namespace
 // ARDUINO macro is defined at least when using PlatformIO
-#ifdef ARDUINO
+#if (defined(ARDUINO) || (!__has_include(<cmath>)))
 #include "nmtools/platform/math/arduino.hpp"
 #else
 #include "nmtools/platform/math/stl.hpp"

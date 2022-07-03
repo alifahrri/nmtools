@@ -15,6 +15,12 @@ namespace nmtools::meta
     struct is_constant_index : is_integral_constant<T> {}; 
 
     template <typename T>
+    struct is_constant_index<const T> : is_constant_index<T> {};
+
+    template <typename T>
+    struct is_constant_index<T&> : is_constant_index<T> {};
+
+    template <typename T>
     inline constexpr auto is_constant_index_v = is_constant_index<T>::value;
 } // namespace nmtools::meta
 

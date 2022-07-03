@@ -37,6 +37,12 @@ namespace nmtools::meta
         static constexpr auto value = v;
     };
 
+    template <>
+    struct to_value<none_t>
+    {
+        static constexpr auto value = none_t{};
+    };
+
     // nmtools' true_type & false_type is not an alias to integral_constant
     template <> struct to_value<true_type>
     { static constexpr auto value = true; };

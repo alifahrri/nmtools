@@ -1,8 +1,24 @@
 #include "nmtools/utl/maybe.hpp"
+#include "nmtools/utl/array.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
 namespace utl = nm::utl;
+
+template <typename T>
+static constexpr auto test(bool valid, const T& t)
+{
+    using result_t = utl::maybe<T>;
+    auto res = result_t{};
+
+    if (valid) {
+        // union's active member can't be changed at constexpr :(
+        // res = t;
+        return result_t{t};
+    }
+
+    return res;
+}
 
 TEST_CASE("maybe" * doctest::test_suite("utl"))
 {
@@ -51,6 +67,18 @@ TEST_CASE("maybe" * doctest::test_suite("utl"))
 
             maybe = 3;
             CHECK( *maybe == 3 );
+        }
+    }
+
+    SUBCASE("constexpr")
+    {
+        {
+            constexpr auto res = test(false,utl::array{0ul,1ul,2ul});
+            CHECK( !res );
+        }
+        {
+            constexpr auto res = test(true,utl::array{0ul,1ul,2ul});
+            CHECK( res );
         }
     }
 }

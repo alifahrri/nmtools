@@ -23,9 +23,14 @@ namespace nmtools::impl
     template <typename array_t, typename index_type>
     struct at_t
     {
-        constexpr decltype(auto) operator()(const array_t& a, [[maybe_unused]] index_type i) const
+        constexpr decltype(auto) operator()([[maybe_unused]] const array_t& a, [[maybe_unused]] index_type i) const
         {
-            if constexpr (meta::has_at_v<const array_t&,index_type>) {
+            if constexpr (meta::is_constant_index_array_v<array_t> && meta::is_index_v<index_type>) {
+                // allow accessing constant index array using index type for const only
+                constexpr auto array = meta::to_value_v<array_t>;
+                // TODO: return constant index if index_type is constant index
+                return at_t<meta::remove_cvref_t<decltype(array)>,index_type>{}(array,i);
+            } else if constexpr (meta::has_at_v<const array_t&,index_type>) {
                 return a.at(i);
             } else if constexpr (meta::has_square_bracket_v<const array_t&,index_type>) {
                 return a[i];

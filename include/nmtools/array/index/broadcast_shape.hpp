@@ -5,6 +5,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/max.hpp"
 #include "nmtools/array/index/sum.hpp"
@@ -89,16 +90,30 @@ namespace nmtools::index
             auto bdim = len(bshape);
             if constexpr (meta::is_resizeable_v<result_t>)
                 res.resize(bdim);
-            for (size_t i=0; i<bdim; i++)
-                at(res,i) = at(bshape,i);
+            if constexpr (meta::is_tuple_v<bshape_t>) {
+                constexpr auto N = meta::len_v<bshape_t>;
+                meta::template_for<N>([&](auto i){
+                    at(res,i) = at(bshape,i);
+                });
+            } else {
+                for (size_t i=0; i<bdim; i++)
+                    at(res,i) = at(bshape,i);
+            }
         }
         else if constexpr (is_none_v<bshape_t> && !is_none_v<ashape_t>) {
             // similar to above case, but ashape is index array instead of bshape
             auto adim = len(ashape);
             if constexpr (meta::is_resizeable_v<result_t>)
                 res.resize(adim);
-            for (size_t i=0; i<adim; i++)
-                at(res,i) = at(ashape,i);
+            if constexpr (meta::is_tuple_v<ashape_t>) {
+                constexpr auto N = meta::len_v<ashape_t>;
+                meta::template_for<N>([&](auto i){
+                    at(res,i) = at(ashape,i);
+                });
+            } else {
+                for (size_t i=0; i<adim; i++)
+                    at(res,i) = at(ashape,i);
+            }
         } else {
             // do nothing
         }

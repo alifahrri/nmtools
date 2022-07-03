@@ -45,9 +45,15 @@ namespace nmtools::view::detail
         // auto r1 = at(bshape,i1);
         auto r2 = at(bshape,i2);
 
-        auto adim = len(ashape);
-        auto bdim = len(bshape);
+        auto adim = (size_t)len(ashape);
+        auto bdim = (size_t)len(bshape);
+        #if 0 // breaks on avr-gcc with nmtools_tuple = utl::tuple :(
         const auto [h_dim, l_dim] = (adim > bdim) ? nmtools_tuple{adim,bdim} : nmtools_tuple{bdim,adim};
+        #else
+        const auto [h_dim, l_dim] = [&](){
+            return ((adim > bdim) ? nmtools_tuple{adim,bdim} : nmtools_tuple{bdim,adim});
+        }();
+        #endif
 
         // check matrix shape
         auto valid_shape = l1 == r2;

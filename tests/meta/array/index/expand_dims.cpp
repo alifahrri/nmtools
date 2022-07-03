@@ -111,6 +111,9 @@ TEST_CASE("expand_dims(array;any)" * doctest::test_suite("meta::expand_dims"))
     }
 }
 
+// NOTE: no longer supported
+// TODO: remove
+#if 0
 TEST_CASE("expand_dims(tuple,any)" * doctest::test_suite("meta::expand_dims"))
 {
     {
@@ -135,6 +138,7 @@ TEST_CASE("expand_dims(tuple,any)" * doctest::test_suite("meta::expand_dims"))
         STATIC_CHECK_IS_SAME( result_t, exp_t );
     }
 }
+#endif
 
 TEST_CASE("expand_dims(hybrid_ndarray,any)" * doctest::test_suite("meta::expand_dims"))
 {

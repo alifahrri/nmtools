@@ -65,16 +65,19 @@ namespace nmtools::index
     constexpr auto argsort(const array_t& array)
     {
         using result_t = meta::remove_cvref_t<decltype(argsort(*array))>;
-        using return_t = meta::make_maybe_type_t<result_t>;
+        using return_t = nmtools_maybe<result_t>;
 
-        auto ret = return_t{};
+        // auto ret = return_t{};
         if (static_cast<bool>(array)) {
-            ret = argsort(*array);
+            // ret = argsort(*array);
+            return return_t{argsort(*array)};
         } else {
-            ret = meta::Nothing;
+            // operator= from stl's optional not constexpr 😭
+            // ret = meta::Nothing;
+            return return_t{meta::Nothing};
         }
 
-        return ret;
+        // return ret;
     } // argsort (maybe)
 } // namespace nmtools::index
 

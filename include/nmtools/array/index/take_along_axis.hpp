@@ -36,7 +36,7 @@ namespace nmtools::index
             auto indices_dim = (size_t)len(indices);
             auto maybe_axis  = normalize_axis(axis, shape_dim);
 
-            auto [broadcast_s, b_shape] = broadcast_shape(shape,indices);
+            const auto [broadcast_s, b_shape] = broadcast_shape(shape,indices);
 
             if (!static_cast<bool>(maybe_axis) || !((size_t)shape_dim == (size_t)indices_dim) || !static_cast<bool>(broadcast_s)) {
                 return return_t {}; // Nothing
@@ -87,7 +87,10 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_fixed_index_array_v<shape_t> && is_fixed_index_array_v<indices_shape_t> && is_index_v<axis_t>) {
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                using type = resolve_optype_t<index::shape_take_along_axis_t, decltype(to_value_v<shape_t>), indices_shape_t, axis_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_fixed_index_array_v<shape_t> && is_fixed_index_array_v<indices_shape_t> && is_index_v<axis_t>) {
                 constexpr auto shape_dim   = len_v<shape_t>;
                 constexpr auto indices_dim = len_v<indices_shape_t>;
                 if constexpr (shape_dim == indices_dim) {

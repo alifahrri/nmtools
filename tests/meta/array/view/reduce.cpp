@@ -1,3 +1,7 @@
+#if __has_include(<boost/array.hpp>)
+#define NMTOOLS_ENABLE_BOOST
+#endif
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/meta.hpp"
@@ -12,7 +16,7 @@ namespace meta = nm::meta;
 using nm::none_t;
 using namespace nm::literals;
 
-#define declval(type) std::declval<type>()
+#define declval(type) meta::declval<type>()
 
 TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::reduce"))
 {
@@ -134,4 +138,1095 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view::reduce"))
         using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
     }
+}
+
+#if 1
+TEST_CASE("reduce(case1)" * doctest::test_suite("meta::reduce"))
+{
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = nmtools_array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            // reduction may change size but not maximum size
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 6);
+        }
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 6);
+        }
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = nmtools_list<size_t>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            // TODO: fix bounded dim
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = na::static_vector<float,12>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 6);
+        }
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            // TODO: fix bounded dim
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = na::static_vector<float,12>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            // TODO: fix bounded dim
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = nmtools_list<size_t>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+#ifdef NMTOOLS_ENABLE_BOOST
+    {
+        using buffer_type = boost::array<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = boost::container::static_vector<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = boost::container::small_vector<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = boost::container::vector<float>;
+        using shape_type  = boost::container::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            // TODO: fix bounded dim
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+    {
+        using buffer_type = boost::array<float,12>;
+        using shape_type  = boost::container::small_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = decltype(0_ct);
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{3,2}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 6);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 2);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 12);
+        }
+    }
+#endif // NMTOOLS_ENABLE_BOOST
+}
+#endif
+
+TEST_CASE("reduce(case2)" * doctest::test_suite("meta::reduce"))
+{
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = nmtools_array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        static_assert( !meta::is_ndarray_v<view_type> );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        static_assert( !meta::is_ndarray_v<view_type> );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = nmtools_list<size_t>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = na::static_vector<float,12>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = na::static_vector<float,12>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = nmtools_list<size_t>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+#ifdef NMTOOLS_ENABLE_BOOST
+    {
+        using buffer_type = boost::array<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = boost::container::static_vector<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = boost::container::small_vector<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = boost::container::vector<float>;
+        using shape_type  = boost::container::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+    {
+        using buffer_type = boost::array<float,12>;
+        using shape_type  = boost::container::small_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type = nm::none_t;
+        using init_type = nm::none_t;
+        using keepdims_type = decltype(nm::False);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
+    }
+#endif // NMTOOLS_ENABLE_BOOST
+}
+
+TEST_CASE("reduce(case3)" * doctest::test_suite("meta::reduce"))
+{
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = nmtools_array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = nmtools_list<size_t>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = nmtools_array<float,12>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = na::static_vector<float,12>;
+        using shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = na::static_vector<float,12>;
+        using shape_type  = na::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = nmtools_list<float>;
+        using shape_type  = nmtools_list<size_t>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+        
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+#ifdef NMTOOLS_ENABLE_BOOST
+    {
+        using buffer_type = boost::array<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = boost::container::static_vector<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = boost::container::small_vector<float,12>;
+        using shape_type  = boost::array<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = boost::container::vector<float>;
+        using shape_type  = boost::container::static_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+    {
+        using buffer_type = boost::array<float,12>;
+        using shape_type  = boost::container::small_vector<size_t,3>;
+        using array_type  = na::ndarray_t<buffer_type,shape_type>;
+
+        using axis_type  = nm::none_t;
+        using init_type  = nm::none_t;
+        using dtype_type = nm::none_t;
+        using keepdims_type = decltype(nm::True);
+        using view_type = decltype(view::reduce_add(declval(array_type),declval(axis_type),declval(dtype_type),declval(init_type),declval(keepdims_type)));
+
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_type );
+
+        {
+            constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
+            constexpr auto fixed_dim    = meta::fixed_dim_v<view_type>;
+            constexpr auto fixed_size   = meta::fixed_size_v<view_type>;
+            constexpr auto bounded_dim  = meta::bounded_dim_v<view_type>;
+            constexpr auto bounded_size = meta::bounded_size_v<view_type>;
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_shape, (nmtools_array{1,1,1}));
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(fixed_size, 1);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_dim, 3);
+            NMTOOLS_CHECK_EQUAL_IF_NOT_FAIL(bounded_size, 1);
+        }
+    }
+#endif // NMTOOLS_ENABLE_BOOST
 }

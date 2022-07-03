@@ -25,6 +25,7 @@ namespace nmtools::meta
         // doesn't work on embedded, works on linux: https://godbolt.org/z/186Ex9Eeq
         // doesn't work on linux, works on embedded: https://godbolt.org/z/hfr7e6fbM
         static constexpr auto value = [](){
+            // NOTE: following std, integral_constant is not considered as integral/integer trait
             return is_same_v<T,bool>
                 || is_same_v<T,char>
                 || is_same_v<T,int>

@@ -2,21 +2,35 @@ cmake_minimum_required(VERSION 3.10.2)
 project(numeric-tests-doctest-meta)
 
 set( META_VIEW_TEST_SOURCES
+    array/view/accumulate.cpp
+    array/view/atleast_1d.cpp
+    array/view/atleast_2d.cpp
+    array/view/atleast_3d.cpp
     array/view/broadcast_to.cpp
     array/view/compress.cpp
     array/view/concatenate.cpp
+    array/view/expand_dims.cpp
     array/view/flatten.cpp
+    array/view/full.cpp
     array/view/matmul.cpp
     array/view/mean.cpp
+    array/view/moveaxis.cpp
+    array/view/ones.cpp
+    array/view/outer.cpp
     array/view/pad.cpp
+    array/view/pooling.cpp
     array/view/prod.cpp
+    array/view/reduce.cpp
     array/view/repeat.cpp
     array/view/reshape.cpp
+    array/view/squeeze.cpp
     array/view/take.cpp
+    array/view/tile.cpp
     array/view/transpose.cpp
     array/view/ufunc.cpp
     array/view/var.cpp
     array/view/where.cpp
+    array/view/zeros.cpp
 )
 
 set( META_EVAL_TEST_SOURCES
@@ -78,10 +92,12 @@ set( META_TRAIT_TEST_SOURCES
     traits/has_square_bracket.cpp
     traits/is_base_of.cpp
     traits/is_class.cpp
+    traits/is_destructible.cpp
     traits/is_index.cpp
     traits/is_index_array.cpp
     traits/is_integer.cpp
     traits/is_num.cpp
+    traits/is_pod.cpp
     traits/is_reference.cpp
     traits/is_slice_index_array.cpp
     traits/is_slice_index.cpp
@@ -99,10 +115,12 @@ set( META_TRANSFORM_TEST_SOURCES
     transform/remove_reference.cpp
     transform/replace_element_type.cpp
     transform/nested_array_dim.cpp
+    transform/promote_index.cpp
     transform/remove_nested_array_extents.cpp
     transform/resize_fixed_ndarray.cpp
     transform/resize_hybrid_ndarray_max_size.cpp
     transform/transform_bounded_array.cpp
+    transform/to_value.cpp
 )
 
 set( META_UTILITY_TEST_SOURCES
@@ -119,6 +137,8 @@ add_executable(${PROJECT_NAME} tests.cpp
     array/ndarray.cpp
     array/boost.cpp
     array/stl.cpp
+    array/fixed.cpp
+    array/hybrid.cpp
     array/error_type.cpp
     ${META_EVAL_TEST_SOURCES}
     ${META_VIEW_TEST_SOURCES}

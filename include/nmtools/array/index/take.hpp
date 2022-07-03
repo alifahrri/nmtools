@@ -19,27 +19,29 @@ namespace nmtools::index
 
         auto res = return_t {};
 
-        auto n = len(indices);
-        // TODO: error when n > at(shape,axis)
+        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+            auto n = len(indices);
+            // TODO: error when n > at(shape,axis)
 
-        if constexpr (is_none_v<axis_t>)
-            at(res,0) = n;
-        else {
-            auto shape_take_impl = [&](auto i){
-                using common_t = meta::promote_index_t<axis_t,decltype(i)>;
-                at(res,i) = ((common_t)i == (common_t)axis) ? n : at(shape,i);
-            };
-            [[maybe_unused]] auto dim = len(shape);
-            if constexpr (meta::is_resizeable_v<return_t>)
-                res.resize(dim);
-
-            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
-                constexpr auto DIM = meta::len_v<shape_t>;
-                meta::template_for<DIM>(shape_take_impl);
-            }
+            if constexpr (is_none_v<axis_t>)
+                at(res,0) = n;
             else {
-                for (size_t i=0; i<dim; i++)
-                    shape_take_impl(i);
+                auto shape_take_impl = [&](auto i){
+                    using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+                    at(res,i) = ((common_t)i == (common_t)axis) ? n : at(shape,i);
+                };
+                [[maybe_unused]] auto dim = len(shape);
+                if constexpr (meta::is_resizeable_v<return_t>)
+                    res.resize(dim);
+
+                if constexpr (meta::is_fixed_index_array_v<shape_t>) {
+                    constexpr auto DIM = meta::len_v<shape_t>;
+                    meta::template_for<DIM>(shape_take_impl);
+                }
+                else {
+                    for (size_t i=0; i<dim; i++)
+                        shape_take_impl(i);
+                }
             }
         }
 
@@ -108,14 +110,41 @@ namespace nmtools::meta
         using type = make_array_type_t<size_t,1>;
     }; // shape_take_t
 
+    namespace error
+    {
+        template <typename...>
+        struct SHAPE_TAKE_UNSUPPORTED : detail::fail_t {};
+    }
+
     // TODO: compute at compile-time whenever possible
     template <typename shape_t, typename indices_t, typename axis_t>
     struct resolve_optype<
         void, index::shape_take_t, shape_t, indices_t, axis_t
     >
     {
-        // when slicing at given axis, the resulting shape type follow original shape
-        using type = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
+        static constexpr auto vtype = [](){
+            // indices may not be index array
+            using index_t = get_element_or_common_type_t<indices_t>;
+            [[maybe_unused]] constexpr auto index_array_or_index_ndarray = (is_ndarray_v<indices_t> && is_index_v<index_t>) || is_index_array_v<indices_t>;
+            if constexpr (is_constant_index_array_v<shape_t> && is_constant_index_array_v<indices_t> && (is_none_v<axis_t> || is_constant_index_v<axis_t>)) {
+                constexpr auto result = index::shape_take(to_value_v<shape_t>, to_value_v<indices_t>, to_value_v<axis_t>);
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(result)-1>([&](auto init, auto index){
+                    using init_type = type_t<decltype(init)>;
+                    return as_value_v<append_type_t<init_type,ct<at(result,index+1)>>>;
+                }, as_value_v<nmtools_tuple<ct<at(result,0)>>>);
+            } else if constexpr (is_index_array_v<shape_t> && index_array_or_index_ndarray && is_none_v<axis_t>) {
+                return as_value_v<none_t>;
+            } else if constexpr (is_index_array_v<shape_t> && index_array_or_index_ndarray && is_index_v<axis_t>) {
+                // when slicing at given axis, the resulting shape type follow original shape
+                using type = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
+                return as_value_v<type>;
+            } else {
+                using type = error::SHAPE_TAKE_UNSUPPORTED<shape_t,indices_t,axis_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     }; // shape_take_t
 
     template <typename index_t, typename shape_t, typename indices_t, typename axis_t>

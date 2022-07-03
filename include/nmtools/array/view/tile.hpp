@@ -4,7 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/index/tile.hpp"
-#include "nmtools/array/index/shape_tile.hpp"
 #include "nmtools/array/shape.hpp"
 
 namespace nmtools::view
@@ -71,6 +70,7 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    // TODO: remove
     /**
      * @brief Infer the shape of tile view at compile-time.
      * 
@@ -94,6 +94,7 @@ namespace nmtools::meta
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
 
+    #if 0
     /**
      * @brief Infer dimension of tile view at compile-time.
      * 
@@ -112,6 +113,32 @@ namespace nmtools::meta
         }();
         using value_type = decltype(value);
     }; // fixed_dim
+    #endif
+
+    template <typename array_t, typename reps_t>
+    struct fixed_size<
+        view::decorator_t<view::tile_t, array_t, reps_t>
+    >
+    {
+        using view_type  = view::decorator_t<view::tile_t, array_t, reps_t>;
+        using shape_type = decltype(declval<view_type>().shape());
+
+        static constexpr auto value = [](){
+            // reps may change shape, so change size
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // fixed_size
+
+    template <typename array_t, typename reps_t>
+    struct bounded_size<
+        view::decorator_t<view::tile_t, array_t, reps_t>
+    > : fixed_size<
+        view::decorator_t<view::tile_t, array_t, reps_t>
+    > {}; // bounded_size
 
     template <typename array_t, typename reps_t>
     struct is_ndarray< view::decorator_t< view::tile_t, array_t, reps_t >>

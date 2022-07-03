@@ -21,11 +21,9 @@ namespace case1
     using index_t = size_t;
 
     constexpr auto numel = 12;
-    template <typename value_t>
-    using buffer_t = nmtools_array<value_t,numel>;
+    using buffer_t = nmtools_array<T,numel>;
 
     constexpr auto dim = 3;
-    template <typename...>
     using shape_buffer_t = nmtools_array<index_t,dim>;
 } // namespace case1
 
@@ -38,14 +36,12 @@ namespace case2
     using index_t = size_t;
 
     constexpr auto numel = 12;
-    template <typename value_t>
-    using buffer_t = nmtools_array<value_t,numel>;
+    using buffer_t = nmtools_array<T,numel>;
 
-    template <typename...>
     using shape_buffer_t = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
 
     template <typename...>
-    using stride_buffer_t = meta::resolve_optype_t<ix::compute_strides_t,shape_buffer_t<>>;
+    using stride_buffer_t = meta::resolve_optype_t<ix::compute_strides_t,shape_buffer_t>;
 } // namespace case2
 
 // fixed-shape dynamic-buffer
@@ -54,14 +50,12 @@ namespace case3
     using T = float;
     using index_t = size_t;
 
-    template <typename value_t>
-    using buffer_t = nmtools_list<value_t>;
+    using buffer_t = nmtools_list<T>;
 
-    template <typename...>
     using shape_buffer_t = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
 
     template <typename...>
-    using stride_buffer_t = meta::resolve_optype_t<ix::compute_strides_t,shape_buffer_t<>>;
+    using stride_buffer_t = meta::resolve_optype_t<ix::compute_strides_t,shape_buffer_t>;
 } // namespace case3
 
 // dynamic-shape fixed-buffer
@@ -71,10 +65,8 @@ namespace case4
     using index_t = size_t;
 
     constexpr auto numel = 12;
-    template <typename value_t>
-    using buffer_t = nmtools_array<value_t,numel>;
+    using buffer_t = nmtools_array<T,numel>;
 
-    template <typename...>
     using shape_buffer_t = nmtools_list<index_t>;
 } // namespace case4
 
@@ -85,11 +77,9 @@ namespace case5
     using index_t = size_t;
 
     constexpr auto numel = 12;
-    template <typename value_t>
-    using buffer_t = nmtools_array<value_t,numel>;
+    using buffer_t = nmtools_array<T,numel>;
 
     constexpr auto bounded_dim = 6;
-    template <typename...>
     using shape_buffer_t = na::hybrid_ndarray<index_t,bounded_dim,1>;
 } // namespace case5
 
@@ -100,14 +90,12 @@ namespace case6
     using index_t = size_t;
 
     constexpr auto max_numel = 12;
-    template <typename value_t>
-    using buffer_t = na::hybrid_ndarray<index_t,max_numel,1>;
+    using buffer_t = na::hybrid_ndarray<T,max_numel,1>;
 
-    template <typename...>
     using shape_buffer_t = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
 
     template <typename...>
-    using stride_buffer_t = meta::resolve_optype_t<ix::compute_strides_t,shape_buffer_t<>>;
+    using stride_buffer_t = meta::resolve_optype_t<ix::compute_strides_t,shape_buffer_t>;
 } // namespace case6
 
 // hybrid-shape dynamic-buffer
@@ -116,11 +104,9 @@ namespace case7
     using T = float;
     using index_t = size_t;
 
-    template <typename value_t>
-    using buffer_t = nmtools_list<value_t>;
+    using buffer_t = nmtools_list<T>;
 
     constexpr auto bounded_dim = 3;
-    template <typename...>
     using shape_buffer_t = na::hybrid_ndarray<index_t,bounded_dim,1>;
 } // namespace case7
 
@@ -131,11 +117,9 @@ namespace case8
     using index_t = size_t;
 
     constexpr auto max_numel = 12;
-    template <typename value_t>
-    using buffer_t = na::hybrid_ndarray<value_t,max_numel,1>;
+    using buffer_t = na::hybrid_ndarray<T,max_numel,1>;
 
     constexpr auto bounded_dim = 3;
-    template <typename...>
     using shape_buffer_t = na::hybrid_ndarray<index_t,bounded_dim,1>;
 } // namespace case8
 
@@ -145,10 +129,8 @@ namespace case9
     using T = float;
     using index_t = size_t;
 
-    template <typename value_t>
-    using buffer_t = nmtools_list<value_t>;
+    using buffer_t = nmtools_list<T>;
 
-    template <typename...>
     using shape_buffer_t = nmtools_list<index_t>;
 } // namespace case9
 
@@ -158,7 +140,7 @@ namespace case9
 TEST_CASE("ndarray(case1)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case1;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     auto array = ndarray{};
 
@@ -208,7 +190,7 @@ TEST_CASE("ndarray(case1)" * doctest::test_suite("array::ndarray"))
 TEST_CASE("ndarray(case2)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case2;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t,stride_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     {
         auto array = ndarray{};
@@ -248,7 +230,7 @@ TEST_CASE("ndarray(case2)" * doctest::test_suite("array::ndarray"))
 TEST_CASE("ndarray(case3)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case3;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t,stride_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t>;
 
     auto array = ndarray{};
     NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
@@ -279,7 +261,7 @@ TEST_CASE("ndarray(case3)" * doctest::test_suite("array::ndarray"))
 TEST_CASE("ndarray(case4)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case4;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     {
         auto array = ndarray{};
@@ -323,7 +305,7 @@ TEST_CASE("ndarray(case4)" * doctest::test_suite("array::ndarray"))
 TEST_CASE("ndarray(case5)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case5;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     {
         auto array = ndarray {};
@@ -371,7 +353,7 @@ TEST_CASE("ndarray(case5)" * doctest::test_suite("array::ndarray"))
 TEST_CASE("ndarray(case6)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case6;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t,stride_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t>;
 
     auto array = ndarray {};
 
@@ -405,7 +387,7 @@ TEST_CASE("ndarray(case6)" * doctest::test_suite("array::ndarray"))
 TEST_CASE("ndarray(case7)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case7;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     auto array = ndarray {};
 
@@ -446,7 +428,7 @@ TEST_CASE("ndarray(case7)" * doctest::test_suite("array::ndarray"))
 TEST_CASE("ndarray(case8)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case8;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     auto array = ndarray {};
 
@@ -489,7 +471,7 @@ TEST_CASE("ndarray(case8)" * doctest::test_suite("array::ndarray"))
 TEST_CASE("ndarray(case9)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case9;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     auto array = ndarray {};
 
@@ -530,19 +512,7 @@ TEST_CASE("ndarray(case9)" * doctest::test_suite("array::ndarray"))
     NMTOOLS_REQUIRE_EQUAL( array.size(), 6 );
 }
 
-#include "nmtools/array/index/reverse.hpp"
-
-template <typename shape_t, typename strides_t>
-struct column_major_offset_t
-{
-    template <typename indices_t>
-    constexpr auto operator()(const indices_t& indices, const shape_t&, const strides_t& strides) const
-    {
-        auto offset = nm::index::compute_offset(nm::index::reverse(indices),strides);
-        // return (nm::index::product(shape)-1) - offset;
-        return offset;
-    } // operator()
-};
+using nmtools::array::column_major_offset_t;
 
 // custom strides
 namespace case10
@@ -551,15 +521,13 @@ namespace case10
     using index_t = size_t;
 
     constexpr auto numel = 12;
-    template <typename value_t>
-    using buffer_t = nmtools_array<value_t,numel>;
+    using buffer_t = nmtools_array<T,numel>;
 
     constexpr auto dim = 3;
-    template <typename...>
     using shape_buffer_t = nmtools_array<index_t,dim>;
 
     template <typename...>
-    using stride_buffer_t = shape_buffer_t<index_t>;
+    using stride_buffer_t = shape_buffer_t;
 } // namespace case1
 
 
@@ -567,7 +535,7 @@ namespace case10
 TEST_CASE("ndarray(case10)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case10;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t,stride_buffer_t,column_major_offset_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,column_major_offset_t>;
 
     auto array = ndarray{};
 
@@ -629,23 +597,21 @@ namespace case11
     using index_t = size_t;
 
     constexpr auto numel = 12;
-    template <typename value_t>
-    using buffer_t = ::boost::array<value_t,numel>;
+    using buffer_t = ::boost::array<T,numel>;
 
     constexpr auto dim = 3;
-    template <typename...>
     using shape_buffer_t = ::boost::array<index_t,dim>;
 
-    static_assert( meta::is_index_array_v<shape_buffer_t<size_t>> );
+    static_assert( meta::is_index_array_v<shape_buffer_t> );
 
     template <typename...>
-    using stride_buffer_t = shape_buffer_t<index_t>;
+    using stride_buffer_t = shape_buffer_t;
 } // namespace case1
 
 TEST_CASE("ndarray(case11)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case11;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     auto array = ndarray {};
 
@@ -689,23 +655,21 @@ namespace case12
     using index_t = size_t;
 
     constexpr auto max_numel = 12;
-    template <typename value_t>
-    using buffer_t = ::boost::container::static_vector<value_t,max_numel>;
+    using buffer_t = ::boost::container::static_vector<T,max_numel>;
 
     constexpr auto bounded_dim = 6;
-    template <typename...>
     using shape_buffer_t = ::boost::container::static_vector<index_t,bounded_dim>;
 
-    static_assert( meta::is_index_array_v<shape_buffer_t<size_t>> );
+    static_assert( meta::is_index_array_v<shape_buffer_t> );
 
     template <typename...>
-    using stride_buffer_t = shape_buffer_t<index_t>;
+    using stride_buffer_t = shape_buffer_t;
 } // namespace case1
 
 TEST_CASE("ndarray(case12)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case12;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     auto array = ndarray {};
 
@@ -757,23 +721,21 @@ namespace case13
     using index_t = size_t;
 
     constexpr auto max_numel = 12;
-    template <typename value_t>
-    using buffer_t = ::boost::container::small_vector<value_t,max_numel>;
+    using buffer_t = ::boost::container::small_vector<T,max_numel>;
 
     constexpr auto bounded_dim = 6;
-    template <typename...>
     using shape_buffer_t = ::boost::container::small_vector<index_t,bounded_dim>;
 
-    static_assert( meta::is_index_array_v<shape_buffer_t<size_t>> );
+    static_assert( meta::is_index_array_v<shape_buffer_t> );
 
     template <typename...>
-    using stride_buffer_t = shape_buffer_t<index_t>;
+    using stride_buffer_t = shape_buffer_t;
 }
 
 TEST_CASE("ndarray(case13)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case13;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     auto array = ndarray {};
 
@@ -824,19 +786,17 @@ namespace case14
     using T = float;
     using index_t = size_t;
 
-    template <typename value_t>
-    using buffer_t = ::boost::container::vector<value_t>;
+    using buffer_t = ::boost::container::vector<T>;
 
-    template <typename...>
     using shape_buffer_t = ::boost::container::vector<index_t>;
 
-    static_assert( meta::is_index_array_v<shape_buffer_t<size_t>> );
+    static_assert( meta::is_index_array_v<shape_buffer_t> );
 }
 
 TEST_CASE("ndarray(case14)" * doctest::test_suite("array::ndarray"))
 {
     using namespace case14;
-    using ndarray = na::ndarray_t<T,index_t,buffer_t,shape_buffer_t>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
 
     auto array = ndarray {};
 

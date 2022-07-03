@@ -245,6 +245,11 @@ namespace nmtools::view
             return len(shape());
         } // dim
 
+        constexpr auto size() const
+        {
+            return index::product(shape());
+        }
+
         /**
          * @brief compute element at given indices, effectively perform reduction.
          * 
@@ -368,32 +373,11 @@ namespace nmtools::view
         
         constexpr auto shape() const
         {
-            // TODO: move shape computation to initialization since the src array is assumed not changing shape anyway
-            // None axis with keepdims True:
-            // just get the original shape and then fill with one
-            [[maybe_unused]]
-            auto f_shape = [&](){
-                auto shape_ = detail::shape(array);
-                using m_shape_t = decltype(shape_);
-                if constexpr (meta::is_constant_index_array_v<m_shape_t>) {
-                    // special case: shape is compile-time value,
-                    // can't access and modify at runtime
-                    constexpr auto N   = meta::len_v<m_shape_t>;
-                    using val_t = meta::ct<1>;
-                    constexpr auto val = val_t{};
-                    auto res = meta::template_reduce<N-1>([&](auto init, auto /*index*/){
-                        return detail::tuple_cat(init,meta::make_tuple_type_t<val_t>{val});
-                    }, /*init=*/meta::make_tuple_type_t<val_t>{val});
-                    return res;
-                } else {
-                    for (size_t i=0; i<len(shape_); i++)
-                        at(shape_,i) = 1;
-                    return shape_;
-                }
-            };
+            [[maybe_unused]] auto shape_ = detail::shape(array);
             if constexpr (meta::is_integral_constant_v<keepdims_t>) {
-                if constexpr (static_cast<bool>(keepdims_t::value))
-                    return f_shape();
+                if constexpr (static_cast<bool>(keepdims_t::value)) {
+                    return index::remove_dims(shape_,axis,keepdims);
+                }
                 else return None;
             }
             else // if (is_none_v<keepdims_t>)
@@ -409,6 +393,12 @@ namespace nmtools::view
             }
             else return 0;
         } // dim
+
+        constexpr auto size() const noexcept
+        {
+            // reducing with None axis strictly return 1 element
+            return meta::ct_v<1ul>;
+        }
 
         constexpr operator result_type() const
         {
@@ -498,6 +488,28 @@ namespace nmtools::meta
             return (is_ndarray_v<array_t> && value_);
         }();
     };
+
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    struct fixed_size< 
+        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
+        // , enable_if_t<!is_none_v<axis_t>>
+    >
+    {
+        using view_type  = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >;
+        using shape_type = decltype(declval<view_type>().shape());
+        using size_type  = decltype(declval<view_type>().size());
+
+        static constexpr auto value = [](){
+            // reduction may change shape
+            if constexpr (is_ndarray_v<view_type> && is_constant_index_v<size_type>) {
+                return size_type::value;
+            } else if constexpr (is_ndarray_v<view_type> && is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // fixed_size
 
     template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
     struct is_ndarray< 

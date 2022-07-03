@@ -125,7 +125,8 @@ TEST_CASE("split(case9)" * doctest::test_suite("view::split") * doctest::skip(tr
 {
     SPLIT_SUBCASE( case9, a, indices_or_sections, axis );
     SPLIT_SUBCASE( case9, a_a, indices_or_sections, axis );
-    SPLIT_SUBCASE( case9, a_v, indices_or_sections, axis );
+    // TODO: remove nested std vector support
+    // SPLIT_SUBCASE( case9, a_v, indices_or_sections, axis );
     SPLIT_SUBCASE( case9, a_f, indices_or_sections, axis );
     SPLIT_SUBCASE( case9, a_h, indices_or_sections, axis );
     SPLIT_SUBCASE( case9, a_d, indices_or_sections, axis );

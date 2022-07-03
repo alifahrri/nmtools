@@ -59,5 +59,5 @@ TEST_CASE("moveaxis(case8)" * doctest::test_suite("functional::moveaxis"))
     FUNCTIONAL_SUBCASE( "case8", fn::moveaxis[source_a][destination_a], a_a );
     FUNCTIONAL_SUBCASE( "case8", fn::moveaxis[source_f][destination_f], a_f );
     FUNCTIONAL_SUBCASE( "case8", fn::moveaxis[source_h][destination_h], a_h );
-    FUNCTIONAL_SUBCASE( "case8", fn::moveaxis[source_v][destination_v], a_d );
+    // FUNCTIONAL_SUBCASE( "case8", fn::moveaxis[source_v][destination_v], a_d );
 }

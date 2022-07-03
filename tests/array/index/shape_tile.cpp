@@ -1,28 +1,22 @@
-#include "nmtools/array/index/shape_tile.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/index/tile.hpp"
+#include "nmtools/array/ndarray.hpp"
 
-#include "testing/doctest.hpp"
-
-#include <vector>
-#include <array>
-#include <tuple>
+#include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+using namespace nmtools::literals;
+
 NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        int shape[1] = {3};
-        int reps[1] = {2};
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast(shape,kind::nested_vec);
-        auto reps_a  = cast<int>(reps);
-        auto reps_v  = cast(reps,kind::nested_vec);
+        inline int shape[1] = {3};
+        inline int reps[1] = {2};
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -31,12 +25,10 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        int shape[1] = {3};
-        int reps[2]  = {2,2};
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast(shape,kind::nested_vec);
-        auto reps_a  = cast<int>(reps);
-        auto reps_v  = cast(reps,kind::nested_vec);
+        inline int shape[1]  = {3};
+        inline int reps[2]   = {2,2};
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -47,10 +39,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
     {
         int shape[1] = {3};
         int reps[3]  = {2,1,2};
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast(shape,kind::nested_vec);
-        auto reps_a  = cast<int>(reps);
-        auto reps_v  = cast(reps,kind::nested_vec);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -61,10 +51,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
     {
         int shape[1] = {3};
         int reps[2]  = {2,1};
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast(shape,kind::nested_vec);
-        auto reps_a  = cast<int>(reps);
-        auto reps_v  = cast(reps,kind::nested_vec);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -75,10 +63,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
     {
         int shape[3] = {2,1,4};
         int reps[2]  = {2,2};
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast(shape,kind::nested_vec);
-        auto reps_a  = cast<int>(reps);
-        auto reps_v  = cast(reps,kind::nested_vec);
+        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -86,7 +72,80 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
     }
 }
 
-#define RUN_impl(...) \
+NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        constexpr inline int shape[1] = {3};
+        constexpr inline int reps[1] = {2};
+        constexpr inline auto shape_ct = nmtools_tuple{3_ct};
+        constexpr inline auto reps_ct  = nmtools_tuple{2_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        constexpr inline int result[1] = {6};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        constexpr inline int shape[1]  = {3};
+        constexpr inline int reps[2]   = {2,2};
+        constexpr inline auto shape_ct = nmtools_tuple{3_ct};
+        constexpr inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        constexpr int result[2] = {2,6};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        constexpr inline int shape[1]  = {3};
+        constexpr inline int reps[3]   = {2,1,2};
+        constexpr inline auto shape_ct = nmtools_tuple{3_ct};
+        constexpr inline auto reps_ct  = nmtools_tuple{2_ct,1_ct,2_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        constexpr int result[3] = {2,1,6};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        constexpr inline int shape[1] = {3};
+        constexpr inline int reps[2]  = {2,1};
+        constexpr inline auto shape_ct = nmtools_tuple{3_ct};
+        constexpr inline auto reps_ct  = nmtools_tuple{2_ct,1_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        constexpr int result[2] = {2,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        constexpr inline int shape[3]  = {2,1,4};
+        constexpr inline int reps[2]   = {2,2};
+        constexpr inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
+        constexpr inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        constexpr int result[3] = {2,2,8};
+    }
+}
+
+#define RUN_shape_tile_impl(...) \
 nm::index::shape_tile(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
@@ -99,14 +158,14 @@ using nm::benchmarks::TrackedBench;
     auto title = std::string("shape_tile-") + #case_name; \
     auto name  = nm::testing::make_func_args("", args...); \
     auto fn    = [&](){ \
-        return RUN_impl(args...); \
+        return RUN_shape_tile_impl(args...); \
     }; \
     return TrackedBench::run(title, name, fn); \
 }(__VA_ARGS__);
 #else
 // run normally without benchmarking, ignore case_name
 #define RUN_shape_tile(case_name, ...) \
-RUN_impl(__VA_ARGS__);
+RUN_shape_tile_impl(__VA_ARGS__);
 #endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define SHAPE_TILE_SUBCASE(case_name,shape,reps) \
@@ -117,32 +176,105 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( result, expect:: result ); \
 }
 
+#define CONSTEXPR_SHAPE_TILE_SUBCASE(case_name,shape,reps) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS( constexpr_shape_tile, case_name ); \
+    constexpr auto result = RUN_shape_tile_impl( args::shape,args::reps ); \
+    NMTOOLS_ASSERT_EQUAL( result, expect:: result ); \
+}
+
 TEST_CASE("shape_tile(case1)" * doctest::test_suite("index::shape_tile"))
 {
+    SHAPE_TILE_SUBCASE( case1, shape, reps );
     SHAPE_TILE_SUBCASE( case1, shape_a, reps_a );
     SHAPE_TILE_SUBCASE( case1, shape_v, reps_v );
+    SHAPE_TILE_SUBCASE( case1, shape_f, reps_f );
+    SHAPE_TILE_SUBCASE( case1, shape_h, reps_h );
 }
 
 TEST_CASE("shape_tile(case2)" * doctest::test_suite("index::shape_tile"))
 {
+    SHAPE_TILE_SUBCASE( case2, shape, reps );
     SHAPE_TILE_SUBCASE( case2, shape_a, reps_a );
     SHAPE_TILE_SUBCASE( case2, shape_v, reps_v );
+    SHAPE_TILE_SUBCASE( case2, shape_f, reps_f );
+    SHAPE_TILE_SUBCASE( case2, shape_h, reps_h );
 }
 
 TEST_CASE("shape_tile(case3)" * doctest::test_suite("index::shape_tile"))
 {
+    SHAPE_TILE_SUBCASE( case3, shape, reps );
     SHAPE_TILE_SUBCASE( case3, shape_a, reps_a );
     SHAPE_TILE_SUBCASE( case3, shape_v, reps_v );
+    SHAPE_TILE_SUBCASE( case3, shape_f, reps_f );
+    SHAPE_TILE_SUBCASE( case3, shape_h, reps_h );
 }
 
 TEST_CASE("shape_tile(case4)" * doctest::test_suite("index::shape_tile"))
 {
+    SHAPE_TILE_SUBCASE( case4, shape, reps );
     SHAPE_TILE_SUBCASE( case4, shape_a, reps_a );
     SHAPE_TILE_SUBCASE( case4, shape_v, reps_v );
+    SHAPE_TILE_SUBCASE( case4, shape_f, reps_f );
+    SHAPE_TILE_SUBCASE( case4, shape_h, reps_h );
 }
 
 TEST_CASE("shape_tile(case5)" * doctest::test_suite("index::shape_tile"))
 {
+    SHAPE_TILE_SUBCASE( case5, shape, reps );
     SHAPE_TILE_SUBCASE( case5, shape_a, reps_a );
     SHAPE_TILE_SUBCASE( case5, shape_v, reps_v );
+    SHAPE_TILE_SUBCASE( case5, shape_f, reps_f );
+    SHAPE_TILE_SUBCASE( case5, shape_h, reps_h );
+}
+
+TEST_CASE("shape_tile(case1)" * doctest::test_suite("index::constexpr_shape_tile"))
+{
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case1, shape, reps );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case1, shape_a, reps_a );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case1, shape_f, reps_f );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case1, shape_h, reps_h );
+
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case1, shape_ct, reps_ct );
+}
+
+TEST_CASE("shape_tile(case2)" * doctest::test_suite("index::constexpr_shape_tile"))
+{
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case2, shape, reps );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case2, shape_a, reps_a );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case2, shape_f, reps_f );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case2, shape_h, reps_h );
+
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case2, shape_ct, reps_ct );
+}
+
+TEST_CASE("shape_tile(case3)" * doctest::test_suite("index::constexpr_shape_tile"))
+{
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case3, shape, reps );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case3, shape_a, reps_a );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case3, shape_f, reps_f );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case3, shape_h, reps_h );
+
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case4, shape_ct, reps_ct );
+}
+
+TEST_CASE("shape_tile(case4)" * doctest::test_suite("index::constexpr_shape_tile"))
+{
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case4, shape, reps );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case4, shape_a, reps_a );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case4, shape_f, reps_f );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case4, shape_h, reps_h );
+
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case4, shape_ct, reps_ct );
+}
+
+TEST_CASE("shape_tile(case5)" * doctest::test_suite("index::constexpr_shape_tile"))
+{
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case5, shape, reps );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case5, shape_a, reps_a );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case5, shape_f, reps_f );
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case5, shape_h, reps_h );
+
+    CONSTEXPR_SHAPE_TILE_SUBCASE( case5, shape_ct, reps_ct );
 }

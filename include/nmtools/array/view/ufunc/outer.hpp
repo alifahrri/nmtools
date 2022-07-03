@@ -73,8 +73,22 @@ namespace nmtools::view
 
         constexpr auto dim() const
         {
+            // TODO: make sure to return compile time index whenever possible
             return len(shape());
         } // dim
+
+        constexpr auto size() const noexcept
+        {
+            auto size_ = index::product(shape());
+            if constexpr (meta::is_constant_index_v<decltype(size_)>) {
+                return size_;
+            } else if constexpr (meta::is_fixed_size_v<lhs_t> && meta::is_fixed_size_v<rhs_t>) {
+                constexpr auto size_ = meta::fixed_size_v<lhs_t> * meta::fixed_size_v<rhs_t>;
+                return meta::ct_v<size_>;
+            } else {
+                return size_;
+            }
+        }
 
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
@@ -95,6 +109,7 @@ namespace nmtools::view
 namespace nmtools::meta
 {
 
+    // TODO: remove
     /**
      * @brief Compile-time shape inference for outer ufunc.
      * 
@@ -140,6 +155,7 @@ namespace nmtools::meta
             ) {
                 return fixed_dim_v<lhs_t> + fixed_dim_v<rhs_t>;
             } else {
+                // TODO: use specific error type
                 return detail::Fail;
             }
         }();
@@ -147,6 +163,7 @@ namespace nmtools::meta
         using type = value_type;
     };
 
+    // TODO: remove
     /**
      * @brief Infer maximum size (of hybrid ndarray) for outer view.
      * 
@@ -190,6 +207,22 @@ namespace nmtools::meta
         using value_type = remove_cvref_t<decltype(value)>;
         using type = value_type;
     };
+
+    template <typename op_t, typename lhs_t, typename rhs_t>
+    struct bounded_size<
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+    >
+    {
+        using view_type = view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >;
+
+        static constexpr auto value = [](){
+            if constexpr (is_bounded_size_v<lhs_t> && is_bounded_size_v<rhs_t>) {
+                return bounded_size_v<lhs_t> * bounded_size_v<rhs_t>;
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // bounded_size
 
     template <typename op_t, typename lhs_t, typename rhs_t>
     struct is_ndarray< 

@@ -1,7 +1,7 @@
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/testing/testing.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 #include <vector>
 #include <array>
@@ -10,28 +10,13 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-// TODO: add index vector kind, do not use nested vec
-#ifndef PLATFORMIO
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid);
-#else
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_h = cast(name, kind::hybrid);
-#endif // PLATFORMIO
-
 NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int axis[3] = {-1,-2,-3};
         inline int ndim = 3;
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -42,7 +27,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis[3] = {-1,-2,3};
         inline int ndim = 3;
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -54,7 +39,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis[3] = {-1,2,-3};
         inline int ndim = 3;
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -129,6 +114,26 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
         inline auto result = meta::Nothing;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        inline int axis = 0;
+        inline int ndim = 3;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        inline int result = 0;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        inline int axis = 1;
+        inline int ndim = 3;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
+    {
+        inline int result = 1;
     }
 }
 
@@ -236,4 +241,270 @@ TEST_CASE("normalize_axis(case9)" * doctest::test_suite("index::normalize_axis")
 TEST_CASE("normalize_axis(case10)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case10, axis, ndim );
+}
+
+TEST_CASE("normalize_axis(case11)" * doctest::test_suite("index::normalize_axis"))
+{
+    NORMALIZE_AXIS_SUBCASE( case11, axis, ndim );
+}
+
+TEST_CASE("normalize_axis(case12)" * doctest::test_suite("index::normalize_axis"))
+{
+    NORMALIZE_AXIS_SUBCASE( case12, axis, ndim );
+}
+
+NMTOOLS_TESTING_DECLARE_CASE(index, constexpr_normalize_axis)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        constexpr inline int axis[3] = {-1,-2,-3};
+        constexpr inline int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        constexpr inline int result[3] = {2,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        constexpr inline int axis[3] = {-1,-2,3};
+        constexpr inline int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        // AxisError: axis 3 is out of bounds for array of dimension 3
+        constexpr inline auto result = meta::Nothing;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        constexpr inline int axis[3] = {-1,2,-3};
+        constexpr inline int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        constexpr inline int result[3] = {2,2,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        constexpr inline int axis = -3;
+        constexpr inline int ndim = 3;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        constexpr inline int result = 0;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        constexpr inline int axis = 3;
+        constexpr inline int ndim = 3;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        constexpr inline auto result = meta::Nothing;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        constexpr inline int axis[1] = {0};
+        constexpr inline int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        constexpr inline int result[1] = {0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        constexpr inline int axis[1] = {1};
+        constexpr inline int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        constexpr inline int result[1] = {1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        constexpr inline unsigned int axis[1] = {0};
+        constexpr inline int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        constexpr inline int result[1] = {0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        constexpr inline unsigned int axis[1] = {1};
+        constexpr inline int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        constexpr inline int result[1] = {1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        constexpr inline unsigned int axis[1] = {0};
+        constexpr inline unsigned int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        constexpr inline int result[1] = {0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        constexpr inline unsigned int axis[1] = {1};
+        constexpr inline unsigned int ndim = 3;
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(axis);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        constexpr inline int result[1] = {1};
+    }
+}
+
+#define CONSTEXPR_NORMALIZE_AXIS_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, constexpr_normalize_axis, case_name); \
+    using namespace args; \
+    constexpr auto result = RUN_impl(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#if defined(__clang__) && (__clang_major__ <= 10)
+#define NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+#endif // clang 10
+
+
+TEST_CASE("normalize_axis(case1)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    // somehow doesn't work on clang 🤷, works fine on gcc
+    // note: non-constexpr function 'operator()<int const (&)[3], const int &>' cannot be used in a constant expression
+    // TODO: fix constexpr clang, seems like something to do with at customization point
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case1, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case1, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case1, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case1, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case2)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case2, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case2, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case2, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case2, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case3)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case3, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case3, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case3, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case3, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case4)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case4, axis, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case5)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case6)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    // somehow doesn't work on clang 🤷, works fine on gcc
+    // note: non-constexpr function 'operator()<int const (&)[3], const int &>' cannot be used in a constant expression
+    // TODO: fix constexpr clang, seems like something to do with at customization point
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case6, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case6, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case6, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case6, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case7)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    // somehow doesn't work on clang 🤷, works fine on gcc
+    // note: non-constexpr function 'operator()<int const (&)[3], const int &>' cannot be used in a constant expression
+    // TODO: fix constexpr clang, seems like something to do with at customization point
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case7, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case7, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case7, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case7, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case8)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    // somehow doesn't work on clang 🤷, works fine on gcc
+    // note: non-constexpr function 'operator()<int const (&)[3], const int &>' cannot be used in a constant expression
+    // TODO: fix constexpr clang, seems like something to do with at customization point
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case8, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case8, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case8, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case8, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case9)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    // somehow doesn't work on clang 🤷, works fine on gcc
+    // note: non-constexpr function 'operator()<int const (&)[3], const int &>' cannot be used in a constant expression
+    // TODO: fix constexpr clang, seems like something to do with at customization point
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case9, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case9, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case9, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case9, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case10)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case10, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case10, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case10, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case10, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+}
+
+TEST_CASE("normalize_axis(case11)" * doctest::test_suite("index::constexpr_normalize_axis"))
+{
+    #ifndef NMTOOLS_NO_CONSTEXPR_MOVEAXIS
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case11, axis, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case11, axis_a, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case11, axis_f, ndim );
+    CONSTEXPR_NORMALIZE_AXIS_SUBCASE( case11, axis_h, ndim );
+    #endif // NMTOOLS_NO_CONSTEXPR_MOVEAXIS
 }

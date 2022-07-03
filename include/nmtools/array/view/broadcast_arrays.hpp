@@ -124,7 +124,7 @@ namespace nmtools::view
 
         // when all arrays' shapes are known at compile time, perform checks at compile time
         // the return type is not wrapped, and should be noexcept ready
-        if constexpr (((meta::is_fixed_size_ndarray_v<arrays_t> || meta::is_num_v<arrays_t>) && ...)) {
+        if constexpr (((meta::is_fixed_size_ndarray_v<arrays_t> || meta::is_num_v<arrays_t> || meta::is_integral_constant_v<arrays_t>) && ...)) {
             constexpr auto bshape = detail::fn::broadcast_shape(meta::as_value_v<arrays_t>...);
             static_assert( !meta::is_fail_v<decltype(bshape)>
                 , "cannot broadcast arrays together" );

@@ -30,37 +30,40 @@ namespace nmtools::index
         using return_t = meta::resolve_optype_t<shape_tile_t,shape_t,reps_t>;
         auto ret = return_t {};
 
-        auto m = len(shape);
-        auto n = len(reps);
-        auto s = [&](){
-            if ((size_t)m > (size_t)n) {
-                return m;
-            } else {
-                return n;
-            }
-        }();
+        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+            auto m = len(shape);
+            auto n = len(reps);
+            // TODO: better deduction
+            auto s = [&]()->size_t{ // quick workaround for inconsistent type erro
+                if ((size_t)m > (size_t)n) {
+                    return m;
+                } else {
+                    return n;
+                }
+            }();
 
-        if constexpr (meta::is_resizeable_v<return_t>)
-            ret.resize(s);
+            if constexpr (meta::is_resizeable_v<return_t>)
+                ret.resize(s);
 
-        auto shape_tile_impl = [&](auto i){
-            using idx_t = meta::make_signed_t<decltype(m-i-1)>;
-            idx_t ai = m - i - 1;
-            idx_t bi = n - i - 1;
-            idx_t si = s - i - 1;
-            if (ai < 0)
-                at(ret,si) = tuple_at(reps,bi);
-            else if (bi < 0)
-                at(ret,si) = tuple_at(shape,ai);
-            else {
-                auto a = tuple_at(shape,ai);
-                auto b = tuple_at(reps,bi);
-                at(ret,si) = a * b;
-            }
-        }; // shape_tile_impl
+            auto shape_tile_impl = [&](auto i){
+                using idx_t = meta::make_signed_t<decltype(m-i-1)>;
+                idx_t ai = m - i - 1;
+                idx_t bi = n - i - 1;
+                idx_t si = s - i - 1;
+                if (ai < 0)
+                    at(ret,si) = tuple_at(reps,bi);
+                else if (bi < 0)
+                    at(ret,si) = tuple_at(shape,ai);
+                else {
+                    auto a = tuple_at(shape,ai);
+                    auto b = tuple_at(reps,bi);
+                    at(ret,si) = a * b;
+                }
+            }; // shape_tile_impl
 
-        for (size_t i=0; i<(size_t)len(ret); i++)
-            shape_tile_impl(i);
+            for (size_t i=0; i<(size_t)len(ret); i++)
+                shape_tile_impl(i);
+        }
 
         return ret;
     } // shape_tile
@@ -70,7 +73,8 @@ namespace nmtools::meta
 {
     namespace error
     {
-        struct SHAPE_TILE_ERROR : detail::fail_t {};
+        template <typename...>
+        struct SHAPE_TILE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
 
     // TODO: compute at compile-time whenever possible
@@ -86,39 +90,54 @@ namespace nmtools::meta
     >
     {
         static constexpr auto value = [](){
-            if constexpr (is_dynamic_index_array_v<shape_t> && is_dynamic_index_array_v<reps_t>) {
-                return as_value_v<shape_t>;
+            if constexpr (is_constant_index_array_v<shape_t> && is_constant_index_array_v<reps_t>) {
+                constexpr auto result = index::shape_tile(to_value_v<shape_t>, to_value_v<reps_t>);
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(result)-1>([&](auto init, auto index){
+                    using init_type = type_t<decltype(init)>;
+                    return as_value_v<append_type_t<init_type,ct<at(result,index+1)>>>;
+                }, as_value_v<nmtools_tuple<ct<at(result,0)>>>);
+            } else if constexpr (is_constant_index_array_v<shape_t> && is_index_array_v<reps_t>) {
+                using type = resolve_optype_t<index::shape_tile_t,decltype(to_value_v<shape_t>),reps_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_index_array_v<shape_t> && is_constant_index_array_v<reps_t>) {
+                using type = resolve_optype_t<index::shape_tile_t,shape_t,decltype(to_value_v<reps_t>)>;
+                return as_value_v<type>;
             } else if constexpr (is_hybrid_index_array_v<shape_t> && is_hybrid_index_array_v<reps_t>) {
-                constexpr auto shape_max = hybrid_index_array_max_size_v<shape_t>;
-                constexpr auto reps_max  = hybrid_index_array_max_size_v<reps_t>;
+                constexpr auto shape_max = bounded_size_v<shape_t>;
+                constexpr auto reps_max  = bounded_size_v<reps_t>;
                 constexpr auto max_size  = shape_max > reps_max ? shape_max : reps_max;
-                using type = resize_hybrid_index_array_max_size_t<shape_t,max_size>;
+                using type = resize_bounded_size_t<shape_t,max_size>;
                 return as_value_v<type>;
             } else if constexpr (is_fixed_index_array_v<shape_t> && is_fixed_index_array_v<reps_t>) {
-                constexpr auto shape_size = fixed_index_array_size_v<shape_t>;
-                constexpr auto reps_size  = fixed_index_array_size_v<reps_t>;
+                constexpr auto shape_size = len_v<shape_t>;
+                constexpr auto reps_size  = len_v<reps_t>;
                 constexpr auto size = shape_size > reps_size ? shape_size : reps_size;
-                using type = resize_fixed_index_array_t<shape_t,size>;
+                // TODO: try to resize
+                // using type = resize_fixed_index_array_t<shape_t,size>;
+                using type = nmtools_array<get_element_type_t<shape_t>,size>;
                 return as_value_v<type>;
-            } else if constexpr (is_dynamic_index_array_v<shape_t>) {
-                return as_value_v<shape_t>;
-            } else if constexpr (is_dynamic_index_array_v<reps_t>) {
-                return as_value_v<reps_t>;
-            } else if constexpr (is_hybrid_index_array_v<shape_t>) {
+            } else if constexpr (is_hybrid_index_array_v<shape_t> && is_fixed_index_array_v<reps_t>) {
                 // always select max
-                constexpr auto shape_max = hybrid_ndarray_max_size_v<shape_t>;
-                constexpr auto reps_size = fixed_index_array_size_v<reps_t>;
+                constexpr auto shape_max = bounded_size_v<shape_t>;
+                constexpr auto reps_size = len_v<reps_t>;
                 constexpr auto max = shape_max > reps_size ? shape_max : reps_size;
-                using type = resize_hybrid_index_array_max_size_t<shape_t,max>;
+                using type = resize_bounded_size_t<shape_t,max>;
                 return as_value_v<type>;
-            } else if constexpr (is_hybrid_index_array_v<reps_t>) {
-                constexpr auto shape_size = fixed_index_array_size_v<shape_t>;
-                constexpr auto reps_max   = hybrid_ndarray_max_size_v<reps_t>;
+            } else if constexpr (is_hybrid_index_array_v<reps_t> && is_fixed_index_array_v<shape_t>) {
+                constexpr auto shape_size = len_v<shape_t>;
+                constexpr auto reps_max   = bounded_size_v<reps_t>;
                 constexpr auto max = shape_size > reps_max ? shape_size : reps_max;
-                using type = resize_hybrid_index_array_max_size_t<reps_t,max>;
+                using type = resize_bounded_size_t<reps_t,max>;
                 return as_value_v<type>;
+            } else if constexpr ((is_fixed_index_array_v<shape_t> || is_hybrid_index_array_v<shape_t>) && is_index_array_v<reps_t>) {
+                return as_value_v<reps_t>;
+            } else if constexpr (is_index_array_v<shape_t> && (is_fixed_index_array_v<reps_t> || is_hybrid_index_array_v<reps_t>)) {
+                return as_value_v<shape_t>;
+            } else if constexpr (is_index_array_v<shape_t> && is_index_array_v<reps_t>) {
+                return as_value_v<shape_t>;
             } else {
-                return as_value_v<error::SHAPE_TILE_ERROR>;
+                return as_value_v<error::SHAPE_TILE_UNSUPPORTED<shape_t,reps_t>>;
             }
         }();
         using type = type_t<decltype(value)>;
@@ -151,7 +170,8 @@ namespace nmtools::index
         auto m = len(shape);
         auto n = len(indices);
         // clang (android & emscripten) complains about ambiguous call
-        auto s = [&](){
+        auto s = [&]()->size_t{ // quick workaround for inconsistent type error
+            // TODO: better deduction
             if ((size_t)m > (size_t)n) {
                 return m;
             } else {

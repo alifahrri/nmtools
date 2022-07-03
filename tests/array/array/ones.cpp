@@ -49,6 +49,8 @@ TEST_CASE("ones(case1)" * doctest::test_suite("array::ones"))
     ONES_SUBCASE(case1, shape_ct, dtype );
 }
 
+// TODO: remove
+#if 0
 TEST_CASE("ones_traits(case1)" * doctest::test_suite("array::ones_traits"))
 {
     {
@@ -68,3 +70,4 @@ TEST_CASE("ones_traits(case1)" * doctest::test_suite("array::ones_traits"))
         static_assert( is_fixed_shape );
     }
 }
+#endif

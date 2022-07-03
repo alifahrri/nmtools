@@ -343,6 +343,7 @@ namespace nmtools::impl
 
 namespace nmtools
 {
+    // TODO: remove, specialize shape_t instead
     /**
      * @brief return the shape of dynamic_ndarray
      * 
@@ -356,6 +357,7 @@ namespace nmtools
         return a.shape();
     } // shape
 
+    // TODO: remove, specialize dim_t
     /**
      * @brief return the dimensionality of dynamic_ndarray
      * 
@@ -444,6 +446,7 @@ namespace nmtools::meta
      * 
      */
 
+    // TODO: remove
     /**
      * @brief specialization of metafunction get_ndarray_value_type,
      * which tells the value/element type of dynamic_ndarray

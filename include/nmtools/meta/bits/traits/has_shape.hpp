@@ -13,6 +13,12 @@ namespace nmtools::meta
     template <typename T>
     struct has_shape : detail::expression_check<void,expr::shape,T> {};
 
+    template <typename T>
+    struct has_shape<const T> : has_shape<T> {};
+
+    template <typename T>
+    struct has_shape<T&> : has_shape<T> {};
+
     /**
      * @brief helper variable template to check if type `T` has member function `shape`.
      * 

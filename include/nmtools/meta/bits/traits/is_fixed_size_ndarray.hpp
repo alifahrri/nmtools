@@ -24,7 +24,11 @@ namespace nmtools::meta
     {
         static constexpr auto value = [](){
             using fixed_size_t = fixed_ndarray_shape<T>;
+            #if 0
             using value_type   = typename fixed_size_t::value_type;
+            #else
+            using value_type = decltype(fixed_size_t::value);
+            #endif
             // TODO: use fail type instead of void
             if constexpr (!is_void_v<value_type> && !is_fail_v<value_type>)
                 return true;

@@ -52,11 +52,11 @@ TEST_CASE("conv2d(case1)" * doctest::test_suite("view::conv2d"))
 
 TEST_CASE("conv2d(case2)" * doctest::test_suite("view::conv2d"))
 {
-    CONV2D_SUBCASE( case2, input, weight );
-    CONV2D_SUBCASE( case2, input_a, weight_a );
+    // CONV2D_SUBCASE( case2, input, weight );
+    // CONV2D_SUBCASE( case2, input_a, weight_a );
     CONV2D_SUBCASE( case2, input_f, weight_f );
-    CONV2D_SUBCASE( case2, input_h, weight_h );
-    CONV2D_SUBCASE( case2, input_d, weight_d );
+    // CONV2D_SUBCASE( case2, input_h, weight_h );
+    // CONV2D_SUBCASE( case2, input_d, weight_d );
 }
 
 TEST_CASE("conv2d(case3)" * doctest::test_suite("view::conv2d"))

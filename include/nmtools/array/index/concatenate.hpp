@@ -102,8 +102,7 @@ namespace nmtools::index
         }
 
         // TODO: use optional instead
-        using return_t = meta::make_tuple_type_t<bool,bool,a_indices_t,b_indices_t>;
-        return return_t{aflag,bflag,a_indices,b_indices};
+        return nmtools_tuple{aflag,bflag,a_indices,b_indices};
     } // concatenate
 } // namespace nmtools::index
 
@@ -168,44 +167,50 @@ namespace nmtools::index
         // TODO: allow negative axis
         using result_t = meta::resolve_optype_t<shape_concatenate_t,ashape_t,bshape_t,axis_t>;
 
-        auto ret = result_t {};
-        bool suc = true;
+        if constexpr (meta::is_constant_index_array_v<result_t>) {
+            // TODO: no need to return tuple
+            // TODO: use optional instead
+            return nmtools_tuple{true, result_t {}};
+        } else {
+            auto ret = result_t {};
+            bool suc = true;
 
-        [[maybe_unused]] auto ad = len(ashape);
-        [[maybe_unused]] auto bd = len(bshape);
+            [[maybe_unused]] auto ad = len(ashape);
+            [[maybe_unused]] auto bd = len(bshape);
 
-        if constexpr (meta::is_resizeable_v<result_t>)
-            ret.resize(ad); // ad must be == bd
+            if constexpr (meta::is_resizeable_v<result_t>)
+                ret.resize(ad); // ad must be == bd
 
-        if constexpr (is_none_v<axis_t>)
-        {
-            auto na = product(ashape);
-            auto nb = product(bshape);
-            at(ret,0) = na + nb;
-        }
-        else if (ad==bd) {
-            using idx_t = meta::promote_index_t<size_t,axis_t>;
-            // todo: maybe convert ashape & bshape to array first to simplify expression
-            for (size_t i=0; i<(size_t)ad; i++) {
-                // TODO: do not use tuple_at
-                auto ai = tuple_at(ashape,i);
-                auto bi = tuple_at(bshape,i);
-                if (static_cast<idx_t>(i)==static_cast<idx_t>(axis))
-                    at(ret,i) = ai + bi;
-                // concat must have same shape except at axis idx
-                else if (ai==bi)
-                    at(ret,i) = ai;
-                else {
-                    suc = false;
-                    break;
+            if constexpr (is_none_v<axis_t>)
+            {
+                auto na = product(ashape);
+                auto nb = product(bshape);
+                at(ret,0) = na + nb;
+            }
+            else if (ad==bd) {
+                using idx_t = meta::promote_index_t<size_t,axis_t>;
+                // todo: maybe convert ashape & bshape to array first to simplify expression
+                for (size_t i=0; i<(size_t)ad; i++) {
+                    // TODO: do not use tuple_at
+                    auto ai = tuple_at(ashape,i);
+                    auto bi = tuple_at(bshape,i);
+                    if (static_cast<idx_t>(i)==static_cast<idx_t>(axis))
+                        at(ret,i) = ai + bi;
+                    // concat must have same shape except at axis idx
+                    else if (ai==bi)
+                        at(ret,i) = ai;
+                    else {
+                        suc = false;
+                        break;
+                    }
                 }
             }
+            else suc = false;
+            
+            // TODO: use optional instead
+            using return_t = meta::make_tuple_type_t<bool,result_t>;
+            return return_t{suc,ret};
         }
-        else suc = false;
-        
-        // TODO: use optional instead
-        using return_t = meta::make_tuple_type_t<bool,result_t>;
-        return return_t{suc,ret};
     } // shape_concatenate
 } // namespace nmtools::index
 
@@ -214,6 +219,9 @@ namespace nmtools::meta
     namespace error
     {
         struct SHAPE_CONCATENATE_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
+        struct SHAPE_CONCATENATE_INVALID : detail::fail_t {};
     } // namespace error
     
     /**
@@ -228,10 +236,27 @@ namespace nmtools::meta
         void, index::shape_concatenate_t, ashape_t, bshape_t, axis_t
     >
     {
-        // TODO: compute at compile time when possible (ashape & bshape is constant index array, axis constant index)
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
-                return as_value_v<error::SHAPE_CONCATENATE_UNSUPPORTED>;
+            if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t> && (is_none_v<axis_t> || is_constant_index_v<axis_t>)) {
+                constexpr auto ashape  = to_value_v<ashape_t>;
+                constexpr auto bshape  = to_value_v<bshape_t>;
+                constexpr auto result_ = index::shape_concatenate(ashape,bshape,axis_t{});
+                constexpr auto success = nmtools::get<0>(result_);
+                constexpr auto result  = nmtools::get<1>(result_);
+                if constexpr (success) {
+                    return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
+                        using init_t = type_t<decltype(init)>;
+                        constexpr auto I = decltype(index)::value + 1;
+                        using return_t = append_type_t<init_t,ct<nmtools::at(result,I)>>;
+                        return as_value_v<return_t>;
+                    }, /*init=*/as_value_v<nmtools_tuple<ct<nmtools::at(result,0)>>>);
+                } else {
+                    return as_value_v<error::SHAPE_CONCATENATE_INVALID<ashape_t,bshape_t,axis_t>>;
+                }
+            } else if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t> && is_none_v<axis_t>) {
+                using index_t = get_element_or_common_type_t<ashape_t>;
+                using type = nmtools_array<index_t,1>;
+                return as_value_v<type>;
             } else if constexpr (is_dynamic_index_array_v<ashape_t>) {
                 return as_value_v<ashape_t>;
             } else if constexpr (is_dynamic_index_array_v<bshape_t>) {
@@ -251,6 +276,8 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
 
+    // TODO: remove
+    #if 0
     template <typename ashape_t, typename bshape_t>
     struct resolve_optype <
         void, index::shape_concatenate_t, ashape_t, bshape_t, none_t
@@ -265,6 +292,7 @@ namespace nmtools::meta
 
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
+    #endif
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_CONCATENATE_HPP

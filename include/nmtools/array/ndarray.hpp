@@ -6,6 +6,7 @@
 #ifndef NMTOOLS_DISABLE_DYNAMIC_ARRAY
 #include "nmtools/array/ndarray/dynamic.hpp"
 #endif // NMTOOLS_DISABLE_DYNAMIC_ARRAY
+#include "nmtools/array/ndarray/ndarray.hpp"
 
 namespace nmtools::meta
 {
