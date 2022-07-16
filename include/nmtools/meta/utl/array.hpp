@@ -1,11 +1,12 @@
 #ifndef NMTOOLS_META_UTL_ARRAY_HPP
 #define NMTOOLS_META_UTL_ARRAY_HPP
 
-#include "nmtools/utl.hpp"
-
 #include "nmtools/meta/array.hpp"
+
 #include "nmtools/meta/bits/traits/is_num.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
+
+#include "nmtools/utl.hpp"
 
 namespace nmtools::meta
 {
