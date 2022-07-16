@@ -1,8 +1,6 @@
 #ifndef NMTOOLS_ARRAY_INDEX_GATHER_HPP
 #define NMTOOLS_ARRAY_INDEX_GATHER_HPP
 
-#include "nmtools/array/meta.hpp"
-#include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/utility/at.hpp"

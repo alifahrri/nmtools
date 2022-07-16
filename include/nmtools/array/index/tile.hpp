@@ -2,7 +2,6 @@
 #define NMTOOLS_ARRAY_INDEX_TILE_HPP
 
 #include "nmtools/array/at.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
@@ -46,17 +45,18 @@ namespace nmtools::index
                 ret.resize(s);
 
             auto shape_tile_impl = [&](auto i){
-                using idx_t = meta::make_signed_t<decltype(m-i-1)>;
-                idx_t ai = m - i - 1;
-                idx_t bi = n - i - 1;
-                idx_t si = s - i - 1;
+                using idx_t  = meta::get_index_element_type_t<shape_t>;
+                using sidx_t = meta::make_signed_t<idx_t>;
+                sidx_t ai = m - i - 1;
+                sidx_t bi = n - i - 1;
+                sidx_t si = s - i - 1;
                 if (ai < 0)
-                    at(ret,si) = tuple_at(reps,bi);
+                    at(ret,si) = at(reps,bi);
                 else if (bi < 0)
-                    at(ret,si) = tuple_at(shape,ai);
+                    at(ret,si) = at(shape,ai);
                 else {
-                    auto a = tuple_at(shape,ai);
-                    auto b = tuple_at(reps,bi);
+                    auto a = at(shape,ai);
+                    auto b = at(reps,bi);
                     at(ret,si) = a * b;
                 }
             }; // shape_tile_impl
@@ -188,7 +188,7 @@ namespace nmtools::index
             int bi = n - i - 1;
             if (ai >= 0) {
                 auto idx = at(indices,bi);
-                auto s = tuple_at(shape,ai);
+                auto s = at(shape,ai);
                 at(ret,ai) = idx % s;
             }
             else break;
@@ -201,6 +201,7 @@ namespace nmtools::index
 namespace nmtools::meta
 {
     namespace error {
+        template <typename...>
         struct INDEX_TILE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
 
@@ -218,13 +219,16 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (is_constant_index_array_v<shape_t>) {
-                return as_value_v<error::INDEX_TILE_UNSUPPORTED>;
+                // return as_value_v<error::INDEX_TILE_UNSUPPORTED<shape_t,reps_t,indices_t>>;
+                using index_t = get_index_element_type_t<shape_t>;
+                using type = nmtools_array<index_t,len_v<shape_t>>;
+                return as_value_v<type>;
             } else if constexpr (is_fixed_index_array_v<shape_t>) {
                 return as_value_v<transform_bounded_array_t<shape_t>>;
             } else if constexpr (is_index_array_v<shape_t>) {
                 return as_value_v<shape_t>;
             } else {
-                return as_value_v<error::INDEX_TILE_UNSUPPORTED>;
+                return as_value_v<error::INDEX_TILE_UNSUPPORTED<shape_t,reps_t,indices_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;

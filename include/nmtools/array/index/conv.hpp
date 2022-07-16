@@ -238,7 +238,15 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             // TODO: compile-time compute when possible
-            if constexpr (
+            if constexpr (is_constant_index_array_v<shape_t>) {
+                using shape_type = remove_cvref_t<decltype(to_value_v<shape_t>)>;
+                using type = resolve_optype_t<index::shape_conv2d_t,shape_type,out_channels_t,kernel_size_t,stride_t,padding_t,dilation_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<kernel_size_t>) {
+                using kernel_size_type = remove_cvref_t<decltype(to_value_v<kernel_size_t>)>;
+                using type = resolve_optype_t<index::shape_conv2d_t,shape_t,out_channels_t,kernel_size_type,stride_t,padding_t,dilation_t>;
+                return as_value_v<type>;
+            } else if constexpr (
                     is_index_array_v<shape_t>
                 &&  is_index_v<out_channels_t>
                 &&  is_index_array_v<kernel_size_t>

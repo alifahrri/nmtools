@@ -127,9 +127,8 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (is_fixed_index_array_v<shape_t>) {
-                // tuple<int,..> is also belong to this category
-                constexpr auto N = fixed_index_array_size_v<shape_t>;
-                using elem_t = remove_cvref_t<get_element_or_common_type_t<shape_t>>;
+                constexpr auto N = len_v<shape_t>;
+                using elem_t = remove_cvref_t<get_index_element_type_t<shape_t>>;
                 return as_value_v<make_array_type_t<elem_t,N>>;
             } else if constexpr (is_index_array_v<shape_t>) {
                 return as_value_v<shape_t>;
@@ -253,8 +252,16 @@ namespace nmtools::meta
                 } else {
                     return as_value_v<error::SHAPE_CONCATENATE_INVALID<ashape_t,bshape_t,axis_t>>;
                 }
+            } else if constexpr (is_constant_index_array_v<ashape_t>) {
+                // simply recurse for now
+                using type = resolve_optype_t<index::shape_concatenate_t,remove_cvref_t<decltype(to_value_v<ashape_t>)>,bshape_t,axis_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<bshape_t>) {
+                // simply recurse for now
+                using type = resolve_optype_t<index::shape_concatenate_t,ashape_t,remove_cvref_t<decltype(to_value_v<bshape_t>)>,axis_t>;
+                return as_value_v<type>;
             } else if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t> && is_none_v<axis_t>) {
-                using index_t = get_element_or_common_type_t<ashape_t>;
+                using index_t = get_index_element_type_t<ashape_t>;
                 using type = nmtools_array<index_t,1>;
                 return as_value_v<type>;
             } else if constexpr (is_dynamic_index_array_v<ashape_t>) {

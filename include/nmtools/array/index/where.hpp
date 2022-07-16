@@ -77,14 +77,19 @@ namespace nmtools::meta
             if constexpr (is_resizeable_v<array_t>) {
                 using type = replace_element_type_t<array_t,index_t>;
                 return as_value_v<type>;
-            }
-            else if constexpr (is_fixed_index_array_v<array_t>) {
-                constexpr auto N = fixed_index_array_size_v<array_t>;
+            } else if constexpr (is_constant_index_array_v<array_t>) {
+                constexpr auto N = len_v<array_t>;
                 // need to use hybrid array1d since the size will depends on runtime value
-                using type = array::hybrid_ndarray<index_t,N,1>;
+                using type = array::static_vector<index_t,N>;
                 return as_value_v<type>;
-            }
-            else {
+            } else if constexpr (is_fixed_dim_v<array_t> || is_bounded_dim_v<array_t>) {
+                // quick error check
+                static_assert( bounded_dim_v<array_t> == 1, "unsupported where" );
+                constexpr auto N = fixed_size_v<array_t>;
+                // need to use hybrid array1d since the size will depends on runtime value
+                using type = array::static_vector<index_t,N>;
+                return as_value_v<type>;
+            } else {
                 using type = error::WHERE_UNSUPPORTED<array_t, index_t>;
                 return as_value_v<type>;
             }

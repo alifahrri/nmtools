@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_INDEX_PAD_HPP
 #define NMTOOLS_ARRAY_INDEX_PAD_HPP
 
-#include "nmtools/array/meta.hpp"
+#include "nmtools/meta.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/ref.hpp"
 
@@ -94,7 +94,7 @@ namespace nmtools::index
         using result_t = meta::resolve_optype_t<pad_t,index_t,src_shape_t,dst_shape_t,pad_width_t>;
         // use maybe type to indicate out of bound index (of src shape)
         using return_t = meta::make_maybe_type_t<result_t>;
-        using idx_t    = meta::get_element_type_t<result_t>;
+        using idx_t    = meta::get_index_element_type_t<result_t>;
         using s_idx_t  = meta::make_signed_t<idx_t>;
 
         auto res = result_t {};
@@ -169,7 +169,7 @@ namespace nmtools::meta
                     return as_value_v<error::SHAPE_PAD_INVALID<shape_t,pad_width_t>>;
                 }
             } else if constexpr (is_constant_index_array_v<shape_t> && is_index_array_v<pad_width_t>) {
-                using index_t = get_element_or_common_type_t<pad_width_t>;
+                using index_t = get_index_element_type_t<pad_width_t>;
                 return as_value_v<nmtools_array<index_t,len_v<shape_t>>>;
             } else if constexpr (is_index_array_v<shape_t> && is_index_array_v<pad_width_t>) {
                 using type = transform_bounded_array_t<shape_t>;
@@ -195,7 +195,12 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_index_array_v<src_shape_t> && is_index_array_v<dst_shape_t> && is_index_array_v<pad_width_t>) {
+            if constexpr (is_constant_index_array_v<src_shape_t>) {
+                // simply recurse for now
+                using shape_t = remove_cvref_t<decltype(to_value_v<src_shape_t>)>;
+                using type = resolve_optype_t<index::pad_t,index_t,shape_t,dst_shape_t,pad_width_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_index_array_v<src_shape_t> && is_index_array_v<dst_shape_t> && is_index_array_v<pad_width_t>) {
                 // follow src shape
                 using type = transform_bounded_array_t<src_shape_t>;
                 return as_value_v<type>;
