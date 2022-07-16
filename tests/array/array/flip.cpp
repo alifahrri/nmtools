@@ -2,9 +2,7 @@
 #include "nmtools/testing/data/array/flip.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#include <vector>
-#include <array>
-#include <tuple>
+namespace nm = nmtools;
 
 #define RUN_flip_impl(...) \
 nm::array::flip(__VA_ARGS__);

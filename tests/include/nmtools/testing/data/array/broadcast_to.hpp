@@ -61,6 +61,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         inline int8_t x[3] = {1,2,3};
         inline auto shape = nmtools_array{3,3};
+        inline auto shape_ct = nmtools_tuple{3_ct,3_ct};
         NMTOOLS_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -76,6 +77,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         inline int8_t x[3] = {1,2,3};
         inline auto shape = nmtools_array{2,3,3};
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,3_ct};
         NMTOOLS_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -102,6 +104,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
             {3}
         };
         inline auto shape = nmtools_array{3,3};
+        inline auto shape_ct = nmtools_tuple{3_ct,3_ct};
         NMTOOLS_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
@@ -121,6 +124,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
             {3}
         };
         inline auto shape = nmtools_array{2,3,3};
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,3_ct};
         NMTOOLS_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
@@ -143,6 +147,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         inline int8_t x[1][3] = {{1,2,3}};
         inline auto shape = nmtools_array{1,3};
+        inline auto shape_ct = nmtools_tuple{1_ct,3_ct};
         NMTOOLS_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
@@ -156,6 +161,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
     {
         inline int8_t x[1][3] = {{1,2,3}};
         inline auto shape = nmtools_array{2,3,3};
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,3_ct};
         NMTOOLS_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
@@ -186,6 +192,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
             },
         };
         inline auto shape = nmtools_array{2,3,3};
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,3_ct};
         NMTOOLS_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)

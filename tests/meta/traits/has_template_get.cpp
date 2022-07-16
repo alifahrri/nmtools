@@ -1,5 +1,5 @@
 #include "nmtools/meta.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 #include <array>
 #include <tuple>

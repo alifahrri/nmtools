@@ -1,7 +1,7 @@
 #include "nmtools/array/index/compute_offset.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/constants.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 #include <array>
 #include <vector>
 

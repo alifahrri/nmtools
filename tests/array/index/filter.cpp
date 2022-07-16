@@ -1,6 +1,6 @@
 #include "nmtools/array/index/filter.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 #include <array>
 #include <tuple>
@@ -20,7 +20,6 @@ TEST_CASE("filter(vector)" * doctest::test_suite("index::filter"))
         // error: reference to local binding 'filtered' declared in enclosing function
         // auto [arg, filtered] = nm::index::filter(f,array);
         auto result = nm::index::filter(f,array);
-        auto arg = std::get<0>(result);
         auto filtered = std::get<1>(result);
         auto expected = std::vector{1,1};
         NMTOOLS_ASSERT_CLOSE( filtered, expected );
@@ -34,7 +33,6 @@ TEST_CASE("filter(vector)" * doctest::test_suite("index::filter"))
         // error: reference to local binding 'filtered' declared in enclosing function
         // auto [arg, filtered] = nm::index::filter(f,array);
         auto result = nm::index::filter(f,array);
-        auto arg = std::get<0>(result);
         auto filtered = std::get<1>(result);
         auto expected = std::vector{3,4,5,9,2};
         NMTOOLS_ASSERT_CLOSE( filtered, expected );
@@ -48,7 +46,6 @@ TEST_CASE("filter(vector)" * doctest::test_suite("index::filter"))
         // error: reference to local binding 'filtered' declared in enclosing function
         // auto [arg, filtered] = nm::index::filter(f,array);
         auto result = nm::index::filter(f,array);
-        auto arg = std::get<0>(result);
         auto filtered = std::get<1>(result);
         auto expected = std::vector<int>{};
         NMTOOLS_ASSERT_CLOSE( filtered, expected );
@@ -62,7 +59,6 @@ TEST_CASE("filter(vector)" * doctest::test_suite("index::filter"))
         // error: reference to local binding 'filtered' declared in enclosing function
         // auto [arg, filtered] = nm::index::filter(f,array);
         auto result = nm::index::filter(f,array);
-        auto arg = std::get<0>(result);
         auto filtered = std::get<1>(result);
         auto expected = std::vector{3,1,4,1,5,9,2};
         NMTOOLS_ASSERT_CLOSE( filtered, expected );

@@ -1,10 +1,23 @@
-#include "nmtools/array/view/broadcast_arrays.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/array/kind.hpp"
+#if 1
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+#endif
 
-#include "testing/doctest.hpp"
+#include "nmtools/array/view/broadcast_arrays.hpp"
+#include "nmtools/array/ndarray.hpp"
+
+#include "nmtools/testing/doctest.hpp"
 
 #include <vector>
 #include <array>
@@ -13,13 +26,6 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
 namespace kind = na::kind;
-
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid); \
 
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
 {
@@ -32,8 +38,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {4},
             {5}
         };
-        CAST_ARRAYS(lhs)
-        CAST_ARRAYS(rhs)
+        NMTOOLS_CAST_ARRAYS(lhs)
+        NMTOOLS_CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -45,8 +51,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {4,4,4},
             {5,5,5},
         };
-        auto shape = std::array{2,3};
-        auto expected = std::tuple{cast<int>(lhs),cast<int>(rhs)};
+        auto shape = nmtools_array{2,3};
+        auto expected = nmtools_tuple{cast<int>(lhs),cast<int>(rhs)};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -56,8 +62,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {4},
             {5}
         };
-        CAST_ARRAYS(lhs)
-        CAST_ARRAYS(rhs)
+        NMTOOLS_CAST_ARRAYS(lhs)
+        NMTOOLS_CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -69,8 +75,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {4,4,4},
             {5,5,5},
         };
-        auto shape = std::array{2,3};
-        auto expected = std::tuple{cast<int>(lhs),cast<int>(rhs)};
+        auto shape = nmtools_array{2,3};
+        auto expected = nmtools_tuple{cast<int>(lhs),cast<int>(rhs)};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -84,8 +90,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {5}
             }
         };
-        CAST_ARRAYS(lhs)
-        CAST_ARRAYS(rhs)
+        NMTOOLS_CAST_ARRAYS(lhs)
+        NMTOOLS_CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -101,8 +107,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {5,5,5},
             }
         };
-        auto shape = std::array{1,2,3};
-        auto expected = std::tuple{cast<int>(lhs),cast<int>(rhs)};
+        auto shape = nmtools_array{1,2,3};
+        auto expected = nmtools_tuple{cast<int>(lhs),cast<int>(rhs)};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -120,8 +126,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {7},
             },
         };
-        CAST_ARRAYS(lhs)
-        CAST_ARRAYS(rhs)
+        NMTOOLS_CAST_ARRAYS(lhs)
+        NMTOOLS_CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -145,8 +151,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {7,7,7},
             }
         };
-        auto shape = std::array{2,2,3};
-        auto expected = std::tuple{cast<int>(lhs),cast<int>(rhs)};
+        auto shape = nmtools_array{2,2,3};
+        auto expected = nmtools_tuple{cast<int>(lhs),cast<int>(rhs)};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -170,9 +176,9 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {11,12,13},
             }
         };
-        CAST_ARRAYS(A)
-        CAST_ARRAYS(B)
-        CAST_ARRAYS(C)
+        NMTOOLS_CAST_ARRAYS(A)
+        NMTOOLS_CAST_ARRAYS(B)
+        NMTOOLS_CAST_ARRAYS(C)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -206,8 +212,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {11,12,13},
             }
         };
-        auto shape = std::array{2,2,3};
-        auto expected = std::tuple{cast<int>(A),cast<int>(B),cast<int>(C)};
+        auto shape = nmtools_array{2,2,3};
+        auto expected = nmtools_tuple{cast<int>(A),cast<int>(B),cast<int>(C)};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -216,7 +222,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
             {1,2,3}
         };
         int rhs = 6;
-        CAST_ARRAYS(lhs)
+        NMTOOLS_CAST_ARRAYS(lhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -226,8 +232,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
         int rhs[1][3] = {
             {6,6,6}
         };
-        auto shape = std::array{1,3};
-        auto expected = std::tuple{cast<int>(lhs),cast<int>(rhs)};
+        auto shape = nmtools_array{1,3};
+        auto expected = nmtools_tuple{cast<int>(lhs),cast<int>(rhs)};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
@@ -236,7 +242,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
         int rhs[1][3] = {
             {1,2,3}
         };
-        CAST_ARRAYS(rhs)
+        NMTOOLS_CAST_ARRAYS(rhs)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -246,8 +252,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
         int rhs[1][3] = {
             {1,2,3}
         };
-        auto shape = std::array{1,3};
-        auto expected = std::tuple{cast<int>(lhs),cast<int>(rhs)};
+        auto shape = nmtools_array{1,3};
+        auto expected = nmtools_tuple{cast<int>(lhs),cast<int>(rhs)};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case8)
@@ -260,7 +266,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
         int lhs = 6;
         int rhs = 1;
         auto shape = None;
-        auto expected = std::tuple{lhs,rhs};
+        auto expected = nmtools_tuple{lhs,rhs};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case9)
@@ -282,8 +288,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {11,12,13},
             }
         };
-        CAST_ARRAYS(B)
-        CAST_ARRAYS(C)
+        NMTOOLS_CAST_ARRAYS(B)
+        NMTOOLS_CAST_ARRAYS(C)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -317,8 +323,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
                 {11,12,13},
             }
         };
-        auto shape = std::array{2,2,3};
-        auto expected = std::tuple{cast<int>(A),cast<int>(B),cast<int>(C)};
+        auto shape = nmtools_array{2,2,3};
+        auto expected = nmtools_tuple{cast<int>(A),cast<int>(B),cast<int>(C)};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case10)
@@ -329,7 +335,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
         auto shape = None;
-        auto expected = std::tuple{1,2};
+        auto expected = nmtools_tuple{1,2};
     }
 }
 
@@ -379,6 +385,75 @@ TEST_CASE("broadcast_arrays(case1)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_d, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_f, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_h, rhs_h );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_db, rhs_ds_db );
+
+
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_db, rhs_cs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_db, rhs_fs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_ds_db, rhs_hs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_db, rhs_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_fs_db, rhs_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_db, rhs_ds_db );
 }
 
 TEST_CASE("broadcast_arrays(case2)" * doctest::test_suite("view::broadcast_arrays"))
@@ -388,6 +463,75 @@ TEST_CASE("broadcast_arrays(case2)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_d, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_f, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_h, rhs_h );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_db, rhs_ds_db );
+
+
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_db, rhs_cs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_db, rhs_fs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_ds_db, rhs_hs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_db, rhs_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_fs_db, rhs_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_db, rhs_ds_db );
 }
 
 TEST_CASE("broadcast_arrays(case3)" * doctest::test_suite("view::broadcast_arrays"))
@@ -397,6 +541,75 @@ TEST_CASE("broadcast_arrays(case3)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_d, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_f, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_h, rhs_h );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_db, rhs_ds_db );
+
+
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_db, rhs_cs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_db, rhs_fs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_ds_db, rhs_hs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_db, rhs_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_fs_db, rhs_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_db, rhs_ds_db );
 }
 
 TEST_CASE("broadcast_arrays(case4)" * doctest::test_suite("view::broadcast_arrays"))
@@ -406,6 +619,75 @@ TEST_CASE("broadcast_arrays(case4)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_d, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_f, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_h, rhs_h );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_db, rhs_ds_db );
+
+
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_db, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_fb, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_hb, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_db, rhs_cs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_db, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_fb, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_hb, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_db, rhs_fs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_db, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_fb, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_hb, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_ds_db, rhs_hs_db );
+
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_db, rhs_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_fs_db, rhs_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_fb, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_hb, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_db, rhs_ds_db );
 }
 
 TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("view::broadcast_arrays"))
@@ -415,6 +697,62 @@ TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case5, A_d, B_d, C_d );
     BROADCAST_ARRAYS_SUBCASE(case5, A_f, B_f, C_f );
     BROADCAST_ARRAYS_SUBCASE(case5, A_h, B_h, C_h );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_fb, B_cs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_hb, B_cs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_db, B_cs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_fb, B_fs_fb, C_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_hb, B_fs_hb, C_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_db, B_fs_db, C_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_fb, B_hs_fb, C_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_hb, B_hs_hb, C_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_db, B_hs_db, C_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_fb, B_ds_fb, C_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_hb, B_ds_hb, C_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_db, B_ds_db, C_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_fb, B_cs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_hb, B_cs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_db, B_cs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_fb, B_cs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_hb, B_cs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_db, B_cs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_fb, B_cs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_hb, B_cs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_db, B_cs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_fb, B_fs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_hb, B_fs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_db, B_fs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_fb, B_hs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_hb, B_hs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_db, B_hs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_fb, B_ds_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_hb, B_ds_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_db, B_ds_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_fb, B_cs_fb, C_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_hb, B_cs_hb, C_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_cs_db, B_cs_db, C_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_fb, B_fs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_hb, B_fs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_fs_db, B_fs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_fb, B_hs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_hb, B_hs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_hs_db, B_hs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_fb, B_ds_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_hb, B_ds_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case5, A_ds_db, B_ds_db, C_cs_db );
 }
 
 TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("view::broadcast_arrays"))
@@ -424,6 +762,22 @@ TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_d, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_f, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_h, rhs );
+
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_cs_fb, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_cs_hb, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_cs_db, rhs );
+
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_fs_fb, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_fs_hb, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_fs_db, rhs );
+
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_hs_fb, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_hs_hb, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_hs_db, rhs );
+
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_ds_fb, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_ds_hb, rhs );
+    BROADCAST_ARRAYS_SUBCASE(case6, lhs_ds_db, rhs );
 }
 
 TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("view::broadcast_arrays"))
@@ -433,6 +787,22 @@ TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_h );
+
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_ds_db );
 }
 
 TEST_CASE("broadcast_arrays(case8)" * doctest::test_suite("view::broadcast_arrays"))
@@ -466,20 +836,20 @@ TEST_CASE("broadcast_arrays(fixed_shape)" * doctest::test_suite("view::broadcast
         using bB_t = decltype(bB);
         NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bA_t> );
         NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bB_t> );
-        constexpr auto expected_shape = std::array{3,3};
+        constexpr auto expected_shape = nmtools_array{3,3};
         NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bA_t>, expected_shape) ));
         NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bB_t>, expected_shape) ));
     }
     SUBCASE("array")
     {
-        auto A = std::array{1,2,3};
-        auto B = std::array{std::array{4,5,6}};
+        auto A = nmtools_array{1,2,3};
+        auto B = nmtools_array{nmtools_array{4,5,6}};
         auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
         using bA_t = decltype(bA);
         using bB_t = decltype(bB);
         NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bA_t> );
         NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bB_t> );
-        constexpr auto expected_shape = std::array{3};
+        constexpr auto expected_shape = nmtools_array{3};
         NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bA_t>, expected_shape) ));
         NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bB_t>, expected_shape) ));
     }
@@ -492,7 +862,7 @@ TEST_CASE("broadcast_arrays(fixed_shape)" * doctest::test_suite("view::broadcast
         using bB_t = decltype(bB);
         NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bA_t> );
         NMTOOLS_STATIC_CHECK( meta::is_fixed_size_ndarray_v<bB_t> );
-        constexpr auto expected_shape = std::array{2,3};
+        constexpr auto expected_shape = nmtools_array{2,3};
         NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bA_t>, expected_shape) ));
         NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_ndarray_shape_v<bB_t>, expected_shape) ));
     }
@@ -569,7 +939,7 @@ constexpr auto eval_broadcast_arrays(const first_t& A, const second_t& B, const 
     auto bout = na::eval(b,nm::None,out_t);
     auto cout = na::eval(c,nm::None,out_t);
 
-    return std::tuple{aout,bout,cout};
+    return nmtools_tuple{aout,bout,cout};
 } // eval_broadcast_arrays
 
 // skip constexpr test for emscripten for now, works for gcc & clang

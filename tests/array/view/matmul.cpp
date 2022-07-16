@@ -1,3 +1,19 @@
+#if 1
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+#endif
+
 #include "nmtools/array/view/matmul.hpp"
 #include "nmtools/testing/data/array/matmul.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -427,6 +443,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(array, matmul, case_name); \
     using namespace args; \
     auto result = RUN_matmul(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -437,6 +454,58 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case1, lhs_f, rhs_f );
     MATMUL_SUBCASE( case1, lhs_h, rhs_h );
     MATMUL_SUBCASE( case1, lhs_d, rhs_d );
+
+    MATMUL_SUBCASE( case1, lhs_cs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case1, lhs_cs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case1, lhs_cs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case1, lhs_fs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case1, lhs_fs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case1, lhs_fs_db, rhs_fs_db );
+
+    MATMUL_SUBCASE( case1, lhs_hs_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case1, lhs_hs_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case1, lhs_hs_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case1, lhs_ds_fb, rhs_ds_fb );
+    MATMUL_SUBCASE( case1, lhs_ds_hb, rhs_ds_hb );
+    MATMUL_SUBCASE( case1, lhs_ds_db, rhs_ds_db );
+
+    MATMUL_SUBCASE( case1, lhs_fs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case1, lhs_fs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case1, lhs_fs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case1, lhs_hs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case1, lhs_hs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case1, lhs_hs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case1, lhs_ds_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case1, lhs_ds_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case1, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case1, lhs_cs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case1, lhs_cs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case1, lhs_cs_db, rhs_fs_db );
+
+    MATMUL_SUBCASE( case1, lhs_hs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case1, lhs_hs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case1, lhs_hs_db, rhs_fs_db );
+
+    MATMUL_SUBCASE( case1, lhs_ds_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case1, lhs_ds_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case1, lhs_ds_db, rhs_fs_db );
+
+    MATMUL_SUBCASE( case1, lhs_cs_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case1, lhs_cs_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case1, lhs_cs_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case1, lhs_fs_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case1, lhs_fs_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case1, lhs_fs_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case1, lhs_ds_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case1, lhs_ds_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case1, lhs_ds_db, rhs_hs_db );
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("view::matmul"))
@@ -446,6 +515,58 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case2, lhs_f, rhs_f );
     MATMUL_SUBCASE( case2, lhs_h, rhs_h );
     MATMUL_SUBCASE( case2, lhs_d, rhs_d );
+
+    MATMUL_SUBCASE( case2, lhs_cs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case2, lhs_cs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case2, lhs_cs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case2, lhs_fs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case2, lhs_fs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case2, lhs_fs_db, rhs_fs_db );
+
+    MATMUL_SUBCASE( case2, lhs_hs_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case2, lhs_hs_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case2, lhs_hs_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case2, lhs_ds_fb, rhs_ds_fb );
+    MATMUL_SUBCASE( case2, lhs_ds_hb, rhs_ds_hb );
+    MATMUL_SUBCASE( case2, lhs_ds_db, rhs_ds_db );
+
+    MATMUL_SUBCASE( case2, lhs_fs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case2, lhs_fs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case2, lhs_fs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case2, lhs_hs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case2, lhs_hs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case2, lhs_hs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case2, lhs_ds_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case2, lhs_ds_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case2, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case2, lhs_cs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case2, lhs_cs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case2, lhs_cs_db, rhs_fs_db );
+
+    MATMUL_SUBCASE( case2, lhs_hs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case2, lhs_hs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case2, lhs_hs_db, rhs_fs_db );
+
+    MATMUL_SUBCASE( case2, lhs_ds_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case2, lhs_ds_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case2, lhs_ds_db, rhs_fs_db );
+
+    MATMUL_SUBCASE( case2, lhs_cs_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case2, lhs_cs_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case2, lhs_cs_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case2, lhs_fs_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case2, lhs_fs_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case2, lhs_fs_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case2, lhs_ds_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case2, lhs_ds_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case2, lhs_ds_db, rhs_hs_db );
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("view::matmul"))
@@ -455,6 +576,59 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case3, lhs_f, rhs_f );
     MATMUL_SUBCASE( case3, lhs_h, rhs_h );
     MATMUL_SUBCASE( case3, lhs_d, rhs_d );
+
+    MATMUL_SUBCASE( case3, lhs_cs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case3, lhs_cs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case3, lhs_cs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case3, lhs_fs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case3, lhs_fs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case3, lhs_fs_db, rhs_fs_db );
+
+    // TODO: fix runtime
+    // MATMUL_SUBCASE( case3, lhs_hs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case3, lhs_hs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case3, lhs_hs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case3, lhs_ds_fb, rhs_ds_fb );
+    // MATMUL_SUBCASE( case3, lhs_ds_hb, rhs_ds_hb );
+    // MATMUL_SUBCASE( case3, lhs_ds_db, rhs_ds_db );
+
+    MATMUL_SUBCASE( case3, lhs_fs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case3, lhs_fs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case3, lhs_fs_db, rhs_cs_db );
+
+    // MATMUL_SUBCASE( case3, lhs_hs_fb, rhs_cs_fb );
+    // MATMUL_SUBCASE( case3, lhs_hs_hb, rhs_cs_hb );
+    // MATMUL_SUBCASE( case3, lhs_hs_db, rhs_cs_db );
+
+    // MATMUL_SUBCASE( case3, lhs_ds_fb, rhs_cs_fb );
+    // MATMUL_SUBCASE( case3, lhs_ds_hb, rhs_cs_hb );
+    // MATMUL_SUBCASE( case3, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case3, lhs_cs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case3, lhs_cs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case3, lhs_cs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case3, lhs_hs_fb, rhs_fs_fb );
+    // MATMUL_SUBCASE( case3, lhs_hs_hb, rhs_fs_hb );
+    // MATMUL_SUBCASE( case3, lhs_hs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case3, lhs_ds_fb, rhs_fs_fb );
+    // MATMUL_SUBCASE( case3, lhs_ds_hb, rhs_fs_hb );
+    // MATMUL_SUBCASE( case3, lhs_ds_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case3, lhs_cs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case3, lhs_cs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case3, lhs_cs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case3, lhs_fs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case3, lhs_fs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case3, lhs_fs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case3, lhs_ds_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case3, lhs_ds_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case3, lhs_ds_db, rhs_hs_db );
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("view::matmul"))
@@ -464,6 +638,58 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case4, lhs_f, rhs_f );
     MATMUL_SUBCASE( case4, lhs_h, rhs_h );
     MATMUL_SUBCASE( case4, lhs_d, rhs_d );
+
+    MATMUL_SUBCASE( case4, lhs_cs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case4, lhs_cs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case4, lhs_cs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case4, lhs_fs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case4, lhs_fs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case4, lhs_fs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_hs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case4, lhs_hs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case4, lhs_hs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_ds_fb, rhs_ds_fb );
+    // MATMUL_SUBCASE( case4, lhs_ds_hb, rhs_ds_hb );
+    // MATMUL_SUBCASE( case4, lhs_ds_db, rhs_ds_db );
+
+    MATMUL_SUBCASE( case4, lhs_fs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case4, lhs_fs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case4, lhs_fs_db, rhs_cs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_hs_fb, rhs_cs_fb );
+    // MATMUL_SUBCASE( case4, lhs_hs_hb, rhs_cs_hb );
+    // MATMUL_SUBCASE( case4, lhs_hs_db, rhs_cs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_ds_fb, rhs_cs_fb );
+    // MATMUL_SUBCASE( case4, lhs_ds_hb, rhs_cs_hb );
+    // MATMUL_SUBCASE( case4, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case4, lhs_cs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case4, lhs_cs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case4, lhs_cs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_hs_fb, rhs_fs_fb );
+    // MATMUL_SUBCASE( case4, lhs_hs_hb, rhs_fs_hb );
+    // MATMUL_SUBCASE( case4, lhs_hs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_ds_fb, rhs_fs_fb );
+    // MATMUL_SUBCASE( case4, lhs_ds_hb, rhs_fs_hb );
+    // MATMUL_SUBCASE( case4, lhs_ds_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_cs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case4, lhs_cs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case4, lhs_cs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_fs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case4, lhs_fs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case4, lhs_fs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case4, lhs_ds_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case4, lhs_ds_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case4, lhs_ds_db, rhs_hs_db );
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("view::matmul"))
@@ -473,6 +699,58 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case5, lhs_f, rhs_f );
     MATMUL_SUBCASE( case5, lhs_h, rhs_h );
     MATMUL_SUBCASE( case5, lhs_d, rhs_d );
+
+    MATMUL_SUBCASE( case5, lhs_cs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case5, lhs_cs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case5, lhs_cs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case5, lhs_fs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case5, lhs_fs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case5, lhs_fs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_hs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case5, lhs_hs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case5, lhs_hs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_ds_fb, rhs_ds_fb );
+    // MATMUL_SUBCASE( case5, lhs_ds_hb, rhs_ds_hb );
+    // MATMUL_SUBCASE( case5, lhs_ds_db, rhs_ds_db );
+
+    MATMUL_SUBCASE( case5, lhs_fs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case5, lhs_fs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case5, lhs_fs_db, rhs_cs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_hs_fb, rhs_cs_fb );
+    // MATMUL_SUBCASE( case5, lhs_hs_hb, rhs_cs_hb );
+    // MATMUL_SUBCASE( case5, lhs_hs_db, rhs_cs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_ds_fb, rhs_cs_fb );
+    // MATMUL_SUBCASE( case5, lhs_ds_hb, rhs_cs_hb );
+    // MATMUL_SUBCASE( case5, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case5, lhs_cs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case5, lhs_cs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case5, lhs_cs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_hs_fb, rhs_fs_fb );
+    // MATMUL_SUBCASE( case5, lhs_hs_hb, rhs_fs_hb );
+    // MATMUL_SUBCASE( case5, lhs_hs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_ds_fb, rhs_fs_fb );
+    // MATMUL_SUBCASE( case5, lhs_ds_hb, rhs_fs_hb );
+    // MATMUL_SUBCASE( case5, lhs_ds_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_cs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case5, lhs_cs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case5, lhs_cs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_fs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case5, lhs_fs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case5, lhs_fs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case5, lhs_ds_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case5, lhs_ds_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case5, lhs_ds_db, rhs_hs_db );
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("view::matmul"))
@@ -482,6 +760,58 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case6, lhs_f, rhs_f );
     MATMUL_SUBCASE( case6, lhs_h, rhs_h );
     MATMUL_SUBCASE( case6, lhs_d, rhs_d );
+
+    MATMUL_SUBCASE( case6, lhs_cs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case6, lhs_cs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case6, lhs_cs_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case6, lhs_fs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case6, lhs_fs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case6, lhs_fs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_hs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case6, lhs_hs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case6, lhs_hs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_ds_fb, rhs_ds_fb );
+    // MATMUL_SUBCASE( case6, lhs_ds_hb, rhs_ds_hb );
+    // MATMUL_SUBCASE( case6, lhs_ds_db, rhs_ds_db );
+
+    MATMUL_SUBCASE( case6, lhs_fs_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case6, lhs_fs_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case6, lhs_fs_db, rhs_cs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_hs_fb, rhs_cs_fb );
+    // MATMUL_SUBCASE( case6, lhs_hs_hb, rhs_cs_hb );
+    // MATMUL_SUBCASE( case6, lhs_hs_db, rhs_cs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_ds_fb, rhs_cs_fb );
+    // MATMUL_SUBCASE( case6, lhs_ds_hb, rhs_cs_hb );
+    // MATMUL_SUBCASE( case6, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case6, lhs_cs_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case6, lhs_cs_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case6, lhs_cs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_hs_fb, rhs_fs_fb );
+    // MATMUL_SUBCASE( case6, lhs_hs_hb, rhs_fs_hb );
+    // MATMUL_SUBCASE( case6, lhs_hs_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_ds_fb, rhs_fs_fb );
+    // MATMUL_SUBCASE( case6, lhs_ds_hb, rhs_fs_hb );
+    // MATMUL_SUBCASE( case6, lhs_ds_db, rhs_fs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_cs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case6, lhs_cs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case6, lhs_cs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_fs_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case6, lhs_fs_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case6, lhs_fs_db, rhs_hs_db );
+
+    // MATMUL_SUBCASE( case6, lhs_ds_fb, rhs_hs_fb );
+    // MATMUL_SUBCASE( case6, lhs_ds_hb, rhs_hs_hb );
+    // MATMUL_SUBCASE( case6, lhs_ds_db, rhs_hs_db );
 }
 
 TEST_CASE("matmul(view_at)" * doctest::test_suite("view::matmul"))

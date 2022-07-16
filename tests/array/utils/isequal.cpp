@@ -1,7 +1,7 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/utils/isequal.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 #include <array>
 #include <tuple>

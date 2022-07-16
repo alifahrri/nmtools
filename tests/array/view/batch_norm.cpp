@@ -1,3 +1,19 @@
+#if 1
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+#endif
+
 #include "nmtools/array/view/batch_norm.hpp"
 #include "nmtools/testing/data/array/batch_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -45,6 +61,73 @@ TEST_CASE("batch_norm(case1)" * doctest::test_suite("view::batch_norm"))
     BATCH_NORM_SUBCASE( case1, input_f, mean_f, var_f, weight_f, bias_f );
     BATCH_NORM_SUBCASE( case1, input_h, mean_h, var_h, weight_h, bias_h );
     BATCH_NORM_SUBCASE( case1, input_d, mean_d, var_d, weight_d, bias_d );
+
+    BATCH_NORM_SUBCASE( case1, input_cs_fb, mean_cs_fb, var_cs_fb, weight_cs_fb, bias_cs_fb );
+    BATCH_NORM_SUBCASE( case1, input_cs_hb, mean_cs_hb, var_cs_hb, weight_cs_hb, bias_cs_hb );
+    BATCH_NORM_SUBCASE( case1, input_cs_db, mean_cs_db, var_cs_db, weight_cs_db, bias_cs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_fs_fb, mean_fs_fb, var_fs_fb, weight_fs_fb, bias_fs_fb );
+    BATCH_NORM_SUBCASE( case1, input_fs_hb, mean_fs_hb, var_fs_hb, weight_fs_hb, bias_fs_hb );
+    BATCH_NORM_SUBCASE( case1, input_fs_db, mean_fs_db, var_fs_db, weight_fs_db, bias_fs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_hs_fb, mean_hs_fb, var_hs_fb, weight_hs_fb, bias_hs_fb );
+    BATCH_NORM_SUBCASE( case1, input_hs_hb, mean_hs_hb, var_hs_hb, weight_hs_hb, bias_hs_hb );
+    BATCH_NORM_SUBCASE( case1, input_hs_db, mean_hs_db, var_hs_db, weight_hs_db, bias_hs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_ds_fb, mean_ds_fb, var_ds_fb, weight_ds_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case1, input_ds_hb, mean_ds_hb, var_ds_hb, weight_ds_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case1, input_ds_db, mean_ds_db, var_ds_db, weight_ds_db, bias_ds_db );
+
+
+    BATCH_NORM_SUBCASE( case1, input_cs_fb, mean_fs_fb, var_cs_fb, weight_cs_fb, bias_cs_fb );
+    BATCH_NORM_SUBCASE( case1, input_cs_hb, mean_fs_hb, var_cs_hb, weight_cs_hb, bias_cs_hb );
+    BATCH_NORM_SUBCASE( case1, input_cs_db, mean_fs_db, var_cs_db, weight_cs_db, bias_cs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_hs_fb, mean_fs_fb, var_hs_fb, weight_hs_fb, bias_hs_fb );
+    BATCH_NORM_SUBCASE( case1, input_hs_hb, mean_fs_hb, var_hs_hb, weight_hs_hb, bias_hs_hb );
+    BATCH_NORM_SUBCASE( case1, input_hs_db, mean_fs_db, var_hs_db, weight_hs_db, bias_hs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_ds_fb, mean_fs_fb, var_ds_fb, weight_ds_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case1, input_ds_hb, mean_fs_hb, var_ds_hb, weight_ds_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case1, input_ds_db, mean_fs_db, var_ds_db, weight_ds_db, bias_ds_db );
+
+
+    BATCH_NORM_SUBCASE( case1, input_cs_fb, mean_hs_fb, var_cs_fb, weight_cs_fb, bias_cs_fb );
+    BATCH_NORM_SUBCASE( case1, input_cs_hb, mean_hs_hb, var_cs_hb, weight_cs_hb, bias_cs_hb );
+    BATCH_NORM_SUBCASE( case1, input_cs_db, mean_hs_db, var_cs_db, weight_cs_db, bias_cs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_fs_fb, mean_hs_fb, var_fs_fb, weight_fs_fb, bias_fs_fb );
+    BATCH_NORM_SUBCASE( case1, input_fs_hb, mean_hs_hb, var_fs_hb, weight_fs_hb, bias_fs_hb );
+    BATCH_NORM_SUBCASE( case1, input_fs_db, mean_hs_db, var_fs_db, weight_fs_db, bias_fs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_ds_fb, mean_hs_fb, var_ds_fb, weight_ds_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case1, input_ds_hb, mean_hs_hb, var_ds_hb, weight_ds_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case1, input_ds_db, mean_hs_db, var_ds_db, weight_ds_db, bias_ds_db );
+
+    BATCH_NORM_SUBCASE( case1, input_cs_fb, mean_ds_fb, var_cs_fb, weight_cs_fb, bias_cs_fb );
+    BATCH_NORM_SUBCASE( case1, input_cs_hb, mean_ds_hb, var_cs_hb, weight_cs_hb, bias_cs_hb );
+    BATCH_NORM_SUBCASE( case1, input_cs_db, mean_ds_db, var_cs_db, weight_cs_db, bias_cs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_fs_fb, mean_ds_fb, var_fs_fb, weight_fs_fb, bias_fs_fb );
+    BATCH_NORM_SUBCASE( case1, input_fs_hb, mean_ds_hb, var_fs_hb, weight_fs_hb, bias_fs_hb );
+    BATCH_NORM_SUBCASE( case1, input_fs_db, mean_ds_db, var_fs_db, weight_fs_db, bias_fs_db );
+
+    BATCH_NORM_SUBCASE( case1, input_hs_fb, mean_ds_fb, var_hs_fb, weight_hs_fb, bias_hs_fb );
+    BATCH_NORM_SUBCASE( case1, input_hs_hb, mean_ds_hb, var_hs_hb, weight_hs_hb, bias_hs_hb );
+    BATCH_NORM_SUBCASE( case1, input_hs_db, mean_ds_db, var_hs_db, weight_hs_db, bias_hs_db );
+
+
+    BATCH_NORM_SUBCASE( case1, input_cs_fb, mean_fs_fb, var_cs_fb, weight_hs_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case1, input_cs_hb, mean_fs_hb, var_cs_hb, weight_hs_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case1, input_cs_db, mean_fs_db, var_cs_db, weight_hs_db, bias_ds_db );
+
+    BATCH_NORM_SUBCASE( case1, input_hs_fb, mean_fs_fb, var_cs_fb, weight_hs_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case1, input_hs_hb, mean_fs_hb, var_cs_hb, weight_hs_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case1, input_hs_db, mean_fs_db, var_cs_db, weight_hs_db, bias_ds_db );
+
+    BATCH_NORM_SUBCASE( case1, input_ds_fb, mean_fs_fb, var_cs_fb, weight_hs_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case1, input_ds_hb, mean_fs_hb, var_cs_hb, weight_hs_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case1, input_ds_db, mean_fs_db, var_cs_db, weight_hs_db, bias_ds_db );
 }
 
 TEST_CASE("batch_norm(case2)" * doctest::test_suite("view::batch_norm"))
@@ -54,4 +137,71 @@ TEST_CASE("batch_norm(case2)" * doctest::test_suite("view::batch_norm"))
     BATCH_NORM_SUBCASE( case2, input_f, mean_f, var_f, weight_f, bias_f );
     BATCH_NORM_SUBCASE( case2, input_h, mean_h, var_h, weight_h, bias_h );
     BATCH_NORM_SUBCASE( case2, input_d, mean_d, var_d, weight_d, bias_d );
+
+    BATCH_NORM_SUBCASE( case2, input_cs_fb, mean_cs_fb, var_cs_fb, weight_cs_fb, bias_cs_fb );
+    BATCH_NORM_SUBCASE( case2, input_cs_hb, mean_cs_hb, var_cs_hb, weight_cs_hb, bias_cs_hb );
+    BATCH_NORM_SUBCASE( case2, input_cs_db, mean_cs_db, var_cs_db, weight_cs_db, bias_cs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_fs_fb, mean_fs_fb, var_fs_fb, weight_fs_fb, bias_fs_fb );
+    BATCH_NORM_SUBCASE( case2, input_fs_hb, mean_fs_hb, var_fs_hb, weight_fs_hb, bias_fs_hb );
+    BATCH_NORM_SUBCASE( case2, input_fs_db, mean_fs_db, var_fs_db, weight_fs_db, bias_fs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_hs_fb, mean_hs_fb, var_hs_fb, weight_hs_fb, bias_hs_fb );
+    BATCH_NORM_SUBCASE( case2, input_hs_hb, mean_hs_hb, var_hs_hb, weight_hs_hb, bias_hs_hb );
+    BATCH_NORM_SUBCASE( case2, input_hs_db, mean_hs_db, var_hs_db, weight_hs_db, bias_hs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_ds_fb, mean_ds_fb, var_ds_fb, weight_ds_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case2, input_ds_hb, mean_ds_hb, var_ds_hb, weight_ds_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case2, input_ds_db, mean_ds_db, var_ds_db, weight_ds_db, bias_ds_db );
+
+
+    BATCH_NORM_SUBCASE( case2, input_cs_fb, mean_fs_fb, var_cs_fb, weight_cs_fb, bias_cs_fb );
+    BATCH_NORM_SUBCASE( case2, input_cs_hb, mean_fs_hb, var_cs_hb, weight_cs_hb, bias_cs_hb );
+    BATCH_NORM_SUBCASE( case2, input_cs_db, mean_fs_db, var_cs_db, weight_cs_db, bias_cs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_hs_fb, mean_fs_fb, var_hs_fb, weight_hs_fb, bias_hs_fb );
+    BATCH_NORM_SUBCASE( case2, input_hs_hb, mean_fs_hb, var_hs_hb, weight_hs_hb, bias_hs_hb );
+    BATCH_NORM_SUBCASE( case2, input_hs_db, mean_fs_db, var_hs_db, weight_hs_db, bias_hs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_ds_fb, mean_fs_fb, var_ds_fb, weight_ds_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case2, input_ds_hb, mean_fs_hb, var_ds_hb, weight_ds_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case2, input_ds_db, mean_fs_db, var_ds_db, weight_ds_db, bias_ds_db );
+
+
+    BATCH_NORM_SUBCASE( case2, input_cs_fb, mean_hs_fb, var_cs_fb, weight_cs_fb, bias_cs_fb );
+    BATCH_NORM_SUBCASE( case2, input_cs_hb, mean_hs_hb, var_cs_hb, weight_cs_hb, bias_cs_hb );
+    BATCH_NORM_SUBCASE( case2, input_cs_db, mean_hs_db, var_cs_db, weight_cs_db, bias_cs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_fs_fb, mean_hs_fb, var_fs_fb, weight_fs_fb, bias_fs_fb );
+    BATCH_NORM_SUBCASE( case2, input_fs_hb, mean_hs_hb, var_fs_hb, weight_fs_hb, bias_fs_hb );
+    BATCH_NORM_SUBCASE( case2, input_fs_db, mean_hs_db, var_fs_db, weight_fs_db, bias_fs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_ds_fb, mean_hs_fb, var_ds_fb, weight_ds_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case2, input_ds_hb, mean_hs_hb, var_ds_hb, weight_ds_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case2, input_ds_db, mean_hs_db, var_ds_db, weight_ds_db, bias_ds_db );
+
+    BATCH_NORM_SUBCASE( case2, input_cs_fb, mean_ds_fb, var_cs_fb, weight_cs_fb, bias_cs_fb );
+    BATCH_NORM_SUBCASE( case2, input_cs_hb, mean_ds_hb, var_cs_hb, weight_cs_hb, bias_cs_hb );
+    BATCH_NORM_SUBCASE( case2, input_cs_db, mean_ds_db, var_cs_db, weight_cs_db, bias_cs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_fs_fb, mean_ds_fb, var_fs_fb, weight_fs_fb, bias_fs_fb );
+    BATCH_NORM_SUBCASE( case2, input_fs_hb, mean_ds_hb, var_fs_hb, weight_fs_hb, bias_fs_hb );
+    BATCH_NORM_SUBCASE( case2, input_fs_db, mean_ds_db, var_fs_db, weight_fs_db, bias_fs_db );
+
+    BATCH_NORM_SUBCASE( case2, input_hs_fb, mean_ds_fb, var_hs_fb, weight_hs_fb, bias_hs_fb );
+    BATCH_NORM_SUBCASE( case2, input_hs_hb, mean_ds_hb, var_hs_hb, weight_hs_hb, bias_hs_hb );
+    BATCH_NORM_SUBCASE( case2, input_hs_db, mean_ds_db, var_hs_db, weight_hs_db, bias_hs_db );
+
+
+    BATCH_NORM_SUBCASE( case2, input_cs_fb, mean_fs_fb, var_cs_fb, weight_hs_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case2, input_cs_hb, mean_fs_hb, var_cs_hb, weight_hs_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case2, input_cs_db, mean_fs_db, var_cs_db, weight_hs_db, bias_ds_db );
+
+    BATCH_NORM_SUBCASE( case2, input_hs_fb, mean_fs_fb, var_cs_fb, weight_hs_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case2, input_hs_hb, mean_fs_hb, var_cs_hb, weight_hs_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case2, input_hs_db, mean_fs_db, var_cs_db, weight_hs_db, bias_ds_db );
+
+    BATCH_NORM_SUBCASE( case2, input_ds_fb, mean_fs_fb, var_cs_fb, weight_hs_fb, bias_ds_fb );
+    BATCH_NORM_SUBCASE( case2, input_ds_hb, mean_fs_hb, var_cs_hb, weight_hs_hb, bias_ds_hb );
+    BATCH_NORM_SUBCASE( case2, input_ds_db, mean_fs_db, var_cs_db, weight_hs_db, bias_ds_db );
 }

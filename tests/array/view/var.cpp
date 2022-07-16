@@ -1,6 +1,24 @@
+#if 1
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+#endif
+
 #include "nmtools/array/view/var.hpp"
 #include "nmtools/testing/data/array/var.hpp"
 #include "nmtools/testing/doctest.hpp"
+
+namespace nm = nmtools;
 
 #define RUN_var_impl(...) \
 nmtools::view::var(__VA_ARGS__);
@@ -43,6 +61,23 @@ TEST_CASE("var(case1)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case1, array_d, axis );
+
+    VAR_SUBCASE( case1, array_cs_fb, axis );
+    VAR_SUBCASE( case1, array_cs_hb, axis );
+    VAR_SUBCASE( case1, array_cs_db, axis );
+    
+    VAR_SUBCASE( case1, array_fs_fb, axis );
+    VAR_SUBCASE( case1, array_fs_hb, axis );
+    VAR_SUBCASE( case1, array_fs_db, axis );
+
+    // TODO: fix compile
+    // VAR_SUBCASE( case1, array_hs_fb, axis );
+    // VAR_SUBCASE( case1, array_hs_hb, axis );
+    // VAR_SUBCASE( case1, array_hs_db, axis );
+
+    VAR_SUBCASE( case1, array_ds_fb, axis );
+    VAR_SUBCASE( case1, array_ds_hb, axis );
+    VAR_SUBCASE( case1, array_ds_db, axis );
 }
 
 TEST_CASE("var(case2)" * doctest::test_suite("view::var"))
@@ -54,6 +89,22 @@ TEST_CASE("var(case2)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case2, array_d, axis );
+
+    VAR_SUBCASE( case2, array_cs_fb, axis );
+    VAR_SUBCASE( case2, array_cs_hb, axis );
+    VAR_SUBCASE( case2, array_cs_db, axis );
+    
+    VAR_SUBCASE( case2, array_fs_fb, axis );
+    VAR_SUBCASE( case2, array_fs_hb, axis );
+    VAR_SUBCASE( case2, array_fs_db, axis );
+
+    // VAR_SUBCASE( case2, array_hs_fb, axis );
+    // VAR_SUBCASE( case2, array_hs_hb, axis );
+    // VAR_SUBCASE( case2, array_hs_db, axis );
+
+    VAR_SUBCASE( case2, array_ds_fb, axis );
+    VAR_SUBCASE( case2, array_ds_hb, axis );
+    VAR_SUBCASE( case2, array_ds_db, axis );
 }
 
 TEST_CASE("var(case3)" * doctest::test_suite("view::var"))
@@ -65,6 +116,22 @@ TEST_CASE("var(case3)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case3, array_d, axis );
+
+    VAR_SUBCASE( case3, array_cs_fb, axis );
+    VAR_SUBCASE( case3, array_cs_hb, axis );
+    VAR_SUBCASE( case3, array_cs_db, axis );
+    
+    VAR_SUBCASE( case3, array_fs_fb, axis );
+    VAR_SUBCASE( case3, array_fs_hb, axis );
+    VAR_SUBCASE( case3, array_fs_db, axis );
+
+    // VAR_SUBCASE( case3, array_hs_fb, axis );
+    // VAR_SUBCASE( case3, array_hs_hb, axis );
+    // VAR_SUBCASE( case3, array_hs_db, axis );
+
+    VAR_SUBCASE( case3, array_ds_fb, axis );
+    VAR_SUBCASE( case3, array_ds_hb, axis );
+    VAR_SUBCASE( case3, array_ds_db, axis );
 }
 
 TEST_CASE("var(case4)" * doctest::test_suite("view::var"))
@@ -76,6 +143,22 @@ TEST_CASE("var(case4)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case4, array_d, axis );
+
+    VAR_SUBCASE( case4, array_cs_fb, axis );
+    VAR_SUBCASE( case4, array_cs_hb, axis );
+    VAR_SUBCASE( case4, array_cs_db, axis );
+    
+    VAR_SUBCASE( case4, array_fs_fb, axis );
+    VAR_SUBCASE( case4, array_fs_hb, axis );
+    VAR_SUBCASE( case4, array_fs_db, axis );
+
+    // VAR_SUBCASE( case4, array_hs_fb, axis );
+    // VAR_SUBCASE( case4, array_hs_hb, axis );
+    // VAR_SUBCASE( case4, array_hs_db, axis );
+
+    VAR_SUBCASE( case4, array_ds_fb, axis );
+    VAR_SUBCASE( case4, array_ds_hb, axis );
+    VAR_SUBCASE( case4, array_ds_db, axis );
 }
 
 TEST_CASE("var(case5)" * doctest::test_suite("view::var"))
@@ -87,6 +170,22 @@ TEST_CASE("var(case5)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case5, array_d, axis );
+
+    VAR_SUBCASE( case5, array_cs_fb, axis );
+    VAR_SUBCASE( case5, array_cs_hb, axis );
+    VAR_SUBCASE( case5, array_cs_db, axis );
+    
+    VAR_SUBCASE( case5, array_fs_fb, axis );
+    VAR_SUBCASE( case5, array_fs_hb, axis );
+    VAR_SUBCASE( case5, array_fs_db, axis );
+
+    // VAR_SUBCASE( case5, array_hs_fb, axis );
+    // VAR_SUBCASE( case5, array_hs_hb, axis );
+    // VAR_SUBCASE( case5, array_hs_db, axis );
+
+    VAR_SUBCASE( case5, array_ds_fb, axis );
+    VAR_SUBCASE( case5, array_ds_hb, axis );
+    VAR_SUBCASE( case5, array_ds_db, axis );
 }
 
 TEST_CASE("var(case6)" * doctest::test_suite("view::var"))
@@ -98,6 +197,22 @@ TEST_CASE("var(case6)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case6, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case6, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case6, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case6, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case6, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case6, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case6, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_ds_db, axis, nm::None, ddof, keepdims );
 }
 
 TEST_CASE("var(case7)" * doctest::test_suite("view::var"))
@@ -109,6 +224,22 @@ TEST_CASE("var(case7)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case7, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case7, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case7, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case7, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case7, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case7, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case7, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_ds_db, axis, nm::None, ddof, keepdims );
 }
 
 TEST_CASE("var(case8)" * doctest::test_suite("view::var"))
@@ -120,6 +251,22 @@ TEST_CASE("var(case8)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case7, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case8, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case8, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case8, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case8, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case8, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case8, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_ds_db, axis, nm::None, ddof, keepdims );
 }
 
 TEST_CASE("var(case9)" * doctest::test_suite("view::var"))
@@ -131,6 +278,22 @@ TEST_CASE("var(case9)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case9, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case9, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case9, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case9, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case9, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case9, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case9, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_ds_db, axis, nm::None, ddof, keepdims );
 }
 
 namespace view = nm::view;
@@ -162,6 +325,22 @@ TEST_CASE("var(case10)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case10, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case10, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case10, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case10, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case10, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case10, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case10, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_ds_db, axis, nm::None, ddof, keepdims );
 }
 
 TEST_CASE("var(case11)" * doctest::test_suite("view::var"))
@@ -173,6 +352,22 @@ TEST_CASE("var(case11)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case11, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case11, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case11, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case11, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case11, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case11, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case11, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_ds_db, axis, nm::None, ddof, keepdims );
 }
 
 TEST_CASE("var(case12)" * doctest::test_suite("view::var"))
@@ -184,6 +379,22 @@ TEST_CASE("var(case12)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case12, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case12, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case12, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case12, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case12, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case12, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case12, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_ds_db, axis, nm::None, ddof, keepdims );
 }
 
 TEST_CASE("var(case13)" * doctest::test_suite("view::var"))
@@ -195,6 +406,22 @@ TEST_CASE("var(case13)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case13, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case13, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case13, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case13, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case13, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case13, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case13, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_ds_db, axis, nm::None, ddof, keepdims );
 }
 
 TEST_CASE("var(case14)" * doctest::test_suite("view::var"))
@@ -206,4 +433,20 @@ TEST_CASE("var(case14)" * doctest::test_suite("view::var"))
     // not supported yet,
     // TODO: support slicing for dynamic dim
     // VAR_SUBCASE( case14, array_d, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case14, array_cs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_cs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_cs_db, axis, nm::None, ddof, keepdims );
+    
+    VAR_SUBCASE( case14, array_fs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_fs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_fs_db, axis, nm::None, ddof, keepdims );
+
+    // VAR_SUBCASE( case14, array_hs_fb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case14, array_hs_hb, axis, nm::None, ddof, keepdims );
+    // VAR_SUBCASE( case14, array_hs_db, axis, nm::None, ddof, keepdims );
+
+    VAR_SUBCASE( case14, array_ds_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_ds_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_ds_db, axis, nm::None, ddof, keepdims );
 }

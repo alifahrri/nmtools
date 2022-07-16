@@ -1,4 +1,3 @@
-#include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"

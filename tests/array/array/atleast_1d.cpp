@@ -7,17 +7,17 @@
 #include <tuple>
 
 #define RUN_atleast_1d_impl(...) \
-nm::array::atleast_1d(__VA_ARGS__);
+nmtools::array::atleast_1d(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
+using nmtools::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs atleast_1d fn to callable lambda
 #define RUN_atleast_1d(case_name, ...) \
 [](auto&&...args){ \
     auto title = std::string("atleast_1d-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
+    auto name  = nmtools::testing::make_func_args("", args...); \
     auto fn    = [&](){ \
         return RUN_atleast_1d_impl(args...); \
     }; \
@@ -74,8 +74,8 @@ TEST_CASE("atleast_1d(case4)" * doctest::test_suite("array::atleast_1d"))
 }
 
 
-namespace array = nm::array;
-namespace meta = nm::meta;
+namespace array = nmtools::array;
+namespace meta = nmtools::meta;
 
 TEST_CASE("atleast_1d(traits)" * doctest::test_suite("array::atleast_1d"))
 {

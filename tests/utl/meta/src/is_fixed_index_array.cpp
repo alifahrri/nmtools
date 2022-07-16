@@ -1,4 +1,4 @@
-#include "nmtools/meta/utl/traits.hpp"
+#include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

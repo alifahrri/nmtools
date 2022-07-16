@@ -1,6 +1,6 @@
 #include "nmtools/array/index/choose.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 #include <array>
 #include <tuple>

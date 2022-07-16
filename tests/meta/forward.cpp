@@ -1,3 +1,4 @@
+#include "nmtools/meta.hpp"
 #include "nmtools/utility/forward.hpp"
 #include "nmtools/testing/doctest.hpp"
 

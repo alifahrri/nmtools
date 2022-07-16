@@ -1,4 +1,4 @@
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/view.hpp"
 #include "nmtools/array/fixed.hpp"
 #include "nmtools/array/dynamic.hpp"

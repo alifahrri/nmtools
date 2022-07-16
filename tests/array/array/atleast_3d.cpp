@@ -7,17 +7,17 @@
 #include <tuple>
 
 #define RUN_atleast_3d_impl(...) \
-nm::array::atleast_3d(__VA_ARGS__);
+nmtools::array::atleast_3d(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
+using nmtools::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs atleast_3d fn to callable lambda
 #define RUN_atleast_3d(case_name, ...) \
 [](auto&&...args){ \
     auto title = std::string("atleast_3d-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
+    auto name  = nmtools::testing::make_func_args("", args...); \
     auto fn    = [&](){ \
         return RUN_atleast_3d_impl(args...); \
     }; \
@@ -35,8 +35,8 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(array, atleast_3d, case_name); \
     using namespace args; \
     auto result = RUN_atleast_3d(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( nm::dim(result), expect::dim ); \
-    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::dim(result), expect::dim ); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -85,8 +85,8 @@ TEST_CASE("atleast_3d(case5)" * doctest::test_suite("array::atleast_3d"))
     ATLEAST_3D_SUBCASE( case5, a_h );
 }
 
-namespace array = nm::array;
-namespace meta = nm::meta;
+namespace array = nmtools::array;
+namespace meta = nmtools::meta;
 
 TEST_CASE("atleast_3d(traits)" * doctest::test_suite("array::atleast_3d"))
 {
