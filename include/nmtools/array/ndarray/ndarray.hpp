@@ -11,6 +11,7 @@
 #include "nmtools/array/utility.hpp"
 // NOTE: to include nmtools_hybrid_ndarray macro
 #include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/utility/cast.hpp"
 
 // experimental version that combine all three to single class
 
@@ -568,5 +569,221 @@ namespace nmtools::meta
         using type = array::ndarray_t<buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t>;
     }; // replace_element_type
 } // namespace nmtools::meta
+
+// casting
+
+namespace nmtools::array::kind
+{
+    enum class BufferKind {
+        CONSTANT, // useful for shape, but should not used for buffer
+        FIXED,
+        DYNAMIC,
+        HYBRID,
+    };
+
+    template <BufferKind Shape, BufferKind Buffer>
+    struct ndarray_kind_t {};
+
+    constexpr inline auto ndarray_cs_fb = ndarray_kind_t< BufferKind::CONSTANT, BufferKind::FIXED >{};
+    constexpr inline auto ndarray_cs_hb = ndarray_kind_t< BufferKind::CONSTANT, BufferKind::HYBRID >{};
+    constexpr inline auto ndarray_cs_db = ndarray_kind_t< BufferKind::CONSTANT, BufferKind::DYNAMIC >{};
+    constexpr inline auto ndarray_fs_fb = ndarray_kind_t< BufferKind::FIXED,    BufferKind::FIXED >{};
+    constexpr inline auto ndarray_fs_hb = ndarray_kind_t< BufferKind::FIXED,    BufferKind::HYBRID >{};
+    constexpr inline auto ndarray_fs_db = ndarray_kind_t< BufferKind::FIXED,    BufferKind::DYNAMIC >{};
+    constexpr inline auto ndarray_hs_fb = ndarray_kind_t< BufferKind::HYBRID,   BufferKind::FIXED >{};
+    constexpr inline auto ndarray_hs_hb = ndarray_kind_t< BufferKind::HYBRID,   BufferKind::HYBRID >{};
+    constexpr inline auto ndarray_hs_db = ndarray_kind_t< BufferKind::HYBRID,   BufferKind::DYNAMIC >{};
+    constexpr inline auto ndarray_ds_fb = ndarray_kind_t< BufferKind::DYNAMIC,  BufferKind::FIXED >{};
+    constexpr inline auto ndarray_ds_hb = ndarray_kind_t< BufferKind::DYNAMIC,  BufferKind::HYBRID >{};
+    constexpr inline auto ndarray_ds_db = ndarray_kind_t< BufferKind::DYNAMIC,  BufferKind::DYNAMIC >{};
+}
+
+namespace nmtools::meta
+{
+    using array::kind::BufferKind;
+
+    namespace error
+    {
+        template <typename...>
+        struct CAST_NDARRAY_KIND_UNSUPPORTED : detail::fail_t {};
+    }
+
+    template <typename src_t, BufferKind ShapeKind, BufferKind SizeKind>
+    struct resolve_optype<void, cast_kind_t, src_t, array::kind::ndarray_kind_t<ShapeKind,SizeKind>>
+    {
+        static constexpr auto vtype = [](){
+            using element_type = get_element_type_t<src_t>;
+            using error_type [[maybe_unused]] = error::CAST_NDARRAY_KIND_UNSUPPORTED<src_t,array::kind::ndarray_kind_t<ShapeKind,SizeKind>>;
+            constexpr auto shape  = fixed_shape_v<src_t>;
+            constexpr auto dim    = fixed_dim_v<src_t>;
+            constexpr auto size   = fixed_size_v<src_t>;
+            constexpr auto b_dim  = bounded_dim_v<src_t>;
+            constexpr auto b_size = bounded_size_v<src_t>;
+            using shape_type  = decltype(shape);
+            using dim_type    = decltype(dim);
+            using size_type   = decltype(size);
+            using b_dim_type  = decltype(b_dim);
+            using b_size_type = decltype(b_size);
+            using nmtools::len, nmtools::at;
+            // constant shape
+            constexpr auto c_shape_vtype = [&](){
+                if constexpr (!is_fail_v<shape_type>) {
+                    return template_reduce<len(shape)-1>([&](auto init, auto index){
+                        using init_type = type_t<decltype(init)>;
+                        return as_value_v<append_type_t<init_type,ct<at(shape,decltype(index)::value+1)>>>;
+                    }, as_value_v<nmtools_tuple<ct<at(shape,0)>>>);
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // fixed shape
+            constexpr auto f_shape_vtype = [&](){
+                if constexpr (!is_fail_v<dim_type>) {
+                    using type = nmtools_array<size_t,dim>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // bounded shape (for bounded dim)
+            constexpr auto b_shape_vtype = [&](){
+                if constexpr (!is_fail_v<b_dim_type>) {
+                    using type = array::static_vector<size_t,b_dim>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // fixed buffer
+            constexpr auto f_buffer_vtype = [&](){
+                if constexpr (!is_fail_v<size_type>) {
+                    using type = nmtools_array<element_type,size>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // bounded buffer
+            constexpr auto b_buffer_vtype = [&](){
+                if constexpr (!is_fail_v<b_size_type>) {
+                    using type = array::static_vector<element_type,b_size>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // dynamic buffer
+
+            using c_shape_type  [[maybe_unused]] = type_t<decltype(c_shape_vtype)>;
+            using f_shape_type  [[maybe_unused]] = type_t<decltype(f_shape_vtype)>;
+            using b_shape_type  [[maybe_unused]] = type_t<decltype(b_shape_vtype)>;
+            using f_buffer_type [[maybe_unused]] = type_t<decltype(f_buffer_vtype)>;
+            using b_buffer_type [[maybe_unused]] = type_t<decltype(b_buffer_vtype)>;
+            using d_buffer_type [[maybe_unused]] = nmtools_list<element_type>;
+            using d_shape_type  [[maybe_unused]] = nmtools_list<size_t>;
+
+            if constexpr (
+                    (ShapeKind == BufferKind::CONSTANT)
+                &&  (SizeKind  == BufferKind::FIXED) // buffer can't be constant
+                && !(is_fail_v<c_shape_type>)
+                && !(is_fail_v<f_buffer_type>)
+            ) {
+                using type = array::ndarray_t<f_buffer_type,c_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::CONSTANT)
+                &&  (SizeKind  == BufferKind::HYBRID)
+                && !(is_fail_v<c_shape_type>)
+                && !(is_fail_v<b_buffer_type>)
+            ) {
+                using type = array::ndarray_t<b_buffer_type,c_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::CONSTANT)
+                &&  (SizeKind  == BufferKind::DYNAMIC)
+                && !(is_fail_v<c_shape_type>)
+                && !(is_fail_v<d_buffer_type>)
+            ) {
+                using type = array::ndarray_t<d_buffer_type,c_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::FIXED)
+                &&  (SizeKind  == BufferKind::FIXED)
+                && !(is_fail_v<f_shape_type>)
+                && !(is_fail_v<f_buffer_type>)
+            ) {
+                using type = array::ndarray_t<f_buffer_type,f_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::FIXED)
+                &&  (SizeKind  == BufferKind::HYBRID)
+                && !(is_fail_v<f_shape_type>)
+                && !(is_fail_v<b_buffer_type>)
+            ) {
+                using type = array::ndarray_t<b_buffer_type,f_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::FIXED)
+                &&  (SizeKind  == BufferKind::DYNAMIC)
+                && !(is_fail_v<f_shape_type>)
+                && !(is_fail_v<d_buffer_type>)
+            ) {
+                using type = array::ndarray_t<d_buffer_type,f_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::HYBRID)
+                &&  (SizeKind  == BufferKind::FIXED)
+                && !(is_fail_v<b_shape_type>)
+                && !(is_fail_v<f_buffer_type>)
+            ) {
+                using type = array::ndarray_t<f_buffer_type,b_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::HYBRID)
+                &&  (SizeKind  == BufferKind::HYBRID)
+                && !(is_fail_v<b_shape_type>)
+                && !(is_fail_v<b_buffer_type>)
+            ) {
+                using type = array::ndarray_t<b_buffer_type,b_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::HYBRID)
+                &&  (SizeKind  == BufferKind::DYNAMIC)
+                && !(is_fail_v<b_shape_type>)
+                && !(is_fail_v<d_buffer_type>)
+            ) {
+                using type = array::ndarray_t<d_buffer_type,b_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::DYNAMIC)
+                &&  (SizeKind  == BufferKind::FIXED)
+                && !(is_fail_v<d_shape_type>)
+                && !(is_fail_v<f_buffer_type>)
+            ) {
+                using type = array::ndarray_t<f_buffer_type,d_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::DYNAMIC)
+                &&  (SizeKind  == BufferKind::HYBRID)
+                && !(is_fail_v<d_shape_type>)
+                && !(is_fail_v<b_buffer_type>)
+            ) {
+                using type = array::ndarray_t<b_buffer_type,d_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                    (ShapeKind == BufferKind::DYNAMIC)
+                &&  (SizeKind  == BufferKind::DYNAMIC)
+                && !(is_fail_v<d_shape_type>)
+                && !(is_fail_v<d_buffer_type>)
+            ) {
+                using type = array::ndarray_t<d_buffer_type,d_shape_type>;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<error_type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+}
 
 #endif // NMTOOLS_ARRAY_NDARRAY_NDARRAY_HPP
