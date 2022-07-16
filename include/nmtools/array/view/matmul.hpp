@@ -390,7 +390,14 @@ namespace nmtools::meta
     struct resolve_optype< void, view::detail::shape_matmul_t, lhs_shape_t, rhs_shape_t >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_dynamic_index_array_v<lhs_shape_t> && is_dynamic_index_array_v<rhs_shape_t>) {
+            // TODO: compute at compile time whenever possible
+            if constexpr (is_constant_index_array_v<lhs_shape_t>) {
+                using lhs_shape_type = remove_cvref_t<decltype(to_value_v<lhs_shape_t>)>;
+                return as_value_v<resolve_optype_t<view::detail::shape_matmul_t, lhs_shape_type, rhs_shape_t> >;
+            } else if constexpr (is_constant_index_array_v<rhs_shape_t>) {
+                using rhs_shape_type = remove_cvref_t<decltype(to_value_v<rhs_shape_t>)>;
+                return as_value_v<resolve_optype_t<view::detail::shape_matmul_t, lhs_shape_t, rhs_shape_type> >;
+            } else if constexpr (is_dynamic_index_array_v<lhs_shape_t> && is_dynamic_index_array_v<rhs_shape_t>) {
                 return as_value_v<lhs_shape_t>;
             } else if constexpr (is_hybrid_index_array_v<lhs_shape_t> && is_hybrid_index_array_v<rhs_shape_t>) {
                 constexpr auto lhs_max  = hybrid_index_array_max_size_v<lhs_shape_t>;

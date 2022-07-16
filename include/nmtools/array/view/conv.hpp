@@ -46,12 +46,12 @@ namespace nmtools::view
         {
             // TODO: consider to compute this at initialization, since view doesn't allow change shape anyway
 
-            auto i_shape = detail::shape(input);
-            auto f_shape = detail::shape(weight);
-            auto out_channels = at(f_shape,meta::ct_v<0>);
-            auto k_width  = at(f_shape,meta::ct_v<-1>);
-            auto k_height = at(f_shape,meta::ct_v<-2>);
-            auto kernel_size = nmtools_array{k_width,k_height};
+            const auto i_shape = detail::shape(input);
+            const auto f_shape = detail::shape(weight);
+            const auto out_channels = at(f_shape,meta::ct_v<0>);
+            const auto k_width  = at(f_shape,meta::ct_v<-1>);
+            const auto k_height = at(f_shape,meta::ct_v<-2>);
+            const auto kernel_size = nmtools_array{k_width,k_height};
 
             return index::shape_conv2d(i_shape,out_channels,kernel_size,stride,None,dilation);
         } // shape
@@ -66,22 +66,22 @@ namespace nmtools::view
         constexpr auto operator()(size_types...indices) const
         {
             // TODO: consider to compute this at initialization, since view doesn't allow change shape anyway
-            auto i_shape = detail::shape(input);
-            auto f_shape = detail::shape(weight);
-            auto k_width  = at(f_shape,meta::ct_v<-1>);
-            auto k_height = at(f_shape,meta::ct_v<-2>);
-            auto kernel_size = nmtools_array{k_width,k_height};
+            const auto i_shape = detail::shape(input);
+            const auto f_shape = detail::shape(weight);
+            const auto k_width  = at(f_shape,meta::ct_v<-1>);
+            const auto k_height = at(f_shape,meta::ct_v<-2>);
+            const auto kernel_size = nmtools_array{k_width,k_height};
             // This controls the layout (CHW or HWC)
             constexpr auto ch_idx  = meta::ct_v<-3>;
             // TODO: generalize to handle arbitrary "channel" axis
-            auto in_channels = at(i_shape,ch_idx);
-            auto groups = at(f_shape,ch_idx) / in_channels;
+            const auto in_channels = at(i_shape,ch_idx);
+            const auto groups = at(f_shape,ch_idx) / in_channels;
 
-            auto indices_ = pack_indices(indices...);
+            const auto indices_ = pack_indices(indices...);
 
-            auto slice_args = index::slice_conv2d(indices_,i_shape,kernel_size,stride,dilation,groups);
+            const auto slice_args = index::slice_conv2d(indices_,i_shape,kernel_size,stride,dilation,groups);
 
-            auto sliced = [&](){
+            const auto sliced = [&](){
                 if constexpr (meta::is_pointer_v<input_type>) {
                     return apply_slice(*input,slice_args);
                 } else {
@@ -90,18 +90,18 @@ namespace nmtools::view
             }();
 
             // TODO: support for NHWC format
-            auto out_ch_idx = meta::ct_v<-3>;
-            auto filter_i = at(indices_,out_ch_idx);
+            const auto out_ch_idx = meta::ct_v<-3>;
+            const auto filter_i = at(indices_,out_ch_idx);
 
             // assume weight dim == 4, and output channel is at axis 0
-            auto filter = [&](){
+            const auto filter = [&](){
                 if constexpr (meta::is_pointer_v<weight_type>) {
                     return slice(*weight,filter_i,Ellipsis);
                 } else {
                     return slice(weight,filter_i,Ellipsis);
                 }
             }();
-            auto filtered = multiply(sliced,filter);
+            const auto filtered = multiply(sliced,filter);
 
             return reduce_add(filtered,None);
         } // operator()

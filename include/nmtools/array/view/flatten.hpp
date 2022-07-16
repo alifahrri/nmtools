@@ -8,9 +8,6 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 
-// TODO: remove
-#include "nmtools/array/meta.hpp"
-
 namespace nmtools::index
 {
     using namespace literals;

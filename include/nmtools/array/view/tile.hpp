@@ -78,7 +78,9 @@ namespace nmtools::meta
      * @tparam reps_t 
      */
     template <typename array_t, typename reps_t>
-    struct fixed_ndarray_shape< view::tile_t<array_t,reps_t> >
+    struct fixed_ndarray_shape< view::decorator_t<view::tile_t,array_t,reps_t> >
+        : fixed_shape< view::decorator_t<view::tile_t,array_t,reps_t> > {};
+    #if 0
     {
         static inline constexpr auto value = [](){
             // we can only know the shape at compile time if both array and reps are compile-time constant
@@ -93,6 +95,7 @@ namespace nmtools::meta
         }();
         using value_type = decltype(value);
     }; // fixed_ndarray_shape
+    #endif
 
     #if 0
     /**

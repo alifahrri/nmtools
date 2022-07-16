@@ -3,7 +3,6 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
-#include "nmtools/array/meta.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/array/index/ref.hpp"
@@ -228,8 +227,8 @@ namespace nmtools::meta
                 using type = make_tuple_type_t<shape_t,shape_t>;
                 return as_value_v<type>;
             } else if constexpr (is_constant_index_array_v<shape_t>) {
-                // not supported yet
-                using type = error::SPLIT_INDEX_UNSUPPORTED<shape_t,split_t>;
+                // TODO: check if split_t is constant index and then compute at compile-time
+                using type = resolve_optype_t<view::detail::split_index_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,split_t>;
                 return as_value_v<type>;
             } else if constexpr (is_fixed_index_array_v<shape_t> && !is_constant_index_v<split_t>) {
                 // shape is fixed size but the index to split is runtime value

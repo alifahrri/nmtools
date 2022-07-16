@@ -1,13 +1,11 @@
 #ifndef NMTOOLS_ARRAY_VIEW_MUTABLE_FLATTEN_HPP
 #define NMTOOLS_ARRAY_VIEW_MUTABLE_FLATTEN_HPP
 
-#include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
 
-#include "nmtools/array/meta.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 
