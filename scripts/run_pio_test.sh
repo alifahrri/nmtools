@@ -20,6 +20,7 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [ -z "$DEST" -a "$DEST" != " " ]; then
+    echo "please provide test case directory! e.g. -d arduino/ufuncs"
     exit 1
 fi
 

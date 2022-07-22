@@ -57,6 +57,12 @@ namespace nmtools::meta
     {
         static constexpr auto value = sizeof...(Ts);
     };
+
+    template <typename T, size_t N>
+    struct fixed_size<utl::array<T,N>>
+    {
+        static constexpr auto value = N;
+    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_UTL_ARRAY_HPP

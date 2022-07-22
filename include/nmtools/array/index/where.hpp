@@ -82,10 +82,11 @@ namespace nmtools::meta
                 // need to use hybrid array1d since the size will depends on runtime value
                 using type = array::static_vector<index_t,N>;
                 return as_value_v<type>;
-            } else if constexpr (is_fixed_dim_v<array_t> || is_bounded_dim_v<array_t>) {
+            } else if constexpr (is_fixed_size_v<array_t> || is_bounded_size_v<array_t>) {
+                // assume index array
                 // quick error check
                 static_assert( bounded_dim_v<array_t> == 1, "unsupported where" );
-                constexpr auto N = fixed_size_v<array_t>;
+                constexpr auto N = bounded_size_v<array_t>;
                 // need to use hybrid array1d since the size will depends on runtime value
                 using type = array::static_vector<index_t,N>;
                 return as_value_v<type>;
