@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -56,12 +56,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("compress(case1)" * doctest::test_suite("view::compress"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     COMPRESS_SUBCASE( case1,   condition,   array, axis );
     COMPRESS_SUBCASE( case1, condition_a, array_a, axis );
     COMPRESS_SUBCASE( case1, condition_f, array_f, axis );
     COMPRESS_SUBCASE( case1, condition_d, array_d, axis );
     COMPRESS_SUBCASE( case1, condition_h, array_h, axis );
 
+    #else
     COMPRESS_SUBCASE( case1, condition_cs_fb, array_cs_fb, axis );
     COMPRESS_SUBCASE( case1, condition_cs_hb, array_cs_hb, axis );
     COMPRESS_SUBCASE( case1, condition_cs_db, array_cs_db, axis );
@@ -105,16 +107,19 @@ TEST_CASE("compress(case1)" * doctest::test_suite("view::compress"))
     // COMPRESS_SUBCASE( case1, condition_ds_fb, array_hs_fb, axis );
     // COMPRESS_SUBCASE( case1, condition_ds_hb, array_hs_hb, axis );
     // COMPRESS_SUBCASE( case1, condition_ds_db, array_hs_db, axis );
+    #endif
 }
 
 TEST_CASE("compress(case2)" * doctest::test_suite("view::compress"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     COMPRESS_SUBCASE( case2,   condition,   array, axis );
     COMPRESS_SUBCASE( case2, condition_a, array_a, axis );
     COMPRESS_SUBCASE( case2, condition_f, array_f, axis );
     COMPRESS_SUBCASE( case2, condition_d, array_d, axis );
     COMPRESS_SUBCASE( case2, condition_h, array_h, axis );
 
+    #else
     COMPRESS_SUBCASE( case2, condition_cs_fb, array_cs_fb, axis );
     COMPRESS_SUBCASE( case2, condition_cs_hb, array_cs_hb, axis );
     COMPRESS_SUBCASE( case2, condition_cs_db, array_cs_db, axis );
@@ -156,16 +161,19 @@ TEST_CASE("compress(case2)" * doctest::test_suite("view::compress"))
     // COMPRESS_SUBCASE( case2, condition_ds_fb, array_hs_fb, axis );
     // COMPRESS_SUBCASE( case2, condition_ds_hb, array_hs_hb, axis );
     // COMPRESS_SUBCASE( case2, condition_ds_db, array_hs_db, axis );
+    #endif
 }
 
 TEST_CASE("compress(case3)" * doctest::test_suite("view::compress"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     COMPRESS_SUBCASE( case3,   condition,   array, axis );
     COMPRESS_SUBCASE( case3, condition_a, array_a, axis );
     COMPRESS_SUBCASE( case3, condition_f, array_f, axis );
     COMPRESS_SUBCASE( case3, condition_d, array_d, axis );
     COMPRESS_SUBCASE( case3, condition_h, array_h, axis );
 
+    #else
     COMPRESS_SUBCASE( case3, condition_cs_fb, array_cs_fb, axis );
     COMPRESS_SUBCASE( case3, condition_cs_hb, array_cs_hb, axis );
     COMPRESS_SUBCASE( case3, condition_cs_db, array_cs_db, axis );
@@ -207,16 +215,19 @@ TEST_CASE("compress(case3)" * doctest::test_suite("view::compress"))
     // COMPRESS_SUBCASE( case3, condition_ds_fb, array_hs_fb, axis );
     // COMPRESS_SUBCASE( case3, condition_ds_hb, array_hs_hb, axis );
     // COMPRESS_SUBCASE( case3, condition_ds_db, array_hs_db, axis );
+    #endif
 }
 
 TEST_CASE("compress(case4)" * doctest::test_suite("view::compress"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     COMPRESS_SUBCASE( case4,   condition,   array, axis );
     COMPRESS_SUBCASE( case4, condition_a, array_a, axis );
     COMPRESS_SUBCASE( case4, condition_f, array_f, axis );
     COMPRESS_SUBCASE( case4, condition_d, array_d, axis );
     COMPRESS_SUBCASE( case4, condition_h, array_h, axis );
 
+    #else
     COMPRESS_SUBCASE( case4, condition_cs_fb, array_cs_fb, axis );
     COMPRESS_SUBCASE( case4, condition_cs_hb, array_cs_hb, axis );
     COMPRESS_SUBCASE( case4, condition_cs_db, array_cs_db, axis );
@@ -257,16 +268,19 @@ TEST_CASE("compress(case4)" * doctest::test_suite("view::compress"))
     // COMPRESS_SUBCASE( case4, condition_ds_fb, array_hs_fb, axis );
     // COMPRESS_SUBCASE( case4, condition_ds_hb, array_hs_hb, axis );
     // COMPRESS_SUBCASE( case4, condition_ds_db, array_hs_db, axis );
+    #endif
 }
 
 TEST_CASE("compress(case5)" * doctest::test_suite("view::compress"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     COMPRESS_SUBCASE( case5, condition,   array, axis );
     COMPRESS_SUBCASE( case5, condition, array_a, axis );
     COMPRESS_SUBCASE( case5, condition, array_f, axis );
     COMPRESS_SUBCASE( case5, condition, array_d, axis );
     COMPRESS_SUBCASE( case5, condition, array_h, axis );
 
+    #else
     COMPRESS_SUBCASE( case5, condition, array_cs_fb, axis );
     COMPRESS_SUBCASE( case5, condition, array_cs_hb, axis );
     COMPRESS_SUBCASE( case5, condition, array_cs_db, axis );
@@ -282,4 +296,5 @@ TEST_CASE("compress(case5)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case5, condition, array_ds_fb, axis );
     COMPRESS_SUBCASE( case5, condition, array_ds_hb, axis );
     COMPRESS_SUBCASE( case5, condition, array_ds_db, axis );
+    #endif
 }

@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -60,6 +60,7 @@ SUBCASE(#case_name) \
 
 TEST_CASE("squeeze(case1)" * doctest::test_suite("view::squeeze"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SQUEEZE_SUBCASE( case1, array );
     SQUEEZE_SUBCASE( case1, array_a );
     SQUEEZE_SUBCASE( case1, array_v );
@@ -67,6 +68,7 @@ TEST_CASE("squeeze(case1)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case1, array_d );
     SQUEEZE_SUBCASE( case1, array_h );
 
+    #else
     SQUEEZE_SUBCASE( case1, array_cs_fb );
     SQUEEZE_SUBCASE( case1, array_cs_hb );
     SQUEEZE_SUBCASE( case1, array_cs_db );
@@ -82,10 +84,12 @@ TEST_CASE("squeeze(case1)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case1, array_ds_fb );
     SQUEEZE_SUBCASE( case1, array_ds_hb );
     SQUEEZE_SUBCASE( case1, array_ds_db );
+    #endif
 }
 
 TEST_CASE("squeeze(case2)" * doctest::test_suite("view::squeeze"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SQUEEZE_SUBCASE( case2, array );
     SQUEEZE_SUBCASE( case2, array_a );
     SQUEEZE_SUBCASE( case2, array_v );
@@ -93,6 +97,7 @@ TEST_CASE("squeeze(case2)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case2, array_d );
     SQUEEZE_SUBCASE( case2, array_h );
 
+    #else
     SQUEEZE_SUBCASE( case2, array_cs_fb );
     SQUEEZE_SUBCASE( case2, array_cs_hb );
     SQUEEZE_SUBCASE( case2, array_cs_db );
@@ -108,10 +113,12 @@ TEST_CASE("squeeze(case2)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case2, array_ds_fb );
     SQUEEZE_SUBCASE( case2, array_ds_hb );
     SQUEEZE_SUBCASE( case2, array_ds_db );
+    #endif
 }
 
 TEST_CASE("squeeze(case3)" * doctest::test_suite("view::squeeze"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SQUEEZE_SUBCASE( case3, array );
     SQUEEZE_SUBCASE( case3, array_a );
     SQUEEZE_SUBCASE( case3, array_v );
@@ -119,6 +126,7 @@ TEST_CASE("squeeze(case3)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case3, array_d );
     SQUEEZE_SUBCASE( case3, array_h );
 
+    #else
     SQUEEZE_SUBCASE( case3, array_cs_fb );
     SQUEEZE_SUBCASE( case3, array_cs_hb );
     SQUEEZE_SUBCASE( case3, array_cs_db );
@@ -134,10 +142,12 @@ TEST_CASE("squeeze(case3)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case3, array_ds_fb );
     SQUEEZE_SUBCASE( case3, array_ds_hb );
     SQUEEZE_SUBCASE( case3, array_ds_db );
+    #endif
 }
 
 TEST_CASE("squeeze(case4)" * doctest::test_suite("view::squeeze"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SQUEEZE_SUBCASE( case4, array );
     SQUEEZE_SUBCASE( case4, array_a );
     SQUEEZE_SUBCASE( case4, array_v );
@@ -145,6 +155,7 @@ TEST_CASE("squeeze(case4)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case4, array_d );
     SQUEEZE_SUBCASE( case4, array_h );
 
+    #else
     SQUEEZE_SUBCASE( case4, array_cs_fb );
     SQUEEZE_SUBCASE( case4, array_cs_hb );
     SQUEEZE_SUBCASE( case4, array_cs_db );
@@ -160,10 +171,12 @@ TEST_CASE("squeeze(case4)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case4, array_ds_fb );
     SQUEEZE_SUBCASE( case4, array_ds_hb );
     SQUEEZE_SUBCASE( case4, array_ds_db );
+    #endif
 }
 
 TEST_CASE("squeeze(case5)" * doctest::test_suite("view::squeeze"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SQUEEZE_SUBCASE( case5, array );
     SQUEEZE_SUBCASE( case5, array_a );
     SQUEEZE_SUBCASE( case5, array_v );
@@ -171,6 +184,7 @@ TEST_CASE("squeeze(case5)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case5, array_d );
     SQUEEZE_SUBCASE( case5, array_h );
 
+    #else
     SQUEEZE_SUBCASE( case5, array_cs_fb );
     SQUEEZE_SUBCASE( case5, array_cs_hb );
     SQUEEZE_SUBCASE( case5, array_cs_db );
@@ -186,10 +200,12 @@ TEST_CASE("squeeze(case5)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case5, array_ds_fb );
     SQUEEZE_SUBCASE( case5, array_ds_hb );
     SQUEEZE_SUBCASE( case5, array_ds_db );
+    #endif
 }
 
 TEST_CASE("squeeze(case6)" * doctest::test_suite("view::squeeze"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SQUEEZE_SUBCASE( case6, array );
     SQUEEZE_SUBCASE( case6, array_a );
     SQUEEZE_SUBCASE( case6, array_v );
@@ -197,6 +213,7 @@ TEST_CASE("squeeze(case6)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case6, array_d );
     SQUEEZE_SUBCASE( case6, array_h );
 
+    #else
     SQUEEZE_SUBCASE( case6, array_cs_fb );
     SQUEEZE_SUBCASE( case6, array_cs_hb );
     SQUEEZE_SUBCASE( case6, array_cs_db );
@@ -212,4 +229,5 @@ TEST_CASE("squeeze(case6)" * doctest::test_suite("view::squeeze"))
     SQUEEZE_SUBCASE( case6, array_ds_fb );
     SQUEEZE_SUBCASE( case6, array_ds_hb );
     SQUEEZE_SUBCASE( case6, array_ds_db );
+    #endif
 }

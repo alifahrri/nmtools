@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -55,12 +55,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("max_pool2d(case1)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case1, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case1, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case1, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case1, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case1, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case1, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case1, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case1, array_cs_db, kernel_size, stride, ceil_mode );
@@ -77,16 +79,19 @@ TEST_CASE("max_pool2d(case1)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case1, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case1, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case1, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case2)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case2, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case2, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case2, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case2, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case2, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case2, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case2, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case2, array_cs_db, kernel_size, stride, ceil_mode );
@@ -102,16 +107,19 @@ TEST_CASE("max_pool2d(case2)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case2, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case2, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case2, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case3)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case3, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case3, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case3, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case3, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case3, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case3, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case3, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case3, array_cs_db, kernel_size, stride, ceil_mode );
@@ -127,16 +135,19 @@ TEST_CASE("max_pool2d(case3)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case3, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case3, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case3, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case4)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case4, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case4, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case4, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case4, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case4, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case4, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case4, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case4, array_cs_db, kernel_size, stride, ceil_mode );
@@ -152,16 +163,19 @@ TEST_CASE("max_pool2d(case4)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case4, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case4, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case4, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case5)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case5, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case5, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case5, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case5, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case5, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case5, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case5, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case5, array_cs_db, kernel_size, stride, ceil_mode );
@@ -177,16 +191,19 @@ TEST_CASE("max_pool2d(case5)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case5, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case5, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case5, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case6)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case6, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case6, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case6, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case6, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case6, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case6, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case6, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case6, array_cs_db, kernel_size, stride, ceil_mode );
@@ -202,16 +219,19 @@ TEST_CASE("max_pool2d(case6)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case6, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case6, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case6, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case7)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case7, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case7, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case7, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case7, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case7, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case7, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case7, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case7, array_cs_db, kernel_size, stride, ceil_mode );
@@ -227,16 +247,19 @@ TEST_CASE("max_pool2d(case7)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case7, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case7, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case7, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case8)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case8, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case8, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case8, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case8, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case8, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case8, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case8, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case8, array_cs_db, kernel_size, stride, ceil_mode );
@@ -252,16 +275,19 @@ TEST_CASE("max_pool2d(case8)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case8, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case8, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case8, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case9)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case9, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case9, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case9, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case9, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case9, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case9, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case9, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case9, array_cs_db, kernel_size, stride, ceil_mode );
@@ -277,16 +303,19 @@ TEST_CASE("max_pool2d(case9)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case9, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case9, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case9, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 TEST_CASE("max_pool2d(case10)" * doctest::test_suite("view::max_pool2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL2D_SUBCASE( case10, array, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case10, array_a, kernel_size_a, stride_a, ceil_mode );
     MAX_POOL2D_SUBCASE( case10, array_v, kernel_size_v, stride_v, ceil_mode );
     MAX_POOL2D_SUBCASE( case10, array_f, kernel_size_f, stride_f, ceil_mode );
     MAX_POOL2D_SUBCASE( case10, array_h, kernel_size_h, stride_h, ceil_mode );
 
+    #else
     MAX_POOL2D_SUBCASE( case10, array_cs_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case10, array_cs_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case10, array_cs_db, kernel_size, stride, ceil_mode );
@@ -302,6 +331,7 @@ TEST_CASE("max_pool2d(case10)" * doctest::test_suite("view::max_pool2d"))
     MAX_POOL2D_SUBCASE( case10, array_ds_fb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case10, array_ds_hb, kernel_size, stride, ceil_mode );
     MAX_POOL2D_SUBCASE( case10, array_ds_db, kernel_size, stride, ceil_mode );
+    #endif
 }
 
 #define RUN_avg_pool2d_impl(...) \

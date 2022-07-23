@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -55,6 +55,7 @@ SUBCASE(#case_name) \
 
 TEST_CASE("moveaxis(case1)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case1, a, source, destination );
     MOVEAXIS_SUBCASE( case1, a_a, source, destination );
     MOVEAXIS_SUBCASE( case1, a_v, source, destination );
@@ -62,6 +63,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case1, a_d, source, destination );
     MOVEAXIS_SUBCASE( case1, a_h, source, destination );
 
+    #else
     MOVEAXIS_SUBCASE( case1, a_cs_fb, source, destination );
     MOVEAXIS_SUBCASE( case1, a_cs_hb, source, destination );
     MOVEAXIS_SUBCASE( case1, a_cs_db, source, destination );
@@ -77,10 +79,12 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case1, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case1, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case1, a_ds_db, source, destination );
+    #endif
 }
 
 TEST_CASE("moveaxis(case2)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case2, a, source, destination );
     MOVEAXIS_SUBCASE( case2, a_a, source, destination );
     MOVEAXIS_SUBCASE( case2, a_v, source, destination );
@@ -88,6 +92,7 @@ TEST_CASE("moveaxis(case2)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case2, a_d, source, destination );
     MOVEAXIS_SUBCASE( case2, a_h, source, destination );
 
+    #else
     MOVEAXIS_SUBCASE( case2, a_cs_fb, source, destination );
     MOVEAXIS_SUBCASE( case2, a_cs_hb, source, destination );
     MOVEAXIS_SUBCASE( case2, a_cs_db, source, destination );
@@ -103,10 +108,12 @@ TEST_CASE("moveaxis(case2)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case2, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case2, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case2, a_ds_db, source, destination );
+    #endif
 }
 
 TEST_CASE("moveaxis(case3)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case3, a, source, destination );
     MOVEAXIS_SUBCASE( case3, a_a, source, destination );
     MOVEAXIS_SUBCASE( case3, a_v, source, destination );
@@ -114,6 +121,7 @@ TEST_CASE("moveaxis(case3)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case3, a_d, source, destination );
     MOVEAXIS_SUBCASE( case3, a_h, source, destination );
 
+    #else
     MOVEAXIS_SUBCASE( case3, a_cs_fb, source, destination );
     MOVEAXIS_SUBCASE( case3, a_cs_hb, source, destination );
     MOVEAXIS_SUBCASE( case3, a_cs_db, source, destination );
@@ -129,10 +137,12 @@ TEST_CASE("moveaxis(case3)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case3, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case3, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case3, a_ds_db, source, destination );
+    #endif
 }
 
 TEST_CASE("moveaxis(case4)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case4, a, source, destination );
     MOVEAXIS_SUBCASE( case4, a_a, source, destination );
     MOVEAXIS_SUBCASE( case4, a_v, source, destination );
@@ -140,6 +150,7 @@ TEST_CASE("moveaxis(case4)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case4, a_d, source, destination );
     MOVEAXIS_SUBCASE( case4, a_h, source, destination );
 
+    #else
     MOVEAXIS_SUBCASE( case4, a_cs_fb, source, destination );
     MOVEAXIS_SUBCASE( case4, a_cs_hb, source, destination );
     MOVEAXIS_SUBCASE( case4, a_cs_db, source, destination );
@@ -155,10 +166,12 @@ TEST_CASE("moveaxis(case4)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case4, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case4, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case4, a_ds_db, source, destination );
+    #endif
 }
 
 TEST_CASE("moveaxis(case5)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case5, a, source, destination );
     MOVEAXIS_SUBCASE( case5, a_a, source, destination );
     MOVEAXIS_SUBCASE( case5, a_v, source, destination );
@@ -166,6 +179,7 @@ TEST_CASE("moveaxis(case5)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case5, a_d, source, destination );
     MOVEAXIS_SUBCASE( case5, a_h, source, destination );
 
+    #else
     MOVEAXIS_SUBCASE( case5, a_cs_fb, source, destination );
     MOVEAXIS_SUBCASE( case5, a_cs_hb, source, destination );
     MOVEAXIS_SUBCASE( case5, a_cs_db, source, destination );
@@ -181,10 +195,12 @@ TEST_CASE("moveaxis(case5)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case5, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case5, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case5, a_ds_db, source, destination );
+    #endif
 }
 
 TEST_CASE("moveaxis(case6)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case6, a, source, destination );
     MOVEAXIS_SUBCASE( case6, a_a, source, destination );
     MOVEAXIS_SUBCASE( case6, a_v, source, destination );
@@ -192,6 +208,7 @@ TEST_CASE("moveaxis(case6)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case6, a_d, source, destination );
     MOVEAXIS_SUBCASE( case6, a_h, source, destination );
 
+    #else
     MOVEAXIS_SUBCASE( case6, a_cs_fb, source, destination );
     MOVEAXIS_SUBCASE( case6, a_cs_hb, source, destination );
     MOVEAXIS_SUBCASE( case6, a_cs_db, source, destination );
@@ -207,10 +224,12 @@ TEST_CASE("moveaxis(case6)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case6, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case6, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case6, a_ds_db, source, destination );
+    #endif
 }
 
 TEST_CASE("moveaxis(case7)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case7, a, source, destination );
     MOVEAXIS_SUBCASE( case7, a_a, source, destination );
     MOVEAXIS_SUBCASE( case7, a_v, source, destination );
@@ -218,6 +237,7 @@ TEST_CASE("moveaxis(case7)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case7, a_d, source, destination );
     MOVEAXIS_SUBCASE( case7, a_h, source, destination );
 
+    #else
     // TODO: fix compile
     // MOVEAXIS_SUBCASE( case7, a_cs_fb, source, destination );
     // MOVEAXIS_SUBCASE( case7, a_cs_hb, source, destination );
@@ -234,10 +254,12 @@ TEST_CASE("moveaxis(case7)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case7, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case7, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case7, a_ds_db, source, destination );
+    #endif
 }
 
 TEST_CASE("moveaxis(case8)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case8, a, source, destination );
     MOVEAXIS_SUBCASE( case8, a_a, source, destination );
     MOVEAXIS_SUBCASE( case8, a_v, source, destination );
@@ -245,6 +267,7 @@ TEST_CASE("moveaxis(case8)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case8, a_d, source, destination );
     MOVEAXIS_SUBCASE( case8, a_h, source, destination );
 
+    #else
     // TODO: fix compile time
     // MOVEAXIS_SUBCASE( case8, a_cs_fb, source, destination );
     // MOVEAXIS_SUBCASE( case8, a_cs_hb, source, destination );
@@ -261,10 +284,12 @@ TEST_CASE("moveaxis(case8)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case8, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case8, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case8, a_ds_db, source, destination );
+    #endif
 }
 
 TEST_CASE("moveaxis(case9)" * doctest::test_suite("view::moveaxis"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MOVEAXIS_SUBCASE( case9, a, source, destination );
     MOVEAXIS_SUBCASE( case9, a_a, source, destination );
     MOVEAXIS_SUBCASE( case9, a_v, source, destination );
@@ -272,6 +297,7 @@ TEST_CASE("moveaxis(case9)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case9, a_d, source, destination );
     MOVEAXIS_SUBCASE( case9, a_h, source, destination );
 
+    #else
     // TODO: fix compile-time
     // MOVEAXIS_SUBCASE( case9, a_cs_fb, source, destination );
     // MOVEAXIS_SUBCASE( case9, a_cs_hb, source, destination );
@@ -288,4 +314,5 @@ TEST_CASE("moveaxis(case9)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case9, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case9, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case9, a_ds_db, source, destination );
+    #endif
 }

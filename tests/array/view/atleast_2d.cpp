@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -58,6 +58,7 @@ TEST_CASE("atleast_2d(case1)" * doctest::test_suite("view::atleast_2d"))
 
 TEST_CASE("atleast_2d(case2)" * doctest::test_suite("view::atleast_2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_2D_SUBCASE( case2, a );
     ATLEAST_2D_SUBCASE( case2, a_a );
     ATLEAST_2D_SUBCASE( case2, a_v );
@@ -65,6 +66,7 @@ TEST_CASE("atleast_2d(case2)" * doctest::test_suite("view::atleast_2d"))
     ATLEAST_2D_SUBCASE( case2, a_d );
     ATLEAST_2D_SUBCASE( case2, a_h );
 
+    #else
     ATLEAST_2D_SUBCASE( case2, a_cs_fb );
     ATLEAST_2D_SUBCASE( case2, a_cs_hb );
     ATLEAST_2D_SUBCASE( case2, a_cs_db );
@@ -80,10 +82,12 @@ TEST_CASE("atleast_2d(case2)" * doctest::test_suite("view::atleast_2d"))
     ATLEAST_2D_SUBCASE( case2, a_ds_fb );
     ATLEAST_2D_SUBCASE( case2, a_ds_hb );
     ATLEAST_2D_SUBCASE( case2, a_ds_db );
+    #endif
 }
 
 TEST_CASE("atleast_2d(case3)" * doctest::test_suite("view::atleast_2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_2D_SUBCASE( case3, a );
     ATLEAST_2D_SUBCASE( case3, a_a );
     ATLEAST_2D_SUBCASE( case3, a_v );
@@ -91,6 +95,7 @@ TEST_CASE("atleast_2d(case3)" * doctest::test_suite("view::atleast_2d"))
     ATLEAST_2D_SUBCASE( case3, a_d );
     ATLEAST_2D_SUBCASE( case3, a_h );
 
+    #else
     ATLEAST_2D_SUBCASE( case3, a_cs_fb );
     ATLEAST_2D_SUBCASE( case3, a_cs_hb );
     ATLEAST_2D_SUBCASE( case3, a_cs_db );
@@ -106,10 +111,12 @@ TEST_CASE("atleast_2d(case3)" * doctest::test_suite("view::atleast_2d"))
     ATLEAST_2D_SUBCASE( case3, a_ds_fb );
     ATLEAST_2D_SUBCASE( case3, a_ds_hb );
     ATLEAST_2D_SUBCASE( case3, a_ds_db );
+    #endif
 }
 
 TEST_CASE("atleast_2d(case4)" * doctest::test_suite("view::atleast_2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_2D_SUBCASE( case4, a );
     ATLEAST_2D_SUBCASE( case4, a_a );
     ATLEAST_2D_SUBCASE( case4, a_v );
@@ -117,6 +124,7 @@ TEST_CASE("atleast_2d(case4)" * doctest::test_suite("view::atleast_2d"))
     ATLEAST_2D_SUBCASE( case4, a_d );
     ATLEAST_2D_SUBCASE( case4, a_h );
 
+    #else
     ATLEAST_2D_SUBCASE( case4, a_cs_fb );
     ATLEAST_2D_SUBCASE( case4, a_cs_hb );
     ATLEAST_2D_SUBCASE( case4, a_cs_db );
@@ -132,6 +140,7 @@ TEST_CASE("atleast_2d(case4)" * doctest::test_suite("view::atleast_2d"))
     ATLEAST_2D_SUBCASE( case4, a_ds_fb );
     ATLEAST_2D_SUBCASE( case4, a_ds_hb );
     ATLEAST_2D_SUBCASE( case4, a_ds_db );
+    #endif
 }
 
 

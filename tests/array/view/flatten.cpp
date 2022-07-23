@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -60,12 +60,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("flatten(case1)" * doctest::test_suite("view::flatten"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     FLATTEN_SUBCASE( case1, array );
     FLATTEN_SUBCASE( case1, array_a );
     FLATTEN_SUBCASE( case1, array_f );
     FLATTEN_SUBCASE( case1, array_d );
     FLATTEN_SUBCASE( case1, array_h );
 
+    #else
     FLATTEN_SUBCASE( case1, array_cs_fb );
     FLATTEN_SUBCASE( case1, array_cs_hb );
     FLATTEN_SUBCASE( case1, array_cs_db );
@@ -81,16 +83,19 @@ TEST_CASE("flatten(case1)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case1, array_ds_fb );
     FLATTEN_SUBCASE( case1, array_ds_hb );
     FLATTEN_SUBCASE( case1, array_ds_db );
+    #endif
 }
 
 TEST_CASE("flatten(case2)" * doctest::test_suite("view::flatten"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     FLATTEN_SUBCASE( case2, array );
     FLATTEN_SUBCASE( case2, array_a );
     FLATTEN_SUBCASE( case2, array_f );
     FLATTEN_SUBCASE( case2, array_d );
     FLATTEN_SUBCASE( case2, array_h );
 
+    #else
     FLATTEN_SUBCASE( case2, array_cs_fb );
     FLATTEN_SUBCASE( case2, array_cs_hb );
     FLATTEN_SUBCASE( case2, array_cs_db );
@@ -106,16 +111,19 @@ TEST_CASE("flatten(case2)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case2, array_ds_fb );
     FLATTEN_SUBCASE( case2, array_ds_hb );
     FLATTEN_SUBCASE( case2, array_ds_db );
+    #endif
 }
 
 TEST_CASE("flatten(case3)" * doctest::test_suite("view::flatten"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     FLATTEN_SUBCASE( case3, array );
     FLATTEN_SUBCASE( case3, array_a );
     FLATTEN_SUBCASE( case3, array_f );
     FLATTEN_SUBCASE( case3, array_d );
     FLATTEN_SUBCASE( case3, array_h );
 
+    #else
     FLATTEN_SUBCASE( case3, array_cs_fb );
     FLATTEN_SUBCASE( case3, array_cs_hb );
     FLATTEN_SUBCASE( case3, array_cs_db );
@@ -131,16 +139,19 @@ TEST_CASE("flatten(case3)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case3, array_ds_fb );
     FLATTEN_SUBCASE( case3, array_ds_hb );
     FLATTEN_SUBCASE( case3, array_ds_db );
+    #endif
 }
 
 TEST_CASE("flatten(case4)" * doctest::test_suite("view::flatten"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     FLATTEN_SUBCASE( case4, array );
     FLATTEN_SUBCASE( case4, array_a );
     FLATTEN_SUBCASE( case4, array_f );
     FLATTEN_SUBCASE( case4, array_d );
     FLATTEN_SUBCASE( case4, array_h );
 
+    #else
     FLATTEN_SUBCASE( case4, array_cs_fb );
     FLATTEN_SUBCASE( case4, array_cs_hb );
     FLATTEN_SUBCASE( case4, array_cs_db );
@@ -156,6 +167,7 @@ TEST_CASE("flatten(case4)" * doctest::test_suite("view::flatten"))
     FLATTEN_SUBCASE( case4, array_ds_fb );
     FLATTEN_SUBCASE( case4, array_ds_hb );
     FLATTEN_SUBCASE( case4, array_ds_db );
+    #endif
 }
 
 TEST_CASE("flatten(case5)" * doctest::test_suite("view::flatten"))

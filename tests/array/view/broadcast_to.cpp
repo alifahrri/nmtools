@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -61,6 +61,7 @@ SUBCASE(#case_name) \
 
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case1, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_d, shape, expected );
@@ -71,6 +72,7 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case1, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case1, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_cs_db, shape, expected );
@@ -102,10 +104,12 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case1, x_fs_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case2)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case2, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_d, shape, expected );
@@ -116,6 +120,7 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case2, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case2, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_cs_db, shape, expected );
@@ -147,10 +152,12 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case2, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case2, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case2, x_ds_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case3)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case3, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_d, shape, expected );
@@ -161,6 +168,7 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case3, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case3, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_cs_db, shape, expected );
@@ -193,10 +201,12 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case3, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_ds_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case4, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_d, shape, expected );
@@ -207,6 +217,7 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case4, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_cs_db, shape, expected );
@@ -238,10 +249,12 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_ds_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case5)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case5, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_d, shape, expected );
@@ -252,6 +265,7 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case5, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case5, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_cs_db, shape, expected );
@@ -283,10 +297,12 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case5, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_ds_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case6)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case6, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_d, shape, expected );
@@ -297,6 +313,7 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case6, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case6, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_cs_db, shape, expected );
@@ -328,10 +345,12 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case6, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_ds_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case7)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case7, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_d, shape, expected );
@@ -342,6 +361,7 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case7, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case7, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_cs_db, shape, expected );
@@ -373,10 +393,12 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case7, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_ds_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case8)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case8, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_d, shape, expected );
@@ -387,6 +409,7 @@ TEST_CASE("broadcast_to(case8)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case8, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case8, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_cs_db, shape, expected );
@@ -419,10 +442,12 @@ TEST_CASE("broadcast_to(case8)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case8, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_ds_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_TO_SUBCASE( case9, x_a, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_d, shape, expected );
@@ -433,6 +458,7 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_h, shape_ct, expected );
 
+    #else
     BROADCAST_TO_SUBCASE( case9, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_cs_db, shape, expected );
@@ -464,6 +490,7 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_ds_db, shape_ct, expected );
+    #endif
 }
 
 TEST_CASE("broadcast_to(case10)" * doctest::test_suite("view::broadcast_to"))

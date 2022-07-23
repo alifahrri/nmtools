@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -61,12 +61,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("expand_dims(case1)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case1, array,   axis_a );
     EXPAND_DIMS_SUBCASE( case1, array_a, axis_a );
     EXPAND_DIMS_SUBCASE( case1, array_f, axis_a );
     EXPAND_DIMS_SUBCASE( case1, array_d, axis_a );
     EXPAND_DIMS_SUBCASE( case1, array_h, axis_a );
 
+    #else
     EXPAND_DIMS_SUBCASE( case1, array_cs_fb, axis_a );
     EXPAND_DIMS_SUBCASE( case1, array_cs_hb, axis_a );
     EXPAND_DIMS_SUBCASE( case1, array_cs_db, axis_a );
@@ -82,16 +84,19 @@ TEST_CASE("expand_dims(case1)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case1, array_ds_fb, axis_a );
     EXPAND_DIMS_SUBCASE( case1, array_ds_hb, axis_a );
     EXPAND_DIMS_SUBCASE( case1, array_ds_db, axis_a );
+    #endif
 }
 
 TEST_CASE("expand_dims(case2)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case2, array,   axis );
     EXPAND_DIMS_SUBCASE( case2, array_a, axis );
     EXPAND_DIMS_SUBCASE( case2, array_f, axis );
     EXPAND_DIMS_SUBCASE( case2, array_d, axis );
     EXPAND_DIMS_SUBCASE( case2, array_h, axis );
 
+    #else
     EXPAND_DIMS_SUBCASE( case2, array_cs_fb, axis );
     EXPAND_DIMS_SUBCASE( case2, array_cs_hb, axis );
     EXPAND_DIMS_SUBCASE( case2, array_cs_db, axis );
@@ -107,16 +112,19 @@ TEST_CASE("expand_dims(case2)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case2, array_ds_fb, axis );
     EXPAND_DIMS_SUBCASE( case2, array_ds_hb, axis );
     EXPAND_DIMS_SUBCASE( case2, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("expand_dims(case3)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case3, array,   axis );
     EXPAND_DIMS_SUBCASE( case3, array_a, axis );
     EXPAND_DIMS_SUBCASE( case3, array_f, axis );
     EXPAND_DIMS_SUBCASE( case3, array_d, axis );
     EXPAND_DIMS_SUBCASE( case3, array_h, axis );
 
+    #else
     EXPAND_DIMS_SUBCASE( case3, array_cs_fb, axis );
     EXPAND_DIMS_SUBCASE( case3, array_cs_hb, axis );
     EXPAND_DIMS_SUBCASE( case3, array_cs_db, axis );
@@ -132,16 +140,19 @@ TEST_CASE("expand_dims(case3)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case3, array_ds_fb, axis );
     EXPAND_DIMS_SUBCASE( case3, array_ds_hb, axis );
     EXPAND_DIMS_SUBCASE( case3, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("expand_dims(case4)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case4, array,   axis_a );
     EXPAND_DIMS_SUBCASE( case4, array_a, axis_a );
     EXPAND_DIMS_SUBCASE( case4, array_f, axis_a );
     EXPAND_DIMS_SUBCASE( case4, array_d, axis_a );
     EXPAND_DIMS_SUBCASE( case4, array_h, axis_a );
 
+    #else
     EXPAND_DIMS_SUBCASE( case4, array_cs_fb, axis_a );
     EXPAND_DIMS_SUBCASE( case4, array_cs_hb, axis_a );
     EXPAND_DIMS_SUBCASE( case4, array_cs_db, axis_a );
@@ -157,16 +168,19 @@ TEST_CASE("expand_dims(case4)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case4, array_ds_fb, axis_a );
     EXPAND_DIMS_SUBCASE( case4, array_ds_hb, axis_a );
     EXPAND_DIMS_SUBCASE( case4, array_ds_db, axis_a );
+    #endif
 }
 
 TEST_CASE("expand_dims(case5)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case5, array,   axis_a );
     EXPAND_DIMS_SUBCASE( case5, array_a, axis_a );
     EXPAND_DIMS_SUBCASE( case5, array_f, axis_a );
     EXPAND_DIMS_SUBCASE( case5, array_d, axis_a );
     EXPAND_DIMS_SUBCASE( case5, array_h, axis_a );
 
+    #else
     EXPAND_DIMS_SUBCASE( case5, array_cs_fb, axis_a );
     EXPAND_DIMS_SUBCASE( case5, array_cs_hb, axis_a );
     EXPAND_DIMS_SUBCASE( case5, array_cs_db, axis_a );
@@ -182,16 +196,19 @@ TEST_CASE("expand_dims(case5)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case5, array_ds_fb, axis_a );
     EXPAND_DIMS_SUBCASE( case5, array_ds_hb, axis_a );
     EXPAND_DIMS_SUBCASE( case5, array_ds_db, axis_a );
+    #endif
 }
 
 TEST_CASE("expand_dims(case6)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case6, array,   axis );
     EXPAND_DIMS_SUBCASE( case6, array_a, axis );
     EXPAND_DIMS_SUBCASE( case6, array_f, axis );
     EXPAND_DIMS_SUBCASE( case6, array_d, axis );
     EXPAND_DIMS_SUBCASE( case6, array_h, axis );
 
+    #else
     EXPAND_DIMS_SUBCASE( case6, array_cs_fb, axis );
     EXPAND_DIMS_SUBCASE( case6, array_cs_hb, axis );
     EXPAND_DIMS_SUBCASE( case6, array_cs_db, axis );
@@ -207,16 +224,19 @@ TEST_CASE("expand_dims(case6)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case6, array_ds_fb, axis );
     EXPAND_DIMS_SUBCASE( case6, array_ds_hb, axis );
     EXPAND_DIMS_SUBCASE( case6, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("expand_dims(case7)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case7, array,   axis );
     EXPAND_DIMS_SUBCASE( case7, array_a, axis );
     EXPAND_DIMS_SUBCASE( case7, array_f, axis );
     EXPAND_DIMS_SUBCASE( case7, array_d, axis );
     EXPAND_DIMS_SUBCASE( case7, array_h, axis );
 
+    #else
     EXPAND_DIMS_SUBCASE( case7, array_cs_fb, axis );
     EXPAND_DIMS_SUBCASE( case7, array_cs_hb, axis );
     EXPAND_DIMS_SUBCASE( case7, array_cs_db, axis );
@@ -232,16 +252,19 @@ TEST_CASE("expand_dims(case7)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case7, array_ds_fb, axis );
     EXPAND_DIMS_SUBCASE( case7, array_ds_hb, axis );
     EXPAND_DIMS_SUBCASE( case7, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("expand_dims(case8)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case8, array,   axis );
     EXPAND_DIMS_SUBCASE( case8, array_a, axis );
     EXPAND_DIMS_SUBCASE( case8, array_f, axis );
     EXPAND_DIMS_SUBCASE( case8, array_d, axis );
     EXPAND_DIMS_SUBCASE( case8, array_h, axis );
 
+    #else
     EXPAND_DIMS_SUBCASE( case8, array_cs_fb, axis );
     EXPAND_DIMS_SUBCASE( case8, array_cs_hb, axis );
     EXPAND_DIMS_SUBCASE( case8, array_cs_db, axis );
@@ -257,16 +280,19 @@ TEST_CASE("expand_dims(case8)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case8, array_ds_fb, axis );
     EXPAND_DIMS_SUBCASE( case8, array_ds_hb, axis );
     EXPAND_DIMS_SUBCASE( case8, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("expand_dims(case9)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case9, array,   axis );
     EXPAND_DIMS_SUBCASE( case9, array_a, axis );
     EXPAND_DIMS_SUBCASE( case9, array_f, axis );
     EXPAND_DIMS_SUBCASE( case9, array_d, axis );
     EXPAND_DIMS_SUBCASE( case9, array_h, axis );
 
+    #else
     EXPAND_DIMS_SUBCASE( case9, array_cs_fb, axis );
     EXPAND_DIMS_SUBCASE( case9, array_cs_hb, axis );
     EXPAND_DIMS_SUBCASE( case9, array_cs_db, axis );
@@ -282,16 +308,19 @@ TEST_CASE("expand_dims(case9)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case9, array_ds_fb, axis );
     EXPAND_DIMS_SUBCASE( case9, array_ds_hb, axis );
     EXPAND_DIMS_SUBCASE( case9, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("expand_dims(case10)" * doctest::test_suite("view::expand_dims"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     EXPAND_DIMS_SUBCASE( case10, array,   axis_a );
     EXPAND_DIMS_SUBCASE( case10, array_a, axis_a );
     EXPAND_DIMS_SUBCASE( case10, array_f, axis_a );
     EXPAND_DIMS_SUBCASE( case10, array_d, axis_a );
     EXPAND_DIMS_SUBCASE( case10, array_h, axis_a );
 
+    #else
     EXPAND_DIMS_SUBCASE( case10, array_cs_fb, axis_a );
     EXPAND_DIMS_SUBCASE( case10, array_cs_hb, axis_a );
     EXPAND_DIMS_SUBCASE( case10, array_cs_db, axis_a );
@@ -307,4 +336,5 @@ TEST_CASE("expand_dims(case10)" * doctest::test_suite("view::expand_dims"))
     EXPAND_DIMS_SUBCASE( case10, array_ds_fb, axis_a );
     EXPAND_DIMS_SUBCASE( case10, array_ds_hb, axis_a );
     EXPAND_DIMS_SUBCASE( case10, array_ds_db, axis_a );
+    #endif
 }

@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -60,11 +60,13 @@ SUBCASE(#case_name) \
 
 TEST_CASE("tile(case1)" * doctest::test_suite("view::tile"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TILE_VIEW_SUBCASE( case1, array_a, reps_a );
     TILE_VIEW_SUBCASE( case1, array_f, reps_a );
     TILE_VIEW_SUBCASE( case1, array_d, reps_a );
     TILE_VIEW_SUBCASE( case1, array_h, reps_a );
 
+    #else
     TILE_VIEW_SUBCASE( case1, array_cs_fb, reps_a );
     TILE_VIEW_SUBCASE( case1, array_cs_hb, reps_a );
     TILE_VIEW_SUBCASE( case1, array_cs_db, reps_a );
@@ -80,15 +82,18 @@ TEST_CASE("tile(case1)" * doctest::test_suite("view::tile"))
     TILE_VIEW_SUBCASE( case1, array_ds_fb, reps_a );
     TILE_VIEW_SUBCASE( case1, array_ds_hb, reps_a );
     TILE_VIEW_SUBCASE( case1, array_ds_db, reps_a );
+    #endif
 }
 
 TEST_CASE("tile(case2)" * doctest::test_suite("view::tile"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TILE_VIEW_SUBCASE( case2, array_a, reps_a );
     TILE_VIEW_SUBCASE( case2, array_f, reps_a );
     TILE_VIEW_SUBCASE( case2, array_d, reps_a );
     TILE_VIEW_SUBCASE( case2, array_h, reps_a );
 
+    #else
     TILE_VIEW_SUBCASE( case2, array_cs_fb, reps_a );
     TILE_VIEW_SUBCASE( case2, array_cs_hb, reps_a );
     TILE_VIEW_SUBCASE( case2, array_cs_db, reps_a );
@@ -104,16 +109,19 @@ TEST_CASE("tile(case2)" * doctest::test_suite("view::tile"))
     TILE_VIEW_SUBCASE( case2, array_ds_fb, reps_a );
     TILE_VIEW_SUBCASE( case2, array_ds_hb, reps_a );
     TILE_VIEW_SUBCASE( case2, array_ds_db, reps_a );
+    #endif
 }
 
 
 TEST_CASE("tile(case3)" * doctest::test_suite("view::tile"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TILE_VIEW_SUBCASE( case3, array_a, reps_a );
     TILE_VIEW_SUBCASE( case3, array_f, reps_a );
     TILE_VIEW_SUBCASE( case3, array_d, reps_a );
     TILE_VIEW_SUBCASE( case3, array_h, reps_a );
 
+    #else
     TILE_VIEW_SUBCASE( case3, array_cs_fb, reps_a );
     TILE_VIEW_SUBCASE( case3, array_cs_hb, reps_a );
     TILE_VIEW_SUBCASE( case3, array_cs_db, reps_a );
@@ -129,15 +137,18 @@ TEST_CASE("tile(case3)" * doctest::test_suite("view::tile"))
     TILE_VIEW_SUBCASE( case3, array_ds_fb, reps_a );
     TILE_VIEW_SUBCASE( case3, array_ds_hb, reps_a );
     TILE_VIEW_SUBCASE( case3, array_ds_db, reps_a );
+    #endif
 }
 
 TEST_CASE("tile(case4)" * doctest::test_suite("view::tile"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TILE_VIEW_SUBCASE( case4, array_a, reps_a );
     TILE_VIEW_SUBCASE( case4, array_f, reps_a );
     TILE_VIEW_SUBCASE( case4, array_d, reps_a );
     TILE_VIEW_SUBCASE( case4, array_h, reps_a );
 
+    #else
     TILE_VIEW_SUBCASE( case4, array_cs_fb, reps_a );
     TILE_VIEW_SUBCASE( case4, array_cs_hb, reps_a );
     TILE_VIEW_SUBCASE( case4, array_cs_db, reps_a );
@@ -153,15 +164,18 @@ TEST_CASE("tile(case4)" * doctest::test_suite("view::tile"))
     TILE_VIEW_SUBCASE( case4, array_ds_fb, reps_a );
     TILE_VIEW_SUBCASE( case4, array_ds_hb, reps_a );
     TILE_VIEW_SUBCASE( case4, array_ds_db, reps_a );
+    #endif
 }
 
 TEST_CASE("tile(case5)" * doctest::test_suite("view::tile"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TILE_VIEW_SUBCASE( case5, array_a, reps_a );
     TILE_VIEW_SUBCASE( case5, array_f, reps_a );
     TILE_VIEW_SUBCASE( case5, array_d, reps_a );
     TILE_VIEW_SUBCASE( case5, array_h, reps_a );
 
+    #else
     TILE_VIEW_SUBCASE( case5, array_cs_fb, reps_a );
     TILE_VIEW_SUBCASE( case5, array_cs_hb, reps_a );
     TILE_VIEW_SUBCASE( case5, array_cs_db, reps_a );
@@ -177,4 +191,5 @@ TEST_CASE("tile(case5)" * doctest::test_suite("view::tile"))
     TILE_VIEW_SUBCASE( case5, array_ds_fb, reps_a );
     TILE_VIEW_SUBCASE( case5, array_ds_hb, reps_a );
     TILE_VIEW_SUBCASE( case5, array_ds_db, reps_a );
+    #endif
 }

@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -59,12 +59,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ADD_SUBCASE( case1,   a,   b );
     ADD_SUBCASE( case1, a_a, b_a );
     ADD_SUBCASE( case1, a_f, b_f );
     ADD_SUBCASE( case1, a_d, b_d );
     ADD_SUBCASE( case1, a_h, b_h );
 
+    #else
     ADD_SUBCASE( case1, a_cs_fb, b_cs_fb );
     ADD_SUBCASE( case1, a_cs_hb, b_cs_hb );
     ADD_SUBCASE( case1, a_cs_db, b_cs_db );
@@ -132,16 +134,19 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case1, a_hs_fb, b_ds_fb );
     ADD_SUBCASE( case1, a_hs_hb, b_ds_hb );
     ADD_SUBCASE( case1, a_hs_db, b_ds_db );
+    #endif
 }
 
 TEST_CASE("add(case2)" * doctest::test_suite("view::add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ADD_SUBCASE( case2,   a, b );
     ADD_SUBCASE( case2, a_a, b );
     ADD_SUBCASE( case2, a_f, b );
     ADD_SUBCASE( case2, a_d, b );
     ADD_SUBCASE( case2, a_h, b );
 
+    #else
     ADD_SUBCASE( case2, a_cs_fb, b );
     ADD_SUBCASE( case2, a_cs_hb, b );
     ADD_SUBCASE( case2, a_cs_db, b );
@@ -157,6 +162,7 @@ TEST_CASE("add(case2)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case2, a_ds_fb, b );
     ADD_SUBCASE( case2, a_ds_hb, b );
     ADD_SUBCASE( case2, a_ds_db, b );
+    #endif
 }
 
 TEST_CASE("add(case3)" * doctest::test_suite("view::add"))
@@ -166,12 +172,14 @@ TEST_CASE("add(case3)" * doctest::test_suite("view::add"))
 
 TEST_CASE("add(case4)" * doctest::test_suite("view::add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ADD_SUBCASE(case4, a, b);
     ADD_SUBCASE(case4, a_a, b);
     ADD_SUBCASE(case4, a_f, b);
     ADD_SUBCASE(case4, a_d, b);
     ADD_SUBCASE(case4, a_h, b);
 
+    #else
     ADD_SUBCASE( case4, a_cs_fb, b );
     ADD_SUBCASE( case4, a_cs_hb, b );
     ADD_SUBCASE( case4, a_cs_db, b );
@@ -187,6 +195,7 @@ TEST_CASE("add(case4)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case4, a_ds_fb, b );
     ADD_SUBCASE( case4, a_ds_hb, b );
     ADD_SUBCASE( case4, a_ds_db, b );
+    #endif
 }
 
 #define RUN_reduce_add_impl(...) \
@@ -224,12 +233,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("reduce_add(case1)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case1,   a, axis );
     REDUCE_ADD_SUBCASE( case1, a_a, axis );
     REDUCE_ADD_SUBCASE( case1, a_f, axis );
     REDUCE_ADD_SUBCASE( case1, a_d, axis );
     REDUCE_ADD_SUBCASE( case1, a_h, axis );
 
+    #else
     REDUCE_ADD_SUBCASE( case1, a_cs_fb, axis );
     REDUCE_ADD_SUBCASE( case1, a_cs_hb, axis );
     REDUCE_ADD_SUBCASE( case1, a_cs_db, axis );
@@ -245,16 +256,19 @@ TEST_CASE("reduce_add(case1)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case1, a_ds_fb, axis );
     REDUCE_ADD_SUBCASE( case1, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case1, a_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("reduce_add(case2)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case2,   a, axis );
     REDUCE_ADD_SUBCASE( case2, a_a, axis );
     REDUCE_ADD_SUBCASE( case2, a_f, axis );
     REDUCE_ADD_SUBCASE( case2, a_d, axis );
     REDUCE_ADD_SUBCASE( case2, a_h, axis );
 
+    #else
     REDUCE_ADD_SUBCASE( case2, a_cs_fb, axis );
     REDUCE_ADD_SUBCASE( case2, a_cs_hb, axis );
     REDUCE_ADD_SUBCASE( case2, a_cs_db, axis );
@@ -270,16 +284,19 @@ TEST_CASE("reduce_add(case2)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case2, a_ds_fb, axis );
     REDUCE_ADD_SUBCASE( case2, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case2, a_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("reduce_add(case3)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case3,   a, axis );
     REDUCE_ADD_SUBCASE( case3, a_a, axis );
     REDUCE_ADD_SUBCASE( case3, a_f, axis );
     REDUCE_ADD_SUBCASE( case3, a_d, axis );
     REDUCE_ADD_SUBCASE( case3, a_h, axis );
 
+    #else
     REDUCE_ADD_SUBCASE( case3, a_cs_fb, axis );
     REDUCE_ADD_SUBCASE( case3, a_cs_hb, axis );
     REDUCE_ADD_SUBCASE( case3, a_cs_db, axis );
@@ -295,16 +312,19 @@ TEST_CASE("reduce_add(case3)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case3, a_ds_fb, axis );
     REDUCE_ADD_SUBCASE( case3, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case3, a_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("reduce_add(case4)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case4,   a,   axis );
     REDUCE_ADD_SUBCASE( case4, a_a, axis_a );
     REDUCE_ADD_SUBCASE( case4, a_f, axis_f );
     REDUCE_ADD_SUBCASE( case4, a_d, axis_f );
     REDUCE_ADD_SUBCASE( case4, a_h, axis_h );
 
+    #else
     REDUCE_ADD_SUBCASE( case4, a_cs_fb, axis );
     REDUCE_ADD_SUBCASE( case4, a_cs_hb, axis );
     REDUCE_ADD_SUBCASE( case4, a_cs_db, axis );
@@ -368,16 +388,19 @@ TEST_CASE("reduce_add(case4)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case4, a_ds_fb, axis_v );
     REDUCE_ADD_SUBCASE( case4, a_ds_hb, axis_v );
     REDUCE_ADD_SUBCASE( case4, a_ds_db, axis_v );
+    #endif
 }
 
 TEST_CASE("reduce_add(case5)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case5,   a,   axis );
     REDUCE_ADD_SUBCASE( case5, a_a, axis_a );
     REDUCE_ADD_SUBCASE( case5, a_f, axis_f );
     REDUCE_ADD_SUBCASE( case5, a_d, axis_f );
     REDUCE_ADD_SUBCASE( case5, a_h, axis_h );
 
+    #else
     REDUCE_ADD_SUBCASE( case5, a_cs_fb, axis );
     REDUCE_ADD_SUBCASE( case5, a_cs_hb, axis );
     REDUCE_ADD_SUBCASE( case5, a_cs_db, axis );
@@ -441,16 +464,19 @@ TEST_CASE("reduce_add(case5)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case5, a_ds_fb, axis_v );
     REDUCE_ADD_SUBCASE( case5, a_ds_hb, axis_v );
     REDUCE_ADD_SUBCASE( case5, a_ds_db, axis_v );
+    #endif
 }
 
 TEST_CASE("reduce_add(case6)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case6,   a,   axis );
     REDUCE_ADD_SUBCASE( case6, a_a, axis_a );
     REDUCE_ADD_SUBCASE( case6, a_f, axis_f );
     REDUCE_ADD_SUBCASE( case6, a_d, axis_f );
     REDUCE_ADD_SUBCASE( case6, a_h, axis_h );
 
+    #else
     REDUCE_ADD_SUBCASE( case6, a_cs_fb, axis );
     REDUCE_ADD_SUBCASE( case6, a_cs_hb, axis );
     REDUCE_ADD_SUBCASE( case6, a_cs_db, axis );
@@ -514,16 +540,19 @@ TEST_CASE("reduce_add(case6)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case6, a_ds_fb, axis_v );
     REDUCE_ADD_SUBCASE( case6, a_ds_hb, axis_v );
     REDUCE_ADD_SUBCASE( case6, a_ds_db, axis_v );
+    #endif
 }
 
 TEST_CASE("reduce_add(case7)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case7,   a, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_a, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_f, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_d, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_h, axis, dtype );
 
+    #else
     REDUCE_ADD_SUBCASE( case7, a_cs_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_cs_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_cs_db, axis, dtype );
@@ -539,16 +568,19 @@ TEST_CASE("reduce_add(case7)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case7, a_ds_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_ds_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_ds_db, axis, dtype );
+    #endif
 }
 
 TEST_CASE("reduce_add(case8)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case8,   a, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_a, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_f, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_d, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_h, axis, dtype, initial );
 
+    #else
     REDUCE_ADD_SUBCASE( case8, a_cs_fb, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_cs_hb, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_cs_db, axis, dtype, initial );
@@ -564,16 +596,19 @@ TEST_CASE("reduce_add(case8)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case8, a_ds_fb, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_ds_hb, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_ds_db, axis, dtype, initial );
+    #endif
 }
 
 TEST_CASE("reduce_add(case9)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case9,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_h, axis, dtype, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case9, a_cs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_cs_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_cs_db, axis, dtype, initial, keepdims );
@@ -589,16 +624,19 @@ TEST_CASE("reduce_add(case9)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case9, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_ds_db, axis, dtype, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case10)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case10,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_h, axis, dtype, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case10, a_cs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_cs_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_cs_db, axis, dtype, initial, keepdims );
@@ -614,16 +652,19 @@ TEST_CASE("reduce_add(case10)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case10, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_ds_db, axis, dtype, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case11)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case11,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_h, axis, dtype, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case11, a_cs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_cs_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_cs_db, axis, dtype, initial, keepdims );
@@ -639,16 +680,19 @@ TEST_CASE("reduce_add(case11)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case11, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_ds_db, axis, dtype, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case12)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case12,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_h, axis, dtype, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case12, a_cs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_cs_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_cs_db, axis, dtype, initial, keepdims );
@@ -664,16 +708,19 @@ TEST_CASE("reduce_add(case12)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case12, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_ds_db, axis, dtype, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case13)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case13,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_h, axis, dtype, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case13, a_cs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_cs_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_cs_db, axis, dtype, initial, keepdims );
@@ -689,16 +736,19 @@ TEST_CASE("reduce_add(case13)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case13, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_ds_db, axis, dtype, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case14)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case14,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_h, axis, dtype, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case14, a_cs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_cs_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_cs_db, axis, dtype, initial, keepdims );
@@ -714,16 +764,19 @@ TEST_CASE("reduce_add(case14)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case14, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_ds_db, axis, dtype, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case15)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case15,   a, axis );
     REDUCE_ADD_SUBCASE( case15, a_a, axis );
     REDUCE_ADD_SUBCASE( case15, a_f, axis );
     REDUCE_ADD_SUBCASE( case15, a_d, axis );
     REDUCE_ADD_SUBCASE( case15, a_h, axis );
 
+    #else
     REDUCE_ADD_SUBCASE( case15, a_cs_fb, axis );
     REDUCE_ADD_SUBCASE( case15, a_cs_hb, axis );
     REDUCE_ADD_SUBCASE( case15, a_cs_db, axis );
@@ -739,16 +792,19 @@ TEST_CASE("reduce_add(case15)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case15, a_ds_fb, axis );
     REDUCE_ADD_SUBCASE( case15, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case15, a_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("reduce_add(case16)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case16,   a, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_a, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_f, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_d, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_h, axis, nmtools::None, initial );
 
+    #else
     REDUCE_ADD_SUBCASE( case16, a_cs_fb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_cs_hb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_cs_db, axis, nmtools::None, initial );
@@ -764,16 +820,19 @@ TEST_CASE("reduce_add(case16)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case16, a_ds_fb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_ds_hb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_ds_db, axis, nmtools::None, initial );
+    #endif
 }
 
 TEST_CASE("reduce_add(case17)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case17,   a, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case17, a_a, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case17, a_f, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case17, a_d, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case17, a_h, axis, nmtools::None, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case17, a_cs_fb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case17, a_cs_hb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case17, a_cs_db, axis, nmtools::None, initial );
@@ -789,16 +848,19 @@ TEST_CASE("reduce_add(case17)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case17, a_ds_fb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case17, a_ds_hb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case17, a_ds_db, axis, nmtools::None, initial );
+    #endif
 }
 
 TEST_CASE("reduce_add(case18)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case18,   a, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_a, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_f, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_d, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_h, axis, nmtools::None, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case18, a_cs_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_cs_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_cs_db, axis, nmtools::None, initial, keepdims );
@@ -814,16 +876,19 @@ TEST_CASE("reduce_add(case18)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case18, a_ds_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_ds_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_ds_db, axis, nmtools::None, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case19)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case19,   a, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_a, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_f, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_d, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_h, axis, nmtools::None, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case19, a_cs_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_cs_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_cs_db, axis, nmtools::None, initial, keepdims );
@@ -839,16 +904,19 @@ TEST_CASE("reduce_add(case19)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case19, a_ds_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_ds_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_ds_db, axis, nmtools::None, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case20)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case20,   a, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_a, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_f, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_d, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_h, axis, nmtools::None, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case20, a_cs_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_cs_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_cs_db, axis, nmtools::None, initial, keepdims );
@@ -864,16 +932,19 @@ TEST_CASE("reduce_add(case20)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case20, a_ds_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_ds_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_ds_db, axis, nmtools::None, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case21)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case21,   a, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_a, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_f, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_d, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_h, axis, dtype );
 
+    #else
     REDUCE_ADD_SUBCASE( case21, a_cs_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_cs_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_cs_db, axis, dtype );
@@ -889,16 +960,19 @@ TEST_CASE("reduce_add(case21)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case21, a_ds_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_ds_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_ds_db, axis, dtype );
+    #endif
 }
 
 TEST_CASE("reduce_add(case22)" * doctest::test_suite("view::reduce_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case22,   a, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_a, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_f, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_d, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_h, axis, dtype );
 
+    #else
     REDUCE_ADD_SUBCASE( case22, a_cs_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_cs_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_cs_db, axis, dtype );
@@ -914,18 +988,21 @@ TEST_CASE("reduce_add(case22)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case22, a_ds_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_ds_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_ds_db, axis, dtype );
+    #endif
 }
 
 TEST_CASE("reduce_add(case23)" * doctest::test_suite("view::reduce_add"))
 {
     auto dtype   = nmtools::None;
     auto initial = nmtools::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case23,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_h, axis, dtype, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case23, a_cs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_cs_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_cs_db, axis, dtype, initial, keepdims );
@@ -941,18 +1018,21 @@ TEST_CASE("reduce_add(case23)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case23, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_ds_db, axis, dtype, initial, keepdims );
+    #endif
 }
 
 TEST_CASE("reduce_add(case24)" * doctest::test_suite("view::reduce_add"))
 {
     auto dtype   = nmtools::None;
     auto initial = nmtools::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case24,   a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_a, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_f, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_d, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_h, axis, dtype, initial, keepdims );
 
+    #else
     REDUCE_ADD_SUBCASE( case24, a_cs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_cs_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_cs_db, axis, dtype, initial, keepdims );
@@ -968,6 +1048,7 @@ TEST_CASE("reduce_add(case24)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case24, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_ds_db, axis, dtype, initial, keepdims );
+    #endif
 }
 
 #define RUN_accumulate_add_impl(...) \
@@ -1005,12 +1086,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("accumulate_add(case1)" * doctest::test_suite("view::accumulate_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case1,   a, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_a, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_f, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_h, axis );
 
+    #else
     ACCUMULATE_ADD_SUBCASE( case1, a_cs_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_cs_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_cs_db, axis );
@@ -1026,16 +1109,19 @@ TEST_CASE("accumulate_add(case1)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case1, a_ds_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_ds_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("accumulate_add(case2)" * doctest::test_suite("view::accumulate_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case2,   a, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_a, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_f, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_h, axis );
 
+    #else
     ACCUMULATE_ADD_SUBCASE( case2, a_cs_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_cs_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_cs_db, axis );
@@ -1051,16 +1137,19 @@ TEST_CASE("accumulate_add(case2)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case2, a_ds_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_ds_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("accumulate_add(case3)" * doctest::test_suite("view::accumulate_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case3,   a, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_a, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_f, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_h, axis );
 
+    #else
     ACCUMULATE_ADD_SUBCASE( case3, a_cs_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_cs_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_cs_db, axis );
@@ -1076,6 +1165,7 @@ TEST_CASE("accumulate_add(case3)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case3, a_ds_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_ds_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_ds_db, axis );
+    #endif
 }
 
 #define RUN_outer_add_impl(...) \
@@ -1113,12 +1203,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     OUTER_ADD_SUBCASE( case1,   a,   b );
     OUTER_ADD_SUBCASE( case1, a_a, b_a );
     OUTER_ADD_SUBCASE( case1, a_f, b_f );
     OUTER_ADD_SUBCASE( case1, a_d, b_d );
     OUTER_ADD_SUBCASE( case1, a_h, b_h );
 
+    #else
     OUTER_ADD_SUBCASE( case1, a_cs_fb, b_cs_fb );
     OUTER_ADD_SUBCASE( case1, a_cs_hb, b_cs_hb );
     OUTER_ADD_SUBCASE( case1, a_cs_db, b_cs_db );
@@ -1182,6 +1274,7 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
     OUTER_ADD_SUBCASE( case1, a_hs_fb, b_ds_fb );
     OUTER_ADD_SUBCASE( case1, a_hs_hb, b_ds_hb );
     OUTER_ADD_SUBCASE( case1, a_hs_db, b_ds_db );
+    #endif
 }
 
 #define ADD_FIXED_SHAPE_SUBCASE(subcase_name, expected_shape, ...) \

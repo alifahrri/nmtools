@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -60,6 +60,7 @@ TEST_CASE("atleast_3d(case1)" * doctest::test_suite("view::atleast_3d"))
 
 TEST_CASE("atleast_3d(case2)" * doctest::test_suite("view::atleast_3d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_3D_SUBCASE( case2, a );
     ATLEAST_3D_SUBCASE( case2, a_a );
     ATLEAST_3D_SUBCASE( case2, a_v );
@@ -67,6 +68,7 @@ TEST_CASE("atleast_3d(case2)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case2, a_d );
     ATLEAST_3D_SUBCASE( case2, a_h );
 
+    #else
     ATLEAST_3D_SUBCASE( case2, a_cs_fb );
     ATLEAST_3D_SUBCASE( case2, a_cs_hb );
     ATLEAST_3D_SUBCASE( case2, a_cs_db );
@@ -82,10 +84,12 @@ TEST_CASE("atleast_3d(case2)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case2, a_ds_fb );
     ATLEAST_3D_SUBCASE( case2, a_ds_hb );
     ATLEAST_3D_SUBCASE( case2, a_ds_db );
+    #endif
 }
 
 TEST_CASE("atleast_3d(case3)" * doctest::test_suite("view::atleast_3d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_3D_SUBCASE( case3, a );
     ATLEAST_3D_SUBCASE( case3, a_a );
     ATLEAST_3D_SUBCASE( case3, a_v );
@@ -93,6 +97,7 @@ TEST_CASE("atleast_3d(case3)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case3, a_d );
     ATLEAST_3D_SUBCASE( case3, a_h );
 
+    #else
     ATLEAST_3D_SUBCASE( case3, a_cs_fb );
     ATLEAST_3D_SUBCASE( case3, a_cs_hb );
     ATLEAST_3D_SUBCASE( case3, a_cs_db );
@@ -108,10 +113,12 @@ TEST_CASE("atleast_3d(case3)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case3, a_ds_fb );
     ATLEAST_3D_SUBCASE( case3, a_ds_hb );
     ATLEAST_3D_SUBCASE( case3, a_ds_db );
+    #endif
 }
 
 TEST_CASE("atleast_3d(case4)" * doctest::test_suite("view::atleast_3d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_3D_SUBCASE( case4, a );
     ATLEAST_3D_SUBCASE( case4, a_a );
     ATLEAST_3D_SUBCASE( case4, a_v );
@@ -119,6 +126,7 @@ TEST_CASE("atleast_3d(case4)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case4, a_d );
     ATLEAST_3D_SUBCASE( case4, a_h );
 
+    #else
     ATLEAST_3D_SUBCASE( case4, a_cs_fb );
     ATLEAST_3D_SUBCASE( case4, a_cs_hb );
     ATLEAST_3D_SUBCASE( case4, a_cs_db );
@@ -134,10 +142,12 @@ TEST_CASE("atleast_3d(case4)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case4, a_ds_fb );
     ATLEAST_3D_SUBCASE( case4, a_ds_hb );
     ATLEAST_3D_SUBCASE( case4, a_ds_db );
+    #endif
 }
 
 TEST_CASE("atleast_3d(case5)" * doctest::test_suite("view::atleast_3d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_3D_SUBCASE( case5, a );
     ATLEAST_3D_SUBCASE( case5, a_a );
     ATLEAST_3D_SUBCASE( case5, a_v );
@@ -145,6 +155,7 @@ TEST_CASE("atleast_3d(case5)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case5, a_d );
     ATLEAST_3D_SUBCASE( case5, a_h );
 
+    #else
     ATLEAST_3D_SUBCASE( case5, a_cs_fb );
     ATLEAST_3D_SUBCASE( case5, a_cs_hb );
     ATLEAST_3D_SUBCASE( case5, a_cs_db );
@@ -160,6 +171,7 @@ TEST_CASE("atleast_3d(case5)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case5, a_ds_fb );
     ATLEAST_3D_SUBCASE( case5, a_ds_hb );
     ATLEAST_3D_SUBCASE( case5, a_ds_db );
+    #endif
 }
 
 namespace view = nmtools::view;

@@ -1,4 +1,5 @@
-#if 1
+// NOTE: to minimize memory footprint on ci
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -59,11 +60,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("argsort(case1)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case1, array, axis );
     ARGSORT_SUBCASE( case1, array_a, axis );
     ARGSORT_SUBCASE( case1, array_f, axis );
     ARGSORT_SUBCASE( case1, array_h, axis );
     ARGSORT_SUBCASE( case1, array_d, axis );
+
+    #else //# if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 
     ARGSORT_SUBCASE( case1, array_cs_fb, axis );
     ARGSORT_SUBCASE( case1, array_cs_hb, axis );
@@ -81,10 +85,12 @@ TEST_CASE("argsort(case1)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case1, array_ds_fb, axis );
     ARGSORT_SUBCASE( case1, array_ds_hb, axis );
     ARGSORT_SUBCASE( case1, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("argsort(case2)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case2, array, axis );
     ARGSORT_SUBCASE( case2, array_a, axis );
     ARGSORT_SUBCASE( case2, array_f, axis );
@@ -92,6 +98,7 @@ TEST_CASE("argsort(case2)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case2, array_d, axis );
 
 
+    #else
     ARGSORT_SUBCASE( case2, array_cs_fb, axis );
     ARGSORT_SUBCASE( case2, array_cs_hb, axis );
     ARGSORT_SUBCASE( case2, array_cs_db, axis );
@@ -108,10 +115,12 @@ TEST_CASE("argsort(case2)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case2, array_ds_fb, axis );
     ARGSORT_SUBCASE( case2, array_ds_hb, axis );
     ARGSORT_SUBCASE( case2, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("argsort(case3)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case3, array, axis );
     ARGSORT_SUBCASE( case3, array_a, axis );
     ARGSORT_SUBCASE( case3, array_f, axis );
@@ -119,6 +128,7 @@ TEST_CASE("argsort(case3)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case3, array_d, axis );
 
 
+    #else
     ARGSORT_SUBCASE( case3, array_cs_fb, axis );
     ARGSORT_SUBCASE( case3, array_cs_hb, axis );
     ARGSORT_SUBCASE( case3, array_cs_db, axis );
@@ -135,10 +145,12 @@ TEST_CASE("argsort(case3)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case3, array_ds_fb, axis );
     ARGSORT_SUBCASE( case3, array_ds_hb, axis );
     ARGSORT_SUBCASE( case3, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("argsort(case4)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case4, array, axis );
     ARGSORT_SUBCASE( case4, array_a, axis );
     ARGSORT_SUBCASE( case4, array_f, axis );
@@ -146,6 +158,7 @@ TEST_CASE("argsort(case4)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case4, array_d, axis );
 
 
+    #else
     ARGSORT_SUBCASE( case4, array_cs_fb, axis );
     ARGSORT_SUBCASE( case4, array_cs_hb, axis );
     ARGSORT_SUBCASE( case4, array_cs_db, axis );
@@ -162,10 +175,12 @@ TEST_CASE("argsort(case4)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case4, array_ds_fb, axis );
     ARGSORT_SUBCASE( case4, array_ds_hb, axis );
     ARGSORT_SUBCASE( case4, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("argsort(case5)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case5, array, axis );
     ARGSORT_SUBCASE( case5, array_a, axis );
     ARGSORT_SUBCASE( case5, array_f, axis );
@@ -173,6 +188,7 @@ TEST_CASE("argsort(case5)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case5, array_d, axis );
 
 
+    #else
     ARGSORT_SUBCASE( case5, array_cs_fb, axis );
     ARGSORT_SUBCASE( case5, array_cs_hb, axis );
     ARGSORT_SUBCASE( case5, array_cs_db, axis );
@@ -189,10 +205,12 @@ TEST_CASE("argsort(case5)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case5, array_ds_fb, axis );
     ARGSORT_SUBCASE( case5, array_ds_hb, axis );
     ARGSORT_SUBCASE( case5, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("argsort(case6)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case6, array, axis );
     ARGSORT_SUBCASE( case6, array_a, axis );
     ARGSORT_SUBCASE( case6, array_f, axis );
@@ -200,6 +218,7 @@ TEST_CASE("argsort(case6)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case6, array_d, axis );
 
 
+    #else
     ARGSORT_SUBCASE( case6, array_cs_fb, axis );
     ARGSORT_SUBCASE( case6, array_cs_hb, axis );
     ARGSORT_SUBCASE( case6, array_cs_db, axis );
@@ -216,20 +235,24 @@ TEST_CASE("argsort(case6)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case6, array_ds_fb, axis );
     ARGSORT_SUBCASE( case6, array_ds_hb, axis );
     ARGSORT_SUBCASE( case6, array_ds_db, axis );
+    #endif
 }
 
 
 TEST_CASE("argsort(case7)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case7, array, axis );
     ARGSORT_SUBCASE( case7, array_a, axis );
     ARGSORT_SUBCASE( case7, array_f, axis );
     ARGSORT_SUBCASE( case7, array_h, axis );
     ARGSORT_SUBCASE( case7, array_d, axis );
+    #endif
 }
 
 TEST_CASE("argsort(case8)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case8, array, axis );
     ARGSORT_SUBCASE( case8, array_a, axis );
     ARGSORT_SUBCASE( case8, array_f, axis );
@@ -237,6 +260,7 @@ TEST_CASE("argsort(case8)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case8, array_d, axis );
 
 
+    #else
     ARGSORT_SUBCASE( case8, array_cs_fb, axis );
     ARGSORT_SUBCASE( case8, array_cs_hb, axis );
     ARGSORT_SUBCASE( case8, array_cs_db, axis );
@@ -253,11 +277,13 @@ TEST_CASE("argsort(case8)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case8, array_ds_fb, axis );
     ARGSORT_SUBCASE( case8, array_ds_hb, axis );
     ARGSORT_SUBCASE( case8, array_ds_db, axis );
+    #endif
 }
 
 
 TEST_CASE("argsort(case9)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case9, array, axis );
     ARGSORT_SUBCASE( case9, array_a, axis );
     ARGSORT_SUBCASE( case9, array_f, axis );
@@ -265,6 +291,7 @@ TEST_CASE("argsort(case9)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case9, array_d, axis );
 
 
+    #else
     ARGSORT_SUBCASE( case9, array_cs_fb, axis );
     ARGSORT_SUBCASE( case9, array_cs_hb, axis );
     ARGSORT_SUBCASE( case9, array_cs_db, axis );
@@ -281,10 +308,12 @@ TEST_CASE("argsort(case9)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case9, array_ds_fb, axis );
     ARGSORT_SUBCASE( case9, array_ds_hb, axis );
     ARGSORT_SUBCASE( case9, array_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("argsort(case10)" * doctest::test_suite("view::argsort"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ARGSORT_SUBCASE( case10, array, axis );
     ARGSORT_SUBCASE( case10, array_a, axis );
     ARGSORT_SUBCASE( case10, array_f, axis );
@@ -292,6 +321,7 @@ TEST_CASE("argsort(case10)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case10, array_d, axis );
 
 
+    #else
     ARGSORT_SUBCASE( case10, array_cs_fb, axis );
     ARGSORT_SUBCASE( case10, array_cs_hb, axis );
     ARGSORT_SUBCASE( case10, array_cs_db, axis );
@@ -308,4 +338,5 @@ TEST_CASE("argsort(case10)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case10, array_ds_fb, axis );
     ARGSORT_SUBCASE( case10, array_ds_hb, axis );
     ARGSORT_SUBCASE( case10, array_ds_db, axis );
+    #endif
 }

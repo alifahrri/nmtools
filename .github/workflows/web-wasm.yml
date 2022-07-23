@@ -45,6 +45,6 @@ jobs:
       - name: build
         run: |
           ./dockcross-${{ matrix.name }} bash -c "emcc -v"
-          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j1 VERBOSE=1'
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js

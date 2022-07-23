@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -59,12 +59,15 @@ TEST_CASE("conv2d(case1)" * doctest::test_suite("view::conv2d"))
         using namespace args;
         [[maybe_unused]] auto result = RUN_conv2d(case_name, input, weight);
     }
+
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case1, input, weight );
     CONV2D_SUBCASE( case1, input_a, weight_a );
     CONV2D_SUBCASE( case1, input_f, weight_f );
     CONV2D_SUBCASE( case1, input_h, weight_h );
     CONV2D_SUBCASE( case1, input_d, weight_d );
 
+    #else
     CONV2D_SUBCASE( case1, input_cs_fb, weight_cs_fb );
     CONV2D_SUBCASE( case1, input_cs_hb, weight_cs_hb );
     CONV2D_SUBCASE( case1, input_cs_db, weight_cs_db );
@@ -129,16 +132,19 @@ TEST_CASE("conv2d(case1)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case1, input_hs_fb, weight_ds_fb );
     // CONV2D_SUBCASE( case1, input_hs_hb, weight_ds_hb );
     // CONV2D_SUBCASE( case1, input_hs_db, weight_ds_db );
+    #endif
 }
 
 TEST_CASE("conv2d(case2)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case2, input, weight );
     CONV2D_SUBCASE( case2, input_a, weight_a );
     CONV2D_SUBCASE( case2, input_f, weight_f );
     CONV2D_SUBCASE( case2, input_h, weight_h );
     CONV2D_SUBCASE( case2, input_d, weight_d );
 
+    #else
     CONV2D_SUBCASE( case2, input_cs_fb, weight_cs_fb );
     CONV2D_SUBCASE( case2, input_cs_hb, weight_cs_hb );
     CONV2D_SUBCASE( case2, input_cs_db, weight_cs_db );
@@ -202,16 +208,19 @@ TEST_CASE("conv2d(case2)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case2, input_hs_fb, weight_ds_fb );
     // CONV2D_SUBCASE( case2, input_hs_hb, weight_ds_hb );
     // CONV2D_SUBCASE( case2, input_hs_db, weight_ds_db );
+    #endif
 }
 
 TEST_CASE("conv2d(case3)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case3, input, weight );
     CONV2D_SUBCASE( case3, input_a, weight_a );
     CONV2D_SUBCASE( case3, input_f, weight_f );
     CONV2D_SUBCASE( case3, input_h, weight_h );
     CONV2D_SUBCASE( case3, input_d, weight_d );
 
+    #else
     CONV2D_SUBCASE( case3, input_cs_fb, weight_cs_fb );
     CONV2D_SUBCASE( case3, input_cs_hb, weight_cs_hb );
     CONV2D_SUBCASE( case3, input_cs_db, weight_cs_db );
@@ -275,16 +284,19 @@ TEST_CASE("conv2d(case3)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case3, input_hs_fb, weight_ds_fb );
     // CONV2D_SUBCASE( case3, input_hs_hb, weight_ds_hb );
     // CONV2D_SUBCASE( case3, input_hs_db, weight_ds_db );
+    #endif
 }
 
 TEST_CASE("conv2d(case4)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case4, input, weight );
     CONV2D_SUBCASE( case4, input_a, weight_a );
     CONV2D_SUBCASE( case4, input_f, weight_f );
     CONV2D_SUBCASE( case4, input_h, weight_h );
     CONV2D_SUBCASE( case4, input_d, weight_d );
 
+    #else
     CONV2D_SUBCASE( case4, input, weight, None, stride );
     CONV2D_SUBCASE( case4, input_a, weight_a, None, stride_a );
     CONV2D_SUBCASE( case4, input_f, weight_f, None, stride_f );
@@ -356,10 +368,12 @@ TEST_CASE("conv2d(case4)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case4, input_hs_fb, weight_ds_fb, None, stride_a );
     // CONV2D_SUBCASE( case4, input_hs_hb, weight_ds_hb, None, stride_a );
     // CONV2D_SUBCASE( case4, input_hs_db, weight_ds_db, None, stride_a );
+    #endif
 }
 
 TEST_CASE("conv2d(case5)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case5, input, weight, None, stride );
     CONV2D_SUBCASE( case5, input_a, weight_a, None, stride_a );
     CONV2D_SUBCASE( case5, input_f, weight_f, None, stride_f );
@@ -368,6 +382,7 @@ TEST_CASE("conv2d(case5)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case5, input_d, weight_d, stride_d );
     CONV2D_SUBCASE( case5, input_d, weight_d, None, stride_v );
 
+    #else
     CONV2D_SUBCASE( case5, input_cs_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case5, input_cs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case5, input_cs_db, weight_cs_db, None, stride_a );
@@ -431,16 +446,19 @@ TEST_CASE("conv2d(case5)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case5, input_hs_fb, weight_ds_fb, None, stride_a );
     // CONV2D_SUBCASE( case5, input_hs_hb, weight_ds_hb, None, stride_a );
     // CONV2D_SUBCASE( case5, input_hs_db, weight_ds_db, None, stride_a );
+    #endif
 }
 
 TEST_CASE("conv2d(case6)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case6, input, weight, None, stride );
     CONV2D_SUBCASE( case6, input_a, weight_a, None, stride_a );
     CONV2D_SUBCASE( case6, input_f, weight_f, None, stride_f );
     CONV2D_SUBCASE( case6, input_h, weight_h, None, stride_h );
     CONV2D_SUBCASE( case6, input_d, weight_d, None, stride_v );
 
+    #else
     CONV2D_SUBCASE( case6, input_cs_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case6, input_cs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case6, input_cs_db, weight_cs_db, None, stride_a );
@@ -504,16 +522,19 @@ TEST_CASE("conv2d(case6)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case6, input_hs_fb, weight_ds_fb, None, stride_a );
     // CONV2D_SUBCASE( case6, input_hs_hb, weight_ds_hb, None, stride_a );
     // CONV2D_SUBCASE( case6, input_hs_db, weight_ds_db, None, stride_a );
+    #endif
 }
 
 TEST_CASE("conv2d(case7)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case7, input, weight, None, stride );
     CONV2D_SUBCASE( case7, input_a, weight_a, None, stride_a );
     CONV2D_SUBCASE( case7, input_f, weight_f, None, stride_f );
     CONV2D_SUBCASE( case7, input_h, weight_h, None, stride_h );
     CONV2D_SUBCASE( case7, input_d, weight_d, None, stride_v );
 
+    #else
     CONV2D_SUBCASE( case7, input_cs_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case7, input_cs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case7, input_cs_db, weight_cs_db, None, stride_a );
@@ -577,25 +598,30 @@ TEST_CASE("conv2d(case7)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case7, input_hs_fb, weight_ds_fb, None, stride_a );
     // CONV2D_SUBCASE( case7, input_hs_hb, weight_ds_hb, None, stride_a );
     // CONV2D_SUBCASE( case7, input_hs_db, weight_ds_db, None, stride_a );
+    #endif
 }
 
 TEST_CASE("conv2d(case8)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case8, input, weight, None, stride );
     CONV2D_SUBCASE( case8, input_a, weight_a, None, stride_a );
     CONV2D_SUBCASE( case8, input_f, weight_f, None, stride_f );
     CONV2D_SUBCASE( case8, input_h, weight_h, None, stride_h );
     CONV2D_SUBCASE( case8, input_d, weight_d, None, stride_v );
+    #endif
 }
 
 TEST_CASE("conv2d(case9)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case9, input, weight, None, stride );
     CONV2D_SUBCASE( case9, input_a, weight_a, None, stride_a );
     CONV2D_SUBCASE( case9, input_f, weight_f, None, stride_f );
     CONV2D_SUBCASE( case9, input_h, weight_h, None, stride_h );
     CONV2D_SUBCASE( case9, input_d, weight_d, None, stride_v );
 
+    #else
     CONV2D_SUBCASE( case9, input_cs_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case9, input_cs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case9, input_cs_db, weight_cs_db, None, stride_a );
@@ -659,16 +685,19 @@ TEST_CASE("conv2d(case9)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case9, input_hs_fb, weight_ds_fb, None, stride_a );
     // CONV2D_SUBCASE( case9, input_hs_hb, weight_ds_hb, None, stride_a );
     // CONV2D_SUBCASE( case9, input_hs_db, weight_ds_db, None, stride_a );
+    #endif
 }
 
 TEST_CASE("conv2d(case10)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case10, input, weight, None, stride );
     CONV2D_SUBCASE( case10, input_a, weight_a, None, stride_a );
     CONV2D_SUBCASE( case10, input_f, weight_f, None, stride_f );
     CONV2D_SUBCASE( case10, input_h, weight_h, None, stride_h );
     CONV2D_SUBCASE( case10, input_d, weight_d, None, stride_v );
 
+    #else
     CONV2D_SUBCASE( case10, input_cs_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case10, input_cs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case10, input_cs_db, weight_cs_db, None, stride_a );
@@ -732,16 +761,19 @@ TEST_CASE("conv2d(case10)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case10, input_hs_fb, weight_ds_fb, None, stride_a );
     // CONV2D_SUBCASE( case10, input_hs_hb, weight_ds_hb, None, stride_a );
     // CONV2D_SUBCASE( case10, input_hs_db, weight_ds_db, None, stride_a );
+    #endif
 }
 
 TEST_CASE("conv2d(case11)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case11, input, weight, None, stride, padding );
     CONV2D_SUBCASE( case11, input_a, weight_a, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_f, weight_f, None, stride_f, padding_f );
     CONV2D_SUBCASE( case11, input_h, weight_h, None, stride_h, padding_h );
     CONV2D_SUBCASE( case11, input_d, weight_d, None, stride_v, padding_v );
 
+    #else
     CONV2D_SUBCASE( case11, input_cs_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_cs_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_cs_db, weight_cs_db, None, stride_a, padding_a );
@@ -805,16 +837,19 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case11, input_hs_fb, weight_ds_fb, None, stride_a, padding_a );
     // CONV2D_SUBCASE( case11, input_hs_hb, weight_ds_hb, None, stride_a, padding_a );
     // CONV2D_SUBCASE( case11, input_hs_db, weight_ds_db, None, stride_a, padding_a );
+    #endif
 }
 
 TEST_CASE("conv2d(case12)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case12, input, weight, None, stride, padding );
     CONV2D_SUBCASE( case12, input_a, weight_a, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_f, weight_f, None, stride_f, padding_f );
     CONV2D_SUBCASE( case12, input_h, weight_h, None, stride_h, padding_h );
     CONV2D_SUBCASE( case12, input_d, weight_d, None, stride_v, padding_v );
 
+    #else
     CONV2D_SUBCASE( case12, input_cs_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_cs_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_cs_db, weight_cs_db, None, stride_a, padding_a );
@@ -878,25 +913,30 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case12, input_hs_fb, weight_ds_fb, None, stride_a, padding_a );
     // CONV2D_SUBCASE( case12, input_hs_hb, weight_ds_hb, None, stride_a, padding_a );
     // CONV2D_SUBCASE( case12, input_hs_db, weight_ds_db, None, stride_a, padding_a );
+    #endif
 }
 
 TEST_CASE("conv2d(case13)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case13, input, weight, None, stride, padding );
     CONV2D_SUBCASE( case13, input_a, weight_a, None, stride, padding );
     CONV2D_SUBCASE( case13, input_f, weight_f, None, stride, padding );
     CONV2D_SUBCASE( case13, input_h, weight_h, None, stride, padding );
     CONV2D_SUBCASE( case13, input_d, weight_d, None, stride, padding );
+    #endif
 }
 
 TEST_CASE("conv2d(case14)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case14, input, weight, None, stride, padding );
     CONV2D_SUBCASE( case14, input_a, weight_a, None, stride, padding );
     CONV2D_SUBCASE( case14, input_f, weight_f, None, stride, padding );
     CONV2D_SUBCASE( case14, input_h, weight_h, None, stride, padding );
     CONV2D_SUBCASE( case14, input_d, weight_d, None, stride, padding );
 
+    #else
     CONV2D_SUBCASE( case14, input_cs_fb, weight_cs_fb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_cs_hb, weight_cs_hb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_cs_db, weight_cs_db, None, stride, padding );
@@ -960,16 +1000,19 @@ TEST_CASE("conv2d(case14)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case14, input_hs_fb, weight_ds_fb, None, stride, padding );
     // CONV2D_SUBCASE( case14, input_hs_hb, weight_ds_hb, None, stride, padding );
     // CONV2D_SUBCASE( case14, input_hs_db, weight_ds_db, None, stride, padding );
+    #endif
 }
 
 TEST_CASE("conv2d(case15)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case15, input, weight, None, stride, padding );
     CONV2D_SUBCASE( case15, input_a, weight_a, None, stride, padding );
     CONV2D_SUBCASE( case15, input_f, weight_f, None, stride, padding );
     CONV2D_SUBCASE( case15, input_h, weight_h, None, stride, padding );
     CONV2D_SUBCASE( case15, input_d, weight_d, None, stride, padding );
 
+    #else
     CONV2D_SUBCASE( case15, input_cs_fb, weight_cs_fb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_cs_hb, weight_cs_hb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_cs_db, weight_cs_db, None, stride, padding );
@@ -1033,16 +1076,19 @@ TEST_CASE("conv2d(case15)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case15, input_hs_fb, weight_ds_fb, None, stride, padding );
     // CONV2D_SUBCASE( case15, input_hs_hb, weight_ds_hb, None, stride, padding );
     // CONV2D_SUBCASE( case15, input_hs_db, weight_ds_db, None, stride, padding );
+    #endif
 }
 
 TEST_CASE("conv2d(case16)" * doctest::test_suite("view::conv2d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV2D_SUBCASE( case16, input, weight, bias, stride, padding );
     CONV2D_SUBCASE( case16, input_a, weight_a, bias_a, stride, padding );
     CONV2D_SUBCASE( case16, input_f, weight_f, bias_f, stride, padding );
     CONV2D_SUBCASE( case16, input_h, weight_h, bias_h, stride, padding );
     CONV2D_SUBCASE( case16, input_d, weight_d, bias_d, stride, padding );
 
+    #else
     CONV2D_SUBCASE( case16, input_cs_fb, weight_cs_fb, bias_cs_fb, stride, padding );
     CONV2D_SUBCASE( case16, input_cs_hb, weight_cs_hb, bias_cs_hb, stride, padding );
     CONV2D_SUBCASE( case16, input_cs_db, weight_cs_db, bias_cs_db, stride, padding );
@@ -1106,4 +1152,5 @@ TEST_CASE("conv2d(case16)" * doctest::test_suite("view::conv2d"))
     // CONV2D_SUBCASE( case16, input_hs_fb, weight_ds_fb, bias_ds_fb, stride, padding );
     // CONV2D_SUBCASE( case16, input_hs_hb, weight_ds_hb, bias_ds_hb, stride, padding );
     // CONV2D_SUBCASE( case16, input_hs_db, weight_ds_db, bias_ds_db, stride, padding );
+    #endif
 }

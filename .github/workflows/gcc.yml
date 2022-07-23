@@ -32,7 +32,37 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         # use single thread to minimize memory usage, Process completed with exit code 137.
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j1 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 VERBOSE=1'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/meta/numeric-tests-doctest-meta'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utl/meta/numeric-tests-utl-meta'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utl/array/numeric-tests-utl-array'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utl/utl/numeric-tests-utl'
+  
+  # separate job to avoid OOM
+  dockcross-gcc-generic-ndarray-view:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        # use single thread to minimize memory usage, Process completed with exit code 137.
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_VIEW=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'

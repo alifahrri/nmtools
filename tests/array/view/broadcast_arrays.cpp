@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -380,12 +380,14 @@ SUBCASE(#case_name) \
 
 TEST_CASE("broadcast_arrays(case1)" * doctest::test_suite("view::broadcast_arrays"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_a, rhs_a );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_v, rhs_v );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_d, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_f, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_h, rhs_h );
 
+    #else
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_fb, rhs_cs_fb );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_hb, rhs_cs_hb );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_cs_db, rhs_cs_db );
@@ -454,16 +456,19 @@ TEST_CASE("broadcast_arrays(case1)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_fb, rhs_ds_fb );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_hb, rhs_ds_hb );
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_hs_db, rhs_ds_db );
+    #endif
 }
 
 TEST_CASE("broadcast_arrays(case2)" * doctest::test_suite("view::broadcast_arrays"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_a, rhs_a );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_v, rhs_v );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_d, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_f, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_h, rhs_h );
 
+    #else
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_fb, rhs_cs_fb );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_hb, rhs_cs_hb );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_cs_db, rhs_cs_db );
@@ -532,16 +537,19 @@ TEST_CASE("broadcast_arrays(case2)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_fb, rhs_ds_fb );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_hb, rhs_ds_hb );
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_hs_db, rhs_ds_db );
+    #endif
 }
 
 TEST_CASE("broadcast_arrays(case3)" * doctest::test_suite("view::broadcast_arrays"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_a, rhs_a );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_v, rhs_v );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_d, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_f, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_h, rhs_h );
 
+    #else
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_fb, rhs_cs_fb );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_hb, rhs_cs_hb );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_cs_db, rhs_cs_db );
@@ -610,16 +618,19 @@ TEST_CASE("broadcast_arrays(case3)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_fb, rhs_ds_fb );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_hb, rhs_ds_hb );
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_hs_db, rhs_ds_db );
+    #endif
 }
 
 TEST_CASE("broadcast_arrays(case4)" * doctest::test_suite("view::broadcast_arrays"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_a, rhs_a );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_v, rhs_v );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_d, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_f, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_h, rhs_h );
 
+    #else
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_fb, rhs_cs_fb );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_hb, rhs_cs_hb );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_cs_db, rhs_cs_db );
@@ -688,16 +699,19 @@ TEST_CASE("broadcast_arrays(case4)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_fb, rhs_ds_fb );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_hb, rhs_ds_hb );
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_hs_db, rhs_ds_db );
+    #endif
 }
 
 TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("view::broadcast_arrays"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case5, A_a, B_a, C_a );
     BROADCAST_ARRAYS_SUBCASE(case5, A_v, B_v, C_v );
     BROADCAST_ARRAYS_SUBCASE(case5, A_d, B_d, C_d );
     BROADCAST_ARRAYS_SUBCASE(case5, A_f, B_f, C_f );
     BROADCAST_ARRAYS_SUBCASE(case5, A_h, B_h, C_h );
 
+    #else
     BROADCAST_ARRAYS_SUBCASE(case5, A_cs_fb, B_cs_fb, C_cs_fb );
     BROADCAST_ARRAYS_SUBCASE(case5, A_cs_hb, B_cs_hb, C_cs_hb );
     BROADCAST_ARRAYS_SUBCASE(case5, A_cs_db, B_cs_db, C_cs_db );
@@ -753,16 +767,19 @@ TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case5, A_ds_fb, B_ds_fb, C_cs_fb );
     BROADCAST_ARRAYS_SUBCASE(case5, A_ds_hb, B_ds_hb, C_cs_hb );
     BROADCAST_ARRAYS_SUBCASE(case5, A_ds_db, B_ds_db, C_cs_db );
+    #endif
 }
 
 TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("view::broadcast_arrays"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_a, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_v, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_d, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_f, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_h, rhs );
 
+    #else
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_cs_fb, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_cs_hb, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_cs_db, rhs );
@@ -778,16 +795,19 @@ TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_ds_fb, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_ds_hb, rhs );
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_ds_db, rhs );
+    #endif
 }
 
 TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("view::broadcast_arrays"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_a );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_v );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_d );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_f );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_h );
 
+    #else
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_cs_fb );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_cs_hb );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_cs_db );
@@ -803,6 +823,7 @@ TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("view::broadcast_array
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_ds_fb );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_ds_hb );
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_ds_db );
+    #endif
 }
 
 TEST_CASE("broadcast_arrays(case8)" * doctest::test_suite("view::broadcast_arrays"))

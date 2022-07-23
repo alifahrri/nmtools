@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -60,6 +60,7 @@ SUBCASE(#case_name) \
 
 TEST_CASE("reshape(case1)" * doctest::test_suite("view::reshape"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     RESHAPE_SUBCASE(case1, array, newshape );
     RESHAPE_SUBCASE(case1, array_a, newshape_a );
     RESHAPE_SUBCASE(case1, array_f, newshape_a );
@@ -72,6 +73,7 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case1, array_d, newshape_ct );
     RESHAPE_SUBCASE(case1, array_h, newshape_ct );
 
+    #else
     RESHAPE_SUBCASE(case1, array_cs_fb, newshape_ct );
     RESHAPE_SUBCASE(case1, array_cs_hb, newshape_ct );
     RESHAPE_SUBCASE(case1, array_cs_db, newshape_ct );
@@ -103,10 +105,12 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case1, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case1, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case1, array_ds_db, newshape_a );
+    #endif
 }
 
 TEST_CASE("reshape(case2)" * doctest::test_suite("view::reshape"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     RESHAPE_SUBCASE(case2, array, newshape );
     RESHAPE_SUBCASE(case2, array_a, newshape_a );
     RESHAPE_SUBCASE(case2, array_f, newshape_a );
@@ -119,6 +123,7 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case2, array_d, newshape_ct );
     RESHAPE_SUBCASE(case2, array_h, newshape_ct );
 
+    #else
     RESHAPE_SUBCASE(case2, array_cs_fb, newshape_ct );
     RESHAPE_SUBCASE(case2, array_cs_hb, newshape_ct );
     RESHAPE_SUBCASE(case2, array_cs_db, newshape_ct );
@@ -150,16 +155,19 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case2, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case2, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case2, array_ds_db, newshape_a );
+    #endif
 }
 
 TEST_CASE("reshape(case3)" * doctest::test_suite("view::reshape"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     RESHAPE_SUBCASE(case3, array, newshape );
     RESHAPE_SUBCASE(case3, array_a, newshape_a );
     RESHAPE_SUBCASE(case3, array_f, newshape_a );
     RESHAPE_SUBCASE(case3, array_d, newshape_v );
     RESHAPE_SUBCASE(case3, array_h, newshape_h );
 
+    #else
     RESHAPE_SUBCASE(case3, array, newshape_ct );
     RESHAPE_SUBCASE(case3, array_a, newshape_ct );
     RESHAPE_SUBCASE(case3, array_f, newshape_ct );
@@ -197,10 +205,12 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case3, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case3, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case3, array_ds_db, newshape_a );
+    #endif
 }
 
 TEST_CASE("reshape(case4)" * doctest::test_suite("view::reshape"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     RESHAPE_SUBCASE(case4, array, newshape );
     RESHAPE_SUBCASE(case4, array_a, newshape_a );
     RESHAPE_SUBCASE(case4, array_f, newshape_a );
@@ -213,6 +223,7 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case4, array_d, newshape_ct );
     RESHAPE_SUBCASE(case4, array_h, newshape_ct );
 
+    #else
     RESHAPE_SUBCASE(case4, array_cs_fb, newshape_ct );
     RESHAPE_SUBCASE(case4, array_cs_hb, newshape_ct );
     RESHAPE_SUBCASE(case4, array_cs_db, newshape_ct );
@@ -244,10 +255,12 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case5, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case5, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case5, array_ds_db, newshape_a );
+    #endif
 }
 
 TEST_CASE("reshape(case5)" * doctest::test_suite("view::reshape"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     RESHAPE_SUBCASE(case5, array, newshape );
     RESHAPE_SUBCASE(case5, array_a, newshape_a );
     RESHAPE_SUBCASE(case5, array_f, newshape_a );
@@ -261,6 +274,7 @@ TEST_CASE("reshape(case5)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case5, array_h, newshape_ct );
 
 
+    #else
     RESHAPE_SUBCASE(case5, array_cs_fb, newshape_ct );
     RESHAPE_SUBCASE(case5, array_cs_hb, newshape_ct );
     RESHAPE_SUBCASE(case5, array_cs_db, newshape_ct );
@@ -292,6 +306,7 @@ TEST_CASE("reshape(case5)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case5, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case5, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case5, array_ds_db, newshape_a );
+    #endif
 }
 
 // NOTE: currently reshape is not monadic

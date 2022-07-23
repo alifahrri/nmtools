@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -57,12 +57,14 @@ TEST_CASE("atleast_1d(case1)" * doctest::test_suite("view::atleast_1d"))
 
 TEST_CASE("atleast_1d(case2)" * doctest::test_suite("view::atleast_1d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_1D_SUBCASE( case2, a );
     ATLEAST_1D_SUBCASE( case2, a_a );
     ATLEAST_1D_SUBCASE( case2, a_f );
     ATLEAST_1D_SUBCASE( case2, a_d );
     ATLEAST_1D_SUBCASE( case2, a_h );
 
+    #else
     ATLEAST_1D_SUBCASE( case2, a_cs_fb );
     ATLEAST_1D_SUBCASE( case2, a_cs_hb );
     ATLEAST_1D_SUBCASE( case2, a_cs_db );
@@ -78,16 +80,19 @@ TEST_CASE("atleast_1d(case2)" * doctest::test_suite("view::atleast_1d"))
     ATLEAST_1D_SUBCASE( case2, a_ds_fb );
     ATLEAST_1D_SUBCASE( case2, a_ds_hb );
     ATLEAST_1D_SUBCASE( case2, a_ds_db );
+    #endif
 }
 
 TEST_CASE("atleast_1d(case3)" * doctest::test_suite("view::atleast_1d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_1D_SUBCASE( case3, a );
     ATLEAST_1D_SUBCASE( case3, a_a );
     ATLEAST_1D_SUBCASE( case3, a_f );
     ATLEAST_1D_SUBCASE( case3, a_d );
     ATLEAST_1D_SUBCASE( case3, a_h );
 
+    #else
     ATLEAST_1D_SUBCASE( case3, a_cs_fb );
     ATLEAST_1D_SUBCASE( case3, a_cs_hb );
     ATLEAST_1D_SUBCASE( case3, a_cs_db );
@@ -103,16 +108,19 @@ TEST_CASE("atleast_1d(case3)" * doctest::test_suite("view::atleast_1d"))
     ATLEAST_1D_SUBCASE( case3, a_ds_fb );
     ATLEAST_1D_SUBCASE( case3, a_ds_hb );
     ATLEAST_1D_SUBCASE( case3, a_ds_db );
+    #endif
 }
 
 TEST_CASE("atleast_1d(case4)" * doctest::test_suite("view::atleast_1d"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ATLEAST_1D_SUBCASE( case4, a );
     ATLEAST_1D_SUBCASE( case4, a_a );
     ATLEAST_1D_SUBCASE( case4, a_f );
     ATLEAST_1D_SUBCASE( case4, a_d );
     ATLEAST_1D_SUBCASE( case4, a_h );
 
+    #else
     ATLEAST_1D_SUBCASE( case4, a_cs_fb );
     ATLEAST_1D_SUBCASE( case4, a_cs_hb );
     ATLEAST_1D_SUBCASE( case4, a_cs_db );
@@ -128,6 +136,7 @@ TEST_CASE("atleast_1d(case4)" * doctest::test_suite("view::atleast_1d"))
     ATLEAST_1D_SUBCASE( case4, a_ds_fb );
     ATLEAST_1D_SUBCASE( case4, a_ds_hb );
     ATLEAST_1D_SUBCASE( case4, a_ds_db );
+    #endif
 }
 
 

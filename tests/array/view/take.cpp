@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -56,6 +56,7 @@ SUBCASE(#case_name) \
 
 TEST_CASE("case1" * doctest::test_suite("view::take"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TAKE_SUBCASE( case1,   array,   indices, axis );
     TAKE_SUBCASE( case1, array_a, indices_a, axis );
     TAKE_SUBCASE( case1, array_v, indices_v, axis );
@@ -63,6 +64,7 @@ TEST_CASE("case1" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case1, array_d, indices_d, axis );
     TAKE_SUBCASE( case1, array_h, indices_h, axis );
 
+    #else
     TAKE_SUBCASE( case1, array_cs_fb, indices, axis );
     TAKE_SUBCASE( case1, array_cs_hb, indices, axis );
     TAKE_SUBCASE( case1, array_cs_db, indices, axis );
@@ -78,10 +80,12 @@ TEST_CASE("case1" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case1, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case1, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case1, array_ds_db, indices, axis );
+    #endif
 }
 
 TEST_CASE("case2" * doctest::test_suite("view::take"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TAKE_SUBCASE( case2,   array,   indices, axis );
     TAKE_SUBCASE( case2, array_a, indices_a, axis );
     TAKE_SUBCASE( case2, array_v, indices_v, axis );
@@ -89,6 +93,7 @@ TEST_CASE("case2" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case2, array_d, indices_d, axis );
     TAKE_SUBCASE( case2, array_h, indices_h, axis );
 
+    #else
     TAKE_SUBCASE( case2, array_cs_fb, indices, axis );
     TAKE_SUBCASE( case2, array_cs_hb, indices, axis );
     TAKE_SUBCASE( case2, array_cs_db, indices, axis );
@@ -104,10 +109,12 @@ TEST_CASE("case2" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case2, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case2, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case2, array_ds_db, indices, axis );
+    #endif
 }
 
 TEST_CASE("case3" * doctest::test_suite("view::take"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TAKE_SUBCASE( case3,   array,   indices, axis );
     TAKE_SUBCASE( case3, array_a, indices_a, axis );
     TAKE_SUBCASE( case3, array_v, indices_v, axis );
@@ -115,6 +122,7 @@ TEST_CASE("case3" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case3, array_d, indices_d, axis );
     TAKE_SUBCASE( case3, array_h, indices_h, axis );
 
+    #else
     TAKE_SUBCASE( case3, array_cs_fb, indices, axis );
     TAKE_SUBCASE( case3, array_cs_hb, indices, axis );
     TAKE_SUBCASE( case3, array_cs_db, indices, axis );
@@ -130,10 +138,12 @@ TEST_CASE("case3" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case3, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case3, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case3, array_ds_db, indices, axis );
+    #endif
 }
 
 TEST_CASE("case4" * doctest::test_suite("view::take"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TAKE_SUBCASE( case4,   array,   indices, axis );
     TAKE_SUBCASE( case4, array_a, indices_a, axis );
     TAKE_SUBCASE( case4, array_v, indices_v, axis );
@@ -141,6 +151,7 @@ TEST_CASE("case4" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case4, array_d, indices_d, axis );
     TAKE_SUBCASE( case4, array_h, indices_h, axis );
 
+    #else
     TAKE_SUBCASE( case4, array_cs_fb, indices, axis );
     TAKE_SUBCASE( case4, array_cs_hb, indices, axis );
     TAKE_SUBCASE( case4, array_cs_db, indices, axis );
@@ -156,10 +167,12 @@ TEST_CASE("case4" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case4, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case4, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case4, array_ds_db, indices, axis );
+    #endif
 }
 
 TEST_CASE("case5" * doctest::test_suite("view::take"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TAKE_SUBCASE( case5,   array,   indices, axis );
     TAKE_SUBCASE( case5, array_a, indices_a, axis );
     TAKE_SUBCASE( case5, array_v, indices_v, axis );
@@ -167,6 +180,7 @@ TEST_CASE("case5" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case5, array_d, indices_d, axis );
     TAKE_SUBCASE( case5, array_h, indices_h, axis );
 
+    #else
     TAKE_SUBCASE( case5, array_cs_fb, indices, axis );
     TAKE_SUBCASE( case5, array_cs_hb, indices, axis );
     TAKE_SUBCASE( case5, array_cs_db, indices, axis );
@@ -182,10 +196,12 @@ TEST_CASE("case5" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case5, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case5, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case5, array_ds_db, indices, axis );
+    #endif
 }
 
 TEST_CASE("case6" * doctest::test_suite("view::take"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TAKE_SUBCASE( case6,   array,   indices, axis );
     TAKE_SUBCASE( case6, array_a, indices_a, axis );
     TAKE_SUBCASE( case6, array_v, indices_v, axis );
@@ -193,6 +209,7 @@ TEST_CASE("case6" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case6, array_d, indices_d, axis );
     TAKE_SUBCASE( case6, array_h, indices_h, axis );
 
+    #else
     TAKE_SUBCASE( case6, array_cs_fb, indices, axis );
     TAKE_SUBCASE( case6, array_cs_hb, indices, axis );
     TAKE_SUBCASE( case6, array_cs_db, indices, axis );
@@ -208,4 +225,5 @@ TEST_CASE("case6" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case6, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case6, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case6, array_ds_db, indices, axis );
+    #endif
 }

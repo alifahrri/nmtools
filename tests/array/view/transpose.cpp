@@ -1,4 +1,4 @@
-#if 1
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -37,6 +37,8 @@ SUBCASE(#case_name) \
 
 TEST_CASE("transpose(case1)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case1, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case1, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case1, array_cs_db, axes_a );
@@ -52,10 +54,13 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case1, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case1, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case1, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case2)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case2, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case2, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case2, array_cs_db, axes_a );
@@ -71,10 +76,13 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case2, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case2, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case2, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case3)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case3, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case3, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case3, array_cs_db, axes_a );
@@ -90,10 +98,13 @@ TEST_CASE("transpose(case3)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case3, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case3, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case3, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case4)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case4, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case4, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case4, array_cs_db, axes_a );
@@ -109,10 +120,13 @@ TEST_CASE("transpose(case4)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case4, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case4, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case4, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case5)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case5, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case5, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case5, array_cs_db, axes_a );
@@ -128,10 +142,13 @@ TEST_CASE("transpose(case5)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case5, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case5, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case5, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case6)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case6, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case6, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case6, array_cs_db, axes_a );
@@ -147,10 +164,13 @@ TEST_CASE("transpose(case6)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case6, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case6, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case6, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case7)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case7, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case7, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case7, array_cs_db, axes_a );
@@ -166,10 +186,13 @@ TEST_CASE("transpose(case7)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case7, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case7, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case7, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case8)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case8, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case8, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case8, array_cs_db, axes_a );
@@ -185,10 +208,13 @@ TEST_CASE("transpose(case8)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case8, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case8, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case8, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case9)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case9, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case9, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case9, array_cs_db, axes_a );
@@ -204,10 +230,13 @@ TEST_CASE("transpose(case9)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case9, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case9, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case9, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(case10)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #else
     TRANSPOSE_SUBCASE( case10, array_cs_fb, axes_a );
     TRANSPOSE_SUBCASE( case10, array_cs_hb, axes_a );
     TRANSPOSE_SUBCASE( case10, array_cs_db, axes_a );
@@ -223,10 +252,12 @@ TEST_CASE("transpose(case10)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case10, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case10, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case10, array_ds_db, axes_a );
+    #endif
 }
 
 TEST_CASE("transpose(array)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TRANSPOSE_SUBCASE( case1, array_a, axes_a );
     TRANSPOSE_SUBCASE( case2, array_a, axes_a );
     TRANSPOSE_SUBCASE( case3, array_a, axes_a );
@@ -248,10 +279,13 @@ TEST_CASE("transpose(array)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case8, array_a, axes_ct );
     TRANSPOSE_SUBCASE( case9, array_a, axes_ct );
     TRANSPOSE_SUBCASE( case10, array_a, axes_ct );
+    #else
+    #endif
 }
 
 TEST_CASE("transpose(fixed_ndarray)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TRANSPOSE_SUBCASE( case1, array_f, axes_a );
     TRANSPOSE_SUBCASE( case2, array_f, axes_a );
     TRANSPOSE_SUBCASE( case3, array_f, axes_a );
@@ -273,10 +307,13 @@ TEST_CASE("transpose(fixed_ndarray)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case8, array_f, axes_ct );
     TRANSPOSE_SUBCASE( case9, array_f, axes_ct );
     TRANSPOSE_SUBCASE( case10, array_f, axes_ct );
+    #else
+    #endif
 }
 
 TEST_CASE("transpose(hybrid_ndarray)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TRANSPOSE_SUBCASE( case1, array_h, axes_a );
     TRANSPOSE_SUBCASE( case2, array_h, axes_a );
     TRANSPOSE_SUBCASE( case3, array_h, axes_a );
@@ -287,10 +324,13 @@ TEST_CASE("transpose(hybrid_ndarray)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case8, array_h, axes_a );
     TRANSPOSE_SUBCASE( case9, array_h, axes_a );
     TRANSPOSE_SUBCASE( case10, array_h, axes_a );
+    #else
+    #endif
 }
 
 TEST_CASE("transpose(dynamic_ndarray)" * doctest::test_suite("view::transpose"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TRANSPOSE_SUBCASE( case1, array_d, axes_a );
     TRANSPOSE_SUBCASE( case2, array_d, axes_a );
     TRANSPOSE_SUBCASE( case3, array_d, axes_a );
@@ -312,4 +352,6 @@ TEST_CASE("transpose(dynamic_ndarray)" * doctest::test_suite("view::transpose"))
     TRANSPOSE_SUBCASE( case8, array_d, axes_v );
     TRANSPOSE_SUBCASE( case9, array_d, axes_v );
     TRANSPOSE_SUBCASE( case10, array_d, axes_v );
+    #else
+    #endif
 }
