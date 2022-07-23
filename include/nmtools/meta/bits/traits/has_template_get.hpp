@@ -16,8 +16,8 @@ namespace nmtools::meta
         }();
     }; // has_template_get
 
-    template <typename T, auto...Is>
-    inline constexpr bool has_template_get_v = has_template_get<T,Is...>::value;
+    template <typename T, auto I=0>
+    inline constexpr bool has_template_get_v = has_template_get<T,I>::value;
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_TEMPLATE_GET_HPP

@@ -2,6 +2,8 @@
 #include "nmtools/testing/data/array/var.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+namespace nm = nmtools;
+
 #define RUN_var_impl(...) \
 nmtools::array::var(__VA_ARGS__);
 

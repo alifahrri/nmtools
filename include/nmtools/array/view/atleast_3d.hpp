@@ -36,41 +36,6 @@ namespace nmtools::view
                 auto shape_ = detail::shape(array);
                 return index::shape_atleast_nd(shape_,3_ct);
             }
-            // TODO: remove
-            #if 0
-            // check if fixed 1d array
-            else if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
-                using namespace nmtools::literals;
-                auto shape_ = detail::shape(array);
-                constexpr auto dim_ = meta::fixed_dim_v<array_t>;
-                if constexpr (dim_ == 1) {
-                    using meta::ct;
-                    using tuple_t = meta::make_tuple_type_t<ct<0>,ct<1>>;
-                    return index::expand_dims(shape_,tuple_t{});
-                } else if constexpr (dim_ == 2)
-                    return index::expand_dims(shape_,0_ct);
-                // referenced array is atleast 2d
-                else return shape_;
-            }
-            // assume dynamic dim
-            else {
-                // TODO: create metafunction "make_sequence_type" to create vector
-                // assume std vector is available
-                // static_assert (NMTOOLS_HAS_VECTOR);
-                auto shape_ = detail::shape(array);
-                auto dim_   = detail::dim(array);
-
-                using shape_t = decltype(shape_);
-                auto r_shape = shape_t{};
-                // prepend
-                if (dim_ == 1)
-                    index::impl::expand_dims(r_shape,shape_,meta::make_array_type_t<size_t,2>{0ul,1ul});
-                else if (dim_ == 2)
-                    index::impl::expand_dims(r_shape,shape_,meta::make_array_type_t<size_t,1>{0ul});
-                else r_shape = shape_;
-                return r_shape;
-            }
-            #endif
         } // shape
 
         constexpr auto dim() const

@@ -1,6 +1,6 @@
 #include "nmtools/array/view/ref/initializer_list.hpp"
 #include "nmtools/array/view/flatten.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 TEST_CASE("initializer_list" * doctest::test_suite("view::ref"))
 {

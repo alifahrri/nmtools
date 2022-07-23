@@ -1,5 +1,5 @@
 #include "nmtools/array/ndarray/hybrid.hpp"
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

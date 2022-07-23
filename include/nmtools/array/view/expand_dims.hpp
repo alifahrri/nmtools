@@ -21,7 +21,6 @@ namespace nmtools::view
     struct expand_dims_t
     {
         using value_type = meta::get_element_type_t<array_t>;
-        using const_reference = const value_type&;
         // array type as required by decorator
         using array_type = resolve_array_type_t<array_t>;
         using axis_type  = resolve_attribute_type_t<axis_t>;

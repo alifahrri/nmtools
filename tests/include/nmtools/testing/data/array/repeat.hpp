@@ -1,35 +1,13 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_REPEAT_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_REPEAT_HPP
 
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
-
-#include "nmtools/constants.hpp"
+#include "nmtools/testing/array_cast.hpp"
 #include "nmtools/testing/testing.hpp"
-
-#include <vector>
-#include <array>
-#include <tuple>
 
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
 namespace kind = na::kind;
-
-#ifndef PLATFORMIO
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid);
-#else
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_h = cast(name, kind::hybrid);
-#endif // PLATFORMIO
 
 NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
 {
@@ -38,7 +16,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 3;
         inline auto axis = None;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -52,7 +30,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 2;
         inline auto axis = 0;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -71,7 +49,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 2;
         inline auto axis = 1;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -88,7 +66,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline auto repeats = std::array{1,2};
         inline auto axis = 0;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -106,7 +84,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline auto repeats = std::array{1,2};
         inline auto axis = 1;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -123,7 +101,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[1][2][2] = {{{1,2},{3,4}}};
         inline auto repeats = 2;
         inline auto axis = 0;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -141,7 +119,5 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         };
     }
 }
-
-#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_REPEAT_HPP

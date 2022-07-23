@@ -3,7 +3,7 @@
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
 
-#include "testing/doctest.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 #include <vector>
 #include <tuple>

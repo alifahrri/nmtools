@@ -19,7 +19,7 @@ namespace nmtools::index
      * @brief specific tag to resolve return type
      * 
      */
-    struct expand_dims_t {};
+    struct shape_expand_dims_t {};
 
     // TODO: remove
     template <typename array_t, typename value_t>
@@ -41,12 +41,22 @@ namespace nmtools::index
         }
     } // contains
 
-    namespace impl
+    /**
+     * @brief extend the shape with value 1 for each given axis
+     * 
+     * @tparam shape_t 
+     * @tparam axes_t 
+     * @param shape 
+     * @param axes 
+     * @return constexpr auto 
+     */
+    template <typename shape_t, typename axes_t>
+    constexpr auto shape_expand_dims([[maybe_unused]] const shape_t& shape, [[maybe_unused]] const axes_t& axes)
     {
-        // TODO: maybe remove
-        template <typename newshape_t, typename shape_t, typename axes_t>
-        constexpr auto expand_dims(newshape_t& newshape, const shape_t shape, const axes_t& axes)
-        {
+        using return_t = meta::resolve_optype_t<shape_expand_dims_t,shape_t,axes_t>;
+        auto newshape = return_t{};
+
+        if constexpr (!meta::is_constant_index_array_v<return_t>) {
             auto n_axes = [&](){
                 if constexpr (meta::is_index_array_v<axes_t>)
                     return len(axes);
@@ -56,7 +66,7 @@ namespace nmtools::index
             auto n = dim+n_axes;
 
             // resize output if necessary
-            if constexpr (meta::is_resizeable_v<newshape_t>)
+            if constexpr (meta::is_resizeable_v<return_t>)
                 newshape.resize(n);
             
             auto idx = size_t{0};
@@ -69,29 +79,15 @@ namespace nmtools::index
                 at(newshape,i) = (in_axis ? 1 : tuple_at(shape,idx));
                 idx += (!in_axis ? 1 : 0);
             }
-        } // expand_dims
-    } // namespace impl
-
-    /**
-     * @brief extend the shape with value 1 for each given axis
-     * 
-     * @tparam shape_t 
-     * @tparam axes_t 
-     * @param shape 
-     * @param axes 
-     * @return constexpr auto 
-     */
-    template <typename shape_t, typename axes_t>
-    constexpr auto expand_dims([[maybe_unused]] const shape_t shape, [[maybe_unused]] const axes_t& axes)
-    {
-        using return_t = meta::resolve_optype_t<expand_dims_t,shape_t,axes_t>;
-        auto newshape = return_t{};
-
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
-            impl::expand_dims(newshape, shape, axes);
         }
 
         return newshape;
+    } // shape_expand_dims
+
+    template <typename shape_t, typename axes_t>
+    constexpr auto expand_dims([[maybe_unused]] const shape_t& shape, [[maybe_unused]] const axes_t& axes)
+    {
+        return shape_expand_dims(shape,axes);
     } // expand_dims
 } // namespace nmtools::index
 
@@ -108,7 +104,7 @@ namespace nmtools
         
         template <typename shape_t, typename axes_t>
         struct resolve_optype<
-            void, index::expand_dims_t, shape_t, axes_t
+            void, index::shape_expand_dims_t, shape_t, axes_t
         >
         {
             static constexpr auto vtype = [](){
@@ -132,7 +128,7 @@ namespace nmtools
                     }();
                     constexpr auto newdim = len_v<shape_t> + n_axes;
                     // TODO: try to resize instead of create new type
-                    return as_value_v<nmtools_array<get_element_or_common_type_t<shape_t>,newdim>>;
+                    return as_value_v<nmtools_array<get_index_element_type_t<shape_t>,newdim>>;
                 } else if constexpr ((is_hybrid_index_array_v<shape_t> || is_fixed_index_array_v<shape_t>) && (is_index_v<axes_t> || is_fixed_index_array_v<axes_t> || is_hybrid_index_array_v<axes_t>)) {
                     constexpr auto n_max_axes = [](){
                         if constexpr (is_index_v<axes_t>) {

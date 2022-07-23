@@ -20,7 +20,7 @@ using std::tuple;
 
 int main()
 {
-    auto reps = tuple{2,1,2};
+    auto reps = std::array{2,1,2};
     DESC("\n tiling an std::array")
     {
         auto array = std::array{0,1,2};

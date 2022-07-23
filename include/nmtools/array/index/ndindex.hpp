@@ -4,7 +4,6 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/meta.hpp"
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/utility/at.hpp"
@@ -23,7 +22,7 @@ namespace nmtools::index
     {
         using shape_type = const shape_t&;
         using stride_type = meta::resolve_optype_t<compute_strides_t,shape_t>;
-        using size_type = meta::remove_cvref_t<meta::get_element_or_common_type_t<shape_t>>;
+        using size_type = meta::remove_cvref_t<meta::get_index_element_type_t<shape_t>>;
 
         shape_type shape;
         stride_type stride;

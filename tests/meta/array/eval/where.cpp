@@ -1,9 +1,9 @@
+#include "nmtools/meta.hpp"
 #include "nmtools/array/view/where.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/eval.hpp"
-#include "nmtools/array/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

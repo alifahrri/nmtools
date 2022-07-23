@@ -12,6 +12,7 @@
 #include "nmtools/meta/bits/transform/get_element_type.hpp"
 #include "nmtools/meta/bits/transform/get_common_type.hpp"
 #include "nmtools/meta/bits/transform/get_element_or_common_type.hpp"
+#include "nmtools/meta/bits/transform/get_index_element_type.hpp"
 #include "nmtools/meta/bits/transform/get_index_type.hpp"
 #include "nmtools/meta/bits/transform/get_maybe_type.hpp"
 #include "nmtools/meta/bits/transform/get_value_type.hpp"
@@ -32,9 +33,7 @@
 #include "nmtools/meta/bits/transform/tuple_to_array.hpp"
 #include "nmtools/meta/bits/transform/type_list_at.hpp"
 
-#include "nmtools/meta/common.hpp"
-#include "nmtools/meta/traits.hpp"
-#include "nmtools/meta/array.hpp"
+#include "nmtools/meta/bits/traits/has_type.hpp"
 
 namespace nmtools::meta
 {

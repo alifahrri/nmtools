@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(view, cos, case_name); \
     using namespace args; \
     auto result = RUN_cos(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -45,7 +45,6 @@ TEST_CASE("cos(case1)" * doctest::test_suite("array::cos"))
 {
     COS_SUBCASE( case1,   a);
     COS_SUBCASE( case1, a_a);
-    COS_SUBCASE( case1, a_v);
     COS_SUBCASE( case1, a_f);
     COS_SUBCASE( case1, a_d);
     COS_SUBCASE( case1, a_h);

@@ -1,32 +1,10 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_COS_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_COS_HPP
 
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ndarray.hpp"
+#include "nmtools/testing/array_cast.hpp"
 #include "nmtools/testing/testing.hpp"
-
-#include <vector>
-#include <array>
-
-namespace nm = nmtools;
-namespace na = nm::array;
-namespace view = nm::view;
-namespace kind = na::kind;
-
-#ifndef PLATFORMIO
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid);
-#else
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_h = cast(name, kind::hybrid);
-#endif // PLATFORMIO
+#include "nmtools/math.hpp"
 
 NMTOOLS_TESTING_DECLARE_CASE(view, cos)
 {
@@ -37,19 +15,16 @@ NMTOOLS_TESTING_DECLARE_CASE(view, cos)
             {3,4,5},
             {6,7,8},
         };
-        CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        inline int shape[2] = {3,3};
         inline float result[3][3] = {
-            {std::cos(0.f),std::cos(1.f),std::cos(2.f)},
-            {std::cos(3.f),std::cos(4.f),std::cos(5.f)},
-            {std::cos(6.f),std::cos(7.f),std::cos(8.f)},
+            {math::cos(0.f),math::cos(1.f),math::cos(2.f)},
+            {math::cos(3.f),math::cos(4.f),math::cos(5.f)},
+            {math::cos(6.f),math::cos(7.f),math::cos(8.f)},
         };
     }
 }
-
-#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_COS_HPP

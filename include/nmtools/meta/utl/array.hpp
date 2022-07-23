@@ -1,11 +1,12 @@
 #ifndef NMTOOLS_META_UTL_ARRAY_HPP
 #define NMTOOLS_META_UTL_ARRAY_HPP
 
-#include "nmtools/utl.hpp"
-
 #include "nmtools/meta/array.hpp"
+
 #include "nmtools/meta/bits/traits/is_num.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
+
+#include "nmtools/utl.hpp"
 
 namespace nmtools::meta
 {
@@ -55,6 +56,12 @@ namespace nmtools::meta
     struct fixed_index_array_size<utl::tuple<Ts...>,enable_if_t<(is_index_v<Ts> && ...)>>
     {
         static constexpr auto value = sizeof...(Ts);
+    };
+
+    template <typename T, size_t N>
+    struct fixed_size<utl::array<T,N>>
+    {
+        static constexpr auto value = N;
     };
 } // namespace nmtools::meta
 

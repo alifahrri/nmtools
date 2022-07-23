@@ -1,29 +1,31 @@
 #ifndef NMTOOLS_META_HPP
 #define NMTOOLS_META_HPP
 
+#include "nmtools/meta/common.hpp"
 #include "nmtools/platform.hpp"
-
-#include "nmtools/meta/traits.hpp"
-#include "nmtools/meta/transform.hpp"
-#include "nmtools/meta/array.hpp"
 
 // use stl as default implementation for various type
 // such as maybe (meta::make_maybe_type...)
 
 // must include first, prefer stl
 #ifndef NMTOOLS_DISABLE_STL
+#include "nmtools/meta/stl/transform.hpp"
 #include "nmtools/meta/stl/traits.hpp"
 #include "nmtools/meta/stl/array.hpp"
-#include "nmtools/meta/stl/transform.hpp"
 #endif // NMTOOLS_DISABLE_STL
 
-#include "nmtools/meta/utl/array.hpp"
+#include "nmtools/meta/utl/common.hpp"
 #include "nmtools/meta/utl/traits.hpp"
+#include "nmtools/meta/utl/array.hpp"
 #include "nmtools/meta/utl/transform.hpp"
 
 #ifdef NMTOOLS_ENABLE_BOOST
 #include "nmtools/meta/boost.hpp"
 #endif
+
+#include "nmtools/meta/traits.hpp"
+#include "nmtools/meta/transform.hpp"
+#include "nmtools/meta/array.hpp"
 
 namespace nmtools::meta
 {

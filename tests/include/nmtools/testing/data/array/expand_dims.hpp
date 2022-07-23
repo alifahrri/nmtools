@@ -1,32 +1,13 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_EXPAND_DIMS_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_EXPAND_DIMS_HPP
 
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
+#include "nmtools/testing/array_cast.hpp"
 #include "nmtools/testing/testing.hpp"
-
-#include <array>
-#include <tuple>
-#include <vector>
 
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
 namespace kind = na::kind;
-
-#ifndef PLATFORMIO
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid);
-#else
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_h = cast(name, kind::hybrid);
-#endif // PLATFORMIO
 
 NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
 {
@@ -35,8 +16,8 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
     {
         inline double array[6] = {1,2,3,4,5,6};
         inline int axis[1]  = {0};
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -49,7 +30,7 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
     {
         inline double array[6] = {1,2,3,4,5,6};
         inline int axis     = 0;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -62,7 +43,7 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
     {
         inline double array[6] = {1,2,3,4,5,6};
         inline int axis     = 1;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -75,8 +56,8 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
     {
         inline double array[6] = {1,2,3,4,5,6};
         inline int axis[2]  = {0,1};
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -93,8 +74,8 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
     {
         inline double array[6] = {1,2,3,4,5,6};
         inline int axis[2]  = {0,2};
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -115,7 +96,7 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
             {5,6}
         };
         inline int axis = 0;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -138,7 +119,7 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
             {5,6}
         };
         inline int axis = 1;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -165,7 +146,7 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
             {5,6}
         };
         inline int axis = 2;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -201,7 +182,7 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
             }
         };
         inline int axis = 0;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -240,8 +221,8 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
             }
         };
         inline int axis[2] = {0,5};
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -265,7 +246,5 @@ NMTOOLS_TESTING_DECLARE_CASE(expand_dims)
         }};
     }
 }
-
-#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_EXPAND_DIMS_HPP

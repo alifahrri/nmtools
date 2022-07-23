@@ -2,6 +2,7 @@
 #define NMTOOLS_META_STL_TRAITS_HPP
 
 #include "nmtools/meta/traits.hpp"
+#include "nmtools/meta/array.hpp"
 
 #include <type_traits>
 #include <variant>

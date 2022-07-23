@@ -20,6 +20,11 @@ target_link_options(coverage_config INTERFACE --coverage)
 option(NMTOOLS_CODE_COVERAGE "build with code coverage reporting" OFF)
 message(STATUS "CODE_COVERAGE ${NMTOOLS_CODE_COVERAGE}")
 
+option(NMTOOLS_TESTING_GENERIC_NDARRAY "build test with generic ndarray" OFF)
+if (NMTOOLS_TESTING_GENERIC_NDARRAY)
+    add_compile_definitions(NMTOOLS_TESTING_GENERIC_NDARRAY)
+endif(NMTOOLS_TESTING_GENERIC_NDARRAY)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_subdirectory(array)
