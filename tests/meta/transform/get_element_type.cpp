@@ -57,12 +57,12 @@ TEST_CASE("get_element_type_t" * doctest::test_suite("meta"))
         STATIC_CHECK_IS_SAME( result_t, double );
     }
     {
-        using arg_t = std::vector<double>;
+        using arg_t = nmtools_list<double>;
         using result_t = meta::get_element_type_t<arg_t>;
         STATIC_CHECK_IS_SAME( result_t, double );
     }
     {
-        using arg_t = std::vector<std::vector<double>>;
+        using arg_t = nmtools_list<nmtools_list<double>>;
         using result_t = meta::get_element_type_t<arg_t>;
         STATIC_CHECK_IS_SAME( result_t, double );
     }
@@ -72,23 +72,23 @@ TEST_CASE("get_element_type_t" * doctest::test_suite("meta"))
         STATIC_CHECK_IS_SAME( result_t, bool );
     }
     {
-        using arg_t = std::vector<bool>;
+        using arg_t = nmtools_list<bool>;
         using result_t = meta::get_element_type_t<arg_t>;
         STATIC_CHECK_IS_SAME( result_t, bool );
     }
     // TODO: remove support for nested vector
     {
-        using arg_t = std::vector<std::vector<bool>>;
+        using arg_t = nmtools_list<nmtools_list<bool>>;
         using result_t = meta::get_element_type_t<arg_t>;
         STATIC_CHECK_IS_SAME( result_t, bool );
     }
     {
-        using arg_t = std::vector<std::vector<std::vector<double>>>;
+        using arg_t = nmtools_list<nmtools_list<nmtools_list<double>>>;
         using result_t = meta::get_element_type_t<arg_t>;
         STATIC_CHECK_IS_SAME( result_t, double );
     }
     {
-        using arg_t = std::vector<std::vector<std::vector<std::vector<double>>>>;
+        using arg_t = nmtools_list<nmtools_list<nmtools_list<nmtools_list<double>>>>;
         using result_t = meta::get_element_type_t<arg_t>;
         STATIC_CHECK_IS_SAME( result_t, double );
     }

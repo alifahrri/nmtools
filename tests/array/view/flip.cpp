@@ -57,7 +57,6 @@ TEST_CASE("flip(case1)" * doctest::test_suite("view::flip"))
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     FLIP_SUBCASE(case1,   array, axis );
     FLIP_SUBCASE(case1, array_a, axis );
-    // FLIP_SUBCASE(case1, array_v, axis );
     FLIP_SUBCASE(case1, array_f, axis );
     FLIP_SUBCASE(case1, array_h, axis );
     // TODO: support flip for dynamic ndarray
@@ -89,7 +88,6 @@ TEST_CASE("flip(case2)" * doctest::test_suite("view::flip"))
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     FLIP_SUBCASE(case2,   array, axis );
     FLIP_SUBCASE(case2, array_a, axis );
-    FLIP_SUBCASE(case2, array_v, axis );
     FLIP_SUBCASE(case2, array_f, axis );
     FLIP_SUBCASE(case2, array_h, axis );
     // FLIP_SUBCASE(case2, array_d, axis );
@@ -118,7 +116,6 @@ TEST_CASE("flip(case3)" * doctest::test_suite("view::flip"))
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     FLIP_SUBCASE(case3,   array, axis );
     FLIP_SUBCASE(case3, array_a, axis );
-    FLIP_SUBCASE(case3, array_v, axis );
     FLIP_SUBCASE(case3, array_f, axis );
     FLIP_SUBCASE(case3, array_h, axis );
     // FLIP_SUBCASE(case3, array_d, axis );
@@ -147,7 +144,6 @@ TEST_CASE("flip(case4)" * doctest::test_suite("view::flip"))
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     FLIP_SUBCASE(case4,   array,   axis );
     FLIP_SUBCASE(case4, array_a, axis_a );
-    FLIP_SUBCASE(case4, array_v, axis_v );
     FLIP_SUBCASE(case4, array_f, axis_f );
     FLIP_SUBCASE(case4, array_h, axis_h );
     // FLIP_SUBCASE(case4, array_d, axis_d );

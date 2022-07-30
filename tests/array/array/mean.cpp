@@ -121,7 +121,7 @@ TEST_CASE("mean(case7)" * doctest::test_suite("array::mean"))
         static_assert( meta::is_either_v<result_t> );
         static_assert( meta::is_num_v<left_t> );
         static_assert( meta::is_ndarray_v<right_t> );
-        auto rptr = std::get_if<right_t>(&result);
+        auto rptr = nmtools::get_if<right_t>(&result);
         CHECK( rptr );
         NMTOOLS_ASSERT_EQUAL( nm::shape(*rptr), expect::shape );
     }

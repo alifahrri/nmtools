@@ -49,7 +49,6 @@ TEST_CASE("cosh(case1)" * doctest::test_suite("array::cosh"))
 {
     COSH_SUBCASE( case1,   a);
     COSH_SUBCASE( case1, a_a);
-    COSH_SUBCASE( case1, a_v);
     COSH_SUBCASE( case1, a_f);
     COSH_SUBCASE( case1, a_d);
     COSH_SUBCASE( case1, a_h);

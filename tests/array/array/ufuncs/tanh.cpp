@@ -45,7 +45,6 @@ TEST_CASE("tanh(case1)" * doctest::test_suite("array::tanh"))
 {
     TANH_SUBCASE( case1,   a);
     TANH_SUBCASE( case1, a_a);
-    TANH_SUBCASE( case1, a_v);
     TANH_SUBCASE( case1, a_f);
     TANH_SUBCASE( case1, a_d);
     TANH_SUBCASE( case1, a_h);

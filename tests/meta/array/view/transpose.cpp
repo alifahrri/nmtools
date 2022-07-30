@@ -26,7 +26,7 @@ TEST_CASE("transpose" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
         }
         {
-            using array_t = std::array<std::array<int,3>,2>;
+            using array_t = nmtools_array<nmtools_array<int,3>,2>;
             using axes_t  = nm::none_t;
             using view_t  = decltype(view::transpose(declval(array_t),declval(axes_t)));
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );

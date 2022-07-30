@@ -2,6 +2,7 @@
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("initializer_list" * doctest::test_suite("view::ref"))
 {
     using nmtools::view::ref_t;
@@ -274,3 +275,4 @@ TEST_CASE("flattten(ref(initializer_list[2]))" * doctest::test_suite("view::ref"
         STATIC_CHECK_IS_SAME( array_t, expected_t );
     }
 }
+#endif

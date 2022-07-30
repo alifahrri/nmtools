@@ -7,7 +7,7 @@ namespace meta = nm::meta;
 
 using nm::index::argsort_t;
 using namespace nm::literals;
-using std::tuple;
+using nmtools_tuple;
 
 TEST_CASE("argsort" * doctest::test_suite("index"))
 {

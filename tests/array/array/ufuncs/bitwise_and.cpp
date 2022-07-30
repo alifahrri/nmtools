@@ -46,7 +46,6 @@ TEST_CASE("bitwise_and(case1)" * doctest::test_suite("array::bitwise_and"))
 {
     BITWISE_AND_SUBCASE( case1,   a,   b );
     BITWISE_AND_SUBCASE( case1, a_a, b_a );
-    BITWISE_AND_SUBCASE( case1, a_v, b_v );
     BITWISE_AND_SUBCASE( case1, a_f, b_f );
     BITWISE_AND_SUBCASE( case1, a_d, b_d );
     BITWISE_AND_SUBCASE( case1, a_h, b_h );
@@ -56,7 +55,6 @@ TEST_CASE("bitwise_and(case2)" * doctest::test_suite("array::bitwise_and"))
 {
     BITWISE_AND_SUBCASE( case2,   a, b );
     BITWISE_AND_SUBCASE( case2, a_a, b );
-    BITWISE_AND_SUBCASE( case2, a_v, b );
     BITWISE_AND_SUBCASE( case2, a_f, b );
     BITWISE_AND_SUBCASE( case2, a_d, b );
     BITWISE_AND_SUBCASE( case2, a_h, b );

@@ -12,6 +12,12 @@ using namespace nm::literals;
 
 #define declval(type) std::declval<type>()
 
+#ifdef NMTOOLS_DISABLE_STL
+using meta::true_type, meta::false_type;
+#else
+using std::true_type, std::false_type;
+#endif
+
 TEST_CASE("view(prod)" * doctest::test_suite("view"))
 {
     // is_fixed_size_ndarray
@@ -20,7 +26,7 @@ TEST_CASE("view(prod)" * doctest::test_suite("view"))
         using axis_t    = none_t;
         using dtype_t   = none_t;
         using initial_t = none_t;
-        using keepdims_t = std::true_type;
+        using keepdims_t = true_type;
         using view_t     = decltype(view::prod(declval(array_t),declval(axis_t),declval(dtype_t),declval(initial_t),declval(keepdims_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
@@ -29,7 +35,7 @@ TEST_CASE("view(prod)" * doctest::test_suite("view"))
         using axis_t    = none_t;
         using dtype_t   = none_t;
         using initial_t = none_t;
-        using keepdims_t = std::false_type;
+        using keepdims_t = false_type;
         using view_t     = decltype(view::prod(declval(array_t),declval(axis_t),declval(dtype_t),declval(initial_t),declval(keepdims_t)));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );

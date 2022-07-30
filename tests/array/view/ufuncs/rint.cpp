@@ -46,7 +46,6 @@ TEST_CASE("rint(case1)" * doctest::test_suite("view::rint"))
 {
     RINT_SUBCASE( case1,   a);
     RINT_SUBCASE( case1, a_a);
-    RINT_SUBCASE( case1, a_v);
     RINT_SUBCASE( case1, a_f);
     RINT_SUBCASE( case1, a_d);
     RINT_SUBCASE( case1, a_h);

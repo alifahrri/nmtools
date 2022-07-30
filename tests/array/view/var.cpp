@@ -341,7 +341,7 @@ TEST_CASE("var(case10)" * doctest::test_suite("view::var"))
         static_assert( meta::is_num_v<left_t> );
         static_assert( meta::is_ndarray_v<right_t> );
 
-        auto value = std::get_if<left_t>(&var);
+        auto value = nmtools::get_if<left_t>(&var);
         NMTOOLS_ASSERT_CLOSE( *value, expect::result );
     }
 

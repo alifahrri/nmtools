@@ -46,7 +46,6 @@ TEST_CASE("divide(case1)" * doctest::test_suite("view::divide"))
 {
     DIVIDE_SUBCASE( case1,   a,   b );
     DIVIDE_SUBCASE( case1, a_a, b_a );
-    DIVIDE_SUBCASE( case1, a_v, b_v );
     DIVIDE_SUBCASE( case1, a_f, b_f );
     DIVIDE_SUBCASE( case1, a_d, b_d );
     DIVIDE_SUBCASE( case1, a_h, b_h );
@@ -56,7 +55,6 @@ TEST_CASE("divide(case2)" * doctest::test_suite("view::divide"))
 {
     DIVIDE_SUBCASE( case2,   a, b );
     DIVIDE_SUBCASE( case2, a_a, b );
-    DIVIDE_SUBCASE( case2, a_v, b );
     DIVIDE_SUBCASE( case2, a_f, b );
     DIVIDE_SUBCASE( case2, a_d, b );
     DIVIDE_SUBCASE( case2, a_h, b );

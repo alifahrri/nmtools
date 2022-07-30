@@ -114,8 +114,8 @@ namespace nmtools::view
 
             auto shape_ = b_shape;
             at(shape_,axis) = at(src_shape,axis);
-            auto [Ni, M_Nk] = detail::split(shape_,axis);
-            auto [M_, Nk] = detail::split(M_Nk,1_ct);
+            const auto [Ni, M_Nk] = detail::split(shape_,axis);
+            const auto [M_, Nk] = detail::split(M_Nk,1_ct);
 
             // TODO: support range-for for ndindex
             auto Ni_index = index::ndindex(Ni);

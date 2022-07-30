@@ -46,7 +46,6 @@ TEST_CASE("arctan(case1)" * doctest::test_suite("view::arctan"))
 {
     ARCTAN_SUBCASE( case1,   a);
     ARCTAN_SUBCASE( case1, a_a);
-    ARCTAN_SUBCASE( case1, a_v);
     ARCTAN_SUBCASE( case1, a_f);
     ARCTAN_SUBCASE( case1, a_d);
     ARCTAN_SUBCASE( case1, a_h);

@@ -5,7 +5,7 @@
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
 
-using std::vector;
+using nmtools_list;
 using nmtools::shape;
 using nmtools::dim;
 using nmtools::array::dynamic_ndarray;
@@ -20,10 +20,10 @@ TEST_CASE("dynamic_ndarray[2,3,2]")
     auto ndarray = dynamic_ndarray<double>();
     ndarray.resize(shape_);
     CHECK(ndarray.dim()==3);
-    NMTOOLS_ASSERT_EQUAL( ndarray.shape(),(std::array{2,3,2}) );
-    NMTOOLS_ASSERT_EQUAL( ndarray.strides(),(std::array{6,2,1}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(),(nmtools_array{2,3,2}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(),(nmtools_array{6,2,1}) );
     CHECK( dim(ndarray)==3 );
-    NMTOOLS_ASSERT_EQUAL( shape(ndarray), vector({2ul,3ul,2ul}) );
+    NMTOOLS_ASSERT_EQUAL( shape(ndarray), (vector{2ul,3ul,2ul}) );
     {
         ndarray = {
             {
@@ -77,9 +77,19 @@ TEST_CASE("dynamic_ndarray[5]")
 {
     auto ndarray = dynamic_ndarray({1.,2.,3.,4.,5.});
     CHECK(ndarray.dim()==1);
-    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), vector{5} );
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), nmtools_array{5} );
     NMTOOLS_ASSERT_CLOSE( ndarray, (vector{1,2,3,4,5}) );
-    NMTOOLS_ASSERT_EQUAL( shape(ndarray), vector({5ul}));
+    // utl vector tripped on this
+    // TODO: fix
+    #ifndef NMTOOLS_DISABLE_STL
+    NMTOOLS_ASSERT_EQUAL( shape(ndarray), vector<size_t>{5ul});
+    #else
+    {
+        auto expect = vector<size_t>(1);
+        expect[0] = 5;
+        NMTOOLS_ASSERT_EQUAL( shape(ndarray), expect);
+    }
+    #endif
 }
 
 TEST_CASE("dynamic_ndarray[3,3]")

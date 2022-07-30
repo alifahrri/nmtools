@@ -16,7 +16,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis[3] = {-1,-2,-3};
         inline int ndim = 3;
-        NMTOOLS_CAST_ARRAYS(axis);
+        NMTOOLS_CAST_INDEX_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -27,7 +27,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis[3] = {-1,-2,3};
         inline int ndim = 3;
-        NMTOOLS_CAST_ARRAYS(axis);
+        NMTOOLS_CAST_INDEX_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -39,7 +39,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis[3] = {-1,2,-3};
         inline int ndim = 3;
-        NMTOOLS_CAST_ARRAYS(axis);
+        NMTOOLS_CAST_INDEX_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {

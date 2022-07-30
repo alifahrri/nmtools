@@ -62,6 +62,7 @@ namespace nmtools::meta
     namespace error
     {
         // specific type tor respresent index::choose type infer error
+        template <typename...>
         struct INDEX_CHOOSE_UNHANDLED_CASE : detail::fail_t {};
     } // namespace error
     
@@ -159,7 +160,7 @@ namespace nmtools::meta
                 using type = replace_element_type_t<tf_indices_t,element_t>;
                 return as_value_v<type>;
             } else {
-                return as_value_v<error::INDEX_CHOOSE_UNHANDLED_CASE>;
+                return as_value_v<error::INDEX_CHOOSE_UNHANDLED_CASE<indices_t,array_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;

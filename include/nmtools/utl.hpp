@@ -10,5 +10,6 @@
 #include "nmtools/utl/tuple.hpp"
 #include "nmtools/utl/either.hpp"
 #include "nmtools/utl/maybe.hpp"
+#include "nmtools/utl/vector.hpp"
 
 #endif // NMTOOLS_UTL_HPP

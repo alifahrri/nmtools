@@ -45,7 +45,6 @@ TEST_CASE("flatten(case1)" * doctest::test_suite("array::flatten"))
 {
     FLATTEN_SUBCASE( case1, array );
     FLATTEN_SUBCASE( case1, array_a );
-    FLATTEN_SUBCASE( case1, array_v );
     FLATTEN_SUBCASE( case1, array_f );
     FLATTEN_SUBCASE( case1, array_d );
     FLATTEN_SUBCASE( case1, array_h );
@@ -55,7 +54,6 @@ TEST_CASE("flatten(case2)" * doctest::test_suite("array::flatten"))
 {
     FLATTEN_SUBCASE( case2, array );
     FLATTEN_SUBCASE( case2, array_a );
-    FLATTEN_SUBCASE( case2, array_v );
     FLATTEN_SUBCASE( case2, array_f );
     FLATTEN_SUBCASE( case2, array_d );
     FLATTEN_SUBCASE( case2, array_h );
@@ -65,7 +63,6 @@ TEST_CASE("flatten(case3)" * doctest::test_suite("array::flatten"))
 {
     FLATTEN_SUBCASE( case3, array );
     FLATTEN_SUBCASE( case3, array_a );
-    FLATTEN_SUBCASE( case3, array_v );
     FLATTEN_SUBCASE( case3, array_f );
     FLATTEN_SUBCASE( case3, array_d );
     FLATTEN_SUBCASE( case3, array_h );
@@ -75,7 +72,6 @@ TEST_CASE("flatten(case4)" * doctest::test_suite("array::flatten"))
 {
     FLATTEN_SUBCASE( case4, array );
     FLATTEN_SUBCASE( case4, array_a );
-    FLATTEN_SUBCASE( case4, array_v );
     FLATTEN_SUBCASE( case4, array_f );
     FLATTEN_SUBCASE( case4, array_d );
     FLATTEN_SUBCASE( case4, array_h );

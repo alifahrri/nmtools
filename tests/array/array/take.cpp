@@ -42,7 +42,6 @@ TEST_CASE("case1" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case1,   array,   indices, axis );
     TAKE_SUBCASE( case1, array_a, indices_a, axis );
-    TAKE_SUBCASE( case1, array_v, indices_v, axis );
     TAKE_SUBCASE( case1, array_f, indices_f, axis );
     TAKE_SUBCASE( case1, array_d, indices_d, axis );
     TAKE_SUBCASE( case1, array_h, indices_h, axis );
@@ -52,7 +51,6 @@ TEST_CASE("case2" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case2,   array,   indices, axis );
     TAKE_SUBCASE( case2, array_a, indices_a, axis );
-    TAKE_SUBCASE( case2, array_v, indices_v, axis );
     TAKE_SUBCASE( case2, array_f, indices_f, axis );
     TAKE_SUBCASE( case2, array_d, indices_d, axis );
     TAKE_SUBCASE( case2, array_h, indices_h, axis );
@@ -62,7 +60,6 @@ TEST_CASE("case3" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case3,   array,   indices, axis );
     TAKE_SUBCASE( case3, array_a, indices_a, axis );
-    TAKE_SUBCASE( case3, array_v, indices_v, axis );
     TAKE_SUBCASE( case3, array_f, indices_f, axis );
     TAKE_SUBCASE( case3, array_d, indices_d, axis );
     TAKE_SUBCASE( case3, array_h, indices_h, axis );
@@ -72,7 +69,6 @@ TEST_CASE("case4" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case4,   array,   indices, axis );
     TAKE_SUBCASE( case4, array_a, indices_a, axis );
-    TAKE_SUBCASE( case4, array_v, indices_v, axis );
     TAKE_SUBCASE( case4, array_f, indices_f, axis );
     TAKE_SUBCASE( case4, array_d, indices_d, axis );
     TAKE_SUBCASE( case4, array_h, indices_h, axis );
@@ -82,7 +78,6 @@ TEST_CASE("case5" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case5,   array,   indices, axis );
     TAKE_SUBCASE( case5, array_a, indices_a, axis );
-    TAKE_SUBCASE( case5, array_v, indices_v, axis );
     TAKE_SUBCASE( case5, array_f, indices_f, axis );
     TAKE_SUBCASE( case5, array_d, indices_d, axis );
     TAKE_SUBCASE( case5, array_h, indices_h, axis );
@@ -92,7 +87,6 @@ TEST_CASE("case6" * doctest::test_suite("array::take"))
 {
     TAKE_SUBCASE( case6,   array,   indices, axis );
     TAKE_SUBCASE( case6, array_a, indices_a, axis );
-    TAKE_SUBCASE( case6, array_v, indices_v, axis );
     TAKE_SUBCASE( case6, array_f, indices_f, axis );
     TAKE_SUBCASE( case6, array_d, indices_d, axis );
     TAKE_SUBCASE( case6, array_h, indices_h, axis );

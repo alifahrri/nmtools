@@ -46,7 +46,6 @@ TEST_CASE("ldexp(case1)" * doctest::test_suite("array::ldexp"))
 {
     LDEXP_SUBCASE( case1,   a,   b );
     LDEXP_SUBCASE( case1, a_a, b_a );
-    LDEXP_SUBCASE( case1, a_v, b_v );
     LDEXP_SUBCASE( case1, a_f, b_f );
     LDEXP_SUBCASE( case1, a_d, b_d );
     LDEXP_SUBCASE( case1, a_h, b_h );
@@ -56,7 +55,6 @@ TEST_CASE("ldexp(case2)" * doctest::test_suite("array::ldexp"))
 {
     LDEXP_SUBCASE( case2,   a, b );
     LDEXP_SUBCASE( case2, a_a, b );
-    LDEXP_SUBCASE( case2, a_v, b );
     LDEXP_SUBCASE( case2, a_f, b );
     LDEXP_SUBCASE( case2, a_d, b );
     LDEXP_SUBCASE( case2, a_h, b );

@@ -46,7 +46,6 @@ TEST_CASE("log10(case1)" * doctest::test_suite("view::log10"))
 {
     LOG10_SUBCASE( case1,   a);
     LOG10_SUBCASE( case1, a_a);
-    LOG10_SUBCASE( case1, a_v);
     LOG10_SUBCASE( case1, a_f);
     LOG10_SUBCASE( case1, a_d);
     LOG10_SUBCASE( case1, a_h);

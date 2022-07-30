@@ -12,21 +12,14 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#define CAST_ARRAYS(name) \
-auto name##_a = cast(name, kind::nested_arr); \
-auto name##_v = cast(name, kind::nested_vec); \
-auto name##_f = cast(name, kind::fixed); \
-auto name##_d = cast(name, kind::dynamic); \
-auto name##_h = cast(name, kind::hybrid); \
-
 NMTOOLS_TESTING_DECLARE_CASE(index, shape_outer)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int ashape[2] = {1,2};
         int bshape[2] = {3,4};
-        CAST_ARRAYS(ashape)
-        CAST_ARRAYS(bshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -37,8 +30,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_outer)
     {
         int ashape[1] = {1};
         int bshape[2] = {3,4};
-        CAST_ARRAYS(ashape)
-        CAST_ARRAYS(bshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -49,8 +42,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_outer)
     {
         int ashape[2] = {1,2};
         int bshape[3] = {2,3,4};
-        CAST_ARRAYS(ashape)
-        CAST_ARRAYS(bshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -61,8 +54,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_outer)
     {
         int ashape[2] = {1,2};
         int bshape[1] = {4};
-        CAST_ARRAYS(ashape)
-        CAST_ARRAYS(bshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -149,9 +142,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, outer)
         int indices[4] = {0,0,0,0};
         int ashape[2] = {1,2};
         int bshape[2] = {3,4};
-        CAST_ARRAYS(indices)
-        CAST_ARRAYS(ashape)
-        CAST_ARRAYS(bshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -164,9 +157,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, outer)
         int indices[3] = {0,0,0};
         int ashape[1] = {1};
         int bshape[2] = {3,4};
-        CAST_ARRAYS(indices)
-        CAST_ARRAYS(ashape)
-        CAST_ARRAYS(bshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -179,9 +172,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, outer)
         int indices[5] = {0,0,0,0,0};
         int ashape[2] = {1,2};
         int bshape[3] = {2,3,4};
-        CAST_ARRAYS(indices)
-        CAST_ARRAYS(ashape)
-        CAST_ARRAYS(bshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -194,9 +187,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, outer)
         int indices[3] = {0,0,0};
         int ashape[2] = {1,2};
         int bshape[1] = {4};
-        CAST_ARRAYS(indices)
-        CAST_ARRAYS(ashape)
-        CAST_ARRAYS(bshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -235,8 +228,8 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(index, outer, case_name); \
     using namespace args; \
     auto result = RUN_outer(case_name, __VA_ARGS__); \
-    auto aidx = std::get<0>(result); \
-    auto bidx = std::get<1>(result); \
+    auto aidx = nmtools::get<0>(result); \
+    auto bidx = nmtools::get<1>(result); \
     NMTOOLS_ASSERT_CLOSE( aidx, expect::aidx ); \
     NMTOOLS_ASSERT_CLOSE( bidx, expect::bidx ); \
 }

@@ -26,89 +26,89 @@ using nmtools::utils::isequal;
 using nmtools::array::fixed_ndarray;
 using nmtools::array::dynamic_ndarray;
 
-static_assert( meta::is_ndarray_v<std::array<double,3>> );
+static_assert( meta::is_ndarray_v<nmtools_array<double,3>> );
 
 /**
- * @test test case for mutable ref view to 1D std::array
+ * @test test case for mutable ref view to 1D nmtools_array
  * 
  */
-TEST_CASE("mutable_ref(std::array)" * doctest::test_suite("view::mutable_ref")) // mutable_ref with 1D std::array
+TEST_CASE("mutable_ref(nmtools_array)" * doctest::test_suite("view::mutable_ref")) // mutable_ref with 1D nmtools_array
 {
-    auto array = std::array{1.,2.,3.};
+    auto array = nmtools_array{1.,2.,3.};
     auto array_ref = view::mutable_ref(array);
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),std::array{3}) );
+    CHECK( isclose(array_ref.shape(),nmtools_array{3}) );
 
     {
-        auto expected = std::array{1.,2.,3.};
+        auto expected = nmtools_array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );
     }
 
     {
         array_ref(0) = 3;
-        auto expected = std::array{3.,2.,3.};
+        auto expected = nmtools_array{3.,2.,3.};
         CHECK( isclose(array,expected) );
     }
 
     {
         // view should have meta::fixed_ndarray_shape if its underlying array have too
         constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK(( std::get<0>(shape)==3 ));
+        STATIC_CHECK(( nmtools::get<0>(shape)==3 ));
     }
 }
 
 /**
- * @test test case for mutable ref view to 1D std::array created using make_view
+ * @test test case for mutable ref view to 1D nmtools_array created using make_view
  * 
  */
-TEST_CASE("make_view<mutable_ref_t>(std::array)"*doctest::test_suite("view::mutable_ref")) // make_view<mutable_ref_t>
+TEST_CASE("make_view<mutable_ref_t>(nmtools_array)"*doctest::test_suite("view::mutable_ref")) // make_view<mutable_ref_t>
 {
     using view::mutable_ref_t;
-    auto array = std::array{1.,2.,3.};
+    auto array = nmtools_array{1.,2.,3.};
     auto array_ref = view::make_view<mutable_ref_t>(array);
 
     CHECK( array_ref.dim()==1 );
     // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isequal(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{3}) );
     
     {
-        auto expected = std::array{1.,2.,3.};
+        auto expected = nmtools_array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );
     }
 
     {
         array_ref(0) = 3;
-        auto expected = std::array{3.,2.,3.};
+        auto expected = nmtools_array{3.,2.,3.};
         CHECK( isclose(array,expected) );
     }
 
     {
         // view should have meta::fixed_ndarray_shape if its underlying array have too
         constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK(( std::get<0>(shape)==3 ));
+        STATIC_CHECK(( nmtools::get<0>(shape)==3 ));
     }
 }
 
 /**
- * @test test case for mutable ref view to std::vector
+ * @test test case for mutable ref view to nmtools_list
  * 
  */
-TEST_CASE("mutable_ref(std::vector[1])"*doctest::test_suite("view::mutable_ref")) // ref with 1D std::vector
+TEST_CASE("mutable_ref(nmtools_list[1])"*doctest::test_suite("view::mutable_ref")) // ref with 1D nmtools_list
 {
-    auto array = std::vector{1.,2.,3.};
+    auto array = nmtools_list{1.,2.,3.};
     auto array_ref = view::mutable_ref(array);
 
     CHECK( array_ref.dim()==1 );
-    CHECK( isequal(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{3}) );
     {
-        auto expected = std::array{1.,2.,3.};
+        auto expected = nmtools_array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );
     }
     {
         array_ref(0) = 3;
-        auto expected = std::array{3.,2.,3.};
+        auto expected = nmtools_array{3.,2.,3.};
         CHECK( isclose(array,expected) );
     }
     CHECK( nmtools::at(array_ref,0)==3 );
@@ -123,9 +123,9 @@ TEST_CASE("mutable_ref(fixed_ndarray[1])" * doctest::test_suite("view::mutable_r
     auto array = fixed_ndarray{{1.,2.,3.}};
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==1 );
-    CHECK( isequal(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{3}) );
 
-    array = std::array{1.,2.,3.};
+    array = nmtools_array{1.,2.,3.};
 }
 
 /**
@@ -142,16 +142,16 @@ TEST_CASE("mutable_ref(fixed_ndarray[2])" * doctest::test_suite("view::mutable_r
     auto array_ref = view::mutable_ref(array);
 
     {
-        auto expected = std::array{
-            std::array{1.,2.},
-            std::array{3.,4.},
-            std::array{4.,5.},
+        double expected[3][2] = {
+            {1.,2.},
+            {3.,4.},
+            {4.,5.},
         };
         NMTOOLS_ASSERT_CLOSE( array_ref, expected );
     }
 
     CHECK( array_ref.dim()==2 );
-    CHECK( isequal(array_ref.shape(),std::array{3,2}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{3,2}) );
 
     CHECK( array_ref(0,1)==2 );
     CHECK( array_ref(1,0)==3 );
@@ -172,7 +172,7 @@ TEST_CASE("mutable_ref(fixed_ndarray[3])"*doctest::test_suite("view::mutable_ref
     auto array = fixed_ndarray<double,3,2,4>{};
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==3 );
-    CHECK( isequal(array_ref.shape(),std::array{3,2,4}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{3,2,4}) );
 
     // @todo provide constructor/assignment op from 3D array
 
@@ -189,7 +189,7 @@ TEST_CASE("mutable_ref(fixed_ndarray[4])"*doctest::test_suite("view::mutable_ref
     auto array = fixed_ndarray<double,3,2,4,1>{};
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==4 );
-    CHECK( isequal(array_ref.shape(),std::array{3,2,4,1}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{3,2,4,1}) );
 
     // @todo provide constructor/assignment op from 4D array
 
@@ -206,7 +206,7 @@ TEST_CASE("mutable_ref(dynamic_ndarray[1])"*doctest::test_suite("view::mutable_r
     auto array = dynamic_ndarray({1.,2.,3.});
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==1 );
-    CHECK( isequal(array_ref.shape(),std::array{3}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{3}) );
 }
 
 /**
@@ -221,7 +221,7 @@ TEST_CASE("mutable_ref(dynamic_ndarray[2])"*doctest::test_suite("view::mutable_r
     });
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==2 );
-    CHECK( isequal(array_ref.shape(),std::array{2,3}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{2,3}) );
 }
 
 /**
@@ -239,7 +239,7 @@ TEST_CASE("mutable_ref(dynamic_ndarray[3]"*doctest::test_suite("view::mutable_re
     array = std::move(a);
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==3 );
-    CHECK( isequal(array_ref.shape(),std::array{1,3,1}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{1,3,1}) );
 
     // @todo provide constructor/assignment op from 3D array
 }
@@ -259,7 +259,7 @@ TEST_CASE("mutable_ref(dynamic_ndarray[3])"*doctest::test_suite("view::mutable_r
     array = std::move(a);
     auto array_ref = view::mutable_ref(array);
     CHECK( array_ref.dim()==4 );
-    CHECK( isequal(array_ref.shape(),std::array{1,2,2,1}) );
+    CHECK( isequal(array_ref.shape(),nmtools_array{1,2,2,1}) );
 
     // @todo provide constructor/assignment op from 3D array
 

@@ -8,6 +8,12 @@
 namespace nm = nmtools;
 namespace meta = nm::meta;
 
+#if defined(NMTOOLS_DISABLE_STL)
+using meta::integral_constant;
+#else
+using std::integral_constant;
+#endif
+
 TEST_CASE("is_index" * doctest::test_suite("meta::traits"))
 {
     {
@@ -19,7 +25,7 @@ TEST_CASE("is_index" * doctest::test_suite("meta::traits"))
         STATIC_CHECK_TRAIT_FALSE( meta::is_index, arg_t );
     }
     {
-        using arg_t = std::integral_constant<int,1>;
+        using arg_t = integral_constant<int,1>;
         STATIC_CHECK_TRAIT( meta::is_index, arg_t );
     }
 }

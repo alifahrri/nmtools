@@ -11,13 +11,16 @@
 #include <vector>
 #include <variant>
 
-using std::vector;
-using std::array;
-using std::tuple;
+using nmtools_list;
+using nmtools_array;
+using nmtools_tuple;
 using nmtools::array::fixed_ndarray;
 using nmtools::array::dynamic_ndarray;
 using nmtools::utils::isclose;
 
+namespace meta = nmtools::meta;
+
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @test isclose(tuple,tuple)
  * 
@@ -35,6 +38,7 @@ TEST_CASE("isclose(tuple,tuple)" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
 /**
  * @test isclose(array,array)
@@ -54,6 +58,7 @@ TEST_CASE("isclose(array,array)" * doctest::test_suite("utils"))
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isclose(vector,vector)" * doctest::test_suite("utils"))
 {
     {
@@ -67,6 +72,7 @@ TEST_CASE("isclose(vector,vector)" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif
 
 TEST_CASE("isclose(int[],int[])" * doctest::test_suite("utils"))
 {
@@ -97,6 +103,7 @@ TEST_CASE("isclose(int[],int[])" * doctest::test_suite("utils"))
 //     }
 // }
 
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @test isclose(tuple,array)
  * 
@@ -132,7 +139,9 @@ TEST_CASE("isclose(array,tuple)" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @test isclose(array[2],array[2])
  * 
@@ -162,7 +171,9 @@ TEST_CASE("isclose(array[2],array[2])" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isclose(vector[2],vector[2])" * doctest::test_suite("utils"))
 {
     {
@@ -188,6 +199,7 @@ TEST_CASE("isclose(vector[2],vector[2])" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
 TEST_CASE("isclose(int[][],int[][])" * doctest::test_suite("utils"))
 {
@@ -215,6 +227,7 @@ TEST_CASE("isclose(int[][],int[][])" * doctest::test_suite("utils"))
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isclose(array[2],tuple[2])" * doctest::test_suite("utils"))
 {
     {
@@ -294,7 +307,9 @@ TEST_CASE("isclose(array[3],array[3])" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isclose(vector[3],vector[3])" * doctest::test_suite("utils"))
 {
     {
@@ -344,6 +359,7 @@ TEST_CASE("isclose(vector[3],vector[3])" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
 TEST_CASE("isclose(int[][][],int[][][])" * doctest::test_suite("utils"))
 {
@@ -395,6 +411,7 @@ TEST_CASE("isclose(int[][][],int[][][])" * doctest::test_suite("utils"))
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @test isclose(array[4],array[4])
  * 
@@ -496,7 +513,9 @@ TEST_CASE("isclose(array[4],array[4])" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isclose(vector[4],vector[4])" * doctest::test_suite("utils"))
 {
     {
@@ -594,6 +613,7 @@ TEST_CASE("isclose(vector[4],vector[4])" * doctest::test_suite("utils"))
         CHECK( !isclose(lhs,rhs) );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
 TEST_CASE("isclose(int[][][][],int[][][][])" * doctest::test_suite("utils"))
 {
@@ -696,52 +716,56 @@ TEST_CASE("isclose(int[][][][],int[][][][])" * doctest::test_suite("utils"))
 TEST_CASE("isclose(variant)" * doctest::test_suite("isclose"))
 {
     {
-        using lhs_t = std::variant<nmtools::none_t,int>;
-        using rhs_t = std::variant<nmtools::none_t,int>;
+        using lhs_t = nmtools_either<nmtools::none_t,int>;
+        using rhs_t = nmtools_either<nmtools::none_t,int>;
         CHECK(  isclose(lhs_t{nmtools::None},rhs_t{nmtools::None}) );
         CHECK( !isclose(lhs_t{nmtools::None},rhs_t{1}) );
         CHECK( !isclose(lhs_t{1},rhs_t{nmtools::None}) );
         CHECK(  isclose(lhs_t{1},rhs_t{1}) );
     }
+    #ifndef NMTOOLS_DISABLE_STL
     {
-        using lhs_t = std::variant<nmtools::none_t,std::array<float,3>>;
-        using rhs_t = std::variant<nmtools::none_t,std::vector<float>>;
+        using lhs_t = nmtools_either<nmtools::none_t,nmtools_array<float,3>>;
+        using rhs_t = nmtools_either<nmtools::none_t,nmtools_list<float>>;
         CHECK((  isclose(lhs_t{nmtools::None},rhs_t{nmtools::None}) ));
-        CHECK(( !isclose(lhs_t{nmtools::None},rhs_t{std::vector{1.f,2.f,3.f}}) ));
-        CHECK(( !isclose(lhs_t{std::array{1.f,2.f,3.f}},rhs_t{nmtools::None}) ));
-        CHECK((  isclose(lhs_t{std::array{1.f,2.f,3.f}},rhs_t{std::vector{1.f,2.f,3.f}}) ));
+        CHECK(( !isclose(lhs_t{nmtools::None},rhs_t{nmtools_list{1.f,2.f,3.f}}) ));
+        CHECK(( !isclose(lhs_t{nmtools_array{1.f,2.f,3.f}},rhs_t{nmtools::None}) ));
+        CHECK((  isclose(lhs_t{nmtools_array{1.f,2.f,3.f}},rhs_t{nmtools_list{1.f,2.f,3.f}}) ));
     }
     {
-        using lhs_t = std::variant<nmtools::none_t,std::array<float,3>>;
-        using rhs_t = std::vector<float>;
+        using lhs_t = nmtools_either<nmtools::none_t,nmtools_array<float,3>>;
+        using rhs_t = nmtools_list<float>;
         auto rhs = rhs_t{1.f, 2.f, 3.f};
         CHECK(( !isclose(lhs_t{nmtools::None},rhs) ));
-        CHECK((  isclose(lhs_t{std::array{1.f,2.f,3.f}},rhs) ));
+        CHECK((  isclose(lhs_t{nmtools_array{1.f,2.f,3.f}},rhs) ));
     }
+    #endif // NMTOOLS_DISABLE_STL
 }
 
 TEST_CASE("isclose(optional)" * doctest::test_suite("isclose"))
 {
     SUBCASE("int")
     {
-        using lhs_t = std::optional<int>;
-        using rhs_t = std::optional<int>;
-        CHECK(  isclose(lhs_t{std::nullopt},rhs_t{std::nullopt}) );
+        using lhs_t = nmtools_maybe<int>;
+        using rhs_t = nmtools_maybe<int>;
+        CHECK(  isclose(lhs_t{meta::Nothing},rhs_t{meta::Nothing}) );
         CHECK(  isclose(lhs_t{0},rhs_t{0}) );
-        CHECK( !isclose(lhs_t{std::nullopt},rhs_t{0}) );
-        CHECK( !isclose(lhs_t{0},rhs_t{std::nullopt}) );
+        CHECK( !isclose(lhs_t{meta::Nothing},rhs_t{0}) );
+        CHECK( !isclose(lhs_t{0},rhs_t{meta::Nothing}) );
     }
+    #ifndef NMTOOLS_DISABLE_STL
     SUBCASE("array")
     {
-        using array_t = std::array<float,3>;
-        using vector_t = std::vector<float>;
-        using lhs_t = std::optional<array_t>;
-        using rhs_t = std::optional<vector_t>;
-        CHECK(  isclose(lhs_t{std::nullopt}, rhs_t{std::nullopt}) );
+        using array_t = nmtools_array<float,3>;
+        using vector_t = nmtools_list<float>;
+        using lhs_t = nmtools_maybe<array_t>;
+        using rhs_t = nmtools_maybe<vector_t>;
+        CHECK(  isclose(lhs_t{meta::Nothing}, rhs_t{meta::Nothing}) );
         CHECK(  isclose(lhs_t{array_t{1,2,3}}, rhs_t{vector_t{1,2,3}}) );
-        CHECK( !isclose(lhs_t{std::nullopt}, rhs_t{vector_t{1,2,3}}) );
-        CHECK( !isclose(lhs_t{array_t{1,2,3}}, rhs_t{std::nullopt}) );
+        CHECK( !isclose(lhs_t{meta::Nothing}, rhs_t{vector_t{1,2,3}}) );
+        CHECK( !isclose(lhs_t{array_t{1,2,3}}, rhs_t{meta::Nothing}) );
     }
+    #endif // NMTOOLS_DISABLE_STL
 }
 
 // should NOT COMPILE static assertion failed: unsupported isclose, mismatched size for packed type

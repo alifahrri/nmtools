@@ -20,13 +20,6 @@ namespace composition
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid); \
-
 
 NMTOOLS_TESTING_DECLARE_CASE(composition, mean_subtract)
 {
@@ -45,8 +38,8 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, mean_subtract)
             }
         };
         inline int axis[1] = {0};
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -79,8 +72,8 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, mean_subtract)
             }
         };
         inline int axis[1] = {1};
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -113,8 +106,8 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, mean_subtract)
             }
         };
         inline int axis[1] = {1};
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -149,7 +142,7 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, mean_subtract)
             }
         };
         inline auto axis = 0_ct;
-        CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {

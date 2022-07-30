@@ -19,9 +19,7 @@ NMTOOLS_TESTING_DECLARE_CASE(nonzero)
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int x[6] = {0,1,2,3,4,5};
-        auto x_v = cast(x,kind::nested_vec);
-        auto x_a = cast<int>(x);
-        auto x_h = cast(x,kind::hybrid);
+        NMTOOLS_CAST_INDEX_ARRAYS(x);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -31,9 +29,7 @@ NMTOOLS_TESTING_DECLARE_CASE(nonzero)
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
         int x[6] = {1,2,0,3,5,6};
-        auto x_v = cast(x,kind::nested_vec);
-        auto x_a = cast<int>(x);
-        auto x_h = cast(x,kind::hybrid);
+        NMTOOLS_CAST_INDEX_ARRAYS(x);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -43,9 +39,7 @@ NMTOOLS_TESTING_DECLARE_CASE(nonzero)
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
         bool x[6] = {true,true,false,true,true,true};
-        auto x_v = cast<std::vector<bool>>(x);
-        auto x_a = cast<bool>(x);
-        auto x_h = cast(x,kind::hybrid);
+        NMTOOLS_CAST_INDEX_ARRAYS(x);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {

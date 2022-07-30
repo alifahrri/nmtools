@@ -46,7 +46,6 @@ TEST_CASE("fabs(case1)" * doctest::test_suite("array::fabs"))
 {
     FABS_SUBCASE( case1,   a);
     FABS_SUBCASE( case1, a_a);
-    FABS_SUBCASE( case1, a_v);
     FABS_SUBCASE( case1, a_f);
     FABS_SUBCASE( case1, a_d);
     FABS_SUBCASE( case1, a_h);

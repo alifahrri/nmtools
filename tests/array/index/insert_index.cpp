@@ -11,7 +11,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline int idx  = 4;
         inline int axis = 0;
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -23,7 +23,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline int idx  = 4;
         inline int axis = 3;
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -35,7 +35,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline int idx  = 4;
         inline int axis = 2;
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -47,14 +47,18 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline auto idx = Ellipsis;
         inline int axis = 2;
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
         using slice_t  = nmtools_either<int,ellipsis_t>;
         using slices_t = nmtools_array<slice_t,4>;
         using maybe_slices_t   = nmtools_maybe<slices_t>;
+        #if 0
         inline slices_t slices = {1,2,Ellipsis,3};
+        #else
+        inline slices_t slices = {(slice_t)1,(slice_t)2,(slice_t)Ellipsis,(slice_t)3};
+        #endif
         inline auto result = maybe_slices_t{slices};
     }
 
@@ -63,14 +67,18 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline auto idx = Ellipsis;
         inline int axis = 3;
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
         using slice_t  = nmtools_either<int,ellipsis_t>;
         using slices_t = nmtools_array<slice_t,4>;
         using maybe_slices_t   = nmtools_maybe<slices_t>;
+        #if 0
         inline slices_t slices = {1,2,3,Ellipsis};
+        #else
+        inline slices_t slices = {(slice_t)1,(slice_t)2,(slice_t)3,(slice_t)Ellipsis};
+        #endif
         inline auto result = maybe_slices_t{slices};
     }
 
@@ -79,7 +87,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline auto idx = Ellipsis;
         inline int axis = 4;
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -91,8 +99,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline int other[2] = {4,5};
         inline int axis = 0;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(other)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(other)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -104,8 +112,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline int other[2] = {4,5};
         inline int axis = 1;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(other)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(other)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -117,8 +125,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline int other[2] = {4,5};
         inline int axis = 2;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(other)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(other)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -130,8 +138,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[3] = {1,2,3};
         inline int other[2] = {4,5};
         inline int axis = 3;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(other)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(other)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -143,29 +151,41 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
         inline int indices[1] = {1};
         inline auto other = Ellipsis;
         inline auto axis = -1;
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
         using slice_t  = nmtools_either<int,ellipsis_t>;
         using slices_t = nmtools_array<slice_t,2>;
+        #if 0
         inline auto result = slices_t{1,Ellipsis};
+        #else
+        inline auto result = slices_t{(slice_t)1,(slice_t)Ellipsis};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case12)
     {
         using slice_t  = nmtools_either<int,ellipsis_t>;
         using slices_t = nmtools_array<slice_t,2>;
+        #if 0
         inline auto indices = slices_t{1,Ellipsis};
+        #else
+        inline auto indices = slices_t{(slice_t)1,(slice_t)Ellipsis};
+        #endif
         inline int other[1] = {0};
         inline auto axis = -1;
-        NMTOOLS_CAST_ARRAYS(other)
+        NMTOOLS_CAST_INDEX_ARRAYS(other)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
         using slice_t  = nmtools_either<int,ellipsis_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        #if 0
         inline auto result = slices_t{1,Ellipsis,0};
+        #else
+        inline auto result = slices_t{(slice_t)1,(slice_t)Ellipsis,(slice_t)0};
+        #endif
     }
 }
 

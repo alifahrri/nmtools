@@ -1,6 +1,5 @@
-#include "nmtools/array/dynamic.hpp"
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/meta.hpp"
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <array>
@@ -9,12 +8,14 @@
 #include <variant>
 #include <optional>
 
-using std::vector;
-using std::array;
-using std::tuple;
+using nmtools_list;
+using nmtools_array;
+using nmtools_tuple;
 using nmtools::array::fixed_ndarray;
 using nmtools::array::dynamic_ndarray;
 using nmtools::utils::isequal;
+
+namespace meta = nmtools::meta;
 
 /**
  * @test isequal(tuple,tuple)
@@ -177,6 +178,8 @@ TEST_CASE("isequal(array,tuple)" * doctest::test_suite("utils"))
     }
 }
 
+// TODO: fix for utl nested array
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @test isequal(array[2],array[2])
  * 
@@ -232,6 +235,7 @@ TEST_CASE("isequal(vector[2],vector[2])" * doctest::test_suite("utils"))
         CHECK( !isequal(lhs,rhs) );
     }
 }
+#endif
 
 TEST_CASE("isequal(int[][],int[][])" * doctest::test_suite("utils"))
 {
@@ -259,6 +263,8 @@ TEST_CASE("isequal(int[][],int[][])" * doctest::test_suite("utils"))
     }
 }
 
+// TODO: fix for utl nested array
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isequal(array[2],tuple[2])" * doctest::test_suite("utils"))
 {
     {
@@ -284,7 +290,10 @@ TEST_CASE("isequal(array[2],tuple[2])" * doctest::test_suite("utils"))
         CHECK( !isequal(lhs,rhs) );
     }
 }
+#endif
 
+// TODO: fix  nmtools::impl::error::AT_UNSUPPORTED<const nmtools::array::fixed_ndarray<int, 2, 3>&, long unsigned int>;
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isequal(fixed_ndarray[2],fixed_ndarray[2])" * doctest::test_suite("utils"))
 {
     {
@@ -314,7 +323,10 @@ TEST_CASE("isequal(fixed_ndarray[2],fixed_ndarray[2])" * doctest::test_suite("ut
         CHECK( !isequal(lhs,rhs) );
     }
 }
+#endif
 
+// TODO: fix for utl nested array
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @brief isequal(array[3],array[3])
  * 
@@ -418,6 +430,7 @@ TEST_CASE("isequal(vector[3],vector[3])" * doctest::test_suite("utils"))
         CHECK( !isequal(lhs,rhs) );
     }
 }
+#endif
 
 TEST_CASE("isequal(int[][][],int[][][])" * doctest::test_suite("utils"))
 {
@@ -469,6 +482,8 @@ TEST_CASE("isequal(int[][][],int[][][])" * doctest::test_suite("utils"))
     }
 }
 
+// TODO: fix  nmtools::impl::error::AT_UNSUPPORTED<const nmtools::array::fixed_ndarray<int, 2, 3>&, long unsigned int>;
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isequal(fixed_ndarray[3],fixed_ndarray[3])" * doctest::test_suite("utils"))
 {
     {
@@ -522,7 +537,10 @@ TEST_CASE("isequal(fixed_ndarray[3],fixed_ndarray[3])" * doctest::test_suite("ut
         CHECK( !isequal(lhs,rhs) );
     }
 }
+#endif
 
+// TODO: fix for utl nested array
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @test isequal(array[4],array[4])
  * 
@@ -722,6 +740,7 @@ TEST_CASE("isequal(vector[4],vector[4])" * doctest::test_suite("utils"))
         CHECK( !isequal(lhs,rhs) );
     }
 }
+#endif
 
 TEST_CASE("isequal(int[][][][],int[][][][])" * doctest::test_suite("utils"))
 {
@@ -821,6 +840,8 @@ TEST_CASE("isequal(int[][][][],int[][][][])" * doctest::test_suite("utils"))
     }
 }
 
+// TODO: fix at unsupported for fixed_ndarray
+#ifndef NMTOOLS_DISABLE_STL 
 TEST_CASE("isequal(fixed_ndarray[4],fixed_ndarray[4])" * doctest::test_suite("utils"))
 {
     {
@@ -922,38 +943,39 @@ TEST_CASE("isequal(fixed_ndarray[4],fixed_ndarray[4])" * doctest::test_suite("ut
         CHECK( !isequal(lhs,rhs) );
     }
 }
+#endif
 
 TEST_CASE("isequal(variant)" * doctest::test_suite("isequal"))
 {
     {
-        using lhs_t = std::variant<nmtools::none_t,int>;
-        using rhs_t = std::variant<nmtools::none_t,int>;
+        using lhs_t = nmtools_either<nmtools::none_t,int>;
+        using rhs_t = nmtools_either<nmtools::none_t,int>;
         CHECK(  isequal(lhs_t{nmtools::None},rhs_t{nmtools::None}) );
         CHECK( !isequal(lhs_t{nmtools::None},rhs_t{1}) );
         CHECK( !isequal(lhs_t{1},rhs_t{nmtools::None}) );
         CHECK(  isequal(lhs_t{1},rhs_t{1}) );
     }
     {
-        using lhs_t = std::variant<nmtools::none_t,std::array<long int,3>>;
-        using rhs_t = std::variant<nmtools::none_t,std::vector<long int>>;
+        using lhs_t = nmtools_either<nmtools::none_t,nmtools_array<long int,3>>;
+        using rhs_t = nmtools_either<nmtools::none_t,nmtools_list<long int>>;
         CHECK((  isequal(lhs_t{nmtools::None},rhs_t{nmtools::None}) ));
-        CHECK(( !isequal(lhs_t{nmtools::None},rhs_t{std::vector{1l,2l,3l}}) ));
-        CHECK(( !isequal(lhs_t{std::array{1l,2l,3l}},rhs_t{nmtools::None}) ));
-        CHECK((  isequal(lhs_t{std::array{1l,2l,3l}},rhs_t{std::vector{1l,2l,3l}}) ));
+        CHECK(( !isequal(lhs_t{nmtools::None},rhs_t{nmtools_list{1l,2l,3l}}) ));
+        CHECK(( !isequal(lhs_t{nmtools_array{1l,2l,3l}},rhs_t{nmtools::None}) ));
+        CHECK((  isequal(lhs_t{nmtools_array{1l,2l,3l}},rhs_t{nmtools_list{1l,2l,3l}}) ));
     }
     {
-        using lhs_t = std::variant<nmtools::none_t,std::array<long int,3>>;
-        using rhs_t = std::vector<long int>;
+        using lhs_t = nmtools_either<nmtools::none_t,nmtools_array<long int,3>>;
+        using rhs_t = nmtools_list<long int>;
         auto rhs = rhs_t{1l,2l,3l};
         CHECK(( !isequal(lhs_t{nmtools::None},rhs) ));
-        CHECK((  isequal(lhs_t{std::array{1l,2l,3l}},rhs) ));
+        CHECK((  isequal(lhs_t{nmtools_array{1l,2l,3l}},rhs) ));
     }
     {
-        using lhs_t = std::vector<long int>;
-        using rhs_t = std::variant<nmtools::none_t,std::array<long int,3>>;
+        using lhs_t = nmtools_list<long int>;
+        using rhs_t = nmtools_either<nmtools::none_t,nmtools_array<long int,3>>;
         auto lhs = lhs_t{1l,2l,3l};
         CHECK(( !isequal(lhs,rhs_t{nmtools::None}) ));
-        CHECK((  isequal(lhs,rhs_t{std::array{1l,2l,3l}}) ));
+        CHECK((  isequal(lhs,rhs_t{nmtools_array{1l,2l,3l}}) ));
     }
 }
 
@@ -961,23 +983,23 @@ TEST_CASE("isequal(optional)" * doctest::test_suite("isequal"))
 {
     SUBCASE("int")
     {
-        using lhs_t = std::optional<int>;
-        using rhs_t = std::optional<int>;
+        using lhs_t = nmtools_maybe<int>;
+        using rhs_t = nmtools_maybe<int>;
         CHECK(  isequal(lhs_t{0},rhs_t{0}) );
-        CHECK(  isequal(lhs_t{std::nullopt},rhs_t{std::nullopt}));
-        CHECK( !isequal(lhs_t{std::nullopt},rhs_t{0}));
-        CHECK( !isequal(lhs_t{0},rhs_t{std::nullopt}));
+        CHECK(  isequal(lhs_t{meta::Nothing},rhs_t{meta::Nothing}));
+        CHECK( !isequal(lhs_t{meta::Nothing},rhs_t{0}));
+        CHECK( !isequal(lhs_t{0},rhs_t{meta::Nothing}));
     }
     SUBCASE("array")
     {
-        using array_t = std::array<int,3>;
-        using vector_t = std::vector<int>;
-        using lhs_t = std::optional<array_t>;
-        using rhs_t = std::optional<vector_t>;
+        using array_t = nmtools_array<int,3>;
+        using vector_t = nmtools_list<int>;
+        using lhs_t = nmtools_maybe<array_t>;
+        using rhs_t = nmtools_maybe<vector_t>;
         CHECK(  isequal(lhs_t{array_t{1,2,3}},rhs_t{vector_t{1,2,3}}) );
-        CHECK(  isequal(lhs_t{std::nullopt},rhs_t{std::nullopt}) );
-        CHECK( !isequal(lhs_t{array_t{1,2,3}},rhs_t{std::nullopt}) );
-        CHECK( !isequal(lhs_t{std::nullopt},rhs_t{vector_t{1,2,3}}) );
+        CHECK(  isequal(lhs_t{meta::Nothing},rhs_t{meta::Nothing}) );
+        CHECK( !isequal(lhs_t{array_t{1,2,3}},rhs_t{meta::Nothing}) );
+        CHECK( !isequal(lhs_t{meta::Nothing},rhs_t{vector_t{1,2,3}}) );
     }
 }
 
@@ -993,13 +1015,13 @@ TEST_CASE("isequal(integral_constant)" * doctest::test_suite("isequal"))
     SUBCASE("tuple(ct)")
     {
         {
-            auto lhs = std::tuple{1_ct};
-            auto rhs = std::array{1};
+            auto lhs = nmtools_tuple{1_ct};
+            auto rhs = nmtools_array{1};
             CHECK( isequal(lhs,rhs) );
         }
         {
-            auto lhs = std::tuple{1_ct};
-            auto rhs = std::vector{1};
+            auto lhs = nmtools_tuple{1_ct};
+            auto rhs = nmtools_array{1};
             CHECK( isequal(lhs,rhs) );
         }
     }

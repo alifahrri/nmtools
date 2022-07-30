@@ -132,4 +132,17 @@ TEST_CASE("tuple" * doctest::test_suite("utl"))
             NMTOOLS_ASSERT_EQUAL( utl::get<4>(tp), 4 );
         }
     }
+
+    SUBCASE("len")
+    {
+        {
+            auto tp = utl::tuple{1,1.0};
+            NMTOOLS_ASSERT_EQUAL( nm::len(tp), 2 );
+        }
+        {
+            using namespace nm::literals;
+            auto tp = utl::tuple{1_ct,2_ct};
+            NMTOOLS_ASSERT_EQUAL( nm::len(tp), 2 );
+        }
+    }
 }

@@ -42,14 +42,14 @@ TEST_CASE("cast_kind" * doctest::test_suite("meta"))
         using src_t  = int[2];
         using kind_t = kind::nested_array_t;
         using result_t = meta::resolve_optype_t<nm::cast_kind_t,src_t,kind_t>;
-        using expect_t = std::array<int,2>;
+        using expect_t = nmtools_array<int,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using src_t  = int[2][3][2];
         using kind_t = kind::nested_array_t;
         using result_t = meta::resolve_optype_t<nm::cast_kind_t,src_t,kind_t>;
-        using expect_t = std::array<std::array<std::array<int,2>,3>,2>;
+        using expect_t = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
 

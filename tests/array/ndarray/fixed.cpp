@@ -35,8 +35,8 @@ TEST_CASE("fixed_ndarray[2,3,2]")
         },
     }};
     CHECK(ndarray.dim()==3);
-    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (std::array{2,3,2}) );
-    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{6,2,1}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (nmtools_array{2,3,2}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (nmtools_array{6,2,1}) );
     {
         ndarray = {
             {
@@ -81,7 +81,7 @@ TEST_CASE("fixed_ndarray[2,3,2]")
         // no matching calls
         // ndarray = 1;
         // static assertion failed: unsupported dim for fixed_ndarray assignment
-        // ndarray = std::array{1,2,3,4};
+        // ndarray = nmtools_array{1,2,3,4};
     }
 }
 
@@ -101,8 +101,8 @@ TEST_CASE("fixed_ndarray[2,3,2]")
         },
     }};
     CHECK(ndarray.dim()==3);
-    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (std::array{2,3,2}) );
-    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{6,2,1}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (nmtools_array{2,3,2}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (nmtools_array{6,2,1}) );
     {
         constexpr double expected[2][3][2] = {
             {
@@ -135,7 +135,7 @@ TEST_CASE("fixed_ndarray[2,3,2]")
         // no matching calls
         // ndarray = 1;
         // static assertion failed: unsupported dim for fixed_ndarray assignment
-        // ndarray = std::array{1,2,3,4};
+        // ndarray = nmtools_array{1,2,3,4};
     }
 }
 
@@ -148,9 +148,9 @@ TEST_CASE("fixed_ndarray[2,3,1]")
         }
     };
     CHECK(ndarray.dim()==3);
-    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (std::array{2,3,1}) );
-    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{3,1,1}) );
-    constexpr auto expected_shape = std::array{2ul,3ul,1ul};
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(), (nmtools_array{2,3,1}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (nmtools_array{3,1,1}) );
+    constexpr auto expected_shape = nmtools_array{2ul,3ul,1ul};
     static_assert(isequal(shape(ndarray),expected_shape));
 }
 
@@ -163,8 +163,8 @@ TEST_CASE("fixed_ndarray[2,3]")
         }
     };
     CHECK(ndarray.dim()==2);
-    NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   (std::array{2,3}) );
-    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (std::array{3,1}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   (nmtools_array{2,3}) );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), (nmtools_array{3,1}) );
     {
         ndarray = {
             {1,2,3},
@@ -182,8 +182,8 @@ TEST_CASE("fixed_ndarray[3]")
 {
     auto ndarray = fixed_ndarray{{1.,2.,3.}};
     CHECK(ndarray.dim()==1);
-    NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   std::array{3} );
-    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), std::array{1} );
+    NMTOOLS_ASSERT_EQUAL( ndarray.shape(),   nmtools_array{3} );
+    NMTOOLS_ASSERT_EQUAL( ndarray.strides(), nmtools_array{1} );
     {
         ndarray = {1,2,3};
         double expected[3] = {1,2,3};

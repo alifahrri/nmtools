@@ -152,6 +152,27 @@ namespace nmtools::meta
 
     template <size_t N>
     constexpr inline auto make_index_sequence_v = make_index_sequence<N>{};
+
+    // TODO: rename, ct_t maybe
+    template <auto I, auto...Is>
+    struct make_ct
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (static_cast<bool>(sizeof...(Is))) {
+                using type = integer_sequence<decltype(I),I,Is...>;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<integral_constant<decltype(I),I>>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
+    template <auto I, auto...Is>
+    using ct = type_t<make_ct<I,Is...>>;
+
+    template <auto I, auto...Is>
+    constexpr inline auto ct_v = ct<I,Is...>{};
 } // nmtools::meta
 
 namespace nmtools::meta

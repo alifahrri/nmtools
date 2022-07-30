@@ -47,7 +47,6 @@ TEST_CASE("not_equal(case1)" * doctest::test_suite("view::not_equal"))
 {
     NOT_EQUAL_SUBCASE( case1,   a,   b );
     NOT_EQUAL_SUBCASE( case1, a_a, b_a );
-    NOT_EQUAL_SUBCASE( case1, a_v, b_v );
     NOT_EQUAL_SUBCASE( case1, a_f, b_f );
     NOT_EQUAL_SUBCASE( case1, a_d, b_d );
     NOT_EQUAL_SUBCASE( case1, a_h, b_h );
@@ -58,7 +57,6 @@ TEST_CASE("not_equal(case2)" * doctest::test_suite("view::not_equal"))
 {
     NOT_EQUAL_SUBCASE( case2,   a, b );
     NOT_EQUAL_SUBCASE( case2, a_a, b );
-    NOT_EQUAL_SUBCASE( case2, a_v, b );
     NOT_EQUAL_SUBCASE( case2, a_f, b );
     NOT_EQUAL_SUBCASE( case2, a_d, b );
     NOT_EQUAL_SUBCASE( case2, a_h, b );

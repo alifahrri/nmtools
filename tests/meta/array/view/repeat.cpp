@@ -24,7 +24,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
         }
         {
-            using array_t   = std::array<int,3>;
+            using array_t   = nmtools_array<int,3>;
             using repeats_t = meta::ct<3>;
             using axis_t    = nm::none_t;
             using view_t    = view::decorator_t< view::repeat_t, array_t, repeats_t, axis_t >;
@@ -54,7 +54,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
         }
         {
-            using array_t   = std::array<int,3>;
+            using array_t   = nmtools_array<int,3>;
             using repeats_t = int;
             using axis_t    = nm::none_t;
             using view_t    = view::decorator_t< view::repeat_t, array_t, repeats_t, axis_t >;
@@ -84,7 +84,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
         }
         {
-            using array_t   = std::array<int,3>;
+            using array_t   = nmtools_array<int,3>;
             using repeats_t = meta::ct<3>;
             using axis_t    = int;
             using view_t    = view::decorator_t< view::repeat_t, array_t, repeats_t, axis_t >;
@@ -120,7 +120,7 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
-            using array_t   = std::array<int,3>;
+            using array_t   = nmtools_array<int,3>;
             using repeats_t = meta::ct<3>;
             using axis_t    = nm::none_t;
             using view_t    = view::decorator_t< view::repeat_t, array_t, repeats_t, axis_t >;
@@ -150,7 +150,7 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
-            using array_t   = std::array<int,3>;
+            using array_t   = nmtools_array<int,3>;
             using repeats_t = int;
             using axis_t    = nm::none_t;
             using view_t    = view::decorator_t< view::repeat_t, array_t, repeats_t, axis_t >;
@@ -180,7 +180,7 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
-            using array_t   = std::array<int,3>;
+            using array_t   = nmtools_array<int,3>;
             using repeats_t = meta::ct<3>;
             using axis_t    = int;
             using view_t    = view::decorator_t< view::repeat_t, array_t, repeats_t, axis_t >;

@@ -9,7 +9,7 @@ namespace meta = nm::meta;
 
 using nm::index::compute_strides_t;
 using namespace nm::literals;
-using std::tuple;
+using nmtools_tuple;
 
 TEST_CASE("computes_strides" * doctest::test_suite("index"))
 {

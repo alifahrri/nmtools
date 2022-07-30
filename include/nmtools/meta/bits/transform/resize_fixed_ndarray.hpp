@@ -2,6 +2,7 @@
 #define NMTOOLS_META_BITS_TRANSFORM_RESIZE_FIXED_NDARRAY_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/def.hpp"
 
 namespace nmtools::meta
 {
@@ -34,6 +35,16 @@ namespace nmtools::meta
      */
     template <typename T, typename U>
     using resize_fixed_ndarray_t = type_t<resize_fixed_ndarray<T,U>>;
+
+    template <typename T, typename U, size_t N>
+    struct resize_fixed_ndarray<T[N],U,
+        enable_if_t<is_fixed_size_ndarray_v<U>>
+    >
+    {
+        using shape_t = nmtools_tuple<ct<N>>;
+        using default_ndarray_t = type_t<make_fixed_ndarray<T,shape_t>>;
+        using type = resize_fixed_ndarray_t<default_ndarray_t,U>;
+    }; // resize_fixed_ndarray
 } // namespace nmtools::meta
 
 

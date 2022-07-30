@@ -90,4 +90,18 @@ TEST_CASE("either" * doctest::test_suite("utl"))
             static_assert( meta::is_pointer_v<lptr_t> );
         }
     }
+
+    SUBCASE("array")
+    {
+        using array_t  = utl::array<size_t,3>;
+        using index_t  = size_t;
+        using slice_t  = utl::either<index_t,array_t>;
+        using slices_t = utl::array<slice_t,3>;
+        [[maybe_unused]] auto arr1 = slice_t(array_t{0ul,1ul,1ul});
+        [[maybe_unused]] auto arr2 = slice_t(array_t{0ul,3ul,1ul});
+        [[maybe_unused]] auto arr3 = slice_t(array_t{0ul,3ul,1ul});
+        auto result = slices_t{arr1,arr2,arr3};
+        // auto result = slices_t{array_t{0ul,1ul,1ul},array_t{0ul,3ul,1ul},array_t{0ul,3ul,1ul}};
+        NMTOOLS_ASSERT_EQUAL( (nm::at(result,0)), (array_t{0,1,1}) );
+    }
 }

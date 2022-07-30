@@ -18,6 +18,12 @@ using namespace nm::literals;
 
 #define declval(type) meta::declval<type>()
 
+#ifdef NMTOOLS_DISABLE_STL
+using meta::true_type, meta::false_type;
+#else
+using std::true_type, std::false_type;
+#endif
+
 TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::reduce"))
 {
     // reduce add, as needed by mean view
@@ -25,35 +31,35 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::reduce"))
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = int[3][2];
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = na::fixed_ndarray<int,3,2>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
-        using array_t = std::array<std::array<int,2>,3>;
+        using array_t = nmtools_array<nmtools_array<int,2>,3>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = na::hybrid_ndarray<int,6,2>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = na::dynamic_ndarray<int>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
     }
 
@@ -63,7 +69,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view::reduce"))
         using array_t    = int[3][2];
         using axis_t     = none_t;
         using dtype_t    = none_t;
-        using keepdims_t = std::true_type;
+        using keepdims_t = true_type;
         using view_t     = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, dtype_t, keepdims_t>;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
     }
@@ -76,27 +82,27 @@ TEST_CASE("fixed_ndarray_shape" * doctest::test_suite("view::reduce"))
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = int[3][2];
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         constexpr auto shape = meta::fixed_ndarray_shape_v<view_t>;
-        constexpr auto expected = std::array{2ul};
+        constexpr auto expected = nmtools_array{2ul};
         NMTOOLS_STATIC_ASSERT_EQUAL( shape, expected );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = na::fixed_ndarray<int,3,2>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         constexpr auto shape = meta::fixed_ndarray_shape_v<view_t>;
-        constexpr auto expected = std::array{2ul};
+        constexpr auto expected = nmtools_array{2ul};
         NMTOOLS_STATIC_ASSERT_EQUAL( shape, expected );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
-        using array_t = std::array<std::array<int,2>,3>;
+        using array_t = nmtools_array<nmtools_array<int,2>,3>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         constexpr auto shape = meta::fixed_ndarray_shape_v<view_t>;
-        constexpr auto expected = std::array{2ul};
+        constexpr auto expected = nmtools_array{2ul};
         NMTOOLS_STATIC_ASSERT_EQUAL( shape, expected );
     }
 }
@@ -107,35 +113,35 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view::reduce"))
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = int[3][2];
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = na::fixed_ndarray<int,3,2>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
-        using array_t = std::array<std::array<int,2>,3>;
+        using array_t = nmtools_array<nmtools_array<int,2>,3>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = na::hybrid_ndarray<int,6,2>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
     }
     {
         using op_t    = view::add_t<none_t, none_t, float, void>;
         using array_t = na::dynamic_ndarray<int>;
         using axis_t  = decltype(0_ct);
-        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, std::false_type >;
+        using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, axis_t, none_t, false_type >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
     }
 }

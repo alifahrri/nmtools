@@ -46,7 +46,6 @@ TEST_CASE("less(case1)" * doctest::test_suite("array::less"))
 {
     LESS_SUBCASE( case1,   a,   b );
     LESS_SUBCASE( case1, a_a, b_a );
-    LESS_SUBCASE( case1, a_v, b_v );
     LESS_SUBCASE( case1, a_f, b_f );
     LESS_SUBCASE( case1, a_d, b_d );
     LESS_SUBCASE( case1, a_h, b_h );
@@ -56,7 +55,6 @@ TEST_CASE("less(case2)" * doctest::test_suite("array::less"))
 {
     LESS_SUBCASE( case2,   a, b );
     LESS_SUBCASE( case2, a_a, b );
-    LESS_SUBCASE( case2, a_v, b );
     LESS_SUBCASE( case2, a_f, b );
     LESS_SUBCASE( case2, a_d, b );
     LESS_SUBCASE( case2, a_h, b );

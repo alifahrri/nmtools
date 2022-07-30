@@ -46,7 +46,6 @@ TEST_CASE("greater(case1)" * doctest::test_suite("array::greater"))
 {
     GREATER_SUBCASE( case1,   a,   b );
     GREATER_SUBCASE( case1, a_a, b_a );
-    GREATER_SUBCASE( case1, a_v, b_v );
     GREATER_SUBCASE( case1, a_f, b_f );
     GREATER_SUBCASE( case1, a_d, b_d );
     GREATER_SUBCASE( case1, a_h, b_h );
@@ -56,7 +55,6 @@ TEST_CASE("greater(case2)" * doctest::test_suite("array::greater"))
 {
     GREATER_SUBCASE( case2,   a, b );
     GREATER_SUBCASE( case2, a_a, b );
-    GREATER_SUBCASE( case2, a_v, b );
     GREATER_SUBCASE( case2, a_f, b );
     GREATER_SUBCASE( case2, a_d, b );
     GREATER_SUBCASE( case2, a_h, b );

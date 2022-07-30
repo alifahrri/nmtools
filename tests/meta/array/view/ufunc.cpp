@@ -19,19 +19,25 @@ using nm::none_t;
 
 #define declval(type) meta::declval<type>()
 
+#ifdef NMTOOLS_DISABLE_STL
+using meta::false_type, meta::true_type;
+#else
+using std::false_type, std::true_type;
+#endif
+
 TEST_CASE("ufunc" * doctest::test_suite("view"))
 {
     SUBCASE("get_operands_type")
     {
         using array_t = int[2][3];
-        using shape_t = std::array<unsigned long, 1>;
+        using shape_t = nmtools_array<unsigned long, 1>;
         using free_axes_t = nmtools::array::hybrid_ndarray<unsigned long, 1, 1>;
         using keepdims_t  = std::integral_constant<bool, false>;
         using reduced_t   = view::decorator_t<view::reduce_t, view::add_t<>, array_t, unsigned long, nmtools::none_t, keepdims_t >;
         using lhs_t = view::decorator_t<view::broadcast_to_t, reduced_t, shape_t, free_axes_t >;
         using rhs_t = view::decorator_t<view::broadcast_to_t, size_t, shape_t, none_t>;
         using operands_t = view::detail::get_operands_type_t<lhs_t,rhs_t>;
-        using expected_t = std::tuple<const lhs_t, const rhs_t>;
+        using expected_t = nmtools_tuple<const lhs_t, const rhs_t>;
         NMTOOLS_STATIC_CHECK_IS_SAME( operands_t, expected_t );
     }
 }
@@ -448,7 +454,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
     {
         {
             // divide * reduce_add
-            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, std::false_type>;
+            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type>;
             using rhs_t = size_t;
             // using view_t = decltype(view::divide(declval(lhs_t),declval(rhs_t)));
             using view_t = view::decorator_t< view::ufunc_t, view::divide_t, lhs_t, rhs_t >;
@@ -456,7 +462,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
         }
         {
             // divide * reduce_add
-            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, std::false_type>;
+            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type>;
             using rhs_t = size_t;
             using view_t = decltype(view::divide(declval(lhs_t),declval(rhs_t)));
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
@@ -465,7 +471,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
     SUBCASE("multiply")
     {
         {
-            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, std::false_type>;
+            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type>;
             using rhs_t = size_t;
             using view_t = decltype(view::multiply(declval(lhs_t),declval(rhs_t)));
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );

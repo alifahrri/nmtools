@@ -46,7 +46,6 @@ TEST_CASE("ceil(case1)" * doctest::test_suite("view::ceil"))
 {
     CEIL_SUBCASE( case1,   a);
     CEIL_SUBCASE( case1, a_a);
-    CEIL_SUBCASE( case1, a_v);
     CEIL_SUBCASE( case1, a_f);
     CEIL_SUBCASE( case1, a_d);
     CEIL_SUBCASE( case1, a_h);

@@ -6,7 +6,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, argsort)
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int array[4] = {0,1,2,3};
-        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(array);
         inline auto array_ct = nmtools_tuple{0_ct,1_ct,2_ct,3_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -17,7 +17,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, argsort)
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
         inline int array[4] = {1,0,2,3};
-        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(array);
         inline auto array_ct = nmtools_tuple{1_ct,0_ct,2_ct,3_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -28,7 +28,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, argsort)
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
         inline int array[4] = {2,1,0,3};
-        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(array);
         inline auto array_ct = nmtools_tuple{2_ct,1_ct,0_ct,3_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -39,7 +39,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, argsort)
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
     {
         inline int array[4] = {1,2,3,4};
-        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(array);
         inline auto array_ct = nmtools_tuple{1_ct,2_ct,3_ct,4_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
@@ -50,7 +50,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, argsort)
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
     {
         inline int array[4] = {2,1,3,4};
-        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(array);
         inline auto array_ct = nmtools_tuple{2_ct,1_ct,3_ct,4_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
@@ -61,7 +61,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, argsort)
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
     {
         inline int array[4] = {3,2,1,4};
-        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(array);
         inline auto array_ct = nmtools_tuple{3_ct,2_ct,1_ct,4_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)

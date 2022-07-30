@@ -13,20 +13,20 @@ using nm::none_t;
 TEST_CASE("eval(zeros)" * doctest::test_suite("eval") * doctest::may_fail())
 {
     {
-        using view_t = view::decorator_t< view::zeros_t, std::vector<int>, float >;
+        using view_t = view::decorator_t< view::zeros_t, nmtools_list<int>, float >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
         using expected_t = na::dynamic_ndarray<float>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using shape_t = decltype(std::tuple{1_ct});
+        using shape_t = decltype(nmtools_tuple{1_ct});
         using view_t = view::decorator_t< view::zeros_t, shape_t, int >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
         using expected_t = na::fixed_ndarray<int,1>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using shape_t = decltype(std::tuple{2_ct,3_ct,1_ct});
+        using shape_t = decltype(nmtools_tuple{2_ct,3_ct,1_ct});
         using view_t = view::decorator_t< view::zeros_t, shape_t, int >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
         using expected_t = na::fixed_ndarray<int,2,3,1>;
@@ -35,7 +35,7 @@ TEST_CASE("eval(zeros)" * doctest::test_suite("eval") * doctest::may_fail())
         static_assert( std::is_same_v< meta::make_fixed_ndarray_t<int,shape_t>, expected_t > );
     }
     {
-        using shape_t = decltype(std::tuple{2_ct,3_ct,4_ct,1_ct});
+        using shape_t = decltype(nmtools_tuple{2_ct,3_ct,4_ct,1_ct});
         using view_t = view::decorator_t< view::zeros_t, shape_t, double >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
         using expected_t = na::fixed_ndarray<double,2,3,4,1>;

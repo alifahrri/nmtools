@@ -46,7 +46,6 @@ TEST_CASE("exp2(case1)" * doctest::test_suite("view::exp2"))
 {
     EXP2_SUBCASE( case1,   a);
     EXP2_SUBCASE( case1, a_a);
-    EXP2_SUBCASE( case1, a_v);
     EXP2_SUBCASE( case1, a_f);
     EXP2_SUBCASE( case1, a_d);
     EXP2_SUBCASE( case1, a_h);

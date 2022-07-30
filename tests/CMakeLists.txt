@@ -25,6 +25,10 @@ if (NMTOOLS_TESTING_GENERIC_NDARRAY)
     add_compile_definitions(NMTOOLS_TESTING_GENERIC_NDARRAY)
 endif(NMTOOLS_TESTING_GENERIC_NDARRAY)
 
+option(NMTOOLS_TESTING_NOSTL "build tests without stl dependencies" OFF)
+if (NMTOOLS_TESTING_NOSTL)
+    add_compile_definitions(NMTOOLS_DISABLE_STL)
+endif (NMTOOLS_TESTING_NOSTL)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_subdirectory(array)

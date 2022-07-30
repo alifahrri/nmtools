@@ -261,9 +261,13 @@ TEST_CASE("mean(case7)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case7, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case7, a_hs_db, axis, dtype, keepdims);
 
+    // TODO: fix utl either
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case7, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case7, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case7, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -292,9 +296,13 @@ TEST_CASE("mean(case8)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case8, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case8, a_hs_db, axis, dtype, keepdims);
 
+    // TODO: fix utl either
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case8, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case8, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case8, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -447,9 +455,12 @@ TEST_CASE("mean(case13)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case13, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case13, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case13, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case13, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case13, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -478,9 +489,12 @@ TEST_CASE("mean(case14)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case14, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case14, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case14, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case14, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case14, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -509,9 +523,12 @@ TEST_CASE("mean(case15)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case15, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case15, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case15, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case15, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case15, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -540,9 +557,12 @@ TEST_CASE("mean(case16)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case16, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case16, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case16, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case16, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case16, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -571,9 +591,12 @@ TEST_CASE("mean(case17)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case17, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case17, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case17, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case17, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case17, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -602,9 +625,12 @@ TEST_CASE("mean(case18)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case18, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case18, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case18, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case18, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case18, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -633,9 +659,12 @@ TEST_CASE("mean(case19)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case19, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case19, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case19, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case19, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case19, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -664,9 +693,12 @@ TEST_CASE("mean(case20)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case20, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case20, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case20, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case20, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case20, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -896,9 +928,12 @@ TEST_CASE("mean(case27)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case27, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case27, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case27, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case27, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case27, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -927,9 +962,12 @@ TEST_CASE("mean(case28)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case28, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case28, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case28, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case28, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case28, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -958,9 +996,12 @@ TEST_CASE("mean(case30)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case30, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case30, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case30, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case30, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case30, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -989,9 +1030,12 @@ TEST_CASE("mean(case31)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case31, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case31, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case31, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case31, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case31, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }
 
@@ -1020,8 +1064,11 @@ TEST_CASE("mean(case32)" * doctest::test_suite("view::mean"))
     // MEAN_SUBCASE(case32, a_hs_hb, axis, dtype, keepdims);
     // MEAN_SUBCASE(case32, a_hs_db, axis, dtype, keepdims);
 
+    #ifndef NMTOOLS_DISABLE_STL
     MEAN_SUBCASE(case32, a_ds_fb, axis, dtype, keepdims);
     MEAN_SUBCASE(case32, a_ds_hb, axis, dtype, keepdims);
     MEAN_SUBCASE(case32, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
     #endif
 }

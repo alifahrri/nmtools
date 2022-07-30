@@ -47,7 +47,6 @@ TEST_CASE("greater_equal(case1)" * doctest::test_suite("view::greater_equal"))
 {
     GREATER_EQUAL_SUBCASE( case1,   a,   b );
     GREATER_EQUAL_SUBCASE( case1, a_a, b_a );
-    GREATER_EQUAL_SUBCASE( case1, a_v, b_v );
     GREATER_EQUAL_SUBCASE( case1, a_f, b_f );
     GREATER_EQUAL_SUBCASE( case1, a_d, b_d );
     GREATER_EQUAL_SUBCASE( case1, a_h, b_h );
@@ -57,7 +56,6 @@ TEST_CASE("greater_equal(case2)" * doctest::test_suite("view::greater_equal"))
 {
     GREATER_EQUAL_SUBCASE( case2,   a, b );
     GREATER_EQUAL_SUBCASE( case2, a_a, b );
-    GREATER_EQUAL_SUBCASE( case2, a_v, b );
     GREATER_EQUAL_SUBCASE( case2, a_f, b );
     GREATER_EQUAL_SUBCASE( case2, a_d, b );
     GREATER_EQUAL_SUBCASE( case2, a_h, b );

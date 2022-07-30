@@ -45,7 +45,6 @@ TEST_CASE("right_shift(case1)" * doctest::test_suite("view::right_shift"))
 {
     RIGHT_SHIFT_SUBCASE( case1,   a,   b );
     RIGHT_SHIFT_SUBCASE( case1, a_a, b_a );
-    RIGHT_SHIFT_SUBCASE( case1, a_v, b_v );
     RIGHT_SHIFT_SUBCASE( case1, a_f, b_f );
     RIGHT_SHIFT_SUBCASE( case1, a_d, b_d );
     RIGHT_SHIFT_SUBCASE( case1, a_h, b_h );
@@ -55,7 +54,6 @@ TEST_CASE("right_shift(case2)" * doctest::test_suite("view::right_shift"))
 {
     RIGHT_SHIFT_SUBCASE( case2,   a, b );
     RIGHT_SHIFT_SUBCASE( case2, a_a, b );
-    RIGHT_SHIFT_SUBCASE( case2, a_v, b );
     RIGHT_SHIFT_SUBCASE( case2, a_f, b );
     RIGHT_SHIFT_SUBCASE( case2, a_d, b );
     RIGHT_SHIFT_SUBCASE( case2, a_h, b );
@@ -98,7 +96,6 @@ TEST_CASE("reduce_right_shift(case1)" * doctest::test_suite("array::reduce_right
 {
     REDUCE_RIGHT_SHIFT_SUBCASE( case1,   a, axis );
     REDUCE_RIGHT_SHIFT_SUBCASE( case1, a_a, axis );
-    REDUCE_RIGHT_SHIFT_SUBCASE( case1, a_v, axis );
     REDUCE_RIGHT_SHIFT_SUBCASE( case1, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_RIGHT_SHIFT_SUBCASE( case1, a_d, axis );
@@ -109,7 +106,6 @@ TEST_CASE("reduce_right_shift(case2)" * doctest::test_suite("array::reduce_right
 {
     REDUCE_RIGHT_SHIFT_SUBCASE( case2,   a, axis );
     REDUCE_RIGHT_SHIFT_SUBCASE( case2, a_a, axis );
-    REDUCE_RIGHT_SHIFT_SUBCASE( case2, a_v, axis );
     REDUCE_RIGHT_SHIFT_SUBCASE( case2, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_RIGHT_SHIFT_SUBCASE( case2, a_d, axis );
@@ -120,7 +116,6 @@ TEST_CASE("reduce_right_shift(case3)" * doctest::test_suite("array::reduce_right
 {
     REDUCE_RIGHT_SHIFT_SUBCASE( case3,   a, axis );
     REDUCE_RIGHT_SHIFT_SUBCASE( case3, a_a, axis );
-    REDUCE_RIGHT_SHIFT_SUBCASE( case3, a_v, axis );
     REDUCE_RIGHT_SHIFT_SUBCASE( case3, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_RIGHT_SHIFT_SUBCASE( case3, a_d, axis );
@@ -131,7 +126,6 @@ TEST_CASE("reduce_right_shift(case4)" * doctest::test_suite("array::reduce_right
 {
     REDUCE_RIGHT_SHIFT_SUBCASE( case4,   a, axis, dtype, initial );
     REDUCE_RIGHT_SHIFT_SUBCASE( case4, a_a, axis, dtype, initial );
-    REDUCE_RIGHT_SHIFT_SUBCASE( case4, a_v, axis, dtype, initial );
     REDUCE_RIGHT_SHIFT_SUBCASE( case4, a_f, axis, dtype, initial );
     REDUCE_RIGHT_SHIFT_SUBCASE( case4, a_h, axis, dtype, initial );
 }
@@ -140,7 +134,6 @@ TEST_CASE("reduce_right_shift(case5)" * doctest::test_suite("array::reduce_right
 {
     REDUCE_RIGHT_SHIFT_SUBCASE( case5,   a, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case5, a_a, axis, dtype, initial, keepdims );
-    REDUCE_RIGHT_SHIFT_SUBCASE( case5, a_v, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case5, a_f, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case5, a_h, axis, dtype, initial, keepdims );
 }
@@ -149,7 +142,6 @@ TEST_CASE("reduce_right_shift(case6)" * doctest::test_suite("array::reduce_right
 {
     REDUCE_RIGHT_SHIFT_SUBCASE( case6,   a, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case6, a_a, axis, dtype, initial, keepdims );
-    REDUCE_RIGHT_SHIFT_SUBCASE( case6, a_v, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case6, a_f, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case6, a_h, axis, dtype, initial, keepdims );
 }
@@ -158,7 +150,6 @@ TEST_CASE("reduce_right_shift(case7)" * doctest::test_suite("array::reduce_right
 {
     REDUCE_RIGHT_SHIFT_SUBCASE( case7,   a, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case7, a_a, axis, dtype, initial, keepdims );
-    REDUCE_RIGHT_SHIFT_SUBCASE( case7, a_v, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case7, a_f, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case7, a_h, axis, dtype, initial, keepdims );
 }
@@ -167,7 +158,6 @@ TEST_CASE("reduce_right_shift(case8)" * doctest::test_suite("array::reduce_right
 {
     REDUCE_RIGHT_SHIFT_SUBCASE( case8,   a, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case8, a_a, axis, dtype, initial, keepdims );
-    REDUCE_RIGHT_SHIFT_SUBCASE( case8, a_v, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case8, a_f, axis, dtype, initial, keepdims );
     REDUCE_RIGHT_SHIFT_SUBCASE( case8, a_h, axis, dtype, initial, keepdims );
 }
@@ -209,7 +199,6 @@ TEST_CASE("accumulate_right_shift(case1)" * doctest::test_suite("array::accumula
 {
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case1,   a, axis );
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case1, a_a, axis );
-    ACCUMULATE_RIGHT_SHIFT_SUBCASE( case1, a_v, axis );
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case1, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_RIGHT_SHIFT_SUBCASE( case1, a_d, axis );
@@ -220,7 +209,6 @@ TEST_CASE("accumulate_right_shift(case2)" * doctest::test_suite("array::accumula
 {
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case2,   a, axis );
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case2, a_a, axis );
-    ACCUMULATE_RIGHT_SHIFT_SUBCASE( case2, a_v, axis );
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case2, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_RIGHT_SHIFT_SUBCASE( case2, a_d, axis );
@@ -231,7 +219,6 @@ TEST_CASE("accumulate_right_shift(case3)" * doctest::test_suite("array::accumula
 {
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case3,   a, axis );
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case3, a_a, axis );
-    ACCUMULATE_RIGHT_SHIFT_SUBCASE( case3, a_v, axis );
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case3, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_RIGHT_SHIFT_SUBCASE( case3, a_d, axis );
@@ -275,7 +262,6 @@ TEST_CASE("outer_right_shift(case1)" * doctest::test_suite("array::outer_right_s
 {
     OUTER_RIGHT_SHIFT_SUBCASE( case1,   a,   b );
     OUTER_RIGHT_SHIFT_SUBCASE( case1, a_a, b_a );
-    // OUTER_RIGHT_SHIFT_SUBCASE( case1, a_v, b_v );
     OUTER_RIGHT_SHIFT_SUBCASE( case1, a_f, b_f );
     OUTER_RIGHT_SHIFT_SUBCASE( case1, a_d, b_d );
     OUTER_RIGHT_SHIFT_SUBCASE( case1, a_h, b_h );

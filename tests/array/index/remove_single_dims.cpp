@@ -12,13 +12,6 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#define CAST_ARRAYS(name) \
-auto name##_a = cast(name, kind::nested_arr); \
-auto name##_v = cast(name, kind::nested_vec); \
-auto name##_f = cast(name, kind::fixed); \
-auto name##_d = cast(name, kind::dynamic); \
-auto name##_h = cast(name, kind::hybrid); \
-
 #define RUN_impl(...) \
 ::nmtools::index::remove_single_dims(__VA_ARGS__);
 
@@ -56,7 +49,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, remove_single_dims)
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int shape[3] = {1,2,3};
-        CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -66,7 +59,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, remove_single_dims)
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
         int shape[3] = {1,2,3};
-        CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -97,28 +90,30 @@ TEST_CASE("remove_single_dims(case2)" * doctest::test_suite("index::remove_singl
 TEST_CASE("remove_single_dims" * doctest::test_suite("index::remove_single_dims"))
 {
     {
-        auto shape = std::array{1,2,3};
+        auto shape = nmtools_array{1,2,3};
         auto squeezed = nm::index::remove_single_dims(shape);
-        auto expected = std::array{2,3};
+        auto expected = nmtools_array{2,3};
         NMTOOLS_ASSERT_EQUAL( squeezed, expected );
     }
     // using tuple with runtime value not supported yet
     // {
     //     auto shape = std::tuple{1,2,3};
     //     auto squeezed = nm::index::remove_single_dims(shape);
-    //     auto expected = std::array{2,3};
+    //     auto expected = nmtools_array{2,3};
     //     NMTOOLS_ASSERT_EQUAL( squeezed, expected );
     // }
+    #ifndef NMTOOLS_DISABLE_STL
     {
         auto shape = std::vector{1,2,3};
         auto squeezed = nm::index::remove_single_dims(shape);
-        auto expected = std::array{2,3};
+        auto expected = nmtools_array{2,3};
         NMTOOLS_ASSERT_EQUAL( squeezed, expected );
     }
+    #endif // NMTOOLS_DISABLE_STL
     {
         auto shape = nm::array::hybrid_ndarray({1,2,3});
         auto squeezed = nm::index::remove_single_dims(shape);
-        auto expected = std::array{2,3};
+        auto expected = nmtools_array{2,3};
         NMTOOLS_ASSERT_EQUAL( squeezed, expected );
     }
 }

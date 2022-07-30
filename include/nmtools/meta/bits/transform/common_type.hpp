@@ -9,6 +9,7 @@
 #include "nmtools/meta/bits/transform/at.hpp"
 #include "nmtools/meta/bits/transform/type_list_at.hpp"
 #include "nmtools/meta/bits/transform/make_signed.hpp"
+#include "nmtools/meta/bits/transform/add_reference.hpp"
 
 namespace nmtools::meta
 {

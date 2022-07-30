@@ -44,7 +44,6 @@ SUBCASE(#case_name) \
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case1, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case1, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_h, shape, expected );
@@ -53,7 +52,6 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("array::broadcast_to"))
 TEST_CASE("broadcast_to(case2)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case2, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case2, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_h, shape, expected );
@@ -62,7 +60,6 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("array::broadcast_to"))
 TEST_CASE("broadcast_to(case3)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case3, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case3, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_h, shape, expected );
@@ -71,7 +68,6 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("array::broadcast_to"))
 TEST_CASE("broadcast_to(case4)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case4, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case4, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_h, shape, expected );
@@ -80,7 +76,6 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("array::broadcast_to"))
 TEST_CASE("broadcast_to(case5)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case5, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case5, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_h, shape, expected );
@@ -89,7 +84,6 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("array::broadcast_to"))
 TEST_CASE("broadcast_to(case6)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case6, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case6, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_h, shape, expected );
@@ -98,7 +92,6 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("array::broadcast_to"))
 TEST_CASE("broadcast_to(case7)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case7, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case7, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_h, shape, expected );
@@ -107,7 +100,6 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("array::broadcast_to"))
 TEST_CASE("broadcast_to(case8)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case8, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case8, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_h, shape, expected );
@@ -116,7 +108,6 @@ TEST_CASE("broadcast_to(case8)" * doctest::test_suite("array::broadcast_to"))
 TEST_CASE("broadcast_to(case9)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case9, x_a, shape, expected );
-    BROADCAST_TO_SUBCASE( case9, x_v, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_f, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_d, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_h, shape, expected );

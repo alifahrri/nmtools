@@ -18,7 +18,7 @@ TEST_CASE("eval(flip)" * doctest::test_suite("eval"))
     {
         using view_t = view::decorator_t< view::flip_t, int[3], none_t >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-        using expected_t = std::array<int,3>;
+        using expected_t = nmtools_array<int,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         static_assert( meta::is_fixed_size_ndarray_v<view_t> );
     }

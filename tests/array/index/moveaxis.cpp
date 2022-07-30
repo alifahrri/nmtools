@@ -10,7 +10,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3] = {1,2,3};
         inline int source = 0;
         inline int destination = 1;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -22,7 +22,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3] = {1,2,3};
         inline int source = 1;
         inline int destination = 0;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -34,7 +34,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3] = {1,2,3};
         inline int source = 0;
         inline int destination = -2;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -46,7 +46,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3] = {1,2,3};
         inline int source = 0;
         inline int destination = 2;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -58,7 +58,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3] = {1,2,3};
         inline int source = 0;
         inline int destination = -1;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -70,7 +70,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3] = {1,2,3};
         inline int source = -1;
         inline int destination = 0;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -82,9 +82,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3] = {1,2,3};
         inline int source[1] = {-1};
         inline int destination[1] = {0};
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(source);
-        NMTOOLS_CAST_ARRAYS(destination);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(source);
+        NMTOOLS_CAST_INDEX_ARRAYS(destination);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -96,9 +96,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[4] = {1,2,3,4};
         inline int source[1] = {0};
         inline int destination[1] = {-1};
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(source);
-        NMTOOLS_CAST_ARRAYS(destination);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(source);
+        NMTOOLS_CAST_INDEX_ARRAYS(destination);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -110,9 +110,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[4] = {1,2,3,4};
         inline int source[2] = {0,1};
         inline int destination[2] = {-1,2};
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(source);
-        NMTOOLS_CAST_ARRAYS(destination);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(source);
+        NMTOOLS_CAST_INDEX_ARRAYS(destination);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -124,9 +124,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[4] = {1,2,3,4};
         inline int source[2] = {0,1};
         inline int destination[2] = {3,2};
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(source);
-        NMTOOLS_CAST_ARRAYS(destination);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(source);
+        NMTOOLS_CAST_INDEX_ARRAYS(destination);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -138,7 +138,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[4] = {1,2,3,4};
         inline int source = 0;
         inline int destination = -1;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
@@ -150,7 +150,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[4] = {1,2,3,4};
         inline int source = 0;
         inline int destination = -2;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
@@ -162,7 +162,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[4] = {1,2,3,4};
         inline int source = 2;
         inline int destination = 3;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13)
     {
@@ -174,9 +174,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[4] = {1,2,3,4};
         inline int source[1] = {2};
         inline int destination[1] = {1};
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(source);
-        NMTOOLS_CAST_ARRAYS(destination);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(source);
+        NMTOOLS_CAST_INDEX_ARRAYS(destination);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case14)
     {
@@ -190,9 +190,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         // inline int destination[2] = {1,2};
         inline int source[2] = {2,1};
         inline int destination[2] = {1,0};
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(source);
-        NMTOOLS_CAST_ARRAYS(destination);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(source);
+        NMTOOLS_CAST_INDEX_ARRAYS(destination);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case15)
     {
@@ -204,9 +204,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[4] = {1,2,3,4};
         inline int source[2] = {2,0};
         inline int destination[2] = {1,2};
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(source);
-        NMTOOLS_CAST_ARRAYS(destination);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(source);
+        NMTOOLS_CAST_INDEX_ARRAYS(destination);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case16)
     {
@@ -218,7 +218,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3] = {1,2,6};
         inline int source = 0;
         inline int destination = 1;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case17)
     {
@@ -230,9 +230,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int shape[3]       = {1,2,6};
         inline int source[1]      = {0};
         inline int destination[1] = {1};
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(source);
-        NMTOOLS_CAST_ARRAYS(destination);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(source);
+        NMTOOLS_CAST_INDEX_ARRAYS(destination);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case18)
     {

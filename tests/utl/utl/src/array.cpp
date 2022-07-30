@@ -74,4 +74,12 @@ TEST_CASE("array" * doctest::test_suite("utl"))
             NMTOOLS_ASSERT_EQUAL( value, 1 );
         }
     }
+
+    SUBCASE("len")
+    {
+        {
+            auto array = utl::array{1,2,3};
+            NMTOOLS_ASSERT_EQUAL( nm::len(array), 3 );
+        }
+    }
 }

@@ -54,44 +54,6 @@ TEST_CASE("transpose(array)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case10, array_a, axes_ct );
 }
 
-TEST_CASE("transpose(vector)" * doctest::test_suite("array::transpose"))
-{
-    TRANSPOSE_SUBCASE( case1, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case2, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case3, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case4, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case5, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case6, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case7, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case8, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case9, array_v, axes_a );
-    TRANSPOSE_SUBCASE( case10, array_v, axes_a );
-
-    // TODO: fix
-    // TRANSPOSE_SUBCASE( case1, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case2, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case3, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case4, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case5, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case6, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case7, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case8, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case9, array_v, axes_v );
-    // TRANSPOSE_SUBCASE( case10, array_v, axes_v );
-
-    // TODO: fix
-    // TRANSPOSE_SUBCASE( case1, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case2, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case3, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case4, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case5, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case6, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case7, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case8, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case9, array_v, axes_ct );
-    // TRANSPOSE_SUBCASE( case10, array_v, axes_ct );
-}
-
 TEST_CASE("transpose(fixed_ndarray)" * doctest::test_suite("array::transpose"))
 {
     TRANSPOSE_SUBCASE( case1, array_f, axes_a );

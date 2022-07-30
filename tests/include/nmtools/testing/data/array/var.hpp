@@ -368,7 +368,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, var)
                 {10,11},
             }
         };
-        inline auto axis = std::tuple{0_ct,1_ct};
+        inline auto axis = nmtools_tuple{0_ct,1_ct};
         inline int ddof = 0;
         inline auto keepdims = False;
         NMTOOLS_CAST_ARRAYS(array);

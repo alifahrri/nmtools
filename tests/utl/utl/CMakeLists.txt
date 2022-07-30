@@ -8,6 +8,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/tuple.cpp
     src/maybe.cpp
     src/either.cpp
+    src/vector.cpp
 )
 
 target_compile_options(

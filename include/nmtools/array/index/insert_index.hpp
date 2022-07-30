@@ -133,11 +133,15 @@ namespace nmtools::meta
                 using new_element_t = type_t<decltype(new_element_vtype)>;
                 if constexpr (is_fixed_index_array_v<indices_t>) {
                     constexpr auto new_size = len_v<indices_t> + 1;
-                    using resized_t = resize_fixed_index_array_t<indices_t,new_size>;
+                    using resized_t = resize_fixed_index_array_t<transform_bounded_array_t<indices_t>,new_size>;
                     using type = replace_value_type_t<resized_t,new_element_t>;
-                    return as_value_v<type>;
+                    if constexpr (is_fail_v<type> || is_fail_v<resized_t>) {
+                        return as_value_v<nmtools_array<new_element_t,new_size>>;
+                    } else {
+                        return as_value_v<type>;
+                    }
                 } else {
-                    using type = replace_value_type_t<indices_t,new_element_t>;
+                    using type = replace_value_type_t<transform_bounded_array_t<indices_t>,new_element_t>;
                     return as_value_v<type>;
                 }
             } else if constexpr (
@@ -149,7 +153,11 @@ namespace nmtools::meta
                 constexpr auto n_index   = len_v<index_t>;
                 constexpr auto dim = n_indices + n_index;
                 using resized_t = resize_fixed_index_array_t<indices_t,dim>;
-                return as_value_v<resized_t>;
+                if constexpr (is_fail_v<resized_t>) {
+                    return as_value_v<nmtools_array<get_element_type_t<indices_t>,dim>>;
+                } else {
+                    return as_value_v<resized_t>;
+                }
             } else if constexpr (
                    (is_hybrid_index_array_v<indices_t> && !is_tuple_v<indices_t>)
                 && (is_hybrid_index_array_v<index_t>)

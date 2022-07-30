@@ -14,11 +14,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int padding[2]     = {0,0};
         inline int stride[2]      = {2,2};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -33,11 +33,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int padding[2]   = {0,0};
         inline int stride[2]    = {1,1};
         inline int dilations[2] = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -52,11 +52,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int padding[2]   = {1,1};
         inline int stride[2]    = {1,1};
         inline int dilations[2] = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -71,11 +71,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int padding[2]     = {1,1};
         inline int stride[2]      = {2,2};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -90,11 +90,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int padding[2]     = {1,1};
         inline int stride[2]      = {1,1};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -109,11 +109,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int padding[2]     = {1,1};
         inline int stride[2]      = {1,1};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -128,11 +128,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int padding[2]     = {1,1};
         inline int stride[2]      = {2,2};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -147,11 +147,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {0,0};
         inline int dilations[2]    = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -168,11 +168,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {0,0};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -188,11 +188,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {2,2};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -208,11 +208,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {1,1};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
@@ -228,11 +228,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {2,2};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
@@ -248,11 +248,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int stride[2]      = {2,2};
         inline int padding[2]     = {0,0};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13)
     {
@@ -268,11 +268,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int stride[2]      = {2,2};
         inline int padding[2]     = {1,1};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case14)
     {
@@ -288,11 +288,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_conv2d)
         inline int stride[2]      = {2,2};
         inline int padding[2]     = {1,1};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case15)
     {
@@ -313,13 +313,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {0,0};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -329,7 +329,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        // NOTE: utl either doesn't support this
+        // TODO: fix utl either construction/conversion
+        #if 0
         inline auto result = slices_t{array_t{0,1,1},array_t{0,3,1},array_t{0,3,1}};
+        #else
+        inline auto result = slices_t{slice_t{array_t{0,1,1}},slice_t{array_t{0,3,1}},slice_t{array_t{0,3,1}}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -341,13 +347,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {0,0};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -356,7 +362,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        #if 0
         inline auto result = slices_t{array_t{0,1,1},array_t{1,4,1},array_t{0,3,1}};
+        #else
+        inline auto result = slices_t{slice_t{array_t{0,1,1}},slice_t{array_t{1,4,1}},slice_t{array_t{0,3,1}}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -368,13 +378,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {0,0};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -383,7 +393,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        #if 0
         inline auto result = slices_t{array_t{0,1,1},array_t{0,3,1},array_t{1,4,1}};
+        #else
+        inline auto result = slices_t{(slice_t)array_t{0,1,1},(slice_t)array_t{0,3,1},(slice_t)array_t{1,4,1}};
+        #endif
         // shape_out = (in_shape + 2*padding - dilation * (kernel - 1) - 1) / stride + 1
         // padding=0, dilation=1, stride=1 :
         // shape_out = (in_shape - (kernel - 1) - 1) + 1 = (in_shape - kernel - 1)
@@ -400,13 +414,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int stride[2]      = {1,1};
         inline int padding[2]     = {0,0};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -415,7 +429,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        #if 0
         inline auto result = slices_t{array_t{0,1,1},array_t{1,4,1},array_t{1,4,1}};
+        #else
+        inline auto result = slices_t{(slice_t)array_t{0,1,1},(slice_t)array_t{1,4,1},(slice_t)array_t{1,4,1}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -427,13 +445,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int padding[2]     = {0,0};
         inline int stride[2]      = {1,1};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -442,7 +460,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        #if 0
         inline auto result = slices_t{array_t{0,1,1},array_t{1,4,1},array_t{1,4,1}};
+        #else
+        inline auto result = slices_t{(slice_t)array_t{0,1,1},(slice_t)array_t{1,4,1},(slice_t)array_t{1,4,1}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -454,13 +476,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int padding[2]     = {0,0};
         inline int stride[2]      = {2,2};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -468,7 +490,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        #if 0
         inline auto result = slices_t{array_t{0,1,1},array_t{0,3,1},array_t{0,3,1}};
+        #else
+        inline auto result = slices_t{(slice_t)array_t{0,1,1},(slice_t)array_t{0,3,1},(slice_t)array_t{0,3,1}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
@@ -480,13 +506,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int padding[2]     = {0,0};
         inline int stride[2]      = {2,2};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -494,7 +520,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        #if 0
         inline auto result = slices_t{array_t{0,1,1},array_t{2,5,1},array_t{0,3,1}};
+        #else
+        inline auto result = slices_t{(slice_t)array_t{0,1,1},(slice_t)array_t{2,5,1},(slice_t)array_t{0,3,1}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case8)
@@ -506,13 +536,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int padding[2]     = {0,0};
         inline int stride[2]      = {2,2};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -520,7 +550,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,3>;
+        #if 0
         inline auto result = slices_t{array_t{0,1,1},array_t{4,7,1},array_t{0,3,1}};
+        #else
+        inline auto result = slices_t{(slice_t)array_t{0,1,1},(slice_t)array_t{4,7,1},(slice_t)array_t{0,3,1}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case9)
@@ -532,13 +566,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int padding[2]     = {0,0};
         inline int stride[2]      = {1,1};
         inline int dilations[2]   = {1,1};
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -546,7 +580,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,4>;
+        #if 0
         inline auto result = slices_t{size_t{0},array_t{0,3,1},array_t{0,3,1},array_t{0,3,1}};
+        #else
+        inline auto result = slices_t{(slice_t)size_t{0},(slice_t)array_t{0,3,1},(slice_t)array_t{0,3,1},(slice_t)array_t{0,3,1}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case10)
@@ -559,13 +597,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int stride[2]      = {1,1};
         inline int dilations[2]   = {1,1};
         inline int groups = 3;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -573,7 +611,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,4>;
+        #if 0
         inline auto result = slices_t{size_t{0},size_t{2},array_t{2,5,1},array_t{2,5,1}};
+        #else
+        inline auto result = slices_t{(slice_t)size_t{0},(slice_t)size_t{2},(slice_t)array_t{2,5,1},(slice_t)array_t{2,5,1}};
+        #endif
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case11)
@@ -586,13 +628,13 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         inline int stride[2]      = {1,1};
         inline int dilations[2]   = {1,1};
         inline int groups = 1;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(src_shape)
-        NMTOOLS_CAST_ARRAYS(dst_shape)
-        NMTOOLS_CAST_ARRAYS(kernel_size)
-        NMTOOLS_CAST_ARRAYS(padding)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(dilations)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilations)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
@@ -600,7 +642,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_conv2d)
         using index_t  = size_t;
         using slice_t  = nmtools_either<index_t,array_t>;
         using slices_t = nmtools_array<slice_t,4>;
+        #if 0
         inline auto result = slices_t{size_t{0},array_t{0,3,1},array_t{0,3,1},array_t{0,3,1}};
+        #else
+        inline auto result = slices_t{(slice_t)size_t{0},(slice_t)array_t{0,3,1},(slice_t)array_t{0,3,1},(slice_t)array_t{0,3,1}};
+        #endif
     }
 }
 
@@ -628,7 +674,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -664,7 +710,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -693,7 +739,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -720,7 +766,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -753,7 +799,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -783,7 +829,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -807,7 +853,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {2,2};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -856,7 +902,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -908,7 +954,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -932,7 +978,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int stride[2] = {2,2};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -954,8 +1000,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int padding[2] = {1,1};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
@@ -980,8 +1026,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
         inline int padding[2] = {2,3};
         NMTOOLS_CAST_ARRAYS(input)
         NMTOOLS_CAST_ARRAYS(weight)
-        NMTOOLS_CAST_ARRAYS(stride)
-        NMTOOLS_CAST_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {

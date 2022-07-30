@@ -46,7 +46,6 @@ TEST_CASE("sin(case1)" * doctest::test_suite("view::sin"))
 {
     SIN_SUBCASE( case1,   a);
     SIN_SUBCASE( case1, a_a);
-    SIN_SUBCASE( case1, a_v);
     SIN_SUBCASE( case1, a_f);
     SIN_SUBCASE( case1, a_d);
     SIN_SUBCASE( case1, a_h);

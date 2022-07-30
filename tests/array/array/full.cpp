@@ -42,7 +42,6 @@ TEST_CASE("full(case1)" * doctest::test_suite("array::full"))
 {
     FULL_SUBCASE(case1, shape, fill_value );
     FULL_SUBCASE(case1, shape_a, fill_value );
-    FULL_SUBCASE(case1, shape_v, fill_value );
     // TODO: fix
     // FULL_SUBCASE(case1, shape_f, fill_value );
     FULL_SUBCASE(case1, shape_h, fill_value );

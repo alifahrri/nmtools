@@ -46,7 +46,6 @@ TEST_CASE("arcsin(case1)" * doctest::test_suite("array::arcsin"))
 {
     ARCSIN_SUBCASE( case1,   a);
     ARCSIN_SUBCASE( case1, a_a);
-    ARCSIN_SUBCASE( case1, a_v);
     ARCSIN_SUBCASE( case1, a_f);
     ARCSIN_SUBCASE( case1, a_d);
     ARCSIN_SUBCASE( case1, a_h);

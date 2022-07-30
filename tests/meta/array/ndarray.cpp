@@ -1,3 +1,4 @@
+#include "nmtools/utl.hpp"
 #include "nmtools/array/ndarray/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 

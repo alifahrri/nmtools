@@ -46,7 +46,6 @@ TEST_CASE("tan(case1)" * doctest::test_suite("view::tan"))
 {
     TAN_SUBCASE( case1,   a);
     TAN_SUBCASE( case1, a_a);
-    TAN_SUBCASE( case1, a_v);
     TAN_SUBCASE( case1, a_f);
     TAN_SUBCASE( case1, a_d);
     TAN_SUBCASE( case1, a_h);

@@ -35,7 +35,7 @@ TEST_CASE("eval(mean)" * doctest::test_suite("eval"))
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using array_t    = std::array<std::array<int,2>,3>;
+        using array_t    = nmtools_array<nmtools_array<int,2>,3>;
         using axis_t     = none_t;
         // using dtype_t    = none_t;
         // using keepdims_t = std::false_type;
@@ -89,7 +89,7 @@ TEST_CASE("eval(mean)" * doctest::test_suite("eval"))
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using array_t    = std::array<std::array<int,2>,3>;
+        using array_t    = nmtools_array<nmtools_array<int,2>,3>;
         using axis_t     = size_t;
         // using dtype_t    = none_t;
         // using keepdims_t = std::false_type;
@@ -143,18 +143,18 @@ TEST_CASE("eval(mean)" * doctest::test_suite("eval"))
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using eval_t     = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
         using element_t  = float;
-        using expected_t = std::array<element_t,2>;
+        using expected_t = nmtools_array<element_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using array_t    = std::array<std::array<int,2>,3>;
+        using array_t    = nmtools_array<nmtools_array<int,2>,3>;
         using axis_t     = decltype(0_ct);
         // using dtype_t    = none_t;
         // using keepdims_t = std::false_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t)));
         using eval_t     = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
         using element_t  = float;
-        using expected_t = std::array<element_t,2>;
+        using expected_t = nmtools_array<element_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
@@ -203,7 +203,7 @@ TEST_CASE("eval(mean)" * doctest::test_suite("eval"))
         using left_eval_t    = meta::resolve_optype_t< na::eval_t, left_t, none_t >;
         using right_eval_t   = meta::resolve_optype_t< na::eval_t, right_t, none_t >;
         using left_expect_t  = float;
-        using right_expect_t = std::array<std::array<float,1>,1>;
+        using right_expect_t = nmtools_array<nmtools_array<float,1>,1>;
         NMTOOLS_STATIC_CHECK_IS_SAME( left_eval_t, left_expect_t );
         NMTOOLS_STATIC_CHECK_IS_SAME( right_eval_t, right_expect_t );
     }
@@ -213,7 +213,7 @@ TEST_CASE("eval(mean)" * doctest::test_suite("eval"))
         using dtype_t    = none_t;
         using keepdims_t = bool;
         using eval_t     = decltype(na::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
-        using expected_t = std::variant<float,std::array<std::array<float,1ul>,1ul>>;
+        using expected_t = nmtools_either<float,nmtools_array<nmtools_array<float,1ul>,1ul>>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
 }

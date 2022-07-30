@@ -45,7 +45,6 @@ TEST_CASE("reciprocal(case1)" * doctest::test_suite("array::reciprocal"))
 {
     RECIPROCAL_SUBCASE( case1,   a);
     RECIPROCAL_SUBCASE( case1, a_a);
-    RECIPROCAL_SUBCASE( case1, a_v);
     RECIPROCAL_SUBCASE( case1, a_f);
     RECIPROCAL_SUBCASE( case1, a_d);
     RECIPROCAL_SUBCASE( case1, a_h);

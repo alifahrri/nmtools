@@ -46,7 +46,6 @@ TEST_CASE("floor(case1)" * doctest::test_suite("view::floor"))
 {
     FLOOR_SUBCASE( case1,   a);
     FLOOR_SUBCASE( case1, a_a);
-    FLOOR_SUBCASE( case1, a_v);
     FLOOR_SUBCASE( case1, a_f);
     FLOOR_SUBCASE( case1, a_d);
     FLOOR_SUBCASE( case1, a_h);

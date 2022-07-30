@@ -35,7 +35,7 @@ TEST_CASE("ufunc" * doctest::test_suite("view"))
     using testing::ufunc::g;
     SUBCASE("case1")
     {
-        auto array = std::array<int,3>{1,2,3};
+        auto array = nmtools_array<int,3>{1,2,3};
         auto reduced = view::reduce_add(array,0ul);
         auto lhs_ptr = &array;
         auto rhs_ptr = reduced.array;
@@ -44,7 +44,7 @@ TEST_CASE("ufunc" * doctest::test_suite("view"))
     }
     SUBCASE("case2")
     {
-        auto array = std::array<int,3>{1,2,3};
+        auto array = nmtools_array<int,3>{1,2,3};
         auto reduced = f(array);
         auto lhs_ptr = &array;
         auto rhs_ptr = reduced.array;
@@ -52,17 +52,17 @@ TEST_CASE("ufunc" * doctest::test_suite("view"))
         CHECK( is_same );
     }
     {
-        using array_t = std::array<std::array<int,3>,2>;
+        using array_t = nmtools_array<nmtools_array<int,3>,2>;
         array_t array = {{
             {1,2,3},
             {4,5,6}
         }};
         auto reduced_div = g(array);
         auto lhs_ptr = &array;
-        auto rhs_ptr = std::get<0>(reduced_div.operands).array.array;
+        auto rhs_ptr = nmtools::get<0>(reduced_div.operands).array.array;
         auto is_same = lhs_ptr == rhs_ptr;
         CHECK( is_same );
-        auto expected = std::array{5ul,7ul,9ul};
+        auto expected = nmtools_array{5ul,7ul,9ul};
         NMTOOLS_ASSERT_EQUAL( reduced_div, expected );
     }
 }

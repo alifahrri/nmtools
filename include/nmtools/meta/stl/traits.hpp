@@ -88,8 +88,6 @@ namespace nmtools::meta
     template <typename T>
     struct has_tuple_size<T, void_t<typename std::tuple_size<T>::type>> : true_type {};
 
-// TODO: no need to use ifdef, can safely assume already have vector
-#if defined(NMTOOLS_HAS_STL_VECTOR) && (NMTOOLS_HAS_STL_VECTOR)
     template <>
     struct is_bit_reference<std::vector<bool>::reference> : std::true_type {};
 
@@ -106,7 +104,6 @@ namespace nmtools::meta
 
     template <typename T, typename Allocator>
     struct is_list<std::vector<T,Allocator>> : true_type {};
-#endif // NMTOOLS_HAS_VECTOR
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRAITS_HPP

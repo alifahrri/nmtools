@@ -65,7 +65,7 @@ TEST_CASE("full_traits(case1)" * doctest::test_suite("view::full_traits"))
     }
     {
         using namespace nm::literals;
-        auto shape = std::tuple{2_ct,3_ct,2_ct};
+        auto shape = nmtools_tuple{2_ct,3_ct,2_ct};
         auto fill_value = 1;
         auto array = nm::view::full(shape,fill_value);
         using array_t = decltype(array);

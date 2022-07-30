@@ -47,7 +47,6 @@ TEST_CASE("signbit(case1)" * doctest::test_suite("view::signbit"))
 {
     SIGNBIT_SUBCASE( case1,   a );
     SIGNBIT_SUBCASE( case1, a_a );
-    SIGNBIT_SUBCASE( case1, a_v );
     SIGNBIT_SUBCASE( case1, a_f );
     SIGNBIT_SUBCASE( case1, a_d );
     SIGNBIT_SUBCASE( case1, a_h );

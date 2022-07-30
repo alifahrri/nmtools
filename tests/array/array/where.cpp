@@ -42,7 +42,6 @@ TEST_CASE("where(case1)" * doctest::test_suite("array::where"))
 {
     WHERE_SUBCASE(case1, condition,   x,   y  );
     WHERE_SUBCASE(case1, condition_a, x_a, y_a);
-    WHERE_SUBCASE(case1, condition_v, x_v, y_v);
     WHERE_SUBCASE(case1, condition_f, x_f, y_f);
     WHERE_SUBCASE(case1, condition_d, x_d, y_d);
     WHERE_SUBCASE(case1, condition_h, x_h, y_h);
@@ -52,7 +51,6 @@ TEST_CASE("where(case2)" * doctest::test_suite("array::where"))
 {
     WHERE_SUBCASE(case2, condition,   x,   y  );
     WHERE_SUBCASE(case2, condition_a, x_a, y_a);
-    WHERE_SUBCASE(case2, condition_v, x_v, y_v);
     WHERE_SUBCASE(case2, condition_f, x_f, y_f);
     WHERE_SUBCASE(case2, condition_d, x_d, y_d);
     WHERE_SUBCASE(case2, condition_h, x_h, y_h);
@@ -63,7 +61,6 @@ TEST_CASE("where(case3)" * doctest::test_suite("array::where"))
     WHERE_SUBCASE(case3, condition,   x,   y  );
     WHERE_SUBCASE(case3, condition_a, x_a, y_a);
     // TODO: remove support for nested vector
-    // WHERE_SUBCASE(case3, condition_v, x_v, y_v);
     WHERE_SUBCASE(case3, condition_f, x_f, y_f);
     WHERE_SUBCASE(case3, condition_d, x_d, y_d);
     WHERE_SUBCASE(case3, condition_h, x_h, y_h);

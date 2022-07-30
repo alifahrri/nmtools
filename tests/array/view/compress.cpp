@@ -60,7 +60,9 @@ TEST_CASE("compress(case1)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case1,   condition,   array, axis );
     COMPRESS_SUBCASE( case1, condition_a, array_a, axis );
     COMPRESS_SUBCASE( case1, condition_f, array_f, axis );
+    #ifndef NMTOOLS_DISABLE_STL
     COMPRESS_SUBCASE( case1, condition_d, array_d, axis );
+    #endif
     COMPRESS_SUBCASE( case1, condition_h, array_h, axis );
 
     #else
@@ -116,7 +118,9 @@ TEST_CASE("compress(case2)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case2,   condition,   array, axis );
     COMPRESS_SUBCASE( case2, condition_a, array_a, axis );
     COMPRESS_SUBCASE( case2, condition_f, array_f, axis );
+    #ifndef NMTOOLS_DISABLE_STL
     COMPRESS_SUBCASE( case2, condition_d, array_d, axis );
+    #endif
     COMPRESS_SUBCASE( case2, condition_h, array_h, axis );
 
     #else
@@ -170,7 +174,9 @@ TEST_CASE("compress(case3)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case3,   condition,   array, axis );
     COMPRESS_SUBCASE( case3, condition_a, array_a, axis );
     COMPRESS_SUBCASE( case3, condition_f, array_f, axis );
+    #ifndef NMTOOLS_DISABLE_STL
     COMPRESS_SUBCASE( case3, condition_d, array_d, axis );
+    #endif
     COMPRESS_SUBCASE( case3, condition_h, array_h, axis );
 
     #else
@@ -224,7 +230,9 @@ TEST_CASE("compress(case4)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case4,   condition,   array, axis );
     COMPRESS_SUBCASE( case4, condition_a, array_a, axis );
     COMPRESS_SUBCASE( case4, condition_f, array_f, axis );
+    #ifndef NMTOOLS_DISABLE_STL
     COMPRESS_SUBCASE( case4, condition_d, array_d, axis );
+    #endif
     COMPRESS_SUBCASE( case4, condition_h, array_h, axis );
 
     #else

@@ -46,7 +46,6 @@ TEST_CASE("arcsinh(case1)" * doctest::test_suite("view::arcsinh"))
 {
     ARCSINH_SUBCASE( case1,   a);
     ARCSINH_SUBCASE( case1, a_a);
-    ARCSINH_SUBCASE( case1, a_v);
     ARCSINH_SUBCASE( case1, a_f);
     ARCSINH_SUBCASE( case1, a_d);
     ARCSINH_SUBCASE( case1, a_h);

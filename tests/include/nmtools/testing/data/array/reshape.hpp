@@ -19,7 +19,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline int8_t array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
         inline int8_t newshape[2] = {12,1};
         NMTOOLS_CAST_ARRAYS(array)
-        NMTOOLS_CAST_ARRAYS(newshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(newshape)
         inline auto newshape_ct = nmtools_tuple{12_ct, 1_ct};
         // TODO: remove this tuple
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
@@ -40,7 +40,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline int8_t array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
         inline int8_t newshape[2] = {3,4};
         NMTOOLS_CAST_ARRAYS(array)
-        NMTOOLS_CAST_ARRAYS(newshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(newshape)
         inline auto newshape_ct = nmtools_tuple{3_ct, 4_ct};
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
@@ -61,7 +61,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline int8_t array[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
         inline int8_t newshape[4] = {1,2,3,2};
         NMTOOLS_CAST_ARRAYS(array)
-        NMTOOLS_CAST_ARRAYS(newshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(newshape)
         inline auto newshape_ct = nmtools_tuple{1_ct, 2_ct, 3_ct, 2_ct};
         inline auto newshape_t = ::nmtools::index::as_tuple(newshape_a);
     }
@@ -93,7 +93,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline auto newshape = nmtools_array{-1,3,2};
         inline auto newshape_ct = nmtools_tuple{"-1"_ct,3_ct,2_ct};
         NMTOOLS_CAST_ARRAYS(array)
-        NMTOOLS_CAST_ARRAYS(newshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(newshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -118,7 +118,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline auto newshape = nmtools_array{2,-1,2};
         inline auto newshape_ct = nmtools_tuple{2_ct,"-1"_ct,2_ct};
         NMTOOLS_CAST_ARRAYS(array)
-        NMTOOLS_CAST_ARRAYS(newshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(newshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -143,7 +143,7 @@ NMTOOLS_TESTING_DECLARE_CASE(reshape)
         inline auto newshape = nmtools_array{-1,-1,2};
         inline auto newshape_ct = nmtools_tuple{"-1"_ct,"-1"_ct,2_ct};
         NMTOOLS_CAST_ARRAYS(array)
-        NMTOOLS_CAST_ARRAYS(newshape)
+        NMTOOLS_CAST_INDEX_ARRAYS(newshape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
