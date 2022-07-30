@@ -29,8 +29,8 @@ TEST_CASE("ndenumerate" * doctest::test_suite("index"))
     CHECK( pack.size() == 6 );
     // newer doctest CHECK macro definition breaks the following :(
     #ifdef __clang__
-    [[maybe_unused]] auto idx = std::get<0>(pack[3]);
-    auto val = std::get<1>(pack[3]);
+    [[maybe_unused]] auto idx = nmtools::get<0>(pack[3]);
+    auto val = nmtools::get<1>(pack[3]);
     #else
     const auto [idx, val] = pack[3];
     #endif
@@ -39,8 +39,8 @@ TEST_CASE("ndenumerate" * doctest::test_suite("index"))
     for (size_t i=0; i<pack.size(); i++) {
         // newer doctest CHECK macro definition breaks the following :(
         #ifdef __clang__
-        [[maybe_unused]] auto idx = std::get<0>(pack[i]);
-        auto value = std::get<1>(pack[i]);
+        [[maybe_unused]] auto idx = nmtools::get<0>(pack[i]);
+        auto value = nmtools::get<1>(pack[i]);
         #else
         const auto [idx, value] = pack[i];
         #endif

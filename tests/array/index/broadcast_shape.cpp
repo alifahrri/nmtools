@@ -245,8 +245,8 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(broadcast_shape, case_name); \
     using namespace args; \
     auto results  = RUN_broadcast_shape(case_name,__VA_ARGS__); \
-    auto success  = std::get<0>(results); \
-    auto newshape = std::get<1>(results); \
+    auto success  = nmtools::get<0>(results); \
+    auto newshape = nmtools::get<1>(results); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
     if (expect::success) \
         NMTOOLS_ASSERT_EQUAL( newshape, expect::expected ); \

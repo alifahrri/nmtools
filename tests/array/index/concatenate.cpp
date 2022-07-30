@@ -109,8 +109,8 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(shape_concatenate, case_name) \
     auto result = RUN_shape_concatenate(case_name, args::ashape, args::bshape, args::axis); \
-    auto success = std::get<0>(result); \
-    auto shape = std::get<1>(result); \
+    auto success = nmtools::get<0>(result); \
+    auto shape = nmtools::get<1>(result); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
     if (expect::success) \
         NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
@@ -328,10 +328,10 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(index,concatenate,case_name); \
     auto result = RUN_concatenate(case_name,args::ashape,args::bshape,args::indices,args::axis); \
-    auto aflag = std::get<0>(result) ; \
-    auto bflag = std::get<1>(result) ; \
-    auto a_idx = std::get<2>(result) ; \
-    auto b_idx = std::get<3>(result) ; \
+    auto aflag = nmtools::get<0>(result) ; \
+    auto bflag = nmtools::get<1>(result) ; \
+    auto a_idx = nmtools::get<2>(result) ; \
+    auto b_idx = nmtools::get<3>(result) ; \
     NMTOOLS_ASSERT_EQUAL( aflag, expect::aflag ); \
     NMTOOLS_ASSERT_EQUAL( bflag, expect::bflag ); \
     if (expect::aflag) \
