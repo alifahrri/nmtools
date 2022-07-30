@@ -16,11 +16,11 @@ namespace nmtools::error
 {
     // dummy
 
-    inline void no_malloc() {}
+    inline void no_malloc(size_t) {}
 
-    inline void no_realloc() {}
+    inline void no_realloc(void*,size_t) {}
 
-    inline void no_free() {}
+    inline void no_free(void*) {}
 } // namespace nmtools::error
 
 #if __has_include(<malloc.h>)
