@@ -46,7 +46,6 @@ SUBCASE(#case_name) \
 TEST_CASE("tile(case1)" * doctest::test_suite("array::tile"))
 {
     TILE_ARRAY_SUBCASE( case1, array_a, reps_a );
-    TILE_ARRAY_SUBCASE( case1, array_v, reps_a );
     TILE_ARRAY_SUBCASE( case1, array_f, reps_a );
     TILE_ARRAY_SUBCASE( case1, array_d, reps_a );
     TILE_ARRAY_SUBCASE( case1, array_h, reps_a );
@@ -55,7 +54,6 @@ TEST_CASE("tile(case1)" * doctest::test_suite("array::tile"))
 TEST_CASE("tile(case2)" * doctest::test_suite("array::tile"))
 {
     TILE_ARRAY_SUBCASE( case2, array_a, reps_a );
-    TILE_ARRAY_SUBCASE( case2, array_v, reps_a );
     TILE_ARRAY_SUBCASE( case2, array_f, reps_a );
     TILE_ARRAY_SUBCASE( case2, array_d, reps_a );
     TILE_ARRAY_SUBCASE( case2, array_h, reps_a );
@@ -65,7 +63,6 @@ TEST_CASE("tile(case2)" * doctest::test_suite("array::tile"))
 TEST_CASE("tile(case3)" * doctest::test_suite("array::tile"))
 {
     TILE_ARRAY_SUBCASE( case3, array_a, reps_a );
-    TILE_ARRAY_SUBCASE( case3, array_v, reps_a );
     TILE_ARRAY_SUBCASE( case3, array_f, reps_a );
     TILE_ARRAY_SUBCASE( case3, array_d, reps_a );
     TILE_ARRAY_SUBCASE( case3, array_h, reps_a );
@@ -74,7 +71,6 @@ TEST_CASE("tile(case3)" * doctest::test_suite("array::tile"))
 TEST_CASE("tile(case4)" * doctest::test_suite("array::tile"))
 {
     TILE_ARRAY_SUBCASE( case4, array_a, reps_a );
-    TILE_ARRAY_SUBCASE( case4, array_v, reps_a );
     TILE_ARRAY_SUBCASE( case4, array_f, reps_a );
     TILE_ARRAY_SUBCASE( case4, array_d, reps_a );
     TILE_ARRAY_SUBCASE( case4, array_h, reps_a );
@@ -83,7 +79,6 @@ TEST_CASE("tile(case4)" * doctest::test_suite("array::tile"))
 TEST_CASE("tile(case5)" * doctest::test_suite("array::tile"))
 {
     TILE_ARRAY_SUBCASE( case5, array_a, reps_a );
-    TILE_ARRAY_SUBCASE( case5, array_v, reps_a );
     TILE_ARRAY_SUBCASE( case5, array_f, reps_a );
     TILE_ARRAY_SUBCASE( case5, array_d, reps_a );
     TILE_ARRAY_SUBCASE( case5, array_h, reps_a );

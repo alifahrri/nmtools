@@ -45,7 +45,6 @@ TEST_CASE("square(case1)" * doctest::test_suite("array::square"))
 {
     SQUARE_SUBCASE( case1,   a);
     SQUARE_SUBCASE( case1, a_a);
-    SQUARE_SUBCASE( case1, a_v);
     SQUARE_SUBCASE( case1, a_f);
     SQUARE_SUBCASE( case1, a_d);
     SQUARE_SUBCASE( case1, a_h);

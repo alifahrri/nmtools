@@ -4,10 +4,6 @@
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#include <vector>
-#include <array>
-#include <tuple>
-
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
@@ -17,16 +13,18 @@ NMTOOLS_TESTING_DECLARE_CASE(logical_not)
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         bool x[5] = {true, false, false, true, false};
-        auto x_vector = cast<std::vector<bool>>(x);
-        auto x_array  = cast<bool>(x);
-        auto x_fixed_vector = cast<na::fixed_ndarray<bool,5>>(x);
+        NMTOOLS_CAST_INDEX_ARRAYS(x);
+        auto x_vector = x_v;
+        auto x_array  = x_a;
+        auto x_fixed_vector = x_f;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
         bool x[5] = {false, true, true, false, true};
-        auto x_vector = cast<std::vector<bool>>(x);
-        auto x_array  = cast<bool>(x);
-        auto x_fixed_vector = cast<na::fixed_ndarray<bool,5>>(x);
+        NMTOOLS_CAST_INDEX_ARRAYS(x);
+        auto x_vector = x_v;
+        auto x_array  = x_a;
+        auto x_fixed_vector = x_f;
     }
 }
 

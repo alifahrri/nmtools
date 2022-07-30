@@ -9,8 +9,12 @@
 namespace nm = nmtools;
 using namespace nm::literals;
 using nmtools::utils::isequal;
+#ifndef NMTOOLS_DISABLE_STL
 using std::tuple;
 using std::vector;
+#else
+using nmtools_tuple;
+#endif
 
 TEST_CASE("ndindex({3,2})" * doctest::test_suite("index"))
 {
@@ -43,6 +47,7 @@ TEST_CASE("ndindex({3,2})" * doctest::test_suite("index"))
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("ndindex(vector{3,2})" * doctest::test_suite("index"))
 {
     // NOTE: ndindex doesnt support temporary for now
@@ -75,6 +80,7 @@ TEST_CASE("ndindex(vector{3,2})" * doctest::test_suite("index"))
         CHECK(( isequal(i,vector{2,1}) ));
     }
 }
+#endif
 
 TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
 {
@@ -155,6 +161,7 @@ TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
 {
     auto shape_ = vector{3,2,3};
@@ -233,6 +240,7 @@ TEST_CASE("ndindex({3,2,3})" * doctest::test_suite("index"))
         CHECK(( isequal(i,vector{2,1,2}) ));
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
 TEST_CASE("ndindex({3,2,3,1})" * doctest::test_suite("index"))
 {

@@ -15,8 +15,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take)
         int indices[3] = {0,1,4};
         int shape[2] = {2,5};
         int axis = 1;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -28,8 +28,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take)
         int indices[1] = {0};
         int shape[2] = {2,5};
         int axis = 0;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -41,8 +41,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take)
         int indices[3] = {0,1,4};
         int shape[2] = {2,5};
         auto axis = None;
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -111,9 +111,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, take)
         int shape[1] = {6};
         int indices[3] = {0,1,4};
         int axis = 0;
-        NMTOOLS_CAST_ARRAYS(idx)
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(idx)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -126,9 +126,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, take)
         int shape[1] = {6};
         int indices[3] = {0,1,4};
         auto axis = None;
-        NMTOOLS_CAST_ARRAYS(idx)
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(idx)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -141,9 +141,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, take)
         int shape[2] = {2,5};
         int indices[3] = {0,1,4};
         auto axis = None;
-        NMTOOLS_CAST_ARRAYS(idx)
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(idx)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -156,9 +156,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, take)
         int shape[2] = {2,5};
         int indices[3] = {0,1,4};
         int axis = 1;
-        NMTOOLS_CAST_ARRAYS(idx)
-        NMTOOLS_CAST_ARRAYS(indices)
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(idx)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -213,7 +213,6 @@ TEST_CASE("shape_take(case1)" * doctest::test_suite("index::shape_take"))
     SHAPE_TAKE_SUBCASE( case1, shape_a, indices_a, axis );
     SHAPE_TAKE_SUBCASE( case1, shape_v, indices_v, axis );
     SHAPE_TAKE_SUBCASE( case1, shape_f, indices_f, axis );
-    SHAPE_TAKE_SUBCASE( case1, shape_v, indices_d, axis );
     SHAPE_TAKE_SUBCASE( case1, shape_h, indices_h, axis );
 }
 
@@ -223,7 +222,6 @@ TEST_CASE("shape_take(case2)" * doctest::test_suite("index::shape_take"))
     SHAPE_TAKE_SUBCASE( case2, shape_a, indices_a, axis );
     SHAPE_TAKE_SUBCASE( case2, shape_v, indices_v, axis );
     SHAPE_TAKE_SUBCASE( case2, shape_f, indices_f, axis );
-    SHAPE_TAKE_SUBCASE( case2, shape_v, indices_d, axis );
     SHAPE_TAKE_SUBCASE( case2, shape_h, indices_h, axis );
 }
 
@@ -233,7 +231,6 @@ TEST_CASE("shape_take(case3)" * doctest::test_suite("index::shape_take"))
     SHAPE_TAKE_SUBCASE( case3,  shape_a, indices_a, axis );
     SHAPE_TAKE_SUBCASE( case3,  shape_v, indices_v, axis );
     SHAPE_TAKE_SUBCASE( case3,  shape_f, indices_f, axis );
-    SHAPE_TAKE_SUBCASE( case3,  shape_v, indices_d, axis );
     SHAPE_TAKE_SUBCASE( case3,  shape_h, indices_h, axis );
 }
 
@@ -306,7 +303,6 @@ TEST_CASE("take(case1)" * doctest::test_suite("index::take"))
     TAKE_SUBCASE( case1, idx_v, shape_v, indices_v, axis );
     TAKE_SUBCASE( case1, idx_f, shape_f, indices_f, axis );
     // dynamic dimension ndarray is not considered as index array, even if the element type is index type
-    // TAKE_SUBCASE( case1, idx_d, shape_d, indices_d, axis );
     TAKE_SUBCASE( case1, idx_h, shape_h, indices_h, axis );
 }
 
@@ -316,7 +312,6 @@ TEST_CASE("take(case2)" * doctest::test_suite("index::take"))
     TAKE_SUBCASE( case2, idx_a, shape_a, indices_a, axis );
     TAKE_SUBCASE( case2, idx_v, shape_v, indices_v, axis );
     TAKE_SUBCASE( case2, idx_f, shape_f, indices_f, axis );
-    // TAKE_SUBCASE( case2, idx_d, shape_d, indices_d, axis );
     TAKE_SUBCASE( case2, idx_h, shape_h, indices_h, axis );
 }
 
@@ -326,7 +321,6 @@ TEST_CASE("take(case3)" * doctest::test_suite("index::take"))
     TAKE_SUBCASE( case3, idx_a, shape_a, indices_a, axis );
     TAKE_SUBCASE( case3, idx_v, shape_v, indices_v, axis );
     TAKE_SUBCASE( case3, idx_f, shape_f, indices_f, axis );
-    // TAKE_SUBCASE( case3, idx_d, shape_d, indices_d, axis );
     TAKE_SUBCASE( case3, idx_h, shape_h, indices_h, axis );
 }
 
@@ -336,6 +330,5 @@ TEST_CASE("take(case4)" * doctest::test_suite("index::take"))
     TAKE_SUBCASE( case4, idx_a, shape_a, indices_a, axis );
     TAKE_SUBCASE( case4, idx_v, shape_v, indices_v, axis );
     TAKE_SUBCASE( case4, idx_f, shape_f, indices_f, axis );
-    // TAKE_SUBCASE( case4, idx_d, shape_d, indices_d, axis );
     TAKE_SUBCASE( case4, idx_h, shape_h, indices_h, axis );
 }

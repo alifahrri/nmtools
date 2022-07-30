@@ -45,7 +45,6 @@ TEST_CASE("log2(case1)" * doctest::test_suite("array::log2"))
 {
     LOG2_SUBCASE( case1,   a);
     LOG2_SUBCASE( case1, a_a);
-    LOG2_SUBCASE( case1, a_v);
     LOG2_SUBCASE( case1, a_f);
     LOG2_SUBCASE( case1, a_d);
     LOG2_SUBCASE( case1, a_h);

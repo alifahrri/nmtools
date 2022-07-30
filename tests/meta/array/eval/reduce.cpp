@@ -49,15 +49,15 @@ TEST_CASE("eval(reduce)" * doctest::test_suite("eval"))
             using axis_t  = decltype(0_ct);
             using view_t  = view::decorator_t< view::reduce_t, view::add_t<>, array_t, axis_t, none_t, none_t>;
             using eval_t  = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = std::array<int,3>;
+            using expected_t = nmtools_array<int,3>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
         {
-            using array_t = std::array<std::array<int,3>,2>;
+            using array_t = nmtools_array<nmtools_array<int,3>,2>;
             using axis_t  = decltype(0_ct);
             using view_t  = view::decorator_t< view::reduce_t, view::add_t<>, array_t, axis_t, none_t, none_t>;
             using eval_t  = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
-            using expected_t = std::array<int,3>;
+            using expected_t = nmtools_array<int,3>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
         {

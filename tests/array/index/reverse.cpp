@@ -9,9 +9,14 @@
 namespace nm = nmtools;
 using namespace nm::literals;
 using nmtools::utils::isequal;
+#ifndef NMTOOLS_DISABLE_STL
 using std::tuple;
 using std::vector;
 using std::array;
+#else
+using nmtools_tuple;
+using nmtools_array;
+#endif
 
 TEST_CASE("reverse" * doctest::test_suite("index"))
 {
@@ -45,6 +50,7 @@ TEST_CASE("reverse" * doctest::test_suite("index"))
         auto reversed = nm::index::reverse(indices);
         CHECK( isequal(reversed,array{1,0,2}) );
     }
+    #ifndef NMTOOLS_DISABLE_STL
     {
         auto indices  = vector{1};
         auto reversed = nm::index::reverse(indices);
@@ -60,4 +66,5 @@ TEST_CASE("reverse" * doctest::test_suite("index"))
         auto reversed = nm::index::reverse(indices);
         CHECK( isequal(reversed,array{1,0,2}) );
     }
+    #endif // NMTOOLS_DISABLE_STL
 }

@@ -14,29 +14,15 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#ifndef PLATFORMIO
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid);
-#else
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_h = cast(name, kind::hybrid);
-#endif // PLATFORMIO
-
 NMTOOLS_TESTING_DECLARE_CASE(array, zeros)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int shape[3] = {2,3,2};
         inline auto dtype = float32;
-        CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
         using namespace nmtools::literals;
-        inline auto shape_ct = std::tuple{2_ct,3_ct,2_ct};
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -54,7 +40,5 @@ NMTOOLS_TESTING_DECLARE_CASE(array, zeros)
         };
     }
 }
-
-#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_ZEROS_HPP

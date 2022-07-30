@@ -8,7 +8,11 @@ namespace meta = nm::meta;
 
 using nm::index::logical_not_t;
 using namespace nm::literals;
+#ifdef NMTOOLS_DISABLE_STL
+using nmtools_tuple, meta::false_type, meta::true_type;
+#else
 using std::tuple, std::false_type, std::true_type;
+#endif
 
 TEST_CASE("logical_not" * doctest::test_suite("index"))
 {

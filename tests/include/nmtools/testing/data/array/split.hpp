@@ -15,7 +15,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[1] = {9};
         inline auto indices_or_sections = 3;
         inline auto axis = 0;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -30,7 +30,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[1] = {9};
         inline auto indices_or_sections = 9;
         inline auto axis = 0;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -51,7 +51,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[1] = {9};
         inline auto indices_or_sections = 1;
         inline auto axis = 0;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -64,7 +64,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[1] = {9};
         inline auto indices_or_sections = 3;
         inline auto axis = -1;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -79,7 +79,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[1] = {9}; 
         inline auto indices_or_sections = 9;
         inline auto axis = -1;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -91,7 +91,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[1] = {9};
         inline auto indices_or_sections = 1;
         inline auto axis = -1;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -103,7 +103,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[1] = {6};
         inline auto indices_or_sections = nmtools_array{2,4};
         inline auto axis = 0;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -118,7 +118,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[1] = {6};
         inline auto indices_or_sections = nmtools_array{2,5};
         inline auto axis = 0;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -133,7 +133,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[2] = {2,6};
         inline auto indices_or_sections = 2;
         inline auto axis = 0;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -153,7 +153,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[2] = {2,6};
         inline auto indices_or_sections = 2;
         inline auto axis = 1;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -173,7 +173,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[2] = {2,6};
         inline auto indices_or_sections = nmtools_array{2,4};
         inline auto axis = 1;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
@@ -197,7 +197,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, split_args)
         inline int shape[2] = {2,6};
         inline auto indices_or_sections = nmtools_array{2,5};
         inline auto axis = 1;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
@@ -406,19 +406,22 @@ NMTOOLS_TESTING_DECLARE_CASE(array, split)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
-        inline auto split0 = nmtools_array{
-            nmtools_array{0,1},
-            nmtools_array{6,7},
+        inline int split0[2][2] = {
+            {0,1},
+            {6,7},
         };
-        inline auto split1 = nmtools_array{
-            nmtools_array{2,3},
-            nmtools_array{8,9},
+        inline int split1[2][2] = {
+            {2,3},
+            {8,9},
         };
-        inline auto split2 = nmtools_array{
-            nmtools_array{ 4, 5},
-            nmtools_array{10,11},
+        inline int split2[2][2] = {
+            { 4, 5},
+            {10,11},
         };
-        inline auto result = nmtools_tuple{split0,split1,split2};
+        NMTOOLS_CAST_ARRAYS(split0)
+        NMTOOLS_CAST_ARRAYS(split1)
+        NMTOOLS_CAST_ARRAYS(split2)
+        inline auto result = nmtools_tuple{split0_a,split1_a,split2_a};
     }
 #endif // ARDUINO
 

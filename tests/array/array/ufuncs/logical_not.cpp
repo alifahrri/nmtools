@@ -46,7 +46,6 @@ TEST_CASE("logical_not(case1)" * doctest::test_suite("array::logical_not"))
 {
     LOGICAL_NOT_SUBCASE( case1,   a );
     LOGICAL_NOT_SUBCASE( case1, a_a );
-    LOGICAL_NOT_SUBCASE( case1, a_v );
     LOGICAL_NOT_SUBCASE( case1, a_f );
     LOGICAL_NOT_SUBCASE( case1, a_d );
     LOGICAL_NOT_SUBCASE( case1, a_h );

@@ -47,7 +47,6 @@ TEST_CASE("isfinite(case1)" * doctest::test_suite("view::isfinite"))
 {
     ISFINITE_SUBCASE( case1,   a );
     ISFINITE_SUBCASE( case1, a_a );
-    ISFINITE_SUBCASE( case1, a_v );
     ISFINITE_SUBCASE( case1, a_f );
     ISFINITE_SUBCASE( case1, a_d );
     ISFINITE_SUBCASE( case1, a_h );

@@ -46,7 +46,6 @@ TEST_CASE("arccos(case1)" * doctest::test_suite("array::arccos"))
 {
     ARCCOS_SUBCASE( case1,   a);
     ARCCOS_SUBCASE( case1, a_a);
-    ARCCOS_SUBCASE( case1, a_v);
     ARCCOS_SUBCASE( case1, a_f);
     ARCCOS_SUBCASE( case1, a_d);
     ARCCOS_SUBCASE( case1, a_h);

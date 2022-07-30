@@ -293,7 +293,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
         using case1::args::a;
         inline int8_t axis[2] = {0,1};
         NMTOOLS_CAST_ARRAYS(a)
-        NMTOOLS_CAST_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -332,7 +332,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
         inline auto initial = None;
         inline auto keepdims = false;
         NMTOOLS_CAST_ARRAYS(a)
-        NMTOOLS_CAST_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case14)
     {
@@ -422,7 +422,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
         };
         inline int8_t axis[2] = {0,2};
         NMTOOLS_CAST_ARRAYS(a)
-        NMTOOLS_CAST_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -446,7 +446,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
         };
         inline int8_t axis[2] = {1,2};
         NMTOOLS_CAST_ARRAYS(a)
-        NMTOOLS_CAST_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -597,7 +597,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
         inline auto initial = None;
         inline auto keepdims = false;
         NMTOOLS_CAST_ARRAYS(a)
-        NMTOOLS_CAST_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
@@ -624,7 +624,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
         inline auto initial = None;
         inline auto keepdims = true;
         NMTOOLS_CAST_ARRAYS(a)
-        NMTOOLS_CAST_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13)
     {

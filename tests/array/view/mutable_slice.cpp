@@ -990,28 +990,24 @@ TEST_CASE("mutable_slice(case1)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case1,   array,   rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case1, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case1, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case1, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case1, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case1, array_h, rhs_h, slice0, slice1, slice2);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case1,   array, rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case1, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case1,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case1, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case1,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case1, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case1, array_h, rhs_h, dslices);
@@ -1021,28 +1017,24 @@ TEST_CASE("mutable_slice(case2)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case2,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case2, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case2, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case2, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case2, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case2, array_h, rhs_h, slice0, slice1, slice2);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case2,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case2, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case2,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case2, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case2,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case2, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case2, array_h, rhs_h, dslices);
@@ -1052,28 +1044,24 @@ TEST_CASE("mutable_slice(case3)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case3,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case3, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case3, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case3, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case3, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case3, array_h, rhs_h, slice0, slice1, slice2);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case3,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case3, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case3,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case3, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case3,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case3, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case3, array_h, rhs_h, dslices);
@@ -1083,28 +1071,24 @@ TEST_CASE("mutable_slice(case4)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case4,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case4, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case4, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case4, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case4, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case4, array_h, rhs_h, slice0, slice1, slice2);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case4,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case4, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case4,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case4, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case4,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case4, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case4, array_h, rhs_h, dslices);
@@ -1114,14 +1098,12 @@ TEST_CASE("mutable_slice(case5)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case5,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case5, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case5, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case5, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case5, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case5, array_h, rhs_h, slice0, slice1, slice2);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case5,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case5, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_h, rhs_h, slices);
@@ -1130,14 +1112,12 @@ TEST_CASE("mutable_slice(case5)" * doctest::test_suite("view::mutable_slice"))
 #if 0
     APPLY_MUTABLE_SLICE_SUBCASE(case5,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case5, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_h, rhs_h, dslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case5,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case5, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case5, array_h, rhs_h, dslices);
@@ -1148,7 +1128,6 @@ TEST_CASE("mutable_slice(case6)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case6,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case6, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case6, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case6, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case6, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case6, array_h, rhs_h, slice0, slice1, slice2);
@@ -1157,21 +1136,18 @@ TEST_CASE("mutable_slice(case6)" * doctest::test_suite("view::mutable_slice"))
 #if 0
     APPLY_MUTABLE_SLICE_SUBCASE(case6,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case6, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case6,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case6, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case6,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case6, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case6, array_h, rhs_h, dslices);
@@ -1182,7 +1158,6 @@ TEST_CASE("mutable_slice(case7)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case7,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case7, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case7, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case7, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case7, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case7, array_h, rhs_h, slice0, slice1, slice2);
@@ -1191,21 +1166,18 @@ TEST_CASE("mutable_slice(case7)" * doctest::test_suite("view::mutable_slice"))
 #if 0
     APPLY_MUTABLE_SLICE_SUBCASE(case7,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case7, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case7,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case7, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case7,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case7, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case7, array_h, rhs_h, dslices);
@@ -1216,7 +1188,6 @@ TEST_CASE("mutable_slice(case8)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case8,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case8, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case8, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case8, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case8, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case8, array_h, rhs_h, slice0, slice1, slice2);
@@ -1224,21 +1195,18 @@ TEST_CASE("mutable_slice(case8)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case8,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case8, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case8,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case8, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case8,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case8, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case8, array_h, rhs_h, dslices);
@@ -1249,7 +1217,6 @@ TEST_CASE("mutable_slice(case9)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case9,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case9, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case9, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case9, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case9, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case9, array_h, rhs_h, slice0, slice1, slice2);
@@ -1257,21 +1224,18 @@ TEST_CASE("mutable_slice(case9)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case9,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case9, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case9,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case9, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case9,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case9, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case9, array_h, rhs_h, dslices);
@@ -1282,7 +1246,6 @@ TEST_CASE("mutable_slice(case10)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case10,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case10, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case10, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case10, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case10, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case10, array_h, rhs_h, slice0, slice1, slice2);
@@ -1290,21 +1253,18 @@ TEST_CASE("mutable_slice(case10)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case10,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case10, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case10,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case10, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case10,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case10, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case10, array_h, rhs_h, dslices);
@@ -1315,7 +1275,6 @@ TEST_CASE("mutable_slice(case11)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case11,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case11, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case11, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case11, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case11, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case11, array_h, rhs_h, slice0, slice1);
@@ -1323,21 +1282,18 @@ TEST_CASE("mutable_slice(case11)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case11,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case11, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case11,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case11, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case11,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case11, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case11, array_h, rhs_h, dslices);
@@ -1348,7 +1304,6 @@ TEST_CASE("mutable_slice(case12)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case12,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case12, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case12, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case12, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case12, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case12, array_h, rhs_h, slice0, slice1);
@@ -1358,7 +1313,6 @@ TEST_CASE("mutable_slice(case13)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case13,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case13, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case13, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case13, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case13, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case13, array_h, rhs_h, slice0, slice1);
@@ -1366,21 +1320,18 @@ TEST_CASE("mutable_slice(case13)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case13,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case13, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case13,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case13, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case13,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case13, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case13, array_h, rhs_h, dslices);
@@ -1391,28 +1342,24 @@ TEST_CASE("mutable_slice(case14)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case14,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case14, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case14, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case14, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case14, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case14, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case14,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case14, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case14,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case14, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case14,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case14, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case14, array_h, rhs_h, dslices);
@@ -1423,7 +1370,6 @@ TEST_CASE("mutable_slice(case15)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case15,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case15, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case15, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case15, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case15, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case15, array_h, rhs_h, slice0, slice1);
@@ -1431,21 +1377,18 @@ TEST_CASE("mutable_slice(case15)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case15,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case15, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case15,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case15, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case15,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case15, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case15, array_h, rhs_h, dslices);
@@ -1456,7 +1399,6 @@ TEST_CASE("mutable_slice(case16)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case16,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case16, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case16, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case16, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case16, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case16, array_h, rhs_h, slice0, slice1);
@@ -1464,21 +1406,18 @@ TEST_CASE("mutable_slice(case16)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case16,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case16, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case16,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case16, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case16,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case16, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case16, array_h, rhs_h, dslices);
@@ -1489,7 +1428,6 @@ TEST_CASE("mutable_slice(case17)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case17,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case17, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case17, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case17, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case17, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case17, array_h, rhs_h, slice0, slice1);
@@ -1497,21 +1435,18 @@ TEST_CASE("mutable_slice(case17)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case17,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case17, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case17,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case17, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case17,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case17, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case17, array_h, rhs_h, dslices);
@@ -1522,7 +1457,6 @@ TEST_CASE("mutable_slice(case18)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case18,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case18, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case18, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case18, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case18, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case18, array_h, rhs_h, slice0, slice1);
@@ -1530,21 +1464,18 @@ TEST_CASE("mutable_slice(case18)" * doctest::test_suite("view::mutable_slice"))
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case18,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case18, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case18,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case18, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case18,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case18, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case18, array_h, rhs_h, dslices);
@@ -1555,28 +1486,24 @@ TEST_CASE("mutable_slice(case19)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case19,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case19, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case19, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case19, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case19, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case19, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case19,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case19, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case19,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case19, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case19,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case19, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case19, array_h, rhs_h, dslices);
@@ -1587,28 +1514,24 @@ TEST_CASE("mutable_slice(case20)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case20,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case20, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case20, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case20, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case20, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case20, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case20,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case20, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case20,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case20, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case20,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case20, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case20, array_h, rhs_h, dslices);
@@ -1619,28 +1542,24 @@ TEST_CASE("mutable_slice(case21)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case21,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case21, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case21, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case21, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case21, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case21, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case21,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case21, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case21,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case21, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case21,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case21, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case21, array_h, rhs_h, dslices);
@@ -1651,28 +1570,24 @@ TEST_CASE("mutable_slice(case22)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case22,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case22, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case22, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case22, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case22, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case22, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case22,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case22, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case22,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case22, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case22,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case22, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case22, array_h, rhs_h, dslices);
@@ -1683,28 +1598,24 @@ TEST_CASE("mutable_slice(case23)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case23,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case23, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case23, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case23, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case23, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case23, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case23,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case23, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case23,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case23, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case23,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case23, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case23, array_h, rhs_h, dslices);
@@ -1715,28 +1626,24 @@ TEST_CASE("mutable_slice(case24)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case24,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case24, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case24, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case24, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case24, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case24, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case24,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case24, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case24,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case24, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case24,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case24, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case24, array_h, rhs_h, dslices);
@@ -1747,28 +1654,24 @@ TEST_CASE("mutable_slice(case25)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case25,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case25, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case25, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case25, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case25, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case25, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case25,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case25, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case25,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case25, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case25,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case25, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case25, array_h, rhs_h, dslices);
@@ -1779,28 +1682,24 @@ TEST_CASE("mutable_slice(case26)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case26,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case26, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case26, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case26, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case26, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case26, array_h, rhs_h, slice0, slice1);
 #if 1
     APPLY_MUTABLE_SLICE_SUBCASE(case26,   array,   rhs, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_a, rhs_a, slices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case26, array_v, rhs_v, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_f, rhs_f, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_d, rhs_d, slices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_h, rhs_h, slices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case26,   array,   rhs, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_a, rhs_a, aslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case26, array_v, rhs_v, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_f, rhs_f, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_d, rhs_d, aslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_h, rhs_h, aslices);
 
     APPLY_MUTABLE_SLICE_SUBCASE(case26,   array,   rhs, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_a, rhs_a, dslices);
-    APPLY_MUTABLE_SLICE_SUBCASE(case26, array_v, rhs_v, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_f, rhs_f, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_d, rhs_d, dslices);
     APPLY_MUTABLE_SLICE_SUBCASE(case26, array_h, rhs_h, dslices);
@@ -1811,7 +1710,6 @@ TEST_CASE("mutable_slice(case27)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case27,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case27, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case27, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case27, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case27, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case27, array_h, rhs_h, slice0, slice1, slice2);
@@ -1821,7 +1719,6 @@ TEST_CASE("mutable_slice(case28)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case28,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case28, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case28, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case28, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case28, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case28, array_h, rhs_h, slice0, slice1);
@@ -1831,7 +1728,6 @@ TEST_CASE("mutable_slice(case29)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case29,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case29, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case29, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case29, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case29, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case29, array_h, rhs_h, slice0, slice1, slice2);
@@ -1841,7 +1737,6 @@ TEST_CASE("mutable_slice(case30)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case30,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case30, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case30, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case30, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case30, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case30, array_h, rhs_h, slice0, slice1, slice2);
@@ -1851,7 +1746,6 @@ TEST_CASE("mutable_slice(case31)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case31,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case31, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case31, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case31, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case31, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case31, array_h, rhs_h, slice0, slice1, slice2);
@@ -1861,7 +1755,6 @@ TEST_CASE("mutable_slice(case32)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case32,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case32, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case32, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case32, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case32, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case32, array_h, rhs_h, slice0, slice1, slice2);
@@ -1871,7 +1764,6 @@ TEST_CASE("mutable_slice(case33)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case33,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case33, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case33, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case33, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case33, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case33, array_h, rhs_h, slice0, slice1, slice2);
@@ -1881,7 +1773,6 @@ TEST_CASE("mutable_slice(case34)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case34,   array, rhs, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case34, array_a, rhs_a, slice0, slice1);
-    MUTABLE_SLICE_SUBCASE(case34, array_v, rhs_v, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case34, array_f, rhs_f, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case34, array_d, rhs_d, slice0, slice1);
     MUTABLE_SLICE_SUBCASE(case34, array_h, rhs_h, slice0, slice1);
@@ -1891,7 +1782,6 @@ TEST_CASE("mutable_slice(case35)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case35,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case35, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case35, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case35, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case35, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case35, array_h, rhs_h, slice0, slice1, slice2);
@@ -1901,7 +1791,6 @@ TEST_CASE("mutable_slice(case36)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case36,   array, rhs, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case36, array_a, rhs_a, slice0, slice1, slice2);
-    MUTABLE_SLICE_SUBCASE(case36, array_v, rhs_v, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case36, array_f, rhs_f, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case36, array_d, rhs_d, slice0, slice1, slice2);
     MUTABLE_SLICE_SUBCASE(case36, array_h, rhs_h, slice0, slice1, slice2);
@@ -1911,7 +1800,6 @@ TEST_CASE("mutable_slice(case37)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case37,   array, rhs, slice0, slice1, slice2, slice3);
     MUTABLE_SLICE_SUBCASE(case37, array_a, rhs_a, slice0, slice1, slice2, slice3);
-    MUTABLE_SLICE_SUBCASE(case37, array_v, rhs_v, slice0, slice1, slice2, slice3);
     MUTABLE_SLICE_SUBCASE(case37, array_f, rhs_f, slice0, slice1, slice2, slice3);
     MUTABLE_SLICE_SUBCASE(case37, array_d, rhs_d, slice0, slice1, slice2, slice3);
     MUTABLE_SLICE_SUBCASE(case37, array_h, rhs_h, slice0, slice1, slice2, slice3);
@@ -1921,7 +1809,6 @@ TEST_CASE("mutable_slice(case38)" * doctest::test_suite("view::mutable_slice"))
 {
     MUTABLE_SLICE_SUBCASE(case38,   array, rhs, slice0, slice1, slice2, slice3);
     MUTABLE_SLICE_SUBCASE(case38, array_a, rhs_a, slice0, slice1, slice2, slice3);
-    MUTABLE_SLICE_SUBCASE(case38, array_v, rhs_v, slice0, slice1, slice2, slice3);
     MUTABLE_SLICE_SUBCASE(case38, array_f, rhs_f, slice0, slice1, slice2, slice3);
     MUTABLE_SLICE_SUBCASE(case38, array_d, rhs_d, slice0, slice1, slice2, slice3);
     MUTABLE_SLICE_SUBCASE(case38, array_h, rhs_h, slice0, slice1, slice2, slice3);

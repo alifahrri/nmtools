@@ -49,7 +49,6 @@ TEST_CASE("expm1(case1)" * doctest::test_suite("array::expm1"))
 {
     EXPM1_SUBCASE( case1,   a);
     EXPM1_SUBCASE( case1, a_a);
-    EXPM1_SUBCASE( case1, a_v);
     EXPM1_SUBCASE( case1, a_f);
     EXPM1_SUBCASE( case1, a_d);
     EXPM1_SUBCASE( case1, a_h);

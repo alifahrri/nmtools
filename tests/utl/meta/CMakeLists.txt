@@ -12,6 +12,12 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/len.cpp
     src/nested_array_dim.cpp
     src/replace_element_type.cpp
+    src/resize_fixed_ndarray.cpp
+    src/fixed_dim.cpp
+    src/fixed_size.cpp
+    src/fixed_shape.cpp
+    src/bounded_dim.cpp
+    src/bounded_size.cpp
     ## traits
     src/is_ndarray.cpp
     src/is_maybe.cpp

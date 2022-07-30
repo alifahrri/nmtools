@@ -46,7 +46,6 @@ TEST_CASE("negative(case1)" * doctest::test_suite("view::negative"))
 {
     NEGATIVE_SUBCASE( case1,   a);
     NEGATIVE_SUBCASE( case1, a_a);
-    NEGATIVE_SUBCASE( case1, a_v);
     NEGATIVE_SUBCASE( case1, a_f);
     NEGATIVE_SUBCASE( case1, a_d);
     NEGATIVE_SUBCASE( case1, a_h);

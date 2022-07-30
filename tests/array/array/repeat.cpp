@@ -46,7 +46,6 @@ SUBCASE(#case_name) \
 TEST_CASE("repeat(case1)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case1, array_a, repeats, axis);
-    REPEAT_SUBCASE(case1, array_v, repeats, axis);
     REPEAT_SUBCASE(case1, array_f, repeats, axis);
     REPEAT_SUBCASE(case1, array_d, repeats, axis);
     REPEAT_SUBCASE(case1, array_h, repeats, axis);
@@ -55,7 +54,6 @@ TEST_CASE("repeat(case1)" * doctest::test_suite("array::repeat"))
 TEST_CASE("repeat(case2)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case2, array_a, repeats, axis);
-    REPEAT_SUBCASE(case2, array_v, repeats, axis);
     REPEAT_SUBCASE(case2, array_f, repeats, axis);
     REPEAT_SUBCASE(case2, array_d, repeats, axis);
     REPEAT_SUBCASE(case2, array_h, repeats, axis);
@@ -64,7 +62,6 @@ TEST_CASE("repeat(case2)" * doctest::test_suite("array::repeat"))
 TEST_CASE("repeat(case3)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case3, array_a, repeats, axis);
-    REPEAT_SUBCASE(case3, array_v, repeats, axis);
     REPEAT_SUBCASE(case3, array_f, repeats, axis);
     REPEAT_SUBCASE(case3, array_d, repeats, axis);
     REPEAT_SUBCASE(case3, array_h, repeats, axis);
@@ -73,7 +70,6 @@ TEST_CASE("repeat(case3)" * doctest::test_suite("array::repeat"))
 TEST_CASE("repeat(case4)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case4, array_a, repeats, axis);
-    REPEAT_SUBCASE(case4, array_v, repeats, axis);
     REPEAT_SUBCASE(case4, array_f, repeats, axis);
     REPEAT_SUBCASE(case4, array_d, repeats, axis);
     REPEAT_SUBCASE(case4, array_h, repeats, axis);
@@ -82,7 +78,6 @@ TEST_CASE("repeat(case4)" * doctest::test_suite("array::repeat"))
 TEST_CASE("repeat(case5)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case5, array_a, repeats, axis);
-    REPEAT_SUBCASE(case5, array_v, repeats, axis);
     REPEAT_SUBCASE(case5, array_f, repeats, axis);
     REPEAT_SUBCASE(case5, array_d, repeats, axis);
     REPEAT_SUBCASE(case5, array_h, repeats, axis);
@@ -91,7 +86,6 @@ TEST_CASE("repeat(case5)" * doctest::test_suite("array::repeat"))
 TEST_CASE("repeat(case6)" * doctest::test_suite("array::repeat"))
 {
     REPEAT_SUBCASE(case6, array_a, repeats, axis);
-    REPEAT_SUBCASE(case6, array_v, repeats, axis);
     REPEAT_SUBCASE(case6, array_f, repeats, axis);
     REPEAT_SUBCASE(case6, array_d, repeats, axis);
     REPEAT_SUBCASE(case6, array_h, repeats, axis);

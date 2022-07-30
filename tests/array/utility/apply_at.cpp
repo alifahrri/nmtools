@@ -16,8 +16,7 @@
  */
 #define NMTOOLS_ASSERT_CLOSE NMTOOLS_ASSERT_CLOSE_DOCTEST
 
-using std::tuple;
-using std::vector;
+using nmtools_list, nmtools_array, nmtools_tuple;
 namespace nm = nmtools;
 
 TEST_CASE("apply_at(double[]...)" * doctest::test_suite("utility"))
@@ -61,9 +60,9 @@ TEST_CASE("apply_at(double[]...)" * doctest::test_suite("utility"))
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("apply_at(std::array<...>)" * doctest::test_suite("utility"))
 {
-    using std::array;
     {
         auto a = array{
             array{1,2},
@@ -115,7 +114,6 @@ TEST_CASE("apply_at(std::array<...>)" * doctest::test_suite("utility"))
 
 TEST_CASE("apply_at(std::vector<...>)" * doctest::test_suite("utility"))
 {
-    using std::vector;
     {
         auto a = vector{
             vector{1,2},
@@ -182,6 +180,7 @@ TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
         }
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
 TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 {
@@ -189,12 +188,25 @@ TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
     {
         auto a = dynamic_ndarray{{1,2,3,4,5,6}};
         {
+            // utl::vector tripped for 1 element
+            // TODO: fix utl vector initialization with 1 element
+            #if 0
             auto indices = vector{1ul};
+            #else
+            auto indices = vector<size_t>(1);
+            indices[0] = 1;
+            #endif
             auto res = nm::apply_at(a, indices);
             NMTOOLS_ASSERT_CLOSE(res, 2);
         }
         {
+            // TODO: fix utl vector initialization with 1 element
+            #if 0
             auto indices = vector{2ul};
+            #else
+            auto indices = vector<size_t>(1);
+            indices[0] = 2;
+            #endif
             auto res = nm::apply_at(a, indices);
             NMTOOLS_ASSERT_CLOSE(res, 3);
         }

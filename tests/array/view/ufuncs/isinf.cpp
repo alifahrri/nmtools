@@ -47,7 +47,6 @@ TEST_CASE("isinf(case1)" * doctest::test_suite("view::isinf"))
 {
     ISINF_SUBCASE( case1,   a );
     ISINF_SUBCASE( case1, a_a );
-    ISINF_SUBCASE( case1, a_v );
     ISINF_SUBCASE( case1, a_f );
     ISINF_SUBCASE( case1, a_d );
     ISINF_SUBCASE( case1, a_h );

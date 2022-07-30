@@ -47,7 +47,6 @@ TEST_CASE("isnan(case1)" * doctest::test_suite("view::isnan"))
 {
     ISNAN_SUBCASE( case1,   a );
     ISNAN_SUBCASE( case1, a_a );
-    ISNAN_SUBCASE( case1, a_v );
     ISNAN_SUBCASE( case1, a_f );
     ISNAN_SUBCASE( case1, a_d );
     ISNAN_SUBCASE( case1, a_h );

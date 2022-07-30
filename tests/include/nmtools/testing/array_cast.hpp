@@ -29,6 +29,11 @@ inline auto name##_a = nmtools::cast(name, nmtools::array::kind::nested_arr);
 #define NMTOOLS_CAST_ARRAYS_NESTED_VEC(name) \
 inline auto name##_v = nmtools::cast(name, nmtools::array::kind::nested_vec);
 #endif
+// TODO: add index_vec tag
+#ifndef NMTOOLS_CAST_INDEX_VECTOR
+#define NMTOOLS_CAST_INDEX_VECTOR(name) \
+inline auto name##_v = nmtools::cast(name, nmtools::array::kind::nested_vec);
+#endif
 #ifndef NMTOOLS_CAST_ARRAYS_FIXED
 #define NMTOOLS_CAST_ARRAYS_FIXED(name) \
 inline auto name##_f = nmtools::cast(name, nmtools::array::kind::fixed);
@@ -53,7 +58,17 @@ NMTOOLS_CAST_ARRAYS_FIXED  (name) \
 NMTOOLS_CAST_ARRAYS_HYBRID (name) \
 NMTOOLS_CAST_ARRAYS_DYNAMIC(name) \
 NMTOOLS_CAST_ARRAYS_EXTRA  (name) \
-NMTOOLS_CAST_ARRAYS_NESTED_VEC(name) \
+
+#endif // NMTOOLS_CAST_ARRAYS
+
+// NOTE: quick workaround to weeds out nested vector while allowing vector
+#ifndef NMTOOLS_CAST_INDEX_ARRAYS
+#define NMTOOLS_CAST_INDEX_ARRAYS(name) \
+NMTOOLS_CAST_ARRAYS_NESTED (name) \
+NMTOOLS_CAST_ARRAYS_FIXED  (name) \
+NMTOOLS_CAST_ARRAYS_HYBRID (name) \
+NMTOOLS_CAST_ARRAYS_EXTRA  (name) \
+NMTOOLS_CAST_INDEX_VECTOR  (name) \
 
 #endif // NMTOOLS_CAST_ARRAYS
 

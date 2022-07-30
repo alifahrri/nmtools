@@ -45,7 +45,6 @@ TEST_CASE("fmin(case1)" * doctest::test_suite("array::fmin"))
 {
     FMIN_SUBCASE( case1,   a,   b );
     FMIN_SUBCASE( case1, a_a, b_a );
-    FMIN_SUBCASE( case1, a_v, b_v );
     FMIN_SUBCASE( case1, a_f, b_f );
     FMIN_SUBCASE( case1, a_d, b_d );
     FMIN_SUBCASE( case1, a_h, b_h );
@@ -55,7 +54,6 @@ TEST_CASE("fmin(case2)" * doctest::test_suite("array::fmin"))
 {
     FMIN_SUBCASE( case2,   a, b );
     FMIN_SUBCASE( case2, a_a, b );
-    FMIN_SUBCASE( case2, a_v, b );
     FMIN_SUBCASE( case2, a_f, b );
     FMIN_SUBCASE( case2, a_d, b );
     FMIN_SUBCASE( case2, a_h, b );
@@ -98,7 +96,6 @@ TEST_CASE("reduce_fmin(case1)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case1,   a, axis );
     REDUCE_FMIN_SUBCASE( case1, a_a, axis );
-    REDUCE_FMIN_SUBCASE( case1, a_v, axis );
     REDUCE_FMIN_SUBCASE( case1, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_FMIN_SUBCASE( case1, a_d, axis );
@@ -109,7 +106,6 @@ TEST_CASE("reduce_fmin(case2)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case2,   a, axis );
     REDUCE_FMIN_SUBCASE( case2, a_a, axis );
-    REDUCE_FMIN_SUBCASE( case2, a_v, axis );
     REDUCE_FMIN_SUBCASE( case2, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_FMIN_SUBCASE( case2, a_d, axis );
@@ -120,7 +116,6 @@ TEST_CASE("reduce_fmin(case3)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case3,   a, axis );
     REDUCE_FMIN_SUBCASE( case3, a_a, axis );
-    REDUCE_FMIN_SUBCASE( case3, a_v, axis );
     REDUCE_FMIN_SUBCASE( case3, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_FMIN_SUBCASE( case3, a_d, axis );
@@ -131,7 +126,6 @@ TEST_CASE("reduce_fmin(case4)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case4,   a, axis );
     REDUCE_FMIN_SUBCASE( case4, a_a, axis );
-    REDUCE_FMIN_SUBCASE( case4, a_v, axis );
     REDUCE_FMIN_SUBCASE( case4, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_FMIN_SUBCASE( case4, a_d, axis );
@@ -142,7 +136,6 @@ TEST_CASE("reduce_fmin(case5)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case5,   a, axis );
     REDUCE_FMIN_SUBCASE( case5, a_a, axis );
-    REDUCE_FMIN_SUBCASE( case5, a_v, axis );
     REDUCE_FMIN_SUBCASE( case5, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_FMIN_SUBCASE( case5, a_d, axis );
@@ -153,7 +146,6 @@ TEST_CASE("reduce_fmin(case6)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case6,   a, axis );
     REDUCE_FMIN_SUBCASE( case6, a_a, axis );
-    REDUCE_FMIN_SUBCASE( case6, a_v, axis );
     REDUCE_FMIN_SUBCASE( case6, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_FMIN_SUBCASE( case6, a_d, axis );
@@ -164,7 +156,6 @@ TEST_CASE("reduce_fmin(case7)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case7,   a, axis, dtype, initial );
     REDUCE_FMIN_SUBCASE( case7, a_a, axis, dtype, initial );
-    REDUCE_FMIN_SUBCASE( case7, a_v, axis, dtype, initial );
     REDUCE_FMIN_SUBCASE( case7, a_f, axis, dtype, initial );
     REDUCE_FMIN_SUBCASE( case7, a_f, axis, dtype, initial );
 }
@@ -173,7 +164,6 @@ TEST_CASE("reduce_fmin(case8)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case8,   a, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case8, a_a, axis, dtype, initial, keepdims );
-    REDUCE_FMIN_SUBCASE( case8, a_v, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case8, a_f, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case8, a_f, axis, dtype, initial, keepdims );
 }
@@ -182,7 +172,6 @@ TEST_CASE("reduce_fmin(case9)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case9,   a, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case9, a_a, axis, dtype, initial, keepdims );
-    REDUCE_FMIN_SUBCASE( case9, a_v, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case9, a_f, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case9, a_f, axis, dtype, initial, keepdims );
 }
@@ -191,7 +180,6 @@ TEST_CASE("reduce_fmin(case10)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case10,   a, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case10, a_a, axis, dtype, initial, keepdims );
-    REDUCE_FMIN_SUBCASE( case10, a_v, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case10, a_f, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case10, a_f, axis, dtype, initial, keepdims );
 }
@@ -200,7 +188,6 @@ TEST_CASE("reduce_fmin(case11)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case11,   a, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case11, a_a, axis, dtype, initial, keepdims );
-    REDUCE_FMIN_SUBCASE( case11, a_v, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case11, a_f, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case11, a_f, axis, dtype, initial, keepdims );
 }
@@ -209,7 +196,6 @@ TEST_CASE("reduce_fmin(case12)" * doctest::test_suite("array::reduce_fmin"))
 {
     REDUCE_FMIN_SUBCASE( case12,   a, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case12, a_a, axis, dtype, initial, keepdims );
-    REDUCE_FMIN_SUBCASE( case12, a_v, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
     REDUCE_FMIN_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
 }
@@ -251,7 +237,6 @@ TEST_CASE("accumulate_fmin(case1)" * doctest::test_suite("array::accumulate_fmin
 {
     ACCUMULATE_FMIN_SUBCASE( case1,   a, axis );
     ACCUMULATE_FMIN_SUBCASE( case1, a_a, axis );
-    ACCUMULATE_FMIN_SUBCASE( case1, a_v, axis );
     ACCUMULATE_FMIN_SUBCASE( case1, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_FMIN_SUBCASE( case1, a_d, axis );
@@ -262,7 +247,6 @@ TEST_CASE("accumulate_fmin(case2)" * doctest::test_suite("array::accumulate_fmin
 {
     ACCUMULATE_FMIN_SUBCASE( case2,   a, axis );
     ACCUMULATE_FMIN_SUBCASE( case2, a_a, axis );
-    ACCUMULATE_FMIN_SUBCASE( case2, a_v, axis );
     ACCUMULATE_FMIN_SUBCASE( case2, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_FMIN_SUBCASE( case2, a_d, axis );
@@ -273,7 +257,6 @@ TEST_CASE("accumulate_fmin(case3)" * doctest::test_suite("array::accumulate_fmin
 {
     ACCUMULATE_FMIN_SUBCASE( case3,   a, axis );
     ACCUMULATE_FMIN_SUBCASE( case3, a_a, axis );
-    ACCUMULATE_FMIN_SUBCASE( case3, a_v, axis );
     ACCUMULATE_FMIN_SUBCASE( case3, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_FMIN_SUBCASE( case3, a_d, axis );
@@ -318,7 +301,6 @@ TEST_CASE("outer_fmin(case1)" * doctest::test_suite("array::outer_fmin"))
     OUTER_FMIN_SUBCASE( case1,   a,   b );
     OUTER_FMIN_SUBCASE( case1, a_a, b_a );
     // TODO: remove support for nested vector as ndarray
-    // OUTER_FMIN_SUBCASE( case1, a_v, b_v );
     OUTER_FMIN_SUBCASE( case1, a_f, b_f );
     OUTER_FMIN_SUBCASE( case1, a_d, b_d );
     OUTER_FMIN_SUBCASE( case1, a_h, b_h );

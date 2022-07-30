@@ -46,7 +46,6 @@ TEST_CASE("invert(case1)" * doctest::test_suite("view::invert"))
 {
     INVERT_SUBCASE( case1,   a );
     INVERT_SUBCASE( case1, a_a );
-    INVERT_SUBCASE( case1, a_v );
     INVERT_SUBCASE( case1, a_f );
     INVERT_SUBCASE( case1, a_d );
     INVERT_SUBCASE( case1, a_h );

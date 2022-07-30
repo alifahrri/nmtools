@@ -47,7 +47,6 @@ TEST_CASE("cumprod(case1)" * doctest::test_suite("array::cumprod"))
 {
     CUMPROD_SUBCASE( case1,   a, axis );
     CUMPROD_SUBCASE( case1, a_a, axis );
-    CUMPROD_SUBCASE( case1, a_v, axis );
     CUMPROD_SUBCASE( case1, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet
@@ -59,7 +58,6 @@ TEST_CASE("cumprod(case2)" * doctest::test_suite("array::cumprod"))
 {
     CUMPROD_SUBCASE( case2,   a, axis );
     CUMPROD_SUBCASE( case2, a_a, axis );
-    CUMPROD_SUBCASE( case2, a_v, axis );
     CUMPROD_SUBCASE( case2, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet
@@ -71,7 +69,6 @@ TEST_CASE("cumprod(case3)" * doctest::test_suite("array::cumprod"))
 {
     CUMPROD_SUBCASE( case3,   a, axis );
     CUMPROD_SUBCASE( case3, a_a, axis );
-    CUMPROD_SUBCASE( case3, a_v, axis );
     CUMPROD_SUBCASE( case3, a_f, axis );
     // not yet supported,
     // cant figure out apply_slice for dynamic dim array yet

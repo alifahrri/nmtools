@@ -18,9 +18,9 @@ TEST_CASE("compute_strides" * doctest::test_suite("index"))
      * 
      */
     {
-        auto shape   = std::array{3};
+        auto shape   = nmtools_array{3};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{1}) );
+        CHECK( isequal(strides,nmtools_array{1}) );
     }
     /**
      * @code{.py}
@@ -30,9 +30,9 @@ TEST_CASE("compute_strides" * doctest::test_suite("index"))
      * 
      */
     {
-        auto shape   = std::array{3,2};
+        auto shape   = nmtools_array{3,2};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{2,1}) );
+        CHECK( isequal(strides,nmtools_array{2,1}) );
     }
     /**
      * @code{.py}
@@ -42,9 +42,9 @@ TEST_CASE("compute_strides" * doctest::test_suite("index"))
      * 
      */
     {
-        auto shape   = std::array{3,2,1};
+        auto shape   = nmtools_array{3,2,1};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{2,1,1}) );
+        CHECK( isequal(strides,nmtools_array{2,1,1}) );
     }
     /**
      * @code{.py}
@@ -54,12 +54,13 @@ TEST_CASE("compute_strides" * doctest::test_suite("index"))
      * 
      */
     {
-        auto shape   = std::array{3,2,3};
+        auto shape   = nmtools_array{3,2,3};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{6,3,1}) );
+        CHECK( isequal(strides,nmtools_array{6,3,1}) );
     }
 }
 
+#if 0
 TEST_CASE("compute_strides(std::vector)" * doctest::test_suite("index"))
 {
     /**
@@ -72,7 +73,7 @@ TEST_CASE("compute_strides(std::vector)" * doctest::test_suite("index"))
     {
         auto shape   = std::vector{3};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{1}) );
+        CHECK( isequal(strides,nmtools_array{1}) );
     }
     /**
      * @code{.py}
@@ -84,7 +85,7 @@ TEST_CASE("compute_strides(std::vector)" * doctest::test_suite("index"))
     {
         auto shape   = std::vector{3,2};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{2,1}) );
+        CHECK( isequal(strides,nmtools_array{2,1}) );
     }
     /**
      * @code{.py}
@@ -96,7 +97,7 @@ TEST_CASE("compute_strides(std::vector)" * doctest::test_suite("index"))
     {
         auto shape   = std::vector{3,2,1};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{2,1,1}) );
+        CHECK( isequal(strides,nmtools_array{2,1,1}) );
     }
     /**
      * @code{.py}
@@ -108,11 +109,12 @@ TEST_CASE("compute_strides(std::vector)" * doctest::test_suite("index"))
     {
         auto shape   = std::vector{3,2,3};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{6,3,1}) );
+        CHECK( isequal(strides,nmtools_array{6,3,1}) );
     }
 }
+#endif
 
-TEST_CASE("compute_strides(std::tuple)" * doctest::test_suite("index"))
+TEST_CASE("compute_strides(nmtools_tuple)" * doctest::test_suite("index"))
 {
     /**
      * @code{.py}
@@ -122,9 +124,9 @@ TEST_CASE("compute_strides(std::tuple)" * doctest::test_suite("index"))
      * 
      */
     {
-        auto shape   = std::tuple{3};
+        auto shape   = nmtools_tuple{3};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{1}) );
+        CHECK( isequal(strides,nmtools_array{1}) );
     }
     /**
      * @code{.py}
@@ -134,9 +136,9 @@ TEST_CASE("compute_strides(std::tuple)" * doctest::test_suite("index"))
      * 
      */
     {
-        auto shape   = std::tuple{3,2};
+        auto shape   = nmtools_tuple{3,2};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{2,1}) );
+        CHECK( isequal(strides,nmtools_array{2,1}) );
     }
     /**
      * @code{.py}
@@ -146,9 +148,9 @@ TEST_CASE("compute_strides(std::tuple)" * doctest::test_suite("index"))
      * 
      */
     {
-        auto shape   = std::tuple{3,2,1};
+        auto shape   = nmtools_tuple{3,2,1};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{2,1,1}) );
+        CHECK( isequal(strides,nmtools_array{2,1,1}) );
     }
     /**
      * @code{.py}
@@ -158,32 +160,32 @@ TEST_CASE("compute_strides(std::tuple)" * doctest::test_suite("index"))
      * 
      */
     {
-        auto shape   = std::tuple{3,2,3};
+        auto shape   = nmtools_tuple{3,2,3};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{6,3,1}) );
+        CHECK( isequal(strides,nmtools_array{6,3,1}) );
     }
 }
 
-TEST_CASE("compute_strides(std::tuple<integral_constant>)" * doctest::test_suite("index"))
+TEST_CASE("compute_strides(nmtools_tuple<integral_constant>)" * doctest::test_suite("index"))
 {
     {
-        auto shape   = std::tuple{3_ct};
+        auto shape   = nmtools_tuple{3_ct};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{1}) );
+        CHECK( isequal(strides,nmtools_array{1}) );
     }
     {
-        auto shape   = std::tuple{3_ct,2_ct};
+        auto shape   = nmtools_tuple{3_ct,2_ct};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{2,1}) );
+        CHECK( isequal(strides,nmtools_array{2,1}) );
     }
     {
-        auto shape   = std::tuple{3_ct,2_ct,1_ct};
+        auto shape   = nmtools_tuple{3_ct,2_ct,1_ct};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{2,1,1}) );
+        CHECK( isequal(strides,nmtools_array{2,1,1}) );
     }
     {
-        auto shape   = std::tuple{3_ct,2_ct,3_ct};
+        auto shape   = nmtools_tuple{3_ct,2_ct,3_ct};
         auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,std::array{6,3,1}) );
+        CHECK( isequal(strides,nmtools_array{6,3,1}) );
     }
 }

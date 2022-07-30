@@ -47,7 +47,6 @@ TEST_CASE("atleast_1d(case2)" * doctest::test_suite("array::atleast_1d"))
 {
     ATLEAST_1D_SUBCASE( case2, a );
     ATLEAST_1D_SUBCASE( case2, a_a );
-    ATLEAST_1D_SUBCASE( case2, a_v );
     ATLEAST_1D_SUBCASE( case2, a_f );
     ATLEAST_1D_SUBCASE( case2, a_d );
     ATLEAST_1D_SUBCASE( case2, a_h );
@@ -57,7 +56,6 @@ TEST_CASE("atleast_1d(case3)" * doctest::test_suite("array::atleast_1d"))
 {
     ATLEAST_1D_SUBCASE( case3, a );
     ATLEAST_1D_SUBCASE( case3, a_a );
-    ATLEAST_1D_SUBCASE( case3, a_v );
     ATLEAST_1D_SUBCASE( case3, a_f );
     ATLEAST_1D_SUBCASE( case3, a_d );
     ATLEAST_1D_SUBCASE( case3, a_h );
@@ -67,7 +65,6 @@ TEST_CASE("atleast_1d(case4)" * doctest::test_suite("array::atleast_1d"))
 {
     ATLEAST_1D_SUBCASE( case4, a );
     ATLEAST_1D_SUBCASE( case4, a_a );
-    ATLEAST_1D_SUBCASE( case4, a_v );
     ATLEAST_1D_SUBCASE( case4, a_f );
     ATLEAST_1D_SUBCASE( case4, a_d );
     ATLEAST_1D_SUBCASE( case4, a_h );

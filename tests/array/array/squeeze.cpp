@@ -46,7 +46,6 @@ TEST_CASE("squeeze(case1)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case1, array );
     SQUEEZE_SUBCASE( case1, array_a );
-    SQUEEZE_SUBCASE( case1, array_v );
     SQUEEZE_SUBCASE( case1, array_f );
     SQUEEZE_SUBCASE( case1, array_d );
     SQUEEZE_SUBCASE( case1, array_h );
@@ -56,7 +55,6 @@ TEST_CASE("squeeze(case2)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case2, array );
     SQUEEZE_SUBCASE( case2, array_a );
-    SQUEEZE_SUBCASE( case2, array_v );
     SQUEEZE_SUBCASE( case2, array_f );
     SQUEEZE_SUBCASE( case2, array_d );
     SQUEEZE_SUBCASE( case2, array_h );
@@ -66,7 +64,6 @@ TEST_CASE("squeeze(case3)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case3, array );
     SQUEEZE_SUBCASE( case3, array_a );
-    SQUEEZE_SUBCASE( case3, array_v );
     SQUEEZE_SUBCASE( case3, array_f );
     SQUEEZE_SUBCASE( case3, array_d );
     SQUEEZE_SUBCASE( case3, array_h );
@@ -76,7 +73,6 @@ TEST_CASE("squeeze(case4)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case4, array );
     SQUEEZE_SUBCASE( case4, array_a );
-    SQUEEZE_SUBCASE( case4, array_v );
     SQUEEZE_SUBCASE( case4, array_f );
     SQUEEZE_SUBCASE( case4, array_d );
     SQUEEZE_SUBCASE( case4, array_h );
@@ -86,7 +82,6 @@ TEST_CASE("squeeze(case5)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case5, array );
     SQUEEZE_SUBCASE( case5, array_a );
-    SQUEEZE_SUBCASE( case5, array_v );
     SQUEEZE_SUBCASE( case5, array_f );
     SQUEEZE_SUBCASE( case5, array_d );
     SQUEEZE_SUBCASE( case5, array_h );
@@ -96,7 +91,6 @@ TEST_CASE("squeeze(case6)" * doctest::test_suite("array::squeeze"))
 {
     SQUEEZE_SUBCASE( case6, array );
     SQUEEZE_SUBCASE( case6, array_a );
-    SQUEEZE_SUBCASE( case6, array_v );
     SQUEEZE_SUBCASE( case6, array_f );
     SQUEEZE_SUBCASE( case6, array_d );
     SQUEEZE_SUBCASE( case6, array_h );

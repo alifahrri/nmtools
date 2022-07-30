@@ -45,7 +45,6 @@ TEST_CASE("trunc(case1)" * doctest::test_suite("array::trunc"))
 {
     TRUNC_SUBCASE( case1,   a);
     TRUNC_SUBCASE( case1, a_a);
-    TRUNC_SUBCASE( case1, a_v);
     TRUNC_SUBCASE( case1, a_f);
     TRUNC_SUBCASE( case1, a_d);
     TRUNC_SUBCASE( case1, a_h);

@@ -50,7 +50,6 @@ TEST_CASE("sinh(case1)" * doctest::test_suite("view::sinh"))
 {
     SINH_SUBCASE( case1,   a);
     SINH_SUBCASE( case1, a_a);
-    SINH_SUBCASE( case1, a_v);
     SINH_SUBCASE( case1, a_f);
     SINH_SUBCASE( case1, a_d);
     SINH_SUBCASE( case1, a_h);

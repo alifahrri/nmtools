@@ -32,7 +32,7 @@ TEST_CASE("ndenumerate" * doctest::test_suite("index"))
     [[maybe_unused]] auto idx = std::get<0>(pack[3]);
     auto val = std::get<1>(pack[3]);
     #else
-    auto [idx, val] = pack[3];
+    const auto [idx, val] = pack[3];
     #endif
     CHECK( val == 3 );
 
@@ -42,7 +42,7 @@ TEST_CASE("ndenumerate" * doctest::test_suite("index"))
         [[maybe_unused]] auto idx = std::get<0>(pack[i]);
         auto value = std::get<1>(pack[i]);
         #else
-        auto [idx, value] = pack[i];
+        const auto [idx, value] = pack[i];
         #endif
         auto v = apply_at(array,indices[i]);
         CHECK( value == v );
@@ -50,7 +50,7 @@ TEST_CASE("ndenumerate" * doctest::test_suite("index"))
 
     // newer doctest CHECK macro definition breaks the following :(
     #ifndef __clang__
-    for (auto [idx,value] : pack) {
+    for (const auto [idx,value] : pack) {
         auto v = apply_at(array,idx);
         CHECK( value == v );
     }
@@ -58,7 +58,7 @@ TEST_CASE("ndenumerate" * doctest::test_suite("index"))
 
     {
         const auto& p = pack[2];
-        const auto& v = std::get<1>(p);
+        const auto& v = nmtools::get<1>(p);
         array[0][0][2] = 10;
         CHECK( v == 10 );
     }

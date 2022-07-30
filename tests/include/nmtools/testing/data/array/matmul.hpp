@@ -15,7 +15,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, split)
     {
         inline int shape[3] = {2,3,2};
         inline auto N = 1;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -27,7 +27,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, split)
     {
         inline int shape[3] = {2,3,2};
         inline auto N = 2;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -39,7 +39,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, split)
     {
         inline int shape[3] = {2,3,2};
         inline auto N = -2;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -51,7 +51,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, split)
     {
         inline int shape[3] = {2,3,2};
         inline auto N = -1;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -63,11 +63,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, split)
     {
         inline int shape[3] = {2,3,2};
         inline auto N = 0;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        inline auto lhs = std::vector<int>{};
+        inline auto lhs = nmtools_list<int>{};
         inline int rhs[3] = {2,3,2};
     }
 
@@ -75,12 +75,12 @@ NMTOOLS_TESTING_DECLARE_CASE(array, split)
     {
         inline int shape[3] = {2,3,2};
         inline auto N = 3;
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
         inline int lhs[3] = {2,3,2};
-        inline auto rhs = std::vector<int>{};
+        inline auto rhs = nmtools_list<int>{};
     }
 }
 
@@ -90,8 +90,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] = {3,4};
         inline int rshape[2] = {4,3};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -102,8 +102,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] = {4,3};
         inline int rshape[2] = {3,4};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -114,8 +114,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] = {4,1};
         inline int rshape[2] = {1,4};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -126,8 +126,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] = {1,4};
         inline int rshape[2] = {4,1};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -138,8 +138,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] =   {4,3};
         inline int rshape[3] = {2,3,2};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -150,8 +150,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[3] = {2,3,2};
         inline int rshape[2] =   {2,4};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -162,8 +162,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[4] = {9,5,7,4};
         inline int rshape[4] = {9,5,4,3};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -174,8 +174,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[4] = {1,5,7,4};
         inline int rshape[4] = {9,1,4,3};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -186,12 +186,12 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[4] = {9,5,7,4};
         inline int rshape[4] = {5,9,4,3};
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
-        inline auto result = meta::nothing;
+        inline auto result = meta::Nothing;
     }
 }
 
@@ -202,9 +202,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_matmul_indices)
         inline int indices[1] = {0};
         inline int   shape[3] = {1,4,3};
         inline int  bshape[1] = {1};
-        NMTOOLS_CAST_ARRAYS(indices);
-        NMTOOLS_CAST_ARRAYS(shape);
-        NMTOOLS_CAST_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -218,7 +218,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concat_indices)
     {
         inline int indices[1] = {0};
         inline auto tuple = nmtools_tuple{2,nmtools_tuple{None,None}};
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -237,15 +237,15 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
         inline int  lshape[2] = {4,3};
         inline int  rshape[2] = {3,4};
         inline int   shape[2] = {4,4};
-        NMTOOLS_CAST_ARRAYS(indices);
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        inline auto  left = std::tuple{0,std::tuple{None,None}};
-        inline auto right = std::tuple{std::tuple{None,None},0};
+        inline auto  left = nmtools_tuple{0,nmtools_tuple{None,None}};
+        inline auto right = nmtools_tuple{nmtools_tuple{None,None},0};
         using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto left_v  = slices_t{size_t{0},nmtools_tuple{None,None}};
@@ -258,15 +258,15 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
         inline int  lshape[2] = {4,3};
         inline int  rshape[2] = {3,4};
         inline int   shape[2] = {4,4};
-        NMTOOLS_CAST_ARRAYS(indices);
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        inline auto  left = std::tuple{3,std::tuple{None,None}};
-        inline auto right = std::tuple{std::tuple{None,None},2};
+        inline auto  left = nmtools_tuple{3,nmtools_tuple{None,None}};
+        inline auto right = nmtools_tuple{nmtools_tuple{None,None},2};
         using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto left_v  = slices_t{size_t{3},nmtools_tuple{None,None}};
@@ -279,15 +279,15 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
         inline int  lshape[3] = {1,4,3};
         inline int  rshape[2] =   {3,4};
         inline int   shape[3] = {1,4,4};
-        NMTOOLS_CAST_ARRAYS(indices);
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        inline auto  left = std::tuple{0,0,std::tuple{None,None}};
-        inline auto right = std::tuple{std::tuple{None,None},0};
+        inline auto  left = nmtools_tuple{0,0,nmtools_tuple{None,None}};
+        inline auto right = nmtools_tuple{nmtools_tuple{None,None},0};
         using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto left_v  = slices_t{size_t{0},size_t{0},nmtools_tuple{None,None}};
@@ -300,15 +300,15 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
         inline int  lshape[3] = {1,4,3};
         inline int  rshape[2] =   {3,4};
         inline int   shape[3] = {1,4,4};
-        NMTOOLS_CAST_ARRAYS(indices);
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        inline auto  left = std::tuple{0,3,std::tuple{None,None}};
-        inline auto right = std::tuple{std::tuple{None,None},2};
+        inline auto  left = nmtools_tuple{0,3,nmtools_tuple{None,None}};
+        inline auto right = nmtools_tuple{nmtools_tuple{None,None},2};
         using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto left_v  = slices_t{size_t{0},size_t{3},nmtools_tuple{None,None}};
@@ -321,15 +321,15 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
         inline int  lshape[2] =   {2,3};
         inline int  rshape[3] = {2,3,2};
         inline int   shape[3] = {2,2,2};
-        NMTOOLS_CAST_ARRAYS(indices);
-        NMTOOLS_CAST_ARRAYS(lshape);
-        NMTOOLS_CAST_ARRAYS(rshape);
-        NMTOOLS_CAST_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(lshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(rshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        inline auto  left = std::tuple{1,std::tuple{None,None}};
-        inline auto right = std::tuple{1,std::tuple{None,None},0};
+        inline auto  left = nmtools_tuple{1,nmtools_tuple{None,None}};
+        inline auto right = nmtools_tuple{1,nmtools_tuple{None,None},0};
         using slice_t  = nmtools_either<size_t,nmtools_tuple<none_t,none_t>>;
         using slices_t = nmtools_list<slice_t>;
         inline auto left_v  = slices_t{size_t{1},nmtools_tuple{None,None}};

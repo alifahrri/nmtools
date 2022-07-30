@@ -64,7 +64,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
     {
         inline int array[2][2] = {{1,2},{3,4}};
-        inline auto repeats = std::array{1,2};
+        inline auto repeats = nmtools_array{1,2};
         inline auto axis = 0;
         NMTOOLS_CAST_ARRAYS(array);
     }
@@ -82,7 +82,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
     {
         inline int array[2][2] = {{1,2},{3,4}};
-        inline auto repeats = std::array{1,2};
+        inline auto repeats = nmtools_array{1,2};
         inline auto axis = 1;
         NMTOOLS_CAST_ARRAYS(array);
     }

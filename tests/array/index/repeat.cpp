@@ -18,7 +18,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto axis    = None;
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = 3_ct;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -33,7 +33,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = 3_ct;
         auto axis_ct    = 0_ct;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -48,7 +48,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = 3_ct;
         auto axis_ct    = 1_ct;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -63,7 +63,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = nmtools_tuple{1_ct,2_ct};
         auto axis_ct    = 1_ct;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -78,7 +78,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = nmtools_tuple{1_ct,2_ct};
         auto axis_ct    = 0_ct;
-        NMTOOLS_CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -302,8 +302,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices  = 7;
         int repeats  = 2;
         auto axis = None;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -316,8 +315,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices  = 6;
         int repeats  = 2;
         auto axis = None;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -330,8 +328,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices  = 5;
         int repeats  = 2;
         auto axis = None;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -344,8 +341,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {5,0};
         int repeats  = 3;
         auto axis    = 0;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -358,8 +354,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {5,1};
         int repeats  = 3;
         auto axis    = 0;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -372,8 +367,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {2,0};
         int repeats[2] = {1,2};
         auto axis    = 0;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -386,8 +380,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {1,0};
         int repeats[2] = {1,2};
         auto axis    = 0;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -400,8 +393,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {0,0};
         int repeats[2] = {1,2};
         auto axis    = 0;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -414,8 +406,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {0,0};
         int repeats[2] = {1,2};
         auto axis    = 1;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -428,8 +419,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {0,1};
         int repeats[2] = {1,2};
         auto axis    = 1;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -442,8 +432,7 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {1,2};
         int repeats[2] = {1,2};
         auto axis    = 1;
-        auto shape_a = cast<int>(shape);
-        auto shape_v = cast<std::vector<int>>(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {

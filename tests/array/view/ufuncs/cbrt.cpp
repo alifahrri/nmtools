@@ -46,7 +46,6 @@ TEST_CASE("cbrt(case1)" * doctest::test_suite("view::cbrt"))
 {
     CBRT_SUBCASE( case1,   a);
     CBRT_SUBCASE( case1, a_a);
-    CBRT_SUBCASE( case1, a_v);
     CBRT_SUBCASE( case1, a_f);
     CBRT_SUBCASE( case1, a_d);
     CBRT_SUBCASE( case1, a_h);

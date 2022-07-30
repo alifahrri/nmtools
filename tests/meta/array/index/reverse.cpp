@@ -13,19 +13,19 @@ TEST_CASE("reverse" * doctest::test_suite("index"))
     {
         using indices_t  = int[2];
         using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = std::array<int,2>;
+        using expected_t = nmtools_array<int,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
-        using indices_t  = std::array<int,2>;
+        using indices_t  = nmtools_array<int,2>;
         using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = std::array<int,2>;
+        using expected_t = nmtools_array<int,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
-        using indices_t  = std::vector<int>;
+        using indices_t  = nmtools_list<int>;
         using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = std::vector<int>;
+        using expected_t = nmtools_list<int>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
@@ -41,15 +41,15 @@ TEST_CASE("reverse" * doctest::test_suite("index"))
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
-        using indices_t  = decltype(std::tuple{1_ct,2_ct});
+        using indices_t  = decltype(nmtools_tuple{1_ct,2_ct});
         using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = decltype(std::tuple{2_ct,1_ct});
+        using expected_t = decltype(nmtools_tuple{2_ct,1_ct});
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
-        using indices_t  = decltype(std::tuple{2_ct,0_ct,1_ct});
+        using indices_t  = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
         using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = decltype(std::tuple{1_ct,0_ct,2_ct});
+        using expected_t = decltype(nmtools_tuple{1_ct,0_ct,2_ct});
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
 }

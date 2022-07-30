@@ -526,7 +526,7 @@ set(FUNCTIONAL_TEST_SOURCES
     functional/where.cpp
 )
 if (NOT NMTOOLS_TEST_FUNCTIONAL)
-    set (NMTOOLS_TEST_FUNCTIONAL "")
+    set (FUNCTIONAL_TEST_SOURCES "")
 endif()
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
@@ -560,29 +560,6 @@ target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
-
-###################### NO STL ##################################
-option(NMTOOLS_ENABLE_TEST_NOSTL "build nostl tests" OFF)
-set(NMTOOLS_NOSTL_TEST_SOURCES
-    ${ARRAY_INDEX_TEST_SOURCES}
-)
-if (NOT NMTOOLS_ENABLE_TEST_NOSTL)
-    set (NMTOOLS_NOSTL_TEST_SOURCES "")
-endif()
-add_executable(${PROJECT_NAME}-doctest-nostl tests.cpp 
-    ${NMTOOLS_NOSTL_TEST_SOURCES}
-)
-
-target_compile_definitions(${PROJECT_NAME}-doctest-nostl PRIVATE
-    NMTOOLS_DISABLE_STL
-    NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
-)
-
-target_compile_features(${PROJECT_NAME}-doctest-nostl PRIVATE cxx_std_17)
-if (doctest_FOUND)
-    target_link_libraries(${PROJECT_NAME}-doctest-nostl PRIVATE doctest::doctest)
-endif()
-###################### NO STL ##################################
 
 option(NMTOOLS_ENABLE_TEST_BENCHMARKS "build benchmark programs" OFF)
 if (NMTOOLS_ENABLE_TEST_BENCHMARKS)

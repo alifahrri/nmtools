@@ -13,20 +13,13 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#define CAST_ARRAYS(name) \
-auto name##_a = cast(name, kind::nested_arr); \
-auto name##_v = cast(name, kind::nested_vec); \
-auto name##_f = cast(name, kind::fixed); \
-auto name##_d = cast(name, kind::dynamic); \
-auto name##_h = cast(name, kind::hybrid); \
-
 NMTOOLS_TESTING_DECLARE_CASE(index, remove_dims)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int shape[3] = {1,2,3};
         int axis = 1;
-        CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -38,7 +31,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, remove_dims)
         int shape[3] = {1,2,3};
         int axis = 1;
         auto keepdims = True;
-        CAST_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {

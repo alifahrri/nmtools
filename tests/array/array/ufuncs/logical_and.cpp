@@ -46,7 +46,6 @@ TEST_CASE("logical_and(case1)" * doctest::test_suite("array::logical_and"))
 {
     LOGICAL_AND_SUBCASE( case1,   a,   b );
     LOGICAL_AND_SUBCASE( case1, a_a, b_a );
-    LOGICAL_AND_SUBCASE( case1, a_v, b_v );
     LOGICAL_AND_SUBCASE( case1, a_f, b_f );
     LOGICAL_AND_SUBCASE( case1, a_d, b_d );
     LOGICAL_AND_SUBCASE( case1, a_h, b_h );
@@ -56,7 +55,6 @@ TEST_CASE("logical_and(case2)" * doctest::test_suite("array::logical_and"))
 {
     LOGICAL_AND_SUBCASE( case2,   a, b );
     LOGICAL_AND_SUBCASE( case2, a_a, b );
-    LOGICAL_AND_SUBCASE( case2, a_v, b );
     LOGICAL_AND_SUBCASE( case2, a_f, b );
     LOGICAL_AND_SUBCASE( case2, a_d, b );
     LOGICAL_AND_SUBCASE( case2, a_h, b );

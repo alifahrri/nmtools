@@ -46,7 +46,6 @@ TEST_CASE("arccosh(case1)" * doctest::test_suite("view::arccosh"))
 {
     ARCCOSH_SUBCASE( case1,   a);
     ARCCOSH_SUBCASE( case1, a_a);
-    ARCCOSH_SUBCASE( case1, a_v);
     ARCCOSH_SUBCASE( case1, a_f);
     ARCCOSH_SUBCASE( case1, a_d);
     ARCCOSH_SUBCASE( case1, a_h);

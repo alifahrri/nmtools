@@ -23,7 +23,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
         }
         {
-            using view_t = view::decorator_t< view::flatten_t, std::array<int,3> >;
+            using view_t = view::decorator_t< view::flatten_t, nmtools_array<int,3> >;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
         }
         {
@@ -50,7 +50,7 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
-            using view_t = view::decorator_t< view::flatten_t, std::array<int,3> >;
+            using view_t = view::decorator_t< view::flatten_t, nmtools_array<int,3> >;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {

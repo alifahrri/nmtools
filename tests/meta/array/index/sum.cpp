@@ -10,7 +10,7 @@ namespace meta = nm::meta;
 
 using nm::index::sum_t;
 using namespace nm::literals;
-using std::tuple;
+using nmtools_tuple;
 
 TEST_CASE("sum" * doctest::test_suite("index"))
 {

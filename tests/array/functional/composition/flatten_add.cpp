@@ -280,6 +280,9 @@ TEST_CASE("flatten_reduce_add(case14)" * doctest::test_suite("functional::compos
         FUNCTIONAL_SUBCASE( "case14", flattened, (fn::flatten * fn::reduce_add[axis_a][dtype][initial][keepdims]), a_a);
         FUNCTIONAL_SUBCASE( "case14", flattened, (fn::flatten * fn::reduce_add[axis_f][dtype][initial][keepdims]), a_f);
         FUNCTIONAL_SUBCASE( "case14", flattened, (fn::flatten * fn::reduce_add[axis_h][dtype][initial][keepdims]), a_h);
+        // TODO: fix utl vector
+        #ifndef NMTOOLS_DISABLE_STL
         FUNCTIONAL_SUBCASE( "case14", flattened, (fn::flatten * fn::reduce_add[axis_v][dtype][initial][keepdims]), a_d);
+        #endif
     }
 }

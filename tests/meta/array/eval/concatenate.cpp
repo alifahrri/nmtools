@@ -20,16 +20,16 @@ TEST_CASE("eval(concatenate)" * doctest::test_suite("eval"))
         using axis_t = nm::none_t;
         using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
-        using expected_t = std::array<int,6>;
+        using expected_t = nmtools_array<int,6>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using lhs_t  = std::array<std::array<int,2>,2>;
-        using rhs_t  = std::array<std::array<int,1>,2>;
+        using lhs_t  = nmtools_array<nmtools_array<int,2>,2>;
+        using rhs_t  = nmtools_array<nmtools_array<int,1>,2>;
         using axis_t = nm::none_t;
         using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
-        using expected_t = std::array<int,6>;
+        using expected_t = nmtools_array<int,6>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
@@ -72,8 +72,8 @@ TEST_CASE("eval(concatenate)" * doctest::test_suite("eval"))
         static_assert( meta::is_dynamic_ndarray_v<view_t> );
     }
     {
-        using lhs_t  = std::array<std::array<int,2>,2>;
-        using rhs_t  = std::array<std::array<int,2>,1>;
+        using lhs_t  = nmtools_array<nmtools_array<int,2>,2>;
+        using rhs_t  = nmtools_array<nmtools_array<int,2>,1>;
         using axis_t = int;
         using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
@@ -97,16 +97,16 @@ TEST_CASE("eval(concatenate)" * doctest::test_suite("eval"))
         using axis_t = decltype(0_ct);
         using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
-        using expected_t = std::array<std::array<int,2>,3>;
+        using expected_t = nmtools_array<nmtools_array<int,2>,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using lhs_t  = std::array<std::array<int,2>,2>;
-        using rhs_t  = std::array<std::array<int,2>,1>;
+        using lhs_t  = nmtools_array<nmtools_array<int,2>,2>;
+        using rhs_t  = nmtools_array<nmtools_array<int,2>,1>;
         using axis_t = decltype(0_ct);
         using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
-        using expected_t = std::array<std::array<int,2>,3>;
+        using expected_t = nmtools_array<nmtools_array<int,2>,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {

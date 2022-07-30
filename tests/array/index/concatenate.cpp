@@ -20,8 +20,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
         inline auto axis_ct = 0_ct;
         inline auto ashape_ct = nmtools_tuple{2_ct,2_ct};
         inline auto bshape_ct = nmtools_tuple{1_ct,2_ct};
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -37,8 +37,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
         inline auto axis_ct = 1_ct;
         inline auto ashape_ct = nmtools_tuple{2_ct,2_ct};
         inline auto bshape_ct = nmtools_tuple{1_ct,2_ct};
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -54,8 +54,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
         inline auto axis_ct = 1_ct;
         inline auto ashape_ct = nmtools_tuple{2_ct,2_ct};
         inline auto bshape_ct = nmtools_tuple{2_ct,1_ct};
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -70,8 +70,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
         inline int bshape[2] = {2,1};
         inline auto ashape_ct = nmtools_tuple{2_ct,2_ct};
         inline auto bshape_ct = nmtools_tuple{2_ct,1_ct};
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -120,7 +120,7 @@ SUBCASE(#case_name) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(shape_concatenate, case_name) \
-    auto [success, shape] = RUN_shape_concatenate(case_name, args::ashape, args::bshape, args::axis); \
+    const auto [success, shape] = RUN_shape_concatenate(case_name, args::ashape, args::bshape, args::axis); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
     if (expect::success) \
         NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
@@ -178,9 +178,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concatenate)
         inline int bshape[2]  = {1,2};
         inline int indices[2] = {0,0};
         inline int axis = 0;
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -196,9 +196,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concatenate)
         int bshape[2]  = {1,2};
         int indices[2] = {2,1};
         int axis = 0;
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -214,9 +214,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concatenate)
         int bshape[2]  = {1,2};
         int indices[2] = {1,1};
         int axis = 0;
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -232,9 +232,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concatenate)
         int bshape[2]  = {1,2};
         int indices[2] = {2,0};
         int axis = 0;
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -250,9 +250,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concatenate)
         int bshape[2]  = {1,2};
         int indices[1] = {4};
         auto axis = None;
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -268,9 +268,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concatenate)
         int bshape[2]  = {1,2};
         int indices[1] = {5};
         auto axis = None;
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -286,9 +286,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concatenate)
         int bshape[2]  = {1,2};
         int indices[1] = {2};
         auto axis = None;
-        NMTOOLS_CAST_ARRAYS(ashape);
-        NMTOOLS_CAST_ARRAYS(bshape);
-        NMTOOLS_CAST_ARRAYS(indices);
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape);
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -344,7 +344,7 @@ SUBCASE(#case_name) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(index,concatenate,case_name); \
-    auto [aflag,bflag,a_idx,b_idx] = RUN_concatenate(case_name, args::ashape,args::bshape,args::indices,args::axis); \
+    const auto [aflag,bflag,a_idx,b_idx] = RUN_concatenate(case_name, args::ashape,args::bshape,args::indices,args::axis); \
     NMTOOLS_ASSERT_EQUAL( aflag, expect::aflag ); \
     NMTOOLS_ASSERT_EQUAL( bflag, expect::bflag ); \
     if (expect::aflag) \

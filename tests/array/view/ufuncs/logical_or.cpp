@@ -47,7 +47,6 @@ TEST_CASE("logical_or(case1)" * doctest::test_suite("view::logical_or"))
 {
     LOGICAL_OR_SUBCASE( case1,   a,   b );
     LOGICAL_OR_SUBCASE( case1, a_a, b_a );
-    LOGICAL_OR_SUBCASE( case1, a_v, b_v );
     LOGICAL_OR_SUBCASE( case1, a_f, b_f );
     LOGICAL_OR_SUBCASE( case1, a_d, b_d );
     LOGICAL_OR_SUBCASE( case1, a_h, b_h );
@@ -57,7 +56,6 @@ TEST_CASE("logical_or(case2)" * doctest::test_suite("view::logical_or"))
 {
     LOGICAL_OR_SUBCASE( case2,   a, b );
     LOGICAL_OR_SUBCASE( case2, a_a, b );
-    LOGICAL_OR_SUBCASE( case2, a_v, b );
     LOGICAL_OR_SUBCASE( case2, a_f, b );
     LOGICAL_OR_SUBCASE( case2, a_d, b );
     LOGICAL_OR_SUBCASE( case2, a_h, b );
@@ -133,7 +131,6 @@ TEST_CASE("reduce_logical_or(case1)" * doctest::test_suite("view::reduce_logical
 {
     REDUCE_LOGICAL_OR_SUBCASE( case1,   a, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case1, a_a, axis );
-    REDUCE_LOGICAL_OR_SUBCASE( case1, a_v, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case1, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_LOGICAL_OR_SUBCASE( case1, a_d, axis );
@@ -144,7 +141,6 @@ TEST_CASE("reduce_logical_or(case2)" * doctest::test_suite("view::reduce_logical
 {
     REDUCE_LOGICAL_OR_SUBCASE( case2,   a, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case2, a_a, axis );
-    REDUCE_LOGICAL_OR_SUBCASE( case2, a_v, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case2, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_LOGICAL_OR_SUBCASE( case2, a_d, axis );
@@ -155,7 +151,6 @@ TEST_CASE("reduce_logical_or(case3)" * doctest::test_suite("view::reduce_logical
 {
     REDUCE_LOGICAL_OR_SUBCASE( case3,   a, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case3, a_a, axis );
-    REDUCE_LOGICAL_OR_SUBCASE( case3, a_v, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case3, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_LOGICAL_OR_SUBCASE( case3, a_d, axis );
@@ -166,7 +161,6 @@ TEST_CASE("reduce_logical_or(case4)" * doctest::test_suite("view::reduce_logical
 {
     REDUCE_LOGICAL_OR_SUBCASE( case4,   a, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case4, a_a, axis );
-    REDUCE_LOGICAL_OR_SUBCASE( case4, a_v, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case4, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_LOGICAL_OR_SUBCASE( case4, a_d, axis );
@@ -177,7 +171,6 @@ TEST_CASE("reduce_logical_or(case5)" * doctest::test_suite("view::reduce_logical
 {
     REDUCE_LOGICAL_OR_SUBCASE( case5,   a, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case5, a_a, axis );
-    REDUCE_LOGICAL_OR_SUBCASE( case5, a_v, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case5, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_LOGICAL_OR_SUBCASE( case5, a_d, axis );
@@ -188,7 +181,6 @@ TEST_CASE("reduce_logical_or(case6)" * doctest::test_suite("view::reduce_logical
 {
     REDUCE_LOGICAL_OR_SUBCASE( case6,   a, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case6, a_a, axis );
-    REDUCE_LOGICAL_OR_SUBCASE( case6, a_v, axis );
     REDUCE_LOGICAL_OR_SUBCASE( case6, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_LOGICAL_OR_SUBCASE( case6, a_d, axis );

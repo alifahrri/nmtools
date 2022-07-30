@@ -21,13 +21,6 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid); \
-
 NMTOOLS_TESTING_DECLARE_CASE(composition, subtract_fabs_square)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -49,8 +42,8 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, subtract_fabs_square)
                 {5.5}
             }
         };
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -83,7 +76,7 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, subtract_fabs_square)
             }
         };
         inline float b = 5.5;
-        CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {

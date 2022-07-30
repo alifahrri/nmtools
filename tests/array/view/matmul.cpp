@@ -47,8 +47,8 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(array, split, case_name); \
     using namespace args; \
     auto result = RUN_split(case_name, __VA_ARGS__); \
-    auto lhs = std::get<0>(result); \
-    auto rhs = std::get<1>(result); \
+    auto lhs = nmtools::get<0>(result); \
+    auto rhs = nmtools::get<1>(result); \
     NMTOOLS_ASSERT_EQUAL( lhs, expect::lhs ); \
     NMTOOLS_ASSERT_EQUAL( rhs, expect::rhs ); \
 }
@@ -343,8 +343,8 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(index, matmul, case_name); \
     using namespace args; \
     auto result = RUN_index_matmul(case_name, __VA_ARGS__); \
-    auto left   = std::get<0>(result); \
-    auto right  = std::get<1>(result); \
+    auto left   = nmtools::get<0>(result); \
+    auto right  = nmtools::get<1>(result); \
     NMTOOLS_ASSERT_EQUAL( left, expect::res_left ); \
     NMTOOLS_ASSERT_EQUAL( right, expect::res_right ); \
 }
@@ -356,8 +356,8 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(index, matmul, case_name); \
     using namespace args; \
     auto result = RUN_index_matmul(case_name, __VA_ARGS__); \
-    auto left   = std::get<0>(result); \
-    auto right  = std::get<1>(result); \
+    auto left   = nmtools::get<0>(result); \
+    auto right  = nmtools::get<1>(result); \
     NMTOOLS_ASSERT_EQUAL( nm::dim(left), nm::dim(expect::res_left) ); \
     NMTOOLS_ASSERT_EQUAL( nm::dim(right), nm::dim(expect::res_right) ); \
 }

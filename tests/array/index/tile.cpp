@@ -17,8 +17,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         inline int reps[1] = {2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -31,8 +31,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         inline int reps[2]   = {2,2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -45,8 +45,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[3]  = {2,1,2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,1_ct,2_ct};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -59,8 +59,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[2]  = {2,1};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,1_ct};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -73,8 +73,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[2]  = {2,2};
         inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -87,8 +87,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int8_t reps[2]  = {2,2};
         inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -365,9 +365,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {1,5};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -379,9 +379,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {0,4};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -393,9 +393,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {1,3};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -407,9 +407,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {0,2};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -421,9 +421,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[1] = {3};
         int reps[2]  = {2,2};
         int indices[2] = {1,1};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -435,9 +435,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[3] = {2,1,4};
         int reps[2]  = {2,2};
         int indices[3] = {0,1,7};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -449,9 +449,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[3] = {2,1,4};
         int reps[2]  = {2,2};
         int indices[3] = {1,0,4};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -463,9 +463,9 @@ NMTOOLS_TESTING_DECLARE_CASE(tile)
         int shape[3] = {2,1,4};
         int reps[2]  = {2,2};
         int indices[3] = {0,1,3};
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(reps)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(reps)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {

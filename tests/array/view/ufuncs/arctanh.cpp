@@ -46,7 +46,6 @@ TEST_CASE("arctanh(case1)" * doctest::test_suite("view::arctanh"))
 {
     ARCTANH_SUBCASE( case1,   a);
     ARCTANH_SUBCASE( case1, a_a);
-    ARCTANH_SUBCASE( case1, a_v);
     ARCTANH_SUBCASE( case1, a_f);
     ARCTANH_SUBCASE( case1, a_d);
     ARCTANH_SUBCASE( case1, a_h);

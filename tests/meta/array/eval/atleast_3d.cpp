@@ -19,21 +19,21 @@ TEST_CASE("eval(atleast_3d)" * doctest::test_suite("eval"))
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using view_t = view::decorator_t< view::atleast_3d_t, std::vector<int> >;
+        using view_t = view::decorator_t< view::atleast_3d_t, nmtools_list<int> >;
         using eval_t = meta::resolve_optype_t<na::eval_t, view_t, none_t>;
         using expected_t = na::dynamic_ndarray<int>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using view_t = view::decorator_t< view::atleast_3d_t, std::array<int,3> >;
+        using view_t = view::decorator_t< view::atleast_3d_t, nmtools_array<int,3> >;
         using eval_t = meta::resolve_optype_t<na::eval_t, view_t, none_t>;
-        using expected_t = std::array<std::array<std::array<int,3>,1>,1>;
+        using expected_t = nmtools_array<nmtools_array<nmtools_array<int,3>,1>,1>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
         using view_t = view::decorator_t< view::atleast_3d_t, int[3] >;
         using eval_t = meta::resolve_optype_t<na::eval_t, view_t, none_t>;
-        using expected_t = std::array<std::array<std::array<int,3>,1>,1>;
+        using expected_t = nmtools_array<nmtools_array<nmtools_array<int,3>,1>,1>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {

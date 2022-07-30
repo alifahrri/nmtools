@@ -6,9 +6,9 @@
 #include <tuple>
 #include <vector>
 
-using std::vector;
-using std::array;
-using std::tuple;
+using nmtools_list;
+using nmtools_array;
+using nmtools_tuple;
 
 namespace na = nmtools::array;
 using nmtools::array::fixed_ndarray;
@@ -135,6 +135,7 @@ TEST_CASE("to_string(tuple[2])" * doctest::test_suite("utils") * doctest::skip(t
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @test to_string(array[2])
  * 
@@ -166,6 +167,7 @@ TEST_CASE("to_string(vector[2])" * doctest::test_suite("utils") * doctest::skip(
         CHECK( str.size() );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
 TEST_CASE("to_string(double[2][3])" * doctest::test_suite("utils") * doctest::skip(true))
 {
@@ -205,6 +207,7 @@ TEST_CASE("to_string(tuple[3])" * doctest::test_suite("utils") * doctest::skip(t
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @brief to_string(array[3])
  * 
@@ -249,6 +252,8 @@ TEST_CASE("to_string(vector[3])" * doctest::test_suite("utils") * doctest::skip(
     }
 }
 
+#endif // NMTOOLS_DISABLE_STL
+
 TEST_CASE("to_string(double[2][2][3])" * doctest::test_suite("utils") * doctest::skip(true))
 {
     {
@@ -280,6 +285,7 @@ TEST_CASE("to_string(fixed_ndarray[3])" * doctest::test_suite("utils") * doctest
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
 /**
  * @test to_string(array[4],array[4])
  * 
@@ -347,6 +353,7 @@ TEST_CASE("to_string(vector[4])" * doctest::test_suite("utils") * doctest::skip(
         CHECK( str.size() );
     }
 }
+#endif // NMTOOLS_DISABLE_STL
 
 TEST_CASE("to_string(double[2][2][2][3])" * doctest::test_suite("utils") * doctest::skip(true))
 {
@@ -395,7 +402,7 @@ TEST_CASE("to_string(variant)" * doctest::test_suite("utils") * doctest::skip(tr
 {
     SUBCASE("None")
     {
-        using arg_t = std::variant<nmtools::none_t,std::array<size_t,3>>;
+        using arg_t = nmtools_either<nmtools::none_t,nmtools_array<size_t,3>>;
         auto arg = arg_t{nmtools::None};
         auto str = to_string(arg);
         auto to_print = std::string("\n") + str;
@@ -404,8 +411,8 @@ TEST_CASE("to_string(variant)" * doctest::test_suite("utils") * doctest::skip(tr
     }
     SUBCASE("array")
     {
-        using arg_t = std::variant<nmtools::none_t,std::array<size_t,3>>;
-        auto arg = arg_t{std::array<size_t,3>{1ul,2ul,3ul}};
+        using arg_t = nmtools_either<nmtools::none_t,nmtools_array<size_t,3>>;
+        auto arg = arg_t{nmtools_array<size_t,3>{1ul,2ul,3ul}};
         auto str = to_string(arg);
         auto to_print = std::string("\n") + str;
         MESSAGE( to_print );
@@ -425,7 +432,7 @@ TEST_CASE("to_string(optional)" * doctest::test_suite("utils") * doctest::skip(t
     }
     SUBCASE("array")
     {
-        auto arg = std::array<size_t,3>{1ul,2ul,3ul};
+        auto arg = nmtools_array<size_t,3>{1ul,2ul,3ul};
         auto str = to_string(arg);
         auto to_print = std::string("\n") + str;
         MESSAGE( to_print );

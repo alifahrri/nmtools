@@ -63,7 +63,7 @@ TEST_CASE("ones_traits(case1)" * doctest::test_suite("view::ones_traits"))
     }
     {
         using namespace nm::literals;
-        auto shape = std::tuple{2_ct,3_ct,2_ct};
+        auto shape = nmtools_tuple{2_ct,3_ct,2_ct};
         auto array = nm::view::ones(shape,nm::float32);
         using array_t = decltype(array);
         constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;

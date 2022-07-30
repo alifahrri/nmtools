@@ -11,7 +11,7 @@ namespace na = nmtools::array;
 
 TEST_CASE("cast<array>(double[])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::array<double,5>; 
+    using dst_t = nmtools_array<double,5>; 
     double src[5] = {1,2,3,4,5};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), dst_t );
@@ -21,7 +21,7 @@ TEST_CASE("cast<array>(double[])" * doctest::test_suite("cast"))
 TEST_CASE("cast<float>(double[])" * doctest::test_suite("cast"))
 {
     using dst_t = float;
-    using expected_t = std::array<dst_t,5>;
+    using expected_t = nmtools_array<dst_t,5>;
     double src[5] = {1,2,3,4,5};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
@@ -31,7 +31,7 @@ TEST_CASE("cast<float>(double[])" * doctest::test_suite("cast"))
 TEST_CASE("cast<bool>(bool[])" * doctest::test_suite("cast"))
 {
     using dst_t = bool;
-    using expected_t = std::array<dst_t,5>;
+    using expected_t = nmtools_array<dst_t,5>;
     bool src[5] = {true,false,true,false,true};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
@@ -41,7 +41,7 @@ TEST_CASE("cast<bool>(bool[])" * doctest::test_suite("cast"))
 TEST_CASE("cast<bool>(bool[])" * doctest::test_suite("cast"))
 {
     using dst_t = bool;
-    using expected_t = std::array<dst_t,5>;
+    using expected_t = nmtools_array<dst_t,5>;
     bool src[5] = {true,false,true,false,true};
     auto res = nm::cast<expected_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
@@ -50,7 +50,7 @@ TEST_CASE("cast<bool>(bool[])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<vector>(double[])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::vector<double>;
+    using dst_t = nmtools_list<double>;
     double src[5] = {1,2,3,4,5};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), dst_t );
@@ -59,9 +59,9 @@ TEST_CASE("cast<vector>(double[])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<float>(vector)" * doctest::test_suite("cast"))
 {
-    using src_t = std::vector<double>;
+    using src_t = nmtools_list<double>;
     using dst_t = float;
-    using expected_t = std::vector<dst_t>;
+    using expected_t = nmtools_list<dst_t>;
     auto src = src_t{1,2,3,4,5};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
@@ -70,7 +70,7 @@ TEST_CASE("cast<float>(vector)" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<vector>(bool[])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::vector<bool>;
+    using dst_t = nmtools_list<bool>;
     bool src[5] = {true,false,true,false,true};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), dst_t );
@@ -119,7 +119,7 @@ TEST_CASE("cast<float>(dynamic_ndarray)" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::array<std::array<double,3>,2>;
+    using dst_t = nmtools_array<nmtools_array<double,3>,2>;
     double src[2][3] = {
         {1,2,3},
         {4,5,6},
@@ -132,7 +132,7 @@ TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
 TEST_CASE("cast<float>(double[2])" * doctest::test_suite("cast"))
 {
     using dst_t = float;
-    using expected_t = std::array<std::array<dst_t,3>,2>;
+    using expected_t = nmtools_array<nmtools_array<dst_t,3>,2>;
     double src[2][3] = {
         {1,2,3},
         {4,5,6},
@@ -142,9 +142,10 @@ TEST_CASE("cast<float>(double[2])" * doctest::test_suite("cast"))
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
 
+#if 0
 TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::vector<std::vector<double>>;
+    using dst_t = nmtools_list<nmtools_list<double>>;
     double src[2][3] = {
         {1,2,3},
         {4,5,6},
@@ -156,9 +157,9 @@ TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<float>(vector[2])" * doctest::test_suite("cast"))
 {
-    using src_t = std::vector<std::vector<double>>;
+    using src_t = nmtools_list<nmtools_list<double>>;
     using dst_t = float;
-    using expected_t = std::vector<std::vector<dst_t>>;
+    using expected_t = nmtools_list<nmtools_list<dst_t>>;
     auto src = src_t{
         {1,2,3},
         {4,5,6},
@@ -167,6 +168,7 @@ TEST_CASE("cast<float>(vector[2])" * doctest::test_suite("cast"))
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
+#endif
 
 TEST_CASE("cast<fixed_ndarray>(double[2])" * doctest::test_suite("cast"))
 {
@@ -222,7 +224,7 @@ TEST_CASE("cast<float>(dynamic_ndarray[2])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<array[3]>(double[3])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::array<std::array<std::array<double,3>,1>,2>;
+    using dst_t = nmtools_array<nmtools_array<nmtools_array<double,3>,1>,2>;
     double src[2][1][3] = {
         {
             {1,2,3}
@@ -239,7 +241,7 @@ TEST_CASE("cast<array[3]>(double[3])" * doctest::test_suite("cast"))
 TEST_CASE("cast<float>(double[3])" * doctest::test_suite("cast"))
 {
     using dst_t = float;
-    using expected_t = std::array<std::array<std::array<dst_t,3>,1>,2>;
+    using expected_t = nmtools_array<nmtools_array<nmtools_array<dst_t,3>,1>,2>;
     double src[2][1][3] = {
         {
             {1,2,3}
@@ -253,9 +255,10 @@ TEST_CASE("cast<float>(double[3])" * doctest::test_suite("cast"))
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
 
+#if 0
 TEST_CASE("cast<vector[3]>(double[3])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::vector<std::vector<std::vector<double>>>;
+    using dst_t = nmtools_list<nmtools_list<nmtools_list<double>>>;
     double src[2][1][3] = {
         {
             {1,2,3}
@@ -271,9 +274,9 @@ TEST_CASE("cast<vector[3]>(double[3])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<float>(vector[3])" * doctest::test_suite("cast"))
 {
-    using src_t = std::vector<std::vector<std::vector<double>>>;
+    using src_t = nmtools_list<nmtools_list<nmtools_list<double>>>;
     using dst_t = float;
-    using expected_t = std::vector<std::vector<std::vector<dst_t>>>;
+    using expected_t = nmtools_list<nmtools_list<nmtools_list<dst_t>>>;
     auto src = src_t{
         {
             {1,2,3}
@@ -286,6 +289,7 @@ TEST_CASE("cast<float>(vector[3])" * doctest::test_suite("cast"))
     STATIC_CHECK_IS_SAME( decltype(res), expected_t );
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
+#endif
 
 TEST_CASE("cast<fixed_ndarray>(double[3])" * doctest::test_suite("cast"))
 {
@@ -357,7 +361,7 @@ TEST_CASE("cast<float>(dynamic_ndarray[3])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<array>(double[])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::array<float,5>; 
+    using dst_t = nmtools_array<float,5>; 
     double src[5] = {1,2,3,4,5};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), dst_t );
@@ -366,7 +370,7 @@ TEST_CASE("cast<array>(double[])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<vector>(double[])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::vector<float>;
+    using dst_t = nmtools_list<float>;
     double src[5] = {1,2,3,4,5};
     auto res = nm::cast<dst_t>(src);
     STATIC_CHECK_IS_SAME( decltype(res), dst_t );
@@ -393,7 +397,7 @@ TEST_CASE("cast<dynamic_ndarray>(double[])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::array<std::array<float,3>,2>;
+    using dst_t = nmtools_array<nmtools_array<float,3>,2>;
     double src[2][3] = {
         {1,2,3},
         {4,5,6},
@@ -403,9 +407,11 @@ TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
 
+// TODO: disable nested vector support
+#if 0
 TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::vector<std::vector<float>>;
+    using dst_t = nmtools_list<nmtools_list<float>>;
     double src[2][3] = {
         {1,2,3},
         {4,5,6},
@@ -414,6 +420,7 @@ TEST_CASE("cast<array[2]>(double[2])" * doctest::test_suite("cast"))
     STATIC_CHECK_IS_SAME( decltype(res), dst_t );
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
+#endif
 
 TEST_CASE("cast<fixed_ndarray>(double[2])" * doctest::test_suite("cast"))
 {
@@ -441,7 +448,7 @@ TEST_CASE("cast<dynamic_ndarray>(double[2])" * doctest::test_suite("cast"))
 
 TEST_CASE("cast<array[3]>(double[3])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::array<std::array<std::array<float,3>,1>,2>;
+    using dst_t = nmtools_array<nmtools_array<nmtools_array<float,3>,1>,2>;
     double src[2][1][3] = {
         {
             {1,2,3}
@@ -455,9 +462,10 @@ TEST_CASE("cast<array[3]>(double[3])" * doctest::test_suite("cast"))
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
 
+#if 0
 TEST_CASE("cast<vector[3]>(double[3])" * doctest::test_suite("cast"))
 {
-    using dst_t = std::vector<std::vector<std::vector<float>>>;
+    using dst_t = nmtools_list<nmtools_list<nmtools_list<float>>>;
     double src[2][1][3] = {
         {
             {1,2,3}
@@ -470,6 +478,7 @@ TEST_CASE("cast<vector[3]>(double[3])" * doctest::test_suite("cast"))
     STATIC_CHECK_IS_SAME( decltype(res), dst_t );
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
+#endif
 
 TEST_CASE("cast<fixed_ndarray>(double[3])" * doctest::test_suite("cast"))
 {

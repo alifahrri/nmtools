@@ -32,8 +32,8 @@ TEST_CASE("is_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
         {
-            using lhs_t  = std::array<std::array<int,4>,3>;
-            using rhs_t  = std::array<std::array<int,3>,4>;
+            using lhs_t  = nmtools_array<nmtools_array<int,4>,3>;
+            using rhs_t  = nmtools_array<nmtools_array<int,3>,4>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -103,8 +103,8 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
         }
         {
-            using lhs_t  = std::array<std::array<int,4>,3>;
-            using rhs_t  = std::array<std::array<int,3>,4>;
+            using lhs_t  = nmtools_array<nmtools_array<int,4>,3>;
+            using rhs_t  = nmtools_array<nmtools_array<int,3>,4>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
         }
@@ -175,8 +175,8 @@ TEST_CASE("get_element_type" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_IS_SAME( elem_t, int );
         }
         {
-            using lhs_t  = std::array<std::array<int,4>,3>;
-            using rhs_t  = std::array<std::array<int,3>,4>;
+            using lhs_t  = nmtools_array<nmtools_array<int,4>,3>;
+            using rhs_t  = nmtools_array<nmtools_array<int,3>,4>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
             using elem_t = meta::get_element_type_t<view_t>;
             NMTOOLS_STATIC_CHECK_IS_SAME( elem_t, int );
@@ -255,8 +255,8 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
-            using lhs_t  = std::array<std::array<int,4>,3>;
-            using rhs_t  = std::array<std::array<int,3>,4>;
+            using lhs_t  = nmtools_array<nmtools_array<int,4>,3>;
+            using rhs_t  = nmtools_array<nmtools_array<int,3>,4>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }

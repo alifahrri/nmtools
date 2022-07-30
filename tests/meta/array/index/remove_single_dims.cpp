@@ -10,7 +10,11 @@ namespace meta = nm::meta;
 
 using nm::index::remove_single_dims_t;
 using namespace nm::literals;
+#ifdef NMTOOLS_DISABLE_STL
+using nmtools_tuple;
+#else
 using std::tuple;
+#endif
 
 TEST_CASE("remove_single_dims" * doctest::test_suite("index"))
 {

@@ -59,7 +59,6 @@ TEST_CASE("where(case1)" * doctest::test_suite("view::where"))
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TILE_WHERE_SUBCASE(case1, condition,   x,   y  );
     TILE_WHERE_SUBCASE(case1, condition_a, x_a, y_a);
-    TILE_WHERE_SUBCASE(case1, condition_v, x_v, y_v);
     TILE_WHERE_SUBCASE(case1, condition_f, x_f, y_f);
     TILE_WHERE_SUBCASE(case1, condition_d, x_d, y_d);
     TILE_WHERE_SUBCASE(case1, condition_h, x_h, y_h);
@@ -88,7 +87,6 @@ TEST_CASE("where(case2)" * doctest::test_suite("view::where"))
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TILE_WHERE_SUBCASE(case2, condition,   x,   y  );
     TILE_WHERE_SUBCASE(case2, condition_a, x_a, y_a);
-    TILE_WHERE_SUBCASE(case2, condition_v, x_v, y_v);
     TILE_WHERE_SUBCASE(case2, condition_f, x_f, y_f);
     TILE_WHERE_SUBCASE(case2, condition_d, x_d, y_d);
     TILE_WHERE_SUBCASE(case2, condition_h, x_h, y_h);
@@ -117,7 +115,6 @@ TEST_CASE("where(case3)" * doctest::test_suite("view::where"))
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     TILE_WHERE_SUBCASE(case3, condition,   x,   y  );
     TILE_WHERE_SUBCASE(case3, condition_a, x_a, y_a);
-    TILE_WHERE_SUBCASE(case3, condition_v, x_v, y_v);
     TILE_WHERE_SUBCASE(case3, condition_f, x_f, y_f);
     TILE_WHERE_SUBCASE(case3, condition_d, x_d, y_d);
     TILE_WHERE_SUBCASE(case3, condition_h, x_h, y_h);

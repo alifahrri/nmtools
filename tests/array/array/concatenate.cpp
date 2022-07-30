@@ -53,7 +53,6 @@ SUBCASE(#case_name) \
 TEST_CASE("concatenate(case1)" * doctest::test_suite("array::concatenate"))
 {
     CONCATENATE_SUBCASE(case1, lhs_a, rhs_a, axis);
-    CONCATENATE_SUBCASE(case1, lhs_v, rhs_v, axis);
     CONCATENATE_SUBCASE(case1, lhs_f, rhs_f, axis);
     CONCATENATE_SUBCASE(case1, lhs_d, rhs_d, axis);
     CONCATENATE_SUBCASE(case1, lhs_h, rhs_h, axis);
@@ -62,7 +61,6 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("array::concatenate"))
 TEST_CASE("concatenate(case2)" * doctest::test_suite("array::concatenate"))
 {
     CONCATENATE_SUBCASE(case2, lhs_a, rhs_a, axis);
-    CONCATENATE_SUBCASE(case2, lhs_v, rhs_v, axis);
     CONCATENATE_SUBCASE(case2, lhs_f, rhs_f, axis);
     CONCATENATE_SUBCASE(case2, lhs_d, rhs_d, axis);
     CONCATENATE_SUBCASE(case2, lhs_h, rhs_h, axis);
@@ -72,7 +70,6 @@ TEST_CASE("concatenate(case3)" * doctest::test_suite("array::concatenate"))
 {
     CONCATENATE_SUBCASE(case3, lhs_a, rhs_a, axis);
     // TODO: remove nested std vector support
-    // CONCATENATE_SUBCASE(case3, lhs_v, rhs_v, axis);
     CONCATENATE_SUBCASE(case3, lhs_f, rhs_f, axis);
     CONCATENATE_SUBCASE(case3, lhs_d, rhs_d, axis);
     CONCATENATE_SUBCASE(case3, lhs_h, rhs_h, axis);
@@ -81,7 +78,6 @@ TEST_CASE("concatenate(case3)" * doctest::test_suite("array::concatenate"))
 TEST_CASE("concatenate(case4)" * doctest::test_suite("array::concatenate"))
 {
     CONCATENATE_SUBCASE(case4, lhs_a, rhs_a, axis);
-    CONCATENATE_SUBCASE(case4, lhs_v, rhs_v, axis);
     CONCATENATE_SUBCASE(case4, lhs_f, rhs_f, axis);
     CONCATENATE_SUBCASE(case4, lhs_d, rhs_d, axis);
     CONCATENATE_SUBCASE(case4, lhs_h, rhs_h, axis);

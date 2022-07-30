@@ -45,7 +45,6 @@ TEST_CASE("sqrt(case1)" * doctest::test_suite("array::sqrt"))
 {
     SQRT_SUBCASE( case1,   a);
     SQRT_SUBCASE( case1, a_a);
-    SQRT_SUBCASE( case1, a_v);
     SQRT_SUBCASE( case1, a_f);
     SQRT_SUBCASE( case1, a_d);
     SQRT_SUBCASE( case1, a_h);

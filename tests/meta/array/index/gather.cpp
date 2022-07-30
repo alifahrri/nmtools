@@ -15,24 +15,24 @@ namespace meta = nm::meta;
 TEST_CASE("gather(vector;vector)" * doctest::test_suite("index::gather"))
 {
     {
-        using lhs_t = std::vector<int>;
-        using rhs_t = std::vector<int>;
+        using lhs_t = nmtools_list<int>;
+        using rhs_t = nmtools_list<int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::vector<int>;
+        using exp_t = nmtools_list<int>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::vector<float>;
-        using rhs_t = std::vector<int>;
+        using lhs_t = nmtools_list<float>;
+        using rhs_t = nmtools_list<int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::vector<float>;
+        using exp_t = nmtools_list<float>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::vector<bool>;
-        using rhs_t = std::vector<int>;
+        using lhs_t = nmtools_list<bool>;
+        using rhs_t = nmtools_list<int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::vector<bool>;
+        using exp_t = nmtools_list<bool>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }
@@ -40,45 +40,45 @@ TEST_CASE("gather(vector;vector)" * doctest::test_suite("index::gather"))
 TEST_CASE("gather(array;array)" * doctest::test_suite("index::gather"))
 {
     {
-        using lhs_t = std::array<int,4>;
-        using rhs_t = std::array<int,4>;
+        using lhs_t = nmtools_array<int,4>;
+        using rhs_t = nmtools_array<int,4>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<int,4>;
+        using exp_t = nmtools_array<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::array<float,4>;
-        using rhs_t = std::array<int,4>;
+        using lhs_t = nmtools_array<float,4>;
+        using rhs_t = nmtools_array<int,4>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<float,4>;
+        using exp_t = nmtools_array<float,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::array<bool,4>;
-        using rhs_t = std::array<int,4>;
+        using lhs_t = nmtools_array<bool,4>;
+        using rhs_t = nmtools_array<int,4>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<bool,4>;
+        using exp_t = nmtools_array<bool,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::array<int,4>;
-        using rhs_t = std::array<int,3>;
+        using lhs_t = nmtools_array<int,4>;
+        using rhs_t = nmtools_array<int,3>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<int,3>;
+        using exp_t = nmtools_array<int,3>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::array<float,4>;
-        using rhs_t = std::array<int,3>;
+        using lhs_t = nmtools_array<float,4>;
+        using rhs_t = nmtools_array<int,3>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<float,3>;
+        using exp_t = nmtools_array<float,3>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::array<bool,4>;
-        using rhs_t = std::array<int,3>;
+        using lhs_t = nmtools_array<bool,4>;
+        using rhs_t = nmtools_array<int,3>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<bool,3>;
+        using exp_t = nmtools_array<bool,3>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }
@@ -132,57 +132,63 @@ TEST_CASE("gather(hybrid_ndarray;hybrid_ndarray)" * doctest::test_suite("index::
 TEST_CASE("gather(tuple;tuple)" * doctest::test_suite("index::gather"))
 {
     {
-        using lhs_t = std::tuple<int,int,int,int>;
-        using rhs_t = std::tuple<int,int,int,int>;
+        using lhs_t = nmtools_tuple<int,int,int,int>;
+        using rhs_t = nmtools_tuple<int,int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<int,4>;
+        using exp_t = nmtools_array<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::tuple<float,float,float,float>;
-        using rhs_t = std::tuple<int,int,int,int>;
+        using lhs_t = nmtools_tuple<float,float,float,float>;
+        using rhs_t = nmtools_tuple<int,int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<float,4>;
+        using exp_t = nmtools_array<float,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::tuple<bool,bool,bool,bool>;
-        using rhs_t = std::tuple<int,int,int,int>;
+        using lhs_t = nmtools_tuple<bool,bool,bool,bool>;
+        using rhs_t = nmtools_tuple<int,int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<bool,4>;
+        using exp_t = nmtools_array<bool,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::tuple<int,int,int,int>;
-        using rhs_t = std::tuple<int,int,int>;
+        using lhs_t = nmtools_tuple<int,int,int,int>;
+        using rhs_t = nmtools_tuple<int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<int,3>;
+        using exp_t = nmtools_array<int,3>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::tuple<float,float,float,float>;
-        using rhs_t = std::tuple<int,int,int>;
+        using lhs_t = nmtools_tuple<float,float,float,float>;
+        using rhs_t = nmtools_tuple<int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<float,3>;
+        using exp_t = nmtools_array<float,3>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = std::tuple<bool,bool,bool,bool>;
-        using rhs_t = std::tuple<int,int,int>;
+        using lhs_t = nmtools_tuple<bool,bool,bool,bool>;
+        using rhs_t = nmtools_tuple<int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = std::array<bool,3>;
+        using exp_t = nmtools_array<bool,3>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }
 
 using nm::index::gather_t;
 using namespace nm::literals;
-using std::tuple;
+using nmtools_tuple;
+
+#ifdef NMTOOLS_DISABLE_STL
+using meta::integral_constant;
+#else
+using std::integral_constant;
+#endif
 
 TEST_CASE("gather" * doctest::test_suite("index"))
 {
     {
-        using vector_t  = std::tuple<std::integral_constant<size_t,10>>;
+        using vector_t  = nmtools_tuple<integral_constant<size_t,10>>;
         using indices_t = na::hybrid_ndarray<size_t,1,1>;
         using result_t  = meta::resolve_optype_t<nm::index::gather_t,vector_t,indices_t>;
         using expected_t = na::hybrid_ndarray<size_t,1,1>;

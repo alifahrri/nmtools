@@ -159,7 +159,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         NMTOOLS_CAST_ARRAYS(array)
         inline int8_t axes[4]  = {1,0,3,2};
         inline auto axes_ct = nmtools_tuple{1_ct,0_ct,3_ct,2_ct};
-        NMTOOLS_CAST_ARRAYS(axes)
+        NMTOOLS_CAST_INDEX_ARRAYS(axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -202,7 +202,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         NMTOOLS_CAST_ARRAYS(array)
         inline int8_t axes[2]  = {0,1};
         inline auto axes_ct = nmtools_tuple{0_ct,1_ct};
-        NMTOOLS_CAST_ARRAYS(axes)
+        NMTOOLS_CAST_INDEX_ARRAYS(axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -222,7 +222,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         NMTOOLS_CAST_ARRAYS(array)
         inline int8_t axes[2]  = {1,0};
         inline auto axes_ct = nmtools_tuple{1_ct,0_ct};
-        NMTOOLS_CAST_ARRAYS(axes)
+        NMTOOLS_CAST_INDEX_ARRAYS(axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -248,7 +248,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         NMTOOLS_CAST_ARRAYS(array)
         inline int8_t axes[3]  = {2,0,1};
         inline auto axes_ct = nmtools_tuple{2_ct,0_ct,1_ct};
-        NMTOOLS_CAST_ARRAYS(axes)
+        NMTOOLS_CAST_INDEX_ARRAYS(axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -284,7 +284,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         NMTOOLS_CAST_ARRAYS(array)
         inline int8_t axes[3]  = {1,2,0};
         inline auto axes_ct = nmtools_tuple{1_ct,2_ct,0_ct};
-        NMTOOLS_CAST_ARRAYS(axes)
+        NMTOOLS_CAST_INDEX_ARRAYS(axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -325,7 +325,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         NMTOOLS_CAST_ARRAYS(array)
         inline int8_t axes[4]  = {0,1,3,2};
         inline auto axes_ct = nmtools_tuple{0_ct,1_ct,3_ct,2_ct};
-        NMTOOLS_CAST_ARRAYS(axes)
+        NMTOOLS_CAST_INDEX_ARRAYS(axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {

@@ -196,7 +196,7 @@ TEST_CASE("flatten" * doctest::test_suite("view::flatten"))
             {4,5,6},
         };
         auto flattened = f(array);
-        auto expected  = std::array{1,2,3,4,5,6};
+        auto expected  = nmtools_array{1,2,3,4,5,6};
         NMTOOLS_ASSERT_EQUAL( flattened, expected );
     }
     {
@@ -205,7 +205,7 @@ TEST_CASE("flatten" * doctest::test_suite("view::flatten"))
             {4,5,6},
         };
         auto flattened = g(array);
-        auto expected  = std::array{1,2,3,4,5,6};
+        auto expected  = nmtools_array{1,2,3,4,5,6};
         NMTOOLS_ASSERT_EQUAL( flattened, expected );
     }
 }

@@ -1,4 +1,5 @@
 #include "nmtools/meta.hpp"
+#include "nmtools/meta/stl.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

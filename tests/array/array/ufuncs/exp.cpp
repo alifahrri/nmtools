@@ -45,7 +45,6 @@ TEST_CASE("exp(case1)" * doctest::test_suite("array::exp"))
 {
     EXP_SUBCASE( case1,   a);
     EXP_SUBCASE( case1, a_a);
-    EXP_SUBCASE( case1, a_v);
     EXP_SUBCASE( case1, a_f);
     EXP_SUBCASE( case1, a_d);
     EXP_SUBCASE( case1, a_h);

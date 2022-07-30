@@ -14,20 +14,6 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace kind = na::kind;
 
-#ifndef PLATFORMIO
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid);
-#else
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_h = cast(name, kind::hybrid);
-#endif // PLATFORMIO
-
 NMTOOLS_TESTING_DECLARE_CASE(view, arctan2)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -38,8 +24,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, arctan2)
             {0.6,0.7,0.8},
         };
         inline float b[3] = {0.0,0.1,0.2};
-        CAST_ARRAYS(a)
-        CAST_ARRAYS(b)
+        NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(b)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -51,7 +37,5 @@ NMTOOLS_TESTING_DECLARE_CASE(view, arctan2)
         };
     }
 }
-
-#undef CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_ARCTAN2_HPP

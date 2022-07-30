@@ -46,7 +46,6 @@ TEST_CASE("minimum(case1)" * doctest::test_suite("array::minimum"))
 {
     MINIMUM_SUBCASE( case1,   a,   b );
     MINIMUM_SUBCASE( case1, a_a, b_a );
-    MINIMUM_SUBCASE( case1, a_v, b_v );
     MINIMUM_SUBCASE( case1, a_f, b_f );
     MINIMUM_SUBCASE( case1, a_d, b_d );
     MINIMUM_SUBCASE( case1, a_h, b_h );
@@ -56,7 +55,6 @@ TEST_CASE("minimum(case2)" * doctest::test_suite("array::minimum"))
 {
     MINIMUM_SUBCASE( case2,   a, b );
     MINIMUM_SUBCASE( case2, a_a, b );
-    MINIMUM_SUBCASE( case2, a_v, b );
     MINIMUM_SUBCASE( case2, a_f, b );
     MINIMUM_SUBCASE( case2, a_d, b );
     MINIMUM_SUBCASE( case2, a_h, b );
@@ -99,7 +97,6 @@ TEST_CASE("reduce_minimum(case1)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case1,   a, axis );
     REDUCE_MINIMUM_SUBCASE( case1, a_a, axis );
-    REDUCE_MINIMUM_SUBCASE( case1, a_v, axis );
     REDUCE_MINIMUM_SUBCASE( case1, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_MINIMUM_SUBCASE( case1, a_d, axis );
@@ -110,7 +107,6 @@ TEST_CASE("reduce_minimum(case2)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case2,   a, axis );
     REDUCE_MINIMUM_SUBCASE( case2, a_a, axis );
-    REDUCE_MINIMUM_SUBCASE( case2, a_v, axis );
     REDUCE_MINIMUM_SUBCASE( case2, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_MINIMUM_SUBCASE( case2, a_d, axis );
@@ -121,7 +117,6 @@ TEST_CASE("reduce_minimum(case3)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case3,   a, axis );
     REDUCE_MINIMUM_SUBCASE( case3, a_a, axis );
-    REDUCE_MINIMUM_SUBCASE( case3, a_v, axis );
     REDUCE_MINIMUM_SUBCASE( case3, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_MINIMUM_SUBCASE( case3, a_d, axis );
@@ -132,7 +127,6 @@ TEST_CASE("reduce_minimum(case4)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case4,   a, axis );
     REDUCE_MINIMUM_SUBCASE( case4, a_a, axis );
-    REDUCE_MINIMUM_SUBCASE( case4, a_v, axis );
     REDUCE_MINIMUM_SUBCASE( case4, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_MINIMUM_SUBCASE( case4, a_d, axis );
@@ -143,7 +137,6 @@ TEST_CASE("reduce_minimum(case5)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case5,   a, axis );
     REDUCE_MINIMUM_SUBCASE( case5, a_a, axis );
-    REDUCE_MINIMUM_SUBCASE( case5, a_v, axis );
     REDUCE_MINIMUM_SUBCASE( case5, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_MINIMUM_SUBCASE( case5, a_d, axis );
@@ -154,7 +147,6 @@ TEST_CASE("reduce_minimum(case6)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case6,   a, axis );
     REDUCE_MINIMUM_SUBCASE( case6, a_a, axis );
-    REDUCE_MINIMUM_SUBCASE( case6, a_v, axis );
     REDUCE_MINIMUM_SUBCASE( case6, a_f, axis );
     // dynamic dim array not supported yet
     // REDUCE_MINIMUM_SUBCASE( case6, a_d, axis );
@@ -165,7 +157,6 @@ TEST_CASE("reduce_minimum(case7)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case7,   a, axis, dtype, initial );
     REDUCE_MINIMUM_SUBCASE( case7, a_a, axis, dtype, initial );
-    REDUCE_MINIMUM_SUBCASE( case7, a_v, axis, dtype, initial );
     REDUCE_MINIMUM_SUBCASE( case7, a_f, axis, dtype, initial );
     REDUCE_MINIMUM_SUBCASE( case7, a_h, axis, dtype, initial );
 }
@@ -174,7 +165,6 @@ TEST_CASE("reduce_minimum(case8)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case8,   a, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case8, a_a, axis, dtype, initial, keepdims );
-    REDUCE_MINIMUM_SUBCASE( case8, a_v, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case8, a_f, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case8, a_h, axis, dtype, initial, keepdims );
 }
@@ -183,7 +173,6 @@ TEST_CASE("reduce_minimum(case9)" * doctest::test_suite("array::reduce_minimum")
 {
     REDUCE_MINIMUM_SUBCASE( case9,   a, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case9, a_a, axis, dtype, initial, keepdims );
-    REDUCE_MINIMUM_SUBCASE( case9, a_v, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case9, a_f, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case9, a_h, axis, dtype, initial, keepdims );
 }
@@ -192,7 +181,6 @@ TEST_CASE("reduce_minimum(case10)" * doctest::test_suite("array::reduce_minimum"
 {
     REDUCE_MINIMUM_SUBCASE( case10,   a, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case10, a_a, axis, dtype, initial, keepdims );
-    REDUCE_MINIMUM_SUBCASE( case10, a_v, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case10, a_f, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case10, a_h, axis, dtype, initial, keepdims );
 }
@@ -201,7 +189,6 @@ TEST_CASE("reduce_minimum(case11)" * doctest::test_suite("array::reduce_minimum"
 {
     REDUCE_MINIMUM_SUBCASE( case11,   a, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case11, a_a, axis, dtype, initial, keepdims );
-    REDUCE_MINIMUM_SUBCASE( case11, a_v, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case11, a_f, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case11, a_h, axis, dtype, initial, keepdims );
 }
@@ -210,7 +197,6 @@ TEST_CASE("reduce_minimum(case12)" * doctest::test_suite("array::reduce_minimum"
 {
     REDUCE_MINIMUM_SUBCASE( case12,   a, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case12, a_a, axis, dtype, initial, keepdims );
-    REDUCE_MINIMUM_SUBCASE( case12, a_v, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
     REDUCE_MINIMUM_SUBCASE( case12, a_h, axis, dtype, initial, keepdims );
 }
@@ -252,7 +238,6 @@ TEST_CASE("accumulate_minimum(case1)" * doctest::test_suite("array::accumulate_m
 {
     ACCUMULATE_MINIMUM_SUBCASE( case1,   a, axis );
     ACCUMULATE_MINIMUM_SUBCASE( case1, a_a, axis );
-    ACCUMULATE_MINIMUM_SUBCASE( case1, a_v, axis );
     ACCUMULATE_MINIMUM_SUBCASE( case1, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_MINIMUM_SUBCASE( case1, a_d, axis );
@@ -263,7 +248,6 @@ TEST_CASE("accumulate_minimum(case2)" * doctest::test_suite("array::accumulate_m
 {
     ACCUMULATE_MINIMUM_SUBCASE( case2,   a, axis );
     ACCUMULATE_MINIMUM_SUBCASE( case2, a_a, axis );
-    ACCUMULATE_MINIMUM_SUBCASE( case2, a_v, axis );
     ACCUMULATE_MINIMUM_SUBCASE( case2, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_MINIMUM_SUBCASE( case2, a_d, axis );
@@ -274,7 +258,6 @@ TEST_CASE("accumulate_minimum(case3)" * doctest::test_suite("array::accumulate_m
 {
     ACCUMULATE_MINIMUM_SUBCASE( case3,   a, axis );
     ACCUMULATE_MINIMUM_SUBCASE( case3, a_a, axis );
-    ACCUMULATE_MINIMUM_SUBCASE( case3, a_v, axis );
     ACCUMULATE_MINIMUM_SUBCASE( case3, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_MINIMUM_SUBCASE( case3, a_d, axis );
@@ -319,7 +302,6 @@ TEST_CASE("outer_minimum(case1)" * doctest::test_suite("array::outer_minimum"))
     OUTER_MINIMUM_SUBCASE( case1,   a,   b );
     OUTER_MINIMUM_SUBCASE( case1, a_a, b_a );
     // TODO: remove support for nested vector as ndarray
-    // OUTER_MINIMUM_SUBCASE( case1, a_v, b_v );
     OUTER_MINIMUM_SUBCASE( case1, a_f, b_f );
     OUTER_MINIMUM_SUBCASE( case1, a_d, b_d );
     OUTER_MINIMUM_SUBCASE( case1, a_h, b_h );

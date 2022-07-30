@@ -67,8 +67,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,1,2};
         inline auto axis_u = 0ul;
         inline auto axis_i = -3l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -81,8 +81,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,1,2};
         inline auto axis_u = 1ul;
         inline auto axis_i = -2l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -95,8 +95,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,1,2};
         inline auto axis_u = 2ul;
         inline auto axis_i = -1l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -109,8 +109,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,3,1};
         inline auto axis_u = 0ul;
         inline auto axis_i = -3l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -123,8 +123,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,3,1};
         inline auto axis_u = 1ul;
         inline auto axis_i = -2l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -137,8 +137,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,3,1};
         inline auto axis_u = 2ul;
         inline auto axis_i = -1l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -153,8 +153,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,1,2};
         inline auto axis_u = 3ul;
         inline auto axis_i = -4l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -167,8 +167,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,3,1};
         inline auto axis_u = 4ul;
         inline auto axis_i = -4l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -181,8 +181,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[1] = {1};
         inline auto axis_u = 1ul;
         inline auto axis_i = -2l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -195,8 +195,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,2,1};
         inline auto axis_u = 1ul;
         inline auto axis_i = -2l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -211,8 +211,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,3,1};
         inline auto axis_u = 0ul;
         inline auto axis_i = -3l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
@@ -225,8 +225,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_take_along_axis)
         inline int indices[3] = {1,3,1};
         inline auto axis_u = 2ul;
         inline auto axis_i = -1l;
-        NMTOOLS_CAST_ARRAYS(shape)
-        NMTOOLS_CAST_ARRAYS(indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {

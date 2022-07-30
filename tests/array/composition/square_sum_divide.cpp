@@ -43,13 +43,6 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#define CAST_ARRAYS(name) \
-inline auto name##_a = cast(name, kind::nested_arr); \
-inline auto name##_v = cast(name, kind::nested_vec); \
-inline auto name##_f = cast(name, kind::fixed); \
-inline auto name##_d = cast(name, kind::dynamic); \
-inline auto name##_h = cast(name, kind::hybrid); \
-
 NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -69,7 +62,7 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum)
         inline auto axis = None;
         inline auto dtype = None;
         inline auto keepdims = True;
-        CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -148,7 +141,7 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum_divide)
         inline auto axis = None;
         inline auto dtype = None;
         inline auto keepdims = None;
-        CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -173,7 +166,7 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum_divide)
         inline auto axis = None;
         inline auto dtype = None;
         inline auto keepdims = True;
-        CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -200,7 +193,7 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum_divide)
         inline auto axis = None;
         inline auto dtype = None;
         inline auto keepdims = False;
-        CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -225,7 +218,7 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum_divide)
         inline auto axis = None;
         inline auto dtype = None;
         inline auto keepdims = false;
-        CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -250,7 +243,7 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum_divide)
         inline auto axis = None;
         inline auto dtype = None;
         inline auto keepdims = true;
-        CAST_ARRAYS(a)
+        NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -277,8 +270,8 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum_divide)
         inline auto keepdims = True;
         inline auto N = 12;
         inline auto dtype = None;
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -307,8 +300,8 @@ NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum_divide)
         inline auto keepdims = true;
         inline auto N = 12;
         inline auto dtype = None;
-        CAST_ARRAYS(array);
-        CAST_ARRAYS(axis);
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_ARRAYS(axis);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
