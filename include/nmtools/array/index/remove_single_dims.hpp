@@ -32,7 +32,7 @@ namespace nmtools::index
             constexpr auto f = [](auto a){
                 return a > 1;
             };
-            auto [arg, squeezed] = filter(f,shape);
+            const auto [arg, squeezed] = filter(f,shape);
             // manual assignment
             auto n = len(squeezed);
 

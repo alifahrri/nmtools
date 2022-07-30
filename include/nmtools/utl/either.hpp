@@ -175,12 +175,12 @@ namespace nmtools::utl
         friend base;
     public:
 
-        constexpr either() noexcept
+        either() noexcept
             : left{}, tag{LEFT} {}
 
-        constexpr explicit either(const left_t& val) noexcept
+        explicit either(const left_t& val) noexcept
             : left(val), tag{LEFT} {}
-        constexpr explicit either(const right_t& val) noexcept
+        explicit either(const right_t& val) noexcept
             : right(val), tag{RIGHT} {}
 
         ~either()

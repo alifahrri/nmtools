@@ -217,6 +217,7 @@ namespace nmtools::meta
 {
     namespace error
     {
+        template <typename...>
         struct SHAPE_CONCATENATE_UNSUPPORTED : detail::fail_t {};
 
         template <typename...>
@@ -276,8 +277,11 @@ namespace nmtools::meta
                 return as_value_v<transform_bounded_array_t<ashape_t>>;
             } else if constexpr (is_fixed_index_array_v<bshape_t>) {
                 return as_value_v<transform_bounded_array_t<bshape_t>>;
+            } else if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t>) {
+                // TODO: cleanup
+                return as_value_v<ashape_t>;
             } else {
-                return as_value_v<error::SHAPE_CONCATENATE_UNSUPPORTED>;
+                return as_value_v<error::SHAPE_CONCATENATE_UNSUPPORTED<ashape_t,bshape_t,axis_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;

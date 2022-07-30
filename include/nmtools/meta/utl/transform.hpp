@@ -145,6 +145,18 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     };
+
+    template <typename T, template<typename>typename Allocator, typename U>
+    struct replace_value_type<utl::vector<T,Allocator<T>>,U>
+    {
+        using type = utl::vector<U,Allocator<U>>;
+    };
+
+    template <typename T, size_t N, typename U>
+    struct replace_value_type<utl::array<T,N>,U>
+    {
+        using type = utl::array<U,N>;
+    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_UTL_TRANSFORM_HPP

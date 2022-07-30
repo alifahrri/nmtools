@@ -6,6 +6,7 @@
 #include "nmtools/meta/bits/transform/len.hpp"
 #include "nmtools/meta/bits/array/nested_array_dim.hpp"
 #include "nmtools/meta/bits/array/fixed_ndarray_shape.hpp"
+#include "nmtools/meta/bits/array/fixed_shape.hpp"
 #include "nmtools/meta/bits/traits/is_void.hpp"
 
 namespace nmtools::meta
@@ -74,6 +75,7 @@ namespace nmtools::meta
             // which simply count the number of shape
             using dim_t = fixed_ndarray_dim<T>;
             using value_type = typename dim_t::value_type;
+            [[maybe_unused]] constexpr auto shape = fixed_shape_v<T>;
             if constexpr (!is_void_v<value_type>)
                 return dim_t::value;
             // TODO: try to compute from fixed_shape
@@ -81,6 +83,8 @@ namespace nmtools::meta
             // the dimension can be known at compile time
             else if constexpr (nested_array_dim_v<T> > 0)
                 return nested_array_dim_v<T>;
+            else if constexpr (!is_fail_v<decltype(shape)>)
+                return len_v<decltype(shape)>;
             else return detail::Fail;
         }();
         // TODO: use specific error type

@@ -6,10 +6,11 @@
 #include "nmtools/utl/either.hpp"
 #include "nmtools/utl/maybe.hpp"
 #include "nmtools/utl/tuple.hpp"
+#include "nmtools/utl/vector.hpp"
 
 namespace nmtools::meta
 {
-    #ifndef NMTOOLS_META_MAKE_MAYBE_TYPE
+#ifndef NMTOOLS_META_MAKE_MAYBE_TYPE
 #define NMTOOLS_META_MAKE_MAYBE_TYPE
 
     template <typename T, typename>
@@ -94,14 +95,14 @@ namespace nmtools::meta
     template <typename T, typename Allocator>
     struct make_sequence_type
     {
-        using type = error::UTL_SEQUENCE_UNSUPPORTED<T,Allocator>;
+        using type = utl::vector<T,Allocator>;
     };
 
-    template <typename T, typename Allocator=none_t>
+    template <typename T, typename Allocator=utl::allocator<T>>
     using make_sequence_type_t = type_t<make_sequence_type<T,Allocator>>;
 
     // TODO: support sequence type by adding utl::vector
-    #define nmtools_list ::nmtools::meta::error::UTL_SEQUENCE_UNSUPPORTED
+    #define nmtools_list ::nmtools::utl::vector
 
 #endif // NMTOOLS_META_MAKE_SEQUENCE
 } // namespace nmtools::meta

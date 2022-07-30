@@ -155,6 +155,13 @@ namespace nmtools::meta
                 using type = resize_fixed_index_array_t<new_type,rsize>;
                 return as_value<type>{};
             }
+            // TODO: cleanup the logic above
+            else if constexpr (
+                is_index_array_v<ashape_t> && is_index_array_v<bshape_t>
+            ) {
+                // assume a is resizeable
+                return as_value_v<ashape_t>;
+            }
             else {
                 return as_value<error::SHAPE_OUTER_UNSUPPORTED<ashape_t,bshape_t>>{};
             }

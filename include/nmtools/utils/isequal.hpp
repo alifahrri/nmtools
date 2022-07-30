@@ -265,9 +265,9 @@ namespace nmtools::utils
                 using tuple_rhs_t = meta::make_tuple_type_t<trhs_ptr_t,urhs_ptr_t>;
                 auto same = false;
                 // under the hood, recursively call isclose to properly handle view type
-                if (auto [tptr, uptr] = tuple_lhs_t{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
+                if (const auto [tptr, uptr] = tuple_lhs_t{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
                     same = isequal(*tptr,*uptr);
-                else if (auto [tptr, uptr] = tuple_rhs_t{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
+                else if (const auto [tptr, uptr] = tuple_rhs_t{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
                     same = isequal(*tptr,*uptr);
                 return same;
             }

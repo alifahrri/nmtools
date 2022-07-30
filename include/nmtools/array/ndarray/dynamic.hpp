@@ -32,7 +32,7 @@ namespace nmtools::array
      * @tparam T element type of nd-array
      * @tparam storage_type template template parameter to store data
      */
-    template <typename T, template <typename...> typename storage_type=std::vector, template<typename...> typename shape_storage_type=std::vector>
+    template <typename T, template <typename...> typename storage_type=nmtools_list, template<typename...> typename shape_storage_type=nmtools_list>
     struct dynamic_ndarray
     {
         using data_type = storage_type<T>;

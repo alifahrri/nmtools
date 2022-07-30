@@ -32,6 +32,19 @@ namespace nmtools::impl
             return sizeof...(Ts);
         }
     };
+
+    template <typename T, typename allocator>
+    struct len_t<utl::vector<T,allocator>>
+    {
+        using array = utl::vector<T,allocator>;
+        using const_array = const array&;
+        using type  = typename array::size_type;
+
+        constexpr type operator()(const_array a) const noexcept
+        {
+            return a.size();
+        }
+    };
 } // namespace nmtools::impl
 
 #endif // NMTOOLS_ARRAY_IMPL_UTL_HPP

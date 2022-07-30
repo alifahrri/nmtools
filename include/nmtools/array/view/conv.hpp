@@ -199,7 +199,7 @@ namespace nmtools::view
             // TODO: support NHWC layout
             auto spatial_i = dim_ - 2;
             // handle index array or num
-            auto [pad_h,pad_w] = [&](){
+            const auto [pad_h,pad_w] = [&](){
                 if constexpr (meta::is_index_v<padding_t>) {
                     return nmtools_tuple{padding,padding};
                 } else {

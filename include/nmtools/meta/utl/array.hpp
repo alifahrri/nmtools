@@ -5,6 +5,7 @@
 
 #include "nmtools/meta/bits/traits/is_num.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
+#include "nmtools/meta/bits/traits/is_slice_index.hpp"
 
 #include "nmtools/utl.hpp"
 
@@ -23,7 +24,7 @@ namespace nmtools::meta
     };
 
     template <typename T, size_t N>
-    struct fixed_ndarray_shape<utl::array<T,N>>
+    struct fixed_shape<utl::array<T,N>>
     {
         static constexpr auto value = [](){
             if constexpr (is_num_v<T>) {
@@ -47,6 +48,9 @@ namespace nmtools::meta
     };
 
     template <typename T, size_t N>
+    struct fixed_ndarray_shape<utl::array<T,N>> : fixed_shape<utl::array<T,N>> {};
+
+    template <typename T, size_t N>
     struct fixed_index_array_size<utl::array<T,N>,enable_if_t<is_index_v<T>>>
     {
         static constexpr auto value = N;
@@ -58,10 +62,28 @@ namespace nmtools::meta
         static constexpr auto value = sizeof...(Ts);
     };
 
-    template <typename T, size_t N>
-    struct fixed_size<utl::array<T,N>>
+    template <typename T, typename Allocator>
+    struct fixed_dim<utl::vector<T,Allocator>>
     {
-        static constexpr auto value = N;
+        static constexpr auto value = [](){
+            if constexpr (is_num_v<T> || is_slice_index_v<T>) {
+                return 1;
+            } else {
+                return error::FIXED_DIM_UNSUPPORTED<utl::vector<T,Allocator>>{};
+            }
+        }();
+    };
+
+    template <typename...Ts>
+    struct fixed_shape<utl::tuple<Ts...>>
+    {
+        static constexpr auto value = [](){
+            if constexpr ((is_constant_index_v<Ts> && ...)) {
+                return nmtools_array{sizeof...(Ts)};
+            } else {
+                return error::FIXED_SHAPE_UNSUPPORTED<utl::tuple<Ts...>>{};
+            }
+        }();
     };
 } // namespace nmtools::meta
 

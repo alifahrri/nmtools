@@ -92,6 +92,7 @@ namespace nmtools::meta
         using type = typename _make_type<T,N,Ns...>::type;
     }; // make_nested_raw_array
 
+    // TODO: remove support for nested dynamic array
     /**
      * @brief metafunction to make nested dynamic array.
      * 
@@ -197,6 +198,12 @@ namespace nmtools::meta
     template <template<typename...>typename TT, typename T>
     using apply_t = typename apply<TT,T>::type;
 
+    namespace error
+    {
+        template<typename...>
+        struct RESIZE_FIXED_VECTOR_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief metafunction to resize fixed vector.
      * 
@@ -209,7 +216,15 @@ namespace nmtools::meta
         // TODO: use error type
         /* pack new size as type instead of non-type template param */
         using new_size = integral_constant<size_t,N>;
-        using type = replace_template_parameter_t<T,new_size>;
+        static constexpr auto vtype = [](){
+            using type = replace_template_parameter_t<T,new_size>;
+            if constexpr (is_void_v<type>) {
+                return as_value_v<error::RESIZE_FIXED_VECTOR_UNSUPPORTED<T,as_type<N>>>;
+            } else {
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     };
 
     /**
@@ -235,27 +250,6 @@ namespace nmtools::meta
      */
     template <typename array_t>
     using remove_cvref_pointer_t = remove_cvref_t<remove_pointer_t<array_t>>;
-
-    // TODO: rename, ct_t maybe
-    template <auto I, auto...Is>
-    struct make_ct
-    {
-        static constexpr auto vtype = [](){
-            if constexpr (static_cast<bool>(sizeof...(Is))) {
-                using type = integer_sequence<decltype(I),I,Is...>;
-                return as_value_v<type>;
-            } else {
-                return as_value_v<integral_constant<decltype(I),I>>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    };
-
-    template <auto I, auto...Is>
-    using ct = type_t<make_ct<I,Is...>>;
-
-    template <auto I, auto...Is>
-    constexpr inline auto ct_v = ct<I,Is...>{};
 
     /** @} */ // end group meta
 } // namespace nmtools::meta

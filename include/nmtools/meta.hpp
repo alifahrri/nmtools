@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/platform.hpp"
+#include "nmtools/meta/def.hpp"
 
 // use stl as default implementation for various type
 // such as maybe (meta::make_maybe_type...)
