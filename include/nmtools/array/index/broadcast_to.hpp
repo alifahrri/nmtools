@@ -148,7 +148,7 @@ namespace nmtools::index
      * @brief Specialization for shape_broadcast_to function.
      * 
      * Shape of Num type is represented as None,
-     * broadcasting num to None should always be successfull.
+     * broadcasting num to None should always be successful.
      * 
      * @tparam  
      * @param ashape 
@@ -169,7 +169,7 @@ namespace nmtools::index
         // which is either 1 or empty according to the broadcasting rules
         // then transform back the offset to with respect to original shape (src_shape).
 
-        // NOTE: the following are suspect to be hotspot
+        // NOTE: the following are suspect to be hot-spot
         // since broadcasting is almost used everywhere
         // TODO: measure and inspect if this can be optimized
 
@@ -221,7 +221,7 @@ namespace nmtools::meta
             using type = tuple_to_array_t<transform_bounded_array_t<bshape_t>>;
             using element_t = remove_cvref_t<get_element_type_t<type>>;
             // specialize when both lhs and rhs is constant index array
-            // also make sure the resulting type's element type is not contant index
+            // also make sure the resulting type's element type is not constant index
             if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
                 constexpr auto M = len_v<bshape_t>;
                 using new_type_t = element_t;
@@ -235,7 +235,16 @@ namespace nmtools::meta
                     return as_value_v<result_t>;
                 }
             }
-            // make sure the resulting type's element type is not contant index
+            // TODO: enable this, make maybe type, if at runtime doesn't match then nothing
+            // else if constexpr (is_constant_index_array_v<bshape_t>) {
+            //     return as_value_v<bshape_t>;
+            // }
+            else if constexpr (is_constant_index_array_v<ashape_t>) {
+                // simply recurse on value
+                using type = resolve_optype_t<index::shape_broadcast_to_t,remove_cvref_t<decltype(to_value_v<ashape_t>)>,bshape_t>;
+                return as_value_v<type>;
+            }
+            // make sure the resulting type's element type is not constant index
             else if constexpr (is_fixed_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
                 // src's shape type may be raw or tuple
                 constexpr auto N = len_v<bshape_t>;
@@ -250,7 +259,26 @@ namespace nmtools::meta
                     return as_value_v<type>;
                 }
             }
-            // make sure the resulting type's element type is not contant index
+            else if constexpr (is_fixed_size_v<ashape_t> && is_bounded_size_v<bshape_t>) {
+                constexpr auto fixed_size = fixed_size_v<bshape_t>;
+                if constexpr (!is_fail_v<decltype(fixed_size)>) {
+                    using type = resize_size_t<ashape_t,fixed_size>;
+                    return as_value_v<type>;
+                } else {
+                    using type = replace_element_type_t<bshape_t,get_element_or_common_type_t<ashape_t>>;
+                    return as_value_v<type>;
+                }
+            }
+            else if constexpr (is_bounded_size_v<ashape_t> && is_bounded_size_v<bshape_t>) {
+                // for "unidirectional broadcasting": prefer rhs size
+                [[maybe_unused]] constexpr auto bounded_a_size = bounded_size_v<ashape_t>;
+                [[maybe_unused]] constexpr auto bounded_b_size = bounded_size_v<bshape_t>;
+                // still can't be sure at compile-time since size can be smaller at runtime
+                // TODO: resize instead of make new type
+                using type = resize_bounded_size_t<ashape_t,bounded_b_size>;
+                return as_value_v<type>;
+            }
+            // make sure the resulting type's element type is not constant index
             else if constexpr (is_constant_index_array_v<bshape_t>) {
                 using ashape_type = tuple_to_array_t<transform_bounded_array_t<ashape_t>>;
                 if constexpr (is_constant_index_v<element_t>) {
@@ -264,7 +292,7 @@ namespace nmtools::meta
             }
             else return as_value_v<type>;
         }();
-        // unline broadcast_shape,
+        // unlike broadcast_shape,
         // for shape_broadcast_to, the resulting shape will follow bshape
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
