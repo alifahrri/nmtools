@@ -11,6 +11,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int source = 0;
         inline int destination = 1;
         NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        inline auto shape_ct  = nmtools_tuple{1_ct,2_ct,3_ct};
+        inline auto source_ct = 0_ct;
+        inline auto destination_ct = 1_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -23,6 +26,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int source = 1;
         inline int destination = 0;
         NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        inline auto shape_ct  = nmtools_tuple{1_ct,2_ct,3_ct};
+        inline auto source_ct = 1_ct;
+        inline auto destination_ct = 0_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -35,6 +41,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int source = 0;
         inline int destination = -2;
         NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        inline auto shape_ct  = nmtools_tuple{1_ct,2_ct,3_ct};
+        inline auto source_ct = 0_ct;
+        inline auto destination_ct = "-2"_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -47,6 +56,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int source = 0;
         inline int destination = 2;
         NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        inline auto shape_ct  = nmtools_tuple{1_ct,2_ct,3_ct};
+        inline auto source_ct = 0_ct;
+        inline auto destination_ct = 2_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -59,6 +71,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index, moveaxis_to_transpose)
         inline int source = 0;
         inline int destination = -1;
         NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        inline auto shape_ct  = nmtools_tuple{1_ct,2_ct,3_ct};
+        inline auto source_ct = 0_ct;
+        inline auto destination_ct = "-1"_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -539,6 +554,15 @@ TEST_CASE("moveaxis_to_transpose(case1)" * doctest::test_suite("index::moveaxis_
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_v, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_f, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_h, source, destination );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_a, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_v, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_f, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_h, source_ct, destination_ct );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_ct, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case1, shape_ct, source, destination );
 }
 
 TEST_CASE("moveaxis_to_transpose(case2)" * doctest::test_suite("index::moveaxis_to_transpose"))
@@ -548,6 +572,15 @@ TEST_CASE("moveaxis_to_transpose(case2)" * doctest::test_suite("index::moveaxis_
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_v, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_f, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_h, source, destination );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_a, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_v, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_f, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_h, source_ct, destination_ct );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_ct, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case2, shape_ct, source, destination );
 }
 
 TEST_CASE("moveaxis_to_transpose(case3)" * doctest::test_suite("index::moveaxis_to_transpose"))
@@ -557,6 +590,15 @@ TEST_CASE("moveaxis_to_transpose(case3)" * doctest::test_suite("index::moveaxis_
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_v, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_f, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_h, source, destination );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_a, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_v, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_f, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_h, source_ct, destination_ct );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_ct, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case3, shape_ct, source, destination );
 }
 
 TEST_CASE("moveaxis_to_transpose(case4)" * doctest::test_suite("index::moveaxis_to_transpose"))
@@ -566,6 +608,15 @@ TEST_CASE("moveaxis_to_transpose(case4)" * doctest::test_suite("index::moveaxis_
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_v, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_f, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_h, source, destination );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_a, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_v, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_f, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_h, source_ct, destination_ct );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_ct, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case4, shape_ct, source, destination );
 }
 
 TEST_CASE("moveaxis_to_transpose(case5)" * doctest::test_suite("index::moveaxis_to_transpose"))
@@ -575,6 +626,15 @@ TEST_CASE("moveaxis_to_transpose(case5)" * doctest::test_suite("index::moveaxis_
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_v, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_f, source, destination );
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_h, source, destination );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_a, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_v, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_f, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_h, source_ct, destination_ct );
+
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_ct, source_ct, destination_ct );
+    MOVEAXIS_TO_TRANSPOSE_SUBCASE( case5, shape_ct, source, destination );
 }
 
 TEST_CASE("moveaxis_to_transpose(case6)" * doctest::test_suite("index::moveaxis_to_transpose"))

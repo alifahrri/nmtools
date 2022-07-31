@@ -231,10 +231,9 @@ TEST_CASE("moveaxis(case7)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case7, a_h, source, destination );
 
     #else
-    // TODO: fix compile
-    // MOVEAXIS_SUBCASE( case7, a_cs_fb, source, destination );
-    // MOVEAXIS_SUBCASE( case7, a_cs_hb, source, destination );
-    // MOVEAXIS_SUBCASE( case7, a_cs_db, source, destination );
+    MOVEAXIS_SUBCASE( case7, a_cs_fb, source, destination );
+    MOVEAXIS_SUBCASE( case7, a_cs_hb, source, destination );
+    MOVEAXIS_SUBCASE( case7, a_cs_db, source, destination );
 
     MOVEAXIS_SUBCASE( case7, a_fs_fb, source, destination );
     MOVEAXIS_SUBCASE( case7, a_fs_hb, source, destination );
@@ -260,10 +259,9 @@ TEST_CASE("moveaxis(case8)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case8, a_h, source, destination );
 
     #else
-    // TODO: fix compile time
-    // MOVEAXIS_SUBCASE( case8, a_cs_fb, source, destination );
-    // MOVEAXIS_SUBCASE( case8, a_cs_hb, source, destination );
-    // MOVEAXIS_SUBCASE( case8, a_cs_db, source, destination );
+    MOVEAXIS_SUBCASE( case8, a_cs_fb, source, destination );
+    MOVEAXIS_SUBCASE( case8, a_cs_hb, source, destination );
+    MOVEAXIS_SUBCASE( case8, a_cs_db, source, destination );
 
     MOVEAXIS_SUBCASE( case8, a_fs_fb, source, destination );
     MOVEAXIS_SUBCASE( case8, a_fs_hb, source, destination );
@@ -289,10 +287,9 @@ TEST_CASE("moveaxis(case9)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case9, a_h, source, destination );
 
     #else
-    // TODO: fix compile-time
-    // MOVEAXIS_SUBCASE( case9, a_cs_fb, source, destination );
-    // MOVEAXIS_SUBCASE( case9, a_cs_hb, source, destination );
-    // MOVEAXIS_SUBCASE( case9, a_cs_db, source, destination );
+    MOVEAXIS_SUBCASE( case9, a_cs_fb, source, destination );
+    MOVEAXIS_SUBCASE( case9, a_cs_hb, source, destination );
+    MOVEAXIS_SUBCASE( case9, a_cs_db, source, destination );
 
     MOVEAXIS_SUBCASE( case9, a_fs_fb, source, destination );
     MOVEAXIS_SUBCASE( case9, a_fs_hb, source, destination );
