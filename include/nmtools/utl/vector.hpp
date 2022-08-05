@@ -16,6 +16,8 @@ namespace nmtools::error
 {
     // dummy
 
+    inline void no_calloc(size_t,size_t) {}
+
     inline void no_malloc(size_t) {}
 
     inline void no_realloc(void*,size_t) {}
@@ -26,6 +28,10 @@ namespace nmtools::error
 #if __has_include(<malloc.h>)
 
 #include <malloc.h>
+
+#ifndef nmtools_calloc
+#define nmtools_calloc ::calloc
+#endif
 
 #ifndef nmtools_malloc
 #define nmtools_malloc ::malloc
@@ -40,6 +46,10 @@ namespace nmtools::error
 #endif
 
 #else // __has_include(<malloc.h>)
+
+#ifndef nmtools_malloc
+#define nmtools_malloc ::nmtools::error::no_calloc
+#endif
 
 #ifndef nmtools_malloc
 #define nmtools_malloc ::nmtools::error::no_malloc
@@ -66,7 +76,11 @@ namespace nmtools::utl
 
         static pointer allocate(size_type N)
         {
+            #if 1
             return static_cast<pointer>(nmtools_malloc(sizeof(T) * N));
+            #else
+            return static_cast<pointer>(nmtools_calloc(N,sizeof(T)));
+            #endif
         }
 
         static pointer realloc(pointer ptr, size_type new_size)

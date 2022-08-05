@@ -182,8 +182,10 @@ SUBCASE(#case_name) \
     auto shape   = nmtools::get<1>(results); \
     auto free    = nmtools::get<2>(results); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
-    NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
-    NMTOOLS_ASSERT_EQUAL( free, expect::free ); \
+    if ((success == expect::success) && success) { \
+        NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
+        NMTOOLS_ASSERT_EQUAL( free, expect::free ); \
+    } \
 }
 #endif
 

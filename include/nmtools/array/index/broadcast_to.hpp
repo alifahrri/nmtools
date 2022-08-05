@@ -87,6 +87,8 @@ namespace nmtools::index
         // TODO: error handling for unsupported shape_broadcast_to dimension
         if constexpr (meta::is_resizeable_v<result_t>) {
             res.resize(bdim);
+        }
+        if constexpr (meta::is_resizeable_v<free_axes_t>) {
             free_axes.resize(bdim);
         }
         
