@@ -47,8 +47,8 @@ namespace nmtools::error
 
 #else // __has_include(<malloc.h>)
 
-#ifndef nmtools_malloc
-#define nmtools_malloc ::nmtools::error::no_calloc
+#ifndef nmtools_calloc
+#define nmtools_calloc ::nmtools::error::no_calloc
 #endif
 
 #ifndef nmtools_malloc
