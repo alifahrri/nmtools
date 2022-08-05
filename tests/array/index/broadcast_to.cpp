@@ -169,8 +169,10 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case_name); \
     const auto [success, shape, free] = RUN_broadcast_to(case_name, args::ashape, args::bshape); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
-    NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
-    NMTOOLS_ASSERT_EQUAL( free, expect::free ); \
+    if ((success == expect::success) && success) { \
+        NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
+        NMTOOLS_ASSERT_EQUAL( free, expect::free ); \
+    } \
 }
 #else
 #define BROADCAST_TO_SUBCASE(case_name, ashape, bshape) \
