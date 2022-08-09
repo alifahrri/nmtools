@@ -324,7 +324,7 @@ namespace nmtools::meta
      * @{
      */
 
-    template <typename T, size_t N, size_t M>
+    template <typename T, auto N, auto M>
     struct resize_size<array::fixed_ndarray<T,N>,M>
     {
         using type = array::fixed_ndarray<T,M>;
