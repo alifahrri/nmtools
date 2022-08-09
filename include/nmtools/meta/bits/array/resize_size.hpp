@@ -14,7 +14,7 @@ namespace nmtools::meta
     template <typename T, auto NewSize, typename=void>
     struct resize_size
     {
-        using type = error::RESIZE_SIZE_UNSUPPORTED<T>;
+        using type = error::RESIZE_SIZE_UNSUPPORTED<T,as_type<NewSize>>;
     };
 
     template <typename T, auto NewSize>
@@ -25,6 +25,12 @@ namespace nmtools::meta
 
     template <typename T, auto NewSize>
     using resize_size_t = type_t<resize_size<T,NewSize>>;
+
+    template <typename T, auto N, auto M>
+    struct resize_size<T[N],M>
+    {
+        using type = nmtools_array<T,M>;
+    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_ARRAY_RESIZE_SIZE_HPP

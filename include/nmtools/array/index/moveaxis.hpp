@@ -33,8 +33,13 @@ namespace nmtools::index
         if constexpr ((! meta::is_constant_index_array_v<result_t>) && (! meta::is_fail_v<result_t>)) {
             using return_t = utl::maybe<result_t>;
 
-            // TODO: use constant index whenever possible
-            auto dim = len(shape);
+            auto dim = [&](){
+                if constexpr (meta::is_constant_index_array_v<shape_t>) {
+                    return meta::ct_v<meta::len_v<shape_t>>;
+                } else {
+                    return len(shape);
+                }
+            }();
 
             auto order = result_t {};
             if constexpr (meta::is_resizeable_v<result_t>) {
@@ -157,7 +162,7 @@ namespace nmtools::meta
     {
         // simply follow the shape but make it unsigned
         static constexpr auto vtype = [](){
-            [[maybe_unused]] constexpr auto valid_args =
+            [[maybe_unused]] constexpr auto valid_src_dst =
                    (is_index_array_v<source_t> && is_index_array_v<destination_t>)
                 || (is_index_v<source_t> && is_index_v<destination_t>);
             if constexpr (is_constant_index_array_v<shape_t> && (is_constant_index_v<source_t> || is_constant_index_array_v<source_t>) && (is_constant_index_v<destination_t> || is_constant_index_array_v<destination_t>)) {
@@ -175,9 +180,11 @@ namespace nmtools::meta
                     using type = error::MOVEAXIS_TO_TRANSPOSE_INVALID<shape_t,source_t,destination_t>;
                     return as_value_v<type>;
                 }
-            } else if constexpr (is_constant_index_array_v<shape_t> && is_index_v<source_t> && is_index_v<destination_t>) {
-                return as_value_v<decltype(to_value_v<shape_t>)>;
-            } else if constexpr (is_index_array_v<shape_t> && valid_args) {
+            } else if constexpr (is_constant_index_array_v<shape_t> && valid_src_dst) {
+                using shape_type = remove_cvref_t<decltype(to_value_v<shape_t>)>;
+                using type = resolve_optype_t<index::moveaxis_to_transpose_t,shape_type,source_t,destination_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_index_array_v<shape_t> && valid_src_dst) {
                 using index_t = get_element_type_t<shape_t>;
                 using unsigned_t = make_unsigned_t<index_t>;
                 using type = replace_element_type_t<transform_bounded_array_t<shape_t>,unsigned_t>;

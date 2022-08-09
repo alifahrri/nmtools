@@ -324,6 +324,12 @@ namespace nmtools::meta
      * @{
      */
 
+    template <typename T, auto N, auto M>
+    struct resize_size<array::fixed_ndarray<T,N>,M>
+    {
+        using type = array::fixed_ndarray<T,M>;
+    };
+
     // TODO: remove
     /**
      * @brief specialization of metafunction

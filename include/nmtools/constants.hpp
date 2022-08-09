@@ -35,12 +35,15 @@ namespace nmtools::detail
     template <typename always_void,typename T, T...Ts>
     struct ct_impl_t;
 
-    template<>
-    struct ct_impl_t<void,char,'-','1'>
+    // TODO: support val > 9
+    template <char val>
+    struct ct_impl_t<void,char,'-',val>
     {
+        static_assert( val > '0' && val <= '9', "invalid negative constant" );
         constexpr auto operator()() const noexcept
         {
-            return meta::ct_v<-1>;
+            constexpr auto value = val - '0';
+            return meta::ct_v<-value>;
         }
     }; // ct_impl_t
 
@@ -79,12 +82,19 @@ namespace nmtools::literals
     } // _ct
 
 #if defined(__GNUC__) or defined(__clang__)
+#define NMTOOLS_ENABLE_STRING_LITERAL
+#endif // __GNUC__ || __clang__
+
+#ifndef NMTOOLS_DISABLE_STRING_LITERAL // may be supplied by user
+#ifdef  NMTOOLS_ENABLE_STRING_LITERAL  // automatically enabled on gcc & clang
     template <typename T, T...cs>
     constexpr auto operator ""_ct()
     {
         return detail::ct_impl_t<void,T,cs...>{}();
     } // ""_ct
-#endif // __GNUC__ || __clang__
+#endif // NMTOOLS_ENABLE_STRING_LITERAL
+#endif // NMTOOLS_DISABLE_STRING_LITERAL
+
 } // namespace nmtools::literals
 
 #endif // NMTOOLS_CONSTANTS_HPP

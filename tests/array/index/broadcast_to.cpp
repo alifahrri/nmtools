@@ -169,8 +169,10 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case_name); \
     const auto [success, shape, free] = RUN_broadcast_to(case_name, args::ashape, args::bshape); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
-    NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
-    NMTOOLS_ASSERT_EQUAL( free, expect::free ); \
+    if ((success == expect::success) && success) { \
+        NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
+        NMTOOLS_ASSERT_EQUAL( free, expect::free ); \
+    } \
 }
 #else
 #define BROADCAST_TO_SUBCASE(case_name, ashape, bshape) \
@@ -182,13 +184,17 @@ SUBCASE(#case_name) \
     auto shape   = nmtools::get<1>(results); \
     auto free    = nmtools::get<2>(results); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
-    NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
-    NMTOOLS_ASSERT_EQUAL( free, expect::free ); \
+    if ((success == expect::success) && success) { \
+        NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
+        NMTOOLS_ASSERT_EQUAL( free, expect::free ); \
+    } \
 }
 #endif
 
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("index::shape_broadcast_to"))
 {
+    BROADCAST_TO_SUBCASE(case1, ashape, bshape);
+
     BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_v);
     BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_h);
@@ -203,10 +209,22 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("index::shape_broadcast_to
     BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_h);
 
     BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case1,   ashape, bshape_ct);
+    BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_ct);
+    BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_ct);
+    BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case1, ashape_ct,   bshape);
+    BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_a);
+    BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_v);
+    BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case2)" * doctest::test_suite("index::shape_broadcast_to"))
 {
+    BROADCAST_TO_SUBCASE(case2, ashape, bshape);
+
     BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_a);
     BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_v);
     BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_h);
@@ -219,6 +237,18 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("index::shape_broadcast_to
     
     BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_h);
     BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_h);
+
+    BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case2,   ashape, bshape_ct);
+    BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_ct);
+    BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_ct);
+    BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case2, ashape_ct,   bshape);
+    BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_a);
+    BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_v);
+    BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case3)" * doctest::test_suite("index::shape_broadcast_to"))
@@ -251,6 +281,18 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("index::shape_broadcast_to
     
     BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_h);
     BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_h);
+
+    BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case4,   ashape, bshape_ct);
+    BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_ct);
+    BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_ct);
+    BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case4, ashape_ct,   bshape);
+    BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_a);
+    BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_v);
+    BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case5)" * doctest::test_suite("index::shape_broadcast_to"))
@@ -276,6 +318,18 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("index::shape_broadcast_to
     #ifndef NMTOOLS_DISABLE_STL
     BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_h);
     #endif
+
+    BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case5,   ashape, bshape_ct);
+    BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_ct);
+    BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_ct);
+    BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case5, ashape_ct,   bshape);
+    BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_a);
+    BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_v);
+    BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case6)" * doctest::test_suite("index::shape_broadcast_to"))
@@ -301,6 +355,18 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("index::shape_broadcast_to
     #ifndef NMTOOLS_DISABLE_STL
     BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_h);
     #endif
+
+    BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case6,   ashape, bshape_ct);
+    BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_ct);
+    BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_ct);
+    BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case6, ashape_ct,   bshape);
+    BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_a);
+    BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_v);
+    BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_h);
 }
 
 TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::shape_broadcast_to"))
@@ -317,6 +383,18 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::shape_broadcast_to
     
     BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_h);
     BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_h);
+
+    BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case7,   ashape, bshape_ct);
+    BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_ct);
+    BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_ct);
+    BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_ct);
+
+    BROADCAST_TO_SUBCASE(case7, ashape_ct,   bshape);
+    BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_a);
+    BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_v);
+    BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_h);
 }
 
 TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("index::shape_broadcast_to"))

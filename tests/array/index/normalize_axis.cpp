@@ -10,6 +10,8 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+using namespace nmtools::literals;
+
 NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -17,6 +19,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
         inline int axis[3] = {-1,-2,-3};
         inline int ndim = 3;
         NMTOOLS_CAST_INDEX_ARRAYS(axis);
+        inline auto axis_ct = nmtools_tuple{"-1"_ct,"-2"_ct,"-3"_ct};
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -28,6 +32,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
         inline int axis[3] = {-1,-2,3};
         inline int ndim = 3;
         NMTOOLS_CAST_INDEX_ARRAYS(axis);
+        inline auto axis_ct = nmtools_tuple{"-1"_ct,"-2"_ct,3_ct};
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -40,6 +46,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
         inline int axis[3] = {-1,2,-3};
         inline int ndim = 3;
         NMTOOLS_CAST_INDEX_ARRAYS(axis);
+        inline auto axis_ct = nmtools_tuple{"-1"_ct,2_ct,"-3"_ct};
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -50,6 +58,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis = -3;
         inline int ndim = 3;
+        inline auto axis_ct = "-3"_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -60,6 +70,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis = 3;
         inline int ndim = 3;
+        inline auto axis_ct = 3_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -70,6 +82,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline auto axis = 0ul;
         inline int ndim = 3;
+        inline auto axis_ct = 0_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -80,6 +94,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline auto axis = 0ul;
         inline auto ndim = 3ul;
+        inline auto axis_ct = 0_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -90,6 +106,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline auto axis = 1ul;
         inline auto ndim = 3ul;
+        inline auto axis_ct = 1_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -100,6 +118,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline auto axis = 2ul;
         inline auto ndim = 3ul;
+        inline auto axis_ct = 2_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
@@ -110,6 +130,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline auto axis = 3ul;
         inline auto ndim = 3ul;
+        inline auto axis_ct = 3_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
@@ -120,6 +142,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis = 0;
         inline int ndim = 3;
+        inline auto axis_ct = 0_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
@@ -130,6 +154,8 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     {
         inline int axis = 1;
         inline int ndim = 3;
+        inline auto axis_ct = 1_ct;
+        inline auto ndim_ct = 3_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
@@ -180,6 +206,15 @@ TEST_CASE("normalize_axis(case1)" * doctest::test_suite("index::normalize_axis")
     NORMALIZE_AXIS_SUBCASE( case1, axis_v, ndim );
     NORMALIZE_AXIS_SUBCASE( case1, axis_f, ndim );
     NORMALIZE_AXIS_SUBCASE( case1, axis_h, ndim );
+
+    NORMALIZE_AXIS_SUBCASE( case1, axis, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case1, axis_a, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case1, axis_v, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case1, axis_f, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case1, axis_h, ndim_ct );
+
+    NORMALIZE_AXIS_SUBCASE( case1, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case1, axis_ct, ndim );
 }
 
 TEST_CASE("normalize_axis(case2)" * doctest::test_suite("index::normalize_axis"))
@@ -189,6 +224,17 @@ TEST_CASE("normalize_axis(case2)" * doctest::test_suite("index::normalize_axis")
     NORMALIZE_AXIS_SUBCASE( case2, axis_v, ndim );
     NORMALIZE_AXIS_SUBCASE( case2, axis_f, ndim );
     NORMALIZE_AXIS_SUBCASE( case2, axis_h, ndim );
+
+    NORMALIZE_AXIS_SUBCASE( case2, axis, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case2, axis_a, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case2, axis_v, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case2, axis_f, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case2, axis_h, ndim_ct );
+
+    #if 0
+    NORMALIZE_AXIS_SUBCASE( case2, axis_ct, ndim_ct );
+    #endif
+    NORMALIZE_AXIS_SUBCASE( case2, axis_ct, ndim );
 }
 
 TEST_CASE("normalize_axis(case3)" * doctest::test_suite("index::normalize_axis"))
@@ -198,59 +244,98 @@ TEST_CASE("normalize_axis(case3)" * doctest::test_suite("index::normalize_axis")
     NORMALIZE_AXIS_SUBCASE( case3, axis_v, ndim );
     NORMALIZE_AXIS_SUBCASE( case3, axis_f, ndim );
     NORMALIZE_AXIS_SUBCASE( case3, axis_h, ndim );
+
+    NORMALIZE_AXIS_SUBCASE( case3, axis, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_a, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_v, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_f, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_h, ndim_ct );
+
+    NORMALIZE_AXIS_SUBCASE( case3, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case3, axis_ct, ndim );
 }
 
 TEST_CASE("normalize_axis(case4)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case4, axis, ndim );
-    NORMALIZE_AXIS_SUBCASE( case4, axis, ndim );
-    NORMALIZE_AXIS_SUBCASE( case4, axis, ndim );
-    NORMALIZE_AXIS_SUBCASE( case4, axis, ndim );
-    NORMALIZE_AXIS_SUBCASE( case4, axis, ndim );
+
+    NORMALIZE_AXIS_SUBCASE( case4, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case4, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case4,    axis, ndim_ct );
 }
 
 TEST_CASE("normalize_axis(case5)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
-    NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
-    NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
-    NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
-    NORMALIZE_AXIS_SUBCASE( case5, axis, ndim );
+
+    #if 0 // should trigger invalid type
+    NORMALIZE_AXIS_SUBCASE( case5, axis_ct, ndim_ct );
+    #endif
+    NORMALIZE_AXIS_SUBCASE( case5, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case5,    axis, ndim_ct );
 }
 
 TEST_CASE("normalize_axis(case6)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case6, axis, ndim );
+
+    NORMALIZE_AXIS_SUBCASE( case6, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case6, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case6,    axis, ndim_ct );
 }
 
 TEST_CASE("normalize_axis(case7)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case7, axis, ndim );
+
+    NORMALIZE_AXIS_SUBCASE( case7, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case7, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case7,    axis, ndim_ct );
 }
 
 TEST_CASE("normalize_axis(case8)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case8, axis, ndim );
+
+    NORMALIZE_AXIS_SUBCASE( case8, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case8, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case8,    axis, ndim_ct );
 }
 
 TEST_CASE("normalize_axis(case9)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case9, axis, ndim );
+
+    NORMALIZE_AXIS_SUBCASE( case9, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case9, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case9, axis, ndim_ct );
 }
 
 TEST_CASE("normalize_axis(case10)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case10, axis, ndim );
+
+    #if 0 // should trigger invalid type
+    NORMALIZE_AXIS_SUBCASE( case10, axis_ct, ndim_ct );
+    #endif
+    NORMALIZE_AXIS_SUBCASE( case10, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case10, axis, ndim_ct );
 }
 
 TEST_CASE("normalize_axis(case11)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case11, axis, ndim );
+    NORMALIZE_AXIS_SUBCASE( case11, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case11, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case11, axis, ndim_ct );
 }
 
 TEST_CASE("normalize_axis(case12)" * doctest::test_suite("index::normalize_axis"))
 {
     NORMALIZE_AXIS_SUBCASE( case12, axis, ndim );
+    NORMALIZE_AXIS_SUBCASE( case12, axis_ct, ndim_ct );
+    NORMALIZE_AXIS_SUBCASE( case12, axis_ct, ndim );
+    NORMALIZE_AXIS_SUBCASE( case12, axis, ndim_ct );
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(index, constexpr_normalize_axis)

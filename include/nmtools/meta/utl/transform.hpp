@@ -21,6 +21,12 @@ namespace nmtools::meta
         using type = utl::array<T,M>;
     };
 
+    template <typename T, size_t N, auto M>
+    struct resize_size<utl::array<T,N>,M>
+    {
+        using type = utl::array<T,(size_t)M>;
+    };
+
     template <typename T, size_t N, typename U>
     struct resize_fixed_ndarray<utl::array<T,N>,U>
     {
