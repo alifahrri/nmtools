@@ -25,56 +25,57 @@ namespace nmtools::detail
         using left_t  = meta::get_either_left_t<no_cvref_either_t>;
         using right_t = meta::get_either_right_t<no_cvref_either_t>;
 
-        [[maybe_unused]] auto l_ptr = get_if<left_t>(&either);
-        [[maybe_unused]] auto r_ptr = get_if<right_t>(&either);
+        [[maybe_unused]] auto l_ptr = get_if<left_t>(&nmtools::forward<either_t>(either));
+        [[maybe_unused]] auto r_ptr = get_if<right_t>(&nmtools::forward<either_t>(either));
 
         if constexpr (meta::is_either_v<left_t> && meta::is_either_v<right_t>) {
-            using l_result_t = decltype(get_flat_either<I>(*l_ptr));
-            if constexpr (meta::is_fail_v<l_result_t>) {
-                using left_types_t = meta::resolve_optype_t<flatten_either_t,left_t>;
-                constexpr auto n_left = meta::len_v<left_types_t>;
-                constexpr auto i = I - n_left;
-                using r_result_t = decltype(get_flat_either<i>(*r_ptr));
-                // NOTE: there may be a case (when incorrectly used) where
-                // the requested index is unreachable (I >= len(flattened_either))
-                // assume reachable
-                if (r_ptr) {
-                    return get_flat_either<i>(*r_ptr);
-                } else {
-                    return static_cast<r_result_t>(nullptr);
-                }
-            } else {
+            using left_types_t  = meta::resolve_optype_t<flatten_either_t,left_t>;
+            using right_types_t = meta::resolve_optype_t<flatten_either_t,right_t>;
+            [[maybe_unused]] constexpr auto n_left  = meta::len_v<left_types_t>;
+            [[maybe_unused]] constexpr auto n_right = meta::len_v<right_types_t>;
+            if constexpr (I < n_left) {
+                using l_result_t = decltype(get_flat_either<I>(*l_ptr));
                 if (l_ptr) {
                     return get_flat_either<I>(*l_ptr);
                 } else {
                     return static_cast<l_result_t>(nullptr);
                 }
+            } else if constexpr (I >= n_left && I < n_right) {
+                constexpr auto J = I - n_left;
+                using r_result_t = decltype(get_flat_either<J>(*r_ptr));
+                if (r_ptr) {
+                    return get_flat_either<J>(*r_ptr);
+                } else {
+                    return static_cast<r_result_t>(nullptr);
+                }
+            } else {
+                return GET_FLAT_EITHER_UNREACHABLE<I,either_t>{};
             }
         } else if constexpr (meta::is_either_v<left_t>) {
             // we know right_t is not either,
             // so we know left is starting from 0,
             // but we do not know how deep is the left,
 
-            auto l_ptr = get_if<left_t>(&either);
-            using result_t = decltype(get_flat_either<I>(*l_ptr));
-            if constexpr (meta::is_fail_v<result_t>) {
-                // assume right
-                // TODO: fix, this still may be unreachable
-                return get_if<right_t>(&either);
-            } else {
+            using left_types_t  = meta::resolve_optype_t<flatten_either_t,left_t>;
+            [[maybe_unused]] constexpr auto n_left  = meta::len_v<left_types_t>;
+            if constexpr (I < n_left) {
+                auto l_ptr = get_if<left_t>(&nmtools::forward<either_t>(either));
+                using result_t = decltype(get_flat_either<I>(*l_ptr));
                 if (l_ptr) {
                     return get_flat_either<I>(*l_ptr);
                 } else {
                     return static_cast<result_t>(nullptr);
                 }
+            } else {
+                return get_if<right_t>(&nmtools::forward<either_t>(either));
             }
         } else if constexpr (meta::is_either_v<right_t>) {
             // we know left_t is not either,
             // so index at right start from 1
             if constexpr (I==0) {
-                return get_if<left_t>(&either);
+                return get_if<left_t>(&nmtools::forward<either_t>(either));
             } else {
-                auto r_ptr = get_if<right_t>(&either);
+                auto r_ptr = get_if<right_t>(&nmtools::forward<either_t>(either));
 
                 using result_t = decltype(get_flat_either<I-1>(*r_ptr));
                 // assume reachable
@@ -121,7 +122,10 @@ namespace nmtools
             // since this is like variant type,
             // should only have one valid pointer
             if (ptr) {
-                get<I>(res) = ptr;
+                using res_t = meta::at_t<result_t,I>;
+                // NOTE: quick workaround for invalid conversion from const* to *, especially when using utl
+                // TODO: fix, remove const_cast
+                get<I>(res) = const_cast<res_t>(ptr);
             }
         });
 
