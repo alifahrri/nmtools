@@ -108,6 +108,8 @@ set( META_TRANSFORM_TEST_SOURCES
     transform/apply.cpp
     transform/common_type.cpp
     transform/get_common_type.cpp
+    transform/get_either_left.cpp
+    transform/get_either_right.cpp
     transform/get_element_type.cpp
     transform/get_element_or_common_type.cpp
     transform/get_underlying_array_type.cpp

@@ -1890,10 +1890,58 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice)
         auto slice3  = 1;
         NMTOOLS_CAST_INDEX_ARRAYS(shape);
         NMTOOLS_CAST_INDEX_ARRAYS(indices);
+        using r_slice_t  = nmtools_either<decltype(slice1),decltype(slice2)>;
+        using slice_t    = nmtools_either<int,r_slice_t>;
+        using d_slices_t = nmtools_list<slice_t>;
+        using a_slices_t = nmtools_array<slice_t,4>;
+        auto d_slices = d_slices_t{
+            (slice_t)slice0,
+            (slice_t)(r_slice_t)slice1,
+            (slice_t)(r_slice_t)slice2,
+            (slice_t)slice3,
+        };
+        auto a_slices = a_slices_t{
+            (slice_t)slice0,
+            (slice_t)(r_slice_t)slice1,
+            (slice_t)(r_slice_t)slice2,
+            (slice_t)slice3,
+        };
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case44)
     {
         int result[4] = {1,0,2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case45)
+    {
+        int indices[2] = {0,0};
+        int shape[4] = {2,1,3,2};
+        auto slice0  = 1;
+        auto slice1  = Ellipsis;
+        auto slice2  = tuple{None,None,-1};
+        auto slice3  = 0;
+        NMTOOLS_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CAST_INDEX_ARRAYS(indices);
+        using r_slice_t  = nmtools_either<decltype(slice1),decltype(slice2)>;
+        using slice_t    = nmtools_either<int,r_slice_t>;
+        using d_slices_t = nmtools_list<slice_t>;
+        using a_slices_t = nmtools_array<slice_t,4>;
+        auto d_slices = d_slices_t{
+            (slice_t)slice0,
+            (slice_t)(r_slice_t)slice1,
+            (slice_t)(r_slice_t)slice2,
+            (slice_t)slice3,
+        };
+        auto a_slices = a_slices_t{
+            (slice_t)slice0,
+            (slice_t)(r_slice_t)slice1,
+            (slice_t)(r_slice_t)slice2,
+            (slice_t)slice3,
+        };
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case45)
+    {
+        int result[4] = {1,0,2,0};
     }
 }
 
@@ -1919,6 +1967,48 @@ using nm::benchmarks::TrackedBench;
 #define RUN_slice(case_name, ...) \
 RUN_slice_impl(__VA_ARGS__);
 #endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define RUN_dynamic_slice_impl(...) \
+nm::index::dynamic_slice(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs dynamic_slice fn to callable lambda
+#define RUN_dynamic_slice(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("dynamic_slice-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_dynamic_slice_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_dynamic_slice(case_name, ...) \
+RUN_dynamic_slice_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define DYNAMIC_SLICE_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, dynamic_slice, case_name); \
+    using namespace args; \
+    auto result = RUN_dynamic_slice(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+// TODO: use apply instead of dynamic_slice
+#define APPLY_SLICE_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(index, slice, case_name); \
+    using namespace args; \
+    auto result = RUN_dynamic_slice(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
 
 #define SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
@@ -2323,6 +2413,25 @@ TEST_CASE("slice(case44)" * doctest::test_suite("index::slice"))
     SLICE_SUBCASE(case44, indices_v, shape_v, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case44, indices_f, shape_f, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case44, indices_h, shape_h, slice0, slice1, slice2, slice3);
+
+    // TODO: support raw array indices/shape
+    // APPLY_SLICE_SUBCASE( case44, indices, shape, d_slices );
+    APPLY_SLICE_SUBCASE( case44, indices_a, shape_a, d_slices );
+    APPLY_SLICE_SUBCASE( case44, indices_v, shape_v, d_slices );
+}
+
+TEST_CASE("slice(case45)" * doctest::test_suite("index::slice"))
+{
+    SLICE_SUBCASE(case45, indices,   shape, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case45, indices_a, shape_a, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case45, indices_v, shape_v, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case45, indices_f, shape_f, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case45, indices_h, shape_h, slice0, slice1, slice2, slice3);
+
+    // TODO: support raw array indices/shape
+    // APPLY_SLICE_SUBCASE( case45, indices, shape, d_slices );
+    APPLY_SLICE_SUBCASE( case45, indices_a, shape_a, d_slices );
+    APPLY_SLICE_SUBCASE( case45, indices_v, shape_v, d_slices );
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
@@ -2800,38 +2909,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, dynamic_slice)
     {
         inline auto result = nmtools_list{0,2,0,1};
     }
-}
-
-#define RUN_dynamic_slice_impl(...) \
-nm::index::dynamic_slice(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs dynamic_slice fn to callable lambda
-#define RUN_dynamic_slice(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("dynamic_slice-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_dynamic_slice_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_dynamic_slice(case_name, ...) \
-RUN_dynamic_slice_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define DYNAMIC_SLICE_SUBCASE(case_name, ...) \
-SUBCASE(#case_name) \
-{ \
-    NMTOOLS_TESTING_DECLARE_NS(index, dynamic_slice, case_name); \
-    using namespace args; \
-    auto result = RUN_dynamic_slice(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
 TEST_CASE("dynamic_slice(case1)" * doctest::test_suite("index::dynamic_slice"))
