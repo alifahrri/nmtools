@@ -50,6 +50,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
     using namespace args; \
     auto result = RUN_slice(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -1117,6 +1118,62 @@ TEST_CASE("slice(case38)" * doctest::test_suite("view::slice"))
     #endif
 }
 
+TEST_CASE("slice(case39)" * doctest::test_suite("view::slice"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    SLICE_SUBCASE(case39,   array, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_a, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_f, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_d, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_h, slice0, slice1, slice2, slice3);
+
+    #else
+    SLICE_SUBCASE(case39, array_cs_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_cs_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_cs_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case39, array_fs_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_fs_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_fs_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case39, array_hs_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_hs_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_hs_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case39, array_ds_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_ds_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_ds_db, slice0, slice1, slice2, slice3);
+    #endif
+}
+
+TEST_CASE("slice(case40)" * doctest::test_suite("view::slice"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    SLICE_SUBCASE(case40,   array, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_a, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_f, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_d, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_h, slice0, slice1, slice2, slice3);
+
+    #else
+    SLICE_SUBCASE(case40, array_cs_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_cs_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_cs_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case40, array_fs_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_fs_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_fs_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case40, array_hs_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_hs_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_hs_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case40, array_ds_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_ds_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_ds_db, slice0, slice1, slice2, slice3);
+    #endif
+}
+
 namespace meta = nmtools::meta;
 namespace view = nmtools::view;
 
@@ -1364,68 +1421,52 @@ TEST_CASE("apply_slice(case25)" * doctest::test_suite("view::apply_slice"))
     APPLY_SLICE_SUBCASE(case25, array_d, dslices);
 }
 
-// not supported yet
-// TODO: fix dynamic slicing for this case
-// TEST_CASE("apply_slice(case26)" * doctest::test_suite("view::apply_slice"))
-// {
-//     APPLY_SLICE_SUBCASE(case26, array_d, dslices);
-// }
+TEST_CASE("apply_slice(case26)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case26, array_d, dslices);
+}
 
 TEST_CASE("apply_slice(case27)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case27, array_d, dslices);
 }
 
-// not supported yet
-// TODO: fix dynamic slicing for this case
-// TEST_CASE("apply_slice(case28)" * doctest::test_suite("view::apply_slice"))
-// {
-//     APPLY_SLICE_SUBCASE(case28, array_d, dslices);
-// }
+TEST_CASE("apply_slice(case28)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case28, array_d, dslices);
+}
 
-// not supported yet
-// TODO: fix dynamic slicing for this case
-// TEST_CASE("apply_slice(case29)" * doctest::test_suite("view::apply_slice"))
-// {
-//     APPLY_SLICE_SUBCASE(case29, array_d, dslices);
-// }
+TEST_CASE("apply_slice(case29)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case29, array_d, dslices);
+}
 
 TEST_CASE("apply_slice(case30)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case30, array_d, dslices);
 }
 
-// NOTE: triggers ASAN
-// TODO: fix runtime
-TEST_CASE("apply_slice(case33)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+TEST_CASE("apply_slice(case33)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case33, array_d, dslices);
 }
 
-// not supported yet
-// TODO: fix dynamic slicing for this case
-// TEST_CASE("apply_slice(case34)" * doctest::test_suite("view::apply_slice"))
-// {
-//     APPLY_SLICE_SUBCASE(case34, array_d, dslices);
-// }
+TEST_CASE("apply_slice(case34)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case34, array_d, dslices);
+}
 
-// not supported yet
-// TODO: fix dynamic slicing for this case
-// TEST_CASE("apply_slice(case35)" * doctest::test_suite("view::apply_slice"))
-// {
-//     APPLY_SLICE_SUBCASE(case35, array_d, dslices);
-// }
+TEST_CASE("apply_slice(case35)" * doctest::test_suite("view::apply_slice"))
+{
+    APPLY_SLICE_SUBCASE(case35, array_d, dslices);
+}
 
-// NOTE: triggers ASAN
-// TODO: fix runtime
-TEST_CASE("apply_slice(case36)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+TEST_CASE("apply_slice(case36)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case36, array_d, dslices);
 }
 
-// NOTE: known to be incorrect when tuple{None,None,-1}
-// TODO: fix for negative step
-TEST_CASE("apply_slice(case37)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+TEST_CASE("apply_slice(case37)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case37, array_d, dslices);
 }
@@ -1435,8 +1476,7 @@ TEST_CASE("apply_slice(case38)" * doctest::test_suite("view::apply_slice"))
     APPLY_SLICE_SUBCASE(case38, array_d, dslices);
 }
 
-// TODO: fix for negative step
-TEST_CASE("apply_slice(case39)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+TEST_CASE("apply_slice(case39)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case39, array_d, dslices);
 }
