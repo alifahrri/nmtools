@@ -79,10 +79,9 @@ TEST_CASE("conv2d(case1)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case1, input_fs_hb, weight_fs_hb );
     CONV2D_SUBCASE( case1, input_fs_db, weight_fs_db );
 
-    // TODO: fix
-    // CONV2D_SUBCASE( case1, input_hs_fb, weight_hs_fb );
-    // CONV2D_SUBCASE( case1, input_hs_hb, weight_hs_hb );
-    // CONV2D_SUBCASE( case1, input_hs_db, weight_hs_db );
+    CONV2D_SUBCASE( case1, input_hs_fb, weight_hs_fb );
+    CONV2D_SUBCASE( case1, input_hs_hb, weight_hs_hb );
+    CONV2D_SUBCASE( case1, input_hs_db, weight_hs_db );
 
     CONV2D_SUBCASE( case1, input_ds_fb, weight_ds_fb );
     CONV2D_SUBCASE( case1, input_ds_hb, weight_ds_hb );
@@ -92,9 +91,9 @@ TEST_CASE("conv2d(case1)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case1, input_fs_hb, weight_cs_hb );
     CONV2D_SUBCASE( case1, input_fs_db, weight_cs_db );
 
-    // CONV2D_SUBCASE( case1, input_hs_fb, weight_cs_fb );
-    // CONV2D_SUBCASE( case1, input_hs_hb, weight_cs_hb );
-    // CONV2D_SUBCASE( case1, input_hs_db, weight_cs_db );
+    CONV2D_SUBCASE( case1, input_hs_fb, weight_cs_fb );
+    CONV2D_SUBCASE( case1, input_hs_hb, weight_cs_hb );
+    CONV2D_SUBCASE( case1, input_hs_db, weight_cs_db );
 
     CONV2D_SUBCASE( case1, input_ds_fb, weight_cs_fb );
     CONV2D_SUBCASE( case1, input_ds_hb, weight_cs_hb );
@@ -104,9 +103,9 @@ TEST_CASE("conv2d(case1)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case1, input_cs_hb, weight_fs_hb );
     CONV2D_SUBCASE( case1, input_cs_db, weight_fs_db );
 
-    // CONV2D_SUBCASE( case1, input_hs_fb, weight_fs_fb );
-    // CONV2D_SUBCASE( case1, input_hs_hb, weight_fs_hb );
-    // CONV2D_SUBCASE( case1, input_hs_db, weight_fs_db );
+    CONV2D_SUBCASE( case1, input_hs_fb, weight_fs_fb );
+    CONV2D_SUBCASE( case1, input_hs_hb, weight_fs_hb );
+    CONV2D_SUBCASE( case1, input_hs_db, weight_fs_db );
 
     CONV2D_SUBCASE( case1, input_ds_fb, weight_fs_fb );
     CONV2D_SUBCASE( case1, input_ds_hb, weight_fs_hb );
@@ -132,9 +131,9 @@ TEST_CASE("conv2d(case1)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case1, input_fs_hb, weight_ds_hb );
     CONV2D_SUBCASE( case1, input_fs_db, weight_ds_db );
 
-    // CONV2D_SUBCASE( case1, input_hs_fb, weight_ds_fb );
-    // CONV2D_SUBCASE( case1, input_hs_hb, weight_ds_hb );
-    // CONV2D_SUBCASE( case1, input_hs_db, weight_ds_db );
+    CONV2D_SUBCASE( case1, input_hs_fb, weight_ds_fb );
+    CONV2D_SUBCASE( case1, input_hs_hb, weight_ds_hb );
+    CONV2D_SUBCASE( case1, input_hs_db, weight_ds_db );
     #endif
 }
 
@@ -156,9 +155,9 @@ TEST_CASE("conv2d(case2)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case2, input_fs_hb, weight_fs_hb );
     CONV2D_SUBCASE( case2, input_fs_db, weight_fs_db );
 
-    // CONV2D_SUBCASE( case2, input_hs_fb, weight_hs_fb );
-    // CONV2D_SUBCASE( case2, input_hs_hb, weight_hs_hb );
-    // CONV2D_SUBCASE( case2, input_hs_db, weight_hs_db );
+    CONV2D_SUBCASE( case2, input_hs_fb, weight_hs_fb );
+    CONV2D_SUBCASE( case2, input_hs_hb, weight_hs_hb );
+    CONV2D_SUBCASE( case2, input_hs_db, weight_hs_db );
 
     CONV2D_SUBCASE( case2, input_ds_fb, weight_ds_fb );
     CONV2D_SUBCASE( case2, input_ds_hb, weight_ds_hb );
@@ -168,9 +167,9 @@ TEST_CASE("conv2d(case2)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case2, input_fs_hb, weight_cs_hb );
     CONV2D_SUBCASE( case2, input_fs_db, weight_cs_db );
 
-    // CONV2D_SUBCASE( case2, input_hs_fb, weight_cs_fb );
-    // CONV2D_SUBCASE( case2, input_hs_hb, weight_cs_hb );
-    // CONV2D_SUBCASE( case2, input_hs_db, weight_cs_db );
+    CONV2D_SUBCASE( case2, input_hs_fb, weight_cs_fb );
+    CONV2D_SUBCASE( case2, input_hs_hb, weight_cs_hb );
+    CONV2D_SUBCASE( case2, input_hs_db, weight_cs_db );
 
     CONV2D_SUBCASE( case2, input_ds_fb, weight_cs_fb );
     CONV2D_SUBCASE( case2, input_ds_hb, weight_cs_hb );
@@ -180,9 +179,9 @@ TEST_CASE("conv2d(case2)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case2, input_cs_hb, weight_fs_hb );
     CONV2D_SUBCASE( case2, input_cs_db, weight_fs_db );
 
-    // CONV2D_SUBCASE( case2, input_hs_fb, weight_fs_fb );
-    // CONV2D_SUBCASE( case2, input_hs_hb, weight_fs_hb );
-    // CONV2D_SUBCASE( case2, input_hs_db, weight_fs_db );
+    CONV2D_SUBCASE( case2, input_hs_fb, weight_fs_fb );
+    CONV2D_SUBCASE( case2, input_hs_hb, weight_fs_hb );
+    CONV2D_SUBCASE( case2, input_hs_db, weight_fs_db );
 
     CONV2D_SUBCASE( case2, input_ds_fb, weight_fs_fb );
     CONV2D_SUBCASE( case2, input_ds_hb, weight_fs_hb );
@@ -208,9 +207,9 @@ TEST_CASE("conv2d(case2)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case2, input_fs_hb, weight_ds_hb );
     CONV2D_SUBCASE( case2, input_fs_db, weight_ds_db );
 
-    // CONV2D_SUBCASE( case2, input_hs_fb, weight_ds_fb );
-    // CONV2D_SUBCASE( case2, input_hs_hb, weight_ds_hb );
-    // CONV2D_SUBCASE( case2, input_hs_db, weight_ds_db );
+    CONV2D_SUBCASE( case2, input_hs_fb, weight_ds_fb );
+    CONV2D_SUBCASE( case2, input_hs_hb, weight_ds_hb );
+    CONV2D_SUBCASE( case2, input_hs_db, weight_ds_db );
     #endif
 }
 
@@ -232,9 +231,9 @@ TEST_CASE("conv2d(case3)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case3, input_fs_hb, weight_fs_hb );
     CONV2D_SUBCASE( case3, input_fs_db, weight_fs_db );
 
-    // CONV2D_SUBCASE( case3, input_hs_fb, weight_hs_fb );
-    // CONV2D_SUBCASE( case3, input_hs_hb, weight_hs_hb );
-    // CONV2D_SUBCASE( case3, input_hs_db, weight_hs_db );
+    CONV2D_SUBCASE( case3, input_hs_fb, weight_hs_fb );
+    CONV2D_SUBCASE( case3, input_hs_hb, weight_hs_hb );
+    CONV2D_SUBCASE( case3, input_hs_db, weight_hs_db );
 
     CONV2D_SUBCASE( case3, input_ds_fb, weight_ds_fb );
     CONV2D_SUBCASE( case3, input_ds_hb, weight_ds_hb );
@@ -244,9 +243,9 @@ TEST_CASE("conv2d(case3)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case3, input_fs_hb, weight_cs_hb );
     CONV2D_SUBCASE( case3, input_fs_db, weight_cs_db );
 
-    // CONV2D_SUBCASE( case3, input_hs_fb, weight_cs_fb );
-    // CONV2D_SUBCASE( case3, input_hs_hb, weight_cs_hb );
-    // CONV2D_SUBCASE( case3, input_hs_db, weight_cs_db );
+    CONV2D_SUBCASE( case3, input_hs_fb, weight_cs_fb );
+    CONV2D_SUBCASE( case3, input_hs_hb, weight_cs_hb );
+    CONV2D_SUBCASE( case3, input_hs_db, weight_cs_db );
 
     CONV2D_SUBCASE( case3, input_ds_fb, weight_cs_fb );
     CONV2D_SUBCASE( case3, input_ds_hb, weight_cs_hb );
@@ -256,9 +255,9 @@ TEST_CASE("conv2d(case3)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case3, input_cs_hb, weight_fs_hb );
     CONV2D_SUBCASE( case3, input_cs_db, weight_fs_db );
 
-    // CONV2D_SUBCASE( case3, input_hs_fb, weight_fs_fb );
-    // CONV2D_SUBCASE( case3, input_hs_hb, weight_fs_hb );
-    // CONV2D_SUBCASE( case3, input_hs_db, weight_fs_db );
+    CONV2D_SUBCASE( case3, input_hs_fb, weight_fs_fb );
+    CONV2D_SUBCASE( case3, input_hs_hb, weight_fs_hb );
+    CONV2D_SUBCASE( case3, input_hs_db, weight_fs_db );
 
     CONV2D_SUBCASE( case3, input_ds_fb, weight_fs_fb );
     CONV2D_SUBCASE( case3, input_ds_hb, weight_fs_hb );
@@ -284,9 +283,9 @@ TEST_CASE("conv2d(case3)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case3, input_fs_hb, weight_ds_hb );
     CONV2D_SUBCASE( case3, input_fs_db, weight_ds_db );
 
-    // CONV2D_SUBCASE( case3, input_hs_fb, weight_ds_fb );
-    // CONV2D_SUBCASE( case3, input_hs_hb, weight_ds_hb );
-    // CONV2D_SUBCASE( case3, input_hs_db, weight_ds_db );
+    CONV2D_SUBCASE( case3, input_hs_fb, weight_ds_fb );
+    CONV2D_SUBCASE( case3, input_hs_hb, weight_ds_hb );
+    CONV2D_SUBCASE( case3, input_hs_db, weight_ds_db );
     #endif
 }
 
@@ -316,9 +315,9 @@ TEST_CASE("conv2d(case4)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case4, input_fs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case4, input_fs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case4, input_hs_fb, weight_hs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case4, input_hs_hb, weight_hs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case4, input_hs_db, weight_hs_db, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_fb, weight_hs_fb, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_hb, weight_hs_hb, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_db, weight_hs_db, None, stride_a );
 
     CONV2D_SUBCASE( case4, input_ds_fb, weight_ds_fb, None, stride_a );
     CONV2D_SUBCASE( case4, input_ds_hb, weight_ds_hb, None, stride_a );
@@ -328,9 +327,9 @@ TEST_CASE("conv2d(case4)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case4, input_fs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case4, input_fs_db, weight_cs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case4, input_hs_fb, weight_cs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case4, input_hs_hb, weight_cs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case4, input_hs_db, weight_cs_db, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_fb, weight_cs_fb, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_hb, weight_cs_hb, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_db, weight_cs_db, None, stride_a );
 
     CONV2D_SUBCASE( case4, input_ds_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case4, input_ds_hb, weight_cs_hb, None, stride_a );
@@ -340,9 +339,9 @@ TEST_CASE("conv2d(case4)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case4, input_cs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case4, input_cs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case4, input_hs_fb, weight_fs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case4, input_hs_hb, weight_fs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case4, input_hs_db, weight_fs_db, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_fb, weight_fs_fb, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_hb, weight_fs_hb, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_db, weight_fs_db, None, stride_a );
 
     CONV2D_SUBCASE( case4, input_ds_fb, weight_fs_fb, None, stride_a );
     CONV2D_SUBCASE( case4, input_ds_hb, weight_fs_hb, None, stride_a );
@@ -368,9 +367,9 @@ TEST_CASE("conv2d(case4)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case4, input_fs_hb, weight_ds_hb, None, stride_a );
     CONV2D_SUBCASE( case4, input_fs_db, weight_ds_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case4, input_hs_fb, weight_ds_fb, None, stride_a );
-    // CONV2D_SUBCASE( case4, input_hs_hb, weight_ds_hb, None, stride_a );
-    // CONV2D_SUBCASE( case4, input_hs_db, weight_ds_db, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_fb, weight_ds_fb, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_hb, weight_ds_hb, None, stride_a );
+    CONV2D_SUBCASE( case4, input_hs_db, weight_ds_db, None, stride_a );
     #endif
 }
 
@@ -394,9 +393,9 @@ TEST_CASE("conv2d(case5)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case5, input_fs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case5, input_fs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case5, input_hs_fb, weight_hs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case5, input_hs_hb, weight_hs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case5, input_hs_db, weight_hs_db, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_fb, weight_hs_fb, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_hb, weight_hs_hb, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_db, weight_hs_db, None, stride_a );
 
     CONV2D_SUBCASE( case5, input_ds_fb, weight_ds_fb, None, stride_a );
     CONV2D_SUBCASE( case5, input_ds_hb, weight_ds_hb, None, stride_a );
@@ -406,9 +405,9 @@ TEST_CASE("conv2d(case5)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case5, input_fs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case5, input_fs_db, weight_cs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case5, input_hs_fb, weight_cs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case5, input_hs_hb, weight_cs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case5, input_hs_db, weight_cs_db, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_fb, weight_cs_fb, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_hb, weight_cs_hb, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_db, weight_cs_db, None, stride_a );
 
     CONV2D_SUBCASE( case5, input_ds_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case5, input_ds_hb, weight_cs_hb, None, stride_a );
@@ -418,9 +417,9 @@ TEST_CASE("conv2d(case5)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case5, input_cs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case5, input_cs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case5, input_hs_fb, weight_fs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case5, input_hs_hb, weight_fs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case5, input_hs_db, weight_fs_db, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_fb, weight_fs_fb, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_hb, weight_fs_hb, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_db, weight_fs_db, None, stride_a );
 
     CONV2D_SUBCASE( case5, input_ds_fb, weight_fs_fb, None, stride_a );
     CONV2D_SUBCASE( case5, input_ds_hb, weight_fs_hb, None, stride_a );
@@ -446,9 +445,9 @@ TEST_CASE("conv2d(case5)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case5, input_fs_hb, weight_ds_hb, None, stride_a );
     CONV2D_SUBCASE( case5, input_fs_db, weight_ds_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case5, input_hs_fb, weight_ds_fb, None, stride_a );
-    // CONV2D_SUBCASE( case5, input_hs_hb, weight_ds_hb, None, stride_a );
-    // CONV2D_SUBCASE( case5, input_hs_db, weight_ds_db, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_fb, weight_ds_fb, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_hb, weight_ds_hb, None, stride_a );
+    CONV2D_SUBCASE( case5, input_hs_db, weight_ds_db, None, stride_a );
     #endif
 }
 
@@ -470,9 +469,9 @@ TEST_CASE("conv2d(case6)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case6, input_fs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case6, input_fs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case6, input_hs_fb, weight_hs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case6, input_hs_hb, weight_hs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case6, input_hs_db, weight_hs_db, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_fb, weight_hs_fb, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_hb, weight_hs_hb, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_db, weight_hs_db, None, stride_a );
 
     CONV2D_SUBCASE( case6, input_ds_fb, weight_ds_fb, None, stride_a );
     CONV2D_SUBCASE( case6, input_ds_hb, weight_ds_hb, None, stride_a );
@@ -482,9 +481,9 @@ TEST_CASE("conv2d(case6)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case6, input_fs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case6, input_fs_db, weight_cs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case6, input_hs_fb, weight_cs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case6, input_hs_hb, weight_cs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case6, input_hs_db, weight_cs_db, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_fb, weight_cs_fb, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_hb, weight_cs_hb, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_db, weight_cs_db, None, stride_a );
 
     CONV2D_SUBCASE( case6, input_ds_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case6, input_ds_hb, weight_cs_hb, None, stride_a );
@@ -494,9 +493,9 @@ TEST_CASE("conv2d(case6)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case6, input_cs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case6, input_cs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case6, input_hs_fb, weight_fs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case6, input_hs_hb, weight_fs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case6, input_hs_db, weight_fs_db, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_fb, weight_fs_fb, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_hb, weight_fs_hb, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_db, weight_fs_db, None, stride_a );
 
     CONV2D_SUBCASE( case6, input_ds_fb, weight_fs_fb, None, stride_a );
     CONV2D_SUBCASE( case6, input_ds_hb, weight_fs_hb, None, stride_a );
@@ -522,9 +521,9 @@ TEST_CASE("conv2d(case6)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case6, input_fs_hb, weight_ds_hb, None, stride_a );
     CONV2D_SUBCASE( case6, input_fs_db, weight_ds_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case6, input_hs_fb, weight_ds_fb, None, stride_a );
-    // CONV2D_SUBCASE( case6, input_hs_hb, weight_ds_hb, None, stride_a );
-    // CONV2D_SUBCASE( case6, input_hs_db, weight_ds_db, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_fb, weight_ds_fb, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_hb, weight_ds_hb, None, stride_a );
+    CONV2D_SUBCASE( case6, input_hs_db, weight_ds_db, None, stride_a );
     #endif
 }
 
@@ -546,9 +545,9 @@ TEST_CASE("conv2d(case7)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case7, input_fs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case7, input_fs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case7, input_hs_fb, weight_hs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case7, input_hs_hb, weight_hs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case7, input_hs_db, weight_hs_db, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_fb, weight_hs_fb, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_hb, weight_hs_hb, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_db, weight_hs_db, None, stride_a );
 
     CONV2D_SUBCASE( case7, input_ds_fb, weight_ds_fb, None, stride_a );
     CONV2D_SUBCASE( case7, input_ds_hb, weight_ds_hb, None, stride_a );
@@ -558,9 +557,9 @@ TEST_CASE("conv2d(case7)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case7, input_fs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case7, input_fs_db, weight_cs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case7, input_hs_fb, weight_cs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case7, input_hs_hb, weight_cs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case7, input_hs_db, weight_cs_db, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_fb, weight_cs_fb, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_hb, weight_cs_hb, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_db, weight_cs_db, None, stride_a );
 
     CONV2D_SUBCASE( case7, input_ds_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case7, input_ds_hb, weight_cs_hb, None, stride_a );
@@ -570,9 +569,9 @@ TEST_CASE("conv2d(case7)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case7, input_cs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case7, input_cs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case7, input_hs_fb, weight_fs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case7, input_hs_hb, weight_fs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case7, input_hs_db, weight_fs_db, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_fb, weight_fs_fb, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_hb, weight_fs_hb, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_db, weight_fs_db, None, stride_a );
 
     CONV2D_SUBCASE( case7, input_ds_fb, weight_fs_fb, None, stride_a );
     CONV2D_SUBCASE( case7, input_ds_hb, weight_fs_hb, None, stride_a );
@@ -598,9 +597,9 @@ TEST_CASE("conv2d(case7)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case7, input_fs_hb, weight_ds_hb, None, stride_a );
     CONV2D_SUBCASE( case7, input_fs_db, weight_ds_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case7, input_hs_fb, weight_ds_fb, None, stride_a );
-    // CONV2D_SUBCASE( case7, input_hs_hb, weight_ds_hb, None, stride_a );
-    // CONV2D_SUBCASE( case7, input_hs_db, weight_ds_db, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_fb, weight_ds_fb, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_hb, weight_ds_hb, None, stride_a );
+    CONV2D_SUBCASE( case7, input_hs_db, weight_ds_db, None, stride_a );
     #endif
 }
 
@@ -633,9 +632,9 @@ TEST_CASE("conv2d(case9)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case9, input_fs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case9, input_fs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case9, input_hs_fb, weight_hs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case9, input_hs_hb, weight_hs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case9, input_hs_db, weight_hs_db, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_fb, weight_hs_fb, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_hb, weight_hs_hb, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_db, weight_hs_db, None, stride_a );
 
     CONV2D_SUBCASE( case9, input_ds_fb, weight_ds_fb, None, stride_a );
     CONV2D_SUBCASE( case9, input_ds_hb, weight_ds_hb, None, stride_a );
@@ -645,9 +644,9 @@ TEST_CASE("conv2d(case9)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case9, input_fs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case9, input_fs_db, weight_cs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case9, input_hs_fb, weight_cs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case9, input_hs_hb, weight_cs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case9, input_hs_db, weight_cs_db, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_fb, weight_cs_fb, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_hb, weight_cs_hb, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_db, weight_cs_db, None, stride_a );
 
     CONV2D_SUBCASE( case9, input_ds_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case9, input_ds_hb, weight_cs_hb, None, stride_a );
@@ -657,9 +656,9 @@ TEST_CASE("conv2d(case9)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case9, input_cs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case9, input_cs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case9, input_hs_fb, weight_fs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case9, input_hs_hb, weight_fs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case9, input_hs_db, weight_fs_db, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_fb, weight_fs_fb, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_hb, weight_fs_hb, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_db, weight_fs_db, None, stride_a );
 
     CONV2D_SUBCASE( case9, input_ds_fb, weight_fs_fb, None, stride_a );
     CONV2D_SUBCASE( case9, input_ds_hb, weight_fs_hb, None, stride_a );
@@ -685,9 +684,9 @@ TEST_CASE("conv2d(case9)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case9, input_fs_hb, weight_ds_hb, None, stride_a );
     CONV2D_SUBCASE( case9, input_fs_db, weight_ds_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case9, input_hs_fb, weight_ds_fb, None, stride_a );
-    // CONV2D_SUBCASE( case9, input_hs_hb, weight_ds_hb, None, stride_a );
-    // CONV2D_SUBCASE( case9, input_hs_db, weight_ds_db, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_fb, weight_ds_fb, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_hb, weight_ds_hb, None, stride_a );
+    CONV2D_SUBCASE( case9, input_hs_db, weight_ds_db, None, stride_a );
     #endif
 }
 
@@ -709,9 +708,9 @@ TEST_CASE("conv2d(case10)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case10, input_fs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case10, input_fs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case10, input_hs_fb, weight_hs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case10, input_hs_hb, weight_hs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case10, input_hs_db, weight_hs_db, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_fb, weight_hs_fb, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_hb, weight_hs_hb, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_db, weight_hs_db, None, stride_a );
 
     CONV2D_SUBCASE( case10, input_ds_fb, weight_ds_fb, None, stride_a );
     CONV2D_SUBCASE( case10, input_ds_hb, weight_ds_hb, None, stride_a );
@@ -721,9 +720,9 @@ TEST_CASE("conv2d(case10)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case10, input_fs_hb, weight_cs_hb, None, stride_a );
     CONV2D_SUBCASE( case10, input_fs_db, weight_cs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case10, input_hs_fb, weight_cs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case10, input_hs_hb, weight_cs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case10, input_hs_db, weight_cs_db, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_fb, weight_cs_fb, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_hb, weight_cs_hb, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_db, weight_cs_db, None, stride_a );
 
     CONV2D_SUBCASE( case10, input_ds_fb, weight_cs_fb, None, stride_a );
     CONV2D_SUBCASE( case10, input_ds_hb, weight_cs_hb, None, stride_a );
@@ -733,9 +732,9 @@ TEST_CASE("conv2d(case10)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case10, input_cs_hb, weight_fs_hb, None, stride_a );
     CONV2D_SUBCASE( case10, input_cs_db, weight_fs_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case10, input_hs_fb, weight_fs_fb, None, stride_a );
-    // CONV2D_SUBCASE( case10, input_hs_hb, weight_fs_hb, None, stride_a );
-    // CONV2D_SUBCASE( case10, input_hs_db, weight_fs_db, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_fb, weight_fs_fb, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_hb, weight_fs_hb, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_db, weight_fs_db, None, stride_a );
 
     CONV2D_SUBCASE( case10, input_ds_fb, weight_fs_fb, None, stride_a );
     CONV2D_SUBCASE( case10, input_ds_hb, weight_fs_hb, None, stride_a );
@@ -761,9 +760,9 @@ TEST_CASE("conv2d(case10)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case10, input_fs_hb, weight_ds_hb, None, stride_a );
     CONV2D_SUBCASE( case10, input_fs_db, weight_ds_db, None, stride_a );
 
-    // CONV2D_SUBCASE( case10, input_hs_fb, weight_ds_fb, None, stride_a );
-    // CONV2D_SUBCASE( case10, input_hs_hb, weight_ds_hb, None, stride_a );
-    // CONV2D_SUBCASE( case10, input_hs_db, weight_ds_db, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_fb, weight_ds_fb, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_hb, weight_ds_hb, None, stride_a );
+    CONV2D_SUBCASE( case10, input_hs_db, weight_ds_db, None, stride_a );
     #endif
 }
 
@@ -787,9 +786,9 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case11, input_fs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_fs_db, weight_fs_db, None, stride_a, padding_a );
 
-    // CONV2D_SUBCASE( case11, input_hs_fb, weight_hs_fb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case11, input_hs_hb, weight_hs_hb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case11, input_hs_db, weight_hs_db, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_fb, weight_hs_fb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_hb, weight_hs_hb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_db, weight_hs_db, None, stride_a, padding_a );
 
     CONV2D_SUBCASE( case11, input_ds_fb, weight_ds_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_hb, weight_ds_hb, None, stride_a, padding_a );
@@ -799,9 +798,9 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case11, input_fs_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_fs_db, weight_cs_db, None, stride_a, padding_a );
 
-    // CONV2D_SUBCASE( case11, input_hs_fb, weight_cs_fb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case11, input_hs_hb, weight_cs_hb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case11, input_hs_db, weight_cs_db, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_fb, weight_cs_fb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_hb, weight_cs_hb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_db, weight_cs_db, None, stride_a, padding_a );
 
     CONV2D_SUBCASE( case11, input_ds_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_hb, weight_cs_hb, None, stride_a, padding_a );
@@ -811,9 +810,9 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case11, input_cs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_cs_db, weight_fs_db, None, stride_a, padding_a );
 
-    // CONV2D_SUBCASE( case11, input_hs_fb, weight_fs_fb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case11, input_hs_hb, weight_fs_hb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case11, input_hs_db, weight_fs_db, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_fb, weight_fs_fb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_hb, weight_fs_hb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_db, weight_fs_db, None, stride_a, padding_a );
 
     CONV2D_SUBCASE( case11, input_ds_fb, weight_fs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_hb, weight_fs_hb, None, stride_a, padding_a );
@@ -839,9 +838,9 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case11, input_fs_hb, weight_ds_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_fs_db, weight_ds_db, None, stride_a, padding_a );
 
-    // CONV2D_SUBCASE( case11, input_hs_fb, weight_ds_fb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case11, input_hs_hb, weight_ds_hb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case11, input_hs_db, weight_ds_db, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_fb, weight_ds_fb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_hb, weight_ds_hb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case11, input_hs_db, weight_ds_db, None, stride_a, padding_a );
     #endif
 }
 
@@ -865,9 +864,9 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case12, input_fs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_fs_db, weight_fs_db, None, stride_a, padding_a );
 
-    // CONV2D_SUBCASE( case12, input_hs_fb, weight_hs_fb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case12, input_hs_hb, weight_hs_hb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case12, input_hs_db, weight_hs_db, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_fb, weight_hs_fb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_hb, weight_hs_hb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_db, weight_hs_db, None, stride_a, padding_a );
 
     CONV2D_SUBCASE( case12, input_ds_fb, weight_ds_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_hb, weight_ds_hb, None, stride_a, padding_a );
@@ -877,9 +876,9 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case12, input_fs_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_fs_db, weight_cs_db, None, stride_a, padding_a );
 
-    // CONV2D_SUBCASE( case12, input_hs_fb, weight_cs_fb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case12, input_hs_hb, weight_cs_hb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case12, input_hs_db, weight_cs_db, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_fb, weight_cs_fb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_hb, weight_cs_hb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_db, weight_cs_db, None, stride_a, padding_a );
 
     CONV2D_SUBCASE( case12, input_ds_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_hb, weight_cs_hb, None, stride_a, padding_a );
@@ -889,9 +888,9 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case12, input_cs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_cs_db, weight_fs_db, None, stride_a, padding_a );
 
-    // CONV2D_SUBCASE( case12, input_hs_fb, weight_fs_fb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case12, input_hs_hb, weight_fs_hb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case12, input_hs_db, weight_fs_db, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_fb, weight_fs_fb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_hb, weight_fs_hb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_db, weight_fs_db, None, stride_a, padding_a );
 
     CONV2D_SUBCASE( case12, input_ds_fb, weight_fs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_hb, weight_fs_hb, None, stride_a, padding_a );
@@ -917,9 +916,9 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case12, input_fs_hb, weight_ds_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_fs_db, weight_ds_db, None, stride_a, padding_a );
 
-    // CONV2D_SUBCASE( case12, input_hs_fb, weight_ds_fb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case12, input_hs_hb, weight_ds_hb, None, stride_a, padding_a );
-    // CONV2D_SUBCASE( case12, input_hs_db, weight_ds_db, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_fb, weight_ds_fb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_hb, weight_ds_hb, None, stride_a, padding_a );
+    CONV2D_SUBCASE( case12, input_hs_db, weight_ds_db, None, stride_a, padding_a );
     #endif
 }
 
@@ -956,9 +955,9 @@ TEST_CASE("conv2d(case14)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case14, input_fs_hb, weight_fs_hb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_fs_db, weight_fs_db, None, stride, padding );
 
-    // CONV2D_SUBCASE( case14, input_hs_fb, weight_hs_fb, None, stride, padding );
-    // CONV2D_SUBCASE( case14, input_hs_hb, weight_hs_hb, None, stride, padding );
-    // CONV2D_SUBCASE( case14, input_hs_db, weight_hs_db, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_fb, weight_hs_fb, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_hb, weight_hs_hb, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_db, weight_hs_db, None, stride, padding );
 
     CONV2D_SUBCASE( case14, input_ds_fb, weight_ds_fb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_ds_hb, weight_ds_hb, None, stride, padding );
@@ -968,9 +967,9 @@ TEST_CASE("conv2d(case14)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case14, input_fs_hb, weight_cs_hb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_fs_db, weight_cs_db, None, stride, padding );
 
-    // CONV2D_SUBCASE( case14, input_hs_fb, weight_cs_fb, None, stride, padding );
-    // CONV2D_SUBCASE( case14, input_hs_hb, weight_cs_hb, None, stride, padding );
-    // CONV2D_SUBCASE( case14, input_hs_db, weight_cs_db, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_fb, weight_cs_fb, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_hb, weight_cs_hb, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_db, weight_cs_db, None, stride, padding );
 
     CONV2D_SUBCASE( case14, input_ds_fb, weight_cs_fb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_ds_hb, weight_cs_hb, None, stride, padding );
@@ -980,9 +979,9 @@ TEST_CASE("conv2d(case14)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case14, input_cs_hb, weight_fs_hb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_cs_db, weight_fs_db, None, stride, padding );
 
-    // CONV2D_SUBCASE( case14, input_hs_fb, weight_fs_fb, None, stride, padding );
-    // CONV2D_SUBCASE( case14, input_hs_hb, weight_fs_hb, None, stride, padding );
-    // CONV2D_SUBCASE( case14, input_hs_db, weight_fs_db, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_fb, weight_fs_fb, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_hb, weight_fs_hb, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_db, weight_fs_db, None, stride, padding );
 
     CONV2D_SUBCASE( case14, input_ds_fb, weight_fs_fb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_ds_hb, weight_fs_hb, None, stride, padding );
@@ -1008,9 +1007,9 @@ TEST_CASE("conv2d(case14)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case14, input_fs_hb, weight_ds_hb, None, stride, padding );
     CONV2D_SUBCASE( case14, input_fs_db, weight_ds_db, None, stride, padding );
 
-    // CONV2D_SUBCASE( case14, input_hs_fb, weight_ds_fb, None, stride, padding );
-    // CONV2D_SUBCASE( case14, input_hs_hb, weight_ds_hb, None, stride, padding );
-    // CONV2D_SUBCASE( case14, input_hs_db, weight_ds_db, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_fb, weight_ds_fb, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_hb, weight_ds_hb, None, stride, padding );
+    CONV2D_SUBCASE( case14, input_hs_db, weight_ds_db, None, stride, padding );
     #endif
 }
 
@@ -1034,9 +1033,9 @@ TEST_CASE("conv2d(case15)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case15, input_fs_hb, weight_fs_hb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_fs_db, weight_fs_db, None, stride, padding );
 
-    // CONV2D_SUBCASE( case15, input_hs_fb, weight_hs_fb, None, stride, padding );
-    // CONV2D_SUBCASE( case15, input_hs_hb, weight_hs_hb, None, stride, padding );
-    // CONV2D_SUBCASE( case15, input_hs_db, weight_hs_db, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_fb, weight_hs_fb, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_hb, weight_hs_hb, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_db, weight_hs_db, None, stride, padding );
 
     CONV2D_SUBCASE( case15, input_ds_fb, weight_ds_fb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_ds_hb, weight_ds_hb, None, stride, padding );
@@ -1046,9 +1045,9 @@ TEST_CASE("conv2d(case15)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case15, input_fs_hb, weight_cs_hb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_fs_db, weight_cs_db, None, stride, padding );
 
-    // CONV2D_SUBCASE( case15, input_hs_fb, weight_cs_fb, None, stride, padding );
-    // CONV2D_SUBCASE( case15, input_hs_hb, weight_cs_hb, None, stride, padding );
-    // CONV2D_SUBCASE( case15, input_hs_db, weight_cs_db, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_fb, weight_cs_fb, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_hb, weight_cs_hb, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_db, weight_cs_db, None, stride, padding );
 
     CONV2D_SUBCASE( case15, input_ds_fb, weight_cs_fb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_ds_hb, weight_cs_hb, None, stride, padding );
@@ -1058,9 +1057,9 @@ TEST_CASE("conv2d(case15)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case15, input_cs_hb, weight_fs_hb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_cs_db, weight_fs_db, None, stride, padding );
 
-    // CONV2D_SUBCASE( case15, input_hs_fb, weight_fs_fb, None, stride, padding );
-    // CONV2D_SUBCASE( case15, input_hs_hb, weight_fs_hb, None, stride, padding );
-    // CONV2D_SUBCASE( case15, input_hs_db, weight_fs_db, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_fb, weight_fs_fb, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_hb, weight_fs_hb, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_db, weight_fs_db, None, stride, padding );
 
     CONV2D_SUBCASE( case15, input_ds_fb, weight_fs_fb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_ds_hb, weight_fs_hb, None, stride, padding );
@@ -1086,9 +1085,9 @@ TEST_CASE("conv2d(case15)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case15, input_fs_hb, weight_ds_hb, None, stride, padding );
     CONV2D_SUBCASE( case15, input_fs_db, weight_ds_db, None, stride, padding );
 
-    // CONV2D_SUBCASE( case15, input_hs_fb, weight_ds_fb, None, stride, padding );
-    // CONV2D_SUBCASE( case15, input_hs_hb, weight_ds_hb, None, stride, padding );
-    // CONV2D_SUBCASE( case15, input_hs_db, weight_ds_db, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_fb, weight_ds_fb, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_hb, weight_ds_hb, None, stride, padding );
+    CONV2D_SUBCASE( case15, input_hs_db, weight_ds_db, None, stride, padding );
     #endif
 }
 
@@ -1112,9 +1111,9 @@ TEST_CASE("conv2d(case16)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case16, input_fs_hb, weight_fs_hb, bias_fs_hb, stride, padding );
     CONV2D_SUBCASE( case16, input_fs_db, weight_fs_db, bias_fs_db, stride, padding );
 
-    // CONV2D_SUBCASE( case16, input_hs_fb, weight_hs_fb, bias_hs_fb, stride, padding );
-    // CONV2D_SUBCASE( case16, input_hs_hb, weight_hs_hb, bias_hs_hb, stride, padding );
-    // CONV2D_SUBCASE( case16, input_hs_db, weight_hs_db, bias_hs_db, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_fb, weight_hs_fb, bias_hs_fb, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_hb, weight_hs_hb, bias_hs_hb, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_db, weight_hs_db, bias_hs_db, stride, padding );
 
     CONV2D_SUBCASE( case16, input_ds_fb, weight_ds_fb, bias_ds_fb, stride, padding );
     CONV2D_SUBCASE( case16, input_ds_hb, weight_ds_hb, bias_ds_hb, stride, padding );
@@ -1124,9 +1123,9 @@ TEST_CASE("conv2d(case16)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case16, input_fs_hb, weight_cs_hb, bias_cs_hb, stride, padding );
     CONV2D_SUBCASE( case16, input_fs_db, weight_cs_db, bias_cs_db, stride, padding );
 
-    // CONV2D_SUBCASE( case16, input_hs_fb, weight_cs_fb, bias_cs_fb, stride, padding );
-    // CONV2D_SUBCASE( case16, input_hs_hb, weight_cs_hb, bias_cs_hb, stride, padding );
-    // CONV2D_SUBCASE( case16, input_hs_db, weight_cs_db, bias_cs_db, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_fb, weight_cs_fb, bias_cs_fb, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_hb, weight_cs_hb, bias_cs_hb, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_db, weight_cs_db, bias_cs_db, stride, padding );
 
     CONV2D_SUBCASE( case16, input_ds_fb, weight_cs_fb, bias_cs_fb, stride, padding );
     CONV2D_SUBCASE( case16, input_ds_hb, weight_cs_hb, bias_cs_hb, stride, padding );
@@ -1136,9 +1135,9 @@ TEST_CASE("conv2d(case16)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case16, input_cs_hb, weight_fs_hb, bias_fs_hb, stride, padding );
     CONV2D_SUBCASE( case16, input_cs_db, weight_fs_db, bias_fs_db, stride, padding );
 
-    // CONV2D_SUBCASE( case16, input_hs_fb, weight_fs_fb, bias_fs_fb, stride, padding );
-    // CONV2D_SUBCASE( case16, input_hs_hb, weight_fs_hb, bias_fs_hb, stride, padding );
-    // CONV2D_SUBCASE( case16, input_hs_db, weight_fs_db, bias_fs_db, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_fb, weight_fs_fb, bias_fs_fb, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_hb, weight_fs_hb, bias_fs_hb, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_db, weight_fs_db, bias_fs_db, stride, padding );
 
     CONV2D_SUBCASE( case16, input_ds_fb, weight_fs_fb, bias_fs_fb, stride, padding );
     CONV2D_SUBCASE( case16, input_ds_hb, weight_fs_hb, bias_fs_hb, stride, padding );
@@ -1164,8 +1163,8 @@ TEST_CASE("conv2d(case16)" * doctest::test_suite("view::conv2d"))
     CONV2D_SUBCASE( case16, input_fs_hb, weight_ds_hb, bias_ds_hb, stride, padding );
     CONV2D_SUBCASE( case16, input_fs_db, weight_ds_db, bias_ds_db, stride, padding );
 
-    // CONV2D_SUBCASE( case16, input_hs_fb, weight_ds_fb, bias_ds_fb, stride, padding );
-    // CONV2D_SUBCASE( case16, input_hs_hb, weight_ds_hb, bias_ds_hb, stride, padding );
-    // CONV2D_SUBCASE( case16, input_hs_db, weight_ds_db, bias_ds_db, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_fb, weight_ds_fb, bias_ds_fb, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_hb, weight_ds_hb, bias_ds_hb, stride, padding );
+    CONV2D_SUBCASE( case16, input_hs_db, weight_ds_db, bias_ds_db, stride, padding );
     #endif
 }

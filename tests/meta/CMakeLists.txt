@@ -70,6 +70,7 @@ set( META_INDEX_TEST_SOURCES
     array/index/gather.cpp
     array/index/insert_index.cpp
     array/index/logical_not.cpp
+    array/index/matmul.cpp
     array/index/nonzero.cpp
     array/index/pooling.cpp
     array/index/remove_dims.cpp
