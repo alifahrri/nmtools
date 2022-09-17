@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_TAKE_ALONG_AXIS_HPP
 #define NMTOOLS_ARRAY_VIEW_TAKE_ALONG_AXIS_HPP
 
+#include "nmtools/meta.hpp"
 #include "nmtools/array/index/take_along_axis.hpp"
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/index/insert_index.hpp"
@@ -12,10 +13,9 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/broadcast_arrays.hpp"
 #include "nmtools/array/utility/apply_resize.hpp"
-#include "nmtools/meta.hpp"
 
-// for detail::split
-#include "nmtools/array/view/matmul.hpp"
+// for index::split
+#include "nmtools/array/index/matmul.hpp"
 
 namespace nmtools::view
 {
@@ -114,8 +114,8 @@ namespace nmtools::view
 
             auto shape_ = b_shape;
             at(shape_,axis) = at(src_shape,axis);
-            const auto [Ni, M_Nk] = detail::split(shape_,axis);
-            const auto [M_, Nk] = detail::split(M_Nk,1_ct);
+            const auto [Ni, M_Nk] = index::split(shape_,axis);
+            const auto [M_, Nk] = index::split(M_Nk,1_ct);
 
             // TODO: support range-for for ndindex
             auto Ni_index = index::ndindex(Ni);
