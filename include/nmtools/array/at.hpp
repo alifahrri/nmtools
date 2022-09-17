@@ -30,6 +30,18 @@ namespace nmtools::impl
                 constexpr auto array = meta::to_value_v<array_t>;
                 // TODO: return constant index if index_type is constant index
                 return at_t<meta::remove_cvref_t<decltype(array)>,index_type>{}(array,i);
+            } else if constexpr (meta::is_tuple_v<array_t> && meta::is_constant_index_v<index_type>) {
+                // NOTE: to properly handle at with constant negative index 
+                constexpr auto index = [&](){
+                    auto value = index_type::value;
+                    auto LEN = meta::len_v<array_t>;
+                    if (value > 0) {
+                        return value;
+                    } else {
+                        return LEN + value;
+                    }
+                }();
+                return nmtools::get<index>(a);
             } else if constexpr (meta::has_at_v<const array_t&,index_type>) {
                 return a.at(i);
             } else if constexpr (meta::has_square_bracket_v<const array_t&,index_type>) {
@@ -45,6 +57,17 @@ namespace nmtools::impl
         {
             if constexpr (meta::has_at_v<array_t&,index_type>) {
                 return a.at(i);
+            } else if constexpr (meta::is_tuple_v<array_t> && meta::is_constant_index_v<index_type>) {
+                constexpr auto index = [&](){
+                    auto value = index_type::value;
+                    auto LEN = meta::len_v<array_t>;
+                    if (value > 0) {
+                        return value;
+                    } else {
+                        return LEN + value;
+                    }
+                }();
+                return nmtools::get<index>(a);
             } else if constexpr (meta::has_square_bracket_v<array_t&,index_type>) {
                 return a[i];
             } else if constexpr (meta::has_bracket_v<array_t&,index_type>) {
@@ -120,17 +143,25 @@ namespace nmtools
     template <typename array_t, typename index_type>
     constexpr decltype(auto) at(const array_t& a, [[maybe_unused]] index_type i)
     {
-        // TODO (wrap std metafunctions): wrap as meta::is_same_v
+        #if 0
         if constexpr (meta::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
             const auto N = len(a);
             const auto index = N - 1;
             return at(a,index);
-        } else if constexpr (meta::is_constant_index_v<index_type>) {
+        } else 
+        #endif
+        if constexpr (meta::is_constant_index_v<index_type>) {
             // assume constant index has static member value
             constexpr auto index = index_type::value;
             if constexpr (index < 0) {
-                const auto N = len(a) + index;
-                return at(a,meta::make_unsigned_t<decltype(N)>{N});
+                constexpr auto LEN = meta::len_v<array_t>;
+                if constexpr (LEN > 0) {
+                    constexpr auto N = LEN + index;
+                    return at(a,meta::ct_v<N>);
+                } else {
+                    const auto N = len(a) + index;
+                    return at(a,meta::make_unsigned_t<decltype(N)>{N});
+                }
             } else {
                 return at<index>(a);
             }
@@ -173,16 +204,25 @@ namespace nmtools
     template <typename array_t, typename index_type>
     constexpr decltype(auto) at(array_t& a, [[maybe_unused]] index_type i)
     {
+        #if 0
         if constexpr (meta::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
             const auto N = len(a);
             const auto index = N - 1;
             return at(a,index);
-        } else if constexpr (meta::is_constant_index_v<index_type>) {
+        } else 
+        #endif
+        if constexpr (meta::is_constant_index_v<index_type>) {
             // assume constant index has static member value
             constexpr auto index = index_type::value;
             if constexpr (index < 0) {
-                const auto N = len(a) + index;
-                return at(a,meta::make_unsigned_t<decltype(N)>{N});
+                constexpr auto LEN = meta::len_v<array_t>;
+                if constexpr (LEN > 0) {
+                    constexpr auto N = LEN + index;
+                    return at(a,meta::ct_v<N>);
+                } else {
+                    const auto N = len(a) + index;
+                    return at(a,meta::make_unsigned_t<decltype(N)>{N});
+                }
             } else {
                 return at<index>(a);
             }
