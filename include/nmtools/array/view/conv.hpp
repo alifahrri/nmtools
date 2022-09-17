@@ -45,13 +45,21 @@ namespace nmtools::view
         constexpr auto shape() const
         {
             // TODO: consider to compute this at initialization, since view doesn't allow change shape anyway
-
             const auto i_shape = detail::shape(input);
             const auto f_shape = detail::shape(weight);
             const auto out_channels = at(f_shape,meta::ct_v<0>);
-            const auto k_width  = at(f_shape,meta::ct_v<-1>);
-            const auto k_height = at(f_shape,meta::ct_v<-2>);
-            const auto kernel_size = nmtools_array{k_width,k_height};
+            const auto kernel_size = [&](){
+                const auto k_width  = at(f_shape,meta::ct_v<-1>);
+                const auto k_height = at(f_shape,meta::ct_v<-2>);
+                if constexpr (meta::is_constant_index_v<decltype(k_width)>
+                    && meta::is_constant_index_v<decltype(k_height)>)
+                {
+                    // prevent array with constant index as value type
+                    return nmtools_tuple{k_width,k_height};
+                } else {
+                    return nmtools_array{k_width,k_height};   
+                }
+            }();
 
             return index::shape_conv2d(i_shape,out_channels,kernel_size,stride,None,dilation);
         } // shape
@@ -70,7 +78,18 @@ namespace nmtools::view
             const auto f_shape = detail::shape(weight);
             const auto k_width  = at(f_shape,meta::ct_v<-1>);
             const auto k_height = at(f_shape,meta::ct_v<-2>);
-            const auto kernel_size = nmtools_array{k_width,k_height};
+            const auto kernel_size = [&](){
+                const auto k_width  = at(f_shape,meta::ct_v<-1>);
+                const auto k_height = at(f_shape,meta::ct_v<-2>);
+                if constexpr (meta::is_constant_index_v<decltype(k_width)>
+                    && meta::is_constant_index_v<decltype(k_height)>)
+                {
+                    // prevent array with constant index as value type
+                    return nmtools_tuple{k_width,k_height};
+                } else {
+                    return nmtools_array{k_width,k_height};   
+                }
+            }();
             // This controls the layout (CHW or HWC)
             constexpr auto ch_idx  = meta::ct_v<-3>;
             // TODO: generalize to handle arbitrary "channel" axis
