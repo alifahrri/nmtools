@@ -147,7 +147,15 @@ namespace nmtools::utils
                 || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>);
             auto is_index_constant = meta::is_index_array_v<t1> && meta::is_index_array_v<t2>;
             auto element_is_integer = meta::is_integer_v<t1_t> && meta::is_integer_v<t2_t>;
-            return (is_num_or_array && element_is_integer) || is_integer || is_index_constant || is_none || is_ellipsis;
+            auto is_slice = meta::is_slice_index_v<t1> && meta::is_slice_index_v<t2>;
+            auto is_slice_array = meta::is_slice_index_array_v<t1> && meta::is_slice_index_array_v<t2>;
+            return (is_num_or_array && element_is_integer)
+                || is_integer 
+                || is_index_constant 
+                || is_none 
+                || is_ellipsis 
+                || is_slice 
+                || is_slice_array;
         } // constrained(T1,T2)
 
         /**
@@ -401,6 +409,18 @@ namespace nmtools::utils
                     }
                     return equal;
                 }
+            }
+            else if constexpr (meta::is_slice_index_array_v<T> && meta::is_slice_index_array_v<U>) {
+                auto n_left  = nmtools::len(t);
+                auto n_right = nmtools::len(u);
+                auto equal = n_left == n_right;
+                for (size_t i=0; i<nmtools::len(t) && equal; i++) {
+                    equal = equal && isequal(at(t,i),at(u,i));
+                }
+                return equal;
+            }
+            else if constexpr (meta::is_slice_index_v<T> && meta::is_slice_index_v<U>) {
+                return meta::is_same_v<T,U>;
             }
             // assume both T and U is ndarray
             else {

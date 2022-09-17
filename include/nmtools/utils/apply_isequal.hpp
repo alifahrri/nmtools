@@ -85,6 +85,24 @@ namespace nmtools::utils
                 }
             });
             return equal;
+        } else if constexpr (meta::is_tuple_v<left_t>) {
+            auto equal = len(left) == len(right);
+            constexpr auto N = meta::len_v<left_t>;
+            meta::template_for<N>([&](auto i){
+                if (equal) {
+                    equal = equal && apply_isequal(at(left,i),at(right,i));
+                }
+            });
+            return equal;
+        } else if constexpr (meta::is_tuple_v<right_t>) {
+            auto equal = len(left) == len(right);
+            constexpr auto N = meta::len_v<right_t>;
+            meta::template_for<N>([&](auto i){
+                if (equal) {
+                    equal = equal && apply_isequal(at(left,i),at(right,i));
+                }
+            });
+            return equal;
         } else {
             // fallback to isequal
             return isequal(left,right);

@@ -28,6 +28,12 @@ namespace nmtools::meta
     template <template<typename...>typename tuple>
     struct is_slice_index<tuple<none_t,none_t,none_t>> : true_type {};
 
+    template <typename T>
+    struct is_slice_index<const T> : is_slice_index<T> {};
+
+    template <typename T>
+    struct is_slice_index<T&> : is_slice_index<T> {};
+
     /**
      * @brief Helper inline variable to check if type T is slicing index.
      * 
