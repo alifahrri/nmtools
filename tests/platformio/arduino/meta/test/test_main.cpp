@@ -251,7 +251,7 @@ NM_TEST_SUBCASE(shape_matmul, case1)
     {
         using lhs_t = int[2];
         using rhs_t = int[2];
-        using result_t = meta::resolve_optype_t<view::detail::shape_matmul_t,lhs_t,rhs_t>;
+        using result_t = meta::resolve_optype_t<nmtools::index::shape_matmul_t,lhs_t,rhs_t>;
         using expect_t = utl::array<int,2>;
         // to allow debugging type
         constexpr auto is_same = meta::is_same<result_t,expect_t>{};
