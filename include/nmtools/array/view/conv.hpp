@@ -76,8 +76,6 @@ namespace nmtools::view
             // TODO: consider to compute this at initialization, since view doesn't allow change shape anyway
             const auto i_shape = detail::shape(input);
             const auto f_shape = detail::shape(weight);
-            const auto k_width  = at(f_shape,meta::ct_v<-1>);
-            const auto k_height = at(f_shape,meta::ct_v<-2>);
             const auto kernel_size = [&](){
                 const auto k_width  = at(f_shape,meta::ct_v<-1>);
                 const auto k_height = at(f_shape,meta::ct_v<-2>);
