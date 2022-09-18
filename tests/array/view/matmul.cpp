@@ -21,6 +21,9 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_
 #define RUN_matmul_impl(...) \
 nmtools::view::matmul(__VA_ARGS__);
 
+namespace nm = nmtools;
+namespace meta = nm::meta;
+
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
