@@ -6,6 +6,7 @@
 
 NMTOOLS_TESTING_DECLARE_CASE(array, slice)
 {
+    using nmtools::array::static_vector;
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
@@ -28,8 +29,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = dslices_t{(slice_t){None,2},(slice_t){None,1},(slice_t){None,2}};
         inline auto aslices = aslices_t{{{None,2},{None,1},{None,2}}};
+        inline auto hslices = hslices_t{{{None,2},{None,1},{None,2}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -62,8 +65,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<none_t,none_t>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = dslices_t{slice0,slice1,slice2};
         inline auto aslices = aslices_t{slice0,slice1,slice2};
+        inline auto hslices = hslices_t{{slice0,slice1,slice2}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -103,8 +108,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<int,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = dslices_t{(slice_t){1,2},(slice_t){0,1},(slice_t){0,2}};
         inline auto aslices = aslices_t{{{1,2},{0,1},{0,2}}};
+        inline auto hslices = hslices_t{{{1,2},{0,1},{0,2}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -134,7 +141,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
         inline auto dslices = dslices_t{(slice_t){1,3},(slice_t){0,1},(slice_t){0,2}};
-        inline auto aslices = aslices_t{{{1,3},{0,1},{0,2}}};
+        inline auto aslices = aslices_t{{(slice_t){1,3},(slice_t){0,1},(slice_t){0,2}}};
+        using hslice_t  = nmtools_either<nmtools_tuple<int,int>,nmtools_tuple<none_t,none_t>>;
+        using hslices_t = static_vector<hslice_t,3>;
+        inline auto hslices = hslices_t{{(hslice_t)slice0,(hslice_t)slice1,(hslice_t)slice2}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
@@ -162,7 +172,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         inline auto slices = nmtools_tuple{slice0,slice1,slice2};
         using slice_t  = nmtools_tuple<none_t,int>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = slices_t{(slice_t){None,2},(slice_t){None,2},(slice_t){None,-1}};
+        inline auto aslices = aslices_t{(slice_t){None,2},(slice_t){None,2},(slice_t){None,-1}};
+        inline auto hslices = hslices_t{{(slice_t){None,2},(slice_t){None,2},(slice_t){None,-1}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
@@ -202,8 +216,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t   = nmtools_either<decltype(slice0),rhs_slice_t>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = dslices_t{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2};
         inline auto aslices = aslices_t{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
@@ -236,8 +252,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t   = nmtools_either<decltype(slice0),rhs_slice_t>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = dslices_t{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2};
         inline auto aslices = aslices_t{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
@@ -269,8 +287,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<none_t,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = dslices_t{(slice_t){None,None,-1},(slice_t){None,None,1},(slice_t){None,None,1}};
         inline auto aslices = aslices_t{{{None,None,-1},{None,None,1},{None,None,1}}};
+        inline auto hslices = hslices_t{{{None,None,-1},{None,None,1},{None,None,1}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
@@ -310,8 +330,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<none_t,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = dslices_t{(slice_t){None,None,1},(slice_t){None,None,-1},(slice_t){None,None,1}};
         inline auto aslices = aslices_t{{{None,None,1},{None,None,-1},{None,None,1}}};
+        inline auto hslices = hslices_t{{{None,None,1},{None,None,-1},{None,None,1}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
@@ -351,8 +373,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<none_t,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = dslices_t{(slice_t){None,None,-1},(slice_t){None,None,1},(slice_t){None,None,-1}};
         inline auto aslices = aslices_t{{{None,None,-1},{None,None,1},{None,None,-1}}};
+        inline auto hslices = hslices_t{{{None,None,-1},{None,None,1},{None,None,-1}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
@@ -385,8 +409,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<none_t,none_t,size_t>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){None,None,2},(slice_t){None,None,1}};
         inline auto aslices = aslices_t{{{None,None,2},{None,None,1}}};
+        inline auto hslices = hslices_t{{{None,None,2},{None,None,1}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
@@ -411,8 +437,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<none_t,int,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){None,4,2},(slice_t){None,2,1}};
         inline auto aslices = aslices_t{{{None,4,2},{None,2,1}}};
+        inline auto hslices = hslices_t{{{None,4,2},{None,2,1}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
@@ -437,8 +465,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<int,none_t,size_t>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){0,None,2},(slice_t){1,None,1}};
         inline auto aslices = aslices_t{{{0,None,2},{1,None,1}}};
+        inline auto hslices = hslices_t{{{0,None,2},{1,None,1}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13)
@@ -463,8 +493,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<size_t,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){0,None,2},(slice_t){1,None,2}};
         inline auto aslices = aslices_t{{{0,None,2},{1,None,2}}};
+        inline auto hslices = hslices_t{{{0,None,2},{1,None,2}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case14)
@@ -489,8 +521,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<size_t,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){3,None,-2},(slice_t){1,None,-2}};
         inline auto aslices = aslices_t{{{3,None,-2},{1,None,-2}}};
+        inline auto hslices = hslices_t{{{3,None,-2},{1,None,-2}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case15)
@@ -515,8 +549,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<none_t,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){None,None,-2},(slice_t){None,None,-2}};
         inline auto aslices = aslices_t{{{None,None,-2},{None,None,-2}}};
+        inline auto hslices = hslices_t{{{None,None,-2},{None,None,-2}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case16)
@@ -541,8 +577,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<size_t,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){3,None,2},(slice_t){1,None,-2}};
         inline auto aslices = aslices_t{{{3,None,2},{1,None,-2}}};
+        inline auto hslices = hslices_t{{{3,None,2},{1,None,-2}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case17)
@@ -564,8 +602,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<int,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){1,None,-2},(slice_t){1,None,-2}};
         inline auto aslices = aslices_t{{{1,None,-2},{1,None,-2}}};
+        inline auto hslices = hslices_t{{{1,None,-2},{1,None,-2}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case18)
@@ -587,8 +627,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<int,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){2,None,-2},(slice_t){1,None,-2}};
         inline auto aslices = aslices_t{{{2,None,-2},{1,None,-2}}};
+        inline auto hslices = hslices_t{{{2,None,-2},{1,None,-2}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case19)
@@ -613,8 +655,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_tuple<int,none_t,int>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{(slice_t){0,None,1},(slice_t){1,None,4}};
         inline auto aslices = aslices_t{{{0,None,1},{1,None,4}}};
+        inline auto hslices = hslices_t{{{0,None,1},{1,None,4}}};
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case20)
@@ -648,8 +692,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t>>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{slice0,slice1};
         inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case21)
     {
@@ -688,8 +734,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{slice0,slice1};
         inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case22)
     {
@@ -728,8 +776,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{slice0,slice1};
         inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case23)
     {
@@ -768,8 +818,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{slice0,slice1};
         inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case24)
     {
@@ -803,8 +855,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{slice0,slice1};
         inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case25)
     {
@@ -836,8 +890,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using dslices_t = nmtools_list<slice_t>;
         using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = dslices_t{slice0,slice1};
         inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case26)
     {
@@ -867,7 +923,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = slices_t{slice0,slice1,slice2};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case27)
     {
@@ -897,7 +957,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = slices_t{slice0,slice1};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case28)
     {
@@ -935,7 +999,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = slices_t{slice0,slice1,slice2};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case29)
     {
@@ -969,7 +1037,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = slices_t{slice0,slice1,slice2};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case30)
     {
@@ -1052,7 +1124,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = slices_t{slice0,slice1,slice2};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case33)
     {
@@ -1082,7 +1158,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,2>;
+        using hslices_t = static_vector<slice_t,2>;
         inline auto dslices = slices_t{slice0,slice1};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case34)
     {
@@ -1120,7 +1200,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = slices_t{slice0,slice1,slice2};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case35)
     {
@@ -1154,7 +1238,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         NMTOOLS_CAST_ARRAYS(array)
         using slice_t  = nmtools_either<decltype(slice0),decltype(slice1)>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,3>;
+        using hslices_t = static_vector<slice_t,3>;
         inline auto dslices = slices_t{slice0,slice1,slice2};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)slice1,(slice_t)slice2}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case36)
     {
@@ -1189,7 +1277,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using slice1_t = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t,int>>;
         using slice_t  = nmtools_either<int,slice1_t>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,4>;
+        using hslices_t = static_vector<slice_t,4>;
         inline auto dslices = slices_t{(slice_t)slice0,(slice_t)(slice1_t)slice1,(slice_t)(slice1_t)slice2,(slice_t)slice3};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)(slice1_t)slice1,(slice_t)(slice1_t)slice2,(slice_t)slice3}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)(slice1_t)slice1,(slice_t)(slice1_t)slice2,(slice_t)slice3}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case37)
     {
@@ -1224,7 +1316,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using rhs_slice_t = nmtools_either<ellipsis_t,nmtools_tuple<none_t,none_t,int>>;
         using slice_t  = nmtools_either<int,rhs_slice_t>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,4>;
+        using hslices_t = static_vector<slice_t,4>;
         inline auto dslices = slices_t{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case38)
     {
@@ -1259,7 +1355,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using rhs_slice_t = nmtools_either<ellipsis_t,nmtools_array<int,3>>;
         using slice_t  = nmtools_either<int,rhs_slice_t>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,4>;
+        using hslices_t = static_vector<slice_t,4>;
         inline auto dslices = slices_t{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case39)
     {
@@ -1294,7 +1394,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, slice)
         using rhs_slice_t = nmtools_either<ellipsis_t,nmtools_array<int,3>>;
         using slice_t  = nmtools_either<int,rhs_slice_t>;
         using slices_t = nmtools_list<slice_t>;
+        using aslices_t = nmtools_array<slice_t,4>;
+        using hslices_t = static_vector<slice_t,4>;
         inline auto dslices = slices_t{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3};
+        inline auto aslices = aslices_t{{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3}};
+        inline auto hslices = hslices_t{{(slice_t)slice0,(slice_t)(rhs_slice_t)slice1,(slice_t)(rhs_slice_t)slice2,(slice_t)slice3}};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case40)
     {

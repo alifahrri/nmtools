@@ -83,6 +83,7 @@ set(ARRAY_INDEX_TEST_SOURCES
     index/gather.cpp
     index/insert_index.cpp
     index/logical_not.cpp
+    index/matmul.cpp
     index/moveaxis.cpp
     index/ndenumerate.cpp
     index/ndindex.cpp

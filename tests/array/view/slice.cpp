@@ -1303,185 +1303,724 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
     using namespace args; \
     auto result = RUN_apply_slice(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
 TEST_CASE("apply_slice(case1)" * doctest::test_suite("view::apply_slice"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     APPLY_SLICE_SUBCASE(case1, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_a, aslices);
+
+    #else
+    APPLY_SLICE_SUBCASE(case1, array_cs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_cs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_cs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_fs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_fs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_fs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_hs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_hs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case1, array_hs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_cs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_cs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_cs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_fs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_fs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_fs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_hs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_hs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case1, array_hs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_cs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case1, array_cs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case1, array_cs_db, aslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_fs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case1, array_fs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case1, array_fs_db, aslices);
+
+    APPLY_SLICE_SUBCASE(case1, array_hs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case1, array_hs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case1, array_hs_db, aslices);
+    #endif
 }
 
 TEST_CASE("apply_slice(case2)" * doctest::test_suite("view::apply_slice"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     APPLY_SLICE_SUBCASE(case2, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_a, aslices);
+
+    #else
+    APPLY_SLICE_SUBCASE(case2, array_cs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_cs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_cs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_fs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_fs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_fs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_hs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_hs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case2, array_hs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_cs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_cs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_cs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_fs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_fs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_fs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_hs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_hs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case2, array_hs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_cs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case2, array_cs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case2, array_cs_db, aslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_fs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case2, array_fs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case2, array_fs_db, aslices);
+
+    APPLY_SLICE_SUBCASE(case2, array_hs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case2, array_hs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case2, array_hs_db, aslices);
+    #endif
 }
 
 TEST_CASE("apply_slice(case3)" * doctest::test_suite("view::apply_slice"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     APPLY_SLICE_SUBCASE(case3, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_a, aslices);
+    #else
+    APPLY_SLICE_SUBCASE(case3, array_cs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_cs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_cs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_fs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_fs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_fs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_hs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_hs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case3, array_hs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_cs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_cs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_cs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_fs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_fs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_fs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_hs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_hs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case3, array_hs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_cs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case3, array_cs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case3, array_cs_db, aslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_fs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case3, array_fs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case3, array_fs_db, aslices);
+
+    APPLY_SLICE_SUBCASE(case3, array_hs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case3, array_hs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case3, array_hs_db, aslices);
+    #endif
 }
 
 TEST_CASE("apply_slice(case4)" * doctest::test_suite("view::apply_slice"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     APPLY_SLICE_SUBCASE(case4, array_d, dslices);
+    // APPLY_SLICE_SUBCASE(case4, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_h, dslices);
+    // APPLY_SLICE_SUBCASE(case4, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_a, dslices);
+    // APPLY_SLICE_SUBCASE(case4, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_a, aslices);
+
+    #else
+    APPLY_SLICE_SUBCASE(case4, array_cs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case4, array_cs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case4, array_cs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_fs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case4, array_fs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case4, array_fs_db, dslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_hs_fb, dslices);
+    APPLY_SLICE_SUBCASE(case4, array_hs_hb, dslices);
+    APPLY_SLICE_SUBCASE(case4, array_hs_db, dslices);
+
+    // APPLY_SLICE_SUBCASE(case4, array_cs_fb, hslices);
+    // APPLY_SLICE_SUBCASE(case4, array_cs_hb, hslices);
+    // APPLY_SLICE_SUBCASE(case4, array_cs_db, hslices);
+
+    // APPLY_SLICE_SUBCASE(case4, array_fs_fb, hslices);
+    // APPLY_SLICE_SUBCASE(case4, array_fs_hb, hslices);
+    // APPLY_SLICE_SUBCASE(case4, array_fs_db, hslices);
+
+    // APPLY_SLICE_SUBCASE(case4, array_hs_fb, hslices);
+    // APPLY_SLICE_SUBCASE(case4, array_hs_hb, hslices);
+    // APPLY_SLICE_SUBCASE(case4, array_hs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_cs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case4, array_cs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case4, array_cs_db, aslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_fs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case4, array_fs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case4, array_fs_db, aslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_hs_fb, aslices);
+    APPLY_SLICE_SUBCASE(case4, array_hs_hb, aslices);
+    APPLY_SLICE_SUBCASE(case4, array_hs_db, aslices);
+    #endif
+}
+
+// TODO: fix runtime, shape zero at last axis
+TEST_CASE("apply_slice(case4)" * doctest::test_suite("view::apply_slice") * doctest::skip(true))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    APPLY_SLICE_SUBCASE(case4, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_a, hslices);
+
+    #else
+    APPLY_SLICE_SUBCASE(case4, array_cs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_cs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_cs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_fs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_fs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_fs_db, hslices);
+
+    APPLY_SLICE_SUBCASE(case4, array_hs_fb, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_hs_hb, hslices);
+    APPLY_SLICE_SUBCASE(case4, array_hs_db, hslices);
+    #endif
 }
 
 TEST_CASE("apply_slice(case5)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case5, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case5, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case5, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case5, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case5, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case5, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case5, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case5, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case5, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case8)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case8, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case8, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case8, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case8, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case8, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case8, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case8, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case8, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case8, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case9)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case9, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case9, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case9, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case9, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case9, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case9, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case9, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case9, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case9, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case10)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case10, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case10, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case10, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case10, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case10, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case10, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case10, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case10, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case10, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case11)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case11, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case11, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case11, array_d, aslices);
+    
+    APPLY_SLICE_SUBCASE(case11, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case11, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case11, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case11, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case11, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case11, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case12)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case12, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case12, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case12, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case12, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case12, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case12, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case12, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case12, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case12, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case13)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case13, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case13, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case13, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case13, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case13, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case13, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case13, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case13, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case13, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case14)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case14, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case14, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case14, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case14, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case14, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case14, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case14, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case14, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case14, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case15)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case15, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case15, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case15, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case15, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case15, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case15, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case15, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case15, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case15, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case16)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case16, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case16, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case16, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case16, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case16, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case16, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case16, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case16, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case16, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case17)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case17, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case17, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case17, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case17, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case17, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case17, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case17, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case17, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case17, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case18)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case18, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case18, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case18, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case18, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case18, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case18, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case18, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case18, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case18, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case19)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case19, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case19, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case19, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case19, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case19, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case19, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case19, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case19, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case19, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case20)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case20, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case20, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case20, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case20, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case20, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case20, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case20, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case20, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case20, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case21)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case21, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case21, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case21, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case21, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case21, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case21, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case21, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case21, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case21, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case22)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case22, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case22, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case22, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case22, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case22, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case22, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case22, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case22, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case22, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case23)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case23, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case23, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case23, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case23, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case23, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case23, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case23, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case23, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case23, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case24)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case24, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case24, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case24, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case24, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case24, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case24, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case24, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case24, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case24, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case25)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case25, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case25, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case25, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case25, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case25, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case25, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case25, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case25, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case25, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case26)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case26, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case26, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case26, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case26, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case26, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case26, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case26, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case26, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case26, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case27)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case27, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case27, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case27, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case27, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case27, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case27, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case27, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case27, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case27, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case28)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case28, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case28, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case28, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case28, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case28, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case28, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case28, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case28, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case28, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case29)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case29, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case29, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case29, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case29, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case29, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case29, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case29, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case29, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case29, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case30)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case30, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case30, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case30, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case30, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case30, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case30, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case30, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case30, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case30, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case33)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case33, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case33, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case33, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case33, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case33, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case33, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case33, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case33, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case33, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case34)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case34, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case34, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case34, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case34, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case34, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case34, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case34, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case34, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case34, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case35)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case35, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case35, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case35, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case35, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case35, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case35, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case35, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case35, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case35, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case36)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case36, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case36, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case36, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case36, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case36, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case36, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case36, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case36, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case36, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case37)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case37, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case37, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case37, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case37, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case37, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case37, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case37, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case37, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case37, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case38)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case38, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case38, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case38, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case38, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case38, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case38, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case38, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case38, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case38, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case39)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case39, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case39, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case39, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case39, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case39, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case39, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case39, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case39, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case39, array_a, aslices);
 }
 
 TEST_CASE("apply_slice(case40)" * doctest::test_suite("view::apply_slice"))
 {
     APPLY_SLICE_SUBCASE(case40, array_d, dslices);
+    APPLY_SLICE_SUBCASE(case40, array_d, hslices);
+    APPLY_SLICE_SUBCASE(case40, array_d, aslices);
+
+    APPLY_SLICE_SUBCASE(case40, array_h, dslices);
+    APPLY_SLICE_SUBCASE(case40, array_h, hslices);
+    APPLY_SLICE_SUBCASE(case40, array_h, aslices);
+
+    APPLY_SLICE_SUBCASE(case40, array_a, dslices);
+    APPLY_SLICE_SUBCASE(case40, array_a, hslices);
+    APPLY_SLICE_SUBCASE(case40, array_a, aslices);
 }

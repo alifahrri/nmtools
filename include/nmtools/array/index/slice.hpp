@@ -749,13 +749,13 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (is_fixed_index_array_v<shape_t>) {
-                using index_t = get_element_or_common_type_t<shape_t>;
+                using index_t = get_index_element_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 constexpr auto src_dim = len_v<shape_t>;
                 using type = make_hybrid_ndarray_t<elem_t,src_dim,1>;
                 return as_value_v<type>;
-            } else if constexpr (is_dynamic_index_array_v<shape_t>) {
-                using index_t = get_element_or_common_type_t<shape_t>;
+            } else if constexpr (is_index_array_v<shape_t>) {
+                using index_t = get_index_element_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 using type = replace_element_type_t<shape_t,elem_t>;
                 return as_value_v<type>;

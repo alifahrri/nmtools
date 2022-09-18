@@ -511,7 +511,7 @@ NM_TEST_SUBCASE(shape_matmul, case1)
         int l_shape[2] = {3,4};
         int r_shape[2] = {4,3};
         int expect[2]  = {3,3};
-        auto result = view::detail::shape_matmul(l_shape,r_shape);
+        auto result = nmtools::index::shape_matmul(l_shape,r_shape);
         TEST_ASSERT_TRUE( isequal(result,expect) );
         static_assert( meta::is_signed_v<int> );
     }
