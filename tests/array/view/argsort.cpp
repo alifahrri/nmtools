@@ -77,10 +77,9 @@ TEST_CASE("argsort(case1)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case1, array_fs_hb, axis );
     ARGSORT_SUBCASE( case1, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case1, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case1, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case1, array_hs_db, axis );
+    ARGSORT_SUBCASE( case1, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case1, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case1, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case1, array_ds_fb, axis );
     ARGSORT_SUBCASE( case1, array_ds_hb, axis );
@@ -107,10 +106,9 @@ TEST_CASE("argsort(case2)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case2, array_fs_hb, axis );
     ARGSORT_SUBCASE( case2, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case2, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case2, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case2, array_hs_db, axis );
+    ARGSORT_SUBCASE( case2, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case2, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case2, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case2, array_ds_fb, axis );
     ARGSORT_SUBCASE( case2, array_ds_hb, axis );
@@ -137,10 +135,9 @@ TEST_CASE("argsort(case3)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case3, array_fs_hb, axis );
     ARGSORT_SUBCASE( case3, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case3, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case3, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case3, array_hs_db, axis );
+    ARGSORT_SUBCASE( case3, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case3, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case3, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case3, array_ds_fb, axis );
     ARGSORT_SUBCASE( case3, array_ds_hb, axis );
@@ -167,10 +164,9 @@ TEST_CASE("argsort(case4)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case4, array_fs_hb, axis );
     ARGSORT_SUBCASE( case4, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case4, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case4, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case4, array_hs_db, axis );
+    ARGSORT_SUBCASE( case4, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case4, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case4, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case4, array_ds_fb, axis );
     ARGSORT_SUBCASE( case4, array_ds_hb, axis );
@@ -197,10 +193,9 @@ TEST_CASE("argsort(case5)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case5, array_fs_hb, axis );
     ARGSORT_SUBCASE( case5, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case5, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case5, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case5, array_hs_db, axis );
+    ARGSORT_SUBCASE( case5, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case5, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case5, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case5, array_ds_fb, axis );
     ARGSORT_SUBCASE( case5, array_ds_hb, axis );
@@ -227,10 +222,9 @@ TEST_CASE("argsort(case6)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case6, array_fs_hb, axis );
     ARGSORT_SUBCASE( case6, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case6, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case6, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case6, array_hs_db, axis );
+    ARGSORT_SUBCASE( case6, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case6, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case6, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case6, array_ds_fb, axis );
     ARGSORT_SUBCASE( case6, array_ds_hb, axis );
@@ -269,10 +263,9 @@ TEST_CASE("argsort(case8)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case8, array_fs_hb, axis );
     ARGSORT_SUBCASE( case8, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case8, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case8, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case8, array_hs_db, axis );
+    ARGSORT_SUBCASE( case8, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case8, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case8, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case8, array_ds_fb, axis );
     ARGSORT_SUBCASE( case8, array_ds_hb, axis );
@@ -300,10 +293,9 @@ TEST_CASE("argsort(case9)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case9, array_fs_hb, axis );
     ARGSORT_SUBCASE( case9, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case9, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case9, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case9, array_hs_db, axis );
+    ARGSORT_SUBCASE( case9, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case9, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case9, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case9, array_ds_fb, axis );
     ARGSORT_SUBCASE( case9, array_ds_hb, axis );
@@ -330,10 +322,9 @@ TEST_CASE("argsort(case10)" * doctest::test_suite("view::argsort"))
     ARGSORT_SUBCASE( case10, array_fs_hb, axis );
     ARGSORT_SUBCASE( case10, array_fs_db, axis );
 
-    // TODO: fix
-    // ARGSORT_SUBCASE( case10, array_hs_fb, axis );
-    // ARGSORT_SUBCASE( case10, array_hs_hb, axis );
-    // ARGSORT_SUBCASE( case10, array_hs_db, axis );
+    ARGSORT_SUBCASE( case10, array_hs_fb, axis );
+    ARGSORT_SUBCASE( case10, array_hs_hb, axis );
+    ARGSORT_SUBCASE( case10, array_hs_db, axis );
 
     ARGSORT_SUBCASE( case10, array_ds_fb, axis );
     ARGSORT_SUBCASE( case10, array_ds_hb, axis );

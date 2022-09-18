@@ -226,9 +226,9 @@ TEST_CASE("split(case1)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case1, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case1, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case1, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case1, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case1, a_hs_db, indices_or_sections, axis );
+    SPLIT_SUBCASE( case1, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case1, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case1, a_hs_db, indices_or_sections, axis );
 
     SPLIT_SUBCASE( case1, a_ds_fb, indices_or_sections, axis );
     SPLIT_SUBCASE( case1, a_ds_hb, indices_or_sections, axis );
@@ -257,9 +257,12 @@ TEST_CASE("split(case2)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case2, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case2, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case2, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case2, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case2, a_hs_db, indices_or_sections, axis );
+    // TODO: fix "realloc(): invalid old size"
+    #ifndef NMTOOLS_DISABLE_STL
+    SPLIT_SUBCASE( case2, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case2, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case2, a_hs_db, indices_or_sections, axis );
+    #endif
 
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
@@ -294,9 +297,12 @@ TEST_CASE("split(case3)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case3, a_fs_db, indices_or_sections, axis );
     #endif
 
-    // SPLIT_SUBCASE( case3, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case3, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case3, a_hs_db, indices_or_sections, axis );
+    // TODO: fix utl vector segfault
+    #ifndef NMTOOLS_DISABLE_STL
+    SPLIT_SUBCASE( case3, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case3, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case3, a_hs_db, indices_or_sections, axis );
+    #endif
 
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
@@ -328,11 +334,10 @@ TEST_CASE("split(case4)" * doctest::test_suite("view::split"))
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
     SPLIT_SUBCASE( case4, a_fs_db, indices_or_sections, axis );
+    SPLIT_SUBCASE( case4, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case4, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case4, a_hs_db, indices_or_sections, axis );
     #endif
-
-    // SPLIT_SUBCASE( case4, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case4, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case4, a_hs_db, indices_or_sections, axis );
 
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
@@ -364,12 +369,12 @@ TEST_CASE("split(case5)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case5, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case5, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case5, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case5, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case5, a_hs_db, indices_or_sections, axis );
-
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
+    SPLIT_SUBCASE( case5, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case5, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case5, a_hs_db, indices_or_sections, axis );
+
     SPLIT_SUBCASE( case5, a_ds_fb, indices_or_sections, axis );
     SPLIT_SUBCASE( case5, a_ds_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case5, a_ds_db, indices_or_sections, axis );
@@ -397,9 +402,12 @@ TEST_CASE("split(case6)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case6, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case6, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case6, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case6, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case6, a_hs_db, indices_or_sections, axis );
+    // TODO: fix segfault
+    #ifndef NMTOOLS_DISABLE_STL
+    SPLIT_SUBCASE( case6, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case6, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case6, a_hs_db, indices_or_sections, axis );
+    #endif
 
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
@@ -430,9 +438,9 @@ TEST_CASE("split(case7)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case7, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case7, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case7, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case7, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case7, a_hs_db, indices_or_sections, axis );
+    SPLIT_SUBCASE( case7, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case7, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case7, a_hs_db, indices_or_sections, axis );
 
     #ifndef NMTOOLS_DISABLE_STL
     SPLIT_SUBCASE( case7, a_ds_fb, indices_or_sections, axis );
@@ -461,9 +469,9 @@ TEST_CASE("split(case8)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case8, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case8, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case8, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case8, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case8, a_hs_db, indices_or_sections, axis );
+    SPLIT_SUBCASE( case8, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case8, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case8, a_hs_db, indices_or_sections, axis );
 
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
@@ -495,9 +503,9 @@ TEST_CASE("split(case9)" * doctest::test_suite("view::split") * doctest::skip(tr
     SPLIT_SUBCASE( case9, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case9, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case9, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case9, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case9, a_hs_db, indices_or_sections, axis );
+    SPLIT_SUBCASE( case9, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case9, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case9, a_hs_db, indices_or_sections, axis );
 
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
@@ -529,9 +537,12 @@ TEST_CASE("split(case10)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case10, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case10, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case10, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case10, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case10, a_hs_db, indices_or_sections, axis );
+    // TODO: fix segfault
+    #ifndef NMTOOLS_DISABLE_STL
+    SPLIT_SUBCASE( case10, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case10, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case10, a_hs_db, indices_or_sections, axis );
+    #endif
 
     // TODO: fix utl vector
     #ifndef NMTOOLS_DISABLE_STL
@@ -562,9 +573,9 @@ TEST_CASE("split(case11)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case11, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case11, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case11, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case11, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case11, a_hs_db, indices_or_sections, axis );
+    SPLIT_SUBCASE( case11, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case11, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case11, a_hs_db, indices_or_sections, axis );
 
     // TODO: fix utl vector "realloc(): invalid pointer"
     #ifndef NMTOOLS_DISABLE_STL
@@ -597,9 +608,12 @@ TEST_CASE("split(case12)" * doctest::test_suite("view::split"))
     SPLIT_SUBCASE( case12, a_fs_hb, indices_or_sections, axis );
     SPLIT_SUBCASE( case12, a_fs_db, indices_or_sections, axis );
 
-    // SPLIT_SUBCASE( case12, a_hs_fb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case12, a_hs_hb, indices_or_sections, axis );
-    // SPLIT_SUBCASE( case12, a_hs_db, indices_or_sections, axis );
+    // TODO: fix realloc(): invalid pointer
+    #ifndef NMTOOLS_DISABLE_STL
+    SPLIT_SUBCASE( case12, a_hs_fb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case12, a_hs_hb, indices_or_sections, axis );
+    SPLIT_SUBCASE( case12, a_hs_db, indices_or_sections, axis );
+    #endif
 
     // TODO: fix utl vector
     #ifndef NMTOOLS_DISABLE_STL
