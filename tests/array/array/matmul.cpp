@@ -5,6 +5,9 @@
 #define RUN_matmul_impl(...) \
 nmtools::array::matmul(__VA_ARGS__);
 
+namespace nm = nmtools;
+namespace meta = nm::meta;
+
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
