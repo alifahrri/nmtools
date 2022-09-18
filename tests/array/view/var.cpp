@@ -72,10 +72,9 @@ TEST_CASE("var(case1)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case1, array_fs_hb, axis );
     VAR_SUBCASE( case1, array_fs_db, axis );
 
-    // TODO: fix compile
-    // VAR_SUBCASE( case1, array_hs_fb, axis );
-    // VAR_SUBCASE( case1, array_hs_hb, axis );
-    // VAR_SUBCASE( case1, array_hs_db, axis );
+    VAR_SUBCASE( case1, array_hs_fb, axis );
+    VAR_SUBCASE( case1, array_hs_hb, axis );
+    VAR_SUBCASE( case1, array_hs_db, axis );
 
     VAR_SUBCASE( case1, array_ds_fb, axis );
     VAR_SUBCASE( case1, array_ds_hb, axis );
@@ -103,9 +102,9 @@ TEST_CASE("var(case2)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case2, array_fs_hb, axis );
     VAR_SUBCASE( case2, array_fs_db, axis );
 
-    // VAR_SUBCASE( case2, array_hs_fb, axis );
-    // VAR_SUBCASE( case2, array_hs_hb, axis );
-    // VAR_SUBCASE( case2, array_hs_db, axis );
+    VAR_SUBCASE( case2, array_hs_fb, axis );
+    VAR_SUBCASE( case2, array_hs_hb, axis );
+    VAR_SUBCASE( case2, array_hs_db, axis );
 
     VAR_SUBCASE( case2, array_ds_fb, axis );
     VAR_SUBCASE( case2, array_ds_hb, axis );
@@ -133,9 +132,9 @@ TEST_CASE("var(case3)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case3, array_fs_hb, axis );
     VAR_SUBCASE( case3, array_fs_db, axis );
 
-    // VAR_SUBCASE( case3, array_hs_fb, axis );
-    // VAR_SUBCASE( case3, array_hs_hb, axis );
-    // VAR_SUBCASE( case3, array_hs_db, axis );
+    VAR_SUBCASE( case3, array_hs_fb, axis );
+    VAR_SUBCASE( case3, array_hs_hb, axis );
+    VAR_SUBCASE( case3, array_hs_db, axis );
 
     VAR_SUBCASE( case3, array_ds_fb, axis );
     VAR_SUBCASE( case3, array_ds_hb, axis );
@@ -163,9 +162,9 @@ TEST_CASE("var(case4)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case4, array_fs_hb, axis );
     VAR_SUBCASE( case4, array_fs_db, axis );
 
-    // VAR_SUBCASE( case4, array_hs_fb, axis );
-    // VAR_SUBCASE( case4, array_hs_hb, axis );
-    // VAR_SUBCASE( case4, array_hs_db, axis );
+    VAR_SUBCASE( case4, array_hs_fb, axis );
+    VAR_SUBCASE( case4, array_hs_hb, axis );
+    VAR_SUBCASE( case4, array_hs_db, axis );
 
     VAR_SUBCASE( case4, array_ds_fb, axis );
     VAR_SUBCASE( case4, array_ds_hb, axis );
@@ -193,9 +192,9 @@ TEST_CASE("var(case5)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case5, array_fs_hb, axis );
     VAR_SUBCASE( case5, array_fs_db, axis );
 
-    // VAR_SUBCASE( case5, array_hs_fb, axis );
-    // VAR_SUBCASE( case5, array_hs_hb, axis );
-    // VAR_SUBCASE( case5, array_hs_db, axis );
+    VAR_SUBCASE( case5, array_hs_fb, axis );
+    VAR_SUBCASE( case5, array_hs_hb, axis );
+    VAR_SUBCASE( case5, array_hs_db, axis );
 
     VAR_SUBCASE( case5, array_ds_fb, axis );
     VAR_SUBCASE( case5, array_ds_hb, axis );
@@ -223,9 +222,9 @@ TEST_CASE("var(case6)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case6, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case6, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case6, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case6, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case6, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case6, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case6, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case6, array_ds_hb, axis, nm::None, ddof, keepdims );
@@ -253,9 +252,9 @@ TEST_CASE("var(case7)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case7, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case7, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case7, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case7, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case7, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case7, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case7, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case7, array_ds_hb, axis, nm::None, ddof, keepdims );
@@ -283,9 +282,9 @@ TEST_CASE("var(case8)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case8, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case8, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case8, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case8, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case8, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case8, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case8, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case8, array_ds_hb, axis, nm::None, ddof, keepdims );
@@ -313,9 +312,9 @@ TEST_CASE("var(case9)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case9, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case9, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case9, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case9, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case9, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case9, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case9, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case9, array_ds_hb, axis, nm::None, ddof, keepdims );
@@ -363,9 +362,9 @@ TEST_CASE("var(case10)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case10, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case10, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case10, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case10, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case10, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case10, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case10, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case10, array_ds_hb, axis, nm::None, ddof, keepdims );
@@ -393,9 +392,9 @@ TEST_CASE("var(case11)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case11, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case11, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case11, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case11, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case11, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case11, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case11, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case11, array_ds_hb, axis, nm::None, ddof, keepdims );
@@ -423,9 +422,9 @@ TEST_CASE("var(case12)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case12, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case12, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case12, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case12, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case12, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case12, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case12, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case12, array_ds_hb, axis, nm::None, ddof, keepdims );
@@ -453,9 +452,9 @@ TEST_CASE("var(case13)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case13, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case13, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case13, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case13, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case13, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case13, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case13, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case13, array_ds_hb, axis, nm::None, ddof, keepdims );
@@ -483,9 +482,9 @@ TEST_CASE("var(case14)" * doctest::test_suite("view::var"))
     VAR_SUBCASE( case14, array_fs_hb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case14, array_fs_db, axis, nm::None, ddof, keepdims );
 
-    // VAR_SUBCASE( case14, array_hs_fb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case14, array_hs_hb, axis, nm::None, ddof, keepdims );
-    // VAR_SUBCASE( case14, array_hs_db, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_hs_fb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_hs_hb, axis, nm::None, ddof, keepdims );
+    VAR_SUBCASE( case14, array_hs_db, axis, nm::None, ddof, keepdims );
 
     VAR_SUBCASE( case14, array_ds_fb, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case14, array_ds_hb, axis, nm::None, ddof, keepdims );
