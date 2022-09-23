@@ -4,6 +4,7 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/dtypes.hpp"
+#include "nmtools/array/index/arange.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
 
@@ -11,21 +12,7 @@ namespace nmtools::view
 {
     namespace detail
     {
-        // workaround for clang
-        // since gcc has constexpr ceil while clang doesn't :|
-        constexpr size_t ceil_(float num)
-        {
-            return (static_cast<float>(static_cast<size_t>(num)) == num)
-                ? static_cast<size_t>(num)
-                : static_cast<size_t>(num) + ((num > 0) ? 1 : 0);
-        }
-
-        template <typename start_t, typename stop_t, typename step_t>
-        constexpr auto arange_shape(start_t start, stop_t stop, step_t step)
-        {
-            size_t d = ceil_(float(stop - start) / step);
-            return meta::make_array_type_t<size_t,1>{d};
-        } // arange_shape
+        using index::arange_shape, index::ceil_;
     } // namespace detail
 
     template <typename start_t, typename stop_t, typename step_t, typename T>
@@ -37,25 +24,29 @@ namespace nmtools::view
         using step_type  = const step_t;
         using element_type = T;
         using array_type = none_t;
+        using shape_type = meta::resolve_optype_t<index::arange_shape_t,start_t,stop_t,step_t>;
 
         start_type start;
         stop_type stop;
         step_type step;
+        shape_type shape_;
 
         constexpr arange_t(start_type start, stop_type stop, step_type step)
-            : start(start), stop(stop), step(step) {}
+            : start(start)
+            , stop(stop)
+            , step(step)
+            , shape_(index::arange_shape(start,stop,step))
+        {}
 
         constexpr auto shape() const
         {
-            if constexpr (is_none_v<step_t>)
-                return detail::arange_shape(start,stop,1);
-            else
-                return detail::arange_shape(start,stop,step);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
         {
-            return 1;
+            using namespace literals;
+            return 1_ct;
         } // dim
 
         template <typename size_type>
@@ -116,26 +107,10 @@ namespace nmtools::meta
     };
 
     template <typename start_t, typename stop_t, typename step_t, typename T>
-    struct fixed_ndarray_shape< view::arange_t<start_t, stop_t, step_t, T> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_integral_constant_v<start_t> && is_integral_constant_v<stop_t> && is_integral_constant_v<step_t>) {
-                return view::detail::arange_shape(start_t{}, stop_t{}, step_t{});
-            } else if constexpr (is_integral_constant_v<start_t> && is_integral_constant_v<stop_t> && is_none_v<step_t>) {
-                return view::detail::arange_shape(start_t{}, stop_t{}, 1);
-            } else if constexpr (is_none_v<start_t> && is_integral_constant_v<stop_t> && is_none_v<step_t>) {
-                return view::detail::arange_shape(0, stop_t{}, 1);
-            }
-            else return detail::fail_t{};
-        }();
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-
-    template <typename start_t, typename stop_t, typename step_t, typename T>
     struct is_ndarray< view::decorator_t< view::arange_t, start_t, stop_t, step_t, T >>
     {
         static constexpr auto value = is_num_v<T> && is_index_v<start_t>
-            && is_index_v<stop_t> && is_index_v<step_t>;
+            && is_index_v<stop_t> && (is_index_v<step_t> || is_none_v<step_t>);
     };
 } // namespace nmtools::meta
 
