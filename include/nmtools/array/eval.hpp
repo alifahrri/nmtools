@@ -497,8 +497,8 @@ namespace nmtools::meta
                 if constexpr (!is_fail_v<shape_type>) {
                     return template_reduce<len(shape)-1>([&](auto init, auto index){
                         using init_type = type_t<decltype(init)>;
-                        return as_value_v<append_type_t<init_type,ct<at(shape,decltype(index)::value+1)>>>;
-                    }, as_value_v<nmtools_tuple<ct<at(shape,0)>>>);
+                        return as_value_v<append_type_t<init_type,ct<(size_t)at(shape,ct_v<decltype(index)::value+1>)>>>;
+                    }, as_value_v<nmtools_tuple<ct<(size_t)at(shape,ct_v<0>)>>>);
                 } else {
                     return as_value_v<error_type>;
                 }
