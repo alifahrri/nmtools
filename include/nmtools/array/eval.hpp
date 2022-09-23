@@ -1,6 +1,11 @@
 #ifndef NMTOOLS_ARRAY_EVAL_HPP
 #define NMTOOLS_ARRAY_EVAL_HPP
 
+#include "nmtools/meta.hpp"
+#include "nmtools/constants.hpp"
+#include "nmtools/assert.hpp"
+#include "nmtools/utility/forward.hpp"
+
 #include "nmtools/array/ndarray.hpp"
 
 #include "nmtools/utils/isequal.hpp"
@@ -8,14 +13,15 @@
 #include "nmtools/array/utility/apply_resize.hpp"
 #include "nmtools/array/shape.hpp"
 
-#include "nmtools/meta.hpp"
-#include "nmtools/constants.hpp"
-#include "nmtools/assert.hpp"
-
 namespace nmtools::array
 {
+    // NOTE: old version
+    // TODO: remove
     // special tag to resolve eval return type
     struct eval_t {};
+
+    // special tag to resolve eval return type
+    struct eval_result_t {};
 
     // TODO: consider to change signature to evaluator_<view_c,context_t,output_t,void>
     // hence performing eval resolver outside the struct, allowing to easily specialize evaluator_t
@@ -27,16 +33,16 @@ namespace nmtools::array
      * @tparam context_t evaluation context
      * @tparam typename sfinae point
      */
-    template <typename view_t, typename context_t, typename=void>
+    template <typename view_t, typename context_t, typename resolver_t=eval_t, typename=void>
     struct evaluator_t;
 
-    template <typename view_t>
-    struct evaluator_t<view_t,none_t>
+    template <typename view_t, typename resolver_t>
+    struct evaluator_t<view_t,none_t,resolver_t>
     {
         using view_type    = const view_t&;
         using context_type = const none_t&;
         // TODO: move output type as template params
-        using output_type  = meta::resolve_optype_t<eval_t,view_t,none_t>;
+        using output_type  = meta::resolve_optype_t<resolver_t,view_t,none_t>;
 
         view_type view;
         context_type context;
@@ -106,14 +112,52 @@ namespace nmtools::array
         } // operator()
     }; // evaluator_t
 
-    template <typename view_t, typename context_t>
+    template <typename resolver_t=eval_t,typename view_t, typename context_t>
     constexpr auto evaluator(const view_t& view, context_t&& context)
     {
         // TODO: perfect forwarding for context
         using ctx_t = meta::remove_cvref_t<context_t>;
-        using evaluator_type = evaluator_t<view_t,ctx_t>;
+        using evaluator_type = evaluator_t<view_t,ctx_t,resolver_t>;
         return evaluator_type{view,context};
     } // evaluator
+
+    namespace detail
+    {
+
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_t, typename view_t>
+    constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> =meta::as_value_v<resolver_t>)
+    {
+        // TODO: perfect forwarding for eval context
+        // TODO: support maybe type
+        if constexpr (meta::is_either_v<view_t>) {
+            using left_t   = meta::get_either_left_t<view_t>;
+            using right_t  = meta::get_either_right_t<view_t>;
+            // deduce return type for each type
+            using rleft_t  = decltype(detail::eval(meta::declval<left_t>(),context,output));
+            using rright_t = decltype(detail::eval(meta::declval<right_t>(),context,output));
+            constexpr auto vtype = [](){
+                if constexpr (meta::is_same_v<rleft_t,rright_t>) {
+                    return meta::as_value_v<rleft_t>;
+                } else {
+                    using either_t = meta::replace_either_t<view_t,rleft_t,rright_t>;
+                    return meta::as_value_v<either_t>;
+                }
+            }();
+            using return_t = meta::type_t<decltype(vtype)>;
+            // match either type at runtime
+            if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
+                return return_t{detail::eval(*view_ptr,context,output)};
+            } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
+                auto view_rptr = nmtools::get_if<right_t>(&view);
+                return return_t{detail::eval(*view_rptr,context,output)};
+            }
+        } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
+            auto evaluator_ = evaluator<resolver_t>(view,context);
+            return evaluator_(output);
+        }
+    } // eval
+
+    }
 
     /**
      * @brief Evaluate a view, given context and optional output.
@@ -126,38 +170,15 @@ namespace nmtools::array
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename view_t>
-    constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{})
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_t, typename view_t>
+    constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
-        // TODO: perfect forwarding for eval context
-        // TODO: support maybe type
-        if constexpr (meta::is_either_v<view_t>) {
-            using left_t   = meta::get_either_left_t<view_t>;
-            using right_t  = meta::get_either_right_t<view_t>;
-            // deduce return type for each type
-            using rleft_t  = decltype(eval(meta::declval<left_t>(),context,output));
-            using rright_t = decltype(eval(meta::declval<right_t>(),context,output));
-            constexpr auto vtype = [](){
-                if constexpr (meta::is_same_v<rleft_t,rright_t>) {
-                    return meta::as_value_v<rleft_t>;
-                } else {
-                    using either_t = meta::replace_either_t<view_t,rleft_t,rright_t>;
-                    return meta::as_value_v<either_t>;
-                }
-            }();
-            using return_t = meta::type_t<decltype(vtype)>;
-            // match either type at runtime
-            if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
-                return return_t{eval(*view_ptr,context,output)};
-            } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
-                auto view_rptr = nmtools::get_if<right_t>(&view);
-                return return_t{eval(*view_rptr,context,output)};
-            }
-        } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
-            auto evaluator_ = evaluator(view,context);
-            return evaluator_(output);
-        }
-    } // eval
+        return detail::eval(view
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
+    }
 
 } // namespace nmtools::array
 
@@ -170,8 +191,12 @@ namespace nmtools::meta
         struct EVAL_UNHANDLED_CASE : detail::fail_t {};
         struct EVAL_UNHANDLED_UNARY_CASE : detail::fail_t {};
         struct EVAL_UNHANDLED_BINARY_CASE : detail::fail_t {};
+
+        template <typename...>
+        struct EVAL_RESULT_UNSUPPORTED : detail::fail_t {};
     } // namespace error::eval
 
+    // TODO: remove
     /**
      * @brief Infer array type when the underlying array of the view type is just single array.
      * 
@@ -349,6 +374,7 @@ namespace nmtools::meta
         }
     } // resolve_unary_array_type
 
+    // TODO: remove
     /**
      * @brief Infer array type when the underlying array of the view type is two array.
      * 
@@ -446,8 +472,172 @@ namespace nmtools::meta
         }
     } // resolve_binary_array_type
 
+    // TODO: make this the default eval type resolver
+    template <typename view_t>
+    struct resolve_optype<
+        void, array::eval_result_t, view_t, none_t
+    >
+    {
+        static constexpr auto vtype = [](){
+            using element_type = get_element_type_t<view_t>;
+            using error_type [[maybe_unused]] = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t>;
+            constexpr auto shape  = fixed_shape_v<view_t>;
+            constexpr auto dim    = fixed_dim_v<view_t>;
+            constexpr auto size   = fixed_size_v<view_t>;
+            constexpr auto b_dim  = bounded_dim_v<view_t>;
+            constexpr auto b_size = bounded_size_v<view_t>;
+            using shape_type  = decltype(shape);
+            using dim_type    = decltype(dim);
+            using size_type   = decltype(size);
+            using b_dim_type  = decltype(b_dim);
+            using b_size_type = decltype(b_size);
+            using nmtools::len, nmtools::at;
+            // constant shape
+            constexpr auto c_shape_vtype = [&](){
+                if constexpr (!is_fail_v<shape_type>) {
+                    return template_reduce<len(shape)-1>([&](auto init, auto index){
+                        using init_type = type_t<decltype(init)>;
+                        return as_value_v<append_type_t<init_type,ct<at(shape,decltype(index)::value+1)>>>;
+                    }, as_value_v<nmtools_tuple<ct<at(shape,0)>>>);
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // fixed shape
+            constexpr auto f_shape_vtype = [&](){
+                if constexpr (!is_fail_v<dim_type>) {
+                    using type = nmtools_array<size_t,dim>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // bounded shape (for bounded dim)
+            constexpr auto b_shape_vtype = [&](){
+                if constexpr (!is_fail_v<b_dim_type>) {
+                    using type = array::static_vector<size_t,b_dim>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // fixed buffer
+            constexpr auto f_buffer_vtype = [&](){
+                if constexpr (!is_fail_v<size_type>) {
+                    using type = nmtools_array<element_type,size>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // bounded buffer
+            constexpr auto b_buffer_vtype = [&](){
+                if constexpr (!is_fail_v<b_size_type>) {
+                    using type = array::static_vector<element_type,b_size>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // dynamic buffer
+
+            using c_shape_type  [[maybe_unused]] = type_t<decltype(c_shape_vtype)>;
+            using f_shape_type  [[maybe_unused]] = type_t<decltype(f_shape_vtype)>;
+            using b_shape_type  [[maybe_unused]] = type_t<decltype(b_shape_vtype)>;
+            using f_buffer_type [[maybe_unused]] = type_t<decltype(f_buffer_vtype)>;
+            using b_buffer_type [[maybe_unused]] = type_t<decltype(b_buffer_vtype)>;
+            using d_buffer_type [[maybe_unused]] = nmtools_list<element_type>;
+            // TODO: add small vector optimization fo shape
+            using d_shape_type  [[maybe_unused]] = nmtools_list<size_t>;
+
+            // prefer constant-shape, no-dynamic allocation
+            if constexpr (
+                !is_fail_v<c_shape_type>
+                && !is_fail_v<f_buffer_type>
+            ) {
+                using type = array::ndarray_t<f_buffer_type,c_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<c_shape_type>
+                && !is_fail_v<b_buffer_type>
+            ) {
+                using type = array::ndarray_t<b_buffer_type,c_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<c_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,c_shape_type>;
+                return as_value_v<type>;
+            }
+            // fixed-shape
+            else if constexpr (
+                !is_fail_v<f_shape_type>
+                && !is_fail_v<f_buffer_type>
+            ) {
+                using type = array::ndarray_t<f_buffer_type,f_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<f_shape_type>
+                && !is_fail_v<b_buffer_type>
+            ) {
+                using type = array::ndarray_t<b_buffer_type,f_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<f_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,f_shape_type>;
+                return as_value_v<type>;
+            } 
+            // bounded shape
+            else if constexpr (
+                !is_fail_v<b_shape_type>
+                && !is_fail_v<f_buffer_type>
+            ) {
+                using type = array::ndarray_t<f_buffer_type,b_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<b_shape_type>
+                && !is_fail_v<b_buffer_type>
+            ) {
+                using type = array::ndarray_t<b_buffer_type,b_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<b_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,b_shape_type>;
+                return as_value_v<type>;
+            }
+            // dynamic shape
+            else if constexpr (
+                !is_fail_v<d_shape_type>
+                && !is_fail_v<f_buffer_type>
+            ) {
+                using type = array::ndarray_t<f_buffer_type,d_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<d_shape_type>
+                && !is_fail_v<b_buffer_type>
+            ) {
+                using type = array::ndarray_t<b_buffer_type,d_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<d_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,d_shape_type>;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<error_type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
     /**
-     * @brief Default implementation of type resolver for eval op with None execution.
+     * @brief Old implementation of type resolver for eval op with None execution.
      * 
      * At the moment the implementation should be working for various view type
      * such as ufuncs, outer_ufuncs, accumulate_ufuncs, arange, atleast_1d, full, ones, zeros, flip.
