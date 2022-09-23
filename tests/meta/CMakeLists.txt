@@ -57,6 +57,7 @@ set( META_EVAL_TEST_SOURCES
 )
 
 set( META_INDEX_TEST_SOURCES
+    array/index/arange.cpp
     array/index/broadcast_shape.cpp
     array/index/broadcast_to.cpp
     array/index/argsort.cpp

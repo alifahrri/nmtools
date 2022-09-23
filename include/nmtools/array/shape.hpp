@@ -115,6 +115,7 @@ namespace nmtools::impl
             // for scalar type, simply return None
             else if constexpr (meta::is_num_v<array_t>)
                 return None;
+            // TODO: remove meta::fixed_ndarray_shape
             // check for fixed-shape array, should capture all kind of fixed-size array
             else if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
                 // @todo whenever the shape is constant return it as compile-time constant

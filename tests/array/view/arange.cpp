@@ -96,7 +96,7 @@ TEST_CASE("arange_traits(case1)" * doctest::test_suite("view::arange_traits"))
         using namespace nm::literals;
         auto array = nm::view::arange(0_ct,5_ct,1_ct,nm::float32);
         using array_t = decltype(array);
-        constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;
+        constexpr auto is_fixed_shape = nm::meta::is_fixed_shape_v<array_t>;
         static_assert( is_fixed_shape );
     }
 }

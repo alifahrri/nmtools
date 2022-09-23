@@ -10,37 +10,6 @@
 
 namespace nmtools::view
 {
-    namespace detail
-    {
-        // TODO: remove
-        template <typename shape_t>
-        constexpr auto get_ones_shape(const shape_t& shape)
-        {
-            static_assert (meta::is_index_array_v<shape_t>
-                , "unsupported ones shape, expects index array"
-            );
-            using return_t = meta::transform_bounded_array_t<
-                meta::tuple_to_array_t<shape_t>
-            >;
-            auto res = return_t{};
-
-            [[maybe_unused]] const auto n = len(shape);
-            if constexpr (meta::is_resizeable_v<return_t>)
-                res.resize(n);
-            
-            if constexpr (meta::is_constant_index_array_v<shape_t>) {
-                constexpr auto N = meta::fixed_index_array_size_v<shape_t>;
-                meta::template_for<N>([&](auto i){
-                    at(res,i) = at(shape,i);
-                });
-            }
-            else
-                for (size_t i=0; i<n; i++)
-                    at(res,i) = at(shape,i);
-            return res;
-        } // get_ones_shape
-    }
-
     template <typename shape_t, typename T>
     struct ones_t
     {
@@ -98,22 +67,6 @@ namespace nmtools::meta
     {
         using type = T;
     };
-
-    // TODO: remove
-    template <typename shape_t, typename T>
-    struct fixed_ndarray_shape< view::ones_t<shape_t, T> >
-        : fixed_shape< view::ones_t<shape_t, T> > {};
-    #if 0
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_constant_index_array_v<shape_t>)
-                return view::detail::get_ones_shape(shape_t{});
-            else
-                return detail::fail_t{};
-        }();
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-    #endif
 
     template <typename shape_t, typename T>
     struct is_ndarray< view::decorator_t< view::ones_t, shape_t, T >>
