@@ -24,20 +24,22 @@ namespace nmtools::view
         // array type as required by decorator
         using array_type = resolve_array_type_t<array_t>;
         using axis_type  = resolve_attribute_type_t<axis_t>;
+        using src_shape_type = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
+        using shape_type = meta::resolve_optype_t<index::shape_expand_dims_t,src_shape_type,axis_t>;
 
         array_type array;
         axis_type  axis;
+        shape_type shape_;
 
-        constexpr expand_dims_t(const array_t& array, const axis_t& axis)
-            : array(initialize(array, meta::as_value_v<array_type>))
-            , axis(init_attribute(axis, meta::as_value_v<axis_type>)) {}
+        constexpr expand_dims_t(const array_t& array_, const axis_t& axis)
+            : array(initialize(array_, meta::as_value_v<array_type>))
+            , axis(init_attribute(axis, meta::as_value_v<axis_type>))
+            , shape_(index::shape_expand_dims(nmtools::shape(array_),axis))
+        {}
         
         constexpr auto shape() const noexcept
         {
-            auto shape_ = detail::shape(array);
-            // TODO: maybe rename index::expand_dims to index::shape_expand_dims
-            auto newshape = index::expand_dims(shape_,axis);
-            return newshape;
+            return shape_;
         } // shape
 
         constexpr auto dim() const noexcept
@@ -83,39 +85,6 @@ namespace nmtools::meta
 {
     using view::decorator_t;
     using view::expand_dims_t;
-
-    // TODO: remove
-    /**
-     * @brief Infer the shape of expand_dims view at compile-time.
-     * 
-     * @tparam array_t 
-     * @tparam axis_t 
-     */
-    template <typename array_t, typename axis_t>
-    struct fixed_ndarray_shape< expand_dims_t<array_t,axis_t>
-    >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_fixed_size_ndarray_v<array_t> &&
-                (is_constant_index_array_v<axis_t> || is_constant_index_v<axis_t>))
-            {
-                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
-                constexpr auto axis  = [](){
-                    if constexpr (is_constant_index_v<axis_t>) {
-                        // use tuple for now
-                        return make_tuple_type_t<axis_t>{axis_t{}};
-                    } else {
-                        return axis_t{};
-                    }
-                }();
-                // TODO: maybe rename index::expand_dims to index::shape_expand_dims
-                return index::expand_dims(shape,axis);
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-    }; // fixed_ndarray_shape
 
     template <typename array_t, typename axis_t>
     struct is_ndarray< decorator_t<expand_dims_t,array_t,axis_t> >
