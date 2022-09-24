@@ -64,11 +64,11 @@ namespace nmtools::meta
                 }, meta::as_value_v<nmtools_tuple<ct<at(dst_shape,0)>>>);
             } else if constexpr (meta::is_index_array_v<shape_t>) {
                 constexpr auto N = [](){
-                    constexpr auto fixed = len_v<shape_t>;
                     constexpr auto bound = bounded_size_v<shape_t>;
                     if constexpr (!is_fail_v<decltype(bound)>) {
                         return bound;
                     } else {
+                        constexpr auto fixed = len_v<shape_t>;
                         return fixed; // maybe 0
                     }
                 }();
