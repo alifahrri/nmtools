@@ -109,7 +109,14 @@ namespace nmtools::index
             // index to fill res
             for (idx_t i=0; i<(idx_t)dim; i++) {
                 auto in_axis_ = in_axis(i);
-                if (in_axis_ && !keepdims)
+                auto keepdims_ = [&](){
+                    if constexpr (is_none_v<keepdims_t>) {
+                        return false;
+                    } else {
+                        return keepdims;
+                    }
+                }();
+                if (in_axis_ && !keepdims_)
                     continue;
                 else {
                     auto si = at(shape,i);
