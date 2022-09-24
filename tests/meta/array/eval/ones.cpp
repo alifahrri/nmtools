@@ -14,21 +14,21 @@ TEST_CASE("eval(ones)" * doctest::test_suite("eval") * doctest::may_fail())
 {
     {
         using view_t = view::decorator_t< view::ones_t, std::vector<int>, float >;
-        using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
+        using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
         using expected_t = na::dynamic_ndarray<float>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
         using shape_t = decltype(nmtools_tuple{1_ct});
         using view_t = view::decorator_t< view::ones_t, shape_t, int >;
-        using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
+        using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
         using expected_t = na::fixed_ndarray<int,1>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
         using shape_t = decltype(nmtools_tuple{2_ct,3_ct,1_ct});
         using view_t = view::decorator_t< view::ones_t, shape_t, int >;
-        using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
+        using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
         using expected_t = na::fixed_ndarray<int,2,3,1>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         static_assert( meta::is_constant_index_array_v<shape_t> );
@@ -37,7 +37,7 @@ TEST_CASE("eval(ones)" * doctest::test_suite("eval") * doctest::may_fail())
     {
         using shape_t = decltype(nmtools_tuple{2_ct,3_ct,4_ct,1_ct});
         using view_t = view::decorator_t< view::ones_t, shape_t, double >;
-        using eval_t = meta::resolve_optype_t< na::eval_t, view_t, none_t >;
+        using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
         using expected_t = na::fixed_ndarray<double,2,3,4,1>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
