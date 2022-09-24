@@ -84,6 +84,7 @@ namespace nmtools::index
         return newshape;
     } // shape_expand_dims
 
+    // TODO: remove
     template <typename shape_t, typename axes_t>
     constexpr auto expand_dims([[maybe_unused]] const shape_t& shape, [[maybe_unused]] const axes_t& axes)
     {
@@ -177,66 +178,6 @@ namespace nmtools
                 }
             }();
             using type = type_t<decltype(vtype)>;
-
-            // TODO: remove
-            #if 0
-            // deduce the type of expand_dim ops prefer dynamic index array when possible,
-            // otherwise select hybrid index, choose fixed index only if both are fixed 
-            static constexpr auto vtype = [](){
-                if constexpr (is_dynamic_index_array_v<shape_t>)
-                    return as_value<shape_t>{};
-                else if constexpr (is_dynamic_index_array_v<axes_t>)
-                    return as_value<axes_t>{};
-                else if constexpr (is_hybrid_index_array_v<shape_t> && is_hybrid_index_array_v<axes_t>) {
-                    constexpr auto max_shape = hybrid_index_array_max_size_v<shape_t>;
-                    constexpr auto max_axes  = hybrid_index_array_max_size_v<axes_t>;
-                    using type = resize_hybrid_index_array_max_size_t<shape_t,max_shape+max_axes>;
-                    return as_value<type>{};
-                }
-                else if constexpr (is_hybrid_index_array_v<shape_t> && is_fixed_index_array_v<axes_t>) {
-                    constexpr auto max_shape = hybrid_index_array_max_size_v<shape_t>;
-                    constexpr auto n_axes    = fixed_index_array_size_v<axes_t>;
-                    using type = resize_hybrid_index_array_max_size_t<shape_t,max_shape+n_axes>;
-                    return as_value<type>{};
-                }
-                else if constexpr (is_fixed_index_array_v<shape_t> && is_hybrid_index_array_v<axes_t>) {
-                    constexpr auto n_shape  = fixed_index_array_size_v<shape_t>;
-                    constexpr auto max_axes = hybrid_index_array_max_size_v<axes_t>;
-                    using type = resize_hybrid_index_array_max_size_t<axes_t,n_shape+max_axes>;
-                    return as_value<type>{};
-                }
-                else if constexpr (is_fixed_index_array_v<shape_t> && is_fixed_index_array_v<axes_t>) {
-                    constexpr auto n_shape = fixed_index_array_size_v<shape_t>;
-                    constexpr auto n_axes  = fixed_index_array_size_v<axes_t>;
-                    using type = resize_fixed_index_array_t<
-                        tuple_to_array_t<
-                            transform_bounded_array_t<shape_t>>
-                        , n_shape+n_axes
-                    >;
-                    return as_value<type>{};
-                }
-                else if constexpr (is_hybrid_index_array_v<shape_t> && is_index_v<axes_t>) {
-                    constexpr auto max_shape = hybrid_index_array_max_size_v<shape_t>;
-                    using type = resize_hybrid_index_array_max_size_t<shape_t,max_shape+1>;
-                    return as_value<type>{};
-                }
-                else if constexpr (is_fixed_index_array_v<shape_t> && is_index_v<axes_t>) {
-                    constexpr auto n_shape = fixed_index_array_size_v<shape_t>;
-                    using type = resize_fixed_index_array_t<
-                        tuple_to_array_t<
-                            transform_bounded_array_t<shape_t>>
-                        , n_shape+1
-                    >;
-                    return as_value<type>{};
-                }
-                else return as_value<void>{};
-            }();
-
-            using type = tuple_to_array_t<
-                transform_bounded_array_t<
-                    type_t<remove_cvref_t<decltype(vtype)>>>
-            >;
-            #endif
         }; // resolve_optype
     } // namespace meta
 }
