@@ -151,15 +151,15 @@ TEST_CASE("atleast_2d(traits)" * doctest::test_suite("view::atleast_2d"))
         int a = 1;
         auto array = view::atleast_2d(a);
         using array_t = decltype(array);
-        constexpr auto is_fixed = meta::is_fixed_size_ndarray_v<array_t>;
+        constexpr auto is_fixed = meta::is_fixed_shape_v<array_t>;
         NMTOOLS_STATIC_ASSERT_EQUAL( is_fixed, true );
     }
     SUBCASE("!fixed_ndarray(std::vector)")
     {
-        auto a = std::vector{1};
+        auto a = nmtools_list{1,2};
         auto array = view::atleast_2d(a);
         using array_t = decltype(array);
-        constexpr auto is_fixed = meta::is_fixed_size_ndarray_v<array_t>;
+        constexpr auto is_fixed = meta::is_fixed_shape_v<array_t>;
         NMTOOLS_STATIC_ASSERT_EQUAL( is_fixed, false );
     }
 }

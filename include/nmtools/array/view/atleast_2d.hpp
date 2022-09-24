@@ -21,45 +21,26 @@ namespace nmtools::view
     {
         using array_type = resolve_array_type_t<array_t>;
 
-        array_type array;
+        using nd_type = meta::ct<2ul>;
+
+        static constexpr auto shape_vtype = [](){
+            using shape_t = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
+            using type = meta::resolve_optype_t<index::shape_atleast_nd_t, shape_t, nd_type>;
+            return meta::as_value_v<type>;
+        }();
+        using shape_type = meta::type_t<decltype(shape_vtype)>;
+
+        array_type array_;
+        shape_type shape_;
 
         constexpr atleast_2d_t(const array_t& array)
-            : array(initialize(array, meta::as_value_v<array_type>)) {}
+            : array_(initialize(array, meta::as_value_v<array_type>))
+            , shape_(index::shape_atleast_nd(nmtools::shape(array),nd_type{}))
+        {}
         
         constexpr auto shape() const
         {
-            using namespace literals;
-            // arithmetic type
-            if constexpr (meta::is_num_v<array_t>) {
-                return nmtools_tuple{1_ct,1_ct};
-            } else {
-                auto shape_ = detail::shape(array);
-                return index::shape_atleast_nd(shape_,2_ct);
-            }
-            // TODO: remove
-            #if 0
-            // check if fixed 1d array
-            else if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
-                using namespace nmtools::literals;
-                // exactly 1d, prepend 1 to the shape
-                auto shape_ = detail::shape(array);
-                if constexpr (meta::fixed_dim_v<array_t> == 1)
-                    return index::expand_dims(shape_,0_ct);
-                // referenced array is atleast 2d
-                else return shape_;
-            }
-            // assume dynamic dim
-            else {
-                // TODO: create metafunction "make_sequence_type" to create vector
-                // assume std vector is available
-                // static_assert (NMTOOLS_HAS_VECTOR);
-                auto shape_ = detail::shape(array);
-                // prepend
-                if (len(shape_)==1)
-                    shape_.insert(shape_.begin(),1);
-                return shape_;
-            }
-            #endif
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -75,19 +56,19 @@ namespace nmtools::view
             // TODO: check shape
             // TODO: move to "index" member function
             if constexpr (meta::is_num_v<array_t>) {
-                return array;
+                return array_;
             } else {
                 auto indices_ = pack_indices(indices...);
                 auto expanded_shape   = shape();
                 auto squeezed_strides = index::compute_strides(expanded_shape);
 
-                auto shape_     = detail::shape(array);
+                auto shape_     = detail::shape(array_);
                 auto offset     = index::compute_offset(indices_,squeezed_strides);
                 auto tf_indices = index::compute_indices(offset,shape_);
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return apply_at(*array,tf_indices);
+                    return apply_at(*array_,tf_indices);
                 } else {
-                    return apply_at(array,tf_indices);
+                    return apply_at(array_,tf_indices);
                 }
             }
         } // operator()
@@ -125,77 +106,10 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
-    // TODO: remove
-    template <typename array_t>
-    struct fixed_ndarray_shape< view::atleast_2d_t<array_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (meta::is_num_v<array_t>) {
-                using array_type = make_array_type_t<size_t,2>;
-                return array_type{1ul,1ul};
-            } else if constexpr (is_fixed_size_ndarray_v<array_t>) {
-                if constexpr (fixed_ndarray_dim_v<array_t> == 1) {
-                    constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
-                    return index::expand_dims(shape_,0);
-                }
-                else return fixed_ndarray_shape_v<array_t>;
-            }
-            else return fixed_ndarray_shape_v<array_t>;
-        }();
-        using value_type = decltype(value);
-    };
-
     template <typename array_t>
     struct is_ndarray< view::decorator_t< view::atleast_2d_t, array_t >>
     {
         static constexpr auto value = meta::is_num_v<array_t> || is_ndarray_v<array_t>;
-    };
-
-    // TODO: remove
-    /**
-     * @brief specialization of eval type resolver for atleast_2d view.
-     * 
-     * @tparam array_t 
-     * @note this specialization is provided since no actual type
-     *      with fixed-dim dynamic-size trait is available, while such array is needed for this view.
-     * @todo add fixed-dim dynamic-size ndarray and remove this specialization.
-     */
-    template <typename array_t>
-    struct resolve_optype<
-        void, array::eval_t, view::decorator_t< view::atleast_2d_t, array_t >, none_t
-    >
-    {
-        static constexpr auto vtype = [](){
-            if constexpr (is_num_v<array_t>) {
-                using shape_t = make_tuple_type_t<ct<1>,ct<1>>;
-                using type = make_fixed_ndarray_t<array_t,shape_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_fixed_size_ndarray_v<array_t>) {
-                if constexpr (fixed_ndarray_dim_v<array_t> == 1) {
-                    constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
-                    // use arbitrary fixed-shape type to 
-                    // match resize_fixed_ndarray signature
-                    // (needs type instead of value)
-                    using some_array_t = int[1][nmtools::at(shape_,0)];
-                    using tf_array_t   = transform_bounded_array_t<array_t>;
-                    using type = resize_fixed_ndarray_t<tf_array_t,some_array_t>;
-                    return as_value_v<type>;
-                } else /* if constexpr (fixed_ndarray_dim_v<array_t> >= 2) */ {
-                    return as_value_v<array_t>;
-                }
-            } else if constexpr (is_fixed_dim_ndarray_v<array_t>) {
-                if constexpr (fixed_dim_v<array_t> == 2) {
-                    return as_value_v<array_t>;
-                } else {
-                    using element_t = get_element_type_t<array_t>;
-                    using type = make_dynamic_ndarray_t<element_t>;
-                    return as_value_v<type>;
-                }
-            } else /* if constexpr (is_dynamic_ndarray_v<array_t> || is_hybrid_ndarray_v<array_t>) */ {
-                return as_value_v<array_t>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
     };
 } // namespace nmtools::meta
 

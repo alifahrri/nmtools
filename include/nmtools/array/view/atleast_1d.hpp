@@ -1,10 +1,11 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ATLEAST_1D_HPP
 #define NMTOOLS_ARRAY_VIEW_ATLEAST_1D_HPP
 
-#include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/utility/apply_at.hpp"
-#include "nmtools/array/shape.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/array/index/atleast_nd.hpp"
+#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/shape.hpp"
+#include "nmtools/array/utility/apply_at.hpp"
 
 namespace nmtools::view
 {
@@ -14,19 +15,37 @@ namespace nmtools::view
         // TODO: consider to copy when array_t is simply arithmetic type
         using array_type = resolve_array_type_t<array_t>;
 
-        array_type array;
+        using nd_type = meta::ct<1ul>;
+
+        static constexpr auto shape_vtype = [](){
+            using shape_t = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
+            using type = meta::resolve_optype_t<index::shape_atleast_nd_t, shape_t, nd_type>;
+            return meta::as_value_v<type>;
+        }();
+        using shape_type = meta::type_t<decltype(shape_vtype)>;
+
+        static constexpr auto size_type = [](){
+            if constexpr (meta::is_fixed_size_v<array_t>) {
+                constexpr auto size = meta::fixed_size_v<array_t>;
+                using type = nmtools_tuple<meta::ct<(size_t)size>>;
+                return meta::as_value_v<type>;
+            } else {
+                // TODO: consider to use index_type
+                return meta::as_value_v<size_t>;
+            }
+        }();
+
+        array_type array_;
+        shape_type shape_;
 
         constexpr atleast_1d_t(const array_t& array)
-            : array(initialize(array, meta::as_value_v<array_type>)) {}
+            : array_(initialize(array, meta::as_value_v<array_type>))
+            , shape_(index::shape_atleast_nd(nmtools::shape(array),nd_type{}))
+        {}
         
         constexpr auto shape() const
         {
-            using namespace literals;
-            if constexpr (meta::is_num_v<array_t>) {
-                return nmtools_tuple{1_ct};
-            } else {
-                return detail::shape(array);
-            }
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -42,13 +61,13 @@ namespace nmtools::view
             // TODO: move to "index" member function
             // TODO: check shape
             if constexpr (meta::is_num_v<array_t>) {
-                return array;
+                return array_;
             } else {
                 auto indices_ = pack_indices(indices...);
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return apply_at(*array, indices_);
+                    return apply_at(*array_, indices_);
                 } else {
-                    return apply_at(array, indices_);
+                    return apply_at(array_, indices_);
                 }
             }
         } // operator()
@@ -86,41 +105,12 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
-    // TODO: remove
-    template <typename array_t>
-    struct fixed_ndarray_shape< view::atleast_1d_t<array_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_num_v<array_t>)
-                return meta::make_array_type_t<size_t,1>{1ul};
-            else return fixed_ndarray_shape_v<array_t>;
-        }();
-        using value_type = decltype(value);
-    };
-
-    // TODO: remove
-    template <typename array_t>
-    struct fixed_dim<
-        view::decorator_t< view::atleast_1d_t, array_t >
-    >
-    {
-        static constexpr auto value = [](){
-            if constexpr (is_num_v<array_t>) {
-                return 1;
-            } else if constexpr (is_fixed_dim_ndarray_v<array_t>) {
-                return fixed_dim_v<array_t>;
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = decltype(value);
-    }; // fixed_dim
-
     template <typename array_t>
     struct fixed_size<
         view::decorator_t< view::atleast_1d_t, array_t >
     >
     {
+        // maybe not fixed-shape but fixed-size
         static constexpr auto value = fixed_size_v<array_t>;
     }; // fixed_size
 

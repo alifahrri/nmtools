@@ -21,21 +21,26 @@ namespace nmtools::view
     {
         using array_type = resolve_array_type_t<array_t>;
 
-        array_type array;
+        using nd_type = meta::ct<3ul>;
+
+        static constexpr auto shape_vtype = [](){
+            using shape_t = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
+            using type = meta::resolve_optype_t<index::shape_atleast_nd_t, shape_t, nd_type>;
+            return meta::as_value_v<type>;
+        }();
+        using shape_type = meta::type_t<decltype(shape_vtype)>;
+
+        array_type array_;
+        shape_type shape_;
 
         constexpr atleast_3d_t(const array_t& array)
-            : array(initialize(array, meta::as_value_v<array_type>)) {}
+            : array_(initialize(array, meta::as_value_v<array_type>))
+            , shape_(index::shape_atleast_nd(nmtools::shape(array),nd_type{}))
+        {}
         
         constexpr auto shape() const
         {
-            using namespace literals;
-            if constexpr (meta::is_num_v<array_t>) {
-                // arithmetic type
-                return nmtools_tuple{1_ct,1_ct,1_ct};
-            } else {
-                auto shape_ = detail::shape(array);
-                return index::shape_atleast_nd(shape_,3_ct);
-            }
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -52,19 +57,19 @@ namespace nmtools::view
             // TODO: check shape
             // TODO: make decorator support returning num array, then make implement the following under index member fn
             if constexpr (meta::is_num_v<array_t>) {
-                return array;
+                return array_;
             } else {
                 auto indices_ = pack_indices(indices...);
                 auto expanded_shape   = shape();
                 auto squeezed_strides = index::compute_strides(expanded_shape);
 
-                auto shape_     = detail::shape(array);
+                auto shape_     = detail::shape(array_);
                 auto offset     = index::compute_offset(indices_,squeezed_strides);
                 auto tf_indices = index::compute_indices(offset,shape_);
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return apply_at(*array,tf_indices);
+                    return apply_at(*array_,tf_indices);
                 } else {
-                    return apply_at(array,tf_indices);
+                    return apply_at(array_,tf_indices);
                 }
             }
         } // operator()
@@ -102,89 +107,10 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
-    // TODO: remove
-    template <typename array_t>
-    struct fixed_ndarray_shape< view::atleast_3d_t<array_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (meta::is_num_v<array_t>)
-                return make_array_type_t<size_t,3>{1ul,1ul,1ul};
-            else if constexpr (is_fixed_size_ndarray_v<array_t>) {
-                constexpr auto dim_ = fixed_ndarray_dim_v<array_t>;
-                constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
-                if constexpr (dim_ == 1)
-                    return index::expand_dims(shape_,make_array_type_t<size_t,2>{0,1});
-                else if constexpr (dim_ == 2)
-                    return index::expand_dims(shape_,0);
-                else return shape_;
-            }
-            else return fixed_ndarray_shape_v<array_t>;
-        }();
-        using value_type = decltype(value);
-    };
-
     template <typename array_t>
     struct is_ndarray< view::decorator_t< view::atleast_3d_t, array_t >>
     {
         static constexpr auto value = meta::is_num_v<array_t> || is_ndarray_v<array_t>;
-    };
-
-    // TODO: remove
-    /**
-     * @brief specialization of eval type resolver for atleast_3d view.
-     * 
-     * @tparam array_t 
-     * @note this specialization is provided since no actual type
-     *      with fixed-dim dynamic-size trait is available, while such array is needed for this view.
-     * @todo add fixed-dim dynamic-size ndarray and remove this specialization.
-     */
-    template <typename array_t>
-    struct resolve_optype<
-        void, array::eval_t, view::decorator_t< view::atleast_3d_t, array_t >, none_t
-    >
-    {
-        // deduce the type,
-        // for now only check for fixed-size ndarray
-        // not yet decided what to do for hybrid ndarray or nested view
-        static constexpr auto vtype = [](){
-            if constexpr (is_num_v<array_t>) {
-                using shape_t = make_tuple_type_t<ct<1>,ct<1>,ct<1>>;
-                using type = make_fixed_ndarray_t<array_t,shape_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_fixed_size_ndarray_v<array_t>) {
-                constexpr auto dim_ = fixed_ndarray_dim_v<array_t>;
-                [[maybe_unused]] constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
-                if constexpr (dim_ == 1) {
-                    using some_array_t = int[1][1][nmtools::at(shape_,0)];
-                    using tf_array_t   = transform_bounded_array_t<array_t>;
-                    using type = resize_fixed_ndarray_t<tf_array_t,some_array_t>;
-                    return as_value_v<type>;
-                } else if constexpr (dim_ == 2) {
-                    constexpr auto dim0 = nmtools::at(shape_,0);
-                    constexpr auto dim1 = nmtools::at(shape_,1);
-                    using some_array_t = int[1][dim0][dim1];
-                    using tf_array_t   = transform_bounded_array_t<array_t>;
-                    using type = resize_fixed_ndarray_t<tf_array_t,some_array_t>;
-                    return as_value_v<type>;
-                } else /* if constexpr (dim >= 3) */ {
-                    // already 3+ dim, no transformation needed
-                    using type = array_t;
-                    return as_value_v<type>;
-                }
-            } else if constexpr (is_fixed_dim_ndarray_v<array_t>) {
-                if constexpr (fixed_dim_v<array_t> == 3) {
-                    return as_value_v<array_t>;
-                } else {
-                    using element_t = get_element_type_t<array_t>;
-                    using type = make_dynamic_ndarray_t<element_t>;
-                    return as_value_v<type>;
-                }
-            } else {
-                using type = array_t;
-                return as_value_v<type>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
     };
 } // namespace nmtools::meta
 

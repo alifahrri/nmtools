@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/ndarray.hpp"
 
 // TODO: move to shape.hpp
 #ifdef NMTOOLS_ENABLE_BOOST
@@ -78,11 +79,20 @@ namespace nmtools::meta
                 constexpr auto max_dim = bounded_size_v<shape_t>;
                 using index_t = get_element_type_t<shape_t>;
                 // TODO: use resize instead
-                return as_value_v<nmtools_hybrid_ndarray<index_t,(max_dim > nd ? max_dim : nd),1>>;
+                return as_value_v<array::static_vector<index_t,(max_dim > nd ? max_dim : nd)>>;
             } else if constexpr (is_index_array_v<shape_t>) {
                 using index_t = get_element_type_t<shape_t>;
-                // TODO: support small_vector/small_buffert
+                // TODO: support small_vector/small_buffer
                 return as_value_v<nmtools_list<index_t>>;
+            } else if constexpr (is_none_v<shape_t> && is_constant_index_v<nd_t>) {
+                return template_reduce<nd_t::value-1>([](auto init, [[maybe_unused]] auto index){
+                    using init_t = type_t<decltype(init)>;
+                    using type = append_type_t<init_t,ct<1ul>>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<ct<1ul>>>);
+            } else if constexpr (is_none_v<shape_t> && is_index_v<nd_t>) {
+                // TODO; consider to use index_type
+                return as_value_v<nmtools_list<size_t>>;
             } else {
                 return as_value_v<error::SHAPE_ATLEAST_ND_UNSUPPORTED<shape_t,nd_t>>;
             }

@@ -34,9 +34,17 @@ namespace nmtools::meta
         using element_type = get_element_type_t<array_type>;
 
         static constexpr auto vtype = [](){
-            if constexpr (is_fixed_size_ndarray_v<U>) {
-                constexpr auto shape = fixed_ndarray_shape_v<U>;
-                constexpr auto dim   = fixed_dim_v<U>;
+            // TODO: remove is_fixed_size_ndarray_v
+            if constexpr (is_fixed_shape_v<U> || is_fixed_size_ndarray_v<U>) {
+                constexpr auto shape = [](){
+                    constexpr auto shape = fixed_shape_v<U>;
+                    if constexpr (is_fail_v<decltype(shape)>) {
+                        return fixed_ndarray_shape_v<U>;
+                    } else {
+                        return shape;
+                    }
+                }();
+                constexpr auto dim = len_v<decltype(shape)>;
                 auto initial = as_value_v<utl::array<element_type,nmtools::get<dim-1>(shape)>>;
                 return template_reduce<dim-1>([&](auto init, auto index){
                     constexpr auto i = decltype(index)::value;
