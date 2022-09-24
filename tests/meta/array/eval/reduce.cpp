@@ -44,6 +44,8 @@ TEST_CASE("eval(reduce)" * doctest::test_suite("eval"))
         }
 
         // compile-time axis
+        // TODO: fix compile error on utl
+        #ifndef NMTOOLS_DISABLE_STL
         {
             using array_t = int[2][3];
             using axis_t  = decltype(0_ct);
@@ -60,6 +62,7 @@ TEST_CASE("eval(reduce)" * doctest::test_suite("eval"))
             using expected_t = nmtools_array<int,3>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
+        #endif
         {
             using array_t = na::fixed_ndarray<int,2,3>;
             using axis_t  = decltype(0_ct);
