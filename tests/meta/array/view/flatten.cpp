@@ -14,29 +14,29 @@ namespace meta = nm::meta;
 using namespace nm::literals;
 using nm::none_t;
 
-TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
+TEST_CASE("is_fixed_shape" * doctest::test_suite("view"))
 {
     SUBCASE("flatten")
     {
         {
             using view_t = view::decorator_t< view::flatten_t, int[2][3][2] >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using view_t = view::decorator_t< view::flatten_t, nmtools_array<int,3> >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using view_t = view::decorator_t< view::flatten_t, na::fixed_ndarray<int,2,3,2> >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using view_t = view::decorator_t< view::flatten_t, na::dynamic_ndarray<int> >;
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_t );
         }
         {
             using view_t = view::decorator_t< view::flatten_t, na::hybrid_ndarray<int,12,3> >;
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_t );
         }
     }
 }
