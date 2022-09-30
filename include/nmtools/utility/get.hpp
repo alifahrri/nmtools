@@ -7,7 +7,7 @@ namespace nmtools::meta
 {
     namespace error
     {
-        template <typename>
+        template <typename...>
         struct TEMPLATE_GET_UNSUPPORTED : detail::fail_t {};
     }
 }
@@ -17,7 +17,7 @@ namespace nmtools
     template <size_t I, typename T>
     struct get_t
     {
-        using type = meta::error::TEMPLATE_GET_UNSUPPORTED<T>;
+        using type = meta::error::TEMPLATE_GET_UNSUPPORTED<T,meta::as_type<I>>;
 
         constexpr type operator()([[maybe_unused]] const T& t) const noexcept
         {

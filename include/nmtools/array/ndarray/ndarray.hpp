@@ -12,6 +12,7 @@
 // NOTE: to include nmtools_hybrid_ndarray macro
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/utility/cast.hpp"
+#include "nmtools/utility/get.hpp"
 
 // experimental version that combine all three to single class
 
@@ -219,6 +220,50 @@ namespace nmtools::array
         } // resize
     }; // ndarray_t
 } // namespace nmtools::array
+
+namespace nmtools
+{
+    template <size_t I,
+          typename buffer_t
+        , typename shape_buffer_t
+        , template <typename...>typename stride_buffer_t
+        , template <typename...>typename offset_compute_t>
+    struct get_t<I,array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>>
+    {
+        using array_type = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+
+        static constexpr auto vtype = [](){
+            constexpr auto dim = meta::len_v<shape_buffer_t>;
+            if constexpr (meta::is_constant_index_array_v<shape_buffer_t> && (dim==1)) {
+                using type = meta::get_element_type_t<buffer_t>;
+                return meta::as_value_v<type>;
+            } else {
+                using type = meta::error::TEMPLATE_GET_UNSUPPORTED<array_type,meta::as_type<I>>;
+                return meta::as_value_v<type>;
+            }
+        }();
+
+        using type = meta::type_t<decltype(vtype)>;
+
+        constexpr decltype(auto) operator()([[maybe_unused]] const array_type& t) const noexcept
+        {
+            if constexpr (meta::is_fail_v<type>) {
+                return type{};
+            } else {
+                return t(I);
+            }
+        }
+
+        constexpr decltype(auto) operator()([[maybe_unused]] array_type& t) const noexcept
+        {
+            if constexpr (meta::is_fail_v<type>) {
+                return type{};
+            } else {
+                return t(I);
+            }
+        }
+    };
+}
 
 namespace nmtools::meta
 {
@@ -568,6 +613,23 @@ namespace nmtools::meta
         using buffer_type = replace_element_type_t<buffer_t,U>;
         using type = array::ndarray_t<buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t>;
     }; // replace_element_type
+
+    template <typename U
+        , typename buffer_t
+        , typename shape_buffer_t
+        , template <typename...>typename stride_buffer_t
+        , template <typename...>typename offset_compute_t>
+    struct is_index_array<
+        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>, U
+    >
+    {
+        static constexpr auto value = [](){
+            constexpr auto dim = len_v<shape_buffer_t>;
+            return (dim == 1)
+                && is_index_v<get_element_type_t<buffer_t>>
+            ;
+        }();
+    }; // is_index_array
 } // namespace nmtools::meta
 
 // casting
