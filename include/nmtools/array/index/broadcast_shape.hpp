@@ -142,6 +142,7 @@ namespace nmtools::meta
         // error type for in-compatible shapes
         struct BROADCAST_SHAPE_ERROR : detail::fail_t {};
         // error type for unsupported ashape_t bshape_t
+        template <typename...>
         struct BROADCAST_SHAPE_UNSUPPORTED : detail::fail_t {};
     }
 
@@ -259,7 +260,25 @@ namespace nmtools::meta
                 using type = resize_fixed_index_array_t<new_type,rsize>;
                 return as_value_v<type>;
             }
-            else return as_value_v<error::BROADCAST_SHAPE_UNSUPPORTED>;
+            else if constexpr (
+                is_index_array_v<ashape_t> && is_index_array_v<bshape_t>
+            ) {
+                constexpr auto len_a = len_v<ashape_t>;
+                constexpr auto len_b = len_v<bshape_t>;
+                // TODO: try to return static_vector
+                // constexpr auto b_size_a = bounded_size_v<ashape_t>;
+                // constexpr auto b_size_b = bounded_size_v<bshape_t>;
+                if constexpr ((len_a > 0) && (len_b > 0)) {
+                    constexpr auto max_size = (len_a > len_b) ? len_a : len_b;
+                    // TODO: use index_type instead of size_t
+                    using type = nmtools_array<size_t,max_size>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<size_t>;
+                    return as_value_v<type>;
+                }
+            }
+            else return as_value_v<error::BROADCAST_SHAPE_UNSUPPORTED<ashape_t,bshape_t>>;
         }();
 
         using type = type_t<meta::remove_cvref_t<decltype(vtype)>>;

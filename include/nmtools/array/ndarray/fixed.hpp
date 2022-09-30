@@ -525,7 +525,7 @@ namespace nmtools::array
 
         auto flat_rhs  = view::flatten(nmtools::forward<ndarray_t>(rhs));
         auto flat_data = view::mutable_flatten(this->data);
-        constexpr auto n_rhs = nmtools::at(meta::fixed_ndarray_shape_v<decltype(flat_rhs)>,meta::ct_v<0>);
+        constexpr auto n_rhs = meta::fixed_size_v<decltype(flat_rhs)>;
         static_assert (numel_==n_rhs
             , "mismatched shape for fixed_ndarray assignment"
         );

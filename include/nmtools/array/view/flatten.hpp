@@ -7,31 +7,7 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
-
-namespace nmtools::index
-{
-    using namespace literals;
-
-    // TODO: consider to move somewhere else
-    template <typename array_t>
-    constexpr auto shape_flatten(const array_t& array)
-    {
-        // TODO: return fixed index whenever possible
-        // TODO: use make_unsigned_t instead of size_t
-        if constexpr (meta::is_num_v<array_t>) {
-            return nmtools_tuple{1_ct};
-        } else {
-            auto shape_ = view::detail::shape(array);
-            auto N = index::product(shape_);
-            // flattened array is strictly 1D
-            if constexpr (meta::is_constant_index_v<decltype(N)>) {
-                return nmtools_tuple{N};
-            } else {
-                return nmtools_array{N};
-            }
-        }
-    } // shape_flatten
-} // namespace nmtools::index
+#include "nmtools/array/index/flatten.hpp"
 
 namespace nmtools::view
 {
@@ -48,14 +24,28 @@ namespace nmtools::view
         using const_reference = const value_type&;
         // array type as required by decorator
         using array_type      = resolve_array_type_t<array_t>;
-        using dst_shape_type  = decltype(index::shape_flatten(meta::declval<array_t>()));
+        using src_shape_type  = const decltype(nmtools::shape(meta::declval<array_t>()));
+        static constexpr auto fixed_size_vtype = [](){
+            constexpr auto fixed_size = meta::fixed_size_v<array_t>;
+            // NOTE: for now, ignore if array_t is view
+            // TODO: re-enable when all views are cleaned up
+            if constexpr (is_view_v<array_t>) {
+                return meta::as_value_v<meta::error::FIXED_SIZE_UNSUPPORTED<array_t>>;
+            } else if constexpr (meta::is_fail_v<decltype(fixed_size)>) {
+                return meta::as_value_v<decltype(fixed_size)>;
+            } else {
+                return meta::as_value_v<meta::ct<(size_t)fixed_size>>;
+            }
+        }();
+        using fixed_size_type = meta::type_t<decltype(fixed_size_vtype)>;
+        using dst_shape_type  = const meta::resolve_optype_t<index::shape_flatten_t,src_shape_type,fixed_size_type>;
 
         array_type     array;
         dst_shape_type dst_shape;
 
-        constexpr flatten_t(const array_t& array)
-            : array(initialize<array_type>(array))
-            , dst_shape(index::shape_flatten(array))
+        constexpr flatten_t(const array_t& array_)
+            : array(initialize<array_type>(array_))
+            , dst_shape(index::shape_flatten(nmtools::shape(array_),fixed_size_type{}))
         {}
 
         constexpr auto dim() const noexcept
@@ -100,14 +90,16 @@ namespace nmtools::view
         using value_type      = array_t;
         using const_reference = const value_type&;
         using array_type      = const array_t;
-        using dst_shape_type  = const decltype(index::shape_flatten(meta::declval<array_type>()));
+        using src_shape_type  = const decltype(nmtools::shape(meta::declval<array_t>()));
+        using fixed_size_type = decltype(meta::fixed_size_v<array_t>);
+        using dst_shape_type  = const meta::resolve_optype_t<index::shape_flatten_t,src_shape_type,fixed_size_type>;
 
         array_type     array;
         dst_shape_type dst_shape;
 
-        constexpr flatten_t(const array_t& array)
-            : array(initialize<array_type>(array))
-            , dst_shape(index::shape_flatten(array))
+        constexpr flatten_t(const array_t& array_)
+            : array(initialize<array_type>(array_))
+            , dst_shape(index::shape_flatten(nmtools::shape(array_),fixed_size_type{}))
         {}
 
         constexpr auto dim() const noexcept
@@ -176,66 +168,8 @@ namespace nmtools::meta
     struct is_array1d<view::decorator_t<view::flatten_t,array_t>> : meta::true_type {};
 } // namespace nmtools::meta
 
-namespace nmtools
-{
-    // TODO: remove
-    // TODO: update this, to check for fixed dst_shape member type
-    /**
-     * @brief Infer the shape of flatten view at compile time.
-     * 
-     * @tparam array_t 
-     */
-    template <typename array_t>
-    struct meta::fixed_ndarray_shape< view::flatten_t<array_t> >
-    {
-        static constexpr auto value = [](){
-            if constexpr (meta::is_num_v<array_t>) {
-                return nmtools_array{(size_t)1};
-            } else if constexpr (meta::is_fixed_size_ndarray_v<array_t>) {
-                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
-                constexpr auto N     = index::product(shape);
-                return nmtools_array{(size_t)N};
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-
-    // TODO: remove
-    #if 0
-    /**
-     * @brief Infer the dimension of flatten view at compile-time.
-     * 
-     * @tparam array_t 
-     */
-    template <typename array_t>
-    struct meta::fixed_dim < view::decorator_t<view::flatten_t, array_t> >
-    {
-        static constexpr auto value = 1ul;
-        using value_type = size_t;
-    }; // fixed_dim
-    #endif
-} // nmtools
-
 namespace nmtools::meta
 {
-    template <typename array_t>
-    struct fixed_shape<
-        view::decorator_t< view::flatten_t, array_t >
-    >
-    {
-        static constexpr auto value = [](){
-            // flatten view is strictly 1D, only need the size to decide the resulting shape
-            constexpr auto fixed_size = fixed_size_v<array_t>;
-            if constexpr (is_index_v<decltype(fixed_size)>) {
-                return nmtools_array{fixed_size};
-            } else {
-                return fixed_size;
-            }
-        }();
-    }; // fixed_shape
-
     template <typename array_t>
     struct is_ndarray< view::decorator_t< view::flatten_t, array_t > >
     {

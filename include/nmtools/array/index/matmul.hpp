@@ -142,13 +142,7 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_dynamic_index_array_v<shape_t>) {
-                using type = make_tuple_type_t<shape_t,shape_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_hybrid_index_array_v<shape_t>) {
-                using type = make_tuple_type_t<shape_t,shape_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_constant_index_array_v<shape_t>) {
+            if constexpr (is_constant_index_array_v<shape_t>) {
                 // TODO: check if split_t is constant index and then compute at compile-time
                 using type = resolve_optype_t<index::split_index_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,split_t>;
                 return as_value_v<type>;
@@ -179,6 +173,9 @@ namespace nmtools::meta
                 using left_t  = typename make_fixed_ndarray<element_t,left_size_t>::type;
                 using right_t = typename make_fixed_ndarray<element_t,right_size_t>::type;
                 using type    = make_tuple_type_t<left_t,right_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_index_array_v<shape_t>) {
+                using type = make_tuple_type_t<shape_t,shape_t>;
                 return as_value_v<type>;
             } else {
                 // unhandled type
@@ -396,122 +393,6 @@ namespace nmtools::index
         }();
 
         return nmtools_tuple{l_slices,r_slices};
-
-        #if 0
-        if constexpr (meta::is_dynamic_index_array_v<indices_t>
-            && meta::is_dynamic_index_array_v<lshape_t>
-            && meta::is_dynamic_index_array_v<rshape_t>
-        ) {
-            using index_t  = meta::get_element_type_t<indices_t>;
-            using slice_t  = nmtools_either<index_t,nmtools_tuple<none_t,none_t>>;
-            // assume indices, lshape, rshape, shape is dynamic index array
-            using result_t = nmtools_list<slice_t>;
-            auto l_slices = result_t {};
-            auto r_slices = result_t {};
-
-            auto ldim = len(lshape);
-            auto rdim = len(rshape);
-            [[maybe_unused]] auto matmul_dim = len(shape);
-            if constexpr (meta::is_resizeable_v<result_t>) {
-                l_slices.resize(ldim);
-                r_slices.resize(rdim);
-            }
-
-            constexpr auto all = nmtools_tuple{None,None};
-
-            // matmul slices
-            // for example left  -> [?,::]
-            //             right -> [::,?]
-            at(l_slices,meta::ct_v<-1>) = all;
-            at(r_slices,meta::ct_v<-2>) = all;
-
-            // active col/row slices
-            // for example left  -> [i_{-2},::]
-            //             right -> [::,i_{-1}]
-            at(l_slices,meta::ct_v<-2>) = at(indices,meta::ct_v<-2>);
-            at(r_slices,meta::ct_v<-1>) = at(indices,meta::ct_v<-1>);
-
-            // broadcasted indices
-
-            auto l_offset = matmul_dim - ldim;
-            for (size_t i=0; (ldim > 2) && (i<(ldim-2)); i++) {
-                // broadcasted indices can only same or 1
-                auto si = at(lshape,i);
-                at(l_slices,i) = (si == 1 ? 0 : at(indices,i+l_offset));
-            }
-
-            auto r_offset = matmul_dim - rdim;
-            for (size_t i=0; (rdim > 2) && (i<(rdim-2)); i++) {
-                // broadcasted indices can only same or 1
-                auto si = at(rshape,i);
-                at(r_slices,i) = (si == 1 ? 0 : at(indices,i+r_offset));
-            }
-
-            return nmtools_tuple{l_slices,r_slices};
-        } else {
-            const auto row = at(indices,meta::ct_v<-2>);
-            const auto col = at(indices,meta::ct_v<-1>);
-
-            const auto split_indices = split(indices,meta::ct_v<-2>);
-            const auto b_indices     = at(split_indices,meta::ct_v<0>);
-
-            [[maybe_unused]] auto all_slices = nmtools_tuple{None,None};
-            using all_slices_t [[maybe_unused]] = nmtools_tuple<none_t,none_t>;
-
-            [[maybe_unused]] auto all_ellipsis = nmtools_tuple{Ellipsis,Ellipsis};
-            using all_ellipsis_t [[maybe_unused]] = nmtools_tuple<ellipsis_t,ellipsis_t>;
-
-            /**
-             * @brief Computes broadcasted left and right indices to corresponding original shape.
-             * 
-             */
-            const auto lr_indices = [&](){
-                constexpr auto dim = meta::len_v<indices_t>;
-                if constexpr (dim > 2) {
-                    // broadcasted shape
-                    auto shape_    = split(shape,meta::ct_v<-2>);
-                    auto b_shape   = at(shape_,meta::ct_v<0>);
-                    // need to compute broadcast indices
-                    auto l_indices = broadcast_matmul_indices(b_indices,lshape,b_shape);
-                    auto r_indices = broadcast_matmul_indices(b_indices,rshape,b_shape);
-                    return nmtools_tuple{l_indices,r_indices};
-                } else {
-                    return all_ellipsis;
-                }
-            }();
-
-            auto get_lslice_indices = [&](const auto& l_indices){
-                // here l_indices maybe ellipsis, index array, or either (ellipsis/index array)
-                using l_indices_t = meta::remove_cvref_t<decltype(l_indices)>;
-                // matmul slices for left operands, [...,row,:]
-                auto matmul_indices = nmtools_tuple{row, all_slices};
-                if constexpr (is_ellipsis_v<l_indices_t>) {
-                    return matmul_indices;
-                } else {
-                    return concat_indices(l_indices, matmul_indices);
-                }
-            };
-
-            auto get_rslice_indices = [&](const auto& r_indices){
-                using r_indices_t = meta::remove_cvref_t<decltype(r_indices)>;
-                // matmul slices for right operands [...,:,col]
-                auto matmul_indices = nmtools_tuple{all_slices, col};
-                if constexpr (is_ellipsis_v<r_indices_t>) {
-                    return matmul_indices;
-                } else {
-                    return concat_indices(r_indices, matmul_indices);
-                }
-            };
-
-            using namespace nmtools::literals;
-
-            const auto l_indices = at(lr_indices,0_ct);
-            const auto r_indices = at(lr_indices,1_ct);
-            auto lslice_indices = get_lslice_indices(l_indices);
-            auto rslice_indices = get_rslice_indices(r_indices);
-            return nmtools_tuple{lslice_indices,rslice_indices};
-        }
-        #endif
     } // matmul
 } // namespace nmtools::index
 
@@ -520,6 +401,9 @@ namespace nmtools::meta
     namespace error
     {
         struct SHAPE_MATMUL_ERROR : detail::fail_t {};
+
+        template <typename...>
+        struct SHAPE_MATMUL_UNSUPPORTED : detail::fail_t {};
 
         template <typename...>
         struct MATMUL_ERROR : detail::fail_t {};
@@ -575,10 +459,25 @@ namespace nmtools::meta
                 constexpr auto max = lhs > rhs ? lhs : rhs;
                 using type = resize_hybrid_index_array_max_size_t<rhs_shape_t,max>;
                 return as_value_v<type>;
+            } else if constexpr (is_index_array_v<lhs_shape_t> && is_index_array_v<rhs_shape_t>) {
+                constexpr auto len_a = len_v<lhs_shape_t>;
+                constexpr auto len_b = len_v<rhs_shape_t>;
+                // TODO: try to return static_vector
+                // constexpr auto b_size_a = bounded_size_v<lhs_shape_t>;
+                // constexpr auto b_size_b = bounded_size_v<rhs_shape_t>;
+                if constexpr ((len_a > 0) && (len_b > 0)) {
+                    constexpr auto max_size = (len_a > len_b) ? len_a : len_b;
+                    // TODO: use index_type instead of size_t
+                    using type = nmtools_array<size_t,max_size>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<size_t>;
+                    return as_value_v<type>;
+                }
             }
             // unsupported
             else {
-                return as_value_v<error::SHAPE_MATMUL_ERROR>;
+                return as_value_v<error::SHAPE_MATMUL_UNSUPPORTED<lhs_shape_t,rhs_shape_t>>;
             }
         }();
 
