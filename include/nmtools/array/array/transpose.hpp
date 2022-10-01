@@ -19,13 +19,17 @@ namespace nmtools::array
      * @param output    optional output
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
         typename array_t, typename axes_t=none_t>
     constexpr auto transpose(const array_t& array, axes_t axes=axes_t{},
-        context_t&& context=context_t{}, output_t&& output=output_t{})
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto transposed = view::transpose(array,axes);
-        return eval(transposed,context,output);
+        return eval(transposed
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
     } // transpose
 } // namespace nmtools::array
 
