@@ -17,25 +17,31 @@ using nm::none_t;
 
 TEST_CASE("transpose" * doctest::test_suite("view"))
 {
-    SUBCASE("is_fixed_size_ndarray")
+    SUBCASE("is_fixed_shape")
     {
         {
             using array_t = int[2][3];
             using axes_t  = nm::none_t;
-            using view_t  = decltype(view::transpose(declval(array_t),declval(axes_t)));
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            using view_t  = view::decorator_t<view::transpose_t,array_t,axes_t>;
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using array_t = nmtools_array<nmtools_array<int,3>,2>;
             using axes_t  = nm::none_t;
             using view_t  = decltype(view::transpose(declval(array_t),declval(axes_t)));
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3>;
             using axes_t  = nm::none_t;
             using view_t  = decltype(view::transpose(declval(array_t),declval(axes_t)));
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
+        }
+        {
+            using array_t = na::ndarray_t<nmtools_array<int,6>,nmtools_tuple<meta::ct<2>,meta::ct<3>>>;
+            using axes_t  = nm::none_t;
+            using view_t  = view::decorator_t<view::transpose_t,array_t,axes_t>;
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
     }
 }

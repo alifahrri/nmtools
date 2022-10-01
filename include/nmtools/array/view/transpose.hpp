@@ -39,14 +39,19 @@ namespace nmtools::view
         using const_reference = const value_type&;
         // array type as required by decorator
         using array_type = resolve_array_type_t<array_t>;
+        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
+        using dst_shape_type = meta::resolve_optype_t<index::shape_transpose_t,src_shape_type,axes_t>;
         using axes_type  = resolve_attribute_type_t<axes_t>;
 
-        array_type array;
-        axes_type axes;
+        array_type      array;
+        axes_type       axes;
+        dst_shape_type  shape_;
 
-        constexpr transpose_t(const array_t& array, const axes_t& axes=axes_t{})
-            : array(initialize(array, meta::as_value_v<array_type>))
-            , axes(init_attribute(axes, meta::as_value_v<axes_type>)) {}
+        constexpr transpose_t(const array_t& array_, const axes_t& axes=axes_t{})
+            : array(initialize(array_, meta::as_value_v<array_type>))
+            , axes(init_attribute(axes, meta::as_value_v<axes_type>))
+            , shape_(index::shape_transpose(nmtools::shape</*force_constant_index*/true>(array_),axes))
+        {}
         
         /**
          * @brief return the shape of dst (sliced) array
@@ -55,8 +60,7 @@ namespace nmtools::view
          */
         constexpr decltype(auto) shape() const noexcept
         {
-            auto shape_ = detail::shape(array);
-            return index::shape_transpose(shape_,axes);
+            return shape_;
         } // shape
         
         /**
@@ -71,6 +75,7 @@ namespace nmtools::view
         {
             auto indices_ = pack_indices(indices...);
 
+            // TODO: move to index/transpose.hpp
             if constexpr (is_none_v<axes_type>) {
                 indices_ = ::nmtools::index::reverse(indices_);
             } else {
@@ -101,36 +106,6 @@ namespace nmtools::view
 
 namespace nmtools
 {
-
-    // TODO: remove
-    /**
-     * @brief Specialization of fixed_ndarray_shape for transpose view.
-     * 
-     * @tparam array_t      referenced array type
-     * @tparam indices_t    indices type
-     */
-    template <typename array_t, typename indices_t>
-    struct meta::fixed_ndarray_shape<
-        view::transpose_t<array_t,indices_t>
-    >
-    {
-        static constexpr auto value = [](){
-            if constexpr (!is_fixed_size_ndarray_v<array_t>) {
-                return detail::Fail;
-            } else if constexpr (is_none_v<indices_t>) {
-                constexpr auto src_value = meta::fixed_ndarray_shape_v<array_t>;
-                return ::nmtools::index::reverse(src_value);
-            } else if constexpr (meta::is_constant_index_array_v<indices_t>) {
-                constexpr auto src = meta::fixed_ndarray_shape_v<array_t>;
-                constexpr auto dst = indices_t{};
-                return ::nmtools::index::gather(src,dst);
-            } else {
-                // the array is fixed size but the desired indices are not
-                return detail::Fail;
-            }
-        }();
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
 
     /**
      * @brief specialization of meta::is_ndarray for transpose view and arbitray axes

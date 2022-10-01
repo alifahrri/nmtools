@@ -20,19 +20,23 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         using array_type = resolve_array_type_t<array_t>;
+        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
+        using dst_shape_type = meta::resolve_optype_t<index::shape_tile_t,src_shape_type,reps_t>;
         using reps_type  = resolve_attribute_type_t<reps_t>;
         
-        array_type array;
-        reps_type  reps;
+        array_type     array;
+        reps_type      reps;
+        dst_shape_type shape_;
 
-        constexpr tile_t(const array_t& array, const reps_t& reps)
-            : array(initialize(array, meta::as_value_v<array_type>))
-            , reps(init_attribute(reps, meta::as_value_v<reps_type>)) {}
+        constexpr tile_t(const array_t& array_, const reps_t& reps)
+            : array(initialize(array_, meta::as_value_v<array_type>))
+            , reps(init_attribute(reps, meta::as_value_v<reps_type>))
+            , shape_(index::shape_tile(nmtools::shape</*force_constant_index*/true>(array_),reps))
+        {}
         
         constexpr decltype(auto) shape() const
         {
-            auto shape_ = detail::shape(array);
-            return index::shape_tile(shape_,reps);
+            return shape_;
         } // shape
 
         constexpr decltype(auto) dim() const
@@ -71,53 +75,6 @@ namespace nmtools::view
 namespace nmtools::meta
 {
     // TODO: remove
-    /**
-     * @brief Infer the shape of tile view at compile-time.
-     * 
-     * @tparam array_t 
-     * @tparam reps_t 
-     */
-    template <typename array_t, typename reps_t>
-    struct fixed_ndarray_shape< view::decorator_t<view::tile_t,array_t,reps_t> >
-        : fixed_shape< view::decorator_t<view::tile_t,array_t,reps_t> > {};
-    #if 0
-    {
-        static inline constexpr auto value = [](){
-            // we can only know the shape at compile time if both array and reps are compile-time constant
-            // note that shape_tile will "repeat elements" or multiply size between array's shape and reps
-            if constexpr (is_fixed_size_ndarray_v<array_t> && is_constant_index_array_v<reps_t>) {
-                constexpr auto shape_ = fixed_ndarray_shape_v<array_t>;
-                constexpr auto reps   = reps_t{};
-                return index::shape_tile(shape_,reps);
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-    #endif
-
-    #if 0
-    /**
-     * @brief Infer dimension of tile view at compile-time.
-     * 
-     * @tparam array_t 
-     * @tparam reps_t 
-     */
-    template <typename array_t, typename reps_t>
-    struct fixed_dim< view::decorator_t<view::tile_t, array_t, reps_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_fixed_index_array_v<reps_t>) {
-                return fixed_index_array_size_v<reps_t>;
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = decltype(value);
-    }; // fixed_dim
-    #endif
-
     template <typename array_t, typename reps_t>
     struct fixed_size<
         view::decorator_t<view::tile_t, array_t, reps_t>

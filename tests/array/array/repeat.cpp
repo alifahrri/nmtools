@@ -1,11 +1,23 @@
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+#endif
+
 #include "nmtools/array/array/repeat.hpp"
 #include "nmtools/testing/data/array/repeat.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
-
-#include <vector>
-#include <array>
-#include <tuple>
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -45,48 +57,162 @@ SUBCASE(#case_name) \
 
 TEST_CASE("repeat(case1)" * doctest::test_suite("array::repeat"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REPEAT_SUBCASE(case1, array_a, repeats, axis);
     REPEAT_SUBCASE(case1, array_f, repeats, axis);
     REPEAT_SUBCASE(case1, array_d, repeats, axis);
     REPEAT_SUBCASE(case1, array_h, repeats, axis);
+
+    #else
+    REPEAT_SUBCASE(case1, array_cs_fb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_cs_hb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_cs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case1, array_fs_fb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_fs_hb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_fs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case1, array_hs_fb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_hs_hb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_hs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case1, array_ds_fb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_ds_hb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_ds_db, repeats, axis);
+    #endif
 }
 
 TEST_CASE("repeat(case2)" * doctest::test_suite("array::repeat"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REPEAT_SUBCASE(case2, array_a, repeats, axis);
     REPEAT_SUBCASE(case2, array_f, repeats, axis);
     REPEAT_SUBCASE(case2, array_d, repeats, axis);
     REPEAT_SUBCASE(case2, array_h, repeats, axis);
+
+    #else
+    REPEAT_SUBCASE(case2, array_cs_fb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_cs_hb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_cs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case2, array_fs_fb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_fs_hb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_fs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case2, array_hs_fb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_hs_hb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_hs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case2, array_ds_fb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_ds_hb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_ds_db, repeats, axis);
+    #endif
 }
 
 TEST_CASE("repeat(case3)" * doctest::test_suite("array::repeat"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REPEAT_SUBCASE(case3, array_a, repeats, axis);
     REPEAT_SUBCASE(case3, array_f, repeats, axis);
     REPEAT_SUBCASE(case3, array_d, repeats, axis);
     REPEAT_SUBCASE(case3, array_h, repeats, axis);
+
+    #else
+    REPEAT_SUBCASE(case3, array_cs_fb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_cs_hb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_cs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case3, array_fs_fb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_fs_hb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_fs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case3, array_hs_fb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_hs_hb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_hs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case3, array_ds_fb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_ds_hb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_ds_db, repeats, axis);
+    #endif
 }
 
 TEST_CASE("repeat(case4)" * doctest::test_suite("array::repeat"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REPEAT_SUBCASE(case4, array_a, repeats, axis);
     REPEAT_SUBCASE(case4, array_f, repeats, axis);
     REPEAT_SUBCASE(case4, array_d, repeats, axis);
     REPEAT_SUBCASE(case4, array_h, repeats, axis);
+
+    #else
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats, axis);
+    #endif
 }
 
 TEST_CASE("repeat(case5)" * doctest::test_suite("array::repeat"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REPEAT_SUBCASE(case5, array_a, repeats, axis);
     REPEAT_SUBCASE(case5, array_f, repeats, axis);
     REPEAT_SUBCASE(case5, array_d, repeats, axis);
     REPEAT_SUBCASE(case5, array_h, repeats, axis);
+
+    #else
+    REPEAT_SUBCASE(case5, array_cs_fb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_cs_hb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_cs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case5, array_fs_fb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_fs_hb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_fs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case5, array_hs_fb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_hs_hb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_hs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case5, array_ds_fb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_ds_hb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_ds_db, repeats, axis);
+    #endif
 }
 
 TEST_CASE("repeat(case6)" * doctest::test_suite("array::repeat"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REPEAT_SUBCASE(case6, array_a, repeats, axis);
     REPEAT_SUBCASE(case6, array_f, repeats, axis);
     REPEAT_SUBCASE(case6, array_d, repeats, axis);
     REPEAT_SUBCASE(case6, array_h, repeats, axis);
+
+    #else
+    REPEAT_SUBCASE(case6, array_cs_fb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_cs_hb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_cs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case6, array_fs_fb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_fs_hb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_fs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case6, array_hs_fb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_hs_hb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_hs_db, repeats, axis);
+
+    REPEAT_SUBCASE(case6, array_ds_fb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_ds_hb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_ds_db, repeats, axis);
+    #endif
 }
