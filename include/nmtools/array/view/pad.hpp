@@ -28,12 +28,13 @@ namespace nmtools::view
         using pad_width_type = resolve_attribute_type_t<pad_width_t>;
         using pad_value_type = resolve_attribute_type_t<value_t>;
         using value_type     = meta::get_element_type_t<array_t>;
-        using shape_type     = meta::remove_reference_t<decltype(*index::shape_pad(detail::shape(meta::declval<array_t>()),meta::declval<pad_width_t>()))>;
+        using src_shape_type = decltype(nmtools::shape(meta::declval<array_t>()));
+        using dst_shape_type = meta::resolve_optype_t<index::shape_pad_t,src_shape_type,pad_width_t>;
 
         array_type     array;
         pad_width_type pad_width;
         pad_value_type pad_value;
-        shape_type     shape_;
+        dst_shape_type shape_;
 
         // only support constant pad for now
         // TODO: add reflect and edge mode
@@ -95,35 +96,6 @@ namespace nmtools::view
 namespace nmtools::meta
 {
     /**
-     * @brief Infer the shape of pad view at compile-time.
-     * 
-     * @tparam array_t 
-     * @tparam pad_width_t 
-     * @tparam value_t 
-     */
-    template <typename array_t, typename pad_width_t, typename value_t>
-    struct fixed_ndarray_shape<
-        view::pad_t< array_t, pad_width_t, value_t >
-    >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_fixed_size_ndarray_v<array_t> && is_constant_index_array_v<pad_width_t>) {
-                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
-                constexpr auto pad_width = to_value_v<pad_width_t>;
-                constexpr auto padded = index::shape_pad(shape,pad_width);
-                if constexpr (static_cast<bool>(padded)) {
-                    return *padded;
-                } else {
-                    return detail::Fail;
-                }
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = remove_cvref_t<decltype(value)>;
-    }; // fixed_ndarray_shape
-
-    /**
      * @brief Infer the dimension of pad view at compile-time.
      * 
      * @tparam array_t 
@@ -136,13 +108,13 @@ namespace nmtools::meta
     >
     {
         using view_type  = view::decorator_t< view::pad_t, array_t, pad_width_t, value_t >;
-        using shape_type = typename view_type::shape_type;
+        using dst_shape_type = typename view_type::dst_shape_type;
 
         static inline constexpr auto value = [](){
             // padding doesn't change dimension, only change shape
             #if 1
-            if constexpr (is_fixed_index_array_v<shape_type>) {
-                return len_v<shape_type>;
+            if constexpr (is_fixed_index_array_v<dst_shape_type>) {
+                return len_v<dst_shape_type>;
             } else {
                 return error::FIXED_DIM_UNSUPPORTED<view_type>{};
             }
@@ -164,13 +136,13 @@ namespace nmtools::meta
     >
     {
         using view_type  = view::decorator_t< view::pad_t, array_t, pad_width_t, value_t >;
-        using shape_type = typename view_type::shape_type;
+        using dst_shape_type = typename view_type::dst_shape_type;
 
         static inline constexpr auto value = [](){
             // can only know the resulting size if the shape is constant
             // since pad width affect the shape
-            if constexpr (is_constant_index_array_v<shape_type>) {
-                return index::product(shape_type{});
+            if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                return index::product(dst_shape_type{});
             } else {
                 return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
             }
