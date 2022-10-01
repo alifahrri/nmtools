@@ -89,7 +89,7 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
     }
 }
 
-TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
+TEST_CASE("is_fixed_shape" * doctest::test_suite("view"))
 {
     using namespace nmtools::literals;
     SUBCASE("pad")
@@ -99,7 +99,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using pad_width_t = decltype(nmtools_tuple{1_ct,2_ct,0_ct,0_ct});
             using value_t = float;
             using view_t  = view::decorator_t< view::pad_t, array_t, pad_width_t, value_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
     }
 }

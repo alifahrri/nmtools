@@ -28,7 +28,7 @@ namespace nmtools::view
         using pad_width_type = resolve_attribute_type_t<pad_width_t>;
         using pad_value_type = resolve_attribute_type_t<value_t>;
         using value_type     = meta::get_element_type_t<array_t>;
-        using src_shape_type = decltype(nmtools::shape(meta::declval<array_t>()));
+        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
         using dst_shape_type = meta::resolve_optype_t<index::shape_pad_t,src_shape_type,pad_width_t>;
 
         array_type     array;
@@ -40,11 +40,11 @@ namespace nmtools::view
         // TODO: add reflect and edge mode
         const PADDING_MODE mode = PADDING_MODE::CONSTANT;
 
-        constexpr pad_t(const array_t& array, const pad_width_t& pad_width, const value_t pad_value)
-            : array(initialize(array, meta::as_value_v<array_type>))
+        constexpr pad_t(const array_t& array_, const pad_width_t& pad_width, const value_t pad_value)
+            : array(initialize(array_, meta::as_value_v<array_type>))
             , pad_width(init_attribute(pad_width, meta::as_value_v<pad_width_type>))
             , pad_value(init_attribute(pad_value, meta::as_value_v<pad_value_type>))
-            , shape_(*index::shape_pad(detail::shape(array),pad_width))
+            , shape_(*index::shape_pad(nmtools::shape</*force_constant_index*/true>(array_),pad_width))
         {}
         
         constexpr auto shape() const

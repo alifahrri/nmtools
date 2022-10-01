@@ -20,7 +20,7 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         using array_type = resolve_array_type_t<array_t>;
-        using src_shape_type = decltype(nmtools::shape(meta::declval<array_t>()));
+        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
         using dst_shape_type = meta::resolve_optype_t<index::shape_tile_t,src_shape_type,reps_t>;
         using reps_type  = resolve_attribute_type_t<reps_t>;
         
@@ -31,7 +31,7 @@ namespace nmtools::view
         constexpr tile_t(const array_t& array_, const reps_t& reps)
             : array(initialize(array_, meta::as_value_v<array_type>))
             , reps(init_attribute(reps, meta::as_value_v<reps_type>))
-            , shape_(index::shape_tile(nmtools::shape(array_),reps))
+            , shape_(index::shape_tile(nmtools::shape</*force_constant_index*/true>(array_),reps))
         {}
         
         constexpr decltype(auto) shape() const

@@ -39,7 +39,7 @@ namespace nmtools::view
         using const_reference = const value_type&;
         // array type as required by decorator
         using array_type = resolve_array_type_t<array_t>;
-        using src_shape_type = decltype(nmtools::shape(meta::declval<array_t>()));
+        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
         using dst_shape_type = meta::resolve_optype_t<index::shape_transpose_t,src_shape_type,axes_t>;
         using axes_type  = resolve_attribute_type_t<axes_t>;
 
@@ -50,7 +50,7 @@ namespace nmtools::view
         constexpr transpose_t(const array_t& array_, const axes_t& axes=axes_t{})
             : array(initialize(array_, meta::as_value_v<array_type>))
             , axes(init_attribute(axes, meta::as_value_v<axes_type>))
-            , shape_(index::shape_transpose(nmtools::shape(array_),axes))
+            , shape_(index::shape_transpose(nmtools::shape</*force_constant_index*/true>(array_),axes))
         {}
         
         /**

@@ -18,7 +18,7 @@ namespace nmtools::view
         using array_type   = resolve_array_type_t<array_t>;
         using repeats_type = resolve_attribute_type_t<repeats_t>;
         using axis_type    = resolve_attribute_type_t<axis_t>;
-        using src_shape_type = decltype(nmtools::shape(meta::declval<array_t>()));
+        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
         using dst_shape_type = meta::resolve_optype_t<index::shape_repeat_t,src_shape_type,repeats_t,axis_t>;
 
         array_type     array;
@@ -26,11 +26,11 @@ namespace nmtools::view
         axis_type      axis;
         dst_shape_type dst_shape;
 
-        constexpr repeat_t(const array_t& array, const repeats_t& repeats, const axis_t& axis)
-            : array(initialize(array, meta::as_value_v<array_type>))
+        constexpr repeat_t(const array_t& array_, const repeats_t& repeats, const axis_t& axis)
+            : array(initialize(array_, meta::as_value_v<array_type>))
             , repeats(init_attribute(repeats, meta::as_value_v<repeats_type>))
             , axis(init_attribute(axis, meta::as_value_v<axis_type>))
-            , dst_shape(index::shape_repeat(detail::shape(array),repeats,axis))
+            , dst_shape(index::shape_repeat(nmtools::shape</*force_constant_index*/true>(array_),repeats,axis))
         {}
         
         constexpr decltype(auto) shape() const

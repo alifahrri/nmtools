@@ -14,19 +14,19 @@ namespace nmtools::view
         using array_type   = resolve_array_type_t<array_t>;
         using indices_type = resolve_attribute_type_t<indices_t>;
         using axis_type    = resolve_attribute_type_t<axis_t>;
-        using src_shape_type = decltype(nmtools::shape(meta::declval<array_t>()));
-        using shape_type     = meta::resolve_optype_t<index::shape_take_t,src_shape_type,indices_t,axis_t>;
+        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
+        using dst_shape_type = meta::resolve_optype_t<index::shape_take_t,src_shape_type,indices_t,axis_t>;
 
-        array_type   array;
-        indices_type indices;
-        axis_type    axis;
-        shape_type   shape_;
+        array_type     array;
+        indices_type   indices;
+        axis_type      axis;
+        dst_shape_type shape_;
 
-        constexpr take_t(const array_t& array, const indices_t& indices_, const axis_t& axis)
-            : array(initialize<array_type>(array))
+        constexpr take_t(const array_t& array_, const indices_t& indices_, const axis_t& axis)
+            : array(initialize<array_type>(array_))
             , indices(init_attribute<indices_type>(indices_))
             , axis(init_attribute<axis_type>(axis))
-            , shape_(index::shape_take(detail::shape(array),indices_,axis))
+            , shape_(index::shape_take(nmtools::shape</*force_constant_index*/true>(array_),indices_,axis))
         {}
         
         constexpr auto shape() const
@@ -77,12 +77,12 @@ namespace nmtools::meta
     >
     {
         using view_type  = view::decorator_t< view::take_t, array_t, indices_t, axis_t >;
-        using shape_type = typename view_type::shape_type;
+        using dst_shape_type = typename view_type::dst_shape_type;
 
         static constexpr auto value = [](){
             // indices and axis contributes to shape changes, may decrease/increase number of elements
-            if constexpr (is_constant_index_array_v<shape_type>) {
-                return index::product(shape_type{});
+            if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                return index::product(dst_shape_type{});
             } else {
                 return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
             }
