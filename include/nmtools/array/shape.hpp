@@ -232,14 +232,15 @@ namespace nmtools
                 return shape_t{shape(*rptr)};
             }
         } else {
+            using meta::ct_v;
             if constexpr (force_constant_index) {
                 constexpr auto fixed_shape = meta::fixed_shape_v<array_t>;
                 if constexpr (!meta::is_fail_v<decltype(fixed_shape)>) {
                     return meta::template_reduce<len(fixed_shape)-1>([&](auto init, auto index){
                         using init_type = decltype(init);
-                        using type = meta::append_type_t<init_type,meta::ct<(size_t)at(fixed_shape,index+1)>>;
+                        using type = meta::append_type_t<init_type,meta::ct<(size_t)at(fixed_shape,ct_v<index+1>)>>;
                         return type{};
-                    }, nmtools_tuple<meta::ct<(size_t)at(fixed_shape,0)>>{});
+                    }, nmtools_tuple<meta::ct<static_cast<size_t>(fixed_shape,ct_v<0>)>>{});
                 } else {
                     return impl::shape<array_t>(array);
                 }
