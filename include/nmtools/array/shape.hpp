@@ -240,7 +240,7 @@ namespace nmtools
                         using init_type = decltype(init);
                         using type = meta::append_type_t<init_type,meta::ct<(size_t)at(fixed_shape,ct_v<index+1>)>>;
                         return type{};
-                    }, nmtools_tuple<meta::ct<static_cast<size_t>(fixed_shape,ct_v<0>)>>{});
+                    }, nmtools_tuple<meta::ct<static_cast<size_t>(at(fixed_shape,ct_v<0>))>>{});
                 } else {
                     return impl::shape<array_t>(array);
                 }
