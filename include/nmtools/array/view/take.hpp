@@ -71,34 +71,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    /**
-     * @brief Infer shape for take view at compile-time.
-     * 
-     * Only supported if array's shape and indices and axis are known at compile-time.
-     * 
-     * @tparam array_t 
-     * @tparam indices_t 
-     * @tparam axis_t 
-     */
-    template <typename array_t, typename indices_t, typename axis_t>
-    struct fixed_ndarray_shape< view::take_t<array_t,indices_t,axis_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_fixed_size_ndarray_v<array_t>
-                && is_constant_index_array_v<indices_t>
-                && is_constant_index_v<axis_t>)
-            {
-                constexpr auto shape   = fixed_ndarray_shape_v<array_t>;
-                constexpr auto indices = indices_t{};
-                constexpr auto axis    = axis_t{};
-                return ::nmtools::index::shape_take(shape,indices,axis);
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-
     template <typename array_t, typename indices_t, typename axis_t>
     struct fixed_size<
         view::decorator_t< view::take_t, array_t, indices_t, axis_t >
