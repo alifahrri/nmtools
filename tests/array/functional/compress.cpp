@@ -22,7 +22,7 @@ TEST_CASE("compress(case1)" * doctest::test_suite("functional::compress"))
     FUNCTIONAL_SUBCASE( "case1", fn::compress[condition_a][axis], array_a );
     FUNCTIONAL_SUBCASE( "case1", fn::compress[condition_f][axis], array_f );
     FUNCTIONAL_SUBCASE( "case1", fn::compress[condition_h][axis], array_h );
-    FUNCTIONAL_SUBCASE( "case1", fn::compress[condition_d][axis], array_d );
+    FUNCTIONAL_SUBCASE( "case1", fn::compress[condition_v][axis], array_d );
 }
 
 #if 1
@@ -35,7 +35,7 @@ TEST_CASE("compress(case3)" * doctest::test_suite("functional::compress"))
     FUNCTIONAL_SUBCASE( "case3", fn::compress[condition_a][axis], array_a );
     FUNCTIONAL_SUBCASE( "case3", fn::compress[condition_f][axis], array_f );
     FUNCTIONAL_SUBCASE( "case3", fn::compress[condition_h][axis], array_h );
-    FUNCTIONAL_SUBCASE( "case3", fn::compress[condition_d][axis], array_d );
+    FUNCTIONAL_SUBCASE( "case3", fn::compress[condition_v][axis], array_d );
 }
 #endif
 
