@@ -299,6 +299,7 @@ NM_TEST_SUBCASE(constexpr_take, case5)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, view::take, array, indices, axis );
 }
 
+#if 0
 NM_TEST_SUBCASE(where, case1)
 {
     NMTOOLS_TESTING_DECLARE_NS( view, where, case1 );
@@ -318,6 +319,7 @@ NM_TEST_SUBCASE(where, case2)
     NMTOOLS_PIO_SUBCASE( case2, result, na::where, condition_a, x_a, y_a );
     NMTOOLS_PIO_SUBCASE( case2, result, na::where, condition_a, x, y );
 }
+#endif
 
 NM_TEST_SUBCASE(reshape, case1)
 {
@@ -414,6 +416,7 @@ NM_TEST_SUBCASE(constexpr_concatenate, case4)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, expected, na::concatenate, lhs_a, rhs_a, axis_ct );
 }
 
+#if 0
 NM_TEST_SUBCASE(broadcast_to, case1)
 {
     NMTOOLS_TESTING_DECLARE_NS( broadcast_to, case1 );
@@ -477,6 +480,7 @@ NM_TEST_SUBCASE(constexpr_broadcast_to, case10)
     NMTOOLS_TESTING_DECLARE_NS( constexpr_broadcast_to, case10 );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case10, expected, view::broadcast_to, x, shape );
 }
+#endif
 
 // list not supported yet on arduino
 // NM_TEST_SUBCASE(split, case1)
@@ -609,11 +613,13 @@ NM_TEST_SUBCASE(take, case6)
     NMTOOLS_PIO_SUBCASE( case6, result, view::take, array_a, indices_a, axis );
 }
 
+#if 0
 NM_TEST_SUBCASE(where, case3)
 {
     NMTOOLS_TESTING_DECLARE_NS( view, where, case3 );
     NMTOOLS_PIO_SUBCASE( case3, result, view::where, condition_a, x_a, y_a );
 }
+#endif
 
 NM_TEST_SUBCASE(reshape, case2)
 {
@@ -657,6 +663,7 @@ NM_TEST_SUBCASE(concatenate, case2)
     NMTOOLS_PIO_SUBCASE( case2, expected, view::concatenate, lhs_a, rhs_a, axis );
 }
 
+#if 0
 NM_TEST_SUBCASE(broadcast_to, case2)
 {
     NMTOOLS_TESTING_DECLARE_NS( broadcast_to, case2 );
@@ -704,6 +711,7 @@ NM_TEST_SUBCASE(broadcast_to, case11)
     NMTOOLS_TESTING_DECLARE_NS( broadcast_to, case11 );
     NMTOOLS_PIO_SUBCASE( case11, expected, view::broadcast_to, x, shape );
 }
+#endif
 #endif // NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
 
 /* ========================================================================= */
@@ -744,8 +752,10 @@ void setup()
     NMTOOLS_PIO_RUN(constexpr_take, case2)
     NMTOOLS_PIO_RUN(constexpr_take, case5)
 
+    #if 0
     NMTOOLS_PIO_RUN(where, case1)
     NMTOOLS_PIO_RUN(where, case2)
+    #endif
 
     NMTOOLS_PIO_RUN(reshape, case1)
     NMTOOLS_PIO_RUN(constexpr_reshape, case1)
@@ -758,6 +768,7 @@ void setup()
     NMTOOLS_PIO_RUN(constexpr_concatenate, case3)
     NMTOOLS_PIO_RUN(constexpr_concatenate, case4)
 
+    #if 0
     NMTOOLS_PIO_RUN(broadcast_to, case1)
     NMTOOLS_PIO_RUN(broadcast_to, case7)
     NMTOOLS_PIO_RUN(broadcast_to, case10)
@@ -765,6 +776,7 @@ void setup()
     NMTOOLS_PIO_RUN(constexpr_broadcast_to, case1)
     NMTOOLS_PIO_RUN(constexpr_broadcast_to, case7)
     NMTOOLS_PIO_RUN(constexpr_broadcast_to, case10)
+    #endif
 
     NMTOOLS_PIO_RUN(split, case2)
     NMTOOLS_PIO_RUN(split, case3)
@@ -788,7 +800,9 @@ void setup()
     NMTOOLS_PIO_RUN(take, case4)
     NMTOOLS_PIO_RUN(take, case6)
 
+    #if 0
     NMTOOLS_PIO_RUN(where, case3)
+    #endif
 
     NMTOOLS_PIO_RUN(reshape, case2)
     NMTOOLS_PIO_RUN(reshape, case3)
@@ -800,7 +814,9 @@ void setup()
     NMTOOLS_PIO_RUN(concatenate, case1)
     NMTOOLS_PIO_RUN(concatenate, case2)
 
+    #if 0
     NMTOOLS_PIO_RUN(broadcast_to, case11)
+    #endif
 #endif
     UNITY_END();
 }

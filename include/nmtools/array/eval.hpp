@@ -550,8 +550,10 @@ namespace nmtools::meta
             // TODO: add small vector optimization fo shape
             using d_shape_type  [[maybe_unused]] = nmtools_list<size_t>;
 
+            if constexpr (is_num_v<view_t>) {
+                return as_value_v<element_type>;
             // prefer constant-shape, no-dynamic allocation
-            if constexpr (
+            } else if constexpr (
                 !is_fail_v<c_shape_type>
                 && !is_fail_v<f_buffer_type>
             ) {

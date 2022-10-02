@@ -18,45 +18,6 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/assert.hpp"
 
-namespace nmtools::view::detail::fn
-{
-    /**
-     * @brief Index broadcast_to, compile-time version.
-     * 
-     * This is useful when one wants to check broadcasting at compile time,
-     * but it is desired that the results is to be type instead of value.
-     * For instance, broadcast_to type constructor requires the shape_t argument
-     * to be type template parameter.
-     * 
-     * @tparam array_t 
-     * @tparam shape_t 
-     * @return constexpr auto 
-     */
-    template <typename array_t, typename shape_t>
-    constexpr auto shape_broadcast_to(meta::as_value<array_t>, meta::as_value<shape_t>)
-    {
-        // map type to value
-        constexpr auto src_shape = meta::fixed_ndarray_shape_v<array_t>;
-        constexpr auto dst_shape = meta::to_value_v<shape_t>;
-        // actually call broadcast to
-        constexpr auto result    = index::shape_broadcast_to(src_shape,dst_shape);
-        // TODO: use optional
-        constexpr auto success   = nmtools::get<0>(result);
-        if constexpr (success) {
-            constexpr auto shape_ = nmtools::get<1>(result);
-            constexpr auto free   = nmtools::get<2>(result);
-            constexpr auto not_free    = index::logical_not(free);
-            constexpr auto origin_axes = index::nonzero(not_free);
-            using mshape_t = decltype(shape_);
-            using origin_t = decltype(origin_axes);
-            using return_t = meta::make_tuple_type_t<mshape_t,origin_t>;
-            // not really need to pass value since they are "value-less" type?
-            return return_t{shape_, origin_axes};
-        }
-        else return meta::detail::Fail;
-    }
-} // nmtools::view::detail::fn
-
 namespace nmtools::view
 {
     /**
@@ -78,15 +39,18 @@ namespace nmtools::view
         // NOTE: do not take ref if the array is another view
         // since it makes composing view not possible.
         using array_type = resolve_array_type_t<array_t>;
-        using shape_type = shape_t;
-        using origin_axes_type = origin_axes_t;
+        using shape_type = resolve_attribute_type_t<shape_t>;
+        using origin_axes_type = resolve_attribute_type_t<origin_axes_t>;
 
         array_type array;
         shape_type shape_; // broadcasted shape
         origin_axes_type origin_axes; // origin axes axes
         
-        constexpr broadcast_to_t(const array_t& array, shape_type shape, origin_axes_type origin_axes)
-            : array(initialize<array_type>(array)), shape_(shape), origin_axes(origin_axes) {}
+        constexpr broadcast_to_t(const array_t& array, const shape_t& shape, origin_axes_type origin_axes)
+            : array(initialize<array_type>(array))
+            , shape_(init_attribute<shape_type>(shape))
+            , origin_axes(init_attribute<origin_axes_type>(origin_axes))
+        {}
         
         constexpr decltype(auto) shape() const noexcept
         {
@@ -203,24 +167,9 @@ namespace nmtools::view
             using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t>;
             return view_t{{array, shape, None}};
         }
-        // both shape is known at compile time, checks at compile time
-        else if constexpr (meta::is_fixed_size_ndarray_v<array_t> && meta::is_constant_index_array_v<shape_t>) {
-            constexpr auto array_v = meta::as_value_v<array_t>;
-            constexpr auto shape_v = meta::as_value_v<shape_t>;
-            constexpr auto result  = detail::fn::shape_broadcast_to(array_v,shape_v);
-            using result_t = decltype(result);
-            if constexpr (!meta::is_fail_v<result_t>) {
-                constexpr auto origin_axes = nmtools::get<1>(result);
-                using origin_axes_t = meta::remove_cvref_t<decltype(origin_axes)>;
-                using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>;
-                return view_t{{array,shape,origin_axes}};
-            }
-            else static_assert( !meta::is_fail_v<result_t>
-                , "unsupported broadcast_to" );
-        }
         // assume array_t is ndarray
         else {
-            auto ashape = ::nmtools::shape(array);
+            auto ashape = ::nmtools::shape</*force_constant_index*/true>(array);
             // NOTE: must declare as const since utl::tuple takes reference (?)
             // TODO: revisit this case
             const auto [success, shape_, free] = index::shape_broadcast_to(ashape,shape);
@@ -271,11 +220,47 @@ namespace nmtools::meta
         static constexpr auto value = [](){
             if (is_fixed_index_array_v<shape_t> || is_constant_index_array_v<shape_t> || is_hybrid_index_array_v<shape_t>) {
                 return false;
-            } else if (is_index_array_v<shape_t>) {
+            } else /* if (is_index_array_v<shape_t>) */ {
                 return true;
             }
         }();
     }; // is_dynamic_ndarray
+
+    template <typename array_t, typename shape_t, typename origin_axes_t>
+    struct fixed_size<
+        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
+    >
+    {
+        using view_type  = view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >;
+        using shape_type = decltype(declval<view_type>().shape());
+
+        static constexpr auto value = [](){
+            // broadcast may change shape, so change size
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
+
+    template <typename array_t, typename shape_t, typename origin_axes_t>
+    struct bounded_size<
+        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
+    >
+    {
+        using view_type  = view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >;
+        using shape_type = decltype(declval<view_type>().shape());
+
+        static constexpr auto value = [](){
+            // broadcast may change shape, so change size
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
 
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct fixed_dim<
@@ -293,48 +278,6 @@ namespace nmtools::meta
         using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
     }; // fixed_dim
 
-    // TODO: remove
-    /**
-     * @brief Specialization of fixed_ndarray_shape for broadcast_to view.
-     *
-     * Return the fixed shape if array_t is fixed size
-     * and shape_t is known at compile time (constant index array).
-     * 
-     * @tparam array_t 
-     * @tparam shape_t 
-     * @tparam origin_axes_t 
-     */
-    template <typename array_t, typename shape_t, typename origin_axes_t>
-    struct fixed_ndarray_shape< view::broadcast_to_t<array_t, shape_t, origin_axes_t> >
-    {
-        static constexpr auto value = [](){
-            // for now, only deduce broadcast_to view as fixed-size
-            // whenever BOTH the shape and referenced array's shape is known at compile-time
-            // TODO: consider to deduce as fixed-size when 
-            // shape is known at compile time regardless the type of ref array
-            if constexpr (is_constant_index_array_v<shape_t> && is_fixed_size_ndarray_v<array_t>) {
-                constexpr auto src_shape = fixed_ndarray_shape_v<array_t>;
-                // assume the shape is default constructible
-                // and the shape information is embedded to the type
-                constexpr auto dst_shape = shape_t{};
-                // by constructing the view itself,
-                // it should be known already if src and dst is broadcastable
-                // hence it is actually redundant to check here
-                // TODO: skip checking)
-                constexpr auto result = index::shape_broadcast_to(src_shape,dst_shape);
-                constexpr auto success = nmtools::get<0>(result);
-                if constexpr (success)
-                    return dst_shape;
-                else return detail::fail_t{};
-            } else if constexpr (is_constant_index_array_v<shape_t> && is_num_v<array_t>) {
-                // constant index array should be default-constructible;
-                return shape_t{};
-            }
-            else return detail::fail_t{};
-        }();
-        using value_type = meta::remove_cvref_t<decltype(value)>;
-    }; // fixed_ndarray_shape
-
     template <typename array_t, typename shape_t, typename origin_axes_t>
     struct is_ndarray< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
     {
@@ -346,33 +289,6 @@ namespace nmtools::meta
     {
         static constexpr auto value = is_num_v<array_t> && is_none_v<shape_t>;
     };
-
-    // TODO: remove
-    /**
-     * @brief Resolve optype for broadcast_to view evaluation.
-     * 
-     * @tparam array_t 
-     * @tparam shape_t 
-     * @tparam origin_axes_t 
-     */
-    template <typename array_t, typename shape_t, typename origin_axes_t>
-    struct resolve_optype<
-        void, array::eval_t, view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >, none_t
-    >
-    {
-        static constexpr auto vtype = [](){
-            using element_t = get_element_type_t<array_t>;
-            if constexpr (is_constant_index_array_v<shape_t>) {
-                using ref_array_t = make_fixed_ndarray_t<element_t,shape_t>;
-                using type = resize_fixed_ndarray_t<array_t,ref_array_t>;
-                return as_value_v<type>;
-            } else /* if constexpr (is_dynamic_index_array_v<shape_t> */ {
-                using type = make_dynamic_ndarray_t<element_t>;
-                return as_value_v<type>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    }; // resolve_optype
 
 } // namespace nmtools::meta
 
