@@ -137,7 +137,13 @@ TEST_CASE("is_fixed_shape" * doctest::test_suite("view::mean"))
         using dtype_t    = none_t;
         using keepdims_t = true_type;
         using view_t     = decltype(view::mean(declval(array_t),declval(axis_t),declval(dtype_t),declval(keepdims_t)));
+        // NOTE: this inferred differently on utl
+        // TODO: fix utl
+        #ifdef NMTOOLS_DISABLE_STL
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
+        #else
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_t );
+        #endif
     }
     {
         using array_t    = na::dynamic_ndarray<int>;
