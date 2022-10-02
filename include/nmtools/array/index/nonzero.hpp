@@ -84,7 +84,7 @@ namespace nmtools::meta
                     if constexpr (is_boolean_v<element_t>) {
                         return as_value_v<size_t>;
                     } else {
-                        return as_value_v<element_t>;
+                        return as_value_v<make_unsigned_t<element_t>>;
                     }
                 }();
                 using element_t = type_t<decltype(element_vtype)>;
