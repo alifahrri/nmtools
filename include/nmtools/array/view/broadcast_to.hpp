@@ -220,7 +220,7 @@ namespace nmtools::meta
         static constexpr auto value = [](){
             if (is_fixed_index_array_v<shape_t> || is_constant_index_array_v<shape_t> || is_hybrid_index_array_v<shape_t>) {
                 return false;
-            } else if (is_index_array_v<shape_t>) {
+            } else /* if (is_index_array_v<shape_t>) */ {
                 return true;
             }
         }();
