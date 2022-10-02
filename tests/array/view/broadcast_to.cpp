@@ -606,21 +606,21 @@ TEST_CASE("broadcast_to(traits)"  * doctest::test_suite("view::broadcast_to"))
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_hybrid_ndarray, broadcasted_t );
         }
     }
-    SUBCASE("is_fixed_size_ndarray")
+    SUBCASE("is_fixed_shape")
     {
         {
             int  x[3] = {1,2,3};
             auto shape = nmtools_tuple{1_ct,2_ct,3_ct};
             auto broadcasted = view::broadcast_to(x,shape);
             using broadcasted_t = decltype(broadcasted);
-            NMTOOLS_ASSERT_EQUAL( meta::is_fixed_size_ndarray_v<broadcasted_t>, true );
+            NMTOOLS_ASSERT_EQUAL( meta::is_fixed_shape_v<broadcasted_t>, true );
         }
         {
             int  x[3] = {1,2,3};
             auto shape = nmtools_list{1,2,3};
             auto broadcasted = view::broadcast_to(x,shape);
             using broadcasted_t = decltype(broadcasted);
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, broadcasted_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, broadcasted_t );
         }
     }
     SUBCASE("is_dynamic_ndarray")
@@ -658,7 +658,7 @@ TEST_CASE("broadcast_to(traits)"  * doctest::test_suite("view::broadcast_to"))
         }
     }
     // this use assert
-    // SUBCASE("is_fixed_size_ndarray(2)")
+    // SUBCASE("is_fixed_shape(2)")
     // {
     //     int x[3] = {1,2,3};
     //     // cant do this here, will assert
@@ -666,6 +666,6 @@ TEST_CASE("broadcast_to(traits)"  * doctest::test_suite("view::broadcast_to"))
     //     auto shape = nmtools_tuple{1,3,2};
     //     auto broadcasted = view::broadcast_to(x,shape);
     //     using broadcasted_t = decltype(broadcasted);
-    //     NMTOOLS_ASSERT_EQUAL( meta::is_fixed_size_ndarray_v<broadcasted_t>, false );
+    //     NMTOOLS_ASSERT_EQUAL( meta::is_fixed_shape_v<broadcasted_t>, false );
     // }
 }

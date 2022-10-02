@@ -67,7 +67,7 @@ using std::false_type;
 using std::integral_constant;
 #endif
 
-TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
+TEST_CASE("is_fixed_shape" * doctest::test_suite("view"))
 {
     SUBCASE("broadcast_to")
     {
@@ -78,7 +78,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, decltype(0_ct), none_t, false_type >;
             using shape_t = nmtools_tuple<integral_constant<long unsigned int, 2> >;
             using broadcasted_t = decltype(view::broadcast_to(declval(view_t),declval(shape_t)));
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, broadcasted_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, broadcasted_t );
         }
         {
             using op_t    = view::add_t<none_t, none_t, float, void>;
@@ -86,7 +86,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, decltype(0_ct), none_t, false_type >;
             using shape_t = nmtools_tuple<integral_constant<long unsigned int, 2> >;
             using broadcasted_t = decltype(view::broadcast_to(declval(view_t),declval(shape_t)));
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, broadcasted_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, broadcasted_t );
         }
         {
             using op_t    = view::add_t<none_t, none_t, float, void>;
@@ -94,7 +94,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, decltype(0_ct), none_t, false_type >;
             using shape_t = nmtools_tuple<integral_constant<long unsigned int, 2> >;
             using broadcasted_t = decltype(view::broadcast_to(declval(view_t),declval(shape_t)));
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, broadcasted_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, broadcasted_t );
         }
         {
             using op_t    = view::add_t<none_t, none_t, float, void>;
@@ -102,7 +102,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, decltype(0_ct), none_t, false_type >;
             using shape_t = nmtools_tuple<integral_constant<long unsigned int, 2> >;
             using broadcasted_t = decltype(view::broadcast_to(declval(view_t),declval(shape_t)));
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, broadcasted_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, broadcasted_t );
         }
         {
             using op_t    = view::add_t<none_t, none_t, float, void>;
@@ -110,7 +110,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using view_t  = view::decorator_t<view::reduce_t, op_t, array_t, decltype(0_ct), none_t, false_type >;
             using shape_t = nmtools_tuple<integral_constant<long unsigned int, 2> >;
             using broadcasted_t = decltype(view::broadcast_to(declval(view_t),declval(shape_t)));
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, broadcasted_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, broadcasted_t );
         }
     }
 }
