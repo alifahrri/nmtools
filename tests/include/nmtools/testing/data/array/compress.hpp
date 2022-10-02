@@ -17,7 +17,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, compress)
             {5,6},
         };
         inline int axis = 0;
-        NMTOOLS_CAST_ARRAYS(condition)
+        NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -37,7 +37,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, compress)
             {5,6},
         };
         inline int axis = 1;
-        NMTOOLS_CAST_ARRAYS(condition)
+        NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -59,7 +59,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, compress)
             {5,6},
         };
         inline int axis = 0;
-        NMTOOLS_CAST_ARRAYS(condition)
+        NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -80,7 +80,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, compress)
             {5,6},
         };
         inline auto axis = None;
-        NMTOOLS_CAST_ARRAYS(condition)
+        NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_ARRAYS(array)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
