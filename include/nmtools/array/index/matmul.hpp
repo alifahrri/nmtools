@@ -6,7 +6,7 @@
 #include "nmtools/array/index/broadcast_shape.hpp"
 #include "nmtools/array/index/broadcast_to.hpp"
 #include "nmtools/array/index/product.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/at.hpp"
 
 
@@ -64,61 +64,6 @@ namespace nmtools::index
 
         return result_t{left,right};
     } // split
-
-
-    // TODO: properly resolve op return type
-    /**
-     * @brief Join broadcasted indices with non-broadcasted matmul indices.
-     * 
-     * This is necessary because matmul broadcasting only happened at axis 0 upto -2.
-     * Can not use meta::append_type because indices is not guaranteed to be known at compile-time.
-     * 
-     */
-    template <typename indices_t, typename tuple_t>
-    constexpr auto concat_indices(const indices_t& indices, const tuple_t& tuple)
-    {
-        if constexpr (meta::is_fixed_index_array_v<indices_t>) {
-            constexpr auto n_index = meta::len_v<indices_t>;
-            auto i0   = at(indices,meta::ct_v<0>);
-            auto init = nmtools_tuple{i0};
-            auto joined = meta::template_reduce<n_index>([&](auto init, auto index){
-                constexpr auto i = decltype(index)::value;
-                if constexpr (i<(n_index-1)) {
-                    auto index_i = at(indices,meta::ct_v<i+1>);
-                    return utility::tuple_cat(init,nmtools_tuple{index_i});
-                } else {
-                    return utility::tuple_cat(init,tuple);
-                }
-            }, /*init=*/init);
-            return joined;
-        } else {
-            // assume dynamic shape
-            using value_t = meta::get_value_type_t<indices_t>;
-            // specific for matmul
-            // if tuple is indeed tuple, assume its element is either integer or {None,None}
-            using either_t = nmtools_either<value_t,nmtools_tuple<none_t,none_t>>;
-            using result_t = meta::replace_value_type_t<indices_t,either_t>;
-
-            auto res = result_t {};
-            auto n_index = len(indices);
-            // assume tuple is tuple
-            constexpr auto n_tuple = meta::len_v<tuple_t>;
-            if constexpr (meta::is_resizeable_v<result_t>) {
-                res.resize(n_index+n_tuple);
-            }
-
-            for (size_t i=0; i<n_index; i++) {
-                at(res,i) = at(indices,i);
-            }
-
-            meta::template_for<n_tuple>([&](auto index){
-                at(res,index+n_index) = at(tuple,index);
-            });
-
-            return res;
-        }
-        // TODO: error handling (compile-time and runtime)
-    } // concat_indices
 }
 
 namespace nmtools::meta
@@ -207,94 +152,58 @@ namespace nmtools::index
         using result_t = meta::resolve_optype_t<shape_matmul_t,lhs_shape_t,rhs_shape_t>;
         using return_t = meta::make_maybe_type_t<result_t>;
 
-        using idx1_t = meta::ct<-1>;
-        using idx2_t = meta::ct<-2>;
-
-        constexpr auto i1 = idx1_t{};
-        constexpr auto i2 = idx2_t{};
-
-        const auto [b_ashape, m_ashape] = split(ashape,-2);
-        const auto [b_bshape, m_bshape] = split(bshape,-2);
-
-        auto l1 = at(ashape,i1);
-        // auto l2 = at(ashape,i2);
-        // auto r1 = at(bshape,i1);
-        auto r2 = at(bshape,i2);
-
-        auto adim = (size_t)len(ashape);
-        auto bdim = (size_t)len(bshape);
-        #if 0 // breaks on avr-gcc with nmtools_tuple = utl::tuple :(
-        const auto [h_dim, l_dim] = (adim > bdim) ? nmtools_tuple{adim,bdim} : nmtools_tuple{bdim,adim};
-        #else
-        const auto [h_dim, l_dim] = [&](){
-            return ((adim > bdim) ? nmtools_tuple{adim,bdim} : nmtools_tuple{bdim,adim});
-        }();
-        #endif
-
-        // check matrix shape
-        auto valid_shape = l1 == r2;
-        // broadcast shape, if possible
-        const auto [success, b_shape] = index::broadcast_shape(b_ashape,b_bshape);
-
-        valid_shape = valid_shape && success;
-
-        if (valid_shape) {
-            auto dim = h_dim;
-            auto result = result_t{};
-            if constexpr (meta::is_resizeable_v<result_t>) {
-                result.resize(dim);
-            }
-            for (size_t i=0; i<(dim-2); i++) {
-                at(result,i) = at(b_shape,i);
-            }
-            at(result,i1) = at(bshape,i1);
-            at(result,i2) = at(ashape,i2);
-            return return_t{result};
+        if constexpr (meta::is_constant_index_array_v<result_t>) {
+            // still use maybe for simplicity at caller site
+            return return_t{result_t{}};
         } else {
-            return return_t{meta::Nothing};
+            using idx1_t = meta::ct<-1>;
+            using idx2_t = meta::ct<-2>;
+
+            constexpr auto i1 = idx1_t{};
+            constexpr auto i2 = idx2_t{};
+
+            const auto [b_ashape, m_ashape] = split(ashape,-2);
+            const auto [b_bshape, m_bshape] = split(bshape,-2);
+
+            auto l1 = at(ashape,i1);
+            // auto l2 = at(ashape,i2);
+            // auto r1 = at(bshape,i1);
+            auto r2 = at(bshape,i2);
+
+            auto adim = (size_t)len(ashape);
+            auto bdim = (size_t)len(bshape);
+            #if 0 // breaks on avr-gcc with nmtools_tuple = utl::tuple :(
+            const auto [h_dim, l_dim] = (adim > bdim) ? nmtools_tuple{adim,bdim} : nmtools_tuple{bdim,adim};
+            #else
+            const auto [h_dim, l_dim] = [&](){
+                return ((adim > bdim) ? nmtools_tuple{adim,bdim} : nmtools_tuple{bdim,adim});
+            }();
+            #endif
+
+            // check matrix shape
+            auto valid_shape = l1 == r2;
+            // broadcast shape, if possible
+            const auto [success, b_shape] = index::broadcast_shape(b_ashape,b_bshape);
+
+            valid_shape = valid_shape && success;
+
+            if (valid_shape) {
+                auto dim = h_dim;
+                auto result = result_t{};
+                if constexpr (meta::is_resizeable_v<result_t>) {
+                    result.resize(dim);
+                }
+                for (size_t i=0; i<(dim-2); i++) {
+                    at(result,i) = at(b_shape,i);
+                }
+                at(result,i1) = at(bshape,i1);
+                at(result,i2) = at(ashape,i2);
+                return return_t{result};
+            } else {
+                return return_t{meta::Nothing};
+            }
         }
     } // shape_matmul
-
-    // TODO: remove
-    /**
-     * @brief Computes src indices corresponding to src shape, given dst (matmul) indices.
-     * 
-     * The src_shape is expected to be full shape (not splitted).
-     * The indices are expected to be broadcast indices only (splitted).
-     * The dst_shape is expected to be broadcast indices only (splitted).
-     * 
-     * Only fixed index arrays are supported for now.
-     * 
-     */
-    template <typename indices_t, typename src_shape_t, typename dst_shape_t>
-    constexpr auto broadcast_matmul_indices(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape)
-    {
-        [[maybe_unused]] auto b_src_shape = at(split(src_shape,meta::ct_v<-2>),meta::ct_v<0>);
-        if constexpr (meta::is_fixed_index_array_v<src_shape_t>) {
-            // assume src_shape is fixed index array
-            constexpr auto dim = meta::len_v<src_shape_t>;
-            // the result of broadcasting 
-            // may be zero for src_shape when len(indices) > len(src_shape),
-            // for such case: return ellipsis
-            // NOTE: this may produce wrong result for dynamic dimension
-            // TODO: also support dynamic dimension
-            if constexpr (dim<=2) {
-                return Ellipsis;
-            } else {
-                return ::nmtools::index::broadcast_to(indices,b_src_shape,dst_shape);
-            }
-        } else {
-            auto dim = len(src_shape);
-            auto broadcasted = index::broadcast_to(indices,b_src_shape,dst_shape);
-            using broadcasted_t = decltype(broadcasted);
-            using result_t = nmtools_either<ellipsis_t,broadcasted_t>;
-            if (dim <= 2) {
-                return result_t{Ellipsis};
-            } else {
-                return result_t{broadcasted};
-            }
-        }
-    } // broadcast_matmul_indices
 
     struct matmul_t {};
 
@@ -400,6 +309,7 @@ namespace nmtools::meta
 {
     namespace error
     {
+        template <typename...>
         struct SHAPE_MATMUL_ERROR : detail::fail_t {};
 
         template <typename...>
@@ -419,57 +329,57 @@ namespace nmtools::meta
     struct resolve_optype< void, index::shape_matmul_t, lhs_shape_t, rhs_shape_t >
     {
         static constexpr auto vtype = [](){
-            // TODO: compute at compile time whenever possible
-            if constexpr (is_constant_index_array_v<lhs_shape_t>) {
+            if constexpr (is_constant_index_array_v<lhs_shape_t> && is_constant_index_array_v<rhs_shape_t>) {
+                constexpr auto lhs_shape = to_value_v<lhs_shape_t>;
+                constexpr auto rhs_shape = to_value_v<rhs_shape_t>;
+                constexpr auto result = index::shape_matmul(lhs_shape,rhs_shape);
+                if constexpr (static_cast<bool>(result)) {
+                    using nmtools::len, nmtools::at;
+                    return template_reduce<len(*result)-1>([&](auto init, auto index){
+                        using init_type = type_t<decltype(init)>;
+                        using type = append_type_t<init_type,ct<at(*result,index+1)>>;
+                        return as_value_v<type>;
+                    }, as_value_v<nmtools_tuple<ct<at(*result,0)>>>);
+                } else {
+                    using type = error::SHAPE_MATMUL_ERROR<lhs_shape_t,rhs_shape_t>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (is_constant_index_array_v<lhs_shape_t>) {
                 using lhs_shape_type = remove_cvref_t<decltype(to_value_v<lhs_shape_t>)>;
                 return as_value_v<resolve_optype_t<index::shape_matmul_t, lhs_shape_type, rhs_shape_t> >;
             } else if constexpr (is_constant_index_array_v<rhs_shape_t>) {
                 using rhs_shape_type = remove_cvref_t<decltype(to_value_v<rhs_shape_t>)>;
                 return as_value_v<resolve_optype_t<index::shape_matmul_t, lhs_shape_t, rhs_shape_type> >;
-            } else if constexpr (is_dynamic_index_array_v<lhs_shape_t> && is_dynamic_index_array_v<rhs_shape_t>) {
-                return as_value_v<lhs_shape_t>;
-            } else if constexpr (is_hybrid_index_array_v<lhs_shape_t> && is_hybrid_index_array_v<rhs_shape_t>) {
-                constexpr auto lhs_max  = hybrid_index_array_max_size_v<lhs_shape_t>;
-                constexpr auto rhs_max  = hybrid_index_array_max_size_v<rhs_shape_t>;
-                constexpr auto max_size = lhs_max > rhs_max ? lhs_max : rhs_max;
-                using type = resize_hybrid_index_array_max_size_t< lhs_shape_t, max_size >;
-                return as_value_v<type>;
-            } else if constexpr (is_fixed_index_array_v<lhs_shape_t> && is_fixed_index_array_v<rhs_shape_t>) {
-                constexpr auto adim = len_v<lhs_shape_t>;
-                constexpr auto bdim = len_v<rhs_shape_t>;
-                constexpr auto size = adim > bdim ? adim : bdim;
-                using type = resize_fixed_index_array_t<transform_bounded_array_t<lhs_shape_t>,size>;
-                return as_value_v<type>;
-            } else if constexpr (is_dynamic_index_array_v<lhs_shape_t>) {
-                return as_value_v<lhs_shape_t>;
-            } else if constexpr (is_dynamic_index_array_v<rhs_shape_t>) {
-                return as_value_v<rhs_shape_t>;
-            }
-            // from this point, either lhs or rhs will be dynamic
-            else if constexpr (is_hybrid_index_array_v<lhs_shape_t>) {
-                // always select max
-                constexpr auto lhs = hybrid_index_array_max_size_v<lhs_shape_t>;
-                constexpr auto rhs = fixed_index_array_size_v<rhs_shape_t>;
-                constexpr auto max = lhs > rhs ? lhs : rhs;
-                using type = resize_hybrid_index_array_max_size_t<lhs_shape_t,max>;
-                return as_value_v<type>;
-            } else if constexpr (is_hybrid_index_array_v<rhs_shape_t>) {
-                constexpr auto lhs = fixed_index_array_size_v<lhs_shape_t>;
-                constexpr auto rhs = hybrid_index_array_max_size_v<rhs_shape_t>;
-                constexpr auto max = lhs > rhs ? lhs : rhs;
-                using type = resize_hybrid_index_array_max_size_t<rhs_shape_t,max>;
-                return as_value_v<type>;
             } else if constexpr (is_index_array_v<lhs_shape_t> && is_index_array_v<rhs_shape_t>) {
                 constexpr auto len_a = len_v<lhs_shape_t>;
                 constexpr auto len_b = len_v<rhs_shape_t>;
-                // TODO: try to return static_vector
-                // constexpr auto b_size_a = bounded_size_v<lhs_shape_t>;
-                // constexpr auto b_size_b = bounded_size_v<rhs_shape_t>;
+                [[maybe_unused]] constexpr auto b_size_a = bounded_size_v<lhs_shape_t>;
+                [[maybe_unused]] constexpr auto b_size_b = bounded_size_v<rhs_shape_t>;
                 if constexpr ((len_a > 0) && (len_b > 0)) {
                     constexpr auto max_size = (len_a > len_b) ? len_a : len_b;
                     // TODO: use index_type instead of size_t
                     using type = nmtools_array<size_t,max_size>;
                     return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(b_size_a)> && !is_fail_v<decltype(b_size_b)>) {
+                    constexpr auto max_size = (b_size_a > b_size_b ? b_size_a : b_size_b);
+                    using type = array::static_vector<size_t,max_size>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(b_size_a)> && (len_b > 0)) {
+                    if constexpr (len_b >= b_size_a) {
+                        using type = nmtools_array<size_t,len_b>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = array::static_vector<size_t,b_size_a>;
+                        return as_value_v<type>;
+                    }
+                } else if constexpr ((len_a > 0) && !is_fail_v<decltype(b_size_b)>) {
+                    if constexpr (len_a >= b_size_b) {
+                        using type = nmtools_array<size_t,len_a>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = array::static_vector<size_t,b_size_b>;
+                        return as_value_v<type>;
+                    }
                 } else {
                     using type = nmtools_list<size_t>;
                     return as_value_v<type>;
@@ -541,7 +451,6 @@ namespace nmtools::meta
 namespace nmtools::view::detail
 {
     using index::shape_matmul;
-    using index::broadcast_matmul_indices;
     using index::matmul;
 }
 
