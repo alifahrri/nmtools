@@ -45,6 +45,14 @@ namespace nmtools::meta
         using value_type = decltype(value);
     };
 
+    template <typename T, std::size_t N>
+    struct fixed_size<
+        ::boost::array<T,N>
+    >
+    {
+        static constexpr auto value = N;
+    };
+
     // TODO: remove, update default impl of fixed_dim to compute from fixed_shape
     template <typename T, std::size_t N>
     struct fixed_dim<

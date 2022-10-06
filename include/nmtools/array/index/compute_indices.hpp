@@ -58,7 +58,7 @@ namespace nmtools::index
             , "unsupported return type for compute_indices" );
         auto indices = return_t{};
         if constexpr (meta::is_resizeable_v<return_t>)
-            indices.resize(size(shape));
+            indices.resize(len(shape));
 
         impl::compute_indices(indices, offset, shape, strides);
 
