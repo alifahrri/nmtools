@@ -49,7 +49,7 @@ RUN_TEST(test_##test_name##_##case_name);
 
 /* ========================================================================= */
 
-#if 0
+#if 1
 NM_TEST_SUBCASE(add, case1)
 {
     NMTOOLS_TESTING_DECLARE_NS( view, add, case1 );
@@ -261,7 +261,7 @@ NM_TEST_SUBCASE(constexpr_mean, case1)
 
 #ifndef NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
 
-#if 0
+#if 1
 NM_TEST_SUBCASE(add, case2)
 {
     NMTOOLS_TESTING_DECLARE_NS( view, add, case2 );
@@ -533,7 +533,7 @@ void setup()
 
     UNITY_BEGIN();
 
-    #if 0
+    #if 1
     NMTOOLS_PIO_RUN(add, case1);
     NMTOOLS_PIO_RUN(constexpr_add, case1);
     NMTOOLS_PIO_RUN(constexpr_add, case2);
@@ -564,7 +564,7 @@ void setup()
 
 #ifndef NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
 
-    #if 0
+    #if 1
     NMTOOLS_PIO_RUN(add, case2);
     #endif
 
