@@ -155,16 +155,18 @@ namespace nmtools::index
      * @tparam ashape_t 
      * @tparam bshape_t 
      * @tparam axis_t 
+     * @tparam asize_t 
+     * @tparam bsize_t 
      * @param ashape lhs array
      * @param bshape rhs array
      * @param axis The axis along which the arrays will be joined. If axis is None, arrays are flattened before use.
      * @return constexpr auto 
      */
-    template <typename ashape_t, typename bshape_t, typename axis_t>
-    constexpr auto shape_concatenate(const ashape_t& ashape, const bshape_t& bshape, [[maybe_unused]] axis_t axis)
+    template <typename ashape_t, typename bshape_t, typename axis_t, typename asize_t=size_t, typename bsize_t=size_t>
+    constexpr auto shape_concatenate(const ashape_t& ashape, const bshape_t& bshape, [[maybe_unused]] axis_t axis, asize_t=asize_t{}, bsize_t=bsize_t{})
     {
         // TODO: allow negative axis
-        using result_t = meta::resolve_optype_t<shape_concatenate_t,ashape_t,bshape_t,axis_t>;
+        using result_t = meta::resolve_optype_t<shape_concatenate_t,ashape_t,bshape_t,axis_t,asize_t,bsize_t>;
 
         if constexpr (meta::is_constant_index_array_v<result_t>) {
             // TODO: no need to return tuple
@@ -231,9 +233,9 @@ namespace nmtools::meta
      * @tparam bshape_t 
      * @tparam axis_t 
      */
-    template <typename ashape_t, typename bshape_t, typename axis_t>
+    template <typename ashape_t, typename bshape_t, typename axis_t, typename asize_t, typename bsize_t>
     struct resolve_optype<
-        void, index::shape_concatenate_t, ashape_t, bshape_t, axis_t
+        void, index::shape_concatenate_t, ashape_t, bshape_t, axis_t, asize_t, bsize_t
     >
     {
         static constexpr auto vtype = [](){
@@ -255,16 +257,23 @@ namespace nmtools::meta
                 }
             } else if constexpr (is_constant_index_array_v<ashape_t>) {
                 // simply recurse for now
-                using type = resolve_optype_t<index::shape_concatenate_t,remove_cvref_t<decltype(to_value_v<ashape_t>)>,bshape_t,axis_t>;
+                using type = resolve_optype_t<index::shape_concatenate_t,remove_cvref_t<decltype(to_value_v<ashape_t>)>,bshape_t,axis_t,asize_t,bsize_t>;
                 return as_value_v<type>;
             } else if constexpr (is_constant_index_array_v<bshape_t>) {
                 // simply recurse for now
-                using type = resolve_optype_t<index::shape_concatenate_t,ashape_t,remove_cvref_t<decltype(to_value_v<bshape_t>)>,axis_t>;
+                using type = resolve_optype_t<index::shape_concatenate_t,ashape_t,remove_cvref_t<decltype(to_value_v<bshape_t>)>,axis_t,asize_t,bsize_t>;
                 return as_value_v<type>;
             } else if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t> && is_none_v<axis_t>) {
-                using index_t = get_index_element_type_t<ashape_t>;
-                using type = nmtools_array<index_t,1>;
-                return as_value_v<type>;
+                if constexpr (is_constant_index_v<asize_t> && is_constant_index_v<bsize_t>) {
+                    constexpr auto size_a = to_value_v<asize_t>;
+                    constexpr auto size_b = to_value_v<bsize_t>;
+                    using type = nmtools_tuple<ct<size_a+size_b>>;
+                    return as_value_v<type>;
+                } else {
+                    using index_t = get_index_element_type_t<ashape_t>;
+                    using type = nmtools_array<index_t,1>;
+                    return as_value_v<type>;
+                }
             } else if constexpr (is_dynamic_index_array_v<ashape_t>) {
                 return as_value_v<ashape_t>;
             } else if constexpr (is_dynamic_index_array_v<bshape_t>) {
@@ -286,24 +295,6 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
-
-    // TODO: remove
-    #if 0
-    template <typename ashape_t, typename bshape_t>
-    struct resolve_optype <
-        void, index::shape_concatenate_t, ashape_t, bshape_t, none_t
-    >
-    {
-        // for shape_concatenate, when axis is none, the arrays are flattened before concatenated
-        static constexpr auto vtype = [](){
-            if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t>)
-                return as_value_v<make_array_type_t<size_t,1>>;
-            else return as_value_v<error::SHAPE_CONCATENATE_UNSUPPORTED>;
-        }();
-
-        using type = type_t<decltype(vtype)>;
-    }; // resolve_optype
-    #endif
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_CONCATENATE_HPP
