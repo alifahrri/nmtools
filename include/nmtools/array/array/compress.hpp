@@ -21,13 +21,17 @@ namespace nmtools::array
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
         typename condition_t, typename array_t, typename axis_t>
     constexpr auto compress(const condition_t& condition, const array_t& array, axis_t axis,
-        context_t&& context=context_t{}, output_t&& output=output_t{})
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto compressed = view::compress(condition,array,axis);
-        return eval(compressed,context,output);
+        return eval(compressed
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
     } // compress
 } // namespace nmtools::array
 
