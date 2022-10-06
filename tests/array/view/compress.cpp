@@ -66,49 +66,39 @@ TEST_CASE("compress(case1)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case1, condition_h, array_h, axis );
 
     #else
+    // condition in compress view must be index array
+
     COMPRESS_SUBCASE( case1, condition_cs_fb, array_cs_fb, axis );
     COMPRESS_SUBCASE( case1, condition_cs_hb, array_cs_hb, axis );
     COMPRESS_SUBCASE( case1, condition_cs_db, array_cs_db, axis );
 
-    // TODO: fix runtime
-    // COMPRESS_SUBCASE( case1, condition_fs_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_fs_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_fs_db, array_fs_db, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_fb, array_fs_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_hb, array_fs_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_db, array_fs_db, axis );
 
-    // TODO: fix runtime
-    // COMPRESS_SUBCASE( case1, condition_hs_fb, array_hs_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_hs_hb, array_hs_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_hs_db, array_hs_db, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_fb, array_hs_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_hb, array_hs_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_db, array_hs_db, axis );
 
-    // TODO: fix runtime
-    // COMPRESS_SUBCASE( case1, condition_ds_fb, array_ds_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_ds_hb, array_ds_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_ds_db, array_ds_db, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_fb, array_ds_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_hb, array_ds_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_db, array_ds_db, axis );
 
+    COMPRESS_SUBCASE( case1, condition_fs_fb, array_fs_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_hb, array_fs_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_db, array_fs_db, axis );
 
-    // COMPRESS_SUBCASE( case1, condition_fs_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_fs_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_fs_db, array_cs_db, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_fb, array_cs_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_hb, array_cs_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_db, array_cs_db, axis );
 
-    // COMPRESS_SUBCASE( case1, condition_hs_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_hs_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_hs_db, array_cs_db, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_fb, array_hs_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_hb, array_hs_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_db, array_hs_db, axis );
 
-    // COMPRESS_SUBCASE( case1, condition_ds_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_ds_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_ds_db, array_cs_db, axis );
-
-    // COMPRESS_SUBCASE( case1, condition_hs_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_hs_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_hs_db, array_fs_db, axis );
-
-    // COMPRESS_SUBCASE( case1, condition_ds_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_ds_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_ds_db, array_fs_db, axis );
-
-    // COMPRESS_SUBCASE( case1, condition_ds_fb, array_hs_fb, axis );
-    // COMPRESS_SUBCASE( case1, condition_ds_hb, array_hs_hb, axis );
-    // COMPRESS_SUBCASE( case1, condition_ds_db, array_hs_db, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_fb, array_ds_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_hb, array_ds_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_db, array_ds_db, axis );
     #endif
 }
 
@@ -128,43 +118,33 @@ TEST_CASE("compress(case2)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case2, condition_cs_hb, array_cs_hb, axis );
     COMPRESS_SUBCASE( case2, condition_cs_db, array_cs_db, axis );
 
-    // TODO: fix runtime
-    // COMPRESS_SUBCASE( case2, condition_fs_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_fs_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_fs_db, array_fs_db, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_fb, array_fs_fb, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_hb, array_fs_hb, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_db, array_fs_db, axis );
 
-    // COMPRESS_SUBCASE( case2, condition_hs_fb, array_hs_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_hs_hb, array_hs_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_hs_db, array_hs_db, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_fb, array_hs_fb, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_hb, array_hs_hb, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_db, array_hs_db, axis );
 
-    // COMPRESS_SUBCASE( case2, condition_ds_fb, array_ds_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_ds_hb, array_ds_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_ds_db, array_ds_db, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_fb, array_ds_fb, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_hb, array_ds_hb, axis );
+    COMPRESS_SUBCASE( case2, condition_cs_db, array_ds_db, axis );
 
+    COMPRESS_SUBCASE( case2, condition_fs_fb, array_fs_fb, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_hb, array_fs_hb, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_db, array_fs_db, axis );
 
-    // COMPRESS_SUBCASE( case2, condition_fs_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_fs_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_fs_db, array_cs_db, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_fb, array_cs_fb, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_hb, array_cs_hb, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_db, array_cs_db, axis );
 
-    // COMPRESS_SUBCASE( case2, condition_hs_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_hs_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_hs_db, array_cs_db, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_fb, array_hs_fb, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_hb, array_hs_hb, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_db, array_hs_db, axis );
 
-    // COMPRESS_SUBCASE( case2, condition_ds_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_ds_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_ds_db, array_cs_db, axis );
-
-    // COMPRESS_SUBCASE( case2, condition_hs_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_hs_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_hs_db, array_fs_db, axis );
-
-    // COMPRESS_SUBCASE( case2, condition_ds_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_ds_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_ds_db, array_fs_db, axis );
-
-    // COMPRESS_SUBCASE( case2, condition_ds_fb, array_hs_fb, axis );
-    // COMPRESS_SUBCASE( case2, condition_ds_hb, array_hs_hb, axis );
-    // COMPRESS_SUBCASE( case2, condition_ds_db, array_hs_db, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_fb, array_ds_fb, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_hb, array_ds_hb, axis );
+    COMPRESS_SUBCASE( case2, condition_fs_db, array_ds_db, axis );
     #endif
 }
 
@@ -184,43 +164,33 @@ TEST_CASE("compress(case3)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case3, condition_cs_hb, array_cs_hb, axis );
     COMPRESS_SUBCASE( case3, condition_cs_db, array_cs_db, axis );
 
-    // TODO: fix
-    // COMPRESS_SUBCASE( case3, condition_fs_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_fs_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_fs_db, array_fs_db, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_fb, array_fs_fb, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_hb, array_fs_hb, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_db, array_fs_db, axis );
 
-    // COMPRESS_SUBCASE( case3, condition_hs_fb, array_hs_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_hs_hb, array_hs_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_hs_db, array_hs_db, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_fb, array_hs_fb, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_hb, array_hs_hb, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_db, array_hs_db, axis );
 
-    // COMPRESS_SUBCASE( case3, condition_ds_fb, array_ds_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_ds_hb, array_ds_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_ds_db, array_ds_db, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_fb, array_ds_fb, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_hb, array_ds_hb, axis );
+    COMPRESS_SUBCASE( case3, condition_cs_db, array_ds_db, axis );
 
+    COMPRESS_SUBCASE( case3, condition_fs_fb, array_fs_fb, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_hb, array_fs_hb, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_db, array_fs_db, axis );
 
-    // COMPRESS_SUBCASE( case3, condition_fs_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_fs_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_fs_db, array_cs_db, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_fb, array_cs_fb, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_hb, array_cs_hb, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_db, array_cs_db, axis );
 
-    // COMPRESS_SUBCASE( case3, condition_hs_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_hs_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_hs_db, array_cs_db, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_fb, array_hs_fb, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_hb, array_hs_hb, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_db, array_hs_db, axis );
 
-    // COMPRESS_SUBCASE( case3, condition_ds_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_ds_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_ds_db, array_cs_db, axis );
-
-    // COMPRESS_SUBCASE( case3, condition_hs_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_hs_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_hs_db, array_fs_db, axis );
-
-    // COMPRESS_SUBCASE( case3, condition_ds_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_ds_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_ds_db, array_fs_db, axis );
-
-    // COMPRESS_SUBCASE( case3, condition_ds_fb, array_hs_fb, axis );
-    // COMPRESS_SUBCASE( case3, condition_ds_hb, array_hs_hb, axis );
-    // COMPRESS_SUBCASE( case3, condition_ds_db, array_hs_db, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_fb, array_ds_fb, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_hb, array_ds_hb, axis );
+    COMPRESS_SUBCASE( case3, condition_fs_db, array_ds_db, axis );
     #endif
 }
 
@@ -240,42 +210,33 @@ TEST_CASE("compress(case4)" * doctest::test_suite("view::compress"))
     COMPRESS_SUBCASE( case4, condition_cs_hb, array_cs_hb, axis );
     COMPRESS_SUBCASE( case4, condition_cs_db, array_cs_db, axis );
 
-    // COMPRESS_SUBCASE( case4, condition_fs_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_fs_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_fs_db, array_fs_db, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_fb, array_fs_fb, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_hb, array_fs_hb, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_db, array_fs_db, axis );
 
-    // COMPRESS_SUBCASE( case4, condition_hs_fb, array_hs_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_hs_hb, array_hs_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_hs_db, array_hs_db, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_fb, array_hs_fb, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_hb, array_hs_hb, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_db, array_hs_db, axis );
 
-    // COMPRESS_SUBCASE( case4, condition_ds_fb, array_ds_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_ds_hb, array_ds_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_ds_db, array_ds_db, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_fb, array_ds_fb, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_hb, array_ds_hb, axis );
+    COMPRESS_SUBCASE( case4, condition_cs_db, array_ds_db, axis );
 
+    COMPRESS_SUBCASE( case4, condition_fs_fb, array_fs_fb, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_hb, array_fs_hb, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_db, array_fs_db, axis );
 
-    // COMPRESS_SUBCASE( case4, condition_fs_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_fs_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_fs_db, array_cs_db, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_fb, array_cs_fb, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_hb, array_cs_hb, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_db, array_cs_db, axis );
 
-    // COMPRESS_SUBCASE( case4, condition_hs_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_hs_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_hs_db, array_cs_db, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_fb, array_hs_fb, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_hb, array_hs_hb, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_db, array_hs_db, axis );
 
-    // COMPRESS_SUBCASE( case4, condition_ds_fb, array_cs_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_ds_hb, array_cs_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_ds_db, array_cs_db, axis );
-
-    // COMPRESS_SUBCASE( case4, condition_hs_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_hs_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_hs_db, array_fs_db, axis );
-
-    // COMPRESS_SUBCASE( case4, condition_ds_fb, array_fs_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_ds_hb, array_fs_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_ds_db, array_fs_db, axis );
-
-    // COMPRESS_SUBCASE( case4, condition_ds_fb, array_hs_fb, axis );
-    // COMPRESS_SUBCASE( case4, condition_ds_hb, array_hs_hb, axis );
-    // COMPRESS_SUBCASE( case4, condition_ds_db, array_hs_db, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_fb, array_ds_fb, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_hb, array_ds_hb, axis );
+    COMPRESS_SUBCASE( case4, condition_fs_db, array_ds_db, axis );
     #endif
 }
 

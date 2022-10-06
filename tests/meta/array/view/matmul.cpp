@@ -92,7 +92,7 @@ TEST_CASE("is_ndarray" * doctest::test_suite("view"))
     }
 }
 
-TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
+TEST_CASE("is_fixed_shape" * doctest::test_suite("view"))
 {
     SUBCASE("matmul")
     {
@@ -100,25 +100,25 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using lhs_t  = int[3][4];
             using rhs_t  = int[4][3];
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using lhs_t  = nmtools_array<nmtools_array<int,4>,3>;
             using rhs_t  = nmtools_array<nmtools_array<int,3>,4>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using lhs_t  = na::fixed_ndarray<int,3,4>;
             using rhs_t  = na::fixed_ndarray<int,4,3>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using lhs_t  = na::hybrid_ndarray<int,12,2>;
             using rhs_t  = na::hybrid_ndarray<int,12,2>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_t );
         }
 
         // batched
@@ -126,19 +126,19 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using lhs_t  = int[4][3];
             using rhs_t  = int[2][3][2];
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using lhs_t  = na::fixed_ndarray<int,4,3>;
             using rhs_t  = na::fixed_ndarray<int,2,3,2>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using lhs_t  = na::hybrid_ndarray<int,12,2>;
             using rhs_t  = na::hybrid_ndarray<int,12,3>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_t );
         }
 
         // batched
@@ -146,19 +146,19 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
             using lhs_t  = int[1][4][3];
             using rhs_t  = int[3][4];
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using lhs_t  = na::fixed_ndarray<int,1,4,3>;
             using rhs_t  = na::fixed_ndarray<int,3,4>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
             using lhs_t  = na::hybrid_ndarray<int,12,3>;
             using rhs_t  = na::hybrid_ndarray<int,12,2>;
             using view_t = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_t );
         }
     }
 }
