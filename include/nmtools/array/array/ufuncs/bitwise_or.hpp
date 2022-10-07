@@ -11,12 +11,17 @@ namespace nmtools::array
     {
         struct bitwise_or
         {
-            template <typename output_t=none_t, typename context_t=none_t, typename left_t, typename right_t>
+            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+                typename left_t, typename right_t>
             inline constexpr auto operator()(const left_t& a, const right_t& b,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
+                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
             {
                 auto bitwise_or = view::bitwise_or(a,b);
-                return eval(bitwise_or,context,output);
+                return eval(bitwise_or
+                    ,nmtools::forward<context_t>(context)
+                    ,nmtools::forward<output_t>(output)
+                    ,resolver
+                );
             } // operator()
         }; // bitwise_or
     } // namespace fn

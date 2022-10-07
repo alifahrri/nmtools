@@ -22,13 +22,17 @@ namespace nmtools::array
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
         typename array_t, typename amin_t, typename amax_t>
     constexpr auto clip(const array_t& a, const amin_t& amin, const amax_t& amax,
-        context_t&& context=context_t{}, output_t&& output=output_t{})
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) 
     {
         auto clipped = view::clip(a,amin,amax);
-        return eval(clipped,context,output);
+        return eval(clipped
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
     } // clip
 } // nmtools::array
 
