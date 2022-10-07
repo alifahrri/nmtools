@@ -28,13 +28,13 @@ namespace nmtools::view::detail
      * @param array     input array
      * @return constexpr auto 
      */
-    template <typename array_t>
+    template <bool force_constant_index=false, typename array_t>
     constexpr auto shape(const array_t& array)
     {
         if constexpr (meta::is_pointer_v<array_t>) {
-            return ::nmtools::shape(*array);
+            return ::nmtools::shape<force_constant_index>(*array);
         } else {
-            return ::nmtools::shape(array);
+            return ::nmtools::shape<force_constant_index>(array);
         }
     } // shape
 
@@ -95,16 +95,6 @@ namespace nmtools::view::detail
 } // nmtools::view::detail
 
 #include "nmtools/array/index/pack.hpp"
-
-#if 0
-#include "nmtools/array/index/matmul.hpp" // for split, concat_indices
-
-namespace nmtools::view::detail
-{
-    using index::split;
-    using index::concat_indices;
-}
-#endif
 
 namespace nmtools::view
 {

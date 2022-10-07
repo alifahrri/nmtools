@@ -18,54 +18,39 @@ namespace nmtools::view
         using value_type = meta::common_type_t<lhs_value_type,rhs_value_type>;
         using array_type = nmtools_tuple<lhs_type,rhs_type>;
         using axis_type  = resolve_attribute_type_t<axis_t>;
+        using lhs_shape_type = decltype(nmtools::shape<true>(meta::declval<lhs_array_t>()));
+        using rhs_shape_type = decltype(nmtools::shape<true>(meta::declval<rhs_array_t>()));
+        using lhs_size_type  = decltype(nmtools::size<true>(meta::declval<lhs_array_t>()));
+        using rhs_size_type  = decltype(nmtools::size<true>(meta::declval<rhs_array_t>()));
+        using shape_type = const meta::resolve_optype_t<index::shape_concatenate_t,lhs_shape_type,rhs_shape_type,axis_t,lhs_size_type,rhs_size_type>;
 
         // lhs_type  lhs;
         // rhs_type  rhs;
         array_type array;
         axis_type axis;
+        shape_type shape_;
 
-        constexpr concatenate_t(const lhs_array_t& lhs,  const rhs_array_t& rhs, const axis_t& axis)
+        constexpr concatenate_t(const lhs_array_t& lhs,  const rhs_array_t& rhs, const axis_t& axis_)
             : array({initialize<lhs_type>(lhs),initialize<rhs_type>(rhs)})
-            , axis(init_attribute<axis_type>(axis))
+            , axis(init_attribute<axis_type>(axis_))
+            , shape_(nmtools::get<1>(index::shape_concatenate(
+                nmtools::shape<true>(lhs),
+                nmtools::shape<true>(rhs),
+                axis_,
+                nmtools::size<true>(lhs),
+                nmtools::size<true>(rhs)))
+            )
         {}
         
         constexpr auto shape() const
         {
-            // TODO: do not recompute since shape is constant anyway
-            const auto& [lhs, rhs] = array;
-            auto ashape = detail::shape(lhs);
-            auto bshape = detail::shape(rhs);
-            // @todo deal with dynamically changing array
-            const auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
-            return shape;
+            return shape_;
         } // shape
 
         constexpr auto dim() const
         {
             return len(shape());
         } // dim
-
-        // TODO: remove, add mutable_concatenate instead
-        template <typename...size_types>
-        constexpr auto operator()(size_types...indices)
-        {
-            auto indices_ = pack_indices(indices...);
-            const auto& [lhs, rhs] = array;
-            // @todo do not always request shape! e.g. for fixed size array, or provide options to turn this off
-            auto ashape = detail::shape(lhs);
-            auto bshape = detail::shape(rhs);
-            const auto [aflag, bflag, a_idx, b_idx] = index::concatenate(ashape,bshape,indices_,axis);
-            // @todo better error handling
-            assert ( aflag || bflag
-                // , "out of bound access"
-            );
-            // @todo maybe provide options/customization to select type casting
-            using common_t = value_type;
-            if (aflag)
-                return static_cast<common_t>(detail::apply_at(lhs,a_idx));
-            else
-                return static_cast<common_t>(detail::apply_at(rhs,b_idx));
-        } // operator()
 
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
@@ -131,127 +116,6 @@ namespace nmtools::meta
         using view_type = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
         using type = typename view_type::value_type;
     }; // get_element_type
-
-    // TODO: remove
-    /**
-     * @brief Infer the shape of concatenate view at compile-time.
-     * 
-     * Return Fail when the shape is only known at runtime.
-     * 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     * @tparam axis_t 
-     */
-    template <typename lhs_t, typename rhs_t, typename axis_t>
-    struct fixed_ndarray_shape<
-        view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >
-    >
-    {
-        static constexpr auto value = [](){
-            if constexpr (
-                    is_fixed_size_ndarray_v<lhs_t>
-                &&  is_fixed_size_ndarray_v<rhs_t>
-                && (is_constant_index_v<axis_t> || is_none_v<axis_t>)
-            ) {
-                constexpr auto ashape  = fixed_ndarray_shape_v<lhs_t>;
-                constexpr auto bshape  = fixed_ndarray_shape_v<rhs_t>;
-                constexpr auto axis    = axis_t{};
-                constexpr auto result  = index::shape_concatenate(ashape,bshape,axis);
-                constexpr auto success = nmtools::get<0>(result);
-                if constexpr (success) {
-                    constexpr auto shape = nmtools::get<1>(result);
-                    return shape;
-                } else {
-                    return detail::Fail;
-                }
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-    }; // fixed_ndarray_shape
-
-    /**
-     * @brief Infer the dimension of concatenate view at compile-time.
-     * 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     * @tparam axis_t 
-     */
-    template <typename lhs_t, typename rhs_t, typename axis_t>
-    struct fixed_dim<
-        view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >
-    >
-    {
-        static constexpr auto value = [](){
-            using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
-            if constexpr (is_fixed_size_ndarray_v<view_t>) {
-                return nmtools::len(fixed_ndarray_shape_v<view_t>);
-            } else if constexpr (is_none_v<axis_t>) {
-                return 1;
-            } else if constexpr (
-                   is_fixed_dim_ndarray_v<lhs_t>
-                && is_fixed_dim_ndarray_v<rhs_t>
-            ) {
-                // concatenate doesn't create new axis
-                // just check if the dimension is the same
-                constexpr auto ldim = fixed_dim_v<lhs_t>;
-                constexpr auto rdim = fixed_dim_v<rhs_t>;
-                if constexpr (ldim == rdim) {
-                    return ldim;
-                } else {
-                    return detail::Fail;
-                }
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-    }; // fixed_dim
-
-    // TODO: remove
-    /**
-     * @brief Infer the shape of hybrid ndarray maximum size at compile-time.
-     * Successful call will make the view considered hybrid_ndarray.
-     * 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     * @tparam axis_t 
-     */
-    template <typename lhs_t, typename rhs_t, typename axis_t>
-    struct hybrid_ndarray_max_size<
-        view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >
-    >
-    {
-        static constexpr auto value = [](){
-            if constexpr (
-                   is_hybrid_ndarray_v<lhs_t>
-                && is_hybrid_ndarray_v<rhs_t>
-            ) {
-                return hybrid_ndarray_max_size_v<lhs_t> + hybrid_ndarray_max_size_v<rhs_t>;
-            } else {
-                return detail::Fail;
-            }
-        }();
-        // TODO: fix either use value_type or type for deducing a valid value
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-        using type = remove_cvref_t<decltype(value)>;
-    }; // hybrid_ndarray_max_size
-
-    template <typename lhs_array_t, typename rhs_array_t>
-    struct fixed_shape<
-        view::decorator_t< view::concatenate_t, lhs_array_t, rhs_array_t, none_t >
-    >
-    {
-        static constexpr auto value = [](){
-            if constexpr (is_fixed_size_v<lhs_array_t> && is_fixed_size_v<rhs_array_t>) {
-                return nmtools_array{fixed_size_v<lhs_array_t> + fixed_size_v<rhs_array_t>};
-            } else {
-                using type = view::decorator_t< view::concatenate_t, lhs_array_t, rhs_array_t, none_t >;
-                return error::FIXED_SIZE_UNSUPPORTED<type>{};
-            }
-        }();
-    };
 
     template <typename lhs_array_t, typename rhs_array_t, typename axis_t>
     struct is_ndarray< 

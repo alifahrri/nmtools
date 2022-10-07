@@ -203,7 +203,7 @@ namespace nmtools
      * @param array
      * @return constexpr auto 
      */
-    template <bool force_constant_index=false, typename array_t>
+    template <bool prefer_constant_index=false, typename array_t>
     constexpr auto shape(const array_t& array)
     {
         // TODO: handle maybe type
@@ -233,7 +233,7 @@ namespace nmtools
             }
         } else {
             using meta::ct_v;
-            if constexpr (force_constant_index) {
+            if constexpr (prefer_constant_index) {
                 constexpr auto fixed_shape = meta::fixed_shape_v<array_t>;
                 if constexpr (!meta::is_fail_v<decltype(fixed_shape)>) {
                     return meta::template_reduce<len(fixed_shape)-1>([&](auto init, auto index){
@@ -303,6 +303,65 @@ namespace nmtools
     } // dim
 
     /** @} */ // end group utility
+} // namespace nmtools
+
+namespace nmtools::impl
+{
+    template <typename array_t>
+    struct numel_t
+    {
+        constexpr auto operator()([[maybe_unused]] const array_t& array) const noexcept
+        {
+            // prefer for explicit call to dim() first
+            if constexpr (meta::has_size_v<array_t>) {
+                return array.size();
+            } else if constexpr (meta::is_fixed_size_v<array_t>) {
+                return meta::fixed_size_v<array_t>;
+            } else {
+                auto shape = nmtools::shape(array);
+                if constexpr (is_none_v<decltype(shape)>) {
+                    return size_t{1};
+                } else {
+                    auto product = ::size_t{1};
+                    for (size_t i=0; i<nmtools::len(shape); i++) {
+                        product *= nmtools::at(shape,i);
+                    }
+                    return product;
+                }
+            }
+        }
+    }; // size_t
+
+    template <typename array_t>
+    inline constexpr auto size = numel_t<array_t>{};
+} // namespace nmtools::impl
+
+namespace nmtools
+{
+    /**
+     * @brief Compute the number of elements of an array
+     * 
+     * @tparam prefer_constant_index 
+     * @tparam array_t 
+     * @param array 
+     * @return constexpr auto 
+     */
+    template <bool prefer_constant_index=false, typename array_t>
+    constexpr auto size([[maybe_unused]] const array_t& array)
+    {
+        // TODO: handle maybe and either type
+        if constexpr (prefer_constant_index) {
+            constexpr auto fixed_size = meta::fixed_size_v<array_t>;
+            if constexpr (!meta::is_fail_v<decltype(fixed_size)>) {
+                using type = meta::ct<(size_t)fixed_size>;
+                return type{};
+            } else {
+                return impl::size<array_t>(array);
+            }
+        } else {
+            return impl::size<array_t>(array);
+        }
+    } // size
 } // namespace nmtools
 
 namespace nmtools::meta

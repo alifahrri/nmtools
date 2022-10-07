@@ -216,41 +216,6 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     }
 }
 
-// TODO: remove
-NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_matmul_indices)
-{
-    NMTOOLS_TESTING_DECLARE_ARGS(case1)
-    {
-        inline int indices[1] = {0};
-        inline int   shape[3] = {1,4,3};
-        inline int  bshape[1] = {1};
-        NMTOOLS_CAST_INDEX_ARRAYS(indices);
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(bshape);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
-    {
-        inline int result[1] = {0};
-    }
-}
-
-NMTOOLS_TESTING_DECLARE_CASE(index, concat_indices)
-{
-    NMTOOLS_TESTING_DECLARE_ARGS(case1)
-    {
-        inline int indices[1] = {0};
-        inline auto tuple = nmtools_tuple{2,nmtools_tuple{None,None}};
-        NMTOOLS_CAST_INDEX_ARRAYS(indices);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
-    {
-        using value_type = nmtools_either<int,nmtools_tuple<none_t,none_t>>;
-        using result_t   = nmtools_list<value_type>;
-        inline auto result = nmtools_tuple{0,2,nmtools_tuple{None,None}};
-        inline auto result_list = result_t{0,2,nmtools_tuple{None,None}};
-    }
-}
-
 NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -600,91 +565,6 @@ TEST_CASE("shape_matmul(case10)" * doctest::test_suite("view::detail::shape_matm
     SHAPE_MATMUL_SUBCASE( case10, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case10, lshape_h, rshape_h );
 }
-
-#define RUN_broadcast_matmul_indices_impl(...) \
-nmtools::index::broadcast_matmul_indices(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs matmul fn to callable lambda
-#define RUN_broadcast_matmul_indices(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("index-broadcast_matmul_indices-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_broadcast_matmul_indices_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_broadcast_matmul_indices(case_name, ...) \
-RUN_broadcast_matmul_indices_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define BROADCAST_MATMUL_INDICES_SUBCASE(case_name, ...) \
-SUBCASE(#case_name) \
-{ \
-    NMTOOLS_TESTING_DECLARE_NS(index, broadcast_matmul_indices, case_name); \
-    using namespace args; \
-    auto result = RUN_broadcast_matmul_indices(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
-}
-
-TEST_CASE("broadcast_matmul_indices(case1)" * doctest::test_suite("index::broadcast_matmul_indices"))
-{
-    BROADCAST_MATMUL_INDICES_SUBCASE(case1, indices, shape, bshape);
-    BROADCAST_MATMUL_INDICES_SUBCASE(case1, indices_v, shape_v, bshape_v);
-}
-
-#define RUN_concat_indices_impl(...) \
-nmtools::index::concat_indices(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs matmul fn to callable lambda
-#define RUN_concat_indices(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("index-concat_indices-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_concat_indices_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_concat_indices(case_name, ...) \
-RUN_concat_indices_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define CONCAT_INDICES_SUBCASE(case_name, ...) \
-SUBCASE(#case_name) \
-{ \
-    NMTOOLS_TESTING_DECLARE_NS(index, concat_indices, case_name); \
-    using namespace args; \
-    auto result = RUN_concat_indices(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
-}
-
-TEST_CASE("concat_indices(case1)" * doctest::test_suite("index::concat_indices"))
-{
-    CONCAT_INDICES_SUBCASE(case1, indices, tuple);
-    // isequal/isclose doesn't support either<int,tuple{None,None}>
-    // CONCAT_INDICES_SUBCASE(case1, indices_v, tuple);
-    SUBCASE("case1")
-    {
-        NMTOOLS_TESTING_DECLARE_NS(index, concat_indices, case1);
-        using namespace args;
-        auto result = RUN_concat_indices(case1, indices_v, tuple);
-        NMTOOLS_ASSERT_EQUAL( nm::dim(result), nm::dim(expect::result_list) );
-    }
-}
-
 
 #define RUN_index_matmul_impl(...) \
 nmtools::view::detail::matmul(__VA_ARGS__);

@@ -181,9 +181,6 @@ NM_TEST_SUBCASE(replace_element_type, case1)
 
 #define declval(T) meta::declval<T>()
 
-// NOTE: impacted by broadcast_to shape cleanup
-// TODO: fix
-#if 0
 NM_TEST_SUBCASE(broadcast_to, case1)
 {
     {
@@ -227,7 +224,7 @@ NM_TEST_SUBCASE(ufuncs, case2)
         using view_t = decltype(view::add(declval(lhs_t),declval(rhs_t)));
         using result_t = meta::get_element_type_t<view_t>;
         using expect_t = int;
-        constexpr auto shape  = meta::fixed_ndarray_shape_v<view_t>;
+        constexpr auto shape  = meta::fixed_shape_v<view_t>;
         constexpr auto expect = utl::array{2,3,2};
         TEST_ASSERT_TRUE(( isequal(shape,expect) ));
         // to allow debugging type
@@ -248,7 +245,6 @@ NM_TEST_SUBCASE(ufuncs, case3)
         TEST_ASSERT_TRUE((  meta::is_fixed_size_ndarray_v<array_t> ));
     }
 }
-#endif
 
 NM_TEST_SUBCASE(shape_matmul, case1)
 {
@@ -306,33 +302,6 @@ NM_TEST_SUBCASE(eval, case3)
         TEST_ASSERT_TRUE(( is_same.value ));
     }
 }
-
-// NOTE: impacted by broadcast_to shape cleanup
-// TODO: fix
-#if 0
-NM_TEST_SUBCASE(eval, case4)
-{
-    // resolve binary array type
-    {
-        using lhs_t = int[2][3][2];
-        using rhs_t = int;
-        using view_t = decltype(view::add(declval(lhs_t),declval(rhs_t)));
-        constexpr auto result = meta::resolve_binary_array_type(
-            meta::as_value_v<lhs_t>, meta::as_value_v<rhs_t>, meta::as_value_v<view_t>
-        );
-        using result_t = meta::type_t<decltype(result)>;
-        using expect_t = utl::array<utl::array<utl::array<int,2>,3>,2>;
-        // to allow debugging type
-        constexpr auto is_same = meta::is_same<result_t,expect_t>{};
-        TEST_ASSERT_TRUE(( is_same.value ));
-        static_assert( meta::is_num_v<rhs_t> );
-        static_assert( meta::is_ndarray_v<lhs_t> );
-        static_assert( meta::is_ndarray_v<view_t> );
-        static_assert( meta::is_fixed_size_ndarray_v<lhs_t> );
-        static_assert( meta::is_fixed_size_ndarray_v<view_t> );
-    }
-}
-#endif
 
 NM_TEST_SUBCASE(eval, case5)
 {
@@ -422,26 +391,17 @@ void setup()
     NM_RUN_SUBCASE(resize_fixed_ndarray, case1);
     NM_RUN_SUBCASE(replace_element_type, case1);
 
-    // NOTE: impacted by broadcast_to shape cleanup
-    // TODO: fix
-    #if 0
     NM_RUN_SUBCASE(broadcast_to, case1);
 
     NM_RUN_SUBCASE(ufuncs, case1);
     NM_RUN_SUBCASE(ufuncs, case2);
     NM_RUN_SUBCASE(ufuncs, case3);
-    #endif
 
     NM_RUN_SUBCASE(shape_matmul, case1);
 
     NM_RUN_SUBCASE(eval, case1);
     NM_RUN_SUBCASE(eval, case2);
     NM_RUN_SUBCASE(eval, case3);
-    // NOTE: impacted by broadcast_to shape cleanup
-    // TODO: fix
-    #if 0
-    NM_RUN_SUBCASE(eval, case4);
-    #endif
     NM_RUN_SUBCASE(eval, case5);
     NM_RUN_SUBCASE(eval, case6);
     NM_RUN_SUBCASE(eval, case7);

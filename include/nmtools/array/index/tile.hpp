@@ -180,7 +180,7 @@ namespace nmtools::index
         }();
 
         if constexpr (meta::is_resizeable_v<return_t>)
-            ret.resize(size(shape));
+            ret.resize(len(shape));
         
         // use int since ai/bi may be negative
         for (int i=0; i<(int)s; i++) {

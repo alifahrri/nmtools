@@ -46,28 +46,30 @@ namespace nmtools::index
         // (3, 1)
         // ```
 
-        auto c_dim = len(nonzero(condition));
-        if constexpr (is_none_v<axis_t>)
-            at(res,0) = c_dim;
-        else {
-            // array dim
-            [[maybe_unused]] auto dim = len(shape);
-            if constexpr (meta::is_resizeable_v<return_t>)
-                res.resize(dim);
-
-            auto shape_compress_impl = [&](auto i){
-                using a_t = meta::get_element_or_common_type_t<axis_t>;
-                using idx_t = meta::promote_index_t<decltype(i),a_t>;
-                at(res,i) = ((idx_t)i == (idx_t)axis) ? c_dim : at(shape,i);
-            };
-
-            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
-                constexpr auto N = meta::len_v<shape_t>;
-                meta::template_for<N>(shape_compress_impl);
-            }
+        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+            auto c_dim = len(nonzero(condition));
+            if constexpr (is_none_v<axis_t>)
+                at(res,0) = c_dim;
             else {
-                for (size_t i=0; i<dim; i++)
-                    shape_compress_impl(i);
+                // array dim
+                [[maybe_unused]] auto dim = len(shape);
+                if constexpr (meta::is_resizeable_v<return_t>)
+                    res.resize(dim);
+
+                auto shape_compress_impl = [&](auto i){
+                    using a_t = meta::get_element_or_common_type_t<axis_t>;
+                    using idx_t = meta::promote_index_t<decltype(i),a_t>;
+                    at(res,i) = ((idx_t)i == (idx_t)axis) ? c_dim : at(shape,i);
+                };
+
+                if constexpr (meta::is_fixed_index_array_v<shape_t>) {
+                    constexpr auto N = meta::len_v<shape_t>;
+                    meta::template_for<N>(shape_compress_impl);
+                }
+                else {
+                    for (size_t i=0; i<dim; i++)
+                        shape_compress_impl(i);
+                }
             }
         }
 
@@ -156,25 +158,76 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
-    // TODO: cleanup index metafunctions
+    namespace error
+    {
+        template <typename...>
+        struct SHAPE_COMPRESS_UNSUPPORTED : detail::fail_t {};
+    }
+
+    /**
+     * @brief Infer the type of shape_compress index function
+     * 
+     * @tparam condition_t 
+     * @tparam shape_t 
+     * @tparam axis_t 
+     */
     template <typename condition_t, typename shape_t, typename axis_t>
     struct resolve_optype<
         void, index::shape_compress_t, condition_t, shape_t, axis_t
     >
     {
-        // just follow the type original array shape type
-        using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
-    }; // shape_compress_t
+        static constexpr auto vtype = [](){
+            if constexpr (
+                is_constant_index_array_v<condition_t>
+                && is_constant_index_array_v<shape_t>
+                && (is_constant_index_v<axis_t> || is_none_v<axis_t>)
+            ) {
+                constexpr auto condition = to_value_v<condition_t>;
+                constexpr auto shape  = to_value_v<shape_t>;
+                constexpr auto axis   = to_value_v<axis_t>;
+                constexpr auto result = index::shape_compress(condition,shape,axis);
+                using index_t = get_index_element_type_t<decltype(result)>;
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(result)-1>([&](auto init, auto index){
+                    using init_type = type_t<decltype(init)>;
+                    using type = append_type_t<init_type,ct<(index_t)at(result,index+1)>>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<ct<(index_t)at(result,0)>>>);
+            } else if constexpr (
+                is_constant_index_array_v<condition_t>
+            ) {
+                using condition_type = decltype(to_value_v<condition_t>);
+                using type = resolve_optype_t<index::shape_compress_t,condition_type,shape_t,axis_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_constant_index_array_v<shape_t>
+            ) {
+                using shape_type = decltype(to_value_v<shape_t>);
+                using type = resolve_optype_t<index::shape_compress_t,condition_t,shape_type,axis_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_index_array_v<condition_t>
+                && is_index_array_v<shape_t>
+                && is_none_v<axis_t>
+            ) {
+                using index_t = get_index_element_type_t<shape_t>;
+                using type = nmtools_array<index_t,1>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_index_array_v<condition_t>
+                && is_index_array_v<shape_t>
+                && is_index_v<axis_t>
+            ) {
+                // compress doesn't reduce dimension, so simply return the same as shape_t
+                using type = transform_bounded_array_t<shape_t>;
+                return as_value_v<type>;
+            } else {
+                using type = error::SHAPE_COMPRESS_UNSUPPORTED<condition_t,shape_t,axis_t>;
+                return as_value_v<type>;
+            }
+        }();
 
-    // TODO: cleanup index metafunctions
-    template <typename condition_t, typename shape_t>
-    struct resolve_optype<
-        void, index::shape_compress_t, condition_t, shape_t, none_t
-    >
-    {
-        // TODO: use meta::make_array_type
-        // when working on flattened array, shape is single element 1D array
-        using type = make_array_type_t<size_t,1>;
+        using type = type_t<decltype(vtype)>;
     }; // shape_compress_t
 
     // TODO: cleanup index metafunctions

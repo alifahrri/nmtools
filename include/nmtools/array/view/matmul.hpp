@@ -28,8 +28,12 @@ namespace nmtools::view
         using lhs_elem_type = meta::get_element_type_t<lhs_t>;
         using rhs_elem_type = meta::get_element_type_t<rhs_t>;
         using result_type   = meta::common_type_t<lhs_elem_type,rhs_elem_type>;
+        using lhs_shape_type = decltype(nmtools::shape<true>(meta::declval<lhs_t>()));
+        using rhs_shape_type = decltype(nmtools::shape<true>(meta::declval<rhs_t>()));
+        using dst_shape_type = meta::resolve_optype_t<index::shape_matmul_t,lhs_shape_type,rhs_shape_type>;
 
         operands_type operands;
+        dst_shape_type shape_;
 
         // the following is needed because cant use view::initialize<...>
         // can't handle tuple yet
@@ -49,14 +53,16 @@ namespace nmtools::view
         } // initialize_operands
 
         constexpr matmul_t(const lhs_t& lhs, const rhs_t& rhs)
-            : operands(initialize_operands(lhs,rhs)) {}
+            : operands(initialize_operands(lhs,rhs))
+            , shape_(*index::shape_matmul(
+                nmtools::shape<true>(lhs),
+                nmtools::shape<true>(rhs))
+            )
+        {}
         
         constexpr auto shape() const
         {
-            const auto ashape = detail::shape(nmtools::get<0>(operands));
-            const auto bshape = detail::shape(nmtools::get<1>(operands));
-            // must has value
-            return *detail::shape_matmul(ashape,bshape);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -76,25 +82,25 @@ namespace nmtools::view
             const auto ashape   = detail::shape(lhs);
             const auto bshape   = detail::shape(rhs);
             auto indices_       = detail::matmul(packed_indices,ashape,bshape,shape());
-            auto lslice_indices = at(indices_,meta::ct_v<0>);
-            auto rslice_indices = at(indices_,meta::ct_v<1>);
+            auto l_slice_indices = at(indices_,meta::ct_v<0>);
+            auto r_slice_indices = at(indices_,meta::ct_v<1>);
 
-            auto lslice = [&](){
+            auto l_slice = [&](){
                 if constexpr (meta::is_pointer_v<lhs_type>) {
-                    return apply_slice(*lhs, lslice_indices);
+                    return apply_slice(*lhs, l_slice_indices);
                 } else {
-                    return apply_slice(lhs, lslice_indices);
+                    return apply_slice(lhs, l_slice_indices);
                 }
             }();
-            auto rslice = [&](){
+            auto r_slice = [&](){
                 if constexpr (meta::is_pointer_v<rhs_type>) {
-                    return apply_slice(*rhs, rslice_indices);
+                    return apply_slice(*rhs, r_slice_indices);
                 } else {
-                    return apply_slice(rhs, rslice_indices);
+                    return apply_slice(rhs, r_slice_indices);
                 }
             }();
             // element multiplication with broadcasting
-            auto multiplied = multiply(lslice,rslice);
+            auto multiplied = multiply(l_slice,r_slice);
             auto reduced    = reduce_add(multiplied,/*axis=*/None);
             return reduced;
         } // view_at
@@ -134,7 +140,7 @@ namespace nmtools::meta
 {
 
     /**
-     * @brief Infre return type of matmul
+     * @brief Infer return type of matmul
      * 
      * @tparam lhs_t 
      * @tparam rhs_t 
@@ -156,88 +162,48 @@ namespace nmtools::meta
     }; // is_ndarray
 
     /**
-     * @brief Infer the resulting shape of matmul at compile-time.
-     * 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     */
-    template <typename lhs_t, typename rhs_t>
-    struct fixed_ndarray_shape<
-        view::matmul_t< lhs_t, rhs_t >
-    >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_fixed_size_ndarray_v<lhs_t> && is_fixed_size_ndarray_v<rhs_t>) {
-                constexpr auto lhs_shape = fixed_ndarray_shape_v<lhs_t>;
-                constexpr auto rhs_shape = fixed_ndarray_shape_v<rhs_t>;
-                constexpr auto shape = view::detail::shape_matmul(lhs_shape,rhs_shape);
-                if constexpr (static_cast<bool>(shape)) {
-                    return shape.value();
-                } else {
-                    return detail::Fail;
-                }
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = remove_cvref_t<decltype(value)>;
-    }; // fixed_ndarray_shape
-
-    /**
      * @brief Infer the maximum size of the resulting matmul, at compile-time.
      * 
      * @tparam lhs_t 
      * @tparam rhs_t 
      */
     template <typename lhs_t, typename rhs_t>
-    struct hybrid_ndarray_max_size<
+    struct bounded_size<
         view::decorator_t< view::matmul_t, lhs_t, rhs_t >
     >
     {
         static inline constexpr auto value = [](){
-            if constexpr (is_hybrid_ndarray_v<lhs_t> && is_hybrid_ndarray_v<rhs_t>) {
+            if constexpr (is_bounded_size_v<lhs_t> && is_bounded_size_v<rhs_t>) {
                 // worst case maximum value
-                return hybrid_ndarray_max_size_v<lhs_t> * hybrid_ndarray_max_size_v<rhs_t>;
-            } else if constexpr (is_fixed_size_ndarray_v<lhs_t> && is_hybrid_ndarray_v<rhs_t>) {
-                constexpr auto shape = fixed_ndarray_shape_v<lhs_t>;
-                return index::product(shape) * hybrid_ndarray_max_size_v<rhs_t>;
-            } else if constexpr (is_hybrid_ndarray_v<lhs_t> && is_fixed_size_ndarray_v<rhs_t>) {
-                constexpr auto shape = fixed_ndarray_shape_v<rhs_t>;
-                return index::product(shape) * hybrid_ndarray_max_size_v<lhs_t>;
+                return bounded_size_v<lhs_t> * bounded_size_v<rhs_t>;
+            } else if constexpr (is_fixed_shape_v<lhs_t> && is_bounded_size_v<rhs_t>) {
+                constexpr auto shape = fixed_shape_v<lhs_t>;
+                return index::product(shape) * bounded_size_v<rhs_t>;
+            } else if constexpr (is_bounded_size_v<lhs_t> && is_fixed_shape_v<rhs_t>) {
+                constexpr auto shape = fixed_shape_v<rhs_t>;
+                return index::product(shape) * bounded_size_v<lhs_t>;
             } else {
-                return detail::Fail;
+                return error::BOUNDED_SIZE_UNSUPPORTED<view::decorator_t< view::matmul_t, lhs_t, rhs_t >>{};
             }
         }();
-        // TODO: simplify is_ndarray default deduction
-        using value_type = remove_cvref_t<decltype(value)>;
-        using type = value_type;
-    }; // hybrid_ndarray_max_size
+    }; // bounded_size
 
-    /**
-     * @brief Infer the resulting dimension of matmul, at compile-time.
-     * 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     */
     template <typename lhs_t, typename rhs_t>
-    struct fixed_dim<
+    struct fixed_size<
         view::decorator_t< view::matmul_t, lhs_t, rhs_t >
     >
     {
-        static inline constexpr auto value = [](){
-            if constexpr (is_fixed_dim_ndarray_v<lhs_t> && is_fixed_dim_ndarray_v<rhs_t>) {
-                // simply take maximum
-                constexpr auto ldim = fixed_dim_v<lhs_t>;
-                constexpr auto rdim = fixed_dim_v<rhs_t>;
-                return (ldim > rdim ? ldim : rdim); 
+        using view_type  = view::decorator_t< view::matmul_t, lhs_t, rhs_t >;
+        using shape_type = typename view_type::dst_shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
             } else {
-                return detail::Fail;
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
             }
         }();
-        // TODO: consider to use fail type to indicate fail instead of void
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-        using type = value_type;
-    }; // fixed_dim
+    }; // fixed_size
 } // namespace nmtools::meta
 
 

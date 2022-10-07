@@ -15,21 +15,24 @@ namespace nmtools::view
         using condition_type = resolve_attribute_type_t<condition_t>;
         using array_type = resolve_array_type_t<array_t>;
         using axis_type  = resolve_attribute_type_t<axis_t>;
+        using src_shape_type = decltype(nmtools::shape</*force_index_array*/true>(meta::declval<array_t>()));
+        using dst_shape_type = meta::resolve_optype_t<index::shape_compress_t,condition_t,src_shape_type,axis_t>;
 
         condition_type condition;
         array_type array;
         axis_type axis;
+        dst_shape_type shape_;
 
-        constexpr compress_t(const condition_t& condition, const array_t& array, const axis_t& axis)
-            : condition(init_attribute<condition_type>(condition))
-            , array(initialize<array_type>(array))
-            , axis(init_attribute<axis_type>(axis))
+        constexpr compress_t(const condition_t& condition_, const array_t& array_, const axis_t& axis_)
+            : condition(init_attribute<condition_type>(condition_))
+            , array(initialize<array_type>(array_))
+            , axis(init_attribute<axis_type>(axis_))
+            , shape_(index::shape_compress(condition_,nmtools::shape<true>(array_),axis_))
         {}
         
         constexpr auto shape() const
         {
-            auto shape_ = detail::shape(array);
-            return ::nmtools::index::shape_compress(condition, shape_, axis);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -67,93 +70,40 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    /**
-     * @brief Infer the shape of compress view at compile-time.
-     * 
-     * @tparam condition_t 
-     * @tparam array_t 
-     * @tparam axis_t 
-     */
+    // compress view may change shape, so change size
     template <typename condition_t, typename array_t, typename axis_t>
-    struct fixed_ndarray_shape< view::compress_t<condition_t,array_t,axis_t> >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (
-                    is_fixed_size_ndarray_v<array_t>
-                &&  is_constant_index_array_v<condition_t>
-                && (is_none_v<axis_t> || is_constant_index_v<axis_t>)
-            ) {
-                constexpr auto ashape    = fixed_ndarray_shape_v<array_t>;
-                constexpr auto condition = condition_t{};
-                constexpr auto axis      = axis_t{};
-                return index::shape_compress(condition,ashape,axis);
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-    }; // fixed_ndarray_shape
-
-    /**
-     * @brief Infer the maximum size of compress view at compile-time.
-     * Successful call will make the view considered hybrid_ndarray.
-     * 
-     * @tparam condition_t 
-     * @tparam array_t 
-     * @tparam axis_t 
-     */
-    template <typename condition_t, typename array_t, typename axis_t>
-    struct hybrid_ndarray_max_size<
+    struct fixed_size<
         view::decorator_t<view::compress_t,condition_t,array_t,axis_t>
     >
     {
-        static inline constexpr auto value = [](){
-            if constexpr (
-                     is_fixed_size_ndarray_v<array_t>
-                &&  !is_constant_index_array_v<condition_t>
-                && !(is_none_v<axis_t> || is_constant_index_v<axis_t>)
-            ) {
-                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
-                return index::product(shape);
-            } else if constexpr (is_hybrid_ndarray_v<array_t>) {
-                return hybrid_ndarray_max_size_v<array_t>;
-            } else {
-                return detail::Fail;
-            }
-        }();
-        // TODO: fix either use value_type or type for deducing a valid value
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-        using type = remove_cvref_t<decltype(value)>;
-    }; // hybrid_ndarray_max_size
+        using view_type = view::decorator_t<view::compress_t,condition_t,array_t,axis_t>;
+        using dst_shape_type = typename view_type::dst_shape_type;
 
-    /**
-     * @brief Infer the fixed dimension of compress view at compile-time.
-     * 
-     * @tparam condition_t 
-     * @tparam array_t 
-     * @tparam axis_t 
-     */
-    template <typename condition_t, typename array_t, typename axis_t>
-    struct fixed_dim<
-        view::decorator_t<view::compress_t,condition_t,array_t,axis_t>
-    >
-    {
-        // compress view doesn't change the resulting dimension,
-        // except for None axis
         static constexpr auto value = [](){
-            if constexpr (is_none_v<axis_t>) {
-                // None axis means compress on flattened array
-                return 1;
-            } else if constexpr (is_fixed_dim_ndarray_v<array_t>) {
-                return fixed_dim_v<array_t>;
+            if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                return index::product(dst_shape_type{});
             } else {
-                return detail::Fail;
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
             }
         }();
-        // TODO: fix either use value_type or type for deducing a valid value
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-        using type = remove_cvref_t<decltype(value)>;
-    }; // fixed_dim
+    }; // fixed_size
+
+    template <typename condition_t, typename array_t, typename axis_t>
+    struct bounded_size<
+        view::decorator_t<view::compress_t,condition_t,array_t,axis_t>
+    >
+    {
+        using view_type = view::decorator_t<view::compress_t,condition_t,array_t,axis_t>;
+
+        static constexpr auto value = [](){
+            constexpr auto fixed_size = fixed_size_v<view_type>;
+            if constexpr (!is_fail_v<decltype(fixed_size)>) {
+                return fixed_size;
+            } else {
+                return bounded_size_v<array_t>;
+            }
+        }();
+    };
 
     template <typename condition_t, typename array_t, typename axis_t>
     struct is_ndarray< view::decorator_t< view::compress_t, condition_t, array_t, axis_t >>

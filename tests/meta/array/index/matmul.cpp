@@ -14,56 +14,49 @@ TEST_CASE("shape_matmul" * doctest::test_suite("index"))
         using lhs_shape_t = int[2];
         using rhs_shape_t = int[2];
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        // TODO: make the type unsigned
-        using expect_t    = nmtools_array<int,2>;
+        using expect_t    = nmtools_array<size_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = nmtools_array<int,2>;
         using rhs_shape_t = nmtools_array<int,2>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        // TODO: make the type unsigned
-        using expect_t    = nmtools_array<int,2>;
+        using expect_t    = nmtools_array<size_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = nmtools_list<int>;
         using rhs_shape_t = nmtools_list<int>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        // TODO: make the type unsigned
-        using expect_t    = nmtools_list<int>;
+        using expect_t    = nmtools_list<size_t>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = na::static_vector<int,2>;
         using rhs_shape_t = na::static_vector<int,2>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        // TODO: make the type unsigned
-        using expect_t    = na::static_vector<int,2>;
+        using expect_t    = na::static_vector<size_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = na::static_vector<int,2>;
         using rhs_shape_t = na::static_vector<int,3>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        // TODO: make the type unsigned
-        using expect_t    = na::static_vector<int,3>;
+        using expect_t    = na::static_vector<size_t,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = na::static_vector<int,3>;
         using rhs_shape_t = na::static_vector<int,2>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        // TODO: make the type unsigned
-        using expect_t    = na::static_vector<int,3>;
+        using expect_t    = na::static_vector<size_t,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = na::static_vector<int,2>;
         using rhs_shape_t = na::static_vector<int,2>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        // TODO: make the type unsigned
-        using expect_t    = na::static_vector<int,2>;
+        using expect_t    = na::static_vector<size_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
 }

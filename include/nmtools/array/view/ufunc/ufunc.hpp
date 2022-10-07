@@ -144,7 +144,7 @@ namespace nmtools::view
         constexpr auto shape() const
         {
             // assume arrays is already broadcasted together
-            return detail::shape(nmtools::get<0>(operands));
+            return detail::shape<true>(nmtools::get<0>(operands));
         } // shape
 
         constexpr auto dim() const
