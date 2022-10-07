@@ -1,3 +1,19 @@
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+#endif
+
 #include "nmtools/array/array/ufuncs/add.hpp"
 #include "nmtools/testing/data/array/add.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -48,42 +64,110 @@ SUBCASE(#case_name) \
 
 TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
 {
-    auto context = None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    ADD_SUBCASE( case1,   a,   b );
+    ADD_SUBCASE( case1, a_a, b_a );
+    ADD_SUBCASE( case1, a_f, b_f );
+    ADD_SUBCASE( case1, a_d, b_d );
+    ADD_SUBCASE( case1, a_h, b_h );
 
-    ADD_SUBCASE( case1,   a,   b, context );
-    ADD_SUBCASE( case1, a_a, b_a, context );
-    // ADD_SUBCASE( case1, a_v, b_v, context );
-    ADD_SUBCASE( case1, a_f, b_f, context );
-    ADD_SUBCASE( case1, a_d, b_d, context );
-    ADD_SUBCASE( case1, a_h, b_h, context );
+    #else
+    ADD_SUBCASE( case1, a_cs_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_cs_db );
 
-    auto output  = meta::as_value<int[3][3]>{};
-    ADD_SUBCASE( case1,   a,   b, context, output );
-    ADD_SUBCASE( case1, a_a, b_a, context, output );
-    // ADD_SUBCASE( case1, a_v, b_v, context, output );
-    ADD_SUBCASE( case1, a_f, b_f, context, output );
-    ADD_SUBCASE( case1, a_d, b_d, context, output );
-    ADD_SUBCASE( case1, a_h, b_h, context, output );
+    ADD_SUBCASE( case1, a_fs_fb, b_fs_fb );
+    ADD_SUBCASE( case1, a_fs_hb, b_fs_hb );
+    ADD_SUBCASE( case1, a_fs_db, b_fs_db );
+
+    ADD_SUBCASE( case1, a_hs_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_hs_db );
+
+    ADD_SUBCASE( case1, a_ds_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_ds_db );
+
+
+    ADD_SUBCASE( case1, a_fs_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_fs_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_fs_db, b_cs_db );
+
+    ADD_SUBCASE( case1, a_hs_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_cs_db );
+
+    ADD_SUBCASE( case1, a_ds_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_cs_db );
+
+
+    ADD_SUBCASE( case1, a_cs_fb, b_fs_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_fs_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_fs_db );
+
+    ADD_SUBCASE( case1, a_hs_fb, b_fs_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_fs_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_fs_db );
+
+    ADD_SUBCASE( case1, a_ds_fb, b_fs_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_fs_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_fs_db );
+
+
+    ADD_SUBCASE( case1, a_cs_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_hs_db );
+
+    ADD_SUBCASE( case1, a_fs_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_fs_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_fs_db, b_hs_db );
+
+    ADD_SUBCASE( case1, a_ds_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_hs_db );
+
+
+    ADD_SUBCASE( case1, a_cs_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_ds_db );
+
+    ADD_SUBCASE( case1, a_fs_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_fs_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_fs_db, b_ds_db );
+
+    ADD_SUBCASE( case1, a_hs_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_ds_db );
+    #endif
 }
 
 TEST_CASE("add(case2)" * doctest::test_suite("array::add"))
 {
-    auto context = None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    ADD_SUBCASE( case2,   a, b );
+    ADD_SUBCASE( case2, a_a, b );
+    ADD_SUBCASE( case2, a_f, b );
+    ADD_SUBCASE( case2, a_d, b );
+    ADD_SUBCASE( case2, a_h, b );
 
-    ADD_SUBCASE( case2,   a, b, context );
-    ADD_SUBCASE( case2, a_a, b, context );
-    // ADD_SUBCASE( case2, a_v, b, context );
-    ADD_SUBCASE( case2, a_f, b, context );
-    ADD_SUBCASE( case2, a_d, b, context );
-    ADD_SUBCASE( case2, a_h, b, context );
+    #else
+    ADD_SUBCASE( case2, a_cs_fb, b );
+    ADD_SUBCASE( case2, a_cs_hb, b );
+    ADD_SUBCASE( case2, a_cs_db, b );
 
-    auto output  = meta::as_value<int[3][3]>{};
-    ADD_SUBCASE( case2,   a, b, context, output );
-    ADD_SUBCASE( case2, a_a, b, context, output );
-    // ADD_SUBCASE( case2, a_v, b, context, output );
-    ADD_SUBCASE( case2, a_f, b, context, output );
-    ADD_SUBCASE( case2, a_d, b, context, output );
-    ADD_SUBCASE( case2, a_h, b, context, output );
+    ADD_SUBCASE( case2, a_fs_fb, b );
+    ADD_SUBCASE( case2, a_fs_hb, b );
+    ADD_SUBCASE( case2, a_fs_db, b );
+
+    ADD_SUBCASE( case2, a_hs_fb, b );
+    ADD_SUBCASE( case2, a_hs_hb, b );
+    ADD_SUBCASE( case2, a_hs_db, b );
+
+    ADD_SUBCASE( case2, a_ds_fb, b );
+    ADD_SUBCASE( case2, a_ds_hb, b );
+    ADD_SUBCASE( case2, a_ds_db, b );
+    #endif
 }
 
 TEST_CASE("add(case3)" * doctest::test_suite("array::add"))
@@ -93,11 +177,30 @@ TEST_CASE("add(case3)" * doctest::test_suite("array::add"))
 
 TEST_CASE("add(case4)" * doctest::test_suite("array::add"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ADD_SUBCASE(case4, a, b);
     ADD_SUBCASE(case4, a_a, b);
     ADD_SUBCASE(case4, a_f, b);
     ADD_SUBCASE(case4, a_d, b);
     ADD_SUBCASE(case4, a_h, b);
+
+    #else
+    ADD_SUBCASE( case4, a_cs_fb, b );
+    ADD_SUBCASE( case4, a_cs_hb, b );
+    ADD_SUBCASE( case4, a_cs_db, b );
+
+    ADD_SUBCASE( case4, a_fs_fb, b );
+    ADD_SUBCASE( case4, a_fs_hb, b );
+    ADD_SUBCASE( case4, a_fs_db, b );
+
+    ADD_SUBCASE( case4, a_hs_fb, b );
+    ADD_SUBCASE( case4, a_hs_hb, b );
+    ADD_SUBCASE( case4, a_hs_db, b );
+
+    ADD_SUBCASE( case4, a_ds_fb, b );
+    ADD_SUBCASE( case4, a_ds_hb, b );
+    ADD_SUBCASE( case4, a_ds_db, b );
+    #endif
 }
 
 // skip constexpr test for emscripten

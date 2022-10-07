@@ -8,6 +8,8 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
 
+// TODO: remove
+#if 0
 TEST_CASE("hybrid_ndarray_max_size" * doctest::test_suite("hybrid_ndarray_max_size"))
 {
     {
@@ -17,3 +19,4 @@ TEST_CASE("hybrid_ndarray_max_size" * doctest::test_suite("hybrid_ndarray_max_si
         NMTOOLS_STATIC_ASSERT_EQUAL( max_size, 3 );
     }
 }
+#endif
