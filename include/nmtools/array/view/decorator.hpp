@@ -606,6 +606,46 @@ namespace nmtools::view
         return initialize<array_type>(array);
     } // initialize
 
+    template <typename operands_type, typename...arrays_t>
+    constexpr auto initialize_operands(const arrays_t&...arrays)
+    {
+        if constexpr (sizeof...(arrays) > 1) {
+            // take the original referenced array as const ref,
+            // may be transformed to pointer later
+            using tuple_t = nmtools_tuple<const arrays_t&...>;
+            auto tuple = tuple_t{arrays...};
+            // the following may transform to tuple of pointer / tuple of value
+            return meta::template_reduce<sizeof...(arrays)>([&](auto init, auto index){
+                constexpr auto i = decltype(index)::value;
+                using arg_t  = meta::at_t<operands_type,i>;
+                using init_t = meta::remove_cvref_t<decltype(init)>;
+                // for each element in operands,
+                // dispatch based on take ref or not
+                auto arg = [&]() -> arg_t {
+                    if constexpr (meta::is_pointer_v<arg_t>) {
+                        return &nmtools::get<i>(tuple);
+                    } else {
+                        return nmtools::get<i>(tuple);
+                    }
+                }();
+                if constexpr (is_none_v<init_t>) {
+                    using tuple = nmtools_tuple<arg_t>;
+                    return tuple{arg};
+                } else {
+                    using tuple = nmtools_tuple<arg_t>;
+                    return detail::tuple_cat(init,tuple{arg});
+                }
+            }, None);
+        } else {
+            using array_t = meta::at_t<operands_type,0>;
+            if constexpr (meta::is_pointer_v<array_t>) {
+                return operands_type{&arrays...};
+            } else {
+                return operands_type{arrays...};
+            }
+        }
+    } // initialize_operands
+
     namespace error
     {
         // error type for resolve_attribute_type metafunction
