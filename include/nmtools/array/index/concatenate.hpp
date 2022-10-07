@@ -244,8 +244,8 @@ namespace nmtools::meta
                 constexpr auto bshape  = to_value_v<bshape_t>;
                 constexpr auto result_ = index::shape_concatenate(ashape,bshape,axis_t{});
                 constexpr auto success = nmtools::get<0>(result_);
-                constexpr auto result  = nmtools::get<1>(result_);
                 if constexpr (success) {
+                    constexpr auto result  = nmtools::get<1>(result_);
                     return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
                         using init_t = type_t<decltype(init)>;
                         constexpr auto I = decltype(index)::value + 1;
