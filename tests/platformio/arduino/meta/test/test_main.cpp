@@ -261,6 +261,8 @@ NM_TEST_SUBCASE(shape_matmul, case1)
     }
 }
 
+// TODO: re-enable eval meta tests
+#if 0
 NM_TEST_SUBCASE(eval, case1)
 {
     // underlying array
@@ -317,8 +319,6 @@ NM_TEST_SUBCASE(eval, case5)
         // to allow debugging type
         constexpr auto is_same = meta::is_same<result_t,expect_t>{};
         TEST_ASSERT_TRUE(( is_same.value ));
-        static_assert( meta::is_fixed_size_ndarray_v<arg_t> );
-        static_assert( meta::is_fixed_size_ndarray_v<view_t> );
     }
 }
 
@@ -350,6 +350,7 @@ NM_TEST_SUBCASE(eval, case7)
         TEST_ASSERT_TRUE(( is_same.value ));
     }
 }
+#endif
 
 /* ================================================================= */
 
@@ -399,12 +400,14 @@ void setup()
 
     NM_RUN_SUBCASE(shape_matmul, case1);
 
+    #if 0
     NM_RUN_SUBCASE(eval, case1);
     NM_RUN_SUBCASE(eval, case2);
     NM_RUN_SUBCASE(eval, case3);
     NM_RUN_SUBCASE(eval, case5);
     NM_RUN_SUBCASE(eval, case6);
     NM_RUN_SUBCASE(eval, case7);
+    #endif
 
     UNITY_END();
 }
