@@ -64,7 +64,8 @@ TEST_CASE("eval(ufunc)" * doctest::test_suite("eval"))
         {
             using view_t = view::decorator_t< view::ufunc_t, view::sin_t, na::hybrid_ndarray<int,1,4> >;
             using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
-            using expected_t = na::ndarray_t<na::static_vector<double,1>,nmtools_array<size_t,4>>;
+            // TODO: properly deduce as static_vector
+            using expected_t = na::ndarray_t<nmtools_list<double>,nmtools_array<size_t,4>>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
         {
@@ -108,7 +109,8 @@ TEST_CASE("eval(ufunc)" * doctest::test_suite("eval"))
             using op_t   = view::add_t<>;
             using view_t = view::decorator_t< view::ufunc_t, op_t, na::hybrid_ndarray<int,1,3>, na::hybrid_ndarray<int,1,3> >;
             using eval_t = meta::resolve_optype_t<na::eval_result_t, view_t, none_t>;
-            using expected_t = na::ndarray_t<na::static_vector<int,1>,nmtools_array<size_t,3>>;
+            // TODO: properly deduce as static_vector
+            using expected_t = na::ndarray_t<nmtools_list<int>,nmtools_array<size_t,3>>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
         {
