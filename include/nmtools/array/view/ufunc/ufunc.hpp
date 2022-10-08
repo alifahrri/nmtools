@@ -173,19 +173,25 @@ namespace nmtools::meta
     };
 
     template <typename op_t, typename...arrays_t>
-    struct bounded_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
+    struct fixed_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
     {
         using view_type = view::decorator_t< view::ufunc_t, op_t, arrays_t... >;
         using type_list = meta::type_list<arrays_t...>;
 
         static constexpr auto value = [](){
-            if constexpr ((is_bounded_size_v<arrays_t> && ...)) {
-                return is_bounded_size_v<at_t<type_list,0>>;
+            constexpr auto fixed_shape = fixed_shape_v<view_type>;
+            if constexpr (!is_fail_v<decltype(fixed_shape)>) {
+                return index::product(fixed_shape);
             } else {
-                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+                return error::FIXED_SHAPE_UNSUPPORTED<view_type>{};
             }
         }();
-    }; // bounded_size
+    }; // fixed_size
+
+    template <typename op_t, typename...arrays_t>
+    struct bounded_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
+        : fixed_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
+    {};
 
     template <typename op_t, typename...arrays_t>
     struct get_element_type<
