@@ -49,7 +49,6 @@ RUN_TEST(test_##test_name##_##case_name);
 
 /* ========================================================================= */
 
-#if 0
 NM_TEST_SUBCASE(add, case1)
 {
     NMTOOLS_TESTING_DECLARE_NS( view, add, case1 );
@@ -121,8 +120,7 @@ NM_TEST_SUBCASE(relu, case1)
     NMTOOLS_PIO_SUBCASE( case1, result, na::relu, a );
 }
 
-#endif 
-
+#if 0
 NM_TEST_SUBCASE(reduce_add, case1)
 {
     NMTOOLS_TESTING_DECLARE_NS( view, reduce_add, case1);
@@ -167,6 +165,8 @@ NM_TEST_SUBCASE(constexpr_reduce_add, case14)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case14, result, na::add.reduce, a_a, axis, dtype, initial, keepdims );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case14, result, na::add.reduce, a, axis, dtype, initial, keepdims );
 }
+
+#endif 
 
 NM_TEST_SUBCASE(accumulate_add, case1)
 {
@@ -262,14 +262,13 @@ NM_TEST_SUBCASE(constexpr_mean, case1)
 
 #ifndef NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
 
-#if 0
 NM_TEST_SUBCASE(add, case2)
 {
     NMTOOLS_TESTING_DECLARE_NS( view, add, case2 );
     NMTOOLS_PIO_SUBCASE( case2, result, view::add, a_a, b );
 }
-#endif
 
+#if 0
 NM_TEST_SUBCASE(reduce_add, case4)
 {
     NMTOOLS_TESTING_DECLARE_NS( view, reduce_add, case4);
@@ -509,6 +508,8 @@ NM_TEST_SUBCASE(mean, case10)
     // NMTOOLS_PIO_SUBCASE( case10, result, na::mean, a, axis, /*dtype=*/nm::None, keepdims );
 }
 
+#endif
+
 
 NM_TEST_SUBCASE(shape_matmul, case1)
 {
@@ -534,7 +535,6 @@ void setup()
 
     UNITY_BEGIN();
 
-    #if 0
     NMTOOLS_PIO_RUN(add, case1);
     NMTOOLS_PIO_RUN(constexpr_add, case1);
     NMTOOLS_PIO_RUN(constexpr_add, case2);
@@ -542,13 +542,14 @@ void setup()
     NMTOOLS_PIO_RUN(constexpr_add, case4);
 
     NMTOOLS_PIO_RUN(relu, case1);
-    #endif
 
+    #if 0
     NMTOOLS_PIO_RUN(reduce_add, case1);
     NMTOOLS_PIO_RUN(constexpr_reduce_add, case1);
     NMTOOLS_PIO_RUN(constexpr_reduce_add, case4);
     NMTOOLS_PIO_RUN(constexpr_reduce_add, case9);
     NMTOOLS_PIO_RUN(constexpr_reduce_add, case14);
+    #endif
 
     NMTOOLS_PIO_RUN(accumulate_add, case1);
     NMTOOLS_PIO_RUN(accumulate_add, case2);
@@ -565,10 +566,9 @@ void setup()
 
 #ifndef NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
 
-    #if 0
     NMTOOLS_PIO_RUN(add, case2);
-    #endif
 
+    #if 0
     NMTOOLS_PIO_RUN(reduce_add, case4);
     NMTOOLS_PIO_RUN(reduce_add, case9);
     NMTOOLS_PIO_RUN(reduce_add, case14);
@@ -598,6 +598,7 @@ void setup()
     NMTOOLS_PIO_RUN(mean, case4);
     NMTOOLS_PIO_RUN(mean, case5);
     NMTOOLS_PIO_RUN(mean, case6);
+    #endif
 
     NMTOOLS_PIO_RUN(shape_matmul, case1);
 #endif // NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
