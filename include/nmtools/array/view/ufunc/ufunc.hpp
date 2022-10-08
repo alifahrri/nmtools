@@ -175,23 +175,50 @@ namespace nmtools::meta
     template <typename op_t, typename...arrays_t>
     struct fixed_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
     {
-        using view_type = view::decorator_t< view::ufunc_t, op_t, arrays_t... >;
-        using type_list = meta::type_list<arrays_t...>;
+        using view_type  = view::decorator_t< view::ufunc_t, op_t, arrays_t... >;
+        using shape_type = typename view_type::shape_type;
+        using type_list  = meta::type_list<arrays_t...>;
 
         static constexpr auto value = [](){
-            constexpr auto fixed_shape = fixed_shape_v<view_type>;
-            if constexpr (!is_fail_v<decltype(fixed_shape)>) {
-                return index::product(fixed_shape);
+            if constexpr ((is_fixed_size_v<arrays_t> || ...)) {
+                return template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
+                    using type_i = at_t<type_list,(size_t)index>;
+                    constexpr auto fixed_size = fixed_size_v<type_i>;
+                    if constexpr (!is_fail_v<decltype(fixed_size)>) {
+                        return fixed_size;
+                    } else {
+                        return init;
+                    }
+                }, error::FIXED_SIZE_UNSUPPORTED<view_type>{});
             } else {
-                return error::FIXED_SHAPE_UNSUPPORTED<view_type>{};
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
             }
         }();
     }; // fixed_size
 
     template <typename op_t, typename...arrays_t>
     struct bounded_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
-        : fixed_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
-    {};
+    {
+        using view_type  = view::decorator_t< view::ufunc_t, op_t, arrays_t... >;
+        using shape_type = typename view_type::shape_type;
+        using type_list  = meta::type_list<arrays_t...>;
+
+        static constexpr auto value = [](){
+            if constexpr ((is_bounded_size_v<arrays_t> || ...)) {
+                return template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
+                    using type_i = at_t<type_list,(size_t)index>;
+                    constexpr auto bounded_size = bounded_size_v<type_i>;
+                    if constexpr (!is_fail_v<decltype(bounded_size)>) {
+                        return bounded_size;
+                    } else {
+                        return init;
+                    }
+                }, error::BOUNDED_SIZE_UNSUPPORTED<view_type>{});
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
 
     template <typename op_t, typename...arrays_t>
     struct get_element_type<
