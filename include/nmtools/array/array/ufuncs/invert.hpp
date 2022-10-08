@@ -11,12 +11,17 @@ namespace nmtools::array
     {
         struct invert
         {
-            template <typename output_t=none_t, typename context_t=none_t, typename left_t>
+            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+                typename left_t>
             inline constexpr auto operator()(const left_t& a,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
+                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
             {
                 auto invert = view::invert(a);
-                return eval(invert,context,output);
+                return eval(invert
+                    ,nmtools::forward<context_t>(context)
+                    ,nmtools::forward<output_t>(output)
+                    ,resolver
+                );
             } // operator()
         }; // invert
     } // namespace fn
