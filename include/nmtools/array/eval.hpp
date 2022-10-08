@@ -125,7 +125,7 @@ namespace nmtools::array
     {
 
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_t, typename view_t>
-    constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> =meta::as_value_v<resolver_t>)
+    constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{}, [[maybe_unused]] meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         // TODO: perfect forwarding for eval context
         // TODO: support maybe type
@@ -133,8 +133,8 @@ namespace nmtools::array
             using left_t   = meta::get_either_left_t<view_t>;
             using right_t  = meta::get_either_right_t<view_t>;
             // deduce return type for each type
-            using rleft_t  = decltype(detail::eval(meta::declval<left_t>(),context,output));
-            using rright_t = decltype(detail::eval(meta::declval<right_t>(),context,output));
+            using rleft_t  = decltype(detail::eval(meta::declval<left_t>(),context,output,resolver));
+            using rright_t = decltype(detail::eval(meta::declval<right_t>(),context,output,resolver));
             constexpr auto vtype = [](){
                 if constexpr (meta::is_same_v<rleft_t,rright_t>) {
                     return meta::as_value_v<rleft_t>;
@@ -146,10 +146,10 @@ namespace nmtools::array
             using return_t = meta::type_t<decltype(vtype)>;
             // match either type at runtime
             if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
-                return return_t{detail::eval(*view_ptr,context,output)};
+                return return_t{detail::eval(*view_ptr,context,output,resolver)};
             } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
                 auto view_rptr = nmtools::get_if<right_t>(&view);
-                return return_t{detail::eval(*view_rptr,context,output)};
+                return return_t{detail::eval(*view_rptr,context,output,resolver)};
             }
         } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
             auto evaluator_ = evaluator<resolver_t>(view,context);
