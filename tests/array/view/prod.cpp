@@ -48,8 +48,7 @@ TEST_CASE("prod(case1)" * doctest::test_suite("view::prod"))
     PROD_SUBCASE( case1,   a, axis );
     PROD_SUBCASE( case1, a_a, axis );
     PROD_SUBCASE( case1, a_f, axis );
-    // reduce doesnt work with dynamic ndarray for now
-    // PROD_SUBCASE( case1, a_d, axis );
+    PROD_SUBCASE( case1, a_d, axis );
     PROD_SUBCASE( case1, a_h, axis );
 }
 

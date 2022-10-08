@@ -733,7 +733,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case19)
     {
-        using shape_t = meta::make_either_type_t<none_t,nmtools_array<uint8_t,3>>;
+        using shape_t = nmtools_either<nmtools_array<uint8_t,3>,none_t>;
         inline auto shape = shape_t(nmtools_array{(uint8_t)1,(uint8_t)1,(uint8_t)1});
         inline int8_t result[1][1][1] = {{{76}}};
     }

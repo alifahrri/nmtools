@@ -128,15 +128,6 @@ namespace nmtools::view
         // when axis is None, reduce can return scalar or ndarray depends on keepdims type
         // use variant to tell that the return value may be scalar or ndarray,
         // depending on the value of keepdims at runtime
-        else if constexpr (is_none_v<axis_t> && meta::is_boolean_v<keepdims_t>) {
-            using scalar_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,meta::false_type>;
-            using ndarray_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,meta::true_type>;
-            // TODO: make default either type configurable
-            using either_t = meta::make_either_type_t<scalar_t,ndarray_t>;
-            return (keepdims ?
-                    either_t{ndarray_t{{op,array,axis,initial,True}}}
-                : either_t{scalar_t{{op,array,axis,initial,False}}});
-        }
         else if constexpr (meta::is_boolean_v<keepdims_t>) {
             using left_t   = decltype(reduce(op,array,axis,initial,True));
             using right_t  = decltype(reduce(op,array,axis,initial,False));

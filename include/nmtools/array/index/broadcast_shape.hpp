@@ -220,8 +220,8 @@ namespace nmtools::meta
             ) /* both is hybrid */ {
                 constexpr auto amax = hybrid_ndarray_max_size_v<ashape_t>;
                 constexpr auto bmax = hybrid_ndarray_max_size_v<bshape_t>;
-                constexpr auto rmax = amax > bmax ? amax : bmax;
-                using new_type = resize_hybrid_ndarray_max_size_t<ashape_t,rmax>;
+                constexpr auto r_max = amax > bmax ? amax : bmax;
+                using new_type = resize_hybrid_ndarray_max_size_t<ashape_t,r_max>;
                 return as_value_v<new_type>;
             }
             else if constexpr (
@@ -229,8 +229,8 @@ namespace nmtools::meta
             ) /* a is hybrid & b is fixed, prefer a */ {
                 constexpr auto amax  = hybrid_ndarray_max_size_v<ashape_t>;
                 constexpr auto bsize = fixed_index_array_size_v<bshape_t>;
-                constexpr auto rmax = amax > bsize ? amax : bsize;
-                using new_type = resize_hybrid_ndarray_max_size_t<ashape_t,rmax>;
+                constexpr auto r_max = amax > bsize ? amax : bsize;
+                using new_type = resize_hybrid_ndarray_max_size_t<ashape_t,r_max>;
                 return as_value_v<new_type>;
             }
             else if constexpr (
@@ -238,8 +238,8 @@ namespace nmtools::meta
             ) /* a is fixed & b is hybrid, prefer b */ {
                 constexpr auto asize = fixed_index_array_size_v<ashape_t>;
                 constexpr auto bmax  = hybrid_ndarray_max_size_v<bshape_t>;
-                constexpr auto rmax  = asize > bmax ? asize : bmax;
-                using new_type = resize_hybrid_ndarray_max_size_t<bshape_t,rmax>;
+                constexpr auto r_max = asize > bmax ? asize : bmax;
+                using new_type = resize_hybrid_ndarray_max_size_t<bshape_t,r_max>;
                 return as_value_v<new_type>;
             }
             else if constexpr (
@@ -278,10 +278,12 @@ namespace nmtools::meta
                     return as_value_v<type>;
                 }
             }
-            else return as_value_v<error::BROADCAST_SHAPE_UNSUPPORTED<ashape_t,bshape_t>>;
+            else {
+                return as_value_v<error::BROADCAST_SHAPE_UNSUPPORTED<ashape_t,bshape_t>>;
+            }
         }();
 
-        using type = type_t<meta::remove_cvref_t<decltype(vtype)>>;
+        using type = type_t<decltype(vtype)>;
     }; // resolve_optype
 } // namespace nmtools::meta
 

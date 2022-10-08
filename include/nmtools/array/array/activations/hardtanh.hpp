@@ -21,14 +21,18 @@ namespace nmtools::array
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
         typename array_t, typename min_val_t=float, typename max_val_t=float>
     constexpr auto hardtanh(const array_t& array, const min_val_t min_val=min_val_t{-1.0},
         const max_val_t max_val=max_val_t{1.0},
-        context_t&& context=context_t{}, output_t&& output=output_t{})
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto a = view::hardtanh(array,min_val,max_val);
-        return eval(a,context,output);
+        return eval(a
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
     } // hardtanh
 } // namespace nmtools::array
 

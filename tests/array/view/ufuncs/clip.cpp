@@ -2,9 +2,6 @@
 #include "nmtools/testing/data/array/clip.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#include <vector>
-#include <array>
-
 namespace nm = nmtools;
 namespace na = nm::array;
 
@@ -74,9 +71,9 @@ TEST_CASE("clip(traits)" * doctest::test_suite("view::clip"))
 {
     SUBCASE("is_ndarray")
     {
-        auto array = std::vector{1,2,3};
-        auto amin  = std::vector{0,0,0};
-        auto amax  = std::vector{3,3,3};
+        auto array = nmtools_list{1,2,3};
+        auto amin  = nmtools_list{0,0,0};
+        auto amax  = nmtools_list{3,3,3};
         auto view  = nm::view::clip(array,amin,amax);
         using view_t = decltype(view);
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
@@ -111,21 +108,21 @@ TEST_CASE("clip(fixed_shape)" * doctest::test_suite("view::clip"))
         int A[1][3] = {{1,2,3}};
         int B[3][1] = {{4},{5},{6}};
         int C[3][1][3] = {{{1,2,3}},{{4,5,6}},{{7,8,9}}};
-        constexpr auto expected_shape = std::array{3,3,3};
+        constexpr auto expected_shape = nmtools_array{3,3,3};
         CLIP_FIXED_SHAPE_SUBCASE( raw, expected_shape, A, B, C );
     }
     {
-        auto A = std::array{1,2,3};
-        auto B = std::array{std::array{4,5,6},std::array{1,2,3}};
-        auto C = std::array<std::array<int,1>,2>{{{7},{8}}};
-        constexpr auto expected_shape = std::array{2,3};
+        auto A = nmtools_array{1,2,3};
+        auto B = nmtools_array{nmtools_array{4,5,6},nmtools_array{1,2,3}};
+        auto C = nmtools_array<nmtools_array<int,1>,2>{{{7},{8}}};
+        constexpr auto expected_shape = nmtools_array{2,3};
         CLIP_FIXED_SHAPE_SUBCASE( array, expected_shape, A, B, C );
     }
     {
         auto A = na::fixed_ndarray{{1,2,3}};
         auto B = na::fixed_ndarray{{{1,2,3},{4,5,6}}};
         auto C = na::fixed_ndarray{{{{1,2,3}},{{4,5,6}},{{7,8,9}}}};
-        constexpr auto expected_shape = std::array{3,2,3};
+        constexpr auto expected_shape = nmtools_array{3,2,3};
         CLIP_FIXED_SHAPE_SUBCASE( fixed_ndarray, expected_shape, A, B, C );
     }
 }

@@ -313,7 +313,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
@@ -322,7 +322,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
@@ -331,7 +331,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
@@ -340,7 +340,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
@@ -349,7 +349,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
@@ -358,7 +358,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
@@ -367,7 +367,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
@@ -376,7 +376,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
         }
 
         {
@@ -386,7 +386,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
         }
         {
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
@@ -395,7 +395,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
         }
         {
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
@@ -404,7 +404,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
         }
         {
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
@@ -413,7 +413,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, view_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
         }
     }
 }

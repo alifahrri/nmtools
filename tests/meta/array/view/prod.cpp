@@ -20,7 +20,7 @@ using std::true_type, std::false_type;
 
 TEST_CASE("view(prod)" * doctest::test_suite("view"))
 {
-    // is_fixed_size_ndarray
+    // is_fixed_shape
     {
         using array_t   = int[3][2];
         using axis_t    = none_t;
@@ -28,7 +28,7 @@ TEST_CASE("view(prod)" * doctest::test_suite("view"))
         using initial_t = none_t;
         using keepdims_t = true_type;
         using view_t     = decltype(view::prod(declval(array_t),declval(axis_t),declval(dtype_t),declval(initial_t),declval(keepdims_t)));
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, view_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
     }
     {
         using array_t   = int[3][2];
@@ -37,7 +37,7 @@ TEST_CASE("view(prod)" * doctest::test_suite("view"))
         using initial_t = none_t;
         using keepdims_t = false_type;
         using view_t     = decltype(view::prod(declval(array_t),declval(axis_t),declval(dtype_t),declval(initial_t),declval(keepdims_t)));
-        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_t );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
     }
     {

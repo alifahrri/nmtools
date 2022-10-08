@@ -261,74 +261,13 @@ NM_TEST_SUBCASE(shape_matmul, case1)
     }
 }
 
-// TODO: re-enable eval meta tests
-#if 0
-NM_TEST_SUBCASE(eval, case1)
-{
-    // underlying array
-    {
-        using arg_t = utl::array<int8_t,3>;
-        using view_t = decltype(view::relu(declval(arg_t)));
-        using result_t = meta::get_underlying_array_type_t<view_t>;
-        using expect_t = utl::tuple<const arg_t*>;
-        // to allow debugging type
-        constexpr auto is_same = meta::is_same<result_t,expect_t>{};
-        TEST_ASSERT_TRUE(( is_same.value ));
-    }
-}
-
-NM_TEST_SUBCASE(eval, case2)
-{
-    {
-        using lhs_t = int[2][3][2];
-        using rhs_t = int;
-        using view_t = decltype(view::add(declval(lhs_t),declval(rhs_t)));
-        using result_t = meta::get_underlying_array_type_t<view_t>;
-        using expect_t = utl::tuple<const lhs_t&, const rhs_t>;
-        // to allow debugging type
-        constexpr auto is_same = meta::is_same<result_t,expect_t>{};
-        TEST_ASSERT_TRUE(( is_same.value ));
-    }
-}
-
-NM_TEST_SUBCASE(eval, case3)
-{
-    // underlying array
-    {
-        using arg_t = int[3];
-        using view_t = decltype(view::relu(declval(arg_t)));
-        using result_t = meta::get_underlying_array_type_t<view_t>;
-        using expect_t = utl::tuple<const arg_t&>;
-        // to allow debugging type
-        constexpr auto is_same = meta::is_same<result_t,expect_t>{};
-        TEST_ASSERT_TRUE(( is_same.value ));
-    }
-}
-
-NM_TEST_SUBCASE(eval, case5)
-{
-    // resolve unary array type
-    {
-        using arg_t = int[2][3][2];
-        using view_t = decltype(view::relu(declval(arg_t)));
-        constexpr auto result = meta::resolve_unary_array_type(
-            meta::as_value_v<arg_t>, meta::as_value_v<view_t>
-        );
-        using result_t = meta::type_t<decltype(result)>;
-        using expect_t = utl::array<utl::array<utl::array<int,2>,3>,2>;
-        // to allow debugging type
-        constexpr auto is_same = meta::is_same<result_t,expect_t>{};
-        TEST_ASSERT_TRUE(( is_same.value ));
-    }
-}
-
 NM_TEST_SUBCASE(eval, case6)
 {
     {
         using lhs_t = int[2][3][2];
         using rhs_t = int;
         using view_t = decltype(view::add(declval(lhs_t),declval(rhs_t)));
-        using result_t = meta::resolve_optype_t<na::eval_t,view_t,nm::none_t>;
+        using result_t = meta::resolve_optype_t<na::eval_result_t,view_t,nm::none_t>;
         using expect_t = utl::array<utl::array<utl::array<int,2>,3>,2>;
         // to allow debugging type
         constexpr auto is_same = meta::is_same<result_t,expect_t>{};
@@ -342,7 +281,7 @@ NM_TEST_SUBCASE(eval, case7)
         using array_t = int[2][3][2];
         using axis_t  = int;
         using view_t  = decltype(view::reduce_add(declval(array_t),declval(axis_t)));
-        using result_t = meta::resolve_optype_t<na::eval_t,view_t,nm::none_t>;
+        using result_t = meta::resolve_optype_t<na::eval_result_t,view_t,nm::none_t>;
         // using expect_t = na::hybrid_ndarray<int,2*3*2,2>;
         using expect_t = meta::make_hybrid_ndarray_t<int,2*3*2,2>;
         // to allow debugging type
@@ -350,7 +289,6 @@ NM_TEST_SUBCASE(eval, case7)
         TEST_ASSERT_TRUE(( is_same.value ));
     }
 }
-#endif
 
 /* ================================================================= */
 
@@ -400,14 +338,8 @@ void setup()
 
     NM_RUN_SUBCASE(shape_matmul, case1);
 
-    #if 0
-    NM_RUN_SUBCASE(eval, case1);
-    NM_RUN_SUBCASE(eval, case2);
-    NM_RUN_SUBCASE(eval, case3);
-    NM_RUN_SUBCASE(eval, case5);
     NM_RUN_SUBCASE(eval, case6);
     NM_RUN_SUBCASE(eval, case7);
-    #endif
 
     UNITY_END();
 }
