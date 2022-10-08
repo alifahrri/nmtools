@@ -337,10 +337,10 @@ TEST_CASE("var(case10)" * doctest::test_suite("view::var"))
 
         using left_t  = meta::get_either_left_t<var_t>;
         using right_t = meta::get_either_right_t<var_t>;
-        static_assert( meta::is_num_v<left_t> );
-        static_assert( meta::is_ndarray_v<right_t> );
+        static_assert( meta::is_num_v<right_t> );
+        static_assert( meta::is_ndarray_v<left_t> );
 
-        auto value = nmtools::get_if<left_t>(&var);
+        auto value = nmtools::get_if<right_t>(&var);
         NMTOOLS_ASSERT_CLOSE( *value, expect::result );
     }
 
