@@ -26,15 +26,19 @@ namespace nmtools::array
      * @param output   optional output.
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
         typename dtype_t=none_t, typename initial_t=none_t,
         typename keepdims_t=meta::false_type, typename array_t, typename axis_t>
     constexpr auto prod(const array_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
         initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{},
-        context_t&& context=context_t{}, output_t&& output=output_t{})
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto prod_ = view::prod(a,axis,dtype,initial,keepdims);
-        return eval(prod_,context,output);
+        return eval(prod_
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
     } // prod
 } // namespace nmtools::array
 

@@ -19,14 +19,18 @@ namespace nmtools::array
      * @param output 
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
-    template <typename output_t=none_t, typename context_t=none_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
         typename array_t, typename alpha_t=float>
     NMTOOLS_UFUNC_CONSTEXPR
     auto celu(const array_t& array, alpha_t alpha=alpha_t{1.0},
-        context_t&& context=context_t{}, output_t&& output=output_t{})
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto a = view::celu(array,alpha);
-        return eval(a,context,output);
+        return eval(a
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
     } // celu
 } // namespace nmtools::view
 
