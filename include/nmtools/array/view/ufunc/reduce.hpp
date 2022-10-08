@@ -216,6 +216,9 @@ namespace nmtools::view
         using element_type  = meta::get_element_type_t<array_t>;
         using keepdims_type = keepdims_t;
 
+        using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
+        using dst_shape_type = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_t,keepdims_t>;
+
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
         op_type       op;
@@ -225,18 +228,20 @@ namespace nmtools::view
         reducer_type  reducer;
         keepdims_type keepdims;
 
-        constexpr reduce_t(op_type op, const array_t& array, const axis_t& axis, initial_type initial, keepdims_type keepdims)
-            : op(op), array(initialize<array_type>(array))
-            , axis(init_attribute<axis_type>(axis))
+        dst_shape_type shape_;
+
+        constexpr reduce_t(op_type op, const array_t& array_, const axis_t& axis_, initial_type initial, keepdims_type keepdims_)
+            : op(op), array(initialize<array_type>(array_))
+            , axis(init_attribute<axis_type>(axis_))
             , initial(initial)
             , reducer{op} // TODO: remove, recurse to scalar reduce ufunc instead of using reducer
-            , keepdims(keepdims) {}
+            , keepdims(keepdims_)
+            , shape_(index::remove_dims(nmtools::shape<true>(array_),axis_,keepdims_))
+        {}
 
         constexpr auto shape() const
         {
-            // TODO: move shape computation to initialization since the src array is assumed not changing shape anyway
-            auto shape_ = detail::shape(array);
-            return index::remove_dims(shape_,axis,keepdims);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -359,6 +364,9 @@ namespace nmtools::view
         using element_type  = meta::get_element_type_t<array_t>;
         using keepdims_type = keepdims_t;
 
+        using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
+        using dst_shape_type = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_type,keepdims_t>;
+
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
         op_type       op;
@@ -368,30 +376,26 @@ namespace nmtools::view
         reducer_type  reducer;
         keepdims_type keepdims;
 
-        constexpr reduce_t(op_type op, const array_t& array, axis_type axis, initial_type initial, keepdims_type keepdims)
-            : op(op), array(initialize<array_type>(array)), axis(axis), initial(initial), reducer{op}, keepdims(keepdims) {}
+        dst_shape_type shape_;
+
+        constexpr reduce_t(op_type op, const array_t& array_, axis_type axis_, initial_type initial, keepdims_type keepdims_)
+            : op(op)
+            , array(initialize<array_type>(array_))
+            , axis(axis_)
+            , initial(initial)
+            , reducer{op}
+            , keepdims(keepdims_)
+            , shape_(index::remove_dims(nmtools::shape<true>(array_),axis_,keepdims_))
+        {}
         
         constexpr auto shape() const
         {
-            [[maybe_unused]] auto shape_ = detail::shape(array);
-            if constexpr (meta::is_integral_constant_v<keepdims_t>) {
-                if constexpr (static_cast<bool>(keepdims_t::value)) {
-                    return index::remove_dims(shape_,axis,keepdims);
-                }
-                else return None;
-            }
-            else // if (is_none_v<keepdims_t>)
-                return None;
+            return shape_;
         } // shape
 
         constexpr auto dim() const
         {
-            if constexpr (meta::is_integral_constant_v<keepdims_t>) {
-                if constexpr (!static_cast<bool>(keepdims_t::value))
-                    return 0;
-                else return detail::dim(array);
-            }
-            else return 0;
+            return len(shape_);
         } // dim
 
         constexpr auto size() const noexcept
@@ -518,149 +522,6 @@ namespace nmtools::meta
     {
         using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >;
         static constexpr auto value = is_ndarray_v<array_t> && !is_num_v<view_t>;
-    };
-
-    /**
-     * @brief Compile-time shape inference for reduce ufuncs.
-     * 
-     * @tparam op_t 
-     * @tparam array_t 
-     * @tparam axis_t 
-     * @tparam initial_t 
-     * @tparam keepdims_t 
-     */
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
-    struct fixed_ndarray_shape<
-        view::reduce_t< op_t, array_t, axis_t, initial_t, keepdims_t >
-    >
-    {
-        static inline constexpr auto value = [](){
-            // the shape of the reduction can only be known at compile time
-            // if axis and keepdims is integral constant
-            if constexpr (
-                    is_fixed_size_ndarray_v<array_t>
-                && (is_integral_constant_v<axis_t> || is_none_v<axis_t>)
-                && (is_integral_constant_v<keepdims_t> || is_none_v<keepdims_t>)
-            ) {
-                constexpr auto keepdims = [](){
-                    if constexpr (is_integral_constant_v<keepdims_t>) {
-                        return keepdims_t::value;
-                     }else /* if constexpr (is_none_v) */ {
-                        return false;
-                     }
-                }();
-                if constexpr (!keepdims && is_none_v<axis_t>) {
-                    // reduce on all axis and not keep dimensions,
-                    // this is not considered as fixed shape ndarray, but should be num type instead
-                    return detail::Fail;
-                } else {
-                    constexpr auto shape  = fixed_ndarray_shape_v<array_t>;
-                    constexpr auto axes   = [&](){
-                        if constexpr (is_none_v<axis_t>) {
-                            // reduce on all axis and keepdims.
-                            // use std array for now
-                            constexpr auto dim = ::nmtools::len(shape);
-                            using axis_type = meta::make_array_type_t<size_t,dim>;
-                            auto axes = axis_type{};
-                            for (size_t i=0; i<dim; i++)
-                                at(axes,i) = i; // on all axis
-                            return axes;
-                        } else {
-                            return axis_t::value;
-                        }
-                    }();
-                    constexpr auto shape_ = index::remove_dims(shape, axes, keepdims);
-                    constexpr auto dim_   = ::nmtools::len(shape_);
-                    using result_t = meta::make_array_type_t<size_t,dim_>;
-                    auto result = result_t{};
-                    for (size_t i=0; i<dim_; i++)
-                        at(result,i) = at(shape_,i);
-                    return result;
-                }
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = remove_cvref_t<decltype(value)>;
-    }; // fixed_ndarray_shape
-
-    /**
-     * @brief Infer the dimension of reduce ufunc view at compile time.
-     * 
-     * @tparam op_t 
-     * @tparam array_t 
-     * @tparam axis_t 
-     * @tparam initial_t 
-     * @tparam keepdims_t 
-     */
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
-    struct fixed_dim< 
-        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
-    >
-    {
-        using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >;
-        static constexpr auto value = [](){
-            if constexpr (is_num_v<view_t>) {
-                // TODO: use specific errort type
-                return detail::Fail;
-            } else if constexpr (
-                   is_fixed_dim_ndarray_v<array_t>
-                && (is_integral_constant_v<keepdims_t> || is_none_v<keepdims_t>))
-            {
-                constexpr auto keepdims = [](){
-                    if constexpr (is_none_v<keepdims_t>) {
-                        return meta::false_type{};
-                    } else {
-                        return keepdims_t {};
-                    }
-                }();
-                if constexpr (static_cast<bool>(keepdims)) {
-                    return fixed_dim_v<array_t>;
-                } else if constexpr (is_index_v<axis_t>) {
-                    return fixed_dim_v<array_t> - 1;
-                } else if constexpr (is_fixed_index_array_v<axis_t>) {
-                    return fixed_dim_v<array_t> - fixed_index_array_size_v<axis_t>;
-                } else {
-                    return detail::Fail;
-                }
-            } else {
-                return detail::Fail;
-            }
-        }();
-        // TODO: consider to use fail type to indicate fail instead of void
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-        using type = value_type;
-    }; // fixed_dim
-
-    /**
-     * @brief 
-     * 
-     * @tparam op_t 
-     * @tparam array_t 
-     * @tparam axis_t 
-     * @tparam initial_t 
-     * @tparam keepdims_t 
-     */
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
-    struct hybrid_ndarray_max_size<
-        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
-    >
-    {
-        using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >;
-        static inline constexpr auto value = [](){
-            if constexpr (is_num_v<view_t>) {
-                // TODO: use specific error type
-                return detail::Fail;
-            } else if constexpr (is_hybrid_ndarray_v<array_t>) {
-                return hybrid_ndarray_max_size_v<array_t>;
-            } else if constexpr (is_fixed_size_ndarray_v<array_t>) {
-                constexpr auto shape = fixed_ndarray_shape_v<array_t>;
-                return index::product(shape);
-            } else {
-                // TODO: use specific error type
-                return detail::Fail;
-            }
-        }();
     };
 
     // provide specialization for reducer

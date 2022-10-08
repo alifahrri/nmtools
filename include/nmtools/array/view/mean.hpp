@@ -121,7 +121,7 @@ namespace nmtools::view
         // note that this mean view is created not by create new view type,
         // but by composing two view (add.reduce + divide) instead
 
-        auto shape = ::nmtools::shape(array);
+        auto shape = ::nmtools::shape<true>(array);
         auto divisor = detail::mean_divisor(shape,axis);
         using divisor_t = decltype(divisor);
         using element_t = meta::get_element_type_t<array_t>;

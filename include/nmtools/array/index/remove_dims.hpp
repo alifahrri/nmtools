@@ -28,22 +28,12 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename axis_t, typename keepdims_t>
-    constexpr auto remove_dims(const shape_t& shape_, const axis_t& axis, [[maybe_unused]] keepdims_t keepdims)
+    constexpr auto remove_dims(const shape_t& shape, const axis_t& axis, [[maybe_unused]] keepdims_t keepdims)
     {
         // note: axis as reference to prevent raw array to ptr
         using return_t = meta::resolve_optype_t<remove_dims_t,shape_t,axis_t,keepdims_t>;
         // TODO: wrap result in maybe type if necessary
         auto res = return_t {};
-
-        const auto shape = [&](){
-            if constexpr (meta::is_constant_index_array_v<shape_t>) {
-                return meta::to_value_v<shape_t>;
-            } else if constexpr (meta::is_bounded_array_v<shape_t>) {
-                return index::ref(shape_);
-            } else {
-                return shape_;
-            }
-        }();
 
         [[maybe_unused]] auto dim = len(shape);
         if constexpr (meta::is_resizeable_v<return_t>) {
@@ -85,6 +75,7 @@ namespace nmtools::index
         // TODO: formulate how to deduce index type
         // , may be using meta::get_index_type_t
         // use the same type as axis_t for loop index
+        [[maybe_unused]]
         constexpr auto idx_vtype = [](){
             if constexpr (meta::is_constant_index_array_v<axis_t>) {
                 // shortcut for now, just use int
@@ -102,7 +93,7 @@ namespace nmtools::index
         // if return_t (inferred from result_optype_t<...>) is constant index array
         // assume it is the final result already
         // so skip the following computation
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!meta::is_constant_index_array_v<return_t> && !is_none_v<return_t>) {
             using idx_t = meta::type_t<decltype(idx_vtype)>;
             idx_t idx = 0;
             // res and shape have different size
@@ -157,85 +148,121 @@ namespace nmtools::meta
         static constexpr auto vtype = [](){
             if constexpr (
                     is_constant_index_array_v<shape_t>
-                && (is_constant_index_v<axis_t> || is_constant_index_array_v<axis_t>)
-                &&  is_integral_constant_v<keepdims_t>
+                && (is_constant_index_v<axis_t> || is_constant_index_array_v<axis_t> || is_none_v<axis_t>)
+                && (is_constant_index_v<keepdims_t> || is_none_v<keepdims_t>)
             ) {
                 // all values are known at compile-time,
                 // compute result at compile-time
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto axis  = to_value_v<axis_t>;
-                constexpr auto keepdims = keepdims_t::value;
-                constexpr auto newshape = index::remove_dims(shape,axis,keepdims);
-                constexpr auto N = ::nmtools::len(newshape);
-                constexpr auto initial = ::nmtools::at(newshape,0);
-                using init_type = make_tuple_type_t<ct<initial>>;
-                // convert back from value to type
-                constexpr auto result = meta::template_reduce<N-1>([&](auto init, auto index){
-                    using init_t = type_t<remove_cvref_t<decltype(init)>>;
-                    constexpr auto s_i1 = ::nmtools::at(newshape,index+1);
-                    using r_t = append_type_t<init_t,ct<s_i1>>;
-                    return as_value_v<r_t>;
-                }, as_value_v<init_type>);
-                return result;
-            } else if constexpr (
-                is_fixed_index_array_v<shape_t>
-                && is_none_v<axis_t>
-                && is_true_type_v<keepdims_t>
-            ) {
-                constexpr auto size = len_v<shape_t>;
-                return template_reduce<size-1>([](auto init, auto){
-                    using init_type = type_t<decltype(init)>;
-                    return as_value_v<append_type_t<init_type,ct<1>>>;
-                }, as_value_v<nmtools_tuple<ct<1>>>);
+                constexpr auto keepdims = keepdims_t{};
+                constexpr auto result = index::remove_dims(shape,axis,keepdims);
+                if constexpr (!is_none_v<decltype(result)>) {
+                    using nmtools::len, nmtools::at;
+                    return template_reduce<len(result)-1>([&](auto init, auto index){
+                        using init_type = type_t<decltype(init)>;
+                        using type = append_type_t<init_type,ct<(size_t)at(result,ct_v<index+1>)>>;
+                        return as_value_v<type>;
+                    }, as_value_v<nmtools_tuple<ct<(size_t)at(result,ct_v<0>)>>>);
+                } else /* if constexpr (is_none_v<decltype(result)>) */ {
+                    return as_value_v<decltype(result)>;
+                }
             } else if constexpr (
                 is_constant_index_array_v<shape_t>
             ) {
-                using new_shape_t = remove_cvref_t<decltype(to_value_v<shape_t>)>;
-                using type = resolve_optype_t<index::remove_dims_t,new_shape_t,axis_t,keepdims_t>;
+                using type = resolve_optype_t<index::remove_dims_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,axis_t,keepdims_t>;
                 return as_value_v<type>;
             } else if constexpr (
-                    is_index_array_v<shape_t>
-                && !is_fixed_index_array_v<shape_t>
+                   is_index_array_v<shape_t>
+                && (is_index_v<axis_t> || is_index_array_v<axis_t>)
+                && (is_constant_index_v<keepdims_t> || is_none_v<keepdims_t>)
             ) {
-                using type = shape_t;
-                return as_value_v<type>;
-            } else if constexpr (
-                   is_fixed_index_array_v<shape_t>
-                && is_integral_constant_v<keepdims_t>
-            ) {
-                constexpr auto keepdims = keepdims_t {};
-                if constexpr (keepdims) {
-                    return as_value_v<shape_t>;
-                } else if constexpr (is_index_v<axis_t>) {
-                    constexpr auto N = fixed_index_array_size_v<shape_t>;
-                    if constexpr (N>1) {
-                        using type = make_array_type_t<size_t,N-1>;
-                        return as_value_v<type>;
+                constexpr auto dim = len_v<shape_t>;
+                [[maybe_unused]] constexpr auto b_dim = bounded_size_v<shape_t>;
+                [[maybe_unused]] constexpr auto keepdims = [](){
+                    if constexpr (is_none_v<keepdims_t>) {
+                        return false;
                     } else {
-                        // should be None ?
-                        return as_value_v<error::REMOVE_DIMS_INVALID<shape_t,axis_t,keepdims_t>>;
+                        return static_cast<bool>(keepdims_t{});
                     }
-                } else if constexpr (is_fixed_index_array_v<axis_t>) {
-                    constexpr auto N = fixed_index_array_size_v<shape_t>;
-                    constexpr auto M = fixed_index_array_size_v<axis_t>;
-                    using type = make_array_type_t<size_t,N-M>;
+                }();
+                [[maybe_unused]] constexpr auto n_reduce_axes = [](){
+                    [[maybe_unused]] constexpr auto N = len_v<axis_t>;
+                    if constexpr (is_index_v<axis_t>) {
+                        return 1;
+                    } else if constexpr (N > 0) {
+                        return N;
+                    } else {
+                        return detail::fail_t {};
+                    }
+                }();
+                [[maybe_unused]] constexpr auto new_dim = [&](){
+                    if constexpr ((dim > 0) && keepdims) {
+                        return dim;
+                    } else if constexpr ((dim > 0) && !keepdims && !is_fail_v<decltype(n_reduce_axes)>) {
+                        return dim - n_reduce_axes;
+                    } else {
+                        return detail::fail_t {};
+                    }
+                }();
+                if constexpr (!is_fail_v<decltype(new_dim)>) {
+                    using type = nmtools_array<size_t,new_dim>;
                     return as_value_v<type>;
-                } else if constexpr (is_index_array_v<axis_t>) {
-                    // TODO: consider to provide metafunction make_hybrid_index_array
-                    constexpr auto N = fixed_index_array_size_v<shape_t>;
-                    using type = array::hybrid_ndarray<size_t,N,1>;
+                } else if constexpr (!is_fail_v<decltype(b_dim)>) {
+                    using type = array::static_vector<size_t,b_dim>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<size_t>;
                     return as_value_v<type>;
                 }
             } else if constexpr (
-                   is_fixed_index_array_v<shape_t>
-                && is_boolean_v<keepdims_t>
+                   is_index_array_v<shape_t>
+                && (is_index_v<axis_t> || is_index_array_v<axis_t>)
+                && is_index_v<keepdims_t>
             ) {
-                // here we don't know exact size, but we know maximum size
-                // TODO: consider to provide metafunction make_hybrid_index_array
-                constexpr auto N = fixed_index_array_size_v<shape_t>;
-                // TODO: use meta::make_hybrid_ndarray
-                using type = array::hybrid_ndarray<size_t,N,1>;
-                return as_value_v<type>;
+                constexpr auto dim = len_v<shape_t>;
+                [[maybe_unused]] constexpr auto b_dim = bounded_size_v<shape_t>;
+                if constexpr (dim > 0) {
+                    using type = array::static_vector<size_t,dim>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(b_dim)>) {
+                    using type = array::static_vector<size_t,b_dim>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<size_t>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (
+                   is_index_array_v<shape_t>
+                && is_none_v<axis_t>
+                && (is_constant_index_v<keepdims_t> || is_none_v<keepdims_t>)
+            ) {
+                constexpr auto size = len_v<shape_t>;
+                [[maybe_unused]]
+                constexpr auto b_size = bounded_size_v<shape_t>;
+                [[maybe_unused]]
+                constexpr auto keepdims = [](){
+                    if constexpr (is_none_v<keepdims_t>) {
+                        return false;
+                    } else {
+                        return static_cast<bool>(keepdims_t{});
+                    }
+                }();
+                if constexpr ((size > 0) && keepdims) {
+                    return template_reduce<size-1>([](auto init, auto){
+                        using init_type = type_t<decltype(init)>;
+                        return as_value_v<append_type_t<init_type,ct<1>>>;
+                    }, as_value_v<nmtools_tuple<ct<1>>>);
+                } else if constexpr (!is_fail_v<decltype(b_size)> && keepdims) {
+                    using type = array::static_vector<size_t,b_size>;
+                    return as_value_v<type>;
+                } else if constexpr (keepdims) {
+                    using type = shape_t;
+                    return as_value_v<type>;
+                } else {
+                    using type = none_t;
+                    return as_value_v<type>;
+                }
             } else {
                 return as_value_v<error::REMOVE_DIMS_UNSUPPORTED<shape_t,axis_t,keepdims_t>>;
             }
