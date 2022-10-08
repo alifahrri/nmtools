@@ -181,7 +181,7 @@ namespace nmtools::meta
 
         static constexpr auto value = [](){
             if constexpr ((is_fixed_size_v<arrays_t> || ...)) {
-                return template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
+                return template_reduce<sizeof...(arrays_t)>([]([[maybe_unused]] auto init, auto index){
                     using type_i = at_t<type_list,(size_t)index>;
                     constexpr auto fixed_size = fixed_size_v<type_i>;
                     if constexpr (!is_fail_v<decltype(fixed_size)>) {
@@ -205,7 +205,7 @@ namespace nmtools::meta
 
         static constexpr auto value = [](){
             if constexpr ((is_bounded_size_v<arrays_t> || ...)) {
-                return template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
+                return template_reduce<sizeof...(arrays_t)>([]([[maybe_unused]] auto init, auto index){
                     using type_i = at_t<type_list,(size_t)index>;
                     constexpr auto bounded_size = bounded_size_v<type_i>;
                     if constexpr (!is_fail_v<decltype(bounded_size)>) {
