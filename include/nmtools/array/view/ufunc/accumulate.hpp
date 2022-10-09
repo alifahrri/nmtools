@@ -34,39 +34,38 @@ namespace nmtools::view
     template <typename op_t, typename array_t, typename axis_t>
     struct accumulate_t
     {
-        // if given array is a view, just use value instead of reference
-        static constexpr auto operands_vtype = [](){
-            if constexpr (is_view_v<array_t>) {
-                return meta::as_value_v<array_t>;
-            } else {
-                return meta::as_value_v<const array_t&>;
-            }
-        }();
-        using operands_type = meta::type_t<decltype(operands_vtype)>;
-        using array_type    = operands_type;
-        using axis_type     = axis_t;
+        using array_type    = resolve_array_type_t<array_t>;
+        using axis_type     = resolve_attribute_type_t<axis_t>;
         using op_type       = op_t;
         using reducer_type  = reducer_t<op_t>;
         using element_type  = meta::get_element_type_t<array_t>;
 
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
+        using shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
+
         op_type      op;
         array_type   array;
         axis_type    axis;
         reducer_type reducer;
+        shape_type   shape_;
 
-        constexpr accumulate_t(op_type op, array_type array, axis_type axis)
-            : op(op), array(array), axis(axis), reducer{op} {}
+        constexpr accumulate_t(op_type op, const array_t& array_, const axis_t& axis)
+            : op(op)
+            , array(initialize<array_type>(array_))
+            , axis(init_attribute<axis_type>(axis))
+            , reducer{op}
+            , shape_(nmtools::shape<true>(array_))
+        {}
 
         constexpr auto shape() const
         {
-            return ::nmtools::shape(array);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
         {
-            return ::nmtools::dim(array);
+            return len(shape());
         } // dim
 
         template <typename...size_types>
@@ -78,10 +77,10 @@ namespace nmtools::view
             // for now, assume axis is int and array is fixed_dim
             [[maybe_unused]] constexpr auto DIM = meta::fixed_dim_v<array_t>;
             // type for slicing is DIMx2 where 2 represent start and stop
-            constexpr auto slices_vtype = [](){
+            constexpr auto slices_vtype = [&](){
                 using slice_type = nmtools_array<size_t,2>;
-                if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
-                    using slices_type = nmtools_array<slice_type,DIM>;
+                if constexpr (!meta::is_fail_v<decltype(DIM)>) {
+                    using slices_type = nmtools_array<slice_type,(size_t)DIM>;
                     return meta::as_value_v<slices_type>;
                 } else {
                     using slices_type = nmtools_list<slice_type>;
@@ -104,7 +103,13 @@ namespace nmtools::view
                 auto stop  = s + 1;
                 at(slices,i) = {start,stop};
             }
-            auto sliced = apply_slice(array, slices);
+            auto sliced = [&](){
+                if constexpr (meta::is_pointer_v<array_type>) {
+                    return apply_slice(*array, slices);
+                } else {
+                    return apply_slice(array, slices);
+                }
+            }();
             auto flattened = flatten(sliced);
             return reducer.template operator()<result_type>(flattened);
         } // operator()
@@ -113,23 +118,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    /**
-     * @brief Compile-time shape inference for accumulate ufunc
-     * 
-     * @tparam op_t 
-     * @tparam array_t 
-     * @tparam axis_t 
-     */
-    template <typename op_t, typename array_t, typename axis_t>
-    struct fixed_ndarray_shape<
-        view::accumulate_t< op_t, array_t, axis_t >
-    >
-    {
-        // accumulate ufunc doesnt change the shape
-        static inline constexpr auto value = fixed_ndarray_shape_v<array_t>;
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-
     template <typename op_t, typename array_t, typename axis_t>
     struct is_ndarray< 
         view::decorator_t< view::accumulate_t, op_t, array_t, axis_t >
