@@ -41,8 +41,18 @@ namespace nmtools::view
         using rhs_element_type = meta::get_element_type_t<rhs_t>;
         using result_type = detail::get_ufunc_result_type_t<op_t,lhs_element_type,rhs_element_type>;
 
+        using lhs_shape_type = decltype(nmtools::shape<true>(meta::declval<lhs_t>()));
+        using rhs_shape_type = decltype(nmtools::shape<true>(meta::declval<rhs_t>()));
+        using lhs_size_type  = decltype(nmtools::size<true>(meta::declval<lhs_t>()));
+        using rhs_size_type  = decltype(nmtools::size<true>(meta::declval<rhs_t>()));
+        using dst_shape_type = const meta::resolve_optype_t<index::shape_outer_t,lhs_shape_type,rhs_shape_type>;
+        using dst_size_type  = const meta::resolve_optype_t<index::size_outer_t,dst_shape_type,lhs_size_type,rhs_size_type>;
+
         op_type op;
         operands_type operands;
+
+        dst_shape_type shape_;
+        dst_size_type  size_;
 
         // the following is needed because cant use view::initialize<...>
         // can't handle tuple yet
@@ -62,13 +72,15 @@ namespace nmtools::view
         } // initialize_operands
 
         constexpr outer_t(op_type op, const lhs_t& lhs, const rhs_t& rhs)
-            : op(op), operands(initialize_operands(lhs,rhs)) {}
+            : op(op)
+            , operands(initialize_operands(lhs,rhs))
+            , shape_(index::shape_outer(nmtools::shape<true>(lhs),nmtools::shape<true>(rhs)))
+            , size_(index::size_outer(shape_,nmtools::size<true>(lhs),nmtools::size<true>(rhs)))
+        {}
         
         constexpr auto shape() const
         {
-            auto ashape = detail::shape(nmtools::get<0>(operands));
-            auto bshape = detail::shape(nmtools::get<1>(operands));
-            return index::shape_outer(ashape,bshape);
+            return shape_;
         } // shape
 
         constexpr auto dim() const
@@ -79,15 +91,7 @@ namespace nmtools::view
 
         constexpr auto size() const noexcept
         {
-            auto size_ = index::product(shape());
-            if constexpr (meta::is_constant_index_v<decltype(size_)>) {
-                return size_;
-            } else if constexpr (meta::is_fixed_size_v<lhs_t> && meta::is_fixed_size_v<rhs_t>) {
-                constexpr auto size_ = meta::fixed_size_v<lhs_t> * meta::fixed_size_v<rhs_t>;
-                return meta::ct_v<size_>;
-            } else {
-                return size_;
-            }
+            return size_;
         }
 
         template <typename...size_types>
@@ -108,105 +112,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-
-    // TODO: remove
-    /**
-     * @brief Compile-time shape inference for outer ufunc.
-     * 
-     * @tparam op_t 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     */
-    template <typename op_t, typename lhs_t, typename rhs_t>
-    struct fixed_ndarray_shape<
-        view::outer_t< op_t, lhs_t, rhs_t >
-    >
-    {
-        static inline constexpr auto value = [](){
-            if constexpr (is_fixed_size_ndarray_v<lhs_t> && is_fixed_size_ndarray_v<rhs_t>) {
-                constexpr auto lhs_shape = fixed_ndarray_shape_v<lhs_t>;
-                constexpr auto rhs_shape = fixed_ndarray_shape_v<rhs_t>;
-                return index::shape_outer(lhs_shape,rhs_shape);
-            } else {
-                return detail::fail_t{};
-            }
-        }();
-        using value_type = remove_cvref_t<decltype(value)>;
-    }; // fixed_ndarray_shape
-
-    /**
-     * @brief Infer the fixed dim for outer view.
-     *
-     * Return Fail when dimension of the view is not known at compile-time.
-     * 
-     * @tparam op_t 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     */
-    template <typename op_t, typename lhs_t, typename rhs_t>
-    struct fixed_dim<
-        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
-    >
-    {
-        static constexpr auto value = [](){
-            if constexpr (
-                   is_fixed_dim_ndarray_v<lhs_t>
-                && is_fixed_dim_ndarray_v<rhs_t>
-            ) {
-                return fixed_dim_v<lhs_t> + fixed_dim_v<rhs_t>;
-            } else {
-                // TODO: use specific error type
-                return detail::Fail;
-            }
-        }();
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-        using type = value_type;
-    };
-
-    // TODO: remove
-    /**
-     * @brief Infer maximum size (of hybrid ndarray) for outer view.
-     * 
-     * Return Fail when the view is not hybrid ndarray.
-     * 
-     * @tparam op_t 
-     * @tparam lhs_t 
-     * @tparam rhs_t 
-     */
-    template <typename op_t, typename lhs_t, typename rhs_t>
-    struct hybrid_ndarray_max_size<
-        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
-    >
-    {
-        static constexpr auto value = [](){
-            if constexpr (
-                   is_hybrid_ndarray_v<lhs_t>
-                && is_hybrid_ndarray_v<rhs_t>
-            ) {
-                return hybrid_ndarray_max_size_v<lhs_t> * hybrid_ndarray_max_size_v<rhs_t>;
-            } else if constexpr (
-                   is_fixed_size_ndarray_v<lhs_t>
-                && is_hybrid_ndarray_v<rhs_t>
-            ) {
-                constexpr auto shape = fixed_ndarray_shape_v<lhs_t>;
-                constexpr auto lhs = index::sum(shape);
-                constexpr auto rhs = hybrid_ndarray_max_size_v<rhs_t>;
-                return lhs * rhs;
-            }  else if constexpr (
-                   is_hybrid_ndarray_v<lhs_t>
-                && is_fixed_size_ndarray_v<rhs_t>
-            ) {
-                constexpr auto lhs = hybrid_ndarray_max_size_v<lhs_t>;
-                constexpr auto shape = fixed_ndarray_shape_v<rhs_t>;
-                constexpr auto rhs = index::sum(shape);
-                return lhs * rhs;
-            } else {
-                return detail::Fail;
-            }
-        }();
-        using value_type = remove_cvref_t<decltype(value)>;
-        using type = value_type;
-    };
 
     template <typename op_t, typename lhs_t, typename rhs_t>
     struct bounded_size<
