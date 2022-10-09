@@ -1107,66 +1107,86 @@ SUBCASE(#case_name) \
 
 TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::add.accumulate"))
 {
-    auto context = None;
-    auto output  = meta::as_value<int[2][3][2]>{};
-
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case1,   a, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_a, axis );
-    // ACCUMULATE_ADD_SUBCASE( case1, a_v, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_f, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_h, axis );
-    // not yet supported,
-    // cant figure out apply_slice for dynamic dim array yet
-    // ACCUMULATE_ADD_SUBCASE( case1, a_d, axis );
 
-    /* array, axis, dtype, context, output */
-    ACCUMULATE_ADD_SUBCASE( case1,   a, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case1, a_a, axis, None, context, output );
-    // ACCUMULATE_ADD_SUBCASE( case1, a_v, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case1, a_f, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case1, a_h, axis, None, context, output );
+    #else
+    ACCUMULATE_ADD_SUBCASE( case1, a_cs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_cs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_cs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case1, a_fs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_fs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_fs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case1, a_hs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_hs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_hs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case1, a_ds_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_ds_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("add.accumulate(case2)" * doctest::test_suite("array::add.accumulate"))
 {
-    auto context = None;
-    auto output  = meta::as_value<int[2][3][2]>{};
-
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case2,   a, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_a, axis );
-    // ACCUMULATE_ADD_SUBCASE( case2, a_v, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_f, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_h, axis );
-    // not yet supported,
-    // cant figure out apply_slice for dynamic dim array yet
-    // ACCUMULATE_ADD_SUBCASE( case2, a_d, axis );
 
-    ACCUMULATE_ADD_SUBCASE( case2,   a, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case2, a_a, axis, None, context, output );
-    // ACCUMULATE_ADD_SUBCASE( case2, a_v, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case2, a_f, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case2, a_h, axis, None, context, output );
+    #else
+    ACCUMULATE_ADD_SUBCASE( case2, a_cs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_cs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_cs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case2, a_fs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_fs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_fs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case2, a_hs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_hs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_hs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case2, a_ds_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_ds_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_ds_db, axis );
+    #endif
 }
 
 TEST_CASE("add.accumulate(case3)" * doctest::test_suite("array::add.accumulate"))
 {
-    auto context = None;
-    auto output  = meta::as_value<int[2][3][2]>{};
-
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case3,   a, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_a, axis );
-    // ACCUMULATE_ADD_SUBCASE( case3, a_v, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_f, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_d, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_h, axis );
-    // not yet supported,
-    // cant figure out apply_slice for dynamic dim array yet
-    // ACCUMULATE_ADD_SUBCASE( case3, a_d, axis );
 
-    ACCUMULATE_ADD_SUBCASE( case3,   a, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case3, a_a, axis, None, context, output );
-    // ACCUMULATE_ADD_SUBCASE( case3, a_v, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case3, a_f, axis, None, context, output );
-    ACCUMULATE_ADD_SUBCASE( case3, a_h, axis, None, context, output );
+    #else
+    ACCUMULATE_ADD_SUBCASE( case3, a_cs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_cs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_cs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case3, a_fs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_fs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_fs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case3, a_hs_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_hs_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_hs_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case3, a_ds_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_ds_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_ds_db, axis );
+    #endif
 }
 
 #define RUN_outer_add_impl(...) \
@@ -1204,21 +1224,76 @@ SUBCASE(#case_name) \
 
 TEST_CASE("add.outer(case1)" * doctest::test_suite("array::add.outer"))
 {
-    auto context = None;
-    auto output  = meta::as_value<int[2][3][3]>{};
-
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     OUTER_ADD_SUBCASE( case1,   a,   b );
     OUTER_ADD_SUBCASE( case1, a_a, b_a );
-    // disable nested array for now
-    // OUTER_ADD_SUBCASE( case1, a_v, b_v );
     OUTER_ADD_SUBCASE( case1, a_f, b_f );
     OUTER_ADD_SUBCASE( case1, a_d, b_d );
     OUTER_ADD_SUBCASE( case1, a_h, b_h );
 
-    OUTER_ADD_SUBCASE( case1,   a,   b, None, context, output );
-    OUTER_ADD_SUBCASE( case1, a_a, b_a, None, context, output );
-    // OUTER_ADD_SUBCASE( case1, a_v, b_v, None, context, output );
-    OUTER_ADD_SUBCASE( case1, a_f, b_f, None, context, output );
-    OUTER_ADD_SUBCASE( case1, a_d, b_d, None, context, output );
-    OUTER_ADD_SUBCASE( case1, a_h, b_h, None, context, output );
+    #else
+    OUTER_ADD_SUBCASE( case1, a_cs_fb, b_cs_fb );
+    OUTER_ADD_SUBCASE( case1, a_cs_hb, b_cs_hb );
+    OUTER_ADD_SUBCASE( case1, a_cs_db, b_cs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_fs_fb, b_fs_fb );
+    OUTER_ADD_SUBCASE( case1, a_fs_hb, b_fs_hb );
+    OUTER_ADD_SUBCASE( case1, a_fs_db, b_fs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_hs_fb, b_hs_fb );
+    OUTER_ADD_SUBCASE( case1, a_hs_hb, b_hs_hb );
+    OUTER_ADD_SUBCASE( case1, a_hs_db, b_hs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_ds_fb, b_ds_fb );
+    OUTER_ADD_SUBCASE( case1, a_ds_hb, b_ds_hb );
+    OUTER_ADD_SUBCASE( case1, a_ds_db, b_ds_db );
+
+    OUTER_ADD_SUBCASE( case1, a_fs_fb, b_cs_fb );
+    OUTER_ADD_SUBCASE( case1, a_fs_hb, b_cs_hb );
+    OUTER_ADD_SUBCASE( case1, a_fs_db, b_cs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_hs_fb, b_cs_fb );
+    OUTER_ADD_SUBCASE( case1, a_hs_hb, b_cs_hb );
+    OUTER_ADD_SUBCASE( case1, a_hs_db, b_cs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_ds_fb, b_cs_fb );
+    OUTER_ADD_SUBCASE( case1, a_ds_hb, b_cs_hb );
+    OUTER_ADD_SUBCASE( case1, a_ds_db, b_cs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_cs_fb, b_fs_fb );
+    OUTER_ADD_SUBCASE( case1, a_cs_hb, b_fs_hb );
+    OUTER_ADD_SUBCASE( case1, a_cs_db, b_fs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_hs_fb, b_fs_fb );
+    OUTER_ADD_SUBCASE( case1, a_hs_hb, b_fs_hb );
+    OUTER_ADD_SUBCASE( case1, a_hs_db, b_fs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_ds_fb, b_fs_fb );
+    OUTER_ADD_SUBCASE( case1, a_ds_hb, b_fs_hb );
+    OUTER_ADD_SUBCASE( case1, a_ds_db, b_fs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_cs_fb, b_hs_fb );
+    OUTER_ADD_SUBCASE( case1, a_cs_hb, b_hs_hb );
+    OUTER_ADD_SUBCASE( case1, a_cs_db, b_hs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_fs_fb, b_hs_fb );
+    OUTER_ADD_SUBCASE( case1, a_fs_hb, b_hs_hb );
+    OUTER_ADD_SUBCASE( case1, a_fs_db, b_hs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_ds_fb, b_hs_fb );
+    OUTER_ADD_SUBCASE( case1, a_ds_hb, b_hs_hb );
+    OUTER_ADD_SUBCASE( case1, a_ds_db, b_hs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_cs_fb, b_ds_fb );
+    OUTER_ADD_SUBCASE( case1, a_cs_hb, b_ds_hb );
+    OUTER_ADD_SUBCASE( case1, a_cs_db, b_ds_db );
+
+    OUTER_ADD_SUBCASE( case1, a_fs_fb, b_ds_fb );
+    OUTER_ADD_SUBCASE( case1, a_fs_hb, b_ds_hb );
+    OUTER_ADD_SUBCASE( case1, a_fs_db, b_ds_db );
+
+    OUTER_ADD_SUBCASE( case1, a_hs_fb, b_ds_fb );
+    OUTER_ADD_SUBCASE( case1, a_hs_hb, b_ds_hb );
+    OUTER_ADD_SUBCASE( case1, a_hs_db, b_ds_db );
+    #endif
 }
