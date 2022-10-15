@@ -14,3 +14,6 @@ fi
 if [ -d "utl" ]; then
     ln -s toolchain-avr-gcc.tar.bz2 utl/toolchain-avr-gcc.tar.bz2
 fi
+if [ -d "constexpr" ]; then
+    ln -s toolchain-avr-gcc.tar.bz2 constexpr/toolchain-avr-gcc.tar.bz2
+fi
