@@ -172,7 +172,7 @@ jobs:
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
     
-    dockcross-clang-constexpr-eval:
+  dockcross-clang-constexpr-eval:
     name: ${{ matrix.name }}-constexpr-eval
     runs-on: ubuntu-18.04
     strategy:
