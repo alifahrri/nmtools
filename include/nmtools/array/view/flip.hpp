@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/slice.hpp"
-#include "nmtools/array/index/count.hpp"
+#include "nmtools/array/index/flip.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
@@ -11,91 +11,6 @@
 
 namespace nmtools::view
 {
-    namespace detail
-    {
-        /**
-         * @brief Helper fn to prepare axis for flip view
-         *
-         * Transform None and int to array.
-         * 
-         * @tparam axis_type 
-         * @tparam shape_t 
-         * @tparam axis_t 
-         * @param shape original array shape
-         * @param axis axis param
-         * @return constexpr auto 
-         */
-        template <typename axis_type, typename shape_t, typename axis_t>
-        constexpr auto compute_flip_axis(const shape_t& shape, const axis_t& axis)
-        {
-            auto flip_axis = axis_type{};
-            if constexpr (is_none_v<axis_t>) {
-                // following numpy, when axis is none flip all axes
-                auto n = len(shape);
-                if constexpr (meta::is_resizeable_v<axis_type>)
-                    flip_axis.resize(n);
-                // for fixed vector, assume the length aleady match
-                // TODO: error handling
-                for (size_t i=0; i<n; i++)
-                    at(flip_axis,i) = i;
-            }
-            else if constexpr (meta::is_index_v<axis_t>) {
-                if constexpr (meta::is_resizeable_v<axis_type>)
-                    flip_axis.resize(1);
-                at(flip_axis,0) = axis;
-            }
-            else /* if constexpr (meta::is_index_array<axis_t>) */ {
-                // cast to axis_type
-                auto n = len(axis);
-                if constexpr (meta::is_resizeable_v<axis_type>)
-                    flip_axis.resize(n);
-                for (size_t i=0; i<n; i++)
-                    at(flip_axis,i) = at(axis,i);
-            }
-            return flip_axis;
-        } // compute_flip_axis
-
-        template <size_t DIM, typename axes_t>
-        constexpr auto get_flip_slices(const axes_t& axes)
-        {
-            using tuple_type  = nmtools_tuple<none_t,none_t,int>;
-            using slices_type = nmtools_array<tuple_type,DIM>;
-            auto slices = slices_type {};
-
-            for (size_t i=0; i<DIM; i++) {
-                auto in_axis = static_cast<bool>(
-                    index::count([&](const auto ii){
-                        using common_t = meta::promote_index_t<decltype(ii),size_t>;
-                        return (common_t)ii == (common_t)i;
-                    }, axes)
-                );
-                // note that None is not assignable (yet?)
-                // at(slices,i) = {None,None, in_axis ? -1 : 1};
-                nmtools::get<2>(at(slices,i)) = in_axis ? -1 : 1;
-            }
-            
-            return slices;
-        } // get_flip_slices
-
-        /**
-         * @brief Helper fn to prepare slice param.
-         * 
-         * Note that flip is implemented using slice,
-         * this fn prepare the slices, called at view construction.
-         * 
-         * @tparam array_t 
-         * @tparam axes_t 
-         * @param axes 
-         * @return constexpr auto 
-         */
-        template <typename array_t, typename axes_t>
-        constexpr auto get_flip_slices(const axes_t& axes)
-        {
-            constexpr auto DIM = meta::fixed_dim_v<array_t>;
-            return get_flip_slices<DIM>(axes);
-        } // get_flip_slices
-    } // namespace detail
-
     /**
      * @brief view object for flip
      * 
@@ -105,48 +20,32 @@ namespace nmtools::view
     template <typename array_t, typename axis_t>
     struct flip_t
     {
-        using array_type = const array_t&;
+        using array_type = resolve_array_type_t<array_t>;
         // axis_type is simply given axis (as parameter)
         // assume axis_t can be integer, none, or index array
-        using axis_type = const axis_t&;
+        using axis_type = resolve_attribute_type_t<axis_t>;
         // deduce shape_type from fn call
-        using shape_type = meta::tuple_to_array_t<
-            meta::remove_cvref_t<decltype(::nmtools::shape(meta::declval<array_t>()))>
-        >;
-        // axes_type should be index_array
-        static constexpr auto axes_vtype = [](){
-            if constexpr (meta::is_index_array_v<axis_t>)
-                return meta::as_value_v<axis_t>;
-            else if constexpr (meta::is_index_v<axis_t>)
-                return meta::as_value_v<nmtools_array<axis_t,1>>;
-            // for none type, simply use array shape type
-            else if constexpr (is_none_v<axis_t>)
-                return meta::as_value_v<shape_type>;
-        }();
-        using axes_type   = meta::transform_bounded_array_t<meta::type_t<decltype(axes_vtype)>>;
-        using slices_type = meta::remove_cvref_t<decltype(detail::get_flip_slices<array_t>(meta::declval<axes_type>()))>;
+        using shape_type  = const decltype(nmtools::shape<true>(meta::declval<array_t>()));
+        using dim_type    = const decltype(nmtools::dim<true>(meta::declval<array_t>()));
+        using slices_type = const meta::resolve_optype_t<index::flip_slices_t,dim_type,axis_type>;
 
         // the underlying array
         array_type array;
         // the underlying array's shape
         shape_type shape_;
+        dim_type dim_;
         // axes represents underlying array's axes to be flipped
-        axes_type axes;
+        axis_type axes;
         // under the hood, this view uses index' slice to compute indices
         // for example flip(a) is the same as a[::-1] where a is 1D array
         slices_type slices;
 
-        constexpr flip_t(array_type array, axis_type axis) : array(array)
-            , shape_([&](){
-                auto shape_ = ::nmtools::shape(array);
-                if constexpr (meta::is_constant_index_array_v<decltype(shape_)>) {
-                    return meta::to_value_v<decltype(shape_)>;
-                } else {
-                    return shape_;
-                }
-            }())
-            , axes(detail::compute_flip_axis<axes_type>(shape_,axis))
-            , slices(detail::get_flip_slices<array_t>(axes))
+        constexpr flip_t(const array_t& array_, const axis_t& axis)
+            : array(initialize<array_type>(array_))
+            , shape_(nmtools::shape<true>(array_))
+            , dim_(nmtools::dim<true>(array_))
+            , axes(init_attribute<axis_type>(axis))
+            , slices(index::flip_slices(dim_,axes))
         {}
         
         constexpr auto shape() const
@@ -157,7 +56,7 @@ namespace nmtools::view
 
         constexpr auto dim() const
         {
-            return len(shape());
+            return dim_;
         } // dim
 
         template <typename...size_types>
@@ -194,22 +93,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    /**
-     * @brief Specialization of fixed_ndarray_shape for view::flip.
-     *
-     * Flip doesn't change shape, simply call fixed_ndarray_shape_v
-     * on the underlying array type.
-     * 
-     * @tparam array_t 
-     * @tparam axis_t 
-     */
-    template <typename array_t, typename axis_t>
-    struct fixed_ndarray_shape< view::flip_t<array_t,axis_t> >
-    {
-        static inline constexpr auto value = fixed_ndarray_shape_v<array_t>;
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
-
     template <typename array_t, typename axis_t>
     struct is_ndarray< view::decorator_t< view::flip_t, array_t, axis_t >>
     {
