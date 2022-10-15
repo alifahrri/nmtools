@@ -23,19 +23,15 @@ namespace nmtools::view
 
         using nd_type = meta::ct<2ul>;
 
-        static constexpr auto shape_vtype = [](){
-            using shape_t = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
-            using type = meta::resolve_optype_t<index::shape_atleast_nd_t, shape_t, nd_type>;
-            return meta::as_value_v<type>;
-        }();
-        using shape_type = meta::type_t<decltype(shape_vtype)>;
+        using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
+        using dst_shape_type = meta::resolve_optype_t<index::shape_atleast_nd_t, src_shape_type, nd_type>;
 
-        array_type array_;
-        shape_type shape_;
+        array_type     array_;
+        dst_shape_type shape_;
 
         constexpr atleast_2d_t(const array_t& array)
             : array_(initialize(array, meta::as_value_v<array_type>))
-            , shape_(index::shape_atleast_nd(nmtools::shape(array),nd_type{}))
+            , shape_(index::shape_atleast_nd(nmtools::shape<true>(array),nd_type{}))
         {}
         
         constexpr auto shape() const
