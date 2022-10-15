@@ -296,10 +296,19 @@ namespace nmtools
      * @return constexpr auto 
      * @see meta::fixed_dim_v
      */
-    template <typename array_t>
-    constexpr auto dim(const array_t& array)
+    template <bool prefer_constant_index=false, typename array_t>
+    constexpr auto dim([[maybe_unused]] const array_t& array)
     {
-        return impl::dim<array_t>(array);
+        if constexpr (prefer_constant_index) {
+            constexpr auto fixed_dim = meta::fixed_dim_v<array_t>;
+            if constexpr (!meta::is_fail_v<decltype(fixed_dim)>) {
+                return meta::ct_v<(size_t)fixed_dim>;
+            } else {
+                return impl::dim<array_t>(array);
+            }
+        } else {
+            return impl::dim<array_t>(array);
+        }
     } // dim
 
     /** @} */ // end group utility
