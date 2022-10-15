@@ -27,22 +27,19 @@ TEST_CASE("eval(atleast_2d)" * doctest::test_suite("eval"))
     {
         using view_t = view::decorator_t< view::atleast_2d_t, nmtools_array<int,3> >;
         using eval_t = meta::resolve_optype_t<na::eval_result_t, view_t, none_t>;
-        // TODO: deduce as fixed shape
-        using expected_t = na::ndarray_t<nmtools_array<int,3>,nmtools_array<size_t,2>>;
+        using expected_t = na::ndarray_t<nmtools_array<int,3>, decltype(nmtools_tuple{1_ct,3_ct})>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
         using view_t = view::decorator_t< view::atleast_2d_t, int[3] >;
         using eval_t = meta::resolve_optype_t<na::eval_result_t, view_t, none_t>;
-        // TODO: deduce as fixed shape
-        using expected_t = na::ndarray_t<nmtools_array<int,3>,nmtools_array<size_t,2>>;
+        using expected_t = na::ndarray_t<nmtools_array<int,3>, decltype(nmtools_tuple{1_ct,3_ct})>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
         using view_t = view::decorator_t< view::atleast_2d_t, na::fixed_ndarray<int,3> >;
         using eval_t = meta::resolve_optype_t<na::eval_result_t, view_t, none_t>;
-        // TODO: deduce as fixed shape
-        using expected_t = na::ndarray_t<nmtools_array<int,3>, nmtools_array<size_t,2>>;
+        using expected_t = na::ndarray_t<nmtools_array<int,3>, decltype(nmtools_tuple{1_ct,3_ct})>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
 

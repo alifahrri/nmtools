@@ -17,30 +17,15 @@ namespace nmtools::view
 
         using nd_type = meta::ct<1ul>;
 
-        static constexpr auto shape_vtype = [](){
-            using shape_t = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
-            using type = meta::resolve_optype_t<index::shape_atleast_nd_t, shape_t, nd_type>;
-            return meta::as_value_v<type>;
-        }();
-        using shape_type = meta::type_t<decltype(shape_vtype)>;
+        using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
+        using dst_shape_type = const meta::resolve_optype_t<index::shape_atleast_nd_t, src_shape_type, nd_type>;
 
-        static constexpr auto size_type = [](){
-            if constexpr (meta::is_fixed_size_v<array_t>) {
-                constexpr auto size = meta::fixed_size_v<array_t>;
-                using type = nmtools_tuple<meta::ct<(size_t)size>>;
-                return meta::as_value_v<type>;
-            } else {
-                // TODO: consider to use index_type
-                return meta::as_value_v<size_t>;
-            }
-        }();
-
-        array_type array_;
-        shape_type shape_;
+        array_type     array_;
+        dst_shape_type shape_;
 
         constexpr atleast_1d_t(const array_t& array)
             : array_(initialize(array, meta::as_value_v<array_type>))
-            , shape_(index::shape_atleast_nd(nmtools::shape(array),nd_type{}))
+            , shape_(index::shape_atleast_nd(nmtools::shape<true>(array),nd_type{}))
         {}
         
         constexpr auto shape() const
@@ -104,15 +89,6 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     };
-
-    template <typename array_t>
-    struct fixed_size<
-        view::decorator_t< view::atleast_1d_t, array_t >
-    >
-    {
-        // maybe not fixed-shape but fixed-size
-        static constexpr auto value = fixed_size_v<array_t>;
-    }; // fixed_size
 
     template <typename array_t>
     struct bounded_size<

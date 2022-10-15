@@ -191,7 +191,7 @@ namespace nmtools::array
         }
 
         template <typename size_type, typename...size_types>
-        auto resize([[maybe_unused]] const size_type& size, const size_types&...sizes)
+        constexpr auto resize([[maybe_unused]] const size_type& size, const size_types&...sizes)
             -> meta::enable_if_t<
                    (meta::is_index_v<size_type> || meta::is_index_array_v<size_type>)
                 && (meta::is_index_v<size_types> && ...)
