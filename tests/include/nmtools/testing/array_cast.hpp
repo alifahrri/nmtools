@@ -98,11 +98,29 @@ inline auto name##_h = nmtools::cast(name, nmtools::array::kind::hybrid);
 
 #endif // NMTOOLS_CAST_ARRAYS define
 
+#ifndef NMTOOLS_CONSTEXPR_CAST_ARRAYS_NESTED
+#define NMTOOLS_CONSTEXPR_CAST_ARRAYS_NESTED(name) \
+constexpr inline auto name##_a = nmtools::cast(name, nmtools::array::kind::nested_arr);
+#endif
+#ifndef NMTOOLS_CONSTEXPR_CAST_ARRAYS_FIXED
+#define NMTOOLS_CONSTEXPR_CAST_ARRAYS_FIXED(name) \
+constexpr inline auto name##_f = nmtools::cast(name, nmtools::array::kind::nested_arr);
+#endif
+#ifndef NMTOOLS_CONSTEXPR_CAST_ARRAYS_HYBRID
+#define NMTOOLS_CONSTEXPR_CAST_ARRAYS_HYBRID(name) \
+constexpr inline auto name##_h = nmtools::cast(name, nmtools::array::kind::nested_arr);
+#endif
+// to easily add new kind
+#ifndef NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA
+#define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name)
+#endif
+
 #if !defined(NMTOOLS_CONSTEXPR_CAST_ARRAYS)
 #define NMTOOLS_CONSTEXPR_CAST_ARRAYS(name) \
-constexpr inline auto name##_a = nmtools::cast(name, nmtools::array::kind::nested_arr); \
-constexpr inline auto name##_f = nmtools::cast(name, nmtools::array::kind::fixed); \
-constexpr inline auto name##_h = nmtools::cast(name, nmtools::array::kind::hybrid);
+NMTOOLS_CONSTEXPR_CAST_ARRAYS_NESTED (name) \
+NMTOOLS_CONSTEXPR_CAST_ARRAYS_FIXED  (name) \
+NMTOOLS_CONSTEXPR_CAST_ARRAYS_HYBRID (name) \
+NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA  (name)
 #endif // NMTOOLS_CONSTEXPR_CAST_ARRAYS
 
 #endif // NMTOOLS_TESTING_ARRAY_CAST_HPP
