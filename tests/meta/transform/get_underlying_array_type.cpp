@@ -97,22 +97,6 @@ TEST_CASE("get_underlying_array_type(broadcast_to)" * doctest::test_suite("get_u
     }
 }
 
-TEST_CASE("get_underlying_array_type(flip)" * doctest::test_suite("get_underlying_array_type"))
-{
-    {
-        using view_t  = view::decorator_t< view::flip_t, nmtools_list<int>, nm::none_t >;
-        using array_t = meta::get_underlying_array_type_t<view_t>;
-        using expected_t = const nmtools_list<int>&;
-        NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
-    }
-    {
-        using view_t = view::decorator_t< view::flip_t, na::fixed_ndarray<int,2,2,2>, nm::none_t >;
-        using array_t = meta::get_underlying_array_type_t<view_t>;
-        using expected_t = const na::fixed_ndarray<int,2,2,2>&;
-        NMTOOLS_STATIC_CHECK_IS_SAME( array_t, expected_t );
-    }
-}
-
 TEST_CASE("get_underlying_array_type(clip)" * doctest::test_suite("get_underlying_array_type"))
 {
     {
