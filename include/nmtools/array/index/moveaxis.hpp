@@ -52,6 +52,8 @@ namespace nmtools::index
                     return nmtools_tuple{a};
                 } else if constexpr (meta::is_index_v<a_t>) {
                     return nmtools_array{a};
+                } else if constexpr (meta::is_constant_index_array_v<a_t>) {
+                    return a_t {};
                 } else {
                     // TODO: check if we can use index::ref
                     // a maybe bounded index
@@ -66,10 +68,10 @@ namespace nmtools::index
                     return res;
                 }
             };
-            auto src = index::normalize_axis(as_array(source), dim);
-            auto dst = index::normalize_axis(as_array(destination), dim);
+            const auto src = index::normalize_axis(as_array(source), dim);
+            const auto dst = index::normalize_axis(as_array(destination), dim);
             // sort by destination, arg shall be maybe type because normalize axis return maybe type
-            auto arg = index::argsort(dst);
+            const auto arg = index::argsort(dst);
 
             // auto ret = return_t {};
             auto valid = true;
