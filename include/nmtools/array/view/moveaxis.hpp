@@ -31,14 +31,14 @@ namespace nmtools::view
     template <typename array_t, typename source_t, typename destination_t>
     constexpr auto moveaxis(const array_t& array, const source_t& source, const destination_t& destination)
     {
-        auto shape_ = shape(array);
+        auto shape_ = shape<true>(array);
         auto order  = index::moveaxis_to_transpose(shape_,source,destination);
         // order should be maybe type
-        using result_t = meta::remove_cvref_t<decltype(transpose(array,*order))>;
+        using result_t = meta::remove_cvref_t<decltype(view::transpose(array,*order))>;
         nmtools_assert_prepare_type( return_t, result_t );
         nmtools_assert( order, "unsupported moveaxis arguments", return_t );
 
-        return return_t{transpose(array,*order)};
+        return return_t{view::transpose(array,*order)};
     } // moveaxis
 } // namespace nmtools::view
 
