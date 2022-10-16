@@ -501,7 +501,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_moveaxis)
         constexpr inline int source = -1;
         constexpr inline int destination = 0;
         constexpr inline auto source_ct = "-1"_ct;
-        constexpr inline auto destination_ct = 0;
+        constexpr inline auto destination_ct = 0_ct;
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(a);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
