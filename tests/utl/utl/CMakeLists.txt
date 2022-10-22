@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/maybe.cpp
     src/either.cpp
     src/vector.cpp
+    src/clipped_integer.cpp
 )
 
 target_compile_options(

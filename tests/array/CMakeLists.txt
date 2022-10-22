@@ -430,6 +430,7 @@ endif ()
 
 set(MISC_TEST_SOURCES
     misc/constants.cpp
+    misc/clipped_integer.cpp
 )
 if (NOT NMTOOLS_TEST_MISC)
     set (MISC_TEST_SOURCES "")
