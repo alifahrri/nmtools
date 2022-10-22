@@ -47,4 +47,94 @@ namespace nmtools
 }
 #endif // ARDUINO
 
+namespace nmtools
+{
+    template <typename T, auto Min, auto Max>
+    struct clipped_integer_t
+    {
+        using value_type = T;
+
+        static constexpr auto min = Min;
+        static constexpr auto max = Max;
+
+        static_assert( (min < max), "invalid value for Min and Max, expect Min < Max" );
+
+        constexpr clipped_integer_t() {}
+
+        constexpr clipped_integer_t(const clipped_integer_t& other)
+            : value(other.value)
+        {}
+
+        constexpr clipped_integer_t(T other)
+            : value(other > Max ? Max : (other < Min ? Min : other))
+        {}
+
+        constexpr operator T() const noexcept
+        {
+            return value;
+        }
+
+        clipped_integer_t& operator=(clipped_integer_t other)
+        {
+            // from same type with same Min Max
+            value = other.value;
+
+            return *this;
+        }
+
+        clipped_integer_t& operator=(T other)
+        {
+            *this = clipped_integer_t{other};
+
+            return *this;
+        }
+
+        // avoid ambiguous call to operator
+        #if 0
+        clipped_integer_t operator+(T other) const noexcept
+        {
+            return clipped_integer_t{T(value + other)};
+        }
+
+        clipped_integer_t operator-(T other) const noexcept
+        {
+            return clipped_integer_t{T(value - other)};
+        }
+        #endif
+
+        template <auto OtherMin, auto OtherMax>
+        clipped_integer_t& operator=(clipped_integer_t<T,OtherMin,OtherMax> other)
+        {
+            *this = {(T)other};
+            return *this;
+        }
+
+        template <typename U, auto OtherMin, auto OtherMax>
+        clipped_integer_t& operator=(clipped_integer_t<U,OtherMin,OtherMax> other)
+        {
+            *this = {(T)other};
+            return *this;
+        }
+
+        private:
+        T value = Min;
+    }; // clipped_integer_t
+
+    #define NMTOOLS_DECLARE_CLIPPED_TYPE(type) \
+    template <auto Max, auto Min=0> \
+    using clipped_##type = clipped_integer_t<type,Min,Max>;
+
+    NMTOOLS_DECLARE_CLIPPED_TYPE(size_t)
+    NMTOOLS_DECLARE_CLIPPED_TYPE(int8_t)
+    NMTOOLS_DECLARE_CLIPPED_TYPE(int16_t)
+    NMTOOLS_DECLARE_CLIPPED_TYPE(int32_t)
+    NMTOOLS_DECLARE_CLIPPED_TYPE(int64_t)
+    NMTOOLS_DECLARE_CLIPPED_TYPE(uint8_t)
+    NMTOOLS_DECLARE_CLIPPED_TYPE(uint16_t)
+    NMTOOLS_DECLARE_CLIPPED_TYPE(uint32_t)
+    NMTOOLS_DECLARE_CLIPPED_TYPE(uint64_t)
+
+    #undef NMTOOLS_DECLARE_CLIPPED_TYPE
+}
+
 #endif // NMTOOLS_DEF_HPP
