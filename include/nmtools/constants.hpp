@@ -37,15 +37,53 @@ namespace nmtools::detail
 
     // TODO: support val > 9
     template <char val>
-    struct ct_impl_t<void,char,'-',val>
+    struct ct_impl_t<
+        meta::enable_if_t<
+            (val > '0' && val <= '9')
+        >
+        ,char,'-',val>
     {
-        static_assert( val > '0' && val <= '9', "invalid negative constant" );
         constexpr auto operator()() const noexcept
         {
             constexpr auto value = val - '0';
             return meta::ct_v<-value>;
         }
     }; // ct_impl_t
+
+    // clipped_integer
+    template <char val, char max>
+    struct ct_impl_t<
+        meta::enable_if_t<
+            (val >= '0' && val <= '9')
+            && (max > '0' && max <= '9')
+        >
+        ,char,val,':','[',max,']'>
+    {
+        constexpr auto operator()() const noexcept
+        {
+            // assume size_t for now
+            using type = clipped_integer_t<size_t,0,max>;
+            return type{(val - '0')};
+        }
+    };
+
+    // clipped_integer
+    template <char val, char min, char max>
+    struct ct_impl_t<
+        meta::enable_if_t<
+            (val >= '0' && val <= '9')
+            && (max > '0' && max <= '9')
+            && (min >= '0' && min <= '9')
+        >
+        ,char,val,':','[',min,',',max,']'>
+    {
+        constexpr auto operator()() const noexcept
+        {
+            // assume size_t for now
+            using type = clipped_integer_t<size_t,min-'0',max-'0'>;
+            return type{(val - '0')};
+        }
+    };
 
 } // nmtools::detail
 
