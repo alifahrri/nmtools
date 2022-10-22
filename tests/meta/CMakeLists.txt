@@ -94,6 +94,7 @@ set( META_TRAIT_TEST_SOURCES
     traits/has_square_bracket.cpp
     traits/is_base_of.cpp
     traits/is_class.cpp
+    traits/is_clipped_integer.cpp
     traits/is_destructible.cpp
     traits/is_index.cpp
     traits/is_index_array.cpp

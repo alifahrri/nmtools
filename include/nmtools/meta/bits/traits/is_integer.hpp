@@ -47,13 +47,16 @@ namespace nmtools::meta
     };
 
     template <typename T>
+    constexpr inline auto is_integer_v = is_integer<T>::value;
+
+    template <typename T, auto Min, auto Max>
+    struct is_integer<clipped_integer_t<T,Min,Max>,enable_if_t<is_integer_v<T>>> : true_type {};
+
+    template <typename T>
     struct is_integer<const T> : is_integer<T> {};
 
     template <typename T>
     struct is_integer<T&> : is_integer<T> {};
-
-    template <typename T>
-    constexpr inline auto is_integer_v = is_integer<T>::value;
 
     template <typename T, typename=void>
     struct is_integral : is_integer<T> {};
