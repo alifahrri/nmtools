@@ -14,7 +14,7 @@
 #include "nmtools/array/view.hpp"
 #include "nmtools/utils/isclose.hpp"
 #include "nmtools/utils/isequal.hpp"
-#include "testing/testing.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #if __has_include("doctest/doctest.h")
     #include "doctest/doctest.h"

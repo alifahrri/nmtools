@@ -19,8 +19,7 @@
     "platforms": "*",
     "export": {
         "include": [
-            "include",
-            "tests/include"
+            "include"
         ],
         "exclude": [
             "include/doctest.h",
