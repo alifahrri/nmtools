@@ -29,7 +29,7 @@ jobs:
     - name: Install PlatformIO
       run: |
         python -m pip install --upgrade pip
-        pip install platformio==5.2.4
+        pip install --upgrade platformio
     - name: Run PlatformIO CI
       run: |
         bash scripts/run_pio_test.sh -d arduino/${{ matrix.test }}
