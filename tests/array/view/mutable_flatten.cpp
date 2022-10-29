@@ -4,7 +4,7 @@
 #include "nmtools/array/dynamic.hpp"
 #include "nmtools/utils/isclose.hpp"
 #include "nmtools/utils/isequal.hpp"
-#include "testing/testing.hpp"
+#include "nmtools/testing/testing.hpp"
 
 #include <array>
 #include <vector>
