@@ -189,3 +189,51 @@ TEST_CASE("compute_strides(nmtools_tuple<integral_constant>)" * doctest::test_su
         CHECK( isequal(strides,nmtools_array{6,3,1}) );
     }
 }
+
+TEST_CASE("compute_strides(nmtools_tuple<clipped_size_t>)" * doctest::test_suite("index"))
+{
+    {
+        auto shape   = nmtools_tuple{"3:[3]"_ct};
+        auto strides = nmtools::index::compute_strides(shape);
+        CHECK( isequal(strides,nmtools_array{1}) );
+    }
+    {
+        auto shape   = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct};
+        auto strides = nmtools::index::compute_strides(shape);
+        CHECK( isequal(strides,nmtools_array{2,1}) );
+    }
+    {
+        auto shape   = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct,"1:[1]"_ct};
+        auto strides = nmtools::index::compute_strides(shape);
+        CHECK( isequal(strides,nmtools_array{2,1,1}) );
+    }
+    {
+        auto shape   = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct,"3:[3]"_ct};
+        auto strides = nmtools::index::compute_strides(shape);
+        CHECK( isequal(strides,nmtools_array{6,3,1}) );
+    }
+}
+
+TEST_CASE("compute_strides(nmtools_array<clipped_size_t>)" * doctest::test_suite("index"))
+{
+    {
+        auto shape   = nmtools_array{"3:[3]"_ct};
+        auto strides = nmtools::index::compute_strides(shape);
+        CHECK( isequal(strides,nmtools_array{1}) );
+    }
+    {
+        auto shape   = nmtools_array{"3:[3]"_ct,"2:[3]"_ct};
+        auto strides = nmtools::index::compute_strides(shape);
+        CHECK( isequal(strides,nmtools_array{2,1}) );
+    }
+    {
+        auto shape   = nmtools_array{"3:[3]"_ct,"2:[3]"_ct,"1:[3]"_ct};
+        auto strides = nmtools::index::compute_strides(shape);
+        CHECK( isequal(strides,nmtools_array{2,1,1}) );
+    }
+    {
+        auto shape   = nmtools_array{"3:[3]"_ct,"2:[3]"_ct,"3:[3]"_ct};
+        auto strides = nmtools::index::compute_strides(shape);
+        CHECK( isequal(strides,nmtools_array{6,3,1}) );
+    }
+}
