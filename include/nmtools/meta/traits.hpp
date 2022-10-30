@@ -19,6 +19,7 @@
 #include "nmtools/meta/bits/traits/is_bounded_array.hpp"
 #include "nmtools/meta/bits/traits/is_bounded_dim.hpp"
 #include "nmtools/meta/bits/traits/is_bounded_size.hpp"
+#include "nmtools/meta/bits/traits/is_clipped_index_array.hpp"
 #include "nmtools/meta/bits/traits/is_clipped_integer.hpp"
 #include "nmtools/meta/bits/traits/is_const.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
