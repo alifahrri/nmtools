@@ -89,7 +89,9 @@ namespace nmtools::meta
     };
 
     template <typename...Ts>
-    struct to_value<utl::tuple<Ts...>>
+    struct to_value<utl::tuple<Ts...>
+        , enable_if_t<(is_constant_index_v<Ts> && ...)>
+    >
     {
         using tuple_type = utl::tuple<Ts...>;
         using error_type = error::TO_VALUE_UNSUPPORTED<tuple_type>;
