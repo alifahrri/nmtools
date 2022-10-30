@@ -32,44 +32,18 @@ namespace nmtools::index
                 constexpr auto n = meta::len_v<shape_t>;
                 meta::template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
-                    ret *= at<i>(shape);
+                    auto p = ret * at<i>(shape);
+                    ret = p;
                 });
             } else {
                 for (size_t i=0; i<len(shape); i++) {
-                    ret *= at(shape,i);
+                    auto p = ret * at(shape,i);
+                    ret = p;
                 }
             }
         }
 
         return ret;
-
-        // TODO: remove
-        #if 0
-        // handle constant index array,
-        // for now, simply convert to value and recurse
-        if constexpr (meta::is_constant_index_array_v<shape_t>) {
-            // TODO: move constant index handling at higher level, see remove_dims for example
-            constexpr auto shape_ = meta::to_value_v<shape_t>;
-            constexpr auto ret  = product(shape_);
-            // TODO: convert back to type
-            return ret;
-        }
-        else {
-            using element_t = meta::get_element_or_common_type_t<shape_t>;
-            auto ret = element_t{1};
-            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
-                constexpr auto n = meta::len_v<shape_t>;
-                meta::template_for<n>([&](auto index){
-                    constexpr auto i = decltype(index)::value;
-                    ret *= at<i>(shape);
-                });
-            }
-            else
-                for (size_t i=0; i<len(shape); i++)
-                    ret *= at(shape,i);
-            return ret;
-        }
-        #endif
     } // product
 } // namespace nmtools::index
 
@@ -90,6 +64,10 @@ namespace nmtools::meta
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto N = index::product(shape);
                 return as_value_v<ct<N>>;
+            } else if constexpr (is_clipped_index_array_v<shape_t>) {
+                constexpr auto shape = to_value_v<shape_t>;
+                constexpr auto N = index::product(shape);
+                return as_value_v<clipped_size_t<N>>;
             } else if constexpr (is_index_array_v<shape_t>) {
                 using type = get_element_or_common_type_t<shape_t>;
                 return as_value_v<type>;

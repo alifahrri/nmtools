@@ -22,22 +22,20 @@ namespace nmtools::index
     {
         using result_t = meta::resolve_optype_t<stride_t,array_t,size_type>;
         auto p = result_t {};
-        if constexpr (meta::is_constant_index_v<result_t>) {
-            // do nothing, assume already computed at compile time with resolve optype
-        } else if constexpr (meta::is_index_v<result_t> && meta::is_fixed_index_array_v<array_t>) {
-            // some fn, still allow tuple of (runtime) index, must be unrolled
+        if constexpr (!meta::is_constant_index_v<result_t>) {
             constexpr auto n = meta::len_v<array_t>;
             p = 1;
-            // note that k may be runtime value
-            meta::template_for<n>([&](auto index){
-                constexpr auto i = decltype(index)::value;
-                if (i>=k+1)
-                    p *= at<i>(shape);
-            });
-        } else if constexpr (meta::is_index_v<result_t>) {
-            p = 1;
-            for (auto j=k+1; j<len(shape); j++)
-                p *= at(shape,j);
+            if constexpr (n > 0) {
+                // note that k may be runtime value
+                meta::template_for<n>([&](auto index){
+                    constexpr auto i = decltype(index)::value;
+                    if (i>=k+1)
+                        p *= at<i>(shape);
+                });
+            } else {
+                for (auto j=k+1; j<len(shape); j++)
+                    p *= at(shape,j);
+            }
         }
         return p;
     } // stride
@@ -63,12 +61,20 @@ namespace nmtools::index
         using return_t  = meta::resolve_optype_t<compute_strides_t,array_t>;
         auto strides_ = return_t{};
         if constexpr (!meta::is_constant_index_array_v<return_t> && meta::is_index_array_v<return_t>) {
-            auto n = len(shape);
+            [[maybe_unused]] auto n = len(shape);
             if constexpr (meta::is_resizeable_v<return_t>) {
                 strides_.resize(n);
             }
-            for (size_t i=0; i<n; i++)
-                at(strides_,i) = stride(shape,i);
+            constexpr auto N = meta::len_v<return_t>;
+            if constexpr (N>0) {
+                // this may be clipped shape
+                meta::template_for<N>([&](auto i){
+                    at(strides_,i) = stride(shape,i);
+                });
+            } else {
+                for (size_t i=0; i<n; i++)
+                    at(strides_,i) = stride(shape,i);
+            }
         }
         return strides_;
     } // compute_strides
@@ -103,6 +109,21 @@ namespace nmtools::meta
                     using result_t = append_type_t<init_t,ct<at(strides,index+1)>>;
                     return as_value_v<result_t>;
                 }, as_value_v<init_type>);
+            } else if constexpr (is_clipped_index_array_v<shape_t>) {
+                constexpr auto len = len_v<shape_t>;
+                if constexpr (len > 0) {
+                    // compute upper bound
+                    constexpr auto shape = to_value_v<shape_t>;
+                    constexpr auto strides = index::compute_strides(shape);
+                    using nmtools::at, nmtools::len;
+                    return template_reduce<len(strides)-1>([&](auto init, auto index){
+                        using init_t = type_t<decltype(init)>;
+                        using result_t = append_type_t<init_t,clipped_size_t<at(strides,index+1)>>;
+                        return as_value_v<result_t>;
+                    }, as_value_v<nmtools_tuple<clipped_size_t<at(strides,0)>>>);
+                } else {
+                    return as_value_v<nmtools_list<size_t>>;
+                }
             } else if constexpr (is_index_array_v<shape_t>) {
                 return as_value_v<type>;
             } else {
@@ -132,6 +153,8 @@ namespace nmtools::meta
                 // convert back to type
                 return as_value_v<ct<stride>>;
             } else if constexpr (is_constant_index_v<element_t>) {
+                return as_value_v<typename element_t::value_type>;
+            } else if constexpr (is_clipped_integer_v<element_t>) {
                 return as_value_v<typename element_t::value_type>;
             } else if constexpr (is_index_v<element_t>) {
                 return as_value_v<element_t>;
