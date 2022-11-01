@@ -211,7 +211,8 @@ namespace nmtools::array
         {
             auto sizes_  = index::pack_indices(size,sizes...);
             auto numel   = index::product(sizes_);
-            auto new_dim = sizeof...(sizes) + 1;
+            // since size may be packed, the proper way to read dim is using len instead of sizes..+1
+            auto new_dim = len(sizes_);
             if constexpr (meta::is_resizeable_v<shape_type>) {
                 shape_.resize(new_dim);
             }
