@@ -19,10 +19,12 @@
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/math.hpp"
+#include "nmtools/platform/math/constexpr.hpp"
 
 namespace nmtools::utils
 {
     using nmtools::math::fabs;
+    using nmtools::math::constexpr_fabs;
 
     namespace detail {
         // TODO: cleanup isclose for boolean
@@ -254,12 +256,12 @@ namespace nmtools::utils
                 using t_type = meta::get_element_type_t<T>;
                 using u_type = meta::get_element_type_t<U>;
                 using common_t = meta::common_type_t<t_type,u_type,E>;
-                return fabs(static_cast<t_type>(t)-static_cast<u_type>(u))
+                return constexpr_fabs(static_cast<t_type>(t)-static_cast<u_type>(u))
                     < static_cast<common_t>(eps);
             }
             else {
                 auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
-                    return fabs(lhs-rhs) < eps;
+                    return constexpr_fabs(lhs-rhs) < eps;
                 };
                 bool close = true;
                 // TODO: static assert whenever possible
