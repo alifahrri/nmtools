@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/loop.hpp"
+#include "nmtools/meta/bits/traits/is_clipped_integer.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
 #include "nmtools/meta/bits/traits/is_signed.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
@@ -38,7 +39,7 @@ namespace nmtools::meta
     
         template <typename T>
         static constexpr auto make_non_constant(as_value<T>) {
-            if constexpr (is_constant_index_v<T>) {
+            if constexpr (is_constant_index_v<T> || is_clipped_integer_v<T>) {
                 return as_value_v<typename T::value_type>;
             } else {
                 return as_value_v<T>;
