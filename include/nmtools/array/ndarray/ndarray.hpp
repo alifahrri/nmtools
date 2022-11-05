@@ -252,7 +252,22 @@ namespace nmtools::array
                     at(shape_,i) = at(sizes_,i);
                 }
             }
-            strides_ = base_type::template compute_strides<stride_type>(shape_);
+            // NOTE: using operator= directly may cause unusable for constexpr, (e.g. std::tuple)
+            // quick workaround just use assignment of the elements
+            auto m_strides_ = base_type::template compute_strides<stride_type>(shape_);
+            if constexpr (meta::is_tuple_v<stride_type>) {
+                constexpr auto N = meta::len_v<stride_type>;
+                meta::template_for<N>([&](auto I){
+                    at(strides_,I) = at(m_strides_,I);
+                });
+            } else {
+                if constexpr (meta::is_resizeable_v<stride_type>) {
+                    strides_.resize(len(m_strides_));
+                }
+                for (size_t i=0; i<(size_t)len(m_strides_); i++) {
+                    at(strides_,i) = at(m_strides_,i);
+                }
+            }
             return true;
         } // resize
     }; // ndarray_t
