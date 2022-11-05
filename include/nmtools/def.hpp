@@ -74,7 +74,7 @@ namespace nmtools
             return value;
         }
 
-        clipped_integer_t& operator=(clipped_integer_t other)
+        constexpr clipped_integer_t& operator=(clipped_integer_t other)
         {
             // from same type with same Min Max
             value = other.value;
@@ -82,7 +82,7 @@ namespace nmtools
             return *this;
         }
 
-        clipped_integer_t& operator=(T other)
+        constexpr clipped_integer_t& operator=(T other)
         {
             *this = clipped_integer_t{other};
 
@@ -103,14 +103,14 @@ namespace nmtools
         #endif
 
         template <auto OtherMin, auto OtherMax>
-        clipped_integer_t& operator=(clipped_integer_t<T,OtherMin,OtherMax> other)
+        constexpr clipped_integer_t& operator=(clipped_integer_t<T,OtherMin,OtherMax> other)
         {
             *this = {(T)other};
             return *this;
         }
 
         template <typename U, auto OtherMin, auto OtherMax>
-        clipped_integer_t& operator=(clipped_integer_t<U,OtherMin,OtherMax> other)
+        constexpr clipped_integer_t& operator=(clipped_integer_t<U,OtherMin,OtherMax> other)
         {
             *this = {(T)other};
             return *this;
