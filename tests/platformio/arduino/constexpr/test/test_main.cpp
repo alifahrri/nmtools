@@ -390,6 +390,9 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case1)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case1);
 
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
+
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, moveaxis, a_a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, moveaxis, a_f, source, destination );
@@ -401,11 +404,15 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case1)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, moveaxis, a_hs_hb, source, destination );
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_moveaxis, case2)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case2);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, moveaxis, a_a, source, destination );
@@ -418,11 +425,16 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case2)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, moveaxis, a_hs_hb, source, destination );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_moveaxis, case3)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case3);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, moveaxis, a_a, source, destination );
@@ -435,11 +447,16 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case3)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, moveaxis, a_hs_hb, source, destination );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_moveaxis, case4)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case4);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, moveaxis, a_a, source, destination );
@@ -452,11 +469,16 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case4)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, moveaxis, a_hs_hb, source, destination );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_moveaxis, case5)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case5);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, moveaxis, a_a, source, destination );
@@ -469,11 +491,16 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case5)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, moveaxis, a_hs_hb, source, destination );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_moveaxis, case6)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case6);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case6, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case6, result, moveaxis, a_a, source, destination );
@@ -486,11 +513,16 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case6)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case6, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case6, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case6, result, moveaxis, a_hs_hb, source, destination );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_moveaxis, case7)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case7);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case7, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case7, result, moveaxis, a_a, source, destination );
@@ -503,11 +535,16 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case7)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case7, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case7, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case7, result, moveaxis, a_hs_hb, source, destination );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_moveaxis, case8)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case8);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case8, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case8, result, moveaxis, a_a, source, destination );
@@ -520,11 +557,16 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case8)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case8, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case8, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case8, result, moveaxis, a_hs_hb, source, destination );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_moveaxis, case9)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_moveaxis, case9);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, moveaxis, a, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, moveaxis, a_a, source, destination );
@@ -537,6 +579,8 @@ NM_TEST_SUBCASE(constexpr_moveaxis, case9)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, moveaxis, a_fs_hb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, moveaxis, a_hs_fb, source, destination );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, moveaxis, a_hs_hb, source, destination );
+    
+    #endif // ARDUINO_ARCH_AVR
 }
 
 /* --------------------- runtime ------------------------------ */
