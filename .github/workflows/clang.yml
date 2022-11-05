@@ -31,7 +31,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -59,7 +59,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_VIEW=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_VIEW=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -87,7 +87,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_VIEW=ON -DNMTOOLS_TESTING_NOSTL=ON -DNMTOOLS_TEST_ARRAY_INDEX=ON -DNMTOOLS_TEST_NDARRAY=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_VIEW=ON -DNMTOOLS_TESTING_NOSTL=ON -DNMTOOLS_TEST_ARRAY_INDEX=ON -DNMTOOLS_TEST_NDARRAY=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -115,7 +115,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TEST_ARRAY_VIEW=ON -DNMTOOLS_TESTING_NOSTL=ON -DNMTOOLS_TEST_ARRAY_INDEX=ON -DNMTOOLS_TEST_NDARRAY=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TEST_ARRAY_VIEW=ON -DNMTOOLS_TESTING_NOSTL=ON -DNMTOOLS_TEST_ARRAY_INDEX=ON -DNMTOOLS_TEST_NDARRAY=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -143,7 +143,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -167,7 +167,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -191,7 +191,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -215,7 +215,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -239,7 +239,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON  -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_TESTING_CONSTEXPR=ON  -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
