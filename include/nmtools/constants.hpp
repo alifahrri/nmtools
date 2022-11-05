@@ -62,7 +62,7 @@ namespace nmtools::detail
         constexpr auto operator()() const noexcept
         {
             // assume size_t for now
-            using type = clipped_integer_t<size_t,0,max>;
+            using type = clipped_integer_t<size_t,0,max-'0'>;
             return type{(val - '0')};
         }
     };

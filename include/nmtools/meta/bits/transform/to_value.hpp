@@ -2,6 +2,7 @@
 #define NMTOOLS_META_BITS_TRANSFORM_TO_VALUE_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/traits/is_tuple.hpp"
 
 namespace nmtools::meta
 {
@@ -49,7 +50,37 @@ namespace nmtools::meta
 
     template <> struct to_value<false_type>
     { static constexpr auto value = false; };
-    
+
+    // converting nmtools' clipped_integer using meta::to_value means
+    // converting the max value to value array
+    // note that currently the min value is ignored.
+    // this (using max value) is mostly useful for indexing function (where min=0, max=N)
+    // to carry the information about maximum number of elements per axis
+    // hence we can deduce the maximum number of elements to deduce the type of buffer at compile time
+
+    template <template<typename...>typename Tuple, typename T, auto...Min, auto...Max>
+    struct to_value<
+        Tuple<clipped_integer_t<T,Min,Max>...>,
+        enable_if_t< is_tuple_v<Tuple<clipped_integer_t<T,Min,Max>...>> >
+    >
+    {
+        static constexpr auto value = nmtools_array{Max...};
+    }; // to_value
+
+    template <template<typename,auto>typename Array, typename T, auto Min, auto Max, auto N>
+    struct to_value<
+        Array<clipped_integer_t<T,Min,Max>,N>
+    >
+    {
+        static constexpr auto value = [](){
+            using type = nmtools_array<T,N>;
+            auto result = type{};
+            for (size_t i=0; i<N; i++) {
+                result[i] = Max;
+            }
+            return result;
+        }();
+    }; // to_value
 
     template <typename T>
     constexpr inline auto to_value_v = to_value<T>::value;

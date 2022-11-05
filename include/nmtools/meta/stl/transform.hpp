@@ -253,7 +253,8 @@ namespace nmtools::meta
     #else
     template <typename...Ts>
     struct to_value<
-        std::tuple<Ts...>
+        std::tuple<Ts...>,
+        enable_if_t<(is_constant_index_v<Ts> && ...)>
     >
     {
         using tuple_type = std::tuple<Ts...>;

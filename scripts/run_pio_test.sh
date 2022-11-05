@@ -28,4 +28,4 @@ pio package pack --output nmtools.tar.gz
 cp nmtools.tar.gz tests/platformio/${DEST}
 cd tests/platformio/${DEST}
 bash ../download-toolchain.sh
-pio test -v --without-uploading --without-testing
+pio test -v --without-uploading --without-testing ${POSITIONAL[@]}

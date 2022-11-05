@@ -2,12 +2,14 @@
 #include "nmtools/array/impl/boost.hpp"
 #endif
 
+#include "nmtools/meta.hpp"
 #include "nmtools/array/ndarray/ndarray.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/index/ndindex.hpp"
-#include "nmtools/meta.hpp"
+#include "nmtools/utl.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/array/cast.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -843,3 +845,294 @@ TEST_CASE("ndarray(case14)" * doctest::test_suite("array::ndarray"))
 }
 
 #endif
+
+namespace na = nmtools::array;
+namespace kind = na::kind;
+
+#if 1
+TEST_CASE("ndarray(case15)" * doctest::test_suite("array::ndarray"))
+{
+    int a[2][3][2] = {
+        {
+            {0,1},
+            {2,3},
+            {4,5},
+        },
+        {
+            { 6, 7},
+            { 8, 9},
+            {10,11},
+        }
+    };
+
+    {
+        auto res = nmtools::cast(a,kind::ndarray_ls_fb);
+        NMTOOLS_ASSERT_EQUAL( nm::shape(res), nm::shape(a) );
+        #ifndef __EMSCRIPTEN__
+        NMTOOLS_ASSERT_EQUAL( res.strides(), (nmtools_array{6,3,1}) );
+        #endif // __EMSCRIPTEN__
+        NMTOOLS_ASSERT_CLOSE( res, a );
+    }
+    {
+        auto res = nmtools::cast(a,kind::ndarray_ls_hb);
+        NMTOOLS_ASSERT_EQUAL( nm::shape(res), nm::shape(a) );
+        NMTOOLS_ASSERT_CLOSE( res, a );
+    }
+    {
+        auto res = nmtools::cast(a,kind::ndarray_ls_db);
+        NMTOOLS_ASSERT_EQUAL( nm::shape(res), nm::shape(a) );
+        NMTOOLS_ASSERT_CLOSE( res, a );
+    }
+}
+#endif
+
+TEST_CASE("ndarray(case16)" * doctest::test_suite("array::ndarray"))
+{
+    using buffer_t = nmtools_array<float,12>;
+    using shape_buffer_t = decltype(nmtools_tuple{"1:[3]"_ct,"1:[4]"_ct,"1:[4]"_ct});
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
+
+    auto array = ndarray {};
+
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    #ifndef __EMSCRIPTEN__
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{1,1,12}) );
+    #endif // __EMSCRIPTEN__
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 12 );
+
+    auto success = array.resize(2,3,2);
+    NMTOOLS_REQUIRE_EQUAL( success, true );
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{2,3,2}) );
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 12 );
+
+    {
+        auto ndindex = ix::ndindex(array.shape());
+        for (size_t i=0; i<ndindex.size(); i++) {
+            nm::apply_at(array,ndindex[i]) = i;
+        }
+        int expect[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        NMTOOLS_ASSERT_CLOSE( array,  expect );
+    }
+
+    success = array.resize(2,1,3,1,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(3,4,4);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(12,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+}
+
+TEST_CASE("ndarray(case17)" * doctest::test_suite("array::ndarray"))
+{
+    using buffer_t = na::static_vector<float,12>;
+    using shape_buffer_t = decltype(nmtools_tuple{"1:[3]"_ct,"1:[4]"_ct,"1:[4]"_ct});
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
+
+    auto array = ndarray {};
+
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{1,1,1}) );
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 1 );
+
+    auto success = array.resize(2,3,2);
+    NMTOOLS_REQUIRE_EQUAL( success, true );
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{2,3,2}) );
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 12 );
+
+    {
+        auto ndindex = ix::ndindex(array.shape());
+        for (size_t i=0; i<ndindex.size(); i++) {
+            nm::apply_at(array,ndindex[i]) = i;
+        }
+        int expect[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        NMTOOLS_ASSERT_CLOSE( array,  expect );
+    }
+
+    success = array.resize(2,1,3,1,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(3,4,4);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(12,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+}
+
+TEST_CASE("ndarray(case18)" * doctest::test_suite("array::ndarray"))
+{
+    using buffer_t = nmtools_list<float>;
+    using shape_buffer_t = decltype(nmtools_tuple{"1:[3]"_ct,"1:[4]"_ct,"1:[4]"_ct});
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
+
+    auto array = ndarray {};
+
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{1,1,1}) );
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 1 );
+
+    auto success = array.resize(2,3,2);
+    NMTOOLS_REQUIRE_EQUAL( success, true );
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{2,3,2}) );
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 12 );
+
+    {
+        auto ndindex = ix::ndindex(array.shape());
+        for (size_t i=0; i<ndindex.size(); i++) {
+            nm::apply_at(array,ndindex[i]) = i;
+        }
+        int expect[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        NMTOOLS_ASSERT_CLOSE( array,  expect );
+    }
+
+    success = array.resize(2,1,3,1,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(3,4,4);
+    NMTOOLS_REQUIRE_EQUAL( success, true );
+
+    success = array.resize(12,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+}
+
+TEST_CASE("ndarray(case19)" * doctest::test_suite("array::ndarray"))
+{
+    using buffer_t = nmtools_list<float>;
+    using shape_buffer_t = nmtools_array<nm::clipped_size_t<3>,3>;
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
+
+    static_assert( meta::is_clipped_index_array_v<typename ndarray::shape_type> );
+    static_assert( meta::is_clipped_index_array_v<typename ndarray::stride_type> );
+    static_assert( !meta::is_resizeable_v<typename ndarray::shape_type> );
+    static_assert( !meta::is_resizeable_v<typename ndarray::stride_type> );
+
+    auto array = ndarray {};
+
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{1,1,1}) );
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 1 );
+
+    auto success = array.resize(2,3,2);
+    NMTOOLS_REQUIRE_EQUAL( success, true );
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{2,3,2}) );
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 12 );
+
+    {
+        auto ndindex = ix::ndindex(array.shape());
+        for (size_t i=0; i<ndindex.size(); i++) {
+            nm::apply_at(array,ndindex[i]) = i;
+        }
+        int expect[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        NMTOOLS_ASSERT_CLOSE( array,  expect );
+    }
+
+    success = array.resize(2,1,3,1,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(3,4,4);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(12,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+}
+
+namespace utl = nm::utl;
+
+TEST_CASE("ndarray(case20)" * doctest::test_suite("array::ndarray"))
+{
+    using buffer_t = utl::array<float,12>;
+    using shape_buffer_t = decltype(utl::tuple{"1:[3]"_ct,"1:[4]"_ct,"1:[4]"_ct});
+    using ndarray = na::ndarray_t<buffer_t,shape_buffer_t>;
+
+    auto array = ndarray {};
+
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    #ifndef __EMSCRIPTEN__
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{1,1,12}) );
+    #endif // __EMSCRIPTEN__
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 12 );
+
+    auto success = array.resize(2,3,2);
+    NMTOOLS_REQUIRE_EQUAL( success, true );
+    NMTOOLS_REQUIRE_EQUAL( array.dim(), 3 );
+    NMTOOLS_REQUIRE_EQUAL( array.shape(), (nmtools_array{2,3,2}) );
+    NMTOOLS_REQUIRE_EQUAL( array.size(), 12 );
+
+    {
+        auto ndindex = ix::ndindex(array.shape());
+        for (size_t i=0; i<ndindex.size(); i++) {
+            nm::apply_at(array,ndindex[i]) = i;
+        }
+        int expect[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        NMTOOLS_ASSERT_CLOSE( array,  expect );
+    }
+
+    success = array.resize(2,1,3,1,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(3,4,4);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+
+    success = array.resize(12,1,1);
+    NMTOOLS_REQUIRE_EQUAL( success, false );
+}

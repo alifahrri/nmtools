@@ -32,11 +32,18 @@ namespace nmtools::array
                 if constexpr (meta::is_resizeable_v<shape_type>) {
                     shape.resize(1);
                 }
-                using index_type = meta::get_element_type_t<shape_type>;
-                for (size_t i=0; i<len(shape)-1; i++) {
-                    at(shape,i) = (index_type)1;
+                constexpr auto dim = meta::len_v<shape_type>;
+                if constexpr (dim > 0) {
+                    // to accommodate clipped shape
+                    meta::template_for<dim>([&](auto index){
+                        at(shape,index) = 1;
+                    });
+                } else {
+                    for (size_t i=0; i<len(shape)-1; i++) {
+                        at(shape,i) = 1;
+                    }
                 }
-                at(shape,len(shape)-1) = len(buffer);
+                at(shape,meta::ct_v<-1>) = len(buffer);
                 return shape;
             }
         }
@@ -55,18 +62,22 @@ namespace nmtools::array
         template <typename strides_type, typename shape_type>
         static constexpr auto compute_strides(const shape_type& shape)
         {
-            auto strides = strides_type{};
             auto result  = index::compute_strides(shape);
-            [[maybe_unused]] auto dim = len(result);
-            if constexpr (meta::is_resizeable_v<strides_type>) {
-                strides.resize(dim);
-            }
-            if constexpr (!meta::is_constant_index_array_v<strides_type>) {
-                for (size_t i=0; i<dim; i++) {
-                    at(strides,i) = at(result,i);
+            if constexpr (meta::is_same_v<strides_type,decltype(result)>) {
+                return result;
+            } else {
+                auto strides = strides_type{};
+                [[maybe_unused]] auto dim = len(result);
+                if constexpr (meta::is_resizeable_v<strides_type>) {
+                    strides.resize(dim);
                 }
+                if constexpr (!meta::is_constant_index_array_v<strides_type>) {
+                    for (size_t i=0; i<dim; i++) {
+                        at(strides,i) = at(result,i);
+                    }
+                }
+                return strides;
             }
-            return strides;
         }
 
         constexpr T* self()
@@ -198,22 +209,48 @@ namespace nmtools::array
                 && (!meta::is_constant_index_array_v<shape_type>)
             , bool>
         {
-            auto sizes_ = index::pack_indices(size,sizes...);
-            auto newdim = len(sizes_);
-            auto numel  = index::product(sizes_);
+            auto sizes_  = index::pack_indices(size,sizes...);
+            auto numel   = index::product(sizes_);
+            // since size may be packed, the proper way to read dim is using len instead of sizes..+1
+            auto new_dim = len(sizes_);
             if constexpr (meta::is_resizeable_v<shape_type>) {
-                shape_.resize(newdim);
+                shape_.resize(new_dim);
             }
             if constexpr (meta::is_resizeable_v<buffer_type>) {
                 data_.resize(numel);
             }
-            auto same_dim   = (index_type)len(shape_) == (index_type)newdim;
-            auto same_numel = (index_type)len(data_)  == (index_type)numel;
-            if (!same_dim || !same_numel) {
+            auto same_dim   = (size_t)len(shape_) == (size_t)new_dim;
+            auto same_numel = (size_t)len(data_)  == (size_t)numel;
+            if (!same_numel) {
                 return false;
             }
-            for (size_t i=0; i<newdim; i++) {
-                at(shape_,i) = at(sizes_,i);
+            if (!same_dim) {
+                return false;
+            }
+            if constexpr (meta::is_clipped_index_array_v<shape_type>) {
+                constexpr auto max_sizes = meta::to_value_v<shape_type>;
+                if ((size_t)len(sizes_) != (size_t)len(max_sizes)) {
+                    return false;
+                }
+                if ((size_t)index::product(sizes_) > (size_t)index::product(max_sizes)) {
+                    return false;
+                }
+                for (size_t i=0; i<len(max_sizes); i++) {
+                    if ((size_t)at(sizes_,i) > (size_t)at(max_sizes,i)) {
+                        return false;
+                    }
+                }
+            }
+            if constexpr (meta::is_tuple_v<shape_type>) {
+                // this may be the case for clipped_shape
+                constexpr auto N = meta::len_v<shape_type>;
+                meta::template_for<N>([&](auto index){
+                    at(shape_,index) = at(sizes_,index);
+                });
+            } else {
+                for (size_t i=0; i<new_dim; i++) {
+                    at(shape_,i) = at(sizes_,i);
+                }
             }
             strides_ = base_type::template compute_strides<stride_type>(shape_);
             return true;
@@ -634,6 +671,10 @@ namespace nmtools::meta
 
 // casting
 
+#ifndef NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE
+#define NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE (6)
+#endif // NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE
+
 namespace nmtools::array::kind
 {
     enum class BufferKind {
@@ -641,9 +682,10 @@ namespace nmtools::array::kind
         FIXED,
         DYNAMIC,
         HYBRID,
+        CLIPPED, // useful for shape, but should not used for buffer
     };
 
-    template <BufferKind Shape, BufferKind Buffer>
+    template <BufferKind Shape, BufferKind Buffer, typename...>
     struct ndarray_kind_t {};
 
     constexpr inline auto ndarray_cs_fb = ndarray_kind_t< BufferKind::CONSTANT, BufferKind::FIXED >{};
@@ -658,6 +700,10 @@ namespace nmtools::array::kind
     constexpr inline auto ndarray_ds_fb = ndarray_kind_t< BufferKind::DYNAMIC,  BufferKind::FIXED >{};
     constexpr inline auto ndarray_ds_hb = ndarray_kind_t< BufferKind::DYNAMIC,  BufferKind::HYBRID >{};
     constexpr inline auto ndarray_ds_db = ndarray_kind_t< BufferKind::DYNAMIC,  BufferKind::DYNAMIC >{};
+    // clipped shape
+    constexpr inline auto ndarray_ls_fb = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::FIXED, meta::ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
+    constexpr inline auto ndarray_ls_hb = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::HYBRID, meta::ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
+    constexpr inline auto ndarray_ls_db = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::DYNAMIC, meta::ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
 }
 
 namespace nmtools::meta
@@ -670,12 +716,12 @@ namespace nmtools::meta
         struct CAST_NDARRAY_KIND_UNSUPPORTED : detail::fail_t {};
     }
 
-    template <typename src_t, BufferKind ShapeKind, BufferKind SizeKind>
-    struct resolve_optype<void, cast_kind_t, src_t, array::kind::ndarray_kind_t<ShapeKind,SizeKind>>
+    template <typename src_t, BufferKind ShapeKind, BufferKind SizeKind, typename...Args>
+    struct resolve_optype<void, cast_kind_t, src_t, array::kind::ndarray_kind_t<ShapeKind,SizeKind,Args...>>
     {
         static constexpr auto vtype = [](){
             using element_type = get_element_type_t<src_t>;
-            using error_type [[maybe_unused]] = error::CAST_NDARRAY_KIND_UNSUPPORTED<src_t,array::kind::ndarray_kind_t<ShapeKind,SizeKind>>;
+            using error_type [[maybe_unused]] = error::CAST_NDARRAY_KIND_UNSUPPORTED<src_t,array::kind::ndarray_kind_t<ShapeKind,SizeKind,Args...>>;
             constexpr auto shape  = fixed_shape_v<src_t>;
             constexpr auto dim    = fixed_dim_v<src_t>;
             constexpr auto size   = fixed_size_v<src_t>;
@@ -716,6 +762,29 @@ namespace nmtools::meta
                     return as_value_v<error_type>;
                 }
             }();
+            // clipped shape
+            constexpr auto cl_shape_vtype = [&](){
+                if constexpr (!is_fail_v<shape_type>) {
+                    return template_reduce<len(shape)-1>([&](auto init, auto index){
+                        using init_type = type_t<decltype(init)>;
+                        return as_value_v<append_type_t<init_type,clipped_size_t<at(shape,decltype(index)::value+1)>>>;
+                    }, as_value_v<nmtools_tuple<clipped_size_t<at(shape,0)>>>);
+                } else if constexpr (!is_fail_v<dim_type>) {
+                    using args_list = type_list<Args...>;
+                    using max_t = at_t<args_list,0>;
+                    constexpr auto max = max_t::value;
+                    using type = nmtools_array<clipped_size_t<max>,dim>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<b_dim_type>) {
+                    using args_list = type_list<Args...>;
+                    using max_t = at_t<args_list,0>;
+                    constexpr auto max = max_t::value;
+                    using type = array::static_vector<clipped_size_t<max>,b_dim>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
             // fixed buffer
             constexpr auto f_buffer_vtype = [&](){
                 if constexpr (!is_fail_v<size_type>) {
@@ -739,6 +808,7 @@ namespace nmtools::meta
             using c_shape_type  [[maybe_unused]] = type_t<decltype(c_shape_vtype)>;
             using f_shape_type  [[maybe_unused]] = type_t<decltype(f_shape_vtype)>;
             using b_shape_type  [[maybe_unused]] = type_t<decltype(b_shape_vtype)>;
+            using cl_shape_type [[maybe_unused]] = type_t<decltype(cl_shape_vtype)>;
             using f_buffer_type [[maybe_unused]] = type_t<decltype(f_buffer_vtype)>;
             using b_buffer_type [[maybe_unused]] = type_t<decltype(b_buffer_vtype)>;
             using d_buffer_type [[maybe_unused]] = nmtools_list<element_type>;
@@ -839,6 +909,30 @@ namespace nmtools::meta
                 && !(is_fail_v<d_buffer_type>)
             ) {
                 using type = array::ndarray_t<d_buffer_type,d_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   (ShapeKind == BufferKind::CLIPPED)
+                && (SizeKind == BufferKind::FIXED)
+                && !(is_fail_v<cl_shape_type>)
+                && !(is_fail_v<f_buffer_type>)
+            ) {
+                using type = array::ndarray_t<f_buffer_type,cl_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   (ShapeKind == BufferKind::CLIPPED)
+                && (SizeKind == BufferKind::HYBRID)
+                && !(is_fail_v<cl_shape_type>)
+                && !(is_fail_v<b_buffer_type>)
+            ) {
+                using type = array::ndarray_t<b_buffer_type,cl_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                   (ShapeKind == BufferKind::CLIPPED)
+                && (SizeKind == BufferKind::DYNAMIC)
+                && !(is_fail_v<cl_shape_type>)
+                && !(is_fail_v<d_buffer_type>)
+            ) {
+                using type = array::ndarray_t<d_buffer_type,cl_shape_type>;
                 return as_value_v<type>;
             } else {
                 return as_value_v<error_type>;
