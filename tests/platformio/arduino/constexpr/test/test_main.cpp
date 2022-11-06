@@ -39,6 +39,9 @@ NM_TEST_SUBCASE(constexpr_atleast_1d, case1)
 NM_TEST_SUBCASE(constexpr_atleast_1d, case2)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_1d, case2);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_1d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_1d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_1d, a_f );
@@ -50,11 +53,14 @@ NM_TEST_SUBCASE(constexpr_atleast_1d, case2)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_1d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_1d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_1d, a_hs_hb );
+    #endif  // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_atleast_1d, case3)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_1d, case3);
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_1d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_1d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_1d, a_f );
@@ -66,11 +72,14 @@ NM_TEST_SUBCASE(constexpr_atleast_1d, case3)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_1d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_1d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_1d, a_hs_hb );
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_atleast_1d, case4)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_1d, case4);
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a_f );
@@ -82,6 +91,7 @@ NM_TEST_SUBCASE(constexpr_atleast_1d, case4)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a_hs_hb );
+    #endif ARDUINO_ARCH_AVR
 }
 
 /* --------------------- atleast_2d ------------------------------ */
@@ -95,6 +105,8 @@ NM_TEST_SUBCASE(constexpr_atleast_2d, case1)
 NM_TEST_SUBCASE(constexpr_atleast_2d, case2)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_2d, case2);
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_2d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_2d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_2d, a_f );
@@ -106,11 +118,14 @@ NM_TEST_SUBCASE(constexpr_atleast_2d, case2)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_2d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_2d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_2d, a_hs_hb );
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_atleast_2d, case3)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_2d, case3);
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_2d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_2d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_2d, a_f );
@@ -122,11 +137,14 @@ NM_TEST_SUBCASE(constexpr_atleast_2d, case3)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_2d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_2d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_2d, a_hs_hb );
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_atleast_2d, case4)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_2d, case4);
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_2d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_2d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_2d, a_f );
@@ -138,6 +156,7 @@ NM_TEST_SUBCASE(constexpr_atleast_2d, case4)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_2d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_2d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_2d, a_hs_hb );
+    #endif // ARDUINO_ARCH_AVR
 }
 
 /* --------------------- atleast_3d ------------------------------ */
@@ -151,6 +170,10 @@ NM_TEST_SUBCASE(constexpr_atleast_3d, case1)
 NM_TEST_SUBCASE(constexpr_atleast_3d, case2)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_3d, case2);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
+
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_3d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_3d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_3d, a_f );
@@ -162,11 +185,16 @@ NM_TEST_SUBCASE(constexpr_atleast_3d, case2)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_3d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_3d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, atleast_3d, a_hs_hb );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_atleast_3d, case3)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_3d, case3);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_3d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_3d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_3d, a_f );
@@ -178,11 +206,15 @@ NM_TEST_SUBCASE(constexpr_atleast_3d, case3)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_3d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_3d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, atleast_3d, a_hs_hb );
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_atleast_3d, case4)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_3d, case4);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_3d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_3d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_3d, a_f );
@@ -194,11 +226,15 @@ NM_TEST_SUBCASE(constexpr_atleast_3d, case4)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_3d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_3d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_3d, a_hs_hb );
+    #endif // ARDUINO_ARCH_AVR
 }
 
 NM_TEST_SUBCASE(constexpr_atleast_3d, case5)
 {
     NMTOOLS_TESTING_DECLARE_NS( array, constexpr_atleast_3d, case5);
+
+    // temporarily skip this on avr:  error: non-type template parameters of class type
+    #ifndef ARDUINO_ARCH_AVR
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, atleast_3d, a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, atleast_3d, a_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, atleast_3d, a_f );
@@ -210,6 +246,8 @@ NM_TEST_SUBCASE(constexpr_atleast_3d, case5)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, atleast_3d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, atleast_3d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case5, result, atleast_3d, a_hs_hb );
+
+    #endif // ARDUINO_ARCH_AVR
 }
 
 /* --------------------- transpose ------------------------------ */
