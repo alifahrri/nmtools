@@ -45,7 +45,7 @@ namespace nmtools::index
                     return max_dim - dim;
                 }
             }();
-            if constexpr (meta::is_resizeable_v<result_t>) {
+            if constexpr (meta::is_resizable_v<result_t>) {
                 result.resize(max_dim);
             }
 

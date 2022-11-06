@@ -31,7 +31,7 @@ namespace nmtools::index
                     at(res,i) = ((common_t)i == (common_t)axis) ? n : at(shape,i);
                 };
                 [[maybe_unused]] auto dim = len(shape);
-                if constexpr (meta::is_resizeable_v<return_t>)
+                if constexpr (meta::is_resizable_v<return_t>)
                     res.resize(dim);
 
                 if constexpr (meta::is_fixed_index_array_v<shape_t>) {
@@ -55,7 +55,7 @@ namespace nmtools::index
 
         auto res = return_t {};
         [[maybe_unused]] auto dim = len(shape);
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>)
             res.resize(dim);
 
         // map dst index to src index (original array) at given axis

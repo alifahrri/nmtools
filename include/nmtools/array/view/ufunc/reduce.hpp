@@ -46,7 +46,7 @@ namespace nmtools::view::detail
         using slices_type = meta::type_t<decltype(slices_vtype)>;
         auto slices = slices_type {};
         auto shape_ = detail::shape(array);
-        if constexpr (meta::is_resizeable_v<slices_type>) {
+        if constexpr (meta::is_resizable_v<slices_type>) {
             slices.resize(dim);
         }
 

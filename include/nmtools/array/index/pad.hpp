@@ -51,7 +51,7 @@ namespace nmtools::index
 
             if (dim*2 == n_pad) {
                 auto res = result_t {};
-                if constexpr (meta::is_resizeable_v<result_t>) {
+                if constexpr (meta::is_resizable_v<result_t>) {
                     res.resize(dim);
                 }
                 for (size_t i=0; i<dim; i++) {
@@ -105,7 +105,7 @@ namespace nmtools::index
         // auto n_pad    = len(pad_width);
         // assume src_dim*2 == n_pad, dst_dim == src_dim == idx_dim
 
-        if constexpr (meta::is_resizeable_v<result_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             auto src_dim = len(src_shape);
             res.resize(src_dim);
         }

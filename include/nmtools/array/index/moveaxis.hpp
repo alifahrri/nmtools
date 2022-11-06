@@ -42,7 +42,7 @@ namespace nmtools::index
             }();
 
             auto order = result_t {};
-            if constexpr (meta::is_resizeable_v<result_t>) {
+            if constexpr (meta::is_resizable_v<result_t>) {
                 order.resize(dim);
             }
 
@@ -60,7 +60,7 @@ namespace nmtools::index
                     using type = meta::transform_bounded_array_t<a_t>;
                     auto res   = type{};
                     auto dim   = len(a);
-                    if constexpr (meta::is_resizeable_v<type>) {
+                    if constexpr (meta::is_resizable_v<type>) {
                         res.resize(dim);
                     }
                     for (size_t i=0; i<(size_t)dim; i++)

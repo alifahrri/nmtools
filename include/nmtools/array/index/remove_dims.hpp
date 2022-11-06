@@ -36,7 +36,7 @@ namespace nmtools::index
         auto res = return_t {};
 
         [[maybe_unused]] auto dim = len(shape);
-        if constexpr (meta::is_resizeable_v<return_t>) {
+        if constexpr (meta::is_resizable_v<return_t>) {
             // number of axis to be removed
             // also take keepdims into accounts
             auto n = [&](){

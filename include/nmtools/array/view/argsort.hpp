@@ -47,7 +47,7 @@ namespace nmtools::view
         constexpr auto eval(output_t& output) const
         {
             // TODO: check if element_type of output_t is index
-            if constexpr (meta::is_resizeable_v<output_t>) {
+            if constexpr (meta::is_resizable_v<output_t>) {
                 ::nmtools::detail::apply_resize(output, dst_shape);
             }
             using index_t = meta::get_element_type_t<output_t>;

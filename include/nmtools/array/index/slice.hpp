@@ -492,7 +492,7 @@ namespace nmtools::index
         }();
         // TODO: error handling for ellipsis > 1
 
-        if constexpr (meta::is_resizeable_v<result_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             res.resize(dim-n_int);
         }
 
@@ -632,7 +632,7 @@ namespace nmtools::index
         auto dim = len(shape);
         const auto n_slices = len(slices);
 
-        if constexpr (meta::is_resizeable_v<result_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             res.resize(dim);
         }
 
@@ -840,7 +840,7 @@ namespace nmtools::index
         // Ellipsis doesn't contribute to dimension reduction.
         // Not all constexpr branches are using dim
         [[maybe_unused]] auto dim = len(shape) - N_INT;
-        if constexpr (meta::is_resizeable_v<return_t>) {
+        if constexpr (meta::is_resizable_v<return_t>) {
             res.resize(dim);
         }
         
@@ -999,7 +999,7 @@ namespace nmtools::index
 
         auto res = return_t {};
         auto dim = len(shape);
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>)
             res.resize(dim);
         
         auto slices_pack = meta::make_tuple_type_t<const slices_t&...>{slices...};

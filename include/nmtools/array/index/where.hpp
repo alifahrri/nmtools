@@ -34,7 +34,7 @@ namespace nmtools::index
             , "unsupported index::where, couldn't deduce return type" );
         #endif
         auto res = return_t{};
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>)
             res.resize(len(array));
         auto n = index_t{0};
         auto where_impl = [&](auto i){
@@ -48,7 +48,7 @@ namespace nmtools::index
         else
             for (size_t i=0; i<len(array); i++)
                 where_impl(i);
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>)
             res.resize(n);
         return res;
     } // where
@@ -63,7 +63,7 @@ namespace nmtools::meta
     }
 
     /**
-     * @brief resolve where return type for resizeable array type
+     * @brief resolve where return type for resizable array type
      * 
      * @tparam array_t 
      * @tparam index_t 
@@ -74,7 +74,7 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_resizeable_v<array_t>) {
+            if constexpr (is_resizable_v<array_t>) {
                 using type = replace_element_type_t<array_t,index_t>;
                 return as_value_v<type>;
             } else if constexpr (is_constant_index_array_v<array_t>) {

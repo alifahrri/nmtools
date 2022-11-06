@@ -10,7 +10,7 @@ namespace nmtools
         template <typename array_t, typename size_type, typename...size_types>
         constexpr auto resize(array_t& array, size_type size_0, size_types...size_n) -> array_t&
         {
-            if constexpr (meta::is_resizeable_nd_v<array_t,size_type,size_types...>)
+            if constexpr (meta::is_resizable_nd_v<array_t,size_type,size_types...>)
                 array.resize(size_0,size_n...);
             else {
                 array.resize(size_0);

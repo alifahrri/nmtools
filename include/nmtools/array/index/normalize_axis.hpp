@@ -44,7 +44,7 @@ namespace nmtools::index
                 auto res = result_t{};
                 [[maybe_unused]] auto n = len(axis);
                 bool valid = true;
-                if constexpr (meta::is_resizeable_v<result_t>) {
+                if constexpr (meta::is_resizable_v<result_t>) {
                     res.resize(n);
                 }
                 using ai_t  = meta::get_element_or_common_type_t<axis_t>;

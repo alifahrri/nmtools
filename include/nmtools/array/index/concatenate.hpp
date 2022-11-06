@@ -46,9 +46,9 @@ namespace nmtools::index
         [[maybe_unused]] auto ad = len(ashape);
         [[maybe_unused]] auto bd = len(bshape);
 
-        if constexpr (meta::is_resizeable_v<a_indices_t>)
+        if constexpr (meta::is_resizable_v<a_indices_t>)
             a_indices.resize(ad);
-        if constexpr (meta::is_resizeable_v<b_indices_t>)
+        if constexpr (meta::is_resizable_v<b_indices_t>)
             b_indices.resize(bd);
 
         // assume len(indices) == len(ashape) == len(bshape)
@@ -179,7 +179,7 @@ namespace nmtools::index
             [[maybe_unused]] auto ad = len(ashape);
             [[maybe_unused]] auto bd = len(bshape);
 
-            if constexpr (meta::is_resizeable_v<result_t>)
+            if constexpr (meta::is_resizable_v<result_t>)
                 ret.resize(ad); // ad must be == bd
 
             if constexpr (is_none_v<axis_t>)

@@ -30,7 +30,7 @@ namespace nmtools::index
             rhs = tmp;
         };
 
-        if constexpr (meta::is_resizeable_v<result_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             arg.resize(dim);
         }
 

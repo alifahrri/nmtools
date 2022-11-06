@@ -29,7 +29,7 @@ namespace nmtools::array
                 return shape_type {};
             } else /* if constexpr (meta::is_fixed_index_array_v<shape_type>) */ {
                 auto shape = shape_type {};
-                if constexpr (meta::is_resizeable_v<shape_type>) {
+                if constexpr (meta::is_resizable_v<shape_type>) {
                     shape.resize(1);
                 }
                 constexpr auto dim = meta::len_v<shape_type>;
@@ -52,7 +52,7 @@ namespace nmtools::array
         static constexpr auto initialize_data()
         {
             auto buffer = buffer_type {};
-            if constexpr (meta::is_resizeable_v<buffer_type>) {
+            if constexpr (meta::is_resizable_v<buffer_type>) {
                 buffer.resize(1);
             }
             at(buffer,len(buffer)-1) = 1;
@@ -68,7 +68,7 @@ namespace nmtools::array
             } else {
                 auto strides = strides_type{};
                 [[maybe_unused]] auto dim = len(result);
-                if constexpr (meta::is_resizeable_v<strides_type>) {
+                if constexpr (meta::is_resizable_v<strides_type>) {
                     strides.resize(dim);
                 }
                 if constexpr (!meta::is_constant_index_array_v<strides_type>) {
@@ -192,9 +192,9 @@ namespace nmtools::array
             , shape_    (base_type::template initialize_shape<shape_type>(data_))
             , strides_  (base_type::template compute_strides<stride_type>(shape_))
         {
-            if constexpr (meta::is_resizeable_v<buffer_type>) {
+            if constexpr (meta::is_resizable_v<buffer_type>) {
                 auto numel = index::product(shape_);
-                // shape may be fixed while data is resizeable
+                // shape may be fixed while data is resizable
                 if (len(data_) != numel) {
                     data_.resize(numel);
                 }
@@ -213,10 +213,10 @@ namespace nmtools::array
             auto numel   = index::product(sizes_);
             // since size may be packed, the proper way to read dim is using len instead of sizes..+1
             auto new_dim = len(sizes_);
-            if constexpr (meta::is_resizeable_v<shape_type>) {
+            if constexpr (meta::is_resizable_v<shape_type>) {
                 shape_.resize(new_dim);
             }
-            if constexpr (meta::is_resizeable_v<buffer_type>) {
+            if constexpr (meta::is_resizable_v<buffer_type>) {
                 data_.resize(numel);
             }
             auto same_dim   = (size_t)len(shape_) == (size_t)new_dim;
@@ -261,7 +261,7 @@ namespace nmtools::array
                     at(strides_,I) = at(m_strides_,I);
                 });
             } else {
-                if constexpr (meta::is_resizeable_v<stride_type>) {
+                if constexpr (meta::is_resizable_v<stride_type>) {
                     strides_.resize(len(m_strides_));
                 }
                 for (size_t i=0; i<(size_t)len(m_strides_); i++) {

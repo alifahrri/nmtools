@@ -57,7 +57,7 @@ namespace nmtools
             using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
             auto ret = return_t{};
 
-            if constexpr (meta::is_resizeable_v<return_t>)
+            if constexpr (meta::is_resizable_v<return_t>)
                 ret.resize(m);
             
             [[maybe_unused]] auto gather_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
@@ -135,14 +135,14 @@ namespace nmtools::meta
             }
             else if constexpr (
                 is_dynamic_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>
-            ) /* vector is dynamic resizeable */ {
+            ) /* vector is dynamic resizable */ {
                 constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
                 using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
                 return as_value_v<replace_element_type_t<return_t,element_t>>;
             }
             else if constexpr (
                 is_hybrid_ndarray_v<vector_t> && is_dynamic_index_array_v<indices_t>
-            ) /* indices is dynamic resizeable */
+            ) /* indices is dynamic resizable */
                 return as_value_v<replace_element_type_t<indices_t,element_t>>;
             else if constexpr (
                 is_hybrid_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>

@@ -66,7 +66,7 @@ namespace nmtools::index
             auto n = dim+n_axes;
 
             // resize output if necessary
-            if constexpr (meta::is_resizeable_v<return_t>)
+            if constexpr (meta::is_resizable_v<return_t>)
                 newshape.resize(n);
             
             auto idx = size_t{0};

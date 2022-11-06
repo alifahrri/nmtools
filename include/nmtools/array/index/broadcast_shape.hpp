@@ -49,7 +49,7 @@ namespace nmtools::index
             auto adim = len(ashape);
             auto bdim = len(bshape);
             auto rdim = adim > bdim ? adim : bdim;
-            if constexpr (meta::is_resizeable_v<result_t>)
+            if constexpr (meta::is_resizable_v<result_t>)
                 res.resize(rdim);
             
             auto broadcast_shape_impl = [&](auto i){
@@ -88,7 +88,7 @@ namespace nmtools::index
             // one of the shape is none (from shape of num type):
             // just copy the other shape, bshape in this case
             auto bdim = len(bshape);
-            if constexpr (meta::is_resizeable_v<result_t>)
+            if constexpr (meta::is_resizable_v<result_t>)
                 res.resize(bdim);
             if constexpr (meta::is_tuple_v<bshape_t>) {
                 constexpr auto N = meta::len_v<bshape_t>;
@@ -103,7 +103,7 @@ namespace nmtools::index
         else if constexpr (is_none_v<bshape_t> && !is_none_v<ashape_t>) {
             // similar to above case, but ashape is index array instead of bshape
             auto adim = len(ashape);
-            if constexpr (meta::is_resizeable_v<result_t>)
+            if constexpr (meta::is_resizable_v<result_t>)
                 res.resize(adim);
             if constexpr (meta::is_tuple_v<ashape_t>) {
                 constexpr auto N = meta::len_v<ashape_t>;
@@ -147,7 +147,7 @@ namespace nmtools::meta
     }
 
     /**
-     * @brief return resizeable array
+     * @brief return resizable array
      * 
      * @tparam ashape_t 
      * @tparam bshape_t 
@@ -205,15 +205,15 @@ namespace nmtools::meta
             }
             else if constexpr (
                 is_dynamic_index_array_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
-            ) // both are dynamic resizeable
+            ) // both are dynamic resizable
                 return as_value_v<ashape_t>;
             else if constexpr (
                 is_dynamic_index_array_v<ashape_t> && is_hybrid_ndarray_v<bshape_t>
-            ) // a is dynamic resizeable
+            ) // a is dynamic resizable
                 return as_value_v<ashape_t>;
             else if constexpr (
                 is_hybrid_ndarray_v<ashape_t> && is_dynamic_index_array_v<bshape_t>
-            ) // b is dynamic resizeable
+            ) // b is dynamic resizable
                 return as_value_v<bshape_t>;
             else if constexpr (
                 is_hybrid_ndarray_v<ashape_t> && is_hybrid_ndarray_v<bshape_t>

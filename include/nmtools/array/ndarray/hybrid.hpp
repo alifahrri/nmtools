@@ -77,7 +77,7 @@ namespace nmtools::array
      */
 
     /**
-     * @brief ndarray with fixed dimension and resizeable shape up to fixed number of elements
+     * @brief ndarray with fixed dimension and resizable shape up to fixed number of elements
      * 
      * @tparam T element type
      * @tparam max_elements maximum number of elements

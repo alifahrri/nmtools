@@ -55,7 +55,7 @@ namespace nmtools::index
             else {
                 auto n = len(shape);
 
-                if constexpr (meta::is_resizeable_v<return_t>)
+                if constexpr (meta::is_resizable_v<return_t>)
                     ret.resize(n);
                 
                 // TODO: do not use tuple_at
@@ -191,7 +191,7 @@ namespace nmtools::index
         }
         else {
             auto n = len(indices);
-            if constexpr (meta::is_resizeable_v<return_t>)
+            if constexpr (meta::is_resizable_v<return_t>)
                 ret.resize(n);
             for (size_t i=0; i<n; i++) {
                 using common_t = meta::promote_index_t<size_t,axis_t>;

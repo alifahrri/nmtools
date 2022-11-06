@@ -40,7 +40,7 @@ namespace nmtools::index
         auto result = result_t {};
 
         if constexpr (!meta::is_constant_index_array_v<result_t>) {
-            if constexpr (meta::is_resizeable_v<result_t>) {
+            if constexpr (meta::is_resizable_v<result_t>) {
                 result.resize(len(shape));
             }
             for (size_t i=0; i<(size_t)len(shape); i++) {

@@ -18,7 +18,7 @@ namespace nmtools::index
 
         if constexpr (! meta::is_constant_index_array_v<result_t>) {
             auto N = (size_t)len(shape);
-            if constexpr (meta::is_resizeable_v<result_t>) {
+            if constexpr (meta::is_resizable_v<result_t>) {
                 res.resize(N);
             }
             if constexpr (is_none_v<axes_t>) {

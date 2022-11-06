@@ -30,7 +30,7 @@ namespace nmtools::index
         // only compute if not constant, otherwise assume already computed
         if constexpr (!meta::is_constant_index_array_v<return_t>) {
             auto s = len(array);
-            if constexpr (meta::is_resizeable_v<return_t>)
+            if constexpr (meta::is_resizable_v<return_t>)
                 res.resize(s);
             for (size_t i=0; i<s; i++)
                 at(res,i) = !at(array,i);

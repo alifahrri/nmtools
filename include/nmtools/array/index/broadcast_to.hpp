@@ -85,10 +85,10 @@ namespace nmtools::index
         // np.shape_broadcast_to(np.array([[1],[2],[3]]), (3,))
         // ValueError: input operand has more dimensions than allowed by the axis remapping
         // TODO: error handling for unsupported shape_broadcast_to dimension
-        if constexpr (meta::is_resizeable_v<result_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             res.resize(bdim);
         }
-        if constexpr (meta::is_resizeable_v<free_axes_t>) {
+        if constexpr (meta::is_resizable_v<free_axes_t>) {
             free_axes.resize(bdim);
         }
         

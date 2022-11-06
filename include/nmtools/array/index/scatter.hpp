@@ -45,7 +45,7 @@ namespace nmtools::index
                 , "unsupported scatter, mismatched dimension between vec and indices"
             );
 
-            if constexpr (meta::is_resizeable_v<result_t>)
+            if constexpr (meta::is_resizable_v<result_t>)
                 ret.resize(len(vec)); // assuming indices has size
 
             auto scatter_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){

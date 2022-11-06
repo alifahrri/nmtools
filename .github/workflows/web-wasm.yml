@@ -50,7 +50,7 @@ jobs:
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
 
   dockcross-wasm-constexpr-eval:
-    name: ${{ matrix.name }}
+    name: ${{ matrix.name }}-constexpr-eval
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -88,7 +88,7 @@ jobs:
   
 
   dockcross-wasm-constexpr-generic-ndarray-eval:
-    name: ${{ matrix.name }}
+    name: ${{ matrix.name }}-constexpr-generic-ndarray-eval
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -125,7 +125,7 @@ jobs:
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
 
   dockcross-wasm-constexpr-no-stl-generic-ndarray-eval:
-    name: ${{ matrix.name }}
+    name: ${{ matrix.name }}-constexpr-no-stl-generic-ndarray-eval
     runs-on: ubuntu-18.04
     strategy:
       matrix:

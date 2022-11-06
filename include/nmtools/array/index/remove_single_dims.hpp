@@ -36,7 +36,7 @@ namespace nmtools::index
             // manual assignment
             auto n = len(squeezed);
 
-            if constexpr (meta::is_resizeable_v<return_t>) {
+            if constexpr (meta::is_resizable_v<return_t>) {
                 res.resize(n);
             }
 
