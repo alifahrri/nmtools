@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY) && defined(NMTOOLS_TESTING_CONSTEXPR)
@@ -21,7 +24,9 @@ constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::n
 constexpr inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
 constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
 constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
-constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb);
+constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb);
 #endif
 
 #include "nmtools/array/array/atleast_3d.hpp"
@@ -109,6 +114,10 @@ TEST_CASE("atleast_3d(case2)" * doctest::test_suite("array::atleast_3d"))
     ATLEAST_3D_SUBCASE( case2, a_ds_fb );
     ATLEAST_3D_SUBCASE( case2, a_ds_hb );
     ATLEAST_3D_SUBCASE( case2, a_ds_db );
+
+    ATLEAST_3D_SUBCASE( case2, a_ls_fb );
+    ATLEAST_3D_SUBCASE( case2, a_ls_hb );
+    ATLEAST_3D_SUBCASE( case2, a_ls_db );
     #endif
 }
 
@@ -137,6 +146,10 @@ TEST_CASE("atleast_3d(case3)" * doctest::test_suite("array::atleast_3d"))
     ATLEAST_3D_SUBCASE( case3, a_ds_fb );
     ATLEAST_3D_SUBCASE( case3, a_ds_hb );
     ATLEAST_3D_SUBCASE( case3, a_ds_db );
+
+    ATLEAST_3D_SUBCASE( case3, a_ls_fb );
+    ATLEAST_3D_SUBCASE( case3, a_ls_hb );
+    ATLEAST_3D_SUBCASE( case3, a_ls_db );
     #endif
 }
 
@@ -165,6 +178,10 @@ TEST_CASE("atleast_3d(case4)" * doctest::test_suite("array::atleast_3d"))
     ATLEAST_3D_SUBCASE( case4, a_ds_fb );
     ATLEAST_3D_SUBCASE( case4, a_ds_hb );
     ATLEAST_3D_SUBCASE( case4, a_ds_db );
+
+    ATLEAST_3D_SUBCASE( case4, a_ls_fb );
+    ATLEAST_3D_SUBCASE( case4, a_ls_hb );
+    ATLEAST_3D_SUBCASE( case4, a_ls_db );
     #endif
 }
 
@@ -193,6 +210,10 @@ TEST_CASE("atleast_3d(case5)" * doctest::test_suite("array::atleast_3d"))
     ATLEAST_3D_SUBCASE( case5, a_ds_fb );
     ATLEAST_3D_SUBCASE( case5, a_ds_hb );
     ATLEAST_3D_SUBCASE( case5, a_ds_db );
+
+    ATLEAST_3D_SUBCASE( case5, a_ls_fb );
+    ATLEAST_3D_SUBCASE( case5, a_ls_hb );
+    ATLEAST_3D_SUBCASE( case5, a_ls_db );
     #endif
 }
 
@@ -220,6 +241,9 @@ TEST_CASE("atleast_3d(case2)" * doctest::test_suite("array::constexpr_atleast_3d
 
     CONSTEXPR_ATLEAST_3D_SUBCASE( case2, a_hs_fb );
     CONSTEXPR_ATLEAST_3D_SUBCASE( case2, a_hs_hb );
+
+    CONSTEXPR_ATLEAST_3D_SUBCASE( case2, a_ls_fb );
+    CONSTEXPR_ATLEAST_3D_SUBCASE( case2, a_ls_hb );
     #endif
 }
 
@@ -240,6 +264,9 @@ TEST_CASE("atleast_3d(case3)" * doctest::test_suite("array::constexpr_atleast_3d
 
     CONSTEXPR_ATLEAST_3D_SUBCASE( case3, a_hs_fb );
     CONSTEXPR_ATLEAST_3D_SUBCASE( case3, a_hs_hb );
+
+    CONSTEXPR_ATLEAST_3D_SUBCASE( case3, a_ls_fb );
+    CONSTEXPR_ATLEAST_3D_SUBCASE( case3, a_ls_hb );
     #endif
 }
 
@@ -260,6 +287,9 @@ TEST_CASE("atleast_3d(case4)" * doctest::test_suite("array::constexpr_atleast_3d
 
     CONSTEXPR_ATLEAST_3D_SUBCASE( case4, a_hs_fb );
     CONSTEXPR_ATLEAST_3D_SUBCASE( case4, a_hs_hb );
+
+    CONSTEXPR_ATLEAST_3D_SUBCASE( case4, a_ls_fb );
+    CONSTEXPR_ATLEAST_3D_SUBCASE( case4, a_ls_hb );
     #endif
 }
 
@@ -280,6 +310,9 @@ TEST_CASE("atleast_3d(case5)" * doctest::test_suite("array::constexpr_atleast_3d
 
     CONSTEXPR_ATLEAST_3D_SUBCASE( case5, a_hs_fb );
     CONSTEXPR_ATLEAST_3D_SUBCASE( case5, a_hs_hb );
+
+    CONSTEXPR_ATLEAST_3D_SUBCASE( case5, a_ls_fb );
+    CONSTEXPR_ATLEAST_3D_SUBCASE( case5, a_ls_hb );
     #endif
 }
 

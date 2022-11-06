@@ -23,6 +23,12 @@ namespace nmtools::meta
     > : true_type {};
 
     template <typename T>
+    struct is_clipped_index_array<const T> : is_clipped_index_array<T> {};
+
+    template <typename T>
+    struct is_clipped_index_array<T&> : is_clipped_index_array<T> {};
+
+    template <typename T>
     constexpr inline auto is_clipped_index_array_v = is_clipped_index_array<T>::value;
 } // namespace nmtools::meta
 

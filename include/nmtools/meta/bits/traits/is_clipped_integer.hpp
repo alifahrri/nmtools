@@ -8,6 +8,12 @@ namespace nmtools::meta
     template <typename T>
     struct is_clipped_integer : false_type {};
 
+    template <typename T>
+    struct is_clipped_integer<const T> : is_clipped_integer<T> {};
+
+    template <typename T>
+    struct is_clipped_integer<T&> : is_clipped_integer<T> {};
+
     template <typename T, auto Min, auto Max>
     struct is_clipped_integer<clipped_integer_t<T,Min,Max>> : true_type {};
 

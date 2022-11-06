@@ -481,6 +481,8 @@ namespace nmtools::meta
         static constexpr auto vtype = [](){
             using element_type = get_element_type_t<view_t>;
             using error_type [[maybe_unused]] = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t>;
+            // TODO: remove, try to read from `nmtools::shape(declval<view_t>())` instead
+            // the following is kept for temporary backward compatibility
             constexpr auto shape  = fixed_shape_v<view_t>;
             constexpr auto dim    = fixed_dim_v<view_t>;
             constexpr auto size   = fixed_size_v<view_t>;
@@ -499,6 +501,15 @@ namespace nmtools::meta
                         using init_type = type_t<decltype(init)>;
                         return as_value_v<append_type_t<init_type,ct<(size_t)at(shape,ct_v<decltype(index)::value+1>)>>>;
                     }, as_value_v<nmtools_tuple<ct<(size_t)at(shape,ct_v<0>)>>>);
+                } else {
+                    return as_value_v<error_type>;
+                }
+            }();
+            // clipped shape
+            constexpr auto cl_shape_vtype = [&](){
+                using shape_t = decltype(nmtools::shape(declval<view_t>()));
+                if constexpr (is_clipped_index_array_v<shape_t>) {
+                    return as_value_v<shape_t>;
                 } else {
                     return as_value_v<error_type>;
                 }
@@ -532,20 +543,25 @@ namespace nmtools::meta
             }();
             // bounded buffer
             constexpr auto b_buffer_vtype = [&](){
-                if constexpr (!is_fail_v<b_size_type>) {
+                if constexpr (!is_fail_v<type_t<decltype(cl_shape_vtype)>>) {
+                    constexpr auto size = index::product(to_value_v<type_t<decltype(cl_shape_vtype)>>);
+                    using type = array::static_vector<element_type,size>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<b_size_type>) {
                     using type = array::static_vector<element_type,b_size>;
                     return as_value_v<type>;
                 } else {
                     return as_value_v<error_type>;
                 }
             }();
-            // dynamic buffer
 
             using c_shape_type  [[maybe_unused]] = type_t<decltype(c_shape_vtype)>;
+            using l_shape_type  [[maybe_unused]] = type_t<decltype(cl_shape_vtype)>;
             using f_shape_type  [[maybe_unused]] = type_t<decltype(f_shape_vtype)>;
             using b_shape_type  [[maybe_unused]] = type_t<decltype(b_shape_vtype)>;
             using f_buffer_type [[maybe_unused]] = type_t<decltype(f_buffer_vtype)>;
             using b_buffer_type [[maybe_unused]] = type_t<decltype(b_buffer_vtype)>;
+            // dynamic buffer
             using d_buffer_type [[maybe_unused]] = nmtools_list<element_type>;
             // TODO: add small vector optimization fo shape
             using d_shape_type  [[maybe_unused]] = nmtools_list<size_t>;
@@ -570,6 +586,26 @@ namespace nmtools::meta
                 && !is_fail_v<d_buffer_type>
             ) {
                 using type = array::ndarray_t<d_buffer_type,c_shape_type>;
+                return as_value_v<type>;
+            }
+            // clipped-shape
+            else if constexpr (
+                !is_fail_v<l_shape_type>
+                && !is_fail_v<f_buffer_type>
+            ) {
+                using type = array::ndarray_t<f_buffer_type,l_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<l_shape_type>
+                && !is_fail_v<b_buffer_type>
+            ) {
+                using type = array::ndarray_t<b_buffer_type,l_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<l_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,l_shape_type>;
                 return as_value_v<type>;
             }
             // fixed-shape
