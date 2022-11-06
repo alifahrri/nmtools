@@ -29,7 +29,7 @@ TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("array::hybrid_ndarray"))
         auto array = na::hybrid_ndarray({1,2,3,4,5,6});
         using array_t = decltype(array);
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, array_t );
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizeable, array_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_t );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, array_t );
         NMTOOLS_STATIC_CHECK_IS_SAME( meta::get_element_type_t<array_t>, int );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_dynamic_ndarray, array_t );
@@ -112,7 +112,7 @@ TEST_CASE("hybrid_ndarray(2)" * doctest::test_suite("array::hybrid_ndarray"))
         });
         using array_t = decltype(array);
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, array_t );
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizeable, array_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_t );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, array_t );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_dynamic_ndarray, array_t );
         NMTOOLS_STATIC_CHECK_IS_SAME( meta::get_element_type_t<array_t>, int );
@@ -258,7 +258,7 @@ TEST_CASE("hybrid_ndarray(3)" * doctest::test_suite("array::hybrid_ndarray"))
         });
         using array_t = decltype(array);
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, array_t );
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizeable, array_t );
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_t );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_hybrid_ndarray, array_t );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_dynamic_ndarray, array_t );
         NMTOOLS_STATIC_CHECK_IS_SAME( meta::get_element_type_t<array_t>, int );

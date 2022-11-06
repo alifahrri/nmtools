@@ -1040,8 +1040,8 @@ TEST_CASE("ndarray(case19)" * doctest::test_suite("array::ndarray"))
 
     static_assert( meta::is_clipped_index_array_v<typename ndarray::shape_type> );
     static_assert( meta::is_clipped_index_array_v<typename ndarray::stride_type> );
-    static_assert( !meta::is_resizeable_v<typename ndarray::shape_type> );
-    static_assert( !meta::is_resizeable_v<typename ndarray::stride_type> );
+    static_assert( !meta::is_resizable_v<typename ndarray::shape_type> );
+    static_assert( !meta::is_resizable_v<typename ndarray::stride_type> );
 
     auto array = ndarray {};
 
