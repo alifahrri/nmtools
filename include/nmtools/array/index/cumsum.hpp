@@ -26,7 +26,7 @@ namespace nmtools::index
     {
         using return_t = meta::resolve_optype_t<cumsum_t,array_t>;
         auto ret = return_t {};
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>)
             ret.resize(size(array));
         
         at(ret,0) = at(array,0);

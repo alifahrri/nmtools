@@ -45,11 +45,11 @@ namespace nmtools::index
         
         auto left  = left_t  {};
         auto right = right_t {};
-        if constexpr (meta::is_resizeable_v<left_t>) {
+        if constexpr (meta::is_resizable_v<left_t>) {
             auto ldim  = axis;
             left.resize(ldim);
         }
-        if constexpr (meta::is_resizeable_v<right_t>) {
+        if constexpr (meta::is_resizable_v<right_t>) {
             auto rdim  = dim - axis;
             right.resize(rdim);
         }
@@ -190,7 +190,7 @@ namespace nmtools::index
             if (valid_shape) {
                 auto dim = h_dim;
                 auto result = result_t{};
-                if constexpr (meta::is_resizeable_v<result_t>) {
+                if constexpr (meta::is_resizable_v<result_t>) {
                     result.resize(dim);
                 }
                 for (size_t i=0; i<(dim-2); i++) {
@@ -273,7 +273,7 @@ namespace nmtools::index
         auto l_slices = [&](){
             auto l_slices = left_slice_t{};
             [[maybe_unused]] auto l_dim = len(lshape);
-            if constexpr (meta::is_resizeable_v<left_slice_t>) {
+            if constexpr (meta::is_resizable_v<left_slice_t>) {
                 // at this point the value type should be either type
                 l_slices.resize(l_dim);
             }
@@ -289,7 +289,7 @@ namespace nmtools::index
         auto r_slices = [&](){
             auto r_slices = right_slice_t{};
             [[maybe_unused]] auto r_dim = len(rshape);
-            if constexpr (meta::is_resizeable_v<right_slice_t>) {
+            if constexpr (meta::is_resizable_v<right_slice_t>) {
                 r_slices.resize(r_dim);
             }
 

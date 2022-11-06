@@ -91,7 +91,7 @@ namespace nmtools::index
                 return return_t{meta::Nothing};
             }
 
-            if constexpr (meta::is_resizeable_v<result_t>) {
+            if constexpr (meta::is_resizable_v<result_t>) {
                 result.resize(len(dst_shape_));
             }
 

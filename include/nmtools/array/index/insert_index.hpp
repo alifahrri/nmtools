@@ -47,7 +47,7 @@ namespace nmtools::index
 
         auto result = result_t {};
 
-        if constexpr (meta::is_resizeable_v<result_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             result.resize(new_dim);
         }
 

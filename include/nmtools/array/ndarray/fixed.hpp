@@ -497,7 +497,7 @@ namespace nmtools::array
      * @tparam ndarray_t 
      * @param rhs ndarray to be cloned
      * @return constexpr auto 
-     * @todo support assignment from generic ndarray and also resizeable ndarray
+     * @todo support assignment from generic ndarray and also resizable ndarray
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
     template <typename ndarray_t, typename>

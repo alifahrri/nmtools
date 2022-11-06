@@ -92,7 +92,7 @@ namespace nmtools::view
             // TODO: consider to unroll when dim is fixed
             // here, len(slices) already matched the dimension of source array
             auto dim = detail::dim(array);
-            if constexpr (meta::is_resizeable_v<slices_type>) {
+            if constexpr (meta::is_resizable_v<slices_type>) {
                 slices.resize(dim);
             }
             for (size_t i=0; i<dim; i++) {

@@ -62,7 +62,7 @@ namespace nmtools::index
         auto strides_ = return_t{};
         if constexpr (!meta::is_constant_index_array_v<return_t> && meta::is_index_array_v<return_t>) {
             [[maybe_unused]] auto n = len(shape);
-            if constexpr (meta::is_resizeable_v<return_t>) {
+            if constexpr (meta::is_resizable_v<return_t>) {
                 strides_.resize(n);
             }
             constexpr auto N = meta::len_v<return_t>;

@@ -33,7 +33,7 @@ namespace nmtools::index
         using return_t = meta::resolve_optype_t<choose_t,indices_t,array_t>;
         auto res = return_t{};
 
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>)
             res.resize(len(indices));
 
         // actual implementation of choose

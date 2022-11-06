@@ -39,7 +39,7 @@ namespace nmtools::view
         template <typename output_t>
         constexpr auto eval(output_t& output) const
         {
-            if constexpr (meta::is_resizeable_v<output_t>) {
+            if constexpr (meta::is_resizable_v<output_t>) {
                 ::nmtools::detail::apply_resize(output, dst_shape);
             }
 

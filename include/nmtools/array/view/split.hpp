@@ -43,7 +43,7 @@ namespace nmtools::view
                     }
                 }();
 
-                if constexpr (meta::is_resizeable_v<result_t>) {
+                if constexpr (meta::is_resizable_v<result_t>) {
                     res.resize(n_split);
                 }
 
@@ -58,7 +58,7 @@ namespace nmtools::view
                     auto& res_i = at(res,i);
                     // NOTE: for dynamic index array, dimension only known at runtime
                     // we must resize to dim for each split arg,
-                    if constexpr (meta::is_resizeable_v<value_type>) {
+                    if constexpr (meta::is_resizable_v<value_type>) {
                         res_i.resize(dim);
                     }
 

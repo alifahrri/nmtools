@@ -41,7 +41,7 @@ namespace nmtools::index
 
         // conv op doesn't change dimension
         auto dim = len(shape);
-        if constexpr (meta::is_resizeable_v<result_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             res.resize(dim);
         }
 
@@ -153,7 +153,7 @@ namespace nmtools::index
         auto res = result_t {};
 
         auto dim = len(shape);
-        if constexpr (meta::is_resizeable_v<result_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             res.resize(dim);
         }
 

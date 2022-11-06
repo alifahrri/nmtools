@@ -209,7 +209,7 @@ namespace nmtools::view
             using pad_type = meta::type_t<decltype(pad_vtype)>;
             auto padding_ = pad_type{};
             auto dim_ = dim(input);
-            if constexpr (meta::is_resizeable_v<pad_type>) {
+            if constexpr (meta::is_resizable_v<pad_type>) {
                 padding_.resize(dim_*2);
             }
             // assuming NCHW, pad at axis [-1,-2]

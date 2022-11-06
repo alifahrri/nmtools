@@ -30,7 +30,7 @@ namespace nmtools::index
         auto n = len(bshape);
         auto s = m;
 
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>)
             res.resize(s);
         
         auto free_axes_impl = [&](auto i){

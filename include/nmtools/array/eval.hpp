@@ -90,7 +90,7 @@ namespace nmtools::array
         {
             using result_t = meta::transform_bounded_array_t<output_t>;
             auto output = result_t{};
-            if constexpr (meta::is_resizeable_v<result_t>) {
+            if constexpr (meta::is_resizable_v<result_t>) {
                 auto inp_shape = ::nmtools::shape(view);
                 ::nmtools::detail::apply_resize(output,inp_shape);
             }

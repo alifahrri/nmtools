@@ -53,7 +53,7 @@ namespace nmtools::index
             else {
                 // array dim
                 [[maybe_unused]] auto dim = len(shape);
-                if constexpr (meta::is_resizeable_v<return_t>)
+                if constexpr (meta::is_resizable_v<return_t>)
                     res.resize(dim);
 
                 auto shape_compress_impl = [&](auto i){
@@ -85,7 +85,7 @@ namespace nmtools::index
 
         auto res = return_t{};
 
-        if constexpr (meta::is_resizeable_v<return_t>) {
+        if constexpr (meta::is_resizable_v<return_t>) {
             // array dim
             auto dim = len(shape);
             res.resize(dim);

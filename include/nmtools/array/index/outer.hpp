@@ -20,7 +20,7 @@ namespace nmtools::index
         if constexpr (!meta::is_constant_index_array_v<return_t>) {
             auto adim = len(ashape);
             auto bdim = len(bshape);
-            if constexpr (meta::is_resizeable_v<return_t>) {
+            if constexpr (meta::is_resizable_v<return_t>) {
                 auto dim  = adim + bdim;
                 res.resize(dim);
             }
@@ -60,9 +60,9 @@ namespace nmtools::index
         auto adim = len(ashape);
         auto bdim = len(bshape);
 
-        if constexpr (meta::is_resizeable_v<ashape_t>)
+        if constexpr (meta::is_resizable_v<ashape_t>)
             aidx.resize(adim);
-        if constexpr (meta::is_resizeable_v<bshape_t>)
+        if constexpr (meta::is_resizable_v<bshape_t>)
             bidx.resize(bdim);
         
         for (size_t i=0; i<adim; i++)

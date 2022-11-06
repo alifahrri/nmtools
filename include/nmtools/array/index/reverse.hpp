@@ -25,7 +25,7 @@ namespace nmtools::index
         // assume already reversed at meta::resolve if result_t is constant
         if constexpr (!meta::is_constant_index_array_v<result_t>) {
             [[maybe_unused]] auto n = len(indices);
-            if constexpr (meta::is_resizeable_v<result_t>)
+            if constexpr (meta::is_resizable_v<result_t>)
                 ret.resize(n);
             // some fn still allow tuple of runtime index, must be unrolled
             // TODO: consider to drop tuple of runtime index

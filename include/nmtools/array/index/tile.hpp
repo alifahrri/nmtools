@@ -41,7 +41,7 @@ namespace nmtools::index
                 }
             }();
 
-            if constexpr (meta::is_resizeable_v<return_t>)
+            if constexpr (meta::is_resizable_v<return_t>)
                 ret.resize(s);
 
             auto shape_tile_impl = [&](auto i){
@@ -179,7 +179,7 @@ namespace nmtools::index
             }
         }();
 
-        if constexpr (meta::is_resizeable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>)
             ret.resize(len(shape));
         
         // use int since ai/bi may be negative

@@ -8,7 +8,7 @@ namespace nmtools::meta
     /**
      * @brief Check if type T is hybrid_index_array.
      *
-     * Has max size but resizeable.
+     * Has max size but resizable.
      * Note that the max size represents maximum "dimension" of the array
      * instead of maximum "element" of the array.
      * Currently querying maximum "element" of an hybrid array

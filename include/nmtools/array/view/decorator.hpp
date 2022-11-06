@@ -726,7 +726,7 @@ namespace nmtools::view
         } else if constexpr (meta::is_index_array_v<attribute_t>) {
             using attr_t = meta::remove_cvref_t<attribute_type>;
             auto attr = attr_t{};
-            if constexpr (meta::is_resizeable_v<attr_t>) {
+            if constexpr (meta::is_resizable_v<attr_t>) {
                 attr.resize(len(attribute));
             }
             for (size_t i=0; i<(size_t)len(attribute); i++) {

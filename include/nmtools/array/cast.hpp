@@ -159,7 +159,7 @@ namespace nmtools
             using return_t = meta::resolve_optype_t<cast_t,dst_t,src_t>;
 
             auto ret = return_t{};
-            if constexpr (meta::is_resizeable_v<return_t>) {
+            if constexpr (meta::is_resizable_v<return_t>) {
                 auto shape = ::nmtools::shape(array);
                 ret = detail::apply_resize(ret, shape);
             }
@@ -192,7 +192,7 @@ namespace nmtools
     {
         // assume dst_t is default-constructible
         auto ret = dst_t{};
-        if constexpr (meta::is_resizeable_v<dst_t>) {
+        if constexpr (meta::is_resizable_v<dst_t>) {
             detail::apply_resize(ret, ::nmtools::shape(array));
         }
         auto ret_view = view::mutable_flatten(ret);
