@@ -42,6 +42,26 @@ namespace nmtools::impl
                     }
                 }();
                 return nmtools::get<index>(a);
+            } else if constexpr (meta::is_tuple_v<array_t> && meta::is_index_v<index_type>) {
+                // allow const tuple to be indexed with runtime index
+                // basically just unroll, then carry value until index is matched then return
+                using common_t = meta::get_index_element_type_t<array_t>;
+                constexpr auto N = meta::len_v<array_t>;
+                auto normalized_index = [&](){
+                    auto value = i;
+                    if (value >= 0) {
+                        return value;
+                    } else {
+                        return N + value;
+                    }
+                }();
+                return meta::template_reduce<N-1>([&](auto init, auto index){
+                    if ((index+1) == normalized_index) {
+                        return (common_t)nmtools::get<decltype(index)::value+1>(a);
+                    } else {
+                        return (common_t)init;
+                    }
+                }, (common_t)nmtools::get<0>(a));
             } else if constexpr (meta::has_at_v<const array_t&,index_type>) {
                 return a.at(i);
             } else if constexpr (meta::has_square_bracket_v<const array_t&,index_type>) {
