@@ -113,7 +113,7 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("array::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_h, shape, expected );
 }
 
-#if NMTOOLS_TESTING_HAS_CONSTEXPR_MATH
+#if 0
 TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("array::broadcast_to"))
 {
     {

@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/view/broadcast_to.hpp"
@@ -72,6 +75,11 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case1, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case1, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case1, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape, expected );
@@ -81,6 +89,10 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case1, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_fs_db, shape, expected );
@@ -89,21 +101,45 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case1, x_fs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_fs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case1, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_hs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_hs_db, shape, expected );
 
-    BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape_ct, expected );
-    BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_ct, expected );
-    BROADCAST_TO_SUBCASE( case1, x_fs_db, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case1, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case1, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_ds_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_ds_db, shape, expected );
 
-    BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape_ct, expected );
-    BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_ct, expected );
-    BROADCAST_TO_SUBCASE( case1, x_fs_db, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ds_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ds_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case1, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case1, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case1, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case1, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_ls_db, shape_cl, expected );
     #endif
 }
 
@@ -120,6 +156,11 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case2, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case2, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case2, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case2, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case2, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case2, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape, expected );
@@ -129,21 +170,33 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case1, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case2, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_fs_db, shape, expected );
 
-    BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape_ct, expected );
-    BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape_ct, expected );
-    BROADCAST_TO_SUBCASE( case1, x_cs_db, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_fs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_fs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case2, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_hs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_hs_db, shape, expected );
 
-    BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape_ct, expected );
-    BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape_ct, expected );
-    BROADCAST_TO_SUBCASE( case1, x_cs_db, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case1, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case1, x_hs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case2, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case2, x_ds_hb, shape, expected );
@@ -152,6 +205,22 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case2, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case2, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case2, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case2, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case2, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case2, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case2, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case2, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case2, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case2, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case2, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case2, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case2, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case2, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case2, x_ls_db, shape_cl, expected );
     #endif
 }
 
@@ -168,6 +237,11 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case3, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case3, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case3, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_cs_hb, shape, expected );
@@ -177,6 +251,10 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case3, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case3, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case3, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_fs_db, shape, expected );
@@ -184,6 +262,10 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case3, x_fs_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_fs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case3, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_fs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case3, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_hs_hb, shape, expected );
@@ -193,6 +275,10 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case3, x_hs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_hs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case3, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_hs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case3, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_ds_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case3, x_ds_db, shape, expected );
@@ -200,6 +286,22 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case3, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case3, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case3, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case3, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case3, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case3, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case3, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case3, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case3, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case3, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case3, x_ls_db, shape_cl, expected );
     #endif
 }
 
@@ -216,6 +318,11 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case4, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case4, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_cs_hb, shape, expected );
@@ -225,6 +332,10 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case4, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case4, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_fs_db, shape, expected );
@@ -232,6 +343,10 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_fs_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_fs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case4, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_fs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case4, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_hs_hb, shape, expected );
@@ -241,6 +356,10 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_hs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_hs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case4, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_hs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case4, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_ds_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_ds_db, shape, expected );
@@ -248,6 +367,22 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case4, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case4, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case4, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case4, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case4, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case4, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case4, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case4, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case4, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case4, x_ls_db, shape_cl, expected );
     #endif
 }
 
@@ -264,6 +399,11 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case5, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case5, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case5, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_cs_hb, shape, expected );
@@ -273,6 +413,10 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case5, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case5, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case5, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_fs_db, shape, expected );
@@ -280,6 +424,10 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case5, x_fs_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_fs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case5, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_fs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case5, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_hs_hb, shape, expected );
@@ -289,6 +437,10 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case5, x_hs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_hs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case5, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_hs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case5, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_ds_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case5, x_ds_db, shape, expected );
@@ -296,6 +448,22 @@ TEST_CASE("broadcast_to(case5)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case5, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case5, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case5, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case5, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case5, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case5, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case5, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case5, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case5, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case5, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case5, x_ls_db, shape_cl, expected );
     #endif
 }
 
@@ -312,6 +480,11 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case6, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case6, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case6, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_cs_hb, shape, expected );
@@ -321,6 +494,10 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case6, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case6, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case6, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_fs_db, shape, expected );
@@ -328,6 +505,10 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case6, x_fs_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_fs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case6, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_fs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case6, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_hs_hb, shape, expected );
@@ -337,6 +518,10 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case6, x_hs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_hs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case6, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_hs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case6, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_ds_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case6, x_ds_db, shape, expected );
@@ -344,6 +529,22 @@ TEST_CASE("broadcast_to(case6)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case6, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case6, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case6, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case6, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case6, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case6, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case6, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case6, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case6, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case6, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case6, x_ls_db, shape_cl, expected );
     #endif
 }
 
@@ -360,6 +561,11 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case7, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case7, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case7, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_cs_hb, shape, expected );
@@ -369,6 +575,10 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case7, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case7, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case7, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_fs_db, shape, expected );
@@ -376,6 +586,10 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case7, x_fs_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_fs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case7, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_fs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case7, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_hs_hb, shape, expected );
@@ -385,6 +599,10 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case7, x_hs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_hs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case7, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_hs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case7, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_ds_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case7, x_ds_db, shape, expected );
@@ -392,6 +610,22 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case7, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case7, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case7, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case7, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case7, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case7, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case7, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case7, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case7, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case7, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case7, x_ls_db, shape_cl, expected );
     #endif
 }
 
@@ -408,6 +642,11 @@ TEST_CASE("broadcast_to(case8)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case8, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case8, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case8, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_cs_hb, shape, expected );
@@ -417,6 +656,10 @@ TEST_CASE("broadcast_to(case8)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case8, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case8, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case8, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_fs_db, shape, expected );
@@ -424,6 +667,10 @@ TEST_CASE("broadcast_to(case8)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case8, x_fs_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_fs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case8, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_fs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case8, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_hs_hb, shape, expected );
@@ -433,6 +680,10 @@ TEST_CASE("broadcast_to(case8)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case8, x_hs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_hs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case8, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_hs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case8, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_ds_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case8, x_ds_db, shape, expected );
@@ -440,6 +691,22 @@ TEST_CASE("broadcast_to(case8)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case8, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case8, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case8, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case8, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case8, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case8, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case8, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case8, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case8, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case8, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case8, x_ls_db, shape_cl, expected );
     #endif
 }
 
@@ -456,6 +723,11 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_d, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_h, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case9, x_a, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_f, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_d, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_h, shape_cl, expected );
+
     #else
     BROADCAST_TO_SUBCASE( case9, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_cs_hb, shape, expected );
@@ -465,6 +737,10 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_cs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_cs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case9, x_cs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_cs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_cs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case9, x_fs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_fs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_fs_db, shape, expected );
@@ -472,6 +748,10 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_fs_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_fs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_fs_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case9, x_fs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_fs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_fs_db, shape_cl, expected );
 
     BROADCAST_TO_SUBCASE( case9, x_hs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_hs_hb, shape, expected );
@@ -481,6 +761,10 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_hs_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_hs_db, shape_ct, expected );
 
+    BROADCAST_TO_SUBCASE( case9, x_hs_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_hs_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_hs_db, shape_cl, expected );
+
     BROADCAST_TO_SUBCASE( case9, x_ds_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_ds_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case9, x_ds_db, shape, expected );
@@ -488,6 +772,22 @@ TEST_CASE("broadcast_to(case9)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case9, x_ds_fb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_ds_hb, shape_ct, expected );
     BROADCAST_TO_SUBCASE( case9, x_ds_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case9, x_ds_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_ds_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_ds_db, shape_cl, expected );
+
+    BROADCAST_TO_SUBCASE( case9, x_ls_fb, shape, expected );
+    BROADCAST_TO_SUBCASE( case9, x_ls_hb, shape, expected );
+    BROADCAST_TO_SUBCASE( case9, x_ls_db, shape, expected );
+
+    BROADCAST_TO_SUBCASE( case9, x_ls_fb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case9, x_ls_hb, shape_ct, expected );
+    BROADCAST_TO_SUBCASE( case9, x_ls_db, shape_ct, expected );
+
+    BROADCAST_TO_SUBCASE( case9, x_ls_fb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_ls_hb, shape_cl, expected );
+    BROADCAST_TO_SUBCASE( case9, x_ls_db, shape_cl, expected );
     #endif
 }
 

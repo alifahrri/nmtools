@@ -5,10 +5,6 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#include <vector>
-#include <array>
-#include <tuple>
-
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
@@ -26,6 +22,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
         auto ashape_ct = tuple{3_ct,1_ct};
         auto bshape_ct = tuple{3_ct,1_ct};
+        auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        auto bshape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -43,6 +41,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
         auto ashape_ct = tuple{3_ct,1_ct};
         auto bshape_ct = tuple{3_ct,3_ct};
+        auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -60,6 +60,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
         auto ashape_ct = tuple{3_ct,1_ct};
         auto bshape_ct = tuple{3_ct,3_ct,1_ct};
+        auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct,"1:[1]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -77,6 +79,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
         auto ashape_ct = tuple{3_ct,1_ct};
         auto bshape_ct = tuple{3_ct,3_ct,6_ct};
+        auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct,"6:[6]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -94,6 +98,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
         auto ashape_ct = tuple{3_ct,1_ct};
         auto bshape_ct = tuple{3_ct};
+        auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        auto bshape_cl = tuple{"3:[3]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -111,6 +117,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
         auto ashape_ct = tuple{3_ct,1_ct};
         auto bshape_ct = tuple{3_ct,6_ct,6_ct};
+        auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        auto bshape_cl = tuple{"3:[3]"_ct,"6:[6]"_ct,"6:[6]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -128,6 +136,8 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
         auto ashape_ct = tuple{3_ct,1_ct};
         auto bshape_ct = tuple{7_ct,3_ct,3_ct,6_ct};
+        auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        auto bshape_cl = tuple{"7:[7]"_ct,"3:[3]"_ct,"3:[3]"_ct,"6:[6]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -163,7 +173,7 @@ RUN_impl(__VA_ARGS__);
 
 // @note clang refuses to compile structured binding for this expr
 #ifndef __clang__
-#define BROADCAST_TO_SUBCASE(case_name, ashape, bshape) \
+#define SHAPE_BROADCAST_TO_SUBCASE(case_name, ashape, bshape) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case_name); \
@@ -175,7 +185,7 @@ SUBCASE(#case_name) \
     } \
 }
 #else
-#define BROADCAST_TO_SUBCASE(case_name, ashape, bshape) \
+#define SHAPE_BROADCAST_TO_SUBCASE(case_name, ashape, bshape) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case_name); \
@@ -193,208 +203,316 @@ SUBCASE(#case_name) \
 
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("index::shape_broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case1, ashape, bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape, bshape);
 
-    BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_a);
-    BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_v);
-    BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_v);
-    BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_a);
-    BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_h);
-    BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_cl, bshape_cl);
 
-    BROADCAST_TO_SUBCASE(case1,   ashape, bshape_ct);
-    BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_ct);
-    BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_ct);
-    BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case1,   ashape, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_a, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_v, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_cl, bshape_ct);
 
-    BROADCAST_TO_SUBCASE(case1, ashape_ct,   bshape);
-    BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_a);
-    BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_v);
-    BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case1,    ashape, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case1,  ashape_a, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case1,  ashape_v, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case1,  ashape_h, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_ct,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_cl,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_cl, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_cl, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_cl, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case1, ashape_cl, bshape_ct);
 }
 
 TEST_CASE("broadcast_to(case2)" * doctest::test_suite("index::shape_broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case2, ashape, bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape, bshape);
 
-    BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_a);
-    BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_v);
-    BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_v);
-    BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_a);
-    BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_h);
-    BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_cl, bshape_cl);
 
-    BROADCAST_TO_SUBCASE(case2,   ashape, bshape_ct);
-    BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_ct);
-    BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_ct);
-    BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case2,   ashape, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_cl, bshape_ct);
 
-    BROADCAST_TO_SUBCASE(case2, ashape_ct,   bshape);
-    BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_a);
-    BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_v);
-    BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case2,   ashape, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_a, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_v, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_h, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_ct,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_cl,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_cl, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_cl, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_cl, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case2, ashape_cl, bshape_ct);
 }
 
 TEST_CASE("broadcast_to(case3)" * doctest::test_suite("index::shape_broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_a);
-    BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_v);
-    BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_v);
-    BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_a);
-    BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_h);
-    BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_h);
+    #if 1
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_h);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_cl, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case3,   ashape, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_a, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_v, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_cl, bshape_ct);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case3,    ashape, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case3,  ashape_a, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case3,  ashape_v, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case3,  ashape_h, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_ct,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_ct, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_ct, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_cl,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_cl, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_cl, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_cl, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case3, ashape_cl, bshape_ct);    
+    #endif
 }
 
 TEST_CASE("broadcast_to(case4)" * doctest::test_suite("index::shape_broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_a);
-    BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_v);
-    BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_v);
-    BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_a);
-    BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_h);
-    BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_cl, bshape_cl);
 
-    BROADCAST_TO_SUBCASE(case4,   ashape, bshape_ct);
-    BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_ct);
-    BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_ct);
-    BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_ct);
+    {
+        constexpr auto i = meta::ct_v<2ul>;
+        constexpr size_t LEN_A = 2;
+        constexpr auto ai = meta::ct_v<(int)LEN_A-decltype(i)::value-1>;
+        static_assert( (int)ai == -1 );
+    }
 
-    BROADCAST_TO_SUBCASE(case4, ashape_ct,   bshape);
-    BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_a);
-    BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_v);
-    BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case4,   ashape, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_cl, bshape_ct);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case4,   ashape, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_a, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_v, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_h, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_ct,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_cl,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_cl, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_cl, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_cl, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case4, ashape_cl, bshape_cl);
 }
 
 TEST_CASE("broadcast_to(case5)" * doctest::test_suite("index::shape_broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_a);
-    // TODO: fix invalid value for utl::vector
-    #ifndef NMTOOLS_DISABLE_STL
-    BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_v);
-    #endif
-    BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_h);
 
-    // TODO: fix invalid value for utl::vector
-    #ifndef NMTOOLS_DISABLE_STL
-    BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_v);
-    BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_a);
-    #endif
-    BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_h);
-    // TODO: fix invalid value for utl::vector
-    #ifndef NMTOOLS_DISABLE_STL
-    BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_h);
-    #endif
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_cl, bshape_cl);
 
-    BROADCAST_TO_SUBCASE(case5,   ashape, bshape_ct);
-    BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_ct);
-    BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_ct);
-    BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case5,   ashape, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_cl, bshape_ct);
 
-    BROADCAST_TO_SUBCASE(case5, ashape_ct,   bshape);
-    BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_a);
-    BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_v);
-    BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case5,   ashape, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_a, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_v, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_h, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_ct,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_cl,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_cl, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_cl, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_cl, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case5, ashape_cl, bshape_ct);
 }
 
 TEST_CASE("broadcast_to(case6)" * doctest::test_suite("index::shape_broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_a);
-    // TODO: fix invalid value for utl::vector
-    #ifndef NMTOOLS_DISABLE_STL
-    BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_v);
-    #endif
-    BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_h);
 
-    // TODO: fix invalid value for utl::vector
-    #ifndef NMTOOLS_DISABLE_STL
-    BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_v);
-    BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_a);
-    #endif
-    BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_h);
-    // TODO: fix invalid value for utl::vector
-    #ifndef NMTOOLS_DISABLE_STL
-    BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_h);
-    #endif
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_cl, bshape_cl);
 
-    BROADCAST_TO_SUBCASE(case6,   ashape, bshape_ct);
-    BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_ct);
-    BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_ct);
-    BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case6,   ashape, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_cl, bshape_ct);
 
-    BROADCAST_TO_SUBCASE(case6, ashape_ct,   bshape);
-    BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_a);
-    BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_v);
-    BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case6,   ashape, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_a, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_v, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_h, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_ct,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_cl,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_cl, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_cl, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_cl, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case6, ashape_cl, bshape_ct);
 }
 
 TEST_CASE("broadcast_to(case7)" * doctest::test_suite("index::shape_broadcast_to"))
 {
-    BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_a);
-    BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_v);
-    BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_v);
-    BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_v);
 
-    BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_a);
-    BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_a);
     
-    BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_h);
-    BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_h);
 
-    BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_cl, bshape_cl);
 
-    BROADCAST_TO_SUBCASE(case7,   ashape, bshape_ct);
-    BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_ct);
-    BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_ct);
-    BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case7,   ashape, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_ct);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_cl, bshape_ct);
 
-    BROADCAST_TO_SUBCASE(case7, ashape_ct,   bshape);
-    BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_a);
-    BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_v);
-    BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case7,   ashape, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_a, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_v, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_h, bshape_cl);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_ct,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_ct, bshape_cl);
+
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_cl,   bshape);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_cl, bshape_a);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_cl, bshape_v);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_cl, bshape_h);
+    SHAPE_BROADCAST_TO_SUBCASE(case7, ashape_cl, bshape_ct);
 }
 
 TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("index::shape_broadcast_to"))
