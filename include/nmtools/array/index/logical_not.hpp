@@ -45,7 +45,7 @@ namespace nmtools::meta
     namespace error
     {
         template <typename...>
-        struct INDEX_LOGICAL_UNSUPPORTED : detail::fail_t{};
+        struct INDEX_LOGICAL_NOT_UNSUPPORTED : detail::fail_t{};
     } // namespace error
 
     template <typename array_t>
@@ -74,7 +74,7 @@ namespace nmtools::meta
             } else if constexpr (is_index_array_v<array_t>) {
                 return as_value_v<array_t>;
             } else {
-                return as_value_v<error::INDEX_LOGICAL_UNSUPPORTED<array_t>>;
+                return as_value_v<error::INDEX_LOGICAL_NOT_UNSUPPORTED<array_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;
