@@ -84,6 +84,7 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    // TODO: improve type deduction
     /**
      * @brief resolve return type for compute_indices
      * 
@@ -103,6 +104,13 @@ namespace nmtools::meta
                 constexpr auto N = fixed_index_array_size_v<shape_t>;
                 using result_t = make_array_type_t<size_t,N>;
                 return as_value_v<result_t>;
+            }
+            // TODO: better deduction for clipped index
+            else if constexpr (
+                is_clipped_index_array_v<shape_t>
+            ) {
+                using type = resolve_optype_t<index::compute_indices_t,offset_t,decltype(to_value_v<shape_t>),strides_t>;
+                return as_value_v<type>;
             }
             else return as_value_v<type>;
         }();

@@ -41,7 +41,7 @@ namespace nmtools
                 if constexpr (meta::is_constant_index_array_v<vector_t>) {
                     return meta::to_value_v<vector_t>;
                 } else if constexpr (meta::is_fixed_index_array_v<vector_t>) {
-                    using element_t  = meta::get_element_or_common_type_t<vector_t>;
+                    using element_t  = meta::get_index_element_type_t<vector_t>;
                     constexpr auto N = meta::fixed_index_array_size_v<vector_t>;
                     using type = meta::make_array_type_t<element_t,N>;
                     auto vec   = type{};
@@ -99,7 +99,7 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             constexpr auto element_vtype = [](){
-                using element_t = remove_cvref_t<get_element_or_common_type_t<vector_t>>;
+                using element_t = remove_cvref_t<get_index_element_type_t<vector_t>>;
                 if constexpr (is_integral_constant_v<element_t>) {
                     return as_value_v<typename element_t::value_type>;
                 } else {
@@ -139,6 +139,11 @@ namespace nmtools::meta
                 is_clipped_index_array_v<vector_t>
             ) {
                 using type = resolve_optype_t<index::gather_t,decltype(to_value_v<vector_t>),indices_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_clipped_index_array_v<indices_t>
+            ) {
+                using type = resolve_optype_t<index::gather_t,vector_t,decltype(to_value_v<indices_t>)>;
                 return as_value_v<type>;
             } else if constexpr (
                 is_dynamic_index_array_v<indices_t>
