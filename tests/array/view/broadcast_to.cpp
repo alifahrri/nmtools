@@ -324,7 +324,6 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_h, shape_cl, expected );
 
     #else
-    #if 0
     BROADCAST_TO_SUBCASE( case4, x_cs_fb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_cs_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_cs_db, shape, expected );
@@ -372,10 +371,8 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_ds_fb, shape_cl, expected );
     BROADCAST_TO_SUBCASE( case4, x_ds_hb, shape_cl, expected );
     BROADCAST_TO_SUBCASE( case4, x_ds_db, shape_cl, expected );
-    #endif
 
     BROADCAST_TO_SUBCASE( case4, x_ls_fb, shape, expected );
-    #if 0
     BROADCAST_TO_SUBCASE( case4, x_ls_hb, shape, expected );
     BROADCAST_TO_SUBCASE( case4, x_ls_db, shape, expected );
 
@@ -386,7 +383,6 @@ TEST_CASE("broadcast_to(case4)" * doctest::test_suite("view::broadcast_to"))
     BROADCAST_TO_SUBCASE( case4, x_ls_fb, shape_cl, expected );
     BROADCAST_TO_SUBCASE( case4, x_ls_hb, shape_cl, expected );
     BROADCAST_TO_SUBCASE( case4, x_ls_db, shape_cl, expected );
-    #endif
     #endif
 }
 
