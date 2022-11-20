@@ -47,7 +47,8 @@ namespace nmtools::impl
                 // basically just unroll, then carry value until index is matched then return
                 using common_t = meta::get_index_element_type_t<array_t>;
                 constexpr auto N = meta::len_v<array_t>;
-                auto normalized_index = [&](){
+                using unsigned_t = meta::make_unsigned_t<common_t>;
+                auto normalized_index = [&]()->unsigned_t{
                     auto value = i;
                     if (value >= 0) {
                         return value;
