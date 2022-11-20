@@ -3,6 +3,8 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
+#include "nmtools/meta/bits/traits/is_clipped_integer.hpp"
+#include "nmtools/meta/bits/traits/is_tuple.hpp"
 #include "nmtools/meta/bits/transform/get_element_or_common_type.hpp"
 
 namespace nmtools::meta
@@ -12,7 +14,7 @@ namespace nmtools::meta
      * 
      * @tparam T 
      */
-    template <typename T>
+    template <typename T, typename=void>
     struct get_index_element_type
     {
         static constexpr auto vtype = [](){
@@ -26,6 +28,16 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     }; // get_index_element_type
+
+    template <template<typename...>typename Tuple, typename...ClippedIndices>
+    struct get_index_element_type<
+        Tuple<ClippedIndices...>,
+        enable_if_t<
+            is_tuple_v<Tuple<ClippedIndices...>>
+            && (is_clipped_integer_v<ClippedIndices> && ...)
+        >
+    >
+    : get_index_element_type<Tuple<typename ClippedIndices::value_type...>> {};
 
     template <typename T>
     using get_index_element_type_t = type_t<get_index_element_type<T>>;

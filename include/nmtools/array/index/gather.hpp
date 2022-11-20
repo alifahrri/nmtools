@@ -41,7 +41,7 @@ namespace nmtools
                 if constexpr (meta::is_constant_index_array_v<vector_t>) {
                     return meta::to_value_v<vector_t>;
                 } else if constexpr (meta::is_fixed_index_array_v<vector_t>) {
-                    using element_t  = meta::get_element_or_common_type_t<vector_t>;
+                    using element_t  = meta::get_index_element_type_t<vector_t>;
                     constexpr auto N = meta::fixed_index_array_size_v<vector_t>;
                     using type = meta::make_array_type_t<element_t,N>;
                     auto vec   = type{};
@@ -99,7 +99,7 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             constexpr auto element_vtype = [](){
-                using element_t = remove_cvref_t<get_element_or_common_type_t<vector_t>>;
+                using element_t = remove_cvref_t<get_index_element_type_t<vector_t>>;
                 if constexpr (is_integral_constant_v<element_t>) {
                     return as_value_v<typename element_t::value_type>;
                 } else {
@@ -122,6 +122,29 @@ namespace nmtools::meta
                     using result_t = append_type_t<init_t,result_i>;
                     return as_value_v<result_t>;
                 }, as_value_v<init_type>);
+            } else if constexpr (is_clipped_index_array_v<vector_t>
+                && is_constant_index_array_v<indices_t>
+            ) {
+                constexpr auto vector  = to_value_v<vector_t>;
+                constexpr auto indices = to_value_v<indices_t>;
+                constexpr auto result  = index::gather(vector,indices);
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(result)-1>([&](auto init, auto index){
+                    using init_t   = type_t<decltype(init)>;
+                    using result_i = clipped_size_t<at(result,index+1)>;
+                    using result_t = append_type_t<init_t,result_i>;
+                    return as_value_v<result_t>;
+                }, as_value_v<nmtools_tuple<clipped_size_t<at(result,0)>>>);
+            } else if constexpr (
+                is_clipped_index_array_v<vector_t>
+            ) {
+                using type = resolve_optype_t<index::gather_t,decltype(to_value_v<vector_t>),indices_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_clipped_index_array_v<indices_t>
+            ) {
+                using type = resolve_optype_t<index::gather_t,vector_t,decltype(to_value_v<indices_t>)>;
+                return as_value_v<type>;
             } else if constexpr (
                 is_dynamic_index_array_v<indices_t>
             ) // whenever indices is dynamic, chose it

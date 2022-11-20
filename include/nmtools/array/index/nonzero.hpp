@@ -40,8 +40,13 @@ namespace nmtools::index
                 }
             }; // nonzero_impl
             
-            for (size_t idx=0; idx<len(a); idx++)
-                nonzero_impl(idx);
+            if constexpr (meta::is_tuple_v<index_array_t>) {
+                constexpr auto N = meta::len_v<index_array_t>;
+                meta::template_for<N>(nonzero_impl);
+            } else {
+                for (size_t idx=0; idx<len(a); idx++)
+                    nonzero_impl(idx);
+            }
         
             ret.resize(n);
         }

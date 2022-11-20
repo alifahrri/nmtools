@@ -5,21 +5,20 @@
 
 #include "nmtools/testing/doctest.hpp"
 
-#include <vector>
-#include <array>
-#include <tuple>
-
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
-namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(nonzero)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int x[6] = {0,1,2,3,4,5};
         NMTOOLS_CAST_INDEX_ARRAYS(x);
+        auto x_ct = nmtools_tuple{0_ct,1_ct,2_ct,3_ct,4_ct,5_ct};
+        auto x_cl = nmtools_tuple{"0:[1]"_ct,"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct,"4:[4]"_ct,"5:[5]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -30,6 +29,8 @@ NMTOOLS_TESTING_DECLARE_CASE(nonzero)
     {
         int x[6] = {1,2,0,3,5,6};
         NMTOOLS_CAST_INDEX_ARRAYS(x);
+        auto x_ct = nmtools_tuple{1_ct,2_ct,0_ct,3_ct,5_ct,6_ct};
+        auto x_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"0:[1]"_ct,"3:[3]"_ct,"5:[5]"_ct,"6:[6]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -84,6 +85,8 @@ TEST_CASE("nonzero(case1)" * doctest::test_suite("index::nonzero"))
     NONZERO_SUBCASE( case1, x_a );
     NONZERO_SUBCASE( case1, x_v );
     NONZERO_SUBCASE( case1, x_h );
+    NONZERO_SUBCASE( case1, x_ct );
+    NONZERO_SUBCASE( case1, x_cl );
 }
 
 TEST_CASE("nonzero(case2)" * doctest::test_suite("index::nonzero"))
@@ -91,6 +94,8 @@ TEST_CASE("nonzero(case2)" * doctest::test_suite("index::nonzero"))
     NONZERO_SUBCASE( case2, x_a );
     NONZERO_SUBCASE( case2, x_v );
     NONZERO_SUBCASE( case2, x_h );
+    NONZERO_SUBCASE( case2, x_ct );
+    NONZERO_SUBCASE( case2, x_cl );
 }
 
 TEST_CASE("nonzero(case3)" * doctest::test_suite("index::nonzero"))

@@ -133,7 +133,7 @@ TEST_CASE("broadcast_to(array;any)" * doctest::test_suite("index::shape_broadcas
         using lhs_t = na::hybrid_ndarray<int,3,1>;
         using rhs_t = nmtools_array<int,4>;
         using res_t = meta::resolve_optype_t<nm::index::shape_broadcast_to_t,lhs_t,rhs_t>;
-        #if 0
+        #if 1
         using exp_t = nmtools_array<int,4>;
         #else
         using exp_t = na::hybrid_ndarray<int,4,1>;

@@ -18,6 +18,8 @@ namespace nmtools::index
      */
     struct shape_broadcast_to_t {};
 
+    struct shape_broadcast_to_free_axes_t {};
+
     // TODO: cleanup index functions
     /**
      * @brief Overloaded version of shape_broadcast_to where the src shape is None (from num type).
@@ -68,8 +70,8 @@ namespace nmtools::index
     template <typename ashape_t, typename bshape_t>
     constexpr auto shape_broadcast_to(const ashape_t& ashape, const bshape_t& bshape)
     {
-        using result_t = meta::resolve_optype_t<shape_broadcast_to_t,ashape_t,bshape_t>;
-        using free_axes_t = meta::replace_element_type_t<result_t,bool>;
+        using result_t    = meta::resolve_optype_t<shape_broadcast_to_t,ashape_t,bshape_t>;
+        using free_axes_t = meta::resolve_optype_t<shape_broadcast_to_free_axes_t,result_t>;
 
         auto res = result_t{};
 
@@ -93,31 +95,41 @@ namespace nmtools::index
         }
         
         auto shape_broadcast_to_impl = [&](auto i){
-            using idx_t = meta::make_signed_t<decltype(adim-i-1)>;
-            idx_t ai = adim - i - 1;
-            idx_t bi = bdim - i - 1;
+            using idx_t [[maybe_unused]] = meta::make_signed_t<decltype(adim-i-1)>;
+            auto ai = [&](){
+                constexpr auto LEN_A = meta::len_v<ashape_t>;
+                if constexpr (meta::is_constant_index_v<decltype(i)> && (LEN_A > 0)) {
+                    return meta::ct_v<(int)LEN_A-(int)decltype(i)::value-1>;
+                } else {
+                    return idx_t(adim - i - 1);
+                }
+            }();
+            auto bi = [&](){
+                constexpr auto LEN_B = meta::len_v<bshape_t>;
+                if constexpr (meta::is_constant_index_v<decltype(i)> && (LEN_B > 0)) {
+                    return meta::ct_v<(int)LEN_B-i-1>;
+                } else {   
+                    return idx_t(bdim - i - 1);
+                }
+            }();
             // handle bshape if constant index array;
             // TODO: move constant index handling at higher level, see remove_dims for example
+            [[maybe_unused]]
             auto get_b = [&](){
                 if constexpr (meta::is_constant_index_array_v<bshape_t>)
                     return at(meta::to_value_v<bshape_t>,bi);
                 else return tuple_at(bshape,bi);
             };
-            if (ai<0) {
-                at(res,bi) = get_b();
-                at(free_axes,bi) = true;
-            }
-            // unlike broadcast_shape, we dont do this here
-            // else if (bi < 0)
-            //     at(res,si) = tuple_at(ashape,ai);
-            else {
+            // Use ai and bi as param, to make call to (at) depends on type
+            // which in turn allowing to avoid instantiation of runtime version
+            [[maybe_unused]]
+            auto non_free_axes_impl = [&](auto ai, auto bi){
                 // prefer get_element_type over decltype(a),
                 // to avoid weird deduction, such as vector of bool
                 using a_t = meta::get_element_or_common_type_t<ashape_t>;
                 using b_t = meta::get_element_or_common_type_t<bshape_t>;
-                // TODO: do not use tuple at
-                auto a = tuple_at(ashape,ai);
-                auto b = get_b();
+                auto a = at(ashape,ai);
+                auto b = at(bshape,bi);
                 using common_t = meta::promote_index_t<a_t,b_t>;
                 if (static_cast<common_t>(a)==static_cast<common_t>(b)) {
                     at(res,bi) = a;
@@ -129,13 +141,48 @@ namespace nmtools::index
                 }
                 else
                     success = false;
+            };
+            [[maybe_unused]]
+            auto free_axes_impl = [&](){
+                at(res,bi) = at(bshape,bi);
+                at(free_axes,bi) = true;
+            };
+
+            // To avoid instantiating runtime version of non_free_axes_impl
+            // when using template_for
+            if constexpr (meta::is_constant_index_v<decltype(ai)>) {
+                constexpr auto AI = decltype(ai)::value;
+                if constexpr (AI < 0) {
+                    free_axes_impl();
+                } else {
+                    non_free_axes_impl(ai,bi);
+                }
+            } else {
+                if (ai<0) {
+                    free_axes_impl();
+                }
+                // unlike broadcast_shape, we dont do this here
+                // else if (bi < 0)
+                //     at(res,si) = tuple_at(ashape,ai);
+                else {
+                    non_free_axes_impl(ai,bi);
+                }
             }
         }; // shape_broadcast_to_impl
 
-        for (size_t i=0; i<(size_t)len(res); i++) {
-            if (!success)
-                break;
-            shape_broadcast_to_impl(i);
+        if constexpr (meta::is_tuple_v<result_t>) {
+            constexpr auto N = meta::len_v<result_t>;
+            meta::template_for<N>([&](auto i){
+                if (!success)
+                    return;
+                shape_broadcast_to_impl(i);
+            });
+        } else {
+            for (size_t i=0; i<(size_t)len(res); i++) {
+                if (!success)
+                    break;
+                shape_broadcast_to_impl(i);
+            }
         }
 
         // - res will have dimension same with bshape, which is the target shape,
@@ -207,6 +254,15 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        template<typename...>
+        struct SHAPE_BROADCAST_TO_UNSUPPORTED : detail::fail_t {};
+
+        template<typename...>
+        struct SHAPE_BROADCAST_TO_FREE_AXES_UNSUPPORTED : detail::fail_t {};
+    }
+
     /**
      * @brief resolve return type of index::shape_shape_broadcast_to
      * 
@@ -220,22 +276,34 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             // bshape_t (target shape) may be raw or tuple
-            using type = tuple_to_array_t<transform_bounded_array_t<bshape_t>>;
-            using element_t = remove_cvref_t<get_element_type_t<type>>;
+            using element_t = remove_cvref_t<get_index_element_type_t<bshape_t>>;
             // specialize when both lhs and rhs is constant index array
             // also make sure the resulting type's element type is not constant index
             if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
                 constexpr auto M = len_v<bshape_t>;
-                using new_type_t = element_t;
-                if constexpr (is_constant_index_v<new_type_t>) {
-                    using result_t = make_array_type_t<typename new_type_t::value_type,M>;
-                    return as_value_v<result_t>;
-                }
-                else {
-                    // TODO: when does this happen?
-                    using result_t = make_array_type_t<new_type_t,M>;
-                    return as_value_v<result_t>;
-                }
+                using result_t = nmtools_array<element_t,M>;
+                return as_value_v<result_t>;
+            }
+            else if constexpr (
+                is_index_array_v<ashape_t>
+                && is_clipped_index_array_v<bshape_t>
+            ) {
+                return as_value_v<bshape_t>;
+            }
+            else if constexpr (
+                is_clipped_index_array_v<ashape_t> // TODO: relax this requirement to just is_index_array
+                && is_constant_index_array_v<bshape_t>
+            ) {
+                // return as clipped shape:
+                // keep info about max size
+                // but still compatible with current runtime impl
+                constexpr auto bshape = to_value_v<bshape_t>;
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(bshape)-1>([&](auto init, auto index){
+                    using init_type = type_t<decltype(init)>;
+                    using type = append_type_t<init_type,clipped_size_t<at(bshape,index+1)>>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<clipped_size_t<at(bshape,0)>>>);
             }
             // TODO: enable this, make maybe type, if at runtime doesn't match then nothing
             // else if constexpr (is_constant_index_array_v<bshape_t>) {
@@ -246,58 +314,58 @@ namespace nmtools::meta
                 using type = resolve_optype_t<index::shape_broadcast_to_t,remove_cvref_t<decltype(to_value_v<ashape_t>)>,bshape_t>;
                 return as_value_v<type>;
             }
-            // make sure the resulting type's element type is not constant index
-            else if constexpr (is_fixed_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
-                // src's shape type may be raw or tuple
-                constexpr auto N = len_v<bshape_t>;
-                using ashape_type = tuple_to_array_t<transform_bounded_array_t<ashape_t>>;
-                using shape_type  = resize_fixed_index_array_t<ashape_type,N>;
-                if constexpr (is_constant_index_v<element_t>) {
-                    using type  = replace_element_type_t<shape_type,typename element_t::value_type>;
+            else if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t>) {
+                constexpr auto fixed_size = len_v<bshape_t>;
+                [[maybe_unused]]
+                constexpr auto bounded_size = bounded_size_v<bshape_t>;
+                if constexpr (fixed_size > 0) {
+                    using type = nmtools_array<element_t,fixed_size>;
                     return as_value_v<type>;
-                }
-                else {
-                    using type  = replace_element_type_t<shape_type,element_t>;
-                    return as_value_v<type>;
-                }
-            }
-            else if constexpr (is_fixed_size_v<ashape_t> && is_bounded_size_v<bshape_t>) {
-                constexpr auto fixed_size = fixed_size_v<bshape_t>;
-                if constexpr (!is_fail_v<decltype(fixed_size)>) {
-                    using type = resize_size_t<ashape_t,fixed_size>;
+                } else if constexpr (!is_fail_v<decltype(bounded_size)>) {
+                    using type = array::static_vector<element_t,bounded_size>;
                     return as_value_v<type>;
                 } else {
-                    using type = replace_element_type_t<bshape_t,get_element_or_common_type_t<ashape_t>>;
+                    using type = nmtools_list<element_t>;
                     return as_value_v<type>;
                 }
             }
-            else if constexpr (is_bounded_size_v<ashape_t> && is_bounded_size_v<bshape_t>) {
-                // for "unidirectional broadcasting": prefer rhs size
-                [[maybe_unused]] constexpr auto bounded_a_size = bounded_size_v<ashape_t>;
-                [[maybe_unused]] constexpr auto bounded_b_size = bounded_size_v<bshape_t>;
-                // still can't be sure at compile-time since size can be smaller at runtime
-                // TODO: resize instead of make new type
-                using type = resize_bounded_size_t<ashape_t,bounded_b_size>;
+            else {
+                using type = error::SHAPE_BROADCAST_TO_UNSUPPORTED<ashape_t,bshape_t>;
                 return as_value_v<type>;
             }
-            // make sure the resulting type's element type is not constant index
-            else if constexpr (is_constant_index_array_v<bshape_t>) {
-                using ashape_type = tuple_to_array_t<transform_bounded_array_t<ashape_t>>;
-                if constexpr (is_constant_index_v<element_t>) {
-                    using type  = replace_element_type_t<ashape_type,typename element_t::value_type>;
-                    return as_value_v<type>;
-                }
-                else {
-                    using type  = replace_element_type_t<ashape_type,element_t>;
-                    return as_value_v<type>;
-                }
-            }
-            else return as_value_v<type>;
         }();
         // unlike broadcast_shape,
         // for shape_broadcast_to, the resulting shape will follow bshape
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
+
+    template <typename shape_result_t>
+    struct resolve_optype<
+        void, index::shape_broadcast_to_free_axes_t, shape_result_t
+    >
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_index_array_v<shape_result_t>) {
+                using type = replace_element_type_t<shape_result_t,bool>;
+                if constexpr (!is_fail_v<type> && !is_void_v<type>) {
+                    return as_value_v<type>;
+                } else {
+                    constexpr auto N = len_v<shape_result_t>;
+                    if constexpr (N>0) {
+                        using type = array::static_vector<bool,N>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = nmtools_list<bool>;
+                        return as_value_v<type>;
+                    }
+                }
+            } else {
+                return as_value_v<error::SHAPE_BROADCAST_TO_FREE_AXES_UNSUPPORTED<shape_result_t>>;
+            }
+        }();
+
+        using type = type_t<decltype(vtype)>;
+    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_BROADCAST_TO_HPP
