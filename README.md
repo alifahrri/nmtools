@@ -15,4 +15,4 @@ Supported compilers:
 - clang 10+
 
 ## Examples
-  See [cmake examples](examples/nmtools/array/README.md) or [notebook examples](examples/notebooks) or [stm32 mbed examples](examples/mbed) or [arduino examples](examples/arduino)
+  See [cmake examples](examples/nmtools/array/README.md) or [notebook examples](examples/notebooks) or [stm32 mbed examples](examples/mbed) or [arduino examples](examples/arduino) or [android examples](examples/android)
