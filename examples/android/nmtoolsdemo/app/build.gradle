@@ -3,6 +3,10 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
 
@@ -17,15 +21,34 @@ android {
 
         externalNativeBuild {
             cmake {
-                arguments '-DANDROID_STL=c++_static'
+                arguments '-DCMAKE_BUILD_TYPE=Release -DANDROID_STL=c++_static'
             }
         }
     }
 
     buildTypes {
         release {
+            debuggable true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            externalNativeBuild {
+                cmake {
+                    arguments "-DCMAKE_BUILD_TYPE=Release"
+                }
+            }
+        }
+
+        debug {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            externalNativeBuild {
+                cmake {
+                    arguments "-DCMAKE_BUILD_TYPE=Release"
+                }
+            }
         }
     }
     compileOptions {
@@ -45,6 +68,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
