@@ -72,73 +72,73 @@ TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
     ADD_SUBCASE( case1, a_h, b_h );
 
     #else
-    // ADD_SUBCASE( case1, a_cs_fb, b_cs_fb );
-    // ADD_SUBCASE( case1, a_cs_hb, b_cs_hb );
-    // ADD_SUBCASE( case1, a_cs_db, b_cs_db );
+    ADD_SUBCASE( case1, a_cs_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_cs_db );
 
     ADD_SUBCASE( case1, a_fs_fb, b_fs_fb );
     ADD_SUBCASE( case1, a_fs_hb, b_fs_hb );
     ADD_SUBCASE( case1, a_fs_db, b_fs_db );
 
-    // ADD_SUBCASE( case1, a_hs_fb, b_hs_fb );
-    // ADD_SUBCASE( case1, a_hs_hb, b_hs_hb );
-    // ADD_SUBCASE( case1, a_hs_db, b_hs_db );
+    ADD_SUBCASE( case1, a_hs_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_hs_db );
 
-    // ADD_SUBCASE( case1, a_ds_fb, b_ds_fb );
-    // ADD_SUBCASE( case1, a_ds_hb, b_ds_hb );
-    // ADD_SUBCASE( case1, a_ds_db, b_ds_db );
-
-
-    // ADD_SUBCASE( case1, a_fs_fb, b_cs_fb );
-    // ADD_SUBCASE( case1, a_fs_hb, b_cs_hb );
-    // ADD_SUBCASE( case1, a_fs_db, b_cs_db );
-
-    // ADD_SUBCASE( case1, a_hs_fb, b_cs_fb );
-    // ADD_SUBCASE( case1, a_hs_hb, b_cs_hb );
-    // ADD_SUBCASE( case1, a_hs_db, b_cs_db );
-
-    // ADD_SUBCASE( case1, a_ds_fb, b_cs_fb );
-    // ADD_SUBCASE( case1, a_ds_hb, b_cs_hb );
-    // ADD_SUBCASE( case1, a_ds_db, b_cs_db );
+    ADD_SUBCASE( case1, a_ds_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_ds_db );
 
 
-    // ADD_SUBCASE( case1, a_cs_fb, b_fs_fb );
-    // ADD_SUBCASE( case1, a_cs_hb, b_fs_hb );
-    // ADD_SUBCASE( case1, a_cs_db, b_fs_db );
+    ADD_SUBCASE( case1, a_fs_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_fs_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_fs_db, b_cs_db );
 
-    // ADD_SUBCASE( case1, a_hs_fb, b_fs_fb );
-    // ADD_SUBCASE( case1, a_hs_hb, b_fs_hb );
-    // ADD_SUBCASE( case1, a_hs_db, b_fs_db );
+    ADD_SUBCASE( case1, a_hs_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_cs_db );
 
-    // ADD_SUBCASE( case1, a_ds_fb, b_fs_fb );
-    // ADD_SUBCASE( case1, a_ds_hb, b_fs_hb );
-    // ADD_SUBCASE( case1, a_ds_db, b_fs_db );
-
-
-    // ADD_SUBCASE( case1, a_cs_fb, b_hs_fb );
-    // ADD_SUBCASE( case1, a_cs_hb, b_hs_hb );
-    // ADD_SUBCASE( case1, a_cs_db, b_hs_db );
-
-    // ADD_SUBCASE( case1, a_fs_fb, b_hs_fb );
-    // ADD_SUBCASE( case1, a_fs_hb, b_hs_hb );
-    // ADD_SUBCASE( case1, a_fs_db, b_hs_db );
-
-    // ADD_SUBCASE( case1, a_ds_fb, b_hs_fb );
-    // ADD_SUBCASE( case1, a_ds_hb, b_hs_hb );
-    // ADD_SUBCASE( case1, a_ds_db, b_hs_db );
+    ADD_SUBCASE( case1, a_ds_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_cs_db );
 
 
-    // ADD_SUBCASE( case1, a_cs_fb, b_ds_fb );
-    // ADD_SUBCASE( case1, a_cs_hb, b_ds_hb );
-    // ADD_SUBCASE( case1, a_cs_db, b_ds_db );
+    ADD_SUBCASE( case1, a_cs_fb, b_fs_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_fs_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_fs_db );
 
-    // ADD_SUBCASE( case1, a_fs_fb, b_ds_fb );
-    // ADD_SUBCASE( case1, a_fs_hb, b_ds_hb );
-    // ADD_SUBCASE( case1, a_fs_db, b_ds_db );
+    ADD_SUBCASE( case1, a_hs_fb, b_fs_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_fs_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_fs_db );
 
-    // ADD_SUBCASE( case1, a_hs_fb, b_ds_fb );
-    // ADD_SUBCASE( case1, a_hs_hb, b_ds_hb );
-    // ADD_SUBCASE( case1, a_hs_db, b_ds_db );
+    ADD_SUBCASE( case1, a_ds_fb, b_fs_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_fs_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_fs_db );
+
+
+    ADD_SUBCASE( case1, a_cs_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_hs_db );
+
+    ADD_SUBCASE( case1, a_fs_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_fs_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_fs_db, b_hs_db );
+
+    ADD_SUBCASE( case1, a_ds_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_hs_db );
+
+
+    ADD_SUBCASE( case1, a_cs_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_ds_db );
+
+    ADD_SUBCASE( case1, a_fs_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_fs_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_fs_db, b_ds_db );
+
+    ADD_SUBCASE( case1, a_hs_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_ds_db );
     #endif
 }
 
