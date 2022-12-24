@@ -689,3 +689,53 @@ TEST_CASE("resize_bounded_dim(case1)" * doctest::test_suite("meta::ndarray"))
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, result_t );
     }
 }
+
+TEST_CASE("is_resizable(case1)" * doctest::test_suite("meta::ndarray"))
+{
+    {
+        using namespace case1;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_type );
+    }
+    {
+        using namespace case2;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_resizable, array_type );
+    }
+    {
+        using namespace case3;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_resizable, array_type );
+    }
+    {
+        using namespace case4;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        // fail because shape is unbounded size
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_type );
+    }
+    {
+        using namespace case5;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_type );
+    }
+    {
+        using namespace case6;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_resizable, array_type );
+    }
+    {
+        using namespace case7;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_type );
+    }
+    {
+        using namespace case8;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_type );
+    }
+    {
+        using namespace case9;
+        using array_type = na::ndarray_t<buffer_t,shape_buffer_t>;
+        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_resizable, array_type );
+    }
+}

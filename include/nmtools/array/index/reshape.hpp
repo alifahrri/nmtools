@@ -148,11 +148,6 @@ namespace nmtools::meta
                 }();
                 if constexpr (!all_pos_int && is_constant_index_array_v<src_shape_t>) {
                     constexpr auto src_shape = to_value_v<src_shape_t>;
-                    // NOTE: using this triggers internal compiler error for gcc (9.4.0)
-                    // internal compiler error: in lookup_template_class_1, at cp/pt.c:9897
-                    // https://github.com/alifahrri/nmtools/runs/5617131903?check_suite_focus=true
-                    // TODO: properly enable compile-time shape inference for GCC
-                    #ifdef __clang__
                     constexpr auto result = index::shape_reshape(src_shape,dst_shape);
                     // assume maybe type (see above)
                     if constexpr (static_cast<bool>(result)) {
@@ -171,11 +166,6 @@ namespace nmtools::meta
                         using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t,decltype(result)>;
                         return as_value_v<type>;
                     }
-                    #else
-                    using m_src_shape_t = remove_cvref_t<decltype(src_shape)>;
-                    using m_dst_shape_t = remove_cvref_t<decltype(dst_shape)>;
-                    return as_value_v<resolve_optype_t<index::shape_reshape_t,m_src_shape_t,m_dst_shape_t>>;
-                    #endif
                 } else if constexpr (!all_pos_int) {
                     using m_dst_shape_t = remove_cvref_t<decltype(dst_shape)>;
                     return as_value_v<resolve_optype_t<index::shape_reshape_t,src_shape_t,m_dst_shape_t>>;

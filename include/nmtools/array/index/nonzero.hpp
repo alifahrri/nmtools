@@ -78,11 +78,11 @@ namespace nmtools::meta
                 constexpr auto index_array = to_value_v<index_array_t>;
                 constexpr auto result = index::nonzero(index_array);
                 using nmtools::len, nmtools::at;
-                return template_reduce<len(result)-1>([&](auto init, auto index){
+                return template_reduce<len(result)>([&](auto init, auto index){
                     using init_type = type_t<decltype(init)>;
-                    using type = append_type_t<init_type,ct<at(result,index+1)>>;
+                    using type = append_type_t<init_type,ct<at(result,index)>>;
                     return as_value_v<type>;
-                }, as_value_v<nmtools_tuple<ct<at(result,0)>>>);
+                }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (is_index_array_v<index_array_t>) {
                 constexpr auto element_vtype = [](){
                     using element_t = get_index_element_type_t<index_array_t>;
