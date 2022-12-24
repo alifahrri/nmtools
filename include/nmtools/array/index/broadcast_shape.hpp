@@ -6,7 +6,6 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/ref.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/max.hpp"
 #include "nmtools/array/index/sum.hpp"
 #include "nmtools/array/index/where.hpp"
@@ -59,21 +58,18 @@ namespace nmtools::index
                 idx_t ai = adim - i - 1;
                 idx_t bi = bdim - i - 1;
                 if ((ai>=0) && (bi>=0)) {
-                    // TODO: do not use tuple_at
-                    auto a = tuple_at(ashape,ai);
-                    auto b = tuple_at(bshape,bi);
+                    auto a = at(ashape,ai);
+                    auto b = at(bshape,bi);
                     using common_t = meta::promote_index_t<decltype(a),decltype(b)>;
                     success = ((common_t)a==(common_t)b) || (a==1) || (b==1);
                     at(res,si) = (common_t)a > (common_t)b ? a : b;
                 }
                 else if (bi<0) {
-                    // TODO: do not use tuple_at
-                    auto a = tuple_at(ashape,ai);
+                    auto a = at(ashape,ai);
                     at(res,si) = a;
                 }
                 else if (ai<0) {
-                    // TODO: do not use tuple_at
-                    auto b = tuple_at(bshape,bi);
+                    auto b = at(bshape,bi);
                     at(res,si) = b;
                 }
                 else {} // not valid
