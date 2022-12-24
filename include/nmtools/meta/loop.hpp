@@ -170,7 +170,7 @@ namespace nmtools::meta
      * @param init initial value for k=0
      * @return constexpr auto 
      */
-    template <size_t N, typename F, typename init_t>
+    template <int N, typename F, typename init_t>
     constexpr auto template_reduce(F&& f, const init_t& init)
     {
         // range<0,0> not defined to have type

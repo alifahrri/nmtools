@@ -46,10 +46,12 @@ namespace nmtools::index
         // (3, 1)
         // ```
 
+        using namespace literals;
+
         if constexpr (!meta::is_constant_index_array_v<return_t>) {
             auto c_dim = len(nonzero(condition));
             if constexpr (is_none_v<axis_t>)
-                at(res,0) = c_dim;
+                at(res,0_ct) = c_dim;
             else {
                 // array dim
                 [[maybe_unused]] auto dim = len(shape);
@@ -59,7 +61,7 @@ namespace nmtools::index
                 auto shape_compress_impl = [&](auto i){
                     using a_t = meta::get_element_or_common_type_t<axis_t>;
                     using idx_t = meta::promote_index_t<decltype(i),a_t>;
-                    at(res,i) = ((idx_t)i == (idx_t)axis) ? c_dim : at(shape,i);
+                    at(res,i) = ((idx_t)i == (idx_t)axis) ? (idx_t)c_dim : (idx_t)at(shape,i);
                 };
 
                 if constexpr (meta::is_fixed_index_array_v<shape_t>) {
@@ -179,7 +181,7 @@ namespace nmtools::meta
         static constexpr auto vtype = [](){
             if constexpr (
                 is_constant_index_array_v<condition_t>
-                && is_constant_index_array_v<shape_t>
+                && (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
                 && (is_constant_index_v<axis_t> || is_none_v<axis_t>)
             ) {
                 constexpr auto condition = to_value_v<condition_t>;
@@ -188,11 +190,34 @@ namespace nmtools::meta
                 constexpr auto result = index::shape_compress(condition,shape,axis);
                 using index_t = get_index_element_type_t<decltype(result)>;
                 using nmtools::len, nmtools::at;
+                constexpr auto init_vtype = [&](){
+                    constexpr auto I = (index_t)at(result,0);
+                    if constexpr (is_constant_index_array_v<shape_t>) {
+                        using type = nmtools_tuple<ct<I>>;
+                        return as_value_v<type>;
+                    } else {
+                        constexpr auto i = (I == 0 ? I+1 : I);
+                        using type = nmtools_tuple<clipped_size_t<i>>;
+                        return as_value_v<type>;
+                    }
+                }();
+                using init_type = type_t<decltype(init_vtype)>;
                 return template_reduce<len(result)-1>([&](auto init, auto index){
                     using init_type = type_t<decltype(init)>;
-                    using type = append_type_t<init_type,ct<(index_t)at(result,index+1)>>;
+                    constexpr auto vtype = [&](){
+                        constexpr auto I = (index_t)at(result,index+1);
+                        if constexpr (is_constant_index_array_v<shape_t>) {
+                            using type = append_type_t<init_type,ct<I>>;
+                            return as_value_v<type>;
+                        } else {
+                            constexpr auto i = (I == 0 ? I+1 : I);
+                            using type = append_type_t<init_type,clipped_size_t<i>>;
+                            return as_value_v<type>;
+                        }
+                    }();
+                    using type = type_t<decltype(vtype)>;
                     return as_value_v<type>;
-                }, as_value_v<nmtools_tuple<ct<(index_t)at(result,0)>>>);
+                }, as_value_v<init_type>);
             } else if constexpr (
                 is_constant_index_array_v<condition_t>
             ) {
