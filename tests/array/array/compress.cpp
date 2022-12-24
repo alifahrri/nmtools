@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/array/compress.hpp"
@@ -83,6 +86,10 @@ TEST_CASE("compress(case1)" * doctest::test_suite("array::compress"))
     COMPRESS_SUBCASE( case1, condition_cs_hb, array_ds_hb, axis );
     COMPRESS_SUBCASE( case1, condition_cs_db, array_ds_db, axis );
 
+    COMPRESS_SUBCASE( case1, condition_cs_fb, array_ls_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_hb, array_ls_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_cs_db, array_ls_db, axis );
+
     COMPRESS_SUBCASE( case1, condition_fs_fb, array_fs_fb, axis );
     COMPRESS_SUBCASE( case1, condition_fs_hb, array_fs_hb, axis );
     COMPRESS_SUBCASE( case1, condition_fs_db, array_fs_db, axis );
@@ -98,6 +105,10 @@ TEST_CASE("compress(case1)" * doctest::test_suite("array::compress"))
     COMPRESS_SUBCASE( case1, condition_fs_fb, array_ds_fb, axis );
     COMPRESS_SUBCASE( case1, condition_fs_hb, array_ds_hb, axis );
     COMPRESS_SUBCASE( case1, condition_fs_db, array_ds_db, axis );
+
+    COMPRESS_SUBCASE( case1, condition_fs_fb, array_ls_fb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_hb, array_ls_hb, axis );
+    COMPRESS_SUBCASE( case1, condition_fs_db, array_ls_db, axis );
     #endif
 }
 

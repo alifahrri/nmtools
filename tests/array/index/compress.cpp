@@ -5,21 +5,26 @@
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/constants.hpp"
 
-#include <array>
-#include <tuple>
-#include <vector>
-
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+using namespace nmtools::literals;
+
 NMTOOLS_TESTING_DECLARE_CASE(index, shape_compress)
 {
+    // TODO: provide helper class form constant index to clipped index
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         int condition[2] = {0,1};
         int shape[2] = {3,2};
         int axis = 0;
+        auto condition_ct = nmtools_tuple{0_ct,1_ct};
+        auto condition_cl = nmtools_tuple{"0:[1]"_ct,"1:[1]"_ct};
+        auto shape_ct = nmtools_tuple{3_ct,2_ct};
+        auto shape_cl = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct};
+        auto axis_ct  = 0_ct;
+        auto axis_cl  = "0:[1]"_ct;
         NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
@@ -33,6 +38,12 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_compress)
         int condition[3] = {0,1,1};
         int shape[2] = {3,2};
         int axis = 0;
+        auto condition_ct = nmtools_tuple{0_ct,1_ct,1_ct};
+        auto condition_cl = nmtools_tuple{"0:[1]"_ct,"1:[1]"_ct,"1:[1]"_ct};
+        auto shape_ct = nmtools_tuple{3_ct,2_ct};
+        auto shape_cl = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct};
+        auto axis_ct  = 0_ct;
+        auto axis_cl  = "0:[1]"_ct;
         NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
@@ -46,6 +57,12 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_compress)
         int condition[2] = {0,1};
         int shape[2] = {3,2};
         int axis = 1;
+        auto condition_ct = nmtools_tuple{0_ct,1_ct};
+        auto condition_cl = nmtools_tuple{"0:[1]"_ct,"1:[1]"_ct};
+        auto shape_ct = nmtools_tuple{3_ct,2_ct};
+        auto shape_cl = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct};
+        auto axis_ct  = 1_ct;
+        auto axis_cl  = "1:[1]"_ct;
         NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
@@ -59,6 +76,12 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_compress)
         int condition[1] = {0};
         int shape[2] = {3,2};
         int axis = 0;
+        auto condition_ct = nmtools_tuple{0_ct};
+        auto condition_cl = nmtools_tuple{"0:[1]"_ct};
+        auto shape_ct = nmtools_tuple{3_ct,2_ct};
+        auto shape_cl = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct};
+        auto axis_ct  = 0_ct;
+        auto axis_cl  = "0:[1]"_ct;
         NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
@@ -72,6 +95,12 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_compress)
         bool condition[3] = {false,true,true};
         int shape[2] = {3,2};
         int axis = 0;
+        auto condition_ct = nmtools_tuple{0_ct,1_ct,1_ct};
+        auto condition_cl = nmtools_tuple{"0:[1]"_ct,"1:[1]"_ct,"1:[1]"_ct};
+        auto shape_ct = nmtools_tuple{3_ct,2_ct};
+        auto shape_cl = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct};
+        auto axis_ct  = 0_ct;
+        auto axis_cl  = "0:[1]"_ct;
         NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
@@ -85,6 +114,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_compress)
         bool condition[5] = {false,true,true,false,true};
         int shape[2] = {3,2};
         auto axis = None;
+        auto condition_ct = nmtools_tuple{0_ct,1_ct,1_ct,0_ct,1_ct};
+        auto condition_cl = nmtools_tuple{"0:[1]"_ct,"1:[1]"_ct,"1:[1]"_ct,"0:[1]"_ct,"1:[1]"_ct};
+        auto shape_ct = nmtools_tuple{3_ct,2_ct};
+        auto shape_cl = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(condition)
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
@@ -226,6 +259,82 @@ TEST_CASE("shape_compress(case1)" * doctest::test_suite("index::shape_compress")
     SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_v, axis );
     SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_f, axis );
     SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_h, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_cl, axis_ct );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_ct, axis );
+
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_v, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_f, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_h, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_a, shape_cl, axis_ct );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_a, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_f, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_h, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_v, shape_cl, axis_ct );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_a, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_v, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_h, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_f, shape_cl, axis_ct );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_a, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_v, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_f, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_h, shape_cl, axis_ct );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_a, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_v, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_f, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_h, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_ct, shape_cl, axis_ct );
+
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_a, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_v, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_f, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_h, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case1, condition_cl, shape_ct, axis_ct );
 }
 
 TEST_CASE("shape_compress(case2)" * doctest::test_suite("index::shape_compress"))
@@ -235,6 +344,9 @@ TEST_CASE("shape_compress(case2)" * doctest::test_suite("index::shape_compress")
     SHAPE_COMPRESS_SUBCASE( case2, condition_v, shape_v, axis );
     SHAPE_COMPRESS_SUBCASE( case2, condition_f, shape_f, axis );
     SHAPE_COMPRESS_SUBCASE( case2, condition_h, shape_h, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case2, condition_ct, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case2, condition_ct, shape_cl, axis_ct );
 }
 
 TEST_CASE("shape_compress(case3)" * doctest::test_suite("index::shape_compress"))
@@ -244,6 +356,9 @@ TEST_CASE("shape_compress(case3)" * doctest::test_suite("index::shape_compress")
     SHAPE_COMPRESS_SUBCASE( case3, condition_v, shape_v, axis );
     SHAPE_COMPRESS_SUBCASE( case3, condition_f, shape_f, axis );
     SHAPE_COMPRESS_SUBCASE( case3, condition_h, shape_h, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case3, condition_ct, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case3, condition_ct, shape_cl, axis_ct );
 }
 
 TEST_CASE("shape_compress(case4)" * doctest::test_suite("index::shape_compress"))
@@ -253,6 +368,9 @@ TEST_CASE("shape_compress(case4)" * doctest::test_suite("index::shape_compress")
     SHAPE_COMPRESS_SUBCASE( case4, condition_v, shape_v, axis );
     SHAPE_COMPRESS_SUBCASE( case4, condition_f, shape_f, axis );
     SHAPE_COMPRESS_SUBCASE( case4, condition_h, shape_h, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case4, condition_ct, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case4, condition_ct, shape_cl, axis_ct );
 }
 
 TEST_CASE("shape_compress(case5)" * doctest::test_suite("index::shape_compress"))
@@ -262,6 +380,9 @@ TEST_CASE("shape_compress(case5)" * doctest::test_suite("index::shape_compress")
     SHAPE_COMPRESS_SUBCASE( case5, condition_v, shape_v, axis );
     SHAPE_COMPRESS_SUBCASE( case5, condition_f, shape_f, axis );
     SHAPE_COMPRESS_SUBCASE( case5, condition_h, shape_h, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case5, condition_ct, shape_ct, axis_ct );
+    SHAPE_COMPRESS_SUBCASE( case5, condition_ct, shape_cl, axis_ct );
 }
 
 TEST_CASE("shape_compress(case6)" * doctest::test_suite("index::shape_compress"))
@@ -271,6 +392,45 @@ TEST_CASE("shape_compress(case6)" * doctest::test_suite("index::shape_compress")
     SHAPE_COMPRESS_SUBCASE( case6, condition_v, shape_v, axis );
     SHAPE_COMPRESS_SUBCASE( case6, condition_f, shape_f, axis );
     SHAPE_COMPRESS_SUBCASE( case6, condition_h, shape_h, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case6, condition_ct, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_ct, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case6, condition_a, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_a, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_a, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_a, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_a, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case6, condition_v, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_v, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_v, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_v, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_v, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case6, condition_f, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_f, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_f, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_f, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_f, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case6, condition_h, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_h, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_h, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_h, shape_ct, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_h, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case6, condition_ct, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_ct, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_ct, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_ct, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_ct, shape_cl, axis );
+
+    SHAPE_COMPRESS_SUBCASE( case6, condition_cl, shape_a, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_cl, shape_v, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_cl, shape_f, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_cl, shape_h, axis );
+    SHAPE_COMPRESS_SUBCASE( case6, condition_cl, shape_ct, axis );
 }
 
 #define RUN_compress_impl(...) \
