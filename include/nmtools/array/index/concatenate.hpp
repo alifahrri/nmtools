@@ -198,8 +198,9 @@ namespace nmtools::index
                     if (static_cast<idx_t>(i)==static_cast<idx_t>(axis)) {
                         at(ret,i) = ai + bi;
                     }
+                    // TODO: consider to provide platform dependent index_t
                     // concat must have same shape except at axis idx
-                    else if (ai==bi) {
+                    else if ((size_t)ai==(size_t)bi) {
                         at(ret,i) = ai;
                     }
                     else {
