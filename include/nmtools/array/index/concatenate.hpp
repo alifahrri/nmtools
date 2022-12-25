@@ -174,7 +174,7 @@ namespace nmtools::index
             return nmtools_tuple{true, result_t {}};
         } else {
             auto ret = result_t {};
-            bool suc = true;
+            bool success = true;
 
             [[maybe_unused]] auto ad = len(ashape);
             [[maybe_unused]] auto bd = len(bshape);
@@ -182,35 +182,49 @@ namespace nmtools::index
             if constexpr (meta::is_resizable_v<result_t>)
                 ret.resize(ad); // ad must be == bd
 
+            using namespace literals;
+
             if constexpr (is_none_v<axis_t>)
             {
                 auto na = product(ashape);
                 auto nb = product(bshape);
-                at(ret,0) = na + nb;
+                at(ret,0_ct) = na + nb;
             }
             else if (ad==bd) {
                 using idx_t = meta::promote_index_t<size_t,axis_t>;
-                // todo: maybe convert ashape & bshape to array first to simplify expression
-                for (size_t i=0; i<(size_t)ad; i++) {
-                    // TODO: do not use tuple_at
-                    auto ai = tuple_at(ashape,i);
-                    auto bi = tuple_at(bshape,i);
-                    if (static_cast<idx_t>(i)==static_cast<idx_t>(axis))
+                auto shape_concatenate_impl = [&](auto i){
+                    auto ai = at(ashape,i);
+                    auto bi = at(bshape,i);
+                    if (static_cast<idx_t>(i)==static_cast<idx_t>(axis)) {
                         at(ret,i) = ai + bi;
+                    }
+                    // TODO: consider to provide platform dependent index_t
                     // concat must have same shape except at axis idx
-                    else if (ai==bi)
+                    else if ((size_t)ai==(size_t)bi) {
                         at(ret,i) = ai;
+                    }
                     else {
-                        suc = false;
-                        break;
+                        success = false;
+                    }
+                };
+                if constexpr (meta::is_tuple_v<result_t>) {
+                    constexpr auto N = meta::len_v<result_t>;
+                    meta::template_for<N>([&](auto I){
+                        shape_concatenate_impl(I);
+                    });
+                } else {
+                    for (size_t i=0; i<(size_t)ad; i++) {
+                        shape_concatenate_impl(i);
+                        if (!success)
+                            break;
                     }
                 }
             }
-            else suc = false;
+            else success = false;
             
             // TODO: use optional instead
             using return_t = meta::make_tuple_type_t<bool,result_t>;
-            return return_t{suc,ret};
+            return return_t{success,ret};
         }
     } // shape_concatenate
 } // namespace nmtools::index
@@ -239,27 +253,47 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t> && (is_none_v<axis_t> || is_constant_index_v<axis_t>)) {
+            if constexpr (
+                   (is_constant_index_array_v<ashape_t> || is_clipped_index_array_v<ashape_t>)
+                && (is_constant_index_array_v<bshape_t> || is_clipped_index_array_v<bshape_t>)
+                && (is_none_v<axis_t> || is_constant_index_v<axis_t>)
+            ) {
                 constexpr auto ashape  = to_value_v<ashape_t>;
                 constexpr auto bshape  = to_value_v<bshape_t>;
                 constexpr auto result_ = index::shape_concatenate(ashape,bshape,axis_t{});
                 constexpr auto success = nmtools::get<0>(result_);
+                using nmtools::at, nmtools::len;
                 if constexpr (success) {
                     constexpr auto result  = nmtools::get<1>(result_);
-                    return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
+                    return template_reduce<len(result)>([&](auto init, auto index){
                         using init_t = type_t<decltype(init)>;
-                        constexpr auto I = decltype(index)::value + 1;
-                        using return_t = append_type_t<init_t,ct<nmtools::at(result,I)>>;
-                        return as_value_v<return_t>;
-                    }, /*init=*/as_value_v<nmtools_tuple<ct<nmtools::at(result,0)>>>);
+                        constexpr auto I = at(result,index);
+                        if constexpr (
+                            is_clipped_index_array_v<ashape_t>
+                            || is_clipped_index_array_v<bshape_t>
+                        ) {
+                            constexpr auto i = (I==0 ? I+1 : I);
+                            using type = append_type_t<init_t,clipped_size_t<i>>;
+                            return as_value_v<type>;
+                        } else {
+                            using type = append_type_t<init_t,ct<I>>;
+                            return as_value_v<type>;
+                        }
+                    }, /*init=*/as_value_v<nmtools_tuple<>>);
                 } else {
                     return as_value_v<error::SHAPE_CONCATENATE_INVALID<ashape_t,bshape_t,axis_t>>;
                 }
-            } else if constexpr (is_constant_index_array_v<ashape_t>) {
+            } else if constexpr (
+                is_constant_index_array_v<ashape_t>
+                || is_clipped_index_array_v<ashape_t>
+            ) {
                 // simply recurse for now
                 using type = resolve_optype_t<index::shape_concatenate_t,remove_cvref_t<decltype(to_value_v<ashape_t>)>,bshape_t,axis_t,asize_t,bsize_t>;
                 return as_value_v<type>;
-            } else if constexpr (is_constant_index_array_v<bshape_t>) {
+            } else if constexpr (
+                is_constant_index_array_v<bshape_t>
+                || is_clipped_index_array_v<bshape_t>
+            ) {
                 // simply recurse for now
                 using type = resolve_optype_t<index::shape_concatenate_t,ashape_t,remove_cvref_t<decltype(to_value_v<bshape_t>)>,axis_t,asize_t,bsize_t>;
                 return as_value_v<type>;

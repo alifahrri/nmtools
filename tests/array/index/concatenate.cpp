@@ -18,8 +18,11 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
         inline int ashape[2] = {2,2};
         inline int bshape[2] = {1,2};
         inline auto axis_ct = 0_ct;
+        inline auto axis_cl = "0:[1]"_ct;
         inline auto ashape_ct = nmtools_tuple{2_ct,2_ct};
+        inline auto ashape_cl = nmtools_tuple{"2:[2]"_ct,"2:[2]"_ct};
         inline auto bshape_ct = nmtools_tuple{1_ct,2_ct};
+        inline auto bshape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape);
         NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
@@ -35,8 +38,11 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
         inline int ashape[2] = {2,2};
         inline int bshape[2] = {1,2};
         inline auto axis_ct = 1_ct;
+        inline auto axis_cl = "1:[1]"_ct;
         inline auto ashape_ct = nmtools_tuple{2_ct,2_ct};
+        inline auto ashape_cl = nmtools_tuple{"2:[2]"_ct,"2:[2]"_ct};
         inline auto bshape_ct = nmtools_tuple{1_ct,2_ct};
+        inline auto bshape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape);
         NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
@@ -52,8 +58,11 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
         inline int ashape[2] = {2,2};
         inline int bshape[2] = {2,1};
         inline auto axis_ct = 1_ct;
+        inline auto axis_cl = "1:[1]"_ct;
         inline auto ashape_ct = nmtools_tuple{2_ct,2_ct};
+        inline auto ashape_cl = nmtools_tuple{"2:[2]"_ct,"2:[2]"_ct};
         inline auto bshape_ct = nmtools_tuple{2_ct,1_ct};
+        inline auto bshape_cl = nmtools_tuple{"2:[2]"_ct,"1:[1]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape);
         NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
@@ -69,7 +78,9 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
         inline int ashape[2] = {2,2};
         inline int bshape[2] = {2,1};
         inline auto ashape_ct = nmtools_tuple{2_ct,2_ct};
+        inline auto ashape_cl = nmtools_tuple{"2:[2]"_ct,"2:[2]"_ct};
         inline auto bshape_ct = nmtools_tuple{2_ct,1_ct};
+        inline auto bshape_cl = nmtools_tuple{"2:[2]"_ct,"1:[1]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape);
         NMTOOLS_CAST_INDEX_ARRAYS(bshape);
     }
@@ -130,31 +141,178 @@ SUBCASE(#case_name) \
 TEST_CASE("shape_concatenate(case1)" * doctest::test_suite("index::shape_concatenate"))
 {
     SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_f, axis );
     SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_v, axis );
     SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_h, axis );
 
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_ct, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_cl, axis_ct );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_f, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_v, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_h, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_ct, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_cl, axis );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_a, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_f, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_v, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_h, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_ct, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_cl, axis_ct );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_a, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_f, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_v, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_h, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_ct, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_a, bshape_cl, axis_cl );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_f, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_v, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_h, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_ct, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_cl, axis );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_a, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_f, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_v, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_h, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_ct, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_cl, axis_ct );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_a, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_f, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_v, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_h, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_ct, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_f, bshape_cl, axis_cl );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_f, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_v, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_h, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_ct, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_cl, axis );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_a, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_f, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_v, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_h, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_ct, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_cl, axis_ct );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_a, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_f, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_v, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_h, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_ct, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_h, bshape_cl, axis_cl );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_f, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_v, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_h, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_ct, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_cl, axis );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_a, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_f, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_v, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_h, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_ct, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_cl, axis_ct );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_a, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_f, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_v, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_h, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_ct, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_v, bshape_cl, axis_cl );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_f, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_v, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_h, axis );
     SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_ct, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_cl, axis );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_a, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_f, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_v, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_h, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_ct, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_cl, axis_ct );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_a, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_f, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_v, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_h, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_ct, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_ct, bshape_cl, axis_cl );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_f, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_v, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_h, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_ct, axis );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_cl, axis );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_a, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_f, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_v, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_h, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_ct, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_cl, axis_ct );
+
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_a, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_f, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_v, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_h, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_ct, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case1, ashape_cl, bshape_cl, axis_cl );
 }
 
 TEST_CASE("shape_concatenate(case2)" * doctest::test_suite("index::shape_concatenate"))
 {
     SHAPE_CONCATENATE_SUBCASE( case2, ashape_a, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case2, ashape_f, bshape_f, axis );
     SHAPE_CONCATENATE_SUBCASE( case2, ashape_v, bshape_v, axis );
     SHAPE_CONCATENATE_SUBCASE( case2, ashape_h, bshape_h, axis );
+
+    // the result is false
+    // SHAPE_CONCATENATE_SUBCASE( case2, ashape_ct, bshape_ct, axis_ct );
+    // SHAPE_CONCATENATE_SUBCASE( case2, ashape_cl, bshape_cl, axis_ct );
 }
 
 TEST_CASE("shape_concatenate(case3)" * doctest::test_suite("index::shape_concatenate"))
 {
     SHAPE_CONCATENATE_SUBCASE( case3, ashape_a, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_f, bshape_f, axis );
     SHAPE_CONCATENATE_SUBCASE( case3, ashape_v, bshape_v, axis );
     SHAPE_CONCATENATE_SUBCASE( case3, ashape_h, bshape_h, axis );
+
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_ct, bshape_ct, axis_ct );
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_cl, bshape_cl, axis_ct );
+
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_ct, bshape_ct, axis_cl );
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_cl, bshape_cl, axis_cl );
+
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_ct, bshape_ct, axis );
+    SHAPE_CONCATENATE_SUBCASE( case3, ashape_cl, bshape_cl, axis );
 }
 
 TEST_CASE("shape_concatenate(case4)" * doctest::test_suite("index::shape_concatenate"))
 {
     SHAPE_CONCATENATE_SUBCASE( case4, ashape_a, bshape_a, axis );
+    SHAPE_CONCATENATE_SUBCASE( case4, ashape_f, bshape_f, axis );
     SHAPE_CONCATENATE_SUBCASE( case4, ashape_v, bshape_v, axis );
     SHAPE_CONCATENATE_SUBCASE( case4, ashape_h, bshape_h, axis );
+
+    SHAPE_CONCATENATE_SUBCASE( case4, ashape_ct, bshape_ct, axis );
+    SHAPE_CONCATENATE_SUBCASE( case4, ashape_cl, bshape_cl, axis );
 }
 
 #include "nmtools/array/index/concatenate.hpp"
