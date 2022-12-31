@@ -68,6 +68,45 @@ namespace nmtools::detail
     };
 
     // clipped_integer
+    template <char val1, char val2, char max1, char max2>
+    struct ct_impl_t<
+        meta::enable_if_t<
+            (val1 >= '0' && val1 <= '9')
+            && (val2 >= '0' && val2 <= '9')
+            && (max1 > '0' && max1 <= '9')
+            && (max2 > '0' && max2 <= '9')
+        >
+        ,char,val1,val2,':','[',max1,max2,']'>
+    {
+        constexpr auto operator()() const noexcept
+        {
+            const auto val = ct_impl(nmtools_array{val1,val2});
+            const auto max = ct_impl(nmtools_array{max1,max2});
+            // assume size_t for now
+            using type = clipped_integer_t<size_t,0,max>;
+            return type{val};
+        }
+    };
+
+    // clipped_integer
+    template <char val, char max>
+    struct ct_impl_t<
+        meta::enable_if_t<
+            (val >= '0' && val <= '9')
+            && (max > '0' && max <= '9')
+        >
+        ,char,'-',val,':','[',max,']'>
+    {
+        constexpr auto operator()() const noexcept
+        {
+            // assume int for now
+            constexpr auto value = -(val - '0');
+            using type = clipped_integer_t<int,value,max-'0'>;
+            return type{value};
+        }
+    };
+
+    // clipped_integer
     template <char val, char min, char max>
     struct ct_impl_t<
         meta::enable_if_t<
