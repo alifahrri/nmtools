@@ -10,15 +10,11 @@
 
 // must include first, prefer stl
 #ifndef NMTOOLS_DISABLE_STL
-#include "nmtools/meta/stl/transform.hpp"
-#include "nmtools/meta/stl/traits.hpp"
-#include "nmtools/meta/stl/array.hpp"
+#include "nmtools/meta/stl.hpp"
 #endif // NMTOOLS_DISABLE_STL
 
-#include "nmtools/meta/utl/common.hpp"
-#include "nmtools/meta/utl/traits.hpp"
-#include "nmtools/meta/utl/array.hpp"
-#include "nmtools/meta/utl/transform.hpp"
+// TODO: prioritize boost as default
+#include "nmtools/meta/utl.hpp"
 
 #ifdef NMTOOLS_ENABLE_BOOST
 #include "nmtools/meta/boost.hpp"

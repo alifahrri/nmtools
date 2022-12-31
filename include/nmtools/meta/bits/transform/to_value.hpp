@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_tuple.hpp"
+#include "nmtools/meta/bits/transform/promote_index.hpp"
 
 namespace nmtools::meta
 {
@@ -58,13 +59,14 @@ namespace nmtools::meta
     // to carry the information about maximum number of elements per axis
     // hence we can deduce the maximum number of elements to deduce the type of buffer at compile time
 
-    template <template<typename...>typename Tuple, typename T, auto...Min, auto...Max>
+    template <template<typename...>typename Tuple, typename...T, auto...Min, auto...Max>
     struct to_value<
         Tuple<clipped_integer_t<T,Min,Max>...>,
         enable_if_t< is_tuple_v<Tuple<clipped_integer_t<T,Min,Max>...>> >
     >
     {
-        static constexpr auto value = nmtools_array{Max...};
+        using index_t = promote_index_t<T...>;
+        static constexpr auto value = nmtools_array{index_t(Max)...};
     }; // to_value
 
     template <template<typename,auto>typename Array, typename T, auto Min, auto Max, auto N>
