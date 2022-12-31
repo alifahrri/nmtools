@@ -4,7 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 
@@ -28,13 +27,13 @@ namespace nmtools::index
         if constexpr (meta::is_fixed_index_array_v<array_t>) {
             bool contain = false;
             meta::template_for<meta::len_v<array_t>>([&](auto i){
-                if (utils::isequal(tuple_at(array,i),value))
+                if (utils::isequal(at(array,i),value))
                     contain = true;
             });
             return contain;
         }
         else {
-            for (size_t i=0; i<tuple_size(array); i++)
+            for (size_t i=0; i<len(array); i++)
                 if (utils::isequal(at(array,i),value))
                     return true;
             return false;   
@@ -53,43 +52,44 @@ namespace nmtools::index
     template <typename shape_t, typename axes_t>
     constexpr auto shape_expand_dims([[maybe_unused]] const shape_t& shape, [[maybe_unused]] const axes_t& axes)
     {
-        using return_t = meta::resolve_optype_t<shape_expand_dims_t,shape_t,axes_t>;
-        auto newshape = return_t{};
+        using result_t = meta::resolve_optype_t<shape_expand_dims_t,shape_t,axes_t>;
+        auto new_shape = result_t{};
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!meta::is_constant_index_array_v<result_t>) {
             auto n_axes = [&](){
                 if constexpr (meta::is_index_array_v<axes_t>)
                     return len(axes);
                 else return 1ul;
             }();
             auto dim = len(shape);
-            auto n = dim+n_axes;
+            [[maybe_unused]] auto n = dim+n_axes;
 
             // resize output if necessary
-            if constexpr (meta::is_resizable_v<return_t>)
-                newshape.resize(n);
+            if constexpr (meta::is_resizable_v<result_t>)
+                new_shape.resize(n);
             
             auto idx = size_t{0};
-            for (size_t i=0; i<n; i++) {
+            auto shape_expand_dims_impl = [&](auto i){
                 auto in_axis = [&](){
                     if constexpr (meta::is_index_array_v<axes_t>)
                         return contains(axes,i);
                     else return i == (size_t)axes;
                 }();
-                at(newshape,i) = (in_axis ? 1 : tuple_at(shape,idx));
+                at(new_shape,i) = (in_axis ? 1 : at(shape,idx));
                 idx += (!in_axis ? 1 : 0);
+            };
+            if constexpr (meta::is_tuple_v<result_t>) {
+                constexpr auto N = meta::len_v<result_t>;
+                meta::template_for<N>(shape_expand_dims_impl);
+            } else {
+                for (size_t i=0; i<n; i++) {
+                    shape_expand_dims_impl(i);
+                }
             }
         }
 
-        return newshape;
+        return new_shape;
     } // shape_expand_dims
-
-    // TODO: remove
-    template <typename shape_t, typename axes_t>
-    constexpr auto expand_dims([[maybe_unused]] const shape_t& shape, [[maybe_unused]] const axes_t& axes)
-    {
-        return shape_expand_dims(shape,axes);
-    } // expand_dims
 } // namespace nmtools::index
 
 namespace nmtools
@@ -110,16 +110,25 @@ namespace nmtools
         {
             static constexpr auto vtype = [](){
                 // TODO: use more generic fixed_shape, fixed_size, fixed_dim
-                if constexpr (is_constant_index_array_v<shape_t> && (is_constant_index_v<axes_t> || is_constant_index_array_v<axes_t>)) {
+                if constexpr (
+                    (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
+                    && (is_constant_index_v<axes_t> || is_constant_index_array_v<axes_t>)
+                ) {
                     constexpr auto shape = to_value_v<shape_t>;
                     constexpr auto axes  = to_value_v<axes_t>;
-                    constexpr auto newshape = index::expand_dims(shape,axes);
-                    return template_reduce<nmtools::len(newshape)-1>([&](auto init, auto index){
+                    constexpr auto new_shape = index::shape_expand_dims(shape,axes);
+                    using nmtools::len, nmtools::at;
+                    return template_reduce<len(new_shape)>([&](auto init, auto index){
                         using init_t = type_t<decltype(init)>;
-                        constexpr auto I = decltype(index)::value + 1;
-                        using result_t = append_type_t<init_t,ct<nmtools::at(newshape,I)>>;
-                        return as_value_v<result_t>;
-                    }, as_value_v<nmtools_tuple<ct<nmtools::at(newshape,0)>>>);
+                        constexpr auto I = at(new_shape,index);
+                        if constexpr (is_constant_index_array_v<shape_t>) {
+                            using result_t = append_type_t<init_t,ct<I>>;
+                            return as_value_v<result_t>;
+                        } else {
+                            using result_t = append_type_t<init_t,clipped_size_t<I>>;
+                            return as_value_v<result_t>;
+                        }
+                    }, as_value_v<nmtools_tuple<>>);
                 } else if constexpr (is_fixed_index_array_v<shape_t> && (is_index_v<axes_t> || is_fixed_index_array_v<axes_t>)) {
                     constexpr auto n_axes = [](){
                         if constexpr (is_index_v<axes_t>) {
