@@ -161,6 +161,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
         NMTOOLS_CAST_ARRAYS(array)
         inline int8_t axes[4]  = {1,0,3,2};
         inline auto axes_ct = nmtools_tuple{1_ct,0_ct,3_ct,2_ct};
+        inline auto axes_cl = nmtools_tuple{"1:[1]"_ct,"0:[1]"_ct,"3:[3]"_ct,"2:[2]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)

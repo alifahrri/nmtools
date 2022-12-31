@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/view/pad.hpp"
@@ -94,6 +97,10 @@ TEST_CASE("pad(case1)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case1, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case1, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case1, array_ds_db, pad_width_a );
+
+    PAD_SUBCASE( case1, array_ls_fb, pad_width_a );
+    PAD_SUBCASE( case1, array_ls_hb, pad_width_a );
+    PAD_SUBCASE( case1, array_ls_db, pad_width_a );
     #endif
 }
 
@@ -122,6 +129,10 @@ TEST_CASE("pad(case2)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case2, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case2, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case2, array_ds_db, pad_width_a );
+
+    PAD_SUBCASE( case2, array_ls_fb, pad_width_a );
+    PAD_SUBCASE( case2, array_ls_hb, pad_width_a );
+    PAD_SUBCASE( case2, array_ls_db, pad_width_a );
     #endif
 }
 
@@ -150,6 +161,10 @@ TEST_CASE("pad(case3)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case3, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case3, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case3, array_ds_db, pad_width_a );
+
+    PAD_SUBCASE( case3, array_ls_fb, pad_width_a );
+    PAD_SUBCASE( case3, array_ls_hb, pad_width_a );
+    PAD_SUBCASE( case3, array_ls_db, pad_width_a );
     #endif
 }
 
@@ -178,6 +193,10 @@ TEST_CASE("pad(case4)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case4, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case4, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case4, array_ds_db, pad_width_a );
+
+    PAD_SUBCASE( case4, array_ls_fb, pad_width_a );
+    PAD_SUBCASE( case4, array_ls_hb, pad_width_a );
+    PAD_SUBCASE( case4, array_ls_db, pad_width_a );
     #endif
 }
 
@@ -206,5 +225,9 @@ TEST_CASE("pad(case5)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case5, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case5, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case5, array_ds_db, pad_width_a );
+
+    PAD_SUBCASE( case5, array_ls_fb, pad_width_a );
+    PAD_SUBCASE( case5, array_ls_hb, pad_width_a );
+    PAD_SUBCASE( case5, array_ls_db, pad_width_a );
     #endif
 }

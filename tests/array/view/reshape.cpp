@@ -11,16 +11,15 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/view/reshape.hpp"
 #include "nmtools/testing/data/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
-
-#include <array>
-#include <tuple>
-#include <vector>
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -90,6 +89,10 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case1, array_ds_hb, newshape_ct );
     RESHAPE_SUBCASE(case1, array_ds_db, newshape_ct );
 
+    RESHAPE_SUBCASE(case1, array_ls_fb, newshape_ct );
+    RESHAPE_SUBCASE(case1, array_ls_hb, newshape_ct );
+    RESHAPE_SUBCASE(case1, array_ls_db, newshape_ct );
+
     RESHAPE_SUBCASE(case1, array_cs_fb, newshape_a );
     RESHAPE_SUBCASE(case1, array_cs_hb, newshape_a );
     RESHAPE_SUBCASE(case1, array_cs_db, newshape_a );
@@ -105,6 +108,30 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case1, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case1, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case1, array_ds_db, newshape_a );
+
+    RESHAPE_SUBCASE(case1, array_ls_fb, newshape_a );
+    RESHAPE_SUBCASE(case1, array_ls_hb, newshape_a );
+    RESHAPE_SUBCASE(case1, array_ls_db, newshape_a );
+
+    RESHAPE_SUBCASE(case1, array_cs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_cs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_cs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case1, array_fs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_fs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_fs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case1, array_hs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_hs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_hs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case1, array_ds_fb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_ds_hb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_ds_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case1, array_ls_fb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_ls_hb, newshape_cl );
+    RESHAPE_SUBCASE(case1, array_ls_db, newshape_cl );
     #endif
 }
 
@@ -140,6 +167,10 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case2, array_ds_hb, newshape_ct );
     RESHAPE_SUBCASE(case2, array_ds_db, newshape_ct );
 
+    RESHAPE_SUBCASE(case2, array_ls_fb, newshape_ct );
+    RESHAPE_SUBCASE(case2, array_ls_hb, newshape_ct );
+    RESHAPE_SUBCASE(case2, array_ls_db, newshape_ct );
+
     RESHAPE_SUBCASE(case2, array_cs_fb, newshape_a );
     RESHAPE_SUBCASE(case2, array_cs_hb, newshape_a );
     RESHAPE_SUBCASE(case2, array_cs_db, newshape_a );
@@ -155,6 +186,30 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case2, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case2, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case2, array_ds_db, newshape_a );
+
+    RESHAPE_SUBCASE(case2, array_ls_fb, newshape_a );
+    RESHAPE_SUBCASE(case2, array_ls_hb, newshape_a );
+    RESHAPE_SUBCASE(case2, array_ls_db, newshape_a );
+
+    RESHAPE_SUBCASE(case2, array_cs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_cs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_cs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case2, array_fs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_fs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_fs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case2, array_hs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_hs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_hs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case2, array_ds_fb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_ds_hb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_ds_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case2, array_ls_fb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_ls_hb, newshape_cl );
+    RESHAPE_SUBCASE(case2, array_ls_db, newshape_cl );
     #endif
 }
 
@@ -190,6 +245,10 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case3, array_ds_hb, newshape_ct );
     RESHAPE_SUBCASE(case3, array_ds_db, newshape_ct );
 
+    RESHAPE_SUBCASE(case3, array_ls_fb, newshape_ct );
+    RESHAPE_SUBCASE(case3, array_ls_hb, newshape_ct );
+    RESHAPE_SUBCASE(case3, array_ls_db, newshape_ct );
+
     RESHAPE_SUBCASE(case3, array_cs_fb, newshape_a );
     RESHAPE_SUBCASE(case3, array_cs_hb, newshape_a );
     RESHAPE_SUBCASE(case3, array_cs_db, newshape_a );
@@ -205,6 +264,30 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case3, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case3, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case3, array_ds_db, newshape_a );
+
+    RESHAPE_SUBCASE(case3, array_ls_fb, newshape_a );
+    RESHAPE_SUBCASE(case3, array_ls_hb, newshape_a );
+    RESHAPE_SUBCASE(case3, array_ls_db, newshape_a );
+
+    RESHAPE_SUBCASE(case3, array_cs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_cs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_cs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case3, array_fs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_fs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_fs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case3, array_hs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_hs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_hs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case3, array_ds_fb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_ds_hb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_ds_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case3, array_ls_fb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_ls_hb, newshape_cl );
+    RESHAPE_SUBCASE(case3, array_ls_db, newshape_cl );
     #endif
 }
 
@@ -240,6 +323,10 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case4, array_ds_hb, newshape_ct );
     RESHAPE_SUBCASE(case4, array_ds_db, newshape_ct );
 
+    RESHAPE_SUBCASE(case4, array_ls_fb, newshape_ct );
+    RESHAPE_SUBCASE(case4, array_ls_hb, newshape_ct );
+    RESHAPE_SUBCASE(case4, array_ls_db, newshape_ct );
+
     RESHAPE_SUBCASE(case4, array_cs_fb, newshape_a );
     RESHAPE_SUBCASE(case4, array_cs_hb, newshape_a );
     RESHAPE_SUBCASE(case4, array_cs_db, newshape_a );
@@ -248,13 +335,37 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case4, array_fs_hb, newshape_a );
     RESHAPE_SUBCASE(case4, array_fs_db, newshape_a );
 
-    RESHAPE_SUBCASE(case5, array_hs_fb, newshape_a );
-    RESHAPE_SUBCASE(case5, array_hs_hb, newshape_a );
-    RESHAPE_SUBCASE(case5, array_hs_db, newshape_a );
+    RESHAPE_SUBCASE(case4, array_hs_fb, newshape_a );
+    RESHAPE_SUBCASE(case4, array_hs_hb, newshape_a );
+    RESHAPE_SUBCASE(case4, array_hs_db, newshape_a );
 
-    RESHAPE_SUBCASE(case5, array_ds_fb, newshape_a );
-    RESHAPE_SUBCASE(case5, array_ds_hb, newshape_a );
-    RESHAPE_SUBCASE(case5, array_ds_db, newshape_a );
+    RESHAPE_SUBCASE(case4, array_ds_fb, newshape_a );
+    RESHAPE_SUBCASE(case4, array_ds_hb, newshape_a );
+    RESHAPE_SUBCASE(case4, array_ds_db, newshape_a );
+
+    RESHAPE_SUBCASE(case4, array_ls_fb, newshape_a );
+    RESHAPE_SUBCASE(case4, array_ls_hb, newshape_a );
+    RESHAPE_SUBCASE(case4, array_ls_db, newshape_a );
+
+    RESHAPE_SUBCASE(case4, array_cs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case4, array_cs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case4, array_cs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case4, array_fs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case4, array_fs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case4, array_fs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case4, array_hs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case4, array_hs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case4, array_hs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case5, array_ds_fb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_ds_hb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_ds_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case5, array_ls_fb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_ls_hb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_ls_db, newshape_cl );
     #endif
 }
 
@@ -291,6 +402,10 @@ TEST_CASE("reshape(case5)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case5, array_ds_hb, newshape_ct );
     RESHAPE_SUBCASE(case5, array_ds_db, newshape_ct );
 
+    RESHAPE_SUBCASE(case5, array_ls_fb, newshape_ct );
+    RESHAPE_SUBCASE(case5, array_ls_hb, newshape_ct );
+    RESHAPE_SUBCASE(case5, array_ls_db, newshape_ct );
+
     RESHAPE_SUBCASE(case5, array_cs_fb, newshape_a );
     RESHAPE_SUBCASE(case5, array_cs_hb, newshape_a );
     RESHAPE_SUBCASE(case5, array_cs_db, newshape_a );
@@ -306,6 +421,30 @@ TEST_CASE("reshape(case5)" * doctest::test_suite("view::reshape"))
     RESHAPE_SUBCASE(case5, array_ds_fb, newshape_a );
     RESHAPE_SUBCASE(case5, array_ds_hb, newshape_a );
     RESHAPE_SUBCASE(case5, array_ds_db, newshape_a );
+
+    RESHAPE_SUBCASE(case5, array_ls_fb, newshape_a );
+    RESHAPE_SUBCASE(case5, array_ls_hb, newshape_a );
+    RESHAPE_SUBCASE(case5, array_ls_db, newshape_a );
+
+    RESHAPE_SUBCASE(case5, array_cs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_cs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_cs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case5, array_fs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_fs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_fs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case5, array_hs_fb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_hs_hb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_hs_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case5, array_ds_fb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_ds_hb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_ds_db, newshape_cl );
+
+    RESHAPE_SUBCASE(case5, array_ls_fb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_ls_hb, newshape_cl );
+    RESHAPE_SUBCASE(case5, array_ls_db, newshape_cl );
     #endif
 }
 
