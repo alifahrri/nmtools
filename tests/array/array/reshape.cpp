@@ -347,7 +347,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("array::reshape"))
     RESHAPE_SUBCASE(case4, array_ls_db, newshape_a );
 
     // NOTE: triggers gcc (9.4) internal compiler error: in lookup_template_class_1, at cp/pt.c:9625
-    #ifdef __clang__
+    // #ifdef__clang__
+    #if 1
     RESHAPE_SUBCASE(case4, array_cs_fb, newshape_cl );
     RESHAPE_SUBCASE(case4, array_cs_hb, newshape_cl );
     RESHAPE_SUBCASE(case4, array_cs_db, newshape_cl );
@@ -429,7 +430,8 @@ TEST_CASE("reshape(case5)" * doctest::test_suite("array::reshape"))
     RESHAPE_SUBCASE(case5, array_ls_db, newshape_a );
 
     // NOTE: triggers gcc (9.4) internal compiler error: in lookup_template_class_1, at cp/pt.c:9625
-    #ifdef __clang__
+    // #ifdef__clang__
+    #if 1
     RESHAPE_SUBCASE(case5, array_cs_fb, newshape_cl );
     RESHAPE_SUBCASE(case5, array_cs_hb, newshape_cl );
     RESHAPE_SUBCASE(case5, array_cs_db, newshape_cl );
