@@ -15,13 +15,15 @@ namespace nmtools::index
     {
         using result_t = meta::resolve_optype_t<shape_flatten_t,shape_t,fixed_size_t>;
 
+        using namespace literals;
+
         auto result = result_t {};
         if constexpr (!meta::is_constant_index_array_v<result_t>) {
             auto n = len(shape);
             // assume result is single size
-            at(result,0) = 1;
+            at(result,0_ct) = 1;
             for (size_t i=0; i<(size_t)n; i++) {
-                at(result,0) *= at(shape,i);
+                at(result,0_ct) = at(result,0_ct) * at(shape,i);
             }
         }
         return result;
@@ -45,15 +47,24 @@ namespace nmtools::meta
             if constexpr (is_constant_index_v<fixed_size_t>) {
                 using type = nmtools_tuple<ct<fixed_size_t::value>>;
                 return as_value_v<type>;
-            } else if constexpr (is_constant_index_array_v<shape_t>) {
+            } else if constexpr (
+                is_constant_index_array_v<shape_t>
+                || is_clipped_index_array_v<shape_t>
+            ) {
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto result = index::shape_flatten(shape,fixed_size_t{});
                 using nmtools::len, nmtools::at;
-                return template_reduce<len(result)-1>([&](auto init, auto index){
+                return template_reduce<len(result)>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;
-                    using type   = append_type_t<init_t,nmtools_tuple<ct<at(result,index+1)>>>;
-                    return as_value_v<type>;
-                }, as_value_v<nmtools_tuple<ct<at(result,0)>>>);
+                    constexpr auto I = at(result,index);
+                    if constexpr (is_constant_index_array_v<shape_t>) {
+                        using type = append_type_t<init_t,ct<I>>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_t,clipped_size_t<I>>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (is_none_v<shape_t>) {
                 using type = nmtools_tuple<ct<1ul>>;
                 return as_value_v<type>;
