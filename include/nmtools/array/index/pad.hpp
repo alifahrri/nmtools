@@ -54,8 +54,16 @@ namespace nmtools::index
                 if constexpr (meta::is_resizable_v<result_t>) {
                     res.resize(dim);
                 }
-                for (size_t i=0; i<dim; i++) {
+                auto shape_pad_impl = [&](auto i){
                     at(res,i) = at(shape,i) + at(pad_width,i) + at(pad_width,dim+i);
+                };
+                if constexpr (meta::is_tuple_v<result_t>) {
+                    constexpr auto N = meta::len_v<result_t>;
+                    meta::template_for<N>(shape_pad_impl);
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        shape_pad_impl(i);
+                    }   
                 }
                 // some operator= not usable in constexpr context
                 // ret = res;
@@ -111,7 +119,7 @@ namespace nmtools::index
         }
 
         bool out_of_bound = false;
-        for (size_t i=0; (i<idx_dim) && (!out_of_bound); i++) {
+        auto pad_impl = [&](auto i){
             auto idx = static_cast<s_idx_t>(at(index,i));
             auto s_i = static_cast<s_idx_t>(at(src_shape,i));
             auto p_i = static_cast<s_idx_t>(at(pad_width,i));
@@ -121,6 +129,14 @@ namespace nmtools::index
                 out_of_bound = true;
             } else {
                 at(res,i) = idx - p_i;
+            }
+        };
+        if constexpr (meta::is_tuple_v<result_t>) {
+            constexpr auto N = meta::len_v<result_t>;
+            meta::template_for<N>(pad_impl);
+        } else {
+            for (size_t i=0; (i<idx_dim) && (!out_of_bound); i++) {
+                pad_impl(i);
             }
         }
 
@@ -155,20 +171,28 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<shape_t> && is_constant_index_array_v<pad_width_t>) {
+            if constexpr (
+                (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
+                && is_constant_index_array_v<pad_width_t>
+            ) {
                 constexpr auto shape     = to_value_v<shape_t>;
                 constexpr auto pad_width = to_value_v<pad_width_t>;
                 constexpr auto result    = index::shape_pad(shape,pad_width);
                 if constexpr (static_cast<bool>(result)) {
                     constexpr auto shape = *result;
-                    return template_reduce<nmtools::len(shape)-1>([&](auto init, auto index){
+                    return template_reduce<nmtools::len(shape)>([&](auto init, auto index){
                         using init_type = type_t<decltype(init)>;
-                        return as_value_v<append_type_t<init_type,ct<nmtools::at(shape,index+1)>>>;
-                    }, as_value_v<nmtools_tuple<ct<nmtools::at(shape,0)>>>);
+                        constexpr auto I = nmtools::at(shape,index);
+                        if constexpr (is_constant_index_array_v<shape_t>) {
+                            return as_value_v<append_type_t<init_type,ct<I>>>;
+                        } else {
+                            return as_value_v<append_type_t<init_type,clipped_size_t<I>>>;
+                        }
+                    }, as_value_v<nmtools_tuple<>>);
                 } else {
                     return as_value_v<error::SHAPE_PAD_INVALID<shape_t,pad_width_t>>;
                 }
-            } else if constexpr (is_constant_index_array_v<shape_t> && is_index_array_v<pad_width_t>) {
+            } else if constexpr (is_fixed_index_array_v<shape_t> && is_index_array_v<pad_width_t>) {
                 using index_t = get_index_element_type_t<pad_width_t>;
                 return as_value_v<nmtools_array<index_t,len_v<shape_t>>>;
             } else if constexpr (is_index_array_v<shape_t> && is_index_array_v<pad_width_t>) {
