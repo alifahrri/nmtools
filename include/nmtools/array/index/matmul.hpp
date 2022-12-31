@@ -94,7 +94,7 @@ namespace nmtools::meta
             } else if constexpr (is_fixed_index_array_v<shape_t> && !is_constant_index_v<split_t>) {
                 // shape is fixed size but the index to split is runtime value
                 constexpr auto max_elements = fixed_index_array_size_v<shape_t>;
-                using element_t = get_element_type_t<shape_t>;
+                using element_t = get_index_element_type_t<shape_t>;
                 // NOTE: use make_hybrid_ndarray instead of make_hybrid_ndarray_t to avoid including ndarray.hpp
                 using hybrid_t  = typename make_hybrid_ndarray<element_t,max_elements,1>::type;
                 using type = make_tuple_type_t<hybrid_t,hybrid_t>;
@@ -111,7 +111,7 @@ namespace nmtools::meta
                         return index;
                     }
                 }();
-                using element_t = get_element_type_t<shape_t>;
+                using element_t = get_index_element_type_t<shape_t>;
 
                 using left_size_t  = make_tuple_type_t<ct<i>>;
                 using right_size_t = make_tuple_type_t<ct<N-i>>;
@@ -181,7 +181,7 @@ namespace nmtools::index
             #endif
 
             // check matrix shape
-            auto valid_shape = l1 == r2;
+            auto valid_shape = (size_t)l1 == (size_t)r2;
             // broadcast shape, if possible
             const auto [success, b_shape] = index::broadcast_shape(b_ashape,b_bshape);
 
