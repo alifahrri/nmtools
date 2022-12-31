@@ -406,9 +406,9 @@ namespace nmtools::meta
             using slice_t [[maybe_unused]] = nmtools_either<index_t,all_t>;
             constexpr auto slice_vtype = [](auto shape_vtype, [[maybe_unused]] auto f_init_vtype){
                 using m_shape_t = type_t<decltype(shape_vtype)>;
-                [[maybe_unused]] constexpr auto f_size = fixed_size_v<m_shape_t>;
+                constexpr auto f_size = len_v<m_shape_t>;
                 [[maybe_unused]] constexpr auto b_size = bounded_size_v<m_shape_t>;
-                if constexpr (!is_fail_v<decltype(f_size)>) {
+                if constexpr (f_size > 0) {
                     using i_slice_t  = type_t<decltype(f_init_vtype)>;
                     return meta::template_reduce<f_size-2>([](auto init, auto){
                         using concatenated = concat_type_t<nmtools_tuple<index_t>,type_t<decltype(init)>>;
