@@ -16,12 +16,9 @@ namespace nmtools::index
     {
         auto minus_1_count = 0;
         auto dst_numel = (size_t)0;
-        // NOTE: to avoid clang constexpr error: constexpr variable 'result' must be initialized by a constant expression
-        // note: read of variable whose lifetime has ended
-        const auto dst_shape_ = dst_shape;
         using index_t = meta::get_index_element_type_t<dst_shape_t>;
-        for (size_t i=0; i<len(dst_shape_); i++) {
-            const auto d_i = at(dst_shape_,i);
+        for (size_t i=0; i<len(dst_shape); i++) {
+            const auto d_i = at(dst_shape,i);
             if (i==0) {
                 dst_numel = 1;
             }
