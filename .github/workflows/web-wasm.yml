@@ -156,7 +156,7 @@ jobs:
       - name: build
         run: |
           ./dockcross-${{ matrix.name }} bash -c "emcc -v"
-          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_NDARRAY=ON -DNMTOOLS_TEST_ARRAY_INDEX=ON -DNMTOOLS_TEST_ARRAY_UTILITY=ON -DNMTOOLS_TEST_UTILS=ON -DNMTOOLS_TEST_NDARRAY=ON -DNMTOOLS_TEST_COMPOSITION=ON -DNMTOOLS_TEST_FUNCTIONAL=ON -DNMTOOLS_TEST_MISC=ON && make -j2 VERBOSE=1'
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_NDARRAY=ON -DNMTOOLS_TEST_ARRAY_UTILITY=ON -DNMTOOLS_TEST_UTILS=ON -DNMTOOLS_TEST_NDARRAY=ON -DNMTOOLS_TEST_COMPOSITION=ON -DNMTOOLS_TEST_FUNCTIONAL=ON -DNMTOOLS_TEST_MISC=ON && make -j2 VERBOSE=1'
       - name: run tests
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
 
