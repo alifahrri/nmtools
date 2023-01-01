@@ -52,7 +52,7 @@ namespace nmtools::view
         {
             auto indices = pack_indices(Is...);
 
-            // TODO: maybe move index computation to index::expand_dims
+            // TODO: maybe move index computation to index::shape_expand_dims
             auto expanded_shape   = shape();
             auto squeezed_strides = index::compute_strides(expanded_shape);
 

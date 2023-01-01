@@ -11,6 +11,26 @@ namespace nmtools::index
 {
     struct shape_reshape_t {};
     
+    template <typename dst_shape_t>
+    constexpr auto count_negative_reshape(const dst_shape_t& dst_shape)
+    {
+        auto minus_1_count = 0;
+        auto dst_numel = (size_t)0;
+        using index_t = meta::get_index_element_type_t<dst_shape_t>;
+        for (size_t i=0; i<len(dst_shape); i++) {
+            const auto d_i = at(dst_shape,i);
+            if (i==0) {
+                dst_numel = 1;
+            }
+            if ((index_t)d_i == index_t(-1)) {
+                minus_1_count++;
+            } else {
+                dst_numel *= (size_t)d_i;
+            }
+        }
+        return nmtools_tuple{minus_1_count,dst_numel};
+    }
+
     /**
      * @brief Compute the resulting shape of reshape op.
      * Folowing numpy, allow -1 shape value.
@@ -50,34 +70,11 @@ namespace nmtools::index
         } else {
             auto result = result_t {};
             using return_t = nmtools_maybe<result_t>;
-            using element_t = meta::get_element_type_t<result_t>;
+            using element_t = meta::get_index_element_type_t<result_t>;
             using index_t = meta::make_signed_t<element_t>; // for comparison
 
-            auto dst_shape_ = [&](){
-                if constexpr (meta::is_constant_index_array_v<dst_shape_t>) {
-                    return meta::to_value_v<dst_shape_t>;
-                } else {
-                    return index::ref(dst_shape);
-                }
-            }();
-
             // number of "-1" in dst_shape
-            const auto [minus_1_count, dst_numel] = [&](){
-                auto minus_1_count = 0;
-                auto dst_numel = (size_t)0;
-                for (size_t i=0; i<len(dst_shape_); i++) {
-                    auto d_i = at(dst_shape_,i);
-                    if (i==0) {
-                        dst_numel = 1;
-                    }
-                    if ((index_t)d_i == index_t(-1)) {
-                        minus_1_count++;
-                    } else {
-                        dst_numel *= d_i;
-                    }
-                }
-                return nmtools_tuple{minus_1_count,dst_numel};
-            }();
+            const auto [minus_1_count, dst_numel] = count_negative_reshape(dst_shape);
 
             if (minus_1_count > 1) {
                 return return_t{meta::Nothing};
@@ -92,15 +89,23 @@ namespace nmtools::index
             }
 
             if constexpr (meta::is_resizable_v<result_t>) {
-                result.resize(len(dst_shape_));
+                result.resize(len(dst_shape));
             }
 
-            for (size_t i=0; i<(size_t)len(dst_shape_); i++) {
-                auto d_i = at(dst_shape_,i);
+            auto shape_reshape_impl = [&,dst_numel=dst_numel](auto i){
+                auto d_i = at(dst_shape,i);
                 if ((index_t)d_i == index_t(-1)) {
                     at(result,i) = src_numel / dst_numel;
                 } else {
-                    at(result,i) = at(dst_shape_,i);
+                    at(result,i) = at(dst_shape,i);
+                }
+            };
+            if constexpr (meta::is_tuple_v<result_t>) {
+                constexpr auto N = meta::len_v<result_t>;
+                meta::template_for<N>(shape_reshape_impl);
+            } else {              
+                for (size_t i=0; i<(size_t)len(dst_shape); i++) {
+                    shape_reshape_impl(i);
                 }
             }
 
@@ -124,18 +129,35 @@ namespace nmtools::meta
     struct resolve_optype<void, index::shape_reshape_t, src_shape_t, dst_shape_t>
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<src_shape_t> && is_constant_index_array_v<dst_shape_t>) {
-                constexpr auto result = index::shape_reshape(to_value_v<src_shape_t>,to_value_v<dst_shape_t>);
-                if constexpr (!static_cast<bool>(result)) {
-                    using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t,decltype(result)>;
+            if constexpr (
+                is_constant_index_array_v<src_shape_t>
+                && (is_constant_index_array_v<dst_shape_t> || is_clipped_index_array_v<dst_shape_t>)
+            ) {
+                constexpr auto src_shape = to_value_v<src_shape_t>;
+                constexpr auto dst_shape = to_value_v<dst_shape_t>;
+                constexpr auto result = index::shape_reshape(src_shape,dst_shape);
+                if constexpr (!static_cast<bool>(result) && is_constant_index_array_v<dst_shape_t>) {
+                    // only if both are constant index should trigger compile-time error
+                    // since clipped shape value may be valid at runtime
+                    using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t,decltype(src_shape),decltype(dst_shape),decltype(result)>;
+                    return as_value_v<type>;
+                } else if constexpr (!static_cast<bool>(result)) {
+                    // to avoid dereference the result
+                    // retry without constant_index_array
+                    using type = resolve_optype_t<index::shape_reshape_t,decltype(src_shape),dst_shape_t>;
                     return as_value_v<type>;
                 } else {
                     constexpr auto res = *result;
                     using nmtools::at, nmtools::len;
-                    return template_reduce<len(res)-1>([&](auto init, auto index){
+                    return template_reduce<len(res)>([&](auto init, auto index){
                         using init_type = type_t<decltype(init)>;
-                        return as_value_v<append_type_t<init_type,ct<at(res,index+1)>>>;
-                    }, as_value_v<nmtools_tuple<ct<at(res,0)>>>);
+                        constexpr auto I = at(res,index);
+                        if constexpr (is_constant_index_array_v<dst_shape_t>) {
+                            return as_value_v<append_type_t<init_type,ct<I>>>;
+                        } else {
+                            return as_value_v<append_type_t<init_type,clipped_size_t<I>>>;
+                        }
+                    }, as_value_v<nmtools_tuple<>>);
                 }
             } else if constexpr (is_constant_index_array_v<dst_shape_t>) {
                 constexpr auto dst_shape = to_value_v<dst_shape_t>;
@@ -187,6 +209,36 @@ namespace nmtools::meta
                 // NOTE: return the runtime type to not confuse the computation (make sure not skip)
                 using m_dst_shape_t = remove_cvref_t<decltype(dst_shape)>;
                 return as_value_v<resolve_optype_t<index::shape_reshape_t,src_shape_t,m_dst_shape_t>>;
+            } else if constexpr (is_index_array_v<src_shape_t> && is_clipped_index_array_v<dst_shape_t>) {
+                constexpr auto clipped_min = clipped_min_v<dst_shape_t>;
+                constexpr auto clipped_max = clipped_max_v<dst_shape_t>;
+                constexpr auto N = len_v<dst_shape_t>;
+                constexpr auto dst_shape = [&](){
+                    auto dst_shape = nmtools_array<int,N>{};
+                    for (auto i=0; i<N; i++) {
+                        dst_shape[i] = (clipped_min[i] < 0 ? clipped_min[i] : clipped_max[i]);
+                    }
+                    return dst_shape;
+                }();
+                // number of "-1" in dst_shape
+                constexpr auto result = index::count_negative_reshape(dst_shape);
+                constexpr auto minus_1_count = nmtools::get<0>(result);
+                if constexpr (minus_1_count > 1) {
+                    return as_value_v<error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t>>;
+                } else {
+                    using nmtools::at;
+                    constexpr auto negative_shape = nmtools::get<1>(result);
+                    return meta::template_reduce<N>([&](auto init, auto index){
+                        using init_t = type_t<decltype(init)>;
+                        constexpr auto min = at(clipped_min,index);
+                        constexpr auto max = at(clipped_max,index);
+                        if constexpr (min < 0) {
+                            return as_value_v<append_type_t<init_t,clipped_size_t<negative_shape>>>;
+                        } else {
+                            return as_value_v<append_type_t<init_t,clipped_size_t<max>>>;
+                        }
+                    }, as_value_v<nmtools_tuple<>>);
+                }
             } else if constexpr (is_index_array_v<src_shape_t> && is_index_array_v<dst_shape_t>) {
                 using element_t = get_element_type_t<dst_shape_t>;
                 using indices_t = transform_bounded_array_t<dst_shape_t>;

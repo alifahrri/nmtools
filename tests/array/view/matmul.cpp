@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/view/matmul.hpp"
@@ -80,6 +83,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case1, lhs_ds_hb, rhs_ds_hb );
     MATMUL_SUBCASE( case1, lhs_ds_db, rhs_ds_db );
 
+    MATMUL_SUBCASE( case1, lhs_ls_fb, rhs_ls_fb );
+    MATMUL_SUBCASE( case1, lhs_ls_hb, rhs_ls_hb );
+    MATMUL_SUBCASE( case1, lhs_ls_db, rhs_ls_db );
+
     MATMUL_SUBCASE( case1, lhs_fs_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case1, lhs_fs_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case1, lhs_fs_db, rhs_cs_db );
@@ -91,6 +98,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case1, lhs_ds_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case1, lhs_ds_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case1, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case1, lhs_ls_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case1, lhs_ls_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case1, lhs_ls_db, rhs_cs_db );
 
     MATMUL_SUBCASE( case1, lhs_cs_fb, rhs_fs_fb );
     MATMUL_SUBCASE( case1, lhs_cs_hb, rhs_fs_hb );
@@ -104,6 +115,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case1, lhs_ds_hb, rhs_fs_hb );
     MATMUL_SUBCASE( case1, lhs_ds_db, rhs_fs_db );
 
+    MATMUL_SUBCASE( case1, lhs_ls_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case1, lhs_ls_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case1, lhs_ls_db, rhs_fs_db );
+
     MATMUL_SUBCASE( case1, lhs_cs_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case1, lhs_cs_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case1, lhs_cs_db, rhs_hs_db );
@@ -115,6 +130,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case1, lhs_ds_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case1, lhs_ds_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case1, lhs_ds_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case1, lhs_ls_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case1, lhs_ls_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case1, lhs_ls_db, rhs_hs_db );
     #endif
 }
 
@@ -144,6 +163,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case2, lhs_ds_hb, rhs_ds_hb );
     MATMUL_SUBCASE( case2, lhs_ds_db, rhs_ds_db );
 
+    MATMUL_SUBCASE( case2, lhs_ls_fb, rhs_ls_fb );
+    MATMUL_SUBCASE( case2, lhs_ls_hb, rhs_ls_hb );
+    MATMUL_SUBCASE( case2, lhs_ls_db, rhs_ls_db );
+
     MATMUL_SUBCASE( case2, lhs_fs_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case2, lhs_fs_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case2, lhs_fs_db, rhs_cs_db );
@@ -155,6 +178,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case2, lhs_ds_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case2, lhs_ds_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case2, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case2, lhs_ls_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case2, lhs_ls_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case2, lhs_ls_db, rhs_cs_db );
 
     MATMUL_SUBCASE( case2, lhs_cs_fb, rhs_fs_fb );
     MATMUL_SUBCASE( case2, lhs_cs_hb, rhs_fs_hb );
@@ -168,6 +195,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case2, lhs_ds_hb, rhs_fs_hb );
     MATMUL_SUBCASE( case2, lhs_ds_db, rhs_fs_db );
 
+    MATMUL_SUBCASE( case2, lhs_ls_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case2, lhs_ls_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case2, lhs_ls_db, rhs_fs_db );
+
     MATMUL_SUBCASE( case2, lhs_cs_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case2, lhs_cs_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case2, lhs_cs_db, rhs_hs_db );
@@ -179,6 +210,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case2, lhs_ds_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case2, lhs_ds_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case2, lhs_ds_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case2, lhs_ls_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case2, lhs_ls_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case2, lhs_ls_db, rhs_hs_db );
     #endif
 }
 
@@ -208,6 +243,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case3, lhs_ds_hb, rhs_ds_hb );
     MATMUL_SUBCASE( case3, lhs_ds_db, rhs_ds_db );
 
+    MATMUL_SUBCASE( case3, lhs_ls_fb, rhs_ls_fb );
+    MATMUL_SUBCASE( case3, lhs_ls_hb, rhs_ls_hb );
+    MATMUL_SUBCASE( case3, lhs_ls_db, rhs_ls_db );
+
     MATMUL_SUBCASE( case3, lhs_fs_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case3, lhs_fs_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case3, lhs_fs_db, rhs_cs_db );
@@ -219,6 +258,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case3, lhs_ds_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case3, lhs_ds_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case3, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case3, lhs_ls_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case3, lhs_ls_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case3, lhs_ls_db, rhs_cs_db );
 
     MATMUL_SUBCASE( case3, lhs_cs_fb, rhs_fs_fb );
     MATMUL_SUBCASE( case3, lhs_cs_hb, rhs_fs_hb );
@@ -232,6 +275,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case3, lhs_ds_hb, rhs_fs_hb );
     MATMUL_SUBCASE( case3, lhs_ds_db, rhs_fs_db );
 
+    MATMUL_SUBCASE( case3, lhs_ls_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case3, lhs_ls_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case3, lhs_ls_db, rhs_fs_db );
+
     MATMUL_SUBCASE( case3, lhs_cs_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case3, lhs_cs_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case3, lhs_cs_db, rhs_hs_db );
@@ -243,6 +290,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case3, lhs_ds_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case3, lhs_ds_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case3, lhs_ds_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case3, lhs_ls_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case3, lhs_ls_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case3, lhs_ls_db, rhs_hs_db );
     #endif
 }
 
@@ -272,6 +323,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case4, lhs_ds_hb, rhs_ds_hb );
     MATMUL_SUBCASE( case4, lhs_ds_db, rhs_ds_db );
 
+    MATMUL_SUBCASE( case4, lhs_ls_fb, rhs_ls_fb );
+    MATMUL_SUBCASE( case4, lhs_ls_hb, rhs_ls_hb );
+    MATMUL_SUBCASE( case4, lhs_ls_db, rhs_ls_db );
+
     MATMUL_SUBCASE( case4, lhs_fs_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case4, lhs_fs_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case4, lhs_fs_db, rhs_cs_db );
@@ -283,6 +338,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case4, lhs_ds_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case4, lhs_ds_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case4, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case4, lhs_ls_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case4, lhs_ls_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case4, lhs_ls_db, rhs_cs_db );
 
     MATMUL_SUBCASE( case4, lhs_cs_fb, rhs_fs_fb );
     MATMUL_SUBCASE( case4, lhs_cs_hb, rhs_fs_hb );
@@ -296,6 +355,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case4, lhs_ds_hb, rhs_fs_hb );
     MATMUL_SUBCASE( case4, lhs_ds_db, rhs_fs_db );
 
+    MATMUL_SUBCASE( case4, lhs_ls_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case4, lhs_ls_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case4, lhs_ls_db, rhs_fs_db );
+
     MATMUL_SUBCASE( case4, lhs_cs_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case4, lhs_cs_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case4, lhs_cs_db, rhs_hs_db );
@@ -307,6 +370,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case4, lhs_ds_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case4, lhs_ds_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case4, lhs_ds_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case4, lhs_ls_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case4, lhs_ls_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case4, lhs_ls_db, rhs_hs_db );
     #endif
 }
 
@@ -336,6 +403,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case5, lhs_ds_hb, rhs_ds_hb );
     MATMUL_SUBCASE( case5, lhs_ds_db, rhs_ds_db );
 
+    MATMUL_SUBCASE( case5, lhs_ls_fb, rhs_ls_fb );
+    MATMUL_SUBCASE( case5, lhs_ls_hb, rhs_ls_hb );
+    MATMUL_SUBCASE( case5, lhs_ls_db, rhs_ls_db );
+
     MATMUL_SUBCASE( case5, lhs_fs_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case5, lhs_fs_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case5, lhs_fs_db, rhs_cs_db );
@@ -347,6 +418,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case5, lhs_ds_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case5, lhs_ds_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case5, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case5, lhs_ls_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case5, lhs_ls_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case5, lhs_ls_db, rhs_cs_db );
 
     MATMUL_SUBCASE( case5, lhs_cs_fb, rhs_fs_fb );
     MATMUL_SUBCASE( case5, lhs_cs_hb, rhs_fs_hb );
@@ -360,6 +435,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case5, lhs_ds_hb, rhs_fs_hb );
     MATMUL_SUBCASE( case5, lhs_ds_db, rhs_fs_db );
 
+    MATMUL_SUBCASE( case5, lhs_ls_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case5, lhs_ls_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case5, lhs_ls_db, rhs_fs_db );
+
     MATMUL_SUBCASE( case5, lhs_cs_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case5, lhs_cs_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case5, lhs_cs_db, rhs_hs_db );
@@ -371,6 +450,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case5, lhs_ds_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case5, lhs_ds_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case5, lhs_ds_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case5, lhs_ls_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case5, lhs_ls_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case5, lhs_ls_db, rhs_hs_db );
     #endif
 }
 
@@ -400,6 +483,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case6, lhs_ds_hb, rhs_ds_hb );
     MATMUL_SUBCASE( case6, lhs_ds_db, rhs_ds_db );
 
+    MATMUL_SUBCASE( case6, lhs_ls_fb, rhs_ls_fb );
+    MATMUL_SUBCASE( case6, lhs_ls_hb, rhs_ls_hb );
+    MATMUL_SUBCASE( case6, lhs_ls_db, rhs_ls_db );
+
     MATMUL_SUBCASE( case6, lhs_fs_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case6, lhs_fs_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case6, lhs_fs_db, rhs_cs_db );
@@ -411,6 +498,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case6, lhs_ds_fb, rhs_cs_fb );
     MATMUL_SUBCASE( case6, lhs_ds_hb, rhs_cs_hb );
     MATMUL_SUBCASE( case6, lhs_ds_db, rhs_cs_db );
+
+    MATMUL_SUBCASE( case6, lhs_ls_fb, rhs_cs_fb );
+    MATMUL_SUBCASE( case6, lhs_ls_hb, rhs_cs_hb );
+    MATMUL_SUBCASE( case6, lhs_ls_db, rhs_cs_db );
 
     MATMUL_SUBCASE( case6, lhs_cs_fb, rhs_fs_fb );
     MATMUL_SUBCASE( case6, lhs_cs_hb, rhs_fs_hb );
@@ -424,6 +515,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case6, lhs_ds_hb, rhs_fs_hb );
     MATMUL_SUBCASE( case6, lhs_ds_db, rhs_fs_db );
 
+    MATMUL_SUBCASE( case6, lhs_ls_fb, rhs_fs_fb );
+    MATMUL_SUBCASE( case6, lhs_ls_hb, rhs_fs_hb );
+    MATMUL_SUBCASE( case6, lhs_ls_db, rhs_fs_db );
+
     MATMUL_SUBCASE( case6, lhs_cs_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case6, lhs_cs_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case6, lhs_cs_db, rhs_hs_db );
@@ -435,6 +530,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("view::matmul"))
     MATMUL_SUBCASE( case6, lhs_ds_fb, rhs_hs_fb );
     MATMUL_SUBCASE( case6, lhs_ds_hb, rhs_hs_hb );
     MATMUL_SUBCASE( case6, lhs_ds_db, rhs_hs_db );
+
+    MATMUL_SUBCASE( case6, lhs_ls_fb, rhs_hs_fb );
+    MATMUL_SUBCASE( case6, lhs_ls_hb, rhs_hs_hb );
+    MATMUL_SUBCASE( case6, lhs_ls_db, rhs_hs_db );
     #endif
 }
 

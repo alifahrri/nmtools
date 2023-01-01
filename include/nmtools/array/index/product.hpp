@@ -26,7 +26,7 @@ namespace nmtools::index
         auto ret = result_t {};
 
         if constexpr (! meta::is_constant_index_v<result_t>) {
-            using element_t = meta::get_element_or_common_type_t<shape_t>;
+            using element_t = meta::get_index_element_type_t<shape_t>;
             ret = element_t{1};
             if constexpr (meta::is_fixed_index_array_v<shape_t>) {
                 constexpr auto n = meta::len_v<shape_t>;
@@ -69,7 +69,7 @@ namespace nmtools::meta
                 constexpr auto N = index::product(shape);
                 return as_value_v<clipped_size_t<N>>;
             } else if constexpr (is_index_array_v<shape_t>) {
-                using type = get_element_or_common_type_t<shape_t>;
+                using type = get_index_element_type_t<shape_t>;
                 return as_value_v<type>;
             } else {
                 using type = error::INDEX_PRODUCT_UNSUPPORTED<shape_t>;

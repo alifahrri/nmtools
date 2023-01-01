@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY) && defined(NMTOOLS_TESTING_CONSTEXPR)
@@ -69,6 +72,10 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case1, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case1, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case1, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case1, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case1, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case1, array_ls_db, axes_a );
     #endif
 }
 
@@ -91,6 +98,10 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case2, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case2, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case2, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case2, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case2, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case2, array_ls_db, axes_a );
     #endif
 }
 
@@ -113,6 +124,10 @@ TEST_CASE("transpose(case3)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case3, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case3, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case3, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case3, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case3, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case3, array_ls_db, axes_a );
     #endif
 }
 
@@ -135,6 +150,10 @@ TEST_CASE("transpose(case4)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case4, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case4, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case4, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case4, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case4, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case4, array_ls_db, axes_a );
     #endif
 }
 
@@ -157,6 +176,10 @@ TEST_CASE("transpose(case5)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case5, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case5, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case5, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case5, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case5, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case5, array_ls_db, axes_a );
     #endif
 }
 
@@ -179,6 +202,10 @@ TEST_CASE("transpose(case6)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case6, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case6, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case6, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case6, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case6, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case6, array_ls_db, axes_a );
     #endif
 }
 
@@ -201,6 +228,10 @@ TEST_CASE("transpose(case7)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case7, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case7, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case7, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case7, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case7, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case7, array_ls_db, axes_a );
     #endif
 }
 
@@ -223,6 +254,10 @@ TEST_CASE("transpose(case8)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case8, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case8, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case8, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case8, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case8, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case8, array_ls_db, axes_a );
     #endif
 }
 
@@ -245,6 +280,10 @@ TEST_CASE("transpose(case9)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case9, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case9, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case9, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case9, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case9, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case9, array_ls_db, axes_a );
     #endif
 }
 
@@ -267,6 +306,110 @@ TEST_CASE("transpose(case10)" * doctest::test_suite("array::transpose"))
     TRANSPOSE_SUBCASE( case10, array_ds_fb, axes_a );
     TRANSPOSE_SUBCASE( case10, array_ds_hb, axes_a );
     TRANSPOSE_SUBCASE( case10, array_ds_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case10, array_ls_fb, axes_a );
+    TRANSPOSE_SUBCASE( case10, array_ls_hb, axes_a );
+    TRANSPOSE_SUBCASE( case10, array_ls_db, axes_a );
+
+    TRANSPOSE_SUBCASE( case10, array_cs_fb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_cs_hb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_cs_db, axes_f );
+
+    TRANSPOSE_SUBCASE( case10, array_fs_fb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_fs_hb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_fs_db, axes_f );
+
+    TRANSPOSE_SUBCASE( case10, array_hs_fb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_hs_hb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_hs_db, axes_f );
+
+    TRANSPOSE_SUBCASE( case10, array_ds_fb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_ds_hb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_ds_db, axes_f );
+
+    TRANSPOSE_SUBCASE( case10, array_ls_fb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_ls_hb, axes_f );
+    TRANSPOSE_SUBCASE( case10, array_ls_db, axes_f );
+
+    TRANSPOSE_SUBCASE( case10, array_cs_fb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_cs_hb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_cs_db, axes_h );
+
+    TRANSPOSE_SUBCASE( case10, array_fs_fb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_fs_hb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_fs_db, axes_h );
+
+    TRANSPOSE_SUBCASE( case10, array_hs_fb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_hs_hb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_hs_db, axes_h );
+
+    TRANSPOSE_SUBCASE( case10, array_ds_fb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_ds_hb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_ds_db, axes_h );
+
+    TRANSPOSE_SUBCASE( case10, array_ls_fb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_ls_hb, axes_h );
+    TRANSPOSE_SUBCASE( case10, array_ls_db, axes_h );
+
+    TRANSPOSE_SUBCASE( case10, array_cs_fb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_cs_hb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_cs_db, axes_v );
+
+    TRANSPOSE_SUBCASE( case10, array_fs_fb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_fs_hb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_fs_db, axes_v );
+
+    TRANSPOSE_SUBCASE( case10, array_hs_fb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_hs_hb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_hs_db, axes_v );
+
+    TRANSPOSE_SUBCASE( case10, array_ds_fb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_ds_hb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_ds_db, axes_v );
+
+    TRANSPOSE_SUBCASE( case10, array_ls_fb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_ls_hb, axes_v );
+    TRANSPOSE_SUBCASE( case10, array_ls_db, axes_v );
+
+    TRANSPOSE_SUBCASE( case10, array_cs_fb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_cs_hb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_cs_db, axes_ct );
+
+    TRANSPOSE_SUBCASE( case10, array_fs_fb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_fs_hb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_fs_db, axes_ct );
+
+    TRANSPOSE_SUBCASE( case10, array_hs_fb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_hs_hb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_hs_db, axes_ct );
+
+    TRANSPOSE_SUBCASE( case10, array_ds_fb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_ds_hb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_ds_db, axes_ct );
+
+    TRANSPOSE_SUBCASE( case10, array_ls_fb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_ls_hb, axes_ct );
+    TRANSPOSE_SUBCASE( case10, array_ls_db, axes_ct );
+
+    TRANSPOSE_SUBCASE( case10, array_cs_fb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_cs_hb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_cs_db, axes_cl );
+
+    TRANSPOSE_SUBCASE( case10, array_fs_fb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_fs_hb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_fs_db, axes_cl );
+
+    TRANSPOSE_SUBCASE( case10, array_hs_fb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_hs_hb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_hs_db, axes_cl );
+
+    TRANSPOSE_SUBCASE( case10, array_ds_fb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_ds_hb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_ds_db, axes_cl );
+
+    TRANSPOSE_SUBCASE( case10, array_ls_fb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_ls_hb, axes_cl );
+    TRANSPOSE_SUBCASE( case10, array_ls_db, axes_cl );
     #endif
 }
 

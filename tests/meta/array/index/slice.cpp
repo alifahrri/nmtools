@@ -49,7 +49,7 @@ TEST_CASE("shape_slice" * doctest::test_suite("meta::index"))
         using slice0_t = decltype(Ellipsis);
         using slice1_t = decltype(nmtools_tuple{None,None});
         using result_t = meta::resolve_optype_t<nm::index::shape_slice_t,shape_t,slice0_t,slice1_t>;
-        using expected_t = na::fixed_ndarray<int,3>;
+        using expected_t = nmtools_array<int,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {

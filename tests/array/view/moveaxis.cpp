@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/view/moveaxis.hpp"
@@ -78,6 +81,10 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case1, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case1, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case1, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case1, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case1, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case1, a_ls_db, source, destination );
     #endif
 }
 
@@ -106,6 +113,10 @@ TEST_CASE("moveaxis(case2)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case2, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case2, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case2, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case2, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case2, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case2, a_ls_db, source, destination );
     #endif
 }
 
@@ -134,6 +145,10 @@ TEST_CASE("moveaxis(case3)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case3, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case3, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case3, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case3, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case3, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case3, a_ls_db, source, destination );
     #endif
 }
 
@@ -162,6 +177,10 @@ TEST_CASE("moveaxis(case4)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case4, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case4, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case4, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case4, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case4, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case4, a_ls_db, source, destination );
     #endif
 }
 
@@ -190,6 +209,10 @@ TEST_CASE("moveaxis(case5)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case5, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case5, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case5, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case5, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case5, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case5, a_ls_db, source, destination );
     #endif
 }
 
@@ -218,6 +241,10 @@ TEST_CASE("moveaxis(case6)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case6, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case6, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case6, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case6, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case6, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case6, a_ls_db, source, destination );
     #endif
 }
 
@@ -246,6 +273,10 @@ TEST_CASE("moveaxis(case7)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case7, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case7, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case7, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case7, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case7, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case7, a_ls_db, source, destination );
     #endif
 }
 
@@ -274,6 +305,10 @@ TEST_CASE("moveaxis(case8)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case8, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case8, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case8, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case8, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case8, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case8, a_ls_db, source, destination );
     #endif
 }
 
@@ -302,5 +337,9 @@ TEST_CASE("moveaxis(case9)" * doctest::test_suite("view::moveaxis"))
     MOVEAXIS_SUBCASE( case9, a_ds_fb, source, destination );
     MOVEAXIS_SUBCASE( case9, a_ds_hb, source, destination );
     MOVEAXIS_SUBCASE( case9, a_ds_db, source, destination );
+
+    MOVEAXIS_SUBCASE( case9, a_ls_fb, source, destination );
+    MOVEAXIS_SUBCASE( case9, a_ls_hb, source, destination );
+    MOVEAXIS_SUBCASE( case9, a_ls_db, source, destination );
     #endif
 }

@@ -6,6 +6,8 @@
 #include "nmtools/meta/bits/transform/append_value.hpp"
 #include "nmtools/meta/bits/transform/at.hpp"
 #include "nmtools/meta/bits/transform/bit_reference_to_bool.hpp"
+#include "nmtools/meta/bits/transform/clipped_min.hpp"
+#include "nmtools/meta/bits/transform/clipped_max.hpp"
 #include "nmtools/meta/bits/transform/common_type.hpp"
 #include "nmtools/meta/bits/transform/concat_type.hpp"
 #include "nmtools/meta/bits/transform/get_either.hpp"

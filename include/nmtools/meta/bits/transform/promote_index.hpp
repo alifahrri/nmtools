@@ -84,8 +84,8 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     }; // promote_index
 
-    template <typename lhs_t, typename...rest_t>
-    using promote_index_t = type_t<promote_index<lhs_t,rest_t...>>;
+    template <typename...rest_t>
+    using promote_index_t = type_t<promote_index<rest_t...>>;
 } // namespace nmtools::meta
 
 

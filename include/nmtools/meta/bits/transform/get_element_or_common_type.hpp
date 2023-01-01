@@ -37,6 +37,12 @@ namespace nmtools::meta
     };
 
     template <typename T>
+    struct get_element_or_common_type<const T> : get_element_or_common_type<T> {};
+
+    template <typename T>
+    struct get_element_or_common_type<T&> : get_element_or_common_type<T> {};
+
+    template <typename T>
     using get_element_or_common_type_t = type_t<get_element_or_common_type<T>>;
 } // namespace nmtools::meta
 

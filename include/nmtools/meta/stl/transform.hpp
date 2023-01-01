@@ -159,6 +159,13 @@ namespace nmtools::meta
         using type = T;
     };
 
+    // TODO: remove, generalize the primary template
+    template <typename T>
+    struct get_maybe_type<std::optional<T>>
+    {
+        using type = T;
+    };
+
     template <typename T, template<typename...>typename Allocator, typename value_type>
     struct replace_value_type<std::vector<T,Allocator<T>>,value_type>
     {

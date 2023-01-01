@@ -816,7 +816,7 @@ namespace nmtools::index
         // number of integer in slices, represent indexing instead of slice
         constexpr auto N_INT = (static_cast<size_t>(meta::is_index_v<slices_t>) + ...);
 
-        auto shape = [&](){
+        const auto shape = [&](){
             // convert constant_index_array of shape to easily allow element access with runtime index
             if constexpr (meta::is_constant_index_array_v<shape_t>) {
                 return meta::to_value_v<shape_t>;
@@ -1074,177 +1074,6 @@ namespace nmtools::index
                 // TODO: exploit the type information, such as signed-/unsigned-ness
                 // to perform conditional compilation
 
-                // TODO: use compute_index
-                // here we compute the start index step, regardless of the dst index
-                // should handle various case, e.g. None, positive, negative start & stop
-                // also assume indices is properly generated
-                #if 0
-                auto index = [&](auto start_, auto stop_, auto step_) -> index_t {
-                    [[maybe_unused]] auto start = start_; // just alias
-                    // following numpy, stop is actually (stop,shape_i)
-                    [[maybe_unused]] auto stop = [&](){
-                        if constexpr (is_none_v<stop_t>)
-                            return si;
-                        // clip value, keep sign
-                        else {
-                            using common_t = meta::promote_index_t<decltype(stop_),decltype(si)>;
-                            auto s = static_cast<common_t>(stop_) < static_cast<common_t>(si)
-                                        ? static_cast<common_t>(stop_) : static_cast<common_t>(si);
-                                 s = static_cast<common_t>(s) > static_cast<common_t>(-si)
-                                        ? static_cast<common_t>(s) : static_cast<common_t>(-si);
-                            return s;
-                        }
-                    }();
-                    // alias
-                    [[maybe_unused]] auto step = step_;
-                    // (1) simplest case: all is none
-                    if constexpr (is_none_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>) {
-                        // example case:
-                        // a[:]
-                        auto index = at(indices,i_i);
-                        return index;
-                    }
-                    // (2) only start is integer
-                    else if constexpr (meta::is_index_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>) {
-                        // example case:
-                        // a[0::]
-                        // a[-1::]
-                        auto index = (start >= 0 ? start : stop - start) + at(indices,i_i);
-                        return index;
-                        // return {start >= 0 ? start : stop - start, 1};
-                    }
-                    // (3) start and stop is integer, can be positive or negative
-                    else if constexpr (meta::is_index_v<start_t> && meta::is_index_v<stop_t> && is_none_v<step_t>) {
-                        // example case:
-                        // a[0:2:]
-                        // a[-2:3:]
-                        // a[0:-1:]
-                        // a[-2:-1:]
-                        auto s = index_t{0};
-                        if (start >= 0 && stop > 0)
-                            s = start;
-                        else if (start < 0 && stop > 0)
-                            s = stop + start;
-                        else if (start >= 0 && stop < 0)
-                            s = start;
-                        else /* if (start < 0 && stop < 0) */
-                            s = si + start;
-                        auto index = s + at(indices,i_i);
-                        return index;
-                    }
-                    // (4) all three is integer, can be positive or negative
-                    else if constexpr (meta::is_index_v<start_t> && meta::is_index_v<stop_t> && meta::is_index_v<step_t>) {
-                        auto _start = index_t{0};
-                        auto _step  = index_t{0};
-                        // step is negative:
-                        if /**/ (start >= 0 && stop > 0 && step < 0) {
-                            _start = stop - 1;
-                            _step  = step;
-                            // return {stop - 1, step};
-                        }
-                        else if (start < 0 && stop > 0 && step < 0) {
-                            _start = stop + start;
-                            _step  = step;
-                            // return {stop+start, step};
-                        } else if (start >= 0 && stop < 0 && step < 0) {
-                            _start = start;
-                            _step  = step;
-                            // return {start, step};
-                        } else if (start < 0 && stop < 0 && step < 0) {
-                            _start = si + start - 1;
-                            _step  = step;
-                            // return {si+start-1, step};
-                        }
-                        // step is positive:
-                        else if (start >= 0 && stop > 0 && step > 0) {
-                            _start = start;
-                            _step  = step;
-                            // return {start, step};
-                        } else if (start < 0 && stop > 0 && step > 0) {
-                            _start = stop + start;
-                            _step  = step;
-                            // return {stop+start, step};
-                        } else if (start >= 0 && stop < 0 && step > 0) {
-                            _start = start;
-                            _step  = step;
-                            // return {start, step};
-                        } else /* if (start < 0 && stop < 0 && step > 0) */ {
-                            _start = si + start;
-                            _step  = step;
-                            // return {si+start, step};
-                        }
-                        auto index = _start + at(indices,i_i) * _step;
-                        return index;
-                    } else if constexpr (is_none_v<start_t> && meta::is_index_v<stop_t> && is_none_v<step_t>) {
-                        auto index = at(indices,i_i);
-                        return index;
-                        // return {0,1};
-                    } else if constexpr (is_none_v<start_t> && meta::is_index_v<stop_t> && meta::is_index_v<step_t>) {
-                        auto _start = index_t{0};
-                        auto _step  = index_t{0};
-                        if (stop > 0 && step > 0) {
-                            _start = 0;
-                            _step  = step;
-                            // return {0,step};
-                        } else if (stop > 0 && step < 0) {
-                            _start = si;
-                            _step  = step;
-                            // return {si,step};
-                        } else if (stop < 0 && step > 0) {
-                            _start = 0;
-                            _step  = step;
-                            // return {0,step};
-                        } else /* if (stop > 0 && step > 0) */ {
-                            _start = 0;
-                            _step  = step;
-                            // return {0,step};
-                        }
-                        auto index = _start + at(indices,i_i) * _step;
-                        return index;
-                    }
-                    else if constexpr (is_none_v<start_t> && is_none_v<stop_t> && meta::is_index_v<step_t>) {
-                        // example case:
-                        // a[::-1]
-                        auto _start = index_t{0};
-                        auto _step  = index_t{0};
-                        if (step < 0) {
-                            _start = si - 1;
-                            _step  = step;
-                            // return {si-1,step};
-                        } else {
-                            _start = 0;
-                            _step  = step;
-                            // return {0,step};
-                        }
-                        auto index = _start + at(indices,i_i) * _step;
-                        return index;
-                    }
-                    else /* if constexpr (meta::is_index_v<start_t> && is_none_v<stop_t> && meta::is_index_v<step_t>) */ {
-                        auto _start = index_t{0};
-                        auto _step  = index_t{0};
-                        if (start >= 0 && step > 0) {
-                            _start = start;
-                            _step  = step;
-                            // return {start, step};
-                        } else if (start >= 0 && step < 0) {
-                            _start = start;
-                            _step  = step;
-                            // return {start, step};
-                        } else if (start < 0 && step > 0) {
-                            _start = si + start;
-                            _step  = step;
-                            // return {si+start,step};
-                        } else /* if (start < 0 && step < 0) */ {
-                            _start = start;
-                            _step  = step;
-                            // return {start, step};
-                        }
-                        auto index = _start + at(indices,i_i) * _step;
-                        return index;
-                    }
-                }(start_,stop_,step_);
-                #endif
-
                 at(res,r_i) = compute_index(indices,si,start_,stop_,step_,i_i);
                 i_i++;
 
@@ -1273,9 +1102,9 @@ namespace nmtools::meta
         static constexpr auto vtype = [](){
             if constexpr (is_fixed_index_array_v<shape_t>) {
                 constexpr auto n_integer = ((static_cast<size_t>(meta::is_index_v<slices_t>)) + ...);
-                constexpr auto dim = fixed_index_array_size_v<shape_t> - n_integer;
-                using shape_type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
-                using type = resize_fixed_index_array_t<shape_type,dim>;
+                constexpr auto dim = len_v<shape_t> - n_integer;
+                using index_t = get_index_element_type_t<shape_t>;
+                using type = nmtools_array<index_t,dim>;
                 return as_value_v<type>;
             } else {
                 using type = shape_t;
@@ -1290,7 +1119,16 @@ namespace nmtools::meta
         void, index::slice_t, indices_t, shape_t, slices_t...
     >
     {
-        using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
+        static constexpr auto vtype = [](){
+            if constexpr (is_bounded_array_v<shape_t> || is_tuple_v<shape_t>) {
+                constexpr auto N = len_v<shape_t>;
+                using index_t = get_index_element_type_t<shape_t>;
+                return as_value_v<nmtools_array<index_t,N>>;
+            } else {
+                return as_value_v<shape_t>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     }; // slice_t
 } // namespace nmtools::meta
 

@@ -93,12 +93,18 @@ NMTOOLS_TESTING_DECLARE_CASE(array, split)
     }
 }
 
+using namespace nmtools::literals;
+
 NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int lshape[2] = {3,4};
         inline int rshape[2] = {4,3};
+        inline auto lshape_ct = nmtools_tuple{3_ct,4_ct};
+        inline auto lshape_cl = nmtools_tuple{"3:[3]"_ct,"4:[4]"_ct};
+        inline auto rshape_ct = nmtools_tuple{4_ct,3_ct};
+        inline auto rshape_cl = nmtools_tuple{"4:[4]"_ct,"3:[3]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -111,6 +117,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] = {4,3};
         inline int rshape[2] = {3,4};
+        inline auto lshape_ct = nmtools_tuple{4_ct,3_ct};
+        inline auto rshape_ct = nmtools_tuple{3_ct,4_ct};
+        inline auto lshape_cl = nmtools_tuple{"4:[4]"_ct,"3:[3]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"3:[3]"_ct,"4:[4]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -123,6 +133,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] = {4,1};
         inline int rshape[2] = {1,4};
+        inline auto lshape_ct = nmtools_tuple{4_ct,1_ct};
+        inline auto rshape_ct = nmtools_tuple{1_ct,4_ct};
+        inline auto lshape_cl = nmtools_tuple{"4:[4]"_ct,"1:[1]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"1:[1]"_ct,"4:[4]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -135,6 +149,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] = {1,4};
         inline int rshape[2] = {4,1};
+        inline auto lshape_ct = nmtools_tuple{1_ct,4_ct};
+        inline auto rshape_ct = nmtools_tuple{4_ct,1_ct};
+        inline auto lshape_cl = nmtools_tuple{"1:[1]"_ct,"4:[4]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"4:[4]"_ct,"1:[1]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -147,6 +165,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[2] =   {4,3};
         inline int rshape[3] = {2,3,2};
+        inline auto lshape_ct = nmtools_tuple{4_ct,3_ct};
+        inline auto rshape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
+        inline auto lshape_cl = nmtools_tuple{"4:[4]"_ct,"3:[3]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"2:[2]"_ct,"3:[3]"_ct,"2:[2]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -159,6 +181,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[3] = {2,3,2};
         inline int rshape[2] =   {2,4};
+        inline auto lshape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
+        inline auto rshape_ct = nmtools_tuple{2_ct,4_ct};
+        inline auto lshape_cl = nmtools_tuple{"2:[2]"_ct,"3:[3]"_ct,"2:[2]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"2:[2]"_ct,"4:[4]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -171,6 +197,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[4] = {9,5,7,4};
         inline int rshape[4] = {9,5,4,3};
+        inline auto lshape_ct = nmtools_tuple{9_ct,5_ct,7_ct,4_ct};
+        inline auto rshape_ct = nmtools_tuple{9_ct,5_ct,4_ct,3_ct};
+        inline auto lshape_cl = nmtools_tuple{"9:[9]"_ct,"5:[5]"_ct,"7:[7]"_ct,"4:[4]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"9:[9]"_ct,"5:[5]"_ct,"4:[4]"_ct,"3:[3]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -183,6 +213,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[4] = {1,5,7,4};
         inline int rshape[4] = {9,1,4,3};
+        inline auto lshape_ct = nmtools_tuple{1_ct,5_ct,7_ct,4_ct};
+        inline auto rshape_ct = nmtools_tuple{9_ct,1_ct,4_ct,3_ct};
+        inline auto lshape_cl = nmtools_tuple{"1:[1]"_ct,"5:[5]"_ct,"7:[7]"_ct,"4:[4]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"9:[9]"_ct,"1:[1]"_ct,"4:[4]"_ct,"3:[3]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -195,6 +229,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[4] = {9,5,7,4};
         inline int rshape[4] = {5,9,4,3};
+        inline auto lshape_ct = nmtools_tuple{9_ct,5_ct,7_ct,4_ct};
+        inline auto rshape_ct = nmtools_tuple{5_ct,9_ct,4_ct,3_ct};
+        inline auto lshape_cl = nmtools_tuple{"9:[9]"_ct,"5:[5]"_ct,"7:[7]"_ct,"4:[4]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"5:[5]"_ct,"9:[9]"_ct,"4:[4]"_ct,"3:[3]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -207,6 +245,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
     {
         inline int lshape[3] = {1,4,3};
         inline int rshape[2] = {3,4};
+        inline auto lshape_ct = nmtools_tuple{1_ct,4_ct,3_ct};
+        inline auto rshape_ct = nmtools_tuple{3_ct,4_ct};
+        inline auto lshape_cl = nmtools_tuple{"1:[1]"_ct,"4:[4]"_ct,"3:[3]"_ct};
+        inline auto rshape_cl = nmtools_tuple{"3:[3]"_ct,"4:[4]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(lshape);
         NMTOOLS_CAST_INDEX_ARRAYS(rshape);
     }
@@ -475,6 +517,51 @@ TEST_CASE("shape_matmul(case1)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case1, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case1, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case1, lshape_d, rshape_d );
+
+    SHAPE_MATMUL_SUBCASE( case1, lshape_ct, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_cl, rshape_cl );
+
+    SHAPE_MATMUL_SUBCASE( case1, lshape_a, rshape_a );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_a, rshape_v );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_a, rshape_f );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_a, rshape_h );;
+    SHAPE_MATMUL_SUBCASE( case1, lshape_a, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_a, rshape_cl );
+
+    SHAPE_MATMUL_SUBCASE( case1, lshape_v, rshape_a );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_v, rshape_v );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_v, rshape_f );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_v, rshape_h );;
+    SHAPE_MATMUL_SUBCASE( case1, lshape_v, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_v, rshape_cl );
+
+    SHAPE_MATMUL_SUBCASE( case1, lshape_f, rshape_a );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_f, rshape_v );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_f, rshape_f );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_f, rshape_h );;
+    SHAPE_MATMUL_SUBCASE( case1, lshape_f, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_f, rshape_cl );
+
+    SHAPE_MATMUL_SUBCASE( case1, lshape_h, rshape_a );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_h, rshape_v );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_h, rshape_f );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_h, rshape_h );;
+    SHAPE_MATMUL_SUBCASE( case1, lshape_h, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_h, rshape_cl );
+
+    SHAPE_MATMUL_SUBCASE( case1, lshape_ct, rshape_a );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_ct, rshape_v );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_ct, rshape_f );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_ct, rshape_h );;
+    SHAPE_MATMUL_SUBCASE( case1, lshape_ct, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_ct, rshape_cl );
+
+    SHAPE_MATMUL_SUBCASE( case1, lshape_cl, rshape_a );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_cl, rshape_v );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_cl, rshape_f );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_cl, rshape_h );;
+    SHAPE_MATMUL_SUBCASE( case1, lshape_cl, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case1, lshape_cl, rshape_cl );
 }
 
 TEST_CASE("shape_matmul(case2)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -485,6 +572,9 @@ TEST_CASE("shape_matmul(case2)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case2, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case2, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case2, lshape_d, rshape_d );
+
+    SHAPE_MATMUL_SUBCASE( case2, lshape_ct, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case2, lshape_cl, rshape_cl );
 }
 
 TEST_CASE("shape_matmul(case3)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -495,6 +585,9 @@ TEST_CASE("shape_matmul(case3)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case3, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case3, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case3, lshape_d, rshape_d );
+
+    SHAPE_MATMUL_SUBCASE( case3, lshape_ct, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case3, lshape_cl, rshape_cl );
 }
 
 TEST_CASE("shape_matmul(case4)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -505,6 +598,9 @@ TEST_CASE("shape_matmul(case4)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case4, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case4, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case4, lshape_d, rshape_d );
+
+    SHAPE_MATMUL_SUBCASE( case4, lshape_ct, rshape_ct );
+    SHAPE_MATMUL_SUBCASE( case4, lshape_cl, rshape_cl );
 }
 
 TEST_CASE("shape_matmul(case5)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -515,6 +611,9 @@ TEST_CASE("shape_matmul(case5)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case5, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case5, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case5, lshape_d, rshape_d );
+
+    SHAPE_MATMUL_SUBCASE( case5, lshape_cl, rshape_cl );
+    SHAPE_MATMUL_SUBCASE( case5, lshape_ct, rshape_ct );
 }
 
 TEST_CASE("shape_matmul(case6)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -525,6 +624,9 @@ TEST_CASE("shape_matmul(case6)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case6, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case6, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case6, lshape_d, rshape_d );
+
+    SHAPE_MATMUL_SUBCASE( case6, lshape_cl, rshape_cl );
+    SHAPE_MATMUL_SUBCASE( case6, lshape_ct, rshape_ct );
 }
 
 TEST_CASE("shape_matmul(case7)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -535,6 +637,9 @@ TEST_CASE("shape_matmul(case7)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case7, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case7, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case7, lshape_d, rshape_d );
+
+    SHAPE_MATMUL_SUBCASE( case7, lshape_cl, rshape_cl );
+    SHAPE_MATMUL_SUBCASE( case7, lshape_ct, rshape_ct );
 }
 
 TEST_CASE("shape_matmul(case8)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -545,6 +650,9 @@ TEST_CASE("shape_matmul(case8)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case8, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case8, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case8, lshape_d, rshape_d );
+
+    SHAPE_MATMUL_SUBCASE( case8, lshape_cl, rshape_cl );
+    SHAPE_MATMUL_SUBCASE( case8, lshape_ct, rshape_ct );
 }
 
 TEST_CASE("shape_matmul(case9)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -555,6 +663,9 @@ TEST_CASE("shape_matmul(case9)" * doctest::test_suite("view::detail::shape_matmu
     SHAPE_MATMUL_SUBCASE( case9, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case9, lshape_h, rshape_h );
     // SHAPE_MATMUL_SUBCASE( case9, lshape_d, rshape_d );
+
+    // SHAPE_MATMUL_SUBCASE( case9, lshape_cl, rshape_cl );
+    // SHAPE_MATMUL_SUBCASE( case9, lshape_ct, rshape_ct );
 }
 
 TEST_CASE("shape_matmul(case10)" * doctest::test_suite("view::detail::shape_matmul"))
@@ -564,6 +675,9 @@ TEST_CASE("shape_matmul(case10)" * doctest::test_suite("view::detail::shape_matm
     SHAPE_MATMUL_SUBCASE( case10, lshape_v, rshape_v );
     SHAPE_MATMUL_SUBCASE( case10, lshape_f, rshape_f );
     SHAPE_MATMUL_SUBCASE( case10, lshape_h, rshape_h );
+
+    SHAPE_MATMUL_SUBCASE( case10, lshape_cl, rshape_cl );
+    SHAPE_MATMUL_SUBCASE( case10, lshape_ct, rshape_ct );
 }
 
 #define RUN_index_matmul_impl(...) \

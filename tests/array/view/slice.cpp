@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/view/slice.hpp"
@@ -79,6 +82,10 @@ TEST_CASE("slice(case1)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case1, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case1, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case1, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case1, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -107,6 +114,10 @@ TEST_CASE("slice(case2)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case2, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case2, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case2, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case2, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case2, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case2, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -135,6 +146,10 @@ TEST_CASE("slice(case3)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case3, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case3, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case3, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case3, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case3, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case3, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -163,6 +178,10 @@ TEST_CASE("slice(case4)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case4, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case4, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case4, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case4, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case4, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case4, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -191,6 +210,10 @@ TEST_CASE("slice(case5)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case5, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case5, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case5, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case5, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case5, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case5, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -219,6 +242,10 @@ TEST_CASE("slice(case6)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case6, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case6, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case6, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case6, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case6, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -247,6 +274,10 @@ TEST_CASE("slice(case7)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case7, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case7, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case7, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case7, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case7, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case7, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -275,6 +306,10 @@ TEST_CASE("slice(case8)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case8, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case8, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case8, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case8, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case8, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case8, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -303,6 +338,10 @@ TEST_CASE("slice(case9)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case9, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case9, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case9, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case9, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case9, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case9, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -331,6 +370,10 @@ TEST_CASE("slice(case10)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case10, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case10, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case10, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case10, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case10, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case10, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -359,6 +402,10 @@ TEST_CASE("slice(case11)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case11, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case11, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case11, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case11, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case11, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case11, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -387,6 +434,10 @@ TEST_CASE("slice(case12)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case12, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case12, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case12, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case12, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case12, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case12, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -415,6 +466,10 @@ TEST_CASE("slice(case13)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case13, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case13, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case13, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case13, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case13, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case13, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -443,6 +498,10 @@ TEST_CASE("slice(case14)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case14, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case14, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case14, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case14, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case14, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case14, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -471,6 +530,10 @@ TEST_CASE("slice(case15)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case15, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case15, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case15, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case15, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case15, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case15, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -499,6 +562,10 @@ TEST_CASE("slice(case16)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case16, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case16, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case16, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case16, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case16, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case16, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -527,6 +594,10 @@ TEST_CASE("slice(case17)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case17, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case17, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case17, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case17, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case17, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case17, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -555,6 +626,10 @@ TEST_CASE("slice(case18)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case18, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case18, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case18, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case18, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case18, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case18, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -583,6 +658,10 @@ TEST_CASE("slice(case19)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case19, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case19, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case19, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case19, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case19, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case19, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -611,6 +690,10 @@ TEST_CASE("slice(case20)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case20, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case20, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case20, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case20, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case20, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case20, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -639,6 +722,10 @@ TEST_CASE("slice(case21)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case21, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case21, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case21, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case21, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case21, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case21, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -667,6 +754,10 @@ TEST_CASE("slice(case22)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case22, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case22, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case22, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case22, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case22, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case22, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -695,6 +786,10 @@ TEST_CASE("slice(case23)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case23, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case23, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case23, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case23, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case23, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case23, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -723,6 +818,10 @@ TEST_CASE("slice(case24)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case24, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case24, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case24, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case24, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case24, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case24, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -751,6 +850,10 @@ TEST_CASE("slice(case25)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case25, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case25, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case25, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case25, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case25, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case25, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -779,6 +882,10 @@ TEST_CASE("slice(case26)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case26, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case26, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case26, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case26, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case26, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case26, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -807,6 +914,10 @@ TEST_CASE("slice(case27)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case27, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case27, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case27, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case27, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case27, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case27, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -835,6 +946,10 @@ TEST_CASE("slice(case28)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case28, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case28, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case28, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case28, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case28, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case28, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -863,6 +978,10 @@ TEST_CASE("slice(case29)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case29, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case29, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case29, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case29, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case29, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case29, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -891,6 +1010,10 @@ TEST_CASE("slice(case30)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case30, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case30, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case30, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case30, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case30, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case30, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -919,6 +1042,10 @@ TEST_CASE("slice(case31)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case31, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case31, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case31, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case31, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case31, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case31, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -947,6 +1074,10 @@ TEST_CASE("slice(case32)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case32, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case32, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case32, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case32, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case32, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case32, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -975,6 +1106,10 @@ TEST_CASE("slice(case33)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case33, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case33, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case33, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case33, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case33, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case33, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -1003,6 +1138,10 @@ TEST_CASE("slice(case34)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case34, array_ds_fb, slice0, slice1);
     SLICE_SUBCASE(case34, array_ds_hb, slice0, slice1);
     SLICE_SUBCASE(case34, array_ds_db, slice0, slice1);
+
+    SLICE_SUBCASE(case34, array_ls_fb, slice0, slice1);
+    SLICE_SUBCASE(case34, array_ls_hb, slice0, slice1);
+    SLICE_SUBCASE(case34, array_ls_db, slice0, slice1);
     #endif
 }
 
@@ -1031,6 +1170,10 @@ TEST_CASE("slice(case35)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case35, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case35, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case35, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case35, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case35, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case35, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -1059,6 +1202,10 @@ TEST_CASE("slice(case36)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case36, array_ds_fb, slice0, slice1, slice2);
     SLICE_SUBCASE(case36, array_ds_hb, slice0, slice1, slice2);
     SLICE_SUBCASE(case36, array_ds_db, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case36, array_ls_fb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case36, array_ls_hb, slice0, slice1, slice2);
+    SLICE_SUBCASE(case36, array_ls_db, slice0, slice1, slice2);
     #endif
 }
 
@@ -1087,6 +1234,10 @@ TEST_CASE("slice(case37)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case37, array_ds_fb, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case37, array_ds_hb, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case37, array_ds_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case37, array_ls_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case37, array_ls_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case37, array_ls_db, slice0, slice1, slice2, slice3);
     #endif
 }
 
@@ -1115,6 +1266,10 @@ TEST_CASE("slice(case38)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case38, array_ds_fb, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case38, array_ds_hb, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case38, array_ds_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case38, array_ls_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case38, array_ls_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case38, array_ls_db, slice0, slice1, slice2, slice3);
     #endif
 }
 
@@ -1143,6 +1298,10 @@ TEST_CASE("slice(case39)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case39, array_ds_fb, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case39, array_ds_hb, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case39, array_ds_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case39, array_ls_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_ls_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case39, array_ls_db, slice0, slice1, slice2, slice3);
     #endif
 }
 
@@ -1171,6 +1330,10 @@ TEST_CASE("slice(case40)" * doctest::test_suite("view::slice"))
     SLICE_SUBCASE(case40, array_ds_fb, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case40, array_ds_hb, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case40, array_ds_db, slice0, slice1, slice2, slice3);
+
+    SLICE_SUBCASE(case40, array_ls_fb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_ls_hb, slice0, slice1, slice2, slice3);
+    SLICE_SUBCASE(case40, array_ls_db, slice0, slice1, slice2, slice3);
     #endif
 }
 

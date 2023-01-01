@@ -75,6 +75,7 @@ namespace nmtools::meta
         }();
     }; // fixed_shape
 
+    // TODO: remove
     template <typename...Ts>
     struct fixed_size<
         std::tuple<Ts...>

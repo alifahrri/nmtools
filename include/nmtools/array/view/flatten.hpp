@@ -63,15 +63,7 @@ namespace nmtools::view
         constexpr auto index(size_type i) const
         {
             using ::nmtools::index::compute_indices;
-            constexpr auto index_vtype = [](){
-                using index_t = meta::get_index_type_t<array_t>;
-                if constexpr (meta::is_constant_index_v<index_t>) {
-                    return meta::as_value_v<typename index_t::value_type>;
-                } else {
-                    return meta::as_value_v<index_t>;
-                }
-            }();
-            using index_t = meta::type_t<decltype(index_vtype)>;
+            using index_t = meta::get_index_element_type_t<dst_shape_type>;
             auto shape_   = detail::shape(array);
             auto indices  = compute_indices(static_cast<index_t>(i),shape_);
             return indices;

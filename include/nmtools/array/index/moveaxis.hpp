@@ -167,22 +167,33 @@ namespace nmtools::meta
             [[maybe_unused]] constexpr auto valid_src_dst =
                    (is_index_array_v<source_t> && is_index_array_v<destination_t>)
                 || (is_index_v<source_t> && is_index_v<destination_t>);
-            if constexpr (is_constant_index_array_v<shape_t> && (is_constant_index_v<source_t> || is_constant_index_array_v<source_t>) && (is_constant_index_v<destination_t> || is_constant_index_array_v<destination_t>)) {
+            if constexpr (
+                (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
+                && (is_constant_index_v<source_t> || is_constant_index_array_v<source_t>) && (is_constant_index_v<destination_t> || is_constant_index_array_v<destination_t>)
+            ) {
                 constexpr auto shape  = to_value_v<shape_t>;
                 constexpr auto source = to_value_v<source_t>;
                 constexpr auto destination = to_value_v<destination_t>;
                 constexpr auto result      = index::moveaxis_to_transpose(shape,source,destination);
                 if constexpr (result.has_value()) {
                     constexpr auto axes = *result;
-                    return template_reduce<nmtools::len(axes)-1>([&](auto init, auto index){
+                    return template_reduce<nmtools::len(axes)>([&](auto init, auto index){
                         using init_type = type_t<decltype(init)>;
-                        return as_value_v<append_type_t<init_type,ct<nmtools::at(axes,index+1)>>>;
-                    }, as_value_v<nmtools_tuple<ct<nmtools::at(axes,0)>>>);
+                        constexpr auto I = nmtools::at(axes,index);
+                        if constexpr (is_constant_index_array_v<shape_t>) {
+                            return as_value_v<append_type_t<init_type,ct<I>>>;
+                        } else {
+                            return as_value_v<append_type_t<init_type,clipped_size_t<I>>>;
+                        }
+                    }, as_value_v<nmtools_tuple<>>);
                 } else {
                     using type = error::MOVEAXIS_TO_TRANSPOSE_INVALID<shape_t,source_t,destination_t>;
                     return as_value_v<type>;
                 }
-            } else if constexpr (is_constant_index_array_v<shape_t> && valid_src_dst) {
+            } else if constexpr (
+                (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
+                && valid_src_dst
+            ) {
                 using shape_type = remove_cvref_t<decltype(to_value_v<shape_t>)>;
                 using type = resolve_optype_t<index::moveaxis_to_transpose_t,shape_type,source_t,destination_t>;
                 return as_value_v<type>;

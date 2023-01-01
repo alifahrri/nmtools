@@ -66,13 +66,6 @@ namespace nmtools::meta
     template <typename T, size_t N>
     struct is_constant_index_array<std::array<T,N>,std::enable_if_t<is_constant_index_v<T>>> : std::true_type {};
 
-    // TODO: move to transform.hpp
-    template <typename T>
-    struct get_maybe_type<std::optional<T>>
-    {
-        using type = T;
-    };
-
     template <int value>
     struct is_signed<std::integral_constant<int,value>> : std::true_type {};
 

@@ -29,7 +29,8 @@ namespace nmtools::impl
                 // allow accessing constant index array using index type for const only
                 constexpr auto array = meta::to_value_v<array_t>;
                 // TODO: return constant index if index_type is constant index
-                return at_t<meta::remove_cvref_t<decltype(array)>,index_type>{}(array,i);
+                auto value = at_t<meta::remove_cvref_t<decltype(array)>,index_type>{}(array,i);
+                return value;
             } else if constexpr (meta::is_tuple_v<array_t> && meta::is_constant_index_v<index_type>) {
                 // NOTE: to properly handle at with constant negative index 
                 constexpr auto index = [&](){

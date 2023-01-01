@@ -74,11 +74,19 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
         set(CMAKE_EXECUTABLE_SUFFIX ".js")
         set_target_properties(
             ${PROJECT_NAME}-doctest
-            PROPERTIES LINK_FLAGS "--emrun -s EXPORTED_FUNCTIONS='[_main]'"
+            PROPERTIES LINK_FLAGS "--emrun -s  EXPORTED_FUNCTIONS='[_main]'"
+        )
+        target_compile_options(
+            ${PROJECT_NAME}-doctest PUBLIC
+            "-sALLOW_MEMORY_GROWTH=1"
         )
     else(JS_ONLY)
         message(STATUS "Setting compilation target to WASM")
         set(CMAKE_EXECUTABLE_SUFFIX ".wasm.js")
+        target_compile_options(
+            ${PROJECT_NAME}-doctest PUBLIC
+            "-sSTACK_SIZE=131072"
+        )
         # note triggers error on newer version: em++: error: --emrun is only compatible with html output
         # set_target_properties(
         #     ${PROJECT_NAME}-doctest

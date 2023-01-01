@@ -94,7 +94,7 @@ namespace nmtools::meta
             } else if constexpr (is_fixed_index_array_v<shape_t> && !is_constant_index_v<split_t>) {
                 // shape is fixed size but the index to split is runtime value
                 constexpr auto max_elements = fixed_index_array_size_v<shape_t>;
-                using element_t = get_element_type_t<shape_t>;
+                using element_t = get_index_element_type_t<shape_t>;
                 // NOTE: use make_hybrid_ndarray instead of make_hybrid_ndarray_t to avoid including ndarray.hpp
                 using hybrid_t  = typename make_hybrid_ndarray<element_t,max_elements,1>::type;
                 using type = make_tuple_type_t<hybrid_t,hybrid_t>;
@@ -111,7 +111,7 @@ namespace nmtools::meta
                         return index;
                     }
                 }();
-                using element_t = get_element_type_t<shape_t>;
+                using element_t = get_index_element_type_t<shape_t>;
 
                 using left_size_t  = make_tuple_type_t<ct<i>>;
                 using right_size_t = make_tuple_type_t<ct<N-i>>;
@@ -181,7 +181,7 @@ namespace nmtools::index
             #endif
 
             // check matrix shape
-            auto valid_shape = l1 == r2;
+            auto valid_shape = (size_t)l1 == (size_t)r2;
             // broadcast shape, if possible
             const auto [success, b_shape] = index::broadcast_shape(b_ashape,b_bshape);
 
@@ -406,9 +406,9 @@ namespace nmtools::meta
             using slice_t [[maybe_unused]] = nmtools_either<index_t,all_t>;
             constexpr auto slice_vtype = [](auto shape_vtype, [[maybe_unused]] auto f_init_vtype){
                 using m_shape_t = type_t<decltype(shape_vtype)>;
-                [[maybe_unused]] constexpr auto f_size = fixed_size_v<m_shape_t>;
+                constexpr auto f_size = len_v<m_shape_t>;
                 [[maybe_unused]] constexpr auto b_size = bounded_size_v<m_shape_t>;
-                if constexpr (!is_fail_v<decltype(f_size)>) {
+                if constexpr (f_size > 0) {
                     using i_slice_t  = type_t<decltype(f_init_vtype)>;
                     return meta::template_reduce<f_size-2>([](auto init, auto){
                         using concatenated = concat_type_t<nmtools_tuple<index_t>,type_t<decltype(init)>>;

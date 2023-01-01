@@ -95,36 +95,34 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            // some fn may produce tuple of (runtime) index,
-            // also shape may be raw array
-            using type [[maybe_unused]] = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
-            if constexpr (is_constant_index_array_v<shape_t>) {
+            constexpr auto DIM = len_v<shape_t>;
+            if constexpr (
+                (DIM > 0)
+                && (is_constant_index_array_v<shape_t>
+                    || is_clipped_index_array_v<shape_t>)
+            ) {
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto strides = index::compute_strides(shape);
                 // convert back to type
                 constexpr auto N = ::nmtools::len(strides);
-                using init_type = make_tuple_type_t<ct<at(strides,0)>>;
-                return template_reduce<N-1>([&](auto init, auto index){
+                using nmtools::at;
+                return template_reduce<N>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;
-                    using result_t = append_type_t<init_t,ct<at(strides,index+1)>>;
-                    return as_value_v<result_t>;
-                }, as_value_v<init_type>);
-            } else if constexpr (is_clipped_index_array_v<shape_t>) {
-                constexpr auto len = len_v<shape_t>;
-                if constexpr (len > 0) {
-                    // compute upper bound
-                    constexpr auto shape = to_value_v<shape_t>;
-                    constexpr auto strides = index::compute_strides(shape);
-                    using nmtools::at, nmtools::len;
-                    return template_reduce<len(strides)-1>([&](auto init, auto index){
-                        using init_t = type_t<decltype(init)>;
-                        using result_t = append_type_t<init_t,clipped_size_t<at(strides,index+1)>>;
+                    constexpr auto I = at(strides,index);
+                    if constexpr (is_constant_index_array_v<shape_t>) {
+                        using result_t = append_type_t<init_t,ct<I>>;
                         return as_value_v<result_t>;
-                    }, as_value_v<nmtools_tuple<clipped_size_t<at(strides,0)>>>);
-                } else {
-                    return as_value_v<nmtools_list<size_t>>;
-                }
+                    } else {
+                        using result_t = append_type_t<init_t,clipped_size_t<I>>;
+                        return as_value_v<result_t>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
+            } else if constexpr (is_clipped_index_array_v<shape_t>) {
+                return as_value_v<nmtools_list<size_t>>;
             } else if constexpr (is_index_array_v<shape_t>) {
+                // some fn may produce tuple of (runtime) index,
+                // also shape may be raw array
+                using type [[maybe_unused]] = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
                 return as_value_v<type>;
             } else {
                 // forwarding params may be helpful for testing/debugging
