@@ -86,6 +86,43 @@ jobs:
       - name: run tests
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
   
+  dockcross-wasm-index:
+    name: ${{ matrix.name }}-index
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        include:
+          # TODO: find out minimum wasm version that works
+          # The following version (emcc 2.04 with clang 12) fails,
+          # internal compiler error:
+          # clang++: /b/s/w/ir/cache/builder/emscripten-releases/llvm-project/clang/lib/AST/ExprConstant.cpp:5963:
+          # "base class initializers not in expected order"' failed.
+          # https://github.com/alifahrri/nmtools/runs/4816856132?check_suite_focus=true
+          # 
+          # - name: web-wasm-2020
+          #   image: web-wasm
+          #   tag: 20201222-0217db3
+          - name: web-wasm-latest
+            image: web-wasm
+            tag: latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.image }}:${{ matrix.tag }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c "emcc -v"
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_INDEX=ON && make -j2 VERBOSE=1'
+      - name: run tests
+        run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
+
   dockcross-wasm-misc:
     name: ${{ matrix.name }}-misc
     runs-on: ubuntu-18.04
