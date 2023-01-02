@@ -24,6 +24,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
         };
         inline int8_t reps[2] = {2,2};
         inline auto reps_ct = nmtools_tuple{2_ct,2_ct};
+        inline auto reps_cl = to_clipped_array(reps_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_ARRAYS(reps)
     }
@@ -47,6 +48,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
     {
         inline int8_t array[3] = {0,1,2};
         inline int8_t reps[1]  = {2};
+        inline auto reps_ct = nmtools_tuple{2_ct};
+        inline auto reps_cl = to_clipped_array(reps_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_ARRAYS(reps)
     }
@@ -61,6 +64,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
     {
         inline int8_t array[3] = {0,1,2};
         inline int8_t reps[6]  = {2,1,1,1,1,1};
+        inline auto reps_ct = nmtools_tuple{2_ct,1_ct,1_ct,1_ct,1_ct,1_ct};
+        inline auto reps_cl = to_clipped_array(reps_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_ARRAYS(reps)
     }
@@ -86,6 +91,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
             }
         };
         inline int8_t reps[3] = {2,1,2};
+        inline auto reps_ct = nmtools_tuple{2_ct,1_ct,2_ct};
+        inline auto reps_cl = to_clipped_array(reps_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_ARRAYS(reps)
     }
@@ -113,6 +120,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, tile)
     {
         inline int8_t array[3] = {0,1,2};
         inline int8_t reps[2]  = {1,2};
+        inline auto reps_ct = nmtools_tuple{1_ct,2_ct};
+        inline auto reps_cl = to_clipped_array(reps_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_ARRAYS(reps)
     }
