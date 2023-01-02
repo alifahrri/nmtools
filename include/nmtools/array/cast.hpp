@@ -18,6 +18,7 @@
 #include "nmtools/array/view/mutable_flatten.hpp"
 
 #include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/tuple_cat.hpp"
 
 namespace nmtools::array::kind
 {
@@ -215,6 +216,26 @@ namespace nmtools
         using ret_t = meta::resolve_optype_t<cast_kind_t,src_t,kind_t>;
         return cast(src, meta::as_value_v<ret_t>);
     } // cast
+
+    template <typename T>
+    constexpr auto to_clipped_array(const T&)
+    {
+        constexpr auto array = meta::to_value_v<T>;
+        constexpr auto N = meta::len_v<T>;
+        return meta::template_reduce<N>([&](auto init, auto index){
+            constexpr auto I = at(array,index);
+            constexpr auto vtype = [](){
+                constexpr auto MAX = (I > 0 ? I : 1);
+                if constexpr (I<0) {
+                    return meta::as_value_v<clipped_int64_t<I,MAX>>;
+                } else {
+                    return meta::as_value_v<clipped_size_t<MAX>>;
+                }
+            }();
+            using type = meta::type_t<decltype(vtype)>;
+            return utility::tuple_append(init,type(I));
+        }, nmtools_tuple<>{});
+    }
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_CAST_HPP

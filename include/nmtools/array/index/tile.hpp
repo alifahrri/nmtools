@@ -115,7 +115,7 @@ namespace nmtools::meta
                 constexpr auto size = shape_size > reps_size ? shape_size : reps_size;
                 // TODO: try to resize
                 // using type = resize_fixed_index_array_t<shape_t,size>;
-                using type = nmtools_array<get_element_type_t<shape_t>,size>;
+                using type = nmtools_array<get_index_element_type_t<shape_t>,size>;
                 return as_value_v<type>;
             } else if constexpr (is_hybrid_index_array_v<shape_t> && is_fixed_index_array_v<reps_t>) {
                 // always select max
@@ -218,7 +218,10 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<shape_t>) {
+            if constexpr (
+                is_constant_index_array_v<shape_t>
+                || is_clipped_index_array_v<shape_t>
+            ) {
                 // return as_value_v<error::INDEX_TILE_UNSUPPORTED<shape_t,reps_t,indices_t>>;
                 using index_t = get_index_element_type_t<shape_t>;
                 using type = nmtools_array<index_t,len_v<shape_t>>;

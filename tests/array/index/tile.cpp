@@ -5,7 +5,6 @@
 
 namespace nm = nmtools;
 namespace na = nm::array;
-namespace kind = na::kind;
 
 using namespace nmtools::literals;
 
@@ -17,6 +16,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         inline int reps[1] = {2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct};
+        inline auto shape_cl = to_clipped_array(shape_ct);
+        inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -31,6 +32,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         inline int reps[2]   = {2,2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
+        inline auto shape_cl = to_clipped_array(shape_ct);
+        inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -45,6 +48,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[3]  = {2,1,2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,1_ct,2_ct};
+        inline auto shape_cl = to_clipped_array(shape_ct);
+        inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -59,6 +64,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[2]  = {2,1};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,1_ct};
+        inline auto shape_cl = to_clipped_array(shape_ct);
+        inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -73,6 +80,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[2]  = {2,2};
         inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
+        inline auto shape_cl = to_clipped_array(shape_ct);
+        inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -87,6 +96,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int8_t reps[2]  = {2,2};
         inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
+        inline auto shape_cl = to_clipped_array(shape_ct);
+        inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -104,6 +115,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[1] = {2};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct};
+        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -118,6 +131,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[2]   = {2,2};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
+        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -132,6 +147,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[3]   = {2,1,2};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct,1_ct,2_ct};
+        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -146,6 +163,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[2]  = {2,1};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct,1_ct};
+        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -160,6 +179,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[2]   = {2,2};
         constexpr inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
+        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -217,10 +238,18 @@ TEST_CASE("shape_tile(case1)" * doctest::test_suite("index::shape_tile"))
     SHAPE_TILE_SUBCASE( case1, shape_h, reps_h );
 
     SHAPE_TILE_SUBCASE( case1, shape_ct, reps_ct );
+    SHAPE_TILE_SUBCASE( case1, shape_ct, reps_cl );
     SHAPE_TILE_SUBCASE( case1, shape_ct, reps_a );
     SHAPE_TILE_SUBCASE( case1, shape_ct, reps_v );
     SHAPE_TILE_SUBCASE( case1, shape_ct, reps_f );
     SHAPE_TILE_SUBCASE( case1, shape_ct, reps_h );
+
+    SHAPE_TILE_SUBCASE( case1, shape_cl, reps_cl );
+    SHAPE_TILE_SUBCASE( case1, shape_cl, reps_ct );
+    SHAPE_TILE_SUBCASE( case1, shape_cl, reps_a );
+    SHAPE_TILE_SUBCASE( case1, shape_cl, reps_v );
+    SHAPE_TILE_SUBCASE( case1, shape_cl, reps_f );
+    SHAPE_TILE_SUBCASE( case1, shape_cl, reps_h );
 }
 
 TEST_CASE("shape_tile(case2)" * doctest::test_suite("index::shape_tile"))
@@ -232,10 +261,18 @@ TEST_CASE("shape_tile(case2)" * doctest::test_suite("index::shape_tile"))
     SHAPE_TILE_SUBCASE( case2, shape_h, reps_h );
 
     SHAPE_TILE_SUBCASE( case2, shape_ct, reps_ct );
+    SHAPE_TILE_SUBCASE( case2, shape_ct, reps_cl );
     SHAPE_TILE_SUBCASE( case2, shape_ct, reps_a );
     SHAPE_TILE_SUBCASE( case2, shape_ct, reps_v );
     SHAPE_TILE_SUBCASE( case2, shape_ct, reps_f );
     SHAPE_TILE_SUBCASE( case2, shape_ct, reps_h );
+
+    SHAPE_TILE_SUBCASE( case2, shape_cl, reps_cl );
+    SHAPE_TILE_SUBCASE( case2, shape_cl, reps_ct );
+    SHAPE_TILE_SUBCASE( case2, shape_cl, reps_a );
+    SHAPE_TILE_SUBCASE( case2, shape_cl, reps_v );
+    SHAPE_TILE_SUBCASE( case2, shape_cl, reps_f );
+    SHAPE_TILE_SUBCASE( case2, shape_cl, reps_h );
 }
 
 TEST_CASE("shape_tile(case3)" * doctest::test_suite("index::shape_tile"))
@@ -247,10 +284,18 @@ TEST_CASE("shape_tile(case3)" * doctest::test_suite("index::shape_tile"))
     SHAPE_TILE_SUBCASE( case3, shape_h, reps_h );
 
     SHAPE_TILE_SUBCASE( case3, shape_ct, reps_ct );
+    SHAPE_TILE_SUBCASE( case3, shape_ct, reps_cl );
     SHAPE_TILE_SUBCASE( case3, shape_ct, reps_a );
     SHAPE_TILE_SUBCASE( case3, shape_ct, reps_v );
     SHAPE_TILE_SUBCASE( case3, shape_ct, reps_f );
     SHAPE_TILE_SUBCASE( case3, shape_ct, reps_h );
+
+    SHAPE_TILE_SUBCASE( case3, shape_cl, reps_cl );
+    SHAPE_TILE_SUBCASE( case3, shape_cl, reps_ct );
+    SHAPE_TILE_SUBCASE( case3, shape_cl, reps_a );
+    SHAPE_TILE_SUBCASE( case3, shape_cl, reps_v );
+    SHAPE_TILE_SUBCASE( case3, shape_cl, reps_f );
+    SHAPE_TILE_SUBCASE( case3, shape_cl, reps_h );
 }
 
 TEST_CASE("shape_tile(case4)" * doctest::test_suite("index::shape_tile"))
@@ -262,10 +307,18 @@ TEST_CASE("shape_tile(case4)" * doctest::test_suite("index::shape_tile"))
     SHAPE_TILE_SUBCASE( case4, shape_h, reps_h );
 
     SHAPE_TILE_SUBCASE( case4, shape_ct, reps_ct );
+    SHAPE_TILE_SUBCASE( case4, shape_ct, reps_cl );
     SHAPE_TILE_SUBCASE( case4, shape_ct, reps_a );
     SHAPE_TILE_SUBCASE( case4, shape_ct, reps_v );
     SHAPE_TILE_SUBCASE( case4, shape_ct, reps_f );
     SHAPE_TILE_SUBCASE( case4, shape_ct, reps_h );
+
+    SHAPE_TILE_SUBCASE( case4, shape_cl, reps_cl );
+    SHAPE_TILE_SUBCASE( case4, shape_cl, reps_ct );
+    SHAPE_TILE_SUBCASE( case4, shape_cl, reps_a );
+    SHAPE_TILE_SUBCASE( case4, shape_cl, reps_v );
+    SHAPE_TILE_SUBCASE( case4, shape_cl, reps_f );
+    SHAPE_TILE_SUBCASE( case4, shape_cl, reps_h );
 }
 
 TEST_CASE("shape_tile(case5)" * doctest::test_suite("index::shape_tile"))
@@ -277,10 +330,18 @@ TEST_CASE("shape_tile(case5)" * doctest::test_suite("index::shape_tile"))
     SHAPE_TILE_SUBCASE( case5, shape_h, reps_h );
 
     SHAPE_TILE_SUBCASE( case5, shape_ct, reps_ct );
+    SHAPE_TILE_SUBCASE( case5, shape_ct, reps_cl );
     SHAPE_TILE_SUBCASE( case5, shape_ct, reps_a );
     SHAPE_TILE_SUBCASE( case5, shape_ct, reps_v );
     SHAPE_TILE_SUBCASE( case5, shape_ct, reps_f );
     SHAPE_TILE_SUBCASE( case5, shape_ct, reps_h );
+
+    SHAPE_TILE_SUBCASE( case5, shape_cl, reps_cl );
+    SHAPE_TILE_SUBCASE( case5, shape_cl, reps_ct );
+    SHAPE_TILE_SUBCASE( case5, shape_cl, reps_a );
+    SHAPE_TILE_SUBCASE( case5, shape_cl, reps_v );
+    SHAPE_TILE_SUBCASE( case5, shape_cl, reps_f );
+    SHAPE_TILE_SUBCASE( case5, shape_cl, reps_h );
 }
 
 TEST_CASE("shape_tile(case6)" * doctest::test_suite("index::shape_tile"))
@@ -292,10 +353,18 @@ TEST_CASE("shape_tile(case6)" * doctest::test_suite("index::shape_tile"))
     SHAPE_TILE_SUBCASE( case6, shape_h, reps_h );
 
     SHAPE_TILE_SUBCASE( case6, shape_ct, reps_ct );
+    SHAPE_TILE_SUBCASE( case6, shape_ct, reps_cl );
     SHAPE_TILE_SUBCASE( case6, shape_ct, reps_a );
     SHAPE_TILE_SUBCASE( case6, shape_ct, reps_v );
     SHAPE_TILE_SUBCASE( case6, shape_ct, reps_f );
     SHAPE_TILE_SUBCASE( case6, shape_ct, reps_h );
+
+    SHAPE_TILE_SUBCASE( case6, shape_cl, reps_cl );
+    SHAPE_TILE_SUBCASE( case6, shape_cl, reps_ct );
+    SHAPE_TILE_SUBCASE( case6, shape_cl, reps_a );
+    SHAPE_TILE_SUBCASE( case6, shape_cl, reps_v );
+    SHAPE_TILE_SUBCASE( case6, shape_cl, reps_f );
+    SHAPE_TILE_SUBCASE( case6, shape_cl, reps_h );
 }
 
 
