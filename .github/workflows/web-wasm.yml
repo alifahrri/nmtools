@@ -87,6 +87,7 @@ jobs:
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
   
   dockcross-wasm-index:
+    # NOTE: failing on github ci because of stack size
     if: ${{ false }}  # TODO: fix
     name: ${{ matrix.name }}-index
     runs-on: ubuntu-18.04
