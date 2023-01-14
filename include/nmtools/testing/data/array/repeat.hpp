@@ -9,6 +9,8 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace kind = na::kind;
 
+using namespace nm::literals;
+
 NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -16,6 +18,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 3;
         inline auto axis = None;
+        inline auto repeats_ct = 3_ct;
         NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -30,6 +33,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 2;
         inline auto axis = 0;
+        inline auto repeats_ct = 2_ct;
+        inline auto axis_ct    = 0_ct;
         NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -49,6 +54,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
         inline int array[2][2] = {{1,2},{3,4}};
         inline int repeats = 2;
         inline auto axis = 1;
+        inline auto repeats_ct = 2_ct;
+        inline auto axis_ct    = 1_ct;
         NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -65,7 +72,11 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
     {
         inline int array[2][2] = {{1,2},{3,4}};
         inline auto repeats = nmtools_array{1,2};
+        inline auto repeats_ct = nmtools_tuple{1_ct,2_ct};
+        inline auto repeats_cl = to_clipped(repeats_ct);
         inline auto axis = 0;
+        inline auto axis_ct = 0_ct;
+        inline auto axis_cl = to_clipped(axis_ct);
         NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
@@ -83,7 +94,10 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
     {
         inline int array[2][2] = {{1,2},{3,4}};
         inline auto repeats = nmtools_array{1,2};
+        inline auto repeats_ct = nmtools_tuple{1_ct,2_ct};
+        inline auto repeats_cl = to_clipped(repeats_ct);
         inline auto axis = 1;
+        inline auto axis_ct = 1_ct;
         NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
@@ -100,7 +114,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, repeat)
     {
         inline int array[1][2][2] = {{{1,2},{3,4}}};
         inline auto repeats = 2;
+        inline auto repeats_ct = 2_ct;
         inline auto axis = 0;
+        inline auto axis_ct = 0_ct;
         NMTOOLS_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)

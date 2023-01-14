@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/array/repeat.hpp"
@@ -79,6 +82,30 @@ TEST_CASE("repeat(case1)" * doctest::test_suite("array::repeat"))
     REPEAT_SUBCASE(case1, array_ds_fb, repeats, axis);
     REPEAT_SUBCASE(case1, array_ds_hb, repeats, axis);
     REPEAT_SUBCASE(case1, array_ds_db, repeats, axis);
+
+    REPEAT_SUBCASE(case1, array_ls_fb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_ls_hb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_ls_db, repeats, axis);
+
+    REPEAT_SUBCASE(case1, array_cs_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_cs_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_cs_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case1, array_fs_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_fs_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_fs_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case1, array_hs_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_hs_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_hs_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case1, array_ds_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_ds_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_ds_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case1, array_ls_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_ls_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case1, array_ls_db, repeats_ct, axis);
     #endif
 }
 
@@ -106,6 +133,50 @@ TEST_CASE("repeat(case2)" * doctest::test_suite("array::repeat"))
     REPEAT_SUBCASE(case2, array_ds_fb, repeats, axis);
     REPEAT_SUBCASE(case2, array_ds_hb, repeats, axis);
     REPEAT_SUBCASE(case2, array_ds_db, repeats, axis);
+
+    REPEAT_SUBCASE(case2, array_ls_fb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_ls_hb, repeats, axis);
+    REPEAT_SUBCASE(case2, array_ls_db, repeats, axis);
+
+    REPEAT_SUBCASE(case2, array_cs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_cs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_cs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_fs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_fs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_fs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_hs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_hs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_hs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_ds_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_ds_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_ds_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_ls_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_ls_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case2, array_ls_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_cs_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_cs_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_cs_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_fs_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_fs_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_fs_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_hs_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_hs_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_hs_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_ds_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_ds_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_ds_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case2, array_ls_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_ls_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case2, array_ls_db, repeats, axis_ct);
     #endif
 }
 
@@ -133,6 +204,10 @@ TEST_CASE("repeat(case3)" * doctest::test_suite("array::repeat"))
     REPEAT_SUBCASE(case3, array_ds_fb, repeats, axis);
     REPEAT_SUBCASE(case3, array_ds_hb, repeats, axis);
     REPEAT_SUBCASE(case3, array_ds_db, repeats, axis);
+
+    REPEAT_SUBCASE(case3, array_ls_fb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_ls_hb, repeats, axis);
+    REPEAT_SUBCASE(case3, array_ls_db, repeats, axis);
     #endif
 }
 
@@ -160,6 +235,172 @@ TEST_CASE("repeat(case4)" * doctest::test_suite("array::repeat"))
     REPEAT_SUBCASE(case4, array_ds_fb, repeats, axis);
     REPEAT_SUBCASE(case4, array_ds_hb, repeats, axis);
     REPEAT_SUBCASE(case4, array_ds_db, repeats, axis);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats, axis);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats, axis);
+
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats, axis_ct);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats_ct, axis);
+
+    ////////////////////////////////////////////////////
+
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats_cl, axis_ct);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats_cl, axis_cl);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats_cl, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats, axis_cl);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats, axis_cl);
+
+    REPEAT_SUBCASE(case4, array_cs_fb, repeats_cl, axis);
+    REPEAT_SUBCASE(case4, array_cs_hb, repeats_cl, axis);
+    REPEAT_SUBCASE(case4, array_cs_db, repeats_cl, axis);
+
+    REPEAT_SUBCASE(case4, array_fs_fb, repeats_cl, axis);
+    REPEAT_SUBCASE(case4, array_fs_hb, repeats_cl, axis);
+    REPEAT_SUBCASE(case4, array_fs_db, repeats_cl, axis);
+
+    REPEAT_SUBCASE(case4, array_hs_fb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_hs_hb, repeats_ct, axis);
+    REPEAT_SUBCASE(case4, array_hs_db, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case4, array_ds_fb, repeats_cl, axis);
+    REPEAT_SUBCASE(case4, array_ds_hb, repeats_cl, axis);
+    REPEAT_SUBCASE(case4, array_ds_db, repeats_cl, axis);
+
+    REPEAT_SUBCASE(case4, array_ls_fb, repeats_cl, axis);
+    REPEAT_SUBCASE(case4, array_ls_hb, repeats_cl, axis);
+    REPEAT_SUBCASE(case4, array_ls_db, repeats_cl, axis);
     #endif
 }
 
@@ -187,6 +428,50 @@ TEST_CASE("repeat(case5)" * doctest::test_suite("array::repeat"))
     REPEAT_SUBCASE(case5, array_ds_fb, repeats, axis);
     REPEAT_SUBCASE(case5, array_ds_hb, repeats, axis);
     REPEAT_SUBCASE(case5, array_ds_db, repeats, axis);
+
+    REPEAT_SUBCASE(case5, array_ls_fb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_ls_hb, repeats, axis);
+    REPEAT_SUBCASE(case5, array_ls_db, repeats, axis);
+
+    REPEAT_SUBCASE(case5, array_cs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_cs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_cs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_fs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_fs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_fs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_hs_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_hs_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_hs_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_ds_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_ds_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_ds_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_ls_fb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_ls_hb, repeats_ct, axis_ct);
+    REPEAT_SUBCASE(case5, array_ls_db, repeats_ct, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_cs_fb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_cs_hb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_cs_db, repeats_cl, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_fs_fb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_fs_hb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_fs_db, repeats_cl, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_hs_fb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_hs_hb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_hs_db, repeats_cl, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_ds_fb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_ds_hb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_ds_db, repeats_cl, axis_ct);
+
+    REPEAT_SUBCASE(case5, array_ls_fb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_ls_hb, repeats_cl, axis_ct);
+    REPEAT_SUBCASE(case5, array_ls_db, repeats_cl, axis_ct);
     #endif
 }
 
@@ -214,5 +499,9 @@ TEST_CASE("repeat(case6)" * doctest::test_suite("array::repeat"))
     REPEAT_SUBCASE(case6, array_ds_fb, repeats, axis);
     REPEAT_SUBCASE(case6, array_ds_hb, repeats, axis);
     REPEAT_SUBCASE(case6, array_ds_db, repeats, axis);
+
+    REPEAT_SUBCASE(case6, array_ls_fb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_ls_hb, repeats, axis);
+    REPEAT_SUBCASE(case6, array_ls_db, repeats, axis);
     #endif
 }

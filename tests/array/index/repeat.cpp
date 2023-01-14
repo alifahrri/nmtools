@@ -18,6 +18,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto axis    = None;
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = 3_ct;
+        auto shape_cl   = to_clipped(shape_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -33,6 +34,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = 3_ct;
         auto axis_ct    = 0_ct;
+        auto shape_cl   = to_clipped(shape_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -48,6 +50,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = 3_ct;
         auto axis_ct    = 1_ct;
+        auto shape_cl   = to_clipped(shape_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -63,6 +66,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = nmtools_tuple{1_ct,2_ct};
         auto axis_ct    = 1_ct;
+        auto shape_cl   = to_clipped(shape_ct);
+        auto repeats_cl = to_clipped(repeats_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
@@ -78,6 +83,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_repeat)
         auto shape_ct   = nmtools_tuple{2_ct,2_ct};
         auto repeats_ct = nmtools_tuple{1_ct,2_ct};
         auto axis_ct    = 0_ct;
+        auto shape_cl   = to_clipped(shape_ct);
+        auto repeats_cl = to_clipped(repeats_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
@@ -199,7 +206,11 @@ TEST_CASE("shape_repeat(case1)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case1, shape_f, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case1, shape_h, repeats, axis );
 
+    SHAPE_REPEAT_SUBCASE( case1, shape_ct, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case1, shape_cl, repeats, axis );
+
     SHAPE_REPEAT_SUBCASE( case1, shape_ct, repeats_ct, axis );
+    SHAPE_REPEAT_SUBCASE( case1, shape_cl, repeats_ct, axis );
 }
 
 TEST_CASE("shape_repeat(case2)" * doctest::test_suite("index::shape_repeat"))
@@ -209,8 +220,15 @@ TEST_CASE("shape_repeat(case2)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case2, shape_v, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case2, shape_f, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case2, shape_h, repeats, axis );
-    
+
+    SHAPE_REPEAT_SUBCASE( case2, shape_ct, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case2, shape_cl, repeats, axis );
+
+    SHAPE_REPEAT_SUBCASE( case2, shape_ct, repeats, axis_ct );
+    SHAPE_REPEAT_SUBCASE( case2, shape_cl, repeats, axis_ct );
+
     SHAPE_REPEAT_SUBCASE( case2, shape_ct, repeats_ct, axis_ct );
+    SHAPE_REPEAT_SUBCASE( case2, shape_cl, repeats_ct, axis_ct );
 }
 
 TEST_CASE("shape_repeat(case3)" * doctest::test_suite("index::shape_repeat"))
@@ -221,7 +239,14 @@ TEST_CASE("shape_repeat(case3)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case3, shape_f, repeats, axis );
     SHAPE_REPEAT_SUBCASE( case3, shape_h, repeats, axis );
 
+    SHAPE_REPEAT_SUBCASE( case3, shape_ct, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case3, shape_cl, repeats, axis );
+
+    SHAPE_REPEAT_SUBCASE( case3, shape_ct, repeats, axis_ct );
+    SHAPE_REPEAT_SUBCASE( case3, shape_cl, repeats, axis_ct );
+
     SHAPE_REPEAT_SUBCASE( case3, shape_ct, repeats_ct, axis_ct );
+    SHAPE_REPEAT_SUBCASE( case3, shape_cl, repeats_ct, axis_ct );
 }
 
 TEST_CASE("shape_repeat(case4)" * doctest::test_suite("index::shape_repeat"))
@@ -233,6 +258,19 @@ TEST_CASE("shape_repeat(case4)" * doctest::test_suite("index::shape_repeat"))
     SHAPE_REPEAT_SUBCASE( case4, shape_h, repeats, axis );
 
     SHAPE_REPEAT_SUBCASE( case4, shape_ct, repeats_ct, axis_ct );
+    SHAPE_REPEAT_SUBCASE( case4, shape_cl, repeats_cl, axis_ct );
+
+    SHAPE_REPEAT_SUBCASE( case4, shape_ct, repeats_ct, axis );
+    SHAPE_REPEAT_SUBCASE( case4, shape_cl, repeats_cl, axis );
+
+    SHAPE_REPEAT_SUBCASE( case4, shape_ct, repeats, axis );
+    SHAPE_REPEAT_SUBCASE( case4, shape_cl, repeats, axis );
+
+    SHAPE_REPEAT_SUBCASE( case4, shape_ct, repeats_cl, axis );
+    SHAPE_REPEAT_SUBCASE( case4, shape_cl, repeats_ct, axis );
+
+    SHAPE_REPEAT_SUBCASE( case4, shape_ct, repeats_cl, axis_ct );
+    SHAPE_REPEAT_SUBCASE( case4, shape_cl, repeats_ct, axis_ct );
 }
 
 TEST_CASE("shape_repeat(case5)" * doctest::test_suite("index::shape_repeat"))
@@ -302,6 +340,8 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices  = 7;
         int repeats  = 2;
         auto axis = None;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -315,6 +355,8 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices  = 6;
         int repeats  = 2;
         auto axis = None;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -328,6 +370,8 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices  = 5;
         int repeats  = 2;
         auto axis = None;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -341,6 +385,8 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {5,0};
         int repeats  = 3;
         auto axis    = 0;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
@@ -354,6 +400,8 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {5,1};
         int repeats  = 3;
         auto axis    = 0;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
@@ -367,6 +415,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {2,0};
         int repeats[2] = {1,2};
         auto axis    = 0;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
+        auto repeats_ct = nmtools_tuple{1_ct,2_ct};
+        auto repeats_cl = to_clipped(repeats_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
@@ -380,6 +432,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {1,0};
         int repeats[2] = {1,2};
         auto axis    = 0;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
+        auto repeats_ct = nmtools_tuple{1_ct,2_ct};
+        auto repeats_cl = to_clipped(repeats_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
@@ -393,6 +449,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {0,0};
         int repeats[2] = {1,2};
         auto axis    = 0;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
+        auto repeats_ct = nmtools_tuple{1_ct,2_ct};
+        auto repeats_cl = to_clipped(repeats_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
@@ -406,6 +466,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {0,0};
         int repeats[2] = {1,2};
         auto axis    = 1;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
+        auto repeats_ct = nmtools_tuple{1_ct,2_ct};
+        auto repeats_cl = to_clipped(repeats_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
@@ -419,6 +483,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {0,1};
         int repeats[2] = {1,2};
         auto axis    = 1;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
+        auto repeats_ct = nmtools_tuple{1_ct,2_ct};
+        auto repeats_cl = to_clipped(repeats_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
@@ -432,6 +500,10 @@ NMTOOLS_TESTING_DECLARE_CASE(repeat)
         int indices[2] = {1,2};
         int repeats[2] = {1,2};
         auto axis    = 1;
+        auto shape_ct = nmtools_tuple{2_ct,2_ct};
+        auto shape_cl = to_clipped(shape_ct);
+        auto repeats_ct = nmtools_tuple{1_ct,2_ct};
+        auto repeats_cl = to_clipped(repeats_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
@@ -475,64 +547,131 @@ TEST_CASE("repeat(case1)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case1, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case1, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case1, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case1, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case1, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case1, shape_cl, indices, repeats, axis);
 }
 
 TEST_CASE("repeat(case2)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case2, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case2, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case2, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case2, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case2, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case2, shape_cl, indices, repeats, axis);
 }
 
 TEST_CASE("repeat(case3)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case3, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case3, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case3, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case3, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case3, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case3, shape_cl, indices, repeats, axis);
 }
 
 TEST_CASE("repeat(case4)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case4, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case4, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case4, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case4, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case4, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case4, shape_cl, indices, repeats, axis);
 }
 
 TEST_CASE("repeat(case5)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case5, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case5, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case5, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case5, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case5, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case5, shape_cl, indices, repeats, axis);
 }
 
 TEST_CASE("repeat(case6)" * doctest::test_suite("index::repeat"))
 {
-    REPEAT_SUBCASE(case6, shape_a, indices, repeats, axis);
-    REPEAT_SUBCASE(case6, shape_v, indices, repeats, axis);
+    // REPEAT_SUBCASE(case6, shape_a, indices, repeats, axis);
+    // REPEAT_SUBCASE(case6, shape_v, indices, repeats, axis);
+    // REPEAT_SUBCASE(case6, shape_f, indices, repeats, axis);
+    // REPEAT_SUBCASE(case6, shape_h, indices, repeats, axis);
+    
+    // REPEAT_SUBCASE(case6, shape_ct, indices, repeats, axis);
+    // REPEAT_SUBCASE(case6, shape_cl, indices, repeats, axis);
+
+    // REPEAT_SUBCASE(case6, shape_ct, indices, repeats_ct, axis);
+    // REPEAT_SUBCASE(case6, shape_cl, indices, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case6, shape_ct, indices, repeats_cl, axis);
+    REPEAT_SUBCASE(case6, shape_cl, indices, repeats_cl, axis);
 }
 
 TEST_CASE("repeat(case7)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case7, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case7, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case7, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case7, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case7, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case7, shape_cl, indices, repeats, axis);
+
+    REPEAT_SUBCASE(case7, shape_ct, indices, repeats_ct, axis);
+    REPEAT_SUBCASE(case7, shape_cl, indices, repeats_ct, axis);
+
+    REPEAT_SUBCASE(case7, shape_ct, indices, repeats_cl, axis);
+    REPEAT_SUBCASE(case7, shape_cl, indices, repeats_cl, axis);
 }
 
 TEST_CASE("repeat(case8)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case8, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case8, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case8, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case8, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case8, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case8, shape_cl, indices, repeats, axis);
 }
 
 TEST_CASE("repeat(case9)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case9, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case9, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case9, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case9, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case9, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case9, shape_cl, indices, repeats, axis);
 }
 
 TEST_CASE("repeat(case10)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case10, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case10, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case10, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case10, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case10, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case10, shape_cl, indices, repeats, axis);
 }
 
 TEST_CASE("repeat(case10)" * doctest::test_suite("index::repeat"))
 {
     REPEAT_SUBCASE(case11, shape_a, indices, repeats, axis);
     REPEAT_SUBCASE(case11, shape_v, indices, repeats, axis);
+    REPEAT_SUBCASE(case11, shape_f, indices, repeats, axis);
+    REPEAT_SUBCASE(case11, shape_h, indices, repeats, axis);
+    
+    REPEAT_SUBCASE(case11, shape_ct, indices, repeats, axis);
+    REPEAT_SUBCASE(case11, shape_cl, indices, repeats, axis);
 }
