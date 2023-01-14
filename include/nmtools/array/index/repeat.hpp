@@ -5,12 +5,12 @@
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/shape.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/where.hpp"
 #include "nmtools/array/index/cumsum.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/sum.hpp"
+#include "nmtools/array/ndarray/hybrid.hpp"
 
 #include "nmtools/assert.hpp"
 
@@ -50,17 +50,24 @@ namespace nmtools::index
             // so the resulting shape is 1-dimensional
             if constexpr (is_none_v<axis_t>) {
                 auto p = product(shape);
-                at(ret,0) = p * repeats;
+                at(ret,meta::ct_v<0>) = p * repeats;
             }
             else {
+                [[maybe_unused]]
                 auto n = len(shape);
 
                 if constexpr (meta::is_resizable_v<return_t>)
                     ret.resize(n);
                 
-                // TODO: do not use tuple_at
-                for (size_t i=0; i<n; i++)
-                    at(ret,i) = tuple_at(shape,i);
+                if constexpr (meta::is_tuple_v<return_t>) {
+                    constexpr auto N = meta::len_v<return_t>;
+                    meta::template_for<N>([&](auto i){
+                        at(ret,i) = at(shape,i);
+                    });
+                } else {
+                    for (size_t i=0; i<n; i++)
+                        at(ret,i) = at(shape,i);
+                }
 
                 if constexpr (meta::is_index_array_v<repeats_t>) {
                     auto r_a = at(ret,axis);
@@ -113,19 +120,26 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (
-                is_constant_index_array_v<shape_t>
-                && (is_constant_index_v<repeats_t> || is_constant_index_array_v<repeats_t>)
+                (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
+                && (is_constant_index_v<repeats_t> || is_constant_index_array_v<repeats_t> || is_clipped_index_array_v<repeats_t>)
                 && (is_none_v<axis_t> || is_constant_index_v<axis_t>)
             ) {
                 constexpr auto shape   = to_value_v<shape_t>;
                 constexpr auto repeats = to_value_v<repeats_t>;
                 constexpr auto axis    = to_value_v<axis_t>;
                 constexpr auto result  = index::shape_repeat(shape,repeats,axis);
-                return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
+                using nmtools::at;
+                return template_reduce<nmtools::len(result)>([&](auto init, auto index){
                     using init_type = type_t<decltype(init)>;
-                    using result_t  = append_type_t<init_type,ct<nmtools::at(result,index+1)>>;
-                    return as_value_v<result_t>;
-                }, as_value_v<nmtools_tuple<ct<nmtools::at(result,0)>>>);
+                    constexpr auto I = at(result,index);
+                    if constexpr (is_constant_index_array_v<shape_t>) {
+                        using result_t  = append_type_t<init_type,ct<I>>;
+                        return as_value_v<result_t>;
+                    } else {
+                        using result_t  = append_type_t<init_type,clipped_size_t<I>>;
+                        return as_value_v<result_t>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (is_none_v<axis_t>) {
                 using type = make_array_type_t<size_t,1>;
                 return as_value_v<type>;
@@ -134,8 +148,23 @@ namespace nmtools::meta
                 && (is_index_v<repeats_t> || is_index_array_v<repeats_t>)
                 && (is_none_v<axis_t> || is_index_v<axis_t>)
             ) {
+                using index_t = get_index_element_type_t<shape_t>;
+                constexpr auto len = len_v<shape_t>;
+                [[maybe_unused]]
+                constexpr auto b_size = bounded_size_v<shape_t>;
+                if constexpr (len > 0) {
+                    return as_value_v<nmtools_array<index_t,len>>;
+                } else if constexpr (!is_fail_v<decltype(b_size)>) {
+                    using type = array::static_vector<index_t,b_size>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<index_t>;
+                    return as_value_v<type>;
+                }
+                #if 0
                 using type = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
                 return as_value_v<type>;
+                #endif
             } else {
                 using type = error::SHAPE_REPEAT_UNSUPPORTED<shape_t,repeats_t,axis_t>;
                 return as_value_v<type>;
@@ -187,7 +216,22 @@ namespace nmtools::index
                     return at<0>(indices) / repeats;
                 }
             }();
-            ret = compute_indices(i,shape);
+
+            auto indices = compute_indices(i,shape);
+            if constexpr (meta::is_resizable_v<return_t>) {
+                ret.resize(len(indices));
+            }
+            auto assign_result = [&](auto i){
+                at(ret,i) = at(indices,i);
+            };
+            if constexpr (meta::is_tuple_v<return_t>) {
+                constexpr auto N = meta::len_v<return_t>;
+                meta::template_for<N>(assign_result);
+            } else {
+                for (size_t i=0; i<len(ret); i++) {
+                    assign_result(i);
+                }
+            }
         }
         else {
             auto n = len(indices);
@@ -196,7 +240,7 @@ namespace nmtools::index
             for (size_t i=0; i<n; i++) {
                 using common_t = meta::promote_index_t<size_t,axis_t>;
                 auto idx = at(indices,i);
-                if constexpr (meta::is_integral_v<repeats_t>) {
+                if constexpr (meta::is_index_v<repeats_t>) {
                     at(ret,i) = (static_cast<common_t>(i)==static_cast<common_t>(axis) ? idx / repeats : idx);
                 } else {
                     auto csum = cumsum(repeats);
@@ -236,14 +280,22 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
-            // make sure type is index array
-            if constexpr (!is_index_array_v<type>) {
-                // assume the index type is size_t
-                using result_t = replace_element_type_t<type,size_t>;
-                return as_value_v<result_t>;
+            constexpr auto N = len_v<shape_t>;
+            [[maybe_unused]]
+            constexpr auto b_dim = bounded_size_v<shape_t>;
+            using index_t = get_index_element_type_t<shape_t>;
+            // TODO: try to return the same type as shape_t
+            if constexpr (N > 0) {
+                using type = nmtools_array<index_t,N>;
+                return as_value_v<type>;
+            } else if constexpr (!is_fail_v<decltype(b_dim)>) {
+                using type = array::static_vector<index_t,b_dim>;
+                return as_value_v<type>;
+            } else {
+                // TODO: small buffer optimization
+                using type = nmtools_list<index_t>;
+                return as_value_v<type>;
             }
-            else return as_value_v<type>;
         }();
         using type = type_t<remove_cvref_t<decltype(vtype)>>;
     }; // resolve_optype
