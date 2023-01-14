@@ -29,10 +29,6 @@ namespace nmtools::index
     constexpr auto where(const F& f, const array_t& array)
     {
         using return_t = meta::resolve_optype_t<where_t,array_t,index_t>;
-        #if 0
-        static_assert (!meta::is_void_v<return_t> && !meta::is_fail_v<return_t>
-            , "unsupported index::where, couldn't deduce return type" );
-        #endif
         auto res = return_t{};
         if constexpr (meta::is_resizable_v<return_t>)
             res.resize(len(array));
@@ -77,7 +73,7 @@ namespace nmtools::meta
             if constexpr (is_resizable_v<array_t>) {
                 using type = replace_element_type_t<array_t,index_t>;
                 return as_value_v<type>;
-            } else if constexpr (is_constant_index_array_v<array_t>) {
+            } else if constexpr (is_constant_index_array_v<array_t> || is_clipped_index_array_v<array_t>) {
                 constexpr auto N = len_v<array_t>;
                 // need to use hybrid array1d since the size will depends on runtime value
                 using type = array::static_vector<index_t,N>;

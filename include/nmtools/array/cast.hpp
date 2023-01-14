@@ -218,23 +218,33 @@ namespace nmtools
     } // cast
 
     template <typename T>
-    constexpr auto to_clipped_array(const T&)
+    constexpr auto to_clipped(const T&)
     {
-        constexpr auto array = meta::to_value_v<T>;
-        constexpr auto N = meta::len_v<T>;
-        return meta::template_reduce<N>([&](auto init, auto index){
-            constexpr auto I = at(array,index);
-            constexpr auto vtype = [](){
-                constexpr auto MAX = (I > 0 ? I : 1);
-                if constexpr (I<0) {
-                    return meta::as_value_v<clipped_int64_t<I,MAX>>;
-                } else {
-                    return meta::as_value_v<clipped_size_t<MAX>>;
-                }
-            }();
-            using type = meta::type_t<decltype(vtype)>;
-            return utility::tuple_append(init,type(I));
-        }, nmtools_tuple<>{});
+        if constexpr (meta::is_constant_index_v<T>) {
+            constexpr auto I = T::value;
+            constexpr auto MAX = (I > 0 ? I : 1);
+            if constexpr (I<0) {
+                return clipped_int64_t<I,MAX>(I);
+            } else {
+                return clipped_size_t<MAX>(I);
+            }
+        } else {
+            constexpr auto array = meta::to_value_v<T>;
+            constexpr auto N = meta::len_v<T>;
+            return meta::template_reduce<N>([&](auto init, auto index){
+                constexpr auto I = at(array,index);
+                constexpr auto vtype = [](){
+                    constexpr auto MAX = (I > 0 ? I : 1);
+                    if constexpr (I<0) {
+                        return meta::as_value_v<clipped_int64_t<I,MAX>>;
+                    } else {
+                        return meta::as_value_v<clipped_size_t<MAX>>;
+                    }
+                }();
+                using type = meta::type_t<decltype(vtype)>;
+                return utility::tuple_append(init,type(I));
+            }, nmtools_tuple<>{});
+        }
     }
 } // namespace nmtools
 

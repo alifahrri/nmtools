@@ -27,7 +27,7 @@ namespace nmtools::index
         if constexpr (!meta::is_constant_index_v<result_t>) {
             res = 0;
             for (size_t i=0; i<(size_t)len(vec); i++)
-                res += at(vec,i);
+                res = res + at(vec,i);
         }
         return res;
     } // sum
@@ -46,13 +46,21 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<array_t>) {
+            if constexpr (
+                is_constant_index_array_v<array_t>
+                || is_clipped_index_array_v<array_t>
+            ) {
                 constexpr auto array = to_value_v<array_t>;
                 constexpr auto sum   = index::sum(array);
-                using result = ct<sum>;
-                return as_value_v<result>;
+                if constexpr (is_constant_index_array_v<array_t>) {
+                    using result = ct<sum>;
+                    return as_value_v<result>;
+                } else {
+                    using result = clipped_size_t<sum>;
+                    return as_value_v<result>;
+                }
             } else if constexpr (is_index_array_v<array_t>) {
-                using element_t = get_element_or_common_type_t<array_t>;
+                using element_t = get_index_element_type_t<array_t>;
                 return as_value_v<element_t>;
             } else {
                 return as_value_v<error::INDEX_SUM_UNSUPPORTED>;

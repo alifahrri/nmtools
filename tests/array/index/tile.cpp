@@ -16,8 +16,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         inline int reps[1] = {2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct};
-        inline auto shape_cl = to_clipped_array(shape_ct);
-        inline auto reps_cl  = to_clipped_array(reps_ct);
+        inline auto shape_cl = to_clipped(shape_ct);
+        inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -32,8 +32,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         inline int reps[2]   = {2,2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
-        inline auto shape_cl = to_clipped_array(shape_ct);
-        inline auto reps_cl  = to_clipped_array(reps_ct);
+        inline auto shape_cl = to_clipped(shape_ct);
+        inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -48,8 +48,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[3]  = {2,1,2};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,1_ct,2_ct};
-        inline auto shape_cl = to_clipped_array(shape_ct);
-        inline auto reps_cl  = to_clipped_array(reps_ct);
+        inline auto shape_cl = to_clipped(shape_ct);
+        inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -64,8 +64,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[2]  = {2,1};
         inline auto shape_ct = nmtools_tuple{3_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,1_ct};
-        inline auto shape_cl = to_clipped_array(shape_ct);
-        inline auto reps_cl  = to_clipped_array(reps_ct);
+        inline auto shape_cl = to_clipped(shape_ct);
+        inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -80,8 +80,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int reps[2]  = {2,2};
         inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
-        inline auto shape_cl = to_clipped_array(shape_ct);
-        inline auto reps_cl  = to_clipped_array(reps_ct);
+        inline auto shape_cl = to_clipped(shape_ct);
+        inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -96,8 +96,8 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_tile)
         int8_t reps[2]  = {2,2};
         inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
         inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
-        inline auto shape_cl = to_clipped_array(shape_ct);
-        inline auto reps_cl  = to_clipped_array(reps_ct);
+        inline auto shape_cl = to_clipped(shape_ct);
+        inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_CAST_INDEX_ARRAYS(reps)
     }
@@ -115,8 +115,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[1] = {2};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct};
-        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
-        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
+        constexpr inline auto shape_cl = to_clipped(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -131,8 +131,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[2]   = {2,2};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
-        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
-        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
+        constexpr inline auto shape_cl = to_clipped(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -147,8 +147,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[3]   = {2,1,2};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct,1_ct,2_ct};
-        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
-        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
+        constexpr inline auto shape_cl = to_clipped(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -163,8 +163,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[2]  = {2,1};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct,1_ct};
-        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
-        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
+        constexpr inline auto shape_cl = to_clipped(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
@@ -179,8 +179,8 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_shape_tile)
         constexpr inline int reps[2]   = {2,2};
         constexpr inline auto shape_ct = nmtools_tuple{2_ct,1_ct,4_ct};
         constexpr inline auto reps_ct  = nmtools_tuple{2_ct,2_ct};
-        constexpr inline auto shape_cl = to_clipped_array(shape_ct);
-        constexpr inline auto reps_cl  = to_clipped_array(reps_ct);
+        constexpr inline auto shape_cl = to_clipped(shape_ct);
+        constexpr inline auto reps_cl  = to_clipped(reps_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(shape)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(reps)
     }
