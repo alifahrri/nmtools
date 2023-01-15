@@ -62,7 +62,7 @@ namespace nmtools::index
                     auto b = at(bshape,bi);
                     using common_t = meta::promote_index_t<decltype(a),decltype(b)>;
                     success = ((common_t)a==(common_t)b) || (a==1) || (b==1);
-                    at(res,si) = (common_t)a > (common_t)b ? a : b;
+                    at(res,si) = (common_t)a > (common_t)b ? (common_t)a : (common_t)b;
                 }
                 else if (bi<0) {
                     auto a = at(ashape,ai);
