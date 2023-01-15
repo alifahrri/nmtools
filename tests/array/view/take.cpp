@@ -11,7 +11,10 @@ inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_
 inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
 inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
 inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/view/take.hpp"
@@ -81,6 +84,90 @@ TEST_CASE("case1" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case1, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case1, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case1, array_ds_db, indices, axis );
+
+    TAKE_SUBCASE( case1, array_ls_fb, indices, axis );
+    TAKE_SUBCASE( case1, array_ls_hb, indices, axis );
+    TAKE_SUBCASE( case1, array_ls_db, indices, axis );
+
+    TAKE_SUBCASE( case1, array_cs_fb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_cs_hb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_cs_db, indices_ct, axis );
+
+    TAKE_SUBCASE( case1, array_fs_fb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_fs_hb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_fs_db, indices_ct, axis );
+
+    TAKE_SUBCASE( case1, array_hs_fb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_hs_hb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_hs_db, indices_ct, axis );
+
+    TAKE_SUBCASE( case1, array_ds_fb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_ds_hb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_ds_db, indices_ct, axis );
+
+    TAKE_SUBCASE( case1, array_ls_fb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_ls_hb, indices_ct, axis );
+    TAKE_SUBCASE( case1, array_ls_db, indices_ct, axis );
+
+    TAKE_SUBCASE( case1, array_cs_fb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_cs_hb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_cs_db, indices_ct, axis_ct );
+
+    TAKE_SUBCASE( case1, array_fs_fb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_fs_hb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_fs_db, indices_ct, axis_ct );
+
+    TAKE_SUBCASE( case1, array_hs_fb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_hs_hb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_hs_db, indices_ct, axis_ct );
+
+    TAKE_SUBCASE( case1, array_ds_fb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_ds_hb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_ds_db, indices_ct, axis_ct );
+
+    TAKE_SUBCASE( case1, array_ls_fb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_ls_hb, indices_ct, axis_ct );
+    TAKE_SUBCASE( case1, array_ls_db, indices_ct, axis_ct );
+
+    TAKE_SUBCASE( case1, array_cs_fb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_cs_hb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_cs_db, indices_cl, axis );
+
+    TAKE_SUBCASE( case1, array_fs_fb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_fs_hb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_fs_db, indices_cl, axis );
+
+    TAKE_SUBCASE( case1, array_hs_fb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_hs_hb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_hs_db, indices_cl, axis );
+
+    TAKE_SUBCASE( case1, array_ds_fb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_ds_hb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_ds_db, indices_cl, axis );
+
+    TAKE_SUBCASE( case1, array_ls_fb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_ls_hb, indices_cl, axis );
+    TAKE_SUBCASE( case1, array_ls_db, indices_cl, axis );
+
+    TAKE_SUBCASE( case1, array_cs_fb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_cs_hb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_cs_db, indices_cl, axis_ct );
+
+    TAKE_SUBCASE( case1, array_fs_fb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_fs_hb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_fs_db, indices_cl, axis_ct );
+
+    TAKE_SUBCASE( case1, array_hs_fb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_hs_hb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_hs_db, indices_cl, axis_ct );
+
+    TAKE_SUBCASE( case1, array_ds_fb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_ds_hb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_ds_db, indices_cl, axis_ct );
+
+    TAKE_SUBCASE( case1, array_ls_fb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_ls_hb, indices_cl, axis_ct );
+    TAKE_SUBCASE( case1, array_ls_db, indices_cl, axis_ct );
     #endif
 }
 
@@ -111,6 +198,10 @@ TEST_CASE("case2" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case2, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case2, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case2, array_ds_db, indices, axis );
+
+    TAKE_SUBCASE( case2, array_ls_fb, indices, axis );
+    TAKE_SUBCASE( case2, array_ls_hb, indices, axis );
+    TAKE_SUBCASE( case2, array_ls_db, indices, axis );
     #endif
 }
 
@@ -141,6 +232,10 @@ TEST_CASE("case3" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case3, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case3, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case3, array_ds_db, indices, axis );
+
+    TAKE_SUBCASE( case3, array_ls_fb, indices, axis );
+    TAKE_SUBCASE( case3, array_ls_hb, indices, axis );
+    TAKE_SUBCASE( case3, array_ls_db, indices, axis );
     #endif
 }
 
@@ -171,6 +266,10 @@ TEST_CASE("case4" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case4, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case4, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case4, array_ds_db, indices, axis );
+
+    TAKE_SUBCASE( case4, array_ls_fb, indices, axis );
+    TAKE_SUBCASE( case4, array_ls_hb, indices, axis );
+    TAKE_SUBCASE( case4, array_ls_db, indices, axis );
     #endif
 }
 
@@ -201,6 +300,10 @@ TEST_CASE("case5" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case5, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case5, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case5, array_ds_db, indices, axis );
+
+    TAKE_SUBCASE( case5, array_ls_fb, indices, axis );
+    TAKE_SUBCASE( case5, array_ls_hb, indices, axis );
+    TAKE_SUBCASE( case5, array_ls_db, indices, axis );
     #endif
 }
 
@@ -231,5 +334,9 @@ TEST_CASE("case6" * doctest::test_suite("view::take"))
     TAKE_SUBCASE( case6, array_ds_fb, indices, axis );
     TAKE_SUBCASE( case6, array_ds_hb, indices, axis );
     TAKE_SUBCASE( case6, array_ds_db, indices, axis );
+
+    TAKE_SUBCASE( case6, array_ls_fb, indices, axis );
+    TAKE_SUBCASE( case6, array_ls_hb, indices, axis );
+    TAKE_SUBCASE( case6, array_ls_db, indices, axis );
     #endif
 }

@@ -346,18 +346,18 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             if constexpr (is_index_array_v<shape_result_t>) {
-                using type = replace_element_type_t<shape_result_t,bool>;
-                if constexpr (!is_fail_v<type> && !is_void_v<type>) {
+                // TODO: try to replace element type instead
+                constexpr auto N = len_v<shape_result_t>;
+                constexpr auto b_dim = bounded_size_v<shape_result_t>;
+                if constexpr (N>0) {
+                    using type = array::static_vector<bool,N>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(b_dim)>) {
+                    using type = array::static_vector<bool,b_dim>;
                     return as_value_v<type>;
                 } else {
-                    constexpr auto N = len_v<shape_result_t>;
-                    if constexpr (N>0) {
-                        using type = array::static_vector<bool,N>;
-                        return as_value_v<type>;
-                    } else {
-                        using type = nmtools_list<bool>;
-                        return as_value_v<type>;
-                    }
+                    using type = nmtools_list<bool>;
+                    return as_value_v<type>;
                 }
             } else {
                 return as_value_v<error::SHAPE_BROADCAST_TO_FREE_AXES_UNSUPPORTED<shape_result_t>>;
