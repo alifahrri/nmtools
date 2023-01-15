@@ -20,6 +20,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, take)
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_ARRAYS(indices)
         inline auto indices_ct = nmtools_tuple{0_ct,1_ct,4_ct};
+        inline auto indices_cl = to_clipped(indices_ct);
         inline auto axis_ct = 0_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
