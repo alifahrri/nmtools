@@ -6,6 +6,7 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
+#include "nmtools/array/ndarray/hybrid.hpp"
 
 namespace nmtools::index
 {
@@ -23,12 +24,15 @@ namespace nmtools::index
             auto n = len(indices);
             // TODO: error when n > at(shape,axis)
 
+            using namespace literals;
+
             if constexpr (is_none_v<axis_t>)
-                at(res,0) = n;
+                at(res,0_ct) = n;
             else {
+                using element_t = meta::get_index_element_type_t<return_t>;
                 auto shape_take_impl = [&](auto i){
                     using common_t = meta::promote_index_t<axis_t,decltype(i)>;
-                    at(res,i) = ((common_t)i == (common_t)axis) ? n : at(shape,i);
+                    at(res,i) = ((common_t)i == (common_t)axis) ? (element_t)n : (element_t)at(shape,i);
                 };
                 [[maybe_unused]] auto dim = len(shape);
                 if constexpr (meta::is_resizable_v<return_t>)
@@ -116,7 +120,6 @@ namespace nmtools::meta
         struct SHAPE_TAKE_UNSUPPORTED : detail::fail_t {};
     }
 
-    // TODO: compute at compile-time whenever possible
     template <typename shape_t, typename indices_t, typename axis_t>
     struct resolve_optype<
         void, index::shape_take_t, shape_t, indices_t, axis_t
@@ -126,19 +129,42 @@ namespace nmtools::meta
             // indices may not be index array
             using index_t = get_element_or_common_type_t<indices_t>;
             [[maybe_unused]] constexpr auto index_array_or_index_ndarray = (is_ndarray_v<indices_t> && is_index_v<index_t>) || is_index_array_v<indices_t>;
-            if constexpr (is_constant_index_array_v<shape_t> && is_constant_index_array_v<indices_t> && (is_none_v<axis_t> || is_constant_index_v<axis_t>)) {
-                constexpr auto result = index::shape_take(to_value_v<shape_t>, to_value_v<indices_t>, to_value_v<axis_t>);
+            if constexpr (
+                (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
+                && is_constant_index_array_v<indices_t>
+                && (is_none_v<axis_t> || is_constant_index_v<axis_t>)
+            ) {
+                constexpr auto shape = to_value_v<shape_t>;
+                constexpr auto axis  = to_value_v<axis_t>;
+                constexpr auto indices = to_value_v<indices_t>;
+                constexpr auto result  = index::shape_take(shape, indices, axis);
                 using nmtools::len, nmtools::at;
-                return template_reduce<len(result)-1>([&](auto init, auto index){
+                return template_reduce<len(result)>([&](auto init, auto index){
                     using init_type = type_t<decltype(init)>;
-                    return as_value_v<append_type_t<init_type,ct<at(result,index+1)>>>;
-                }, as_value_v<nmtools_tuple<ct<at(result,0)>>>);
+                    constexpr auto I = at(result,index);
+                    if constexpr (is_constant_index_array_v<shape_t>) {
+                        using type = append_type_t<init_type,ct<I>>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_type,clipped_size_t<I>>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (is_index_array_v<shape_t> && index_array_or_index_ndarray && is_none_v<axis_t>) {
                 return as_value_v<none_t>;
-            } else if constexpr (is_index_array_v<shape_t> && index_array_or_index_ndarray && is_index_v<axis_t>) {
-                // when slicing at given axis, the resulting shape type follow original shape
-                using type = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
-                return as_value_v<type>;
+            } else if constexpr (
+                is_index_array_v<shape_t>
+                && index_array_or_index_ndarray
+                && is_index_v<axis_t>
+            ) {
+                if constexpr (is_bounded_array_v<shape_t> || is_constant_index_array_v<shape_t>) {
+                    constexpr auto N = len_v<shape_t>;
+                    using type = nmtools_array<index_t,N>;
+                    return as_value_v<type>;
+                } else {
+                    // when slicing at given axis, the resulting shape type follow original shape
+                    return as_value_v<shape_t>;
+                }
             } else {
                 using type = error::SHAPE_TAKE_UNSUPPORTED<shape_t,indices_t,axis_t>;
                 return as_value_v<type>;
@@ -147,12 +173,28 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     }; // shape_take_t
 
-    template <typename index_t, typename shape_t, typename indices_t, typename axis_t>
+    template <typename dst_indices_t, typename shape_t, typename indices_t, typename axis_t>
     struct resolve_optype<
-        void, index::take_t, index_t, shape_t, indices_t, axis_t
+        void, index::take_t, dst_indices_t, shape_t, indices_t, axis_t
     >
     {
-        using type = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
+        static constexpr auto vtype = [](){
+            constexpr auto DIM = len_v<shape_t>;
+            constexpr auto b_dim = bounded_size_v<shape_t>;
+            using index_t = get_index_element_type_t<shape_t>;
+            if constexpr (DIM > 0) {
+                using type = nmtools_array<index_t,DIM>;
+                return as_value_v<type>;
+            } else if constexpr (!is_fail_v<decltype(b_dim)>) {
+                using type = array::static_vector<index_t,b_dim>;
+                return as_value_v<type>;
+            } else {
+                // TODO: small buffer optimization
+                using type = nmtools_list<index_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
     }; // take_t
 } // namespace nmtools::meta
 
