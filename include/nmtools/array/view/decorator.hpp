@@ -128,21 +128,6 @@ namespace nmtools::view
          */
 
         /**
-         * @brief return the dimensionality of the referred array
-         * 
-         * @return constexpr auto 
-         */
-        constexpr auto dim() const noexcept
-        {
-            // @note `this` must be constexpr when constexpr return value is desired
-            if constexpr (meta::has_dim_v<meta::remove_cvref_t<view_type>>)
-                return view_type::dim();
-            // @note may be recursive
-            else
-                return detail::dim(view_type::array);
-        } // dim()
-
-        /**
          * @brief return the shape of this array
          * 
          * @return constexpr auto 
@@ -157,6 +142,16 @@ namespace nmtools::view
                 return detail::shape(view_type::array);
             }
         } // shape
+
+        constexpr auto dim() const noexcept
+        {
+            // @note `this` must be constexpr when constexpr return value is desired
+            if constexpr (meta::has_dim_v<meta::remove_cvref_t<view_type>>)
+                return view_type::dim();
+            // @note may be recursive
+            else
+                return len(shape());
+        } // dim
 
         /**
          * @brief Return the number of elements
@@ -876,6 +871,8 @@ namespace nmtools::meta
         using view_type   = view::decorator_t<view_t,Args...>;
         using array_type  = remove_cvref_pointer_t<typename view_type::array_type>;
 
+        // TODO: simplify deduction, prefer deduce from return of view_type::size
+        // then check if the return is constant index
         static constexpr auto value = [](){
             [[maybe_unused]] constexpr auto array_size = [](){
                 if constexpr (is_tuple_v<array_type>) {
