@@ -104,7 +104,7 @@ namespace nmtools::index
     template <typename indices_t, typename si_t, typename start_t, typename stop_t, typename step_t, typename i_i_t>
     constexpr inline auto compute_index(const indices_t& indices, si_t si, start_t start_, stop_t stop_, step_t step_, i_i_t i_i)
     {
-        using index_t [[maybe_unused]]  = meta::get_element_type_t<indices_t>;
+        using index_t [[maybe_unused]]  = meta::get_index_element_type_t<indices_t>;
         using sindex_t [[maybe_unused]] = meta::make_signed_t<index_t>;
         using result_t [[maybe_unused]] = meta::make_unsigned_t<index_t>;
         [[maybe_unused]] auto start = start_; // just alias
@@ -445,7 +445,7 @@ namespace nmtools::index
     constexpr auto shape_dynamic_slice(const shape_t& shape, const slices_t& slices)
     {
         using result_t  = meta::resolve_optype_t<shape_dynamic_slice_t,shape_t,slices_t>;
-        using size_type = meta::get_element_type_t<result_t>;
+        using size_type = meta::get_index_element_type_t<result_t>;
         using slice_t [[maybe_unused]] = meta::get_value_type_t<slices_t>;
         using namespace literals;
 
@@ -812,7 +812,7 @@ namespace nmtools::index
     constexpr auto shape_slice(const shape_t& shape_, const slices_t&...slices)
     {
         using return_t  = meta::resolve_optype_t<shape_slice_t,shape_t,slices_t...>;
-        using size_type = meta::get_element_type_t<return_t>;
+        using size_type = meta::get_index_element_type_t<return_t>;
         // number of integer in slices, represent indexing instead of slice
         constexpr auto N_INT = (static_cast<size_t>(meta::is_index_v<slices_t>) + ...);
 
@@ -982,7 +982,7 @@ namespace nmtools::index
     constexpr auto slice(const indices_t& indices, const shape_t& shape_, const slices_t&...slices)
     {
         using return_t = meta::resolve_optype_t<slice_t,indices_t,shape_t,slices_t...>;
-        using index_t [[maybe_unused]]  = meta::remove_cvref_t<meta::get_element_type_t<return_t>>;
+        using index_t [[maybe_unused]]  = meta::remove_cvref_t<meta::get_index_element_type_t<return_t>>;
 
         const auto shape = [&](){
             // convert constant_index_array of shape to easily allow element access with runtime index

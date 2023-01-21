@@ -39,7 +39,8 @@ namespace nmtools::view
             auto indices_ = pack_indices(indices...);
 
             auto shape_ = detail::shape(array);
-            return index::apply_slice(indices_,shape_,slices);
+            auto tf_indices = index::apply_slice(indices_,shape_,slices);
+            return tf_indices;
         } // index
     }; // slice_t
 
