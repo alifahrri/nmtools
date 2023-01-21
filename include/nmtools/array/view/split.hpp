@@ -259,7 +259,7 @@ namespace nmtools::meta
                 &&  is_index_v<axis_t>
             ) {
                 constexpr auto dim = len_v<shape_t>;
-                using index_t = get_element_type_t<shape_t>;
+                using index_t = get_index_element_type_t<shape_t>;
                 // we know how many axis at compile-time
                 // NOTE: 2 represents start and stop pair
                 using slice_t = nmtools_array<nmtools_array<index_t,2>,dim>;
@@ -281,7 +281,7 @@ namespace nmtools::meta
                 &&  is_index_v<axis_t>
             ) {
                 constexpr auto dim = len_v<shape_t>;
-                using index_t = get_element_type_t<shape_t>;
+                using index_t = get_index_element_type_t<shape_t>;
                 // we know how many axis at compile-time
                 // NOTE: 2 represents start and stop pair
                 using slice_t = nmtools_array<nmtools_array<index_t,2>,dim>;
@@ -293,7 +293,7 @@ namespace nmtools::meta
                 && (is_index_array_v<indices_t> || is_index_v<indices_t>)
                 &&  is_index_v<axis_t>
             ) {
-                using index_t = get_element_type_t<shape_t>;
+                using index_t = get_index_element_type_t<shape_t>;
                 // we do not know how many axis until runtime
                 using slice_t = nmtools_list<nmtools_array<index_t,2>>;
                 using type = nmtools_list<slice_t>;

@@ -220,7 +220,24 @@ namespace nmtools::array
                 data_.resize(numel);
             }
             auto same_dim   = (size_t)len(shape_) == (size_t)new_dim;
-            auto same_numel = (size_t)len(data_)  == (size_t)numel;
+            auto same_numel = [&](){
+                // NOTE: fixed buffer is used to indicate fixed size
+                // , to use fixed dim dynamic size, use static_vector as buffer
+                #if 0
+                // NOTE: to allow fixed buffer, fixed dim, dynamic shape
+                if (meta::is_resizable_v<buffer_type>) {
+                    // buffer is resizable, can deduce numel from len(data_)
+                    return (size_t)len(data_) == (size_t)numel;
+                } else if (same_dim) {
+                    // same dim and can assign value to shape
+                    return !meta::is_constant_index_array_v<shape_type>;
+                } else {
+                    return false;
+                }
+                #else
+                return (size_t)len(data_) == (size_t)numel;
+                #endif
+            }();
             if (!same_numel) {
                 return false;
             }
