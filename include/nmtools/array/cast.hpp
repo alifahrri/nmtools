@@ -246,6 +246,17 @@ namespace nmtools
             }, nmtools_tuple<>{});
         }
     }
+
+    template <typename T, auto N, template<typename,auto>typename array_t>
+    constexpr auto to_list(const array_t<T,N>& array)
+    {
+        auto res = nmtools_list<T>{};
+        res.resize(N);
+        for (size_t i=0; i<N; i++) {
+            res.at(i) = array.at(i);
+        }
+        return res;
+    }
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_CAST_HPP
