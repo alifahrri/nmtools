@@ -392,6 +392,9 @@ set(VIEW_NN_TEST_SOURCES
     view/activations/softsign.cpp
     view/activations/tanhshrink.cpp
     view/conv.cpp
+    view/conv-2.cpp
+    view/conv-3.cpp
+    view/conv-4.cpp
     view/batch_norm.cpp
     view/softmax.cpp
     view/softmin.cpp
@@ -420,6 +423,9 @@ set(EVAL_NN_TEST_SOURCES
     array/activations/softshrink.cpp
     array/activations/tanhshrink.cpp
     array/conv.cpp
+    array/conv-2.cpp
+    array/conv-3.cpp
+    array/conv-4.cpp
     array/batch_norm.cpp
     array/softmax.cpp
     array/softmin.cpp
