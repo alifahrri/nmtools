@@ -772,7 +772,7 @@ namespace nmtools::meta
     {
         static constexpr auto vtype  = [](){
             // index computation follow shape
-            if constexpr (is_constant_index_array_v<shape_t>) {
+            if constexpr (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>) {
                 using type = resolve_optype_t<index::dynamic_slice_t,indices_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,slice_t>;
                 return as_value_v<type>;
             } else if constexpr (is_index_array_v<shape_t>) {
