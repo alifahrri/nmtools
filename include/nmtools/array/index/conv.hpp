@@ -32,69 +32,103 @@ namespace nmtools::index
      */
     template <typename shape_t, typename out_channels_t, typename kernel_size_t
         , typename stride_t, typename padding_t, typename dilation_t>
-    constexpr auto shape_conv2d(const shape_t& shape, out_channels_t out_channels
-        , const kernel_size_t& kernel_size, const stride_t& stride, const padding_t& padding, const dilation_t& dilation)
+    constexpr auto shape_conv2d([[maybe_unused]] const shape_t& shape, [[maybe_unused]] out_channels_t out_channels
+        , [[maybe_unused]] const kernel_size_t& kernel_size, [[maybe_unused]] const stride_t& stride, [[maybe_unused]] const padding_t& padding, [[maybe_unused]] const dilation_t& dilation)
     {
         // TODO: shape_conv2d: remove padding, assume padded before compute
         using result_t = meta::resolve_optype_t<shape_conv2d_t,shape_t,out_channels_t,kernel_size_t,stride_t,padding_t,dilation_t>;
         auto res = result_t {};
 
-        // conv op doesn't change dimension
-        auto dim = len(shape);
-        if constexpr (meta::is_resizable_v<result_t>) {
-            res.resize(dim);
-        }
-
-        // TODO: shape_conv2d generalize to arbitrary value
-        constexpr auto spatial_dims   = nmtools_array{-2,-1};
-        constexpr auto n_spatial_dims = len(spatial_dims);
-        // This controls the layout (CHW or HWC)
-        // TODO: shape_conv2d: generalize "channel" axis
-        constexpr auto i_out_channel  = meta::ct_v<-3>;
-
-        auto padding_ = [&](){
-            if constexpr (is_none_v<padding_t>) {
-                return nmtools_array<size_t,2>{0,0};
-            } else {
-                return ref(padding);
+        if constexpr (!meta::is_constant_index_array_v<result_t>) {
+            // conv op doesn't change dimension
+            auto dim = len(shape);
+            if constexpr (meta::is_resizable_v<result_t>) {
+                res.resize(dim);
             }
-        }();
-        auto dilation_ = [&](){
-            if constexpr (is_none_v<dilation_t>) {
-                return nmtools_array<size_t,2>{1,1};
+
+            // TODO: shape_conv2d generalize to arbitrary value
+            constexpr auto spatial_dims   = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
+            constexpr auto n_spatial_dims = meta::ct_v<len(spatial_dims)>;
+            // This controls the layout (CHW or HWC)
+            // TODO: shape_conv2d: generalize "channel" axis
+            constexpr auto i_out_channel  = meta::ct_v<-3>;
+
+            const auto padding_ = [&](){
+                if constexpr (is_none_v<padding_t>) {
+                    return nmtools_tuple{meta::ct_v<0>,meta::ct_v<0>};
+                } else if constexpr (meta::is_bounded_array_v<padding_t>) {
+                    return ref(padding);
+                } else {
+                    return padding;
+                }
+            }();
+            const auto dilation_ = [&](){
+                if constexpr (is_none_v<dilation_t>) {
+                    return nmtools_tuple{meta::ct_v<1>,meta::ct_v<1>};
+                } else if constexpr (meta::is_bounded_array_v<dilation_t>) {
+                    return ref(dilation);
+                } else {
+                    return dilation;
+                }
+            }();
+            const auto stride_ = [&](){
+                if constexpr (is_none_v<stride_t>) {
+                    return nmtools_tuple{meta::ct_v<1>,meta::ct_v<1>};
+                } else if constexpr (meta::is_bounded_array_v<stride_t>) {
+                    return ref(stride);
+                } else {
+                    return stride;
+                }
+            }();
+
+            // TODO: shape_conv2d error handling
+            // nmtools_assert( len(kernel_size)==n_spatial_dims );
+            // nmtools_assert( len(stride)==n_spatial_dims );
+            // nmtools_assert( len(dilation)==n_spatial_dims );
+            // nmtools_assert( len(padding)==n_spatial_dims );
+
+            // additional -1 is to represents out_channels 
+            const auto n_batch = [&](){
+                constexpr auto DIM = meta::len_v<shape_t>;
+                if constexpr (DIM > 0) {
+                    return meta::ct_v<(DIM-n_spatial_dims-1)>;
+                } else {
+                    return (dim-n_spatial_dims-1);
+                }
+            }();
+
+            if constexpr (meta::is_constant_index_v<decltype(n_batch)>) {
+                constexpr auto N_BATCH = decltype(n_batch)::value;
+                meta::template_for<N_BATCH>([&](auto i){
+                    at(res,i) = at(shape,i);
+                });
             } else {
-                return ref(dilation);
+                for (size_t i=0; i<n_batch; i++) {
+                    at(res,i) = at(shape,i);
+                }
             }
-        }();
-        auto stride_ = [&](){
-            if constexpr (is_none_v<stride_t>) {
-                return nmtools_array<size_t,2>{1,1};
+            at(res,i_out_channel) = out_channels;
+
+            auto fill_spatial_dim_impl = [&](auto i){
+                auto spatial_i  = at(spatial_dims,i);
+                auto padding_i  = at(padding_,i);
+                auto kernel_    = at(kernel_size,i);
+                auto stride_i   = at(stride_,i);
+                auto dilation_i = at(dilation_,i);
+                auto dim_res    = (at(shape,spatial_i) + 2 * padding_i - dilation_i * (kernel_ - 1) - 1) / stride_i + 1;
+                at(res,spatial_i) = dim_res;
+            };
+
+            if constexpr (meta::is_constant_index_v<decltype(n_spatial_dims)>) {
+                constexpr auto N_SPATIAL_DIMS = decltype(n_spatial_dims)::value;
+                meta::template_for<N_SPATIAL_DIMS>([&](auto i){
+                    fill_spatial_dim_impl(i);
+                });
             } else {
-                return ref(stride);
+                for (size_t i=0; i<(n_spatial_dims); i++) {
+                    fill_spatial_dim_impl(i);
+                }
             }
-        }();
-
-        // TODO: shape_conv2d error handling
-        // nmtools_assert( len(kernel_size)==n_spatial_dims );
-        // nmtools_assert( len(stride)==n_spatial_dims );
-        // nmtools_assert( len(dilation)==n_spatial_dims );
-        // nmtools_assert( len(padding)==n_spatial_dims );
-
-        // additional -1 is to represents out_channels 
-        auto n_batch = (dim-n_spatial_dims-1);
-        for (size_t i=0; i<n_batch; i++) {
-            at(res,i) = at(shape,i);
-        }
-        at(res,i_out_channel) = out_channels;
-
-        for (size_t i=0; i<(n_spatial_dims); i++) {
-            auto spatial_i  = at(spatial_dims,i);
-            auto padding_i  = at(padding_,i);
-            auto kernel_    = at(kernel_size,i);
-            auto stride_i   = at(stride_,i);
-            auto dilation_i = at(dilation_,i);
-            auto dim_res    = (at(shape,spatial_i) + 2 * padding_i - dilation_i * (kernel_ - 1) - 1) / stride_i + 1;
-            at(res,spatial_i) = dim_res;
         }
 
         return res;
@@ -237,8 +271,34 @@ namespace nmtools::meta
         , stride_t, padding_t, dilation_t>
     {
         static constexpr auto vtype = [](){
-            // TODO: compile-time compute when possible
-            if constexpr (is_constant_index_array_v<shape_t>) {
+            if constexpr (
+                (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
+                && is_constant_index_v<out_channels_t>
+                && is_constant_index_array_v<kernel_size_t>
+                && (is_constant_index_array_v<stride_t> || is_none_v<stride_t>)
+                && (is_constant_index_array_v<padding_t> || is_none_v<padding_t>)
+                && (is_constant_index_array_v<dilation_t> || is_none_v<dilation_t>)
+            ) {
+                constexpr auto shape   = to_value_v<shape_t>;
+                constexpr auto out_channels = to_value_v<out_channels_t>;
+                constexpr auto kernel_size  = to_value_v<kernel_size_t>;
+                constexpr auto stride   = to_value_v<stride_t>;
+                constexpr auto padding  = to_value_v<padding_t>;
+                constexpr auto dilation = to_value_v<dilation_t>;
+                constexpr auto result = index::shape_conv2d(shape,out_channels,kernel_size,stride,padding,dilation);
+                return meta::template_reduce<nmtools::len(result)>([&](auto init, auto index){
+                    constexpr auto I = nmtools::at(result,index);
+                    using init_t = type_t<decltype(init)>;
+                    if constexpr (is_constant_index_array_v<shape_t>) {
+                        using type = append_type_t<init_t,ct<I>>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_t,clipped_size_t<I>>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
+            } else if constexpr (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>) {
+                // TODO: try to deduce max size
                 using shape_type = remove_cvref_t<decltype(to_value_v<shape_t>)>;
                 using type = resolve_optype_t<index::shape_conv2d_t,shape_type,out_channels_t,kernel_size_t,stride_t,padding_t,dilation_t>;
                 return as_value_v<type>;

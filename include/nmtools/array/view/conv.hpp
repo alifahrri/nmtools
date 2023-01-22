@@ -30,38 +30,68 @@ namespace nmtools::view
         using stride_type   = resolve_attribute_type_t<stride_t>;
         using dilation_type = resolve_attribute_type_t<dilation_t>;
 
+        template <typename f_shape_t>
+        static constexpr auto get_kernel_size(const f_shape_t& f_shape)
+        {
+            const auto k_width  = at(f_shape,meta::ct_v<-1>);
+            const auto k_height = at(f_shape,meta::ct_v<-2>);
+            if constexpr (meta::is_constant_index_v<decltype(k_width)>
+                && meta::is_constant_index_v<decltype(k_height)>)
+            {
+                // prevent array with constant index as value type
+                return nmtools_tuple{k_width,k_height};
+            } else {
+                return nmtools_array{k_width,k_height};   
+            }
+        }
+
+        using input_shape_type  = decltype(nmtools::shape<true>(meta::declval<input_t>()));
+        using filter_shape_type = decltype(nmtools::shape<true>(meta::declval<weight_t>()));
+        using out_channels_type = decltype(nmtools::at(meta::declval<filter_shape_type>(),meta::ct_v<0>));
+        using kernel_size_type  = decltype(get_kernel_size(meta::declval<filter_shape_type>()));
+        using dst_shape_type    = meta::resolve_optype_t<index::shape_conv2d_t
+                                    ,input_shape_type,out_channels_type
+                                    ,kernel_size_type,stride_type,none_t,dilation_type>;
+        
+        // This controls the layout (CHW or HWC)
+        // TODO: support for NHWC format
+        static constexpr auto ch_idx = meta::ct_v<-3>;
+        static constexpr auto out_ch_idx = meta::ct_v<-3>;
+
+        // TODO: generalize to handle arbitrary "channel" axis
+        using in_channels_type = decltype(nmtools::at(meta::declval<input_shape_type>(),ch_idx));
+        using groups_type = decltype(nmtools::at(meta::declval<filter_shape_type>(),ch_idx) / meta::declval<in_channels_type>());
+
+
         input_type    input;
         weight_type   weight;
         stride_type   stride;
         dilation_type dilation;
 
-        constexpr conv2d_t(const input_t& input, const weight_t& weight, const stride_t& stride, const dilation_t& dilation)
-            : input(initialize<input_type>(input))
-            , weight(initialize<weight_type>(weight))
+        const input_shape_type  input_shape;
+        const filter_shape_type filter_shape;
+        const kernel_size_type  kernel_size;
+        const dst_shape_type    dst_shape;
+        const in_channels_type  in_channels;
+        const groups_type       groups;
+
+        constexpr conv2d_t(const input_t& input_, const weight_t& weight_, const stride_t& stride, const dilation_t& dilation)
+            : input(initialize<input_type>(input_))
+            , weight(initialize<weight_type>(weight_))
             , stride(init_attribute<stride_type>(stride))
             , dilation(init_attribute<dilation_type>(dilation))
+            , input_shape(nmtools::shape<true>(input_))
+            , filter_shape(nmtools::shape<true>(weight_))
+            , kernel_size(get_kernel_size(filter_shape))
+            , dst_shape(index::shape_conv2d(input_shape,nmtools::at(filter_shape,meta::ct_v<0>)
+                , kernel_size,stride,None,dilation))
+            , in_channels(nmtools::at(input_shape,ch_idx))
+            , groups((nmtools::at(filter_shape,ch_idx) / in_channels))
         {}
 
         constexpr auto shape() const
         {
-            // TODO: consider to compute this at initialization, since view doesn't allow change shape anyway
-            const auto i_shape = detail::shape(input);
-            const auto f_shape = detail::shape(weight);
-            const auto out_channels = at(f_shape,meta::ct_v<0>);
-            const auto kernel_size = [&](){
-                const auto k_width  = at(f_shape,meta::ct_v<-1>);
-                const auto k_height = at(f_shape,meta::ct_v<-2>);
-                if constexpr (meta::is_constant_index_v<decltype(k_width)>
-                    && meta::is_constant_index_v<decltype(k_height)>)
-                {
-                    // prevent array with constant index as value type
-                    return nmtools_tuple{k_width,k_height};
-                } else {
-                    return nmtools_array{k_width,k_height};   
-                }
-            }();
-
-            return index::shape_conv2d(i_shape,out_channels,kernel_size,stride,None,dilation);
+            return dst_shape;
         } // shape
 
         constexpr auto dim() const
@@ -73,30 +103,9 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
-            // TODO: consider to compute this at initialization, since view doesn't allow change shape anyway
-            const auto i_shape = detail::shape(input);
-            const auto f_shape = detail::shape(weight);
-            const auto kernel_size = [&](){
-                const auto k_width  = at(f_shape,meta::ct_v<-1>);
-                const auto k_height = at(f_shape,meta::ct_v<-2>);
-                if constexpr (meta::is_constant_index_v<decltype(k_width)>
-                    && meta::is_constant_index_v<decltype(k_height)>)
-                {
-                    // prevent array with constant index as value type
-                    return nmtools_tuple{k_width,k_height};
-                } else {
-                    return nmtools_array{k_width,k_height};   
-                }
-            }();
-            // This controls the layout (CHW or HWC)
-            constexpr auto ch_idx  = meta::ct_v<-3>;
-            // TODO: generalize to handle arbitrary "channel" axis
-            const auto in_channels = at(i_shape,ch_idx);
-            const auto groups = at(f_shape,ch_idx) / in_channels;
-
             const auto indices_ = pack_indices(indices...);
 
-            const auto slice_args = index::slice_conv2d(indices_,i_shape,kernel_size,stride,dilation,groups);
+            const auto slice_args = index::slice_conv2d(indices_,input_shape,kernel_size,stride,dilation,groups);
 
             const auto sliced = [&](){
                 if constexpr (meta::is_pointer_v<input_type>) {
@@ -106,8 +115,6 @@ namespace nmtools::view
                 }
             }();
 
-            // TODO: support for NHWC format
-            const auto out_ch_idx = meta::ct_v<-3>;
             const auto filter_i = at(indices_,out_ch_idx);
 
             // assume weight dim == 4, and output channel is at axis 0
@@ -253,6 +260,26 @@ namespace nmtools::meta
         using weight_elem_t = get_element_type_t<weight_t>;
         using type = decltype(input_elem_t{} * weight_elem_t{});
     }; // get_element_type
+
+    // TODO: remove, do not provide as metafunction, use newer deduction pattern
+    template <typename input_t, typename weight_t, typename stride_t, typename dilation_t>
+    struct fixed_size<
+        decorator_t<conv2d_t,input_t,weight_t,stride_t,dilation_t>
+    >
+    {
+        using view_type = decorator_t<conv2d_t,input_t,weight_t,stride_t,dilation_t>;
+        static inline constexpr auto value = error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+    };
+
+    // TODO: remove, do not provide as metafunction, use newer deduction pattern
+    template <typename input_t, typename weight_t, typename stride_t, typename dilation_t>
+    struct bounded_size<
+        decorator_t<conv2d_t,input_t,weight_t,stride_t,dilation_t>
+    >
+    {
+        using view_type = decorator_t<conv2d_t,input_t,weight_t,stride_t,dilation_t>;
+        static inline constexpr auto value = error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+    };
 
     template <typename input_t, typename weight_t, typename stride_t, typename dilation_t>
     struct is_ndarray<
