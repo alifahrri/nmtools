@@ -32,8 +32,8 @@ namespace nmtools::index
      */
     template <typename shape_t, typename out_channels_t, typename kernel_size_t
         , typename stride_t, typename padding_t, typename dilation_t>
-    constexpr auto shape_conv2d(const shape_t& shape, out_channels_t out_channels
-        , const kernel_size_t& kernel_size, const stride_t& stride, const padding_t& padding, const dilation_t& dilation)
+    constexpr auto shape_conv2d([[maybe_unused]] const shape_t& shape, [[maybe_unused]] out_channels_t out_channels
+        , [[maybe_unused]] const kernel_size_t& kernel_size, [[maybe_unused]] const stride_t& stride, [[maybe_unused]] const padding_t& padding, [[maybe_unused]] const dilation_t& dilation)
     {
         // TODO: shape_conv2d: remove padding, assume padded before compute
         using result_t = meta::resolve_optype_t<shape_conv2d_t,shape_t,out_channels_t,kernel_size_t,stride_t,padding_t,dilation_t>;
