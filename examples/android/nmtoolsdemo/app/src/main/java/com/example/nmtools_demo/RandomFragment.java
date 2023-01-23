@@ -47,14 +47,11 @@ public class RandomFragment extends Fragment {
             try {
                 // random
                 String shape_str = shapeEdit.getText().toString();
-                String[] dims_str = shape_str.split(",");
-                int[] shape = new int[dims_str.length];
-                for (int i=0; i<shape.length; i++) {
-                    shape[i] = Integer.parseInt(dims_str[i]);
-                }
-                String random = NmTools.random(-1.0f, 1.0f, shape);
-                Log.d(TAG, random);
-                textView.setText(random);
+                int[] shape = NmTools.parse_shape(shape_str);
+                NmTools.NDArrayFloat random = NmTools.random(-1.0f, 1.0f, shape);
+                String random_str = random.to_string();
+                Log.d(TAG, random_str);
+                textView.setText(random_str);
             } catch (Exception e) {
                 Log.d(TAG, String.format("Exception: %s", e.toString()));
             }

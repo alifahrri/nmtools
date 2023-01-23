@@ -23,8 +23,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         if (position == 0) {
             return new ArangeFragment();
-        } else {
+        } else if (position == 1) {
             return new RandomFragment();
+        } else {
+            return new UfuncFragment();
         }
     }
 
@@ -33,13 +35,15 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         if (position == 0) {
             return "arange";
-        } else {
+        } else if (position == 1) {
             return "random";
+        } else {
+            return "ufunc";
         }
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }
