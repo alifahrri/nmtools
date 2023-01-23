@@ -3,6 +3,8 @@
 
 #include <jni.h>
 #include "nmtools/array/ndarray.hpp"
+#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/array/view/flatten.hpp"
 
 namespace nmtools::array
 {
@@ -73,6 +75,67 @@ namespace nmtools::array
 
         return array;
     } // from_java_array
+
+    template <typename JavaArray>
+    auto from_java_array(JNIEnv* env, const JavaArray& j_data, const jintArray& j_shape)
+    {
+        auto data = from_java_array(env,j_data);
+        auto shape = from_java_array(env,j_shape);
+        return reshape(data,shape);
+    }
+
+    template <typename Array>
+    auto to_java(JNIEnv* env, const Array& array)
+    {
+        using element_type = meta::get_element_type_t<Array>;
+        auto size  = nmtools::size(array);
+        auto shape = nmtools::shape(array);
+        auto dim   = nmtools::dim(array);
+        auto flat  = view::flatten(array);
+        jintArray jshape = env->NewIntArray(dim);
+        {
+            // temporary
+            auto fill = nmtools_list<jint>(dim);
+            for (size_t i=0; i<dim; i++) {
+                at(fill,i) = at(shape,i);
+            }
+            env->SetIntArrayRegion(jshape,0,dim,fill.data());
+        }
+
+        if constexpr (meta::is_integer_v<element_type>) {
+            // for simplicity just convert to jintArray
+            // TODO: check if jintArray / jlongArray,...
+
+            jintArray result = env->NewIntArray(size);
+
+            {
+                // temporary
+                auto fill = nmtools_list<jint>(size);
+                for (size_t i=0; i<size; i++) {
+                    at(fill,i) = at(flat,i);
+                }
+                env->SetIntArrayRegion(result,0,size,fill.data());
+            }
+
+            return nmtools_tuple{result,jshape};
+        } else {
+            // assume float
+            // TODO: check if jfloatArray / jdoubleArray
+
+            jfloatArray result = env->NewFloatArray(size);
+
+            {
+                // temporary
+                auto fill = nmtools_list<jfloat>(size);
+                for (size_t i=0; i<size; i++) {
+                    at(fill,i) = at(flat,i);
+                }
+                env->SetFloatArrayRegion(result,0,size,fill.data());
+            }
+
+            return nmtools_tuple{result,jshape};
+        }
+    }
 } // namespace nmtools::array
 
 #endif // NMTOOLS_ARRAY_UTILITY_JNI_HPP

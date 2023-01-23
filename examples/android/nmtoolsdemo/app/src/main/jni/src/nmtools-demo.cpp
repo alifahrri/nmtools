@@ -10,10 +10,13 @@
 #include <sstream>
 #include <chrono>
 
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/array/random.hpp"
+#include "nmtools/array/array/ufuncs/sin.hpp"
+#include "nmtools/array/array/activations/relu.hpp"
+#include "nmtools/array/array/activations/sigmoid.hpp"
 #include "nmtools/array/random_engine.hpp"
 
 #include "nmtools/array/index/ndenumerate.hpp"
@@ -32,12 +35,22 @@ using nm::utils::to_string;
 #define LOGD(...) \
   ((void)__android_log_print(ANDROID_LOG_DEBUG, "nmtools-libs::", __VA_ARGS__))
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_nmtools_1demo_NmTools_arange(JNIEnv* env, jobject thiz, jint start, jint stop, jint step) {
+template <typename jType>
+static auto to_string(JNIEnv* env, jType jdata, jintArray jshape)
+{
+    auto array = na::from_java_array(env,jdata,jshape);
+
+    auto result = std::stringstream ();
+    result << to_string(array) << "\n";
+
+    return env->NewStringUTF(result.str().c_str());
+}
+
+static auto arange(JNIEnv* env, jint start, jint stop, jint step)
+{
     // maximum 6 dimension
     using shape_t  = na::static_vector<size_t,6>;
 
-    LOGI("arange: start: %d; stop: %d", start, stop);
     auto t0 = std::chrono::high_resolution_clock::now();
 
     // TODO: fix for negative step with negative stop (e.g. start=10, stop=-5, step=-1)
@@ -51,30 +64,183 @@ Java_com_example_nmtools_1demo_NmTools_arange(JNIEnv* env, jobject thiz, jint st
     auto t1 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
 
-    LOGD("array size: %d", nm::size(array));
-    LOGD("dt: %fms", dt.count());
-
-    auto log = std::stringstream ();
-    log << to_string(reshaped) << "\n";
-
-    LOGD("array: %s", log.str().c_str());
-    return env->NewStringUTF(log.str().c_str());
+    return std::tuple{reshaped,dt};
 }
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_nmtools_1demo_NmTools_random(JNIEnv* env, jobject thiz, jfloat min, jfloat  max, jintArray jshape) {
+static auto random(JNIEnv* env, jfloat min, jfloat max, jintArray jshape)
+{
     auto shape = na::from_java_array(env,jshape);
     auto t0 = std::chrono::high_resolution_clock::now();
     auto array = na::random(shape,nm::float32,na::random_engine((float)min,(float)max));
     auto t1 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
 
-    LOGD("array size: %d", nm::size(array));
+    return std::tuple{array,dt};
+}
+
+static auto sin(JNIEnv* env, jfloatArray jarray, jintArray jshape)
+{
+    auto array = na::from_java_array(env,jarray,jshape);
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = na::sin(array);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
+
+    return std::tuple{result,dt};
+}
+
+static auto relu(JNIEnv* env, jfloatArray jarray, jintArray jshape)
+{
+    auto array = na::from_java_array(env,jarray,jshape);
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = na::relu(array);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
+
+    return std::tuple{result,dt};
+}
+
+static auto sigmoid(JNIEnv* env, jfloatArray jarray, jintArray jshape)
+{
+    auto array = na::from_java_array(env,jarray,jshape);
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = na::sigmoid(array);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
+
+    return std::tuple{result,dt};
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    to_string
+ * Signature: ([I[I)Ljava/lang/String;
+ */
+extern "C"
+JNIEXPORT jstring JNICALL Java_com_example_nmtools_1demo_NmTools_to_1string___3I_3I
+        (JNIEnv *env, jclass, jintArray jdata, jintArray jshape)
+{
+    return to_string(env,jdata,jshape);
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    to_string
+ * Signature: ([F[I)Ljava/lang/String;
+ */
+extern "C"
+JNIEXPORT jstring JNICALL Java_com_example_nmtools_1demo_NmTools_to_1string___3F_3I
+        (JNIEnv *env, jclass, jfloatArray jdata, jintArray jshape)
+{
+    return to_string(env,jdata,jshape);
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    arange2
+ * Signature: (III)Lcom/example/nmtools_demo/NmTools/NDArray;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_arange
+        (JNIEnv *env, jclass, jint start, jint stop, jint step)
+{
+    const auto& [array, dt] = arange(env,start,stop,step);
     LOGD("dt: %fms", dt.count());
 
-    auto log = std::stringstream ();
-    log << to_string(array) << "\n";
+    auto [flat,shape] = na::to_java(env,array);
 
-    LOGD("array: %s", log.str().c_str());
-    return env->NewStringUTF(log.str().c_str());
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    random2
+ * Signature: (FF[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_random
+        (JNIEnv *env, jclass, jfloat min, jfloat max, jintArray jshape)
+{
+    const auto& [array, dt] = random(env,min,max,jshape);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    sin
+ * Signature: ([F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_sin
+        (JNIEnv * env, jclass, jfloatArray jarray, jintArray jshape)
+{
+    const auto& [array, dt] = sin(env,jarray,jshape);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    relu
+ * Signature: ([F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_relu
+        (JNIEnv *env, jclass, jfloatArray jarray, jintArray jshape)
+{
+    const auto& [array, dt] = relu(env,jarray,jshape);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    sigmoid
+ * Signature: ([F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_sigmoid
+        (JNIEnv *env, jclass, jfloatArray jarray, jintArray jshape)
+{
+    const auto& [array, dt] = sigmoid(env,jarray,jshape);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
 }

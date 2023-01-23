@@ -52,7 +52,10 @@ public class ArangeFragment extends Fragment {
                 int start = Integer.parseInt(mStartEdit.getText().toString());
                 int stop  = Integer.parseInt(mStopEdit.getText().toString());
                 int step  = Integer.parseInt(mStepEdit.getText().toString());
-                textView.setText(NmTools.arange(start,stop,step));
+
+                NmTools.NDArrayFloat array = NmTools.arange(start,stop,step);
+
+                textView.setText(array.to_string());
             } catch (Exception e) {
                 Log.d(TAG, String.format("Exception: %s", e.toString()));
             }
