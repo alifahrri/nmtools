@@ -227,7 +227,8 @@ namespace nmtools::meta
                         // init should be as_value<sometype>
                         using init_t = type_t<decltype(init)>;
                         constexpr auto I = at(shape,index);
-                        if constexpr (is_constant_shape_a && is_constant_shape_b) {
+                        // using `is_constant_shape_a` here seems to not working on avr-gcc
+                        if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
                             using type = append_type_t<init_t,ct<I>>;
                             return as_value_v<type>;
                         } else {
