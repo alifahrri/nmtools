@@ -273,6 +273,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/atleast_1d.cpp
     array/atleast_2d.cpp
     array/atleast_3d.cpp
+    array/broadcast_arrays.cpp
     array/broadcast_to.cpp
     array/compress.cpp
     array/concatenate.cpp

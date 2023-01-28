@@ -1,3 +1,22 @@
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
+#endif
+
 #include "nmtools/array/array/activations/relu6.hpp"
 #include "nmtools/testing/data/array/relu6.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -38,9 +57,32 @@ SUBCASE(#case_name) \
 
 TEST_CASE("relu6(case1)" * doctest::test_suite("array::relu6"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     RELU6_SUBCASE(case1, a);
     RELU6_SUBCASE(case1, a_a);
     RELU6_SUBCASE(case1, a_f);
     RELU6_SUBCASE(case1, a_h);
     RELU6_SUBCASE(case1, a_d);
+
+    #else
+    RELU6_SUBCASE(case1, a_cs_fb);
+    RELU6_SUBCASE(case1, a_cs_hb);
+    RELU6_SUBCASE(case1, a_cs_db);
+
+    RELU6_SUBCASE(case1, a_fs_fb);
+    RELU6_SUBCASE(case1, a_fs_hb);
+    RELU6_SUBCASE(case1, a_fs_db);
+
+    RELU6_SUBCASE(case1, a_hs_fb);
+    RELU6_SUBCASE(case1, a_hs_hb);
+    RELU6_SUBCASE(case1, a_hs_db);
+
+    RELU6_SUBCASE(case1, a_ds_fb);
+    RELU6_SUBCASE(case1, a_ds_hb);
+    RELU6_SUBCASE(case1, a_ds_db);
+
+    RELU6_SUBCASE(case1, a_ls_fb);
+    RELU6_SUBCASE(case1, a_ls_hb);
+    RELU6_SUBCASE(case1, a_ls_db);
+    #endif
 }

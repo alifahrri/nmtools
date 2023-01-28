@@ -1,3 +1,22 @@
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
+#endif
+
 #include "nmtools/array/array/activations/hardtanh.hpp"
 #include "nmtools/testing/data/array/hardtanh.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -38,9 +57,32 @@ SUBCASE(#case_name) \
 
 TEST_CASE("hardtanh(case1)" * doctest::test_suite("array::hardtanh"))
 {
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     HARDTANH_SUBCASE(case1, a);
     HARDTANH_SUBCASE(case1, a_a);
     HARDTANH_SUBCASE(case1, a_f);
     HARDTANH_SUBCASE(case1, a_h);
     HARDTANH_SUBCASE(case1, a_d);
+
+    #else
+    HARDTANH_SUBCASE(case1, a_cs_fb);
+    HARDTANH_SUBCASE(case1, a_cs_hb);
+    HARDTANH_SUBCASE(case1, a_cs_db);
+
+    HARDTANH_SUBCASE(case1, a_fs_fb);
+    HARDTANH_SUBCASE(case1, a_fs_hb);
+    HARDTANH_SUBCASE(case1, a_fs_db);
+
+    HARDTANH_SUBCASE(case1, a_hs_fb);
+    HARDTANH_SUBCASE(case1, a_hs_hb);
+    HARDTANH_SUBCASE(case1, a_hs_db);
+
+    HARDTANH_SUBCASE(case1, a_ds_fb);
+    HARDTANH_SUBCASE(case1, a_ds_hb);
+    HARDTANH_SUBCASE(case1, a_ds_db);
+
+    HARDTANH_SUBCASE(case1, a_ls_fb);
+    HARDTANH_SUBCASE(case1, a_ls_hb);
+    HARDTANH_SUBCASE(case1, a_ls_db);
+    #endif
 }
