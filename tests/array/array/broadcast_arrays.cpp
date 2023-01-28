@@ -17,7 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
-#include "nmtools/array/view/broadcast_arrays.hpp"
+#include "nmtools/array/array/broadcast_arrays.hpp"
 #include "nmtools/testing/data/array/broadcast_arrays.hpp"
 
 #include "nmtools/testing/doctest.hpp"
@@ -27,7 +27,7 @@ namespace na = nm::array;
 namespace view = nm::view;
 
 #define RUN_impl(...) \
-nm::view::broadcast_arrays(__VA_ARGS__);
+nm::array::broadcast_arrays(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/benchmarks/bench.hpp"
@@ -60,12 +60,12 @@ SUBCASE(#case_name) \
         constexpr auto i = decltype(index)::value; \
         const auto array       = nmtools::get<i>(results); \
         const auto expected    = nmtools::get<i>(expect::expected); \
-        NMTOOLS_ASSERT_EQUAL( array.shape(), expect::shape ); \
+        NMTOOLS_ASSERT_EQUAL( nmtools::shape(array), expect::shape ); \
         NMTOOLS_ASSERT_CLOSE( array, expected ); \
     }); \
 }
 
-TEST_CASE("broadcast_arrays(case1)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case1)" * doctest::test_suite("array::broadcast_arrays"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case1, lhs_a, rhs_a );
@@ -181,7 +181,7 @@ TEST_CASE("broadcast_arrays(case1)" * doctest::test_suite("view::broadcast_array
     #endif
 }
 
-TEST_CASE("broadcast_arrays(case2)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case2)" * doctest::test_suite("array::broadcast_arrays"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case2, lhs_a, rhs_a );
@@ -298,7 +298,7 @@ TEST_CASE("broadcast_arrays(case2)" * doctest::test_suite("view::broadcast_array
     #endif
 }
 
-TEST_CASE("broadcast_arrays(case3)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case3)" * doctest::test_suite("array::broadcast_arrays"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case3, lhs_a, rhs_a );
@@ -414,7 +414,7 @@ TEST_CASE("broadcast_arrays(case3)" * doctest::test_suite("view::broadcast_array
     #endif
 }
 
-TEST_CASE("broadcast_arrays(case4)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case4)" * doctest::test_suite("array::broadcast_arrays"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case4, lhs_a, rhs_a );
@@ -531,7 +531,7 @@ TEST_CASE("broadcast_arrays(case4)" * doctest::test_suite("view::broadcast_array
     #endif
 }
 
-TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("array::broadcast_arrays"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case5, A_a, B_a, C_a );
@@ -614,7 +614,7 @@ TEST_CASE("broadcast_arrays(case5)" * doctest::test_suite("view::broadcast_array
     #endif
 }
 
-TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("array::broadcast_arrays"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case6, lhs_a, rhs );
@@ -645,7 +645,7 @@ TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("view::broadcast_array
     #endif
 }
 
-TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("array::broadcast_arrays"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_a );
@@ -676,12 +676,12 @@ TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("view::broadcast_array
     #endif
 }
 
-TEST_CASE("broadcast_arrays(case8)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case8)" * doctest::test_suite("array::broadcast_arrays"))
 {
     BROADCAST_ARRAYS_SUBCASE(case8, lhs, rhs);
 }
 
-TEST_CASE("broadcast_arrays(case9)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case9)" * doctest::test_suite("array::broadcast_arrays"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     BROADCAST_ARRAYS_SUBCASE(case9, A, B_a, C_a );
@@ -792,51 +792,7 @@ TEST_CASE("broadcast_arrays(case9)" * doctest::test_suite("view::broadcast_array
     #endif
 }
 
-TEST_CASE("broadcast_arrays(case10)" * doctest::test_suite("view::broadcast_arrays"))
+TEST_CASE("broadcast_arrays(case10)" * doctest::test_suite("array::broadcast_arrays"))
 {
     BROADCAST_ARRAYS_SUBCASE(case10, A, B);
-}
-
-TEST_CASE("broadcast_arrays(fixed_shape)" * doctest::test_suite("view::broadcast_arrays"))
-{
-    namespace meta = nmtools::meta;
-    SUBCASE("raw")
-    {
-        int A[1][3] = {{1,2,3}};
-        int B[3][1] = {{4},{5},{6}};
-        const auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
-        using bA_t = decltype(bA);
-        using bB_t = decltype(bB);
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bA_t> );
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bB_t> );
-        constexpr auto expected_shape = nmtools_array{3,3};
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bA_t>, expected_shape) ));
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bB_t>, expected_shape) ));
-    }
-    SUBCASE("array")
-    {
-        auto A = nmtools_array{1,2,3};
-        auto B = nmtools_array{nmtools_array{4,5,6}};
-        const auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
-        using bA_t = decltype(bA);
-        using bB_t = decltype(bB);
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bA_t> );
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bB_t> );
-        constexpr auto expected_shape = nmtools_array{3};
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bA_t>, expected_shape) ));
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bB_t>, expected_shape) ));
-    }
-    SUBCASE("fixed_ndarray")
-    {
-        auto A = na::fixed_ndarray{{1,2,3}};
-        auto B = na::fixed_ndarray{{{1,2,3},{4,5,6}}};
-        const auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
-        using bA_t = decltype(bA);
-        using bB_t = decltype(bB);
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bA_t> );
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bB_t> );
-        constexpr auto expected_shape = nmtools_array{2,3};
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bA_t>, expected_shape) ));
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bB_t>, expected_shape) ));
-    }
 }

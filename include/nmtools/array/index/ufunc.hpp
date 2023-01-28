@@ -43,8 +43,15 @@ namespace nmtools::index
             if constexpr (meta::is_resizable_v<result_t>) {
                 result.resize(len(shape));
             }
-            for (size_t i=0; i<(size_t)len(shape); i++) {
-                at(result,i) = at(shape,i);
+            if constexpr (meta::is_tuple_v<result_t>) {
+                constexpr auto N = meta::len_v<result_t>;
+                meta::template_for<N>([&](auto i){
+                    at(result,i) = at(shape,i);
+                });
+            } else {
+                for (size_t i=0; i<(size_t)len(shape); i++) {
+                    at(result,i) = at(shape,i);
+                }
             }
         }
 
