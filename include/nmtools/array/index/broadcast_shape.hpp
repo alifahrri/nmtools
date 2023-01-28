@@ -43,7 +43,7 @@ namespace nmtools::index
         auto len_ = [](const auto& shape){
             constexpr auto N = meta::len_v<meta::remove_cvref_t<decltype(shape)>>;
             if constexpr (N>0) {
-                return meta::ct_v<N>;
+                return meta::ct_v<(size_t)N>;
             } else {
                 return len(shape);
             }
