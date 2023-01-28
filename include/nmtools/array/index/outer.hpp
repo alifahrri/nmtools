@@ -19,16 +19,45 @@ namespace nmtools::index
 
         if constexpr (!meta::is_constant_index_array_v<return_t>) {
             auto adim = len(ashape);
-            auto bdim = len(bshape);
             if constexpr (meta::is_resizable_v<return_t>) {
+                auto bdim = len(bshape);
                 auto dim  = adim + bdim;
                 res.resize(dim);
             }
-            
+
+            constexpr auto A_DIM = meta::len_v<ashape_t>;
+
+            auto shape_outer_impl = [&](auto i){
+                if (i<adim) {
+                    if constexpr (meta::is_constant_index_v<decltype(i)> && (A_DIM > 0)) {
+                        if constexpr (decltype(i)::value < A_DIM) {
+                            at(res,i) = at(ashape,i);
+                        }
+                        // else ignore
+                    } else {
+                        at(res,i) = at(ashape,i);
+                    }
+                } else {
+                    at(res,i) = at(bshape,i-adim);
+                }
+            };
+
+            if constexpr (meta::is_tuple_v<return_t>) {
+                constexpr auto N = meta::len_v<return_t>;
+                meta::template_for<N>([&](auto i){
+                    shape_outer_impl(i);
+                });
+            } else {
+                for (size_t i=0; i<len(res); i++) {
+                    shape_outer_impl(i);
+                }
+            }
+            #if 0
             for (size_t i=0; i<adim; i++)
                 at(res,i) = at(ashape,i);
             for (size_t i=0; i<bdim; i++)
                 at(res,i+adim) = at(bshape,i);
+            #endif
         }
         
         return res;
@@ -89,13 +118,30 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+            constexpr auto is_constant_shape_a = is_constant_index_array_v<ashape_t>;
+            constexpr auto is_constant_shape_b = is_constant_index_array_v<bshape_t>;
+            if constexpr (
+                (is_constant_shape_a || is_clipped_index_array_v<ashape_t>)
+                && (is_constant_shape_b || is_clipped_index_array_v<bshape_t>)) {
                 constexpr auto result = index::shape_outer(to_value_v<ashape_t>,to_value_v<bshape_t>);
                 using nmtools::len, nmtools::at;
-                return template_reduce<len(result)-1>([&](auto init, auto index){
+                return template_reduce<len(result)>([&](auto init, auto index){
                     using init_type = type_t<decltype(init)>;
-                    return as_value_v<append_type_t<init_type,ct<at(result,index+1)>>>;
-                }, as_value_v<nmtools_tuple<ct<at(result,0)>>>);
+                    constexpr auto I = at(result,index);
+                    // NOTE: using this breaks arm-gcc (mbed-platformio):
+                    // error: lambda capture of 'is_constant_shape_a' is not a constant expression
+                    #if 0
+                    if constexpr (is_constant_shape_a && is_constant_shape_b) {
+                    #else
+                    if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                    #endif
+                        using type = append_type_t<init_type,ct<I>>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_type,clipped_size_t<I>>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (
                 is_index_array_v<ashape_t>
                 && is_index_array_v<bshape_t>
@@ -106,13 +152,17 @@ namespace nmtools::meta
                 [[maybe_unused]] constexpr auto b_dim_b = bounded_size_v<bshape_t>;
                 if constexpr ((len_a > 0) && (len_b > 0)) {
                     constexpr auto new_dim = len_a + len_b;
+                    // TODO: consider to use index_t
                     using type = nmtools_array<size_t,new_dim>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(b_dim_a)> && !is_fail_v<decltype(b_dim_b)>) {
                     constexpr auto new_dim = b_dim_a + b_dim_b;
+                    // TODO: consider to use index_t
                     using type = array::static_vector<size_t,new_dim>;
                     return as_value_v<type>;
                 } else {
+                    // TODO: consider to use index_t
+                    // TODO: small buffer optimization
                     using type = nmtools_list<size_t>;
                     return as_value_v<type>;
                 }

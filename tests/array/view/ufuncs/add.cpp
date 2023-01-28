@@ -3,15 +3,18 @@
 inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
 inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
-inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
-inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
-inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db);
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/testing/data/array/add.hpp"
@@ -83,6 +86,10 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case1, a_ds_hb, b_ds_hb );
     ADD_SUBCASE( case1, a_ds_db, b_ds_db );
 
+    ADD_SUBCASE( case1, a_ls_fb, b_ls_fb );
+    ADD_SUBCASE( case1, a_ls_hb, b_ls_hb );
+    ADD_SUBCASE( case1, a_ls_db, b_ls_db );
+
 
     ADD_SUBCASE( case1, a_fs_fb, b_cs_fb );
     ADD_SUBCASE( case1, a_fs_hb, b_cs_hb );
@@ -95,6 +102,10 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case1, a_ds_fb, b_cs_fb );
     ADD_SUBCASE( case1, a_ds_hb, b_cs_hb );
     ADD_SUBCASE( case1, a_ds_db, b_cs_db );
+
+    ADD_SUBCASE( case1, a_ls_fb, b_cs_fb );
+    ADD_SUBCASE( case1, a_ls_hb, b_cs_hb );
+    ADD_SUBCASE( case1, a_ls_db, b_cs_db );
 
 
     ADD_SUBCASE( case1, a_cs_fb, b_fs_fb );
@@ -109,6 +120,10 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case1, a_ds_hb, b_fs_hb );
     ADD_SUBCASE( case1, a_ds_db, b_fs_db );
 
+    ADD_SUBCASE( case1, a_ls_fb, b_fs_fb );
+    ADD_SUBCASE( case1, a_ls_hb, b_fs_hb );
+    ADD_SUBCASE( case1, a_ls_db, b_fs_db );
+
 
     ADD_SUBCASE( case1, a_cs_fb, b_hs_fb );
     ADD_SUBCASE( case1, a_cs_hb, b_hs_hb );
@@ -122,6 +137,10 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case1, a_ds_hb, b_hs_hb );
     ADD_SUBCASE( case1, a_ds_db, b_hs_db );
 
+    ADD_SUBCASE( case1, a_ls_fb, b_hs_fb );
+    ADD_SUBCASE( case1, a_ls_hb, b_hs_hb );
+    ADD_SUBCASE( case1, a_ls_db, b_hs_db );
+
 
     ADD_SUBCASE( case1, a_cs_fb, b_ds_fb );
     ADD_SUBCASE( case1, a_cs_hb, b_ds_hb );
@@ -134,6 +153,27 @@ TEST_CASE("add(case1)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case1, a_hs_fb, b_ds_fb );
     ADD_SUBCASE( case1, a_hs_hb, b_ds_hb );
     ADD_SUBCASE( case1, a_hs_db, b_ds_db );
+
+    ADD_SUBCASE( case1, a_ls_fb, b_ds_fb );
+    ADD_SUBCASE( case1, a_ls_hb, b_ds_hb );
+    ADD_SUBCASE( case1, a_ls_db, b_ds_db );
+
+
+    ADD_SUBCASE( case1, a_cs_fb, b_ls_fb );
+    ADD_SUBCASE( case1, a_cs_hb, b_ls_hb );
+    ADD_SUBCASE( case1, a_cs_db, b_ls_db );
+
+    ADD_SUBCASE( case1, a_fs_fb, b_ls_fb );
+    ADD_SUBCASE( case1, a_fs_hb, b_ls_hb );
+    ADD_SUBCASE( case1, a_fs_db, b_ls_db );
+
+    ADD_SUBCASE( case1, a_hs_fb, b_ls_fb );
+    ADD_SUBCASE( case1, a_hs_hb, b_ls_hb );
+    ADD_SUBCASE( case1, a_hs_db, b_ls_db );
+
+    ADD_SUBCASE( case1, a_ds_fb, b_ls_fb );
+    ADD_SUBCASE( case1, a_ds_hb, b_ls_hb );
+    ADD_SUBCASE( case1, a_ds_db, b_ls_db );
     #endif
 }
 
@@ -162,6 +202,10 @@ TEST_CASE("add(case2)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case2, a_ds_fb, b );
     ADD_SUBCASE( case2, a_ds_hb, b );
     ADD_SUBCASE( case2, a_ds_db, b );
+
+    ADD_SUBCASE( case2, a_ls_fb, b );
+    ADD_SUBCASE( case2, a_ls_hb, b );
+    ADD_SUBCASE( case2, a_ls_db, b );
     #endif
 }
 
@@ -195,6 +239,10 @@ TEST_CASE("add(case4)" * doctest::test_suite("view::add"))
     ADD_SUBCASE( case4, a_ds_fb, b );
     ADD_SUBCASE( case4, a_ds_hb, b );
     ADD_SUBCASE( case4, a_ds_db, b );
+
+    ADD_SUBCASE( case4, a_ls_fb, b );
+    ADD_SUBCASE( case4, a_ls_hb, b );
+    ADD_SUBCASE( case4, a_ls_db, b );
     #endif
 }
 
@@ -256,6 +304,10 @@ TEST_CASE("reduce_add(case1)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case1, a_ds_fb, axis );
     REDUCE_ADD_SUBCASE( case1, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case1, a_ds_db, axis );
+
+    REDUCE_ADD_SUBCASE( case1, a_ls_fb, axis );
+    REDUCE_ADD_SUBCASE( case1, a_ls_hb, axis );
+    REDUCE_ADD_SUBCASE( case1, a_ls_db, axis );
     #endif
 }
 
@@ -284,6 +336,10 @@ TEST_CASE("reduce_add(case2)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case2, a_ds_fb, axis );
     REDUCE_ADD_SUBCASE( case2, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case2, a_ds_db, axis );
+
+    REDUCE_ADD_SUBCASE( case2, a_ls_fb, axis );
+    REDUCE_ADD_SUBCASE( case2, a_ls_hb, axis );
+    REDUCE_ADD_SUBCASE( case2, a_ls_db, axis );
     #endif
 }
 
@@ -312,6 +368,10 @@ TEST_CASE("reduce_add(case3)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case3, a_ds_fb, axis );
     REDUCE_ADD_SUBCASE( case3, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case3, a_ds_db, axis );
+
+    REDUCE_ADD_SUBCASE( case3, a_ls_fb, axis );
+    REDUCE_ADD_SUBCASE( case3, a_ls_hb, axis );
+    REDUCE_ADD_SUBCASE( case3, a_ls_db, axis );
     #endif
 }
 
@@ -341,6 +401,10 @@ TEST_CASE("reduce_add(case4)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case4, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case4, a_ds_db, axis );
 
+    REDUCE_ADD_SUBCASE( case4, a_ls_fb, axis );
+    REDUCE_ADD_SUBCASE( case4, a_ls_hb, axis );
+    REDUCE_ADD_SUBCASE( case4, a_ls_db, axis );
+
     REDUCE_ADD_SUBCASE( case4, a_cs_fb, axis_f );
     REDUCE_ADD_SUBCASE( case4, a_cs_hb, axis_f );
     REDUCE_ADD_SUBCASE( case4, a_cs_db, axis_f );
@@ -356,6 +420,10 @@ TEST_CASE("reduce_add(case4)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case4, a_ds_fb, axis_f );
     REDUCE_ADD_SUBCASE( case4, a_ds_hb, axis_f );
     REDUCE_ADD_SUBCASE( case4, a_ds_db, axis_f );
+
+    REDUCE_ADD_SUBCASE( case4, a_ls_fb, axis_f );
+    REDUCE_ADD_SUBCASE( case4, a_ls_hb, axis_f );
+    REDUCE_ADD_SUBCASE( case4, a_ls_db, axis_f );
 
     REDUCE_ADD_SUBCASE( case4, a_cs_fb, axis_h );
     REDUCE_ADD_SUBCASE( case4, a_cs_hb, axis_h );
@@ -373,6 +441,10 @@ TEST_CASE("reduce_add(case4)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case4, a_ds_hb, axis_h );
     REDUCE_ADD_SUBCASE( case4, a_ds_db, axis_h );
 
+    REDUCE_ADD_SUBCASE( case4, a_ls_fb, axis_h );
+    REDUCE_ADD_SUBCASE( case4, a_ls_hb, axis_h );
+    REDUCE_ADD_SUBCASE( case4, a_ls_db, axis_h );
+
     REDUCE_ADD_SUBCASE( case4, a_cs_fb, axis_v );
     REDUCE_ADD_SUBCASE( case4, a_cs_hb, axis_v );
     REDUCE_ADD_SUBCASE( case4, a_cs_db, axis_v );
@@ -388,6 +460,10 @@ TEST_CASE("reduce_add(case4)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case4, a_ds_fb, axis_v );
     REDUCE_ADD_SUBCASE( case4, a_ds_hb, axis_v );
     REDUCE_ADD_SUBCASE( case4, a_ds_db, axis_v );
+
+    REDUCE_ADD_SUBCASE( case4, a_ls_fb, axis_v );
+    REDUCE_ADD_SUBCASE( case4, a_ls_hb, axis_v );
+    REDUCE_ADD_SUBCASE( case4, a_ls_db, axis_v );
     #endif
 }
 
@@ -568,6 +644,10 @@ TEST_CASE("reduce_add(case7)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case7, a_ds_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_ds_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case7, a_ds_db, axis, dtype );
+
+    REDUCE_ADD_SUBCASE( case7, a_ls_fb, axis, dtype );
+    REDUCE_ADD_SUBCASE( case7, a_ls_hb, axis, dtype );
+    REDUCE_ADD_SUBCASE( case7, a_ls_db, axis, dtype );
     #endif
 }
 
@@ -596,6 +676,10 @@ TEST_CASE("reduce_add(case8)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case8, a_ds_fb, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_ds_hb, axis, dtype, initial );
     REDUCE_ADD_SUBCASE( case8, a_ds_db, axis, dtype, initial );
+
+    REDUCE_ADD_SUBCASE( case8, a_ls_fb, axis, dtype, initial );
+    REDUCE_ADD_SUBCASE( case8, a_ls_hb, axis, dtype, initial );
+    REDUCE_ADD_SUBCASE( case8, a_ls_db, axis, dtype, initial );
     #endif
 }
 
@@ -624,6 +708,10 @@ TEST_CASE("reduce_add(case9)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case9, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case9, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case9, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case9, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case9, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
 
@@ -652,6 +740,10 @@ TEST_CASE("reduce_add(case10)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case10, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case10, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case10, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case10, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case10, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
 
@@ -680,6 +772,10 @@ TEST_CASE("reduce_add(case11)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case11, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case11, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case11, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case11, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case11, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
 
@@ -708,6 +804,10 @@ TEST_CASE("reduce_add(case12)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case12, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case12, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case12, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case12, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case12, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
 
@@ -736,6 +836,10 @@ TEST_CASE("reduce_add(case13)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case13, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case13, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case13, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case13, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case13, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
 
@@ -764,6 +868,10 @@ TEST_CASE("reduce_add(case14)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case14, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case14, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case14, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case14, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case14, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
 
@@ -792,6 +900,10 @@ TEST_CASE("reduce_add(case15)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case15, a_ds_fb, axis );
     REDUCE_ADD_SUBCASE( case15, a_ds_hb, axis );
     REDUCE_ADD_SUBCASE( case15, a_ds_db, axis );
+
+    REDUCE_ADD_SUBCASE( case15, a_ls_fb, axis );
+    REDUCE_ADD_SUBCASE( case15, a_ls_hb, axis );
+    REDUCE_ADD_SUBCASE( case15, a_ls_db, axis );
     #endif
 }
 
@@ -820,6 +932,10 @@ TEST_CASE("reduce_add(case16)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case16, a_ds_fb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_ds_hb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case16, a_ds_db, axis, nmtools::None, initial );
+
+    REDUCE_ADD_SUBCASE( case16, a_ls_fb, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case16, a_ls_hb, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case16, a_ls_db, axis, nmtools::None, initial );
     #endif
 }
 
@@ -848,6 +964,10 @@ TEST_CASE("reduce_add(case17)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case17, a_ds_fb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case17, a_ds_hb, axis, nmtools::None, initial );
     REDUCE_ADD_SUBCASE( case17, a_ds_db, axis, nmtools::None, initial );
+
+    REDUCE_ADD_SUBCASE( case17, a_ls_fb, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case17, a_ls_hb, axis, nmtools::None, initial );
+    REDUCE_ADD_SUBCASE( case17, a_ls_db, axis, nmtools::None, initial );
     #endif
 }
 
@@ -876,6 +996,10 @@ TEST_CASE("reduce_add(case18)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case18, a_ds_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_ds_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case18, a_ds_db, axis, nmtools::None, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case18, a_ls_fb, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case18, a_ls_hb, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case18, a_ls_db, axis, nmtools::None, initial, keepdims );
     #endif
 }
 
@@ -904,6 +1028,10 @@ TEST_CASE("reduce_add(case19)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case19, a_ds_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_ds_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case19, a_ds_db, axis, nmtools::None, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case19, a_ls_fb, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case19, a_ls_hb, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case19, a_ls_db, axis, nmtools::None, initial, keepdims );
     #endif
 }
 
@@ -932,6 +1060,10 @@ TEST_CASE("reduce_add(case20)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case20, a_ds_fb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_ds_hb, axis, nmtools::None, initial, keepdims );
     REDUCE_ADD_SUBCASE( case20, a_ds_db, axis, nmtools::None, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case20, a_ls_fb, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case20, a_ls_hb, axis, nmtools::None, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case20, a_ls_db, axis, nmtools::None, initial, keepdims );
     #endif
 }
 
@@ -960,6 +1092,10 @@ TEST_CASE("reduce_add(case21)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case21, a_ds_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_ds_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case21, a_ds_db, axis, dtype );
+
+    REDUCE_ADD_SUBCASE( case21, a_ls_fb, axis, dtype );
+    REDUCE_ADD_SUBCASE( case21, a_ls_hb, axis, dtype );
+    REDUCE_ADD_SUBCASE( case21, a_ls_db, axis, dtype );
     #endif
 }
 
@@ -988,6 +1124,10 @@ TEST_CASE("reduce_add(case22)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case22, a_ds_fb, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_ds_hb, axis, dtype );
     REDUCE_ADD_SUBCASE( case22, a_ds_db, axis, dtype );
+
+    REDUCE_ADD_SUBCASE( case22, a_ls_fb, axis, dtype );
+    REDUCE_ADD_SUBCASE( case22, a_ls_hb, axis, dtype );
+    REDUCE_ADD_SUBCASE( case22, a_ls_db, axis, dtype );
     #endif
 }
 
@@ -1018,6 +1158,10 @@ TEST_CASE("reduce_add(case23)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case23, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case23, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case23, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case23, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case23, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
 
@@ -1048,6 +1192,10 @@ TEST_CASE("reduce_add(case24)" * doctest::test_suite("view::reduce_add"))
     REDUCE_ADD_SUBCASE( case24, a_ds_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_ds_hb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case24, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case24, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case24, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case24, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
 
@@ -1109,6 +1257,10 @@ TEST_CASE("accumulate_add(case1)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case1, a_ds_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_ds_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case1, a_ds_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case1, a_ls_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_ls_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case1, a_ls_db, axis );
     #endif
 }
 
@@ -1137,6 +1289,10 @@ TEST_CASE("accumulate_add(case2)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case2, a_ds_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_ds_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case2, a_ds_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case2, a_ls_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_ls_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case2, a_ls_db, axis );
     #endif
 }
 
@@ -1165,6 +1321,10 @@ TEST_CASE("accumulate_add(case3)" * doctest::test_suite("view::accumulate_add"))
     ACCUMULATE_ADD_SUBCASE( case3, a_ds_fb, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_ds_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_ds_db, axis );
+
+    ACCUMULATE_ADD_SUBCASE( case3, a_ls_fb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_ls_hb, axis );
+    ACCUMULATE_ADD_SUBCASE( case3, a_ls_db, axis );
     #endif
 }
 
@@ -1227,6 +1387,10 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
     OUTER_ADD_SUBCASE( case1, a_ds_hb, b_ds_hb );
     OUTER_ADD_SUBCASE( case1, a_ds_db, b_ds_db );
 
+    OUTER_ADD_SUBCASE( case1, a_ls_fb, b_ls_fb );
+    OUTER_ADD_SUBCASE( case1, a_ls_hb, b_ls_hb );
+    OUTER_ADD_SUBCASE( case1, a_ls_db, b_ls_db );
+
     OUTER_ADD_SUBCASE( case1, a_fs_fb, b_cs_fb );
     OUTER_ADD_SUBCASE( case1, a_fs_hb, b_cs_hb );
     OUTER_ADD_SUBCASE( case1, a_fs_db, b_cs_db );
@@ -1238,6 +1402,10 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
     OUTER_ADD_SUBCASE( case1, a_ds_fb, b_cs_fb );
     OUTER_ADD_SUBCASE( case1, a_ds_hb, b_cs_hb );
     OUTER_ADD_SUBCASE( case1, a_ds_db, b_cs_db );
+
+    OUTER_ADD_SUBCASE( case1, a_ls_fb, b_cs_fb );
+    OUTER_ADD_SUBCASE( case1, a_ls_hb, b_cs_hb );
+    OUTER_ADD_SUBCASE( case1, a_ls_db, b_cs_db );
 
     OUTER_ADD_SUBCASE( case1, a_cs_fb, b_fs_fb );
     OUTER_ADD_SUBCASE( case1, a_cs_hb, b_fs_hb );
@@ -1251,6 +1419,10 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
     OUTER_ADD_SUBCASE( case1, a_ds_hb, b_fs_hb );
     OUTER_ADD_SUBCASE( case1, a_ds_db, b_fs_db );
 
+    OUTER_ADD_SUBCASE( case1, a_ls_fb, b_fs_fb );
+    OUTER_ADD_SUBCASE( case1, a_ls_hb, b_fs_hb );
+    OUTER_ADD_SUBCASE( case1, a_ls_db, b_fs_db );
+
     OUTER_ADD_SUBCASE( case1, a_cs_fb, b_hs_fb );
     OUTER_ADD_SUBCASE( case1, a_cs_hb, b_hs_hb );
     OUTER_ADD_SUBCASE( case1, a_cs_db, b_hs_db );
@@ -1263,6 +1435,10 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
     OUTER_ADD_SUBCASE( case1, a_ds_hb, b_hs_hb );
     OUTER_ADD_SUBCASE( case1, a_ds_db, b_hs_db );
 
+    OUTER_ADD_SUBCASE( case1, a_ls_fb, b_hs_fb );
+    OUTER_ADD_SUBCASE( case1, a_ls_hb, b_hs_hb );
+    OUTER_ADD_SUBCASE( case1, a_ls_db, b_hs_db );
+
     OUTER_ADD_SUBCASE( case1, a_cs_fb, b_ds_fb );
     OUTER_ADD_SUBCASE( case1, a_cs_hb, b_ds_hb );
     OUTER_ADD_SUBCASE( case1, a_cs_db, b_ds_db );
@@ -1274,6 +1450,26 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
     OUTER_ADD_SUBCASE( case1, a_hs_fb, b_ds_fb );
     OUTER_ADD_SUBCASE( case1, a_hs_hb, b_ds_hb );
     OUTER_ADD_SUBCASE( case1, a_hs_db, b_ds_db );
+
+    OUTER_ADD_SUBCASE( case1, a_ls_fb, b_ds_fb );
+    OUTER_ADD_SUBCASE( case1, a_ls_hb, b_ds_hb );
+    OUTER_ADD_SUBCASE( case1, a_ls_db, b_ds_db );
+
+    OUTER_ADD_SUBCASE( case1, a_cs_fb, b_ls_fb );
+    OUTER_ADD_SUBCASE( case1, a_cs_hb, b_ls_hb );
+    OUTER_ADD_SUBCASE( case1, a_cs_db, b_ls_db );
+
+    OUTER_ADD_SUBCASE( case1, a_fs_fb, b_ls_fb );
+    OUTER_ADD_SUBCASE( case1, a_fs_hb, b_ls_hb );
+    OUTER_ADD_SUBCASE( case1, a_fs_db, b_ls_db );
+
+    OUTER_ADD_SUBCASE( case1, a_hs_fb, b_ls_fb );
+    OUTER_ADD_SUBCASE( case1, a_hs_hb, b_ls_hb );
+    OUTER_ADD_SUBCASE( case1, a_hs_db, b_ls_db );
+
+    OUTER_ADD_SUBCASE( case1, a_ds_fb, b_ls_fb );
+    OUTER_ADD_SUBCASE( case1, a_ds_hb, b_ls_hb );
+    OUTER_ADD_SUBCASE( case1, a_ds_db, b_ls_db );
     #endif
 }
 
