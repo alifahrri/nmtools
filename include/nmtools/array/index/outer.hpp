@@ -128,7 +128,13 @@ namespace nmtools::meta
                 return template_reduce<len(result)>([&](auto init, auto index){
                     using init_type = type_t<decltype(init)>;
                     constexpr auto I = at(result,index);
+                    // NOTE: using this breaks arm-gcc (mbed-platformio):
+                    // error: lambda capture of 'is_constant_shape_a' is not a constant expression
+                    #if 0
                     if constexpr (is_constant_shape_a && is_constant_shape_b) {
+                    #else
+                    if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                    #endif
                         using type = append_type_t<init_type,ct<I>>;
                         return as_value_v<type>;
                     } else {
