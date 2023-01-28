@@ -73,7 +73,6 @@ namespace nmtools::index
                     return adim > bdim ? adim : bdim;
                 }
             }();
-            using rdim_t = decltype(rdim);
 
             if constexpr (meta::is_resizable_v<result_t>)
                 res.resize(rdim);
@@ -81,13 +80,26 @@ namespace nmtools::index
             auto broadcast_shape_impl = [&](auto i){
                 using idx_t = meta::make_signed_t<element_t>;
                 // compute index to fill from behind
+                #if 0
+                // OK in gcc but failed on clang 🤷
                 auto si = [&](){
+                    using rdim_t = decltype(rdim);
                     if constexpr (is_constant_index_v<rdim_t> && is_constant_index_v<decltype(i)>) {
                         return meta::ct_v<(rdim_t::value - decltype(i)::value - 1)>;
                     } else {
                         return idx_t(rdim - i - 1);
                     }
                 }();
+                #else
+                auto si = [&](auto rdim, auto i){
+                    using rdim_t = decltype(rdim);
+                    if constexpr (is_constant_index_v<rdim_t> && is_constant_index_v<decltype(i)>) {
+                        return meta::ct_v<(rdim_t::value - decltype(i)::value - 1)>;
+                    } else {
+                        return idx_t(rdim - i - 1);
+                    }
+                }(rdim,i);
+                #endif
                 idx_t ai = (idx_t)adim - (idx_t)i - 1;
                 idx_t bi = (idx_t)bdim - (idx_t)i - 1;
                 if ((ai>=0) && (bi>=0)) {
