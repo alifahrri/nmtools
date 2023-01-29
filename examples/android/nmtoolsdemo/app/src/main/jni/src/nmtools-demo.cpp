@@ -14,6 +14,9 @@
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
 #include "nmtools/array/array/random.hpp"
+#include "nmtools/array/array/ufuncs/add.hpp"
+#include "nmtools/array/array/ufuncs/subtract.hpp"
+#include "nmtools/array/array/ufuncs/multiply.hpp"
 #include "nmtools/array/array/ufuncs/sin.hpp"
 #include "nmtools/array/array/activations/relu.hpp"
 #include "nmtools/array/array/activations/sigmoid.hpp"
@@ -105,6 +108,66 @@ static auto sigmoid(JNIEnv* env, jfloatArray jarray, jintArray jshape)
     auto array = na::from_java_array(env,jarray,jshape);
     auto t0 = std::chrono::high_resolution_clock::now();
     auto result = na::sigmoid(array);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
+
+    return std::tuple{result,dt};
+}
+
+static auto add(JNIEnv* env, jfloatArray jarray_lhs, jintArray jshape_lhs, jfloatArray jarray_rhs, jintArray jshape_rhs)
+{
+    auto lhs = na::from_java_array(env,jarray_lhs,jshape_lhs);
+    auto rhs = na::from_java_array(env,jarray_rhs,jshape_rhs);
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = na::add(lhs,rhs);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
+
+    return std::tuple{result,dt};
+}
+
+static auto subtract(JNIEnv* env, jfloatArray jarray_lhs, jintArray jshape_lhs, jfloatArray jarray_rhs, jintArray jshape_rhs)
+{
+    auto lhs = na::from_java_array(env,jarray_lhs,jshape_lhs);
+    auto rhs = na::from_java_array(env,jarray_rhs,jshape_rhs);
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = na::subtract(lhs,rhs);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
+
+    return std::tuple{result,dt};
+}
+
+static auto multiply(JNIEnv* env, jfloatArray jarray_lhs, jintArray jshape_lhs, jfloatArray jarray_rhs, jintArray jshape_rhs)
+{
+    auto lhs = na::from_java_array(env,jarray_lhs,jshape_lhs);
+    auto rhs = na::from_java_array(env,jarray_rhs,jshape_rhs);
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = na::multiply(lhs,rhs);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
+
+    return std::tuple{result,dt};
+}
+
+static auto reduce_add(JNIEnv *env, jfloatArray jarray, jintArray jshape, jintArray jaxis, jboolean jkeepdims)
+{
+    auto array = na::from_java_array(env,jarray,jshape);
+    auto axis = na::from_java_array<nm::none_t,nmtools_array<size_t,1>>(env,jaxis);
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = na::add.reduce(array,axis,/*dtype*/nm::None,/*initial*/nm::None,bool(jkeepdims));
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
+
+    return std::tuple{result,dt};
+}
+
+static auto reduce_multiply(JNIEnv *env, jfloatArray jarray, jintArray jshape, jintArray jaxis, jboolean jkeepdims)
+{
+    auto array = na::from_java_array(env,jarray,jshape);
+    auto axis = na::from_java_array<nm::none_t,nmtools_array<size_t,1>>(env,jaxis);
+    auto t0 = std::chrono::high_resolution_clock::now();
+    auto result = na::multiply.reduce(array,axis,/*dtype*/nm::None,/*initial*/nm::None,bool(jkeepdims));
     auto t1 = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t1 - t0);
 
@@ -233,6 +296,120 @@ JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_sigmoid
         (JNIEnv *env, jclass, jfloatArray jarray, jintArray jshape)
 {
     const auto& [array, dt] = sigmoid(env,jarray,jshape);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    add
+ * Signature: ([F[I[F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_add
+        (JNIEnv *env, jclass, jfloatArray jarray_lhs, jintArray jshape_lhs, jfloatArray jarray_rhs, jintArray jshape_rhs)
+{
+    // TODO: error handling
+    const auto& [array, dt] = add(env,jarray_lhs,jshape_lhs,jarray_rhs,jshape_rhs);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    subtract
+ * Signature: ([F[I[F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_subtract
+        (JNIEnv *env, jclass, jfloatArray jarray_lhs, jintArray jshape_lhs, jfloatArray jarray_rhs, jintArray jshape_rhs)
+{
+    // TODO: error handling
+    const auto& [array, dt] = subtract(env,jarray_lhs,jshape_lhs,jarray_rhs,jshape_rhs);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    multiply
+ * Signature: ([F[I[F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_multiply
+        (JNIEnv *env, jclass, jfloatArray jarray_lhs, jintArray jshape_lhs, jfloatArray jarray_rhs, jintArray jshape_rhs)
+{
+    // TODO: error handling
+    const auto& [array, dt] = multiply(env,jarray_lhs,jshape_lhs,jarray_rhs,jshape_rhs);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    reduce_add
+ * Signature: ([F[I[IZ)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_reduce_1add
+        (JNIEnv *env, jclass, jfloatArray jarray, jintArray jshape, jintArray jaxis, jboolean jkeepdims)
+{
+    const auto& [array, dt] = reduce_add(env,jarray,jshape,jaxis,jkeepdims);
+    LOGD("dt: %fms", dt.count());
+
+    auto [flat,shape] = na::to_java(env,array);
+
+    jclass NDArrayFloat = env->FindClass("com/example/nmtools_demo/NmTools$NDArrayFloat");
+
+    jmethodID constructor = env->GetMethodID(NDArrayFloat, "<init>", "([F[I)V");
+
+    jobject result = env->NewObject(NDArrayFloat, constructor, flat, shape);
+    return result;
+}
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    reduce_multiply
+ * Signature: ([F[I[IZ)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+extern "C"
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_reduce_1multiply
+        (JNIEnv *env, jclass, jfloatArray jarray, jintArray jshape, jintArray jaxis, jboolean jkeepdims)
+{
+    const auto& [array, dt] = reduce_multiply(env,jarray,jshape,jaxis,jkeepdims);
     LOGD("dt: %fms", dt.count());
 
     auto [flat,shape] = na::to_java(env,array);

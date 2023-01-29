@@ -52,6 +52,11 @@ public class NmTools {
     public static native NDArrayFloat sin(float[] jarray, int[] jshape);
     public static native NDArrayFloat relu(float[] jarray, int[] jshape);
     public static native NDArrayFloat sigmoid(float[] jarray, int[] jshape);
+    public static native NDArrayFloat add(float[] jarray_lhs, int[] jshape_lhs, float[] jarray_rhs, int[] jshape_rhs);
+    public static native NDArrayFloat subtract(float[] jarray_lhs, int[] jshape_lhs, float[] jarray_rhs, int[] jshape_rhs);
+    public static native NDArrayFloat multiply(float[] jarray_lhs, int[] jshape_lhs, float[] jarray_rhs, int[] jshape_rhs);
+    public static native NDArrayFloat reduce_add(float[] jarray_lhs, int[] jshape_lhs, int[] jaxis, boolean keepdims);
+    public static native NDArrayFloat reduce_multiply(float[] jarray_lhs, int[] jshape_lhs, int[] jaxis, boolean keepdims);
 
     public static NDArrayFloat sin(NDArrayFloat ndarray)
     {
@@ -66,5 +71,30 @@ public class NmTools {
     public static NDArrayFloat sigmoid(NDArrayFloat ndarray)
     {
         return sigmoid(ndarray.get_data(), ndarray.get_shape());
+    }
+
+    public static NDArrayFloat add(NDArrayFloat lhs, NDArrayFloat rhs)
+    {
+        return add(lhs.get_data(), lhs.get_shape(), rhs.get_data(), rhs.get_shape());
+    }
+
+    public static NDArrayFloat multiply(NDArrayFloat lhs, NDArrayFloat rhs)
+    {
+        return multiply(lhs.get_data(), lhs.get_shape(), rhs.get_data(), rhs.get_shape());
+    }
+
+    public static NDArrayFloat subtract(NDArrayFloat lhs, NDArrayFloat rhs)
+    {
+        return subtract(lhs.get_data(), lhs.get_shape(), rhs.get_data(), rhs.get_shape());
+    }
+
+    public static NDArrayFloat reduce_add(NDArrayFloat array, int[] axis, boolean keepdims)
+    {
+        return reduce_add(array.get_data(), array.get_shape(), axis, keepdims);
+    }
+
+    public static NDArrayFloat reduce_multiply(NDArrayFloat array, int[] axis, boolean keepdims)
+    {
+        return reduce_multiply(array.get_data(), array.get_shape(), axis, keepdims);
     }
 }

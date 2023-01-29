@@ -63,6 +63,46 @@ JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_relu
 JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_sigmoid
   (JNIEnv *, jclass, jfloatArray, jintArray);
 
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    add
+ * Signature: ([F[I[F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_add
+  (JNIEnv *, jclass, jfloatArray, jintArray, jfloatArray, jintArray);
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    subtract
+ * Signature: ([F[I[F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_subtract
+  (JNIEnv *, jclass, jfloatArray, jintArray, jfloatArray, jintArray);
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    multiply
+ * Signature: ([F[I[F[I)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_multiply
+  (JNIEnv *, jclass, jfloatArray, jintArray, jfloatArray, jintArray);
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    reduce_add
+ * Signature: ([F[I[IZ)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_reduce_1add
+  (JNIEnv *, jclass, jfloatArray, jintArray, jintArray, jboolean);
+
+/*
+ * Class:     com_example_nmtools_demo_NmTools
+ * Method:    reduce_multiply
+ * Signature: ([F[I[IZ)Lcom/example/nmtools_demo/NmTools/NDArrayFloat;
+ */
+JNIEXPORT jobject JNICALL Java_com_example_nmtools_1demo_NmTools_reduce_1multiply
+  (JNIEnv *, jclass, jfloatArray, jintArray, jintArray, jboolean);
+
 #ifdef __cplusplus
 }
 #endif
