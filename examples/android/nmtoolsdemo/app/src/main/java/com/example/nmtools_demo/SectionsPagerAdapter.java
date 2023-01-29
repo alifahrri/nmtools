@@ -25,8 +25,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             return new ArangeFragment();
         } else if (position == 1) {
             return new RandomFragment();
-        } else {
+        } else if (position == 2) {
             return new UfuncFragment();
+        } else if (position == 3) {
+            return new Ufunc2Fragment();
+        } else {
+            return new ReduceFragment();
         }
     }
 
@@ -37,13 +41,17 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             return "arange";
         } else if (position == 1) {
             return "random";
-        } else {
+        } else if (position == 2) {
             return "ufunc";
+        } else if (position == 3) {
+            return "ufunc (2)";
+        } else {
+            return "reduce";
         }
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 5;
     }
 }
