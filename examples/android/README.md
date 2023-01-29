@@ -6,6 +6,8 @@ This example shows how to use nmtools from android.
   <img width="300" src="Screenshot_1671295935.png">
   <img width="300" src="Screenshot_1671295942.png">
   <img width="300" src="Screenshot_1674482297.png">
+  <img width="300" src="Screenshot_1674980216.png">
+  <img width="300" src="Screenshot_1674980249.png">
 </p>
 
 ## Build
