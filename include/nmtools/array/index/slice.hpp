@@ -284,7 +284,7 @@ namespace nmtools::index
      * @return auto 
      */
     template <typename value_t>
-    auto is_int(const value_t& value)
+    constexpr auto is_int(const value_t& value)
     {
         if constexpr (meta::is_either_v<value_t>) {
             using left_t  = meta::get_either_left_t<value_t>;
@@ -309,7 +309,7 @@ namespace nmtools::index
      * @return auto 
      */
     template <typename value_t>
-    auto is_ellipsis(const value_t& value)
+    constexpr auto is_ellipsis(const value_t& value)
     {
         if constexpr (meta::is_either_v<value_t>) {
             using left_t  = meta::get_either_left_t<value_t>;
