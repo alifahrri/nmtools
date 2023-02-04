@@ -361,9 +361,26 @@ namespace nmtools
         // TODO: handle maybe and either type
         if constexpr (prefer_constant_index) {
             constexpr auto fixed_size = meta::fixed_size_v<array_t>;
+            [[maybe_unused]]
+            constexpr auto bounded_size = meta::bounded_size_v<array_t>;
+            [[maybe_unused]]
+            constexpr auto c_shape = meta::to_value_v<decltype(shape(array))>;
             if constexpr (!meta::is_fail_v<decltype(fixed_size)>) {
                 using type = meta::ct<(size_t)fixed_size>;
                 return type{};
+            } else if constexpr (!meta::is_fail_v<decltype(bounded_size)>) {
+                using type = clipped_size_t<(size_t)bounded_size>;
+                return type{nmtools::size(array)};
+            } else if constexpr (!meta::is_fail_v<decltype(c_shape)> && !is_none_v<decltype(c_shape)>) {
+                constexpr auto c_sum = [&](){
+                    size_t c_sum = 1;
+                    for (size_t i=0; i<len(c_shape); i++) {
+                        c_sum *= at(c_shape,i);
+                    }
+                    return c_sum;
+                }();
+                using type = clipped_size_t<size_t(c_sum)>;
+                return type{nmtools::size(array)};
             } else {
                 return impl::size<array_t>(array);
             }
