@@ -254,8 +254,8 @@ namespace nmtools::meta
 
         static constexpr auto value = [](){
             // broadcast may change shape, so change size
-            if constexpr (is_constant_index_array_v<shape_type>) {
-                return index::product(shape_type{});
+            if constexpr (is_constant_index_array_v<shape_type> || is_clipped_index_array_v<shape_type>) {
+                return index::product(to_value_v<shape_type>);
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
             }
