@@ -95,15 +95,18 @@ namespace nmtools::view
         using op_type = op_t;
         using result_type = detail::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
         using shape_type  = const meta::resolve_optype_t<index::shape_ufunc_t,decltype(nmtools::shape<true>(meta::declval<arrays_t>()))...>;
+        using size_type   = const meta::resolve_optype_t<index::size_ufunc_t,shape_type,decltype(nmtools::size<true>(meta::declval<arrays_t>()))...>;
 
         op_type op;
         operands_type operands;
         shape_type shape_;
+        size_type  size_;
 
         constexpr ufunc_t(op_type op, const arrays_t&...operands)
             : op(op)
             , operands(initialize_operands<operands_type>(operands...))
             , shape_(*index::shape_ufunc(nmtools::shape<true>(operands)...))
+            , size_(index::size_ufunc(shape_,nmtools::size<true>(operands)...))
         {}
         
         constexpr auto shape() const
@@ -115,6 +118,11 @@ namespace nmtools::view
         {
             return len(shape());
         } // dim
+
+        constexpr auto size() const
+        {
+            return size_;
+        } // size
 
         template <typename indices_t, size_t...Is>
         static constexpr auto apply_at(op_type op, const operands_type& operands, const indices_t& indices, meta::index_sequence<Is...>)
@@ -172,48 +180,37 @@ namespace nmtools::meta
         static constexpr auto value = (is_ndarray_v<arrays_t> && ...);
     };
 
+    // TODO: remove, move to main decorator_t
     template <typename op_t, typename...arrays_t>
     struct fixed_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
     {
         using view_type  = view::decorator_t< view::ufunc_t, op_t, arrays_t... >;
         using shape_type = typename view_type::shape_type;
         using type_list  = meta::type_list<arrays_t...>;
+        using size_type  = typename view_type::size_type;
 
         static constexpr auto value = [](){
-            if constexpr ((is_fixed_size_v<arrays_t> || ...)) {
-                return template_reduce<sizeof...(arrays_t)>([]([[maybe_unused]] auto init, auto index){
-                    using type_i = at_t<type_list,(size_t)index>;
-                    constexpr auto fixed_size = fixed_size_v<type_i>;
-                    if constexpr (!is_fail_v<decltype(fixed_size)>) {
-                        return fixed_size;
-                    } else {
-                        return init;
-                    }
-                }, error::FIXED_SIZE_UNSUPPORTED<view_type>{});
+            if constexpr (is_constant_index_v<size_type>) {
+                return size_type::value;
             } else {
                 return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
             }
         }();
     }; // fixed_size
 
+    // TODO: remove, move to main decorator_t
     template <typename op_t, typename...arrays_t>
     struct bounded_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
     {
         using view_type  = view::decorator_t< view::ufunc_t, op_t, arrays_t... >;
         using shape_type = typename view_type::shape_type;
         using type_list  = meta::type_list<arrays_t...>;
+        using size_type  = typename view_type::size_type;
 
         static constexpr auto value = [](){
-            if constexpr ((is_bounded_size_v<arrays_t> || ...)) {
-                return template_reduce<sizeof...(arrays_t)>([]([[maybe_unused]] auto init, auto index){
-                    using type_i = at_t<type_list,(size_t)index>;
-                    constexpr auto bounded_size = bounded_size_v<type_i>;
-                    if constexpr (!is_fail_v<decltype(bounded_size)>) {
-                        return bounded_size;
-                    } else {
-                        return init;
-                    }
-                }, error::BOUNDED_SIZE_UNSUPPORTED<view_type>{});
+            constexpr auto c_size = to_value_v<size_type>;
+            if constexpr (!is_fail_v<decltype(c_size)>) {
+                return size_t(c_size);
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
             }

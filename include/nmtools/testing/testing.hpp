@@ -82,23 +82,23 @@ EXPECT_TRUE(isequal(result,expect)) \
  */
 #define NMTOOLS_ASSERT_CLOSE_DOCTEST(result,expect) \
 { \
-    auto __result = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
+    auto result_ = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
     std::string message {}; \
     message = message + \
         + "\n\tActual  : " + STRINGIFY(result)  \
         + "\n\tExpected: " + STRINGIFY(expect); \
-    NMTOOLS_CHECK_MESSAGE( __result, message ); \
+    NMTOOLS_CHECK_MESSAGE( result_, message ); \
 }
 
 #define NMTOOLS_STATIC_ASSERT_CLOSE_DOCTEST(result,expect) \
 { \
-    constexpr auto __result = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
+    constexpr auto result_ = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
     std::string message {}; \
     message = message + \
         + "\n\tActual  : " + STRINGIFY(result)  \
         + "\n\tExpected: " + STRINGIFY(expect); \
-    NMTOOLS_STATIC_ASSERT( __result); \
-    NMTOOLS_CHECK_MESSAGE( __result, message ); \
+    NMTOOLS_STATIC_ASSERT( result_); \
+    NMTOOLS_CHECK_MESSAGE( result_, message ); \
 }
 
 /**

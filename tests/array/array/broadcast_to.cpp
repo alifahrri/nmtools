@@ -1,10 +1,37 @@
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
+#endif
+
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY) && defined(NMTOOLS_TESTING_CONSTEXPR)
+#define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name) \
+constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+constexpr inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb);
+#endif
+
 #include "nmtools/array/array/broadcast_to.hpp"
 #include "nmtools/testing/data/array/broadcast_to.hpp"
 #include "nmtools/testing/doctest.hpp"
-
-#include <vector>
-#include <array>
-#include <tuple>
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -40,6 +67,17 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( array_ref.shape(), args::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
+
+#define CONSTEXPR_BROADCAST_TO_SUBCASE(case_name, array, shape, expected) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(constexpr_broadcast_to, case_name); \
+    constexpr auto result = RUN_broadcast_to(case_name, args::array,args::shape); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::expected) ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
+}
+
+#ifndef NMTOOLS_TESTING_CONSTEXPR
 
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("array::broadcast_to"))
 {
@@ -129,4 +167,8 @@ TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("array::broadcast_to")
         NMTOOLS_STATIC_ASSERT_CLOSE( broadcasted, expect::expected );
     }
 }
+#endif
+
+#else // NMTOOLS_TESTING_CONSTEXPR
+
 #endif

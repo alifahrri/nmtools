@@ -267,7 +267,7 @@ namespace nmtools::array
                 , "unsupporter element access, mismatched dimension"
             );
             auto offset = index::compute_offset(strides_, indices);
-            return data[offset];
+            return data[(size_type)offset];
         } // operator()
 
         constexpr const_reference at(shape_type i) const

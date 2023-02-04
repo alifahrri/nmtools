@@ -39,6 +39,17 @@ namespace nmtools::meta
     >
     : get_index_element_type<Tuple<typename ClippedIndices::value_type...>> {};
 
+    template <template<typename,auto>typename Array, typename T, auto N>
+    struct get_index_element_type<
+        Array<T,N>,
+        enable_if_t<
+            is_clipped_integer_v<T>
+        >
+    >
+    {
+        using type = typename T::value_type;
+    };
+
     template <typename T>
     using get_index_element_type_t = type_t<get_index_element_type<T>>;
 } // namespace nmtools::meta

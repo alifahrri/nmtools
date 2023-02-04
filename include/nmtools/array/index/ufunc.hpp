@@ -56,6 +56,21 @@ namespace nmtools::index
         }
 
         return return_t{result};
+    } // shape_ufunc
+
+    struct size_ufunc_t {};
+
+    template <typename dst_shape_t, typename a_size_t, typename...sizes_t>
+    constexpr auto size_ufunc(const dst_shape_t& dst_shape, a_size_t, sizes_t...)
+    {
+        using result_t = meta::resolve_optype_t<size_ufunc_t,dst_shape_t,a_size_t,sizes_t...>;
+        auto res = result_t {};
+
+        if constexpr (!meta::is_constant_index_v<result_t>) {
+            res = product(dst_shape);
+        }
+
+        return res;
     }
 }
 
@@ -65,6 +80,9 @@ namespace nmtools::meta
     {
         template <typename...>
         struct SHAPE_UFUNC_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
+        struct SIZE_UFUNC_UNSUPPORTED : detail::fail_t {};
     }
 
     template <typename...shapes_t>
@@ -97,6 +115,58 @@ namespace nmtools::meta
                 }, as_value_v<at_t<shapes_type,0>>);
             } else {
                 using type = error::SHAPE_UFUNC_UNSUPPORTED<shapes_t...>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // shape_ufunc_t
+
+    template <typename dst_shape_t, typename a_size_t, typename...sizes_t>
+    struct resolve_optype<
+        void, index::size_ufunc_t, dst_shape_t, a_size_t, sizes_t...
+    >
+    {
+        using size_types = type_list<sizes_t...>;
+
+        static constexpr auto vtype = [](){
+            if constexpr (is_index_array_v<dst_shape_t> && is_index_v<a_size_t> && (is_index_v<sizes_t> && ...)) {
+                constexpr auto c_dst_shape = to_value_v<dst_shape_t>;
+                if constexpr (is_constant_index_array_v<dst_shape_t>) {
+                    constexpr auto numel = (size_t)index::product(c_dst_shape);
+                    using type = ct<numel>;
+                    return as_value_v<type>;   
+                } else if constexpr (is_clipped_index_array_v<dst_shape_t>) {
+                    constexpr auto numel = (size_t)index::product(c_dst_shape);
+                    using type = clipped_size_t<numel>;
+                    return as_value_v<type>;
+                } else {
+                    auto init_vtype = [](){
+                        if constexpr (is_constant_index_v<a_size_t>) {
+                            using type = ct<a_size_t::value>;
+                            return as_value_v<type>;
+                        } else if constexpr (is_clipped_integer_v<a_size_t>) {
+                            using type = clipped_size_t<a_size_t::max>;
+                            return as_value_v<type>;
+                        } else {
+                            return as_value_v<a_size_t>;
+                        }
+                    }();
+                    return template_reduce<sizeof...(sizes_t)>([](auto init, auto index){
+                        using init_t = type_t<decltype(init)>;
+                        constexpr auto I = decltype(index)::value;
+                        using type_i = at_t<size_types,I>;
+                        if constexpr (is_none_v<init_t>) {
+                            return as_value_v<type_i>;
+                        } else if constexpr (is_none_v<type_i>) {
+                            return init;
+                        } else {
+                            using type = promote_index_t<init_t,type_i>;
+                            return as_value_v<type>;
+                        }
+                    }, init_vtype);
+                }
+            } else {
+                using type = error::SIZE_UFUNC_UNSUPPORTED<dst_shape_t,a_size_t,sizes_t...>;
                 return as_value_v<type>;
             }
         }();

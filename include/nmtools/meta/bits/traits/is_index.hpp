@@ -30,6 +30,9 @@ namespace nmtools::meta
     template <typename T>
     struct is_index<T&,enable_if_t<!is_const_v<T>>> : is_index<T> {};
 
+    template <typename T, auto Max>
+    struct is_index<clipped_integer_t<T,0,Max>,enable_if_t<is_integer_v<T>>> : true_type {};
+
     template <typename T>
     inline constexpr auto is_index_v = is_index<T>::value;
 } // namespace nmtools::meta

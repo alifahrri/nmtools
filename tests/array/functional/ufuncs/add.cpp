@@ -104,7 +104,7 @@ TEST_CASE("add(case4)" * doctest::test_suite("functional::add"))
 #if 0
 TEST_CASE("constexpr_add(case1)" * doctest::test_suite("functional::add"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,constexpr_add,case1);
+    NMTOOLS_TESTING_DECLARE_NS(array,constexpr_add,case1);
     using namespace args;
 
     CONSTEXPR_ADD_SUBCASE("case1", fn::add, a,   b);
