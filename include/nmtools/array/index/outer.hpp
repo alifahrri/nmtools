@@ -191,12 +191,17 @@ namespace nmtools::meta
                 using type = ct<size>;
                 return as_value_v<type>;
             } else if constexpr (
-                is_constant_index_v<a_size_t>
-                && is_constant_index_v<b_size_t>
+                (is_constant_index_v<a_size_t> || is_clipped_integer_v<a_size_t>)
+                && (is_constant_index_v<b_size_t> || is_clipped_integer_v<b_size_t>)
             ) {
                 constexpr auto size = to_value_v<a_size_t> * to_value_v<b_size_t>;
-                using type = ct<size>;
-                return as_value_v<type>;
+                if constexpr (is_constant_index_v<a_size_t> && is_constant_index_v<b_size_t>) {
+                    using type = ct<size>;
+                    return as_value_v<type>;
+                } else {
+                    using type = clipped_size_t<size>;
+                    return as_value_v<type>;
+                }
             } else if constexpr (
                 is_index_v<a_size_t>
                 && is_index_v<b_size_t>
