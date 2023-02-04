@@ -130,7 +130,7 @@ namespace nmtools::meta
 
         static constexpr auto vtype = [](){
             if constexpr (is_index_array_v<dst_shape_t> && is_index_v<a_size_t> && (is_index_v<sizes_t> && ...)) {
-                constexpr auto c_dst_shape = to_value_v<dst_shape_t>;
+                [[maybe_unused]] constexpr auto c_dst_shape = to_value_v<dst_shape_t>;
                 if constexpr (is_constant_index_array_v<dst_shape_t>) {
                     constexpr auto numel = (size_t)index::product(c_dst_shape);
                     using type = ct<numel>;
