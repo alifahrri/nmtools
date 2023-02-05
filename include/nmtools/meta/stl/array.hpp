@@ -75,16 +75,6 @@ namespace nmtools::meta
         }();
     }; // fixed_shape
 
-    // TODO: remove
-    template <typename...Ts>
-    struct fixed_size<
-        std::tuple<Ts...>
-    >
-    {
-        static constexpr auto value = sizeof...(Ts);
-        using value_type = decltype(value);
-    }; // fixed_size
-
     template <typename T, size_t N, auto new_dim>
     struct resize_dim<
         std::array<T,N>, new_dim

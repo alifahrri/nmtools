@@ -4,6 +4,7 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_tuple.hpp"
 #include "nmtools/meta/bits/transform/promote_index.hpp"
+#include "nmtools/meta/bits/transform/clipped_max.hpp"
 
 namespace nmtools::meta
 {
@@ -83,6 +84,11 @@ namespace nmtools::meta
             return result;
         }();
     }; // to_value
+
+    template <typename T, auto Min, auto Max>
+    struct to_value<clipped_integer_t<T,Min,Max>>
+        : clipped_max<clipped_integer_t<T,Min,Max>>
+    {};
 
     template <typename T>
     constexpr inline auto to_value_v = to_value<T>::value;

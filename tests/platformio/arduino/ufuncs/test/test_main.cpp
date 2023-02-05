@@ -62,7 +62,7 @@ NM_TEST_SUBCASE(add, case1)
 
 NM_TEST_SUBCASE(constexpr_add, case1)
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, constexpr_add, case1);
+    NMTOOLS_TESTING_DECLARE_NS( array, constexpr_add, case1);
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::add, a, b );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::add, a_a, b_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::add, a_f, b_f );
@@ -78,7 +78,7 @@ NM_TEST_SUBCASE(constexpr_add, case1)
 
 NM_TEST_SUBCASE(constexpr_add, case2)
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, constexpr_add, case2);
+    NMTOOLS_TESTING_DECLARE_NS( array, constexpr_add, case2);
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, view::add, a, b );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, view::add, a_a, b );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, view::add, a_f, b );
@@ -91,7 +91,7 @@ NM_TEST_SUBCASE(constexpr_add, case2)
 
 NM_TEST_SUBCASE(constexpr_add, case3)
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, constexpr_add, case3);
+    NMTOOLS_TESTING_DECLARE_NS( array, constexpr_add, case3);
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, view::add, a, b );
 
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, na::add, a, b );
@@ -99,7 +99,7 @@ NM_TEST_SUBCASE(constexpr_add, case3)
 
 NM_TEST_SUBCASE(constexpr_add, case4)
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, constexpr_add, case4);
+    NMTOOLS_TESTING_DECLARE_NS( array, constexpr_add, case4);
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, view::add, a, b );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, view::add, a_a, b );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, view::add, a_f, b );

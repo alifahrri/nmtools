@@ -57,6 +57,8 @@ SUBCASE(#case_name) \
 
 using nmtools::None;
 
+#ifndef NMTOOLS_TESTING_CONSTEXPR
+
 TEST_CASE("conv2d(case13)" * doctest::test_suite("array::conv2d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
@@ -371,3 +373,7 @@ TEST_CASE("conv2d(case16)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case16, input_ds_db, weight_ls_db, bias_ls_db, stride, padding );
     #endif
 }
+
+#else // NMTOOLS_TESTING_CONSTEXPR
+
+#endif

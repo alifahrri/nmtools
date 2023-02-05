@@ -86,8 +86,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, add)
     }
 }
 
-// TODO: rename to NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_add)
-NMTOOLS_TESTING_DECLARE_CASE(view, constexpr_add)
+NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_add)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {

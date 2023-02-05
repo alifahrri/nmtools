@@ -171,7 +171,7 @@ TEST_CASE("constexpr_flatten_add(case1)" * doctest::test_suite("functional::comp
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,constexpr_add,case1);
+    NMTOOLS_TESTING_DECLARE_NS(array,constexpr_add,case1);
     using namespace args;
     constexpr auto flattened = na::flatten(expect::result);
 

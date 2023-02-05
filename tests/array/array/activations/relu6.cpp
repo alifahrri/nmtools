@@ -17,6 +17,18 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY) && defined(NMTOOLS_TESTING_CONSTEXPR)
+#define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name) \
+constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+constexpr inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb);
+#endif
+
 #include "nmtools/array/array/activations/relu6.hpp"
 #include "nmtools/testing/data/array/relu6.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -55,6 +67,17 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
+#define CONSTEXPR_RELU6_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(activations, constexpr_relu6, case_name); \
+    using namespace args; \
+    constexpr auto result = RUN_relu6(case_name, __VA_ARGS__); \
+    NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
+}
+
+#ifndef NMTOOLS_TESTING_CONSTEXPR
+
 TEST_CASE("relu6(case1)" * doctest::test_suite("array::relu6"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
@@ -86,3 +109,30 @@ TEST_CASE("relu6(case1)" * doctest::test_suite("array::relu6"))
     RELU6_SUBCASE(case1, a_ls_db);
     #endif
 }
+
+#else // NMTOOLS_TESTING_CONSTEXPR
+
+TEST_CASE("relu6(case1)" * doctest::test_suite("array::constexpr_relu6"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_RELU6_SUBCASE(case1, a);
+    CONSTEXPR_RELU6_SUBCASE(case1, a_a);
+    CONSTEXPR_RELU6_SUBCASE(case1, a_f);
+    CONSTEXPR_RELU6_SUBCASE(case1, a_h);
+
+    #else
+    CONSTEXPR_RELU6_SUBCASE(case1, a_cs_fb);
+    CONSTEXPR_RELU6_SUBCASE(case1, a_cs_hb);
+
+    CONSTEXPR_RELU6_SUBCASE(case1, a_fs_fb);
+    CONSTEXPR_RELU6_SUBCASE(case1, a_fs_hb);
+
+    CONSTEXPR_RELU6_SUBCASE(case1, a_hs_fb);
+    CONSTEXPR_RELU6_SUBCASE(case1, a_hs_hb);
+
+    CONSTEXPR_RELU6_SUBCASE(case1, a_ls_fb);
+    CONSTEXPR_RELU6_SUBCASE(case1, a_ls_hb);
+    #endif
+}
+
+#endif

@@ -655,14 +655,6 @@ namespace nmtools::meta
                 using type = array::ndarray_t<b_buffer_type,c_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
-                !is_fail_v<c_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                using type = array::ndarray_t<d_buffer_type,c_shape_type>;
-                return as_value_v<type>;
-            }
-            // clipped-shape
-            else if constexpr (
                 !is_fail_v<l_shape_type>
                 && !is_fail_v<f_buffer_type>
             ) {
@@ -675,14 +667,6 @@ namespace nmtools::meta
                 using type = array::ndarray_t<b_buffer_type,l_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
-                !is_fail_v<l_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                using type = array::ndarray_t<d_buffer_type,l_shape_type>;
-                return as_value_v<type>;
-            }
-            // fixed-shape
-            else if constexpr (
                 !is_fail_v<f_shape_type>
                 && !is_fail_v<f_buffer_type>
             ) {
@@ -694,13 +678,7 @@ namespace nmtools::meta
             ) {
                 using type = array::ndarray_t<b_buffer_type,f_shape_type>;
                 return as_value_v<type>;
-            } else if constexpr (
-                !is_fail_v<f_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                using type = array::ndarray_t<d_buffer_type,f_shape_type>;
-                return as_value_v<type>;
-            } 
+            }
             // bounded shape
             else if constexpr (
                 !is_fail_v<b_shape_type>
@@ -713,12 +691,6 @@ namespace nmtools::meta
                 && !is_fail_v<b_buffer_type>
             ) {
                 using type = array::ndarray_t<b_buffer_type,b_shape_type>;
-                return as_value_v<type>;
-            } else if constexpr (
-                !is_fail_v<b_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                using type = array::ndarray_t<d_buffer_type,b_shape_type>;
                 return as_value_v<type>;
             }
             // dynamic shape
@@ -733,6 +705,30 @@ namespace nmtools::meta
                 && !is_fail_v<b_buffer_type>
             ) {
                 using type = array::ndarray_t<b_buffer_type,d_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<c_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,c_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<l_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,l_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<f_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,f_shape_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                !is_fail_v<b_shape_type>
+                && !is_fail_v<d_buffer_type>
+            ) {
+                using type = array::ndarray_t<d_buffer_type,b_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                 !is_fail_v<d_shape_type>

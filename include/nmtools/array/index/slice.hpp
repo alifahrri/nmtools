@@ -7,6 +7,7 @@
 #include "nmtools/math.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/utility/flatten_either.hpp"
+#include "nmtools/platform/math/constexpr.hpp"
 
 namespace nmtools::index
 {
@@ -284,7 +285,7 @@ namespace nmtools::index
      * @return auto 
      */
     template <typename value_t>
-    auto is_int(const value_t& value)
+    constexpr auto is_int(const value_t& value)
     {
         if constexpr (meta::is_either_v<value_t>) {
             using left_t  = meta::get_either_left_t<value_t>;
@@ -309,7 +310,7 @@ namespace nmtools::index
      * @return auto 
      */
     template <typename value_t>
-    auto is_ellipsis(const value_t& value)
+    constexpr auto is_ellipsis(const value_t& value)
     {
         if constexpr (meta::is_either_v<value_t>) {
             using left_t  = meta::get_either_left_t<value_t>;
@@ -469,7 +470,7 @@ namespace nmtools::index
             }();
             auto s = compute_range(shape_i,start,stop,step);
             auto step_ = compute_step(step);
-            return static_cast<size_type>(math::ceil(static_cast<float>(s) / step_));
+            return static_cast<size_type>(math::constexpr_ceil(static_cast<float>(s) / step_));
         };
 
         auto res = result_t {};
@@ -952,7 +953,8 @@ namespace nmtools::index
 
                 // finally the resulting shape for corresponding indices
                 // is simply the range divided by the step
-                at(res,r_i++) = static_cast<size_type>(math::ceil(static_cast<float>(s) / step));
+                // use constexpr_ceil to allow clang compile this
+                at(res,r_i++) = static_cast<size_type>(math::constexpr_ceil(static_cast<float>(s) / step));
             } else /* if constexpr (meta::is_index_v<slice_t>) */ {
                 // only reduce the dimension,
                 // doesn't contributes to shape computation

@@ -125,8 +125,8 @@ nmtools::testing::remove_string(input_typename,std::string("nmtools::array::"));
 nmtools::testing::remove_string(result_typename,std::string("std::")); \
 nmtools::testing::remove_string(input_typename,std::string("std::")); \
 auto signature = "(" + input_typename + ") -> " + result_typename; \
-auto result_ = bench::TrackedBench::run(bench_title, signature, fn); \
-NMTOOLS_ASSERT_CLOSE( result_, expect::result ); \
+auto m_result_ = bench::TrackedBench::run(bench_title, signature, fn); \
+NMTOOLS_ASSERT_CLOSE( m_result_, expect::result ); \
 }
 
 TEST_CASE("conv_relu_0" * doctest::test_suite("mnist"))

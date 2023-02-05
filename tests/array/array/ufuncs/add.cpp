@@ -17,6 +17,18 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY) && defined(NMTOOLS_TESTING_CONSTEXPR)
+#define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name) \
+constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+constexpr inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb);
+#endif
+
 #include "nmtools/array/array/ufuncs/add.hpp"
 #include "nmtools/testing/data/array/add.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -64,6 +76,104 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
+
+#define CONSTEXPR_ADD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_add, case_name); \
+    using namespace args; \
+    constexpr auto result = RUN_add(case_name, __VA_ARGS__); \
+    NMTOOLS_STATIC_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
+    NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
+}
+
+#define RUN_accumulate_add_impl(...) \
+na::add.accumulate(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs add.accumulate fn to callable lambda
+#define RUN_accumulate_add(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("add.accumulate-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_accumulate_add_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_accumulate_add(case_name, ...) \
+RUN_accumulate_add_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define ACCUMULATE_ADD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_add, case_name); \
+    using namespace args; \
+    auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
+}
+
+#define CONSTEXPR_ACCUMULATE_ADD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_accumulate_add, case_name); \
+    using namespace args; \
+    constexpr auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
+    NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
+}
+
+#define RUN_outer_add_impl(...) \
+na::add.outer(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs add.outer fn to callable lambda
+#define RUN_outer_add(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("add.outer-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_outer_add_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_outer_add(case_name, ...) \
+RUN_outer_add_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define OUTER_ADD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(view, outer_add, case_name); \
+    using namespace args; \
+    auto result = RUN_outer_add(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
+}
+
+#define CONSTEXPR_OUTER_ADD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_outer_add, case_name); \
+    using namespace args; \
+    constexpr auto result = RUN_outer_add(case_name, __VA_ARGS__); \
+    NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
+}
+
+#ifndef NMTOOLS_TESTING_CONSTEXPR
 
 TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
 {
@@ -250,22 +360,6 @@ TEST_CASE("add(case4)" * doctest::test_suite("array::add"))
     ADD_SUBCASE( case4, a_ls_db, b );
     #endif
 }
-
-// skip constexpr test for emscripten
-// NOTE: temporarily disable constexpr test,
-// latest changes to support view composition makes it not possible for the current implementaion,
-// gcc complains about ref wrapper to broadcast to can't be used in constexpr context
-// possible fixes are don't take pointer for evaluation
-// TODO: fixe constexpr support
-// #if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
-// TEST_CASE("add(constexpr)"  * doctest::test_suite("array::add"))
-// {
-//     NMTOOLS_TESTING_DECLARE_NS(view, constexpr_add, case1);
-//     constexpr auto output = meta::as_value<int[3][3]>{};
-//     constexpr auto result = na::add(args::a,args::b,None,output);
-//     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); 
-// }
-// #endif
 
 #define RUN_reduce_add_impl(...) \
 na::fn::add::reduce(__VA_ARGS__);
@@ -1220,39 +1314,6 @@ TEST_CASE("reduce_add(case24)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-#define RUN_accumulate_add_impl(...) \
-na::add.accumulate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.accumulate fn to callable lambda
-#define RUN_accumulate_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.accumulate-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_add(case_name, ...) \
-RUN_accumulate_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define ACCUMULATE_ADD_SUBCASE(case_name, ...) \
-SUBCASE(#case_name) \
-{ \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_add, case_name); \
-    using namespace args; \
-    auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
-    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
-}
-
 TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::add.accumulate"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
@@ -1347,39 +1408,6 @@ TEST_CASE("add.accumulate(case3)" * doctest::test_suite("array::add.accumulate")
     ACCUMULATE_ADD_SUBCASE( case3, a_ls_hb, axis );
     ACCUMULATE_ADD_SUBCASE( case3, a_ls_db, axis );
     #endif
-}
-
-#define RUN_outer_add_impl(...) \
-na::add.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.outer fn to callable lambda
-#define RUN_outer_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.outer-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_add(case_name, ...) \
-RUN_outer_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define OUTER_ADD_SUBCASE(case_name, ...) \
-SUBCASE(#case_name) \
-{ \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_add, case_name); \
-    using namespace args; \
-    auto result = RUN_outer_add(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
-    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
 TEST_CASE("add.outer(case1)" * doctest::test_suite("array::add.outer"))
@@ -1493,3 +1521,202 @@ TEST_CASE("add.outer(case1)" * doctest::test_suite("array::add.outer"))
     OUTER_ADD_SUBCASE( case1, a_ds_db, b_ls_db );
     #endif
 }
+
+#else // NMTOOLS_TESTING_CONSTEXPR
+
+TEST_CASE("add(case1)" * doctest::test_suite("array::constexpr_add"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_ADD_SUBCASE( case1,   a,   b );
+    CONSTEXPR_ADD_SUBCASE( case1, a_a, b_a );
+    CONSTEXPR_ADD_SUBCASE( case1, a_f, b_f );
+    CONSTEXPR_ADD_SUBCASE( case1, a_h, b_h );
+
+    #else
+    CONSTEXPR_ADD_SUBCASE( case1, a_cs_fb, b_cs_fb );
+    CONSTEXPR_ADD_SUBCASE( case1, a_cs_hb, b_cs_hb );
+
+    CONSTEXPR_ADD_SUBCASE( case1, a_ls_fb, b_ls_fb );
+    CONSTEXPR_ADD_SUBCASE( case1, a_ls_hb, b_ls_hb );
+
+    CONSTEXPR_ADD_SUBCASE( case1, a_ls_fb, b_cs_fb );
+    CONSTEXPR_ADD_SUBCASE( case1, a_ls_hb, b_cs_hb );
+
+
+    CONSTEXPR_ADD_SUBCASE( case1, a_cs_fb, b_fs_fb );
+    CONSTEXPR_ADD_SUBCASE( case1, a_cs_hb, b_fs_hb );
+
+    CONSTEXPR_ADD_SUBCASE( case1, a_ls_fb, b_fs_fb );
+    CONSTEXPR_ADD_SUBCASE( case1, a_ls_hb, b_fs_hb );
+
+
+    CONSTEXPR_ADD_SUBCASE( case1, a_cs_fb, b_hs_fb );
+    CONSTEXPR_ADD_SUBCASE( case1, a_cs_hb, b_hs_hb );
+
+    CONSTEXPR_ADD_SUBCASE( case1, a_ls_fb, b_hs_fb );
+    CONSTEXPR_ADD_SUBCASE( case1, a_ls_hb, b_hs_hb );
+
+
+    CONSTEXPR_ADD_SUBCASE( case1, a_cs_fb, b_ls_fb );
+    CONSTEXPR_ADD_SUBCASE( case1, a_cs_hb, b_ls_hb );
+    #endif
+}
+
+TEST_CASE("add(case2)" * doctest::test_suite("array::constexpr_add"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_ADD_SUBCASE( case2,   a, b );
+    CONSTEXPR_ADD_SUBCASE( case2, a_a, b );
+    CONSTEXPR_ADD_SUBCASE( case2, a_f, b );
+    CONSTEXPR_ADD_SUBCASE( case2, a_h, b );
+
+    #else
+    CONSTEXPR_ADD_SUBCASE( case2, a_cs_fb, b );
+    CONSTEXPR_ADD_SUBCASE( case2, a_cs_hb, b );
+
+    // TODO: support these, deduce as fixed/bounded shape, fixed/bounded size
+    // CONSTEXPR_ADD_SUBCASE( case2, a_fs_fb, b );
+    // CONSTEXPR_ADD_SUBCASE( case2, a_fs_hb, b );
+
+    // CONSTEXPR_ADD_SUBCASE( case2, a_hs_fb, b );
+    // CONSTEXPR_ADD_SUBCASE( case2, a_hs_hb, b );
+
+    CONSTEXPR_ADD_SUBCASE( case2, a_ls_fb, b );
+    CONSTEXPR_ADD_SUBCASE( case2, a_ls_hb, b );
+    #endif
+}
+
+TEST_CASE("add(case3)" * doctest::test_suite("array::constexpr_add"))
+{
+    CONSTEXPR_ADD_SUBCASE(case3, a, b);
+}
+
+TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::constexpr_add.accumulate"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1,   a, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_a, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_f, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_h, axis );
+
+    #else
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_cs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_cs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_fs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_fs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_hs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_hs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_ls_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1, a_ls_hb, axis );
+    #endif
+}
+
+TEST_CASE("add.accumulate(case2)" * doctest::test_suite("array::constexpr_add.accumulate"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2,   a, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_a, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_f, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_h, axis );
+
+    #else
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_cs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_cs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_fs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_fs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_hs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_hs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_ls_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2, a_ls_hb, axis );
+    #endif
+}
+
+TEST_CASE("add.accumulate(case3)" * doctest::test_suite("array::constexpr_add.accumulate"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3,   a, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_a, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_f, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_h, axis );
+
+    #else
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_cs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_cs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_fs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_fs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_hs_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_hs_hb, axis );
+
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_ls_fb, axis );
+    CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3, a_ls_hb, axis );
+    #endif
+}
+
+TEST_CASE("add.outer(case1)" * doctest::test_suite("array::constexpr_add.outer"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1,   a,   b );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_a, b_a );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_f, b_f );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_h, b_h );
+
+    #else
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_cs_fb, b_cs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_cs_hb, b_cs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_fs_fb, b_fs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_fs_hb, b_fs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_hs_fb, b_hs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_hs_hb, b_hs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_ls_fb, b_ls_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_ls_hb, b_ls_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_fs_fb, b_cs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_fs_hb, b_cs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_hs_fb, b_cs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_hs_hb, b_cs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_ls_fb, b_cs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_ls_hb, b_cs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_cs_fb, b_fs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_cs_hb, b_fs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_hs_fb, b_fs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_hs_hb, b_fs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_ls_fb, b_fs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_ls_hb, b_fs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_cs_fb, b_hs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_cs_hb, b_hs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_fs_fb, b_hs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_fs_hb, b_hs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_ls_fb, b_hs_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_ls_hb, b_hs_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_cs_fb, b_ls_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_cs_hb, b_ls_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_fs_fb, b_ls_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_fs_hb, b_ls_hb );
+
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_hs_fb, b_ls_fb );
+    CONSTEXPR_OUTER_ADD_SUBCASE( case1, a_hs_hb, b_ls_hb );
+    #endif
+}
+
+#endif // NMTOOLS_TESTING_CONSTEXPR

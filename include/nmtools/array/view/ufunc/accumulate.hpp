@@ -43,12 +43,14 @@ namespace nmtools::view
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
         using shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
+        using size_type  = decltype(nmtools::size<true>(meta::declval<array_t>()));
 
         op_type      op;
         array_type   array;
         axis_type    axis;
         reducer_type reducer;
         shape_type   shape_;
+        size_type    size_;
 
         constexpr accumulate_t(op_type op, const array_t& array_, const axis_t& axis)
             : op(op)
@@ -56,6 +58,7 @@ namespace nmtools::view
             , axis(init_attribute<axis_type>(axis))
             , reducer{op}
             , shape_(nmtools::shape<true>(array_))
+            , size_(nmtools::size<true>(array_))
         {}
 
         constexpr auto shape() const
@@ -68,6 +71,11 @@ namespace nmtools::view
             return len(shape());
         } // dim
 
+        constexpr auto size() const
+        {
+            return size_;
+        } // size
+
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
@@ -76,11 +84,15 @@ namespace nmtools::view
             auto indices_ = pack_indices(indices...);
             // for now, assume axis is int and array is fixed_dim
             [[maybe_unused]] constexpr auto DIM = meta::fixed_dim_v<array_t>;
+            [[maybe_unused]] constexpr auto B_DIM = meta::bounded_dim_v<array_t>;
             // type for slicing is DIMx2 where 2 represent start and stop
             constexpr auto slices_vtype = [&](){
                 using slice_type = nmtools_array<size_t,2>;
                 if constexpr (!meta::is_fail_v<decltype(DIM)>) {
                     using slices_type = nmtools_array<slice_type,(size_t)DIM>;
+                    return meta::as_value_v<slices_type>;
+                } else if constexpr (!meta::is_fail_v<decltype(B_DIM)>) {
+                    using slices_type = array::static_vector<slice_type,(size_t)B_DIM>;
                     return meta::as_value_v<slices_type>;
                 } else {
                     using slices_type = nmtools_list<slice_type>;
