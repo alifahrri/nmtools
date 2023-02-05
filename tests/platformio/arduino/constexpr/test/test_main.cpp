@@ -91,7 +91,7 @@ NM_TEST_SUBCASE(constexpr_atleast_1d, case4)
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a_fs_hb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a_hs_fb );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, atleast_1d, a_hs_hb );
-    #endif ARDUINO_ARCH_AVR
+    #endif // ARDUINO_ARCH_AVR
 }
 
 /* --------------------- atleast_2d ------------------------------ */

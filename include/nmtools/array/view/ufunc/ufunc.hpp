@@ -208,9 +208,10 @@ namespace nmtools::meta
         using size_type  = typename view_type::size_type;
 
         static constexpr auto value = [](){
-            constexpr auto c_size = to_value_v<size_type>;
-            if constexpr (!is_fail_v<decltype(c_size)>) {
-                return size_t(c_size);
+            if constexpr (is_constant_index_v<size_type>) {
+                return size_type::value;
+            } else if constexpr (is_clipped_integer_v<size_type>) {
+                return size_type::max;
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
             }
