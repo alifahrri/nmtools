@@ -208,6 +208,18 @@ namespace nmtools::meta
         using size_type  = typename view_type::size_type;
 
         static constexpr auto value = [](){
+            #if 0
+            // NOTE: in this commit, the following code breaks (arduino uno) avr-gcc
+            // complains about:
+            //  error: non-type template parameters of class type only available with '-std=c++2a' or '-std=gnu++2a'
+            //  struct to_value <const T> : to_value<T> {};
+            constexpr auto c_size = to_value_v<size_type>;
+            if constexpr (!is_fail_v<decltype(c_size)>) {
+                return size_t(c_size);
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+            #else
             if constexpr (is_constant_index_v<size_type>) {
                 return size_type::value;
             } else if constexpr (is_clipped_integer_v<size_type>) {
@@ -215,6 +227,7 @@ namespace nmtools::meta
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
             }
+            #endif
         }();
     };
 
