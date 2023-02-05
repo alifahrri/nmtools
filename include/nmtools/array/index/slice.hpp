@@ -470,7 +470,7 @@ namespace nmtools::index
             }();
             auto s = compute_range(shape_i,start,stop,step);
             auto step_ = compute_step(step);
-            return static_cast<size_type>(math::ceil(static_cast<float>(s) / step_));
+            return static_cast<size_type>(math::constexpr_ceil(static_cast<float>(s) / step_));
         };
 
         auto res = result_t {};
