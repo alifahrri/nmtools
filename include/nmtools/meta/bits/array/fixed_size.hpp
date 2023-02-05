@@ -49,6 +49,15 @@ namespace nmtools::meta
     template <typename T>
     struct fixed_size<T&> : fixed_size<T> {};
     
+    template <template<typename...>typename Tuple, typename...Ts>
+    struct fixed_size<
+        Tuple<Ts...>, enable_if_t<is_tuple_v<Tuple<Ts...>>>
+    >
+    {
+        static constexpr auto value = sizeof...(Ts);
+        using value_type = decltype(value);
+    }; // fixed_size
+    
     template <typename T>
     constexpr inline auto fixed_size_v = fixed_size<T>::value;
 } // namespace nmtools::meta

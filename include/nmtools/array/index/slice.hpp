@@ -7,6 +7,7 @@
 #include "nmtools/math.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/utility/flatten_either.hpp"
+#include "nmtools/platform/math/constexpr.hpp"
 
 namespace nmtools::index
 {
@@ -952,7 +953,8 @@ namespace nmtools::index
 
                 // finally the resulting shape for corresponding indices
                 // is simply the range divided by the step
-                at(res,r_i++) = static_cast<size_type>(math::ceil(static_cast<float>(s) / step));
+                // use constexpr_ceil to allow clang compile this
+                at(res,r_i++) = static_cast<size_type>(math::constexpr_ceil(static_cast<float>(s) / step));
             } else /* if constexpr (meta::is_index_v<slice_t>) */ {
                 // only reduce the dimension,
                 // doesn't contributes to shape computation
