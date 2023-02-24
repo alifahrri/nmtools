@@ -30,7 +30,7 @@ namespace nmtools::view
      * @tparam origin_axes_t the type of origin_axes which is used
      * for gather the original (src) shape from desired (dst) shape.
      */
-    template <typename array_t, typename shape_t, typename origin_axes_t>
+    template <typename array_t, typename shape_t, typename origin_axes_t, typename bsize_t=none_t>
     struct broadcast_to_t
     {
         using value_type = meta::get_element_type_t<array_t>;
@@ -41,15 +41,18 @@ namespace nmtools::view
         using array_type = resolve_array_type_t<array_t>;
         using shape_type = resolve_attribute_type_t<shape_t>;
         using origin_axes_type = resolve_attribute_type_t<origin_axes_t>;
+        using broadcast_size_type = bsize_t;
 
         array_type array;
         shape_type shape_; // broadcasted shape
         origin_axes_type origin_axes; // origin axes axes
+        broadcast_size_type broadcast_size; // the resulting size from broadcast_arrays
         
-        constexpr broadcast_to_t(const array_t& array, const shape_t& shape, origin_axes_type origin_axes)
+        constexpr broadcast_to_t(const array_t& array, const shape_t& shape, origin_axes_type origin_axes, [[maybe_unused]] bsize_t bsize=bsize_t{})
             : array(initialize<array_type>(array))
             , shape_(init_attribute<shape_type>(shape))
             , origin_axes(init_attribute<origin_axes_type>(origin_axes))
+            , broadcast_size(bsize)
         {}
         
         constexpr decltype(auto) shape() const noexcept
@@ -63,6 +66,15 @@ namespace nmtools::view
                 return 0;
             else return len(shape_);
         } // shape
+
+        constexpr auto size() const noexcept
+        {
+            if constexpr (is_none_v<broadcast_size_type>) {
+                return index::product(shape_);
+            } else {
+                return broadcast_size;
+            }
+        }
 
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
@@ -99,10 +111,9 @@ namespace nmtools::view
      * @tparam array_t 
      * @tparam origin_axes_t 
      */
-    template <typename array_t, typename origin_axes_t>
-    struct broadcast_to_t<array_t,none_t,origin_axes_t>
+    template <typename array_t, typename origin_axes_t, typename bsize_t>
+    struct broadcast_to_t<array_t,none_t,origin_axes_t,bsize_t>
     {
-        // conversion can't have trailing return type
         static_assert( meta::is_num_v<array_t>
             , "when shape is None, only accepts scalar array");
         using value_type = array_t;
@@ -112,12 +123,13 @@ namespace nmtools::view
         using shape_type = none_t;
         // ignored:
         using origin_axes_type = origin_axes_t;
+        using broadcast_size_type = meta::ct<1ul>;
 
         array_type array;
         shape_type shape_; // broadcasted shape (destination)
         origin_axes_type origin_axes; // origin axes axes
 
-        constexpr broadcast_to_t(array_type array, shape_type shape, origin_axes_type origin_axes)
+        constexpr broadcast_to_t(array_type array, shape_type shape, origin_axes_type origin_axes, [[maybe_unused]] bsize_t bsize=bsize_t{})
             : array(array), shape_(shape), origin_axes(origin_axes) {}
         
         constexpr auto shape() const noexcept
@@ -128,6 +140,11 @@ namespace nmtools::view
         constexpr auto dim() const noexcept
         {
             return 0;
+        } // shape
+
+        constexpr auto size() const noexcept
+        {
+            return meta::ct_v<1ul>;
         } // shape
 
         constexpr operator value_type() const noexcept
@@ -146,26 +163,26 @@ namespace nmtools::view
      * @param shape The desired shape of the array
      * @return constexpr auto 
      */
-    template <typename array_t, typename shape_t>
-    constexpr auto broadcast_to(const array_t& array, shape_t shape)
+    template <typename array_t, typename shape_t, typename bsize_t=none_t>
+    constexpr auto broadcast_to(const array_t& array, shape_t shape, [[maybe_unused]] bsize_t bsize=bsize_t{})
     {
         if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
-            using ret_left_t  = decltype(broadcast_to(meta::declval<left_t>(),shape));
-            using ret_right_t = decltype(broadcast_to(meta::declval<right_t>(),shape));
+            using ret_left_t  = decltype(broadcast_to(meta::declval<left_t>(),shape,bsize));
+            using ret_right_t = decltype(broadcast_to(meta::declval<right_t>(),shape,bsize));
             using either_t = meta::replace_either_t<array_t,ret_left_t,ret_right_t>;
             if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
-                return either_t{broadcast_to(*l_ptr,shape)};
+                return either_t{broadcast_to(*l_ptr,shape,bsize)};
             } else /* if (auto r_ptr = nmtools::get_if<right_t>(&array)) */ {
                 auto r_ptr = nmtools::get_if<right_t>(&array);
-                return either_t{broadcast_to(*r_ptr,shape)};
+                return either_t{broadcast_to(*r_ptr,shape,bsize)};
             }
         }
         // bypass broadcasting index logic if array_t is simply scalar type
         else if constexpr (meta::is_num_v<array_t>) {
-            using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t>;
-            return view_t{{array, shape, None}};
+            using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t,bsize_t>;
+            return view_t{{array, shape, None,bsize}};
         }
         // assume array_t is ndarray
         else {
@@ -189,7 +206,7 @@ namespace nmtools::view
                 }
             }(free);
             using origin_axes_t = decltype(origin_axes);
-            using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t>;
+            using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t,bsize_t>;
             // prepare_type: may declare return_t as optional type
             nmtools_assert_prepare_type (return_t, view_t);
             nmtools_assert (success, "cannot broadcast shape", return_t);
@@ -203,7 +220,7 @@ namespace nmtools::view
             // where 'x' is array
             // but this function itself (and the broadcast_to_t constructor) are still marked as constexpr
             // to let the view evaluated in constexpr context.
-            return return_t{view_t{{array,shape,origin_axes}}};
+            return return_t{view_t{{array,shape,origin_axes,bsize}}};
         }
     } // broadcast_to
 
@@ -212,9 +229,9 @@ namespace nmtools::view
 namespace nmtools::meta
 {
     // TODO: remove
-    template <typename array_t, typename shape_t, typename origin_axes_t>
+    template <typename array_t, typename shape_t, typename origin_axes_t, typename bsize_t>
     struct is_dynamic_ndarray< 
-        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
+        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t, bsize_t>
     >
     {
         static constexpr auto value = [](){
@@ -226,45 +243,52 @@ namespace nmtools::meta
         }();
     }; // is_dynamic_ndarray
 
-    template <typename array_t, typename shape_t, typename origin_axes_t>
+    template <typename array_t, typename shape_t, typename origin_axes_t, typename bsize_t>
     struct fixed_size<
-        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
+        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t, bsize_t>
     >
     {
-        using view_type  = view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >;
+        using view_type  = view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t, bsize_t >;
         using shape_type = decltype(declval<view_type>().shape());
+        using size_type  = decltype(declval<view_type>().size());
 
         static constexpr auto value = [](){
             // broadcast may change shape, so change size
             if constexpr (is_constant_index_array_v<shape_type>) {
                 return index::product(shape_type{});
+            } else if constexpr (is_constant_index_v<size_type>) {
+                return size_type::value;
             } else {
                 return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
             }
         }();
     };
 
-    template <typename array_t, typename shape_t, typename origin_axes_t>
+    template <typename array_t, typename shape_t, typename origin_axes_t, typename bsize_t>
     struct bounded_size<
-        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
+        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t, bsize_t>
     >
     {
-        using view_type  = view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >;
+        using view_type  = view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t, bsize_t >;
         using shape_type = decltype(declval<view_type>().shape());
+        using size_type  = decltype(declval<view_type>().size());
 
         static constexpr auto value = [](){
             // broadcast may change shape, so change size
             if constexpr (is_constant_index_array_v<shape_type> || is_clipped_index_array_v<shape_type>) {
                 return index::product(to_value_v<shape_type>);
+            } else if constexpr (is_constant_index_v<size_type> || is_clipped_integer_v<size_type>) {
+                constexpr auto size = to_value_v<size_type>;
+                return size;
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
             }
         }();
     };
 
-    template <typename array_t, typename shape_t, typename origin_axes_t>
+    template <typename array_t, typename shape_t, typename origin_axes_t, typename bsize_t>
     struct fixed_dim<
-        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >
+        view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t, bsize_t>
     >
     {
         static constexpr auto value = [](){
@@ -278,14 +302,14 @@ namespace nmtools::meta
         using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
     }; // fixed_dim
 
-    template <typename array_t, typename shape_t, typename origin_axes_t>
-    struct is_ndarray< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
+    template <typename array_t, typename shape_t, typename origin_axes_t, typename bsize_t>
+    struct is_ndarray< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t, bsize_t >>
     {
         static constexpr auto value = (is_ndarray_v<array_t> || is_num_v<array_t>) && is_index_array_v<shape_t>;
     };
 
-    template <typename array_t, typename shape_t, typename origin_axes_t>
-    struct is_num< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t >>
+    template <typename array_t, typename shape_t, typename origin_axes_t, typename bsize_t>
+    struct is_num< view::decorator_t< view::broadcast_to_t, array_t, shape_t, origin_axes_t, bsize_t >>
     {
         static constexpr auto value = is_num_v<array_t> && is_none_v<shape_t>;
     };
