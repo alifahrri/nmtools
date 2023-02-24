@@ -991,6 +991,12 @@ TEST_CASE("broadcast_arrays(case6)" * doctest::test_suite("array::constexpr_broa
 
     CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case6, lhs_ls_fb, rhs );
     CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case6, lhs_ls_hb, rhs );
+
+    CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case6, lhs_fs_fb, rhs );
+    CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case6, lhs_fs_hb, rhs );
+
+    CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case6, lhs_hs_fb, rhs );
+    CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case6, lhs_hs_hb, rhs );
     #endif
 }
 
@@ -1008,12 +1014,11 @@ TEST_CASE("broadcast_arrays(case7)" * doctest::test_suite("array::constexpr_broa
     CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_ls_fb );
     CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_ls_hb );
 
-    // TODO: support these, deduce as fixed/bounded shape, fixed/bounded size
-    // CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_fs_fb );
-    // CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_fs_hb );
+    CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_fs_fb );
+    CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_fs_hb );
 
-    // CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_hs_fb );
-    // CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_hs_hb );
+    CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_hs_fb );
+    CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case7, lhs, rhs_hs_hb );
     #endif
 }
 

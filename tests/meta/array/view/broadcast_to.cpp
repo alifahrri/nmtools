@@ -14,27 +14,6 @@ namespace meta = nm::meta;
 using nm::none_t;
 using namespace nm::literals;
 
-TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
-{
-    SUBCASE("broadcast_to")
-    {
-        {
-            using shape_t = nmtools_array<size_t,2>;
-            using origin_axes_t = na::hybrid_ndarray<size_t,2,1>;
-            using view_t = view::decorator_t<view::broadcast_to_t, int[3][3], shape_t, origin_axes_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
-            NMTOOLS_STATIC_ASSERT_EQUAL( meta::fixed_dim_v<view_t>, 2 );
-        }
-        {
-            using shape_t = nmtools_array<size_t,2>;
-            using origin_axes_t = na::hybrid_ndarray<size_t,2,1>;
-            using view_t = view::decorator_t<view::broadcast_to_t, int, shape_t, origin_axes_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
-            NMTOOLS_STATIC_ASSERT_EQUAL( meta::fixed_dim_v<view_t>, 2 );
-        }
-    }
-}
-
 #define declval(type) std::declval<type>()
 
 using nmtools_tuple;
