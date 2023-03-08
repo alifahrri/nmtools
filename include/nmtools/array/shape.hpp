@@ -381,6 +381,8 @@ namespace nmtools
                 }();
                 using type = clipped_size_t<size_t(c_sum)>;
                 return type{nmtools::size(array)};
+            } else if constexpr (meta::is_num_v<array_t>) {
+                return meta::ct_v<1ul>;
             } else {
                 return impl::size<array_t>(array);
             }

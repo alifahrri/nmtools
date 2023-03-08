@@ -24,12 +24,13 @@ namespace nmtools::view
 
         // TODO: use maybe type instead
         const auto [success, bshape] = index::broadcast_shape(::nmtools::shape<true>(arrays)...);
+        const auto bsize = index::broadcast_size(bshape,nmtools::size<true>(arrays)...);
 
-        using result_t = nmtools_tuple<decltype(broadcast_to(meta::declval<arrays_t>(),bshape))...>;
+        using result_t = nmtools_tuple<decltype(broadcast_to(meta::declval<arrays_t>(),bshape,bsize))...>;
         nmtools_assert_prepare_type (return_t, result_t);
         nmtools_assert (success, "cannot broadcast arrays together", return_t);
 
-        return return_t{result_t{broadcast_to(arrays,bshape)...}};
+        return return_t{result_t{broadcast_to(arrays,bshape,bsize)...}};
     } // broadcast_arrays
 } // namespace nmtools::view
 

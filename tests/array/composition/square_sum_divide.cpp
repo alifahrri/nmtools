@@ -34,8 +34,13 @@ namespace composition
     {
         auto a = view::square(lhs);
         auto b = view::sum(a,axis,dtype,/*initial=*/nmtools::None,keepdims);
+        #if 0
+        // failed on clang with no-stl config, but okay on gcc with no-stl config 🤷
         auto c = view::divide(b,rhs);
         return c;
+        #else
+        return view::divide(b,rhs);
+        #endif
     } // square_sum_divide
 } // namespace composition
 

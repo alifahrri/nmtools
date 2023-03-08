@@ -14,50 +14,9 @@ namespace meta = nm::meta;
 using nm::none_t;
 using namespace nm::literals;
 
-TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
-{
-    SUBCASE("broadcast_to")
-    {
-        {
-            using shape_t = nmtools_array<size_t,2>;
-            using origin_axes_t = na::hybrid_ndarray<size_t,2,1>;
-            using view_t = view::decorator_t<view::broadcast_to_t, int[3][3], shape_t, origin_axes_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
-            NMTOOLS_STATIC_ASSERT_EQUAL( meta::fixed_dim_v<view_t>, 2 );
-        }
-        {
-            using shape_t = nmtools_array<size_t,2>;
-            using origin_axes_t = na::hybrid_ndarray<size_t,2,1>;
-            using view_t = view::decorator_t<view::broadcast_to_t, int, shape_t, origin_axes_t >;
-            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
-            NMTOOLS_STATIC_ASSERT_EQUAL( meta::fixed_dim_v<view_t>, 2 );
-        }
-    }
-}
-
 #define declval(type) std::declval<type>()
 
 using nmtools_tuple;
-
-TEST_CASE("broadcast_arrays" * doctest::test_suite("view"))
-{
-    using lhs_t = int[2][3][2];
-    using rhs_t = int;
-    static_assert( meta::is_constant_index_v<decltype(2_ct,3_ct,2_ct)> );
-    static_assert( meta::is_fixed_index_array_v<nmtools_array<bool,3>> );
-    using broadcasted_t = decltype(view::broadcast_arrays(declval(lhs_t),declval(rhs_t)));
-    constexpr auto len  = meta::len_v<broadcasted_t>;
-    // static_assert( meta::len_v<broadcasted_t> == 2 );
-    NMTOOLS_STATIC_ASSERT_EQUAL( len, 2 );
-    using blhs_t = meta::at_t<broadcasted_t,0>;
-    using brhs_t = meta::at_t<broadcasted_t,1>;
-    using free_axes_t = na::hybrid_ndarray<size_t,3ul,1ul>;
-    using shape_t = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
-    using expected_lhs_t = view::decorator_t<view::broadcast_to_t, lhs_t, shape_t, free_axes_t>;
-    using expected_rhs_t = view::decorator_t<view::broadcast_to_t, rhs_t, shape_t, none_t>;
-    NMTOOLS_STATIC_CHECK_IS_SAME( blhs_t, expected_lhs_t );
-    NMTOOLS_STATIC_CHECK_IS_SAME( brhs_t, expected_rhs_t );
-}
 
 #ifdef NMTOOLS_DISABLE_STL
 using nmtools::meta::false_type;

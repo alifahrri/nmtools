@@ -434,14 +434,14 @@ TEST_CASE("is_fixed_dim_ndarray" * doctest::test_suite("view"))
 TEST_CASE("is_num" * doctest::test_suite("view::ufunc"))
 {
     {
-        using lhs_t  = view::decorator_t<view::broadcast_to_t, int, nm::none_t, nm::none_t>;
-        using rhs_t  = view::decorator_t<view::broadcast_to_t, int, nm::none_t, nm::none_t>;
+        using lhs_t  = view::decorator_t<view::broadcast_to_t, int, nm::none_t, nm::none_t, nm::none_t>;
+        using rhs_t  = view::decorator_t<view::broadcast_to_t, int, nm::none_t, nm::none_t, nm::none_t>;
         using view_t = view::decorator_t<view::scalar_ufunc_t, view::add_t<>, lhs_t, rhs_t >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
     }
     {
-        using lhs_t  = view::decorator_t<view::broadcast_to_t, int, nm::none_t, nm::none_t>;
-        using rhs_t  = view::decorator_t<view::broadcast_to_t, int, nm::none_t, nm::none_t>;
+        using lhs_t  = view::decorator_t<view::broadcast_to_t, int, nm::none_t, nm::none_t, nm::none_t>;
+        using rhs_t  = view::decorator_t<view::broadcast_to_t, int, nm::none_t, nm::none_t, nm::none_t>;
         using op_t   = view::add_t<>;
         using view_t = decltype(view::ufunc(declval(op_t),declval(lhs_t),declval(rhs_t)));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );

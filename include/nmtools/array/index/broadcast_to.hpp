@@ -31,28 +31,32 @@ namespace nmtools::index
     template <typename bshape_t>
     constexpr auto shape_broadcast_to(const none_t&, const bshape_t& bshape)
     {
-        // TODO: create specific type resolver
-        // TODO: only call transform array when necessary
-        using result_t = meta::tuple_to_array_t<
-            meta::transform_bounded_array_t<bshape_t>
-        >;
-
-        auto ret = result_t {};
-        auto dim = len(bshape);
-
-        if constexpr (meta::is_tuple_v<bshape_t>) {
-            constexpr auto N = meta::len_v<bshape_t>;
-            meta::template_for<N>([&](auto index){
-                constexpr auto i = decltype(index)::value;
-                at(ret,i) = at(bshape,meta::ct_v<i>);
-            });
+        if constexpr (is_none_v<bshape_t>) {
+            return nmtools_tuple{true,None,None};
         } else {
-            for (size_t i=0; i<(size_t)dim; i++)
-                at(ret,i) = at(bshape,i);
-        }
+            // TODO: create specific type resolver
+            // TODO: only call transform array when necessary
+            using result_t = meta::tuple_to_array_t<
+                meta::transform_bounded_array_t<bshape_t>
+            >;
 
-        using return_t = meta::make_tuple_type_t<bool,result_t,none_t>;
-        return return_t{true,ret,None};
+            auto ret = result_t {};
+            auto dim = len(bshape);
+
+            if constexpr (meta::is_tuple_v<bshape_t>) {
+                constexpr auto N = meta::len_v<bshape_t>;
+                meta::template_for<N>([&](auto index){
+                    constexpr auto i = decltype(index)::value;
+                    at(ret,i) = at(bshape,meta::ct_v<i>);
+                });
+            } else {
+                for (size_t i=0; i<(size_t)dim; i++)
+                    at(ret,i) = at(bshape,i);
+            }
+
+            using return_t = meta::make_tuple_type_t<bool,result_t,none_t>;
+            return return_t{true,ret,None};
+        }
     } // shape_broadcast_to
 
     // TODO: refactor free_axes
@@ -191,24 +195,6 @@ namespace nmtools::index
         // - free_axes is useful to perform the reverse operation.
         // TODO: use optional instead
         return nmtools_tuple{success, res, free_axes};
-    } // shape_broadcast_to
-
-    /**
-     * @brief Specialization for shape_broadcast_to function.
-     * 
-     * Shape of Num type is represented as None,
-     * broadcasting num to None should always be successful.
-     * 
-     * @tparam  
-     * @param ashape 
-     * @param bshape 
-     * @return constexpr auto 
-     */
-    template<>
-    constexpr auto shape_broadcast_to<none_t,none_t>(const none_t&, const none_t&)
-    {
-        // TODO: use optional instead
-        return nmtools_tuple{true,None,None};
     } // shape_broadcast_to
 
     template <typename indices_t, typename src_shape_t, typename dst_shape_t, typename origin_axes_t>

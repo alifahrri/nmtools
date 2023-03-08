@@ -183,6 +183,21 @@ namespace nmtools::index
         return return_t{success && success_, shape};
     } // broadcast_shape
 
+    struct broadcast_size_t {};
+
+    template <typename dst_shape_t, typename a_size_t, typename b_size_t, typename...other_sizes_t>
+    constexpr auto broadcast_size([[maybe_unused]] const dst_shape_t& dst_shape, a_size_t, b_size_t, other_sizes_t...)
+    {
+        using result_t = meta::resolve_optype_t<broadcast_size_t,dst_shape_t,a_size_t,b_size_t,other_sizes_t...>;
+        auto result = result_t {};
+
+        if constexpr (!meta::is_constant_index_v<result_t>) {
+            result = index::product(dst_shape);
+        }
+
+        return result;
+    } // broadcast_size
+
 } // namespace nmtools::index
 
 namespace nmtools::meta
@@ -194,6 +209,9 @@ namespace nmtools::meta
         // error type for unsupported ashape_t bshape_t
         template <typename...>
         struct BROADCAST_SHAPE_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
+        struct BROADCAST_SIZE_UNSUPPORTED : detail::fail_t {};
     }
 
     /**
@@ -406,6 +424,49 @@ namespace nmtools::meta
 
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype
+
+    template <typename dst_shape_t, typename a_size_t, typename...other_sizes_t>
+    struct resolve_optype<
+        void, index::broadcast_size_t, dst_shape_t, a_size_t, other_sizes_t...
+    >
+    {
+        using other_size_types = type_list<other_sizes_t...>;
+
+        static constexpr auto vtype = [](){
+            [[maybe_unused]] constexpr auto other_is_all_none = (is_same_v<remove_cvref_t<other_sizes_t>,ct<1ul>> && ...);
+            if constexpr (is_constant_index_array_v<dst_shape_t>) {
+                constexpr auto size = index::product(to_value_v<dst_shape_t>);
+                using type = ct<size>;
+                return as_value_v<type>;
+            } else if constexpr (is_clipped_index_array_v<dst_shape_t>) {
+                constexpr auto size = index::product(to_value_v<dst_shape_t>);
+                using type = clipped_size_t<size>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_v<a_size_t> && other_is_all_none) {
+                using type = ct<a_size_t::value>;
+                return as_value_v<type>;
+            } else if constexpr (is_clipped_integer_v<a_size_t> && other_is_all_none) {
+                using type = clipped_size_t<a_size_t::max>;
+                return as_value_v<type>;
+            } else if constexpr (is_index_v<a_size_t>) {
+                return template_reduce<sizeof...(other_sizes_t)>([](auto init, auto index){
+                    constexpr auto I = decltype(index)::value;
+                    using type_i = at_t<other_size_types,I>;
+                    using init_t = type_t<decltype(init)>;
+                    if constexpr (is_same_v<init_t,ct<1ul>> && (is_constant_index_v<type_i> || is_clipped_integer_v<type_i>)) {
+                        return as_value_v<type_i>;
+                    } else if constexpr ((is_constant_index_v<init_t> || is_clipped_integer_v<init_t>) && is_same_v<type_i,ct<1ul>>) {
+                        return as_value_v<init_t>;
+                    } else {
+                        return as_value_v<size_t>;
+                    }
+                }, as_value_v<a_size_t>);
+            } else {
+                return as_value_v<error::BROADCAST_SIZE_UNSUPPORTED<dst_shape_t, a_size_t, other_sizes_t...>>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_INDEX_BROADCAST_SHAPE_HPP
