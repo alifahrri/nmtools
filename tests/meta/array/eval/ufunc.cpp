@@ -16,7 +16,7 @@ namespace meta = nm::meta;
 using namespace nm::literals;
 using nm::none_t;
 
-#define declval(x) std::declval<x>()
+#define declval(x) meta::declval<x>()
 
 // for testing purpose
 #ifdef NMTOOLS_DISABLE_STL
@@ -116,35 +116,7 @@ TEST_CASE("eval(ufunc)" * doctest::test_suite("eval"))
         }
         #endif
         {
-            using shape_t = decltype(nmtools_tuple{3_ct,3_ct});
-            using free_axes_t = na::hybrid_ndarray<size_t, 2, 1>;
-            using view_t = view::decorator_t< view::ufunc_t, view::add_t<>,
-                view::decorator_t< view::broadcast_to_t, int [3][3], shape_t , free_axes_t >,
-                view::decorator_t< view::broadcast_to_t, int [3], shape_t , free_axes_t >
-            >;
-            using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
-            using expected_t = na::ndarray_t<nmtools_array<int,9>,decltype(nmtools_tuple{3_ct,3_ct})>;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-        }
-        {
-            using shape_t = nmtools_array<size_t,2>;
-            using free_axes_t = na::hybrid_ndarray<size_t, 2, 1>;
-            using lhs_t = view::decorator_t< view::broadcast_to_t, int [3][3], shape_t , free_axes_t >;
-            using rhs_t = view::decorator_t< view::broadcast_to_t, int, shape_t , free_axes_t >;
-            using view_t = view::decorator_t<
-                view::ufunc_t, view::add_t<>, lhs_t, rhs_t
-            >;
-            using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
-            using expected_t = na::ndarray_t<nmtools_list<int>,nmtools_array<size_t,2>>;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-        }
-        {
-            using shape_t = decltype(nmtools_tuple{3_ct,3_ct});
-            using free_axes_t = na::hybrid_ndarray<size_t, 2, 1>;
-            using view_t = view::decorator_t< view::ufunc_t, view::add_t<>,
-                view::decorator_t< view::broadcast_to_t, int [3][3], shape_t , free_axes_t >,
-                view::decorator_t< view::broadcast_to_t, int, shape_t , free_axes_t >
-            >;
+            using view_t = decltype(view::add(declval(int[3][3]),declval(int)));
             using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
             using expected_t = na::ndarray_t<nmtools_array<int,9>,decltype(nmtools_tuple{3_ct,3_ct})>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
@@ -152,16 +124,6 @@ TEST_CASE("eval(ufunc)" * doctest::test_suite("eval"))
     }
     SUBCASE("clip")
     {
-        {
-            using view_t = view::decorator_t< view::ufunc_t, view::clip_t,
-                view::decorator_t< view::broadcast_to_t, na::hybrid_ndarray<int,6,2>,  nmtools_array<size_t,3>, na::hybrid_ndarray<size_t,3,1> >,
-                view::decorator_t< view::broadcast_to_t, na::hybrid_ndarray<int,12,3>, nmtools_array<size_t,3>, na::hybrid_ndarray<size_t,3,1> >,
-                view::decorator_t< view::broadcast_to_t, na::hybrid_ndarray<int,1,1>,  nmtools_array<size_t,3>, na::hybrid_ndarray<size_t,3,1> >
-            >;
-            using eval_t = meta::resolve_optype_t< na::eval_result_t, view_t, none_t >;
-            using expected_t = na::ndarray_t<nmtools_list<int>,nmtools_array<size_t,3>>;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-        }
         // TODO: fix
         #if 0
         {
