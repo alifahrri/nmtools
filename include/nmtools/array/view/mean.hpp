@@ -137,8 +137,13 @@ namespace nmtools::view
         auto initial = None;
         // TODO: proper type promotions
         auto reduced = reduce_add(array,axis,dtype_,initial,keepdims);
+        #if 0
+        // failed on clang with no-stl config, but okay on gcc with no-stl config 🤷
         auto mean_   = divide(reduced,divisor);
         return mean_;
+        #else
+        return divide(reduced,divisor);
+        #endif
     } // mean
 } // namespace nmtools::view
 
