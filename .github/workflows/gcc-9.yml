@@ -22,7 +22,7 @@ jobs:
           version: 9
           platform: x64
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake ../.. && make -j2 VERBOSE=1
+        run: mkdir -p build/ && cd build/ && cmake .. && make -j2 VERBOSE=1
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest
@@ -42,7 +42,7 @@ jobs:
           version: 9
           platform: x64
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j2 VERBOSE=1
+        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON .. && make -j2 VERBOSE=1
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest
@@ -58,7 +58,7 @@ jobs:
           version: 9
           platform: x64
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1
+        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF .. && make -j2 VERBOSE=1
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest
@@ -74,7 +74,7 @@ jobs:
           version: 9
           platform: x64
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1
+        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON .. && make -j2 VERBOSE=1
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest
