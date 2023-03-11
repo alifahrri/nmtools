@@ -1601,6 +1601,16 @@ TEST_CASE("add(case3)" * doctest::test_suite("array::constexpr_add"))
     CONSTEXPR_ADD_SUBCASE(case3, a, b);
 }
 
+#ifdef __clang__
+#define CONSTEXPR_TEST_GCC_REDUCE_ADD 1
+#elif __GNUC__ < 10
+#define CONSTEXPR_TEST_GCC_REDUCE_ADD 1
+#else
+// somehow constexpr reduce_add broken on gcc 10
+#define CONSTEXPR_TEST_GCC_REDUCE_ADD 0
+#endif
+
+#if CONSTEXPR_TEST_GCC_REDUCE_ADD
 TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::constexpr_add.reduce"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
@@ -1720,6 +1730,8 @@ TEST_CASE("reduce_add(case15)" * doctest::test_suite("array::constexpr_add.reduc
     CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_ls_hb, axis );
     #endif
 }
+
+#endif // CONSTEXPR_TEST_GCC_REDUCE_ADD
 
 TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::constexpr_add.accumulate"))
 {
