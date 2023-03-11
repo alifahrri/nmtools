@@ -87,6 +87,49 @@ SUBCASE(#case_name) \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
 
+#define RUN_reduce_add_impl(...) \
+na::fn::add::reduce(__VA_ARGS__);
+
+#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#include "nmtools/benchmarks/bench.hpp"
+using nm::benchmarks::TrackedBench;
+// create immediately invoked lambda
+// that packs add.reduce fn to callable lambda
+#define RUN_reduce_add(case_name, ...) \
+[](auto&&...args){ \
+    auto title = std::string("add.reduce-") + #case_name; \
+    auto name  = nm::testing::make_func_args("", args...); \
+    auto fn    = [&](){ \
+        return RUN_reduce_add_impl(args...); \
+    }; \
+    return TrackedBench::run(title, name, fn); \
+}(__VA_ARGS__);
+#else
+// run normally without benchmarking, ignore case_name
+#define RUN_reduce_add(case_name, ...) \
+RUN_reduce_add_impl(__VA_ARGS__);
+#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+
+#define REDUCE_ADD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case_name); \
+    using namespace args; \
+    auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
+}
+
+#define CONSTEXPR_REDUCE_ADD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_reduce_add, case_name); \
+    using namespace args; \
+    constexpr auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
+    NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
+}
+
 #define RUN_accumulate_add_impl(...) \
 na::add.accumulate(__VA_ARGS__);
 
@@ -359,39 +402,6 @@ TEST_CASE("add(case4)" * doctest::test_suite("array::add"))
     ADD_SUBCASE( case4, a_ls_hb, b );
     ADD_SUBCASE( case4, a_ls_db, b );
     #endif
-}
-
-#define RUN_reduce_add_impl(...) \
-na::fn::add::reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.reduce fn to callable lambda
-#define RUN_reduce_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.reduce-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_add(case_name, ...) \
-RUN_reduce_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define REDUCE_ADD_SUBCASE(case_name, ...) \
-SUBCASE(#case_name) \
-{ \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case_name); \
-    using namespace args; \
-    auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
-    NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
 TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::add.reduce"))
@@ -1590,6 +1600,138 @@ TEST_CASE("add(case3)" * doctest::test_suite("array::constexpr_add"))
 {
     CONSTEXPR_ADD_SUBCASE(case3, a, b);
 }
+
+#ifdef __clang__
+#define CONSTEXPR_TEST_GCC_REDUCE_ADD 1
+#elif __GNUC__ < 10
+#define CONSTEXPR_TEST_GCC_REDUCE_ADD 1
+#else
+// somehow constexpr reduce_add broken on gcc 10
+#define CONSTEXPR_TEST_GCC_REDUCE_ADD 0
+#endif
+
+#if CONSTEXPR_TEST_GCC_REDUCE_ADD
+TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::constexpr_add.reduce"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1,   a, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_a, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_f, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_h, axis );
+
+    #else
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_cs_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_cs_hb, axis );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_fs_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_fs_hb, axis );
+
+    // TODO: fix support for compile-time compute by propagating fixed/bounded size
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_hs_fb, axis );
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_hs_hb, axis );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_ls_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case1, a_ls_hb, axis );
+    #endif
+}
+
+TEST_CASE("reduce_add(case4)" * doctest::test_suite("array::constexpr_add.reduce"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4,   a, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_a, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_f, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_h, axis );
+
+    #else
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_cs_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_cs_hb, axis );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_fs_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_fs_hb, axis );
+
+    // TODO: fix support for compile-time compute by propagating fixed/bounded size
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_hs_fb, axis );
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_hs_hb, axis );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_ls_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case4, a_ls_hb, axis );
+    #endif
+}
+
+TEST_CASE("reduce_add(case9)" * doctest::test_suite("array::constexpr_add.reduce"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9,   a, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_a, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_f, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_h, axis, dtype, initial, keepdims );
+
+    #else
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_cs_fb, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_cs_hb, axis, dtype, initial, keepdims );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_fs_fb, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_fs_hb, axis, dtype, initial, keepdims );
+
+    // TODO: fix support for compile-time compute by propagating fixed/bounded size
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_hs_fb, axis, dtype, initial, keepdims );
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_hs_hb, axis, dtype, initial, keepdims );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_ls_fb, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case9, a_ls_hb, axis, dtype, initial, keepdims );
+    #endif
+}
+
+TEST_CASE("reduce_add(case14)" * doctest::test_suite("array::constexpr_add.reduce"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14,   a, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_a, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_f, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_h, axis, dtype, initial, keepdims );
+
+    #else
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_cs_fb, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_cs_hb, axis, dtype, initial, keepdims );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_fs_fb, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_fs_hb, axis, dtype, initial, keepdims );
+
+    // TODO: fix support for compile-time compute by propagating fixed/bounded size
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_hs_fb, axis, dtype, initial, keepdims );
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_hs_hb, axis, dtype, initial, keepdims );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_ls_fb, axis, dtype, initial, keepdims );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case14, a_ls_hb, axis, dtype, initial, keepdims );
+    #endif
+}
+
+TEST_CASE("reduce_add(case15)" * doctest::test_suite("array::constexpr_add.reduce"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15,   a, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_a, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_f, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_h, axis );
+
+    #else
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_cs_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_cs_hb, axis );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_fs_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_fs_hb, axis );
+
+    // TODO: fix support for compile-time compute by propagating fixed/bounded size
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_hs_fb, axis );
+    // CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_hs_hb, axis );
+
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_ls_fb, axis );
+    CONSTEXPR_REDUCE_ADD_SUBCASE( case15, a_ls_hb, axis );
+    #endif
+}
+
+#endif // CONSTEXPR_TEST_GCC_REDUCE_ADD
 
 TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::constexpr_add.accumulate"))
 {
