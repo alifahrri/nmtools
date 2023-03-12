@@ -63,7 +63,6 @@ if (NMTOOLS_UNDEFINED_SANITIZER)
 endif (NMTOOLS_UNDEFINED_SANITIZER)
 
 add_subdirectory(array)
-add_subdirectory(simd)
 
 # for emscripten, generate js main
 if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
@@ -95,6 +94,11 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
         # )
     endif(JS_ONLY)
 endif()
+
+option(NMTOOLS_BUILD_SIMD_TESTS "build metafunctions test programs" OFF)
+if (NMTOOLS_BUILD_SIMD_TESTS)
+    add_subdirectory(simd)
+endif (NMTOOLS_BUILD_SIMD_TESTS)
 
 option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
 if (NMTOOLS_BUILD_META_TESTS)
