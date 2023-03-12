@@ -62,6 +62,9 @@ if (NMTOOLS_UNDEFINED_SANITIZER)
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=undefined")
 endif (NMTOOLS_UNDEFINED_SANITIZER)
 
+add_subdirectory(array)
+add_subdirectory(simd)
+
 # for emscripten, generate js main
 if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     message(" * C++ compiler: Emscripten")
@@ -92,9 +95,6 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
         # )
     endif(JS_ONLY)
 endif()
-
-add_subdirectory(array)
-add_subdirectory(simd)
 
 option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
 if (NMTOOLS_BUILD_META_TESTS)
