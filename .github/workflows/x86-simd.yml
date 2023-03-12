@@ -1,4 +1,4 @@
-name: gcc
+name: x86-simd
 
 on:
   push:
