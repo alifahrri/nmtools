@@ -53,9 +53,9 @@ namespace nmtools::view
         constexpr auto operator()(size_type index) const
         {
             if constexpr (is_none_v<step_t>)
-                return static_cast<element_type>(start + index);
+                return static_cast<element_type>(start) + index;
             else
-                return static_cast<element_type>(start + index * step);
+                return static_cast<element_type>(start) + (index * step);
         } // operator()
     }; // arange_t
     
