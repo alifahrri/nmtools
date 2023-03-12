@@ -11,7 +11,7 @@ namespace nmtools::view
      * @tparam min_val_t 
      * @tparam max_val_t 
      */
-    template <typename min_val_t=float, typename max_val_t=float>
+    template <typename min_val_t=float, typename max_val_t=min_val_t>
     struct hardtanh_t
     {
         const min_val_t min_val = -1.0;
@@ -44,7 +44,7 @@ namespace nmtools::view
      * @param max_val   maximum value of the linear region
      * @return constexpr auto 
      */
-    template <typename array_t, typename min_val_t=float, typename max_val_t=float>
+    template <typename array_t, typename min_val_t=float, typename max_val_t=min_val_t>
     constexpr auto hardtanh(const array_t& array, const min_val_t min_val=min_val_t{-1.0},
         const max_val_t max_val=max_val_t{1.0})
     {
