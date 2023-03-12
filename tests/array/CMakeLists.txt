@@ -122,6 +122,7 @@ set(ARRAY_UTILITY_TEST_SOURCES
     utility/at.cpp
     utility/apply_at.cpp
     utility/cast.cpp
+    utility/data.cpp
     utility/flatten_either.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_UTILITY)

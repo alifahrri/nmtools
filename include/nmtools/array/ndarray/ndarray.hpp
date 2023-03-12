@@ -110,6 +110,11 @@ namespace nmtools::array
             return &self()->data_[0];
         } // data()
 
+        constexpr decltype(auto) data()
+        {
+            return &self()->data_[0];
+        } // data()
+
         constexpr auto size() const
         {
             using buffer_type = meta::remove_cvref_t<decltype(self()->data_)>;

@@ -15,6 +15,14 @@
 
 namespace nmtools::array
 {
+    template <typename ctx_t>
+    struct context_t : ctx_t {};
+
+    using no_context_t = context_t<none_t>;
+
+    // TODO: make this default context
+    constexpr inline auto NoContext = no_context_t {};
+
     // NOTE: old version
     // TODO: remove
     // special tag to resolve eval return type

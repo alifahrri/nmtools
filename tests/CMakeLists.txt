@@ -37,8 +37,6 @@ endif (NMTOOLS_TESTING_CONSTEXPR)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_subdirectory(array)
-
 option(NMTOOLS_ADDRESS_SANITIZER "build with -fsanitize=address" OFF)
 message(STATUS "NMTOOLS_ADDRESS_SANITIZER ${ADDRESS_SANITIZER}")
 
@@ -63,6 +61,8 @@ if (NMTOOLS_UNDEFINED_SANITIZER)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=undefined")
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -fsanitize=undefined")
 endif (NMTOOLS_UNDEFINED_SANITIZER)
+
+add_subdirectory(array)
 
 # for emscripten, generate js main
 if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
@@ -94,6 +94,11 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
         # )
     endif(JS_ONLY)
 endif()
+
+option(NMTOOLS_BUILD_SIMD_TESTS "build metafunctions test programs" OFF)
+if (NMTOOLS_BUILD_SIMD_TESTS)
+    add_subdirectory(simd)
+endif (NMTOOLS_BUILD_SIMD_TESTS)
 
 option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
 if (NMTOOLS_BUILD_META_TESTS)
