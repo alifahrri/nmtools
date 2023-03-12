@@ -37,8 +37,6 @@ endif (NMTOOLS_TESTING_CONSTEXPR)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_subdirectory(array)
-
 option(NMTOOLS_ADDRESS_SANITIZER "build with -fsanitize=address" OFF)
 message(STATUS "NMTOOLS_ADDRESS_SANITIZER ${ADDRESS_SANITIZER}")
 
@@ -94,6 +92,9 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
         # )
     endif(JS_ONLY)
 endif()
+
+add_subdirectory(array)
+add_subdirectory(simd)
 
 option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
 if (NMTOOLS_BUILD_META_TESTS)
