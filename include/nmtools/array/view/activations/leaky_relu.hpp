@@ -16,7 +16,7 @@ namespace nmtools::view
         const negative_slope_t negative_slope = 0.01;
 
         template <typename T>
-        constexpr auto operator()(const T& t) const
+        constexpr auto operator()(const T& t) const -> T
         {
             return (t >= 0? t : negative_slope * t);
         } // operator()
@@ -34,7 +34,7 @@ namespace nmtools::view
     template <typename array_t, typename negative_slope_t=float>
     constexpr auto leaky_relu(const array_t& array, negative_slope_t negative_slope=negative_slope_t{0.01})
     {
-        return ufunc(leaky_relu_t{{negative_slope}},array);
+        return ufunc(leaky_relu_t<negative_slope_t>{{negative_slope}},array);
     } // leaky_relu
 } // namespace nmtools::view
 

@@ -16,7 +16,7 @@ namespace nmtools::view
         const lambda_t lambda = 0.5;
 
         template <typename T>
-        constexpr auto operator()(const T& t) const
+        constexpr auto operator()(const T& t) const -> T
         {
             auto x = t;
             if ((x >= -lambda) && (x <= lambda)) {
@@ -38,7 +38,7 @@ namespace nmtools::view
     template <typename array_t, typename lambda_t=float>
     constexpr auto hardshrink(const array_t& array, lambda_t lambda=lambda_t{0.5})
     {
-        return ufunc(hardshrink_t{{lambda}},array);
+        return ufunc(hardshrink_t<lambda_t>{{lambda}},array);
     } // hardshrink
 } // namespace nmtools::view
 

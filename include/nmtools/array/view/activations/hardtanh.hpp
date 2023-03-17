@@ -18,7 +18,7 @@ namespace nmtools::view
         const max_val_t max_val =  1.0;
 
         template <typename T>
-        constexpr auto operator()(const T& t) const
+        constexpr auto operator()(const T& t) const -> T
         {
             if (t < min_val) {
                 return min_val;

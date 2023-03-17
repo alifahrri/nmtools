@@ -16,7 +16,7 @@ namespace nmtools::view
         const alpha_t alpha = 0.25;
 
         template <typename T>
-        constexpr auto operator()(const T& t) const
+        constexpr auto operator()(const T& t) const -> T
         {
             if (t >= 0) {
                 return t;
@@ -38,7 +38,7 @@ namespace nmtools::view
     template <typename array_t, typename alpha_t=float>
     constexpr auto prelu(const array_t& array, alpha_t alpha=alpha_t{0.25})
     {
-        return ufunc(prelu_t{{alpha}},array);
+        return ufunc(prelu_t<alpha_t>{{alpha}},array);
     } // prelu
 } // namespace nmtools::view
 

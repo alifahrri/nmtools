@@ -10,6 +10,7 @@
 #include "nmtools/meta/bits/transform/clipped_max.hpp"
 #include "nmtools/meta/bits/transform/common_type.hpp"
 #include "nmtools/meta/bits/transform/concat_type.hpp"
+#include "nmtools/meta/bits/transform/conditional.hpp"
 #include "nmtools/meta/bits/transform/get_either.hpp"
 #include "nmtools/meta/bits/transform/get_element_type.hpp"
 #include "nmtools/meta/bits/transform/get_common_type.hpp"
