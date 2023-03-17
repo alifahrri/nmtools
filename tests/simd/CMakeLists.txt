@@ -18,21 +18,35 @@ endif()
 enable_testing()
 
 option(NMTOOLS_SIMD_TEST_ALL "test all simd modules" OFF)
+option(NMTOOLS_SIMD_TEST_SSE "test x86 sse simd modules" OFF)
+option(NMTOOLS_SIMD_TEST_AVX "test x86 avx simd modules" OFF)
 
 if (NMTOOLS_SIMD_TEST_ALL)
-    set(NMTOOLS_X86_SIMD_TEST_SOURCES
-        x86/simd128.cpp
-    )
-else (NMTOOLS_SIMD_TEST_ALL)
-    set(NMTOOLS_X86_SIMD_TEST_SOURCES "")
+    SET(NMTOOLS_SIMD_TEST_SSE ON CACHE BOOL "test x86 sse simd" FORCE)
+    SET(NMTOOLS_SIMD_TEST_AVX ON CACHE BOOL "test x86 avx simd" FORCE)
 endif (NMTOOLS_SIMD_TEST_ALL)
 
+set(NMTOOLS_SIMD_TEST_SOURCES "")
+
+if (NMTOOLS_SIMD_TEST_SSE)
+    set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES} x86/sse.cpp)
+endif (NMTOOLS_SIMD_TEST_SSE)
+
+if (NMTOOLS_SIMD_TEST_AVX)
+    set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES} x86/avx.cpp)
+endif (NMTOOLS_SIMD_TEST_AVX)
+
 add_executable(${PROJECT_NAME}-doctest tests.cpp
-    ${NMTOOLS_X86_SIMD_TEST_SOURCES}
+    ${NMTOOLS_SIMD_TEST_SOURCES}
 )
 
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
-target_compile_options(${PROJECT_NAME}-doctest PRIVATE -msse4.1)
+if (NMTOOLS_SIMD_TEST_SSE)
+    target_compile_options(${PROJECT_NAME}-doctest PRIVATE -msse4.1)
+endif (NMTOOLS_SIMD_TEST_SSE)
+if (NMTOOLS_SIMD_TEST_AVX)
+    target_compile_options(${PROJECT_NAME}-doctest PRIVATE -mavx2)
+endif (NMTOOLS_SIMD_TEST_AVX)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(${PROJECT_NAME}-doctest PRIVATE -g)
 endif()

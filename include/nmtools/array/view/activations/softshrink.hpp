@@ -16,7 +16,7 @@ namespace nmtools::view
         const lambda_t lambda = 0.5;
 
         template <typename T>
-        constexpr auto operator()(const T& x) const
+        constexpr auto operator()(const T& x) const -> T
         {
             if (x > lambda) {
                 return x - lambda;
@@ -40,7 +40,7 @@ namespace nmtools::view
     template <typename array_t, typename lambda_t=float>
     constexpr auto softshrink(const array_t& array, lambda_t lambda=lambda_t{0.5})
     {
-        return ufunc(softshrink_t{{lambda}},array);
+        return ufunc(softshrink_t<lambda_t>{{lambda}},array);
     } // softshrink
     
 } // namespace nmtools::view
