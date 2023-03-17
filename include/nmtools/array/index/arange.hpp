@@ -67,7 +67,7 @@ namespace nmtools::meta
             } else if constexpr (
                 is_index_v<start_t>
                 && is_index_v<stop_t>
-                && (is_index_v<step_t> || is_none_v<step_t>)
+                && (is_num_v<step_t> || is_none_v<step_t>)
             ) {
                 // TODO: use index_type instead of size_t
                 using type = nmtools_array<size_t,1>;
