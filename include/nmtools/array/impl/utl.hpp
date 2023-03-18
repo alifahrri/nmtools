@@ -45,6 +45,19 @@ namespace nmtools::impl
             return a.size();
         }
     };
+
+    template <typename T, size_t Capacity>
+    struct len_t<utl::static_vector<T,Capacity>>
+    {
+        using array = utl::static_vector<T,Capacity>;
+        using const_array = const array&;
+        using type  = typename array::size_type;
+
+        constexpr type operator()(const_array a) const noexcept
+        {
+            return a.size();
+        }
+    };
 } // namespace nmtools::impl
 
 #endif // NMTOOLS_ARRAY_IMPL_UTL_HPP
