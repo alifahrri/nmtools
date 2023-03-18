@@ -74,6 +74,34 @@ namespace nmtools::meta
         }();
     };
 
+    template <typename T, size_t Capacity>
+    struct fixed_dim<
+        utl::static_vector<T,Capacity>
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (is_num_v<T> || is_slice_index_v<T>) {
+                return 1;
+            } else {
+                return error::FIXED_DIM_UNSUPPORTED<utl::static_vector<T,Capacity>>{};
+            }
+        }();
+    };
+
+    template <typename T, size_t Capacity>
+    struct bounded_size<
+        utl::static_vector<T,Capacity>
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (is_num_v<T> || is_slice_index_v<T>) {
+                return Capacity;
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<utl::static_vector<T,Capacity>>{};
+            }
+        }();
+    };
+
     template <typename...Ts>
     struct fixed_shape<utl::tuple<Ts...>>
     {

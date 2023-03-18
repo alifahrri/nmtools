@@ -36,8 +36,14 @@ namespace nmtools::meta
     template <typename T, typename allocator>
     struct is_ndarray<utl::vector<T,allocator>> : is_num<T> {};
 
+    template <typename T, size_t Capacity>
+    struct is_ndarray<utl::static_vector<T,Capacity>> : is_num<T> {};
+
     template <typename T, typename allocator>
     struct is_list<utl::vector<T,allocator>> : true_type {};
+
+    template <typename T, size_t Capacity>
+    struct is_list<utl::static_vector<T,Capacity>> : true_type {};
 
     template <typename T, size_t N>
     struct has_tuple_size<utl::array<T,N>> : true_type {};
