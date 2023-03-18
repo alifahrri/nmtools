@@ -32,7 +32,7 @@ TEST_CASE("static_vector" * doctest::test_suite("utl"))
             NMTOOLS_ASSERT_EQUAL( array.size(), 3 );
         }
         {
-            using array_t = utl::static_vector<double>;
+            using array_t = utl::static_vector<double,12>;
             auto array = array_t();
             array.resize(12);
             NMTOOLS_ASSERT_EQUAL( array.size(), 12 );
