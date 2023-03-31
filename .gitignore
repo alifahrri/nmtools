@@ -16,3 +16,8 @@ include/library.json
 include/etl*
 models
 testbench_results
+SPIRV-LLVM-Translator
+pocl
+*.spv
+*.spt
+*.bc

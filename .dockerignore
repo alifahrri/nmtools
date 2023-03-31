@@ -5,3 +5,7 @@ build/
 docs/
 .devcontainer
 !.devcontainer/.zshrc
+SPIRV-LLVM-Translator
+pocl
+*.spv
+*.bc
