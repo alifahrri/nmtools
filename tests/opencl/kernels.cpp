@@ -1,0 +1,1 @@
+#include "nmtools/array/eval/opencl/kernels_spv.hpp"
