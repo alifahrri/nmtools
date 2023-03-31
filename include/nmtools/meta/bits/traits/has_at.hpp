@@ -38,6 +38,7 @@ namespace nmtools::meta
      * @tparam size_type argument type
      */
     template <typename T, typename size_type>
+    nmtools_meta_variable_attribute
     inline constexpr bool has_at_v = has_at<T,size_type>::value;
 
     /**

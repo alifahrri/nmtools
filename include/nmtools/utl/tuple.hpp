@@ -3,13 +3,17 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/expr.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 // poor man's tuple
 
 namespace nmtools::utl
 {
+    #define DECLARE_TUPLE_VAL_TYPE(index) \
+    using arg##index##_type = meta::remove_address_space_t<arg##index>;
+
     #define DEFINE_TUPLE_VAL(index) \
-    arg##index value##index;
+    arg##index##_type value##index;
 
     #define DEFINE_TUPLE_CTOR(index) \
     constexpr tuple##index() : base(), value##index{} {}
@@ -21,6 +25,7 @@ namespace nmtools::utl
     template <class arg1>
     struct tuple1
     { 
+        DECLARE_TUPLE_VAL_TYPE(1)
         DEFINE_TUPLE_VAL(1)
 
         constexpr tuple1() : value1{} {}
@@ -38,6 +43,7 @@ namespace nmtools::utl
     struct tuple2 : tuple1<arg1>
     { 
         using base = tuple1<arg1>;
+        DECLARE_TUPLE_VAL_TYPE(2)
         DEFINE_TUPLE_VAL(2)
         DEFINE_TUPLE_CTOR(2)
 
@@ -56,6 +62,7 @@ namespace nmtools::utl
     struct tuple3 : tuple2<arg1,arg2>
     { 
         using base = tuple2<arg1,arg2>;
+        DECLARE_TUPLE_VAL_TYPE(3)
         DEFINE_TUPLE_VAL(3)
         DEFINE_TUPLE_CTOR(3)
 
@@ -74,6 +81,7 @@ namespace nmtools::utl
     struct tuple4 : tuple3<arg1,arg2,arg3>
     { 
         using base = tuple3<arg1,arg2,arg3>;
+        DECLARE_TUPLE_VAL_TYPE(4)
         DEFINE_TUPLE_VAL(4)
         DEFINE_TUPLE_CTOR(4)
 
@@ -92,6 +100,7 @@ namespace nmtools::utl
     struct tuple5 : tuple4<arg1,arg2,arg3,arg4>
     { 
         using base = tuple4<arg1,arg2,arg3,arg4>;
+        DECLARE_TUPLE_VAL_TYPE(5)
         DEFINE_TUPLE_VAL(5)
         DEFINE_TUPLE_CTOR(5)
 
@@ -110,6 +119,7 @@ namespace nmtools::utl
     struct tuple6 : tuple5<arg1,arg2,arg3,arg4,arg5>
     { 
         using base = tuple5<arg1,arg2,arg3,arg4,arg5>;
+        DECLARE_TUPLE_VAL_TYPE(6)
         DEFINE_TUPLE_VAL(6)
         DEFINE_TUPLE_CTOR(6)
 
@@ -128,6 +138,7 @@ namespace nmtools::utl
     struct tuple7 : tuple6<arg1,arg2,arg3,arg4,arg5,arg6>
     { 
         using base = tuple6<arg1,arg2,arg3,arg4,arg5,arg6>;
+        DECLARE_TUPLE_VAL_TYPE(7)
         DEFINE_TUPLE_VAL(7)
         DEFINE_TUPLE_CTOR(7)
 
@@ -143,6 +154,7 @@ namespace nmtools::utl
     struct tuple8 : tuple7<arg1,arg2,arg3,arg4,arg5,arg6,arg7>
     { 
         using base = tuple7<arg1,arg2,arg3,arg4,arg5,arg6,arg7>;
+        DECLARE_TUPLE_VAL_TYPE(8)
         DEFINE_TUPLE_VAL(8)
         DEFINE_TUPLE_CTOR(8)
 
@@ -158,6 +170,7 @@ namespace nmtools::utl
     struct tuple9 : tuple8<arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8>
     { 
         using base = tuple8<arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8>;
+        DECLARE_TUPLE_VAL_TYPE(9)
         DEFINE_TUPLE_VAL(9)
         DEFINE_TUPLE_CTOR(9)
 
@@ -300,6 +313,7 @@ namespace nmtools::utl
     struct tuple_element<I,tuple<Args...>>
     {
         using tuple_type = tuple<Args...>;
+        nmtools_meta_variable_attribute
         static constexpr auto vtype = [](){
             RETURN_TUPLE_ARG_TYPE_IF(1)
             else RETURN_TUPLE_ARG_TYPE_IF(2)

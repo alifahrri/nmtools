@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_COMMON_HPP
 #define NMTOOLS_META_COMMON_HPP
 
+#include "nmtools/platform.hpp"
 #include "nmtools/def.hpp"
 
 namespace nmtools::meta
@@ -28,6 +29,7 @@ namespace nmtools::meta
     struct integral_constant
     {
         using value_type = T;
+        nmtools_meta_variable_attribute
         static constexpr value_type value = v;
         constexpr operator value_type() const noexcept
         {

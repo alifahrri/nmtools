@@ -2,6 +2,7 @@
 #define NMTOOLS_UTL_MAYBE_HPP
 
 #include "nmtools/utl/either.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::utl
 {
@@ -58,22 +59,22 @@ namespace nmtools::utl
             return has_value();
         }
 
-        constexpr const_reference value() const& noexcept
+        constexpr const_reference value() const noexcept
         {
             return this->left;
         }
 
-        constexpr reference value() & noexcept
+        constexpr reference value() noexcept
         {
             return this->left;
         }
 
-        constexpr const_reference operator*() const& noexcept
+        constexpr const_reference operator*() const noexcept
         {
             return value();
         }
 
-        constexpr reference operator*() & noexcept
+        constexpr reference operator*() noexcept
         {
             return value();
         }

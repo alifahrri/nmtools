@@ -25,7 +25,7 @@ namespace nmtools::error
     inline void no_free(void*) {}
 } // namespace nmtools::error
 
-#if __has_include(<malloc.h>)
+#if __has_include(<malloc.h>) && not defined(NMTOOLS_UTL_NO_MALLOC)
 
 #include <malloc.h>
 

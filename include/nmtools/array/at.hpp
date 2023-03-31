@@ -20,7 +20,7 @@ namespace nmtools::impl
      * @tparam array_t 
      * @tparam index_type 
      */
-    template <typename array_t, typename index_type>
+    template <typename array_t, typename index_type,typename=void>
     struct at_t
     {
         constexpr decltype(auto) operator()([[maybe_unused]] const array_t& a, [[maybe_unused]] index_type i) const
@@ -99,6 +99,10 @@ namespace nmtools::impl
             }
         }
     };
+
+    template <typename array_t, typename index_type>
+    struct at_t<array_t,index_type,meta::enable_if_t<meta::has_address_space_v<array_t>>>
+        : at_t<meta::remove_address_space_t<array_t>,index_type> {};
 
     template <typename array_t, typename index_type>
     constexpr inline auto at_v = at_t<array_t, index_type>{};

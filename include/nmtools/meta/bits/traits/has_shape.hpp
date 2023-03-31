@@ -25,6 +25,7 @@ namespace nmtools::meta
      * @tparam T type to check 
      */
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool has_shape_v = has_shape<T>::value;
 } // namespace nmtools::meta
 

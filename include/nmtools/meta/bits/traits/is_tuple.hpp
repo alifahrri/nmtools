@@ -20,6 +20,7 @@ namespace nmtools::meta
      * 
      */
     template <typename ...Args>
+    nmtools_meta_variable_attribute
     inline constexpr bool is_tuple_v = is_tuple<Args...>::value;
 } // namespace nmtools::meta
 

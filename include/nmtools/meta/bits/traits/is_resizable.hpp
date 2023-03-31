@@ -22,6 +22,7 @@ namespace nmtools::meta
      * @tparam size_types arguments to `resize`
      */
     template <typename T, typename...size_types>
+    nmtools_meta_variable_attribute
     inline constexpr bool is_resizable_nd_v = is_resizable_nd<T,size_types...>::value;
 
     // TODO: cleanup metafunctions
@@ -63,6 +64,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool is_resizable_v = is_resizable<T>::value;
 
     // TODO: cleanup metafunctions

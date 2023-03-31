@@ -36,10 +36,13 @@ namespace nmtools::utl
         T buffer[Capacity];
         size_type size_ = 0;
 
+        // NOTE: broken on c++4opencl error: conflicting types for 'begin'
+        #if 0
         template <typename type, size_t M> friend constexpr auto begin(static_vector<type,M>&);
         template <typename type, size_t M> friend constexpr auto begin(const static_vector<type,M>&);
         template <typename type, size_t M> friend constexpr auto end(static_vector<type,M>&);
         template <typename type, size_t M> friend constexpr auto end(const static_vector<type,M>&);
+        #endif
 
         public:
         static_vector() {}
