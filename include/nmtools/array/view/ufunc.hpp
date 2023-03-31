@@ -83,7 +83,7 @@ namespace nmtools::view
             return _ufunc(op, b_arrays);
         } else {
             // single argument ufunc, skip broadcasting
-            using view_t = decorator_t<ufunc_t,op_t,array_t>;
+            using view_t = decorator_t<ufunc_t,op_t,meta::remove_address_space_t<array_t>>;
             return view_t{{op,{array}}};
         }
     } // ufunc

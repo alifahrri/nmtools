@@ -324,6 +324,7 @@ namespace nmtools::view
      * @tparam T type to check
      */
     template <typename T>
+    nmtools_meta_variable_attribute
     static inline constexpr bool is_view_v = is_view<T>::value;
 
     namespace error

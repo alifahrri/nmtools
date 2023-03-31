@@ -3,8 +3,6 @@
 
 #include "nmtools/array/view/ufunc.hpp"
 
-#include <cmath>
-
 namespace nmtools::view
 {
     struct reciprocal_t

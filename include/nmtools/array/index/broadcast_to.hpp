@@ -32,7 +32,13 @@ namespace nmtools::index
     constexpr auto shape_broadcast_to(const none_t&, const bshape_t& bshape)
     {
         if constexpr (is_none_v<bshape_t>) {
+            #if 1
+            return nmtools_tuple<bool,none_t,none_t>{true,None,None};
+            #else
+            // broken on c++ for opencl 😭
+            // error: field may not be qualified with an address space
             return nmtools_tuple{true,None,None};
+            #endif
         } else {
             // TODO: create specific type resolver
             // TODO: only call transform array when necessary
