@@ -5,6 +5,8 @@
 #include "nmtools/array/data.hpp"
 
 #include <CL/cl.h>
+// for CL_PLATFORM_ICD_SUFFIX_KHR
+#include <CL/cl_ext.h>
 
 #include <shared_mutex>
 #include <iostream>
@@ -135,6 +137,16 @@ namespace nmtools::array::opencl
             size_t preferred_work_group_size_multiple;
             size_t private_mem_size;
         };
+        struct platform_info_t
+        {
+            std::string platform_profile;
+            std::string platform_version;
+            std::string platform_name;
+            std::string platform_vendor;
+            std::string platform_extensions;
+            std::string platform_icd_suffix;
+            // CL_PLATFORM_ICD_SUFFIX_KHR
+        };
         struct kernel_t
         {
             std::shared_ptr<cl_kernel> kernel_;
@@ -151,6 +163,74 @@ namespace nmtools::array::opencl
         cl_context context;
         cl_command_queue command_queue;
 
+        static inline auto get_platform_infos()
+        {
+            auto platform_ids  = std::vector<cl_platform_id>();
+            cl_int ret;
+            cl_uint ret_num_platforms;
+            ret = clGetPlatformIDs(0, NULL, &ret_num_platforms);
+            nmtools_cl_check_error( ret, "getting the number of platform ids (clGetPlatformIDs)" );
+            platform_ids.resize(ret_num_platforms);
+
+            ret = clGetPlatformIDs(ret_num_platforms, platform_ids.data(), &ret_num_platforms);
+            nmtools_cl_check_error( ret, "reading platform ids (clGetPlatformIDs)" );
+
+            // cl_platform_id platform_id = platform_ids.at(platform_idx);
+
+            auto platform_infos = std::vector<platform_info_t>();
+            // fill-in platform info
+            for (const auto& platform_id : platform_ids)
+            {
+                platform_infos.push_back({});
+                auto& platform_info = platform_infos.back();
+                size_t param_value_size_ret;
+
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_PROFILE, 0, NULL, &param_value_size_ret);
+                nmtools_cl_check_error( ret, "getting the size of platform profile (clGetPlatformInfo)" );
+                auto& platform_profile = platform_info.platform_profile;
+                platform_profile.resize(param_value_size_ret);
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_PROFILE, param_value_size_ret, platform_profile.data(), &param_value_size_ret);
+                nmtools_cl_check_error( ret, "reading platform profile (clGetPlatformInfo)" );
+
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_VERSION, 0, NULL, &param_value_size_ret);
+                nmtools_cl_check_error( ret, "getting the size of platform version (clGetPlatformInfo)" );
+                auto& platform_version = platform_info.platform_version;
+                platform_version.resize(param_value_size_ret);
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_VERSION, param_value_size_ret, platform_version.data(), &param_value_size_ret);
+                nmtools_cl_check_error( ret, "reading platform version (clGetPlatformInfo)" );
+
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_NAME, 0, NULL, &param_value_size_ret);
+                nmtools_cl_check_error( ret, "getting the size of platform name (clGetPlatformInfo)" );
+                auto& platform_name = platform_info.platform_name;
+                platform_name.resize(param_value_size_ret);
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_NAME, param_value_size_ret, platform_name.data(), &param_value_size_ret);
+                nmtools_cl_check_error( ret, "reading platform version (clGetPlatformInfo)" );
+
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_VENDOR, 0, NULL, &param_value_size_ret);
+                nmtools_cl_check_error( ret, "getting the size of platform name (clGetPlatformInfo)" );
+                auto& platform_vendor = platform_info.platform_vendor;
+                platform_vendor.resize(param_value_size_ret);
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_VENDOR, param_value_size_ret, platform_vendor.data(), &param_value_size_ret);
+                nmtools_cl_check_error( ret, "reading platform vendor (clGetPlatformInfo)" );
+
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_EXTENSIONS, 0, NULL, &param_value_size_ret);
+                nmtools_cl_check_error( ret, "getting the size of platform extensions (clGetPlatformInfo)" );
+                auto& platform_extensions = platform_info.platform_extensions;
+                platform_extensions.resize(param_value_size_ret);
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_EXTENSIONS, param_value_size_ret, platform_extensions.data(), &param_value_size_ret);
+                nmtools_cl_check_error( ret, "reading platform vendor (clGetPlatformInfo)" );
+
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_ICD_SUFFIX_KHR, 0, NULL, &param_value_size_ret);
+                nmtools_cl_check_error( ret, "getting the size of platform extensions (clGetPlatformInfo)" );
+                auto& platform_icd_suffix = platform_info.platform_icd_suffix;
+                platform_icd_suffix.resize(param_value_size_ret);
+                ret = clGetPlatformInfo(platform_id, CL_PLATFORM_ICD_SUFFIX_KHR, param_value_size_ret, platform_icd_suffix.data(), &param_value_size_ret);
+                nmtools_cl_check_error( ret, "reading platform vendor (clGetPlatformInfo)" );
+            }
+
+            return platform_infos;
+        }
+
         context_t(size_t platform_idx=0)
         {
             // Get platform and device information
@@ -159,8 +239,13 @@ namespace nmtools::array::opencl
 
             // TODO: handle case: platform_idx >= max_platform / ret_num_platform
             constexpr auto max_platforms = 3;
-            auto platform_ids  = std::array<cl_platform_id,max_platforms>{};
-            cl_int ret = clGetPlatformIDs(max_platforms, platform_ids.data(), &ret_num_platforms);
+            auto platform_ids  = std::vector<cl_platform_id>();
+            cl_int ret;
+            ret = clGetPlatformIDs(max_platforms, NULL, &ret_num_platforms);
+            nmtools_cl_check_error( ret, "getting the number of platform ids (clGetPlatformIDs)" );
+            platform_ids.resize(ret_num_platforms);
+
+            ret = clGetPlatformIDs(max_platforms, platform_ids.data(), &ret_num_platforms);
             nmtools_cl_check_error( ret, "reading platform ids (clGetPlatformIDs)" );
             cl_platform_id platform_id = platform_ids.at(platform_idx);
 
@@ -218,7 +303,7 @@ namespace nmtools::array::opencl
             return ret;
         }
 
-        auto create_kernel(const std::vector<unsigned char>& spirv, const std::string& kernel_name)
+        inline auto create_kernel(const std::vector<unsigned char>& spirv, const std::string& kernel_name)
         {
             cl_int ret;
             auto program = clCreateProgramWithIL(context,spirv.data(),spirv.size(),&ret);
@@ -317,12 +402,12 @@ namespace nmtools::array::opencl
             this->run(kernel.kernel_,out_buffer,output,global_size,local_size);
         }
 
-        auto has_kernel(const std::string& kernel_name)
+        inline auto has_kernel(const std::string& kernel_name)
         {
             return kernel_registry_.has(kernel_name);   
         }
 
-        auto get_kernel(const std::string& kernel_name)
+        inline auto get_kernel(const std::string& kernel_name)
         {
             return kernel_registry_.at(kernel_name);
         }
@@ -344,6 +429,26 @@ namespace nmtools::array::opencl
             auto platform_idx = 0ul;
             if (auto env_idx = std::getenv("NMTOOLS_OPENCL_DEFAULT_PLATFORM_IDX")) {
                 platform_idx = std::stoi(env_idx);
+            }
+            if (auto env_debug = std::getenv("NMTOOLS_OPENCL_DEBUG")) {
+                auto enable_debug = true;
+                try {
+                    enable_debug = std::stoi(env_debug);
+                } catch (std::invalid_argument&) {}
+                if (enable_debug) {
+                    auto platform_infos = context_t::get_platform_infos();
+                    std::cout << "[nmtools opencl] Number of OpenCL platforms: " << platform_infos.size() << "\n";
+                    for (size_t i=0; i<platform_infos.size(); i++) {
+                        const auto& platform_info = platform_infos.at(i);
+                        std::cout << "[nmtools opencl] platform id: " << i << "\n";
+                        std::cout << "[nmtools opencl] platform_name: "         << platform_info.platform_name << "\n";
+                        std::cout << "[nmtools opencl] platform_icd_suffix: "   << platform_info.platform_icd_suffix << "\n";
+                        std::cout << "[nmtools opencl] platform_profile: "      << platform_info.platform_profile << "\n";
+                        std::cout << "[nmtools opencl] platform_version: "      << platform_info.platform_version << "\n";
+                        std::cout << "[nmtools opencl] platform_vendor: "       << platform_info.platform_vendor << "\n";
+                    }
+                    std::cout << "[nmtools opencl] default context using platform #" << platform_idx << "\n";
+                }
             }
             default_context = std::make_shared<context_t>(platform_idx);
         }

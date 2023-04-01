@@ -32,7 +32,7 @@ jobs:
         run: mkdir -p build/ && cd build/ && cmake -DCMAKE_BUILD_TYPE=Debug -DNMTOOLS_BUILD_OPENCL_TESTS=ON -DNMTOOLS_OPENCL_TEST_ALL=ON .. && make -j2 numeric-tests-opencl-doctest VERBOSE=1
       - name: run tests
         run: |
-          build/tests/opencl/numeric-tests-opencl-doctest
+          NMTOOLS_OPENCL_DEBUG=1 build/tests/opencl/numeric-tests-opencl-doctest
 
   clang-opencl:
     name: clang-opencl
@@ -58,4 +58,4 @@ jobs:
         run: mkdir -p build/ && cd build/ && cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/clang.cmake -DCMAKE_BUILD_TYPE=Debug -DNMTOOLS_BUILD_OPENCL_TESTS=ON -DNMTOOLS_OPENCL_TEST_ALL=ON .. && make -j2 numeric-tests-opencl-doctest VERBOSE=1
       - name: run tests
         run: |
-          build/tests/opencl/numeric-tests-opencl-doctest
+          NMTOOLS_OPENCL_DEBUG=1 build/tests/opencl/numeric-tests-opencl-doctest
