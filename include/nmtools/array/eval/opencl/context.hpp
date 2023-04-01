@@ -137,7 +137,7 @@ namespace nmtools::array::opencl
     #ifndef nmtools_cl_check_error
     #define nmtools_cl_check_error(status, function) \
     if (status != CL_SUCCESS) { \
-        throw cl_exception("Got error: " + error_message(status) + " when " + function); \
+        throw cl_exception(status, "Got error: " + error_message(status) + " when " + function); \
     }
     #endif // nmtools_cl_check_error
 
