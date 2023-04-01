@@ -20,7 +20,7 @@ namespace opencl = na::opencl;
 }
 
 // may fail in ci, Cannot find symbol _Z7signbitd in kernel library
-TEST_CASE("signbit(case1)" * doctest::test_suite("opencl::signbit") * doctest::may_fail() * doctest::skip())
+TEST_CASE("signbit(case1)" * doctest::test_suite("opencl::signbit") * doctest::may_fail())
 {
     try {
         auto array = na::arange(0,16);
