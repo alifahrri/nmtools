@@ -119,7 +119,7 @@ namespace nmtools::array::opencl
     }
     #undef CL_ERROR_MESSAGE_RETURN_STR
 
-    class cl_exception : std::runtime_error
+    class cl_exception : public std::runtime_error
     {
         cl_int status_;
         public:
