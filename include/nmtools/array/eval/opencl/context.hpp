@@ -119,10 +119,25 @@ namespace nmtools::array::opencl
     }
     #undef CL_ERROR_MESSAGE_RETURN_STR
 
+    class cl_exception : std::runtime_error
+    {
+        cl_int status_;
+        public:
+        cl_exception(cl_int status, const std::string& message)
+            : status_(status)
+            , std::runtime_error(message)
+        {}
+
+        inline auto status() const
+        {
+            return cl_status_;
+        }
+    };
+
     #ifndef nmtools_cl_check_error
     #define nmtools_cl_check_error(status, function) \
     if (status != CL_SUCCESS) { \
-        throw std::runtime_error("Got error: " + error_message(status) + " when " + function); \
+        throw cl_exception("Got error: " + error_message(status) + " when " + function); \
     }
     #endif // nmtools_cl_check_error
 
@@ -440,12 +455,13 @@ namespace nmtools::array::opencl
                     std::cout << "[nmtools opencl] Number of OpenCL platforms: " << platform_infos.size() << "\n";
                     for (size_t i=0; i<platform_infos.size(); i++) {
                         const auto& platform_info = platform_infos.at(i);
-                        std::cout << "[nmtools opencl] platform id: "  << i << "\n";
-                        std::cout << "[nmtools opencl] name: "         << platform_info.name << "\n";
-                        std::cout << "[nmtools opencl] icd_suffix: "   << platform_info.icd_suffix << "\n";
-                        std::cout << "[nmtools opencl] profile: "      << platform_info.profile << "\n";
-                        std::cout << "[nmtools opencl] version: "      << platform_info.version << "\n";
-                        std::cout << "[nmtools opencl] vendor: "       << platform_info.vendor << "\n";
+                        std::cout << "[nmtools opencl] platform id: "   << i << "\n";
+                        std::cout << "[nmtools opencl] name:\t"         << platform_info.name << "\n";
+                        std::cout << "[nmtools opencl] icd_suffix:\t"   << platform_info.icd_suffix << "\n";
+                        std::cout << "[nmtools opencl] profile:\t"      << platform_info.profile << "\n";
+                        std::cout << "[nmtools opencl] version:\t"      << platform_info.version << "\n";
+                        std::cout << "[nmtools opencl] vendor:\t"       << platform_info.vendor << "\n";
+                        std::cout << "[nmtools opencl] extensions:\t"   << platform_info.extensions << "\n";
                     }
                     std::cout << "[nmtools opencl] default context using platform #" << platform_idx << "\n";
                 }
