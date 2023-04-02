@@ -22,6 +22,7 @@ namespace nmtools::meta
      * @tparam T 
      */
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool is_bounded_array_v = is_bounded_array<T>::value;
 } // namespace nmtools::meta
 

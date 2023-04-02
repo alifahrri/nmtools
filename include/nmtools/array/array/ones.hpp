@@ -20,8 +20,8 @@ namespace nmtools::array
      * @return constexpr auto 
      */
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
-        typename shape_t, typename T>
-    constexpr auto ones(const shape_t& shape, dtype_t<T> dtype,
+        typename shape_t, typename T=float>
+    constexpr auto ones(const shape_t& shape, dtype_t<T> dtype=float32,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto a = view::ones(shape,dtype);

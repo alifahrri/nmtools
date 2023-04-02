@@ -6,7 +6,10 @@
 #include "nmtools/utl/either.hpp"
 #include "nmtools/utl/maybe.hpp"
 #include "nmtools/utl/tuple.hpp"
+#include "nmtools/utl/static_vector.hpp"
+#ifndef NMTOOLS_DISABLE_VECTOR
 #include "nmtools/utl/vector.hpp"
+#endif // NMTOOLS_DISABLE_VECTOR
 
 namespace nmtools::meta
 {
@@ -82,6 +85,13 @@ namespace nmtools::meta
     #define nmtools_either ::nmtools::utl::either
 #endif // NMTOOLS_META_MAKE_EITHER
 
+#ifndef NMTOOLS_META_MAKE_STATIC_VECTOR
+#define NMTOOLS_META_MAKE_STATIC_VECTOR
+
+    #define nmtools_static_vector ::nmtools::utl::static_vector
+
+#endif // NMTOOLS_META_MAKE_STATIC_VECTOR
+
 #ifndef NMTOOLS_META_MAKE_SEQUENCE
 #define NMTOOLS_META_MAKE_SEQUENCE
 
@@ -91,20 +101,22 @@ namespace nmtools::meta
         struct UTL_SEQUENCE_UNSUPPORTED : detail::fail_t {};
     }
 
-    // TODO: support sequence type by adding utl::vector
+    // TODO: remove
     template <typename T, typename Allocator>
     struct make_sequence_type
     {
         using type = utl::vector<T,Allocator>;
     };
 
+    // TODO: remove
     template <typename T, typename Allocator=utl::allocator<T>>
     using make_sequence_type_t = type_t<make_sequence_type<T,Allocator>>;
 
-    // TODO: support sequence type by adding utl::vector
-    #define nmtools_list ::nmtools::utl::vector
-
 #endif // NMTOOLS_META_MAKE_SEQUENCE
+
+    #ifndef nmtools_list
+    #define nmtools_list ::nmtools::utl::vector
+    #endif // nmtools_list
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_UTL_COMMON_HPP

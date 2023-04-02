@@ -38,7 +38,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto celu(const array_t& array, alpha_t alpha=alpha_t{1.0})
     {
-        return ufunc(celu_t{{alpha}},array);
+        return ufunc(celu_t<alpha_t>{{alpha}},array);
     } // celu
 } // namespace nmtools::view
 

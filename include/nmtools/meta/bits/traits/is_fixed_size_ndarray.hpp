@@ -42,6 +42,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool is_fixed_size_ndarray_v = is_fixed_size_ndarray<T>::value;
 } // namespace nmtools::meta
 

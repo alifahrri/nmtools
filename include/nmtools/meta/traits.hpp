@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_TRAITS_HPP
 #define NMTOOLS_META_TRAITS_HPP
 
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
 #include "nmtools/meta/bits/traits/has_array_type.hpp"
 #include "nmtools/meta/bits/traits/has_at.hpp"
 #include "nmtools/meta/bits/traits/has_bracket.hpp"
@@ -64,46 +65,4 @@
 #include "nmtools/meta/expr.hpp"
 #include "nmtools/meta/common.hpp"
 
-namespace nmtools::meta {
-
-    /** @defgroup traits
-    * Collections of type traits used accross the library
-    * @{ 
-    */
-
-
-    // TODO: cleanup metafunctions
-    /**
-     * @brief check if F(Args...) is well-formed
-     * 
-     * @tparam F function
-     * @tparam Args arguments
-     */
-    template <typename F, typename...Args>
-    struct is_callable {
-    private:
-        template <typename FN>
-        constexpr static auto test(int) -> decltype(declval<FN>()(declval<Args>()...), bool()) {
-            return true;
-        }
-        template <typename>
-        constexpr static auto test(...) -> decltype(bool()) {
-            return false;
-        }
-    public:
-        constexpr static bool value = test<F>(int{});
-    };
-
-    /**
-     * @brief helper variable template for is_callable
-     * 
-     * @tparam F function
-     * @tparam Args arguments
-     */
-    template <typename F, typename...Args>
-    inline constexpr bool is_callable_v = is_callable<F,Args...>::value;
-
-    /** @} */ // end group traits
-
-} // namespace nmtools::meta
 #endif // NMTOOLS_META_TRAITS_HPP

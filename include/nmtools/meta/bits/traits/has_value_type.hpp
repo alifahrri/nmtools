@@ -30,6 +30,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool has_value_type_v = has_value_type<T>::value;
 } // namespace nmtools::meta
 

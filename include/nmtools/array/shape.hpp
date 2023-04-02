@@ -43,6 +43,10 @@ namespace nmtools::impl
     }; // len_t
 
     template <typename T>
+    struct len_t<T,meta::enable_if_t<meta::has_address_space_v<T>>>
+        : len_t<meta::remove_address_space_t<T>> {};
+
+    template <typename T>
     inline constexpr auto len = len_t<T>{};
 } // namespace nmtools::impl
 
@@ -188,6 +192,10 @@ namespace nmtools::impl
     #endif
 
     template <typename T>
+    struct shape_t<T,meta::enable_if_t<meta::has_address_space_v<T>>>
+        : shape_t<meta::remove_address_space_t<T>> {};
+
+    template <typename T>
     inline constexpr auto shape = shape_t<T>{};
 } // namespace nmtools::impl
 
@@ -253,7 +261,7 @@ namespace nmtools
 
 namespace nmtools::impl
 {
-    template <typename array_t>
+    template <typename array_t,typename=void>
     struct dim_t
     {
         constexpr auto operator()([[maybe_unused]] const array_t& array) const noexcept
@@ -273,6 +281,10 @@ namespace nmtools::impl
             }
         }
     }; // dim_t
+
+    template <typename T>
+    struct dim_t<T,meta::enable_if_t<meta::has_address_space_v<T>>>
+        : dim_t<meta::remove_address_space_t<T>> {};
 
     template <typename array_t>
     inline constexpr auto dim = dim_t<array_t>{};
@@ -316,7 +328,7 @@ namespace nmtools
 
 namespace nmtools::impl
 {
-    template <typename array_t>
+    template <typename array_t,typename=void>
     struct numel_t
     {
         constexpr auto operator()([[maybe_unused]] const array_t& array) const noexcept
@@ -340,6 +352,10 @@ namespace nmtools::impl
             }
         }
     }; // size_t
+
+    template <typename T>
+    struct numel_t<T,meta::enable_if_t<meta::has_address_space_v<T>>>
+        : numel_t<meta::remove_address_space_t<T>> {};
 
     template <typename array_t>
     inline constexpr auto size = numel_t<array_t>{};

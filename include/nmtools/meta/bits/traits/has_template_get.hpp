@@ -17,6 +17,7 @@ namespace nmtools::meta
     }; // has_template_get
 
     template <typename T, auto I=0>
+    nmtools_meta_variable_attribute
     inline constexpr bool has_template_get_v = has_template_get<T,I>::value;
 } // namespace nmtools::meta
 

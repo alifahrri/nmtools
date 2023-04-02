@@ -76,6 +76,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool is_ndarray_v = is_ndarray<T>::value;
 
 

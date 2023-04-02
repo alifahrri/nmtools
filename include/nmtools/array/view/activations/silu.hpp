@@ -3,7 +3,6 @@
 
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/array/view/activations/sigmoid.hpp"
-#include <cmath>
 
 namespace nmtools::view
 {

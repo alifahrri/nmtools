@@ -24,6 +24,7 @@
 #include "nmtools/meta/bits/transform/make_unsigned.hpp"
 #include "nmtools/meta/bits/transform/promote_index.hpp"
 #include "nmtools/meta/bits/transform/promote_types.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 #include "nmtools/meta/bits/transform/remove_const.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
 #include "nmtools/meta/bits/transform/remove_pointer.hpp"
@@ -63,8 +64,13 @@ namespace nmtools::meta
      * @tparam op_t operator tag
      * @tparam tparams 
      */
+    #ifdef __OPENCL_VERSION__
+    template <typename op_t, typename...tparams>
+    using resolve_optype_t = typename resolve_optype<void,op_t,remove_address_space_t<tparams>...>::type;
+    #else
     template <typename op_t, typename...tparams>
     using resolve_optype_t = typename resolve_optype<void,op_t,tparams...>::type;
+    #endif
 
 
     // TODO: cleanup metafunctions

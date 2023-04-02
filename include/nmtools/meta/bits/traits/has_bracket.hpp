@@ -22,6 +22,7 @@ namespace nmtools::meta
      * @tparam size_types arguments to `operator()`
      */
     template <typename T, typename...size_types>
+    nmtools_meta_variable_attribute
     inline constexpr bool has_funcnd_v = has_funcnd<T,size_types...>::value;
 
     /**
@@ -41,6 +42,7 @@ namespace nmtools::meta
      * @tparam size_type argument type
      */
     template <typename T, typename size_type>
+    nmtools_meta_variable_attribute
     inline constexpr bool has_bracket_v = has_bracket<T,size_type>::value;
 
     /**

@@ -100,6 +100,11 @@ if (NMTOOLS_BUILD_SIMD_TESTS)
     add_subdirectory(simd)
 endif (NMTOOLS_BUILD_SIMD_TESTS)
 
+option(NMTOOLS_BUILD_OPENCL_TESTS "build opencl test programs" OFF)
+if (NMTOOLS_BUILD_OPENCL_TESTS)
+    add_subdirectory(opencl)
+endif (NMTOOLS_BUILD_OPENCL_TESTS)
+
 option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
 if (NMTOOLS_BUILD_META_TESTS)
     add_subdirectory(meta)

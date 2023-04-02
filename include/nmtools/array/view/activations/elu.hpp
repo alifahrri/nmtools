@@ -37,7 +37,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto elu(const array_t& array, alpha_t alpha=alpha_t{1})
     {
-        return ufunc(elu_t{{alpha}}, array);
+        return ufunc(elu_t<alpha_t>{{alpha}}, array);
     } // elu
 } // namespace nmtools::view
 

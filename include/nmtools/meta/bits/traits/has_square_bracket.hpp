@@ -36,6 +36,7 @@ namespace nmtools::meta
      * @tparam size_type argument type to indexing subscript
      */
     template <typename T, typename size_type>
+    nmtools_meta_variable_attribute
     inline constexpr bool has_square_bracket_v = has_square_bracket<T,size_type>::value;
 } // namespace nmtools::meta
 
