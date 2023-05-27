@@ -33,6 +33,9 @@ namespace nmtools::meta
         static constexpr auto value = is_index_v<T>;
     };
 
+    template <typename T, size_t Capacity>
+    struct is_hybrid_index_array<utl::static_vector<T,Capacity>,enable_if_t<is_index_v<T> || is_boolean_v<T>>> : true_type {};
+
     template <typename T, typename allocator>
     struct is_ndarray<utl::vector<T,allocator>> : is_num<T> {};
 

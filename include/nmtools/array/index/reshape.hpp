@@ -74,7 +74,13 @@ namespace nmtools::index
             using index_t = meta::make_signed_t<element_t>; // for comparison
 
             // number of "-1" in dst_shape
+            #if 0
             const auto [minus_1_count, dst_numel] = count_negative_reshape(dst_shape);
+            #else
+            const auto neg_reshape_count = count_negative_reshape(dst_shape);
+            const auto minus_1_count = nmtools::get<0>(neg_reshape_count);
+            const auto dst_numel = nmtools::get<1>(neg_reshape_count);
+            #endif
 
             if (minus_1_count > 1) {
                 return return_t{meta::Nothing};

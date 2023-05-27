@@ -20,6 +20,7 @@ namespace nmtools::meta
     }; // is_hybrid_ndarray
 
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool is_hybrid_ndarray_v = is_hybrid_ndarray<T>::value;
 } // namespace nmtools::meta
 

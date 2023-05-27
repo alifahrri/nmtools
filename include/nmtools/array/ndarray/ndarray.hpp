@@ -293,6 +293,9 @@ namespace nmtools::array
             return true;
         } // resize
     }; // ndarray_t
+
+    template <typename type, size_t max_size>
+    using static_vector_ndarray_t = array::ndarray_t<nmtools_array<type,max_size>,nmtools_array<size_t,1>>;
 } // namespace nmtools::array
 
 namespace nmtools

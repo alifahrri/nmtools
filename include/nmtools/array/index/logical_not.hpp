@@ -1,9 +1,10 @@
 #ifndef NMTOOLS_ARRAY_INDEX_LOGICAL_NOT_HPP
 #define NMTOOLS_ARRAY_INDEX_LOGICAL_NOT_HPP
 
+#include "nmtools/meta.hpp"
 #include "nmtools/array/at.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/meta.hpp"
+#include "nmtools/array/ndarray.hpp"
 
 namespace nmtools::index
 {
@@ -72,7 +73,23 @@ namespace nmtools::meta
                 using type = tuple_to_array_t<array_t>;
                 return as_value_v<transform_bounded_array_t<type>>;
             } else if constexpr (is_index_array_v<array_t>) {
+                constexpr auto DIM = len_v<array_t>;
+                [[maybe_unused]] constexpr auto B_DIM = bounded_size_v<array_t>;
+                using element_t = remove_address_space_t<get_element_or_common_type_t<array_t>>;
+                if constexpr (DIM > 0) {
+                    using type = nmtools_array<element_t,DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
+                    // TODO: provide nmtools_static_vector macro
+                    using type = nmtools_static_vector<element_t,B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<element_t>;
+                    return as_value_v<type>;
+                }
+                #if 0
                 return as_value_v<array_t>;
+                #endif
             } else {
                 return as_value_v<error::INDEX_LOGICAL_NOT_UNSUPPORTED<array_t>>;
             }

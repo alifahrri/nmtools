@@ -173,6 +173,12 @@ namespace nmtools::meta
     {
         using type = utl::array<U,N>;
     };
+
+    template <typename T, size_t N, typename U>
+    struct replace_value_type<utl::static_vector<T,N>,U>
+    {
+        using type = utl::static_vector<U,N>;
+    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_UTL_TRANSFORM_HPP

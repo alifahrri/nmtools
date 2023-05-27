@@ -2,6 +2,8 @@
 #define NMTOOLS_META_BITS_TRAITS_IS_INTEGER_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -60,6 +62,11 @@ namespace nmtools::meta
 
     template <typename T, typename=void>
     struct is_integral : is_integer<T> {};
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct is_integer<T,enable_if_t<has_address_space_v<T>>> : is_integer<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 
     template <typename T>
     constexpr inline auto is_integral_v = is_integral<T>::value;

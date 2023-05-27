@@ -2,6 +2,7 @@
 #define NMTOOLS_UTL_STATIC_VECTOR_HPP
 
 #include "nmtools/def.hpp"
+#include "nmtools/utl/array.hpp"
 
 // poor man's static_vector,
 // very simple and minimalistic implementation of static_vector
@@ -12,6 +13,7 @@
 
 namespace nmtools::utl
 {
+    // TODO: fix utl::static_vector with tuple on C++forOpenCL
     /**
      * @brief Poor man's static_vector type.
      * 
@@ -24,7 +26,7 @@ namespace nmtools::utl
     template <typename T, size_t Capacity=NMTOOLS_DEFAULT_STATIC_VECTOR_MAX_SIZE>
     struct static_vector
     {
-        using buffertype = T[Capacity];
+        using buffer_type = utl::array<T,Capacity>;
         using value_type  = T;
         using pointer     = T*;
         using reference   = T&;
@@ -33,7 +35,7 @@ namespace nmtools::utl
         using const_reference = const T&;
 
         protected:
-        T buffer[Capacity];
+        buffer_type buffer = {};
         size_type size_ = 0;
 
         // NOTE: broken on c++4opencl error: conflicting types for 'begin'
@@ -45,12 +47,14 @@ namespace nmtools::utl
         #endif
 
         public:
-        static_vector() {}
-        static_vector(size_type n)
-        {
-            resize(n);
-        }
-        static_vector(const static_vector& other)
+        constexpr static_vector()
+        {}
+        constexpr static_vector(size_type n)
+            : size_(n)
+        {}
+        constexpr static_vector(const static_vector& other)
+            // : buffer(other.buffer)
+            // , size_(other.size_)
         {
             resize(other.size_);
             // dumb copy
@@ -59,14 +63,14 @@ namespace nmtools::utl
             }
         }
 
-        void resize(size_type new_size)
+        constexpr void resize(size_type new_size)
         {
             // TODO: assert/throw
             if (new_size <= Capacity)
                 size_ = new_size;
         }
 
-        static_vector& operator=(const static_vector& other)
+        constexpr static_vector& operator=(const static_vector& other)
         {
             resize(other.size_);
             // dumb copy
@@ -76,7 +80,7 @@ namespace nmtools::utl
             return *this;
         }
 
-        void push_back(const T& t)
+        constexpr void push_back(const T& t)
         {
             if (size_+1 > Capacity) {
                 return;
@@ -85,14 +89,14 @@ namespace nmtools::utl
             buffer[size_-1] = t;
         }
 
-        const T* data() const
+        constexpr const T* data() const
         {
-            return buffer;
+            return buffer.data();
         }
 
-        T* data()
+        constexpr T* data()
         {
-            return buffer;
+            return buffer.data();
         }
 
         constexpr reference at(size_t i)

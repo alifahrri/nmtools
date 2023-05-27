@@ -17,6 +17,12 @@ namespace nmtools::meta
     };
 
     template <typename T>
+    struct get_maybe_type<const T> : get_maybe_type<T> {};
+
+    template <typename T>
+    struct get_maybe_type<T&> : get_maybe_type<T> {};
+
+    template <typename T>
     using get_maybe_type_t = typename get_maybe_type<T>::type;
 } // namespace nmtools::meta
 

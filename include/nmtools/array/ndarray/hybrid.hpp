@@ -93,15 +93,15 @@ namespace nmtools::array
         static inline constexpr auto dim_ = dimension;
 
         // use std array to make it easier to support constexpr
-        using data_type     = meta::make_array_type_t<T,max_elements>;
-        using value_type    = T;
+        using value_type    = meta::remove_address_space_t<T>;
+        using buffer_type   = nmtools_array<value_type,max_elements>;
         using size_type     = size_t;
-        using shape_type    = meta::make_array_type_t<size_t,dim_>;
-        using stride_type   = meta::make_array_type_t<size_t,dim_>;
+        using shape_type    = nmtools_array<size_t,dim_>;
+        using stride_type   = nmtools_array<size_t,dim_>;
         using reference     = value_type&;
         using const_reference = const value_type&;
 
-        data_type data;
+        buffer_type buffer_;
         shape_type shape_;
         stride_type strides_;
 
@@ -120,20 +120,28 @@ namespace nmtools::array
             strides_ = strides();
             auto array_view = view::flatten(array_ref);
             for (size_t i=0; i<n; i++)
-                nmtools::at(data,i) = nmtools::at(array_view,i);
+                nmtools::at(buffer_,i) = nmtools::at(array_view,i);
         } // init
 
-        constexpr hybrid_ndarray() : data{},
+        constexpr hybrid_ndarray() : buffer_{},
             shape_(detail::init_shape<max_elements,shape_type>()),
             strides_(detail::init_strides<stride_type>(shape_))
-        {} // hybrid_array
+        {} // hybrid_ndarray
+
+        #if 0
+        constexpr hybrid_ndarray(const hybrid_ndarray& other)
+            : buffer_{other.buffer_}
+            , shape_{other.shape_}
+            , strides_{other.shape_}
+        {} // hybrid_ndarray
+        #endif
 
         // explicit hybrid_ndarray(const shape_type& shape) { resize(shape); }
 
         // @note explicit required here, somehow related to operator=
         template <typename array_t, typename=meta::enable_if_t<meta::is_ndarray_v<array_t>>>
         constexpr explicit hybrid_ndarray(array_t&& a) :
-            data(detail::init_data<data_type>(a)),
+            buffer_(detail::init_data<buffer_type>(a)),
             shape_(detail::init_shape<max_elements,shape_type>(::nmtools::shape(a))),
             strides_(detail::init_strides<stride_type>(shape_))
         {} // hybrid_ndarray
@@ -184,32 +192,8 @@ namespace nmtools::array
 
         constexpr auto strides() const
         {
-            auto stride = index::compute_strides(shape_);
-            return stride;
+            return strides_;
         } // strides
-
-        template <typename...size_types>
-        constexpr auto resize(size_types...shape)
-            -> meta::enable_if_t<(meta::is_index_v<size_types> && ...),bool>
-        {
-            using tuple_t = meta::make_tuple_type_t<size_types...>;
-            // TODO: consider to trigger compile-error here
-            if (sizeof...(shape) != dim_) {
-                return false;
-            }
-            auto product = index::product(nmtools_tuple{shape...});
-            if ((size_t)product > max_elements) {
-                return false;
-            }
-            meta::template_for<sizeof...(shape)>([&](auto index){
-                constexpr auto i = decltype(index)::value;
-                shape_.at(i) = nmtools::get<i>(tuple_t{shape...});
-            });
-            strides_ = strides();
-            return true;
-            // numel_   = numel();
-            // data.resize(numel_);
-        } // resize
 
         constexpr auto resize(const shape_type& shape)
         {
@@ -222,10 +206,18 @@ namespace nmtools::array
                 return false;
             }
             shape_   = shape;
-            strides_ = strides();
+            const auto m_strides_ = index::compute_strides(shape_);
+            for (size_t i=0; i<len(m_strides_); i++) {
+                strides_.at(i) = m_strides_.at(i);
+            }
             return true;
-            // numel_   = numel();
-            // data.resize(numel_);
+        } // resize
+
+        template <typename...size_types>
+        constexpr auto resize(size_types...shape)
+            -> meta::enable_if_t<(meta::is_index_v<size_types> && ...),bool>
+        {
+            return resize(shape_type{static_cast<size_t>(shape)...});
         } // resize
 
         template <typename ...size_types>
@@ -246,7 +238,7 @@ namespace nmtools::array
                 , "unsupported element access, mismatched dimension"
             );
             auto offset = index::compute_offset(strides_, indices);
-            return data[offset];
+            return buffer_[offset];
         } // operator()
 
         template <typename ...size_types>
@@ -267,23 +259,33 @@ namespace nmtools::array
                 , "unsupporter element access, mismatched dimension"
             );
             auto offset = index::compute_offset(strides_, indices);
-            return data[(size_type)offset];
+            return buffer_[(size_type)offset];
         } // operator()
 
         constexpr const_reference at(shape_type i) const
         {
             auto offset = index::compute_offset(strides_, i);
-            return data[offset];
+            return buffer_[offset];
         } // at
 
         constexpr reference at(shape_type i)
         {
             auto offset = index::compute_offset(strides_, i);
-            return data[offset];
+            return buffer_[offset];
         } // at
 
         template <typename ndarray_t, typename=meta::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         auto operator=(const ndarray_t& rhs);
+
+        constexpr auto data() const
+        {
+            return buffer_.data();
+        }
+
+        constexpr auto data()
+        {
+            return buffer_.data();
+        }
 
         #define NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(N) \
         decltype(auto) operator=(meta::make_nested_dynamic_array_t<std::initializer_list,value_type,N>&& rhs) \
@@ -368,25 +370,25 @@ namespace nmtools::array
     template <typename T, size_t max_elements>
     constexpr auto begin(const array::hybrid_ndarray<T,max_elements,1>& a)
     {
-        return a.data.data();
+        return a.buffer_.data();
     } // begin
 
     template <typename T, size_t max_elements>
     constexpr auto begin(array::hybrid_ndarray<T,max_elements,1>& a)
     {
-        return a.data.data();
+        return a.buffer_.data();
     } // begin
 
     template <typename T, size_t max_elements>
     constexpr auto end(const array::hybrid_ndarray<T,max_elements,1>& a)
     {
-        return a.data.data() + a.shape_[0];
+        return a.buffer_.data() + a.shape_[0];
     } // end
 
     template <typename T, size_t max_elements>
     constexpr auto end(array::hybrid_ndarray<T,max_elements,1>& a)
     {
-        return a.data.data() + a.shape_[0];
+        return a.buffer_.data() + a.shape_[0];
     } // end
 
     /** @} */ // end group dynamic
@@ -686,7 +688,7 @@ namespace nmtools::array
 
         auto flat_rhs = view::flatten(rhs);
         for (size_t i=0; i<n; i++)
-            nmtools::at(this->data,i) = nmtools::at(flat_rhs,i);
+            nmtools::at(this->buffer_,i) = nmtools::at(flat_rhs,i);
 
         return *this;
     } // operator=

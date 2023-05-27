@@ -32,6 +32,7 @@ namespace nmtools::meta
     }; // is_dynamic_ndarray
 
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool is_dynamic_ndarray_v = is_dynamic_ndarray<T>::value;
 } // namespace nmtools::meta
 

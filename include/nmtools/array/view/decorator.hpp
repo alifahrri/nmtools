@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/data.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/index/product.hpp"
@@ -37,6 +38,16 @@ namespace nmtools::view::detail
             return ::nmtools::shape<force_constant_index>(array);
         }
     } // shape
+
+    template <bool prefer_constant_index=false, typename array_t>
+    constexpr auto size(const array_t& array)
+    {
+        if constexpr (meta::is_pointer_v<array_t>) {
+            return ::nmtools::size<prefer_constant_index>(*array);
+        } else {
+            return ::nmtools::size<prefer_constant_index>(array);
+        }
+    } // size
 
     /**
      * @brief Helper dim function that is pointer-aware.
@@ -245,9 +256,9 @@ namespace nmtools::view
                 // only perform assert if integral type is passed
                 // otherwise assume indices is packed and pass to apply_at
                 // to allow access from packed indices
-                if constexpr (meta::is_integral_v<common_t>)
-                    // @todo static_assert whenever possible
-                    assert (dim()==n); // tmp assertion
+                // if constexpr (meta::is_integral_v<common_t>)
+                //     // @todo static_assert whenever possible
+                //     assert (dim()==n); // tmp assertion
 
                 // @note needs to initialize array_t since view_type::array may not be constant expression
                 // @note flatten_t dim invocation differs from other view types @todo fix
@@ -502,7 +513,7 @@ namespace nmtools::view
      * 
      * @tparam array_t 
      */
-    template <typename array_t>
+    template <typename array_t, typename=void>
     struct resolve_array_type
     {
         static constexpr auto vtype = [](){
@@ -522,6 +533,11 @@ namespace nmtools::view
         }();
         using type = meta::type_t<decltype(vtype)>;
     }; // resolve_array_type
+
+    #ifdef __OPENCL_VERSION__
+    template <typename array_t>
+    struct resolve_array_type<array_t,meta::enable_if_t<meta::has_address_space_v<array_t>>> : resolve_array_type<meta::remove_address_space_t<array_t>> {};
+    #endif // __OPENCL_VERSION__
 
     // TODO: use meta::remove_const
     template <typename array_t>
@@ -654,7 +670,7 @@ namespace nmtools::view
      * 
      * @tparam attribute_t 
      */
-    template <typename attribute_t>
+    template <typename attribute_t,typename=void>
     struct resolve_attribute_type
     {
         static constexpr auto vtype = [](){
@@ -681,6 +697,12 @@ namespace nmtools::view
         }();
         using type = meta::type_t<decltype(vtype)>;
     }; // resolve_attribute_type
+
+    #ifdef __OPENCL_VERSION__
+    template <typename attribute_t>
+    struct resolve_attribute_type<attribute_t,meta::enable_if_t<meta::has_address_space_v<attribute_t>>>
+        : resolve_attribute_type<meta::remove_address_space_t<attribute_t>> {};
+    #endif // __OPENCL_VERSION__
 
     template <typename attribute_t>
     using resolve_attribute_type_t = meta::type_t<resolve_attribute_type<attribute_t>>;
@@ -721,12 +743,21 @@ namespace nmtools::view
             return attr;
         } else if constexpr (meta::is_index_array_v<attribute_t>) {
             using attr_t = meta::remove_cvref_t<attribute_type>;
+            using element_t = meta::get_element_or_common_type_t<attr_t>;
             auto attr = attr_t{};
+            size_t dim = len(attribute);
             if constexpr (meta::is_resizable_v<attr_t>) {
-                attr.resize(len(attribute));
+                attr.resize(dim);
             }
-            for (size_t i=0; i<(size_t)len(attribute); i++) {
-                at(attr,i) = at(attribute,i);
+            for (size_t i=0; i<dim; i++) {
+                auto ai = static_cast<element_t>(at(attribute,i));
+                #if 0
+                // error on C++ for OpenCL 😭
+                // Invalid cast (Producer: 'LLVM14.0.0' Reader: 'LLVM 14.0.0')
+                at(attr,i) = ai;
+                #else
+                nmtools::data(attr)[i] = ai;
+                #endif
             }
             return attr;
         } else /* if constexpr (meta::is_index_v<attribute_t>) */ {

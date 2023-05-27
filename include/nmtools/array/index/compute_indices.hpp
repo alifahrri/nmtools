@@ -20,13 +20,11 @@ namespace nmtools::index
         template <typename indices_t, typename offset_t, typename shape_t, typename strides_t>
         constexpr auto compute_indices(indices_t& indices, const offset_t& offset, const shape_t& shape, const strides_t& strides)
         {
-            constexpr auto shape_has_tuple_size = meta::is_fixed_index_array_v<shape_t>;
-            constexpr auto strides_has_tuple_size = meta::is_fixed_index_array_v<strides_t>;
+            constexpr auto n = meta::len_v<shape_t>;
+            constexpr auto m = meta::len_v<strides_t>;
 
-            if constexpr (shape_has_tuple_size && strides_has_tuple_size)
+            if constexpr ((n>0) && (m>0))
             {
-                constexpr auto n = meta::len_v<shape_t>;
-                constexpr auto m = meta::len_v<strides_t>;
                 static_assert (m==n
                     , "unsupported compute_indices, mismatched shape for shape and strides"
                 );
@@ -84,6 +82,13 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+
+    namespace error
+    {
+        template <typename...>
+        struct COMPUTE_INDICES_UNSUPPORTED : detail::fail_t {};
+    }
+
     // TODO: improve type deduction
     /**
      * @brief resolve return type for compute_indices
@@ -96,6 +101,23 @@ namespace nmtools::meta
     struct resolve_optype< void, index::compute_indices_t, offset_t, shape_t, strides_t >
     {
         static constexpr auto vtype = [](){
+            constexpr auto DIM = len_v<shape_t>;
+            [[maybe_unused]] constexpr auto B_DIM = bounded_size_v<shape_t>;
+            using index_type = get_index_element_type_t<shape_t>;
+            if constexpr (!is_index_array_v<shape_t>) {
+                using type = error::COMPUTE_INDICES_UNSUPPORTED<offset_t,shape_t,strides_t>;
+                return as_value_v<type>;
+            } else if constexpr (DIM > 0) {
+                using type = nmtools_array<index_type,DIM>;
+                return as_value_v<type>;
+            } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
+                using type = utl::static_vector<index_type,B_DIM>;
+                return as_value_v<type>;
+            } else {
+                using type = nmtools_list<index_type>;
+                return as_value_v<type>;
+            }
+            #if 0
             using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
             // temporary workaround:
             // the element type may be constant index,
@@ -113,6 +135,7 @@ namespace nmtools::meta
                 return as_value_v<type>;
             }
             else return as_value_v<type>;
+            #endif
         }();
         using type = type_t<remove_cvref_t<decltype(vtype)>>;
     }; // resolve_optype

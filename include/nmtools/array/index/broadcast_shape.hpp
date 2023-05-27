@@ -78,7 +78,7 @@ namespace nmtools::index
                 res.resize(rdim);
             
             auto broadcast_shape_impl = [&](auto i){
-                using idx_t = meta::make_signed_t<element_t>;
+                using idx_t = meta::remove_address_space_t<meta::make_signed_t<element_t>>;
                 // compute index to fill from behind
                 #if 0
                 // OK in gcc but failed on clang 🤷
@@ -168,19 +168,33 @@ namespace nmtools::index
             // do nothing
         }
 
-        // TODO: use optional
-        using return_t = meta::make_tuple_type_t<bool,result_t>;
-        return return_t{success, res};
+        using return_t = nmtools_maybe<result_t>;
+        if (success) {
+            return return_t{res};
+        } else {
+            return return_t{meta::Nothing};
+        }
     } // broadcast_shape
 
     template <typename ashape_t, typename bshape_t, typename cshape_t, typename...other_shapes_t>
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape, const cshape_t& cshape, const other_shapes_t&...other_shapes)
     {
         // TODO: use optional
+        #if 0
         const auto [success_,shape_] = broadcast_shape(ashape,bshape);
         const auto [success, shape]  = broadcast_shape(shape_,cshape,other_shapes...);
-        using return_t = meta::make_tuple_type_t<bool,meta::remove_cvref_t<decltype(shape)>>;
+        using return_t = nmtools_tuple<bool,meta::remove_cvref_t<meta::remove_address_space_t<decltype(shape)>>>;
         return return_t{success && success_, shape};
+        #else
+        auto result_ = broadcast_shape(ashape,bshape);
+        using result_t = decltype(broadcast_shape(*result_,cshape,other_shapes...));
+        if (result_) {
+            auto result  = broadcast_shape(*result_,cshape,other_shapes...);
+            return result_t{result};
+        } else {
+            return result_t{meta::Nothing};
+        }
+        #endif
     } // broadcast_shape
 
     struct broadcast_size_t {};
@@ -237,10 +251,10 @@ namespace nmtools::meta
                 constexpr auto ashape = to_value_v<ashape_t>;
                 constexpr auto bshape = to_value_v<bshape_t>;
                 constexpr auto broadcasted = index::broadcast_shape(ashape,bshape);
-                constexpr auto success = at(broadcasted,meta::ct_v<0>);
+                constexpr auto success = static_cast<bool>(broadcasted);
                 if constexpr (success) {
                     // convert back from value to type
-                    constexpr auto shape = at(broadcasted,meta::ct_v<1>);
+                    constexpr auto shape = *broadcasted;
                     return template_reduce<::nmtools::len(shape)>([&](auto init, auto index){
                         // init should be as_value<sometype>
                         using init_t = type_t<decltype(init)>;

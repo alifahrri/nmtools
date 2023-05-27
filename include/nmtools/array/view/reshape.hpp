@@ -102,6 +102,8 @@ namespace nmtools::view
     template <typename array_t, typename shape_t>
     constexpr auto reshape(const array_t& array, const shape_t& new_shape)
     {
+        // TODO: fix this on opencl kernel
+        #ifndef __OPENCL_VERSION__
         auto new_shape_ = index::shape_reshape(shape(array),new_shape);
         using new_shape_t = decltype(new_shape_);
         // TODO: consider to make the return type as maybe type instead, when runtime check is needed
@@ -115,6 +117,9 @@ namespace nmtools::view
         } else {
             return decorator_t<reshape_t,array_t,new_shape_t>{{array,new_shape_}};
         }
+        #else
+        return decorator_t<reshape_t,array_t,shape_t>{{array,new_shape}};
+        #endif
     } // reshape
 
     /** @} */ // end group view

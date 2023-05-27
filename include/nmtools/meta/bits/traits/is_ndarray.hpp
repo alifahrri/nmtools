@@ -6,6 +6,8 @@
 #include "nmtools/meta/bits/traits/has_square_bracket.hpp"
 #include "nmtools/meta/bits/traits/is_fixed_size_ndarray.hpp"
 #include "nmtools/meta/bits/array/nested_array_dim.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -78,6 +80,11 @@ namespace nmtools::meta
     template <typename T>
     nmtools_meta_variable_attribute
     inline constexpr bool is_ndarray_v = is_ndarray<T>::value;
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct is_ndarray<T,enable_if_t<has_address_space_v<T>>> : is_ndarray<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 
 
     /** @} */ // end group traits

@@ -82,7 +82,7 @@ namespace nmtools::view
     }; // ref_t
 
     template <typename T>
-    struct ref_t<T*, meta::enable_if_t<meta::is_num_v<meta::remove_address_space_t<T>>>>
+    struct ref_t<T*, meta::enable_if_t<meta::is_num_v<T>>>
     {
         using value_type = T;
         using const_reference = const value_type&;
@@ -168,6 +168,13 @@ namespace nmtools::meta
     struct is_ndarray< view::decorator_t<view::ref_t, array_t> >
     {
         static constexpr auto value = is_ndarray_v<array_t>;
+    };
+
+    // specialization for ptr
+    template <typename array_t>
+    struct is_ndarray< view::decorator_t<view::ref_t, array_t*> >
+    {
+        static constexpr auto value = is_num_v<array_t>;
     };
 
     template <typename T>

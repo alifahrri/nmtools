@@ -23,6 +23,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T>
+    nmtools_meta_variable_attribute
     inline constexpr bool has_tuple_size_v = has_tuple_size<T>::value;
 } // namespace nmtools::meta
 

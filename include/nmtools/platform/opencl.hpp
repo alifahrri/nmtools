@@ -7,6 +7,7 @@
 #define NMTOOLS_DISABLE_DYNAMIC_ARRAY
 #define NMTOOLS_DISABLE_VECTOR
 #define NMTOOLS_META_MAKE_SEQUENCE
-#define nmtools_list nmtools_static_vector
+#define nmtools_list ::nmtools::utl::static_vector
+#define NMTOOLS_OPENCL_KERNEL_MAX_DIM 8
 
 #endif // NMTOOLS_PLATFORM_OPENCL_HPP

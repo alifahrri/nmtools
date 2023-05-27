@@ -364,7 +364,7 @@ namespace nmtools
      * 
      * @tparam T 
      */
-    template <typename T>
+    template <typename T, typename=void>
     struct is_none : meta::false_type {};
 
     template <>
@@ -374,6 +374,23 @@ namespace nmtools
     struct is_none<const none_t> : meta::true_type {};
     template <>
     struct is_none<const none_t&> : meta::true_type {};
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct is_none<global T> : is_none<T> {};
+
+    template <typename T>
+    struct is_none<local T> : is_none<T> {};
+
+    template <typename T>
+    struct is_none<private T> : is_none<T> {};
+
+    template <typename T>
+    struct is_none<constant T> : is_none<T> {};
+
+    template <typename T>
+    struct is_none<generic T> : is_none<T> {};
+    #endif // __OPENCL_VERSION__
 
     /**
      * @brief helper inline variable template to check for "None" type

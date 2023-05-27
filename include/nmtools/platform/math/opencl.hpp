@@ -28,7 +28,6 @@ namespace nmtools::math
     using ::isfinite;
     using ::isinf;
     using ::isnan;
-    using ::log;
     using ::log1p;
     using ::log2;
     using ::log10;
@@ -38,7 +37,6 @@ namespace nmtools::math
     using ::sinh;
     using ::sqrt;
     using ::tan;
-    using ::tanh;
     using ::trunc;
 }
 

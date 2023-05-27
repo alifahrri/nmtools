@@ -3,6 +3,8 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -28,6 +30,11 @@ namespace nmtools::meta
     {
         static constexpr auto value = N;
     };
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct fixed_index_array_size<T,enable_if_t<has_address_space_v<T>>> : fixed_index_array_size<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 
     template <typename T>
     static constexpr auto fixed_index_array_size_v = fixed_index_array_size<T>::value;

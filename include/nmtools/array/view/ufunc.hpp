@@ -18,7 +18,7 @@ namespace nmtools::view
     constexpr auto _ufunc(op_t op, const tuple<arrays_t...>& func, meta::index_sequence<Is...>)
     {
         // help deduction
-        return decorator_t<ufunc_t,op_t,arrays_t...>{{op, nmtools::get<Is>(func)...}};
+        return decorator_t<ufunc_t,op_t,arrays_t...>({{op, nmtools::get<Is>(func)...}});
     }; // _ufunc
 
     template <typename op_t, template<typename...> typename tuple, typename...arrays_t>

@@ -35,8 +35,8 @@ namespace nmtools::utl
         constexpr tuple1(const tuple1<var1>& tp)
             : value1(tp.value1) {};
 
-        // constexpr tuple1(tuple1&&) = default;
-        // constexpr tuple1(const tuple1&) = default;
+        constexpr tuple1(tuple1&&) = default;
+        constexpr tuple1(const tuple1&) = default;
     };
 
     template <class arg1, class arg2>
@@ -52,10 +52,10 @@ namespace nmtools::utl
         
         template <typename var1, typename var2>
         constexpr tuple2(const tuple2<var1,var2>& tp)
-            : base(tp.value1), value2{tp.value2} {}
+            : base(tp.value1), value2(tp.value2) {}
 
-        // constexpr tuple2(tuple2&&) = default;
-        // constexpr tuple2(const tuple2&) = default;
+        constexpr tuple2(tuple2&&) = default;
+        constexpr tuple2(const tuple2&) = default;
     };
 
     template <class arg1, class arg2, class arg3>
@@ -73,8 +73,8 @@ namespace nmtools::utl
         constexpr tuple3(const tuple3<var1,var2,var3>& tp)
             : base(tp.value1,tp.value2), value3{tp.value3} {}
         
-        // constexpr tuple3(tuple3&&) = default;
-        // constexpr tuple3(const tuple3&) = default;
+        constexpr tuple3(tuple3&&) = default;
+        constexpr tuple3(const tuple3&) = default;
     };
 
     template <class arg1, class arg2, class arg3, class arg4>

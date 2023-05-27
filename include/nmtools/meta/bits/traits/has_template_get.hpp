@@ -4,6 +4,7 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/expr.hpp"
 #include "nmtools/meta/bits/traits/is_fail.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {

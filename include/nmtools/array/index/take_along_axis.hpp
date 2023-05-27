@@ -36,11 +36,14 @@ namespace nmtools::index
             auto indices_dim = (size_t)len(indices);
             auto maybe_axis  = normalize_axis(axis, shape_dim);
 
-            const auto [broadcast_s, b_shape] = broadcast_shape(shape,indices);
+            const auto bcast_result = broadcast_shape(shape,indices);
+            const auto broadcast_s = static_cast<bool>(bcast_result);
 
             if (!static_cast<bool>(maybe_axis) || !((size_t)shape_dim == (size_t)indices_dim) || !static_cast<bool>(broadcast_s)) {
                 return return_t {}; // Nothing
             }
+
+            const auto& b_shape = *bcast_result;
 
             auto result = result_t {};
             auto axis_  = *maybe_axis;

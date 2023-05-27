@@ -8,6 +8,9 @@
 #include "nmtools/meta/bits/traits/is_bounded_array.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
 
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
+
 #include "nmtools/meta/loop.hpp"
 
 namespace nmtools::meta
@@ -67,6 +70,11 @@ namespace nmtools::meta
      */
     template <typename T>
     inline constexpr auto fixed_ndarray_shape_v = fixed_ndarray_shape<T>::value;
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct fixed_ndarray_shape<T,enable_if_t<has_address_space_v<T>>> : fixed_ndarray_shape<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_ARRAY_FIXED_NDARRAY_SHAPE

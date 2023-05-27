@@ -16,6 +16,9 @@ namespace nmtools::meta
     template<typename T, size_t N>
     struct is_bounded_array<T[N]> : true_type {};
 
+    template <typename T>
+    struct is_bounded_array<T&> : is_bounded_array<T> {};
+
     /**
      * @brief helper variable template to check if T is bounded array
      * 
