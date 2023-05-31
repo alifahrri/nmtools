@@ -138,6 +138,9 @@ namespace nmtools::view
          *  - has index member function that transform indices
          */
 
+        nmtools_func_attribute
+        ~decorator_t() = default;
+
         /**
          * @brief return the shape of this array
          * 
@@ -240,12 +243,12 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr decltype(auto) operator()(size_types...indices)
         {
+            // TODO: better error handling
             // @note either using auto& or decltype(auto) for return type
             // since at(...) return auto&
 
             // error: pack expansion used as argument for non-pack parameter of alias template :|
             // using common_t = meta::promote_index_t<size_types...>;
-            using common_t = meta::type_t<meta::promote_index<size_types...>>;
             using meta::has_funcnd_v;
             if constexpr (has_funcnd_v<view_type,size_types...>)
                 return view_type::operator()(indices...);
@@ -253,19 +256,6 @@ namespace nmtools::view
                 auto transformed_indices = view_type::index(indices...);
 
                 [[maybe_unused]] constexpr auto n = sizeof...(size_types);
-                // only perform assert if integral type is passed
-                // otherwise assume indices is packed and pass to apply_at
-                // to allow access from packed indices
-                // if constexpr (meta::is_integral_v<common_t>)
-                //     // @todo static_assert whenever possible
-                //     assert (dim()==n); // tmp assertion
-
-                // @note needs to initialize array_t since view_type::array may not be constant expression
-                // @note flatten_t dim invocation differs from other view types @todo fix
-                // if constexpr (meta::is_fixed_size_ndarray_v<array_t>)
-                //     static_assert (detail::dim(array_t{})==n);
-                // else
-                //     assert (dim()==n);
 
                 // call at to referred object, not to this
                 if constexpr (meta::is_pointer_v<array_type>) {
@@ -751,7 +741,7 @@ namespace nmtools::view
             }
             for (size_t i=0; i<dim; i++) {
                 auto ai = static_cast<element_t>(at(attribute,i));
-                #if 0
+                #if 1
                 // error on C++ for OpenCL 😭
                 // Invalid cast (Producer: 'LLVM14.0.0' Reader: 'LLVM 14.0.0')
                 at(attr,i) = ai;

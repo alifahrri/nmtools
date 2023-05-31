@@ -386,7 +386,7 @@ namespace nmtools
                 return type{};
             } else if constexpr (!meta::is_fail_v<decltype(bounded_size)>) {
                 using type = clipped_size_t<(size_t)bounded_size>;
-                return type{nmtools::size(array)};
+                return type{static_cast<size_t>(nmtools::size(array))};
             } else if constexpr (!meta::is_fail_v<decltype(c_shape)> && !is_none_v<decltype(c_shape)>) {
                 constexpr auto c_sum = [&](){
                     size_t c_sum = 1;

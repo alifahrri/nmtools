@@ -6,6 +6,7 @@
 
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/ref.hpp"
+#include "nmtools/array/ndarray.hpp"
 
 namespace nmtools::index
 {
@@ -247,9 +248,24 @@ namespace nmtools::meta
                 }
             } else if constexpr (is_index_array_v<src_shape_t> && is_index_array_v<dst_shape_t>) {
                 using element_t = get_element_type_t<dst_shape_t>;
+                #if 0
                 using indices_t = transform_bounded_array_t<dst_shape_t>;
                 using type = replace_element_type_t<indices_t,make_unsigned_t<element_t>>;
                 return as_value_v<type>;
+                #else
+                constexpr auto DST_DIM = len_v<dst_shape_t>;
+                [[maybe_unused]] constexpr auto DST_B_DIM = bounded_size_v<dst_shape_t>;
+                if constexpr (DST_DIM > 0) {
+                    using type = nmtools_array<element_t,DST_DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(DST_B_DIM)>) {
+                    using type = nmtools_static_vector<element_t,DST_B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<element_t>;
+                    return as_value_v<type>;
+                }
+                #endif
             } else {
                 using type = error::SHAPE_RESHAPE_UNSUPPORTED<src_shape_t,dst_shape_t>;
                 return as_value_v<type>;

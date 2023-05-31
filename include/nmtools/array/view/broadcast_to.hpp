@@ -197,7 +197,6 @@ namespace nmtools::view
             #else
             const auto result = index::shape_broadcast_to(ashape,shape);
             const auto& success = nmtools::get<0>(result);
-            const auto& shape_  = nmtools::get<1>(result);
             const auto& free    = nmtools::get<2>(result);
             #endif
             auto origin_axes = [](auto free){
