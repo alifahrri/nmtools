@@ -189,8 +189,7 @@ namespace nmtools::index
         auto result_ = broadcast_shape(ashape,bshape);
         using result_t = decltype(broadcast_shape(*result_,cshape,other_shapes...));
         if (result_) {
-            auto result  = broadcast_shape(*result_,cshape,other_shapes...);
-            return result_t{result};
+            return broadcast_shape(*result_,cshape,other_shapes...);
         } else {
             return result_t{meta::Nothing};
         }
