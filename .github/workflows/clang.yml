@@ -14,7 +14,7 @@ on:
 jobs:
   dockcross-clang:
     name: ${{ matrix.name }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -42,7 +42,7 @@ jobs:
 
   dockcross-clang-generic-ndarray:
     name: ${{ matrix.name }}-generic-ndarray
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -70,7 +70,7 @@ jobs:
 
   dockcross-clang-no-stl:
     name: ${{ matrix.name }}-no-stl
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -98,7 +98,7 @@ jobs:
 
   dockcross-clang-no-stl-generic-ndarray:
     name: ${{ matrix.name }}-no-stl-generic-ndarray
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -126,7 +126,7 @@ jobs:
 
   dockcross-clang-no-stl-generic-ndarray-eval:
     name: ${{ matrix.name }}-no-stl-generic-ndarray-eval
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -150,7 +150,7 @@ jobs:
 
   dockcross-clang-generic-ndarray-eval:
     name: ${{ matrix.name }}-generic-ndarray-eval
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -174,7 +174,7 @@ jobs:
     
   dockcross-clang-constexpr-eval:
     name: ${{ matrix.name }}-constexpr-eval
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -198,7 +198,7 @@ jobs:
 
   dockcross-clang-constexpr-no-stl-generic-ndarray-eval:
     name: ${{ matrix.name }}-constexpr-no-stl-generic-ndarray-eval
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -222,7 +222,7 @@ jobs:
   
   dockcross-clang-constexpr-generic-ndarray-eval:
     name: ${{ matrix.name }}-constexpr-generic-ndarray-eval
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
