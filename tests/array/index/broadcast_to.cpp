@@ -4,7 +4,7 @@
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/testing/data/array/broadcast_to.hpp"
+#include "nmtools/testing/data/index/broadcast_to.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;
