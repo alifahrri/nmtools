@@ -14,6 +14,7 @@ namespace nmtools::view
     {
         template <typename T>
         NMTOOLS_UFUNC_CONSTEXPR
+        nmtools_func_attribute
         auto operator()(const T& x) const
         {
             return x - math::tanh(x);
@@ -28,6 +29,7 @@ namespace nmtools::view
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
     template <typename array_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto tanhshrink(const array_t& array)
     {

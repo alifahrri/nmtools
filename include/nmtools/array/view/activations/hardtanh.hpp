@@ -31,6 +31,7 @@ namespace nmtools::view
     }; // hardtanh_t
 
     template <typename min_val_t, typename max_val_t>
+    nmtools_func_attribute
     hardtanh_t(min_val_t,max_val_t) -> hardtanh_t<min_val_t,max_val_t>;
 
     /**

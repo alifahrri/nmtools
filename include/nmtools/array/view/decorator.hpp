@@ -212,7 +212,7 @@ namespace nmtools::view
                 // to allow access from packed indices
                 // TODO: better error handling
                 if constexpr (meta::is_integral_v<common_t>) {
-                    constexpr auto n = sizeof...(size_types);
+                    [[maybe_unused]] constexpr auto n = sizeof...(size_types);
                     // TODO: static_assert whenever possible
                     nmtools_cassert ( (common_t)dim()==(common_t)n
                         , "mismatched dimension"

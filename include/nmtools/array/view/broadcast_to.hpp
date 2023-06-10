@@ -128,6 +128,7 @@ namespace nmtools::view
         array_type array;
         shape_type shape_; // broadcasted shape (destination)
         origin_axes_type origin_axes; // origin axes axes
+        broadcast_size_type broadcast_size;
 
         constexpr broadcast_to_t(array_type array, shape_type shape, origin_axes_type origin_axes, [[maybe_unused]] bsize_t bsize=bsize_t{})
             : array(array), shape_(shape), origin_axes(origin_axes) {}
@@ -170,14 +171,14 @@ namespace nmtools::view
         if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
-            using ret_left_t  = decltype(broadcast_to(meta::declval<left_t>(),shape,bsize));
-            using ret_right_t = decltype(broadcast_to(meta::declval<right_t>(),shape,bsize));
+            using ret_left_t  = decltype(view::broadcast_to(meta::declval<left_t>(),shape,bsize));
+            using ret_right_t = decltype(view::broadcast_to(meta::declval<right_t>(),shape,bsize));
             using either_t = meta::replace_either_t<array_t,ret_left_t,ret_right_t>;
             if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
-                return either_t{broadcast_to(*l_ptr,shape,bsize)};
+                return either_t{view::broadcast_to(*l_ptr,shape,bsize)};
             } else /* if (auto r_ptr = nmtools::get_if<right_t>(&array)) */ {
                 auto r_ptr = nmtools::get_if<right_t>(&array);
-                return either_t{broadcast_to(*r_ptr,shape,bsize)};
+                return either_t{view::broadcast_to(*r_ptr,shape,bsize)};
             }
         }
         // bypass broadcasting index logic if array_t is simply scalar type
@@ -196,7 +197,7 @@ namespace nmtools::view
             const auto [success, shape_, free] = index::shape_broadcast_to(ashape,shape);
             #else
             const auto result = index::shape_broadcast_to(ashape,shape);
-            const auto& success = nmtools::get<0>(result);
+            [[maybe_unused]] const auto& success = nmtools::get<0>(result);
             const auto& free    = nmtools::get<2>(result);
             #endif
             auto origin_axes = [](auto free){

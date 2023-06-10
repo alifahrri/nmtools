@@ -14,6 +14,7 @@ namespace nmtools::view
     struct mish_t
     {
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
@@ -29,6 +30,7 @@ namespace nmtools::view
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
     template <typename array_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto mish(const array_t& array)
     {

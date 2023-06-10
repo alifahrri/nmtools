@@ -23,9 +23,19 @@
 	// "name": "Testbench",
 	// "dockerFile": "../docker/testbench.dockerfile",
 
+    // DOCKERFILE: circle
+    // "name": "circle build 198",
+	// "dockerFile": "../docker/circle.dockerfile",
+
+    // DOCKERFILE: cuda
+    // "name": "cuda-12 ubuntu20.04",
+    // "dockerfile": "../docker/cuda.dockerfile",
+
 	"build": { 
-		"args": { "USERNAME": "${localEnv:USER}" }
+		"args": { "USERNAME": "${localEnv:USER}" },
+        "target": "dev"  
 	},
+
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},

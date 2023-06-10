@@ -6,10 +6,37 @@
 
 namespace nmtools::functional
 {
-    constexpr inline auto arccos = functor_t(unary_fmap_t{
-        [](const auto&...args){
-            return view::arccos(args...);
-    }});
+    namespace fun
+    {
+        struct arccos_t
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::arccos(args...);
+            }
+        };
+    }
+
+    constexpr inline auto arccos = functor_t(unary_fmap_t<fun::arccos_t>{});
+
+    template <typename...arrays_t>
+    struct get_function_t<
+        view::decorator_t<
+            view::ufunc_t, view::arccos_t, arrays_t...
+        >
+    > {
+        using view_type = view::decorator_t<
+            view::ufunc_t, view::arccos_t, arrays_t...
+        >;
+
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            return arccos;
+        }
+    };
 } // namespace nmtools::functional
 
 

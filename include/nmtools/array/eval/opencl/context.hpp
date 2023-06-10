@@ -16,18 +16,6 @@
 
 namespace nmtools::array::opencl
 {
-    template <typename array_t>
-    auto get_array(const array_t& array)
-    {
-        if constexpr (meta::is_view_v<array_t>) {
-            return get_array(array.array);
-        } else if constexpr (meta::is_pointer_v<array_t>) {
-            return array;
-        } else if constexpr (meta::is_ndarray_v<array_t>) {
-            return &array;
-        }
-    }
-
     struct buffer_deleter_t
     {
         void operator()(cl_mem* ptr) const

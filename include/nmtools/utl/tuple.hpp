@@ -7,6 +7,14 @@
 
 // poor man's tuple
 
+#ifndef nmtools_utl_alignment
+#define nmtools_utl_alignment(x) __align__(x)
+#endif // nmtools_utl_alignment
+
+#ifndef nmtools_utl_align_size
+#define nmtools_utl_align_size 4
+#endif // nmtools_utl_align_size
+
 namespace nmtools::utl
 {
     #define DECLARE_TUPLE_VAL_TYPE(index) \
@@ -212,6 +220,7 @@ namespace nmtools::utl
     template <typename...Args>
     struct tuple : tuple_base_t<Args...>
     {
+        static_assert( sizeof...(Args) <= 9 );
         using base = tuple_base_t<Args...>;
         constexpr tuple() : base() {};
 

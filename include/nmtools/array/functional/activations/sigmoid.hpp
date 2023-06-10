@@ -6,10 +6,36 @@
 
 namespace nmtools::functional
 {
-    constexpr inline auto sigmoid = functor_t(unary_fmap_t{
-        [](const auto&...args){
-            return view::sigmoid(args...);
-    }});
+    namespace fun
+    {
+        struct sigmoid_t
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::sigmoid(args...);
+            }
+        };
+    }
+    constexpr inline auto sigmoid = functor_t(unary_fmap_t<fun::sigmoid_t>{});
+
+    template <typename...arrays_t>
+    struct get_function_t<
+        view::decorator_t<
+            view::ufunc_t, view::sigmoid_t, arrays_t...
+        >
+    > {
+        using view_type = view::decorator_t<
+            view::ufunc_t, view::sigmoid_t, arrays_t...
+        >;
+
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            return sigmoid;
+        }
+    };
 } // namespace nmtools::functional
 
 

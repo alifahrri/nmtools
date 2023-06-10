@@ -129,6 +129,44 @@ namespace nmtools
                             return as_value_v<result_t>;
                         }
                     }, as_value_v<nmtools_tuple<>>);
+                #if 1
+                } else if constexpr (is_index_array_v<shape_t> && (is_index_v<axes_t>)) {
+                    constexpr auto N = len_v<shape_t>;
+                    [[maybe_unused]] constexpr auto B_SIZE = bounded_size_v<shape_t>;
+                    using index_t = get_index_element_type_t<shape_t>;
+                    if constexpr (N > 0) {
+                        using type = nmtools_array<index_t,N+1>;
+                        return as_value_v<type>;
+                    } else if constexpr (!is_fail_v<decltype(B_SIZE)>) {
+                        using type = nmtools_static_vector<index_t,B_SIZE+1>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = nmtools_list<index_t>;
+                        return as_value_v<type>;
+                    }
+                } else if constexpr (is_index_array_v<shape_t> && is_index_array_v<axes_t>) {
+                    constexpr auto N = len_v<shape_t>;
+                    constexpr auto M = len_v<axes_t>;
+                    [[maybe_unused]] constexpr auto B_N = bounded_size_v<shape_t>;
+                    [[maybe_unused]] constexpr auto B_M = bounded_size_v<axes_t>;
+                    using index_t = get_index_element_type_t<shape_t>;
+                    if constexpr (N > 0 && M > 0) {
+                        using type = nmtools_array<index_t,N+M>;
+                        return as_value_v<type>;
+                    } else if constexpr (N > 0 && !is_fail_v<decltype(B_M)>) {
+                        using type = nmtools_static_vector<index_t,N+B_M>;
+                        return as_value_v<type>;
+                    } else if constexpr (!is_fail_v<decltype(B_N)> && M > 0) {
+                        using type = nmtools_static_vector<index_t,B_N+M>;
+                        return as_value_v<type>;
+                    } else if constexpr (!is_fail_v<decltype(B_N)> && !is_fail_v<decltype(B_M)>) {
+                        using type = nmtools_static_vector<index_t,B_N+B_M>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = nmtools_list<index_t>;
+                        return as_value_v<type>;
+                    }
+                #else
                 } else if constexpr (is_fixed_index_array_v<shape_t> && (is_index_v<axes_t> || is_fixed_index_array_v<axes_t>)) {
                     constexpr auto n_axes = [](){
                         if constexpr (is_index_v<axes_t>) {
@@ -182,6 +220,7 @@ namespace nmtools
                     return as_value_v<replace_element_type_t<axes_t,index_t>>;
                 } else if constexpr (is_index_array_v<shape_t> && is_index_array_v<axes_t>) {
                     return as_value_v<shape_t>;
+                #endif
                 } else {
                     return as_value_v<error::EXPAND_DIMS_UNSUPPORTED<shape_t,axes_t>>;
                 }

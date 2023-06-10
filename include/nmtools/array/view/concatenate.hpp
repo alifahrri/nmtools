@@ -62,8 +62,8 @@ namespace nmtools::view
             const auto bshape = detail::shape(rhs);
             const auto [aflag, bflag, a_idx, b_idx] = index::concatenate(ashape,bshape,indices_,axis);
             // @todo better error handling
-            assert ( aflag || bflag
-                // , "out of bound access"
+            nmtools_cassert ( aflag || bflag
+                , "out of bound access"
             );
             // @todo maybe provide options/customization to select type casting
             using common_t = value_type;
@@ -90,10 +90,10 @@ namespace nmtools::view
     {
         auto ashape = shape(lhs);
         auto bshape = shape(rhs);
-        const auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
+        [[maybe_unused]] const auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
         // TODO: use nmtools_assert macro
-        assert (success
-            // , "unsupported concatenate, mismatched shape"
+        nmtools_cassert (success
+            , "unsupported concatenate, mismatched shape"
         );
         return decorator_t<concatenate_t,lhs_array_t,rhs_array_t,axis_t>{{lhs,rhs,axis}};
     } // concatenate

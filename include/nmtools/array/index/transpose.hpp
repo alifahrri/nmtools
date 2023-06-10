@@ -4,6 +4,8 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/ref.hpp"
+#include "nmtools/array/ndarray.hpp"
+#include "nmtools/utl/static_vector.hpp"
 
 namespace nmtools::index
 {
@@ -99,7 +101,19 @@ namespace nmtools::meta
             ) {
                 return as_value_v<decltype(to_value_v<shape_t>)>;
             } else if constexpr (is_index_array_v<shape_t> && (is_index_array_v<axes_t> || is_none_v<axes_t>)) {
-                return as_value_v<shape_t>;
+                constexpr auto N_SHAPE = len_v<shape_t>;
+                [[maybe_unused]] constexpr auto B_SHAPE = bounded_size_v<shape_t>;
+                using index_t = get_index_element_type_t<shape_t>;
+                if constexpr (N_SHAPE > 0) {
+                    using type = nmtools_array<index_t,N_SHAPE>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_SHAPE)>) {
+                    using type = nmtools_static_vector<index_t,B_SHAPE>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<index_t>;
+                    return as_value_v<type>;
+                }
             } else {
                 return as_value_v<error::SHAPE_TRANSPOSE_UNSUPPORTED<shape_t,axes_t>>;
             }

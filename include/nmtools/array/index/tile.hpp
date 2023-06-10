@@ -5,6 +5,8 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/array/ndarray.hpp"
+#include "nmtools/utl/static_vector.hpp"
 
 namespace nmtools::index
 {
@@ -103,6 +105,34 @@ namespace nmtools::meta
             } else if constexpr (is_index_array_v<shape_t> && is_constant_index_array_v<reps_t>) {
                 using type = resolve_optype_t<index::shape_tile_t,shape_t,decltype(to_value_v<reps_t>)>;
                 return as_value_v<type>;
+            #if 1
+            } else if constexpr (is_index_array_v<shape_t> && is_index_array_v<reps_t>) {
+                constexpr auto N_SHAPE = len_v<shape_t>;
+                constexpr auto N_REPS  = len_v<reps_t>;
+                [[maybe_unused]] constexpr auto B_SHAPE = bounded_size_v<shape_t>;
+                [[maybe_unused]] constexpr auto B_REPS  = bounded_size_v<reps_t>;
+                using index_t = get_index_element_type_t<shape_t>;
+                if constexpr ((N_SHAPE > 0) && (N_REPS > 0)) {
+                    constexpr auto N = N_SHAPE > N_REPS ? N_SHAPE : N_REPS;
+                    using type = nmtools_array<index_t,N>;
+                    return as_value_v<type>;
+                } else if constexpr ((N_SHAPE > 0) && !is_fail_v<decltype(B_REPS)>) {
+                    constexpr auto N = N_SHAPE > B_REPS ? N_SHAPE : B_REPS;
+                    using type = nmtools_static_vector<index_t,N>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_SHAPE)> && (N_REPS > 0)) {
+                    constexpr auto N = B_SHAPE > N_REPS ? B_SHAPE : N_REPS;
+                    using type = nmtools_static_vector<index_t,N>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_SHAPE)> && !is_fail_v<decltype(B_REPS)>) {
+                    constexpr auto N = B_SHAPE > B_REPS ? B_SHAPE : B_REPS;
+                    using type = nmtools_static_vector<index_t,N>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<index_t>;
+                    return as_value_v<type>;
+                }
+            #else
             } else if constexpr (is_hybrid_index_array_v<shape_t> && is_hybrid_index_array_v<reps_t>) {
                 constexpr auto shape_max = bounded_size_v<shape_t>;
                 constexpr auto reps_max  = bounded_size_v<reps_t>;
@@ -136,6 +166,7 @@ namespace nmtools::meta
                 return as_value_v<shape_t>;
             } else if constexpr (is_index_array_v<shape_t> && is_index_array_v<reps_t>) {
                 return as_value_v<shape_t>;
+            #endif
             } else {
                 return as_value_v<error::SHAPE_TILE_UNSUPPORTED<shape_t,reps_t>>;
             }

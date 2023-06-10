@@ -5,6 +5,7 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/assert.hpp"
 #include "nmtools/utility/forward.hpp"
+#include "nmtools/utility/get.hpp"
 
 #include "nmtools/array/ndarray.hpp"
 
@@ -15,6 +16,42 @@
 
 namespace nmtools::array
 {
+    template <typename array_t>
+    decltype(auto) get_array(const array_t& array);
+
+    template <typename array_t>
+    struct get_array_t
+    {
+        constexpr inline auto operator()(const array_t& array) const
+        {
+            if constexpr (meta::is_view_v<array_t>) {
+                return get_array(array.array);
+            } else if constexpr (meta::is_tuple_v<array_t>) {
+                constexpr auto N = meta::len_v<array_t>;
+                if constexpr (N == 1) {
+                    return get_array(nmtools::get<0>(array));
+                } else {
+                    return meta::template_reduce<N>([&](auto init, auto index){
+                        constexpr auto I = decltype(index)::value;
+                        return utility::tuple_append(init,get_array(nmtools::get<I>(array)));
+                    }, nmtools_tuple<>{});
+                }
+            } else if constexpr (meta::is_pointer_v<array_t>) {
+                return array;
+            } else if constexpr (meta::is_ndarray_v<array_t>) {
+                return &array;
+            }
+        }
+    }; // get_array_t
+
+    template <typename array_t>
+    decltype(auto) get_array(const array_t& array)
+    {
+        constexpr auto f_obj = get_array_t<array_t>{};
+        // should return pointer or tuple of pointer
+        return f_obj(array);
+    }
+
     template <typename ctx_t>
     struct context_t : ctx_t {};
 

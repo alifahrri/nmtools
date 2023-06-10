@@ -139,7 +139,11 @@ namespace nmtools::utl
             static_assert( I<Capacity );
             return buffer[I];
         }
-    };
+    }; // static_vector
+
+    template <typename T, typename U, typename...Ts>
+    nmtools_func_attribute
+    static_vector(const T&, const U&, const Ts&...) -> static_vector<meta::common_type_t<T,U,Ts...>,sizeof...(Ts)+2>;
 
     template <typename T, size_t Capacity>
     constexpr auto size(const static_vector<T,Capacity>& a)

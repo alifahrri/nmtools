@@ -37,7 +37,7 @@ namespace nmtools::view
     template <typename op_t, typename...arrays_t>
     struct scalar_ufunc_t
     {
-        // dont take reference for the operands, a Num type should be copied
+        // dont take reference for the array, a Num type should be copied
         // and view type should be cheap to copy
         using operands_type = meta::make_tuple_type_t<arrays_t...>;
         using array_type    = operands_type;
@@ -45,10 +45,10 @@ namespace nmtools::view
         using result_type   = detail::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
 
         op_type op;
-        operands_type operands;
+        operands_type array;
 
         constexpr scalar_ufunc_t(op_type op, const arrays_t&...arrays)
-            : op(op), operands{arrays...} {}
+            : op(op), array{arrays...} {}
         
         constexpr auto dim() const noexcept
         {
@@ -67,15 +67,15 @@ namespace nmtools::view
         }
 
         template <size_t...Is>
-        static constexpr auto apply_at(op_type op, const operands_type& operands, meta::index_sequence<Is...>)
+        static constexpr auto apply_at(op_type op, const operands_type& array, meta::index_sequence<Is...>)
         {
-            return op(nmtools::get<Is>(operands)...);
+            return op(nmtools::get<Is>(array)...);
         } // apply_at
 
         constexpr operator result_type() const
         {
             constexpr auto N = sizeof...(arrays_t);
-            return apply_at(op, operands, meta::make_index_sequence<N>{});
+            return apply_at(op, array, meta::make_index_sequence<N>{});
         } // operator result_type()
     }; // scalar_ufunc_t
 
@@ -98,15 +98,15 @@ namespace nmtools::view
         using size_type   = const meta::resolve_optype_t<index::size_ufunc_t,shape_type,decltype(nmtools::size<true>(meta::declval<arrays_t>()))...>;
 
         op_type op;
-        operands_type operands;
+        operands_type array;
         shape_type shape_;
         size_type  size_;
 
-        constexpr ufunc_t(op_type op, const arrays_t&...operands)
+        constexpr ufunc_t(op_type op, const arrays_t&...array)
             : op(op)
-            , operands(initialize_operands<operands_type>(operands...))
-            , shape_(*index::shape_ufunc(nmtools::shape<true>(operands)...))
-            , size_(index::size_ufunc(shape_,nmtools::size<true>(operands)...))
+            , array(initialize_operands<operands_type>(array...))
+            , shape_(*index::shape_ufunc(nmtools::shape<true>(array)...))
+            , size_(index::size_ufunc(shape_,nmtools::size<true>(array)...))
         {}
         
         constexpr auto shape() const
@@ -125,10 +125,10 @@ namespace nmtools::view
         } // size
 
         template <typename indices_t, size_t...Is>
-        static constexpr auto apply_at(op_type op, const operands_type& operands, const indices_t& indices, meta::index_sequence<Is...>)
+        static constexpr auto apply_at(op_type op, const operands_type& array, const indices_t& indices, meta::index_sequence<Is...>)
         {
             using view::detail::apply_at;
-            return op(detail::apply_at(nmtools::get<Is>(operands),indices)...);
+            return op(detail::apply_at(nmtools::get<Is>(array),indices)...);
         } // apply_at
 
         template <typename...size_types>
@@ -138,7 +138,7 @@ namespace nmtools::view
             // instead of returning (transformed) index only
             auto indices_ = pack_indices(indices...);
             constexpr auto N = sizeof...(arrays_t);
-            return apply_at(op, operands, indices_, meta::make_index_sequence<N>{});
+            return apply_at(op, array, indices_, meta::make_index_sequence<N>{});
         } // operator()
     }; // ufunc_t
 } // namespace nmtools::view

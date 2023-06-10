@@ -13,6 +13,7 @@ namespace nmtools::view
     struct sigmoid_t
     {
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         static auto sigmoid(const T& t)
         {
@@ -21,6 +22,7 @@ namespace nmtools::view
         } // sigmoid
 
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
@@ -36,6 +38,7 @@ namespace nmtools::view
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
     template <typename array_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto sigmoid(const array_t& array)
     {

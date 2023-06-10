@@ -15,7 +15,7 @@ TEST_CASE("where" * doctest::test_suite("index"))
         using array_t = nmtools_array<size_t,2>;
         using index_t = size_t;
         using result_t = meta::resolve_optype_t<nm::index::where_t,array_t,index_t>;
-        using expected_t = nm::array::hybrid_ndarray<size_t,2,1>;
+        using expected_t = nmtools_static_vector<size_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     SUBCASE("case2")
@@ -24,14 +24,6 @@ TEST_CASE("where" * doctest::test_suite("index"))
         using index_t = size_t;
         using result_t = meta::resolve_optype_t<nm::index::where_t,array_t,index_t>;
         using expected_t = nmtools_list<size_t>;
-        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
-    }
-    SUBCASE("dynamic_ndarray")
-    {
-        using array_t = nm::array::dynamic_ndarray<size_t>;
-        using index_t = size_t;
-        using result_t = meta::resolve_optype_t<nm::index::where_t,array_t,index_t>;
-        using expected_t = nm::array::dynamic_ndarray<size_t>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
 }

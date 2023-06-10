@@ -17,37 +17,36 @@ namespace nmtools::view
         using x_type = resolve_array_type_t<x_t>;
         using y_type = resolve_array_type_t<y_t>;
         // needed by decorator_t, also used to deduce underlying array type
-        using array_type = meta::make_tuple_type_t<condition_type,x_type,y_type>;
+        using array_type = nmtools_tuple<condition_type,x_type,y_type>;
         // result type, use common type for now
         using element_type = meta::common_type_t<
             meta::get_element_type_t<condition_t>,
             meta::get_element_type_t<x_t>, meta::get_element_type_t<y_t>
         >;
 
-        condition_type condition;
-        x_type x;
-        y_type y;
+        array_type array;
 
-        constexpr where_t(condition_type condition, x_type x, y_type y)
-            : condition(condition), x(x), y(y) {}
+        constexpr where_t(const condition_t& condition, const x_t& x, const y_t& y)
+            : array{initialize<condition_type>(condition), initialize<x_type>(x), initialize<y_type>(y)}
+        {}
         
         constexpr auto shape() const
         {
-            return ::nmtools::shape(condition);
+            return detail::shape(::nmtools::get<0>(array));
         } // shape
 
         constexpr auto dim() const
         {
-            return ::nmtools::dim(condition);
+            return detail::dim(::nmtools::get<0>(array));
         } // dim
 
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
             auto indices_ = pack_indices(indices...);
-            auto c  = apply_at(condition, indices_);
-            auto x_ = apply_at(x, indices_);
-            auto y_ = apply_at(y, indices_);
+            auto c  = apply_at(nmtools::get<0>(array), indices_);
+            auto x_ = apply_at(nmtools::get<1>(array), indices_);
+            auto y_ = apply_at(nmtools::get<2>(array), indices_);
             return static_cast<element_type>(c ? x_ : y_);
         } // operator()
     }; // where_t

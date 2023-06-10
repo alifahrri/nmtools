@@ -5,7 +5,6 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
 
 namespace nmtools::index
 {
@@ -30,11 +29,12 @@ namespace nmtools::index
     {
         using return_t = meta::resolve_optype_t<where_t,array_t,index_t>;
         auto res = return_t{};
-        if constexpr (meta::is_resizable_v<return_t>)
+        if constexpr (meta::is_resizable_v<return_t>) {
             res.resize(len(array));
+        }
         auto n = index_t{0};
         auto where_impl = [&](auto i){
-            if (f(tuple_at(array,i)))
+            if (f(at(array,i)))
                 at(res,n++) = static_cast<index_t>(i);
         };
         if constexpr (meta::is_fixed_index_array_v<array_t>)
@@ -70,6 +70,7 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
+            #if 0
             if constexpr (is_resizable_v<array_t>) {
                 using type = replace_element_type_t<array_t,index_t>;
                 return as_value_v<type>;
@@ -90,6 +91,20 @@ namespace nmtools::meta
                 using type = error::WHERE_UNSUPPORTED<array_t, index_t>;
                 return as_value_v<type>;
             }
+            #else
+            constexpr auto N = len_v<array_t>;
+            [[maybe_unused]] constexpr auto b_size = bounded_size_v<array_t>;
+            if constexpr (N > 0) {
+                using type = nmtools_static_vector<index_t,N>;
+                return as_value_v<type>;
+            } else if constexpr (!is_fail_v<decltype(b_size)>) {
+                using type = nmtools_static_vector<index_t,b_size>;
+                return as_value_v<type>;
+            } else {
+                using type = nmtools_list<index_t>;
+                return as_value_v<type>;
+            }
+            #endif
         }();
         using type = type_t<remove_cvref_t<decltype(vtype)>>;
     }; // resolve_optype where_t

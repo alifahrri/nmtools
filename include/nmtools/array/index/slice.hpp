@@ -749,6 +749,7 @@ namespace nmtools::meta
     struct resolve_optype<void,index::shape_dynamic_slice_t,shape_t,slice_t>
     {
         static constexpr auto vtype = [](){
+            #if 0
             if constexpr (is_fixed_index_array_v<shape_t>) {
                 using index_t = get_index_element_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
@@ -760,6 +761,23 @@ namespace nmtools::meta
                 using elem_t  = make_unsigned_t<index_t>;
                 using type = replace_element_type_t<shape_t,elem_t>;
                 return as_value_v<type>;
+            #else
+            using index_t = get_index_element_type_t<shape_t>;
+            using elem_t  = make_unsigned_t<index_t>;
+            constexpr auto N = len_v<shape_t>;
+            if constexpr (N > 0) {
+                using type = nmtools_static_vector<elem_t,N>;
+                return as_value_v<type>;
+            } else if constexpr (is_index_array_v<shape_t>) {
+                constexpr auto b_size = bounded_size_v<shape_t>;
+                if constexpr (!is_fail_v<decltype(b_size)>) {
+                    using type = nmtools_static_vector<elem_t,b_size>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<elem_t>;
+                    return as_value_v<type>;
+                }
+            #endif
             } else {
                 using type = error::SHAPE_DYNAMIC_SLICE_UNSUPPORTED<shape_t,slice_t>;
                 return as_value_v<type>;
@@ -777,11 +795,28 @@ namespace nmtools::meta
                 using type = resolve_optype_t<index::dynamic_slice_t,indices_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,slice_t>;
                 return as_value_v<type>;
             } else if constexpr (is_index_array_v<shape_t>) {
+                #if 0
                 // TODO: handle raw array
                 using index_t = get_element_or_common_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 using type = replace_element_type_t<shape_t,elem_t>;
                 return as_value_v<type>;
+                #else
+                using index_t = get_index_element_type_t<shape_t>;
+                using elem_t  = make_unsigned_t<index_t>;
+                constexpr auto N = len_v<shape_t>;
+                [[maybe_unused]] constexpr auto b_size = bounded_size_v<shape_t>;
+                if constexpr (N > 0) {
+                    using type = nmtools_array<elem_t,N>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(b_size)>) {
+                    using type = nmtools_static_vector<elem_t,b_size>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<elem_t>;
+                    return as_value_v<type>;
+                }
+                #endif
             } else {
                 using type = error::DYNAMIC_SLICE_UNSUPPORTED<indices_t,shape_t,slice_t>;
                 return as_value_v<type>;

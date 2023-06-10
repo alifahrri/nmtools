@@ -77,11 +77,10 @@ namespace nmtools::view
 
             // TODO: move to index/transpose.hpp
             if constexpr (is_none_v<axes_type>) {
-                indices_ = ::nmtools::index::reverse(indices_);
+                return ::nmtools::index::reverse(indices_);
             } else {
-                indices_ = ::nmtools::index::scatter(indices_, axes);
+                return ::nmtools::index::scatter(indices_, axes);
             }
-            return indices_;
         } // index
     }; // transpose_t
 

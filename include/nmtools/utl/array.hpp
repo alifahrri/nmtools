@@ -127,6 +127,7 @@ namespace nmtools::utl
 
     // allow CTAD
     template <typename...Args>
+    nmtools_func_attribute
     array(const Args&...) -> array<typename meta::common_type<Args...>::type,sizeof...(Args)>;
 
 

@@ -97,6 +97,9 @@ namespace nmtools::functional
             , operands{operands}
         {}
 
+        nmtools_func_attribute
+        ~functor_composition_t() = default;
+
         static constexpr auto arity = [](){
             using functors = meta::type_list<functors_t...>;
             constexpr auto n_functors = sizeof...(functors_t);
@@ -597,6 +600,52 @@ namespace nmtools::functional
     template <typename F>
     quinary_fmap_t(F&&) -> quinary_fmap_t<F>;
 
+    namespace error
+    {
+        template <typename...>
+        struct GET_FUNCTION_UNSUPPORTED : meta::detail::fail_t {};
+    }
+
+    template <typename view_t>
+    struct get_function_t
+    {
+        view_t view;
+
+        constexpr auto operator()() const noexcept 
+        {
+            return error::GET_FUNCTION_UNSUPPORTED<view_t>{};
+        }
+    }; // get_function_t
+
+    template <template<typename...> typename view_t, typename...Ts>
+    constexpr auto get_function(const view::decorator_t<view_t,Ts...>& view)
+    {
+        using view_type = view::decorator_t<view_t,Ts...>;
+        using array_type = typename view_type::array_type;
+        auto get_fn = get_function_t<view_type>{view};
+        if constexpr (view::is_view_v<array_type>) {
+            return get_fn() * get_function(view.array);
+        #if 0
+        } else if constexpr (meta::is_tuple_v<array_type>) {
+            const auto& array_pack = view.array;
+            constexpr auto N = meta::len_v<decltype(array_pack)>;
+            return meta::template_reduce<N>([&](auto init, auto index){
+                const auto& array = nmtools::get<index>(array_pack);
+                using array_type = meta::remove_cvref_pointer_t<decltype(array)>;
+                constexpr auto is_view = view::is_view_v<array_type>;
+                if constexpr (is_view && meta::is_pointer_v<decltype(array)>) {
+                    return init * get_function(*array);
+                } else if constexpr (is_view) {
+                    return init * get_function(array);
+                } else {
+                    return init;
+                }
+            }, get_fn());
+        #endif
+        } else {;
+            return get_fn();
+        }
+    } // get_function
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP

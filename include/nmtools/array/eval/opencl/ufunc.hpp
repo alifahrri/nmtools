@@ -46,7 +46,7 @@ namespace nmtools::array::opencl
             using out_t = meta::get_element_type_t<output_t>;
             using inp_t = meta::get_element_type_t<view_t>;
 
-            auto left_buffer = context->create_buffer(*nmtools::get<0>(view.operands));
+            auto left_buffer = context->create_buffer(*nmtools::get<0>(view.array));
             auto out_buffer = context->create_buffer<out_t>(nmtools::size(output));
 
             std::string kernel_name = self()->template kernel_name<inp_t,out_t>();
@@ -58,7 +58,7 @@ namespace nmtools::array::opencl
             auto kernel = context->get_kernel(kernel_name);
 
             auto out_size = nmtools::size(output);
-            auto inp_size = nmtools::size(*nmtools::get<0>(view.operands));
+            auto inp_size = nmtools::size(*nmtools::get<0>(view.array));
 
             auto kernel_info = kernel.kernel_info_;
             auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
@@ -109,8 +109,8 @@ namespace nmtools::array::opencl
         {
             using out_t = meta::get_element_type_t<output_t>;
 
-            const auto& left_array  = *get_array(nmtools::get<0>(view.operands));
-            const auto& right_array = *get_array(nmtools::get<1>(view.operands));
+            const auto& left_array  = *get_array(nmtools::get<0>(view.array));
+            const auto& right_array = *get_array(nmtools::get<1>(view.array));
             using left_t  = meta::get_element_type_t<meta::remove_cvref_pointer_t<decltype(left_array)>>;
             using right_t = meta::get_element_type_t<meta::remove_cvref_pointer_t<decltype(right_array)>>;
 

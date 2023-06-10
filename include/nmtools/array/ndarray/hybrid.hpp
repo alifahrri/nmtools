@@ -112,8 +112,8 @@ namespace nmtools::array
             auto array_dim   = ::nmtools::dim(array);
             auto array_shape = ::nmtools::shape(array_ref);
             auto n = index::product(array_shape);
-            assert ( array_dim == dimension
-                // , "unsupported init, mismatched dimension"
+            nmtools_cassert ( array_dim == dimension
+                , "unsupported init, mismatched dimension"
             );
             for (size_t i=0; i<array_dim; i++)
                 shape_[i] = ::nmtools::at(array_shape,i);
@@ -256,11 +256,33 @@ namespace nmtools::array
                 static_cast<common_size_t>(ns)...
             };
             static_assert ( dimension == sizeof...(ns)
-                , "unsupporter element access, mismatched dimension"
+                , "unsupported element access, mismatched dimension"
             );
             auto offset = index::compute_offset(strides_, indices);
             return buffer_[(size_type)offset];
         } // operator()
+
+        template <typename index_t>
+        constexpr auto operator[](index_t i)
+            -> meta::enable_if_t<
+                   (dimension==1)
+                && (meta::is_index_v<index_t>),
+                reference
+            >
+        {
+            return buffer_[i];
+        } // operator[]
+
+        template <typename index_t>
+        constexpr auto operator[](index_t i) const
+            -> meta::enable_if_t<
+                   (dimension==1)
+                && (meta::is_index_v<index_t>),
+                const_reference
+            >
+        {
+            return buffer_[i];
+        } // operator[]
 
         constexpr const_reference at(shape_type i) const
         {

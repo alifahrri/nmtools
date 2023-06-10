@@ -1,0 +1,6 @@
+#ifndef NMTOOLS_PLATFORM_ATTRIBUTES_CUDA_HPP
+#define NMTOOLS_PLATFORM_ATTRIBUTES_CUDA_HPP
+
+#define nmtools_func_attribute __host__ __device__
+
+#endif // NMTOOLS_PLATFORM_ATTRIBUTES_CUDA_HPP

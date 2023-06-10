@@ -4,8 +4,9 @@
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/ndarray.hpp"
+#include "nmtools/utl/static_vector.hpp"
 
 #include "nmtools/assert.hpp"
 
@@ -36,9 +37,9 @@ namespace nmtools::index
 
         if constexpr (!meta::is_constant_index_array_v<result_t>) {
             // get the size of vec, add namespace to avoid ambiguous call
-            auto n = len(vec);
+            [[maybe_unused]] auto n = len(vec);
             // get the size of indices
-            auto m = len(indices);
+            [[maybe_unused]] auto m = len(indices);
             // TODO: support optional
             // TODO: static assert whenever possible
             nmtools_cassert ((size_t)n == (size_t)m
@@ -93,9 +94,25 @@ namespace nmtools::meta
                     return as_value_v<result_t>;
                 }, as_value_v<init_type>);
             } else if constexpr (is_index_array_v<vector_t> && is_index_array_v<indices_t>) {
+                #if 0
                 // some fn still allow tuple of (runtime) index
                 using type = tuple_to_array_t<transform_bounded_array_t<vector_t>>;
                 return as_value_v<type>;
+                #else
+                constexpr auto N_VEC = len_v<vector_t>;
+                [[maybe_unused]] constexpr auto B_VEC = bounded_size_v<vector_t>;
+                using index_t = get_index_element_type_t<vector_t>;
+                if constexpr (N_VEC > 0) {
+                    using type = nmtools_array<index_t,N_VEC>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_VEC)>) {
+                    using type = nmtools_static_vector<index_t,B_VEC>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<index_t>;
+                    return as_value_v<type>;
+                }
+                #endif
             } else {
                 return as_value_v<error::INDEX_SCATTER_UNSUPPORTED>;
             }

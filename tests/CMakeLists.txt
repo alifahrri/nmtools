@@ -105,6 +105,11 @@ if (NMTOOLS_BUILD_OPENCL_TESTS)
     add_subdirectory(opencl)
 endif (NMTOOLS_BUILD_OPENCL_TESTS)
 
+option(NMTOOLS_BUILD_CUDA_TESTS "build cuda test programs" OFF)
+if (NMTOOLS_BUILD_CUDA_TESTS)
+    add_subdirectory(cuda)
+endif (NMTOOLS_BUILD_CUDA_TESTS)
+
 option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
 if (NMTOOLS_BUILD_META_TESTS)
     add_subdirectory(meta)

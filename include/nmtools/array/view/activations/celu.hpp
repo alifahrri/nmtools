@@ -17,6 +17,7 @@ namespace nmtools::view
         const alpha_t alpha = 1.0;
 
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
@@ -35,6 +36,7 @@ namespace nmtools::view
      * @return 
      */
     template <typename array_t, typename alpha_t=float>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto celu(const array_t& array, alpha_t alpha=alpha_t{1.0})
     {
