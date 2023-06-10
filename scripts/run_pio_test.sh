@@ -27,5 +27,7 @@ fi
 pio package pack --output nmtools.tar.gz
 cp nmtools.tar.gz tests/platformio/${DEST}
 cd tests/platformio/${DEST}
-bash ../download-toolchain.sh
+if test -f "../download-toolchain.sh"; then
+    bash ../download-toolchain.sh
+fi
 pio test -v --without-uploading --without-testing ${POSITIONAL[@]}
