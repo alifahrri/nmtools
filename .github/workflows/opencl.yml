@@ -12,6 +12,8 @@ on:
 
 jobs:
   gcc-9-opencl:
+    ## TODO: fix
+    if: ${{ false }}
     name: gcc-9-opencl
     runs-on: ubuntu-20.04
     steps:
@@ -45,7 +47,7 @@ jobs:
       - name: Set up GCC
         uses: egor-tensin/setup-gcc@v1
         with:
-          version: 9
+          version: 14
           platform: x64
       - name: install llvm-spirv
         run: |

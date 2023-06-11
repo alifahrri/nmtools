@@ -29,10 +29,6 @@ RUN cd $HOME && curl -fsSLO https://raw.githubusercontent.com/romkatv/dotfiles-p
 
 ADD .devcontainer/.zshrc $HOME
 
-## install doctest
-COPY scripts/install_doctest.sh install_doctest.sh
-RUN bash install_doctest.sh
-
 from dev as build
 
 WORKDIR /workspace/nmtools
@@ -45,9 +41,16 @@ COPY CMakeLists.txt CMakeLists.txt
 COPY nmtools.pc.in nmtools.pc.in
 COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
+## install doctest
+COPY scripts/install_doctest.sh scripts/install_doctest.sh
+RUN bash scripts/install_doctest.sh
+
 RUN mkdir -p build && cd build \
-    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/cuda-clang.cmake \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/clang.cmake \
         -DNMTOOLS_TEST_ALL=OFF \
         -DNMTOOLS_BUILD_CUDA_TESTS=ON \
+        -DNMTOOLS_TEST_CUDA_PATH=/usr/local/cuda-12.1/ \
+        -DNMTOOLS_TEST_CUDA_ARCH=sm_50 \
+        -DNMTOOLS_TEST_CUDA_ARGS=-nocudalib \
         ../ \
     && make -j2 VERBOSE=1

@@ -1,8 +1,14 @@
 #!/bin/bash
 
+if [[ -z "${LLVM_SPV_VERSION}" ]]; then
+  LLVM_SPV_VERSION="v14.0.0"
+else
+  LLVM_SPV_VERSION="${LLVM_SPV_VERSION}"
+fi
+
 git clone https://github.com/KhronosGroup/SPIRV-LLVM-Translator
 cd SPIRV-LLVM-Translator
-git checkout v10.0.0
+git checkout ${LLVM_SPV_VERSION}
 
 mkdir -p build
 cd build
