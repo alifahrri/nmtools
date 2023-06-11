@@ -1,0 +1,21 @@
+name: cuda
+
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  cuda-clang-docker:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: build docker
+        run: |
+          docker build . --file docker/cuda.dockerfile

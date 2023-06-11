@@ -73,7 +73,7 @@ namespace nmtools::view
     }; // mutable_ref_t
 
     template <typename T>
-    struct mutable_ref_t<T*, meta::enable_if_t<meta::is_num_v<meta::remove_address_space_t<T>>>>
+    struct mutable_ref_t<T*, meta::enable_if_t<meta::is_num_v<T>> >
     {
         using value_type = T;
         using const_reference = const value_type&;
@@ -90,6 +90,11 @@ namespace nmtools::view
         constexpr auto dim() const
         {
             return meta::ct_v<1>;
+        }
+
+        constexpr auto size() const
+        {
+            return numel;
         }
 
         constexpr auto shape() const
@@ -137,7 +142,8 @@ namespace nmtools::view
     template <typename T>
     constexpr auto mutable_ref(T* ptr, size_t numel)
     {
-        return decorator_t<mutable_ref_t,T*>{{ptr,numel}};
+        using pointer_type = meta::remove_address_space_t<T>*;
+        return decorator_t<mutable_ref_t,pointer_type>{{ptr,numel}};
     }
 
     /** @} */ // end group view
@@ -162,6 +168,13 @@ namespace nmtools::meta
     struct is_ndarray< view::decorator_t<view::mutable_ref_t,array_t> >
     {
         static constexpr auto value = is_ndarray_v<remove_cvref_t<array_t>>;
+    };
+
+    // specialization for ptr
+    template <typename array_t>
+    struct is_ndarray< view::decorator_t<view::mutable_ref_t, array_t*> >
+    {
+        static constexpr auto value = is_num_v<array_t>;
     };
 
     template <typename T>

@@ -61,15 +61,15 @@ namespace nmtools::view
 
             using namespace literals;
 
-            // TODO: update broadcast_shape to use maybe type
             auto b_result = index::broadcast_shape(src_shape,detail::shape(indices));
-            auto success  = nmtools::get<0>(b_result);
-            auto b_shape  = nmtools::get<1>(b_result);
+            auto success  = static_cast<bool>(b_result);
 
             if (!success) {
                 // abort computation
                 return success;
             }
+
+            const auto& b_shape = *b_result;
             
             auto b_indices = [&](){
                 if constexpr (meta::is_pointer_v<indices_type>) {

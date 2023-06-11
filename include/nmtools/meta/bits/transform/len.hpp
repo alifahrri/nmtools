@@ -8,6 +8,8 @@
 #include "nmtools/meta/bits/traits/has_template_get.hpp"
 #include "nmtools/meta/bits/traits/is_fixed_size_ndarray.hpp"
 #include "nmtools/meta/bits/traits/is_num.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -19,7 +21,7 @@ namespace nmtools::meta
      * 
      * @tparam T 
      */
-    template <typename T>
+    template <typename T, typename=void>
     struct len
     {
         static constexpr auto value = [](){
@@ -55,6 +57,11 @@ namespace nmtools::meta
     {
         static constexpr auto value = N;
     };
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct len<T,enable_if_t<has_address_space_v<T>>> : len<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_LEN_HPP

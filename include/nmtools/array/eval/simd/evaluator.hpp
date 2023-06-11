@@ -53,7 +53,7 @@ namespace nmtools::array
 
             // NOTE: assume unary ufunc
             // TODO: generalize
-            auto inp_ptr = nmtools::data(*nmtools::get<0>(view.operands));
+            auto inp_ptr = nmtools::data(*nmtools::get<0>(view.array));
             auto out_ptr = nmtools::data(output);
 
             const auto op = context.template create_simd_op<element_type>(view.op);

@@ -35,6 +35,10 @@ inline auto name##_v = nmtools::cast(name, nmtools::array::kind::nested_vec);
 #define NMTOOLS_CAST_INDEX_VECTOR(name) \
 inline auto name##_v = nmtools::cast(name, nmtools::array::kind::nested_vec);
 #endif
+#ifndef NMTOOLS_CAST_INDEX_STATIC_VECTOR
+#define NMTOOLS_CAST_INDEX_STATIC_VECTOR(name) \
+inline auto name##_sv = nmtools::cast(name, nmtools::array::kind::static_vec);
+#endif
 #ifndef NMTOOLS_CAST_ARRAYS_FIXED
 #define NMTOOLS_CAST_ARRAYS_FIXED(name) \
 inline auto name##_f = nmtools::cast(name, nmtools::array::kind::fixed);
@@ -70,6 +74,7 @@ NMTOOLS_CAST_ARRAYS_FIXED  (name) \
 NMTOOLS_CAST_ARRAYS_HYBRID (name) \
 NMTOOLS_CAST_ARRAYS_EXTRA  (name) \
 NMTOOLS_CAST_INDEX_VECTOR  (name) \
+NMTOOLS_CAST_INDEX_STATIC_VECTOR  (name) \
 
 #endif // NMTOOLS_CAST_ARRAYS
 

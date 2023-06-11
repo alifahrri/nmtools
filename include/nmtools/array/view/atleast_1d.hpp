@@ -20,11 +20,11 @@ namespace nmtools::view
         using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
         using dst_shape_type = const meta::resolve_optype_t<index::shape_atleast_nd_t, src_shape_type, nd_type>;
 
-        array_type     array_;
+        array_type     array;
         dst_shape_type shape_;
 
         constexpr atleast_1d_t(const array_t& array)
-            : array_(initialize(array, meta::as_value_v<array_type>))
+            : array(initialize(array, meta::as_value_v<array_type>))
             , shape_(index::shape_atleast_nd(nmtools::shape<true>(array),nd_type{}))
         {}
         
@@ -46,13 +46,13 @@ namespace nmtools::view
             // TODO: move to "index" member function
             // TODO: check shape
             if constexpr (meta::is_num_v<array_t>) {
-                return array_;
+                return array;
             } else {
                 auto indices_ = pack_indices(indices...);
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return apply_at(*array_, indices_);
+                    return apply_at(*array, indices_);
                 } else {
-                    return apply_at(array_, indices_);
+                    return apply_at(array, indices_);
                 }
             }
         } // operator()

@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM ubuntu:jammy as dev
 
 WORKDIR /opt/
 
@@ -56,23 +56,8 @@ RUN bash install_nanobench.sh
 COPY scripts/install_doctest.sh install_doctest.sh
 RUN bash install_doctest.sh --dest /usr/local/include
 
-## install miniconda
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh && \
-    bash Miniconda3-py38_4.10.3-Linux-x86_64.sh -b -p /opt/miniconda && \
-    ln -s /opt/miniconda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo ". /opt/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    echo "conda activate base" >> ~/.bashrc
-  
 ENV PATH /opt/miniconda/bin:$PATH
 
 RUN pip3 install jupyter
-
-## install xeus-cling
-# RUN conda create -n cling \
-#   && conda activate cling \
-#   && conda install xeus-cling==0.10.0 -c conda-forge \
-#   && conda install boost -c conda-forge
-
-# RUN jupyter kernelspec install /opt/miniconda/envs/cling/share/jupyter/kernels/xcpp17 --sys-prefix
 
 ENTRYPOINT [ ]

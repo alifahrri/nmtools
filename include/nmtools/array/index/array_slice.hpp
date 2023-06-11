@@ -54,15 +54,18 @@ namespace nmtools::index
                 result.resize(dim);
             }
 
-            const auto [success, broadcasted] = [&](){
+            const auto bcast_result = [&](){
                 if constexpr (n_slices > 1) {
                     return broadcast_shape(slice,slices...);
                 } else {
-                    return nmtools_tuple{true,ref(slice)};
+                    return nmtools_maybe{ref(slice)};
                 }
             }();
 
+            const auto success = static_cast<bool>(bcast_result);
+
             if (success) {
+                const auto& broadcasted = *bcast_result;
                 // simply return broadcasted
                 auto bdim = len(broadcasted);
                 for (size_t i=0; i<bdim; i++) {

@@ -7,6 +7,8 @@
 #include "nmtools/platform/math/opencl.hpp"
 #elif (defined(ARDUINO) || (!__has_include(<cmath>)))
 #include "nmtools/platform/math/arduino.hpp"
+#elif (defined(__CUDA__))
+#include "nmtools/platform/math/cuda.hpp"
 #else
 #include "nmtools/platform/math/stl.hpp"
 #endif

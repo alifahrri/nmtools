@@ -9,6 +9,9 @@
 #include "nmtools/meta/bits/traits/is_bounded_array.hpp"
 #include "nmtools/meta/bits/transform/len.hpp"
 
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
+
 namespace nmtools::meta
 {
 
@@ -52,6 +55,11 @@ namespace nmtools::meta
             }
         }();
     };
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct fixed_shape<T,enable_if_t<has_address_space_v<T>>> : fixed_shape<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_ARRAY_FIXED_SHAPE_HPP

@@ -9,6 +9,7 @@ namespace nmtools::view
     struct tan_t
     {
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
@@ -17,6 +18,7 @@ namespace nmtools::view
     }; // tan_t
 
     template <typename left_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto tan(const left_t& a)
     {

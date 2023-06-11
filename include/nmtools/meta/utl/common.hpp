@@ -88,6 +88,7 @@ namespace nmtools::meta
 #ifndef NMTOOLS_META_MAKE_STATIC_VECTOR
 #define NMTOOLS_META_MAKE_STATIC_VECTOR
 
+    // TODO: fix utl::static_vector with tuple on C++forOpenCL
     #define nmtools_static_vector ::nmtools::utl::static_vector
 
 #endif // NMTOOLS_META_MAKE_STATIC_VECTOR

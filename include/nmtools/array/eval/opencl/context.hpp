@@ -8,6 +8,9 @@
 // for CL_PLATFORM_ICD_SUFFIX_KHR
 #include <CL/cl_ext.h>
 
+#include <memory>
+#include <mutex>
+#include <unordered_map>
 #include <shared_mutex>
 #include <iostream>
 
@@ -219,6 +222,8 @@ namespace nmtools::array::opencl
         return platform_infos;
     }
 
+    using cl_mem_ptr_t = std::shared_ptr<cl_mem>;
+
     struct context_t
     {
         struct kernel_info_t
@@ -280,7 +285,7 @@ namespace nmtools::array::opencl
             nmtools_cl_check_error( ret, "creating buffer (clCreateBuffer)" );
             ret = clEnqueueWriteBuffer(command_queue, mem_obj, CL_TRUE, 0, n * sizeof(int), data_ptr, 0, NULL, NULL);
             nmtools_cl_check_error( ret, "enqueueing write buffer (clEnqueueWriteBuffer)" );
-            auto shared_mem_obj = std::shared_ptr<cl_mem>(new cl_mem(mem_obj), buffer_deleter_t());
+            auto shared_mem_obj = cl_mem_ptr_t(new cl_mem(mem_obj), buffer_deleter_t());
             return shared_mem_obj;
         }
 
@@ -290,13 +295,13 @@ namespace nmtools::array::opencl
             cl_int ret;
             auto mem_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY, n * sizeof(T), NULL, &ret);
             nmtools_cl_check_error( ret, "creating buffer (clCreateBuffer)" );
-            auto shared_mem_obj = std::shared_ptr<cl_mem>(new cl_mem(mem_obj), buffer_deleter_t());
+            auto shared_mem_obj = cl_mem_ptr_t(new cl_mem(mem_obj), buffer_deleter_t());
             return shared_mem_obj;
         }
 
         template <typename array_t>
         auto create_buffer(const array_t& array)
-            -> meta::enable_if_t<(meta::is_ndarray_v<array_t> || meta::is_num_v<array_t>) && !meta::is_view_v<array_t>, std::shared_ptr<cl_mem>>
+            -> meta::enable_if_t<(meta::is_ndarray_v<array_t> || meta::is_num_v<array_t>) && !meta::is_view_v<array_t>, cl_mem_ptr_t>
         {
             if constexpr (meta::is_ndarray_v<array_t>) {
                 return create_buffer(nmtools::data(array),nmtools::size(array));
@@ -306,7 +311,7 @@ namespace nmtools::array::opencl
         }
 
         template <typename array_t>
-        auto copy_buffer(std::shared_ptr<cl_mem> mem_obj, array_t& array)
+        auto copy_buffer(cl_mem_ptr_t mem_obj, array_t& array)
             -> meta::enable_if_t<meta::is_ndarray_v<array_t> && !meta::is_view_v<array_t>, bool>
         {
             using element_t = meta::get_element_type_t<array_t>;
@@ -381,8 +386,8 @@ namespace nmtools::array::opencl
             meta::template_for<sizeof...(args_t)>([&](auto index){
                 constexpr auto I = size_t(index);
                 auto arg_i = nmtools::get<I>(args_pack);
-                using arg_t = decltype(arg_i);
-                if constexpr (meta::is_same_v<arg_t,std::shared_ptr<cl_mem>>) {
+                using arg_t = meta::remove_cvref_t<decltype(arg_i)>;
+                if constexpr (meta::is_same_v<arg_t,cl_mem_ptr_t>) {
                     auto ret = clSetKernelArg(*kernel,I,sizeof(cl_mem),arg_i.get());
                     auto message = std::string("setting kernel arg #") + std::to_string(I);
                     nmtools_cl_check_error( ret, message );
@@ -437,9 +442,11 @@ namespace nmtools::array::opencl
         }
     };
 
+    using context_ptr_t = std::shared_ptr<context_t>;
+
     inline auto default_context()
     {
-        static std::shared_ptr<context_t> default_context;
+        static context_ptr_t default_context;
         if (!default_context) {
             auto platform_idx = 0ul;
             if (auto env_idx = std::getenv("NMTOOLS_OPENCL_DEFAULT_PLATFORM_IDX")) {

@@ -9,6 +9,7 @@ namespace nmtools::view
     struct isinf_t
     {
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
@@ -17,6 +18,7 @@ namespace nmtools::view
     }; // isinf_t
 
     template <typename left_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto isinf(const left_t& a)
     {

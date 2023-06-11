@@ -5,6 +5,8 @@
 #include "nmtools/meta/bits/traits/is_index.hpp"
 #include "nmtools/meta/bits/traits/is_reference.hpp"
 #include "nmtools/meta/bits/traits/is_const.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -30,6 +32,11 @@ namespace nmtools::meta
 
     template <typename T, size_t N>
     struct is_fixed_index_array<T[N],enable_if_t<is_index_v<T>>> : true_type {};
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct is_fixed_index_array<T,enable_if_t<has_address_space_v<T>>> : is_fixed_index_array<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
 

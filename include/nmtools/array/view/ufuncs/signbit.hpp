@@ -9,6 +9,7 @@ namespace nmtools::view
     struct signbit_t
     {
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
@@ -17,6 +18,7 @@ namespace nmtools::view
     }; // signbit_t
 
     template <typename left_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto signbit(const left_t& a)
     {

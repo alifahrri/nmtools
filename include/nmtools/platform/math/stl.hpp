@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_PLATFORM_MATH_HPP
-#define NMTOOLS_PLATFORM_MATH_HPP
+#ifndef NMTOOLS_PLATFORM_MATH_STL_HPP
+#define NMTOOLS_PLATFORM_MATH_STL_HPP
 
 #include <cmath>
 #include <algorithm> // min, max
@@ -63,4 +63,4 @@ namespace nmtools::math
 #undef NMTOOLS_BINARY_MATH_FWD_STL
 }
 
-#endif // NMTOOLS_PLATFORM_MATH_HPP
+#endif // NMTOOLS_PLATFORM_MATH_STL_HPP

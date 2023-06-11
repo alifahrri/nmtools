@@ -183,11 +183,17 @@ namespace nmtools::index
             // check matrix shape
             auto valid_shape = (size_t)l1 == (size_t)r2;
             // broadcast shape, if possible
+            #if 0
             const auto [success, b_shape] = index::broadcast_shape(b_ashape,b_bshape);
+            #else
+            const auto result = index::broadcast_shape(b_ashape,b_bshape);
+            const auto success = static_cast<bool>(result);
+            #endif
 
             valid_shape = valid_shape && success;
 
             if (valid_shape) {
+                const auto& b_shape = *result;
                 auto dim = h_dim;
                 auto result = result_t{};
                 if constexpr (meta::is_resizable_v<result_t>) {

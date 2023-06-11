@@ -59,7 +59,7 @@ TEST_CASE("ufunc" * doctest::test_suite("view"))
         }};
         auto reduced_div = g(array);
         auto lhs_ptr = &array;
-        auto rhs_ptr = nmtools::get<0>(reduced_div.operands).array.array;
+        auto rhs_ptr = nmtools::get<0>(reduced_div.array).array.array;
         auto is_same = lhs_ptr == rhs_ptr;
         CHECK( is_same );
         auto expected = nmtools_array{5ul,7ul,9ul};

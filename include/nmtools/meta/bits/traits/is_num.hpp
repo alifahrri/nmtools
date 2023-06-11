@@ -3,6 +3,8 @@
 
 #include "nmtools/meta/bits/traits/is_integer.hpp"
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -20,6 +22,11 @@ namespace nmtools::meta
     NMTOOLS_IS_FLOATING_POINT_TRAIT(float64_t)
 
 #undef NMTOOLS_IS_FLOATING_POINT_TRAIT
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct is_floating_point<T,enable_if_t<has_address_space_v<T>>> : is_floating_point<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 
     /**
      * @brief Check if type T is num type.

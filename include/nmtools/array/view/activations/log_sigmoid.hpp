@@ -13,6 +13,7 @@ namespace nmtools::view
     struct log_sigmoid_t
     {
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
@@ -29,6 +30,7 @@ namespace nmtools::view
      * @return  
      */
     template <typename array_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto log_sigmoid(const array_t& array)
     {

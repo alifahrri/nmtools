@@ -63,7 +63,7 @@ namespace nmtools::view
         constexpr auto index(size_type i) const
         {
             using ::nmtools::index::compute_indices;
-            using index_t = meta::get_index_element_type_t<dst_shape_type>;
+            using index_t = meta::remove_address_space_t<meta::get_index_element_type_t<dst_shape_type>>;
             auto shape_   = detail::shape(array);
             auto indices  = compute_indices(static_cast<index_t>(i),shape_);
             return indices;
@@ -117,6 +117,7 @@ namespace nmtools::view
     template <typename array_t>
     constexpr auto flatten(const array_t& array)
     {
+        #ifndef __OPENCL_VERSION__
         if constexpr (meta::is_either_v<array_t>) {
             // TODO: support flatten on scalar
             using left_t  = meta::get_either_left_t<array_t>;
@@ -144,6 +145,9 @@ namespace nmtools::view
         } else {
             return decorator_t<flatten_t,array_t>{array};
         }
+        #else
+        return decorator_t<flatten_t,meta::remove_address_space_t<array_t>>{array};
+        #endif
     } // flatten
 
     /** @} */ // end group view

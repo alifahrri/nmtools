@@ -26,11 +26,11 @@ namespace nmtools::view
         using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
         using dst_shape_type = meta::resolve_optype_t<index::shape_atleast_nd_t, src_shape_type, nd_type>;
 
-        array_type     array_;
+        array_type     array;
         dst_shape_type shape_;
 
         constexpr atleast_2d_t(const array_t& array)
-            : array_(initialize(array, meta::as_value_v<array_type>))
+            : array(initialize(array, meta::as_value_v<array_type>))
             , shape_(index::shape_atleast_nd(nmtools::shape<true>(array),nd_type{}))
         {}
         
@@ -52,19 +52,19 @@ namespace nmtools::view
             // TODO: check shape
             // TODO: move to "index" member function
             if constexpr (meta::is_num_v<array_t>) {
-                return array_;
+                return array;
             } else {
                 auto indices_ = pack_indices(indices...);
                 auto expanded_shape   = shape();
                 auto squeezed_strides = index::compute_strides(expanded_shape);
 
-                auto shape_     = detail::shape(array_);
+                auto shape_     = detail::shape(array);
                 auto offset     = index::compute_offset(indices_,squeezed_strides);
                 auto tf_indices = index::compute_indices(offset,shape_);
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return apply_at(*array_,tf_indices);
+                    return apply_at(*array,tf_indices);
                 } else {
-                    return apply_at(array_,tf_indices);
+                    return apply_at(array,tf_indices);
                 }
             }
         } // operator()

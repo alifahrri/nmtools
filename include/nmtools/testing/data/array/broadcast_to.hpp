@@ -8,6 +8,144 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_to)
+{
+    using nmtools_tuple;
+    using namespace nmtools::literals;
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        inline int ashape[2] = {3,1};
+        inline int bshape[2] = {3,1};
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
+        inline auto ashape_ct = tuple{3_ct,1_ct};
+        inline auto bshape_ct = tuple{3_ct,1_ct};
+        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline auto success = true;
+        inline auto shape   = nmtools_array{3,1};
+        inline auto free    = nmtools_array{false,false};
+        inline auto results = nmtools_tuple{success,shape,free};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline int ashape[2] = {3,1};
+        inline int bshape[2] = {3,3};
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
+        inline auto ashape_ct = tuple{3_ct,1_ct};
+        inline auto bshape_ct = tuple{3_ct,3_ct};
+        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline auto success = true;
+        inline auto shape   = nmtools_array{3,3};
+        inline auto free    = nmtools_array{false,true};
+        inline auto results = nmtools_tuple{success,shape,free};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        inline int ashape[2] = {3,1};
+        inline int bshape[3] = {3,3,1};
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
+        inline auto ashape_ct = tuple{3_ct,1_ct};
+        inline auto bshape_ct = tuple{3_ct,3_ct,1_ct};
+        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct,"1:[1]"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline auto success = true;
+        inline auto shape   = nmtools_array{3,3,1};
+        inline auto free    = nmtools_array{true,false,false};
+        inline auto results = nmtools_tuple{success,shape,free};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        inline int ashape[2] = {3,1};
+        inline int bshape[3] = {3,3,6};
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
+        inline auto ashape_ct = tuple{3_ct,1_ct};
+        inline auto bshape_ct = tuple{3_ct,3_ct,6_ct};
+        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct,"6:[6]"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline auto success = true;
+        inline auto shape   = nmtools_array{3,3,6};
+        inline auto free    = nmtools_array{true,false,true};
+        inline auto results = nmtools_tuple{success,shape,free};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        inline int ashape[2] = {3,1};
+        inline int bshape[1] = {3};
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
+        inline auto ashape_ct = tuple{3_ct,1_ct};
+        inline auto bshape_ct = tuple{3_ct};
+        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = tuple{"3:[3]"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        inline auto success = false;
+        inline auto shape   = nmtools_array{0};
+        inline auto free    = nmtools_array{false};
+        inline auto results = nmtools_tuple{success,shape,free};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        inline int ashape[2] = {3,1};
+        inline int bshape[3] = {3,6,6};
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
+        inline auto ashape_ct = tuple{3_ct,1_ct};
+        inline auto bshape_ct = tuple{3_ct,6_ct,6_ct};
+        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = tuple{"3:[3]"_ct,"6:[6]"_ct,"6:[6]"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        inline auto success = false;
+        inline auto shape   = nmtools_array{0,0,6};
+        inline auto free    = nmtools_array{false,false,true};
+        inline auto results = nmtools_tuple{success,shape,free};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        inline int ashape[2] = {3,1};
+        inline int bshape[4] = {7,3,3,6};
+        NMTOOLS_CAST_INDEX_ARRAYS(ashape)
+        NMTOOLS_CAST_INDEX_ARRAYS(bshape)
+        inline auto ashape_ct = tuple{3_ct,1_ct};
+        inline auto bshape_ct = tuple{7_ct,3_ct,3_ct,6_ct};
+        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = tuple{"7:[7]"_ct,"3:[3]"_ct,"3:[3]"_ct,"6:[6]"_ct};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        inline auto success = true;
+        inline auto shape   = nmtools_array{7,3,3,6};
+        inline auto free    = nmtools_array{true,true,false,true};
+        inline auto results = nmtools_tuple{success,shape,free};
+    }
+}
+
 NMTOOLS_TESTING_DECLARE_CASE(broadcast_to)
 {
     using namespace nmtools::literals;

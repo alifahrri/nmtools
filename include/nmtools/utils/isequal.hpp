@@ -428,7 +428,7 @@ namespace nmtools::utils
                 auto t_dim = ::nmtools::dim(t);
                 auto u_dim = ::nmtools::dim(u);
                 {
-                    using common_t = meta::promote_index_t<decltype(t_dim),decltype(u_dim)>;
+                    using common_t [[maybe_unused]] = meta::promote_index_t<decltype(t_dim),decltype(u_dim)>;
                     // TODO: static assert whenever possible
                     // NOTE: use assert instead of exception, to support compile with -fno-exceptions
                     // TODO: use maybe type
@@ -444,7 +444,7 @@ namespace nmtools::utils
                 auto t_size = t_indices.size();
                 auto u_size = u_indices.size();
                 {
-                    using common_t = meta::promote_index_t<decltype(t_size),decltype(u_size)>;
+                    using common_t [[maybe_unused]] = meta::promote_index_t<decltype(t_size),decltype(u_size)>;
                     nmtools_cassert( ((common_t)t_size == (common_t)u_size)
                         , "size mismatch for isequal"
                     );

@@ -33,8 +33,9 @@ namespace nmtools::index
                         p *= at<i>(shape);
                 });
             } else {
-                for (auto j=k+1; j<len(shape); j++)
+                for (auto j=k+1; j<len(shape); j++) {
                     p *= at(shape,j);
+                }
             }
         }
         return p;
@@ -72,8 +73,9 @@ namespace nmtools::index
                     at(strides_,i) = stride(shape,i);
                 });
             } else {
-                for (size_t i=0; i<n; i++)
+                for (size_t i=0; i<n; i++) {
                     at(strides_,i) = stride(shape,i);
+                }
             }
         }
         return strides_;
@@ -96,6 +98,7 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             constexpr auto DIM = len_v<shape_t>;
+            using index_type [[maybe_unused]] = get_index_element_type_t<shape_t>;
             if constexpr (
                 (DIM > 0)
                 && (is_constant_index_array_v<shape_t>
@@ -118,12 +121,26 @@ namespace nmtools::meta
                     }
                 }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (is_clipped_index_array_v<shape_t>) {
-                return as_value_v<nmtools_list<size_t>>;
+                return as_value_v<nmtools_list<index_type>>;
             } else if constexpr (is_index_array_v<shape_t>) {
+                [[maybe_unused]] constexpr auto B_DIM = bounded_size_v<shape_t>;
+                if constexpr (DIM > 0) {
+                    using type = nmtools_array<index_type,DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
+                    // TODO: provide macro nmtools_static_vector
+                    using type = utl::static_vector<index_type,B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<index_type>;
+                    return as_value_v<type>;
+                }
+                #if 0
                 // some fn may produce tuple of (runtime) index,
                 // also shape may be raw array
                 using type [[maybe_unused]] = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
                 return as_value_v<type>;
+                #endif
             } else {
                 // forwarding params may be helpful for testing/debugging
                 return as_value_v<error::INDEX_COMPUTE_STRIDE_UNSUPPORTED<shape_t>>;

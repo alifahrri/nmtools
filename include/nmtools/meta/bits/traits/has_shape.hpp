@@ -2,6 +2,8 @@
 #define NMTOOLS_META_BITS_TRAITS_HAS_SHAPE_HPP
 
 #include "nmtools/meta/expr.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -10,7 +12,7 @@ namespace nmtools::meta
      * 
      * @tparam T type to check
      */
-    template <typename T>
+    template <typename T, typename=void>
     struct has_shape : detail::expression_check<void,expr::shape,T> {};
 
     template <typename T>
@@ -18,6 +20,9 @@ namespace nmtools::meta
 
     template <typename T>
     struct has_shape<T&> : has_shape<T> {};
+
+    template <typename T>
+    struct has_shape<T,enable_if_t<has_address_space_v<T>>> : has_shape<remove_address_space_t<T>> {};
 
     /**
      * @brief helper variable template to check if type `T` has member function `shape`.

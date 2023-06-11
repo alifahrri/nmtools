@@ -23,9 +23,19 @@
 	// "name": "Testbench",
 	// "dockerFile": "../docker/testbench.dockerfile",
 
+    // DOCKERFILE: circle
+    // "name": "circle build 198",
+	// "dockerFile": "../docker/circle.dockerfile",
+
+    // DOCKERFILE: cuda
+    // "name": "cuda-12 ubuntu20.04",
+    // "dockerfile": "../docker/cuda.dockerfile",
+
 	"build": { 
-		"args": { "USERNAME": "${localEnv:USER}" }
+		"args": { "USERNAME": "${localEnv:USER}" },
+        "target": "dev"  
 	},
+
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},
@@ -40,7 +50,7 @@
 	// "postCreateCommand": "apt-get update && apt-get install -y curl",
 
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
-	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined", "--env=DISPLAY", "--env=QT_X11_NO_MITSHM=1" ],
+	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined", "--env=DISPLAY", "--env=QT_X11_NO_MITSHM=1", "--network=host" ],
 
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
 	"mounts": [ "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind" ],

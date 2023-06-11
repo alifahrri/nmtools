@@ -21,3 +21,5 @@ pocl
 *.spv
 *.spt
 *.bc
+*.ll
+llvm.sh

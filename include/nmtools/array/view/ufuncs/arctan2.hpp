@@ -9,6 +9,7 @@ namespace nmtools::view
     struct arctan2_t
     {
         template <typename T, typename U>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t, const U& u) const
         {
@@ -17,6 +18,7 @@ namespace nmtools::view
     }; // arctan2_t
 
     template <typename left_t, typename right_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto arctan2(const left_t& a, const right_t& b)
     {

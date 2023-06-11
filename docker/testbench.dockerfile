@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:focal as dev
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia

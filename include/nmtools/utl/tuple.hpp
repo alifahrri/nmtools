@@ -7,6 +7,14 @@
 
 // poor man's tuple
 
+#ifndef nmtools_utl_alignment
+#define nmtools_utl_alignment(x) __align__(x)
+#endif // nmtools_utl_alignment
+
+#ifndef nmtools_utl_align_size
+#define nmtools_utl_align_size 4
+#endif // nmtools_utl_align_size
+
 namespace nmtools::utl
 {
     #define DECLARE_TUPLE_VAL_TYPE(index) \
@@ -34,9 +42,6 @@ namespace nmtools::utl
         template <typename var1>
         constexpr tuple1(const tuple1<var1>& tp)
             : value1(tp.value1) {};
-
-        // constexpr tuple1(tuple1&&) = default;
-        // constexpr tuple1(const tuple1&) = default;
     };
 
     template <class arg1, class arg2>
@@ -52,10 +57,7 @@ namespace nmtools::utl
         
         template <typename var1, typename var2>
         constexpr tuple2(const tuple2<var1,var2>& tp)
-            : base(tp.value1), value2{tp.value2} {}
-
-        // constexpr tuple2(tuple2&&) = default;
-        // constexpr tuple2(const tuple2&) = default;
+            : base(tp.value1), value2(tp.value2) {}
     };
 
     template <class arg1, class arg2, class arg3>
@@ -72,9 +74,6 @@ namespace nmtools::utl
         template <typename var1, typename var2, typename var3>
         constexpr tuple3(const tuple3<var1,var2,var3>& tp)
             : base(tp.value1,tp.value2), value3{tp.value3} {}
-        
-        // constexpr tuple3(tuple3&&) = default;
-        // constexpr tuple3(const tuple3&) = default;
     };
 
     template <class arg1, class arg2, class arg3, class arg4>
@@ -221,6 +220,7 @@ namespace nmtools::utl
     template <typename...Args>
     struct tuple : tuple_base_t<Args...>
     {
+        static_assert( sizeof...(Args) <= 9 );
         using base = tuple_base_t<Args...>;
         constexpr tuple() : base() {};
 

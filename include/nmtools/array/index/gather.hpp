@@ -6,6 +6,7 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/ndarray.hpp"
 
 namespace nmtools
 {
@@ -36,6 +37,7 @@ namespace nmtools
             // get the size of indices
             [[maybe_unused]] auto m = len(indices);
 
+            #if 0
             // convert to array, avoid tuple_at
             [[maybe_unused]] auto vec = [&](){
                 if constexpr (meta::is_constant_index_array_v<vector_t>) {
@@ -53,6 +55,9 @@ namespace nmtools
                     return vector;
                 }
             }();
+            #else
+            const auto& vec = vector;
+            #endif
 
             using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
             auto ret = return_t{};
@@ -74,8 +79,9 @@ namespace nmtools
                         gather_impl(ret, vec, indices, i);
                     });
                 else
-                    for (size_t i=0; i<m; i++)
+                    for (size_t i=0; i<m; i++) {
                         gather_impl(ret, vec, indices, i);
+                    }
             }
 
             return ret;
@@ -98,15 +104,7 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            constexpr auto element_vtype = [](){
-                using element_t = remove_cvref_t<get_index_element_type_t<vector_t>>;
-                if constexpr (is_integral_constant_v<element_t>) {
-                    return as_value_v<typename element_t::value_type>;
-                } else {
-                    return as_value_v<element_t>;
-                }
-            }();
-            using element_t = type_t<decltype(element_vtype)>;
+            using element_t = remove_address_space_t<get_index_element_type_t<vector_t>>;
             if constexpr (is_constant_index_array_v<vector_t>
                 && is_constant_index_array_v<indices_t>
             ) {
@@ -129,12 +127,12 @@ namespace nmtools::meta
                 constexpr auto indices = to_value_v<indices_t>;
                 constexpr auto result  = index::gather(vector,indices);
                 using nmtools::len, nmtools::at;
-                return template_reduce<len(result)-1>([&](auto init, auto index){
+                return template_reduce<len(result)>([&](auto init, auto index){
                     using init_t   = type_t<decltype(init)>;
-                    using result_i = clipped_size_t<at(result,index+1)>;
+                    using result_i = clipped_size_t<at(result,index)>;
                     using result_t = append_type_t<init_t,result_i>;
                     return as_value_v<result_t>;
-                }, as_value_v<nmtools_tuple<clipped_size_t<at(result,0)>>>);
+                }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (
                 is_clipped_index_array_v<vector_t>
             ) {
@@ -145,7 +143,26 @@ namespace nmtools::meta
             ) {
                 using type = resolve_optype_t<index::gather_t,vector_t,decltype(to_value_v<indices_t>)>;
                 return as_value_v<type>;
-            } else if constexpr (
+            }
+            #if 1
+            else if constexpr (is_index_array_v<indices_t>) {
+                [[maybe_unused]] constexpr auto n_vec = len_v<vector_t>;
+                [[maybe_unused]] constexpr auto n_idx = len_v<indices_t>;
+                [[maybe_unused]] constexpr auto b_vec = bounded_size_v<vector_t>;
+                [[maybe_unused]] constexpr auto b_idx = bounded_size_v<indices_t>;
+                if constexpr (n_idx > 0) {
+                    using type = nmtools_array<element_t,n_idx>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(b_idx)>) {
+                    using type = nmtools_static_vector<element_t,b_idx>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<element_t>;
+                    return as_value_v<type>;
+                }
+            }
+            #else
+            else if constexpr (
                 is_dynamic_index_array_v<indices_t>
             ) // whenever indices is dynamic, chose it
                 return as_value_v<replace_element_type_t<indices_t,element_t>>;
@@ -207,6 +224,7 @@ namespace nmtools::meta
                 using return_t = resize_fixed_vector_t<type,size>;
                 return as_value_v<replace_element_type_t<return_t,element_t>>;
             }
+            #endif
             else {
                 return as_value_v<error::GATHER_UNSUPPORTED<vector_t,indices_t>>;
             }

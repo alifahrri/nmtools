@@ -2,6 +2,8 @@
 #define NMTOOLS_ARRAY_INDEX_BROADCAST_TO_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/utl.hpp"
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/gather.hpp"
@@ -122,14 +124,6 @@ namespace nmtools::index
                     return idx_t(bdim - i - 1);
                 }
             }();
-            // handle bshape if constant index array;
-            // TODO: move constant index handling at higher level, see remove_dims for example
-            [[maybe_unused]]
-            auto get_b = [&](){
-                if constexpr (meta::is_constant_index_array_v<bshape_t>)
-                    return at(meta::to_value_v<bshape_t>,bi);
-                else return tuple_at(bshape,bi);
-            };
             // Use ai and bi as param, to make call to (at) depends on type
             // which in turn allowing to avoid instantiation of runtime version
             [[maybe_unused]]
@@ -200,7 +194,7 @@ namespace nmtools::index
         // - free_axes value indicates wether the corresponding indices are free (either empty or 1).
         // - free_axes is useful to perform the reverse operation.
         // TODO: use optional instead
-        return nmtools_tuple{success, res, free_axes};
+        return nmtools_tuple<bool,result_t,free_axes_t>{success, res, free_axes};
     } // shape_broadcast_to
 
     template <typename indices_t, typename src_shape_t, typename dst_shape_t, typename origin_axes_t>
@@ -214,10 +208,20 @@ namespace nmtools::index
         // since broadcasting is almost used everywhere
         // TODO: measure and inspect if this can be optimized
 
+        // NOTE: maybe error in opencl:
         auto origin_shape   = gather(dst_shape,origin_axes);
+        // NOTE: maybe error in opencl:
         auto origin_strides = compute_strides(origin_shape);
+        // NOTE: maybe error in opencl:
         auto origin_indices = gather(indices,origin_axes);
 
+        auto offset = compute_offset(origin_indices,origin_strides);
+        return compute_indices(offset,src_shape);
+    } // broadcast_to
+
+    template <typename src_shape_t, typename origin_indices_t, typename origin_strides_t>
+    constexpr auto broadcast_to_(const src_shape_t& src_shape, const origin_indices_t& origin_indices, const origin_strides_t& origin_strides)
+    {
         auto offset = compute_offset(origin_indices,origin_strides);
         return compute_indices(offset,src_shape);
     } // broadcast_to
@@ -268,7 +272,7 @@ namespace nmtools::meta
     {
         static constexpr auto vtype = [](){
             // bshape_t (target shape) may be raw or tuple
-            using element_t = remove_cvref_t<get_index_element_type_t<bshape_t>>;
+            using element_t = remove_address_space_t<remove_cvref_t<get_index_element_type_t<bshape_t>>>;
             // specialize when both lhs and rhs is constant index array
             // also make sure the resulting type's element type is not constant index
             if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
@@ -314,7 +318,7 @@ namespace nmtools::meta
                     using type = nmtools_array<element_t,fixed_size>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(bounded_size)>) {
-                    using type = array::static_vector<element_t,bounded_size>;
+                    using type = nmtools_static_vector<element_t,bounded_size>;
                     return as_value_v<type>;
                 } else {
                     using type = nmtools_list<element_t>;
@@ -342,10 +346,10 @@ namespace nmtools::meta
                 constexpr auto N = len_v<shape_result_t>;
                 constexpr auto b_dim = bounded_size_v<shape_result_t>;
                 if constexpr (N>0) {
-                    using type = array::static_vector<bool,N>;
+                    using type = nmtools_static_vector<bool,N>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(b_dim)>) {
-                    using type = array::static_vector<bool,b_dim>;
+                    using type = nmtools_static_vector<bool,b_dim>;
                     return as_value_v<type>;
                 } else {
                     using type = nmtools_list<bool>;

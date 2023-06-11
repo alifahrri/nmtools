@@ -9,6 +9,8 @@
 #include "nmtools/meta/bits/traits/is_num.hpp"
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
 #include "nmtools/meta/bits/traits/has_value_type.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -85,6 +87,11 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     }; // get_element_type
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct get_element_type<T,enable_if_t<has_address_space_v<T>>> : get_element_type<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 
     /**
      * @brief helper alias template for get_element_type

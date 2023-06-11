@@ -4,9 +4,7 @@
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include <array>
-#include <tuple>
-#include <vector>
+#include "nmtools/testing/data/index/gather.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -21,107 +19,6 @@ using std::array;
 using nmtools_tuple;
 using nmtools_array;
 #endif
-
-NMTOOLS_TESTING_DECLARE_CASE(gather)
-{
-    NMTOOLS_TESTING_DECLARE_ARGS(case1)
-    {
-        int vec[3]     = {1,2,3};
-        int indices[3] = {0,1,2};
-        NMTOOLS_CAST_INDEX_ARRAYS(vec);
-        NMTOOLS_CAST_INDEX_ARRAYS(indices);
-        auto vec_ct     = tuple{1_ct,2_ct,3_ct};
-        auto indices_ct = tuple{0_ct,1_ct,2_ct};
-        auto vec_cl     = tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        auto indices_cl = tuple{"0:[1]"_ct,"1:[1]"_ct,"2:[2]"_ct};
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
-    {
-        int result[3] = {1,2,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case2)
-    {
-        int vec[3]     = {1,2,3};
-        int indices[3] = {1,0,2};
-        NMTOOLS_CAST_INDEX_ARRAYS(vec);
-        NMTOOLS_CAST_INDEX_ARRAYS(indices);
-        auto vec_ct = tuple{1_ct,2_ct,3_ct};
-        auto vec_cl = tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        auto indices_ct = tuple{1_ct,0_ct,2_ct};
-        auto indices_cl = tuple{"1:[1]"_ct,"0:[1]"_ct,"2:[2]"_ct};
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
-    {
-        int result[3] = {2,1,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case3)
-    {
-        int vec[3]     = {1,2,3};
-        int indices[3] = {1,2,0};
-        NMTOOLS_CAST_INDEX_ARRAYS(vec);
-        NMTOOLS_CAST_INDEX_ARRAYS(indices);
-        auto vec_ct = tuple{1_ct,2_ct,3_ct};
-        auto vec_cl = tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        auto indices_ct = tuple{1_ct,2_ct,0_ct};
-        auto indices_cl = tuple{"1:[1]"_ct,"2:[2]"_ct,"0:[1]"_ct};
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
-    {
-        int result[3] = {2,3,1};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case4)
-    {
-        int vec[3]     = {1,2,3};
-        int indices[3] = {2,0,1};
-        NMTOOLS_CAST_INDEX_ARRAYS(vec);
-        NMTOOLS_CAST_INDEX_ARRAYS(indices);
-        auto vec_ct = tuple{1_ct,2_ct,3_ct};
-        auto vec_cl = tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        auto indices_ct = tuple{2_ct,0_ct,1_ct};
-        auto indices_cl = tuple{"2:[2]"_ct,"0:[1]"_ct,"1:[1]"_ct};
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
-    {
-        int result[3] = {3,1,2};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case5)
-    {
-        int vec[3]     = {1,2,3};
-        int indices[3] = {2,1,0};
-        NMTOOLS_CAST_INDEX_ARRAYS(vec);
-        NMTOOLS_CAST_INDEX_ARRAYS(indices);
-        auto vec_ct = tuple{1_ct,2_ct,3_ct};
-        auto vec_cl = tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        auto indices_ct = tuple{2_ct,1_ct,0_ct};
-        auto indices_cl = tuple{"2:[2]"_ct,"1:[1]"_ct,"0:[1]"_ct};
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
-    {
-        int result[3] = {3,2,1};
-    }
-    
-    NMTOOLS_TESTING_DECLARE_ARGS(case6)
-    {
-        int vec[5]     = {1,2,3,4,5};
-        int indices[3] = {2,1,0};
-        NMTOOLS_CAST_INDEX_ARRAYS(vec);
-        NMTOOLS_CAST_INDEX_ARRAYS(indices);
-        auto vec_ct = tuple{1_ct,2_ct,3_ct,4_ct,5_ct};
-        auto vec_cl = tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct,"4:[4]"_ct,"5:[5]"_ct};
-        auto indices_ct = tuple{2_ct,1_ct,0_ct};
-        auto indices_cl = tuple{"2:[2]"_ct,"1:[1]"_ct,"0:[1]"_ct};
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
-    {
-        int result[3] = {3,2,1};
-    }
-}
-
-#undef NMTOOLS_CAST_INDEX_ARRAYS
 
 #define RUN_impl(...) \
 nm::index::gather(__VA_ARGS__);

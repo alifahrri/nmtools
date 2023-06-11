@@ -6,6 +6,8 @@
 #include "nmtools/meta/bits/array/fixed_ndarray_shape.hpp"
 #include "nmtools/meta/bits/traits/is_void.hpp"
 #include "nmtools/meta/bits/traits/is_fail.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -35,6 +37,11 @@ namespace nmtools::meta
             else return false;
         }();
     }; // is_fixed_size_ndarray
+
+    #ifdef __OPENCL_VERSION__
+    template <typename T>
+    struct is_fixed_size_ndarray<T,enable_if_t<has_address_space_v<T>>> : is_fixed_size_ndarray<remove_address_space_t<T>> {};
+    #endif // __OPENCL_VERSION__
 
     /**
      * @brief helper variable template to check if given type T is n-dimensional array that shape is known at compile-time

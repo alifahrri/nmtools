@@ -72,7 +72,7 @@ namespace nmtools::index
                 if constexpr (meta::is_index_array_v<repeats_t>) {
                     auto r_a = at(ret,axis);
                     auto n   = len(repeats);
-                    using common_t = meta::promote_index_t<decltype(r_a),decltype(n)>;
+                    using common_t [[maybe_unused]] = meta::promote_index_t<decltype(r_a),decltype(n)>;
                     // TODO: support optional
                     nmtools_assert ( (common_t)r_a == (common_t)n
                         , "unsupported shape_repeat"

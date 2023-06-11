@@ -19,6 +19,7 @@ namespace nmtools::view
         const threshold_t threshold = 20;
 
         template <typename beta_type=float, typename threshold_type=float, typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         static auto softplus(const T& x, beta_type beta=beta_type{1}, threshold_type threshold=threshold_type{20})
         {
@@ -31,6 +32,7 @@ namespace nmtools::view
         } // softplus
 
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& x) const
         {
@@ -39,6 +41,7 @@ namespace nmtools::view
     }; // softplus_t
 
     template <typename beta_t, typename threshold_t>
+    nmtools_func_attribute
     softplus_t(beta_t,threshold_t) -> softplus_t<beta_t,threshold_t>;
 
     /**
@@ -53,6 +56,7 @@ namespace nmtools::view
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
     template <typename array_t, typename beta_t=float, typename threshold_t=float>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto softplus(const array_t& array, beta_t beta=beta_t{1}, threshold_t threshold=threshold_t{20})
     {

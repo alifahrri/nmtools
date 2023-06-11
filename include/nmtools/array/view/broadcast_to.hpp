@@ -85,9 +85,9 @@ namespace nmtools::view
             // so for now use "operator()" instead of "index" member fn.
             // TODO: consider to move Num type handling to decorator_t
 
-            if constexpr (meta::is_num_v<array_t>)
+            if constexpr (meta::is_num_v<array_t>) {
                 return array;
-            else {
+            } else {
                 auto indices_  = pack_indices(indices...);
                 auto src_shape = detail::shape(array);
 
@@ -128,6 +128,7 @@ namespace nmtools::view
         array_type array;
         shape_type shape_; // broadcasted shape (destination)
         origin_axes_type origin_axes; // origin axes axes
+        broadcast_size_type broadcast_size;
 
         constexpr broadcast_to_t(array_type array, shape_type shape, origin_axes_type origin_axes, [[maybe_unused]] bsize_t bsize=bsize_t{})
             : array(array), shape_(shape), origin_axes(origin_axes) {}
@@ -149,6 +150,7 @@ namespace nmtools::view
 
         constexpr operator value_type() const noexcept
         {
+            static_assert( !meta::is_ndarray_v<meta::remove_cvref_pointer_t<array_type>>);
             return static_cast<value_type>(array);
         } // operator value_type()
     }; // broadcast_to_t
@@ -169,14 +171,14 @@ namespace nmtools::view
         if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
-            using ret_left_t  = decltype(broadcast_to(meta::declval<left_t>(),shape,bsize));
-            using ret_right_t = decltype(broadcast_to(meta::declval<right_t>(),shape,bsize));
+            using ret_left_t  = decltype(view::broadcast_to(meta::declval<left_t>(),shape,bsize));
+            using ret_right_t = decltype(view::broadcast_to(meta::declval<right_t>(),shape,bsize));
             using either_t = meta::replace_either_t<array_t,ret_left_t,ret_right_t>;
             if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
-                return either_t{broadcast_to(*l_ptr,shape,bsize)};
+                return either_t{view::broadcast_to(*l_ptr,shape,bsize)};
             } else /* if (auto r_ptr = nmtools::get_if<right_t>(&array)) */ {
                 auto r_ptr = nmtools::get_if<right_t>(&array);
-                return either_t{broadcast_to(*r_ptr,shape,bsize)};
+                return either_t{view::broadcast_to(*r_ptr,shape,bsize)};
             }
         }
         // bypass broadcasting index logic if array_t is simply scalar type
@@ -187,9 +189,17 @@ namespace nmtools::view
         // assume array_t is ndarray
         else {
             auto ashape = ::nmtools::shape</*force_constant_index*/true>(array);
+            // somehow decomposing this is broken on c++ for opencl (clang-10)
+            // error: cannot decompose class type 'tuple<__private bool, __private ... have non-static data members
+            #if 0
             // NOTE: must declare as const since utl::tuple takes reference (?)
             // TODO: revisit this case
             const auto [success, shape_, free] = index::shape_broadcast_to(ashape,shape);
+            #else
+            const auto result = index::shape_broadcast_to(ashape,shape);
+            [[maybe_unused]] const auto& success = nmtools::get<0>(result);
+            const auto& free    = nmtools::get<2>(result);
+            #endif
             auto origin_axes = [](auto free){
                 // NOTE: can't use capture because clang complains something local binding
 
@@ -206,7 +216,8 @@ namespace nmtools::view
                 }
             }(free);
             using origin_axes_t = decltype(origin_axes);
-            using view_t = decorator_t<broadcast_to_t,array_t,shape_t,origin_axes_t,bsize_t>;
+            using array_type = meta::remove_address_space_t<array_t>;
+            using view_t = decorator_t<broadcast_to_t,array_type,shape_t,origin_axes_t,bsize_t>;
             // prepare_type: may declare return_t as optional type
             nmtools_assert_prepare_type (return_t, view_t);
             nmtools_assert (success, "cannot broadcast shape", return_t);

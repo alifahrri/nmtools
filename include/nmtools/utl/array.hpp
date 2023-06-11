@@ -21,15 +21,20 @@ namespace nmtools::utl
     template <typename T, size_t N>
     struct array
     {
-        using buffer_type = T[N];
-        using value_type  = T;
-        using pointer     = T*;
-        using reference   = T&;
+        #if 1
+        using data_type = meta::remove_address_space_t<T>;
+        #else
+        using data_type = T;
+        #endif
+        using buffer_type = data_type[N];
+        using value_type  = data_type;
+        using pointer     = data_type*;
+        using reference   = data_type&;
         using size_type   = size_t;
-        using const_pointer   = const T*;
-        using const_reference = const T&;
+        using const_pointer   = const data_type*;
+        using const_reference = const data_type&;
 
-        T buffer[N];
+        data_type buffer[N];
 
         constexpr reference at(size_t i)
         {
@@ -58,6 +63,17 @@ namespace nmtools::utl
             return buffer[i];
         }
 
+        constexpr pointer data()
+        {
+            return buffer;
+        }
+
+        constexpr const_pointer data() const
+        {
+            return buffer;
+        }
+
+        #ifndef __OPENCL_VERSION__
         template <size_t I>
         constexpr reference get()
         {
@@ -71,6 +87,7 @@ namespace nmtools::utl
             static_assert( I<N );
             return buffer[I];
         }
+        #endif // __OPENCL_VERSION__
     };
 
     template <typename T, size_t N>
@@ -110,6 +127,7 @@ namespace nmtools::utl
 
     // allow CTAD
     template <typename...Args>
+    nmtools_func_attribute
     array(const Args&...) -> array<typename meta::common_type<Args...>::type,sizeof...(Args)>;
 
 
@@ -135,13 +153,21 @@ namespace nmtools::utl
     template <size_t I, typename T, size_t N>
     constexpr decltype(auto) get(const array<T,N>& a)
     {
+        #ifndef __OPENCL_VERSION__
         return a.template get<I>();
+        #else
+        return a.buffer[I];
+        #endif // __OPENCL_VERSION__
     }
 
     template <size_t I, typename T, size_t N>
     constexpr decltype(auto) get(array<T,N>& a)
     {
+        #ifndef __OPENCL_VERSION__
         return a.template get<I>();
+        #else
+        return a.buffer[I];
+        #endif // __OPENCL_VERSION__
     }
 } // namespace nmtools::utl
 

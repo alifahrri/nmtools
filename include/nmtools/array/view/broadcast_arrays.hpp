@@ -22,15 +22,19 @@ namespace nmtools::view
         static_assert( sizeof...(arrays_t) >= 2
             , "please provide at least two arrays for broadcast_arrays");
 
-        // TODO: use maybe type instead
-        const auto [success, bshape] = index::broadcast_shape(::nmtools::shape<true>(arrays)...);
-        const auto bsize = index::broadcast_size(bshape,nmtools::size<true>(arrays)...);
+        const auto result = index::broadcast_shape(::nmtools::shape<true>(arrays)...);
+        [[maybe_unused]] const auto success = static_cast<bool>(result);
 
-        using result_t = nmtools_tuple<decltype(broadcast_to(meta::declval<arrays_t>(),bshape,bsize))...>;
+        using bcast_result_t = meta::get_maybe_type_t<decltype(result)>;
+        using bsize_t  = meta::resolve_optype_t<index::broadcast_size_t,bcast_result_t,decltype(nmtools::size<true>(arrays))...>;
+
+        using result_t = nmtools_tuple<decltype(view::broadcast_to(meta::declval<arrays_t>(),meta::declval<bcast_result_t>(),meta::declval<bsize_t>()))...>;
         nmtools_assert_prepare_type (return_t, result_t);
         nmtools_assert (success, "cannot broadcast arrays together", return_t);
 
-        return return_t{result_t{broadcast_to(arrays,bshape,bsize)...}};
+        const auto bsize = index::broadcast_size(*result,nmtools::size<true>(arrays)...);
+
+        return return_t{result_t{view::broadcast_to(arrays,*result,bsize)...}};
     } // broadcast_arrays
 } // namespace nmtools::view
 

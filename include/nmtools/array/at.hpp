@@ -98,7 +98,7 @@ namespace nmtools::impl
                 return error::AT_UNSUPPORTED<array_t&,index_type>{};
             }
         }
-    };
+    }; // at_t
 
     template <typename array_t, typename index_type>
     struct at_t<array_t,index_type,meta::enable_if_t<meta::has_address_space_v<array_t>>>

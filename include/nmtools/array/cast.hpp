@@ -20,6 +20,8 @@
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
+#include "nmtools/utl.hpp"
+
 namespace nmtools::array::kind
 {
     // for testing purpose only
@@ -34,6 +36,10 @@ namespace nmtools::array::kind
     inline constexpr auto nested_arr  = nested_array_t {};
     inline constexpr auto fixed_vec   = fixed_vec_t {};
     inline constexpr auto dynamic_vec = dynamic_vec_t {};
+
+    // only support index for now
+    struct static_vec_t {};
+    inline constexpr auto static_vec = static_vec_t {};
 } // namespace nmtools::array::kind
 
 namespace nmtools
@@ -50,6 +56,11 @@ namespace nmtools
 
 namespace nmtools
 {
+    namespace error
+    {
+        template <typename...>
+        struct TESTING_DYNAMIC_ALLOCATION_DISABLED : meta::detail::fail_t {};
+    };
     template <typename src_t, typename kind_t>
     struct meta::resolve_optype<
         void, cast_kind_t, src_t, const kind_t
@@ -94,15 +105,29 @@ namespace nmtools
         #ifndef NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
                 using type = array::dynamic_ndarray<element_t>;
         #else
-                using type = void;
+                using type = ::nmtools::error::TESTING_DYNAMIC_ALLOCATION_DISABLED<cast_kind_t,src_t,kind_t>;
         #endif // NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
                 return meta::as_value_v<type>;
             }
             else if constexpr (meta::is_same_v<kind_t,array::kind::nested_vector_t>) {
                 using element_t [[maybe_unused]] = get_element_type_t<src_t>;
                 [[maybe_unused]] constexpr auto dim = fixed_dim_v<src_t>;
+        #ifndef NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
                 using type = meta::make_nested_dynamic_array_t<nmtools_list,element_t,dim>;
+        #else
+                using type = ::nmtools::error::TESTING_DYNAMIC_ALLOCATION_DISABLED<cast_kind_t,src_t,kind_t>;
+        #endif // NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
                 return as_value_v<type>;
+            } else if constexpr (meta::is_same_v<kind_t,array::kind::static_vec_t>) {
+                using element_t [[maybe_unused]] = get_element_type_t<src_t>;
+                [[maybe_unused]] constexpr auto dim = fixed_dim_v<src_t>;
+                if constexpr (dim != 1) {
+                    return as_value_v<error::CAST_KIND_UNSUPPORTED<src_t,kind_t>>;
+                } else {
+                    constexpr auto length = len_v<src_t>;
+                    using type = utl::static_vector<element_t,length>;
+                    return as_value_v<type>;
+                }
             } else /* */ {
                 return as_value_v<error::CAST_KIND_UNSUPPORTED<src_t,kind_t>>;
             }

@@ -39,10 +39,9 @@ namespace nmtools::view
 
         constexpr auto shape() const noexcept
         {
-            auto shape_ = detail::shape(array);
-            auto N = index::product(shape_);
+            auto N = detail::size(array);
             // flattened array is strictly 1D
-            return meta::make_tuple_type_t<size_t>{N};
+            return nmtools_tuple<size_t>{N};
         } // shape
 
         template <typename size_type>
@@ -58,7 +57,9 @@ namespace nmtools::view
     template <typename array_t>
     constexpr auto mutable_flatten(array_t& array)
     {
-        return decorator_t<mutable_flatten_t,array_t>{array};
+        // remove address space for better compatibility with existing stack
+        using array_type = meta::remove_address_space_t<array_t>;
+        return decorator_t<mutable_flatten_t,array_type>{array};
     } // mutable_flatten
 
     /** @} */ // end group view

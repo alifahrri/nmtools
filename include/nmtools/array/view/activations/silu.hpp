@@ -13,6 +13,7 @@ namespace nmtools::view
     struct silu_t : sigmoid_t
     {
         template <typename T>
+        nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
@@ -28,6 +29,7 @@ namespace nmtools::view
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
     template <typename array_t>
+    nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
     auto silu(const array_t& array)
     {
