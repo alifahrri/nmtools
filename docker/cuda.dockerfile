@@ -1,4 +1,5 @@
-from nvidia/cuda:12.1.1-devel-ubuntu20.04 as dev
+## cuda 12 know to not working: no template named 'texture'
+from nvidia/cuda:11.7.0-devel-ubuntu22.04 as dev
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia
@@ -49,8 +50,7 @@ RUN mkdir -p build && cd build \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/clang.cmake \
         -DNMTOOLS_TEST_ALL=OFF \
         -DNMTOOLS_BUILD_CUDA_TESTS=ON \
-        -DNMTOOLS_TEST_CUDA_PATH=/usr/local/cuda-12.1/ \
-        -DNMTOOLS_TEST_CUDA_ARCH=sm_50 \
-        -DNMTOOLS_TEST_CUDA_ARGS=-nocudalib \
+        -DNMTOOLS_TEST_CUDA_PATH=/usr/local/cuda \
+        -DNMTOOLS_TEST_CUDA_ARCH=sm_80 \
         ../ \
     && make -j2 VERBOSE=1

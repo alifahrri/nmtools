@@ -4,40 +4,8 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/eval/cuda/kernel_helper.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
+#include <stdexcept>
 #include <memory>
-
-
-#if 0
-template <auto out_static_dim=0, auto inp_static_dim=0, typename function_t, typename out_t, typename inp_t, typename out_shape_t, typename inp_shape_t, typename out_dim_t, typename inp_dim_t>
-__global__ void nm_cuda_run_unary_function(const function_t fun, out_t *out, const inp_t* inp, const out_shape_t* out_shape_ptr, const inp_shape_t* inp_shape_ptr, const out_dim_t out_dim, const inp_dim_t inp_dim)
-{
-    namespace cuda = nmtools::array::cuda;
-    auto input  = cuda::create_array<inp_static_dim>(inp,inp_shape_ptr,inp_dim);
-    auto output = cuda::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
-    auto result = fun(input);
-    cuda::assign_array(output,result);
-}
-
-template <auto out_static_dim=0, auto inp_static_dim=0, typename function_t
-    , typename out_t, typename left_t, typename right_t
-    , typename out_shape_t, typename left_shape_t, typename right_shape_t
-    , typename out_dim_t, typename left_dim_t, typename right_dim_t
->
-__global__ void nm_cuda_run_binary_function(const function_t fun
-    , out_t *out, const out_shape_t* out_shape_ptr, const out_dim_t out_dim
-    , const left_t* left_ptr, const left_shape_t* left_shape_ptr, const left_dim_t left_dim
-    , const right_t* right_ptr, const right_shape_t* right_shape_ptr, const right_dim_t right_dim
-) {
-    namespace cuda = nmtools::array::cuda;
-    auto output = cuda::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
-
-    auto left  = cuda::create_array<inp_static_dim>(left_ptr,left_shape_ptr,left_dim);
-    auto right = cuda::create_array<inp_static_dim>(right_ptr,right_shape_ptr,right_dim);
-
-    auto result = fun (left) (right);
-    cuda::assign_array(output,result);
-}
-#endif
 
 template <auto out_static_dim=0, typename function_t
     , typename out_t, typename out_shape_t, typename out_dim_t
@@ -56,6 +24,7 @@ __global__ void nm_cuda_run_function(const function_t fun
         constexpr auto ptr_idx = (size_t)index * 3;
         constexpr auto shp_idx = ptr_idx + 1;
         constexpr auto dim_idx = ptr_idx + 2;
+        // TODO: support constant shape, clipped shape, fixed dim, fixed size, bounded dim, size etc...
         auto array = cuda::create_array(
               nmtools::get<ptr_idx>(args_pack)
             , nmtools::get<shp_idx>(args_pack)
