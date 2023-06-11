@@ -48,7 +48,7 @@ RUN bash scripts/install_doctest.sh
 
 RUN mkdir -p build && cd build \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/clang.cmake \
-        -DNMTOOLS_TEST_ALL=OFF \
+        -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
         -DNMTOOLS_BUILD_CUDA_TESTS=ON \
         -DNMTOOLS_TEST_CUDA_PATH=/usr/local/cuda \
         -DNMTOOLS_TEST_CUDA_ARCH=sm_80 \
