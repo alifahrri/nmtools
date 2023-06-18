@@ -225,7 +225,8 @@ namespace nmtools::array::cuda
         {
             auto args_pack = [&](){
                 if constexpr (meta::is_tuple_v<arg0_t>) {
-                    return arg0;
+                    static_assert( sizeof...(args_t) == 0, "nmtools error" );
+                    return static_cast<const arg0_t&>(arg0);
                 } else {
                     return nmtools_tuple<const arg0_t&, const args_t&...>{arg0, args...};
                 }
