@@ -21,4 +21,4 @@ jobs:
           docker build . --tag nmtools:sycl-clang14-omp --file docker/sycl.dockerfile
       - name: run tests
         run: |
-          docker run --rm -it nmtools:sycl-clang14-omp
+          docker run --rm nmtools:sycl-clang14-omp
