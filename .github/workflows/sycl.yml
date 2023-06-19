@@ -1,0 +1,24 @@
+name: sycl
+
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  opensycl-clang14-omp-docker:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: build docker
+        run: |
+          docker build . --tag nmtools:sycl-clang14-omp --file docker/sycl.dockerfile
+      - name: run tests
+        run: |
+          docker run --rm nmtools:sycl-clang14-omp

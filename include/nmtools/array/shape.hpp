@@ -202,6 +202,18 @@ namespace nmtools::impl
 namespace nmtools
 {
 
+    template <template<typename...>typename tuple, typename...clipped_t>
+    auto clipped_index_array_to_array(const tuple<clipped_t...>& clipped_indices)
+    {
+        constexpr auto N = sizeof...(clipped_t);
+        using index_t = meta::get_index_element_type_t<tuple<clipped_t...>>;
+        auto array = nmtools_array<index_t,N>{};
+        meta::template_for<N>([&](auto index){
+            at(array,index) = at(clipped_indices,index);
+        });
+        return array;
+    }
+
     /**
      * @brief return the shape of an array
      *
@@ -211,7 +223,7 @@ namespace nmtools
      * @param array
      * @return constexpr auto 
      */
-    template <bool prefer_constant_index=false, typename array_t>
+    template <bool prefer_constant_index=false, bool disable_clipped_index=false, typename array_t>
     constexpr auto shape(const array_t& array)
     {
         // TODO: handle maybe type
@@ -239,22 +251,27 @@ namespace nmtools
                 auto rptr = nmtools::get_if<right_t>(&array);
                 return shape_t{shape(*rptr)};
             }
-        } else {
+        } else if constexpr (prefer_constant_index) {
             using meta::ct_v;
-            if constexpr (prefer_constant_index) {
-                constexpr auto fixed_shape = meta::fixed_shape_v<array_t>;
-                if constexpr (!meta::is_fail_v<decltype(fixed_shape)>) {
-                    return meta::template_reduce<len(fixed_shape)-1>([&](auto init, auto index){
-                        using init_type = decltype(init);
-                        using type = meta::append_type_t<init_type,meta::ct<(size_t)at(fixed_shape,ct_v<index+1>)>>;
-                        return type{};
-                    }, nmtools_tuple<meta::ct<static_cast<size_t>(at(fixed_shape,ct_v<0>))>>{});
-                } else {
-                    return impl::shape<array_t>(array);
-                }
+            constexpr auto fixed_shape = meta::fixed_shape_v<array_t>;
+            if constexpr (!meta::is_fail_v<decltype(fixed_shape)>) {
+                return meta::template_reduce<len(fixed_shape)-1>([&](auto init, auto index){
+                    using init_type = decltype(init);
+                    using type = meta::append_type_t<init_type,meta::ct<(size_t)at(fixed_shape,ct_v<index+1>)>>;
+                    return type{};
+                }, nmtools_tuple<meta::ct<static_cast<size_t>(at(fixed_shape,ct_v<0>))>>{});
             } else {
                 return impl::shape<array_t>(array);
             }
+        } else if constexpr (disable_clipped_index) {
+            auto m_shape = shape<false,false>(array);
+            if constexpr (meta::is_clipped_index_array_v<decltype(m_shape)>) {
+                return clipped_index_array_to_array(m_shape);
+            } else {
+                return m_shape;
+            }
+        } else {
+            return impl::shape<array_t>(array);
         }
     } // shape
 }

@@ -31,6 +31,10 @@
     // "name": "cuda-12 ubuntu20.04",
     // "dockerfile": "../docker/cuda.dockerfile",
 
+    // DOCKERFILE: sycl
+    // "name": "sycl-clang14 ubuntu22.04",
+    // "dockerfile": "../docker/sycl.dockerfile",
+
 	"build": { 
 		"args": { "USERNAME": "${localEnv:USER}" },
         "target": "dev"  

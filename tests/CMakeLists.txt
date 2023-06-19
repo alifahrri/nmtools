@@ -110,6 +110,11 @@ if (NMTOOLS_BUILD_CUDA_TESTS)
     add_subdirectory(cuda)
 endif (NMTOOLS_BUILD_CUDA_TESTS)
 
+option(NMTOOLS_BUILD_SYCL_TESTS "build sycl test programs" OFF)
+if (NMTOOLS_BUILD_SYCL_TESTS)
+    add_subdirectory(sycl)
+endif (NMTOOLS_BUILD_SYCL_TESTS)
+
 option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
 if (NMTOOLS_BUILD_META_TESTS)
     add_subdirectory(meta)
