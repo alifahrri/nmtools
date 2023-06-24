@@ -2,6 +2,8 @@
 #define NMTOOLS_META_BITS_TRAITS_IS_MAYBE_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/traits/has_address_space.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 namespace nmtools::meta
 {
@@ -17,7 +19,10 @@ namespace nmtools::meta
     struct is_maybe : false_type {};
 
     template <typename T>
-    struct is_maybe<const T> : is_maybe<T> {};
+    struct is_maybe<const T, enable_if_t<!has_address_space_v<T>>> : is_maybe<T> {};
+
+    template <typename T>
+    struct is_maybe<T, enable_if_t<has_address_space_v<T>>> : is_maybe<remove_address_space_t<T>> {};
 
     template <typename T>
     constexpr inline auto is_maybe_v = is_maybe<T>::value;

@@ -15,6 +15,10 @@
 #define nmtools_utl_align_size 4
 #endif // nmtools_utl_align_size
 
+// NOTE: base class acess is assumed to be unsuppoted when compiling to spirv
+// TODO: revisit this cases
+// #define NMTOOLS_TUPLE_NO_BASE_ACCESS
+
 namespace nmtools::utl
 {
     #define DECLARE_TUPLE_VAL_TYPE(index) \
@@ -45,8 +49,12 @@ namespace nmtools::utl
     };
 
     template <class arg1, class arg2>
-    struct tuple2 : tuple1<arg1>
+    struct tuple2
+    #ifndef NMTOOLS_TUPLE_NO_BASE_ACCESS
+        : tuple1<arg1>
+    #endif
     { 
+        #ifndef NMTOOLS_TUPLE_NO_BASE_ACCESS
         using base = tuple1<arg1>;
         DECLARE_TUPLE_VAL_TYPE(2)
         DEFINE_TUPLE_VAL(2)
@@ -58,11 +66,35 @@ namespace nmtools::utl
         template <typename var1, typename var2>
         constexpr tuple2(const tuple2<var1,var2>& tp)
             : base(tp.value1), value2(tp.value2) {}
+        #else
+        DECLARE_TUPLE_VAL_TYPE(1)
+        DEFINE_TUPLE_VAL(1)
+        DECLARE_TUPLE_VAL_TYPE(2)
+        DEFINE_TUPLE_VAL(2)
+
+        constexpr tuple2()
+            : value1{}
+            , value2{}
+        {}
+        constexpr tuple2(const arg1& val1, const arg2& val2)
+            : value1(val1)
+            , value2(val2)
+        {}
+        template <typename var1, typename var2>
+        constexpr tuple2(const tuple2<var1,var2>& tp)
+            : value1(tp.value1)
+            , value2(tp.value2)
+        {};
+        #endif
     };
 
     template <class arg1, class arg2, class arg3>
-    struct tuple3 : tuple2<arg1,arg2>
+    struct tuple3
+    #ifndef NMTOOLS_TUPLE_NO_BASE_ACCESS
+        : tuple2<arg1,arg2>
+    #endif
     { 
+        #ifndef NMTOOLS_TUPLE_NO_BASE_ACCESS
         using base = tuple2<arg1,arg2>;
         DECLARE_TUPLE_VAL_TYPE(3)
         DEFINE_TUPLE_VAL(3)
@@ -74,11 +106,43 @@ namespace nmtools::utl
         template <typename var1, typename var2, typename var3>
         constexpr tuple3(const tuple3<var1,var2,var3>& tp)
             : base(tp.value1,tp.value2), value3{tp.value3} {}
+        #else
+
+        DECLARE_TUPLE_VAL_TYPE(1)
+        DEFINE_TUPLE_VAL(1)
+        DECLARE_TUPLE_VAL_TYPE(2)
+        DEFINE_TUPLE_VAL(2)
+        DECLARE_TUPLE_VAL_TYPE(3)
+        DEFINE_TUPLE_VAL(3)
+
+        constexpr tuple3()
+            : value1{}
+            , value2{}
+            , value3{}
+        {}
+
+        constexpr tuple3(const arg1& val1, const arg2& val2, const arg3& val3)
+            : value1{val1}
+            , value2{val2}
+            , value3{val3}
+        {}
+        
+        template <typename var1, typename var2, typename var3>
+        constexpr tuple3(const tuple3<var1,var2,var3>& tp)
+            : value1{tp.value1}
+            , value2{tp.value2}
+            , value3{tp.value3}
+        {}
+        #endif // NMTOOLS_NO_BASE_ACCESS
     };
 
     template <class arg1, class arg2, class arg3, class arg4>
-    struct tuple4 : tuple3<arg1,arg2,arg3>
+    struct tuple4
+    #ifndef NMTOOLS_TUPLE_NO_BASE_ACCESS
+        : tuple3<arg1,arg2,arg3>
+    #endif
     { 
+        #ifndef NMTOOLS_TUPLE_NO_BASE_ACCESS
         using base = tuple3<arg1,arg2,arg3>;
         DECLARE_TUPLE_VAL_TYPE(4)
         DEFINE_TUPLE_VAL(4)
@@ -93,6 +157,40 @@ namespace nmtools::utl
         
         // constexpr tuple4(tuple4&&) = default;
         // constexpr tuple4(const tuple4&) = default;
+        #else
+
+        DECLARE_TUPLE_VAL_TYPE(1)
+        DEFINE_TUPLE_VAL(1)
+        DECLARE_TUPLE_VAL_TYPE(2)
+        DEFINE_TUPLE_VAL(2)
+        DECLARE_TUPLE_VAL_TYPE(3)
+        DEFINE_TUPLE_VAL(3)
+        DECLARE_TUPLE_VAL_TYPE(4)
+        DEFINE_TUPLE_VAL(4)
+
+        constexpr tuple4()
+            : value1{}
+            , value2{}
+            , value3{}
+            , value4{}
+        {}
+
+        constexpr tuple4(const arg1& val1, const arg2& val2, const arg3& val3, const arg4& val4)
+            : value1{val1}
+            , value2{val2}
+            , value3{val3}
+            , value4{val4}
+        {}
+
+        template <typename var1, typename var2, typename var3, typename var4>
+        constexpr tuple4(const tuple4<var1,var2,var3,var4>& tp)
+            : value1{tp.value1}
+            , value2{tp.value2}
+            , value3{tp.value3}
+            , value4{tp.value4}
+        {}
+
+        #endif // NMTOOLS_NO_BASE_ACCESS
     };
 
     template <class arg1, class arg2, class arg3, class arg4, class arg5>
@@ -238,6 +336,21 @@ namespace nmtools::utl
     {
         constexpr tuple() {};
     };
+
+    template <typename...args_t>
+    constexpr auto make_tuple(const args_t&...args)
+    {
+        constexpr auto N = sizeof...(args_t);
+        if constexpr (N == 1) {
+            return tuple1<args_t...>(args...);
+        } else if constexpr (N == 2) {
+            return tuple2<args_t...>(args...);
+        } else if constexpr (N == 3) {
+            return tuple3<args_t...>(args...);
+        } else if constexpr (N == 4) {
+            return tuple4<args_t...>(args...);
+        }
+    }
 
     #define HAS_VALUE_N(index) \
     template <typename T> \

@@ -16,6 +16,11 @@
 
 #include "nmtools/assert.hpp"
 
+// NOTE: on spirv, we can't have access to base class
+#if (defined(__OPENCL_VERSION__) || defined(__circle_build__)) && !defined(NMTOOLS_NO_BASE_ACCESS)
+#define NMTOOLS_NO_BASE_ACCESS
+#endif
+
 namespace nmtools::view::detail
 {
     using utility::tuple_append, utility::tuple_cat;
@@ -127,7 +132,10 @@ namespace nmtools::view
      * @tparam Ts arbitrary number of tparams for view_t
      */
     template <template<typename...> typename view_t, typename...Ts>
-    struct decorator_t : view_t<Ts...>
+    struct decorator_t
+        #ifndef NMTOOLS_NO_BASE_ACCESS
+        : view_t<Ts...>
+        #endif // NMTOOLS_NO_BASE_ACCESS
     {
         using view_type = view_t<Ts...>;
         using array_type = typename view_type::array_type;
@@ -137,6 +145,13 @@ namespace nmtools::view
          *  - static assert if view_type array exists
          *  - has index member function that transform indices
          */
+
+        #ifdef NMTOOLS_NO_BASE_ACCESS
+        view_type view;
+        decorator_t(const view_type& view)
+            : view(view)
+        {}
+        #endif
 
         nmtools_func_attribute
         ~decorator_t() = default;
@@ -150,18 +165,31 @@ namespace nmtools::view
         constexpr decltype(auto) shape() const noexcept
         {
             if constexpr (meta::has_shape_v<view_type>) {
+                #ifndef NMTOOLS_NO_BASE_ACCESS
                 return view_type::shape();
+                #else
+                return view.shape();
+                #endif
             }
             else {
+                #ifndef NMTOOLS_NO_BASE_ACCESS
                 return detail::shape(view_type::array);
+                #else
+                return detail::shape(view.array);
+                #endif // NMTOOLS_NO_BASE_ACCESS
             }
         } // shape
 
         constexpr auto dim() const noexcept
         {
             // @note `this` must be constexpr when constexpr return value is desired
-            if constexpr (meta::has_dim_v<meta::remove_cvref_t<view_type>>)
+            if constexpr (meta::has_dim_v<meta::remove_cvref_t<view_type>>) {
+                #ifndef NMTOOLS_NO_BASE_ACCESS
                 return view_type::dim();
+                #else
+                return view.dim();
+                #endif
+            }
             // @note may be recursive
             else
                 return len(shape());
@@ -175,9 +203,14 @@ namespace nmtools::view
         constexpr auto size() const noexcept
         {
             if constexpr (meta::has_size_v<view_type>) {
+                #ifndef NMTOOLS_NO_BASE_ACCESS
                 return view_type::size();
+                #else
+                return view.size();
+                #endif // NMTOOLS_NO_BASE_ACCESS
             } else {
-                return index::product(shape());
+                auto shape_ = this->shape();
+                return index::product(shape_);
             }
         }
 
@@ -202,10 +235,19 @@ namespace nmtools::view
             // using common_t = meta::promote_index_t<size_types...>;
             using common_t = meta::type_t<meta::promote_index<size_types...>>;
             using meta::has_funcnd_v;
-            if constexpr (has_funcnd_v<view_type,size_types...>)
+            if constexpr (has_funcnd_v<view_type,size_types...>) {
+                #ifndef NMTOOLS_NO_BASE_ACCESS
                 return view_type::operator()(indices...);
+                #else
+                return view(indices...);
+                #endif
+            }
             else {
+                #ifndef NMTOOLS_NO_BASE_ACCESS
                 auto transformed_indices = view_type::index(indices...);
+                #else
+                auto transformed_indices = view.index(indices...);
+                #endif // NMTOOLS_NO_BASE_ACCESS
 
                 // only perform assert if integral type is passed
                 // otherwise assume indices is packed and pass to apply_at
@@ -222,9 +264,17 @@ namespace nmtools::view
                 // call at to referred object, not to this.
                 // the array_type from the view may be pointer
                 if constexpr (meta::is_pointer_v<array_type>) {
+                    #ifndef NMTOOLS_NO_BASE_ACCESS
                     return apply_at(*view_type::array, transformed_indices);
+                    #else
+                    return apply_at(*view.array, transformed_indices);
+                    #endif // NMTOOLS_NO_BASE_ACCESS
                 } else {
+                    #ifndef NMTOOLS_NO_BASE_ACCESS
                     return apply_at(view_type::array, transformed_indices);
+                    #else
+                    return apply_at(view.array, transformed_indices);
+                    #endif // NMTOOLS_NO_BASE_ACCESS
                 }
             }
         } // operator()
@@ -251,17 +301,33 @@ namespace nmtools::view
             // using common_t = meta::promote_index_t<size_types...>;
             using meta::has_funcnd_v;
             if constexpr (has_funcnd_v<view_type,size_types...>)
+                #ifndef NMTOOLS_NO_BASE_ACCESS
                 return view_type::operator()(indices...);
+                #else
+                return view(indices...);
+                #endif // NMTOOLS_NO_BASE_ACCESS
             else {
+                #ifndef NMTOOLS_NO_BASE_ACCESS
                 auto transformed_indices = view_type::index(indices...);
+                #else
+                auto transformed_indices = view.index(indices...);
+                #endif
 
                 [[maybe_unused]] constexpr auto n = sizeof...(size_types);
 
                 // call at to referred object, not to this
                 if constexpr (meta::is_pointer_v<array_type>) {
+                    #ifndef NMTOOLS_NO_BASE_ACCESS
                     return apply_at(*view_type::array, transformed_indices);
+                    #else
+                    return apply_at(*view.array, transformed_indices);
+                    #endif // NMTOOLS_NO_BASE_ACCESS
                 } else {
+                    #ifndef NMTOOLS_NO_BASE_ACCESS
                     return apply_at(view_type::array, transformed_indices);
+                    #else
+                    return apply_at(view.array, transformed_indices);
+                    #endif // NMTOOLS_NO_BASE_ACCESS
                 }
             }
         } // operator()

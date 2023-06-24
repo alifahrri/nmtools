@@ -20,6 +20,16 @@ namespace nmtools::array
 {
     struct create_vector_t {};
 
+    template <typename T>
+    constexpr auto unwrap(const T& t)
+    {
+        if constexpr (meta::is_maybe_v<T>) {
+            return *t;
+        } else {
+            return t;
+        }
+    }
+
     template <auto DIM=0, typename size_type, typename type>
     nmtools_func_attribute
     auto create_vector(const type* data_ptr, size_type dim)
@@ -45,15 +55,17 @@ namespace nmtools::array
         auto numel = index::product(shape);
 
         auto ref = view::ref(data_ptr,numel);
-        return view::reshape(ref,shape);
+        auto reshaped = view::reshape(ref,shape);
+        return reshaped;
     }
 
-    template <auto DIM=0, typename dim_type=unsigned long, typename size_type=unsigned long, typename type>
+    template <auto DIM=0, typename dim_type=uint32_t, typename size_type=unsigned long, typename type>
     nmtools_func_attribute
     auto create_array(const type* data_ptr, const size_type* shape_ptr, dim_type dim)
     {
         auto shape = create_vector<DIM>(shape_ptr,dim);
-        return create_array(data_ptr,shape);
+        auto array = create_array(data_ptr,shape);
+        return array;
     }
 
     template <typename type, typename shape_type>
@@ -77,17 +89,18 @@ namespace nmtools::array
 
 namespace nmtools::meta
 {
-    template <auto DIM, typename data_type>
+    template <auto DIM, typename data_t>
     struct resolve_optype<
-        void, array::create_vector_t, as_type<DIM>, data_type
+        void, array::create_vector_t, as_type<DIM>, data_t
     >
     {
+        using data_type = remove_address_space_t<remove_cvref_t<data_t>>;
         static constexpr auto vtype = [](){
             if constexpr (DIM <= 0) {
-                using type = utl::static_vector<remove_address_space_t<data_type>,NMTOOLS_KERNEL_MAX_DIM_>;
+                using type = utl::static_vector<data_type,NMTOOLS_KERNEL_MAX_DIM_>;
                 return as_value_v<type>;
             } else {
-                using type = nmtools_array<remove_address_space_t<data_type>,DIM>;
+                using type = nmtools_array<data_type,DIM>;
                 return as_value_v<type>;
             }
         }();

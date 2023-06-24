@@ -185,9 +185,10 @@ namespace nmtools::meta
     struct fixed_size< view::decorator_t< view::ufunc_t, op_t, arrays_t... >>
     {
         using view_type  = view::decorator_t< view::ufunc_t, op_t, arrays_t... >;
-        using shape_type = typename view_type::shape_type;
+        using ufunc_type = typename view_type::view_type;
+        using shape_type = typename ufunc_type::shape_type;
         using type_list  = meta::type_list<arrays_t...>;
-        using size_type  = typename view_type::size_type;
+        using size_type  = typename ufunc_type::size_type;
 
         static constexpr auto value = [](){
             if constexpr (is_constant_index_v<size_type>) {
