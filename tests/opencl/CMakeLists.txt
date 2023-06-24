@@ -44,7 +44,9 @@ set(LLVM_SPIRV_OPTIONS
     # -spirv-ocl-builtins-version=1.2
     -spirv-max-version=1.0
 )
-set(CLANG_OPENCL_ARGS -emit-llvm -target spir64-unknown-unknown -Xclang -finclude-default-header -cl-std=CLC++ -O1)
+
+# somehow doesn't work on -O2, -O3, -O0 :(
+set(CLANG_OPENCL_ARGS -emit-llvm -target spir64-unknown-unknown -Xclang -finclude-default-header -Xclang -cl-std=CLC++ -O1)
 set(NMTOOLS_OPENCL_MACROS -D__OPENCL_C_VERSION__=120 -D__OPENCL_VERSION__=120 -DNMTOOLS_OPENCL_BUILD_KERNELS)
 
 if (NMTOOLS_OPENCL_TEST_UFUNC)
@@ -104,290 +106,290 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
         kernels/trunc.cpp
 
         ## binary ufuncs ##
-        # kernels/add.cpp
+        kernels/add.cpp
 
         ## indexing ##
-        # kernels/broadcast_to.cpp
+        kernels/broadcast_to.cpp
     )
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-kernels
                     ALL
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} --version
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i relu.spv > ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu6.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu6.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu6.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu6.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i relu6.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/prelu.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/prelu.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/prelu.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/prelu.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i prelu.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/celu.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/celu.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/celu.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/celu.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i celu.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/elu.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/elu.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/elu.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/elu.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i elu.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardshrink.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardshrink.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardshrink.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardshrink.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i hardshrink.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardswish.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardswish.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardswish.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardswish.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i hardswish.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardtanh.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardtanh.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardtanh.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/hardtanh.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i hardtanh.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/leaky_relu.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/leaky_relu.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/leaky_relu.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/leaky_relu.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i leaky_relu.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log_sigmoid.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log_sigmoid.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log_sigmoid.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log_sigmoid.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i log_sigmoid.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/mish.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/mish.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/mish.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/mish.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i mish.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/selu.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/selu.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/selu.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/selu.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i selu.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sigmoid.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sigmoid.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sigmoid.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sigmoid.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i sigmoid.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/silu.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/silu.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/silu.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/silu.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i silu.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softplus.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softplus.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softplus.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softplus.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i softplus.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softshrink.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softshrink.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softshrink.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softshrink.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i softshrink.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softsign.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softsign.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softsign.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/softsign.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i softsign.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanhshrink.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanhshrink.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanhshrink.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanhshrink.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i tanhshrink.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arccos.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arccos.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arccos.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arccos.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i arccos.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arccosh.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arccosh.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arccosh.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arccosh.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i arccosh.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arcsin.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arcsin.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arcsin.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arcsin.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i arcsin.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arcsinh.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arcsinh.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arcsinh.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arcsinh.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i arcsinh.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arctan.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arctan.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arctan.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arctan.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i arctan.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arctanh.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arctanh.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arctanh.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/arctanh.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i arctanh.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cbrt.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cbrt.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cbrt.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cbrt.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i cbrt.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ceil.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ceil.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ceil.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ceil.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i ceil.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cos.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cos.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cos.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cos.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i cos.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cosh.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cosh.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cosh.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cosh.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i cosh.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/exp.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/exp.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/exp.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/exp.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i exp.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/exp2.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/exp2.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/exp2.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/exp2.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i exp2.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/expm1.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/expm1.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/expm1.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/expm1.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i expm1.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/fabs.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/fabs.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/fabs.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/fabs.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i fabs.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/floor.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/floor.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/floor.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/floor.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i floor.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/invert.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/invert.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/invert.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/invert.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i invert.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isfinite.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isfinite.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isfinite.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isfinite.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i isfinite.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isinf.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isinf.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isinf.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isinf.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i isinf.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isnan.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isnan.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isnan.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/isnan.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i isnan.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i log.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log1p.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log1p.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log1p.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log1p.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i log1p.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log2.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log2.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log2.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log2.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i log2.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log10.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log10.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log10.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/log10.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i log10.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/negative.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/negative.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/negative.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/negative.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i negative.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/positive.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/positive.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/positive.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/positive.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i positive.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/reciprocal.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/reciprocal.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/reciprocal.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/reciprocal.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i reciprocal.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/rint.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/rint.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/rint.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/rint.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i rint.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/signbit.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/signbit.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/signbit.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/signbit.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i signbit.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sin.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sin.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sin.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sin.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i sin.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sinh.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sinh.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sinh.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sinh.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i sinh.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sqrt.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sqrt.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sqrt.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/sqrt.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i sqrt.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/square.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/square.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/square.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/square.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i square.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tan.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tan.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tan.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tan.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i tan.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanh.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanh.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanh.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanh.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i tanh.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         &&
-                        clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/trunc.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/trunc.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/trunc.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/trunc.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i trunc.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
-                        ###################
-                        ## Disabled because of comple error: Invalid cast (Producer: 'LLVM14.0.0' Reader: 'LLVM 14.0.0')
-                        # &&
-                        # clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
-                        # -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/add.cpp
-                        # && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.bc
-                        # && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_add.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
-                        # &&
-                        # clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
-                        # -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/broadcast_to.cpp
-                        # && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc
-                        # && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_broadcast_to.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/add.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_add.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/broadcast_to.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_broadcast_to.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     BYPRODUCTS
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.spv
@@ -495,10 +497,10 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tanh.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/trunc.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/trunc.spv
-                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.bc
-                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.spv
-                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc
-                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     )
         endif () # CMAKE_CXX_COMPILER_ID
@@ -517,42 +519,42 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-index-tests
             ALL
-                clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/broadcast_to.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_broadcast_to.spv > ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
                 &&
-                clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_logical_not.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/logical_not.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_logical_not.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_logical_not.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_logical_not.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
                 &&
-                clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_nonzero.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/nonzero.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_nonzero.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_nonzero.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_nonzero.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
                 &&
-                clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_shape.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/broadcast_shape.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_shape.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_shape.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_broadcast_shape.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
                 &&
-                clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_gather.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/gather.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_gather.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_gather.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_gather.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
                 &&
-                clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_strides.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/compute_strides.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_strides.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_strides.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_compute_strides.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
                 &&
-                clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_indices.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/compute_indices.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_indices.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_indices.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_compute_indices.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
                 &&
-                clang ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_offset.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/compute_offset.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_offset.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_offset.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_compute_offset.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp

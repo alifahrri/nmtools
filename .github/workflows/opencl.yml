@@ -58,7 +58,6 @@ jobs:
           libboost-dev
       - name: install llvm-spirv
         run: |
-          export LLVM_SPV_VERSION=v14.0.0
           sudo bash scripts/install_llvm_spirv.sh
       - name: install pocl
         run: |

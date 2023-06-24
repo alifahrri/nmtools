@@ -16,8 +16,12 @@
 	// "dockerFile": "../docker/eoan.dockerfile",
 
     // DOCKERFILE: ubuntu jammy (22.04)
-    "name": "ubuntu jammy - gcc11, clang14",
-	"dockerFile": "../docker/jammy.dockerfile",
+    // "name": "ubuntu jammy - gcc11, clang14",
+	// "dockerFile": "../docker/jammy.dockerfile",
+
+    // DOCKERFILE: ubuntu jammy (22.04)
+    "name": "ubuntu lunar",
+	"dockerFile": "../docker/lunar.dockerfile",
 
 	// DOCKERFILE: testbench
 	// "name": "Testbench",

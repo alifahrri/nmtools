@@ -1,8 +1,28 @@
 #!/bin/bash
 
-git clone -b v3.1 --single-branch https://github.com/pocl/pocl.git
+if [[ -z "${LLVM_VERSION}" ]]; then
+  LLVM_VERSION="15"
+else
+  LLVM_VERSION="${LLVM_VERSION}"
+fi
 
-export LLVM_VERSION=14
+if [[ -z "${POCL_VERSION}" ]]; then
+  POCL_VERSION="v4.0"
+else
+  POCL_VERSION="${POCL_VERSION}"
+fi
+
+echo "using LLVM_VERSION=${LLVM_VERSION}"
+
+echo "using POCL_VERSION=${POCL_VERSION}"
+
+DIR=pocl
+if [[ -d "$DIR" ]]; then
+    echo "$DIR exists. skipping cloning"
+else
+    git clone https://github.com/pocl/pocl.git
+fi
+
 apt install -y xxd python3-dev libpython3-dev build-essential ocl-icd-libopencl1 \
     cmake git pkg-config libclang-${LLVM_VERSION}-dev clang \
     llvm-${LLVM_VERSION} make ninja-build ocl-icd-libopencl1 ocl-icd-dev \
@@ -10,5 +30,7 @@ apt install -y xxd python3-dev libpython3-dev build-essential ocl-icd-libopencl1
     libxml2-dev libclang-cpp${LLVM_VERSION}-dev libclang-cpp${LLVM_VERSION} \
     llvm-${LLVM_VERSION}-dev --fix-missing
 
-cd pocl && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_CUDA=OFF -DSPIRV=ON -DLLVM_SPIRV=/usr/local/bin/llvm-spirv -DCMAKE_INSTALL_PREFIX=/usr .. \
+cd ${DIR}
+git checkout ${POCL_VERSION}
+mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_CUDA=OFF -DSPIRV=ON -DLLVM_SPIRV=/usr/local/bin/llvm-spirv -DCMAKE_INSTALL_PREFIX=/usr .. \
     && make -j2 && make install
