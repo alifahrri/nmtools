@@ -58,15 +58,11 @@ jobs:
           libboost-dev
       - name: install llvm-spirv
         run: |
-          export LLVM_VERSION=14
-          export LLVM_SPV_VERSION=v14.0.0
-          sudo bash scripts/install_llvm_spirv.sh
+          LLVM_VERSION=14 LLVM_SPV_VERSION=v14.0.0 sudo bash scripts/install_llvm_spirv.sh
       - name: install pocl
         run: |
-          export LLVM_VERSION=14
-          export POCL_VERSION=v3.1
           sudo apt install -y python3-dev libpython3-dev build-essential ocl-icd-libopencl1 cmake git pkg-config libclang-${LLVM_VERSION}-dev clang llvm-${LLVM_VERSION} make ninja-build ocl-icd-libopencl1 ocl-icd-dev ocl-icd-opencl-dev libhwloc-dev zlib1g zlib1g-dev clinfo dialog apt-utils libxml2-dev libclang-cpp${LLVM_VERSION}-dev libclang-cpp${LLVM_VERSION} llvm-${LLVM_VERSION}-dev intel-opencl-icd
-          sudo bash scripts/install_pocl.sh
+          LLVM_VERSION=14 POCL_VERSION=v3.1 sudo bash scripts/install_pocl.sh
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build

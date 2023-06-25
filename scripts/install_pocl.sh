@@ -2,12 +2,14 @@
 
 if [[ -z "${LLVM_VERSION}" ]]; then
   LLVM_VERSION="15"
+  echo "set LLVM_VERSION from env"
 else
   LLVM_VERSION="${LLVM_VERSION}"
 fi
 
 if [[ -z "${POCL_VERSION}" ]]; then
   POCL_VERSION="v4.0"
+  echo "set POCL_VERSION from env"
 else
   POCL_VERSION="${POCL_VERSION}"
 fi
