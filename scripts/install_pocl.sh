@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ -z "${LLVM_VERSION}" ]]; then
-  LLVM_VERSION="14"
+  LLVM_VERSION="15"
 else
   LLVM_VERSION="${LLVM_VERSION}"
   echo "set LLVM_VERSION from env"

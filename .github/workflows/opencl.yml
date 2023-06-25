@@ -41,7 +41,7 @@ jobs:
 
   clang-opencl:
     name: clang-opencl
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-23.04
     steps:
       - uses: actions/checkout@v2
       - name: install clang
@@ -58,10 +58,10 @@ jobs:
           libboost-dev
       - name: install llvm-spirv
         run: |
-          LLVM_VERSION=14 LLVM_SPV_VERSION=v14.0.0 sudo bash scripts/install_llvm_spirv.sh
+          LLVM_VERSION=15 LLVM_SPV_VERSION=v15.0.0 sudo bash scripts/install_llvm_spirv.sh
       - name: install pocl
         run: |
-          LLVM_VERSION=14 POCL_VERSION=v3.1 sudo bash scripts/install_pocl.sh
+          LLVM_VERSION=15 POCL_VERSION=v3.1 sudo bash scripts/install_pocl.sh
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
