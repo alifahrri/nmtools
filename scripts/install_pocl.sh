@@ -1,17 +1,17 @@
 #!/bin/bash
 
 if [[ -z "${LLVM_VERSION}" ]]; then
-  LLVM_VERSION="15"
-  echo "set LLVM_VERSION from env"
+  LLVM_VERSION="14"
 else
   LLVM_VERSION="${LLVM_VERSION}"
+  echo "set LLVM_VERSION from env"
 fi
 
 if [[ -z "${POCL_VERSION}" ]]; then
-  POCL_VERSION="v4.0"
-  echo "set POCL_VERSION from env"
+  POCL_VERSION="v3.1"
 else
   POCL_VERSION="${POCL_VERSION}"
+  echo "set POCL_VERSION from env"
 fi
 
 echo "using LLVM_VERSION=${LLVM_VERSION}"
