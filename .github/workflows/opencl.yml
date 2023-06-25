@@ -58,9 +58,9 @@ jobs:
           libboost-dev
       - name: install llvm-15
         run: |
-        wget https://apt.llvm.org/llvm.sh
-        chmod +x llvm.sh
-        sudo ./llvm.sh 15
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 15
       - name: install llvm-spirv
         run: |
           LLVM_VERSION=15 LLVM_SPV_VERSION=v15.0.0 sudo bash scripts/install_llvm_spirv.sh
