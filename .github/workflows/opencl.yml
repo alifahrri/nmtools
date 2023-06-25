@@ -41,7 +41,7 @@ jobs:
 
   clang-opencl:
     name: clang-opencl
-    runs-on: ubuntu-23.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: install clang
@@ -56,6 +56,11 @@ jobs:
           curl \
           clang \
           libboost-dev
+      - name: install llvm-15
+        run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh 15
       - name: install llvm-spirv
         run: |
           LLVM_VERSION=15 LLVM_SPV_VERSION=v15.0.0 sudo bash scripts/install_llvm_spirv.sh
