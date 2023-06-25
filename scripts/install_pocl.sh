@@ -25,7 +25,7 @@ else
     git clone https://github.com/pocl/pocl.git
 fi
 
-apt install -y xxd python3-dev libpython3-dev build-essential ocl-icd-libopencl1 \
+apt install -y xxd python3-dev libpython3-dev build-essential ocl-icd-libopencl1 intel-opencl-icd \
     cmake git pkg-config libclang-${LLVM_VERSION}-dev clang \
     llvm-${LLVM_VERSION} make ninja-build ocl-icd-libopencl1 ocl-icd-dev \
     ocl-icd-opencl-dev libhwloc-dev zlib1g zlib1g-dev clinfo dialog apt-utils \
