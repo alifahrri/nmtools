@@ -5,6 +5,7 @@
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/broadcast_to.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/array/eval/opencl/kernel_helper.hpp"
 
 #ifndef nm_stringify
@@ -17,23 +18,28 @@
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
 namespace nm = nmtools;
+namespace na = nmtools::array;
 namespace view = nmtools::view;
 namespace meta = nmtools::meta;
-namespace index = nmtools::index;
 namespace opencl = nmtools::array::opencl;
 namespace detail = nmtools::view::detail;
 
-// error: Invalid cast (Producer: 'LLVM14.0.0' Reader: 'LLVM 14.0.0')
-// decided to give up for now, maybe there is hope in vulkan, sycl, or cuda
-
 #define nmtools_cl_kernel(out_type,inp_type) \
-kernel void nmtools_cl_kernel_name(out_type,inp_type)(global out_type* out_ptr, global const inp_type* inp_ptr, global const unsigned int* out_shape_ptr, global const unsigned int* inp_shape_ptr, global const unsigned int* dst_shape_ptr, const unsigned int out_dim, const unsigned int inp_dim, const unsigned int dst_size) \
+kernel void nmtools_cl_kernel_name(out_type,inp_type) \
+    ( global out_type* out_ptr                  \
+    , global const inp_type* inp_ptr            \
+    , global const unsigned int* out_shape_ptr  \
+    , global const unsigned int* inp_shape_ptr  \
+    , global const unsigned int* dst_shape_ptr  \
+    , const unsigned int out_dim                \
+    , const unsigned int inp_dim                \
+    , const unsigned int dst_size)              \
 { \
-    auto dst_shape = opencl::create_vector<1>(dst_shape_ptr,dst_size); \
-    auto input  = opencl::create_array</*dim*/1>(inp_ptr,inp_shape_ptr,inp_dim); \
-    auto output = opencl::create_mutable_array</*dim*/1>(out_ptr,out_shape_ptr,out_dim); \
-    auto broadcasted = view::broadcast_to(input,dst_shape); \
-    opencl::assign_array(output,broadcasted); \
+    auto dst_shape   = na::create_vector</*DIM*/1>(dst_shape_ptr,dst_size);               \
+    auto input       = na::create_array(inp_ptr,inp_shape_ptr,inp_dim);         \
+    auto output      = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim); \
+    auto broadcasted = view::broadcast_to(input,dst_shape);                     \
+    opencl::assign_array(output,broadcasted);                                   \
 }
 
 nmtools_cl_kernel(float,float)
@@ -99,11 +105,23 @@ namespace nmtools::array::opencl
             auto inp_size = nmtools::size(inp_array);
             auto dst_size = nmtools::size(view);
 
+            auto out_shape = nmtools::shape(output);
+            auto inp_shape = nmtools::shape(inp_array);
+
+            auto out_shape_buffer = context->create_buffer(out_shape);
+            auto inp_shape_buffer = context->create_buffer(inp_shape);
+            auto dst_shape_buffer = context->create_buffer(view.shape_);
+
+            uint32_t out_dim = nmtools::len(out_shape);
+            uint32_t inp_dim = nmtools::len(inp_shape);
+
+            uint32_t dst_shape_size = nmtools::len(view.shape_);
+
             auto kernel_info = kernel.kernel_info_;
             auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
             auto global_size = nmtools_array{size_t(std::ceil(float(out_size) / local_size[0])) * local_size[0]};
 
-            auto default_args = nmtools_tuple{out_buffer,inp_buffer,out_size,inp_size,dst_size};
+            auto default_args = nmtools_tuple{out_buffer,inp_buffer,out_shape_buffer,inp_shape_buffer,dst_shape_buffer,out_dim,inp_dim,dst_shape_size};
 
             context->set_args(kernel,default_args);
             context->run(kernel,out_buffer,output,global_size,local_size);

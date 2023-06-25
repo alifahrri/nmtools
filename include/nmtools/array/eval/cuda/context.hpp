@@ -221,7 +221,6 @@ namespace nmtools::array::cuda
 
         template <typename function_t, typename output_array_t, typename arg0_t, typename...args_t>
         auto run(const function_t& f, output_array_t& output, const arg0_t& arg0, const args_t&...args)
-            // -> meta::enable_if_t<(sizeof...(args_t) > 2)>
         {
             auto args_pack = [&](){
                 if constexpr (meta::is_tuple_v<arg0_t>) {

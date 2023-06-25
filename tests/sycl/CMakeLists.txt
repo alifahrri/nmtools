@@ -39,6 +39,18 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/activations/softshrink.cpp
     array/activations/softsign.cpp
     array/activations/tanhshrink.cpp
+
+    array/ufuncs/add.cpp
+    array/ufuncs/multiply.cpp
+
+    array/reductions/add.cpp
+    array/reductions/multiply.cpp
+
+    array/accumulations/add.cpp
+    array/accumulations/multiply.cpp
+
+    array/outer/add.cpp
+    array/outer/multiply.cpp
 )
 
 ## TODO: support nvcc compilation

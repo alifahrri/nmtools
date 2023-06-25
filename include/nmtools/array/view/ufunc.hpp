@@ -69,9 +69,17 @@ namespace nmtools::view
                 return result_t{ufunc(op,*rptr,arrays...)};
             }
         } else if constexpr (meta::is_num_v<array_t> && (meta::is_num_v<arrays_t> && ...)) {
+            // NOTE: quick workaround to compile
+            // TODO: revisit this cases
+            #ifndef NMTOOLS_NO_BASE_ACCESS
             // all arrays are numeric, use scalar_ufunc instead
             using view_t = decorator_t<scalar_ufunc_t,op_t,array_t,arrays_t...>;
             return view_t{{op,array,arrays...}};
+            #else
+            using result_t = decorator_t<scalar_ufunc_t,op_t,array_t,arrays_t...>;
+            using view_t = scalar_ufunc_t<op_t,array_t,arrays_t...>;
+            return result_t{view_t{op,array,arrays...}};
+            #endif // NMTOOLS_NO_BASE_ACCESS
         } else if constexpr (sizeof...(arrays) > 0) {
             // enable broadcasting if operands >= 2
             // here, broadcasted array should be view
@@ -82,9 +90,17 @@ namespace nmtools::view
                 , "nmtools internal error" );
             return _ufunc(op, b_arrays);
         } else {
+            // NOTE: quick workaround to compile
+            // TODO: revisit this cases
+            #ifndef NMTOOLS_NO_BASE_ACCESS
             // single argument ufunc, skip broadcasting
             using view_t = decorator_t<ufunc_t,op_t,meta::remove_address_space_t<array_t>>;
             return view_t{{op,{array}}};
+            #else
+            using result_t = decorator_t<ufunc_t,op_t,meta::remove_address_space_t<array_t>>;
+            using view_t = ufunc_t<op_t,meta::remove_address_space_t<array_t>>;
+            return result_t{view_t{op,{array}}};
+            #endif // NMTOOLS_NO_BASE_ACCESS
         }
     } // ufunc
 

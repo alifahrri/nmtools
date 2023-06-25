@@ -9,6 +9,7 @@
 
 namespace nm = nmtools;
 namespace na = nm::array;
+namespace view = nm::view;
 namespace meta = nm::meta;
 namespace opencl = na::opencl;
 

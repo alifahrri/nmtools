@@ -46,6 +46,7 @@ kernel void test_shape_broadcast_to(
     }
 }
 
+#if 0
 kernel void test_broadcast_to(global unsigned long* out_ptr, global const unsigned long* indices_ptr, global const unsigned long* src_shape_ptr, global const unsigned long* dst_shape_ptr, global const unsigned long* origin_axes_ptr, const unsigned long out_size, const unsigned long indices_size, const unsigned long src_shape_size, const unsigned long dst_shape_size, const unsigned long origin_axes_size)
 {
     auto id = get_global_id(0);
@@ -61,6 +62,7 @@ kernel void test_broadcast_to(global unsigned long* out_ptr, global const unsign
         opencl::assign_vector(output,result);
     }
 }
+#endif
 
 #else
 

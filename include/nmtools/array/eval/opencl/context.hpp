@@ -405,8 +405,8 @@ namespace nmtools::array::opencl
             this->set_args(kernel.kernel_,args_pack);
         }
 
-        template <typename array_t, typename out_buffer_t, typename global_size_t, typename local_size_t>
-        auto run(std::shared_ptr<cl_kernel> kernel, out_buffer_t out_buffer, array_t& output, const global_size_t& global_size, const local_size_t& local_size)
+        template <typename array_t, typename global_size_t, typename local_size_t>
+        auto run(std::shared_ptr<cl_kernel> kernel, cl_mem_ptr_t out_buffer, array_t& output, const global_size_t& global_size, const local_size_t& local_size)
         {
             cl_int ret;
             ret = enqueue_kernel(kernel,global_size,local_size);
@@ -414,6 +414,61 @@ namespace nmtools::array::opencl
 
             ret = copy_buffer(out_buffer,output);
             nmtools_cl_check_error( ret, "copying buffer" );
+        }
+
+        template <typename output_array_t, typename fn_attributes_t, typename arg0_t, typename...args_t>
+        auto run(kernel_t kernel, const fn_attributes_t& fn_attributes, output_array_t& output, const arg0_t& arg0, const args_t&...args)
+        {
+            auto args_pack = [&](){
+                if constexpr (meta::is_tuple_v<arg0_t>) {
+                    static_assert( sizeof...(args_t) == 0, "nmtools error" );
+                    return static_cast<const arg0_t&>(arg0);
+                } else {
+                    return nmtools_tuple<const arg0_t&, const args_t&...>{arg0, args...};
+                }
+            }();
+
+            using kernel_size_t = uint32_t;
+            
+            using out_t = meta::get_element_type_t<output_array_t>;
+
+            auto out_buffer       = this->create_buffer<out_t>(nmtools::size(output));
+            auto out_shape_buffer = this->create_buffer(nmtools::shape(output));
+
+            auto out_dim  = nmtools::dim(output);
+            auto out_size = nmtools::size(output);
+
+            constexpr auto N = meta::len_v<decltype(args_pack)>;
+            auto dev_args_pack = meta::template_reduce<N>([&](auto init, auto index){
+                auto buffer_pack = nmtools::get<0>(init);
+                auto shape_pack  = nmtools::get<1>(init);
+                auto dim_pack    = nmtools::get<2>(init);
+
+                const auto& arg_i = *nmtools::get<index>(args_pack);
+
+                auto arg_shape = nmtools::shape(arg_i);
+                auto arg_dim   = nmtools::len(arg_shape);
+
+                auto dev_buffer = this->create_buffer(arg_i);
+                auto dev_shape  = this->create_buffer(arg_shape);
+
+                auto ret_buffer_pack = utility::tuple_append(buffer_pack,dev_buffer);
+                auto ret_shape_pack  = utility::tuple_append(shape_pack,dev_shape);
+                auto ret_dim_pack    = utility::tuple_append(dim_pack,(kernel_size_t)arg_dim);
+
+                return nmtools_tuple{ret_buffer_pack,ret_shape_pack,ret_dim_pack};
+            }, nmtools_tuple{nmtools_tuple{out_buffer},nmtools_tuple{out_shape_buffer},nmtools_tuple{(kernel_size_t)out_dim}});
+
+            auto kernel_info = kernel.kernel_info_;
+            auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
+            auto global_size = nmtools_array{size_t(std::ceil(float(out_size) / local_size[0])) * local_size[0]};
+
+            auto buffer_pack = nmtools::get<0>(dev_args_pack);
+            auto shape_pack  = nmtools::get<1>(dev_args_pack);
+            auto dim_pack    = nmtools::get<2>(dev_args_pack);
+            auto cl_args_pack = utility::tuple_cat(utility::tuple_cat(buffer_pack,utility::tuple_cat(shape_pack,dim_pack)),fn_attributes);
+            this->set_args(kernel,cl_args_pack);
+            this->run(kernel,out_buffer,output,global_size,local_size);
         }
 
         template <typename array_t, typename out_buffer_t, typename global_size_t, typename local_size_t>

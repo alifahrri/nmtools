@@ -183,8 +183,16 @@ namespace nmtools::view
         }
         // bypass broadcasting index logic if array_t is simply scalar type
         else if constexpr (meta::is_num_v<array_t>) {
+            // NOTE: quick workaround to compile
+            // TODO: revisit this cases
+            #ifndef NMTOOLS_NO_BASE_ACCESS
             using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t,bsize_t>;
             return view_t{{array, shape, None,bsize}};
+            #else
+            using view_t = decorator_t<broadcast_to_t,array_t,shape_t,none_t,bsize_t>;
+            using broadcast_t = broadcast_to_t<array_t,shape_t,none_t,bsize_t>;
+            return view_t{broadcast_t{array, shape, None,bsize}};
+            #endif
         }
         // assume array_t is ndarray
         else {
@@ -217,21 +225,22 @@ namespace nmtools::view
             }(free);
             using origin_axes_t = decltype(origin_axes);
             using array_type = meta::remove_address_space_t<array_t>;
+            // NOTE: quick workaround to compile
+            // TODO: revisit this cases
+            #ifndef NMTOOLS_NO_BASE_ACCESS
             using view_t = decorator_t<broadcast_to_t,array_type,shape_t,origin_axes_t,bsize_t>;
             // prepare_type: may declare return_t as optional type
             nmtools_assert_prepare_type (return_t, view_t);
             nmtools_assert (success, "cannot broadcast shape", return_t);
-            // NOTE:
-            // the array view itself cannot be called with constexpr directly (because it use reference)
-            // but can be evaluated in constexpr
-            // see also https://en.cppreference.com/w/cpp/language/constant_expression
-            // Seems like constexpr variable can't hold reference.
-            // clang complains with:
-            //      note: reference to 'x' is not a constant expression
-            // where 'x' is array
-            // but this function itself (and the broadcast_to_t constructor) are still marked as constexpr
-            // to let the view evaluated in constexpr context.
             return return_t{view_t{{array,shape,origin_axes,bsize}}};
+            #else
+            using view_t = decorator_t<broadcast_to_t,array_type,shape_t,origin_axes_t,bsize_t>;
+            using broadcast_t = broadcast_to_t<array_type,shape_t,origin_axes_t,bsize_t>;
+            // prepare_type: may declare return_t as optional type
+            nmtools_assert_prepare_type (return_t, view_t);
+            nmtools_assert (success, "cannot broadcast shape", return_t);
+            return return_t{view_t{broadcast_t{array,shape,origin_axes,bsize}}};
+            #endif
         }
     } // broadcast_to
 

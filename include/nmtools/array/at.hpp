@@ -306,9 +306,12 @@ namespace nmtools
     {
         // TODO (wrap std metafunctions): wrap as meta::common_type_t
         using index_type = meta::promote_index_t<decltype(i),decltype(j)>;
+        #ifndef __circle_build__
         if constexpr (meta::has_square_bracket2d_v<const array_t&,index_type>) {
             return a[{i,j}];
-        } else if constexpr (meta::has_bracket2d_v<const array_t&,index_type>) {
+        } else
+        #endif // __circle_build__
+        if constexpr (meta::has_bracket2d_v<const array_t&,index_type>) {
             return a(i,j);
         } else {
             return at<j>(at<i>(a));

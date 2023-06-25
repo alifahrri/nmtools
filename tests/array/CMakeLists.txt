@@ -586,10 +586,6 @@ target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-# TODO: this may not be portable across compiler, detect compiler
-target_compile_options(${PROJECT_NAME}-doctest PRIVATE
-    -ftemplate-backtrace-limit=0
-)
 
 if (NMTOOLS_CODE_COVERAGE)
     target_link_libraries(numeric-tests-doctest PUBLIC coverage_config)
