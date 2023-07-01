@@ -16,7 +16,9 @@ namespace nmtools::array::simd
     using meta::is_same_v;
 
     template <typename T>
-    struct simd_op_t<x86_avx_t,T,meta::enable_if_t<meta::is_floating_point_v<T>>>
+    struct simd_op_t<x86_avx_t,T,meta::enable_if_t<
+        meta::is_floating_point_v<T> || meta::is_integral_v<T>
+    >>
     {
         using data_t = T;
 
@@ -28,26 +30,49 @@ namespace nmtools::array::simd
         NMTOOLS_ALWAYS_INLINE
         static auto loadu(const data_t* inp_ptr) noexcept
         {
+            [[maybe_unused]] constexpr auto n_bit = sizeof(data_t) * 8;
             if constexpr (is_same_v<data_t,float>) {
                 return _mm256_loadu_ps(inp_ptr);
-            } else {
+            } else if constexpr (is_same_v<data_t,double>) {
                 return _mm256_loadu_pd(inp_ptr);
+            } else if constexpr (meta::is_integral_v<data_t>) {
+                return _mm256_loadu_si256((__m256i*)inp_ptr);
             }
+            static_assert(
+                meta::is_floating_point_v<data_t>
+                || (n_bit == 64)
+                || (n_bit == 32)
+                || (n_bit == 16)
+                || (n_bit == 8)
+                , "unsupported: is not floating point or unsupported bit width"
+            );
         }
 
         template <typename packed_t> NMTOOLS_ALWAYS_INLINE
         static auto storeu(data_t* out_ptr, packed_t simd) noexcept
         {
+            [[maybe_unused]] constexpr auto n_bit = sizeof(data_t) * 8;
             if constexpr (is_same_v<data_t,float>) {
                 _mm256_storeu_ps(out_ptr,simd);
-            } else {
+            } else if constexpr (is_same_v<data_t,double>) {
                 _mm256_storeu_pd(out_ptr,simd);
+            } else if constexpr (meta::is_integral_v<data_t>) {
+                _mm256_storeu_si256((__m256i*)out_ptr,simd);
             }
+            static_assert( 
+                meta::is_floating_point_v<data_t>
+                || (n_bit == 64)
+                || (n_bit == 32)
+                || (n_bit == 16)
+                || (n_bit == 8)
+                , "expected data_t is not floating point or unsupported bit width"
+            );
         }
 
         template <typename packed_t> NMTOOLS_ALWAYS_INLINE
         static auto sqrt(packed_t x) noexcept
         {
+            // TODO: restrict to floating point only (no integer)
             if constexpr (is_same_v<data_t,float>) {
                 return _mm256_sqrt_ps(x);
             } else {
@@ -58,6 +83,7 @@ namespace nmtools::array::simd
         template <typename packed_t> NMTOOLS_ALWAYS_INLINE
         static auto floor(packed_t x) noexcept
         {
+            // TODO: restrict to floating point only (no integer)
             if constexpr (is_same_v<data_t,float>) {
                 return _mm256_floor_ps(x);
             } else {
@@ -68,16 +94,26 @@ namespace nmtools::array::simd
         template <typename X> NMTOOLS_ALWAYS_INLINE
         static auto set1(X x) noexcept
         {
+            [[maybe_unused]] constexpr auto n_bit = sizeof(X) * 8;
             if constexpr (is_same_v<data_t,float>) {
                 return _mm256_set1_ps(x);
-            } else {
+            } else if constexpr (is_same_v<data_t,double>) {
                 return _mm256_set1_pd(x);
+            } else if constexpr (n_bit == 8) {
+                return _mm256_set1_epi8(x);
+            } else if constexpr (n_bit == 16) {
+                return _mm256_set1_epi16(x);
+            } else if constexpr (n_bit == 32) {
+                return _mm256_set1_epi32(x);
+            } else if constexpr (n_bit == 64) {
+                return _mm256_set1_epi64x(x);
             }
         }
 
         template <typename packed_t> NMTOOLS_ALWAYS_INLINE
         static auto ceil(packed_t x) noexcept
         {
+            // TODO: restrict to floating point only (no integer)
             if constexpr (is_same_v<data_t,float>) {
                 return _mm256_ceil_ps(x);
             } else {
@@ -118,11 +154,17 @@ namespace nmtools::array::simd
         template <typename packed_t> NMTOOLS_ALWAYS_INLINE
         static auto mul(packed_t x, packed_t y) noexcept
         {
+            [[maybe_unused]] constexpr auto n_bit = sizeof(data_t) * 8;
             if constexpr (is_same_v<data_t,float>) {
                 return _mm256_mul_ps(x,y);
-            } else {
+            } else if constexpr (is_same_v<data_t,double>) {
                 return _mm256_mul_pd(x,y);
+            } else if constexpr (n_bit == 16) {
+                return _mm256_mullo_epi16(x,y);
+            } else if constexpr (n_bit == 32) {
+                return _mm256_mullo_epi32(x,y);
             }
+            // TODO: support 8-bit, 64-bit mul
         }
 
         template <typename packed_t, typename mask_t> NMTOOLS_ALWAYS_INLINE
@@ -138,20 +180,38 @@ namespace nmtools::array::simd
         template <typename packed_t> NMTOOLS_ALWAYS_INLINE
         static auto add(packed_t x, packed_t y) noexcept
         {
+            [[maybe_unused]] constexpr auto n_bit = sizeof(data_t) * 8;
             if constexpr (is_same_v<data_t,float>) {
                 return _mm256_add_ps(x,y);
-            } else {
+            } else if constexpr (is_same_v<data_t,double>) {
                 return _mm256_add_pd(x,y);
+            } else if constexpr (n_bit == 8) {
+                return _mm256_add_epi8(x,y);
+            } else if constexpr (n_bit == 16) {
+                return _mm256_add_epi16(x,y);
+            } else if constexpr (n_bit == 32) {
+                return _mm256_add_epi32(x,y);
+            } else if constexpr (n_bit == 64) {
+                return _mm256_add_epi64(x,y);
             }
         }
 
         template <typename packed_t> NMTOOLS_ALWAYS_INLINE
         static auto sub(packed_t x, packed_t y) noexcept
         {
+            [[maybe_unused]] constexpr auto n_bit = sizeof(data_t) * 8;
             if constexpr (is_same_v<data_t,float>) {
                 return _mm256_sub_ps(x,y);
-            } else {
+            } else if constexpr (is_same_v<data_t,double>) {
                 return _mm256_sub_pd(x,y);
+            } else if constexpr (n_bit == 8) {
+                return _mm256_sub_epi8(x,y);
+            } else if constexpr (n_bit == 16) {
+                return _mm256_sub_epi16(x,y);
+            } else if constexpr (n_bit == 32) {
+                return _mm256_sub_epi32(x,y);
+            } else if constexpr (n_bit == 64) {
+                return _mm256_sub_epi64(x,y);
             }
         }
 
