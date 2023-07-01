@@ -1,6 +1,10 @@
 #ifndef NMTOOLS_ARRAY_EVAL_SIMD_OP_HPP
 #define NMTOOLS_ARRAY_EVAL_SIMD_OP_HPP
 
+#include "nmtools/array/view/ufuncs/add.hpp"
+#include "nmtools/array/view/ufuncs/multiply.hpp"
+#include "nmtools/array/view/ufuncs/subtract.hpp"
+#include "nmtools/array/view/ufuncs/divide.hpp"
 #include "nmtools/array/view/ufuncs/sqrt.hpp"
 #include "nmtools/array/view/ufuncs/ceil.hpp"
 #include "nmtools/array/view/ufuncs/floor.hpp"
@@ -331,6 +335,70 @@ namespace nmtools::array::simd
 
             const auto x = simd_t::blendv(a,zero,zero_mask);
             return simd_t::blendv(x,inter_val,inter_mask);
+        }
+    };
+
+    template <typename simd_tag_t, typename data_t, typename...op_args_t>
+    struct ufunc_simd_t<view::add_t<op_args_t...>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    {
+        using simd_t       = simd_op_t<simd_tag_t,data_t>;
+        using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
+        using ufunc_op_t   = view::add_t<op_args_t...>;
+
+        ufunc_simd_t(ufunc_op_t op) {}
+
+        NMTOOLS_ALWAYS_INLINE
+        auto eval(simd_dtype_t lhs, simd_dtype_t rhs) const noexcept
+        {
+            return simd_t::add(lhs,rhs);
+        }
+    };
+
+    template <typename simd_tag_t, typename data_t, typename lhs_t, typename rhs_t, typename res_t>
+    struct ufunc_simd_t<view::multiply_t<lhs_t,rhs_t,res_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    {
+        using simd_t       = simd_op_t<simd_tag_t,data_t>;
+        using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
+        using ufunc_op_t   = view::multiply_t<lhs_t,rhs_t,res_t>;
+
+        ufunc_simd_t(ufunc_op_t op) {}
+
+        NMTOOLS_ALWAYS_INLINE
+        auto eval(simd_dtype_t lhs, simd_dtype_t rhs) const noexcept
+        {
+            return simd_t::mul(lhs,rhs);
+        }
+    };
+
+    template <typename simd_tag_t, typename data_t, typename lhs_t, typename rhs_t, typename res_t>
+    struct ufunc_simd_t<view::subtract_t<lhs_t,rhs_t,res_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    {
+        using simd_t       = simd_op_t<simd_tag_t,data_t>;
+        using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
+        using ufunc_op_t   = view::subtract_t<lhs_t,rhs_t,res_t>;
+
+        ufunc_simd_t(ufunc_op_t op) {}
+
+        NMTOOLS_ALWAYS_INLINE
+        auto eval(simd_dtype_t lhs, simd_dtype_t rhs) const noexcept
+        {
+            return simd_t::sub(lhs,rhs);
+        }
+    };
+
+    template <typename simd_tag_t, typename data_t>
+    struct ufunc_simd_t<view::divide_t,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    {
+        using simd_t       = simd_op_t<simd_tag_t,data_t>;
+        using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
+        using ufunc_op_t   = view::divide_t;
+
+        ufunc_simd_t(ufunc_op_t op) {}
+
+        NMTOOLS_ALWAYS_INLINE
+        auto eval(simd_dtype_t lhs, simd_dtype_t rhs) const noexcept
+        {
+            return simd_t::div(lhs,rhs);
         }
     };
 } // namespace nmtools::array::simd
