@@ -145,6 +145,33 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
+    template <typename...>
+    struct UFUNC_ARITY_UNKNOWN : detail::fail_t {};
+
+    template <typename view_type>
+    struct ufunc_arity
+    {
+        static constexpr auto value = -1;
+    };
+
+    template <typename op_t, typename...arrays_t>
+    struct ufunc_arity<
+        view::decorator_t< view::ufunc_t, op_t, arrays_t... >
+    >
+    {
+        static constexpr auto value = sizeof...(arrays_t);
+    };
+    
+    template <typename T>
+    struct ufunc_arity<const T> : ufunc_arity<T> {};
+
+    template <typename T>
+    struct ufunc_arity<T&> : ufunc_arity<T> {};
+
+    template <typename T>
+    constexpr inline auto ufunc_arity_v = ufunc_arity<T>::value;
+
+
     /**
      * @brief Scalar ufunc is num
      * 
