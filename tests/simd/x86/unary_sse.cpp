@@ -1,5 +1,6 @@
 #include "nmtools/array/eval/simd/x86_sse.hpp"
 #include "nmtools/array/array/arange.hpp"
+#include "nmtools/array/array/ufuncs/add.hpp"
 #include "nmtools/array/array/ufuncs/sqrt.hpp"
 #include "nmtools/array/array/ufuncs/ceil.hpp"
 #include "nmtools/array/array/ufuncs/floor.hpp"
