@@ -3,6 +3,7 @@
 
 #include "nmtools/array/eval.hpp"
 #include "nmtools/array/data.hpp"
+#include "nmtools/array/eval/simd/index.hpp"
 #include "nmtools/array/eval/simd/ufunc.hpp"
 
 namespace nmtools::array
@@ -31,8 +32,7 @@ namespace nmtools::array
         context_type context;
 
         template <typename output_t>
-        constexpr auto operator()(output_t& output) const
-            -> meta::enable_if_t<meta::is_ndarray_v<output_t>>
+        constexpr auto eval_unary(output_t& output) const
         {
             auto out_shape = ::nmtools::shape(output);
             auto inp_shape = ::nmtools::shape(view);
@@ -40,7 +40,7 @@ namespace nmtools::array
             // TODO: provide common base/utility for error handling
 
             if (!::nmtools::utils::isequal(out_shape,inp_shape))
-                return;
+                return false;
 
             using ::nmtools::index::ndindex;
             auto out_index = ndindex(out_shape);
@@ -51,8 +51,6 @@ namespace nmtools::array
             static_assert(meta::is_floating_point_v<element_type>
                 , "currently only support float/double");
 
-            // NOTE: assume unary ufunc
-            // TODO: generalize
             auto inp_ptr = nmtools::data(*nmtools::get<0>(view.array));
             auto out_ptr = nmtools::data(output);
 
@@ -79,6 +77,122 @@ namespace nmtools::array
                 auto inp_idx = inp_index[i];
                 auto out_idx = out_index[i];
                 apply_at(output,out_idx) = apply_at(view,inp_idx);
+            }
+
+            return true;
+        }
+
+        enum class BinaryCase : int
+        {
+            SAME_SHAPE=0,
+            TRANSPOSED_2D,
+            INVALID=9999,
+        };
+
+        template <typename output_t>
+        constexpr auto eval_binary(output_t& output) const
+        {
+            auto out_shape = ::nmtools::shape(output);
+            auto inp_shape = ::nmtools::shape(view);
+
+            if (!::nmtools::utils::isequal(out_shape,inp_shape))
+                return false;
+
+            using ::nmtools::index::ndindex;
+            auto out_index = ndindex(out_shape);
+            auto inp_index = ndindex(inp_shape);
+
+            using element_type = meta::get_element_type_t<output_t>;
+            // TODO: do not static assert, tell the caller some combo is not supported
+            static_assert(meta::is_num_v<element_type>
+                , "currently only support numeric types");
+
+            auto input_array_ptr = get_array(view);
+
+            auto lhs_ptr = nmtools::get<0>(input_array_ptr);
+            auto rhs_ptr = nmtools::get<1>(input_array_ptr);
+
+            auto lhs_data_ptr = nmtools::data(*lhs_ptr);
+            auto rhs_data_ptr = nmtools::data(*rhs_ptr);
+            auto out_data_ptr = nmtools::data(output);
+
+            auto lhs_shape = nmtools::shape(*lhs_ptr);
+            auto rhs_shape = nmtools::shape(*rhs_ptr);
+
+            const auto op = context.template create_simd_op<element_type>(view.op);
+            constexpr auto N = decltype(op)::bit_width / (sizeof(element_type) * 8); // 8 = 8-bit
+
+            // assume same size, layout, etc;
+            // TODO: handle different size, layout, broadcasting
+
+            auto binary_case = BinaryCase::INVALID;
+            if (utils::isequal(lhs_shape,rhs_shape)) {
+                binary_case = BinaryCase::SAME_SHAPE;
+            } else if ((len(lhs_shape) == len(rhs_shape)) && (len(rhs_shape) == 2)) {
+                binary_case = BinaryCase::TRANSPOSED_2D;
+            }
+
+            if (binary_case == BinaryCase::INVALID) {
+                return false;
+            }
+
+            const auto size = inp_index.size();
+
+            if (binary_case == BinaryCase::SAME_SHAPE) {
+                for (size_t i=0; (i+N)<=size; i+=N) {
+                    // TODO: support aligned load/store
+                    const auto lhs = op.loadu(&lhs_data_ptr[i]);
+                    const auto rhs = op.loadu(&rhs_data_ptr[i]);
+                    const auto res = op.eval(lhs,rhs);
+                    op.storeu(&out_data_ptr[i],res);
+                }
+
+                // leftover:
+                auto M = (size / N);
+                for (size_t i=(M*N); i<size; i++) {
+                    auto inp_idx = inp_index[i];
+                    auto out_idx = out_index[i];
+                    apply_at(output,out_idx) = apply_at(view,inp_idx);
+                }
+            } else if (binary_case == BinaryCase::TRANSPOSED_2D) {
+                const auto n_elem_pack = meta::as_type<N>{};
+                const auto enumerator = index::binary_2d_simd_enumerator(n_elem_pack,out_shape);
+
+                auto loadu = [&](auto simd_index, auto ptr){
+                    auto [tag,idx] = simd_index;
+                };
+
+                for (auto i=0ul; i<enumerator.size(); i++) {
+                    auto [out_idx,lhs_idx,rhs_idx] = enumerator[i];
+                    auto [out_tag,out_ptr_idx] = out_idx;
+                    auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+                    auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+                    if (out_tag == index::SIMD::PACKED) {
+                        const auto lhs = op.loadu(&lhs_data_ptr[lhs_ptr_idx]);
+                        const auto rhs = op.set1(rhs_data_ptr[rhs_ptr_idx]);
+                        const auto res = op.eval(lhs,rhs);
+                        op.storeu(&out_data_ptr[out_ptr_idx],res);
+                    } else {
+                        out_data_ptr[out_ptr_idx] = view.op(lhs_data_ptr[lhs_ptr_idx],rhs_data_ptr[rhs_ptr_idx]);
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        template <typename output_t>
+        constexpr auto operator()(output_t& output) const
+            -> meta::enable_if_t<meta::is_ndarray_v<output_t>,bool>
+        {
+            constexpr auto arity = meta::ufunc_arity_v<view_type>;
+            static_assert( (arity == 1) || (arity == 2), "unsupported arity ufunc type");
+            if constexpr (arity == 1) {
+                return this->eval_unary(output);
+            } else if constexpr (arity == 2) {
+                return this->eval_binary(output);
+            } else {
+                return false;
             }
         } // operator()
 
