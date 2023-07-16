@@ -85,7 +85,7 @@ namespace nmtools::array
         enum class BinaryCase : int
         {
             SAME_SHAPE=0,
-            TRANSPOSED_2D,
+            BROADCASTED_2D,
             INVALID=9999,
         };
 
@@ -129,7 +129,7 @@ namespace nmtools::array
             if (utils::isequal(lhs_shape,rhs_shape)) {
                 binary_case = BinaryCase::SAME_SHAPE;
             } else if ((len(lhs_shape) == len(rhs_shape)) && (len(rhs_shape) == 2)) {
-                binary_case = BinaryCase::TRANSPOSED_2D;
+                binary_case = BinaryCase::BROADCASTED_2D;
             }
 
             if (binary_case == BinaryCase::INVALID) {
@@ -154,13 +154,9 @@ namespace nmtools::array
                     auto out_idx = out_index[i];
                     apply_at(output,out_idx) = apply_at(view,inp_idx);
                 }
-            } else if (binary_case == BinaryCase::TRANSPOSED_2D) {
+            } else if (binary_case == BinaryCase::BROADCASTED_2D) {
                 const auto n_elem_pack = meta::as_type<N>{};
-                const auto enumerator = index::binary_2d_simd_enumerator(n_elem_pack,out_shape);
-
-                auto loadu = [&](auto simd_index, auto ptr){
-                    auto [tag,idx] = simd_index;
-                };
+                const auto enumerator = index::binary_2d_simd_enumerator(n_elem_pack,out_shape,lhs_shape,rhs_shape);
 
                 for (auto i=0ul; i<enumerator.size(); i++) {
                     auto [out_idx,lhs_idx,rhs_idx] = enumerator[i];
@@ -168,8 +164,14 @@ namespace nmtools::array
                     auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
                     auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
                     if (out_tag == index::SIMD::PACKED) {
-                        const auto lhs = op.loadu(&lhs_data_ptr[lhs_ptr_idx]);
-                        const auto rhs = op.set1(rhs_data_ptr[rhs_ptr_idx]);
+                        const auto lhs = (lhs_tag == index::SIMD::PACKED
+                            ? op.loadu(&lhs_data_ptr[lhs_ptr_idx])
+                            : op.set1(lhs_data_ptr[lhs_ptr_idx])
+                        );
+                        const auto rhs = (rhs_tag == index::SIMD::PACKED
+                            ? op.loadu(&rhs_data_ptr[rhs_ptr_idx])
+                            : op.set1(rhs_data_ptr[rhs_ptr_idx])
+                        );
                         const auto res = op.eval(lhs,rhs);
                         op.storeu(&out_data_ptr[out_ptr_idx],res);
                     } else {

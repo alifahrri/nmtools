@@ -135,11 +135,43 @@ TEST_CASE("broadcast_add(case9)" * doctest::test_suite("simd::x86_AVX"))
 
 TEST_CASE("broadcast_add(case10)" * doctest::test_suite("simd::x86_AVX"))
 {
-    auto n_item = 9;
-    auto lhs_a = na::arange(n_item * 3);
+    auto lhs_a = na::arange(9 * 3);
     auto rhs_a = na::arange(3);
-    auto lhs_shape = nmtools_array{3,n_item};
+    auto lhs_shape = nmtools_array{3,9};
     auto rhs_shape = nmtools_array{3,1};
+    auto lhs = na::reshape(lhs_a,lhs_shape);
+    auto rhs = na::reshape(rhs_a,rhs_shape);
+    X86_AVX_TEST(lhs,add,rhs);
+}
+
+TEST_CASE("broadcast_add(case11)" * doctest::test_suite("simd::x86_AVX"))
+{
+    auto lhs_a = na::arange(9 * 3);
+    auto rhs_a = na::arange(3);
+    auto lhs_shape = nmtools_array{9,3};
+    auto rhs_shape = nmtools_array{1,3};
+    auto lhs = na::reshape(lhs_a,lhs_shape);
+    auto rhs = na::reshape(rhs_a,rhs_shape);
+    X86_AVX_TEST(lhs,add,rhs);
+}
+
+TEST_CASE("broadcast_add(case12)" * doctest::test_suite("simd::x86_AVX"))
+{
+    auto lhs_a = na::arange(10 * 3);
+    auto rhs_a = na::arange(3);
+    auto lhs_shape = nmtools_array{3,10};
+    auto rhs_shape = nmtools_array{3,1};
+    auto lhs = na::reshape(lhs_a,lhs_shape);
+    auto rhs = na::reshape(rhs_a,rhs_shape);
+    X86_AVX_TEST(lhs,add,rhs);
+}
+
+TEST_CASE("broadcast_add(case13)" * doctest::test_suite("simd::x86_AVX"))
+{
+    auto lhs_a = na::arange(10 * 3);
+    auto rhs_a = na::arange(3);
+    auto lhs_shape = nmtools_array{10,3};
+    auto rhs_shape = nmtools_array{1,3};
     auto lhs = na::reshape(lhs_a,lhs_shape);
     auto rhs = na::reshape(rhs_a,rhs_shape);
     X86_AVX_TEST(lhs,add,rhs);
