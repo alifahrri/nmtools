@@ -14,19 +14,35 @@ namespace nmtools::view
     >
     struct multiply_t
     {
+        // NOTE: tried to disable but not successful
+        // TODO: remove by unifying with primary template
+        #if 0
+        // NOTE: required for 'result_type' for reduction
+        static constexpr auto result_vtype = [](){
+            if constexpr (meta::is_num_v<res_t>) {
+                return meta::as_value_v<res_t>;
+            } else {
+                return meta::as_value_v<none_t>;
+            }
+        }();
+        using result_type = meta::type_t<decltype(result_vtype)>;
+        #endif
+
         template <typename T, typename U>
         constexpr auto operator()(const T& t, const U& u) const
         {
-            if constexpr (is_none_v<res_t>) {
+            using result_type = res_t;
+            if constexpr (is_none_v<result_type>) {
                 return t * u;
             } else {
-                return static_cast<res_t>(t * u);
+                return static_cast<result_type>(t * u);
             }
         } // operator()
     }; // multiply_t
 
-    #if 0
-    // TODO: unify with primary template, use static cast to res_t
+    // NOTE: tried to disable but not successful
+    // TODO: remove by unifying with primary template
+    #if 1
     template <typename res_t>
     struct multiply_t<none_t,none_t,res_t
         , meta::enable_if_t<meta::is_num_v<res_t>>
