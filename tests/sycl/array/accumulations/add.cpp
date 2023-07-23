@@ -36,6 +36,7 @@ SUBCASE(#case_name) \
 
 TEST_CASE("accumulate_add(case1)" * doctest::test_suite("array::add.accumulate"))
 {
+    auto dtype = nm::none_t{};
     // ACCUMULATE_ADD( case1,   a, axis );
     // ACCUMULATE_ADD( case1, a_a, axis );
     // ACCUMULATE_ADD( case1, a_f, axis );
@@ -46,15 +47,15 @@ TEST_CASE("accumulate_add(case1)" * doctest::test_suite("array::add.accumulate")
     // ACCUMULATE_ADD( case1, a_cs_hb, axis );
     // ACCUMULATE_ADD( case1, a_cs_db, axis );
 
-    ACCUMULATE_ADD( case1, a_fs_fb, axis );
-    ACCUMULATE_ADD( case1, a_fs_hb, axis );
-    ACCUMULATE_ADD( case1, a_fs_db, axis );
+    ACCUMULATE_ADD( case1, a_fs_fb, axis, dtype );
+    ACCUMULATE_ADD( case1, a_fs_hb, axis, dtype );
+    ACCUMULATE_ADD( case1, a_fs_db, axis, dtype );
 
-    ACCUMULATE_ADD( case1, a_hs_fb, axis );
-    ACCUMULATE_ADD( case1, a_hs_hb, axis );
-    ACCUMULATE_ADD( case1, a_hs_db, axis );
+    ACCUMULATE_ADD( case1, a_hs_fb, axis, dtype );
+    ACCUMULATE_ADD( case1, a_hs_hb, axis, dtype );
+    ACCUMULATE_ADD( case1, a_hs_db, axis, dtype );
 
-    ACCUMULATE_ADD( case1, a_ds_fb, axis );
-    ACCUMULATE_ADD( case1, a_ds_hb, axis );
-    ACCUMULATE_ADD( case1, a_ds_db, axis );
+    ACCUMULATE_ADD( case1, a_ds_fb, axis, dtype );
+    ACCUMULATE_ADD( case1, a_ds_hb, axis, dtype );
+    ACCUMULATE_ADD( case1, a_ds_db, axis, dtype );
 }
