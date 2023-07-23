@@ -40,7 +40,7 @@ namespace nmtools::view
     }; // add_t
     #endif
 
-    template <typename left_t, typename right_t, typename casting_t=casting::same_kind_t>
+    template <typename left_t, typename right_t, typename casting_t=casting::auto_t>
     constexpr auto add(const left_t& a, const right_t& b, casting_t=casting_t{})
     {
         constexpr auto cast_kind = get_casting_v<casting_t>;
