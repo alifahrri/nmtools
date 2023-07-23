@@ -159,10 +159,17 @@ namespace nmtools::array
                 const auto enumerator = index::binary_2d_simd_enumerator(n_elem_pack,out_shape,lhs_shape,rhs_shape);
 
                 for (auto i=0ul; i<enumerator.size(); i++) {
-                    auto [out_idx,lhs_idx,rhs_idx] = enumerator[i];
-                    auto [out_tag,out_ptr_idx] = out_idx;
-                    auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
-                    auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+                    // do not use structured bindings to avoid clang complaining
+                    auto idx = enumerator[i];
+                    auto out_idx = nmtools::get<0>(idx);
+                    auto lhs_idx = nmtools::get<1>(idx);
+                    auto rhs_idx = nmtools::get<2>(idx);
+                    auto out_tag     = nmtools::get<0>(out_idx);
+                    auto out_ptr_idx = nmtools::get<1>(out_idx);
+                    auto lhs_tag     = nmtools::get<0>(lhs_idx);
+                    auto lhs_ptr_idx = nmtools::get<1>(lhs_idx);
+                    auto rhs_tag     = nmtools::get<0>(rhs_idx);
+                    auto rhs_ptr_idx = nmtools::get<1>(rhs_idx);
                     if (out_tag == index::SIMD::PACKED) {
                         const auto lhs = (lhs_tag == index::SIMD::PACKED
                             ? op.loadu(&lhs_data_ptr[lhs_ptr_idx])

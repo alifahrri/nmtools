@@ -149,17 +149,17 @@ TEST_CASE("binary_2d_simd(case1)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -170,17 +170,17 @@ TEST_CASE("binary_2d_simd(case1)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -191,17 +191,17 @@ TEST_CASE("binary_2d_simd(case1)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 8 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -212,17 +212,17 @@ TEST_CASE("binary_2d_simd(case1)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 12 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -242,17 +242,17 @@ TEST_CASE("binary_2d_simd(case2)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -263,17 +263,17 @@ TEST_CASE("binary_2d_simd(case2)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -284,17 +284,17 @@ TEST_CASE("binary_2d_simd(case2)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 8 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -305,17 +305,17 @@ TEST_CASE("binary_2d_simd(case2)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 12 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -326,17 +326,17 @@ TEST_CASE("binary_2d_simd(case2)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 16 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 2 );
         }
@@ -347,17 +347,17 @@ TEST_CASE("binary_2d_simd(case2)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 20 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 2 );
         }
@@ -368,17 +368,17 @@ TEST_CASE("binary_2d_simd(case2)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 24 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 3 );
         }
@@ -389,17 +389,17 @@ TEST_CASE("binary_2d_simd(case2)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 28 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 3 );
         }
@@ -419,17 +419,17 @@ TEST_CASE("binary_2d_simd(case3)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -440,17 +440,17 @@ TEST_CASE("binary_2d_simd(case3)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -461,17 +461,17 @@ TEST_CASE("binary_2d_simd(case3)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 8 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 8 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -482,17 +482,17 @@ TEST_CASE("binary_2d_simd(case3)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 9 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 9 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -503,17 +503,17 @@ TEST_CASE("binary_2d_simd(case3)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 10 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -524,17 +524,17 @@ TEST_CASE("binary_2d_simd(case3)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 14 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -545,17 +545,17 @@ TEST_CASE("binary_2d_simd(case3)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 18 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 8 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -566,17 +566,17 @@ TEST_CASE("binary_2d_simd(case3)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 19 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 9 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -596,17 +596,17 @@ TEST_CASE("binary_2d_simd(case4)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -617,17 +617,17 @@ TEST_CASE("binary_2d_simd(case4)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 1 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 1 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -638,17 +638,17 @@ TEST_CASE("binary_2d_simd(case4)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 2 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 2 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -659,17 +659,17 @@ TEST_CASE("binary_2d_simd(case4)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 3 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -680,17 +680,17 @@ TEST_CASE("binary_2d_simd(case4)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 1 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -701,17 +701,17 @@ TEST_CASE("binary_2d_simd(case4)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 5 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 2 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -731,17 +731,17 @@ TEST_CASE("binary_2d_simd(case5)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -752,17 +752,17 @@ TEST_CASE("binary_2d_simd(case5)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -773,17 +773,17 @@ TEST_CASE("binary_2d_simd(case5)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 5 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 5 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -794,17 +794,17 @@ TEST_CASE("binary_2d_simd(case5)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 9 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 9 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -824,17 +824,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -845,17 +845,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -866,17 +866,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 8 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 8 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -887,17 +887,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 9 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 9 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -908,17 +908,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 13 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 13 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -929,17 +929,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 17 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 17 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
@@ -959,17 +959,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -980,17 +980,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 4 );
         }
@@ -1001,17 +1001,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 5 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 5 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -1022,17 +1022,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 9 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 9 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 4 );
         }
@@ -1052,17 +1052,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -1073,17 +1073,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 4 );
         }
@@ -1094,17 +1094,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 5 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 5 );
         }
@@ -1115,17 +1115,17 @@ TEST_CASE("binary_2d_simd(case6)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 9 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 9 );
         }
@@ -1145,17 +1145,17 @@ TEST_CASE("binary_2d_simd(case7)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
@@ -1166,17 +1166,17 @@ TEST_CASE("binary_2d_simd(case7)" * doctest::test_suite("index::binary_2d_simd")
         auto result = ix::binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
         auto [out_idx,lhs_idx,rhs_idx] = result;
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::SCALAR );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 4 );
         }
@@ -1194,76 +1194,84 @@ TEST_CASE("binary_2d_simd_enumerator(case1)" * doctest::test_suite("index::binar
     NMTOOLS_ASSERT_EQUAL( enumerator.size(), 4 );
 
     {
-        auto [out_idx,lhs_idx,rhs_idx] = enumerator[0];
+        auto out_idx = nm::get<0>(enumerator[0]);
+        auto lhs_idx = nm::get<1>(enumerator[0]);
+        auto rhs_idx = nm::get<2>(enumerator[0]);
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 0 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
     }
 
     {
-        auto [out_idx,lhs_idx,rhs_idx] = enumerator[1];
+        auto out_idx = nm::get<0>(enumerator[1]);
+        auto lhs_idx = nm::get<1>(enumerator[1]);
+        auto rhs_idx = nm::get<2>(enumerator[1]);
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 4 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 0 );
         }
     }
 
     {
-        auto [out_idx,lhs_idx,rhs_idx] = enumerator[2];
+        auto out_idx = nm::get<0>(enumerator[2]);
+        auto lhs_idx = nm::get<1>(enumerator[2]);
+        auto rhs_idx = nm::get<2>(enumerator[2]);
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 8 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 0 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
     }
 
     {
-        auto [out_idx,lhs_idx,rhs_idx] = enumerator[3];
+        auto out_idx = nm::get<0>(enumerator[3]);
+        auto lhs_idx = nm::get<1>(enumerator[3]);
+        auto rhs_idx = nm::get<2>(enumerator[3]);
         {
-            auto [out_tag,out_ptr_idx] = out_idx;
+            auto out_tag = nm::get<0>(out_idx); auto out_ptr_idx = nm::get<1>(out_idx);
             CHECK( out_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( out_ptr_idx, 12 );
         }
         {
-            auto [lhs_tag,lhs_ptr_idx] = lhs_idx;
+            auto lhs_tag = nm::get<0>(lhs_idx); auto lhs_ptr_idx = nm::get<1>(lhs_idx);
             CHECK( lhs_tag == ix::SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( lhs_ptr_idx, 4 );
         }
         {
-            auto [rhs_tag,rhs_ptr_idx] = rhs_idx;
+            auto rhs_tag = nm::get<0>(rhs_idx); auto rhs_ptr_idx = nm::get<1>(rhs_idx);
             CHECK( rhs_tag == ix::SIMD::BROADCAST );
             NMTOOLS_ASSERT_EQUAL( rhs_ptr_idx, 1 );
         }
