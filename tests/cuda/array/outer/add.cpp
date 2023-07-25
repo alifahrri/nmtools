@@ -37,6 +37,7 @@ SUBCASE(#case_name) \
 
 TEST_CASE("outer_add(case1)" * doctest::test_suite("array::add.outer"))
 {
+    auto dtype = nm::None;
     // OUTER_ADD_SUBCASE(case1, a, b);
     // OUTER_ADD_SUBCASE(case1, a_a, b_a);
     // OUTER_ADD_SUBCASE(case1, a_f, b_f);
@@ -47,17 +48,17 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("array::add.outer"))
     // OUTER_ADD_SUBCASE(case1, a_cs_hb, b_cs_hb);
     // OUTER_ADD_SUBCASE(case1, a_cs_db, b_cs_db);
 
-    OUTER_ADD_SUBCASE(case1, a_fs_fb, b_fs_fb);
-    OUTER_ADD_SUBCASE(case1, a_fs_hb, b_fs_hb);
-    OUTER_ADD_SUBCASE(case1, a_fs_db, b_fs_db);
+    OUTER_ADD_SUBCASE(case1, a_fs_fb, b_fs_fb, dtype);
+    OUTER_ADD_SUBCASE(case1, a_fs_hb, b_fs_hb, dtype);
+    OUTER_ADD_SUBCASE(case1, a_fs_db, b_fs_db, dtype);
 
-    OUTER_ADD_SUBCASE(case1, a_hs_fb, b_hs_fb);
-    OUTER_ADD_SUBCASE(case1, a_hs_hb, b_hs_hb);
-    OUTER_ADD_SUBCASE(case1, a_hs_db, b_hs_db);
+    OUTER_ADD_SUBCASE(case1, a_hs_fb, b_hs_fb, dtype);
+    OUTER_ADD_SUBCASE(case1, a_hs_hb, b_hs_hb, dtype);
+    OUTER_ADD_SUBCASE(case1, a_hs_db, b_hs_db, dtype);
 
-    OUTER_ADD_SUBCASE(case1, a_ds_fb, b_ds_fb);
-    OUTER_ADD_SUBCASE(case1, a_ds_hb, b_ds_hb);
-    OUTER_ADD_SUBCASE(case1, a_ds_db, b_ds_db);
+    OUTER_ADD_SUBCASE(case1, a_ds_fb, b_ds_fb, dtype);
+    OUTER_ADD_SUBCASE(case1, a_ds_hb, b_ds_hb, dtype);
+    OUTER_ADD_SUBCASE(case1, a_ds_db, b_ds_db, dtype);
 
     // OUTER_ADD_SUBCASE(case1, a_ls_fb, b_ls_fb);
     // OUTER_ADD_SUBCASE(case1, a_ls_hb, b_ls_hb);
