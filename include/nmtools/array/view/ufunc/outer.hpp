@@ -49,31 +49,31 @@ namespace nmtools::view
         using dst_size_type  = const meta::resolve_optype_t<index::size_outer_t,dst_shape_type,lhs_size_type,rhs_size_type>;
 
         op_type op;
-        operands_type operands;
+        array_type array;
 
         dst_shape_type shape_;
         dst_size_type  size_;
 
         // the following is needed because cant use view::initialize<...>
         // can't handle tuple yet
-        static constexpr auto initialize_operands(const lhs_t& lhs, const rhs_t& rhs)
+        static constexpr auto initialize_array(const lhs_t& lhs, const rhs_t& rhs)
         {
-            using op_lhs_t = meta::at_t<operands_type,0>;
-            using op_rhs_t = meta::at_t<operands_type,1>;
+            using op_lhs_t = meta::at_t<array_type,0>;
+            using op_rhs_t = meta::at_t<array_type,1>;
             if constexpr (meta::is_pointer_v<op_lhs_t> && meta::is_pointer_v<op_rhs_t>) {
-                return operands_type{&lhs,&rhs};
+                return array_type{&lhs,&rhs};
             } else if constexpr (meta::is_pointer_v<op_lhs_t>) {
-                return operands_type{&lhs,rhs};
+                return array_type{&lhs,rhs};
             } else if constexpr (meta::is_pointer_v<op_rhs_t>) {
-                return operands_type{lhs,&rhs};
+                return array_type{lhs,&rhs};
             } else {
-                return operands_type{lhs,rhs};
+                return array_type{lhs,rhs};
             }
-        } // initialize_operands
+        } // initialize_array
 
         constexpr outer_t(op_type op, const lhs_t& lhs, const rhs_t& rhs)
             : op(op)
-            , operands(initialize_operands(lhs,rhs))
+            , array(initialize_array(lhs,rhs))
             , shape_(index::shape_outer(nmtools::shape<true>(lhs),nmtools::shape<true>(rhs)))
             , size_(index::size_outer(shape_,nmtools::size<true>(lhs),nmtools::size<true>(rhs)))
         {}
@@ -100,8 +100,8 @@ namespace nmtools::view
             // here we directly provide operator() to actually performing operations,
             // instead of returning (transformed) index only
             auto indices_ = pack_indices(indices...);
-            const auto& a = nmtools::get<0>(operands);
-            const auto& b = nmtools::get<1>(operands);
+            const auto& a = nmtools::get<0>(array);
+            const auto& b = nmtools::get<1>(array);
             auto ashape = detail::shape(a);
             auto bshape = detail::shape(b);
             const auto [aidx, bidx] = index::outer(indices_,ashape,bshape);
