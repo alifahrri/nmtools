@@ -642,7 +642,7 @@ namespace nmtools::functional
                 }
             }, get_fn());
         #endif
-        } else {;
+        } else {
             return get_fn();
         }
     } // get_function
