@@ -20,22 +20,36 @@ enable_testing()
 option(NMTOOLS_SIMD_TEST_ALL "test all simd modules" OFF)
 option(NMTOOLS_SIMD_TEST_SSE "test x86 sse simd modules" OFF)
 option(NMTOOLS_SIMD_TEST_AVX "test x86 avx simd modules" OFF)
+option(NMTOOLS_SIMD_TEST_INDEX "test index simd modules" OFF)
 
 if (NMTOOLS_SIMD_TEST_ALL)
     SET(NMTOOLS_SIMD_TEST_SSE ON CACHE BOOL "test x86 sse simd" FORCE)
     SET(NMTOOLS_SIMD_TEST_AVX ON CACHE BOOL "test x86 avx simd" FORCE)
+    SET(NMTOOLS_SIMD_TEST_INDEX ON CACHE BOOL "test index simd" FORCE)
 endif (NMTOOLS_SIMD_TEST_ALL)
 
 set(NMTOOLS_SIMD_TEST_SOURCES "")
 
 if (NMTOOLS_SIMD_TEST_SSE)
-    set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES} x86/sse.cpp)
+    set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
+        x86/unary_sse.cpp
+        x86/binary_sse.cpp
+    )
 endif (NMTOOLS_SIMD_TEST_SSE)
 
 if (NMTOOLS_SIMD_TEST_AVX)
-    set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES} x86/avx.cpp)
+    set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
+        x86/unary_avx.cpp
+        x86/binary_avx.cpp
+        x86/binary_avx_broadcast.cpp
+    )
 endif (NMTOOLS_SIMD_TEST_AVX)
 
+if (NMTOOLS_SIMD_TEST_INDEX)
+    set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
+        index/simd_index.cpp
+    )
+endif (NMTOOLS_SIMD_TEST_INDEX)
 add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${NMTOOLS_SIMD_TEST_SOURCES}
 )

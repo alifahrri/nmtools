@@ -25,7 +25,6 @@ namespace nmtools::meta
         void_t<typename T::size_type>
     > : true_type {};
 
-    // TODO: remove metafunctions
     /**
      * @brief helper variable template to check if T has size_type
      * 

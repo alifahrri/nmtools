@@ -1,5 +1,7 @@
 ## cuda 12 know to not working: no template named 'texture'
-from nvidia/cuda:11.7.0-devel-ubuntu22.04 as dev
+## nvidia/cuda:11.7.0-devel-ubuntu22.04 is removed lol
+ARG CUDA_BASE=nvidia/cuda:11.8.0-devel-ubuntu22.04
+from ${CUDA_BASE} as dev
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia

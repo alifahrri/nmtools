@@ -24,6 +24,44 @@ namespace nmtools
     template <typename T>
     constexpr inline auto is_dtype_v = is_dtype<T>::value;
 
+    namespace casting
+    {
+        enum class Casting {
+            AUTO=0,
+            EQUIV,
+            SAME_KIND
+        };
+        using auto_t      = meta::as_type<Casting::AUTO>;
+        using equiv_t     = meta::as_type<Casting::EQUIV>;
+        using same_kind_t = meta::as_type<Casting::SAME_KIND>;
+
+        constexpr inline auto AUTO      = auto_t {};
+        constexpr inline auto EQUIV     = equiv_t {};
+        constexpr inline auto SAME_KIND = same_kind_t {};
+
+        namespace error
+        {
+            template <typename...>
+            struct CASTING_UNSUPPORTED : meta::detail::fail_t {};
+        }
+    } // namespace casting
+
+    template <typename T>
+    struct get_casting
+    {
+        static constexpr auto value = casting::error::CASTING_UNSUPPORTED<T>{};
+    };
+
+    template <casting::Casting kind>
+    struct get_casting<
+        meta::as_type<kind>
+    > {
+        static constexpr auto value = kind;
+    };
+
+    template <typename T>
+    constexpr inline auto get_casting_v = get_casting<T>::value;
+
     namespace dtype {
         using float32_t = dtype_t<::nmtools::float32_t>;
         using float64_t = dtype_t<::nmtools::float64_t>;

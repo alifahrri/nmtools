@@ -13,14 +13,35 @@ namespace nmtools::view
     >
     struct subtract_t
     {
+        // NOTE: tried to disable but not successful
+        // TODO: remove by unifying with primary template
+        #if 0
+        // NOTE: required for 'result_type' for reduction
+        static constexpr auto result_vtype = [](){
+            if constexpr (meta::is_num_v<res_t>) {
+                return meta::as_value_v<res_t>;
+            } else {
+                return meta::as_value_v<none_t>;
+            }
+        }();
+        using result_type = meta::type_t<decltype(result_vtype)>;
+        #endif
+
         template <typename T, typename U>
         constexpr auto operator()(const T& t, const U& u) const
         {
-            return t - u;
+            using result_type = res_t;
+            if constexpr (is_none_v<result_type>) {
+                return t - u;
+            } else {
+                return static_cast<result_type>(t - u);
+            }
         } // operator()
     }; // subtract_t
 
-    // TODO: unify with primary template, use static cast to res_t
+    // NOTE: tried to disable but not successful
+    // TODO: remove by unifying with primary template
+    #if 1
     template <typename res_t>
     struct subtract_t<none_t,none_t,res_t
         , meta::enable_if_t<meta::is_num_v<res_t>>
@@ -34,11 +55,23 @@ namespace nmtools::view
             return t - u;
         } // operator()
     }; // subtract_t
+    #endif
 
-    template <typename left_t, typename right_t>
-    constexpr auto subtract(const left_t& a, const right_t& b)
+    template <typename left_t, typename right_t, typename casting_t=casting::auto_t>
+    constexpr auto subtract(const left_t& a, const right_t& b, casting_t=casting_t{})
     {
-        return ufunc(subtract_t<>{},a,b);
+        constexpr auto cast_kind = get_casting_v<casting_t>;
+        static_assert( !meta::is_fail_v<decltype(cast_kind)>, "unsupported casting kind" );
+        using lhs_t [[maybe_unused]] = meta::get_element_type_t<left_t>;
+        using rhs_t [[maybe_unused]] = meta::get_element_type_t<right_t>;
+        using casting::Casting;
+        if constexpr (cast_kind == Casting::AUTO) {
+            return ufunc(subtract_t<>{},a,b);
+        } else /* if constexpr (cast_kind == Casting::SAME_KIND) */ {
+            static_assert( meta::is_same_v<lhs_t,rhs_t>, "unsupported same-kind cast");
+            return ufunc(subtract_t<lhs_t,rhs_t,rhs_t>{},a,b);
+        }
+        // TODO: support Casting::EQUIV
     } // subtract
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
