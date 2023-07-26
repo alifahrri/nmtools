@@ -121,7 +121,7 @@ namespace nmtools::functional
         >
     > {
         using view_type = view::decorator_t<
-            view::ufunc_t, view::add_t<lhs_t,rhs_t,res_t>, args_t...
+            view::accumulate_t, view::add_t<lhs_t,rhs_t,res_t>, args_t...
         >;
 
         view_type view;
