@@ -1,0 +1,43 @@
+name: x86-simde
+
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+
+jobs:
+  dockcross-x86-simde-avx512:
+    name: ${{ matrix.name }}-x86-simde-avx512
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+          - name: linux-x64-clang
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: setup simde
+        run: |
+          sudo apt-get install -y ninja-build ninja-build python3-pip
+          pip3 install meson==0.55.0
+          sudo bash scripts/install_simde.sh
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_SIMDE_TESTS=ON -DNMTOOLS_SIMDE_TEST_ALL=ON -DNMTOOLS_TEST_ALL=OFF ../.. && make -j2 numeric-tests-simde-doctest VERBOSE=1'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/simd/numeric-tests-simde-doctest'
