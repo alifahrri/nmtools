@@ -34,7 +34,7 @@ jobs:
       - name: setup simde
         run: |
           sudo apt-get install -y ninja-build ninja-build python3-pip
-          pip3 install meson==0.55.0
+          sudo pip3 install meson==0.55.0
           sudo bash scripts/install_simde.sh
       - name: build
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_SIMDE_TESTS=ON -DNMTOOLS_SIMDE_TEST_ALL=ON -DNMTOOLS_TEST_ALL=OFF ../.. && make -j2 numeric-tests-simde-doctest VERBOSE=1'
