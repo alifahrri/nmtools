@@ -6,7 +6,14 @@ else
     echo "set SIMDE_VERSION from env"
 fi
 
+if [[ -z "${SIMDE_INSTALL_PREFIX}" ]]; then
+    SIMDE_INSTALL_PREFIX="${PWD}/install"
+else
+    echo "set SIMDE_INSTALL_PREFIX from env"
+fi
+
 echo "using SIMDE_VERSION=${SIMDE_VERSION}"
+echo "using SIMDE_INSTALL_PREFIX=${SIMDE_INSTALL_PREFIX}"
 
 DIR=simde
 if [[ -d "${DIR}" ]]; then
@@ -20,5 +27,5 @@ fi
 
 cd ${DIR}
 mkdir -p build
-meson setup build --prefix=/usr/local -Dtests=false
+meson setup build --prefix=${SIMDE_INSTALL_PREFIX} -Dtests=false
 ninja -C build install
