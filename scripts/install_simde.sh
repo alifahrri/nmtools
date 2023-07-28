@@ -19,5 +19,6 @@ fi
 # pip3 install meson==0.55.0
 
 cd ${DIR}
+mkdir -p build
 meson setup build --prefix=/usr/local -Dtests=false
 ninja -C build install
