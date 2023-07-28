@@ -43,4 +43,4 @@ jobs:
         run: |
           export SIMDE_INSTALL_PREFIX=${PWD}/install
           export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${SIMDE_INSTALL_PREFIX}/lib/x86_64-linux-gnu/pkgconfig"
-          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/simd/numeric-tests-simde-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/simde/numeric-tests-simde-doctest'
