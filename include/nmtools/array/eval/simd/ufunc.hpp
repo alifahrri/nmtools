@@ -78,7 +78,7 @@ namespace nmtools::array::simd
         using simd_dtype_t = decltype(simd_t::set1(0));
         using ufunc_op_t = view::sqrt_t;
 
-        ufunc_simd_t(ufunc_op_t op) {};
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {};
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t a) const noexcept
@@ -94,7 +94,7 @@ namespace nmtools::array::simd
         using simd_dtype_t = decltype(simd_t::set1(0));
         using ufunc_op_t = view::ceil_t;
 
-        ufunc_simd_t(ufunc_op_t op) {};
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {};
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t a) const noexcept
@@ -110,7 +110,7 @@ namespace nmtools::array::simd
         using simd_dtype_t = decltype(simd_t::set1(0));
         using ufunc_op_t = view::floor_t;
 
-        ufunc_simd_t(ufunc_op_t op) {};
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {};
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t a) const noexcept
@@ -128,7 +128,7 @@ namespace nmtools::array::simd
 
         const simd_dtype_t zero = simd_t::set1(0);
 
-        ufunc_simd_t(ufunc_op_t op) {};
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {};
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t a) const noexcept
@@ -147,7 +147,7 @@ namespace nmtools::array::simd
         const simd_dtype_t zero = simd_t::set1(0);
         const simd_dtype_t six  = simd_t::set1(6);
 
-        ufunc_simd_t(ufunc_op_t op) {};
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {};
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t a) const noexcept
@@ -273,7 +273,7 @@ namespace nmtools::array::simd
         const simd_dtype_t neg_one = simd_t::set1(-1);
         const simd_dtype_t pos_one = simd_t::set1(1);
 
-        ufunc_simd_t(ufunc_op_t op) {};
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {};
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t a) const noexcept
@@ -323,7 +323,7 @@ namespace nmtools::array::simd
         const simd_dtype_t three = simd_t::set1(3);
         const simd_dtype_t neg_three = simd_t::set1(-3);
 
-        ufunc_simd_t(ufunc_op_t op) {}
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {}
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t a) const noexcept
@@ -345,7 +345,7 @@ namespace nmtools::array::simd
         using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
         using ufunc_op_t   = view::add_t<op_args_t...>;
 
-        ufunc_simd_t(ufunc_op_t op) {}
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {}
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t lhs, simd_dtype_t rhs) const noexcept
@@ -361,7 +361,7 @@ namespace nmtools::array::simd
         using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
         using ufunc_op_t   = view::multiply_t<lhs_t,rhs_t,res_t>;
 
-        ufunc_simd_t(ufunc_op_t op) {}
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {}
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t lhs, simd_dtype_t rhs) const noexcept
@@ -377,7 +377,7 @@ namespace nmtools::array::simd
         using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
         using ufunc_op_t   = view::subtract_t<lhs_t,rhs_t,res_t>;
 
-        ufunc_simd_t(ufunc_op_t op) {}
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {}
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t lhs, simd_dtype_t rhs) const noexcept
@@ -393,7 +393,7 @@ namespace nmtools::array::simd
         using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
         using ufunc_op_t   = view::divide_t;
 
-        ufunc_simd_t(ufunc_op_t op) {}
+        ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {}
 
         NMTOOLS_ALWAYS_INLINE
         auto eval(simd_dtype_t lhs, simd_dtype_t rhs) const noexcept
