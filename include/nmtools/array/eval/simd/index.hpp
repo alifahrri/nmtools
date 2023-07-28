@@ -21,10 +21,8 @@ namespace nmtools::index
 
         auto result = result_t{};
 
-        auto lhs_cols = at(lhs_shape,1);
         auto lhs_rows = at(lhs_shape,0);
 
-        auto rhs_cols = at(rhs_shape,1);
         auto rhs_rows = at(rhs_shape,0);
 
         auto out_cols = at(out_shape,1);
@@ -44,7 +42,7 @@ namespace nmtools::index
     }
 
     template <typename index_t=size_t, auto N_ELEM_PACK, typename simd_indices_t, typename out_shape_t, typename simd_shape_t, typename lhs_shape_t, typename rhs_shape_t>
-    auto binary_2d_simd(meta::as_type<N_ELEM_PACK>, const simd_indices_t& simd_indices, const simd_shape_t& simd_shape, const out_shape_t& out_shape, const lhs_shape_t& lhs_shape, const rhs_shape_t& rhs_shape)
+    auto binary_2d_simd(meta::as_type<N_ELEM_PACK>, const simd_indices_t& simd_indices, [[maybe_unused]] const simd_shape_t& simd_shape, const out_shape_t& out_shape, const lhs_shape_t& lhs_shape, const rhs_shape_t& rhs_shape)
     {
         using tagged_index_t = nmtools_tuple<SIMD,index_t>;
         using result_t = nmtools_array<tagged_index_t,3>;
@@ -55,13 +53,9 @@ namespace nmtools::index
         auto lhs_rows = at(lhs_shape,0);
 
         auto out_cols = at(out_shape,1);
-        auto out_rows = at(out_shape,0);
 
         auto rhs_cols = at(rhs_shape,1);
         auto rhs_rows = at(rhs_shape,0);
-
-        auto simd_cols = at(simd_shape,1);
-        auto simd_rows = at(simd_shape,0);
 
         auto simd_col = at(simd_indices,1);
         auto simd_row = at(simd_indices,0);
@@ -70,10 +64,8 @@ namespace nmtools::index
 
         auto is_scalar_res = simd_col >= n_packed;
 
-        auto scalar_lhs_idx = n_packed * N_ELEM_PACK + (simd_col - n_packed) + (simd_row * out_cols);
         auto scalar_res_idx = n_packed * N_ELEM_PACK + (simd_col - n_packed) + (simd_row * out_cols);
 
-        auto packed_lhs_idx = simd_col * N_ELEM_PACK + (simd_row * out_cols);
         auto packed_res_idx = simd_col * N_ELEM_PACK + (simd_row * out_cols);
 
         // if result is scalar then lhs & rhs must be scalar
@@ -138,7 +130,6 @@ namespace nmtools::index
 
         auto operator[](size_t i) const
         {
-            const auto simd_rows = at(simd_shape,0);
             const auto simd_cols = at(simd_shape,1);
             auto simd_indices = simd_indices_type{i / simd_cols, i % simd_cols};
             return binary_2d_simd(n_elem_pack,simd_indices,simd_shape,out_shape,lhs_shape,rhs_shape);
