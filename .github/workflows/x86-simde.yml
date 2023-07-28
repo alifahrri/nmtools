@@ -31,19 +31,9 @@ jobs:
           key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
-      - name: setup simde
-        run: |
-          sudo apt-get install -y ninja-build ninja-build python3-pip pkg-config
-          export SIMDE_INSTALL_PREFIX=${PWD}/install
-          pip3 install meson==0.55.0
-          bash scripts/install_simde.sh
       - name: build
         run: |
-          export SIMDE_INSTALL_PREFIX=${PWD}/install
-          export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${SIMDE_INSTALL_PREFIX}/lib/x86_64-linux-gnu/pkgconfig"
-          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_SIMDE_TESTS=ON -DNMTOOLS_SIMDE_TEST_ALL=ON -DNMTOOLS_TEST_ALL=OFF ../.. && make -j2 numeric-tests-simde-doctest VERBOSE=1'
+          ./dockcross-${{ matrix.name }} bash -c 'export SIMDE_INSTALL_PREFIX=${PWD}/install && export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${SIMDE_INSTALL_PREFIX}/lib/x86_64-linux-gnu/pkgconfig" && sudo apt-get install -y ninja-build ninja-build python3-pip pkg-config && pip3 install meson==0.55.0 && bash scripts/install_simde.sh && mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_SIMDE_TESTS=ON -DNMTOOLS_SIMDE_TEST_ALL=ON -DNMTOOLS_TEST_ALL=OFF ../.. && make -j2 numeric-tests-simde-doctest VERBOSE=1'
       - name: run tests
         run: |
-          export SIMDE_INSTALL_PREFIX=${PWD}/install
-          export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${SIMDE_INSTALL_PREFIX}/lib/x86_64-linux-gnu/pkgconfig"
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/simde/numeric-tests-simde-doctest'
