@@ -56,7 +56,7 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
 
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (NMTOOLS_SIMD_TEST_SSE)
-    target_compile_options(${PROJECT_NAME}-doctest PRIVATE -msse4.1)
+    target_compile_options(${PROJECT_NAME}-doctest PRIVATE -msse4.1 -msse -msse2 -msse3)
 endif (NMTOOLS_SIMD_TEST_SSE)
 if (NMTOOLS_SIMD_TEST_AVX)
     target_compile_options(${PROJECT_NAME}-doctest PRIVATE -mavx2)
