@@ -4,7 +4,10 @@
 #include "nmtools/array/eval/simd/ufunc.hpp"
 #include "nmtools/array/eval/simd/evaluator.hpp"
 
-#include <x86intrin.h>
+#include <xmmintrin.h>
+#include <emmintrin.h>
+#include <tmmintrin.h>
+#include <smmintrin.h>
 
 namespace nmtools::array::simd
 {
@@ -114,7 +117,7 @@ namespace nmtools::array::simd
             } else if constexpr (n_bit == 32) {
                 return _mm_set1_epi32(x);
             } else if constexpr (n_bit == 64) {
-                return _mm_set1_epi64(__m64(x));
+                return _mm_set1_epi64x(x);
             }
         }
 

@@ -1,0 +1,40 @@
+name: web-wasm-simd
+
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  dockcross-wasm-simd:
+    name: ${{ matrix.name }}-eval
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: web-wasm-latest
+            image: web-wasm
+            tag: latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.image }}:${{ matrix.tag }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c "emcc -v"
+          ./dockcross-${{ matrix.name }} bash -c "mkdir -p build/web-wasm-simd/ && cd build/web-wasm-simd && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_SIMD_TESTS=ON -DNMTOOLS_SIMD_TEST_ALL=OFF -DNMTOOLS_SIMD_TEST_SSE=ON ../.. && make -j1 numeric-tests-simd-doctest VERBOSE=1"
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} node --version
+          ls build/web-wasm-simd/tests/simd
+          curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt update && sudo apt install nodejs
+          node --version
+          # ./dockcross-${{ matrix.name }} node --experimental-wasm-simd build/web-wasm-simd/tests/simd/numeric-tests-simd-doctest.js
