@@ -86,8 +86,67 @@ namespace nmtools::array
         {
             SAME_SHAPE=0,
             BROADCASTED_2D,
-            INVALID=9999,
+            INVALID=-1,
         };
+
+        template <typename output_t>
+        constexpr auto eval_reduction(output_t& output) const
+        {
+            auto out_shape = ::nmtools::shape(output);
+            auto inp_shape = ::nmtools::shape(view);
+
+            if (!::nmtools::utils::isequal(out_shape,inp_shape))
+                return false;
+
+            using element_type = meta::get_element_type_t<output_t>;
+            // TODO: do not static assert, tell the caller some combo is not supported
+            static_assert(meta::is_num_v<element_type>
+                , "currently only support numeric types");
+
+            auto input_array_ptr = get_array(view);
+
+            auto inp_data_ptr = nmtools::data(*input_array_ptr);
+
+            const auto op = context.template create_simd_op<element_type>(view.op);
+            constexpr auto N = decltype(op)::bit_width / (sizeof(element_type) * 8); // 8 = 8-bit
+
+            const auto size = nmtools::size(*input_array_ptr);
+
+            auto out_size = nmtools::size(output);
+            if (out_size != 1) {
+                return false;
+            }
+
+            // vertical op
+            auto reg = op.set1(0);
+            for (size_t i=0; (i+N)<=size; i+=N) {
+                const auto operand = op.loadu(&inp_data_ptr[i]);
+                reg = op.eval(reg,operand);
+            }
+
+            // horizontal op
+            element_type tmp_res[N];
+            op.storeu(&tmp_res[0],reg);
+            element_type result = tmp_res[0];
+            for (size_t i=1; i<N; i++) {
+                result = view.op(result,tmp_res[i]);
+            }
+
+            // leftover
+            auto M = (size/N);
+            for (size_t i=(M*N); i<size; i++) {
+                result = view.op(result,inp_data_ptr[i]);
+            }
+
+            if constexpr (meta::is_num_v<output_t>) {
+                output = result;
+            } else {
+                auto out_data_ptr = nmtools::data(output);
+                *out_data_ptr = result;
+            }
+
+            return true;
+        }
 
         template <typename output_t>
         constexpr auto eval_binary(output_t& output) const
@@ -192,25 +251,20 @@ namespace nmtools::array
 
         template <typename output_t>
         constexpr auto operator()(output_t& output) const
-            -> meta::enable_if_t<meta::is_ndarray_v<output_t>,bool>
         {
-            constexpr auto arity = meta::ufunc_arity_v<view_type>;
-            static_assert( (arity == 1) || (arity == 2), "unsupported arity ufunc type");
-            if constexpr (arity == 1) {
-                return this->eval_unary(output);
-            } else if constexpr (arity == 2) {
-                return this->eval_binary(output);
+            if constexpr (meta::is_reduction_v<view_type>) {
+                return this->eval_reduction(output);
             } else {
-                return false;
+                constexpr auto arity = meta::ufunc_arity_v<view_type>;
+                static_assert( (arity == 1) || (arity == 2), "unsupported arity ufunc type");
+                if constexpr (arity == 1) {
+                    return this->eval_unary(output);
+                } else if constexpr (arity == 2) {
+                    return this->eval_binary(output);
+                } else {
+                    return false;
+                }
             }
-        } // operator()
-
-        // TODO: provide common base/utility
-        template <typename output_t>
-        constexpr auto operator()(output_t& output) const
-            -> meta::enable_if_t<meta::is_num_v<output_t>>
-        {
-            output = static_cast<output_t>(view);
         } // operator()
 
         // TODO: provide common base/utility
