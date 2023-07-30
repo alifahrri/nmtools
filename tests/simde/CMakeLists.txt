@@ -22,9 +22,11 @@ pkg_check_modules(SIMDE REQUIRED simde)
 
 option(NMTOOLS_SIMDE_TEST_ALL    "test all simde modules"    ON)
 option(NMTOOLS_SIMDE_TEST_AVX512 "test simde avx512 modules" OFF)
+option(NMTOOLS_SIMDE_TEST_REDUCTION "test simd reduction modules" OFF)
 
 if (NMTOOLS_SIMDE_TEST_ALL)
     set(NMTOOLS_SIMDE_TEST_AVX512 ON CACHE BOOL "test simde avx512" FORCE)
+    SET(NMTOOLS_SIMDE_TEST_REDUCTION ON CACHE BOOL "test simd reduction modules" FORCE)
 endif (NMTOOLS_SIMDE_TEST_ALL)
 
 if (NMTOOLS_SIMDE_TEST_AVX512)
@@ -33,6 +35,11 @@ if (NMTOOLS_SIMDE_TEST_AVX512)
         avx512/binary_ufuncs.cpp
         avx512/binary_broadcast.cpp
     )
+    if (NMTOOLS_SIMDE_TEST_REDUCTION)
+        set(NMTOOLS_SIMDE_TEST_SOURCES ${NMTOOLS_SIMDE_TEST_SOURCES}
+            avx512/reduction_ufuncs.cpp
+        )
+    endif (NMTOOLS_SIMDE_TEST_REDUCTION)
 endif (NMTOOLS_SIMDE_TEST_AVX512)
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp
