@@ -448,6 +448,11 @@ namespace nmtools::view
 namespace nmtools::meta
 {
     template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    struct is_reduction< 
+        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
+    > : true_type {};
+
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
     struct is_num< 
         view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
     >

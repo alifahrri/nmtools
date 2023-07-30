@@ -20,12 +20,14 @@ enable_testing()
 option(NMTOOLS_SIMD_TEST_ALL "test all simd modules" OFF)
 option(NMTOOLS_SIMD_TEST_SSE "test x86 sse simd modules" OFF)
 option(NMTOOLS_SIMD_TEST_AVX "test x86 avx simd modules" OFF)
+option(NMTOOLS_SIMD_TEST_REDUCTION "test simd reduction modules" OFF)
 option(NMTOOLS_SIMD_TEST_INDEX "test index simd modules" OFF)
 
 if (NMTOOLS_SIMD_TEST_ALL)
     SET(NMTOOLS_SIMD_TEST_SSE ON CACHE BOOL "test x86 sse simd" FORCE)
     SET(NMTOOLS_SIMD_TEST_AVX ON CACHE BOOL "test x86 avx simd" FORCE)
     SET(NMTOOLS_SIMD_TEST_INDEX ON CACHE BOOL "test index simd" FORCE)
+    SET(NMTOOLS_SIMD_TEST_REDUCTION ON CACHE BOOL "test simd reduction modules" FORCE)
 endif (NMTOOLS_SIMD_TEST_ALL)
 
 set(NMTOOLS_SIMD_TEST_SOURCES "")
@@ -35,6 +37,11 @@ if (NMTOOLS_SIMD_TEST_SSE)
         x86/unary_sse.cpp
         x86/binary_sse.cpp
     )
+    if (NMTOOLS_SIMD_TEST_REDUCTION)
+        set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
+            x86/reduction_sse.cpp
+        )
+    endif (NMTOOLS_SIMD_TEST_REDUCTION)
 endif (NMTOOLS_SIMD_TEST_SSE)
 
 if (NMTOOLS_SIMD_TEST_AVX)
@@ -43,6 +50,11 @@ if (NMTOOLS_SIMD_TEST_AVX)
         x86/binary_avx.cpp
         x86/binary_avx_broadcast.cpp
     )
+    if (NMTOOLS_SIMD_TEST_REDUCTION)
+        set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
+            x86/reduction_avx.cpp
+        )
+    endif (NMTOOLS_SIMD_TEST_REDUCTION)
 endif (NMTOOLS_SIMD_TEST_AVX)
 
 if (NMTOOLS_SIMD_TEST_INDEX)

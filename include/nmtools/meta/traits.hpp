@@ -50,6 +50,7 @@
 #include "nmtools/meta/bits/traits/is_num.hpp"
 #include "nmtools/meta/bits/traits/is_pod.hpp"
 #include "nmtools/meta/bits/traits/is_pointer.hpp"
+#include "nmtools/meta/bits/traits/is_reduction.hpp"
 #include "nmtools/meta/bits/traits/is_reference.hpp"
 #include "nmtools/meta/bits/traits/is_resizable.hpp"
 #include "nmtools/meta/bits/traits/is_list.hpp"
