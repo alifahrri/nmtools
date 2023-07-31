@@ -105,6 +105,11 @@ if (NMTOOLS_BUILD_SIMDE_TESTS)
     add_subdirectory(simde)
 endif (NMTOOLS_BUILD_SIMDE_TESTS)
 
+option(NMTOOLS_BUILD_INDEX_TESTS "build index test programs" OFF)
+if (NMTOOLS_BUILD_INDEX_TESTS)
+    add_subdirectory(index)
+endif (NMTOOLS_BUILD_INDEX_TESTS)
+
 option(NMTOOLS_BUILD_OPENCL_TESTS "build opencl test programs" OFF)
 if (NMTOOLS_BUILD_OPENCL_TESTS)
     add_subdirectory(opencl)
