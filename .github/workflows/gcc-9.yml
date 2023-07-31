@@ -33,6 +33,24 @@ jobs:
           build/tests/utl/array/numeric-tests-utl-array
           build/tests/utl/utl/numeric-tests-utl
   
+  gcc-9-index:
+    name: gcc-9-index
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 9
+          platform: x64
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - build:
+        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_INDEX_TESTS=ON .. && make -j2 VERBOSE=1 numeric-tests-index-doctest
+      - name: run tests
+        run: |
+          build/tests/index/numeric-tests-index-doctest
+
   gcc-9-constexpr-eval:
     name: gcc-9-constexpr-eval
     runs-on: ubuntu-20.04

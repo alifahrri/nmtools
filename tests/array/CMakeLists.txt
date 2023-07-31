@@ -37,7 +37,6 @@ endif ()
 add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
 
 option(NMTOOLS_TEST_ALL             "test all modules"              ON)
-option(NMTOOLS_TEST_ARRAY_INDEX     "test array index modules"      OFF)
 option(NMTOOLS_TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
 option(NMTOOLS_TEST_UTILS           "test utils modules"            OFF)
 option(NMTOOLS_TEST_NDARRAY         "test ndarray modules"          OFF)
@@ -51,7 +50,6 @@ option(NMTOOLS_TEST_FUNCTIONAL      "test functional module"        OFF)
 option(NMTOOLS_TEST_MISC            "test other modules"            OFF)
 
 if (NMTOOLS_TEST_ALL)
-    SET(NMTOOLS_TEST_ARRAY_INDEX     ON CACHE BOOL "test array index modules"      FORCE)
     SET(NMTOOLS_TEST_ARRAY_UTILITY   ON CACHE BOOL "test array utility modules"    FORCE)
     SET(NMTOOLS_TEST_UTILS           ON CACHE BOOL "test utils modules"            FORCE)
     SET(NMTOOLS_TEST_NDARRAY         ON CACHE BOOL "test ndarray modules"          FORCE)
@@ -64,50 +62,6 @@ if (NMTOOLS_TEST_ALL)
     SET(NMTOOLS_TEST_FUNCTIONAL      ON CACHE BOOL "test functional module"        FORCE)
     SET(NMTOOLS_TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
 endif (NMTOOLS_TEST_ALL)
-
-set(ARRAY_INDEX_TEST_SOURCES
-    index/argsort.cpp
-    index/array_slice.cpp
-    index/broadcast_shape.cpp
-    index/broadcast_to.cpp
-    index/choose.cpp
-    index/compress.cpp
-    index/compute_indices.cpp
-    index/compute_offset.cpp
-    index/compute_strides.cpp
-    index/concatenate.cpp
-    index/conv.cpp
-    index/expand_dims.cpp
-    index/filter.cpp
-    index/free_axes.cpp
-    index/gather.cpp
-    index/insert_index.cpp
-    index/logical_not.cpp
-    index/matmul.cpp
-    index/moveaxis.cpp
-    index/ndenumerate.cpp
-    index/ndindex.cpp
-    index/nonzero.cpp
-    index/normalize_axis.cpp
-    index/outer.cpp
-    index/pad.cpp
-    index/pooling.cpp
-    index/remove_dims.cpp
-    index/remove_single_dims.cpp
-    index/repeat.cpp
-    index/reshape.cpp
-    index/reverse.cpp
-    index/scatter.cpp
-    index/shape_concatenate.cpp
-    index/shape_tile.cpp
-    index/slice.cpp
-    index/take.cpp
-    index/take_along_axis.cpp
-    index/tile.cpp
-)
-if (NOT NMTOOLS_TEST_ARRAY_INDEX)
-    set(ARRAY_INDEX_TEST_SOURCES "")
-endif ()
 
 set(UTILS_TEST_SOURCES
     utils/isequal.cpp
@@ -540,8 +494,6 @@ if (NOT NMTOOLS_TEST_FUNCTIONAL)
 endif()
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
-    ## array detail
-    ${ARRAY_INDEX_TEST_SOURCES}
     ## utility function
     ${UTILS_TEST_SOURCES}
     ## array utility
