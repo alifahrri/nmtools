@@ -121,6 +121,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     view/ref/initializer_list.cpp
     view/repeat.cpp
     view/reshape.cpp
+    view/resize.cpp
     view/slice.cpp
     view/split.cpp
     view/squeeze.cpp
@@ -247,6 +248,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/pooling.cpp
     array/repeat.cpp
     array/reshape.cpp
+    # array/resize.cpp
     array/slice.cpp
     array/squeeze.cpp
     array/stddev.cpp
