@@ -72,6 +72,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/remove_single_dims.cpp
         src/repeat.cpp
         src/reshape.cpp
+        src/resize.cpp
         src/reverse.cpp
         src/scatter.cpp
         src/shape_concatenate.cpp
