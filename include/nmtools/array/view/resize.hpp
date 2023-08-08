@@ -36,6 +36,11 @@ namespace nmtools::view
             return dst_shape;
         }
 
+        constexpr auto size() const
+        {
+            return index::product(dst_shape);
+        }
+
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
@@ -75,6 +80,41 @@ namespace nmtools::meta
     >
     {
         static constexpr auto value = is_ndarray_v<array_t>;
+    };
+
+    template <typename array_t, typename dst_shape_t>
+    struct fixed_size<
+        view::decorator_t<view::resize_t,array_t,dst_shape_t>
+    > {
+        using view_type = view::decorator_t<view::resize_t,array_t,dst_shape_t>;
+        using dst_shape_type = typename view_type::dst_shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                return index::product(dst_shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
+
+    template <typename array_t, typename dst_shape_t>
+    struct bounded_size<
+        view::decorator_t<view::resize_t,array_t,dst_shape_t>
+    > {
+        using view_type = view::decorator_t<view::resize_t,array_t,dst_shape_t>;
+        using dst_shape_type = typename view_type::dst_shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                return index::product(dst_shape_type{});
+            } else if constexpr (is_clipped_index_array_v<dst_shape_type>) {
+                auto max_shape = to_value_v<dst_shape_type>;
+                return index::product(max_shape);
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
     };
 }
 
