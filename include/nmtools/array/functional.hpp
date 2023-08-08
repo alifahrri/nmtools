@@ -68,6 +68,7 @@
 #include "nmtools/array/functional/pooling.hpp"
 #include "nmtools/array/functional/repeat.hpp"
 #include "nmtools/array/functional/reshape.hpp"
+#include "nmtools/array/functional/resize.hpp"
 #include "nmtools/array/functional/slice.hpp"
 #include "nmtools/array/functional/squeeze.hpp"
 #include "nmtools/array/functional/tile.hpp"

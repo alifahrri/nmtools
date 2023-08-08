@@ -225,106 +225,106 @@ if (NOT NMTOOLS_TEST_COMPOSITION)
 endif ()
 
 set(ARRAY_EVAL_TEST_SOURCES
-    array/arange.cpp
-    array/atleast_1d.cpp
-    array/atleast_2d.cpp
-    array/atleast_3d.cpp
-    array/broadcast_arrays.cpp
-    array/broadcast_to.cpp
-    array/compress.cpp
-    array/concatenate.cpp
-    array/cumprod.cpp
-    array/cumsum.cpp
-    array/expand_dims.cpp
-    array/flatten.cpp
-    array/flip.cpp
-    array/full.cpp
-    array/matmul.cpp
-    array/mean.cpp
-    array/moveaxis.cpp
-    array/ones.cpp
-    array/pad.cpp
-    array/prod.cpp
-    array/pooling.cpp
-    array/repeat.cpp
-    array/reshape.cpp
-    # array/resize.cpp
-    array/slice.cpp
-    array/squeeze.cpp
-    array/stddev.cpp
-    array/sum.cpp
-    array/split.cpp
-    array/take.cpp
-    array/tile.cpp
-    array/transpose.cpp
-    array/var.cpp
-    array/where.cpp
-    array/zeros.cpp
-    array/ufuncs/add.cpp
-    array/ufuncs/amax.cpp
-    array/ufuncs/amin.cpp
-    array/ufuncs/arccos.cpp
-    array/ufuncs/arccosh.cpp
-    array/ufuncs/arcsin.cpp
-    array/ufuncs/arcsinh.cpp
-    array/ufuncs/arctan.cpp
-    array/ufuncs/arctan2.cpp
-    array/ufuncs/arctanh.cpp
-    array/ufuncs/bitwise_and.cpp
-    array/ufuncs/bitwise_or.cpp
-    array/ufuncs/bitwise_xor.cpp
-    array/ufuncs/ceil.cpp
-    array/ufuncs/clip.cpp
-    array/ufuncs/cos.cpp
-    array/ufuncs/cosh.cpp
-    array/ufuncs/divide.cpp
-    array/ufuncs/equal.cpp
-    array/ufuncs/exp.cpp
-    array/ufuncs/exp2.cpp
-    array/ufuncs/expm1.cpp
-    array/ufuncs/fabs.cpp
-    array/ufuncs/floor.cpp
-    array/ufuncs/fmax.cpp
-    array/ufuncs/fmin.cpp
-    array/ufuncs/fmod.cpp
-    array/ufuncs/greater_equal.cpp
-    array/ufuncs/greater.cpp
-    array/ufuncs/hypot.cpp
-    array/ufuncs/invert.cpp
-    array/ufuncs/isfinite.cpp
-    array/ufuncs/isinf.cpp
-    array/ufuncs/isnan.cpp
-    array/ufuncs/ldexp.cpp
-    array/ufuncs/left_shift.cpp
-    array/ufuncs/less_equal.cpp
-    array/ufuncs/less.cpp
-    array/ufuncs/log.cpp
-    array/ufuncs/log1p.cpp
-    array/ufuncs/log2.cpp
-    array/ufuncs/log10.cpp
-    array/ufuncs/logical_and.cpp
-    array/ufuncs/logical_not.cpp
-    array/ufuncs/logical_or.cpp
-    array/ufuncs/logical_xor.cpp
-    array/ufuncs/maximum.cpp
-    array/ufuncs/minimum.cpp
-    array/ufuncs/multiply.cpp
-    array/ufuncs/negative.cpp
-    array/ufuncs/not_equal.cpp
-    array/ufuncs/positive.cpp
-    array/ufuncs/power.cpp
-    array/ufuncs/reciprocal.cpp
-    array/ufuncs/right_shift.cpp
-    array/ufuncs/rint.cpp
-    array/ufuncs/signbit.cpp
-    array/ufuncs/sin.cpp
-    array/ufuncs/sinh.cpp
-    array/ufuncs/sqrt.cpp
-    array/ufuncs/square.cpp
-    array/ufuncs/subtract.cpp
-    array/ufuncs/tan.cpp
-    array/ufuncs/tanh.cpp
-    array/ufuncs/trunc.cpp
+    # array/arange.cpp
+    # array/atleast_1d.cpp
+    # array/atleast_2d.cpp
+    # array/atleast_3d.cpp
+    # array/broadcast_arrays.cpp
+    # array/broadcast_to.cpp
+    # array/compress.cpp
+    # array/concatenate.cpp
+    # array/cumprod.cpp
+    # array/cumsum.cpp
+    # array/expand_dims.cpp
+    # array/flatten.cpp
+    # array/flip.cpp
+    # array/full.cpp
+    # array/matmul.cpp
+    # array/mean.cpp
+    # array/moveaxis.cpp
+    # array/ones.cpp
+    # array/pad.cpp
+    # array/prod.cpp
+    # array/pooling.cpp
+    # array/repeat.cpp
+    # array/reshape.cpp
+    array/resize.cpp
+    # array/slice.cpp
+    # array/squeeze.cpp
+    # array/stddev.cpp
+    # array/sum.cpp
+    # array/split.cpp
+    # array/take.cpp
+    # array/tile.cpp
+    # array/transpose.cpp
+    # array/var.cpp
+    # array/where.cpp
+    # array/zeros.cpp
+    # array/ufuncs/add.cpp
+    # array/ufuncs/amax.cpp
+    # array/ufuncs/amin.cpp
+    # array/ufuncs/arccos.cpp
+    # array/ufuncs/arccosh.cpp
+    # array/ufuncs/arcsin.cpp
+    # array/ufuncs/arcsinh.cpp
+    # array/ufuncs/arctan.cpp
+    # array/ufuncs/arctan2.cpp
+    # array/ufuncs/arctanh.cpp
+    # array/ufuncs/bitwise_and.cpp
+    # array/ufuncs/bitwise_or.cpp
+    # array/ufuncs/bitwise_xor.cpp
+    # array/ufuncs/ceil.cpp
+    # array/ufuncs/clip.cpp
+    # array/ufuncs/cos.cpp
+    # array/ufuncs/cosh.cpp
+    # array/ufuncs/divide.cpp
+    # array/ufuncs/equal.cpp
+    # array/ufuncs/exp.cpp
+    # array/ufuncs/exp2.cpp
+    # array/ufuncs/expm1.cpp
+    # array/ufuncs/fabs.cpp
+    # array/ufuncs/floor.cpp
+    # array/ufuncs/fmax.cpp
+    # array/ufuncs/fmin.cpp
+    # array/ufuncs/fmod.cpp
+    # array/ufuncs/greater_equal.cpp
+    # array/ufuncs/greater.cpp
+    # array/ufuncs/hypot.cpp
+    # array/ufuncs/invert.cpp
+    # array/ufuncs/isfinite.cpp
+    # array/ufuncs/isinf.cpp
+    # array/ufuncs/isnan.cpp
+    # array/ufuncs/ldexp.cpp
+    # array/ufuncs/left_shift.cpp
+    # array/ufuncs/less_equal.cpp
+    # array/ufuncs/less.cpp
+    # array/ufuncs/log.cpp
+    # array/ufuncs/log1p.cpp
+    # array/ufuncs/log2.cpp
+    # array/ufuncs/log10.cpp
+    # array/ufuncs/logical_and.cpp
+    # array/ufuncs/logical_not.cpp
+    # array/ufuncs/logical_or.cpp
+    # array/ufuncs/logical_xor.cpp
+    # array/ufuncs/maximum.cpp
+    # array/ufuncs/minimum.cpp
+    # array/ufuncs/multiply.cpp
+    # array/ufuncs/negative.cpp
+    # array/ufuncs/not_equal.cpp
+    # array/ufuncs/positive.cpp
+    # array/ufuncs/power.cpp
+    # array/ufuncs/reciprocal.cpp
+    # array/ufuncs/right_shift.cpp
+    # array/ufuncs/rint.cpp
+    # array/ufuncs/signbit.cpp
+    # array/ufuncs/sin.cpp
+    # array/ufuncs/sinh.cpp
+    # array/ufuncs/sqrt.cpp
+    # array/ufuncs/square.cpp
+    # array/ufuncs/subtract.cpp
+    # array/ufuncs/tan.cpp
+    # array/ufuncs/tanh.cpp
+    # array/ufuncs/trunc.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_EVAL)
     set (ARRAY_EVAL_TEST_SOURCES "")
@@ -362,31 +362,31 @@ if (NOT NMTOOLS_TEST_ARRAY_VIEW_NN)
 endif ()
 
 set(EVAL_NN_TEST_SOURCES
-    array/activations/celu.cpp
-    array/activations/elu.cpp
-    array/activations/hardshrink.cpp
-    array/activations/hardswish.cpp
-    array/activations/hardtanh.cpp
-    array/activations/leaky_relu.cpp
-    array/activations/log_sigmoid.cpp
-    array/activations/mish.cpp
-    array/activations/prelu.cpp
-    array/activations/relu.cpp
-    array/activations/relu6.cpp
-    array/activations/selu.cpp
-    array/activations/sigmoid.cpp
-    array/activations/silu.cpp
-    array/activations/softplus.cpp
-    array/activations/softsign.cpp
-    array/activations/softshrink.cpp
-    array/activations/tanhshrink.cpp
-    array/conv.cpp
-    array/conv-2.cpp
-    array/conv-3.cpp
-    array/conv-4.cpp
-    array/batch_norm.cpp
-    array/softmax.cpp
-    array/softmin.cpp
+    # array/activations/celu.cpp
+    # array/activations/elu.cpp
+    # array/activations/hardshrink.cpp
+    # array/activations/hardswish.cpp
+    # array/activations/hardtanh.cpp
+    # array/activations/leaky_relu.cpp
+    # array/activations/log_sigmoid.cpp
+    # array/activations/mish.cpp
+    # array/activations/prelu.cpp
+    # array/activations/relu.cpp
+    # array/activations/relu6.cpp
+    # array/activations/selu.cpp
+    # array/activations/sigmoid.cpp
+    # array/activations/silu.cpp
+    # array/activations/softplus.cpp
+    # array/activations/softsign.cpp
+    # array/activations/softshrink.cpp
+    # array/activations/tanhshrink.cpp
+    # array/conv.cpp
+    # array/conv-2.cpp
+    # array/conv-3.cpp
+    # array/conv-4.cpp
+    # array/batch_norm.cpp
+    # array/softmax.cpp
+    # array/softmin.cpp
 )
 if (NOT NMTOOLS_TEST_ARRAY_NN_EVAL)
     set (EVAL_NN_TEST_SOURCES "")

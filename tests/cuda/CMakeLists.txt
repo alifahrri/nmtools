@@ -103,6 +103,7 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     array/repeat.cpp
     # TODO: fix runtime
     # array/reshape.cpp
+    array/resize.cpp
     array/slice.cpp
     array/squeeze.cpp
     array/tile.cpp

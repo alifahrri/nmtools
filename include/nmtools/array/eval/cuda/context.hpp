@@ -16,10 +16,11 @@ __global__ void nm_cuda_run_function(const function_t fun
     , const args_t...args
 ) {
     namespace cuda = nmtools::array::cuda;
+    namespace meta = nmtools::meta;
     auto output = cuda::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
 
     auto args_pack = nmtools_tuple<const args_t...>(args...);
-    auto result = nmtools::meta::template_reduce<sizeof...(args_t) / 3>([&](auto init, auto index){
+    auto result = meta::template_reduce<sizeof...(args_t) / 3>([&](auto init, auto index){
         using init_t = decltype(init);
         constexpr auto ptr_idx = (size_t)index * 3;
         constexpr auto shp_idx = ptr_idx + 1;
@@ -36,8 +37,16 @@ __global__ void nm_cuda_run_function(const function_t fun
             return init (array);
         }
     }, nmtools::None);
-    static_assert( nmtools::meta::is_ndarray_v<decltype(result)> );
-    cuda::assign_array(output,result);
+    using result_t = decltype(result);
+    if constexpr (meta::is_maybe_v<result_t>) {
+        static_assert( meta::is_ndarray_v<meta::get_maybe_type_t<result_t>> );
+        if (static_cast<bool>(result)) {
+            cuda::assign_array(output,*result);
+        }
+    } else {
+        static_assert( meta::is_ndarray_v<result_t> );
+        cuda::assign_array(output,result);
+    }
 }
 
 namespace nmtools::array::cuda

@@ -51,6 +51,8 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
 
     array/outer/add.cpp
     array/outer/multiply.cpp
+
+    array/resize.cpp
 )
 
 ## TODO: support nvcc compilation

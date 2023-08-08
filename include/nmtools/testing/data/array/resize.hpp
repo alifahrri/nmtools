@@ -6,6 +6,7 @@
 
 NMTOOLS_TESTING_DECLARE_CASE(resize)
 {
+    using namespace literals;
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int32_t array[4][4] = {
@@ -15,6 +16,8 @@ NMTOOLS_TESTING_DECLARE_CASE(resize)
             {12,13,14,15},
         };
         inline auto dst_shape = nmtools_array{2ul,2ul};
+        inline auto dst_shape_ct = nmtools_tuple{2_ct,2_ct};
+        inline auto dst_shape_cl = to_clipped(dst_shape_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
     }
@@ -35,6 +38,8 @@ NMTOOLS_TESTING_DECLARE_CASE(resize)
             {12,13,14,15},
         };
         inline auto dst_shape = nmtools_array{2ul,3ul};
+        inline auto dst_shape_ct = nmtools_tuple{2_ct,3_ct};
+        inline auto dst_shape_cl = to_clipped(dst_shape_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
     }
@@ -55,6 +60,8 @@ NMTOOLS_TESTING_DECLARE_CASE(resize)
             {12,13,14,15},
         };
         inline auto dst_shape = nmtools_array{3ul,2ul};
+        inline auto dst_shape_ct = nmtools_tuple{3_ct,2_ct};
+        inline auto dst_shape_cl = to_clipped(dst_shape_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
     }
@@ -76,6 +83,8 @@ NMTOOLS_TESTING_DECLARE_CASE(resize)
             {12,13,14,15},
         };
         inline auto dst_shape = nmtools_array{3ul,3ul};
+        inline auto dst_shape_ct = nmtools_tuple{3_ct,3_ct};
+        inline auto dst_shape_cl = to_clipped(dst_shape_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
     }
@@ -97,6 +106,8 @@ NMTOOLS_TESTING_DECLARE_CASE(resize)
             {12,13,14,15},
         };
         inline auto dst_shape = nmtools_array{4ul,2ul};
+        inline auto dst_shape_ct = nmtools_tuple{4_ct,2_ct};
+        inline auto dst_shape_cl = to_clipped(dst_shape_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
     }
@@ -119,6 +130,8 @@ NMTOOLS_TESTING_DECLARE_CASE(resize)
             {12,13,14,15},
         };
         inline auto dst_shape = nmtools_array{8ul,4ul};
+        inline auto dst_shape_ct = nmtools_tuple{8_ct,4_ct};
+        inline auto dst_shape_cl = to_clipped(dst_shape_ct);
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_INDEX_ARRAYS(dst_shape)
     }
