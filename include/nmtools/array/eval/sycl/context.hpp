@@ -140,7 +140,7 @@ namespace nmtools::array::sycl
 
                 cgh.parallel_for(::sycl::range<1>(thread_size),[=](::sycl::id<1> id){
                     auto output = create_mutable_array(&output_accessor[0],&output_shape_accessor[0],output_dim);
-                    auto array  = meta::template_reduce<N/2>([&](auto init, auto index){
+                    auto result = meta::template_reduce<N/2>([&](auto init, auto index){
                         using init_t = decltype(init);
                         constexpr auto ptr_idx = (size_t)index * 2;
                         constexpr auto shp_idx = ptr_idx + 1;
@@ -156,15 +156,24 @@ namespace nmtools::array::sycl
                             return init (array);
                         }
                     },nmtools::None);
-                    static_assert( meta::is_ndarray_v<decltype(array)> );
-                    auto size = numel;
-                    auto idx = id.get(0);
-                    if (idx < size) {
-                        auto flat_lhs = view::mutable_flatten(output);
-                        auto flat_rhs = view::flatten(array);
-                        const auto rhs = flat_rhs(idx);
-                        auto& lhs = flat_lhs(idx);
-                        lhs = rhs;
+                    auto assign_array = [&](auto& output, const auto& array){
+                        auto size = numel;
+                        auto idx = id.get(0);
+                        if (idx < size) {
+                            auto flat_lhs = view::mutable_flatten(output);
+                            auto flat_rhs = view::flatten(array);
+                            const auto rhs = flat_rhs(idx);
+                            auto& lhs = flat_lhs(idx);
+                            lhs = rhs;
+                        }
+                    };
+                    using result_t = decltype(result);
+                    if constexpr (meta::is_maybe_v<result_t>) {
+                        static_assert( meta::is_ndarray_v<meta::get_maybe_type_t<result_t>> );
+                        assign_array(output,*result);
+                    } else {
+                        static_assert( meta::is_ndarray_v<result_t> );
+                        assign_array(output,result);
                     }
                 });
 
