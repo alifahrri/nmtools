@@ -20,8 +20,8 @@
 	// "dockerFile": "../docker/jammy.dockerfile",
 
     // DOCKERFILE: ubuntu jammy (22.04)
-    "name": "ubuntu lunar",
-	"dockerFile": "../docker/lunar.dockerfile",
+    // "name": "ubuntu lunar",
+	// "dockerFile": "../docker/lunar.dockerfile",
 
 	// DOCKERFILE: testbench
 	// "name": "Testbench",
@@ -32,12 +32,12 @@
 	// "dockerFile": "../docker/circle.dockerfile",
 
     // DOCKERFILE: cuda
-    // "name": "cuda-12 ubuntu20.04",
-    // "dockerfile": "../docker/cuda.dockerfile",
+    "name": "cuda-12 ubuntu20.04",
+    "dockerFile": "../docker/cuda.dockerfile",
 
     // DOCKERFILE: sycl
     // "name": "sycl-clang14 ubuntu22.04",
-    // "dockerfile": "../docker/sycl.dockerfile",
+    // "dockerFile": "../docker/sycl.dockerfile",
 
 	"build": { 
 		"args": { "USERNAME": "${localEnv:USER}" },
@@ -58,7 +58,8 @@
 	// "postCreateCommand": "apt-get update && apt-get install -y curl",
 
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
-	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined", "--env=DISPLAY", "--env=QT_X11_NO_MITSHM=1", "--network=host" ],
+	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined", "--env=DISPLAY", "--env=QT_X11_NO_MITSHM=1", "--network=host" ],
+    "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined", "--env=DISPLAY", "--env=QT_X11_NO_MITSHM=1", "--network=host", "--runtime=nvidia" ],
 
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
 	"mounts": [ "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind" ],
