@@ -196,6 +196,16 @@ namespace nmtools::array
                 auto view_rptr = nmtools::get_if<right_t>(&view);
                 return return_t{detail::eval(*view_rptr,context,output,resolver)};
             }
+        } else if constexpr (meta::is_maybe_v<view_t>) {
+            using view_type   = meta::get_maybe_type_t<view_t>;
+            using result_type = decltype(detail::eval(meta::declval<view_type>(),context,output,resolver));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(view)) {
+                auto result = detail::eval(*view,context,output,resolver);
+                return return_type{result};
+            } else {
+                return return_type{meta::Nothing};
+            }
         } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
             auto evaluator_ = evaluator<resolver_t>(view,context);
             return evaluator_(output);
