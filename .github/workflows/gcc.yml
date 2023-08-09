@@ -146,7 +146,7 @@ jobs:
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/gcc-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_FUNCTIONAL_TESTS=ON ../.. && make -j2 VERBOSE=1 numeric-tests-functional-doctest'
       - name: run tests
         run: |
-          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/index/numeric-tests-functional-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/functional/numeric-tests-functional-doctest'
 
   dockcross-gcc-no-stl-generic-ndarray:
     name: ${{ matrix.name }}-no-stl-generic-ndarray
