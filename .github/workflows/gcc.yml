@@ -100,6 +100,54 @@ jobs:
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utl/array/numeric-tests-utl-array'
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utl/utl/numeric-tests-utl'
 
+  dockcross-gcc-index:
+    name: ${{ matrix.name }}-index
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/gcc-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_INDEX_TESTS=ON ../.. && make -j2 VERBOSE=1 numeric-tests-index-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/index/numeric-tests-index-doctest'
+
+  dockcross-gcc-functional:
+    name: ${{ matrix.name }}-index
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          -name: linux-x64
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/gcc-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_FUNCTIONAL_TESTS=ON ../.. && make -j2 VERBOSE=1 numeric-tests-functional-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/functional/numeric-tests-functional-doctest'
+
   dockcross-gcc-no-stl-generic-ndarray:
     name: ${{ matrix.name }}-no-stl-generic-ndarray
     runs-on: ubuntu-20.04
