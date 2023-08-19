@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.2)
-project(numeric-tests)
+project(numeric-tests-view)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     find_package(nmtools REQUIRED CONFIG)
