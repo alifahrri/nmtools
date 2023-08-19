@@ -41,7 +41,7 @@ jobs:
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utl/utl/numeric-tests-utl'
 
   dockcross-clang-index:
-   name: ${{ matrix.name }}-index
+    name: ${{ matrix.name }}-index
     runs-on: ubuntu-20.04
     strategy:
       matrix:
