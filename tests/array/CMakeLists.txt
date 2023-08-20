@@ -40,10 +40,8 @@ option(NMTOOLS_TEST_ALL             "test all modules"              ON)
 option(NMTOOLS_TEST_ARRAY_UTILITY   "test array utility modules"    OFF)
 option(NMTOOLS_TEST_UTILS           "test utils modules"            OFF)
 option(NMTOOLS_TEST_NDARRAY         "test ndarray modules"          OFF)
-option(NMTOOLS_TEST_ARRAY_VIEW      "test array view modules"       OFF)
 option(NMTOOLS_TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
 option(NMTOOLS_TEST_ARRAY_EVAL      "test array evaluation"         OFF)
-option(NMTOOLS_TEST_ARRAY_VIEW_NN   "test array nn view modules"    OFF)
 option(NMTOOLS_TEST_ARRAY_NN_EVAL   "test array nn eval modules"    OFF)
 option(NMTOOLS_TEST_COMPOSITION     "test array view composition"   OFF)
 option(NMTOOLS_TEST_MISC            "test other modules"            OFF)
@@ -52,10 +50,8 @@ if (NMTOOLS_TEST_ALL)
     SET(NMTOOLS_TEST_ARRAY_UTILITY   ON CACHE BOOL "test array utility modules"    FORCE)
     SET(NMTOOLS_TEST_UTILS           ON CACHE BOOL "test utils modules"            FORCE)
     SET(NMTOOLS_TEST_NDARRAY         ON CACHE BOOL "test ndarray modules"          FORCE)
-    SET(NMTOOLS_TEST_ARRAY_VIEW      ON CACHE BOOL "test array view modules"       FORCE)
     SET(NMTOOLS_TEST_ARRAY_UFUNCS    ON CACHE BOOL "test array ufuncs modules"     FORCE)
     SET(NMTOOLS_TEST_ARRAY_EVAL      ON CACHE BOOL "test array evaluation"         FORCE)
-    SET(NMTOOLS_TEST_ARRAY_VIEW_NN   ON CACHE BOOL "test array nn view modules"    FORCE)
     SET(NMTOOLS_TEST_ARRAY_NN_EVAL   ON CACHE BOOL "test array nn eval modules"    FORCE)
     SET(NMTOOLS_TEST_COMPOSITION     ON CACHE BOOL "test array view composition"   FORCE)
     SET(NMTOOLS_TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
@@ -89,137 +85,6 @@ set(NDARRAY_TEST_SOURCES
 )
 if (NOT NMTOOLS_TEST_NDARRAY)
     set(NDARRAY_TEST_SOURCES "")
-endif ()
-
-set(ARRAY_VIEW_TEST_SOURCES
-    view/arange.cpp
-    view/argsort.cpp
-    view/array_slice.cpp
-    view/atleast_1d.cpp
-    view/atleast_2d.cpp
-    view/atleast_3d.cpp
-    view/broadcast_to.cpp
-    view/broadcast_arrays.cpp
-    view/concatenate.cpp
-    view/compress.cpp
-    view/expand_dims.cpp
-    view/flatten.cpp
-    view/flip.cpp
-    view/full.cpp
-    view/matmul.cpp
-    view/mean.cpp
-    view/moveaxis.cpp
-    view/mutable_flatten.cpp
-    view/mutable_ref.cpp
-    view/mutable_slice.cpp
-    view/ones.cpp
-    view/pad.cpp
-    view/pooling.cpp
-    view/ref.cpp
-    view/ref/initializer_list.cpp
-    view/repeat.cpp
-    view/reshape.cpp
-    view/resize.cpp
-    view/slice.cpp
-    view/split.cpp
-    view/squeeze.cpp
-    view/stddev.cpp
-    view/take_along_axis.cpp
-    view/take.cpp
-    view/tile.cpp
-    view/transpose.cpp
-    view/ufunc.cpp
-    view/var.cpp
-    view/where.cpp
-    view/zeros.cpp
-)
-if (NOT NMTOOLS_TEST_ARRAY_VIEW)
-    set (ARRAY_VIEW_TEST_SOURCES "")
-endif ()
-
-set(ARRAY_UFUNCS_TEST_SOURCES
-    view/cumprod.cpp
-    view/cumsum.cpp
-    view/prod.cpp
-    view/sum.cpp
-    view/ufuncs/add.cpp
-    view/ufuncs/amax.cpp
-    view/ufuncs/amin.cpp
-    view/ufuncs/arccos.cpp
-    view/ufuncs/arccosh.cpp
-    view/ufuncs/arcsin.cpp
-    view/ufuncs/arcsinh.cpp
-    view/ufuncs/arctan.cpp
-    view/ufuncs/arctanh.cpp
-    view/ufuncs/arctan2.cpp
-    view/ufuncs/bitwise_and.cpp
-    view/ufuncs/bitwise_or.cpp
-    view/ufuncs/bitwise_xor.cpp
-    view/ufuncs/cbrt.cpp
-    view/ufuncs/ceil.cpp
-    view/ufuncs/clip.cpp
-    view/ufuncs/cos.cpp
-    view/ufuncs/cosh.cpp
-    view/ufuncs/divide.cpp
-    view/ufuncs/equal.cpp
-    view/ufuncs/exp.cpp
-    view/ufuncs/exp2.cpp
-    view/ufuncs/expm1.cpp
-    view/ufuncs/fabs.cpp
-    view/ufuncs/floor.cpp
-    view/ufuncs/fmax.cpp
-    view/ufuncs/fmin.cpp
-    view/ufuncs/fmod.cpp
-    view/ufuncs/greater.cpp
-    view/ufuncs/greater_equal.cpp
-    view/ufuncs/hypot.cpp
-    view/ufuncs/invert.cpp
-    view/ufuncs/isfinite.cpp
-    view/ufuncs/isinf.cpp
-    view/ufuncs/isnan.cpp
-    view/ufuncs/ldexp.cpp
-    view/ufuncs/left_shift.cpp
-    view/ufuncs/less.cpp
-    view/ufuncs/less_equal.cpp
-    view/ufuncs/log.cpp
-    view/ufuncs/log1p.cpp
-    view/ufuncs/log2.cpp
-    view/ufuncs/log10.cpp
-    view/ufuncs/logical_and.cpp
-    view/ufuncs/logical_not.cpp
-    view/ufuncs/logical_or.cpp
-    view/ufuncs/logical_xor.cpp
-    view/ufuncs/maximum.cpp
-    view/ufuncs/minimum.cpp
-    view/ufuncs/multiply.cpp
-    view/ufuncs/negative.cpp
-    view/ufuncs/not_equal.cpp
-    view/ufuncs/positive.cpp
-    view/ufuncs/power.cpp
-    view/ufuncs/reciprocal.cpp
-    view/ufuncs/right_shift.cpp
-    view/ufuncs/rint.cpp
-    view/ufuncs/signbit.cpp
-    view/ufuncs/sin.cpp
-    view/ufuncs/sinh.cpp
-    view/ufuncs/sqrt.cpp
-    view/ufuncs/square.cpp
-    view/ufuncs/subtract.cpp
-    view/ufuncs/tan.cpp
-    view/ufuncs/tanh.cpp
-    view/ufuncs/trunc.cpp
-)
-if (NOT NMTOOLS_TEST_ARRAY_UFUNCS)
-    set (ARRAY_UFUNCS_TEST_SOURCES "")
-endif ()
-
-set(COMPOSITION_TEST_SOURCES
-    composition/mean_subtract.cpp
-    composition/subtract_fabs_square.cpp
-    composition/square_sum_divide.cpp
-)
-if (NOT NMTOOLS_TEST_COMPOSITION)
-    set(COMPOSITION_TEST_SOURCES "")
 endif ()
 
 set(ARRAY_EVAL_TEST_SOURCES
@@ -328,37 +193,6 @@ if (NOT NMTOOLS_TEST_ARRAY_EVAL)
     set (ARRAY_EVAL_TEST_SOURCES "")
 endif ()
 
-set(VIEW_NN_TEST_SOURCES
-    view/activations/celu.cpp
-    view/activations/elu.cpp
-    view/activations/hardshrink.cpp
-    view/activations/hardswish.cpp
-    view/activations/hardtanh.cpp
-    view/activations/leaky_relu.cpp
-    view/activations/log_sigmoid.cpp
-    view/activations/mish.cpp
-    view/activations/prelu.cpp
-    view/activations/relu.cpp
-    view/activations/relu6.cpp
-    view/activations/selu.cpp
-    view/activations/silu.cpp
-    view/activations/sigmoid.cpp
-    view/activations/softplus.cpp
-    view/activations/softshrink.cpp
-    view/activations/softsign.cpp
-    view/activations/tanhshrink.cpp
-    view/conv.cpp
-    view/conv-2.cpp
-    view/conv-3.cpp
-    view/conv-4.cpp
-    view/batch_norm.cpp
-    view/softmax.cpp
-    view/softmin.cpp
-)
-if (NOT NMTOOLS_TEST_ARRAY_VIEW_NN)
-    set (VIEW_NN_TEST_SOURCES "")
-endif ()
-
 set(EVAL_NN_TEST_SOURCES
     array/activations/celu.cpp
     array/activations/elu.cpp
@@ -405,18 +239,12 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${ARRAY_UTILITY_TEST_SOURCES}
     ## ndarray
     ${NDARRAY_TEST_SOURCES}
-    ## view
-    ${ARRAY_VIEW_TEST_SOURCES}
     ## ufuncs
     ${ARRAY_UFUNCS_TEST_SOURCES}
     ## array evaluation
     ${ARRAY_EVAL_TEST_SOURCES}
-    ## array view nn
-    ${VIEW_NN_TEST_SOURCES}
     ## array eval nn
     ${EVAL_NN_TEST_SOURCES}
-    ## view composition
-    ${COMPOSITION_TEST_SOURCES}
     ## misc
     ${MISC_TEST_SOURCES}
 )

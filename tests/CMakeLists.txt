@@ -110,6 +110,16 @@ if (NMTOOLS_BUILD_INDEX_TESTS)
     add_subdirectory(index)
 endif (NMTOOLS_BUILD_INDEX_TESTS)
 
+option(NMTOOLS_BUILD_FUNCTIONAL_TESTS "build functional test programs" OFF)
+if (NMTOOLS_BUILD_FUNCTIONAL_TESTS)
+    add_subdirectory(functional)
+endif (NMTOOLS_BUILD_FUNCTIONAL_TESTS)
+
+option(NMTOOLS_BUILD_VIEW_TESTS "build view test programs" OFF)
+if (NMTOOLS_BUILD_VIEW_TESTS)
+    add_subdirectory(view)
+endif (NMTOOLS_BUILD_VIEW_TESTS)
+
 option(NMTOOLS_BUILD_OPENCL_TESTS "build opencl test programs" OFF)
 if (NMTOOLS_BUILD_OPENCL_TESTS)
     add_subdirectory(opencl)
