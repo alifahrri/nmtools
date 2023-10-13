@@ -241,7 +241,7 @@ namespace nmtools::index
         [[maybe_unused]] const auto row = at(indices,meta::ct_v<-2>);
         [[maybe_unused]] const auto col = at(indices,meta::ct_v<-1>);
 
-        [[maybe_unused]] auto all = nmtools_tuple{None,None};
+        [[maybe_unused]] const auto all = nmtools_tuple{none_t{},none_t{}};
 
         // TODO: return if result_t is compile-time value
 
