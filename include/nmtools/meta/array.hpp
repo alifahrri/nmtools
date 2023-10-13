@@ -23,6 +23,7 @@
 #include "nmtools/meta/bits/array/fixed_size.hpp"
 #include "nmtools/meta/bits/array/bounded_dim.hpp"
 #include "nmtools/meta/bits/array/bounded_size.hpp"
+#include "nmtools/meta/bits/array/contiguous_axis.hpp"
 #include "nmtools/meta/bits/array/resize_dim.hpp"
 #include "nmtools/meta/bits/array/resize_size.hpp"
 #include "nmtools/meta/bits/array/resize_shape.hpp"
