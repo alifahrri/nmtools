@@ -3,6 +3,7 @@
 
 #include "nmtools/array/eval/simd/ufunc.hpp"
 #include "nmtools/array/eval/simd/evaluator.hpp"
+#include "nmtools/array/eval/simd/bit_width.hpp"
 
 #include <xmmintrin.h>
 #include <emmintrin.h>
@@ -13,7 +14,19 @@ namespace nmtools::array::simd
 {
     // simd_tag_t
     struct x86_sse_t {};
+} // namespace nmtools::array::simd
 
+namespace nmtools::meta
+{
+    template <>
+    struct bit_width<array::simd::x86_sse_t>
+    {
+        static constexpr auto value = 128;
+    };
+}
+
+namespace nmtools::array::simd
+{
     constexpr inline auto x86_SSE = array::simd_base_t<x86_sse_t>{};
 
     using meta::is_same_v;
@@ -25,7 +38,7 @@ namespace nmtools::array::simd
     {
         using data_t = T;
 
-        static constexpr inline auto bit_width = 128;
+        static constexpr inline auto bit_width = meta::bit_width_v<x86_sse_t>;
 
         // NOTE: use packed_t as template parameters instead of member alias
         // to avoid warning: ignoring attributes on template argument ‘__m128’ {aka ‘__vector(4) float’}
@@ -291,6 +304,31 @@ namespace nmtools::array::simd
                 return _mm_cmpgt_ps(x,y);
             } else {
                 return _mm_cmpgt_pd(x,y);
+            }
+        }
+
+        template <typename packed_t> NMTOOLS_ALWAYS_INLINE
+        static auto fmadd(packed_t a, packed_t b, packed_t c)
+        {
+            auto tmp = mul(a,b);
+            return add(tmp,c);
+        }
+
+        template <auto POS, typename packed_t> NMTOOLS_ALWAYS_INLINE
+        static auto insert(packed_t a, data_t data, meta::as_type<POS>)
+        {
+            [[maybe_unused]] constexpr auto n_bit = sizeof(data_t) * 8;
+            constexpr auto is_integral = meta::is_integral_v<data_t>;
+            if constexpr (is_integral && (n_bit == 8)) {
+                return _mm_insert_epi8(a,data,POS);
+            } else if constexpr (is_integral && (n_bit == 16)) {
+                return _mm_insert_epi16(a,data,POS);
+            } else if constexpr (is_integral && (n_bit == 32)) {
+                return _mm_insert_epi32(a,data,POS);
+            } else if constexpr (is_integral && (n_bit == 64)) {
+                return _mm_insert_epi64(a,data,POS);
+            } else /*if constexpr (is_same_v<data_t,float>)*/ {
+                return _mm_insert_ps(a,set1(data),POS);
             }
         }
     }; // simd_op_t<x86_sse_t,float>

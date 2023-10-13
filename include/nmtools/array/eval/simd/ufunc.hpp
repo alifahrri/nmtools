@@ -65,6 +65,8 @@ namespace nmtools::array::simd
         NMTOOLS_ALWAYS_INLINE auto logical_or(packed_t,packed_t) const noexcept;
         template <typename packed_t>
         NMTOOLS_ALWAYS_INLINE auto div(packed_t,packed_t) const noexcept;
+        template <typename packed_t>
+        NMTOOLS_ALWAYS_INLINE auto fmadd(packed_t,packed_t,packed_t) const noexcept;
     }; // struct simd_op_t
 
     template <typename ufunc_op_t, typename simd_tag_t, typename data_t>
