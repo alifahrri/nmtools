@@ -18,6 +18,188 @@
 
 namespace nmtools::array
 {
+    template <typename shape_t, typename strides_t>
+    struct row_major_offset_t
+    {
+        using shape_type = shape_t;
+        using strides_type = strides_t;
+
+        shape_type shape_;
+        strides_type strides_;
+
+        constexpr row_major_offset_t(const shape_t& shape, const strides_t& strides)
+            : shape_(shape)
+            , strides_(strides)
+        {}
+
+        constexpr row_major_offset_t()
+            : shape_{}
+            , strides_{}
+        {}
+
+        constexpr row_major_offset_t(const row_major_offset_t& other)
+            : shape_(other.shape_)
+            , strides_(other.strides_)
+        {}
+
+        constexpr row_major_offset_t& operator=(const row_major_offset_t& other)
+        {
+            if constexpr (!meta::is_constant_index_array_v<shape_type>) {
+                [[maybe_unused]] auto dim = len(other.shape_);
+                if constexpr (meta::is_resizable_v<shape_type>) {
+                    shape_.resize(dim);
+                }
+                constexpr auto N = meta::len_v<shape_type>;
+                if constexpr (N>0) {
+                    meta::template_for<N>([&](auto i){
+                        at(shape_,i) = at(other.shape_,i);
+                    });
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        at(shape_,i) = at(other.shape_,i);
+                    }
+                }
+            }
+            if constexpr (!meta::is_constant_index_array_v<strides_type>) {
+                [[maybe_unused]] auto dim = len(other.strides_);
+                if constexpr (meta::is_resizable_v<strides_type>) {
+                    strides_.resize(dim);
+                }
+                constexpr auto N = meta::len_v<strides_type>;
+                if constexpr (N>0) {
+                    meta::template_for<N>([&](auto i){
+                        at(strides_,i) = at(other.strides_,i);
+                    });
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        at(strides_,i) = at(other.strides_,i);
+                    }
+                }
+            }
+            return *this;
+        }
+
+        template <typename indices_t>
+        constexpr auto operator()(const indices_t& indices) const
+        {
+            return index::compute_offset(indices,strides_);
+        } // operator()
+    }; // row_major_offset_t
+
+    template <typename shape_t, typename strides_t>
+    struct column_major_offset_t
+    {
+        using shape_type = meta::remove_cvref_t<decltype(index::reverse(meta::declval<shape_t>()))>;
+        using strides_type = meta::remove_cvref_t<decltype(index::reverse(index::compute_strides(meta::declval<shape_type>())))>;
+
+        shape_type shape_;
+        strides_type strides_;
+
+
+        constexpr column_major_offset_t(const shape_t& shape, const strides_t&)
+            : shape_(index::reverse(shape))
+            , strides_(index::reverse(index::compute_strides(shape_)))
+        {}
+
+        constexpr column_major_offset_t(const column_major_offset_t& other)
+            : shape_(other.shape_)
+            , strides_(other.strides_)
+        {}
+
+        constexpr column_major_offset_t()
+            : shape_{}
+            , strides_{}
+        {}
+
+        constexpr column_major_offset_t& operator=(const column_major_offset_t& other)
+        {
+            if constexpr (!meta::is_constant_index_array_v<shape_type>) {
+                [[maybe_unused]] auto dim = len(other.shape_);
+                if constexpr (meta::is_resizable_v<shape_type>) {
+                    shape_.resize(dim);
+                }
+                constexpr auto N = meta::len_v<shape_type>;
+                if constexpr (N>0) {
+                    meta::template_for<N>([&](auto i){
+                        at(shape_,i) = at(other.shape_,i);
+                    });
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        at(shape_,i) = at(other.shape_,i);
+                    }
+                }
+            }
+            if constexpr (!meta::is_constant_index_array_v<strides_type>) {
+                [[maybe_unused]] auto dim = len(other.strides_);
+                if constexpr (meta::is_resizable_v<strides_type>) {
+                    strides_.resize(dim);
+                }
+                constexpr auto N = meta::len_v<strides_type>;
+                if constexpr (N>0) {
+                    meta::template_for<N>([&](auto i){
+                        at(strides_,i) = at(other.strides_,i);
+                    });
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        at(strides_,i) = at(other.strides_,i);
+                    }
+                }
+            }
+            return *this;
+        }
+
+        template <typename indices_t>
+        constexpr auto operator()(const indices_t& indices) const
+        {
+            auto offset = index::compute_offset(indices,strides_);
+            return offset;
+        } // operator()
+    };
+} // namespace nmtools::array
+
+namespace nmtools::meta
+{
+    template <typename T, typename=void>
+    struct is_row_major_offset : false_type {};
+
+    template <typename T, typename=void>
+    struct is_column_major_offset : false_type {};
+
+    template <typename T>
+    struct is_row_major_offset<const T> : is_row_major_offset<T> {};
+
+    template <typename T>
+    struct is_row_major_offset<T&> : is_row_major_offset<T> {};
+
+    template <typename T>
+    struct is_column_major_offset<const T> : is_column_major_offset<T> {};
+
+    template <typename T>
+    struct is_column_major_offset<T&> : is_column_major_offset<T> {};
+
+    template <typename shape_t, typename strides_t>
+    struct is_row_major_offset<
+        array::row_major_offset_t<shape_t,strides_t>
+    > {
+        static constexpr auto value = is_index_array_v<shape_t> && is_index_array_v<strides_t>;
+    };
+
+    template <typename shape_t, typename strides_t>
+    struct is_column_major_offset<
+        array::column_major_offset_t<shape_t,strides_t>
+    > {
+        static constexpr auto value = is_index_array_v<shape_t> && is_index_array_v<strides_t>;
+    };
+
+    template <typename T>
+    constexpr inline auto is_row_major_offset_v = is_row_major_offset<T>::value;
+
+    template <typename T>
+    constexpr inline auto is_column_major_offset_v = is_column_major_offset<T>::value;
+} // namespace nmtools::meta
+
+namespace nmtools::array
+{
 
     template <typename T>
     struct base_ndarray_t
@@ -128,42 +310,25 @@ namespace nmtools::array
         }
 
         template <typename...size_types>
-        constexpr decltype(auto) operator()(const size_types&...indices)
+        constexpr decltype(auto) offset(const size_types&...indices) const
         {
             auto indices_ = index::pack_indices(indices...);
-            auto offset   = self()->offset(indices_,shape(),strides());
-            return nmtools::at(self()->data_,offset);
+            auto offset   = self()->offset_(indices_);
+            return offset;
+        }
+
+        template <typename...size_types>
+        constexpr decltype(auto) operator()(const size_types&...indices)
+        {
+            return nmtools::at(self()->data_,offset(indices...));
         } // operator()
 
         template <typename...size_types>
         constexpr decltype(auto) operator()(const size_types&...indices) const
         {
-            auto indices_ = index::pack_indices(indices...);
-            auto offset   = self()->offset(indices_,shape(),strides());
-            return nmtools::at(self()->data_,offset);
+            return nmtools::at(self()->data_,offset(indices...));
         } // operator()
     }; // base_ndarray_t
-
-    template <typename shape_t, typename strides_t>
-    struct row_major_offset_t
-    {
-        template <typename indices_t>
-        constexpr auto operator()(const indices_t& indices, const shape_t&, const strides_t& strides) const
-        {
-            return index::compute_offset(indices,strides);
-        } // operator()
-    }; // row_major_offset_t
-
-    template <typename shape_t, typename strides_t>
-    struct column_major_offset_t
-    {
-        template <typename indices_t>
-        constexpr auto operator()(const indices_t& indices, const shape_t&, const strides_t& strides) const
-        {
-            auto offset = index::compute_offset(index::reverse(indices),strides);
-            return offset;
-        } // operator()
-    };
 
     template <typename shape_type>
     using resolve_stride_type_t = meta::resolve_optype_t<index::compute_strides_t,shape_type>;
@@ -190,12 +355,13 @@ namespace nmtools::array
         buffer_type data_;
         shape_type  shape_;
         stride_type strides_;
-        offset_type offset = {};
+        offset_type offset_;
 
         constexpr ndarray_t()
             : data_     (base_type::template initialize_data<buffer_type>())
             , shape_    (base_type::template initialize_shape<shape_type>(data_))
             , strides_  (base_type::template compute_strides<stride_type>(shape_))
+            , offset_   (shape_,strides_)
         {
             if constexpr (meta::is_resizable_v<buffer_type>) {
                 auto numel = index::product(shape_);
@@ -290,9 +456,24 @@ namespace nmtools::array
                     at(strides_,i) = at(m_strides_,i);
                 }
             }
+            offset_ = offset_type(shape_,strides_);
             return true;
         } // resize
     }; // ndarray_t
+
+    template <
+          typename buffer_t
+        , typename shape_buffer_t
+        , template <typename...>typename stride_buffer_t=resolve_stride_type_t
+    >
+    using column_major_ndarray_t = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,column_major_offset_t>;
+
+    template <
+          typename buffer_t
+        , typename shape_buffer_t
+        , template <typename...>typename stride_buffer_t=resolve_stride_type_t
+    >
+    using row_major_ndarray_t = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,row_major_offset_t>;
 
     template <typename type, size_t max_size>
     using static_vector_ndarray_t = array::ndarray_t<nmtools_array<type,max_size>,nmtools_array<size_t,1>>;
@@ -691,13 +872,13 @@ namespace nmtools::meta
         using type = array::ndarray_t<buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t>;
     }; // replace_element_type
 
-    template <typename U
-        , typename buffer_t
+    template <
+          typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct is_index_array<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>, U
+        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
         static constexpr auto value = [](){
@@ -707,6 +888,27 @@ namespace nmtools::meta
             ;
         }();
     }; // is_index_array
+
+    template <
+          typename buffer_t
+        , typename shape_buffer_t
+        , template <typename...>typename stride_buffer_t
+        , template <typename...>typename offset_compute_t>
+    struct contiguous_axis<
+        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+    > {
+        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using offset_type = typename array_type::offset_type;
+        static constexpr auto value = [](){
+            if constexpr (is_row_major_offset_v<offset_type>) {
+                return -1;
+            } else if constexpr (is_column_major_offset_v<offset_type>) {
+                return 0;
+            } else {
+                return error::CONTIGUOUS_AXIS_UNSUPPORTED<array_type>{};
+            }
+        }();
+    };
 } // namespace nmtools::meta
 
 // casting

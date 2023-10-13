@@ -95,6 +95,9 @@ namespace nmtools::meta
     template <auto...Ts>
     struct as_type {};
 
+    template <auto...Ts>
+    constexpr inline auto as_type_v = as_type<Ts...>{};
+
     template <typename T, T...Ints>
     struct integer_sequence
     {

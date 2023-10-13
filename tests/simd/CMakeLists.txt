@@ -36,6 +36,7 @@ if (NMTOOLS_SIMD_TEST_SSE)
     set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
         x86/unary_sse.cpp
         x86/binary_sse.cpp
+        x86/matmul_sse.cpp
     )
     if (NMTOOLS_SIMD_TEST_REDUCTION)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
@@ -49,6 +50,7 @@ if (NMTOOLS_SIMD_TEST_AVX)
         x86/unary_avx.cpp
         x86/binary_avx.cpp
         x86/binary_avx_broadcast.cpp
+        x86/matmul_avx.cpp
     )
     if (NMTOOLS_SIMD_TEST_REDUCTION)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
@@ -60,6 +62,7 @@ endif (NMTOOLS_SIMD_TEST_AVX)
 if (NMTOOLS_SIMD_TEST_INDEX)
     set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
         index/simd_index.cpp
+        index/simd_matmul.cpp
     )
 endif (NMTOOLS_SIMD_TEST_INDEX)
 add_executable(${PROJECT_NAME}-doctest tests.cpp
@@ -71,7 +74,7 @@ if (NMTOOLS_SIMD_TEST_SSE)
     target_compile_options(${PROJECT_NAME}-doctest PRIVATE -msse4.1 -msse -msse2 -msse3)
 endif (NMTOOLS_SIMD_TEST_SSE)
 if (NMTOOLS_SIMD_TEST_AVX)
-    target_compile_options(${PROJECT_NAME}-doctest PRIVATE -mavx2)
+    target_compile_options(${PROJECT_NAME}-doctest PRIVATE -mavx2 -mfma)
 endif (NMTOOLS_SIMD_TEST_AVX)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(${PROJECT_NAME}-doctest PRIVATE -g)

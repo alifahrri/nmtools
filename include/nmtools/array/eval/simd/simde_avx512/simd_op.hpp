@@ -3,13 +3,26 @@
 
 #include "nmtools/array/eval/simd/ufunc.hpp"
 #include "nmtools/array/eval/simd/evaluator.hpp"
+#include "nmtools/array/eval/simd/bit_width.hpp"
 
 #include <simde/x86/avx512.h>
 
 namespace nmtools::array::simd
 {
     struct simde_avx512_t {};
+}
 
+namespace nmtools::meta
+{
+    template <>
+    struct bit_width<array::simd::simde_avx512_t>
+    {
+        static constexpr auto value = 512;
+    };
+}
+
+namespace nmtools::array::simd
+{
     constexpr inline auto simde_AVX512 = array::simd_base_t<simde_avx512_t>{};
 
     using meta::is_same_v;
@@ -21,7 +34,7 @@ namespace nmtools::array::simd
     {
         using data_t = T;
 
-        static constexpr inline auto bit_width = 512;
+        static constexpr inline auto bit_width = meta::bit_width_v<simde_avx512_t>;
 
         NMTOOLS_ALWAYS_INLINE
         static auto loadu(const data_t* inp_ptr) noexcept

@@ -3,6 +3,7 @@
 
 #include "nmtools/array/eval/simd/ufunc.hpp"
 #include "nmtools/array/eval/simd/evaluator.hpp"
+#include "nmtools/array/eval/simd/bit_width.hpp"
 
 #include <x86intrin.h>
 
@@ -10,7 +11,19 @@ namespace nmtools::array::simd
 {
     // simd_tag_t
     struct x86_avx_t {};
+}
 
+namespace nmtools::meta
+{
+    template <>
+    struct bit_width<array::simd::x86_avx_t>
+    {
+        static constexpr auto value = 256;
+    };
+}
+
+namespace nmtools::array::simd
+{
     constexpr inline auto x86_AVX = array::simd_base_t<x86_avx_t>{};
 
     using meta::is_same_v;
@@ -22,7 +35,7 @@ namespace nmtools::array::simd
     {
         using data_t = T;
 
-        static constexpr inline auto bit_width = 256;
+        static constexpr inline auto bit_width = meta::bit_width_v<x86_avx_t>;
 
         NMTOOLS_ALWAYS_INLINE
         static auto loadu(const data_t* inp_ptr) noexcept
@@ -272,6 +285,16 @@ namespace nmtools::array::simd
                 return _mm256_cmp_ps(x,y,_CMP_GT_OS);
             } else {
                 return _mm256_cmp_pd(x,y,_CMP_GT_OS);
+            }
+        }
+
+        template <typename packed_t> NMTOOLS_ALWAYS_INLINE
+        static auto fmadd(packed_t a, packed_t b, packed_t c) noexcept
+        {
+            if constexpr (is_same_v<data_t,float>) {
+                return _mm256_fmadd_ps(a,b,c);
+            } else {
+                return _mm256_fmadd_pd(a,b,c);
             }
         }
     }; // simd_op_t<x86_avx_t,float>

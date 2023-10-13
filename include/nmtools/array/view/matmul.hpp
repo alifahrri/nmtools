@@ -32,7 +32,7 @@ namespace nmtools::view
         using rhs_shape_type = decltype(nmtools::shape<true>(meta::declval<rhs_t>()));
         using dst_shape_type = meta::resolve_optype_t<index::shape_matmul_t,lhs_shape_type,rhs_shape_type>;
 
-        operands_type operands;
+        operands_type array;
         dst_shape_type shape_;
 
         // the following is needed because cant use view::initialize<...>
@@ -53,7 +53,7 @@ namespace nmtools::view
         } // initialize_operands
 
         constexpr matmul_t(const lhs_t& lhs, const rhs_t& rhs)
-            : operands(initialize_operands(lhs,rhs))
+            : array(initialize_operands(lhs,rhs))
             , shape_(*index::shape_matmul(
                 nmtools::shape<true>(lhs),
                 nmtools::shape<true>(rhs))
@@ -73,8 +73,8 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto view_at(const size_types&...indices) const
         {
-            const auto& lhs = nmtools::get<0>(operands);
-            const auto& rhs = nmtools::get<1>(operands);
+            const auto& lhs = nmtools::get<0>(array);
+            const auto& rhs = nmtools::get<1>(array);
             using lhs_type  = meta::remove_cvref_t<decltype(lhs)>;
             using rhs_type  = meta::remove_cvref_t<decltype(rhs)>;
 
