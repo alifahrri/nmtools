@@ -68,11 +68,11 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
 
-#define CONSTEXPR_BROADCAST_TO_SUBCASE(case_name, array, shape, expected) \
+#define CONSTEXPR_BROADCAST_TO_SUBCASE(case_name, array, shape_, expected) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(constexpr_broadcast_to, case_name); \
-    constexpr auto result = RUN_broadcast_to(case_name, args::array,args::shape); \
+    constexpr auto result = RUN_broadcast_to(case_name, args::array,args::shape_); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::expected) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
 }
@@ -170,5 +170,85 @@ TEST_CASE("broadcast_to(constexpr)" * doctest::test_suite("array::broadcast_to")
 #endif
 
 #else // NMTOOLS_TESTING_CONSTEXPR
+
+TEST_CASE("constexpr_broadcast_to(case1)" * doctest::test_suite("array::broadcast_to"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_a, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_f, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_h, shape_ct, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_a, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_f, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_h, shape_cl, expected );
+    #else
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape_ct, expected );
+    
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_ct, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_hs_fb, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_hs_hb, shape_ct, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_ls_fb, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_ls_hb, shape_ct, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_cs_fb, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_cs_hb, shape_cl, expected );
+    
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_fs_fb, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_fs_hb, shape_cl, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_hs_fb, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_hs_hb, shape_cl, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_ls_fb, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case1, x_ls_hb, shape_cl, expected );
+    #endif
+}
+
+TEST_CASE("constexpr_broadcast_to(case7)" * doctest::test_suite("array::broadcast_to"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_a, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_f, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_h, shape_ct, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_a, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_f, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_h, shape_cl, expected );
+    #else
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_cs_fb, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_cs_hb, shape_ct, expected );
+    
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_fs_fb, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_fs_hb, shape_ct, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_hs_fb, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_hs_hb, shape_ct, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_ls_fb, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_ls_hb, shape_ct, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_cs_fb, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_cs_hb, shape_cl, expected );
+    
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_fs_fb, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_fs_hb, shape_cl, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_hs_fb, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_hs_hb, shape_cl, expected );
+
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_ls_fb, shape_cl, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case7, x_ls_hb, shape_cl, expected );
+    #endif
+}
+
+TEST_CASE("constexpr_broadcast_to(case10)" * doctest::test_suite("array::broadcast_to"))
+{
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case10, x, shape_ct, expected );
+    CONSTEXPR_BROADCAST_TO_SUBCASE( case10, x, shape_cl, expected );
+}
 
 #endif
