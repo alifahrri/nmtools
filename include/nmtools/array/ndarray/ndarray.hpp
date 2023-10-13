@@ -32,6 +32,11 @@ namespace nmtools::array
             , strides_(strides)
         {}
 
+        constexpr row_major_offset_t()
+            : shape_{}
+            , strides_{}
+        {}
+
         template <typename indices_t>
         constexpr auto operator()(const indices_t& indices) const
         {
@@ -52,6 +57,11 @@ namespace nmtools::array
         constexpr column_major_offset_t(const shape_t& shape, const strides_t&)
             : shape_(index::reverse(shape))
             , strides_(index::reverse(index::compute_strides(shape_)))
+        {}
+
+        constexpr column_major_offset_t()
+            : shape_{}
+            , strides_{}
         {}
 
         template <typename indices_t>
