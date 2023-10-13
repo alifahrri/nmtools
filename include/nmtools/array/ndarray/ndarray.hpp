@@ -27,7 +27,7 @@ namespace nmtools::array
         shape_type shape_;
         strides_type strides_;
 
-        row_major_offset_t(const shape_t& shape, const strides_t& strides)
+        constexpr row_major_offset_t(const shape_t& shape, const strides_t& strides)
             : shape_(shape)
             , strides_(strides)
         {}
@@ -49,7 +49,7 @@ namespace nmtools::array
         strides_type strides_;
 
 
-        column_major_offset_t(const shape_t& shape, const strides_t&)
+        constexpr column_major_offset_t(const shape_t& shape, const strides_t&)
             : shape_(index::reverse(shape))
             , strides_(index::reverse(index::compute_strides(shape_)))
         {}
