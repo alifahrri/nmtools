@@ -404,6 +404,7 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_broadcast_to)
         constexpr inline int8_t x[3] = {1,2,3};
         constexpr inline auto shape = nmtools_array{1,3};
         constexpr inline auto shape_ct = nmtools_tuple{1_ct,3_ct};
+        constexpr inline auto shape_cl = to_clipped(shape_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -418,6 +419,7 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_broadcast_to)
         constexpr inline int8_t x[1][3] = {{1,2,3}};
         constexpr inline auto shape = nmtools_array{3,3};
         constexpr inline auto shape_ct = nmtools_tuple{3_ct,3_ct};
+        constexpr inline auto shape_cl = to_clipped(shape_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(x)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
@@ -434,6 +436,7 @@ NMTOOLS_TESTING_DECLARE_CASE(constexpr_broadcast_to)
         constexpr inline int8_t x = 1;
         constexpr inline auto shape = nmtools_array{1,3};
         constexpr inline auto shape_ct = nmtools_tuple{1_ct,3_ct};
+        constexpr inline auto shape_cl = to_clipped(shape_ct);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
