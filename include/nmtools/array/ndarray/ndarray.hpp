@@ -37,6 +37,43 @@ namespace nmtools::array
             , strides_{}
         {}
 
+        constexpr row_major_offset_t& operator=(const row_major_offset_t& other)
+        {
+            if constexpr (!meta::is_constant_index_array_v<shape_type>) {
+                [[maybe_unused]] auto dim = len(other.shape_);
+                if constexpr (meta::is_resizable_v<shape_type>) {
+                    shape_.resize(dim);
+                }
+                constexpr auto N = meta::len_v<shape_type>;
+                if constexpr (N>0) {
+                    meta::template_for<N>([&](auto i){
+                        at(shape_,i) = at(other.shape_,i);
+                    });
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        at(shape_,i) = at(other.shape_,i);
+                    }
+                }
+            }
+            if constexpr (!meta::is_constant_index_array_v<strides_type>) {
+                [[maybe_unused]] auto dim = len(other.strides_);
+                if constexpr (meta::is_resizable_v<strides_type>) {
+                    strides_.resize(dim);
+                }
+                constexpr auto N = meta::len_v<strides_type>;
+                if constexpr (N>0) {
+                    meta::template_for<N>([&](auto i){
+                        at(strides_,i) = at(other.strides_,i);
+                    });
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        at(strides_,i) = at(other.strides_,i);
+                    }
+                }
+            }
+            return *this;
+        }
+
         template <typename indices_t>
         constexpr auto operator()(const indices_t& indices) const
         {
@@ -63,6 +100,43 @@ namespace nmtools::array
             : shape_{}
             , strides_{}
         {}
+
+        constexpr column_major_offset_t& operator=(const column_major_offset_t& other)
+        {
+            if constexpr (!meta::is_constant_index_array_v<shape_type>) {
+                [[maybe_unused]] auto dim = len(other.shape_);
+                if constexpr (meta::is_resizable_v<shape_type>) {
+                    shape_.resize(dim);
+                }
+                constexpr auto N = meta::len_v<shape_type>;
+                if constexpr (N>0) {
+                    meta::template_for<N>([&](auto i){
+                        at(shape_,i) = at(other.shape_,i);
+                    });
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        at(shape_,i) = at(other.shape_,i);
+                    }
+                }
+            }
+            if constexpr (!meta::is_constant_index_array_v<strides_type>) {
+                [[maybe_unused]] auto dim = len(other.strides_);
+                if constexpr (meta::is_resizable_v<strides_type>) {
+                    strides_.resize(dim);
+                }
+                constexpr auto N = meta::len_v<strides_type>;
+                if constexpr (N>0) {
+                    meta::template_for<N>([&](auto i){
+                        at(strides_,i) = at(other.strides_,i);
+                    });
+                } else {
+                    for (size_t i=0; i<dim; i++) {
+                        at(strides_,i) = at(other.strides_,i);
+                    }
+                }
+            }
+            return *this;
+        }
 
         template <typename indices_t>
         constexpr auto operator()(const indices_t& indices) const
