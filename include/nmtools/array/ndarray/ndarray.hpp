@@ -37,6 +37,11 @@ namespace nmtools::array
             , strides_{}
         {}
 
+        constexpr row_major_offset_t(const row_major_offset_t& other)
+            : shape_(other.shape_)
+            , strides_(other.strides_)
+        {}
+
         constexpr row_major_offset_t& operator=(const row_major_offset_t& other)
         {
             if constexpr (!meta::is_constant_index_array_v<shape_type>) {
@@ -94,6 +99,11 @@ namespace nmtools::array
         constexpr column_major_offset_t(const shape_t& shape, const strides_t&)
             : shape_(index::reverse(shape))
             , strides_(index::reverse(index::compute_strides(shape_)))
+        {}
+
+        constexpr column_major_offset_t(const column_major_offset_t& other)
+            : shape_(other.shape_)
+            , strides_(other.strides_)
         {}
 
         constexpr column_major_offset_t()
