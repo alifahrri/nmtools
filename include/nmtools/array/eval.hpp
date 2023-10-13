@@ -163,7 +163,7 @@ namespace nmtools::array
         // TODO: perfect forwarding for context
         using ctx_t = meta::remove_cvref_t<context_t>;
         using evaluator_type = evaluator_t<view_t,ctx_t,resolver_t>;
-        return evaluator_type{view,context};
+        return evaluator_type{view,nmtools::forward<context_t>(context)};
     } // evaluator
 
     namespace detail
@@ -178,8 +178,16 @@ namespace nmtools::array
             using left_t   = meta::get_either_left_t<view_t>;
             using right_t  = meta::get_either_right_t<view_t>;
             // deduce return type for each type
-            using rleft_t  = decltype(detail::eval(meta::declval<left_t>(),context,output,resolver));
-            using rright_t = decltype(detail::eval(meta::declval<right_t>(),context,output,resolver));
+            using rleft_t  = decltype(detail::eval(
+                meta::declval<left_t>()
+                ,nmtools::forward<context_t>(context)
+                ,nmtools::forward<output_t>(output)
+                ,resolver));
+            using rright_t = decltype(detail::eval(
+                meta::declval<right_t>()
+                ,nmtools::forward<context_t>(context)
+                ,nmtools::forward<output_t>(output)
+                ,resolver));
             constexpr auto vtype = [](){
                 if constexpr (meta::is_same_v<rleft_t,rright_t>) {
                     return meta::as_value_v<rleft_t>;
@@ -191,24 +199,36 @@ namespace nmtools::array
             using return_t = meta::type_t<decltype(vtype)>;
             // match either type at runtime
             if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
-                return return_t{detail::eval(*view_ptr,context,output,resolver)};
+                return return_t{detail::eval(*view_ptr
+                    ,nmtools::forward<context_t>(context)
+                    ,nmtools::forward<output_t>(output)
+                    ,resolver)};
             } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
                 auto view_rptr = nmtools::get_if<right_t>(&view);
-                return return_t{detail::eval(*view_rptr,context,output,resolver)};
+                return return_t{detail::eval(*view_rptr
+                    ,nmtools::forward<context_t>(context)
+                    ,nmtools::forward<output_t>(output)
+                    ,resolver)};
             }
         } else if constexpr (meta::is_maybe_v<view_t>) {
             using view_type   = meta::get_maybe_type_t<view_t>;
-            using result_type = decltype(detail::eval(meta::declval<view_type>(),context,output,resolver));
+            using result_type = decltype(detail::eval(meta::declval<view_type>()
+                ,nmtools::forward<context_t>(context)
+                ,nmtools::forward<output_t>(output)
+                ,resolver));
             using return_type = nmtools_maybe<result_type>;
             if (static_cast<bool>(view)) {
-                auto result = detail::eval(*view,context,output,resolver);
+                auto result = detail::eval(*view
+                    ,nmtools::forward<context_t>(context)
+                    ,nmtools::forward<output_t>(output)
+                    ,resolver);
                 return return_type{result};
             } else {
                 return return_type{meta::Nothing};
             }
         } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
-            auto evaluator_ = evaluator<resolver_t>(view,context);
-            return evaluator_(output);
+            auto evaluator_ = evaluator<resolver_t>(view,nmtools::forward<context_t>(context));
+            return evaluator_(nmtools::forward<output_t>(output));
         }
     } // eval
 
