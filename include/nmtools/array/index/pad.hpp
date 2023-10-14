@@ -152,7 +152,9 @@ namespace nmtools::meta
 {
     namespace error
     {
+        template <typename...>
         struct SHAPE_PAD_UNSUPPORTED : detail::fail_t {};
+        template <typename...>
         struct PAD_UNSUPPORTED : detail::fail_t {};
 
         template <typename...>
@@ -171,9 +173,14 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
+            // NOTE: clipped index array is when the array has fixed size and may contains clipped integer
+            // so, static vector of clipped integer is not considered clipped index array
+            // static vector of clipped integer can be handled as follows:
+            // - check of bounded size of array
+            // - then check if element is clipped integer
             if constexpr (
                 (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
-                && is_constant_index_array_v<pad_width_t>
+                && (is_constant_index_array_v<pad_width_t> || is_clipped_index_array_v<pad_width_t>)
             ) {
                 constexpr auto shape     = to_value_v<shape_t>;
                 constexpr auto pad_width = to_value_v<pad_width_t>;
@@ -183,7 +190,7 @@ namespace nmtools::meta
                     return template_reduce<nmtools::len(shape)>([&](auto init, auto index){
                         using init_type = type_t<decltype(init)>;
                         constexpr auto I = nmtools::at(shape,index);
-                        if constexpr (is_constant_index_array_v<shape_t>) {
+                        if constexpr (is_constant_index_array_v<shape_t> && is_constant_index_array_v<pad_width_t>) {
                             return as_value_v<append_type_t<init_type,ct<I>>>;
                         } else {
                             return as_value_v<append_type_t<init_type,clipped_size_t<I>>>;
@@ -199,7 +206,7 @@ namespace nmtools::meta
                 using type = transform_bounded_array_t<shape_t>;
                 return as_value_v<type>;
             } else {
-                return as_value_v<error::SHAPE_PAD_UNSUPPORTED>;
+                return as_value_v<error::SHAPE_PAD_UNSUPPORTED<shape_t,pad_width_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;
@@ -229,7 +236,7 @@ namespace nmtools::meta
                 using type = transform_bounded_array_t<src_shape_t>;
                 return as_value_v<type>;
             } else {
-                return as_value_v<error::PAD_UNSUPPORTED>;
+                return as_value_v<error::PAD_UNSUPPORTED<index_t,src_shape_t,dst_shape_t,pad_width_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;
