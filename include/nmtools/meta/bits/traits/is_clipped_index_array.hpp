@@ -21,7 +21,7 @@ namespace nmtools::meta
     template <template<typename,auto>typename Array, typename T, auto Size>
     struct is_clipped_index_array<
         Array<T,Size>,
-        enable_if_t< is_clipped_integer_v<T> >
+        enable_if_t< is_clipped_integer_v<T> && (len_v<Array<T,Size>> > 0) >
     > : true_type {};
 
     template <typename T>
