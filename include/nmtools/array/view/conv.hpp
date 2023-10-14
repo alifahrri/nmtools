@@ -46,12 +46,17 @@ namespace nmtools::view
         }
 
         using input_shape_type  = decltype(nmtools::shape<true>(meta::declval<input_t>()));
+        using input_size_type   = decltype(nmtools::size<true>(meta::declval<input_t>()));
         using filter_shape_type = decltype(nmtools::shape<true>(meta::declval<weight_t>()));
         using out_channels_type = decltype(nmtools::at(meta::declval<filter_shape_type>(),meta::ct_v<0>));
         using kernel_size_type  = decltype(get_kernel_size(meta::declval<filter_shape_type>()));
-        using dst_shape_type    = meta::resolve_optype_t<index::shape_conv2d_t
-                                    ,input_shape_type,out_channels_type
-                                    ,kernel_size_type,stride_type,none_t,dilation_type>;
+
+        using dst_shape_type = meta::resolve_optype_t<index::shape_conv2d_t
+                                ,input_shape_type,out_channels_type
+                                ,kernel_size_type,stride_type,none_t,dilation_type>;
+        using dst_size_type = meta::resolve_optype_t<index::size_conv2d_t
+                                ,dst_shape_type,input_size_type,input_shape_type,out_channels_type
+                                ,kernel_size_type,stride_type,none_t,dilation_type>;
         
         // This controls the layout (CHW or HWC)
         // TODO: support for NHWC format
@@ -69,9 +74,11 @@ namespace nmtools::view
         dilation_type dilation;
 
         const input_shape_type  input_shape;
+        const input_size_type   input_size;
         const filter_shape_type filter_shape;
         const kernel_size_type  kernel_size;
         const dst_shape_type    dst_shape;
+        const dst_size_type     dst_size;
         const in_channels_type  in_channels;
         const groups_type       groups;
 
@@ -81,9 +88,12 @@ namespace nmtools::view
             , stride(init_attribute<stride_type>(stride))
             , dilation(init_attribute<dilation_type>(dilation))
             , input_shape(nmtools::shape<true>(input_))
+            , input_size(nmtools::size<true>(input_))
             , filter_shape(nmtools::shape<true>(weight_))
             , kernel_size(get_kernel_size(filter_shape))
             , dst_shape(index::shape_conv2d(input_shape,nmtools::at(filter_shape,meta::ct_v<0>)
+                , kernel_size,stride,None,dilation))
+            , dst_size(index::size_conv2d(dst_shape,input_size,input_shape,nmtools::at(filter_shape,meta::ct_v<0>)
                 , kernel_size,stride,None,dilation))
             , in_channels(nmtools::at(input_shape,ch_idx))
             , groups((nmtools::at(filter_shape,ch_idx) / in_channels))
@@ -93,6 +103,11 @@ namespace nmtools::view
         {
             return dst_shape;
         } // shape
+
+        constexpr auto size() const
+        {
+            return dst_size;
+        }
 
         constexpr auto dim() const
         {
@@ -151,7 +166,7 @@ namespace nmtools::view
      * @param dilation 
      * @return constexpr auto 
      */
-    template <typename input_t, typename weight_t, typename bias_t=none_t, typename stride_t=none_t, typename padding_t=none_t, typename dilation_t=none_t>
+    template <typename input_t, typename weight_t, typename bias_t=none_t, typename stride_t=meta::ct<1ul>, typename padding_t=none_t, typename dilation_t=meta::ct<1ul>>
     constexpr auto conv2d(const input_t& input, const weight_t& weight, const bias_t& bias=bias_t{}, const stride_t& stride=stride_t{}
         , [[maybe_unused]] const padding_t& padding=padding_t{}, const dilation_t& dilation=dilation_t{})
     {
@@ -166,7 +181,9 @@ namespace nmtools::view
 
         // handle index array or num
         auto stride_ = [&](){
-            if constexpr (meta::is_num_v<stride_t>) {
+            if constexpr (meta::is_constant_index_v<stride_t>) {
+                return nmtools_tuple{stride,stride};
+            } else if constexpr (meta::is_num_v<stride_t>) {
                 return nmtools_array{stride,stride};
             } else if constexpr (meta::is_bounded_array_v<stride_t>) {
                 // prevent array decay to pointer
@@ -179,7 +196,9 @@ namespace nmtools::view
 
         // handle index array or num
         auto dilation_ = [&](){
-            if constexpr (meta::is_num_v<dilation_t>) {
+            if constexpr (meta::is_constant_index_v<dilation_t>) {
+                return nmtools_tuple{dilation,dilation};
+            } else if constexpr (meta::is_num_v<dilation_t>) {
                 return nmtools_array{dilation,dilation};
             } else if constexpr (meta::is_bounded_array_v<dilation_t>) {
                 // prevent array decay to pointer
@@ -194,50 +213,26 @@ namespace nmtools::view
             auto conv_ = view::conv2d(input,weight,None,stride_,padding,dilation_);
             // assume NCHW
             // assume bias is 1D
-            auto C = at(shape(bias),0);
-            auto bias_ = view::reshape(bias,nmtools_array<size_t,3>{C,1,1});
+            auto C = at(shape<true>(bias),meta::ct_v<0>);
+            auto bias_shape = [&](){
+                using channel_axis_t = decltype(C);
+                if constexpr (meta::is_constant_index_v<channel_axis_t>) {
+                    return nmtools_tuple{C,meta::ct_v<1ul>,meta::ct_v<1ul>};
+                } else if constexpr (meta::is_clipped_integer_v<channel_axis_t>) {
+                    return nmtools_tuple{C,clipped_size_t<1ul>{},clipped_size_t<1ul>{}};
+                } else {
+                    return nmtools_array<size_t,3>{C,1,1};
+                }
+            }();
+            auto bias_ = view::reshape(bias,bias_shape);
             return view::add(conv_,bias_); 
         } else if constexpr (is_none_v<padding_t>) {
             using view_t = decorator_t<conv2d_t,input_t,weight_t,stride_type,dilation_type>;
             return view_t{{input,weight,stride_,dilation_}};
         } else /* if constexpr (is_index_array_v<padding_t>) */ {
-            constexpr auto pad_vtype = [](){
-                using index_t = meta::get_element_type_t<padding_t>;
-                if constexpr (meta::is_fixed_dim_ndarray_v<input_t>) {
-                    constexpr auto dim_ = meta::fixed_dim_v<input_t>;
-                    using type = nmtools_array<index_t,dim_*2>;
-                    return meta::as_value_v<type>;
-                } else {
-                    // dynamic ndarray, resized at runtime
-                    using type = nmtools_list<index_t>;
-                    return meta::as_value_v<type>;
-                }
-            }();
-            using pad_type = meta::type_t<decltype(pad_vtype)>;
-            auto padding_ = pad_type{};
-            auto dim_ = dim(input);
-            if constexpr (meta::is_resizable_v<pad_type>) {
-                padding_.resize(dim_*2);
-            }
-            // assuming NCHW, pad at axis [-1,-2]
-            // TODO: support NHWC layout
-            auto spatial_i = dim_ - 2;
-            // handle index array or num
-            const auto [pad_h,pad_w] = [&](){
-                if constexpr (meta::is_index_v<padding_t>) {
-                    return nmtools_tuple{padding,padding};
-                } else {
-                    auto pad_h = at(padding,0);
-                    auto pad_w = at(padding,1);
-                    return nmtools_tuple{pad_h,pad_w};
-                }
-            }();
-            at(padding_,spatial_i)   = pad_h;
-            at(padding_,spatial_i+1) = pad_w;
-            at(padding_,-2) = pad_h;
-            at(padding_,-1) = pad_w;
+            auto padding_conv2d = index::padding_conv2d(nmtools::dim<true>(input),padding);
 
-            auto input_ = pad(input,padding_);
+            auto input_ = pad(input,padding_conv2d);
             using input_type = decltype(input_);
             using view_t = decorator_t<conv2d_t,input_type,weight_t,stride_type,dilation_type>;
             return view_t{{input_,weight,stride_,dilation_}};
@@ -268,7 +263,18 @@ namespace nmtools::meta
     >
     {
         using view_type = decorator_t<conv2d_t,input_t,weight_t,stride_t,dilation_t>;
-        static inline constexpr auto value = error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+        using dst_shape_type = typename view_type::dst_shape_type;
+        using dst_size_type  = typename view_type::dst_size_type;
+
+        static inline constexpr auto value = [](){
+            if constexpr (is_constant_index_v<dst_size_type>) {
+                return to_value_v<dst_size_type>;
+            } else if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                return index::product(dst_shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
     };
 
     // TODO: remove, do not provide as metafunction, use newer deduction pattern
@@ -278,7 +284,23 @@ namespace nmtools::meta
     >
     {
         using view_type = decorator_t<conv2d_t,input_t,weight_t,stride_t,dilation_t>;
-        static inline constexpr auto value = error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+        using dst_shape_type = typename view_type::dst_shape_type;
+        using dst_size_type  = typename view_type::dst_size_type;
+
+        static inline constexpr auto value = [](){
+            if constexpr (is_clipped_integer_v<dst_size_type>
+                || is_constant_index_v<dst_size_type>
+            ) {
+                return to_value_v<dst_size_type>;
+            } else if constexpr (is_clipped_index_array_v<dst_shape_type>
+                || is_constant_index_array_v<dst_shape_type>
+            ) {
+                auto max_shape = to_value_v<dst_shape_type>;
+                return index::product(max_shape);
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
     };
 
     template <typename input_t, typename weight_t, typename stride_t, typename dilation_t>
