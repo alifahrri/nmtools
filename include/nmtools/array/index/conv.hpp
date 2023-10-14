@@ -8,6 +8,7 @@
 #include "nmtools/array/shape.hpp"
 
 #include "nmtools/array/index/ref.hpp"
+#include "nmtools/array/ndarray.hpp"
 
 namespace nmtools::index
 {
@@ -134,6 +135,67 @@ namespace nmtools::index
         return res;
     } // shape_conv2d
 
+    struct size_conv2d_t {};
+
+    template <typename dst_shape_t, typename src_size_t, typename src_shape_t, typename out_channels_t, typename kernel_size_t
+        , typename stride_t, typename padding_t, typename dilation_t>
+    constexpr auto size_conv2d([[maybe_unused]] const dst_shape_t& dst_shape, src_size_t, const src_shape_t&, out_channels_t
+        , const kernel_size_t&, const stride_t&, const padding_t&, const dilation_t&)
+    {
+        using result_t = meta::resolve_optype_t<size_conv2d_t,dst_shape_t,src_size_t,src_shape_t,out_channels_t,kernel_size_t,stride_t,padding_t,dilation_t>;
+
+        auto result = result_t {};
+
+        if constexpr (!meta::is_constant_index_v<result_t>) {
+            auto size = index::product(dst_shape);
+            result = size;
+        }
+
+        return result;
+    }
+
+    struct padding_conv2d_t {};
+
+    template <typename src_dim_t, typename padding_t>
+    constexpr auto padding_conv2d([[maybe_unused]] const src_dim_t& src_dim, [[maybe_unused]] const padding_t& padding)
+    {
+        using result_t = meta::resolve_optype_t<padding_conv2d_t,src_dim_t,padding_t>;
+
+        auto result = result_t {};
+
+        if constexpr (!meta::is_constant_index_array_v<result_t>) {
+            auto dim = src_dim;
+            if constexpr (meta::is_resizable_v<result_t>) {
+                result.resize(dim*2);
+            }
+            // assuming NCHW, pad at axis [-1,-2]
+            // TODO: support NHWC layout
+            const auto [spatial_i, spatial_i_1] = [&](){
+                if constexpr (meta::is_constant_index_v<src_dim_t>) {
+                    return nmtools_tuple{meta::ct_v<(int)src_dim_t::value-2>, meta::ct_v<(int)src_dim_t::value-1>};
+                } else {
+                    return nmtools_tuple{dim-2, dim-1};
+                }
+            }();
+            // handle index array or num
+            const auto [pad_h,pad_w] = [&](){
+                if constexpr (meta::is_index_v<padding_t>) {
+                    return nmtools_tuple{padding,padding};
+                } else {
+                    auto pad_h = at(padding,meta::ct_v<0>);
+                    auto pad_w = at(padding,meta::ct_v<1>);
+                    return nmtools_tuple{pad_h,pad_w};
+                }
+            }();
+            at(result,spatial_i)   = pad_h;
+            at(result,spatial_i_1) = pad_w;
+            at(result,meta::ct_v<-2>) = pad_h;
+            at(result,meta::ct_v<-1>) = pad_w;
+        }
+        
+        return result;
+    } // padding_conv2d
+
     struct slice_conv2d_t {};
 
     /**
@@ -167,22 +229,14 @@ namespace nmtools::index
 
         auto make_array = [](const auto& start, const auto& stop, const auto& step){
             if constexpr (meta::is_index_array_v<left_t>) {
-                using element_t = meta::get_element_type_t<left_t>;
+                using element_t = meta::get_index_element_type_t<left_t>;
                 // assume len(array) is 3
                 return left_t{(element_t)start,(element_t)stop,(element_t)step};
             } else /* if constexpr (meta::is_index_array_v<right_t>) */ {
-                using element_t = meta::get_element_type_t<left_t>;
+                using element_t = meta::get_index_element_type_t<left_t>;
                 return right_t{(element_t)start,(element_t)stop,(element_t)step};
             }
         };
-        constexpr auto index_vtype = [](){
-            if constexpr (meta::is_index_v<left_t>) {
-                return meta::as_value_v<left_t>;
-            } else {
-                return meta::as_value_v<right_t>;
-            }
-        }();
-        using index_t = meta::type_t<decltype(index_vtype)>;
 
         auto res = result_t {};
 
@@ -202,7 +256,7 @@ namespace nmtools::index
         for (size_t i=0; i<n_batch; i++) {
             auto index_i = at(indices,i);
             // need explicit cast on wasm 
-            at(res,i) = static_cast<index_t>(index_i);
+            at(res,i) = static_cast<element_t>(index_i);
         }
         // the slice at output channel axis depends on number of groups
         // currently only support depthwise or full conv
@@ -216,10 +270,10 @@ namespace nmtools::index
         }();
         if (groups_ == 1) {
             // "normal" conv
-            at(res,i_out_channel) = make_array(0,at(shape,i_out_channel),1);
+            at(res,i_out_channel) = static_cast<element_t>(make_array(0,at(shape,i_out_channel),1));
         } else {
             // "depth-wise" conv
-            at(res,i_out_channel) = static_cast<index_t>(at(indices,i_out_channel));
+            at(res,i_out_channel) = static_cast<element_t>(at(indices,i_out_channel));
         }
         auto dilations_ = [&](){
             if constexpr (is_none_v<dilation_t>) {
@@ -246,7 +300,7 @@ namespace nmtools::index
             auto start_i   = at(indices,spatial_i) * stride_i;
             auto stop_i    = start_i + kernel_i;
             // TODO: implement dilation
-            at(res,spatial_i) = make_array(start_i,stop_i,1);
+            at(res,spatial_i) = static_cast<element_t>(make_array(start_i,stop_i,1));
         }
 
         return res;
@@ -260,6 +314,12 @@ namespace nmtools::meta
     {
         template <typename...>
         struct SHAPE_CONV2D_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
+        struct SIZE_CONV2D_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
+        struct PADDING_CONV2D_UNSUPPORTED : detail::fail_t {};
 
         template <typename...>
         struct SLICE_CONV2D_UNSUPPORTED : detail::fail_t {};
@@ -324,6 +384,160 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
+    template <typename dst_shape_t, typename src_size_t, typename src_shape_t, typename out_channels_t, typename kernel_size_t
+        , typename stride_t, typename padding_t, typename dilation_t>
+    struct resolve_optype<void, index::size_conv2d_t, dst_shape_t, src_size_t, src_shape_t, out_channels_t, kernel_size_t
+        , stride_t, padding_t, dilation_t
+    >
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (
+                is_constant_index_array_v<dst_shape_t>
+                || is_clipped_index_array_v<dst_shape_t>
+            ) {
+                constexpr auto size = index::product(to_value_v<dst_shape_t>);
+                using type = ct<size>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_constant_index_array_v<src_shape_t>
+                || is_clipped_index_array_v<src_shape_t>
+                || is_constant_index_v<src_size_t>
+                || is_clipped_integer_v<src_size_t>
+            ) {
+                [[maybe_unused]]
+                constexpr auto size = [](){
+                    if constexpr (is_constant_index_array_v<src_shape_t>
+                        || is_clipped_index_array_v<src_shape_t>
+                    ) {
+                        return index::product(to_value_v<src_shape_t>);
+                    } else {
+                        return to_value_v<src_size_t>;
+                    }
+                }();
+                using index_type [[maybe_unused]] = get_index_element_type_t<dst_shape_t>;
+                if constexpr (
+                       (is_constant_index_v<stride_t> || is_constant_index_array_v<stride_t> || is_none_v<stride_t> )
+                    && (is_constant_index_v<padding_t> || is_constant_index_array_v<padding_t> || is_none_v<padding_t> )
+                ) {
+                    // strides can only reduce the number of dst elements
+                    // while padding may increase it
+                    [[maybe_unused]]
+                    constexpr auto stride = [](){
+                        if constexpr (is_constant_index_v<stride_t>) {
+                            return to_value_v<stride_t>;
+                        } else if constexpr (is_constant_index_array_v<stride_t>) {
+                            auto stride = to_value_v<stride_t>;
+                            return index::product(stride);
+                        } else {
+                            return 1ul;
+                        }
+                    }();
+                    constexpr auto padding = [](){
+                        if constexpr (is_constant_index_v<padding_t>) {
+                            return to_value_v<padding_t>;
+                        } else if constexpr (is_constant_index_array_v<padding_t>) {
+                            auto padding = to_value_v<padding_t>;
+                            return index::product(padding);
+                        } else {
+                            return 1ul;
+                        }
+                    }();
+                    // NOTE: other combination of stride and padding may also result in clipped size
+                    // , here like this to simplify
+                    if constexpr (
+                        padding <= 1
+                    ) {
+                        using type = clipped_size_t<size>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = index_type;
+                        return as_value_v<type>;    
+                    }
+                } else {
+                    using type = index_type;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (
+                is_index_array_v<dst_shape_t>
+                && is_index_array_v<src_shape_t>
+            ) {
+                using type = get_index_element_type_t<dst_shape_t>;
+                return as_value_v<type>;
+            } else {
+                using type = error::SIZE_CONV2D_UNSUPPORTED<dst_shape_t,src_shape_t,out_channels_t,kernel_size_t
+                    , stride_t, padding_t, dilation_t
+                >;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
+    template <typename src_dim_t, typename padding_t>
+    struct resolve_optype<void,index::padding_conv2d_t,src_dim_t,padding_t>
+    {
+        static constexpr auto vtype = [](){
+            using nmtools::at, nmtools::len;
+            if constexpr (
+                is_constant_index_v<src_dim_t>
+                && (is_constant_index_v<padding_t> || is_constant_index_array_v<padding_t>)
+            ) {
+                constexpr auto src_dim = src_dim_t{};
+                constexpr auto result = index::padding_conv2d(src_dim,to_value_v<padding_t>);
+                return meta::template_reduce<len(result)>([&](auto init, auto i){
+                    using init_t = type_t<decltype(init)>;
+                    using type_i = ct<(size_t)at(result,i)>;
+                    using type = append_type_t<init_t,type_i>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<>>);
+            } else if constexpr (
+                is_clipped_integer_v<src_dim_t>
+                && (is_constant_index_v<padding_t> || is_constant_index_array_v<padding_t> || is_clipped_integer_v<padding_t> || is_clipped_index_array_v<padding_t>)
+            ) {
+                constexpr auto max_dim = to_value_v<src_dim_t>;
+                constexpr auto padding = to_value_v<padding_t>;
+                if constexpr (is_integer_v<decltype(padding)>) {
+                    using type = nmtools_static_vector<clipped_size_t<padding>,max_dim*2>;
+                    return as_value_v<type>;
+                } else {
+                    constexpr auto max_padding = [&](){
+                        auto max = at(padding,0);
+                        for (size_t i=1; i<len(padding); i++) {
+                            auto padding_i = at(padding,i);
+                            max = max > padding_i ? max : padding_i;
+                        }
+                        return max;
+                    }();
+                    // NOTE: the following is not clipped index array,
+                    // it is just a bounded size index array with clipped element type
+                    using type = nmtools_static_vector<clipped_size_t<max_padding>,max_dim*2>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (
+                (is_index_v<src_dim_t> || is_clipped_integer_v<src_dim_t>)
+                && (is_index_v<padding_t> || is_index_array_v<padding_t>)
+            ) {
+                [[maybe_unused]]
+                constexpr auto dim = to_value_v<src_dim_t>;
+                using index_t = get_index_element_type_t<padding_t>;
+                if constexpr (is_constant_index_v<src_dim_t>) {
+                    using type = nmtools_array<index_t,dim*2>;
+                    return as_value_v<type>;
+                } else if constexpr (is_clipped_integer_v<src_dim_t>) {
+                    using type = nmtools_static_vector<index_t,dim*2>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<index_t>;
+                    return as_value_v<type>;
+                }
+            } else {
+                using type = error::PADDING_CONV2D_UNSUPPORTED<src_dim_t,padding_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
     template <typename indices_t, typename shape_t, typename kernel_size_t
         , typename stride_t, typename dilation_t, typename groups_t>
     struct resolve_optype<void, index::slice_conv2d_t, indices_t, shape_t, kernel_size_t
@@ -341,9 +555,19 @@ namespace nmtools::meta
                 // TODO: try to infer index type, instead of strictly size_t
                 using array_t = nmtools_array<size_t,3>;
                 using index_t = size_t;
-                // TODO: allow array
-                using type = nmtools_list<nmtools_either<index_t,array_t>>;
-                return as_value_v<type>;
+                
+                constexpr auto DIM = len_v<shape_t>;
+                [[maybe_unused]] constexpr auto B_DIM = bounded_size_v<shape_t>;
+                if constexpr (DIM > 0) {
+                    using type = nmtools_array<nmtools_either<index_t,array_t>,DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
+                    using type = nmtools_static_vector<nmtools_either<index_t,array_t>,B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<nmtools_either<index_t,array_t>>;
+                    return as_value_v<type>;
+                }
             } else {
                 using type = error::SLICE_CONV2D_UNSUPPORTED<indices_t,shape_t,kernel_size_t,stride_t,dilation_t,groups_t>;
                 return as_value_v<type>;
