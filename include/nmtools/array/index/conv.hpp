@@ -405,8 +405,13 @@ namespace nmtools::meta
                 || is_clipped_index_array_v<dst_shape_t>
             ) {
                 constexpr auto size = index::product(to_value_v<dst_shape_t>);
-                using type = ct<size>;
-                return as_value_v<type>;
+                if constexpr (is_constant_index_array_v<dst_shape_t>) {
+                    using type = ct<size>;
+                    return as_value_v<type>;
+                } else {
+                    using type = clipped_size_t<size>;
+                    return as_value_v<type>;
+                }
             } else if constexpr (
                 is_constant_index_array_v<src_shape_t>
                 || is_clipped_index_array_v<src_shape_t>
@@ -425,16 +430,16 @@ namespace nmtools::meta
                 }();
                 using index_type [[maybe_unused]] = get_index_element_type_t<dst_shape_t>;
                 if constexpr (
-                       (is_constant_index_v<stride_t> || is_constant_index_array_v<stride_t> || is_none_v<stride_t> )
+                       (is_constant_index_v<stride_t> || is_constant_index_array_v<stride_t> || is_none_v<stride_t> || is_clipped_index_array_v<stride_t> || is_clipped_integer_v<stride_t>)
                     && (is_constant_index_v<padding_t> || is_constant_index_array_v<padding_t> || is_none_v<padding_t> )
                 ) {
                     // strides can only reduce the number of dst elements
                     // while padding may increase it
                     [[maybe_unused]]
                     constexpr auto stride = [](){
-                        if constexpr (is_constant_index_v<stride_t>) {
+                        if constexpr (is_constant_index_v<stride_t> || is_clipped_integer_v<stride_t>) {
                             return to_value_v<stride_t>;
-                        } else if constexpr (is_constant_index_array_v<stride_t>) {
+                        } else if constexpr (is_constant_index_array_v<stride_t> || is_clipped_index_array_v<stride_t>) {
                             auto stride = to_value_v<stride_t>;
                             return index::product(stride);
                         } else {
