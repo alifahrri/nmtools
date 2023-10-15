@@ -295,6 +295,16 @@ namespace nmtools::array::simd
                 return simde_mm512_cmp_pd_mask(x,y,SIMDE_CMP_GT_OS);
             }
         }
+
+        template <typename packed_t> NMTOOLS_ALWAYS_INLINE
+        static auto fmadd(packed_t a, packed_t b, packed_t c) noexcept
+        {
+            if constexpr (is_same_v<data_t,float>) {
+                return simde_mm512_fmadd_ps(a,b,c);
+            } else {
+                return simde_mm512_fmadd_ps(a,b,c);
+            }
+        }
     };
 }
 

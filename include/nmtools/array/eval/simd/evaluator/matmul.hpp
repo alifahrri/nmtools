@@ -20,7 +20,7 @@ namespace nmtools::array
         context_type context;
 
         template <typename output_t>
-        constexpr auto eval_matmul(output_t& output) const
+        auto eval_matmul(output_t& output) const
         {
             auto out_shape = ::nmtools::shape(output);
             auto inp_shape = ::nmtools::shape(view);
@@ -31,8 +31,6 @@ namespace nmtools::array
                 return false;
 
             using ::nmtools::index::ndindex;
-            auto out_index = ndindex(out_shape);
-            auto inp_index = ndindex(inp_shape);
 
             using element_type = meta::get_element_type_t<output_t>;
             // TODO: do not static assert, tell the caller some combo is not supported
@@ -65,7 +63,6 @@ namespace nmtools::array
 
             using simd_op_t = simd::simd_op_t<simd_tag_t,element_type>;
             const auto op = simd_op_t{};
-            const auto size = inp_index.size();
 
             constexpr auto bit_width = meta::bit_width_v<simd_tag_t>;
             constexpr auto n_simd_pack = (bit_width / (sizeof(element_type) * 8));
@@ -74,12 +71,9 @@ namespace nmtools::array
             const auto enumerator = index::matmul_simd_enumerator(n_elem_pack,out_shape,lhs_shape,rhs_shape);
             for (const auto [out_tag,out_ptr_idx,inner_enumerator] : enumerator) {
                 auto result_pack = op.set1(0);
-                const auto zero  = op.set1(0);
                 for (const auto simd_pack : inner_enumerator) {
                     const auto [out_idx,lhs_idx,rhs_idx] = simd_pack;
-                    const auto out_tag = nmtools::get<0>(out_idx);
                     const auto lhs_tag = nmtools::get<0>(lhs_idx);
-                    const auto rhs_tag = nmtools::get<0>(rhs_idx);
                     const auto out_ptr_idx = nmtools::get<1>(out_idx);
                     const auto lhs_ptr_idx = nmtools::get<1>(lhs_idx);
                     const auto rhs_ptr_idx = nmtools::get<1>(rhs_idx);
@@ -91,38 +85,29 @@ namespace nmtools::array
                             auto rhs = op.loadu(&rhs_data_ptr[rhs_ptr_idx]);
                             result_pack = op.fmadd(lhs,rhs,result_pack);
                         } break;
-                        #define MATMUL_SIMD_PADDING(pad_tag) \
-                        case SIMD::pad_tag: \
-                        { \
-                            constexpr auto n_pad = static_cast<size_t>(SIMD::pad_tag); \
-                            if constexpr (n_pad < n_simd_pack) { \
-                                element_type lhs_array[n_simd_pack] = {0}; \
-                                element_type rhs_array[n_simd_pack] = {0}; \
-                                size_t i=0; \
-                                for (; i<(n_simd_pack-n_pad); i++) { \
-                                    lhs_array[i] = lhs_data_ptr[lhs_ptr_idx+i]; \
-                                    rhs_array[i] = rhs_data_ptr[rhs_ptr_idx+i]; \
-                                } \
-                                for (; i<n_simd_pack; i++) { \
-                                    lhs_array[i] = 0; \
-                                    rhs_array[i] = 0; \
-                                } \
-                                auto lhs = op.loadu(lhs_array); \
-                                auto rhs = op.loadu(rhs_array); \
-                                result_pack = op.fmadd(lhs,rhs,result_pack); \
-                            } \
-                        } break;
-                        MATMUL_SIMD_PADDING(PAD_1)
-                        MATMUL_SIMD_PADDING(PAD_2)
-                        MATMUL_SIMD_PADDING(PAD_3)
-                        MATMUL_SIMD_PADDING(PAD_4)
-                        MATMUL_SIMD_PADDING(PAD_5)
-                        MATMUL_SIMD_PADDING(PAD_6)
-                        MATMUL_SIMD_PADDING(PAD_7)
-                        MATMUL_SIMD_PADDING(PAD_8)
-                        #undef MATMUL_SIMD_PADDING
                         default:
-                            break;
+                        {
+                            constexpr auto n_possible_padding = n_simd_pack - 1;
+                            meta::template_for<n_possible_padding>([&](auto pad){
+                                constexpr auto n_pad = static_cast<int>(pad) + 1;
+                                if (static_cast<int>(lhs_tag) == n_pad) {
+                                    element_type lhs_array[n_simd_pack] = {0};
+                                    element_type rhs_array[n_simd_pack] = {0};
+                                    size_t i=0;
+                                    for (; i<(n_simd_pack-n_pad); i++) {
+                                        lhs_array[i] = lhs_data_ptr[lhs_ptr_idx+i];
+                                        rhs_array[i] = rhs_data_ptr[rhs_ptr_idx+i];
+                                    }
+                                    for (; i<n_simd_pack; i++) {
+                                        lhs_array[i] = 0;
+                                        rhs_array[i] = 0;
+                                    }
+                                    auto lhs = op.loadu(lhs_array);
+                                    auto rhs = op.loadu(rhs_array);
+                                    result_pack = op.fmadd(lhs,rhs,result_pack);
+                                }
+                            });
+                        } break;
                     }
                     // horizontal op
                     element_type tmp_res[n_simd_pack];

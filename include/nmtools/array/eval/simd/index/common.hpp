@@ -3,8 +3,11 @@
 
 namespace nmtools::index
 {
-    enum class SIMD : size_t
+    enum SIMD : int
     {
+        BROADCAST=-3,
+        SCALAR=-2, // assign scalar
+        ACCUMULATE=-1, // accumulate result, maybe for partial application
         PACKED=0,
         PAD_1=1,
         PAD_2=2,
@@ -14,9 +17,6 @@ namespace nmtools::index
         PAD_6=6,
         PAD_7=7,
         PAD_8=8,
-        BROADCAST,
-        SCALAR, // assign scalar
-        ACCUMULATE, // accumulate result, maybe for partial application
     };
 } // namespace nmtools::index
 
