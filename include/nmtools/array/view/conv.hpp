@@ -219,7 +219,7 @@ namespace nmtools::view
                 if constexpr (meta::is_constant_index_v<channel_axis_t>) {
                     return nmtools_tuple{C,meta::ct_v<1ul>,meta::ct_v<1ul>};
                 } else if constexpr (meta::is_clipped_integer_v<channel_axis_t>) {
-                    return nmtools_tuple{C,clipped_size_t<1ul>{},clipped_size_t<1ul>{}};
+                    return nmtools_tuple{C,clipped_size_t<1ul>{1ul},clipped_size_t<1ul>{1ul}};
                 } else {
                     return nmtools_array<size_t,3>{C,1,1};
                 }
