@@ -227,6 +227,15 @@ namespace nmtools::index
         using left_t    = meta::get_either_left_t<element_t>;
         using right_t   = meta::get_either_right_t<element_t>;
 
+        constexpr auto index_vtype = [](){
+            if constexpr (meta::is_index_v<left_t>) {
+                return meta::as_value_v<left_t>;
+            } else {
+                return meta::as_value_v<right_t>;
+            }
+        }();
+        using index_t = meta::type_t<decltype(index_vtype)>;
+
         auto make_array = [](const auto& start, const auto& stop, const auto& step){
             if constexpr (meta::is_index_array_v<left_t>) {
                 using element_t = meta::get_index_element_type_t<left_t>;
@@ -256,7 +265,7 @@ namespace nmtools::index
         for (size_t i=0; i<n_batch; i++) {
             auto index_i = at(indices,i);
             // need explicit cast on wasm 
-            at(res,i) = static_cast<element_t>(index_i);
+            at(res,i) = static_cast<element_t>((index_t)index_i);
         }
         // the slice at output channel axis depends on number of groups
         // currently only support depthwise or full conv
@@ -273,7 +282,7 @@ namespace nmtools::index
             at(res,i_out_channel) = static_cast<element_t>(make_array(0,at(shape,i_out_channel),1));
         } else {
             // "depth-wise" conv
-            at(res,i_out_channel) = static_cast<element_t>(at(indices,i_out_channel));
+            at(res,i_out_channel) = static_cast<element_t>((index_t)at(indices,i_out_channel));
         }
         auto dilations_ = [&](){
             if constexpr (is_none_v<dilation_t>) {
