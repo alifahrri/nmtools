@@ -15,8 +15,8 @@ namespace nmtools::index
         , typename rhs_shape_t>
     auto matmul_simd_shape(meta::as_type<N_ELEM_PACK>
         , [[maybe_unused]] const out_shape_t& out_shape
-        , const lhs_shape_t& lhs_shape
-        , const rhs_shape_t& rhs_shape)
+        , const lhs_shape_t&
+        , const rhs_shape_t&)
     {
         using result_t = out_shape_t;
 
@@ -83,7 +83,6 @@ namespace nmtools::index
         const auto n_rest = n_fmadd - (n_simd * N_ELEM_PACK);
 
         const auto out_cols = at(out_shape,meta::ct_v<-1>);
-        const auto out_rows = at(out_shape,meta::ct_v<-2>);
 
         const auto out_row = out_offset / out_cols;
         const auto out_col = out_offset % out_cols;
