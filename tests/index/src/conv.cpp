@@ -205,7 +205,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(index, slice_conv2d, case_name); \
     using namespace args; \
     auto result = RUN_slice_conv2d(case_name, __VA_ARGS__); \
-    for (size_t i=0; i<result.size(); i++) { \
+    for (size_t i=0; i<nm::len(result); i++) { \
         auto res = nm::at(result,i); \
         auto exp = nm::at(expect::result,i); \
         auto flat_res = nm::flatten_either(res); \
