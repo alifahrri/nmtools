@@ -456,8 +456,11 @@ TEST_CASE("constexpr_conv2d(case16)" * doctest::test_suite("array::conv2d"))
     CONSTEXPR_CONV2D_SUBCASE( case16, input_cs_fb, weight_cs_fb, bias_cs_fb, stride_ct, padding_ct );
     CONSTEXPR_CONV2D_SUBCASE( case16, input_cs_hb, weight_cs_hb, bias_cs_hb, stride_ct, padding_ct );
 
-    // CONSTEXPR_CONV2D_SUBCASE( case16, input_ls_fb, weight_ls_fb, bias_ls_fb, stride_ct, padding_ct );
-    // CONSTEXPR_CONV2D_SUBCASE( case16, input_ls_hb, weight_ls_hb, bias_ls_hb, stride_ct, padding_ct );
+    // TODO: fix constexpr conv2d with (clipped-shape) bias
+    #if 0
+    CONSTEXPR_CONV2D_SUBCASE( case16, input_ls_fb, weight_ls_fb, bias_ls_fb, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case16, input_ls_hb, weight_ls_hb, bias_ls_hb, stride_ct, padding_ct );
+    #endif
     #endif
 }
 

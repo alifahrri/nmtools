@@ -1260,6 +1260,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_conv2d)
         };
         constexpr inline int stride[2] = {1,1};
         constexpr inline auto stride_ct = nmtools_tuple{1_ct,1_ct};
+        constexpr inline auto stride_cl = to_clipped(stride_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(input)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(weight)
     }
@@ -1296,6 +1297,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_conv2d)
         };
         constexpr inline int stride[2] = {1,1};
         constexpr inline auto stride_ct = nmtools_tuple{1_ct,1_ct};
+        constexpr inline auto stride_cl = to_clipped(stride_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(input)
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(weight)
     }

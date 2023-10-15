@@ -544,6 +544,56 @@ TEST_CASE("constexpr_conv2d(case1)" * doctest::test_suite("array::conv2d"))
 
     CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_fb, weight_ls_fb, None, stride_ct );
     CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_hb, weight_ls_hb, None, stride_ct );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_cs_fb, weight_cs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_cs_hb, weight_cs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_fs_fb, weight_fs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_fs_hb, weight_fs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_hs_fb, weight_hs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_hs_hb, weight_hs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_fb, weight_ls_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_hb, weight_ls_hb, None, stride_cl );
+
+    //////////////////////////////////////////////////////////////////////////////
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_fs_fb, weight_cs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_fs_hb, weight_cs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_hs_fb, weight_cs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_hs_hb, weight_cs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_fb, weight_cs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_hb, weight_cs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_cs_fb, weight_fs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_cs_hb, weight_fs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_hs_fb, weight_fs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_hs_hb, weight_fs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_fb, weight_fs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_hb, weight_fs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_cs_fb, weight_ls_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_cs_hb, weight_ls_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_fs_fb, weight_ls_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_fs_hb, weight_ls_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_hs_fb, weight_ls_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_hs_hb, weight_ls_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_cs_fb, weight_hs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_cs_hb, weight_hs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_fs_fb, weight_hs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_fs_hb, weight_hs_hb, None, stride_cl );
+
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_fb, weight_hs_fb, None, stride_cl );
+    CONSTEXPR_CONV2D_SUBCASE( case1, input_ls_hb, weight_hs_hb, None, stride_cl );
     #endif
 }
 
