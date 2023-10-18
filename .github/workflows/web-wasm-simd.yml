@@ -38,3 +38,36 @@ jobs:
           sudo apt update && sudo apt install nodejs
           node --version
           node --experimental-wasm-simd build/web-wasm-simd/tests/simd/numeric-tests-simd-doctest.wasm.js
+
+  dockcross-wasm-simd-vector:
+    name: ${{ matrix.name }}-simd-vector
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: web-wasm-latest
+            image: web-wasm
+            tag: latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.image }}:${{ matrix.tag }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c "emcc -v"
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/web-wasm-simd && cd build/web-wasm-simd/ && cmake -DNMTOOLS_BUILD_VECTOR_TESTS=ON -DNMTOOLS_VECTOR_TEST_ALL=ON -DNMTOOLS_VECTOR_TEST_ARCH=-msimd128 ../.. && make -j2 VERBOSE=1 numeric-tests-vector-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} node --version
+          ls build/web-wasm-simd/tests/vector
+          curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt update && sudo apt install nodejs
+          node --version
+          node --experimental-wasm-simd build/web-wasm-simd/tests/vector/numeric-tests-vector-doctest.wasm.js

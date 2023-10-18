@@ -36,3 +36,30 @@ jobs:
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/simd/numeric-tests-simd-doctest'
+  
+  dockcross-x86-simd-vector:
+    name: ${{ matrix.name }}-simd-${{ matrix.arch }}-vector
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+          - name: linux-x64-clang
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_VECTOR_TESTS=ON -DNMTOOLS_VECTOR_TEST_ALL=ON ../.. && make -j2 VERBOSE=1 numeric-tests-vector-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/vector/numeric-tests-vector-doctest'
+

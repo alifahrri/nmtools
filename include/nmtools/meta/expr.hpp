@@ -85,6 +85,9 @@ namespace nmtools::meta
         template <typename T, typename size_type>
         using square_bracket = decltype(declval<T>()[declval<size_type>()]);
 
+        template <typename T, typename size_type>
+        using reserve = decltype(declval<T>().reserve(declval<size_type>()));
+
         /**
          * @brief helper alias template to check if T has member type 'type'
          * 
