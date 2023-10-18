@@ -98,10 +98,15 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
     endif(JS_ONLY)
 endif()
 
-option(NMTOOLS_BUILD_SIMD_TESTS "build metafunctions test programs" OFF)
+option(NMTOOLS_BUILD_SIMD_TESTS "build simd test programs" OFF)
 if (NMTOOLS_BUILD_SIMD_TESTS)
     add_subdirectory(simd)
 endif (NMTOOLS_BUILD_SIMD_TESTS)
+
+option(NMTOOLS_BUILD_VECTOR_TESTS "build vector extension test programs" OFF)
+if (NMTOOLS_BUILD_VECTOR_TESTS)
+    add_subdirectory(vector)
+endif (NMTOOLS_BUILD_VECTOR_TESTS)
 
 option(NMTOOLS_BUILD_SIMDE_TESTS "build simde test programs" OFF)
 if (NMTOOLS_BUILD_SIMDE_TESTS)
