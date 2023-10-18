@@ -24,7 +24,7 @@ namespace nmtools::array
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename start_t, typename stop_t, typename step_t, typename T=float>
     constexpr auto arange(start_t start, stop_t stop, step_t step, dtype_t<T> dtype=float32,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
@@ -37,7 +37,7 @@ namespace nmtools::array
         );
     } // arange
 
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename start_t, typename stop_t, typename T=float>
     constexpr auto arange(start_t start, stop_t stop, dtype_t<T> dtype=float32,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
@@ -50,7 +50,7 @@ namespace nmtools::array
         );
     } // arange
 
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename stop_t, typename T=float>
     constexpr auto arange(stop_t stop, dtype_t<T> dtype=float32,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)

@@ -21,7 +21,7 @@ namespace nmtools::array
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t, typename min_val_t=float, typename max_val_t=float>
     constexpr auto hardtanh(const array_t& array, const min_val_t min_val=min_val_t{-1.0},
         const max_val_t max_val=max_val_t{1.0},

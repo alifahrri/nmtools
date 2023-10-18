@@ -21,7 +21,7 @@ namespace nmtools::array
      * @param output 
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t, typename beta_t=float, typename threshold_t=float>
     NMTOOLS_UFUNC_CONSTEXPR
     auto softplus(const array_t& array, beta_t beta=beta_t{1}, threshold_t threshold=threshold_t{20},

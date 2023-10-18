@@ -21,7 +21,7 @@ namespace nmtools::array
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t, typename source_t, typename destination_t>
     constexpr auto moveaxis(const array_t& array, const source_t& source, const destination_t& destination,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)

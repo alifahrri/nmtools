@@ -23,7 +23,7 @@ namespace nmtools::array
      * @param output    optional output
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename condition_t, typename x_t, typename y_t>
     constexpr auto where(const condition_t& condition, const x_t& x, const y_t& y,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
