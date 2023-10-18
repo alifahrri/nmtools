@@ -461,6 +461,13 @@ namespace nmtools::array
         } // resize
     }; // ndarray_t
 
+    enum LayoutKind : int
+    {
+        UNKNOWN_LAYOUT=-999,
+        ROW_MAJOR=-1,
+        COLUMN_MAJOR=0,
+    };
+
     template <
           typename buffer_t
         , typename shape_buffer_t
