@@ -40,7 +40,7 @@ jobs:
           node --experimental-wasm-simd build/web-wasm-simd/tests/simd/numeric-tests-simd-doctest.wasm.js
 
   dockcross-wasm-simd-vector:
-    name: ${{ matrix.name }}-simd-${{ matrix.arch }}-vector
+    name: ${{ matrix.name }}-simd-vector
     runs-on: ubuntu-22.04
     strategy:
       matrix:
