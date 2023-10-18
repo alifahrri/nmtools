@@ -19,7 +19,7 @@ namespace nmtools::array
      * @param output 
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t, typename alpha_t=float>
     NMTOOLS_UFUNC_CONSTEXPR
     auto celu(const array_t& array, alpha_t alpha=alpha_t{1.0},

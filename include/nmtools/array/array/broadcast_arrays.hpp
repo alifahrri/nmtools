@@ -16,8 +16,8 @@ namespace nmtools::array
      * @param arrays arrays to be broadcasted together
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t
-        ,typename...arrays_t>
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+        typename...arrays_t>
     constexpr auto broadcast_arrays(const arrays_t&...arrays)
     {
         auto broadcasted_pack = view::broadcast_arrays(arrays...);

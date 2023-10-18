@@ -37,8 +37,11 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -51,8 +54,11 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -65,8 +71,11 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -79,8 +88,11 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -93,8 +105,11 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -107,8 +122,11 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -121,8 +139,11 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -135,8 +156,11 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -149,8 +173,11 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
    
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -163,8 +190,11 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -177,8 +207,11 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -191,8 +224,11 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -205,8 +241,11 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -219,8 +258,11 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -233,8 +275,11 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -247,8 +292,11 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -261,8 +309,11 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -275,8 +326,11 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -289,8 +343,11 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }
 
@@ -303,7 +360,10 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
     auto rhs_shape = nmtools_array{K,N};
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
-    auto output = meta::as_value_v<output_t>;
-    auto rhs    = na::reshape(na::arange(K*N),rhs_shape,nm::None,output);
+    auto rhs = na::reshape(na::arange(K*N),rhs_shape
+        ,/*context*/nm::None
+        ,/*output*/nm::None
+        ,/*resolver*/na::ColumnMajorResolver
+    );
     X86_SSE_TEST(matmul,lhs,rhs);
 }

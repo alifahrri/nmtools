@@ -17,7 +17,7 @@ namespace nmtools::array
      * @param output 
      * @return NMTOOLS_UFUNC_CONSTEXPR 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t>
     NMTOOLS_UFUNC_CONSTEXPR
     auto selu(const array_t& array,

@@ -23,7 +23,7 @@ namespace nmtools::array
      * @param output    optional outptu
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t, typename indices_t, typename axis_t>
     constexpr auto take(const array_t& array, const indices_t& indices, axis_t axis,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)

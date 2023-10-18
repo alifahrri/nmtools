@@ -27,7 +27,7 @@ namespace nmtools::array
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t,
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename input_t, typename weight_t, typename bias_t=none_t, typename stride_t=none_t, typename padding_t=none_t, typename dilation_t=none_t>
     constexpr auto conv2d(const input_t& input, const weight_t& weight, const bias_t& bias=bias_t{}, const stride_t& stride=stride_t{}
         , [[maybe_unused]] const padding_t& padding=padding_t{}, const dilation_t& dilation=dilation_t{}
