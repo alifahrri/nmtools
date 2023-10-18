@@ -16,6 +16,56 @@
 
 namespace nmtools::array
 {
+    template <typename ctx_t>
+    struct context_t : ctx_t {};
+
+    using no_context_t = context_t<none_t>;
+
+    // TODO: make this default context
+    constexpr inline auto NoContext = no_context_t {};
+
+    // NOTE: old version
+    // TODO: remove
+    // special tag to resolve eval return type
+    struct eval_t {};
+
+    // special tag to resolve eval return type
+    template <auto BufferLayout=LayoutKind::ROW_MAJOR>
+    struct default_type_resolver_t {};
+
+    template <typename resolver_t>
+    struct eval_type_resolver_t : resolver_t {};
+
+    template <auto BufferLayout=LayoutKind::ROW_MAJOR>
+    using eval_result_t = eval_type_resolver_t<default_type_resolver_t<BufferLayout>>;
+
+    constexpr inline auto RowMajorResolver = meta::as_value_v<eval_result_t<LayoutKind::ROW_MAJOR>>;
+    constexpr inline auto ColumnMajorResolver = meta::as_value_v<eval_result_t<LayoutKind::COLUMN_MAJOR>>;
+}
+
+namespace nmtools::meta
+{
+    template <typename T>
+    struct is_eval_context : false_type {};
+
+    template <typename T>
+    struct is_eval_context<array::context_t<T>> : true_type {};
+
+    template <typename T>
+    struct is_eval_type_resolver : false_type {};
+    
+    template <typename T>
+    struct is_eval_type_resolver<array::eval_type_resolver_t<T>> : true_type {};
+
+    template <typename T>
+    constexpr inline auto is_eval_context_v = is_eval_context<T>::value;
+
+    template <typename T>
+    constexpr inline auto is_eval_type_resolver_v = is_eval_type_resolver<T>::value;
+}
+
+namespace nmtools::array
+{
     template <typename array_t>
     decltype(auto) get_array(const array_t& array);
 
@@ -51,22 +101,6 @@ namespace nmtools::array
         // should return pointer or tuple of pointer
         return f_obj(array);
     }
-
-    template <typename ctx_t>
-    struct context_t : ctx_t {};
-
-    using no_context_t = context_t<none_t>;
-
-    // TODO: make this default context
-    constexpr inline auto NoContext = no_context_t {};
-
-    // NOTE: old version
-    // TODO: remove
-    // special tag to resolve eval return type
-    struct eval_t {};
-
-    // special tag to resolve eval return type
-    struct eval_result_t {};
 
     // TODO: consider to change signature to evaluator_<view_c,context_t,output_t,void>
     // hence performing eval resolver outside the struct, allowing to easily specialize evaluator_t
@@ -293,7 +327,7 @@ namespace nmtools::array
      * @param output
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename views_t>
     constexpr auto apply_eval(const views_t& views
         , context_t&& context=context_t{}, output_t&& output=output_t{}
@@ -621,14 +655,29 @@ namespace nmtools::meta
     } // resolve_binary_array_type
 
     // TODO: make this the default eval type resolver
-    template <typename view_t>
+    template <array::LayoutKind BufferLayout, typename view_t>
     struct resolve_optype<
-        void, array::eval_result_t, view_t, none_t
+        void, array::eval_type_resolver_t<array::default_type_resolver_t<BufferLayout>>, view_t, none_t
     >
     {
+        template <typename buffer_t, typename shape_buffer_t>
+        static constexpr auto make_ndarray(as_value<buffer_t>, as_value<shape_buffer_t>)
+        {
+            if constexpr (BufferLayout == array::LayoutKind::ROW_MAJOR) {
+                using type = array::row_major_ndarray_t<buffer_t,shape_buffer_t>;
+                return as_value_v<type>;
+            } else if constexpr (BufferLayout == array::LayoutKind::COLUMN_MAJOR) {
+                using type = array::column_major_ndarray_t<buffer_t,shape_buffer_t>;
+                return as_value_v<type>;
+            } else {
+                using type = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<BufferLayout>>;
+                return as_value_v<type>;
+            }
+        }
+
         static constexpr auto vtype = [](){
             using element_type = get_element_type_t<view_t>;
-            using error_type [[maybe_unused]] = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t>;
+            using error_type [[maybe_unused]] = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<BufferLayout>>;
             // TODO: remove, try to read from `nmtools::shape(declval<view_t>())` instead
             // the following is kept for temporary backward compatibility
             constexpr auto shape  = fixed_shape_v<view_t>;
@@ -721,96 +770,81 @@ namespace nmtools::meta
                 !is_fail_v<c_shape_type>
                 && !is_fail_v<f_buffer_type>
             ) {
-                using type = array::ndarray_t<f_buffer_type,c_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<c_shape_type>);
             } else if constexpr (
                 !is_fail_v<c_shape_type>
                 && !is_fail_v<b_buffer_type>
             ) {
-                using type = array::ndarray_t<b_buffer_type,c_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<c_shape_type>);
             } else if constexpr (
                 !is_fail_v<l_shape_type>
                 && !is_fail_v<f_buffer_type>
             ) {
-                using type = array::ndarray_t<f_buffer_type,l_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<l_shape_type>);
             } else if constexpr (
                 !is_fail_v<l_shape_type>
                 && !is_fail_v<b_buffer_type>
             ) {
-                using type = array::ndarray_t<b_buffer_type,l_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<l_shape_type>);
             } else if constexpr (
                 !is_fail_v<f_shape_type>
                 && !is_fail_v<f_buffer_type>
             ) {
-                using type = array::ndarray_t<f_buffer_type,f_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<f_shape_type>);
             } else if constexpr (
                 !is_fail_v<f_shape_type>
                 && !is_fail_v<b_buffer_type>
             ) {
-                using type = array::ndarray_t<b_buffer_type,f_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<f_shape_type>);
             }
             // bounded shape
             else if constexpr (
                 !is_fail_v<b_shape_type>
                 && !is_fail_v<f_buffer_type>
             ) {
-                using type = array::ndarray_t<f_buffer_type,b_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<b_shape_type>);
             } else if constexpr (
                 !is_fail_v<b_shape_type>
                 && !is_fail_v<b_buffer_type>
             ) {
-                using type = array::ndarray_t<b_buffer_type,b_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<b_shape_type>);
             }
             // dynamic shape
             else if constexpr (
                 !is_fail_v<d_shape_type>
                 && !is_fail_v<f_buffer_type>
             ) {
-                using type = array::ndarray_t<f_buffer_type,d_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<d_shape_type>);
             } else if constexpr (
                 !is_fail_v<d_shape_type>
                 && !is_fail_v<b_buffer_type>
             ) {
-                using type = array::ndarray_t<b_buffer_type,d_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<d_shape_type>);
             } else if constexpr (
                 !is_fail_v<c_shape_type>
                 && !is_fail_v<d_buffer_type>
             ) {
-                using type = array::ndarray_t<d_buffer_type,c_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<c_shape_type>);
             } else if constexpr (
                 !is_fail_v<l_shape_type>
                 && !is_fail_v<d_buffer_type>
             ) {
-                using type = array::ndarray_t<d_buffer_type,l_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<l_shape_type>);
             } else if constexpr (
                 !is_fail_v<f_shape_type>
                 && !is_fail_v<d_buffer_type>
             ) {
-                using type = array::ndarray_t<d_buffer_type,f_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<f_shape_type>);
             } else if constexpr (
                 !is_fail_v<b_shape_type>
                 && !is_fail_v<d_buffer_type>
             ) {
-                using type = array::ndarray_t<d_buffer_type,b_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<b_shape_type>);
             } else if constexpr (
                 !is_fail_v<d_shape_type>
                 && !is_fail_v<d_buffer_type>
             ) {
-                using type = array::ndarray_t<d_buffer_type,d_shape_type>;
-                return as_value_v<type>;
+                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<d_shape_type>);
             } else {
                 return as_value_v<error_type>;
             }
