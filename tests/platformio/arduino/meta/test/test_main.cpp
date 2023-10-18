@@ -267,7 +267,7 @@ NM_TEST_SUBCASE(eval, case6)
         using lhs_t = int[2][3][2];
         using rhs_t = int;
         using view_t = decltype(view::add(declval(lhs_t),declval(rhs_t)));
-        using result_t = meta::resolve_optype_t<na::eval_result_t,view_t,nm::none_t>;
+        using result_t = meta::resolve_optype_t<na::eval_result_t<>,view_t,nm::none_t>;
         using expect_t = utl::array<utl::array<utl::array<int,2>,3>,2>;
         // to allow debugging type
         constexpr auto is_same = meta::is_same<result_t,expect_t>{};
@@ -281,7 +281,7 @@ NM_TEST_SUBCASE(eval, case7)
         using array_t = int[2][3][2];
         using axis_t  = int;
         using view_t  = decltype(view::reduce_add(declval(array_t),declval(axis_t)));
-        using result_t = meta::resolve_optype_t<na::eval_result_t,view_t,nm::none_t>;
+        using result_t = meta::resolve_optype_t<na::eval_result_t<>,view_t,nm::none_t>;
         // using expect_t = na::hybrid_ndarray<int,2*3*2,2>;
         using expect_t = meta::make_hybrid_ndarray_t<int,2*3*2,2>;
         // to allow debugging type
