@@ -66,7 +66,7 @@ jobs:
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} node --version
-          ls build/web-wasm-simd/tests/simd
+          ls build/web-wasm-simd/tests/vector
           curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
           sudo apt update && sudo apt install nodejs
           node --version
