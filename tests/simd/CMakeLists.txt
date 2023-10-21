@@ -41,6 +41,7 @@ if (NMTOOLS_SIMD_TEST_SSE)
     if (NMTOOLS_SIMD_TEST_REDUCTION)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
             x86/reduction_sse.cpp
+            x86/reduction_2d_sse.cpp
         )
     endif (NMTOOLS_SIMD_TEST_REDUCTION)
 endif (NMTOOLS_SIMD_TEST_SSE)
@@ -63,6 +64,7 @@ if (NMTOOLS_SIMD_TEST_INDEX)
     set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
         index/simd_index.cpp
         index/simd_matmul.cpp
+        index/simd_reduction.cpp
     )
 endif (NMTOOLS_SIMD_TEST_INDEX)
 add_executable(${PROJECT_NAME}-doctest tests.cpp
