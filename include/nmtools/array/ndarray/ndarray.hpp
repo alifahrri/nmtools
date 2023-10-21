@@ -237,7 +237,7 @@ namespace nmtools::array
             if constexpr (meta::is_resizable_v<buffer_type>) {
                 buffer.resize(1);
             }
-            at(buffer,len(buffer)-1) = 1;
+            at(buffer,len(buffer)-1) = 0;
             return buffer;
         }
 
