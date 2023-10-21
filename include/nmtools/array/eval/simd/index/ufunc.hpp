@@ -19,7 +19,7 @@ namespace nmtools::index
 
         auto rhs_rows = at(rhs_shape,0);
 
-        auto out_cols = at(out_shape,1);
+        auto out_cols = (len(out_shape) == 1 ? at(out_shape,0) : at(out_shape,1));
 
         // assume layout is contiguous on last axis
         // TODO: generalize to arbitrary order layout
@@ -46,7 +46,7 @@ namespace nmtools::index
         auto lhs_cols = at(lhs_shape,1);
         auto lhs_rows = at(lhs_shape,0);
 
-        auto out_cols = at(out_shape,1);
+        auto out_cols = (len(out_shape) == 1 ? at(out_shape,0) : at(out_shape,1));
 
         auto rhs_cols = at(rhs_shape,1);
         auto rhs_rows = at(rhs_shape,0);
@@ -143,23 +143,20 @@ namespace nmtools::index
     };
 
     template <typename index_t=size_t, ReductionKind reduction_kind, auto N_ELEM_PACK, typename inp_shape_t, typename out_shape_t>
-    auto reduction_2d_shape(meta::as_type<reduction_kind>, meta::as_type<N_ELEM_PACK>, const inp_shape_t& inp_shape, const out_shape_t& out_shape)
+    auto reduction_2d_shape(meta::as_type<reduction_kind>, meta::as_type<N_ELEM_PACK>, const inp_shape_t& inp_shape, const out_shape_t&)
     {
         using result_t = nmtools_array<index_t,2>;
 
         auto result = result_t{};
 
         if constexpr (meta::is_resizable_v<result_t>) {
-            result.resize(len(out_shape));
+            result.resize(2); // strictly 2
         }
 
         // assume out (and result) is 2D
 
         constexpr auto row_idx = meta::ct_v<0>;
         constexpr auto col_idx = meta::ct_v<1>;
-
-        [[maybe_unused]] auto out_rows = at(out_shape,row_idx);
-        [[maybe_unused]] auto out_cols = at(out_shape,col_idx);
 
         [[maybe_unused]] auto inp_rows = at(inp_shape,row_idx);
         [[maybe_unused]] auto inp_cols = at(inp_shape,col_idx);
@@ -169,14 +166,14 @@ namespace nmtools::index
             at(result,col_idx) = (inp_cols / N_ELEM_PACK) + ((inp_cols % N_ELEM_PACK ? 1 : 0));
         } else if constexpr (reduction_kind == ReductionKind::VERTICAL) {
             at(result,row_idx) = inp_rows;
-            at(result,col_idx) = (out_cols / N_ELEM_PACK) + (out_cols % N_ELEM_PACK);
+            at(result,col_idx) = (inp_cols / N_ELEM_PACK) + (inp_cols % N_ELEM_PACK);
         }
 
         return result;
     }
 
     template <typename index_t=size_t, ReductionKind reduction_kind, auto N_ELEM_PACK, typename simd_index_t, typename simd_shape_t, typename out_shape_t, typename inp_shape_t>
-    auto reduction_2d(meta::as_type<reduction_kind>, meta::as_type<N_ELEM_PACK>, const simd_index_t& simd_index, const simd_shape_t& simd_shape, const out_shape_t& out_shape, const inp_shape_t& inp_shape)
+    auto reduction_2d(meta::as_type<reduction_kind>, meta::as_type<N_ELEM_PACK>, const simd_index_t& simd_index, const simd_shape_t&, const out_shape_t& out_shape, const inp_shape_t& inp_shape)
     {
         using tagged_index_t = nmtools_tuple<SIMD,index_t>;
         using result_t = nmtools_array<tagged_index_t,2>;
@@ -191,21 +188,21 @@ namespace nmtools::index
             }
         }();
         const auto n_simd = n_ops / N_ELEM_PACK;
-        const auto n_rest = n_ops - (n_simd * N_ELEM_PACK);
 
         if constexpr (reduction_kind == ReductionKind::HORIZONTAL) {
+            const auto n_rest = n_ops - (n_simd * N_ELEM_PACK);
             auto out_index  = at(simd_index,meta::ct_v<0>);
             auto inp_offset = (out_index * n_ops);
             auto inner_idx  = at(simd_index,meta::ct_v<1>);
             auto inp_index  = (inner_idx * N_ELEM_PACK);
 
-            const auto out_tag = (inp_index == ((n_simd + n_rest)-1) ? SIMD::ACCUMULATE : SIMD::NOP);
-            const auto inp_tag = static_cast<bool>(inp_index % N_ELEM_PACK) ? static_cast<SIMD>(N_ELEM_PACK - n_rest) : SIMD::PACKED;
+            const auto out_tag = ((inner_idx+1) == (n_simd+static_cast<bool>(n_rest)) ? SIMD::ACCUMULATE : SIMD::NOP);
+            const auto inp_tag = static_cast<bool>(inp_index + N_ELEM_PACK > n_ops) ? static_cast<SIMD>(N_ELEM_PACK - n_rest) : SIMD::PACKED;
             inp_index = inp_offset + inp_index;
             at(result,meta::ct_v<0>) = tagged_index_t{out_tag,out_index};
             at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,inp_index};
         } else if constexpr (reduction_kind == ReductionKind::VERTICAL) {
-            auto inp_offset = at(simd_index,meta::ct_v<0>) * at(out_shape,meta::ct_v<1>);
+            auto inp_offset = at(simd_index,meta::ct_v<0>) * at(inp_shape,meta::ct_v<1>);
             auto out_index  = at(simd_index,meta::ct_v<1>) * N_ELEM_PACK;
             auto inp_index  = at(simd_index,meta::ct_v<1>) * N_ELEM_PACK;
 
@@ -265,7 +262,7 @@ namespace nmtools::index
     constexpr auto reduction_2d_enumerator(meta::as_type<reduction_kind> kind, meta::as_type<N_ELEM_PACK> n_elem_pack, const out_shape_t& out_shape, const inp_shape_t& inp_shape)
     {
         using enumerator_t = reduction_2d_enumerator_t<index_t,reduction_kind,N_ELEM_PACK,out_shape_t,inp_shape_t>;
-        return enumerator_t{n_elem_pack,kind,inp_shape,out_shape};
+        return enumerator_t{n_elem_pack,kind,out_shape,inp_shape};
     }
 } // namespace nmtools::index
 
