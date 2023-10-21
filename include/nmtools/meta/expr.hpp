@@ -74,6 +74,14 @@ namespace nmtools::meta
         using dim = decltype(declval<T>().dim());
 
         /**
+         * @brief helper alias template to deduce the return value of member function `identity` of type `T`
+         * 
+         * @tparam T type to check
+         */
+        template <typename T>
+        using identity = decltype(declval<T>().identity());
+
+        /**
          * @brief helper alias template to deduce the return value from index subscript `[]`.
          *
          * @note not to be confused with bracketnd that deduce from `operator[]` that takes variadic
