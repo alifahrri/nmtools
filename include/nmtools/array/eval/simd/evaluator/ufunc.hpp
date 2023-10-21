@@ -5,6 +5,7 @@
 #include "nmtools/array/data.hpp"
 #include "nmtools/array/eval/simd/index.hpp"
 #include "nmtools/array/eval/simd/ufunc.hpp"
+#include "nmtools/array/eval/simd/bit_width.hpp"
 
 namespace nmtools::array
 {
@@ -93,10 +94,10 @@ namespace nmtools::array
         template <typename output_t>
         constexpr auto eval_reduction(output_t& output) const
         {
-            auto out_shape = ::nmtools::shape(output);
-            auto inp_shape = ::nmtools::shape(view);
+            auto out_shape  = ::nmtools::shape(output);
+            auto view_shape = ::nmtools::shape(view);
 
-            if (!::nmtools::utils::isequal(out_shape,inp_shape))
+            if (!::nmtools::utils::isequal(out_shape,view_shape))
                 return false;
 
             using element_type = meta::get_element_type_t<output_t>;
@@ -106,47 +107,134 @@ namespace nmtools::array
 
             auto input_array_ptr = get_array(view);
 
-            auto inp_data_ptr = nmtools::data(*input_array_ptr);
+            auto inp_shape = nmtools::shape(*input_array_ptr);
 
+            auto inp_data_ptr = nmtools::data(*input_array_ptr);
+            auto out_data_ptr = nmtools::data(output);
+
+            constexpr auto bit_width = meta::bit_width_v<simd_tag_t>;
             const auto op = context.template create_ufunc_simd_op<element_type>(view.op);
             constexpr auto N = decltype(op)::bit_width / (sizeof(element_type) * 8); // 8 = 8-bit
 
             const auto size = nmtools::size(*input_array_ptr);
 
             auto out_size = nmtools::size(output);
-            if (out_size != 1) {
-                return false;
+            auto out_dim  = dim(output);
+            using axis_type = decltype(view.axis);
+            if (out_size == 1) {
+                // reduce all to single scalar
+
+                // vertical op
+                auto reg = op.set1(0);
+                for (size_t i=0; (i+N)<=size; i+=N) {
+                    const auto operand = op.loadu(&inp_data_ptr[i]);
+                    reg = op.eval(reg,operand);
+                }
+
+                // horizontal op
+                element_type tmp_res[N];
+                op.storeu(&tmp_res[0],reg);
+                element_type result = tmp_res[0];
+                for (size_t i=1; i<N; i++) {
+                    result = view.op(result,tmp_res[i]);
+                }
+
+                // leftover
+                auto M = (size/N);
+                for (size_t i=(M*N); i<size; i++) {
+                    result = view.op(result,inp_data_ptr[i]);
+                }
+
+                if constexpr (meta::is_num_v<output_t>) {
+                    output = result;
+                } else {
+                    auto out_data_ptr = nmtools::data(output);
+                    *out_data_ptr = result;
+                }
+                return true;
+            }
+            if constexpr (meta::is_index_v<axis_type>) {
+                if (out_dim != 2) {
+                    return false;
+                }
+                using index::ReductionKind, index::SIMD;
+                const auto n_elem_pack = meta::as_type_v<N>;
+                // vertical reduction
+                if (view.axis == 0) {
+                    const auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
+                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,inp_shape,out_shape);
+                    for (size_t i=0; i<enumerator.size(); i++) {
+                        auto [out_pack, inp_pack] = enumerator[i];
+                        auto [out_tag,out_offset] = out_pack;
+                        auto [inp_tag,inp_offset] = inp_pack;
+                        switch (out_tag) {
+                            case SIMD::ACCUMULATE_PACKED: {
+                                auto inp_pack = op.loadu(&inp_data_ptr[inp_offset]);
+                                auto out_pack = op.loadu(&out_data_ptr[out_offset]);
+                                auto tmp = op.eval(out_pack,inp_pack);
+                                op.storeu(&out_data_ptr[out_offset],tmp);
+                            } break;
+                            case SIMD::ACCUMULATE: {
+                                out_data_ptr[out_offset] = view.op(out_data_ptr[out_offset],inp_data_ptr[inp_offset]);
+                            } break;
+                            default:
+                                break;
+                        }
+                    }
+                }  else if (view.axis == 1) {
+                    const auto reduction_kind = meta::as_type_v<ReductionKind::HORIZONTAL>;
+                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,inp_shape,out_shape);
+                    auto accum = op.set1(0);
+                    for (size_t i=0; i<enumerator.size(); i++) {
+                        auto [out_pack, inp_pack] = enumerator[i];
+                        auto [out_tag,out_offset] = out_pack;
+                        auto [inp_tag,inp_offset] = inp_pack;
+                        switch (inp_tag) {
+                            case SIMD::PACKED: {
+                                auto inp_pack = op.loadu(&inp_data_ptr[inp_offset]);
+                                accum = op.eval(accum,inp_pack);
+                            } break;
+                            default: {
+                                constexpr auto n_simd_pack = (bit_width / (sizeof(element_type) * 8));
+                                constexpr auto n_possible_padding = n_simd_pack - 1;
+                                meta::template_for<n_possible_padding>([&](auto pad){
+                                    constexpr auto n_pad = static_cast<int>(pad) + 1;
+                                    if (static_cast<int>(inp_tag) == n_pad) {
+                                        element_type padded_inp[n_simd_pack] = {0};
+                                        size_t i=0;
+                                        for (; i<(n_simd_pack-n_pad); i++) {
+                                            padded_inp[i] = inp_data_ptr[inp_offset+i];
+                                        }
+                                        for (; i<n_simd_pack; i++) {
+                                            padded_inp[i] = 0;
+                                        }
+                                        auto padded_reg = op.loadu(padded_inp);
+                                        accum = op.eval(accum,padded_reg);
+                                    }
+                                });
+                            } break;
+                        }
+                        switch (out_tag) {
+                            case SIMD::ACCUMULATE: {
+                                // horizontal op
+                                element_type tmp_res[N];
+                                op.storeu(&tmp_res[0],accum);
+                                element_type result = tmp_res[0];
+                                for (size_t i=1; i<N; i++) {
+                                    result = view.op(result,tmp_res[i]);
+                                }
+                                out_data_ptr[out_offset] = result;
+                                accum = op.set1(0);
+                            } break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                return true;
             }
 
-            // vertical op
-            auto reg = op.set1(0);
-            for (size_t i=0; (i+N)<=size; i+=N) {
-                const auto operand = op.loadu(&inp_data_ptr[i]);
-                reg = op.eval(reg,operand);
-            }
-
-            // horizontal op
-            element_type tmp_res[N];
-            op.storeu(&tmp_res[0],reg);
-            element_type result = tmp_res[0];
-            for (size_t i=1; i<N; i++) {
-                result = view.op(result,tmp_res[i]);
-            }
-
-            // leftover
-            auto M = (size/N);
-            for (size_t i=(M*N); i<size; i++) {
-                result = view.op(result,inp_data_ptr[i]);
-            }
-
-            if constexpr (meta::is_num_v<output_t>) {
-                output = result;
-            } else {
-                auto out_data_ptr = nmtools::data(output);
-                *out_data_ptr = result;
-            }
-
-            return true;
+            return false;
         }
 
         template <typename output_t>
