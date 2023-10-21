@@ -56,6 +56,7 @@ if (NMTOOLS_SIMD_TEST_AVX)
     if (NMTOOLS_SIMD_TEST_REDUCTION)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
             x86/reduction_avx.cpp
+            x86/reduction_2d_avx.cpp
         )
     endif (NMTOOLS_SIMD_TEST_REDUCTION)
 endif (NMTOOLS_SIMD_TEST_AVX)
