@@ -107,19 +107,15 @@ namespace nmtools::array
 
             auto input_array_ptr = get_array(view);
 
-            auto inp_shape = nmtools::shape(*input_array_ptr);
-
             auto inp_data_ptr = nmtools::data(*input_array_ptr);
-            auto out_data_ptr = nmtools::data(output);
 
             constexpr auto bit_width = meta::bit_width_v<simd_tag_t>;
             const auto op = context.template create_ufunc_simd_op<element_type>(view.op);
-            constexpr auto N = decltype(op)::bit_width / (sizeof(element_type) * 8); // 8 = 8-bit
+            constexpr auto N = bit_width / (sizeof(element_type) * 8); // 8 = 8-bit
 
             const auto size = nmtools::size(*input_array_ptr);
 
             auto out_size = nmtools::size(output);
-            auto out_dim  = dim(output);
             using axis_type = decltype(view.axis);
             if (out_size == 1) {
                 // reduce all to single scalar
@@ -154,15 +150,29 @@ namespace nmtools::array
                 return true;
             }
             if constexpr (meta::is_index_v<axis_type>) {
-                if (out_dim != 2) {
+                auto out_data_ptr = nmtools::data(output);
+                auto inp_dim = dim(*input_array_ptr);
+                if (inp_dim != 2) {
                     return false;
                 }
                 using index::ReductionKind, index::SIMD;
                 const auto n_elem_pack = meta::as_type_v<N>;
+                auto identity = [&]()->element_type{
+                    using op_type = meta::remove_cvref_t<decltype(view.op)>;
+                    if constexpr (meta::has_identity_v<op_type>) {
+                        return view.op.identity();
+                    } else {
+                        return 0;
+                    }
+                }();
+                for (size_t i=0; i<out_size; i++) {
+                    out_data_ptr[i] = identity;
+                }
+                auto inp_shape = nmtools::shape(*input_array_ptr);
                 // vertical reduction
                 if (view.axis == 0) {
                     const auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
-                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,inp_shape,out_shape);
+                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
                     for (size_t i=0; i<enumerator.size(); i++) {
                         auto [out_pack, inp_pack] = enumerator[i];
                         auto [out_tag,out_offset] = out_pack;
@@ -183,12 +193,14 @@ namespace nmtools::array
                     }
                 }  else if (view.axis == 1) {
                     const auto reduction_kind = meta::as_type_v<ReductionKind::HORIZONTAL>;
-                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,inp_shape,out_shape);
-                    auto accum = op.set1(0);
+                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
+                    auto accum = op.set1(identity);
                     for (size_t i=0; i<enumerator.size(); i++) {
-                        auto [out_pack, inp_pack] = enumerator[i];
-                        auto [out_tag,out_offset] = out_pack;
-                        auto [inp_tag,inp_offset] = inp_pack;
+                        const auto [out_pack, inp_pack] = enumerator[i];
+                        const auto out_tag = nmtools::get<0>(out_pack);
+                        const auto inp_tag = nmtools::get<0>(inp_pack);
+                        const auto out_offset = nmtools::get<1>(out_pack);
+                        const auto inp_offset = nmtools::get<1>(inp_pack);
                         switch (inp_tag) {
                             case SIMD::PACKED: {
                                 auto inp_pack = op.loadu(&inp_data_ptr[inp_offset]);
@@ -200,13 +212,13 @@ namespace nmtools::array
                                 meta::template_for<n_possible_padding>([&](auto pad){
                                     constexpr auto n_pad = static_cast<int>(pad) + 1;
                                     if (static_cast<int>(inp_tag) == n_pad) {
-                                        element_type padded_inp[n_simd_pack] = {0};
+                                        element_type padded_inp[n_simd_pack] = {identity};
                                         size_t i=0;
                                         for (; i<(n_simd_pack-n_pad); i++) {
                                             padded_inp[i] = inp_data_ptr[inp_offset+i];
                                         }
                                         for (; i<n_simd_pack; i++) {
-                                            padded_inp[i] = 0;
+                                            padded_inp[i] = identity;
                                         }
                                         auto padded_reg = op.loadu(padded_inp);
                                         accum = op.eval(accum,padded_reg);
@@ -224,7 +236,7 @@ namespace nmtools::array
                                     result = view.op(result,tmp_res[i]);
                                 }
                                 out_data_ptr[out_offset] = result;
-                                accum = op.set1(0);
+                                accum = op.set1(identity);
                             } break;
                             default:
                                 break;
