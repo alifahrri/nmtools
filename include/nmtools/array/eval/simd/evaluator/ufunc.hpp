@@ -92,6 +92,83 @@ namespace nmtools::array
         };
 
         template <typename output_t>
+        constexpr auto eval_outer(output_t& output) const
+        {
+            auto out_shape = ::nmtools::shape(output);
+            auto inp_shape = ::nmtools::shape(view);
+
+            if (!::nmtools::utils::isequal(out_shape,inp_shape))
+                return false;
+
+            using ::nmtools::index::ndindex;
+            // auto out_index = ndindex(out_shape);
+            // auto inp_index = ndindex(inp_shape);
+
+            using element_type = meta::get_element_type_t<output_t>;
+            // TODO: do not static assert, tell the caller some combo is not supported
+            static_assert(meta::is_num_v<element_type>
+                , "currently only support numeric types");
+
+            auto input_array_ptr = get_array(view);
+
+            auto lhs_array_ptr = nmtools::get<0>(input_array_ptr);
+            auto rhs_array_ptr = nmtools::get<1>(input_array_ptr);
+
+            auto lhs_data_ptr = nmtools::data(*lhs_array_ptr);
+            auto rhs_data_ptr = nmtools::data(*rhs_array_ptr);
+            auto out_data_ptr = nmtools::data(output);
+
+            auto lhs_shape = nmtools::shape(*lhs_array_ptr);
+            auto rhs_shape = nmtools::shape(*rhs_array_ptr);
+
+            const auto op = context.template create_ufunc_simd_op<element_type>(view.op);
+            constexpr auto N = decltype(op)::bit_width / (sizeof(element_type) * 8); // 8 = 8-bit
+
+            const auto n_elem_pack = meta::as_type_v<N>;
+            const auto enumerator = index::outer_simd_enumerator(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+
+            using index::SIMD;
+
+            for (size_t i=0; i<enumerator.size(); i++) {
+                auto [out_index,lhs_index,rhs_index] = enumerator[i];
+                const auto out_tag = nmtools::get<0>(out_index);
+                // const auto lhs_tag = nmtools::get<0>(lhs_index);
+                // const auto rhs_tag = nmtools::get<0>(rhs_index);
+                const auto out_offset = nmtools::get<1>(out_index);
+                const auto lhs_offset = nmtools::get<1>(lhs_index);
+                const auto rhs_offset = nmtools::get<1>(rhs_index);
+                
+                // lhs always simd-broadcasted
+                const auto lhs = op.set1(lhs_data_ptr[lhs_offset]);
+                switch (out_tag) {
+                    // only packed or pad
+                    case SIMD::PACKED: {
+                        auto rhs = op.loadu(&rhs_data_ptr[rhs_offset]);
+                        auto res = op.eval(lhs,rhs);
+                        op.storeu(&out_data_ptr[out_offset],res);
+                    } break;
+                    default: {
+                        constexpr auto bit_width = meta::bit_width_v<simd_tag_t>;
+                        constexpr auto n_simd_pack = (bit_width / (sizeof(element_type) * 8));
+                            constexpr auto n_possible_padding = n_simd_pack - 1;
+                            meta::template_for<n_possible_padding>([&](auto pad){
+                                constexpr auto n_pad = static_cast<int>(pad) + 1;
+                                if (static_cast<int>(out_tag) == n_pad) {
+                                    auto n_pad = static_cast<int>(out_tag);
+                                    for (size_t i=0; i<(n_simd_pack - n_pad); i++) {
+                                        auto lhs = lhs_data_ptr[lhs_offset+i];
+                                        auto rhs = rhs_data_ptr[rhs_offset+i];
+                                        out_data_ptr[out_offset+i] = view.op(lhs,rhs);
+                                    }
+                                }
+                            });
+                    } break;
+                }
+            }
+            return true;
+        }
+
+        template <typename output_t>
         constexpr auto eval_reduction(output_t& output) const
         {
             auto out_shape  = ::nmtools::shape(output);
@@ -355,6 +432,8 @@ namespace nmtools::array
         {
             if constexpr (meta::is_reduction_v<view_type>) {
                 return this->eval_reduction(output);
+            } else if constexpr (meta::is_outer_v<view_type>) {
+                return this->eval_outer(output);
             } else {
                 constexpr auto arity = meta::ufunc_arity_v<view_type>;
                 static_assert( (arity == 1) || (arity == 2), "unsupported arity ufunc type");
