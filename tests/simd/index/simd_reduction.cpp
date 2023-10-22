@@ -782,8 +782,10 @@ TEST_CASE("reduction_2d_enumerator(case2)" * doctest::test_suite("simd::index"))
 
     for (size_t i=0; i<enumerator.size(); i++) {
         auto [out_pack, inp_pack] = enumerator[i];
-        auto [out_tag,out_offset] = out_pack;
-        auto [inp_tag,inp_offset] = inp_pack;
+        const auto out_tag = nmtools::get<0>(out_pack);
+        const auto out_offset = nmtools::get<1>(out_pack);
+        const auto inp_tag = nmtools::get<0>(inp_pack);
+        const auto inp_offset = nmtools::get<1>(inp_pack);
         CHECK( out_tag == out_tags[i] );
         CHECK( inp_tag == inp_tags[i] );
         NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
@@ -841,8 +843,10 @@ TEST_CASE("reduction_2d_enumerator(case3a)" * doctest::test_suite("simd::index")
 
     for (size_t i=0; i<enumerator.size(); i++) {
         auto [out_pack, inp_pack] = enumerator[i];
-        auto [out_tag,out_offset] = out_pack;
-        auto [inp_tag,inp_offset] = inp_pack;
+        const auto out_tag = nmtools::get<0>(out_pack);
+        const auto out_offset = nmtools::get<1>(out_pack);
+        const auto inp_tag = nmtools::get<0>(inp_pack);
+        const auto inp_offset = nmtools::get<1>(inp_pack);
         CHECK( out_tag == out_tags[i] );
         CHECK( inp_tag == inp_tags[i] );
         NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
@@ -900,8 +904,10 @@ TEST_CASE("reduction_2d_enumerator(case3b)" * doctest::test_suite("simd::index")
 
     for (size_t i=0; i<enumerator.size(); i++) {
         auto [out_pack, inp_pack] = enumerator[i];
-        auto [out_tag,out_offset] = out_pack;
-        auto [inp_tag,inp_offset] = inp_pack;
+        const auto out_tag = nmtools::get<0>(out_pack);
+        const auto out_offset = nmtools::get<1>(out_pack);
+        const auto inp_tag = nmtools::get<0>(inp_pack);
+        const auto inp_offset = nmtools::get<1>(inp_pack);
         CHECK( out_tag == out_tags[i] );
         CHECK( inp_tag == inp_tags[i] );
         NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
@@ -953,8 +959,10 @@ TEST_CASE("reduction_2d_enumerator(case4a)" * doctest::test_suite("simd::index")
     NMTOOLS_ASSERT_EQUAL( enumerator.size(), inp_offsets.size() );
     for (size_t i=0; i<enumerator.size(); i++) {
         auto [out_pack, inp_pack] = enumerator[i];
-        auto [out_tag,out_offset] = out_pack;
-        auto [inp_tag,inp_offset] = inp_pack;
+        const auto out_tag = nmtools::get<0>(out_pack);
+        const auto out_offset = nmtools::get<1>(out_pack);
+        const auto inp_tag = nmtools::get<0>(inp_pack);
+        const auto inp_offset = nmtools::get<1>(inp_pack);
         CHECK_MESSAGE( out_tag == out_tags[i], i );
         CHECK_MESSAGE( inp_tag == inp_tags[i], i );
         NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
@@ -1006,8 +1014,10 @@ TEST_CASE("reduction_2d_enumerator(case4b)" * doctest::test_suite("simd::index")
     NMTOOLS_ASSERT_EQUAL( enumerator.size(), inp_offsets.size() );
     for (size_t i=0; i<enumerator.size(); i++) {
         auto [out_pack, inp_pack] = enumerator[i];
-        auto [out_tag,out_offset] = out_pack;
-        auto [inp_tag,inp_offset] = inp_pack;
+        const auto out_tag = nmtools::get<0>(out_pack);
+        const auto out_offset = nmtools::get<1>(out_pack);
+        const auto inp_tag = nmtools::get<0>(inp_pack);
+        const auto inp_offset = nmtools::get<1>(inp_pack);
         CHECK_MESSAGE( out_tag == out_tags[i], i );
         CHECK_MESSAGE( inp_tag == inp_tags[i], i );
         NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
