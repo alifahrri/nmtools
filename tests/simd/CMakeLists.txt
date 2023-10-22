@@ -37,6 +37,7 @@ if (NMTOOLS_SIMD_TEST_SSE)
         x86/unary_sse.cpp
         x86/binary_sse.cpp
         x86/matmul_sse.cpp
+        x86/outer_sse.cpp
     )
     if (NMTOOLS_SIMD_TEST_REDUCTION)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
@@ -52,6 +53,7 @@ if (NMTOOLS_SIMD_TEST_AVX)
         x86/binary_avx.cpp
         x86/binary_avx_broadcast.cpp
         x86/matmul_avx.cpp
+        x86/outer_avx.cpp
     )
     if (NMTOOLS_SIMD_TEST_REDUCTION)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
@@ -66,6 +68,7 @@ if (NMTOOLS_SIMD_TEST_INDEX)
         index/simd_index.cpp
         index/simd_matmul.cpp
         index/simd_reduction.cpp
+        index/simd_outer.cpp
     )
 endif (NMTOOLS_SIMD_TEST_INDEX)
 add_executable(${PROJECT_NAME}-doctest tests.cpp
