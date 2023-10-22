@@ -14,6 +14,16 @@ namespace nmtools::view
     >
     struct multiply_t
     {
+
+        static constexpr auto identity()
+        {
+            if constexpr (meta::is_num_v<res_t>) {
+                return static_cast<res_t>(1);
+            } else {
+                return 1;
+            }
+        }
+
         // NOTE: tried to disable but not successful
         // TODO: remove by unifying with primary template
         #if 0

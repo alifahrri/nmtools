@@ -5,6 +5,8 @@ namespace nmtools::index
 {
     enum SIMD : int
     {
+        NOP=-999,
+        ACCUMULATE_PACKED=-4,
         BROADCAST=-3,
         SCALAR=-2, // assign scalar
         ACCUMULATE=-1, // accumulate result, maybe for partial application

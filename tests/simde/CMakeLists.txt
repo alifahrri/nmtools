@@ -40,6 +40,7 @@ if (NMTOOLS_SIMDE_TEST_AVX512)
     if (NMTOOLS_SIMDE_TEST_REDUCTION)
         set(NMTOOLS_SIMDE_TEST_SOURCES ${NMTOOLS_SIMDE_TEST_SOURCES}
             avx512/reduction_ufuncs.cpp
+            avx512/reduction_2d.cpp
         )
     endif (NMTOOLS_SIMDE_TEST_REDUCTION)
     if (NMTOOLS_SIMDE_TEST_MATMUL)
