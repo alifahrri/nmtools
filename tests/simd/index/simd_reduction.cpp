@@ -132,12 +132,14 @@ TEST_CASE("reduction_2d(case1a)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 0 );
     }
@@ -156,12 +158,14 @@ TEST_CASE("reduction_2d(case1b)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 4 );
     }
@@ -180,12 +184,14 @@ TEST_CASE("reduction_2d(case1c)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 8 );
     }
@@ -204,12 +210,14 @@ TEST_CASE("reduction_2d(case1d)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 0 );
     }
@@ -228,12 +236,14 @@ TEST_CASE("reduction_2d(case1e)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 4 );
     }
@@ -252,12 +262,14 @@ TEST_CASE("reduction_2d(case1f)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 8 );
     }
@@ -290,12 +302,14 @@ TEST_CASE("reduction_2d(case2a)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 0 );
     }
@@ -314,12 +328,14 @@ TEST_CASE("reduction_2d(case2b)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 1 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 4 );
     }
@@ -338,12 +354,14 @@ TEST_CASE("reduction_2d(case2c)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 2 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 8 );
     }
@@ -362,12 +380,14 @@ TEST_CASE("reduction_2d(case2d)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 0 );
     }
@@ -386,12 +406,14 @@ TEST_CASE("reduction_2d(case2e)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 1 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 4 );
     }
@@ -410,12 +432,14 @@ TEST_CASE("reduction_2d(case2f)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 2 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 8 );
     }
@@ -434,12 +458,14 @@ TEST_CASE("reduction_2d(case3a)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 0 );
     }
@@ -458,12 +484,14 @@ TEST_CASE("reduction_2d(case3b)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 10 );
     }
@@ -482,12 +510,14 @@ TEST_CASE("reduction_2d(case3c)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 20 );
     }
@@ -506,12 +536,14 @@ TEST_CASE("reduction_2d(case3d)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 30 );
     }
@@ -530,12 +562,14 @@ TEST_CASE("reduction_2d(case3e)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 4 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 4 );
     }
@@ -554,12 +588,14 @@ TEST_CASE("reduction_2d(case3f)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 8 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::SCALAR );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 8 );
     }
@@ -578,12 +614,14 @@ TEST_CASE("reduction_2d(case3g)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 9 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::SCALAR );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 9 );
     }
@@ -602,12 +640,14 @@ TEST_CASE("reduction_2d(case3h)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 4 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 14 );
     }
@@ -626,12 +666,14 @@ TEST_CASE("reduction_2d(case3i)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
         NMTOOLS_ASSERT_EQUAL( out_offset, 4 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::PACKED );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 24 );
     }
@@ -650,12 +692,14 @@ TEST_CASE("reduction_2d(case3j)" * doctest::test_suite("simd::index"))
     auto result = ix::reduction_2d(reduction_kind,n_elem_pack,simd_index,simd_shape,out_shape,inp_shape);
     auto [out_index,inp_index] = result;
     {
-        auto [out_tag,out_offset] = out_index;
+        const auto out_tag = nmtools::get<0>(out_index);
+        const auto out_offset = nmtools::get<1>(out_index);
         CHECK( out_tag == SIMD::ACCUMULATE );
         NMTOOLS_ASSERT_EQUAL( out_offset, 8 );
     }
     {
-        auto [inp_tag,inp_offset] = inp_index;
+        const auto inp_tag = nmtools::get<0>(inp_index);
+        const auto inp_offset = nmtools::get<1>(inp_index);
         CHECK( inp_tag == SIMD::SCALAR );
         NMTOOLS_ASSERT_EQUAL( inp_offset, 28 );
     }
@@ -678,12 +722,14 @@ TEST_CASE("reduction_2d_enumerator(case1)" * doctest::test_suite("simd::index"))
     {
         auto [out_index,inp_index] = enumerator[0];
         {
-            auto [out_tag,out_offset] = out_index;
+            const auto out_tag = nmtools::get<0>(out_index);
+            const auto out_offset = nmtools::get<1>(out_index);
             CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
             NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
         }
         {
-            auto [inp_tag,inp_offset] = inp_index;
+            const auto inp_tag = nmtools::get<0>(inp_index);
+            const auto inp_offset = nmtools::get<1>(inp_index);
             CHECK( inp_tag == SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( inp_offset, 0 );
         }
@@ -691,12 +737,14 @@ TEST_CASE("reduction_2d_enumerator(case1)" * doctest::test_suite("simd::index"))
     {
         auto [out_index,inp_index] = enumerator[1];
         {
-            auto [out_tag,out_offset] = out_index;
+            const auto out_tag = nmtools::get<0>(out_index);
+            const auto out_offset = nmtools::get<1>(out_index);
             CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
             NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
         }
         {
-            auto [inp_tag,inp_offset] = inp_index;
+            const auto inp_tag = nmtools::get<0>(inp_index);
+            const auto inp_offset = nmtools::get<1>(inp_index);
             CHECK( inp_tag == SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( inp_offset, 4 );
         }
@@ -704,12 +752,14 @@ TEST_CASE("reduction_2d_enumerator(case1)" * doctest::test_suite("simd::index"))
     {
         auto [out_index,inp_index] = enumerator[2];
         {
-            auto [out_tag,out_offset] = out_index;
+            const auto out_tag = nmtools::get<0>(out_index);
+            const auto out_offset = nmtools::get<1>(out_index);
             CHECK( out_tag == SIMD::ACCUMULATE_PACKED );
             NMTOOLS_ASSERT_EQUAL( out_offset, 0 );
         }
         {
-            auto [inp_tag,inp_offset] = inp_index;
+            const auto inp_tag = nmtools::get<0>(inp_index);
+            const auto inp_offset = nmtools::get<1>(inp_index);
             CHECK( inp_tag == SIMD::PACKED );
             NMTOOLS_ASSERT_EQUAL( inp_offset, 8 );
         }
