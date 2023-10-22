@@ -114,6 +114,11 @@ namespace nmtools::meta
 {
 
     template <typename op_t, typename lhs_t, typename rhs_t>
+    struct is_outer<
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+    > : true_type {};
+
+    template <typename op_t, typename lhs_t, typename rhs_t>
     struct bounded_size<
         view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
     >
