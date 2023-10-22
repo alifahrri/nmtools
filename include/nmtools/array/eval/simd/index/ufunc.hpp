@@ -264,6 +264,103 @@ namespace nmtools::index
         using enumerator_t = reduction_2d_enumerator_t<index_t,reduction_kind,N_ELEM_PACK,out_shape_t,inp_shape_t>;
         return enumerator_t{n_elem_pack,kind,out_shape,inp_shape};
     }
+
+    template <auto N_ELEM_PACK, typename out_shape_t, typename lhs_shape_t, typename rhs_shape_t>
+    constexpr auto outer_simd_shape(meta::as_type<N_ELEM_PACK>, const out_shape_t& out_shape, const lhs_shape_t& lhs_shape, const rhs_shape_t&)
+    {
+        using result_t = out_shape_t;
+        auto result = result_t {};
+
+        if constexpr (meta::is_resizable_v<result_t>) {
+            auto dim = len(out_shape);
+            result.resize(dim);
+        }
+
+        const auto n_ops = at(out_shape,meta::ct_v<-1>);
+        const auto n_packed_ops = n_ops / N_ELEM_PACK;
+
+        // assume lhs is 1D, rhs is 1D, and out is 2D
+        at(result,meta::ct_v<0>) = at(lhs_shape,meta::ct_v<0>);
+        at(result,meta::ct_v<1>) = n_packed_ops + (n_ops % N_ELEM_PACK ? 1 : 0);
+
+        return result;
+    } // outer_simd_shape
+
+    template <typename index_t=size_t, auto N_ELEM_PACK, typename simd_index_t, typename simd_shape_t, typename out_shape_t, typename lhs_shape_t, typename rhs_shape_t>
+    constexpr auto outer_simd(meta::as_type<N_ELEM_PACK>, const simd_index_t& simd_index, const simd_shape_t&, const out_shape_t& out_shape, const lhs_shape_t&, const rhs_shape_t&)
+    {
+        using tagged_index_t = nmtools_tuple<SIMD,index_t>;
+        using result_t = nmtools_array<tagged_index_t,3>;
+
+        const auto n_ops = at(out_shape,meta::ct_v<-1>);
+        const auto n_packed_ops = n_ops / N_ELEM_PACK;
+
+        // assume simd_index is 2D
+        const auto s_i = at(simd_index,meta::ct_v<0>);
+        const auto s_j = at(simd_index,meta::ct_v<1>);
+
+        const auto out_tag = s_j * N_ELEM_PACK + N_ELEM_PACK > n_ops ? static_cast<SIMD>(N_ELEM_PACK - (n_ops - (n_packed_ops * N_ELEM_PACK))) : SIMD::PACKED;
+        const auto lhs_tag = SIMD::BROADCAST;
+        const auto rhs_tag = out_tag;
+
+        const auto out_offset = (out_tag == SIMD::PACKED ? (s_i * n_ops) + (s_j * N_ELEM_PACK) : (s_i * n_ops) + (s_j) * N_ELEM_PACK);
+        const auto lhs_offset = s_i;
+        const auto rhs_offset = (rhs_tag == SIMD::PACKED ? (s_j * N_ELEM_PACK) : (s_j) * N_ELEM_PACK);
+
+        auto result = result_t {};
+        at(result,0) = tagged_index_t{out_tag,out_offset};
+        at(result,1) = tagged_index_t{lhs_tag,lhs_offset};
+        at(result,2) = tagged_index_t{rhs_tag,rhs_offset};
+
+        return result;
+    } // outer_simd
+
+    template <typename index_t, auto N_ELEM_PACK, typename out_shape_t, typename lhs_shape_t, typename rhs_shape_t>
+    struct outer_simd_enumerator_t
+    {
+        using out_shape_type = const out_shape_t;
+        using lhs_shape_type = const lhs_shape_t;
+        using rhs_shape_type = const rhs_shape_t;
+
+        using simd_shape_type = out_shape_t;
+        using index_type = index_t;
+        using size_type  = index_t;
+        using simd_index_type = nmtools_array<index_type,2>;
+
+        meta::as_type<N_ELEM_PACK> n_elem_pack;
+        out_shape_type out_shape;
+        lhs_shape_type lhs_shape;
+        rhs_shape_type rhs_shape
+;
+        simd_shape_type simd_shape;
+
+        outer_simd_enumerator_t(meta::as_type<N_ELEM_PACK>, const out_shape_t& out_shape_, const lhs_shape_t& lhs_shape_, const rhs_shape_t& rhs_shape_)
+            : n_elem_pack{}
+            , out_shape(out_shape_)
+            , lhs_shape(lhs_shape_)
+            , rhs_shape(rhs_shape_)
+            , simd_shape(outer_simd_shape(n_elem_pack,out_shape_,lhs_shape_,rhs_shape_))
+        {}
+
+        constexpr auto size() const noexcept
+        {
+            return index::product(simd_shape);
+        }
+
+        constexpr auto operator[](index_type i) const
+        {
+            auto index_i = i / at(simd_shape,meta::ct_v<1>);
+            auto index_j = i % at(simd_shape,meta::ct_v<1>);
+            return outer_simd(n_elem_pack,simd_index_type{index_i,index_j},simd_shape,out_shape,lhs_shape,rhs_shape);
+        }
+    }; // outer_simd_enumerator_t
+
+    template <typename index_t=size_t, auto N_ELEM_PACK, typename out_shape_t, typename lhs_shape_t, typename rhs_shape_t>
+    constexpr auto outer_simd_enumerator(meta::as_type<N_ELEM_PACK> n_elem_pack, const out_shape_t& out_shape, const lhs_shape_t& lhs_shape, const rhs_shape_t& rhs_shape)
+    {
+        using enumerator_type = outer_simd_enumerator_t<index_t,N_ELEM_PACK,out_shape_t,lhs_shape_t,rhs_shape_t>;
+        return enumerator_type{n_elem_pack,out_shape,lhs_shape,rhs_shape};
+    } // outer_simd_enumerator
 } // namespace nmtools::index
 
 #endif // NMTOOLS_ARRAY_EVAL_SIMD_INDEX_UFUNC_HPP
