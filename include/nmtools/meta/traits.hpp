@@ -50,6 +50,7 @@
 #include "nmtools/meta/bits/traits/is_ndarray.hpp"
 #include "nmtools/meta/bits/traits/is_nothing.hpp"
 #include "nmtools/meta/bits/traits/is_num.hpp"
+#include "nmtools/meta/bits/traits/is_outer.hpp"
 #include "nmtools/meta/bits/traits/is_pod.hpp"
 #include "nmtools/meta/bits/traits/is_pointer.hpp"
 #include "nmtools/meta/bits/traits/is_reduction.hpp"
