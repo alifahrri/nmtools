@@ -85,8 +85,8 @@ EXPECT_TRUE(isequal(result,expect)) \
     auto result_ = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
     std::string message {}; \
     message = message + \
-        + "\n\tActual  : " + STRINGIFY(result)  \
-        + "\n\tExpected: " + STRINGIFY(expect); \
+        + "\n\tActual  :\n" + STRINGIFY(result)  \
+        + "\n\tExpected:\n" + STRINGIFY(expect); \
     NMTOOLS_CHECK_MESSAGE( result_, message ); \
 }
 
