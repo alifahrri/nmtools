@@ -156,7 +156,8 @@ namespace nmtools::array
                                 if (static_cast<int>(out_tag) == n_pad) {
                                     auto n_pad = static_cast<int>(out_tag);
                                     for (size_t i=0; i<(n_simd_pack - n_pad); i++) {
-                                        auto lhs = lhs_data_ptr[lhs_offset+i];
+                                        // lhs is always broadcasted
+                                        auto lhs = lhs_data_ptr[lhs_offset];
                                         auto rhs = rhs_data_ptr[rhs_offset+i];
                                         out_data_ptr[out_offset+i] = view.op(lhs,rhs);
                                     }
