@@ -35,7 +35,7 @@ TEST_CASE("outer_simd_shape(case1b)" * doctest::test_suite("simd::index"))
     NMTOOLS_ASSERT_EQUAL( result, expect );
 }
 
-TEST_CASE("outer_simd_shape(casec)" * doctest::test_suite("simd::index"))
+TEST_CASE("outer_simd_shape(case1c)" * doctest::test_suite("simd::index"))
 {
     auto lhs_shape = nmtools_array{4};
     auto rhs_shape = nmtools_array{6};
@@ -71,6 +71,214 @@ TEST_CASE("outer_simd_shape(case1e)" * doctest::test_suite("simd::index"))
 
     auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
     auto expect = nmtools_array{4,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case2a)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,4};
+    auto rhs_shape = nmtools_array{5};
+    auto out_shape = nmtools_array{2,4,5};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,4,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case2b)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,4};
+    auto rhs_shape = nmtools_array{6};
+    auto out_shape = nmtools_array{2,4,6};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,4,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case2c)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,4};
+    auto rhs_shape = nmtools_array{7};
+    auto out_shape = nmtools_array{2,4,7};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,4,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case2d)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,4};
+    auto rhs_shape = nmtools_array{8};
+    auto out_shape = nmtools_array{2,4,8};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,4,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case2e)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,4};
+    auto rhs_shape = nmtools_array{9};
+    auto out_shape = nmtools_array{2,4,9};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,4,3};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case3a)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2};
+    auto rhs_shape = nmtools_array{4,4};
+    auto out_shape = nmtools_array{2,4,4};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,4,1};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case3b)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2};
+    auto rhs_shape = nmtools_array{5,4};
+    auto out_shape = nmtools_array{2,5,4};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,5,1};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case3c)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{3};
+    auto rhs_shape = nmtools_array{5,6};
+    auto out_shape = nmtools_array{3,5,6};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{3,5,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case4a)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,3};
+    auto rhs_shape = nmtools_array{5,4};
+    auto out_shape = nmtools_array{2,3,5,4};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,3,5,1};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case4b)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,3};
+    auto rhs_shape = nmtools_array{5,5};
+    auto out_shape = nmtools_array{2,3,5,5};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,3,5,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case4c)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,3};
+    auto rhs_shape = nmtools_array{5,6};
+    auto out_shape = nmtools_array{2,3,5,6};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,3,5,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case4d)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,3};
+    auto rhs_shape = nmtools_array{5,7};
+    auto out_shape = nmtools_array{2,3,5,7};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,3,5,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case5a)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{1,2,3};
+    auto rhs_shape = nmtools_array{5,4};
+    auto out_shape = nmtools_array{1,2,3,5,4};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{1,2,3,5,1};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case5b)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{1,2,3};
+    auto rhs_shape = nmtools_array{5,5};
+    auto out_shape = nmtools_array{1,2,3,5,5};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{1,2,3,5,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case6a)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,3};
+    auto rhs_shape = nmtools_array{2,7,5,6};
+    auto out_shape = nmtools_array{2,3,2,7,5,6};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,3,2,7,5,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("outer_simd_shape(case6b)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,3};
+    auto rhs_shape = nmtools_array{2,7,1,5,7};
+    auto out_shape = nmtools_array{2,3,2,7,1,5,7};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto result = ix::outer_simd_shape(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    auto expect = nmtools_array{2,3,2,7,1,5,2};
     NMTOOLS_ASSERT_EQUAL( result, expect );
 }
 
@@ -415,6 +623,132 @@ TEST_CASE("outer_simd_enumerator(case2)" * doctest::test_suite("simd::index"))
         CHECK( out_tag == out_tags[i] );
         CHECK( lhs_tag == lhs_tags[i] );
         CHECK( rhs_tag == rhs_tags[i] );
+        NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
+        NMTOOLS_ASSERT_EQUAL( lhs_offset, lhs_offsets[i] );
+        NMTOOLS_ASSERT_EQUAL( rhs_offset, rhs_offsets[i] );
+    }
+}
+
+TEST_CASE("outer_simd_enumerator(case3)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,4};
+    auto rhs_shape = nmtools_array{5};
+    auto out_shape = nmtools_array{2,4,5};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto simd_shape = nmtools_array{2,4,2};
+
+    auto out_tags = nmtools_array{
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+    };
+    auto lhs_tags = nmtools_array{
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+    };
+    auto rhs_tags = nmtools_array{
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+        SIMD::PACKED,SIMD::PAD_3,
+    };
+    auto out_offsets = nmtools_array{0,4,5,9,10,14,15,19,20,24,25,29,30,34,35,39};
+    auto lhs_offsets = nmtools_array{0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7};
+    auto rhs_offsets = nmtools_array{0,4,0,4,0,4,0,4,0,4,0,4,0,4,0,4};
+
+    auto enumerator = ix::outer_simd_enumerator(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    NMTOOLS_ASSERT_EQUAL( enumerator.size(), out_tags.size() );
+    for (size_t i=0; i<out_tags.size(); i++) {
+        auto [out_index,lhs_index,rhs_index] = enumerator[i];
+        const auto out_tag = nm::get<0>(out_index);
+        const auto lhs_tag = nm::get<0>(lhs_index);
+        const auto rhs_tag = nm::get<0>(rhs_index);
+        const auto out_offset = nm::get<1>(out_index);
+        const auto lhs_offset = nm::get<1>(lhs_index);
+        const auto rhs_offset = nm::get<1>(rhs_index);
+        CHECK_MESSAGE( out_tag == out_tags[i], i );
+        CHECK_MESSAGE( lhs_tag == lhs_tags[i], i );
+        CHECK_MESSAGE( rhs_tag == rhs_tags[i], i );
+        NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
+        NMTOOLS_ASSERT_EQUAL( lhs_offset, lhs_offsets[i] );
+        NMTOOLS_ASSERT_EQUAL( rhs_offset, rhs_offsets[i] );
+    }
+}
+
+TEST_CASE("outer_simd_enumerator(case4)" * doctest::test_suite("simd::index"))
+{
+    auto lhs_shape = nmtools_array{2,4};
+    auto rhs_shape = nmtools_array{6};
+    auto out_shape = nmtools_array{2,4,6};
+
+    auto n_elem_pack = meta::as_type_v<4>;
+
+    auto simd_shape = nmtools_array{2,4,2};
+
+    auto out_tags = nmtools_array{
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+    };
+    auto lhs_tags = nmtools_array{
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+        SIMD::BROADCAST,SIMD::BROADCAST,
+    };
+    auto rhs_tags = nmtools_array{
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+        SIMD::PACKED,SIMD::PAD_2,
+    };
+    auto out_offsets = nmtools_array{0,4,6,10,12,16,18,22,24,28,30,34,36,40,42,46};
+    auto lhs_offsets = nmtools_array{0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7};
+    auto rhs_offsets = nmtools_array{0,4,0,4,0,4,0,4,0,4,0,4,0,4,0,4};
+
+    auto enumerator = ix::outer_simd_enumerator(n_elem_pack,out_shape,lhs_shape,rhs_shape);
+    NMTOOLS_ASSERT_EQUAL( enumerator.size(), out_tags.size() );
+    for (size_t i=0; i<out_tags.size(); i++) {
+        auto [out_index,lhs_index,rhs_index] = enumerator[i];
+        const auto out_tag = nm::get<0>(out_index);
+        const auto lhs_tag = nm::get<0>(lhs_index);
+        const auto rhs_tag = nm::get<0>(rhs_index);
+        const auto out_offset = nm::get<1>(out_index);
+        const auto lhs_offset = nm::get<1>(lhs_index);
+        const auto rhs_offset = nm::get<1>(rhs_index);
+        CHECK_MESSAGE( out_tag == out_tags[i], i );
+        CHECK_MESSAGE( lhs_tag == lhs_tags[i], i );
+        CHECK_MESSAGE( rhs_tag == rhs_tags[i], i );
         NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
         NMTOOLS_ASSERT_EQUAL( lhs_offset, lhs_offsets[i] );
         NMTOOLS_ASSERT_EQUAL( rhs_offset, rhs_offsets[i] );

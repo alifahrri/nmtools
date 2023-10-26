@@ -38,6 +38,8 @@ if (NMTOOLS_SIMD_TEST_SSE)
         x86/binary_sse.cpp
         x86/matmul_sse.cpp
         x86/outer_sse.cpp
+        x86/outer_2d_sse.cpp
+        x86/outer_nd_sse.cpp
     )
     if (NMTOOLS_SIMD_TEST_REDUCTION)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
@@ -54,6 +56,8 @@ if (NMTOOLS_SIMD_TEST_AVX)
         x86/binary_avx_broadcast.cpp
         x86/matmul_avx.cpp
         x86/outer_avx.cpp
+        x86/outer_2d_avx.cpp
+        x86/outer_nd_avx.cpp
     )
     if (NMTOOLS_SIMD_TEST_REDUCTION)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
