@@ -39,6 +39,8 @@ if (NMTOOLS_VECTOR_TEST_128)
         reduction_vector128.cpp
         reduction_2d_vector128.cpp
         outer_vector128.cpp
+        outer_2d_vector128.cpp
+        outer_nd_vector128.cpp
     )
 endif (NMTOOLS_VECTOR_TEST_128)
 
@@ -51,6 +53,8 @@ if (NMTOOLS_VECTOR_TEST_256)
         reduction_vector256.cpp
         reduction_2d_vector256.cpp
         outer_vector256.cpp
+        outer_2d_vector256.cpp
+        outer_nd_vector256.cpp
     )
 endif (NMTOOLS_VECTOR_TEST_256)
 
@@ -63,6 +67,8 @@ if (NMTOOLS_VECTOR_TEST_512)
         reduction_2d_vector512.cpp
         unary_vector512.cpp
         outer_vector512.cpp
+        outer_2d_vector512.cpp
+        outer_nd_vector512.cpp
     )
 endif (NMTOOLS_VECTOR_TEST_512)
 
