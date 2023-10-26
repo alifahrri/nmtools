@@ -36,6 +36,9 @@ if (NMTOOLS_SIMDE_TEST_AVX512)
         avx512/unary_ufuncs.cpp
         avx512/binary_ufuncs.cpp
         avx512/binary_broadcast.cpp
+        avx512/outer_2d.cpp
+        avx512/outer_nd.cpp
+        avx512/outer_ufuncs.cpp
     )
     if (NMTOOLS_SIMDE_TEST_REDUCTION)
         set(NMTOOLS_SIMDE_TEST_SOURCES ${NMTOOLS_SIMDE_TEST_SOURCES}
