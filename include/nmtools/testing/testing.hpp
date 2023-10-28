@@ -36,28 +36,6 @@ nmtools::utils::to_string(array)
 #define NMTOOLS_TESTING_OUTPUT_PRECISION 1e-6
 
 /**
- * @brief implementation of gtest assert macro
- * 
- */
-#define NMTOOLS_ASSERT_CLOSE_GTEST(result,expect) \
-EXPECT_TRUE(isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION)) \
-        <<   "Actual  :\n" \
-        << STRINGIFY(result) \
-        << "\nExpected:\n" \
-        << STRINGIFY(expect) \
-
-/**
- * @brief implementation of gtest assert macro
- * 
- */
-#define NMTOOLS_ASSERT_EQUAL_GTEST(result,expect) \
-EXPECT_TRUE(isequal(result,expect)) \
-        <<   "Actual  :\n" \
-        << STRINGIFY(result) \
-        << "\nExpected:\n" \
-        << STRINGIFY(expect) \
-
-/**
  * @brief implementation of typeinfo logging for doctest,
  * may be used by `NMTOOLS_TESTING_LOG_TYPEINFO` macro
  * 
