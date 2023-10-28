@@ -13,10 +13,6 @@ RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 10000 && \
 	update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-9 10000
 RUN pip3 install -U gcovr
 
-## install gtest
-COPY scripts/install_gtest.sh install_gtest.sh
-RUN bash install_gtest.sh
-
 ## install benchmark
 COPY scripts/install_benchmark.sh install_benchmark.sh
 RUN bash install_benchmark.sh
