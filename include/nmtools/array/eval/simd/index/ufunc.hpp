@@ -252,7 +252,6 @@ namespace nmtools::index
             at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,inp_index};
         } else if constexpr (reduction_kind == ReductionKind::VERTICAL) {
             auto inp_offset = at(simd_index,meta::ct_v<0>) * at(inp_shape,meta::ct_v<1>);
-            // auto out_offset = len(out_shape) > 1 ? at(simd_index,meta::ct_v<0>) * at(out_shape,1) : 0;
             auto out_offset = len(out_shape) > 1 ? (at(simd_index,meta::ct_v<0>) / (at(inp_shape,meta::ct_v<0>) / at(out_shape,meta::ct_v<0>))) * at(out_shape,meta::ct_v<-1>) : 0;
             auto out_index  = at(simd_index,meta::ct_v<1>) * N_ELEM_PACK;
             auto inp_index  = at(simd_index,meta::ct_v<1>) * N_ELEM_PACK;
