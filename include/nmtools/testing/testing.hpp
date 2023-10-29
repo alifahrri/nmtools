@@ -42,6 +42,7 @@ nmtools::utils::to_string(array)
  */
 #define NMTOOLS_TESTING_LOG_TYPEINFO_IMPL_DOCTEST INFO
 
+#ifndef NMTOOLS_CHECK_MESSAGE
 #if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
 #define NMTOOLS_CHECK_MESSAGE(result, message) \
 { \
@@ -53,6 +54,7 @@ nmtools::utils::to_string(array)
     CHECK(result); \
 }
 #endif // (__EMSCRIPTEN__ || __ANDROID__ || __arm__ || __MINGW32__)
+#endif // NMTOOLS_CHECK_MESSAGE
 
 /**
  * @brief implementation of doctest assert macro with message
