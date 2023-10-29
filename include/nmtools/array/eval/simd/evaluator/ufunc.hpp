@@ -6,6 +6,7 @@
 #include "nmtools/array/eval/simd/index.hpp"
 #include "nmtools/array/eval/simd/ufunc.hpp"
 #include "nmtools/array/eval/simd/bit_width.hpp"
+#include "nmtools/array/index/insert_index.hpp"
 
 namespace nmtools::array
 {
@@ -229,10 +230,6 @@ namespace nmtools::array
             }
             if constexpr (meta::is_index_v<axis_type>) {
                 auto out_data_ptr = nmtools::data(output);
-                auto inp_dim = dim(*input_array_ptr);
-                if (inp_dim != 2) {
-                    return false;
-                }
                 using index::ReductionKind, index::SIMD;
                 const auto n_elem_pack = meta::as_type_v<N>;
                 auto identity = [&]()->element_type{
@@ -247,10 +244,34 @@ namespace nmtools::array
                     out_data_ptr[i] = identity;
                 }
                 auto inp_shape = nmtools::shape(*input_array_ptr);
+                auto reduction_axis = view.axis;
+                auto reduction_kind = (reduction_axis == -1) || ((int)reduction_axis == (int)(len(inp_shape)-1)) ? ReductionKind::HORIZONTAL : ReductionKind::VERTICAL;
+                // "normalize" the out shape as if keepdims=True
+                auto out_shape_ = [&](){
+                    using keepdims_type = decltype(view.keepdims);
+                    if constexpr (is_none_v<keepdims_type>) {
+                        return out_shape;
+                    } else {
+                        if constexpr (!keepdims_type::value) {
+                            return index::insert_index(out_shape,1,reduction_axis);
+                        } else {
+                            return out_shape;
+                        }
+                    }
+                }();
+                auto out_shape = [out_shape_](){
+                    // TODO: create "unwrap" function
+                    if constexpr (meta::is_maybe_v<decltype(out_shape_)>) {
+                        return *out_shape_; // assume success, TODO: error handling
+                    } else {
+                        return out_shape_;
+                    }
+                }();
                 // vertical reduction
-                if (view.axis == 0) {
+                switch (reduction_kind) {
+                case ReductionKind::VERTICAL: {
                     const auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
-                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
+                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape,reduction_axis);
                     for (size_t i=0; i<enumerator.size(); i++) {
                         auto [out_pack, inp_pack] = enumerator[i];
                         auto [out_tag,out_offset] = out_pack;
@@ -269,9 +290,10 @@ namespace nmtools::array
                                 break;
                         }
                     }
-                }  else if (view.axis == 1) {
+                } break;
+                case ReductionKind::HORIZONTAL: {
                     const auto reduction_kind = meta::as_type_v<ReductionKind::HORIZONTAL>;
-                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
+                    const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape,reduction_axis);
                     auto accum = op.set1(identity);
                     for (size_t i=0; i<enumerator.size(); i++) {
                         const auto [out_pack, inp_pack] = enumerator[i];
@@ -320,10 +342,13 @@ namespace nmtools::array
                                 break;
                         }
                     }
+                } break;
+                default: {
+                    return false;
+                } break;
                 }
                 return true;
             }
-
             return false;
         }
 
