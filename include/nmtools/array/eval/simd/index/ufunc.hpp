@@ -145,6 +145,46 @@ namespace nmtools::index
         VERTICAL=1,
     };
 
+    template <typename index_t=size_t, ReductionKind reduction_kind, auto N_ELEM_PACK, typename inp_shape_t, typename out_shape_t, typename axis_t>
+    auto reduction_nd_reshape(meta::as_type<reduction_kind>, meta::as_type<N_ELEM_PACK>, const inp_shape_t& inp_shape, const out_shape_t&, [[maybe_unused]] axis_t axis)
+    {
+        using result_t = nmtools_array<index_t,2>;
+
+        auto result = result_t{};
+
+        auto dim = len(inp_shape);
+
+        if constexpr (meta::is_resizable_v<result_t>) {
+            result.resize(2); // strictly 2
+        }
+        at(result,0) = 1;
+        at(result,1) = 1;
+
+        if constexpr (reduction_kind == ReductionKind::HORIZONTAL) {
+            auto horizontal_axis = dim-1; // last
+            for (size_t i=0; i<(size_t)horizontal_axis; i++) {
+                at(result,0) *= at(inp_shape,i);
+            }
+            auto n_ops = at(inp_shape, horizontal_axis);
+            at(result,1) = n_ops;
+        } else if constexpr (reduction_kind == ReductionKind::VERTICAL) {
+            auto vertical_axis = dim;
+            int i = 0;
+            for (; i<=(int)axis; i++) {
+                at(result,0) *= at(inp_shape,i);
+            }
+            for (; i<(int)vertical_axis; i++) {
+                at(result,1) *= at(inp_shape,i);
+            }
+        }
+        if (dim == 1) {
+            at(result,0) = 1;
+            at(result,1) = at(inp_shape,0);
+        }
+
+        return result;
+    }
+
     template <typename index_t=size_t, ReductionKind reduction_kind, auto N_ELEM_PACK, typename inp_shape_t, typename out_shape_t>
     auto reduction_2d_shape(meta::as_type<reduction_kind>, meta::as_type<N_ELEM_PACK>, const inp_shape_t& inp_shape, const out_shape_t&)
     {
@@ -155,8 +195,6 @@ namespace nmtools::index
         if constexpr (meta::is_resizable_v<result_t>) {
             result.resize(2); // strictly 2
         }
-
-        // assume out (and result) is 2D
 
         constexpr auto row_idx = meta::ct_v<0>;
         constexpr auto col_idx = meta::ct_v<1>;
@@ -174,6 +212,14 @@ namespace nmtools::index
 
         return result;
     }
+    
+    template <typename index_t=size_t, ReductionKind reduction_kind, auto N_ELEM_PACK, typename inp_shape_t, typename out_shape_t, typename axis_t=index_t>
+    auto reduction_2d_shape(meta::as_type<reduction_kind> kind, meta::as_type<N_ELEM_PACK> n_elem_pack, const inp_shape_t& inp_shape, const out_shape_t& out_shape, axis_t axis)
+    {
+        auto inp_reshaped = reduction_nd_reshape(kind,n_elem_pack,inp_shape,out_shape,axis);
+        auto result = reduction_2d_shape(kind,n_elem_pack,inp_reshaped,out_shape);
+        return result;
+    }
 
     template <typename index_t=size_t, ReductionKind reduction_kind, auto N_ELEM_PACK, typename simd_index_t, typename simd_shape_t, typename out_shape_t, typename inp_shape_t>
     auto reduction_2d(meta::as_type<reduction_kind>, meta::as_type<N_ELEM_PACK>, const simd_index_t& simd_index, const simd_shape_t&, const out_shape_t& out_shape, const inp_shape_t& inp_shape)
@@ -184,8 +230,8 @@ namespace nmtools::index
         auto result = result_t {};
 
         const auto n_ops  = [&](){
-            if (reduction_kind == ReductionKind::VERTICAL) {
-                return at(out_shape,meta::ct_v<-1>);
+            if constexpr (reduction_kind == ReductionKind::VERTICAL) {
+                return at(inp_shape,meta::ct_v<-1>);
             } else {
                 return at(inp_shape,meta::ct_v<-1>);
             }
@@ -206,11 +252,13 @@ namespace nmtools::index
             at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,inp_index};
         } else if constexpr (reduction_kind == ReductionKind::VERTICAL) {
             auto inp_offset = at(simd_index,meta::ct_v<0>) * at(inp_shape,meta::ct_v<1>);
+            // auto out_offset = len(out_shape) > 1 ? at(simd_index,meta::ct_v<0>) * at(out_shape,1) : 0;
+            auto out_offset = len(out_shape) > 1 ? (at(simd_index,meta::ct_v<0>) / (at(inp_shape,meta::ct_v<0>) / at(out_shape,meta::ct_v<0>))) * at(out_shape,meta::ct_v<-1>) : 0;
             auto out_index  = at(simd_index,meta::ct_v<1>) * N_ELEM_PACK;
             auto inp_index  = at(simd_index,meta::ct_v<1>) * N_ELEM_PACK;
 
             auto rel_scalar_index = n_simd * N_ELEM_PACK + (at(simd_index,meta::ct_v<1>) - n_simd);
-            out_index = out_index > n_ops ? rel_scalar_index : out_index;
+            out_index = out_index > n_ops ? (out_offset + rel_scalar_index) : (out_offset + out_index);
             inp_index = inp_index > n_ops ? (inp_offset + rel_scalar_index) : (inp_offset + inp_index);
 
             // prefer scalar instead of padding because scalar store for output
@@ -228,8 +276,8 @@ namespace nmtools::index
     {
         using inp_shape_type  = const inp_shape_t;
         using out_shape_type  = const out_shape_t;
-        using simd_shape_type = const nmtools_array<index_t,2>;
 
+        using simd_shape_type = meta::remove_cvref_t<decltype(reduction_2d_shape(meta::as_type_v<reduction_kind>,meta::as_type_v<N_ELEM_PACK>,meta::declval<inp_shape_t>(),meta::declval<out_shape_t>()))>;
         using simd_index_type = nmtools_array<index_t,2>;
         using index_type = index_t;
         using size_type  = index_t;
@@ -266,6 +314,14 @@ namespace nmtools::index
     {
         using enumerator_t = reduction_2d_enumerator_t<index_t,reduction_kind,N_ELEM_PACK,out_shape_t,inp_shape_t>;
         return enumerator_t{n_elem_pack,kind,out_shape,inp_shape};
+    }
+
+    template <typename index_t=size_t, ReductionKind reduction_kind, auto N_ELEM_PACK, typename out_shape_t, typename inp_shape_t, typename axis_t>
+    constexpr auto reduction_2d_enumerator(meta::as_type<reduction_kind> kind, meta::as_type<N_ELEM_PACK> n_elem_pack, const out_shape_t& out_shape, const inp_shape_t& inp_shape, axis_t axis)
+    {
+        auto inp_reshaped = reduction_nd_reshape(kind,n_elem_pack,inp_shape,out_shape,axis);
+        auto out_reshaped = reduction_nd_reshape(kind,n_elem_pack,out_shape,out_shape,axis);
+        return reduction_2d_enumerator(kind,n_elem_pack,out_reshaped,inp_reshaped);
     }
 
     template <auto N_ELEM_PACK, typename out_shape_t, typename lhs_shape_t, typename rhs_shape_t>
