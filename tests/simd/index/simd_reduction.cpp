@@ -105,6 +105,97 @@ TEST_CASE("reduction_2d_shape(case2d)" * doctest::test_suite("simd::index"))
     NMTOOLS_ASSERT_EQUAL( result, expect );
 }
 
+TEST_CASE("reduction_2d_shape(case3a)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::HORIZONTAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{2,2,5};
+    auto out_shape   = nmtools_array{2,2,1};
+    auto axis = 2; // last
+
+    auto result = ix::reduction_2d_shape(reduction_kind,n_elem_pack,inp_shape,out_shape,axis);
+    auto expect = nmtools_array{2*2,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("reduction_2d_shape(case3b)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{2,2,5};
+    auto out_shape   = nmtools_array{2,1,5};
+    auto axis = 1;
+
+    auto result = ix::reduction_2d_shape(reduction_kind,n_elem_pack,inp_shape,out_shape,axis); 
+    auto expect = nmtools_array{2*2,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("reduction_2d_shape(case3c)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{2,2,5};
+    auto out_shape   = nmtools_array{2,1,5};
+    auto axis = 0;
+
+    auto result = ix::reduction_2d_shape(reduction_kind,n_elem_pack,inp_shape,out_shape,axis);
+    auto expect = nmtools_array{2,4};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("reduction_2d_shape(case4a)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{3,2,2,5};
+    auto out_shape   = nmtools_array{1,2,2,5};
+    auto axis = 0;
+
+    auto result = ix::reduction_2d_shape(reduction_kind,n_elem_pack,inp_shape,out_shape,axis);
+    auto expect = nmtools_array{3,5};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("reduction_2d_shape(case4b)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{3,2,2,5};
+    auto out_shape   = nmtools_array{3,1,2,5};
+    auto axis = 1;
+
+    auto result = ix::reduction_2d_shape(reduction_kind,n_elem_pack,inp_shape,out_shape,axis);
+    auto expect = nmtools_array{6,4};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("reduction_2d_shape(case4c)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{3,2,2,5};
+    auto out_shape   = nmtools_array{3,2,1,5};
+    auto axis = 2;
+
+    auto result = ix::reduction_2d_shape(reduction_kind,n_elem_pack,inp_shape,out_shape,axis);
+    auto expect = nmtools_array{12,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
+TEST_CASE("reduction_2d_shape(case4d)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::HORIZONTAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{3,2,2,5};
+    auto out_shape   = nmtools_array{3,2,2,1};
+    auto axis = 3;
+
+    auto result = ix::reduction_2d_shape(reduction_kind,n_elem_pack,inp_shape,out_shape,axis);
+    auto expect = nmtools_array{12,2};
+    NMTOOLS_ASSERT_EQUAL( result, expect );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // VERTICAL REDUCTION
@@ -1009,6 +1100,102 @@ TEST_CASE("reduction_2d_enumerator(case4b)" * doctest::test_suite("simd::index")
     };
     auto inp_offsets = nmtools_array{0,4,8,10,14,18,20,24,28,30,34,38};
     auto out_offsets = nmtools_array{0,0,0,1,1,1,2,2,2,3,3,3};
+
+
+    NMTOOLS_ASSERT_EQUAL( enumerator.size(), inp_offsets.size() );
+    for (size_t i=0; i<enumerator.size(); i++) {
+        auto [out_pack, inp_pack] = enumerator[i];
+        const auto out_tag = nmtools::get<0>(out_pack);
+        const auto out_offset = nmtools::get<1>(out_pack);
+        const auto inp_tag = nmtools::get<0>(inp_pack);
+        const auto inp_offset = nmtools::get<1>(inp_pack);
+        CHECK_MESSAGE( out_tag == out_tags[i], i );
+        CHECK_MESSAGE( inp_tag == inp_tags[i], i );
+        NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
+        NMTOOLS_ASSERT_EQUAL( inp_offset, inp_offsets[i] );
+    }
+}
+
+TEST_CASE("reduction_2d_enumerator(case5a)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{2,2,5};
+    auto out_shape   = nmtools_array{1,2,5};
+    auto simd_shape  = nmtools_array{2,4};
+    auto axis = 0;
+
+    auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape,axis);
+    auto out_tags = nmtools_array{
+        SIMD::ACCUMULATE_PACKED,
+        SIMD::ACCUMULATE_PACKED,
+        SIMD::ACCUMULATE,
+        SIMD::ACCUMULATE,
+        SIMD::ACCUMULATE_PACKED,
+        SIMD::ACCUMULATE_PACKED,
+        SIMD::ACCUMULATE,
+        SIMD::ACCUMULATE,
+    };
+    auto inp_tags = nmtools_array{
+        SIMD::PACKED,
+        SIMD::PACKED,
+        SIMD::SCALAR,
+        SIMD::SCALAR,
+        SIMD::PACKED,
+        SIMD::PACKED,
+        SIMD::SCALAR,
+        SIMD::SCALAR,
+    };
+    auto inp_offsets = nmtools_array{0,4,8,9,10,14,18,19};
+    auto out_offsets = nmtools_array{0,4,8,9,0,4,8,9};
+
+
+    NMTOOLS_ASSERT_EQUAL( enumerator.size(), inp_offsets.size() );
+    for (size_t i=0; i<enumerator.size(); i++) {
+        auto [out_pack, inp_pack] = enumerator[i];
+        const auto out_tag = nmtools::get<0>(out_pack);
+        const auto out_offset = nmtools::get<1>(out_pack);
+        const auto inp_tag = nmtools::get<0>(inp_pack);
+        const auto inp_offset = nmtools::get<1>(inp_pack);
+        CHECK_MESSAGE( out_tag == out_tags[i], i );
+        CHECK_MESSAGE( inp_tag == inp_tags[i], i );
+        NMTOOLS_ASSERT_EQUAL( out_offset, out_offsets[i] );
+        NMTOOLS_ASSERT_EQUAL( inp_offset, inp_offsets[i] );
+    }
+}
+
+TEST_CASE("reduction_2d_enumerator(case5b)" * doctest::test_suite("simd::index"))
+{
+    auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
+    auto n_elem_pack = meta::as_type_v<4>;
+    auto inp_shape   = nmtools_array{2,2,5};
+    auto out_shape   = nmtools_array{2,1,5};
+    auto simd_shape  = nmtools_array{4,2};
+    auto axis = 1;
+
+    auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape,axis);
+    auto out_tags = nmtools_array{
+        SIMD::ACCUMULATE_PACKED,
+        SIMD::ACCUMULATE,
+        SIMD::ACCUMULATE_PACKED,
+        SIMD::ACCUMULATE,
+        SIMD::ACCUMULATE_PACKED,
+        SIMD::ACCUMULATE,
+        SIMD::ACCUMULATE_PACKED,
+        SIMD::ACCUMULATE,
+    };
+    auto inp_tags = nmtools_array{
+        SIMD::PACKED,
+        SIMD::SCALAR,
+        SIMD::PACKED,
+        SIMD::SCALAR,
+        SIMD::PACKED,
+        SIMD::SCALAR,
+        SIMD::PACKED,
+        SIMD::SCALAR,
+    };
+    auto inp_offsets = nmtools_array{0,4,5,9,10,14,15,19};
+    auto out_offsets = nmtools_array{0,4,0,4,5,9,5,9};
 
 
     NMTOOLS_ASSERT_EQUAL( enumerator.size(), inp_offsets.size() );

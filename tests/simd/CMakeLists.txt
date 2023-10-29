@@ -45,6 +45,7 @@ if (NMTOOLS_SIMD_TEST_SSE)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
             x86/reduction_sse.cpp
             x86/reduction_2d_sse.cpp
+            x86/reduction_nd_sse.cpp
         )
     endif (NMTOOLS_SIMD_TEST_REDUCTION)
 endif (NMTOOLS_SIMD_TEST_SSE)
@@ -63,6 +64,7 @@ if (NMTOOLS_SIMD_TEST_AVX)
         set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
             x86/reduction_avx.cpp
             x86/reduction_2d_avx.cpp
+            x86/reduction_nd_avx.cpp
         )
     endif (NMTOOLS_SIMD_TEST_REDUCTION)
 endif (NMTOOLS_SIMD_TEST_AVX)
