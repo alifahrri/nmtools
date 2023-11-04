@@ -107,6 +107,9 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
 
         ## binary ufuncs ##
         kernels/add.cpp
+        kernels/multiply.cpp
+        kernels/subtract.cpp
+        kernels/divide.cpp
 
         ## indexing ##
         kernels/broadcast_to.cpp
@@ -390,6 +393,21 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/broadcast_to.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_broadcast_to.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_multiply.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/multiply.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_multiply.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_multiply.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_multiply.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_divide.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/divide.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_divide.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_divide.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_divide.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/subtract.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_subtract.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     BYPRODUCTS
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.spv
@@ -501,6 +519,12 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_add.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_broadcast_to.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_multiply.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_multiply.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_divide.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_divide.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     )
         endif () # CMAKE_CXX_COMPILER_ID
