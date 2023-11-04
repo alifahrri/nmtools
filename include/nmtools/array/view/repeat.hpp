@@ -66,7 +66,15 @@ namespace nmtools::view
     template <typename array_t, typename repeats_t, typename axis_t>
     constexpr auto repeat(const array_t& array, const repeats_t& repeats, const axis_t& axis)
     {
+        // #if !defined(NMTOOLS_NO_BASE_ACCESS)
+        #if 1
         return decorator_t<repeat_t,array_t,repeats_t,axis_t>{{array,repeats,axis}};
+        #else
+        using array_type = meta::remove_address_space_t<array_t>;
+        using return_t = decorator_t<repeat_t,array_type,repeats_t,axis_t>;
+        using repeated_t = repeat_t<array_type,repeats_t,axis_t>;
+        return return_t{repeated_t{array,repeats,axis}};
+        #endif
     } // repeat
 } // namespace nmtools::view
 
@@ -103,7 +111,8 @@ namespace nmtools::meta
     >
     {
         using view_type  = view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t>;
-        using dst_shape_type = typename view_type::dst_shape_type;
+        using repeat_type = view::repeat_t<array_t,repeats_t,axis_t>;
+        using dst_shape_type = typename repeat_type::dst_shape_type;
 
         static constexpr auto value = [](){
             // repeats and axis may change the resulting shape
