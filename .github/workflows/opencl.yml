@@ -40,8 +40,6 @@ jobs:
           NMTOOLS_OPENCL_DEBUG=1 build/tests/opencl/numeric-tests-opencl-doctest
 
   clang-opencl:
-    ## TODO: fix
-    if: ${{ false }}
     name: clang-opencl
     runs-on: ubuntu-22.04
     steps:

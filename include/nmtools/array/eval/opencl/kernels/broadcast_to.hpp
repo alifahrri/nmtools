@@ -102,8 +102,8 @@ namespace nmtools::array::opencl
             auto kernel = context->get_kernel(kernel_name);
 
             auto out_size = nmtools::size(output);
-            auto inp_size = nmtools::size(inp_array);
-            auto dst_size = nmtools::size(view);
+            [[maybe_unused]] auto inp_size = nmtools::size(inp_array);
+            [[maybe_unused]] auto dst_size = nmtools::size(view);
 
             auto out_shape = nmtools::shape(output);
             auto inp_shape = nmtools::shape(inp_array);

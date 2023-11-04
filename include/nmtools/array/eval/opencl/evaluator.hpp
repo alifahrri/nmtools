@@ -42,10 +42,10 @@ namespace nmtools::array
                 return;
 
             using ::nmtools::index::ndindex;
-            auto out_index = ndindex(out_shape);
-            auto inp_index = ndindex(inp_shape);
+            [[maybe_unused]] auto out_index = ndindex(out_shape);
+            [[maybe_unused]] auto inp_index = ndindex(inp_shape);
 
-            using element_type = meta::get_element_type_t<output_t>;
+            using element_type [[maybe_unused]] = meta::get_element_type_t<output_t>;
 
             auto kernel = opencl::kernel_t<view_t>{view,context};
 

@@ -20,7 +20,7 @@ namespace nmtools::array::opencl
     {
         void operator()(cl_mem* ptr) const
         {
-            cl_int ret = clReleaseMemObject(*ptr);
+            [[maybe_unused]] cl_int ret = clReleaseMemObject(*ptr);
             delete ptr;
         }
     };
@@ -29,7 +29,7 @@ namespace nmtools::array::opencl
     {
         void operator()(cl_kernel* ptr) const
         {
-            cl_int ret = clReleaseKernel(*ptr);
+            [[maybe_unused]] cl_int ret = clReleaseKernel(*ptr);
             delete ptr;
         }
     };
@@ -38,7 +38,7 @@ namespace nmtools::array::opencl
     {
         void operator()(cl_program* ptr) const
         {
-            cl_int ret = clReleaseProgram(*ptr);
+            [[maybe_unused]] cl_int ret = clReleaseProgram(*ptr);
             delete ptr;
         }
     };
@@ -127,8 +127,8 @@ namespace nmtools::array::opencl
         cl_int status_;
         public:
         cl_exception(cl_int status, const std::string& message)
-            : status_(status)
-            , std::runtime_error(message)
+            : std::runtime_error(message)
+            , status_(status)
         {}
 
         inline auto status() const
@@ -489,7 +489,7 @@ namespace nmtools::array::opencl
 
         ~context_t()
         {
-            cl_int ret;
+            [[maybe_unused]] cl_int ret;
             ret = clFlush(command_queue);
             ret = clFinish(command_queue);
             ret = clReleaseCommandQueue(command_queue);
