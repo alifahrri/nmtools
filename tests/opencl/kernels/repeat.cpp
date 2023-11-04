@@ -1,0 +1,42 @@
+#include "nmtools/array/eval/opencl/kernels/repeat.hpp"
+#ifndef NMTOOLS_OPENCL_BUILD_KERNELS
+#include "nmtools/array/eval/opencl/context.hpp"
+#include "nmtools/array/eval/opencl/evaluator.hpp"
+#include "nmtools/array/array/arange.hpp"
+#include "nmtools/array/array/repeat.hpp"
+#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/testing/doctest.hpp"
+
+namespace nm = nmtools;
+namespace ix = nm::index;
+namespace na = nm::array;
+namespace meta = nm::meta;
+namespace opencl = na::opencl;
+
+#define OPENCL_TEST(fn,...) \
+{ \
+    auto expect = na::fn(__VA_ARGS__); \
+    auto result = na::fn(__VA_ARGS__,opencl::default_context()); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect ); \
+}
+
+TEST_CASE("repeat(case1)" * doctest::test_suite("opencl::repeat"))
+{
+    auto shape = nmtools_array<uint32_t,2>{1,64};
+    auto input = na::reshape(na::arange(ix::product(shape)),shape);
+    auto repeats = nmtools_array<uint32_t,2>{1,2};
+    auto axis = 0;
+    OPENCL_TEST(repeat,input,repeats,axis);
+}
+
+TEST_CASE("repeat(case2)" * doctest::test_suite("opencl::repeat"))
+{
+    auto shape = nmtools_array<uint32_t,2>{8,8};
+    auto input = na::reshape(na::arange(ix::product(shape)),shape);
+    auto repeats = nmtools_array<uint32_t,2>{1,2};
+    auto axis = 0;
+    OPENCL_TEST(repeat,input,repeats,axis);
+}
+
+#endif // NMTOOLS_OPENCL_BUILD_KERNELS

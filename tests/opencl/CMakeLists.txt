@@ -113,6 +113,8 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
 
         ## indexing ##
         kernels/broadcast_to.cpp
+        kernels/transpose.cpp
+        kernels/repeat.cpp
     )
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-kernels
@@ -408,6 +410,16 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/subtract.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_subtract.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_transpose.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/transpose.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_transpose.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_transpose.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_transpose.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_repeat.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/repeat.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_repeat.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_repeat.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_repeat.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     BYPRODUCTS
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.spv
@@ -525,6 +537,10 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_subtract.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_divide.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_divide.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_transpose.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_transpose.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_repeat.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_repeat.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     )
         endif () # CMAKE_CXX_COMPILER_ID
