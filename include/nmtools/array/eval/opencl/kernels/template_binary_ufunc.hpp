@@ -73,8 +73,12 @@ extern unsigned int nmtools_cl_kernel_len;
 
 namespace nmtools::array::opencl
 {
+    #ifndef NMTOOLS_UFUNC_OP_HAS_ARGS
+    #define NMTOOLS_UFUNC_OP_HAS_ARGS 1
+    #endif
+
     // TODO: add variadic template for op args here, if required
-    #if 1
+    #if NMTOOLS_UFUNC_OP_HAS_ARGS
     template <typename...arrays_t, typename...op_args_t>
     struct kernel_t<view::decorator_t<view::ufunc_t,view::nmtools_cl_ufunc_type<op_args_t...>,arrays_t...>>
         : base_kernel_t< kernel_t<view::decorator_t<view::ufunc_t,view::nmtools_cl_ufunc_type<op_args_t...>,arrays_t...>> >
