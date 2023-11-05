@@ -37,9 +37,9 @@ kernel void nmtools_cl_kernel_name(out_type,inp_type) \
     , const unsigned int axis \
     ) \
 { \
-    auto repeats = na::create_vector(repeats_ptr,repeats_size); \
-    auto input = na::create_array(inp_ptr,inp_shape_ptr,inp_dim); \
-    auto output = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim); \
+    auto repeats  = na::create_vector(repeats_ptr,repeats_size); \
+    auto input    = na::create_array(inp_ptr,inp_shape_ptr,inp_dim); \
+    auto output   = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim); \
     auto repeated = view::repeat(input,repeats,axis); \
     opencl::assign_array(output,repeated); \
 }
