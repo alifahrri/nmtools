@@ -66,8 +66,7 @@ namespace nmtools::view
     template <typename array_t, typename repeats_t, typename axis_t>
     constexpr auto repeat(const array_t& array, const repeats_t& repeats, const axis_t& axis)
     {
-        // #if !defined(NMTOOLS_NO_BASE_ACCESS)
-        #if 1
+        #if !defined(NMTOOLS_NO_BASE_ACCESS)
         return decorator_t<repeat_t,array_t,repeats_t,axis_t>{{array,repeats,axis}};
         #else
         using array_type = meta::remove_address_space_t<array_t>;

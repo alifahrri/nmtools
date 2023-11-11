@@ -96,7 +96,7 @@ namespace nmtools::view
     template <typename array_t, typename axes_t=none_t>
     constexpr auto transpose(const array_t& array, const axes_t& axes=axes_t{})
     {
-        #ifndef NMTOOLS_NO_BASE_ACCESS
+        #if !defined(NMTOOLS_NO_BASE_ACCESS)
         return decorator_t<transpose_t,array_t,axes_t>{{array,axes}};
         #else // NMTOOLS_NO_BASE_ACCESS
         using return_t = decorator_t<transpose_t,array_t,axes_t>;
