@@ -7,6 +7,7 @@
 #include "nmtools/array/view/mutable_ref.hpp"
 #include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/array/eval/opencl/kernel_helper.hpp"
+#include "nmtools/array/index/cast.hpp"
 
 #ifndef nm_stringify
 #define nm_stringify(a) #a
@@ -14,6 +15,11 @@
 
 #define nmtools_cl_kernel_name(out_type,inp_type) repeat##_##out_type##_##inp_type
 #define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(repeat##_##out_type##_##inp_type)
+
+#ifndef nm_cl_index_t
+using nmtools::int32_t;
+#define nm_cl_index_t int32_t
+#endif
 
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
@@ -28,13 +34,13 @@ namespace detail = nmtools::view::detail;
 kernel void nmtools_cl_kernel_name(out_type,inp_type) \
     ( global out_type* out_ptr \
     , global const inp_type* inp_ptr \
-    , global const unsigned int* out_shape_ptr \
-    , global const unsigned int* inp_shape_ptr \
-    , global const unsigned int* repeats_ptr \
-    , const unsigned int out_dim \
-    , const unsigned int inp_dim \
-    , const unsigned int repeats_size \
-    , const unsigned int axis \
+    , global const nm_cl_index_t* out_shape_ptr \
+    , global const nm_cl_index_t* inp_shape_ptr \
+    , global const nm_cl_index_t* repeats_ptr \
+    , const nm_cl_index_t out_dim \
+    , const nm_cl_index_t inp_dim \
+    , const nm_cl_index_t repeats_size \
+    , const nm_cl_index_t axis \
     ) \
 { \
     auto repeats  = na::create_vector(repeats_ptr,repeats_size); \
@@ -96,6 +102,9 @@ namespace nmtools::array::opencl
             auto inp_buffer = context->create_buffer(inp_array);
             auto out_buffer = context->create_buffer<out_t>(nmtools::size(output));
 
+            uint32_t repeats_size = nmtools::len(view.repeats);
+            uint32_t axis = view.axis;
+
             auto kernel_name = this->kernel_name<inp_t,out_t>();
 
             if (!context->has_kernel(kernel_name)) {
@@ -111,21 +120,18 @@ namespace nmtools::array::opencl
             auto out_shape = nmtools::shape(output);
             auto inp_shape = nmtools::shape(inp_array);
 
-            auto out_shape_buffer = context->create_buffer(out_shape);
-            auto inp_shape_buffer = context->create_buffer(inp_shape);
-            auto repeats_buffer = context->create_buffer(view.repeats);
+            auto out_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(out_shape));
+            auto inp_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(inp_shape));
+            auto repeats_buffer = context->create_buffer(index::cast<nm_cl_index_t>(view.repeats));
 
             uint32_t out_dim = nmtools::len(out_shape);
             uint32_t inp_dim = nmtools::len(inp_shape);
-
-            uint32_t repeats_size = nmtools::len(view.repeats);
 
             auto kernel_info = kernel.kernel_info_;
             auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
             auto global_size = nmtools_array{size_t(std::ceil(float(out_size) / local_size[0])) * local_size[0]};
 
-            uint32_t axis = view.axis;
-            auto default_args = nmtools_tuple{out_buffer,inp_buffer,out_shape_buffer,inp_shape_buffer,repeats_buffer,out_dim,inp_dim,repeats_size,axis};
+            auto default_args = nmtools_tuple{out_buffer,inp_buffer,out_shape_buffer,inp_shape_buffer,repeats_buffer,index::cast<nm_cl_index_t>(out_dim),index::cast<nm_cl_index_t>(inp_dim),index::cast<nm_cl_index_t>(repeats_size),index::cast<nm_cl_index_t>(axis)};
 
             context->set_args(kernel,default_args);
             context->run(kernel,out_buffer,output,global_size,local_size);

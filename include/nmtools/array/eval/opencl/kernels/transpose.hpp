@@ -7,6 +7,7 @@
 #include "nmtools/array/view/mutable_ref.hpp"
 #include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/array/eval/opencl/kernel_helper.hpp"
+#include "nmtools/array/index/cast.hpp"
 
 #ifndef nm_stringify
 #define nm_stringify(a) #a
@@ -28,19 +29,19 @@ namespace detail = nmtools::view::detail;
 kernel void nmtools_cl_kernel_name(out_type,inp_type) \
     ( global out_type* out_ptr                  \
     , global const inp_type* inp_ptr            \
-    , global const unsigned int* out_shape_ptr  \
-    , global const unsigned int* inp_shape_ptr  \
-    , global const unsigned int* axes_ptr       \
-    , const unsigned int out_dim                \
-    , const unsigned int inp_dim                \
-    , const unsigned int axes_size              \
+    , global const nm_cl_index_t* out_shape_ptr \
+    , global const nm_cl_index_t* inp_shape_ptr \
+    , global const nm_cl_index_t* axes_ptr      \
+    , const nm_cl_index_t out_dim               \
+    , const nm_cl_index_t inp_dim               \
+    , const nm_cl_index_t axes_size             \
     ) \
 { \
-    auto axes = na::create_vector(axes_ptr,axes_size);                      \
-    auto input = na::create_array(inp_ptr,inp_shape_ptr,inp_dim);           \
-    auto output = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim);  \
-    auto transposed = view::transpose(input,axes);                          \
-    opencl::assign_array(output,transposed);                                \
+    auto axes       = na::create_vector(axes_ptr,axes_size);                    \
+    auto input      = na::create_array(inp_ptr,inp_shape_ptr,inp_dim);          \
+    auto output     = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim);  \
+    auto transposed = view::transpose(input,axes);                              \
+    opencl::assign_array(output,transposed);                                    \
 }
 
 nmtools_cl_kernel(float,float)
@@ -111,9 +112,9 @@ namespace nmtools::array::opencl
             auto out_shape = nmtools::shape(output);
             auto inp_shape = nmtools::shape(inp_array);
 
-            auto out_shape_buffer = context->create_buffer(out_shape);
-            auto inp_shape_buffer = context->create_buffer(inp_shape);
-            auto axes_buffer = context->create_buffer(view.axes);
+            auto out_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(out_shape));
+            auto inp_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(inp_shape));
+            auto axes_buffer = context->create_buffer(index::cast<nm_cl_index_t>(view.axes));
 
             uint32_t out_dim = nmtools::len(out_shape);
             uint32_t inp_dim = nmtools::len(inp_shape);
@@ -124,7 +125,11 @@ namespace nmtools::array::opencl
             auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
             auto global_size = nmtools_array{size_t(std::ceil(float(out_size) / local_size[0])) * local_size[0]};
 
-            auto default_args = nmtools_tuple{out_buffer,inp_buffer,out_shape_buffer,inp_shape_buffer,axes_buffer,out_dim,inp_dim,axes_size};
+            auto default_args = nmtools_tuple{out_buffer,inp_buffer,out_shape_buffer,inp_shape_buffer,axes_buffer
+                ,index::cast<nm_cl_index_t>(out_dim)
+                ,index::cast<nm_cl_index_t>(inp_dim)
+                ,index::cast<nm_cl_index_t>(axes_size)
+            };
 
             context->set_args(kernel,default_args);
             context->run(kernel,out_buffer,output,global_size,local_size);
