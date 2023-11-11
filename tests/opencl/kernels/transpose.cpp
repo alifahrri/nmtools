@@ -23,17 +23,67 @@ namespace opencl = na::opencl;
 
 TEST_CASE("transpose(case1)" * doctest::test_suite("opencl::transpose"))
 {
-    auto shape = nmtools_array<uint32_t,2>{1,64};
-    auto inp = na::reshape(na::arange(ix::product(shape)),shape);
-    auto axes = nmtools_array<uint32_t,2>{0,1};
+    auto shape = nmtools_array{1,64};
+    auto numel = ix::product(shape);
+    auto start = 1;
+    auto stop  = numel + start;
+    auto inp = na::reshape(na::arange(start,stop),shape);
+    auto axes = nmtools_array{0,1};
     OPENCL_TEST(transpose,inp,axes);
 }
 
-TEST_CASE("transpose(case1)" * doctest::test_suite("opencl::transpose"))
+TEST_CASE("transpose(case2)" * doctest::test_suite("opencl::transpose"))
 {
-    auto shape = nmtools_array<uint32_t,2>{1,64};
-    auto inp = na::reshape(na::arange(ix::product(shape)),shape);
-    auto axes = nmtools_array<uint32_t,2>{1,0};
+    auto shape = nmtools_array{1,64};
+    auto numel = ix::product(shape);
+    auto start = 1;
+    auto stop  = numel + start;
+    auto inp = na::reshape(na::arange(start,stop),shape);
+    auto axes = nmtools_array{1,0};
+    OPENCL_TEST(transpose,inp,axes);
+}
+
+TEST_CASE("transpose(case3)" * doctest::test_suite("opencl::transpose"))
+{
+    auto shape = nmtools_array{1,8,4,2};
+    auto numel = ix::product(shape);
+    auto start = 1;
+    auto stop  = numel + start;
+    auto inp = na::reshape(na::arange(start,stop),shape);
+    auto axes = nmtools_array{0,1,3,2};
+    OPENCL_TEST(transpose,inp,axes);
+}
+
+TEST_CASE("transpose(case4)" * doctest::test_suite("opencl::transpose"))
+{
+    auto shape = nmtools_array{1,8,4,2};
+    auto numel = ix::product(shape);
+    auto start = 1;
+    auto stop  = numel + start;
+    auto inp = na::reshape(na::arange(start,stop),shape);
+    auto axes = nmtools_array{1,2,0,3};
+    OPENCL_TEST(transpose,inp,axes);
+}
+
+TEST_CASE("transpose(case5)" * doctest::test_suite("opencl::transpose"))
+{
+    auto shape = nmtools_array{3,1,8,4,2};
+    auto numel = ix::product(shape);
+    auto start = 1;
+    auto stop  = numel + start;
+    auto inp = na::reshape(na::arange(start,stop),shape);
+    auto axes = nmtools_array{1,2,4,0,3};
+    OPENCL_TEST(transpose,inp,axes);
+}
+
+TEST_CASE("transpose(case6)" * doctest::test_suite("opencl::transpose"))
+{
+    auto shape = nmtools_array{3,1,8,4,5,2};
+    auto numel = ix::product(shape);
+    auto start = 1;
+    auto stop  = numel + start;
+    auto inp = na::reshape(na::arange(start,stop),shape);
+    auto axes = nmtools_array{1,2,4,0,5,3};
     OPENCL_TEST(transpose,inp,axes);
 }
 

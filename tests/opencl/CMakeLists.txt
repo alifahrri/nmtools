@@ -46,7 +46,10 @@ set(LLVM_SPIRV_OPTIONS
 )
 
 # somehow doesn't work on -O2, -O3, -O0 :(
-set(CLANG_OPENCL_ARGS -emit-llvm -target spir64-unknown-unknown -Xclang -finclude-default-header -Xclang -cl-std=CLC++ -O1)
+set(CLANG_OPENCL_ARGS -emit-llvm -target spir64-unknown-unknown
+    -Wall -Wextra -Wno-gnu-string-literal-operator-template
+    -Xclang -finclude-default-header
+    -Xclang -cl-std=CLC++ -O1)
 set(NMTOOLS_OPENCL_MACROS -D__OPENCL_C_VERSION__=120 -D__OPENCL_VERSION__=120 -DNMTOOLS_OPENCL_BUILD_KERNELS)
 
 if (NMTOOLS_OPENCL_TEST_UFUNC)
@@ -555,6 +558,9 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
         index/gather.cpp
         index/compute_strides.cpp
         index/compute_indices.cpp
+        index/repeat.cpp
+        index/transpose.cpp
+        index/product.cpp
     )
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-index-tests
@@ -598,6 +604,21 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_offset.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/compute_offset.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_offset.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_compute_offset.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_compute_offset.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
+                &&
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_repeat.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/repeat.cpp
+                && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_repeat.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_repeat.bc
+                && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_repeat.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
+                &&
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_transpose.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/transpose.cpp
+                && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_transpose.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_transpose.bc
+                && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_transpose.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
+                &&
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/product.cpp
+                && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.bc
+                && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_product.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
             BYPRODUCTS
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.bc
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.spv
@@ -607,6 +628,12 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_nonzero.spv
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_shape.bc
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_shape.spv
+                ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_repeat.bc
+                ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_repeat.spv
+                ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_transpose.bc
+                ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_transpose.spv
+                ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.bc
+                ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.spv
         )
     endif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif (NMTOOLS_OPENCL_TEST_INDEX)
@@ -619,6 +646,9 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
 )
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_dependencies(${PROJECT_NAME}-doctest ${PROJECT_NAME}-build-kernels)
+    if (NMTOOLS_OPENCL_TEST_INDEX) 
+    add_dependencies(${PROJECT_NAME}-doctest ${PROJECT_NAME}-build-index-tests)
+    endif ()
 endif ()
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE OpenCL)
 
