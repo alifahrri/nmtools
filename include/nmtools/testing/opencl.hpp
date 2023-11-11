@@ -3,8 +3,15 @@
 
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/eval/opencl/context.hpp"
+#include "nmtools/array/index/cast.hpp"
+
 #include <cstring>
 #include <unordered_map>
+
+#ifndef nm_cl_index_t
+using nmtools::int32_t;
+#define nm_cl_index_t int32_t
+#endif
 
 namespace opencl = nmtools::array::opencl;
 
@@ -81,8 +88,15 @@ namespace nmtools::testing
                     auto cl_buffers_ = utility::tuple_append(cl_buffers,arg);
                     return nmtools_tuple{cl_buffers_,cl_sizes};
                 } else {
-                    auto buffer = context->create_buffer(arg);
-                    auto size   = (uint32_t)nmtools::size(arg);
+                    auto buffer = [&](){
+                        if constexpr (meta::is_index_array_v<decltype(arg)>) {
+                            auto arg_ = index::cast<nm_cl_index_t>(arg);
+                            return context->create_buffer(arg_);
+                        } else {
+                            return context->create_buffer(arg);
+                        }
+                    }();
+                    auto size   = (nm_cl_index_t)nmtools::size(arg);
                     auto cl_buffers_ = utility::tuple_append(cl_buffers,buffer);
                     auto cl_sizes_   = utility::tuple_append(cl_sizes,size);
                     return nmtools_tuple{cl_buffers_,cl_sizes_};
@@ -90,7 +104,7 @@ namespace nmtools::testing
             }, nmtools_tuple{nmtools_tuple<>{},nmtools_tuple<>{}});
 
             auto cl_buffers = utility::tuple_cat(nmtools_tuple{out_buffer},args_cl_buffers);
-            auto cl_sizes = utility::tuple_cat(nmtools_tuple{(uint32_t)out_size},args_cl_sizes);
+            auto cl_sizes = utility::tuple_cat(nmtools_tuple{(nm_cl_index_t)out_size},args_cl_sizes);
             auto cl_args = utility::tuple_cat(cl_buffers,cl_sizes);
 
             context->set_args(kernel,cl_args);
