@@ -16,6 +16,13 @@
 #define NMTOOLS_OPENCL_KERNEL_MAX_DIM_ 8
 #endif
 
+// NOTE: using int32_t here breaks spirv compilation: Invalid cast
+#ifndef nm_cl_index_t
+using nmtools::uint32_t, nmtools::int32_t;
+// #define nm_cl_index_t int32_t
+#define nm_cl_index_t uint32_t
+#endif
+
 namespace nmtools::array::opencl
 {
     struct create_vector_t {};
@@ -30,7 +37,7 @@ namespace nmtools::array::opencl
             vector.resize(dim);
         }
 
-        for (size_type i=0; i<dim; i++) {
+        for (nm_cl_index_t i=0; i<(nm_cl_index_t)dim; i++) {
             at(vector,i) = data_ptr[i];
         }
 
@@ -61,7 +68,7 @@ namespace nmtools::array::opencl
     auto assign_vector(mutable_vector_t& lhs, const vector_t& rhs)
     {
         auto size = nmtools::size(lhs);
-        for (size_t i=0; i<size; i++) {
+        for (nm_cl_index_t i=0; i<(nm_cl_index_t)size; i++) {
             at(lhs,i) = at(rhs,i);
         }
     }
@@ -72,7 +79,7 @@ namespace nmtools::array::opencl
     {
         auto size = nmtools::size(output);
         auto idx = get_global_id(0);
-        if (idx < size) {
+        if ((nm_cl_index_t)idx < (nm_cl_index_t)size) {
             auto flat_lhs = view::mutable_flatten(output);
             auto flat_rhs = view::flatten(input);
             flat_lhs(idx) = flat_rhs(idx);

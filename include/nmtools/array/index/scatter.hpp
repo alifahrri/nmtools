@@ -32,14 +32,15 @@ namespace nmtools::index
     constexpr auto scatter(const vector_t& vec, const indices_t& indices)
     {
         using result_t = meta::resolve_optype_t<scatter_t,vector_t,indices_t>;
+        using size_type = size_t;
 
         auto ret = result_t{};
 
         if constexpr (!meta::is_constant_index_array_v<result_t>) {
             // get the size of vec, add namespace to avoid ambiguous call
-            [[maybe_unused]] auto n = len(vec);
+            [[maybe_unused]] auto n = (size_type)len(vec);
             // get the size of indices
-            [[maybe_unused]] auto m = len(indices);
+            [[maybe_unused]] auto m = (size_type)len(indices);
             // TODO: support optional
             // TODO: static assert whenever possible
             nmtools_cassert ((size_t)n == (size_t)m
@@ -61,7 +62,7 @@ namespace nmtools::index
                     scatter_impl(ret, vec, indices, i);
                 });
             else
-                for (size_t i=0; i<m; i++)
+                for (size_type i=0; i<m; i++)
                     scatter_impl(ret, vec, indices, i);
         }
 

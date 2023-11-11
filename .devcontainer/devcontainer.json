@@ -16,8 +16,8 @@
 	// "dockerFile": "../docker/eoan.dockerfile",
 
     // DOCKERFILE: ubuntu jammy (22.04)
-    // "name": "ubuntu jammy - gcc11, clang14",
-	// "dockerFile": "../docker/jammy.dockerfile",
+    "name": "ubuntu jammy - gcc11, clang14",
+	"dockerFile": "../docker/jammy.dockerfile",
 
     // DOCKERFILE: ubuntu jammy (22.04)
     // "name": "ubuntu lunar",
@@ -32,8 +32,8 @@
 	// "dockerFile": "../docker/circle.dockerfile",
 
     // DOCKERFILE: cuda
-    "name": "cuda-12 ubuntu20.04",
-    "dockerFile": "../docker/cuda.dockerfile",
+    // "name": "cuda-12 ubuntu20.04",
+    // "dockerFile": "../docker/cuda.dockerfile",
 
     // DOCKERFILE: sycl
     // "name": "sycl-clang14 ubuntu22.04",

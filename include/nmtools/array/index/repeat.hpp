@@ -56,7 +56,7 @@ namespace nmtools::index
                 [[maybe_unused]]
                 auto n = len(shape);
 
-                if constexpr (meta::is_resizable_v<return_t>)
+                if constexpr (meta::is_resizable_v<meta::remove_address_space_t<return_t>>)
                     ret.resize(n);
                 
                 if constexpr (meta::is_tuple_v<return_t>) {
@@ -69,7 +69,7 @@ namespace nmtools::index
                         at(ret,i) = at(shape,i);
                 }
 
-                if constexpr (meta::is_index_array_v<repeats_t>) {
+                if constexpr (meta::is_index_array_v<meta::remove_address_space_t<repeats_t>>) {
                     auto r_a = at(ret,axis);
                     auto n   = len(repeats);
                     using common_t [[maybe_unused]] = meta::promote_index_t<decltype(r_a),decltype(n)>;

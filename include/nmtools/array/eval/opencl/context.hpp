@@ -281,7 +281,8 @@ namespace nmtools::array::opencl
         auto create_buffer(const T* data_ptr, size_t n)
         {
             cl_int ret;
-            auto mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, n * sizeof(T), NULL, &ret);
+            auto size_bytes = n * sizeof(T);
+            auto mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, size_bytes, NULL, &ret);
             nmtools_cl_check_error( ret, "creating buffer (clCreateBuffer)" );
             ret = clEnqueueWriteBuffer(command_queue, mem_obj, CL_TRUE, 0, n * sizeof(int), data_ptr, 0, NULL, NULL);
             nmtools_cl_check_error( ret, "enqueueing write buffer (clEnqueueWriteBuffer)" );
@@ -293,7 +294,8 @@ namespace nmtools::array::opencl
         auto create_buffer(size_t n)
         {
             cl_int ret;
-            auto mem_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY, n * sizeof(T), NULL, &ret);
+            auto size_bytes = n * sizeof(T);
+            auto mem_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY, size_bytes, NULL, &ret);
             nmtools_cl_check_error( ret, "creating buffer (clCreateBuffer)" );
             auto shared_mem_obj = cl_mem_ptr_t(new cl_mem(mem_obj), buffer_deleter_t());
             return shared_mem_obj;
@@ -312,12 +314,24 @@ namespace nmtools::array::opencl
 
         template <typename array_t>
         auto copy_buffer(cl_mem_ptr_t mem_obj, array_t& array)
-            -> meta::enable_if_t<meta::is_ndarray_v<array_t> && !meta::is_view_v<array_t>, bool>
+            -> meta::enable_if_t<(meta::is_num_v<array_t> || meta::is_ndarray_v<array_t>) && !meta::is_view_v<array_t>, bool>
         {
             using element_t = meta::get_element_type_t<array_t>;
 
-            auto byte_size = nmtools::size(array) * sizeof(element_t);
-            auto out_ptr   = nmtools::data(array);
+            auto byte_size = [&](){
+                if constexpr (meta::is_ndarray_v<array_t>) {
+                    return nmtools::size(array) * sizeof(element_t);
+                } else {
+                    return sizeof(element_t);
+                }
+            }();
+            auto out_ptr = [&](){
+                if constexpr (meta::is_ndarray_v<array_t>) {
+                    return nmtools::data(array);
+                } else {
+                    return &array;
+                }
+            }();
 
             auto ret = clEnqueueReadBuffer(command_queue, *mem_obj, CL_TRUE, 0, byte_size, out_ptr, 0, NULL, NULL);
             return ret;

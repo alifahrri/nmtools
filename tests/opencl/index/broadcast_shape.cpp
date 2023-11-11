@@ -38,9 +38,9 @@ kernel void test_broadcast_shape_binary(
       global int* out_ptr
     , global const int* ashape_ptr
     , global const int* bshape_ptr
-    , const unsigned int out_size
-    , const unsigned int ashape_size
-    , const unsigned int bshape_size
+    , const nm_cl_index_t out_size
+    , const nm_cl_index_t ashape_size
+    , const nm_cl_index_t bshape_size
 )
 {
     static_assert( meta::has_address_space_v<const __generic nmtools_maybe<nmtools::array::hybrid_ndarray<int, 8, 1>>> );
@@ -57,10 +57,10 @@ kernel void test_broadcast_shape_ternary(
     , global const int* ashape_ptr
     , global const int* bshape_ptr
     , global const int* cshape_ptr
-    , const unsigned int out_size
-    , const unsigned int ashape_size
-    , const unsigned int bshape_size
-    , const unsigned int cshape_size
+    , const nm_cl_index_t out_size
+    , const nm_cl_index_t ashape_size
+    , const nm_cl_index_t bshape_size
+    , const nm_cl_index_t cshape_size
 )
 {
     auto output = view::mutable_ref(out_ptr,out_size);
@@ -78,11 +78,11 @@ kernel void test_broadcast_shape_quaternary(
     , global const int* bshape_ptr
     , global const int* cshape_ptr
     , global const int* dshape_ptr
-    , const unsigned int out_size
-    , const unsigned int ashape_size
-    , const unsigned int bshape_size
-    , const unsigned int cshape_size
-    , const unsigned int dshape_size
+    , const nm_cl_index_t out_size
+    , const nm_cl_index_t ashape_size
+    , const nm_cl_index_t bshape_size
+    , const nm_cl_index_t cshape_size
+    , const nm_cl_index_t dshape_size
 )
 {
     auto output = view::mutable_ref(out_ptr,out_size);
@@ -112,7 +112,7 @@ SUBCASE(#case_name) \
 }
 
 extern unsigned char nm_cl_test_broadcast_shape_spv[];
-extern unsigned int nm_cl_test_broadcast_shape_spv_len;
+extern nm_cl_index_t nm_cl_test_broadcast_shape_spv_len;
 
 static auto tester = testing::OpenCLTester({
         {2,binary_broadcast_shape_kernel_name},

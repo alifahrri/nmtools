@@ -36,7 +36,7 @@ namespace nmtools::index
                     ret = p;
                 });
             } else {
-                for (size_t i=0; i<len(shape); i++) {
+                for (size_t i=0; i<(size_t)len(shape); i++) {
                     auto p = ret * at(shape,i);
                     ret = p;
                 }
