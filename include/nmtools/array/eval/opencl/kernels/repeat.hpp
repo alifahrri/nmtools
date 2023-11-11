@@ -16,11 +16,6 @@
 #define nmtools_cl_kernel_name(out_type,inp_type) repeat##_##out_type##_##inp_type
 #define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(repeat##_##out_type##_##inp_type)
 
-#ifndef nm_cl_index_t
-using nmtools::int32_t;
-#define nm_cl_index_t int32_t
-#endif
-
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
 namespace nm = nmtools;

@@ -88,14 +88,7 @@ namespace nmtools::testing
                     auto cl_buffers_ = utility::tuple_append(cl_buffers,arg);
                     return nmtools_tuple{cl_buffers_,cl_sizes};
                 } else {
-                    auto buffer = [&](){
-                        if constexpr (meta::is_index_array_v<decltype(arg)>) {
-                            auto arg_ = index::cast<nm_cl_index_t>(arg);
-                            return context->create_buffer(arg_);
-                        } else {
-                            return context->create_buffer(arg);
-                        }
-                    }();
+                    auto buffer = context->create_buffer(arg);
                     auto size   = (nm_cl_index_t)nmtools::size(arg);
                     auto cl_buffers_ = utility::tuple_append(cl_buffers,buffer);
                     auto cl_sizes_   = utility::tuple_append(cl_sizes,size);

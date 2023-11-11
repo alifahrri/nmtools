@@ -1,5 +1,6 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/eval/opencl/kernel_helper.hpp"
 
 namespace nm = nmtools;
 namespace ix = nm::index;
@@ -8,15 +9,14 @@ namespace meta = nm::meta;
 
 #define product_kernel_name "test_product"
 
-#ifndef nm_cl_index_t
-using nmtools::int32_t;
-#define nm_cl_index_t int32_t
-#endif
-
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
-kernel void test_product(global int* out_ptr, global const nm_cl_index_t* inp_shape_ptr, const nm_cl_index_t out_size, const nm_cl_index_t inp_size)
-{
+kernel void test_product(
+      global int* out_ptr
+    , global const nm_cl_index_t* inp_shape_ptr
+    , const nm_cl_index_t out_size
+    , const nm_cl_index_t inp_size
+) {
     if (get_global_id(0)==0) {
         auto inp_shape = ix::ref_ptr(inp_shape_ptr,inp_size);
         auto result = ix::product(inp_shape);
@@ -42,7 +42,7 @@ TEST_CASE("product(case1)" * doctest::test_suite("index::product"))
 
     auto shape = nmtools_array{1,2,3};
     auto expect = (int)6;
-    tester.test(opencl::default_context(),expect,shape);    
+    tester.test(opencl::default_context(),expect,ix::cast<nm_cl_index_t>(shape));
 }
 
 TEST_CASE("product(case2)" * doctest::test_suite("index::product"))
@@ -51,7 +51,7 @@ TEST_CASE("product(case2)" * doctest::test_suite("index::product"))
 
     auto shape = nmtools_array{1ul,2ul,3ul};
     auto expect = (int)6;
-    tester.test(opencl::default_context(),expect,shape);    
+    tester.test(opencl::default_context(),expect,ix::cast<nm_cl_index_t>(shape));
 }
 
 #endif // NMTOOLS_OPENCL_BUILD_KERNELS

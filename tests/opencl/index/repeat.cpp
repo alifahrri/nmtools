@@ -1,5 +1,6 @@
 #include "nmtools/array/index/repeat.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/eval/opencl/kernel_helper.hpp"
 
 namespace nm = nmtools;
 namespace ix = nm::index;
@@ -10,8 +11,15 @@ namespace meta = nm::meta;
 
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
-kernel void test_shape_repeat(global int* out_shape_ptr, global const int* inp_shape_ptr, global const int* repeats_ptr, const int out_size, const int inp_size, const int repeats_size, const int axis)
-{
+kernel void test_shape_repeat(
+      global int* out_shape_ptr
+    , global const int* inp_shape_ptr
+    , global const int* repeats_ptr
+    , const int axis
+    , const nm_cl_index_t out_size
+    , const nm_cl_index_t inp_size
+    , const nm_cl_index_t repeats_size
+) {
     if (get_global_id(0)==0) {
         auto output  = view::mutable_ref(out_shape_ptr,out_size);
         auto input   = ix::ref_ptr(inp_shape_ptr,inp_size);
@@ -41,7 +49,12 @@ TEST_CASE("shape_repeat(case1)" * doctest::test_suite("index::shape_repeat"))
     auto tester = testing::OpenCLTester(shape_repeat_kernel_name,nm_cl_test_repeat_spv,nm_cl_test_repeat_spv_len);
 
     NMTOOLS_TESTING_DECLARE_NS(shape_repeat,case4);
-    tester.test(opencl::default_context(),expect::shape,args::shape_a,args::repeats,(int)args::axis);
+    tester.test(opencl::default_context()
+        ,ix::cast<int>(expect::shape)
+        ,ix::cast<int>(args::shape_a)
+        ,ix::cast<int>(args::repeats)
+        ,(int)args::axis
+    );
 }
 
 TEST_CASE("shape_repeat(case2)" * doctest::test_suite("index::shape_repeat"))
@@ -49,7 +62,12 @@ TEST_CASE("shape_repeat(case2)" * doctest::test_suite("index::shape_repeat"))
     auto tester = testing::OpenCLTester(shape_repeat_kernel_name,nm_cl_test_repeat_spv,nm_cl_test_repeat_spv_len);
   
     NMTOOLS_TESTING_DECLARE_NS(shape_repeat,case5);
-    tester.test(opencl::default_context(),expect::shape,args::shape_a,args::repeats,(int)args::axis);
+    tester.test(opencl::default_context()
+        ,ix::cast<int>(expect::shape)
+        ,ix::cast<int>(args::shape_a)
+        ,ix::cast<int>(args::repeats)
+        ,(int)args::axis
+    );
 }
 
 #endif // NMTOOLS_OPENCL_BUILD_KERNELS
