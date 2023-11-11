@@ -21,10 +21,11 @@ namespace nmtools::index
     constexpr auto reverse(const indices_t& indices)
     {
         using result_t = meta::resolve_optype_t<reverse_t,indices_t>;
+        using size_type = size_t;
         auto ret = result_t{};
         // assume already reversed at meta::resolve if result_t is constant
         if constexpr (!meta::is_constant_index_array_v<result_t>) {
-            [[maybe_unused]] auto n = len(indices);
+            [[maybe_unused]] auto n = (size_type)len(indices);
             if constexpr (meta::is_resizable_v<result_t>)
                 ret.resize(n);
             // some fn still allow tuple of runtime index, must be unrolled
@@ -36,7 +37,7 @@ namespace nmtools::index
                     at(ret,index) = at<i>(indices);
                 });
             } else {
-                for (size_t i=0; i<(size_t)n; i++)
+                for (size_type i=0; i<n; i++)
                     at(ret,i) = at(indices,n-1-i);
             }
         }

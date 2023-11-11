@@ -23,6 +23,8 @@ namespace nmtools::index
             constexpr auto n = meta::len_v<shape_t>;
             constexpr auto m = meta::len_v<strides_t>;
 
+            using size_type = size_t;
+
             if constexpr ((n>0) && (m>0))
             {
                 static_assert (m==n
@@ -34,7 +36,7 @@ namespace nmtools::index
                 });
             }
             else
-                for (size_t i=0; i<len(shape); i++)
+                for (size_type i=0; i<(size_type)len(shape); i++)
                     at(indices,i) = (offset / at(strides,i)) % at(shape,i);
         } // compute_indices
     } // namespace impl

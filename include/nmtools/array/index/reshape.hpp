@@ -18,7 +18,7 @@ namespace nmtools::index
         auto minus_1_count = 0;
         auto dst_numel = (size_t)0;
         using index_t = meta::get_index_element_type_t<dst_shape_t>;
-        for (size_t i=0; i<len(dst_shape); i++) {
+        for (size_t i=0; i<(size_t)len(dst_shape); i++) {
             const auto d_i = at(dst_shape,i);
             if (i==0) {
                 dst_numel = 1;

@@ -18,8 +18,10 @@ namespace nmtools::index
 
         auto res = result_t {};
 
+        using size_type = size_t;
+
         if constexpr (! meta::is_constant_index_array_v<result_t>) {
-            auto N = (size_t)len(shape);
+            auto N = (size_type)len(shape);
             if constexpr (meta::is_resizable_v<result_t>) {
                 res.resize(N);
             }
@@ -32,7 +34,7 @@ namespace nmtools::index
                         at(res,i) = at(shape,I);
                     });
                 } else {
-                    for (size_t i=0; i<N; i++) {
+                    for (size_type i=0; i<N; i++) {
                         at(res,i) = at(shape,(N-1)-i);
                     }
                 }
@@ -44,7 +46,7 @@ namespace nmtools::index
                         at(res,i) = at(shape,at(axes,i));
                     });
                 } else {
-                    for (size_t i=0; i<N; i++) {
+                    for (size_type i=0; i<N; i++) {
                         at(res,i) = at(shape,at(axes,i));
                     }
                 }

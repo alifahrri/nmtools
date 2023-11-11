@@ -17,10 +17,11 @@ namespace nmtools::index
      * @param k k-th stride to compute
      * @return constexpr auto
      */
-    template <typename array_t, typename size_type>
-    constexpr auto stride(const array_t& shape, size_type k)
+    template <typename array_t, typename m_size_type>
+    constexpr auto stride(const array_t& shape, m_size_type k)
     {
-        using result_t = meta::resolve_optype_t<stride_t,array_t,size_type>;
+        using result_t = meta::resolve_optype_t<stride_t,array_t,m_size_type>;
+        using size_type = size_t;
         auto p = result_t {};
         if constexpr (!meta::is_constant_index_v<result_t>) {
             constexpr auto n = meta::len_v<array_t>;
@@ -29,11 +30,11 @@ namespace nmtools::index
                 // note that k may be runtime value
                 meta::template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
-                    if (i>=k+1)
+                    if ((size_type)i>=(size_type)(k+1))
                         p *= at<i>(shape);
                 });
             } else {
-                for (auto j=k+1; j<len(shape); j++) {
+                for (size_type j=k+1; j<(size_type)len(shape); j++) {
                     p *= at(shape,j);
                 }
             }
@@ -60,9 +61,10 @@ namespace nmtools::index
     constexpr auto compute_strides(const array_t& shape)
     {
         using return_t  = meta::resolve_optype_t<compute_strides_t,array_t>;
+        using size_type = size_t;
         auto strides_ = return_t{};
         if constexpr (!meta::is_constant_index_array_v<return_t> && meta::is_index_array_v<return_t>) {
-            [[maybe_unused]] auto n = len(shape);
+            [[maybe_unused]] auto n = (size_type)len(shape);
             if constexpr (meta::is_resizable_v<return_t>) {
                 strides_.resize(n);
             }
@@ -73,7 +75,7 @@ namespace nmtools::index
                     at(strides_,i) = stride(shape,i);
                 });
             } else {
-                for (size_t i=0; i<n; i++) {
+                for (size_type i=0; i<n; i++) {
                     at(strides_,i) = stride(shape,i);
                 }
             }

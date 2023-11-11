@@ -21,18 +21,19 @@ namespace nmtools::index
     template <typename indices_t, typename strides_t>
     constexpr auto compute_offset(const indices_t& indices, const strides_t& strides)
     {
-        size_t offset = 0;
-        [[maybe_unused]] auto m = len(indices);
-        [[maybe_unused]] auto n = len(strides);
+        using size_type = size_t;
+        size_type offset = 0;
+        [[maybe_unused]] auto m = (size_type)len(indices);
+        [[maybe_unused]] auto n = (size_type)len(strides);
         constexpr auto N = meta::len_v<indices_t>;
         constexpr auto M = meta::len_v<strides_t>;
         if constexpr ((N > 0) && (M > 0)) {
             meta::template_for<N>([&](auto index){
-                offset += static_cast<size_t>(at(strides,index)) * static_cast<size_t>(at(indices,index));
+                offset += static_cast<size_type>(at(strides,index)) * static_cast<size_type>(at(indices,index));
             });
         } else {
-            for (size_t i=0; i<m; i++) {
-                offset += static_cast<size_t>(at(strides,i)) * static_cast<size_t>(at(indices,i));
+            for (size_type i=0; i<m; i++) {
+                offset += static_cast<size_type>(at(strides,i)) * static_cast<size_type>(at(indices,i));
             }
         }
         return offset;
