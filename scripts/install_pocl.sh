@@ -14,9 +14,17 @@ else
   echo "set POCL_VERSION from env"
 fi
 
+if [[ -z "${POCL_BUILD_TYPE}" ]]; then
+  POCL_BUILD_TYPE=Release
+else
+  echo "set POCL_BUILD_TYPE from env"
+fi
+
 echo "using LLVM_VERSION=${LLVM_VERSION}"
 
 echo "using POCL_VERSION=${POCL_VERSION}"
+
+echo "using POCL_BUILD_TYPE=${POCL_BUILD_TYPE}"
 
 DIR=pocl
 if [[ -d "$DIR" ]]; then
@@ -33,6 +41,6 @@ apt install -y xxd python3-dev libpython3-dev build-essential ocl-icd-libopencl1
     llvm-${LLVM_VERSION}-dev --fix-missing
 
 cd ${DIR}
-git checkout ${POCL_VERSION}
-mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_CUDA=OFF -DSPIRV=ON -DLLVM_SPIRV=/usr/local/bin/llvm-spirv -DCMAKE_INSTALL_PREFIX=/usr .. \
+git fetch && git checkout ${POCL_VERSION}
+mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=${POCL_BUILD_TYPE} -DENABLE_TESTS=OFF -DENABLE_CUDA=OFF -DSPIRV=ON -DLLVM_SPIRV=/usr/local/bin/llvm-spirv -DCMAKE_INSTALL_PREFIX=/usr .. \
     && make -j2 && make install
