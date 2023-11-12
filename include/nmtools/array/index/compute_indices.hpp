@@ -18,6 +18,7 @@ namespace nmtools::index
     namespace impl
     {
         template <typename indices_t, typename offset_t, typename shape_t, typename strides_t>
+        nmtools_index_attribute
         constexpr auto compute_indices(indices_t& indices, const offset_t& offset, const shape_t& shape, const strides_t& strides)
         {
             constexpr auto n = meta::len_v<shape_t>;
@@ -51,6 +52,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename offset_t, typename shape_t, typename strides_t>
+    nmtools_index_attribute
     constexpr auto compute_indices(const offset_t& offset, const shape_t& shape, const strides_t& strides)
     {
         using return_t = meta::resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
@@ -75,6 +77,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename offset_t, typename shape_t>
+    nmtools_index_attribute
     constexpr auto compute_indices(const offset_t& offset, const shape_t& shape)
     {
         auto strides = compute_strides(shape);
