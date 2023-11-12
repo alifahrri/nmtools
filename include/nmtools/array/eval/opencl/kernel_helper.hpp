@@ -11,14 +11,12 @@
 #include "nmtools/array/view/reshape.hpp"
 #include "nmtools/array/eval/kernel_helper.hpp"
 
-// NOTE: using int32_t here breaks spirv compilation: Invalid cast
 #ifndef nm_cl_index_t
 #ifdef nm_index_t
 #define nm_cl_index_t nm_index_t
 #else // nm_index_t
 using nmtools::uint32_t, nmtools::int32_t;
-// #define nm_cl_index_t int32_t
-#define nm_cl_index_t uint32_t
+#define nm_cl_index_t int32_t
 #endif // nm_index_t
 #endif // nm_cl_index_t
 
@@ -27,7 +25,6 @@ using nmtools::uint32_t, nmtools::int32_t;
 #define nm_cl_size_t nm_size_t
 #else // nm_size_t
 using nmtools::uint32_t, nmtools::int32_t;
-// #define nm_cl_size_t int32_t
 #define nm_cl_size_t uint32_t
 #endif // nm_size_t
 #endif // nm_cl_size_t
@@ -53,7 +50,7 @@ namespace nmtools::array::opencl
     {
         auto size = nmtools::size(output);
         auto idx = get_global_id(0);
-        if ((nm_cl_index_t)idx < (nm_cl_index_t)size) {
+        if ((nm_cl_size_t)idx < (nm_cl_size_t)size) {
             auto flat_lhs = view::mutable_flatten(output);
             auto flat_rhs = view::flatten(input);
             flat_lhs((nm_cl_index_t)idx) = flat_rhs((nm_cl_index_t)idx);

@@ -19,22 +19,22 @@ namespace opencl = nmtools::array::opencl;
 
 #define nmtools_cl_kernel(out_type, inp_type) \
 kernel void nmtools_cl_kernel_name(out_type,inp_type) \
-    ( global out_type* out_ptr \
-    , global const inp_type* inp_ptr \
+    ( global out_type* out_ptr                  \
+    , global const inp_type* inp_ptr            \
     , global const nm_cl_index_t* out_shape_ptr \
     , global const nm_cl_index_t* inp_shape_ptr \
     , global const nm_cl_index_t* pad_width_ptr \
-    , const nm_cl_size_t out_dim \
-    , const nm_cl_size_t inp_dim \
-    , const nm_cl_size_t pad_size \
-    , const inp_type pad_value \
+    , const nm_cl_size_t out_dim                \
+    , const nm_cl_size_t inp_dim                \
+    , const nm_cl_size_t pad_size               \
+    , const inp_type pad_value                  \
     ) \
 { \
-    auto input  = na::create_array(inp_ptr,inp_shape_ptr,inp_dim); \
-    auto output = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim); \
-    auto pad_width = na::create_vector(pad_width_ptr,pad_size); \
-    auto padded    = view::pad(input,pad_width,pad_value); \
-    opencl::assign_array(output,padded); \
+    auto input     = na::create_array(inp_ptr,inp_shape_ptr,inp_dim);           \
+    auto output    = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim);   \
+    auto pad_width = na::create_vector(pad_width_ptr,pad_size);                 \
+    auto padded    = view::pad(input,pad_width,pad_value);                      \
+    opencl::assign_array(output,padded);                                        \
 }
 
 nmtools_cl_kernel(float,float)
