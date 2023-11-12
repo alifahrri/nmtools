@@ -12,6 +12,12 @@ namespace meta = nm::meta;
 
 kernel void test_logical_not(global bool* out_ptr, global bool* inp_ptr, const unsigned long out_size, const unsigned long inp_size)
 {
+    // crashed on llvm-spirv 15 when compiling kernel
+    // llvm-spirv: /home/runner/work/nmtools/nmtools/SPIRV-LLVM-Translator/lib/SPIRV/libSPIRV/SPIRVInstruction.h:1910: virtual void SPIRV::SPIRVCompositeExtractBase::validate() const: Assertion `getValueType(Composite)->isTypeArray() || getValueType(Composite)->isTypeStruct() || getValueType(Composite)->isTypeVector()' failed.
+    // 2023-11-12T15:48:07.0290468Z PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace.
+    // 2023-11-12T15:48:07.0291665Z Stack dump:
+    // 2023-11-12T15:48:07.0294036Z 0.	Program arguments: llvm-spirv -spirv-max-version=1.0 -o /home/runner/work/nmtools/nmtools/tests/opencl/index/nm_cl_test_logical_not.spv /home/runner/work/nmtools/nmtools/tests/opencl/index/nm_cl_test_logical_not.bc
+    #if 0
     if (get_global_id(0)==0) {
         auto output = view::mutable_ref(out_ptr,out_size);
         auto input  = ix::ref_ptr(inp_ptr,inp_size);
@@ -21,6 +27,7 @@ kernel void test_logical_not(global bool* out_ptr, global bool* inp_ptr, const u
             nm::at(output,i) = nm::at(result,i);
         }
     }
+    #endif
 }
 #else
 

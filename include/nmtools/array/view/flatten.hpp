@@ -62,10 +62,9 @@ namespace nmtools::view
         template <typename size_type>
         constexpr auto index(size_type i) const
         {
-            using ::nmtools::index::compute_indices;
             using index_t = meta::remove_address_space_t<meta::get_index_element_type_t<dst_shape_type>>;
             auto shape_   = detail::shape(array);
-            auto indices  = compute_indices(static_cast<index_t>(i),shape_);
+            auto indices  = index::compute_indices(static_cast<index_t>(i),shape_);
             return indices;
         } // index
     }; // flatten_t

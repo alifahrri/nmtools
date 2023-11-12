@@ -58,6 +58,7 @@ namespace nmtools::view
         } // dim
 
         template <typename...size_types>
+        nmtools_index_attribute
         constexpr auto operator()(size_types...indices) const
         {
             auto indices_   = pack_indices(indices...);
@@ -87,9 +88,16 @@ namespace nmtools::view
     template <typename array_t, typename pad_width_t, typename value_t=float>
     constexpr auto pad(const array_t& array, const pad_width_t& pad_width, value_t value=static_cast<value_t>(0))
     {
+        #if !defined(NMTOOLS_NO_BASE_ACCESS)
         // TODO: error handling using maybe, check the shape, if success the proceed
         using view_t = decorator_t<pad_t,array_t,pad_width_t,value_t>;
         return view_t{{array,pad_width,value}};
+        #else
+        using array_type = meta::remove_address_space_t<array_t>;
+        using view_t   = pad_t<array_type,pad_width_t,value_t>;
+        using result_t = decorator_t<pad_t,array_type,pad_width_t,value_t>;
+        return result_t{view_t{array,pad_width,value}};
+        #endif
     } // pad
 } // namespace nmtools::view
 
@@ -107,7 +115,7 @@ namespace nmtools::meta
         view::decorator_t< view::pad_t, array_t, pad_width_t, value_t >
     >
     {
-        using view_type  = view::decorator_t< view::pad_t, array_t, pad_width_t, value_t >;
+        using view_type = view::pad_t< array_t, pad_width_t, value_t >;
         using dst_shape_type = typename view_type::dst_shape_type;
 
         static inline constexpr auto value = [](){
@@ -135,7 +143,7 @@ namespace nmtools::meta
         view::decorator_t< view::pad_t, array_t, pad_width_t, value_t >
     >
     {
-        using view_type  = view::decorator_t< view::pad_t, array_t, pad_width_t, value_t >;
+        using view_type = view::pad_t< array_t, pad_width_t, value_t >;
         using dst_shape_type = typename view_type::dst_shape_type;
 
         static inline constexpr auto value = [](){

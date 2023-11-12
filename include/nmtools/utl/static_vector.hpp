@@ -2,6 +2,7 @@
 #define NMTOOLS_UTL_STATIC_VECTOR_HPP
 
 #include "nmtools/def.hpp"
+#include "nmtools/platform.hpp"
 #include "nmtools/utl/array.hpp"
 
 // poor man's static_vector,
@@ -103,12 +104,14 @@ namespace nmtools::utl
             return buffer.data();
         }
 
+        nmtools_index_attribute
         constexpr reference at(size_t i)
         {
             // TODO: assert/throw
             return buffer[i];
         }
 
+        nmtools_index_attribute
         constexpr const_reference at(size_t i) const
         {
             // TODO: assert/throw
@@ -120,11 +123,13 @@ namespace nmtools::utl
             return size_;
         }
 
+        nmtools_index_attribute
         constexpr reference operator[](size_t i) noexcept
         {
             return buffer[i];
         }
 
+        nmtools_index_attribute
         constexpr const_reference operator[](size_t i) const noexcept
         {
             return buffer[i];

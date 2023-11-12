@@ -171,4 +171,13 @@ namespace nmtools
     #undef NMTOOLS_DECLARE_CLIPPED_TYPE
 }
 
+// NOTE: to make it consistent for separate host device compilation
+#ifndef nm_size_t
+#define nm_size_t unsigned int
+#endif // nm_size_t
+
+#ifndef nm_index_t
+#define nm_index_t int
+#endif // nm_index_t
+
 #endif // NMTOOLS_DEF_HPP

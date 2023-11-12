@@ -96,6 +96,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename index_t, typename src_shape_t, typename dst_shape_t, typename pad_width_t>
+    nmtools_index_attribute
     constexpr auto pad(const index_t& index, const src_shape_t& src_shape
         , const dst_shape_t& /*dst_shape*/, const pad_width_t& pad_width)
     {

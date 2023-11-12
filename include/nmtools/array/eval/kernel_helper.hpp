@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_KERNEL_HELPER_HPP
 #define NMTOOLS_ARRAY_EVAL_KERNEL_HELPER_HPP
 
+#include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/index/product.hpp"
@@ -14,6 +15,10 @@
 #define NMTOOLS_KERNEL_MAX_DIM_ NMTOOLS_KERNEL_MAX_DIM 
 #else
 #define NMTOOLS_KERNEL_MAX_DIM_ 8
+#endif
+
+#ifndef nm_stringify
+#define nm_stringify(a) #a
 #endif
 
 namespace nmtools::array
@@ -30,7 +35,7 @@ namespace nmtools::array
         }
     }
 
-    template <auto DIM=0, typename size_type, typename type>
+    template <auto DIM=0, typename size_type=nm_index_t, typename type>
     nmtools_func_attribute
     auto create_vector(const type* data_ptr, size_type dim)
     {
@@ -59,7 +64,7 @@ namespace nmtools::array
         return reshaped;
     }
 
-    template <auto DIM=0, typename dim_type=uint32_t, typename size_type=unsigned long, typename type>
+    template <auto DIM=0, typename dim_type=nm_index_t, typename size_type=nm_index_t, typename type>
     nmtools_func_attribute
     auto create_array(const type* data_ptr, const size_type* shape_ptr, dim_type dim)
     {
@@ -78,7 +83,7 @@ namespace nmtools::array
         return view::reshape(ref,shape);
     }
 
-    template <auto DIM=0, typename dim_type=unsigned long, typename size_type=unsigned long, typename type>
+    template <auto DIM=0, typename dim_type=nm_index_t, typename size_type=nm_index_t, typename type>
     nmtools_func_attribute
     auto create_mutable_array(type* data_ptr, const size_type* shape_ptr, dim_type dim)
     {

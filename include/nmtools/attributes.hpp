@@ -12,8 +12,22 @@
 #define nmtools_meta_variable_attribute
 #endif
 
+// defaults:
+
 #ifndef nmtools_func_attribute
 #define nmtools_func_attribute
+#endif
+
+#ifndef nmtools_inline
+#define nmtools_inline
+#endif
+
+#ifndef nmtools_index_inline
+#define nmtools_index_inline
+#endif
+
+#ifndef nmtools_index_attribute
+#define nmtools_index_attribute
 #endif
 
 #endif // NMTOOLS_ATTRIBUTES_HPP
