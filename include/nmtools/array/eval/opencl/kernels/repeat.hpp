@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_TRANSPOSE_HPP
-#define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_TRANSPOSE_HPP
+#ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_REPEAT_HPP
+#define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_REPEAT_HPP
 
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/view/ref.hpp"
@@ -8,10 +8,6 @@
 #include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/array/eval/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
-
-#ifndef nm_stringify
-#define nm_stringify(a) #a
-#endif
 
 #define nmtools_cl_kernel_name(out_type,inp_type) repeat##_##out_type##_##inp_type
 #define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(repeat##_##out_type##_##inp_type)
@@ -32,10 +28,10 @@ kernel void nmtools_cl_kernel_name(out_type,inp_type) \
     , global const nm_cl_index_t* out_shape_ptr \
     , global const nm_cl_index_t* inp_shape_ptr \
     , global const nm_cl_index_t* repeats_ptr \
-    , const nm_cl_index_t out_dim \
-    , const nm_cl_index_t inp_dim \
-    , const nm_cl_index_t repeats_size \
-    , const nm_cl_index_t axis \
+    , const nm_cl_size_t out_dim \
+    , const nm_cl_size_t inp_dim \
+    , const nm_cl_size_t repeats_size \
+    , const nm_cl_size_t axis \
     ) \
 { \
     auto repeats  = na::create_vector(repeats_ptr,repeats_size); \
@@ -119,8 +115,8 @@ namespace nmtools::array::opencl
             auto inp_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(inp_shape));
             auto repeats_buffer = context->create_buffer(index::cast<nm_cl_index_t>(view.repeats));
 
-            uint32_t out_dim = nmtools::len(out_shape);
-            uint32_t inp_dim = nmtools::len(inp_shape);
+            nm_cl_size_t out_dim = nmtools::len(out_shape);
+            nm_cl_size_t inp_dim = nmtools::len(inp_shape);
 
             auto kernel_info = kernel.kernel_info_;
             auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
@@ -143,4 +139,4 @@ namespace nmtools::array::opencl
 #undef nmtools_cl_kernel_name
 #undef nmtools_cl_kernel_name_str
 
-#endif // NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_TRANSPOSE_HPP
+#endif // NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_REPEAT_HPP

@@ -47,9 +47,8 @@ namespace nmtools::view
         template <typename size_type>
         constexpr auto index(size_type i) const
         {
-            using ::nmtools::index::compute_indices;
             auto shape_  = detail::shape(array);
-            auto indices = compute_indices(i,shape_);
+            auto indices = index::compute_indices(i,shape_);
             return indices;
         } // index
     }; // mutable_flatten_t

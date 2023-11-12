@@ -171,4 +171,14 @@ namespace nmtools
     #undef NMTOOLS_DECLARE_CLIPPED_TYPE
 }
 
+// NOTE: to make it consistent for separate host device compilation
+#ifndef nm_size_t
+#define nm_size_t unsigned int
+#endif // nm_size_t
+
+// NOTE: using int here breaks c++ for opencl kernel compilation (invalid cast)
+#ifndef nm_index_t
+#define nm_index_t unsigned int
+#endif // nm_index_t
+
 #endif // NMTOOLS_DEF_HPP
