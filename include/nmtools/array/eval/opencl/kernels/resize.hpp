@@ -1,44 +1,41 @@
-#ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_REPEAT_HPP
-#define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_REPEAT_HPP
+#ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESIZE_HPP
+#define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESIZE_HPP
 
 #include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/repeat.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
-#include "nmtools/array/eval/kernel_helper.hpp"
+#include "nmtools/array/view/resize.hpp"
 #include "nmtools/array/eval/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
 
-#define nmtools_cl_kernel_name(out_type,inp_type) repeat##_##out_type##_##inp_type
-#define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(repeat##_##out_type##_##inp_type)
+#define nmtools_cl_kernel_name(out_type,inp_type) resize##_##out_type##_##inp_type
+#define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(resize##_##out_type##_##inp_type)
 
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
 namespace nm = nmtools;
 namespace na = nmtools::array;
+namespace ix = nmtools::index;
 namespace view = nmtools::view;
 namespace meta = nmtools::meta;
 namespace opencl = nmtools::array::opencl;
 namespace detail = nmtools::view::detail;
 
-#define nmtools_cl_kernel(out_type, inp_type) \
+#define nmtools_cl_kernel(out_type,inp_type) \
 kernel void nmtools_cl_kernel_name(out_type,inp_type) \
     ( global out_type* out_ptr \
     , global const inp_type* inp_ptr \
     , global const nm_cl_index_t* out_shape_ptr \
     , global const nm_cl_index_t* inp_shape_ptr \
-    , global const nm_cl_index_t* repeats_ptr \
+    , global const nm_cl_index_t* dst_shape_ptr \
     , const nm_cl_size_t out_dim \
     , const nm_cl_size_t inp_dim \
-    , const nm_cl_size_t repeats_size \
-    , const nm_cl_index_t axis \
+    , const nm_cl_size_t dst_size \
     ) \
 { \
-    auto repeats  = na::create_vector(repeats_ptr,repeats_size); \
-    auto input    = na::create_array(inp_ptr,inp_shape_ptr,inp_dim); \
-    auto output   = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim); \
-    auto repeated = view::repeat(input,repeats,axis); \
-    opencl::assign_array(output,repeated); \
+    auto dst_shape = na::create_vector(dst_shape_ptr,dst_size); \
+    auto input     = na::create_array(inp_ptr,inp_shape_ptr,inp_dim); \
+    auto output    = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim); \
+    auto resized   = view::resize(input,dst_shape); \
+    opencl::assign_array(output,resized); \
 }
 
 nmtools_cl_kernel(float,float)
@@ -49,16 +46,16 @@ nmtools_cl_kernel(double,double)
 #include "nmtools/array/eval/opencl/context.hpp"
 #include <cstring> // memcpy
 
-extern unsigned char nm_cl_repeat_spv[];
-extern unsigned int nm_cl_repeat_spv_len;
+extern unsigned char nm_cl_resize_spv[];
+extern unsigned int nm_cl_resize_spv_len;
 
 namespace nmtools::array::opencl
 {
     template <typename...args_t>
     struct kernel_t<
-        view::decorator_t<view::repeat_t,args_t...>
+        view::decorator_t<view::resize_t,args_t...>
     > {
-        using view_t = view::decorator_t<view::repeat_t,args_t...>;
+        using view_t = view::decorator_t<view::resize_t,args_t...>;
 
         view_t view;
         std::shared_ptr<context_t> context;
@@ -67,8 +64,8 @@ namespace nmtools::array::opencl
         {
             using vector = nmtools_list<unsigned char>;
             auto spirv = vector();
-            spirv.resize(nm_cl_repeat_spv_len);
-            memcpy(spirv.data(),nm_cl_repeat_spv,sizeof(unsigned char) * nm_cl_repeat_spv_len);
+            spirv.resize(nm_cl_resize_spv_len);
+            memcpy(spirv.data(),nm_cl_resize_spv,sizeof(unsigned char) * nm_cl_resize_spv_len);
             return spirv;
         }
 
@@ -88,13 +85,11 @@ namespace nmtools::array::opencl
             using out_t = meta::get_element_type_t<output_t>;
 
             const auto& inp_array = *get_array(view);
+
             using inp_t = meta::get_element_type_t<meta::remove_cvref_pointer_t<decltype(inp_array)>>;
 
             auto inp_buffer = context->create_buffer(inp_array);
             auto out_buffer = context->create_buffer<out_t>(nmtools::size(output));
-
-            nm_cl_size_t repeats_size = nmtools::len(view.repeats);
-            nm_cl_size_t axis = view.axis;
 
             auto kernel_name = this->kernel_name<inp_t,out_t>();
 
@@ -106,20 +101,21 @@ namespace nmtools::array::opencl
 
             auto out_size = nmtools::size(output);
             [[maybe_unused]] auto inp_size = nmtools::size(inp_array);
-            [[maybe_unused]] auto dst_size = nmtools::size(view);
 
             auto out_shape = nmtools::shape(output);
             auto inp_shape = nmtools::shape(inp_array);
-
+            auto dst_shape = view.dst_shape;
+            
             auto out_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(out_shape));
             auto inp_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(inp_shape));
-            auto repeats_buffer = context->create_buffer(index::cast<nm_cl_index_t>(view.repeats));
+            auto dst_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(dst_shape));
 
-            nm_cl_size_t out_dim = nmtools::len(out_shape);
-            nm_cl_size_t inp_dim = nmtools::len(inp_shape);
+            auto out_dim = nmtools::len(out_shape);
+            auto inp_dim = nmtools::len(inp_shape);
+            auto dst_len = nmtools::len(dst_shape);
 
             auto kernel_info = kernel.kernel_info_;
-            auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
+            auto local_size = nmtools_array{kernel_info->preferred_work_group_size_multiple};
             auto global_size = nmtools_array{size_t(std::ceil(float(out_size) / local_size[0])) * local_size[0]};
 
             auto default_args = nmtools_tuple{
@@ -127,11 +123,10 @@ namespace nmtools::array::opencl
                 , inp_buffer
                 , out_shape_buffer
                 , inp_shape_buffer
-                , repeats_buffer
-                , index::cast<nm_cl_size_t>(out_dim)
-                , index::cast<nm_cl_size_t>(inp_dim)
-                , index::cast<nm_cl_size_t>(repeats_size)
-                , index::cast<nm_cl_index_t>(axis)
+                , dst_shape_buffer
+                , (nm_cl_size_t)out_dim
+                , (nm_cl_size_t)inp_dim
+                , (nm_cl_size_t)dst_len
             };
 
             context->set_args(kernel,default_args);
@@ -142,11 +137,4 @@ namespace nmtools::array::opencl
 
 #endif // NMTOOLS_OPENCL_BUILD_KERNELS
 
-#undef nmtools_cl_kernel_bin
-#undef nmtools_cl_kernel_len
-#undef nmtools_cl_ufunc_name
-#undef nmtools_cl_ufunc_type
-#undef nmtools_cl_kernel_name
-#undef nmtools_cl_kernel_name_str
-
-#endif // NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_REPEAT_HPP
+#endif // NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESIZE_HPP
