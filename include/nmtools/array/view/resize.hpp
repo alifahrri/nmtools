@@ -6,6 +6,7 @@
 #include "nmtools/array/view/decorator.hpp"
 
 #include "nmtools/array/index/resize.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::view
 {
@@ -50,7 +51,18 @@ namespace nmtools::view
         }
     }; // struct resize_t
 
+    /*
+       NOTE: must use always_inline attribute when compiling c++ for opencl kernel, otherwise:
+       on -O3
+       with hybrid shape: invalid cast
+       with fixed shape: can't translate llvm instruction
+       on -O1
+       with hybrid shape: invalid cast
+       with fixed shape: invalid cast
+    */
+
     template <typename array_t, typename dst_shape_t>
+    nmtools_view_attribute
     constexpr auto resize(const array_t& array, const dst_shape_t& dst_shape)
     {
         const auto src_shape = nmtools::shape<true>(array);
@@ -86,7 +98,7 @@ namespace nmtools::meta
     struct fixed_size<
         view::decorator_t<view::resize_t,array_t,dst_shape_t>
     > {
-        using view_type = view::decorator_t<view::resize_t,array_t,dst_shape_t>;
+        using view_type = view::resize_t<array_t,dst_shape_t>;
         using dst_shape_type = typename view_type::dst_shape_type;
 
         static constexpr auto value = [](){
@@ -102,7 +114,7 @@ namespace nmtools::meta
     struct bounded_size<
         view::decorator_t<view::resize_t,array_t,dst_shape_t>
     > {
-        using view_type = view::decorator_t<view::resize_t,array_t,dst_shape_t>;
+        using view_type = view::resize_t<array_t,dst_shape_t>;
         using dst_shape_type = typename view_type::dst_shape_type;
 
         static constexpr auto value = [](){

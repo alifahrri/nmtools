@@ -12,5 +12,7 @@
 #endif
 #define nmtools_index_inline nmtools_inline
 #define nmtools_index_attribute nmtools_index_inline
+// to avoid invalid cast triggered by view when building c++ for opencl kernel
+#define nmtools_view_attribute nmtools_inline
 
 #endif // NMTOOLS_PLATFORM_ATTRIBUTES_OPENCL_HPP

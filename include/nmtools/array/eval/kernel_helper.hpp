@@ -10,6 +10,7 @@
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/view/reshape.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 #ifdef NMTOOLS_KERNEL_MAX_DIM
 #define NMTOOLS_KERNEL_MAX_DIM_ NMTOOLS_KERNEL_MAX_DIM 
@@ -24,16 +25,6 @@
 namespace nmtools::array
 {
     struct create_vector_t {};
-
-    template <typename T>
-    constexpr auto unwrap(const T& t)
-    {
-        if constexpr (meta::is_maybe_v<T>) {
-            return *t;
-        } else {
-            return t;
-        }
-    }
 
     template <auto DIM=0, typename size_type=nm_index_t, typename type>
     nmtools_func_attribute

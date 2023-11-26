@@ -39,7 +39,7 @@ namespace nmtools::array::opencl
     auto assign_vector(mutable_vector_t& lhs, const vector_t& rhs)
     {
         auto size = nmtools::size(lhs);
-        for (nm_cl_index_t i=0; i<(nm_cl_index_t)size; i++) {
+        for (nm_cl_size_t i=0; i<(nm_cl_size_t)size; i++) {
             at(lhs,i) = at(rhs,i);
         }
     }
@@ -48,11 +48,24 @@ namespace nmtools::array::opencl
     template <typename mutable_array_t, typename array_t>
     auto assign_array(mutable_array_t& output, const array_t& input)
     {
+        auto valid = [&](){
+            if constexpr (meta::is_maybe_v<array_t>) {
+                return static_cast<bool>(input);
+            } else {
+                return true;
+            }
+        }();
         auto size = nmtools::size(output);
         auto idx = get_global_id(0);
-        if ((nm_cl_size_t)idx < (nm_cl_size_t)size) {
+        if (((nm_cl_size_t)idx < (nm_cl_size_t)size) && valid) {
             auto flat_lhs = view::mutable_flatten(output);
-            auto flat_rhs = view::flatten(input);
+            auto flat_rhs = [&](){
+                if constexpr (meta::is_maybe_v<array_t>) {
+                    return view::flatten(*input);
+                } else {
+                    return view::flatten(input);
+                }
+            }();
             flat_lhs((nm_cl_index_t)idx) = flat_rhs((nm_cl_index_t)idx);
         }
     }

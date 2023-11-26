@@ -13,15 +13,15 @@ namespace nmtools::index
     template <typename src_shape_t, typename dst_shape_t>
     constexpr auto check_shape_resize(const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
-        auto src_dim = len(src_shape);
-        auto dst_dim = len(dst_shape);
+        auto src_dim = (nm_size_t)len(src_shape);
+        auto dst_dim = (nm_size_t)len(dst_shape);
 
         if (src_dim != dst_dim) {
             return false;
         }
 
         bool valid = true;
-        for (size_t i=0; valid && (i<src_dim); i++) {
+        for (nm_size_t i=0; valid && (i<src_dim); i++) {
             valid = valid && (at(dst_shape,i) > 0);
         }
 
@@ -45,7 +45,7 @@ namespace nmtools::index
                 if constexpr (meta::is_resizable_v<result_t>) {
                     result.resize(dim);
                 }
-                for (size_t i=0; i<dim; i++) {
+                for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
                     at(result,i) = at(dst_shape,i);
                 }
                 return return_t{result};
@@ -61,6 +61,7 @@ namespace nmtools::index
     constexpr auto resize(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
         using result_t = meta::resolve_optype_t<resize_t,indices_t,src_shape_t,dst_shape_t>;
+        using index_t  = meta::get_index_element_type_t<result_t>;
 
         auto result = result_t{};
         
@@ -69,8 +70,8 @@ namespace nmtools::index
             result.resize(dim);
         }
 
-        for (size_t i=0; i<dim; i++) {
-            at(result,i) = float(at(src_shape,i) * at(indices,i) / at(dst_shape,i));
+        for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
+            at(result,i) = static_cast<index_t>(float(at(src_shape,i) * at(indices,i) / at(dst_shape,i)));
         }
 
         return result;

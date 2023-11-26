@@ -31,7 +31,7 @@ kernel void nmtools_cl_kernel_name(out_type,inp_type) \
     , const nm_cl_size_t out_dim \
     , const nm_cl_size_t inp_dim \
     , const nm_cl_size_t repeats_size \
-    , const nm_cl_size_t axis \
+    , const nm_cl_index_t axis \
     ) \
 { \
     auto repeats  = na::create_vector(repeats_ptr,repeats_size); \
@@ -93,8 +93,8 @@ namespace nmtools::array::opencl
             auto inp_buffer = context->create_buffer(inp_array);
             auto out_buffer = context->create_buffer<out_t>(nmtools::size(output));
 
-            uint32_t repeats_size = nmtools::len(view.repeats);
-            uint32_t axis = view.axis;
+            nm_cl_size_t repeats_size = nmtools::len(view.repeats);
+            nm_cl_size_t axis = view.axis;
 
             auto kernel_name = this->kernel_name<inp_t,out_t>();
 
@@ -122,7 +122,17 @@ namespace nmtools::array::opencl
             auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
             auto global_size = nmtools_array{size_t(std::ceil(float(out_size) / local_size[0])) * local_size[0]};
 
-            auto default_args = nmtools_tuple{out_buffer,inp_buffer,out_shape_buffer,inp_shape_buffer,repeats_buffer,index::cast<nm_cl_index_t>(out_dim),index::cast<nm_cl_index_t>(inp_dim),index::cast<nm_cl_index_t>(repeats_size),index::cast<nm_cl_index_t>(axis)};
+            auto default_args = nmtools_tuple{
+                  out_buffer
+                , inp_buffer
+                , out_shape_buffer
+                , inp_shape_buffer
+                , repeats_buffer
+                , index::cast<nm_cl_size_t>(out_dim)
+                , index::cast<nm_cl_size_t>(inp_dim)
+                , index::cast<nm_cl_size_t>(repeats_size)
+                , index::cast<nm_cl_index_t>(axis)
+            };
 
             context->set_args(kernel,default_args);
             context->run(kernel,out_buffer,output,global_size,local_size);

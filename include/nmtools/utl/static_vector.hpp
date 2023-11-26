@@ -31,7 +31,9 @@ namespace nmtools::utl
         using value_type  = T;
         using pointer     = T*;
         using reference   = T&;
-        using size_type   = size_t;
+        using size_type   = nm_size_t;
+        // NOTE: to avoid invalid cast on c++ for opencl kernel compilation
+        using index_type  = nm_index_t;
         using const_pointer   = const T*;
         using const_reference = const T&;
 
@@ -63,7 +65,7 @@ namespace nmtools::utl
             resize(other.size_);
             // dumb copy
             for (size_type i=0; i<size_; i++) {
-                buffer[i] = other.buffer[i];
+                buffer[(index_type)i] = other.buffer[(index_type)i];
             }
         }
         #endif
@@ -71,19 +73,22 @@ namespace nmtools::utl
         constexpr void resize(size_type new_size)
         {
             // TODO: assert/throw
-            if (new_size <= Capacity)
+            if (new_size <= Capacity) {
                 size_ = new_size;
+            }
         }
 
+        #ifndef __OPENCL_VERSION__
         constexpr static_vector& operator=(const static_vector& other)
         {
             resize(other.size_);
             // dumb copy
             for (size_type i=0; i<size_; i++) {
-                buffer[i] = other.buffer[i];
+                buffer[(index_type)i] = other.buffer[(index_type)i];
             }
             return *this;
         }
+        #endif
 
         constexpr void push_back(const T& t)
         {
@@ -91,7 +96,7 @@ namespace nmtools::utl
                 return;
             }
             resize(size_ + 1);
-            buffer[size_-1] = t;
+            buffer[index_type(size_-1)] = t;
         }
 
         constexpr const T* data() const
@@ -105,14 +110,14 @@ namespace nmtools::utl
         }
 
         nmtools_index_attribute
-        constexpr reference at(size_t i)
+        constexpr reference at(index_type i)
         {
             // TODO: assert/throw
             return buffer[i];
         }
 
         nmtools_index_attribute
-        constexpr const_reference at(size_t i) const
+        constexpr const_reference at(index_type i) const
         {
             // TODO: assert/throw
             return buffer[i];
@@ -124,13 +129,13 @@ namespace nmtools::utl
         }
 
         nmtools_index_attribute
-        constexpr reference operator[](size_t i) noexcept
+        constexpr reference operator[](index_type i) noexcept
         {
             return buffer[i];
         }
 
         nmtools_index_attribute
-        constexpr const_reference operator[](size_t i) const noexcept
+        constexpr const_reference operator[](index_type i) const noexcept
         {
             return buffer[i];
         }
@@ -139,14 +144,14 @@ namespace nmtools::utl
         constexpr reference get()
         {
             static_assert( I<Capacity );
-            return buffer[I];
+            return buffer[(index_type)I];
         }
 
         template <size_t I>
         constexpr const_reference get() const
         {
             static_assert( I<Capacity );
-            return buffer[I];
+            return buffer[(index_type)I];
         }
     }; // static_vector
 

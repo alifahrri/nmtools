@@ -49,8 +49,13 @@ set(LLVM_SPIRV_OPTIONS
 set(CLANG_OPENCL_ARGS -emit-llvm -target spir64-unknown-unknown
     -Wall -Wextra -Wno-gnu-string-literal-operator-template
     -Xclang -finclude-default-header
-    -Xclang -cl-std=CLC++ -O3)
-set(NMTOOLS_OPENCL_MACROS -D__OPENCL_C_VERSION__=120 -D__OPENCL_VERSION__=120 -DNMTOOLS_OPENCL_BUILD_KERNELS)
+    -Xclang -cl-std=CLC++ -O1
+)
+set(NMTOOLS_OPENCL_MACROS
+    -D__OPENCL_C_VERSION__=120
+    -D__OPENCL_VERSION__=120
+    -DNMTOOLS_OPENCL_BUILD_KERNELS
+)
 
 if (NMTOOLS_OPENCL_TEST_UFUNC)
     set(NMTOOLS_OPENCL_TEST_SOURCES ${NMTOOLS_OPENCL_TEST_SOURCES}
@@ -119,6 +124,7 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
         kernels/transpose.cpp
         kernels/repeat.cpp
         kernels/pad.cpp
+        kernels/resize.cpp
     )
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-kernels
@@ -429,6 +435,11 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pad.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/pad.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pad.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pad.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_pad.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/resize.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_resize.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     BYPRODUCTS
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.spv
@@ -552,6 +563,8 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_repeat.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pad.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pad.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     )
         endif () # CMAKE_CXX_COMPILER_ID
@@ -569,6 +582,7 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
         index/repeat.cpp
         index/transpose.cpp
         index/product.cpp
+        index/resize.cpp
     )
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-index-tests
@@ -627,6 +641,11 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/product.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_product.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
+                &&
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_resize.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/resize.cpp
+                && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_resize.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_resize.bc
+                && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_resize.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
             BYPRODUCTS
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.bc
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.spv

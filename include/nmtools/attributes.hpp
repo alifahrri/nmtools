@@ -30,4 +30,8 @@
 #define nmtools_index_attribute
 #endif
 
+#ifndef nmtools_view_attribute
+#define nmtools_view_attribute
+#endif
+
 #endif // NMTOOLS_ATTRIBUTES_HPP
