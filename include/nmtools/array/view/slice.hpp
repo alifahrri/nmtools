@@ -13,7 +13,7 @@ namespace nmtools::view
     struct slice_t
     {
         using array_type  = resolve_array_type_t<array_t>;
-        using slices_type = slices_t;
+        using slices_type = meta::remove_address_space_t<slices_t>;
         using src_shape_type = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
         using dst_shape_type = meta::remove_cvref_t<decltype(index::apply_shape_slice(meta::declval<src_shape_type>(),meta::declval<slices_t>()))>;
 

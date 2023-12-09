@@ -49,6 +49,7 @@ namespace nmtools::view
         } // dim
 
         template <typename...size_types>
+        nmtools_index_attribute
         constexpr auto index(size_types...Is) const
         {
             auto indices = pack_indices(Is...);
