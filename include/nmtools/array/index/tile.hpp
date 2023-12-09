@@ -47,7 +47,7 @@ namespace nmtools::index
                 ret.resize(s);
 
             auto shape_tile_impl = [&](auto i){
-                using idx_t  = meta::get_index_element_type_t<shape_t>;
+                using idx_t  = meta::remove_address_space_t<meta::get_index_element_type_t<shape_t>>;
                 using sidx_t = meta::make_signed_t<idx_t>;
                 sidx_t ai = m - i - 1;
                 sidx_t bi = n - i - 1;
