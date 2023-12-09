@@ -1,7 +1,9 @@
 #ifndef NMTOOLS_UTL_ARRAY_HPP
 #define NMTOOLS_UTL_ARRAY_HPP
 
+#include "nmtools/platform.hpp"
 #include "nmtools/dtypes.hpp"
+#include "nmtools/utl/common.hpp"
 #include "nmtools/meta/bits/transform/common_type.hpp"
 
 // poor man's array,
@@ -30,19 +32,20 @@ namespace nmtools::utl
         using value_type  = data_type;
         using pointer     = data_type*;
         using reference   = data_type&;
-        using size_type   = size_t;
+        using size_type   = nm_utl_size_t;
+        using index_type  = nm_utl_index_t;
         using const_pointer   = const data_type*;
         using const_reference = const data_type&;
 
         data_type buffer[N];
 
-        constexpr reference at(size_t i)
+        constexpr reference at(index_type i)
         {
             // TODO: assert/throw
             return buffer[i];
         }
 
-        constexpr const_reference at(size_t i) const
+        constexpr const_reference at(index_type i) const
         {
             // TODO: assert/throw
             return buffer[i];
@@ -50,15 +53,15 @@ namespace nmtools::utl
 
         constexpr auto size() const noexcept
         {
-            return N;
+            return (size_type)N;
         }
 
-        constexpr reference operator[](size_t i) noexcept
+        constexpr reference operator[](index_type i) noexcept
         {
             return buffer[i];
         }
 
-        constexpr const_reference operator[](size_t i) const noexcept
+        constexpr const_reference operator[](index_type i) const noexcept
         {
             return buffer[i];
         }
@@ -73,6 +76,7 @@ namespace nmtools::utl
             return buffer;
         }
 
+        // TODO: try to avoid macro branching
         #ifndef __OPENCL_VERSION__
         template <size_t I>
         constexpr reference get()
@@ -93,7 +97,7 @@ namespace nmtools::utl
     template <typename T, size_t N>
     constexpr auto size(const array<T,N>&)
     {
-        return N;
+        return (nm_utl_size_t)N;
     }
 
     template <typename T, size_t N>
@@ -111,13 +115,13 @@ namespace nmtools::utl
     template <typename T, size_t N>
     constexpr auto end(const array<T,N>& a)
     {
-        return a.buffer + N;
+        return a.buffer + (nm_utl_index_t)N;
     }
 
     template <typename T, size_t N>
     constexpr auto end(array<T,N>& a)
     {
-        return a.buffer + N;
+        return a.buffer + (nm_utl_index_t)N;
     }
 
     // 🤦
@@ -153,20 +157,22 @@ namespace nmtools::utl
     template <size_t I, typename T, size_t N>
     constexpr decltype(auto) get(const array<T,N>& a)
     {
+        // TODO: try to avoid macro branching
         #ifndef __OPENCL_VERSION__
         return a.template get<I>();
         #else
-        return a.buffer[I];
+        return a.buffer[(nm_utl_index_t)I];
         #endif // __OPENCL_VERSION__
     }
 
     template <size_t I, typename T, size_t N>
     constexpr decltype(auto) get(array<T,N>& a)
     {
+        // TODO: try to avoid macro branching
         #ifndef __OPENCL_VERSION__
         return a.template get<I>();
         #else
-        return a.buffer[I];
+        return a.buffer[(nm_utl_index_t)I];
         #endif // __OPENCL_VERSION__
     }
 } // namespace nmtools::utl
@@ -222,5 +228,25 @@ struct std::tuple_element<I,const nmtools::utl::array<T,N>>
     using array_type = nmtools::utl::array<T,N>;
     using type = const typename nmtools::utl::tuple_element<I,array_type>::type;
 };
+
+#ifdef NMTOOLS_HAS_ADDRESS_SPACE
+
+template <typename array_type>
+struct std::tuple_size<nmtools_address_private array_type>
+    : std::tuple_size<array_type> {};
+
+template <typename array_type>
+struct std::tuple_size<nmtools_address_generic array_type>
+    : std::tuple_size<array_type> {};
+
+template <size_t I, typename array_type>
+struct std::tuple_element<I,nmtools_address_private array_type>
+    : std::tuple_element<I,array_type> {};
+
+template <size_t I, typename array_type>
+struct std::tuple_element<I,nmtools_address_generic array_type>
+    : std::tuple_element<I,array_type> {};
+
+#endif // NMTOOLS_HAS_ADDRESS_SPACE
 
 #endif // NMTOOLS_UTL_ARRAY_HPP

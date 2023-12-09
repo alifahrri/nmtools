@@ -3,6 +3,7 @@
 
 #include "nmtools/def.hpp"
 #include "nmtools/platform.hpp"
+#include "nmtools/utl/common.hpp"
 #include "nmtools/utl/array.hpp"
 
 // poor man's static_vector,
@@ -31,9 +32,9 @@ namespace nmtools::utl
         using value_type  = T;
         using pointer     = T*;
         using reference   = T&;
-        using size_type   = nm_size_t;
+        using size_type   = nm_utl_size_t;
         // NOTE: to avoid invalid cast on c++ for opencl kernel compilation
-        using index_type  = nm_index_t;
+        using index_type  = nm_utl_index_t;
         using const_pointer   = const T*;
         using const_reference = const T&;
 
@@ -78,6 +79,7 @@ namespace nmtools::utl
             }
         }
 
+        // TODO: fix, try to avoid this
         #ifndef __OPENCL_VERSION__
         constexpr static_vector& operator=(const static_vector& other)
         {
