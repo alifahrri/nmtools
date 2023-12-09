@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/transform/common_type.hpp"
+#include "nmtools/meta/bits/transform/remove_address_space.hpp"
 #include "nmtools/meta/bits/traits/is_tuple.hpp"
 
 namespace nmtools::meta
@@ -23,9 +24,9 @@ namespace nmtools::meta
     struct get_common_type<tuple<Ts...>>
     {
         static constexpr auto vtype = [](){
-            using tuple_t = tuple<Ts...>;
+            using tuple_t = tuple<remove_address_space_t<Ts>...>;
             if constexpr (is_tuple_v<tuple_t>) {
-                using type = typename common_type<Ts...>::type;
+                using type = typename common_type<remove_address_space_t<Ts>...>::type;
                 return as_value_v<type>;
             } else {
                 return as_value_v<error::GET_COMMON_TYPE_UNSUPPORTED<tuple_t>>;
