@@ -232,7 +232,7 @@ namespace nmtools::meta
                 && is_index_array_v<stride_t>
             ) {
                 // TODO: consider to use index_type/similar instead of int
-                using slice_t = nmtools_array<int,3>;
+                using slice_t = nmtools_array<nm_index_t,3>;
                 if constexpr (is_fixed_index_array_v<shape_t>) {
                     constexpr auto DIM = len_v<shape_t>;
                     using type = nmtools_array<slice_t,DIM>;
