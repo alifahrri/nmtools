@@ -29,7 +29,7 @@ namespace nmtools::index
                 at(result,i) = at(array,i);
             });
         } else {
-            for (size_t i=0; i<dim; i++) {
+            for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
                 at(result,i) = at(array,i);
             }
         }
@@ -55,6 +55,7 @@ namespace nmtools::meta
             constexpr auto N = len_v<array_t>;
             [[maybe_unused]]
             constexpr auto B_SIZE = bounded_size_v<array_t>;
+            // TODO: try to resize instead, to keep the class/struct of original array
             // TODO: keep compile-time index array
             if constexpr (N > 0) {
                 using type = nmtools_array<dst_type_t,N>;

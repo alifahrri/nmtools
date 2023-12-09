@@ -208,11 +208,8 @@ namespace nmtools::index
         // since broadcasting is almost used everywhere
         // TODO: measure and inspect if this can be optimized
 
-        // NOTE: maybe error in opencl:
         auto origin_shape   = gather(dst_shape,origin_axes);
-        // NOTE: maybe error in opencl:
         auto origin_strides = compute_strides(origin_shape);
-        // NOTE: maybe error in opencl:
         auto origin_indices = gather(indices,origin_axes);
 
         auto offset = compute_offset(origin_indices,origin_strides);
