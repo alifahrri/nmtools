@@ -51,6 +51,7 @@ set(CLANG_OPENCL_ARGS -emit-llvm -target spir64-unknown-unknown
     -Xclang -finclude-default-header
     -Xclang -cl-std=CLC++ -O1
 )
+# TODO: check when __OPENCL_VERSION__ should be defined (host/kernel?)
 set(NMTOOLS_OPENCL_MACROS
     -D__OPENCL_C_VERSION__=120
     -D__OPENCL_VERSION__=120
@@ -125,6 +126,18 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
         kernels/repeat.cpp
         kernels/pad.cpp
         kernels/resize.cpp
+        # TODO: fix kernel compilation error
+        # kernels/pooling.cpp
+        # kernels/flatten.cpp
+        kernels/atleast_1d.cpp
+        kernels/atleast_2d.cpp
+        kernels/atleast_3d.cpp
+        # kernels/reshape.cpp
+        # kernels/squeeze.cpp
+        kernels/expand_dims.cpp
+        # kernels/flip.cpp
+        kernels/tile.cpp
+        kernels/where.cpp
     )
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-kernels
@@ -440,6 +453,65 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/resize.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_resize.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        ## TODO: enable pooling
+                        # &&
+                        # ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        # -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pooling.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/pooling.cpp
+                        # && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pooling.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pooling.bc
+                        # && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_resize.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        ## TODO: enable flatten
+                        # &&
+                        # ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        # -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flatten.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/flatten.cpp
+                        # && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flatten.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flatten.bc
+                        # && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_flatten.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_1d.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/atleast_1d.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_1d.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_1d.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_atleast_1d.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/atleast_2d.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_atleast_2d.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/atleast_3d.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_atleast_3d.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        ## TODO: enable reshape
+                        # &&
+                        # ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        # -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_reshape.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/reshape.cpp
+                        # && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_reshape.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_reshape.bc
+                        # && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_reshape.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        ## TODO: enable squeeze
+                        # &&
+                        # ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        # -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_squeeze.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/squeeze.cpp
+                        # && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_squeeze.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_squeeze.bc
+                        # && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_squeeze.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_expand_dims.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/expand_dims.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_expand_dims.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_expand_dims.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_expand_dims.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        # &&
+                        # ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        # -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flip.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/flip.cpp
+                        # && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flip.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flip.bc
+                        # && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_flip.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_tile.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/tile.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_tile.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_tile.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_tile.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
+                        &&
+                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_where.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/where.cpp
+                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_where.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_where.bc
+                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_where.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     BYPRODUCTS
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/relu.spv
@@ -565,6 +637,29 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pad.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_resize.spv
+                        # TODO: enable pooling
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pooling.bc
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_pooling.spv
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flatten.bc
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flatten.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_1d.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_1d.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.spv
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_reshape.bc
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_reshape.spv
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_squeeze.bc
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_squeeze.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_expand_dims.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_expand_dims.spv
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flip.bc
+                        # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_flip.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_tile.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_tile.spv
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_where.bc
+                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_where.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                     )
         endif () # CMAKE_CXX_COMPILER_ID
@@ -583,6 +678,7 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
         index/transpose.cpp
         index/product.cpp
         index/resize.cpp
+        index/pooling.cpp
     )
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-index-tests
@@ -646,6 +742,11 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
                 -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_resize.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/resize.cpp
                 && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_resize.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_resize.bc
                 && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_resize.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
+                &&
+                ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
+                -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_pooling.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/index/pooling.cpp
+                && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_pooling.spv ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_pooling.bc
+                && cd ${CMAKE_CURRENT_SOURCE_DIR}/index/ && xxd -i nm_cl_test_pooling.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/index.cpp
             BYPRODUCTS
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.bc
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_broadcast_to.spv
@@ -661,6 +762,8 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_transpose.spv
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.bc
                 ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_product.spv
+                ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_pooling.bc
+                ${CMAKE_CURRENT_SOURCE_DIR}/index/nm_cl_test_pooling.spv
         )
     endif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif (NMTOOLS_OPENCL_TEST_INDEX)
