@@ -226,6 +226,7 @@ namespace nmtools::view
          * @see nmtools::at
          */
         template <typename...size_types>
+        nmtools_index_attribute
         constexpr decltype(auto) operator()(size_types...indices) const
         {
             // @note either using auto& or decltype(auto) for return type
@@ -291,6 +292,7 @@ namespace nmtools::view
          * @see nmtools::at
          */
         template <typename...size_types>
+        nmtools_index_attribute
         constexpr decltype(auto) operator()(size_types...indices)
         {
             // TODO: better error handling
