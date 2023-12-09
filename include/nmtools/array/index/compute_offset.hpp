@@ -19,6 +19,7 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename indices_t, typename strides_t>
+    nmtools_index_attribute
     constexpr auto compute_offset(const indices_t& indices, const strides_t& strides)
     {
         using size_type = size_t;
