@@ -1,13 +1,13 @@
-#ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESIZE_HPP
-#define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESIZE_HPP
+#ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESHAPE_HPP
+#define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESHAPE_HPP
 
 #include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/view/resize.hpp"
+#include "nmtools/array/view/reshape.hpp"
 #include "nmtools/array/eval/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
 
-#define nmtools_cl_kernel_name(out_type,inp_type) resize##_##out_type##_##inp_type
-#define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(resize##_##out_type##_##inp_type)
+#define nmtools_cl_kernel_name(out_type,inp_type) reshape_##out_type##_##inp_type
+#define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(reshape_##out_type##_##inp_type)
 
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
@@ -16,7 +16,6 @@ namespace na = nmtools::array;
 namespace view = nmtools::view;
 namespace meta = nmtools::meta;
 namespace opencl = nmtools::array::opencl;
-namespace detail = nmtools::view::detail;
 
 #define nmtools_cl_kernel(out_type,inp_type) \
 kernel void nmtools_cl_kernel_name(out_type,inp_type) \
@@ -24,17 +23,17 @@ kernel void nmtools_cl_kernel_name(out_type,inp_type) \
     , global const inp_type* inp_ptr \
     , global const nm_cl_index_t* out_shape_ptr \
     , global const nm_cl_index_t* inp_shape_ptr \
-    , global const nm_cl_index_t* dst_shape_ptr \
+    , global const nm_cl_index_t* new_shape_ptr \
     , const nm_cl_size_t out_dim \
     , const nm_cl_size_t inp_dim \
-    , const nm_cl_size_t dst_size \
+    , const nm_cl_size_t new_dim \
     ) \
 { \
-    auto dst_shape = na::create_vector(dst_shape_ptr,dst_size); \
-    auto input     = na::create_array(inp_ptr,inp_shape_ptr,inp_dim); \
-    auto output    = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim); \
-    auto resized   = view::resize(input,dst_shape); \
-    opencl::assign_array(output,resized); \
+    auto new_shape = na::create_vector(new_shape_ptr,new_dim); \
+    auto input = na::create_array(inp_ptr,inp_shape_ptr,inp_dim); \
+    auto output = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim); \
+    auto result = view::reshape(input,new_shape); \
+    opencl::assign_array(output,result); \
 }
 
 nmtools_cl_kernel(float,float)
@@ -43,18 +42,18 @@ nmtools_cl_kernel(double,double)
 #else // NMTOOLS_OPENCL_BUILD_KERNELS
 
 #include "nmtools/array/eval/opencl/context.hpp"
-#include <cstring> // memcpy
+#include <cstring>
 
-extern unsigned char nm_cl_resize_spv[];
-extern unsigned int nm_cl_resize_spv_len;
+extern unsigned char nm_cl_reshape_spv[];
+extern unsigned int nm_cl_reshape_spv_len;
 
 namespace nmtools::array::opencl
 {
     template <typename...args_t>
     struct kernel_t<
-        view::decorator_t<view::resize_t,args_t...>
+        view::decorator_t<view::reshape_t,args_t...>
     > {
-        using view_t = view::decorator_t<view::resize_t,args_t...>;
+        using view_t = view::decorator_t<view::reshape_t,args_t...>;
 
         view_t view;
         std::shared_ptr<context_t> context;
@@ -63,8 +62,8 @@ namespace nmtools::array::opencl
         {
             using vector = nmtools_list<unsigned char>;
             auto spirv = vector();
-            spirv.resize(nm_cl_resize_spv_len);
-            memcpy(spirv.data(),nm_cl_resize_spv,sizeof(unsigned char) * nm_cl_resize_spv_len);
+            spirv.resize(nm_cl_reshape_spv_len);
+            memcpy(spirv.data(),nm_cl_reshape_spv,sizeof(unsigned char)*nm_cl_reshape_spv_len);
             return spirv;
         }
 
@@ -103,29 +102,29 @@ namespace nmtools::array::opencl
 
             auto out_shape = nmtools::shape(output);
             auto inp_shape = nmtools::shape(inp_array);
-            auto dst_shape = view.dst_shape;
-            
+
             auto out_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(out_shape));
             auto inp_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(inp_shape));
-            auto dst_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(dst_shape));
 
             auto out_dim = nmtools::len(out_shape);
             auto inp_dim = nmtools::len(inp_shape);
-            auto dst_len = nmtools::len(dst_shape);
+
+            auto new_shape_buffer = context->create_buffer(index::cast<nm_cl_index_t>(view.new_shape));
+            auto new_dim = nmtools::len(view.new_shape);
 
             auto kernel_info = kernel.kernel_info_;
-            auto local_size = nmtools_array{kernel_info->preferred_work_group_size_multiple};
+            auto local_size  = nmtools_array{kernel_info->preferred_work_group_size_multiple};
             auto global_size = nmtools_array{size_t(std::ceil(float(out_size) / local_size[0])) * local_size[0]};
 
             auto default_args = nmtools_tuple{
-                  out_buffer
+                out_buffer
                 , inp_buffer
                 , out_shape_buffer
                 , inp_shape_buffer
-                , dst_shape_buffer
+                , new_shape_buffer
                 , (nm_cl_size_t)out_dim
                 , (nm_cl_size_t)inp_dim
-                , (nm_cl_size_t)dst_len
+                , (nm_cl_size_t)new_dim
             };
 
             context->set_args(kernel,default_args);
@@ -133,7 +132,6 @@ namespace nmtools::array::opencl
         }
     };
 }
-
 #endif // NMTOOLS_OPENCL_BUILD_KERNELS
 
-#endif // NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESIZE_HPP
+#endif // NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESHAPE_HPP
