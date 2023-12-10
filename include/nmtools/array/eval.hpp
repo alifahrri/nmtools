@@ -305,7 +305,7 @@ namespace nmtools::array
          * @return constexpr auto 
          */
         template <typename output_t, typename context_t, typename resolver_t, typename views_t, template<auto...>typename index_sequence, auto...Is>
-        constexpr auto apply_eval(const views_t& views, context_t&& context, output_t&& output, resolver_t resolver, index_sequence<Is...>)
+        constexpr auto apply_eval(const views_t& views, context_t&& context, output_t&& output, [[maybe_unused]] resolver_t resolver, index_sequence<Is...>)
         {
             return nmtools_tuple{array::eval(nmtools::get<Is>(views)
                 , nmtools::forward<context_t>(context)

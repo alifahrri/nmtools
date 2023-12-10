@@ -16,8 +16,8 @@
 	// "dockerFile": "../docker/eoan.dockerfile",
 
     // DOCKERFILE: ubuntu jammy (22.04)
-    "name": "ubuntu jammy - gcc11, clang14",
-	"dockerFile": "../docker/jammy.dockerfile",
+    // "name": "ubuntu jammy - gcc11, clang14",
+	// "dockerFile": "../docker/jammy.dockerfile",
 
     // DOCKERFILE: ubuntu jammy (22.04)
     // "name": "ubuntu lunar",
@@ -32,12 +32,16 @@
 	// "dockerFile": "../docker/circle.dockerfile",
 
     // DOCKERFILE: cuda
-    // "name": "cuda-12 ubuntu20.04",
+    // "name": "nvidia/cuda:11.8.0-devel-ubuntu22.04",
     // "dockerFile": "../docker/cuda.dockerfile",
 
     // DOCKERFILE: sycl
     // "name": "sycl-clang14 ubuntu22.04",
     // "dockerFile": "../docker/sycl.dockerfile",
+
+	// DOCKERFILE: cuda-sycl
+    "name": "sycl-clang14 ubuntu22.04 with cuda toolchain",
+    "dockerFile": "../docker/cuda-sycl.dockerfile",
 
 	"build": { 
 		"args": { "USERNAME": "${localEnv:USER}" },
