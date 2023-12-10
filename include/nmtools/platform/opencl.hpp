@@ -22,4 +22,9 @@
 // NOTE: on spirv, we can't have access / cast to base class
 #define NMTOOLS_NO_BASE_ACCESS
 
+#define NMTOOLS_HAS_ADDRESS_SPACE
+
+#define nmtools_address_private private
+#define nmtools_address_generic generic
+
 #endif // NMTOOLS_PLATFORM_OPENCL_HPP

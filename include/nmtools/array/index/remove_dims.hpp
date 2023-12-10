@@ -45,9 +45,11 @@ namespace nmtools::index
                 else return 1;
             }();
             auto new_dim = [&](){
-                if (static_cast<bool>(keepdims))
-                    return dim;
-                else return dim-n;
+                if (static_cast<bool>(keepdims)) {
+                    return static_cast<nm_size_t>(dim);
+                } else {
+                    return static_cast<nm_size_t>(dim-n);
+                }
             }();
             res.resize(new_dim);
         }

@@ -100,6 +100,7 @@ namespace nmtools::view
      * @return constexpr auto reshape view
      */
     template <typename array_t, typename shape_t>
+    nmtools_view_attribute
     constexpr auto reshape(const array_t& array, const shape_t& new_shape)
     {
         // TODO: fix this on opencl kernel

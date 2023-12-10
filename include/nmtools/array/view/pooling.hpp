@@ -25,7 +25,8 @@ namespace nmtools::view
     template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
     struct pool2d_t
     {
-        using reducer_type     = reducer_t; // assume by value, copyable
+        // must remove address space to handle error: field may not be qualified with an address space
+        using reducer_type     = meta::remove_address_space_t<reducer_t>; // assume by value, copyable
         using array_type       = resolve_array_type_t<array_t>;
         using kernel_size_type = resolve_attribute_type_t<kernel_size_t>;
         using stride_type      = resolve_attribute_type_t<stride_t>;
@@ -81,7 +82,20 @@ namespace nmtools::view
         template <typename sliced_t>
         constexpr auto operator()(const sliced_t& sliced) const
         {
+            #if defined(NMTOOLS_OPENCL_BUILD_KERNELS)
+            // #if 0
+            using element_type = meta::get_element_type_t<sliced_t>;
+            auto flat_slice = flatten(sliced);
+            nm_size_t n = size(flat_slice);
+            auto result = (element_type)nmtools::at(flat_slice,(nm_index_t)0);
+            for (nm_size_t i=1; i<n; i++) {
+                auto element_i = (element_type)nmtools::at(flat_slice,(nm_index_t)i);
+                result = (result > element_i ? result : element_i);
+            }
+            return result;
+            #else // NMTOOLS_OPENCL_BUILD_KERNELS
             return reduce_maximum(sliced,None,None,False);
+            #endif // NMTOOLS_OPENCL_BUILD_KERNELS
         };
     };
 
@@ -115,6 +129,7 @@ namespace nmtools::view
      * @return constexpr auto 
      */
     template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
+    nmtools_view_attribute
     constexpr auto pool2d(const reducer_t& reducer, const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode)
     {
         using view_t = decorator_t<pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>;
@@ -137,6 +152,7 @@ namespace nmtools::view
      * @return constexpr auto 
      */
     template <typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
+    nmtools_view_attribute
     constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{})
     {
         return pool2d(max_reducer_t{},array,kernel_size,stride,ceil_mode);
@@ -158,6 +174,7 @@ namespace nmtools::view
      * @return constexpr auto 
      */
     template <typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
+    nmtools_view_attribute
     constexpr auto avg_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode)
     {
         return pool2d(avg_reducer_t{},array,kernel_size,stride,ceil_mode);
@@ -171,7 +188,7 @@ namespace nmtools::meta
         view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
     >
     {
-        using view_type  = view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>;
+        using view_type  = view::pool2d_t< reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>;
         using shape_type = typename view_type::dst_shape_type;
 
         static constexpr auto value = [](){

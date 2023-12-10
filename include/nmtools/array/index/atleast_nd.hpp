@@ -58,7 +58,7 @@ namespace nmtools::index
                 });
             } else {
                 // fill ones for "extra" dim
-                for (size_t i=0; i<diff; i++) {
+                for (nm_index_t i=0; i<(nm_index_t)diff; i++) {
                     at(result,i) = 1;
                 }
             }
@@ -70,7 +70,7 @@ namespace nmtools::index
                     at(result,I) = at(shape,i);
                 });
             } else {
-                for (size_t i=0; i<dim; i++) {
+                for (nm_index_t i=0; i<(nm_index_t)dim; i++) {
                     at(result,i+diff) = at(shape,i);
                 }
             }

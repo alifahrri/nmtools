@@ -18,6 +18,7 @@ namespace nmtools::index
      * @return constexpr auto
      */
     template <typename array_t, typename m_size_type>
+    nmtools_index_attribute
     constexpr auto stride(const array_t& shape, m_size_type k)
     {
         using result_t = meta::resolve_optype_t<stride_t,array_t,m_size_type>;
@@ -58,6 +59,7 @@ namespace nmtools::index
      * @return constexpr auto
      */
     template <typename array_t>
+    nmtools_index_attribute
     constexpr auto compute_strides(const array_t& shape)
     {
         using return_t  = meta::resolve_optype_t<compute_strides_t,array_t>;

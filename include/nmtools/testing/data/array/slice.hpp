@@ -4,6 +4,8 @@
 #include "nmtools/testing/testing.hpp"
 #include "nmtools/testing/array_cast.hpp"
 
+using nmtools_tuple;
+
 NMTOOLS_TESTING_DECLARE_CASE(array, slice)
 {
     using nmtools::array::static_vector;

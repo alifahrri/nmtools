@@ -60,6 +60,7 @@ namespace nmtools::view
         } // dim
 
         template <typename...size_types>
+        nmtools_index_attribute
         constexpr auto index(size_types...indices) const
         {
             // here we directly provide operator() to actually performing operations,

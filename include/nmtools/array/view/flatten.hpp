@@ -60,6 +60,7 @@ namespace nmtools::view
         } // shape
 
         template <typename size_type>
+        nmtools_index_attribute
         constexpr auto index(size_type i) const
         {
             using index_t = meta::remove_address_space_t<meta::get_index_element_type_t<dst_shape_type>>;
@@ -114,8 +115,10 @@ namespace nmtools::view
     }; // flatten_t
 
     template <typename array_t>
+    nmtools_view_attribute
     constexpr auto flatten(const array_t& array)
     {
+        // TODO: try to avoid macro branching
         #ifndef __OPENCL_VERSION__
         if constexpr (meta::is_either_v<array_t>) {
             // TODO: support flatten on scalar
@@ -145,7 +148,14 @@ namespace nmtools::view
             return decorator_t<flatten_t,array_t>{array};
         }
         #else
+        #ifdef NMTOOLS_NO_BASE_ACCESS
+        using array_type = meta::remove_address_space_t<array_t>;
+        using view_type = flatten_t<array_type>;
+        using result_type = decorator_t<flatten_t,array_type>;
+        return result_type{view_type{array}};
+        #else // NMTOOLS_NO_BASE_ACCESS
         return decorator_t<flatten_t,meta::remove_address_space_t<array_t>>{array};
+        #endif // NMTOOLS_NO_BASE_ACCESS
         #endif
     } // flatten
 

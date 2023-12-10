@@ -5,7 +5,7 @@
 #define nmtools_meta_variable_attribute constant
 
 // on kernel force inline for index
-#ifdef __OPENCL_VERSION__
+#ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 #define nmtools_inline __attribute__((always_inline))
 #else
 #define nmtools_inline
