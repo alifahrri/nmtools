@@ -9,9 +9,10 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
+using nmtools_tuple;
+
 NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
 {
-    using nmtools_tuple;
     using namespace nm::literals;
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
