@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_MOVEAXIS_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
 #include "nmtools/array/index/argsort.hpp"
@@ -200,8 +201,21 @@ namespace nmtools::meta
             } else if constexpr (is_index_array_v<shape_t> && valid_src_dst) {
                 using index_t = get_element_type_t<shape_t>;
                 using unsigned_t = make_unsigned_t<index_t>;
-                using type = replace_element_type_t<transform_bounded_array_t<shape_t>,unsigned_t>;
-                return as_value_v<type>;
+                using element_t  = unsigned_t;
+                [[maybe_unused]]
+                constexpr auto B_DIM = bounded_size_v<shape_t>;
+                constexpr auto DIM   = len_v<shape_t>;
+                if constexpr (DIM > 0) {
+                    using type = nmtools_array<element_t,DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
+                    using type = nmtools_static_vector<element_t,B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector instead
+                    using type = nmtools_list<element_t>;
+                    return as_value_v<type>;
+                }
             } else {
                 return as_value_v<error::MOVEAXIS_TO_TRANSPOSE_UNSUPPORTED>;
             }
