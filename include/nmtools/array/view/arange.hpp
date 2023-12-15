@@ -23,13 +23,16 @@ namespace nmtools::view
         // step can be none, represent 1
         using step_type  = const step_t;
         using element_type = T;
-        using array_type = none_t;
+        // TODO: rename array_type to operand_type
+        using array_type = nmtools_tuple<>;
         using shape_type = meta::resolve_optype_t<index::arange_shape_t,start_t,stop_t,step_t>;
 
         start_type start;
         stop_type stop;
         step_type step;
         shape_type shape_;
+        // to make get_array works
+        array_type array{};
 
         constexpr arange_t(start_type start, stop_type stop, step_type step)
             : start(start)
@@ -37,6 +40,11 @@ namespace nmtools::view
             , step(step)
             , shape_(index::arange_shape(start,stop,step))
         {}
+
+        constexpr auto attributes() const
+        {
+            return nmtools_tuple{start,stop,step,dtype_t<element_type>{}};
+        }
 
         constexpr auto shape() const
         {
@@ -105,6 +113,47 @@ namespace nmtools::meta
     {
         using type = T;
     };
+
+    template <typename start_t, typename stop_t, typename step_t, typename T>
+    struct fixed_size<
+        view::decorator_t<view::arange_t, start_t, stop_t, step_t, T>
+    > {
+        using view_type  = view::decorator_t<view::arange_t, start_t, stop_t, step_t, T>;
+        using shape_type = typename view_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                constexpr auto shape = to_value_v<shape_type>;
+                return index::product(shape);
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
+
+    template <typename start_t, typename stop_t, typename step_t, typename T>
+    struct fixed_shape<
+        view::decorator_t<view::arange_t, start_t, stop_t, step_t, T>
+    > {
+        using view_type  = view::decorator_t<view::arange_t, start_t, stop_t, step_t, T>;
+        using shape_type = typename view_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                constexpr auto shape = to_value_v<shape_type>;
+                return shape;
+            } else {
+                return error::FIXED_SHAPE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
+
+    template <typename start_t, typename stop_t, typename step_t, typename T>
+    struct bounded_size<
+        view::decorator_t<view::arange_t, start_t, stop_t, step_t, T>
+    > : fixed_size<
+        view::decorator_t<view::arange_t, start_t, stop_t, step_t, T>
+    > {};
 
     template <typename start_t, typename stop_t, typename step_t, typename T>
     struct is_ndarray< view::decorator_t< view::arange_t, start_t, stop_t, step_t, T >>
