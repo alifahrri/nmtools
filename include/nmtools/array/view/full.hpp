@@ -21,14 +21,23 @@ namespace nmtools::view
         using shape_type      = resolve_attribute_type_t<shape_t>;
         using fill_value_type = const fill_value_t;
         using element_type    = fill_value_type;
-
-        using array_type = none_t;
+        // TODO: rename array_type to operand_type
+        using array_type = nmtools_tuple<>;
 
         shape_type shape_;
         fill_value_type fill_value;
+        // to make get_array works
+        array_type array{};
 
         constexpr full_t(const shape_t& shape, fill_value_type fill_value)
-            : shape_(init_attribute<shape_type>(shape)), fill_value(fill_value) {}
+            : shape_(init_attribute<shape_type>(shape))
+            , fill_value(fill_value)
+        {}
+
+        constexpr auto attributes() const
+        {
+            return nmtools_tuple{shape_,fill_value};
+        }
         
         constexpr auto shape() const
         {
@@ -72,6 +81,57 @@ namespace nmtools::meta
     struct get_element_type< view::decorator_t<view::full_t, shape_t, fill_value_t> >
     {
         using type = fill_value_t;
+    };
+
+    template <typename shape_t, typename T>
+    struct fixed_size<
+        view::decorator_t<view::full_t,shape_t,T>
+    > {
+        using view_type  = view::decorator_t<view::full_t,shape_t,T>;
+        using shape_type = typename view_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                constexpr auto shape = to_value_v<shape_type>;
+                return index::product(shape);
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
+
+    template <typename shape_t, typename T>
+    struct fixed_shape<
+        view::decorator_t<view::full_t,shape_t,T>
+    > {
+        using view_type  = view::decorator_t<view::full_t,shape_t,T>;
+        using shape_type = typename view_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                constexpr auto shape = to_value_v<shape_type>;
+                return shape;
+            } else {
+                return error::FIXED_SHAPE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
+
+    template <typename shape_t, typename T>
+    struct bounded_size<
+        view::decorator_t<view::full_t,shape_t,T>
+    > {
+        using view_type  = view::decorator_t<view::full_t,shape_t,T>;
+        using shape_type = typename view_type::shape_type;
+
+        static constexpr auto value = [](){
+            constexpr auto shape = to_value_v<shape_type>;
+            if constexpr (!is_fail_v<decltype(shape)>) {
+                return index::product(shape);
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
     };
 
     template <typename shape_t, typename fill_value_t>
