@@ -69,8 +69,7 @@ namespace nmtools::meta
                 && is_index_v<stop_t>
                 && (is_num_v<step_t> || is_none_v<step_t>)
             ) {
-                // TODO: use index_type instead of size_t
-                using type = nmtools_array<size_t,1>;
+                using type = nmtools_array<nm_size_t,1>;
                 return as_value_v<type>;
             } else {
                 using type = error::ARANGE_SHAPE_UNSUPPORTED<start_t,stop_t,step_t>;
