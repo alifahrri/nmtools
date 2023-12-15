@@ -56,6 +56,7 @@
 #include "nmtools/array/functional/ufuncs/tan.hpp"
 #include "nmtools/array/functional/ufuncs/tanh.hpp"
 
+#include "nmtools/array/functional/arange.hpp"
 #include "nmtools/array/functional/atleast_1d.hpp"
 #include "nmtools/array/functional/atleast_2d.hpp"
 #include "nmtools/array/functional/atleast_3d.hpp"
@@ -64,6 +65,9 @@
 #include "nmtools/array/functional/expand_dims.hpp"
 #include "nmtools/array/functional/flatten.hpp"
 #include "nmtools/array/functional/flip.hpp"
+#include "nmtools/array/functional/full.hpp"
+#include "nmtools/array/functional/matmul.hpp"
+#include "nmtools/array/functional/ones.hpp"
 #include "nmtools/array/functional/pad.hpp"
 #include "nmtools/array/functional/pooling.hpp"
 #include "nmtools/array/functional/repeat.hpp"
@@ -74,5 +78,6 @@
 #include "nmtools/array/functional/tile.hpp"
 #include "nmtools/array/functional/transpose.hpp"
 #include "nmtools/array/functional/where.hpp"
+#include "nmtools/array/functional/zeros.hpp"
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_HPP
