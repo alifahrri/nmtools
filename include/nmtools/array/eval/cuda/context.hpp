@@ -1,10 +1,10 @@
 #ifndef NMTOOLS_ARRAY_EVAL_CUDA_CONTEXT_HPP
 #define NMTOOLS_ARRAY_EVAL_CUDA_CONTEXT_HPP
 
+#include "nmtools/exception.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/eval/cuda/kernel_helper.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
-#include <stdexcept>
 #include <memory>
 
 template <auto out_static_dim=0, typename function_t
@@ -18,25 +18,26 @@ __global__ void nm_cuda_run_function(const function_t fun
     namespace cuda = nmtools::array::cuda;
     namespace meta = nmtools::meta;
     auto output = cuda::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
-
+    constexpr auto N = sizeof...(args_t);
     auto args_pack = nmtools_tuple<const args_t...>(args...);
-    auto result = meta::template_reduce<sizeof...(args_t) / 3>([&](auto init, auto index){
-        using init_t = decltype(init);
-        constexpr auto ptr_idx = (size_t)index * 3;
-        constexpr auto shp_idx = ptr_idx + 1;
-        constexpr auto dim_idx = ptr_idx + 2;
-        // TODO: support constant shape, clipped shape, fixed dim, fixed size, bounded dim, size etc...
-        auto array = cuda::create_array(
-              nmtools::get<ptr_idx>(args_pack)
-            , nmtools::get<shp_idx>(args_pack)
-            , nmtools::get<dim_idx>(args_pack)
-        );
-        if constexpr (nmtools::is_none_v<init_t>) {
-            return fun (array);
+    auto result = [&](){
+        if constexpr (N == 0) {
+            return fun();
         } else {
-            return init (array);
+            return meta::template_reduce<sizeof...(args_t) / 3>([&](auto init, auto index){
+                constexpr auto ptr_idx = (size_t)index * 3;
+                constexpr auto shp_idx = ptr_idx + 1;
+                constexpr auto dim_idx = ptr_idx + 2;
+                // TODO: support constant shape, clipped shape, fixed dim, fixed size, bounded dim, size etc...
+                auto array = cuda::create_array(
+                    nmtools::get<ptr_idx>(args_pack)
+                    , nmtools::get<shp_idx>(args_pack)
+                    , nmtools::get<dim_idx>(args_pack)
+                );
+                return init (array);
+            }, fun);
         }
-    }, nmtools::None);
+    }();
     using result_t = decltype(result);
     if constexpr (meta::is_maybe_v<result_t>) {
         static_assert( meta::is_ndarray_v<meta::get_maybe_type_t<result_t>> );
@@ -70,11 +71,11 @@ namespace nmtools::array::cuda
         constexpr inline auto is_shared_ptr_v = is_shared_ptr<T>::value;
     }
 
-    class cuda_exception : public std::runtime_error
+    class cuda_exception : public ::nmtools::exception
     {
         public:
         cuda_exception(cudaError status, const std::string& message)
-            : std::runtime_error(message + " (" + std::to_string(static_cast<int>(status)) + "): " + cudaGetErrorString(status))
+            : nmtools::exception(message + " (" + std::to_string(static_cast<int>(status)) + "): " + cudaGetErrorString(status))
             , status_(status)
         {}
 
@@ -201,7 +202,11 @@ namespace nmtools::array::cuda
             using out_element_t = meta::get_element_type_t<output_array_t>;
 
             auto out_size  = nmtools::size(output);
-            auto out_shape = nmtools::shape(output);
+            if (out_size <= 0) {
+                throw exception("invalid output size! expect > 0, got " + std::to_string(out_size));
+            }
+            // TODO: pass actual type (constant / clipped shape) as is to device
+            auto out_shape = nmtools::shape<false,/*disable_clipped_index*/true>(output);
             auto out_dim   = nmtools::len(out_shape);
 
             auto output_buffer = this->create_buffer<out_element_t>(out_size);
@@ -243,7 +248,8 @@ namespace nmtools::array::cuda
             auto gpu_args_pack = meta::template_reduce<N>([&](auto init, auto index){
                 const auto& arg_i = *nmtools::get<index>(args_pack);
 
-                auto arg_shape = nmtools::shape(arg_i);
+                // TODO: pass actual type (constant / clipped shape) as is to device
+                auto arg_shape = nmtools::shape<false,/*disable_clipped_index*/true>(arg_i);
                 auto arg_dim   = nmtools::len(arg_shape);
 
                 auto gpu_buffer = this->create_buffer(arg_i);
