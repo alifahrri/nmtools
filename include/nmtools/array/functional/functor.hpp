@@ -262,19 +262,28 @@ namespace nmtools::functional
         template <typename...m_operands_t>
         constexpr auto operator()(const m_operands_t&...new_operands) const noexcept
         {
-            using operands_pack_t = meta::pack_operands_type_t<F,operands_t,m_operands_t...>;
-            using function_t = functor_t<F,operands_pack_t,attributes_t>;
-            auto function = function_t{fmap,initialize_operands<operands_pack_t>(operands,new_operands...),attributes};
-            if constexpr (sizeof...(m_operands_t) < arity) {
-                // currying
-                return function;
+            if constexpr (arity == 0 && sizeof...(m_operands_t) == 0) {
+                // assume operands is empty_operands_t
+                static_assert( meta::is_same_v<operands_t,meta::empty_operands_t>
+                    , "internal error: expect operands is empty for arity 0" );
+                return fmap(attributes,operands);
+            } else if constexpr (arity > 0 && sizeof...(m_operands_t) == 0) {
+                return (*this);
             } else {
-                // apply
-                if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
-                    // NOTE: avoid passing empty_attribute_t to fmap, use empty tuple instead
-                    return function.fmap(nmtools_tuple<>{},function.operands);
+                using operands_pack_t = meta::pack_operands_type_t<F,operands_t,m_operands_t...>;
+                using function_t = functor_t<F,operands_pack_t,attributes_t>;
+                auto function = function_t{fmap,initialize_operands<operands_pack_t>(operands,new_operands...),attributes};
+                if constexpr (sizeof...(m_operands_t) < arity) {
+                    // currying
+                    return function;
                 } else {
-                    return function.fmap(function.attributes,function.operands);
+                    // apply
+                    if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
+                        // NOTE: avoid passing empty_attribute_t to fmap, use empty tuple instead
+                        return function.fmap(nmtools_tuple<>{},function.operands);
+                    } else {
+                        return function.fmap(function.attributes,function.operands);
+                    }
                 }
             }
         } // operator()
@@ -342,6 +351,31 @@ namespace nmtools::functional
             return (*this)(meta::make_index_sequence_v<sizeof...(attributes_t)>, attributes, operands);
         } // operator()
     }; // binary_fmap_t
+
+    template <typename F>
+    struct nullary_fmap_t
+    {
+        static constexpr auto arity = 0;
+
+        F fn;
+
+        template <
+            template<auto...>typename sequence, auto...Is,
+            template<typename...>typename attr_tuple, typename...attributes_t
+        >
+        constexpr auto operator()(sequence<Is...>, const attr_tuple<attributes_t...>& attributes, meta::empty_operands_t) const
+        {
+            return fn(nmtools::get<Is>(attributes)...);
+        } // operator()
+
+        template <
+            template<typename...>typename attr_tuple, typename...attributes_t
+        >
+        constexpr auto operator()(const attr_tuple<attributes_t...>& attributes, meta::empty_operands_t operands) const
+        {
+            return (*this)(meta::make_index_sequence_v<sizeof...(attributes_t)>, attributes, operands);
+        } // operator()
+    }; // nullary_fmap_t
 
     /**
      * @brief Type constructor for unary fmap.
