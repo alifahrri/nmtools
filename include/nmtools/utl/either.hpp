@@ -25,12 +25,12 @@ namespace nmtools::utl
 
         // in-place not supported (yet?)
 
-        Derived& self()
+        constexpr Derived& self()
         {
             return static_cast<Derived&>(*this);
         }
 
-        const Derived& self() const
+        constexpr const Derived& self() const
         {
             return static_cast<const Derived&>(*this);
         }

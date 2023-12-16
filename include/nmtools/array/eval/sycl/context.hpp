@@ -101,6 +101,7 @@ namespace nmtools::array::sycl
             constexpr auto N = meta::len_v<decltype(args_pack)>;
             auto device_args_pack = meta::template_reduce<N>([&](auto init, auto index){
                 const auto& arg_i = *nmtools::get<index>(args_pack);
+                // TODO: pass actual type (constant / clipped shape) as is to device
                 auto arg_shape = nmtools::shape<false,/*disable_clipped_index*/true>(arg_i);
                 auto arg_dim   = nmtools::len(arg_shape);
 
@@ -114,6 +115,7 @@ namespace nmtools::array::sycl
 
             using element_t = meta::get_element_type_t<output_array_t>;
             auto numel = nmtools::size(output);
+            // TODO: pass actual type (constant / clipped shape) as is to device
             auto output_shape = nmtools::shape<false,/*disable_clipped_index*/true>(output);
             auto output_dim   = nmtools::dim(output);
 
@@ -140,22 +142,23 @@ namespace nmtools::array::sycl
 
                 cgh.parallel_for(::sycl::range<1>(thread_size),[=](::sycl::id<1> id){
                     auto output = create_mutable_array(&output_accessor[0],&output_shape_accessor[0],output_dim);
-                    auto result = meta::template_reduce<N/2>([&](auto init, auto index){
-                        using init_t = decltype(init);
-                        constexpr auto ptr_idx = (size_t)index * 2;
-                        constexpr auto shp_idx = ptr_idx + 1;
-                        constexpr auto dim_idx = (size_t)index / 2;
-                        auto array = create_array(
-                              nmtools::get<ptr_idx>(accessor_pack).get_pointer().get()
-                            , nmtools::get<shp_idx>(accessor_pack).get_pointer().get()
-                            , nmtools::get<dim_idx>(dim_pack)
-                        );
-                        if constexpr (nmtools::is_none_v<init_t>) {
-                            return f (array);
+                    auto result = [&](){
+                        if constexpr (N == 0) {
+                            return f();
                         } else {
-                            return init (array);
+                            return meta::template_reduce<N/2>([&](auto init, auto index){
+                                constexpr auto ptr_idx = (size_t)index * 2;
+                                constexpr auto shp_idx = ptr_idx + 1;
+                                constexpr auto dim_idx = (size_t)index / 2;
+                                auto array = create_array(
+                                    nmtools::get<ptr_idx>(accessor_pack).get_pointer().get()
+                                    , nmtools::get<shp_idx>(accessor_pack).get_pointer().get()
+                                    , nmtools::get<dim_idx>(dim_pack)
+                                );
+                                return init (array);
+                            },f);
                         }
-                    },nmtools::None);
+                    }();
                     auto assign_array = [&](auto& output, const auto& array){
                         auto size = numel;
                         auto idx = id.get(0);

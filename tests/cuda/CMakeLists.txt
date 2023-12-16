@@ -109,6 +109,17 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     array/tile.cpp
     array/transpose.cpp
     array/where.cpp
+    array/moveaxis.cpp
+    array/arange.cpp
+    array/zeros.cpp
+    array/ones.cpp
+    array/full.cpp
+
+    array/sum.cpp
+    array/cumsum.cpp
+    array/matmul.cpp
+    array/prod.cpp
+    array/cumprod.cpp
 )
 
 ## TODO: support nvcc compilation

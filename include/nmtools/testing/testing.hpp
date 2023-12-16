@@ -428,6 +428,33 @@ namespace subcase::expect
     } \
 }(result, expect);
 
+// NOTE: somehow code inside constexpr-ifs are always compiled
+// TODO: fix
+#define NMTOOLS_STATIC_CHECK_SAME_INDEX_TRAIT( result_t, expect_t ) \
+{ \
+    constexpr auto pass_is_index = meta::is_index_array_v<result_t> == meta::is_index_array_v<expect_t>; \
+    constexpr auto pass_is_constant = meta::is_constant_index_array_v<result_t> == meta::is_constant_index_array_v<expect_t>; \
+    constexpr auto pass_len = meta::len_v<result_t> == meta::len_v<expect_t>; \
+    constexpr auto pass_bounded_size = [](){ \
+        [[maybe_unused]] constexpr auto b_size_result = meta::bounded_size_v<result_t>; \
+        [[maybe_unused]] constexpr auto b_size_expect = meta::bounded_size_v<expect_t>; \
+        [[maybe_unused]] constexpr auto is_same_kind  = meta::is_fail_v<decltype(b_size_result)> == meta::is_fail_v<decltype(b_size_expect)>; \
+        if constexpr (meta::is_fail_v<decltype(b_size_result)>) { \
+            return is_same_kind; \
+        } else if constexpr (meta::is_fail_v<decltype(b_size_expect)>) { \
+            return is_same_kind; \
+        } else if constexpr (!meta::is_fail_v<decltype(b_size_result)> && !meta::is_fail_v<decltype(b_size_expect)>) { \
+            return meta::bounded_size_v<result_t> == meta::bounded_size_v<expect_t>; \
+        } else { \
+            return meta::is_same_v<result_t,expect_t>; \
+        } \
+    }(); \
+    constexpr auto passed = (pass_is_index && pass_is_constant && pass_len && pass_bounded_size); \
+    NMTOOLS_STATIC_ASSERT( passed ); \
+    std::string message = std::string(#result_t) + "(" + NMTOOLS_TESTING_GET_TYPENAME(result_t) + "), " + std::string(#expect_t) + "(" + NMTOOLS_TESTING_GET_TYPENAME(expect_t) + ")"; \
+    NMTOOLS_CHECK_MESSAGE( passed, message ); \
+}
+
 /** @} */ // end groupt testing
 
 #endif // NMTOOLS_TESTING_HPP
