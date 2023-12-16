@@ -437,14 +437,15 @@ namespace subcase::expect
         constexpr auto b_size_result = meta::bounded_size_v<result_t>; \
         constexpr auto b_size_expect = meta::bounded_size_v<expect_t>; \
         constexpr auto is_same_kind  = meta::is_fail_v<decltype(b_size_result)> == meta::is_fail_v<decltype(b_size_expect)>; \
+        constexpr auto b_size_is_num = meta::is_num_v<decltype(b_size_result)> && meta::is_num_v<decltype(b_size_expect)>;
         if constexpr (meta::is_fail_v<decltype(b_size_result)>) { \
             return is_same_kind; \
         } else if constexpr (meta::is_fail_v<decltype(b_size_expect)>) { \
             return is_same_kind; \
-        } else if constexpr (is_same_kind) { \
+        } else if constexpr (is_same_kind && b_size_is_num) { \
             return (b_size_result == b_size_expect); \
         } else { \
-            return false; \
+            return meta::is_same_v<result_t,expect_t>; \
         } \
     }(); \
     constexpr auto passed = (pass_is_index && pass_is_constant && pass_len && pass_bounded_size); \
