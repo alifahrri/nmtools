@@ -443,7 +443,7 @@ namespace subcase::expect
         } else if constexpr (meta::is_fail_v<decltype(b_size_expect)>) { \
             return is_same_kind; \
         } else if constexpr (b_size_is_num) { \
-            return (b_size_result == b_size_expect); \
+            return meta::bounded_size_v<result_t> == meta::bounded_size_v<expect_t>; \
         } else { \
             return meta::is_same_v<result_t,expect_t>; \
         } \
