@@ -430,7 +430,7 @@ namespace subcase::expect
 
 #define NMTOOLS_STATIC_CHECK_SAME_INDEX_TRAIT( result_t, expect_t ) \
 { \
-    constexpr auto pass_is_index = meta::is_index_array_v<result_t>; \
+    constexpr auto pass_is_index = meta::is_index_array_v<result_t> == meta::is_index_array_v<expect_t>; \
     constexpr auto pass_is_constant = meta::is_constant_index_array_v<result_t> == meta::is_constant_index_array_v<expect_t>; \
     constexpr auto pass_len = meta::len_v<result_t> == meta::len_v<expect_t>; \
     constexpr auto pass_bounded_size = [](){ \
