@@ -428,6 +428,8 @@ namespace subcase::expect
     } \
 }(result, expect);
 
+// NOTE: somehow code inside constexpr-ifs are always compiled
+// TODO: fix
 #define NMTOOLS_STATIC_CHECK_SAME_INDEX_TRAIT( result_t, expect_t ) \
 { \
     constexpr auto pass_is_index = meta::is_index_array_v<result_t> == meta::is_index_array_v<expect_t>; \
