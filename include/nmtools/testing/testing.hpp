@@ -450,7 +450,7 @@ namespace subcase::expect
     constexpr auto passed = (pass_is_index && pass_is_constant && pass_len && pass_bounded_size); \
     NMTOOLS_STATIC_ASSERT( passed ); \
     std::string message = std::string(#result_t) + "(" + NMTOOLS_TESTING_GET_TYPENAME(result_t) + "), " + std::string(#expect_t) + "(" + NMTOOLS_TESTING_GET_TYPENAME(expect_t) + ")"; \
-    NMTOOLS_STATIC_ASSERT( passed, message ); \
+    NMTOOLS_CHECK_MESSAGE( passed, message ); \
 }
 
 /** @} */ // end groupt testing
