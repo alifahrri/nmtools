@@ -90,6 +90,18 @@ namespace nmtools::array
                 return array;
             } else if constexpr (meta::is_ndarray_v<array_t>) {
                 return &array;
+            } else if constexpr (meta::is_num_v<array_t>) {
+                // return copy
+                return array;
+            } else {
+                static_assert(
+                    meta::is_view_v<array_t>
+                    || meta::is_pointer_v<array_t>
+                    || meta::is_ndarray_v<array_t>
+                    || meta::is_tuple_v<array_t>
+                    || meta::is_num_v<array_t>
+                    , "unsupported array type"
+                );
             }
         }
     }; // get_array_t

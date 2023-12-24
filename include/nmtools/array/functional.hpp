@@ -31,6 +31,7 @@
 #include "nmtools/array/functional/ufuncs/ceil.hpp"
 #include "nmtools/array/functional/ufuncs/cos.hpp"
 #include "nmtools/array/functional/ufuncs/cosh.hpp"
+#include "nmtools/array/functional/ufuncs/divide.hpp"
 #include "nmtools/array/functional/ufuncs/exp.hpp"
 #include "nmtools/array/functional/ufuncs/exp2.hpp"
 #include "nmtools/array/functional/ufuncs/expm1.hpp"

@@ -9,6 +9,49 @@
 #include <sycl/sycl.hpp>
 #include <memory>
 
+namespace nmtools::array
+{
+    template <typename data_t, typename shape_t, typename dim_t, auto...accessor_args_t>
+    struct device_array<::sycl::accessor<data_t,accessor_args_t...>,shape_t,dim_t>
+    {
+        ::sycl::accessor<data_t,accessor_args_t...> buffer;
+        shape_t shape;
+        dim_t dim;
+    };
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct device_array<::sycl::buffer<data_t>,shape_t,dim_t>
+    {
+        ::sycl::buffer<data_t> buffer;
+        shape_t shape;
+        dim_t dim;
+
+        template <typename...access_args_t>
+        auto accessor(::sycl::handler& cgh, access_args_t...access_args)
+        {
+            auto accessor = ::sycl::accessor(buffer, cgh, access_args...);
+            using accessor_t = decltype(accessor);
+            return device_array<accessor_t,shape_t,dim_t>{accessor,shape,dim};
+        }
+    };
+
+    template <typename data_t, typename shape_t, typename dim_t, auto...accessor_args_t>
+    nmtools_func_attribute
+    auto create_array(const device_array<::sycl::accessor<data_t,accessor_args_t...>,shape_t,dim_t>& array)
+    {
+        // assume array.shape is passed by value
+        return create_array(array.buffer.get_pointer().get(),array.shape);
+    }
+
+    class sycl_exception : public ::nmtools::exception
+    {
+        public:
+        sycl_exception(const std::string& message)
+            : ::nmtools::exception(message)
+        {}
+    };
+}
+
 namespace nmtools::array::sycl
 {
     template <typename T>
@@ -17,14 +60,6 @@ namespace nmtools::array::sycl
     // TODO: check sycl spec for built-in write-only buffer memory
     template <typename T>
     using host_mem_ptr = std::shared_ptr<T>;
-
-    class sycl_exception : public exception
-    {
-        public:
-        sycl_exception(const std::string& message)
-            : exception(message)
-        {}
-    };
 
     struct context_t
     {
@@ -64,6 +99,41 @@ namespace nmtools::array::sycl
             }
         }
 
+        template <typename array_t>
+        auto create_array(const array_t& array)
+        {
+            static_assert(
+                meta::is_ndarray_v<array_t>
+                && !meta::is_view_v<array_t>
+                , "unsupported array type for create_array"
+            );
+            const auto buffer = nmtools::data(array);
+            const auto numel  = nmtools::size(array);
+            const auto shape  = nmtools::shape(array);
+            const auto dim    = nmtools::dim(array);
+
+            using element_t = meta::get_element_type_t<array_t>;
+            using dim_t     = meta::remove_cvref_t<decltype(dim)>;
+
+            // TODO: keep src shape traits
+            using device_shape_t = nmtools_static_vector<size_t,8>;
+            auto device_shape = device_shape_t{};
+            device_shape.resize(dim);
+            for (size_t i=0; i<dim; i++) {
+                at(device_shape,i) = at(shape,i);
+            }
+
+            using buffer_t = ::sycl::buffer<element_t>;
+            auto sycl_buffer = buffer_t(buffer,(size_t)numel);
+
+            using device_array_t = device_array<buffer_t,device_shape_t,dim_t>;
+            using device_array_ptr = std::shared_ptr<device_array_t>;
+
+            auto array_raw_ptr = new device_array_t{sycl_buffer,device_shape,dim};
+            auto array_ptr = device_array_ptr(array_raw_ptr);
+            return array_ptr;
+        }
+
         template <typename T>
         auto create_buffer(size_t n)
         {
@@ -87,6 +157,63 @@ namespace nmtools::array::sycl
             }
         }
 
+        template <typename output_array_t, typename function_t, typename...args_t, auto...Is, template<auto...>typename sequence>
+        auto run_(output_array_t& output, const function_t& f, nmtools_tuple<args_t...> args_pack, sequence<Is...>)
+        {
+            using element_t = meta::get_element_type_t<output_array_t>;
+            auto numel = nmtools::size(output);
+            // TODO: pass actual type (constant / clipped shape) as is to device
+            auto output_shape = nmtools::shape<false,/*disable_clipped_index*/true>(output);
+            auto output_dim   = nmtools::dim(output);
+
+            auto output_buffer = this->create_buffer<element_t>(numel);
+            auto shape_buffer  = this->create_buffer(output_shape);
+
+            auto warp_size   = 32;
+            auto thread_size = size_t(std::ceil(float(numel) / warp_size)) * warp_size;
+
+            queue->submit([&](::sycl::handler& cgh){
+                // create accessor
+                // NOTE: can be unused when sizeof...(args_t) == 0
+                [[maybe_unused]] auto access_mode = ::sycl::read_only;
+                [[maybe_unused]] auto get = [&](const auto& arg){
+                    if constexpr (meta::is_num_v<decltype(arg)>) {
+                        return arg;
+                    } else {
+                        return arg->accessor(cgh,access_mode);
+                    }
+                };
+                auto accessor_pack = nmtools_tuple{get(nmtools::get<Is>(args_pack))...};
+
+                auto output_accessor = ::sycl::accessor(*output_buffer, cgh, ::sycl::write_only);
+                auto output_shape_accessor = ::sycl::accessor(*shape_buffer, cgh, ::sycl::read_only);
+
+                constexpr auto N = sizeof...(args_t);
+
+                auto kernel_range = ::sycl::range<1>(thread_size);
+                cgh.parallel_for(kernel_range,[=](::sycl::id<1> id){
+                    auto output = create_mutable_array(&output_accessor[0],&output_shape_accessor[0],output_dim);
+                    auto result = [&](){
+                        if constexpr (N == 0) {
+                            return f();
+                        } else {
+                            return meta::template_reduce<sizeof...(args_t)>([&](auto fun, auto index){
+                                auto array = array::create_array(nmtools::at(accessor_pack,index));
+                                return fun (array);
+                            }, f);
+                        }
+                    }();
+                    // TODO: properly get the thread & kernel id and shape
+                    auto thread_id  = array::kernel_size<size_t>{id.get(0),0,0};
+                    auto block_id   = array::kernel_size<size_t>{0,0,0};
+                    auto block_size = array::kernel_size<size_t>{1,1,1};
+                    array::assign_result(output,result,thread_id,block_id,block_size);
+                });
+            });
+
+            this->copy_buffer(output_buffer,output);
+        }
+
         template <typename function_t, typename output_array_t, typename arg0_t, typename...args_t>
         auto run(const function_t& f, output_array_t& output, const arg0_t& arg0, const args_t&...args)
         {
@@ -100,88 +227,18 @@ namespace nmtools::array::sycl
             }();
             constexpr auto N = meta::len_v<decltype(args_pack)>;
             auto device_args_pack = meta::template_reduce<N>([&](auto init, auto index){
-                const auto& arg_i = *nmtools::get<index>(args_pack);
-                // TODO: pass actual type (constant / clipped shape) as is to device
-                auto arg_shape = nmtools::shape<false,/*disable_clipped_index*/true>(arg_i);
-                auto arg_dim   = nmtools::len(arg_shape);
+                const auto& arg_i = nmtools::get<index>(args_pack);
+                if constexpr (meta::is_num_v<decltype(arg_i)>) {
+                    return utility::tuple_append(init,arg_i);
+                } else {
+                    auto device_array = create_array(*arg_i);
+                    return utility::tuple_append(init,device_array);
+                }
+            }, nmtools_tuple<>{});
 
-                auto device_buffer = this->create_buffer(arg_i);
-                // TODO: allow constant/clipped index shape
-                auto device_shape = this->create_buffer(arg_shape);
-                auto buffer_shape_pack = utility::tuple_cat(nmtools::get<0>(init),nmtools_tuple{device_buffer,device_shape});
-                auto args_dim_pack = utility::tuple_append(nmtools::get<1>(init),arg_dim);
-                return nmtools_tuple{buffer_shape_pack,args_dim_pack};
-            }, nmtools_tuple<nmtools_tuple<>,nmtools_tuple<>>{});
 
-            using element_t = meta::get_element_type_t<output_array_t>;
-            auto numel = nmtools::size(output);
-            // TODO: pass actual type (constant / clipped shape) as is to device
-            auto output_shape = nmtools::shape<false,/*disable_clipped_index*/true>(output);
-            auto output_dim   = nmtools::dim(output);
-
-            auto output_buffer = this->create_buffer<element_t>(numel);
-            auto shape_buffer  = this->create_buffer(output_shape);
-
-            queue->submit([&](::sycl::handler& cgh){
-                // create accessor
-                auto& buffer_shape_pack = nmtools::get<0>(device_args_pack);
-                auto& dim_pack = nmtools::get<1>(device_args_pack);
-                constexpr auto N = meta::len_v<decltype(buffer_shape_pack)>;
-                auto accessor_pack = meta::template_reduce<N>([&](auto init, auto index){
-                    constexpr auto buffer_idx = size_t(index);
-                    auto buffer_ptr = nmtools::get<buffer_idx>(buffer_shape_pack);
-                    auto accessor = ::sycl::accessor(*buffer_ptr, cgh, ::sycl::read_only);
-                    return utility::tuple_append(init,accessor);
-                }, nmtools_tuple<>{});
-
-                auto warp_size   = 32;
-                auto thread_size = size_t(std::ceil(float(numel) / warp_size)) * warp_size;
-
-                auto output_accessor = ::sycl::accessor(*output_buffer, cgh, ::sycl::write_only);
-                auto output_shape_accessor = ::sycl::accessor(*shape_buffer, cgh, ::sycl::read_only);
-
-                cgh.parallel_for(::sycl::range<1>(thread_size),[=](::sycl::id<1> id){
-                    auto output = create_mutable_array(&output_accessor[0],&output_shape_accessor[0],output_dim);
-                    auto result = [&](){
-                        if constexpr (N == 0) {
-                            return f();
-                        } else {
-                            return meta::template_reduce<N/2>([&](auto init, auto index){
-                                constexpr auto ptr_idx = (size_t)index * 2;
-                                constexpr auto shp_idx = ptr_idx + 1;
-                                constexpr auto dim_idx = (size_t)index / 2;
-                                auto array = create_array(
-                                    nmtools::get<ptr_idx>(accessor_pack).get_pointer().get()
-                                    , nmtools::get<shp_idx>(accessor_pack).get_pointer().get()
-                                    , nmtools::get<dim_idx>(dim_pack)
-                                );
-                                return init (array);
-                            },f);
-                        }
-                    }();
-                    auto assign_array = [&](auto& output, const auto& array){
-                        auto size = numel;
-                        auto idx = id.get(0);
-                        if (idx < size) {
-                            auto flat_lhs = view::mutable_flatten(output);
-                            auto flat_rhs = view::flatten(array);
-                            const auto rhs = flat_rhs(idx);
-                            auto& lhs = flat_lhs(idx);
-                            lhs = rhs;
-                        }
-                    };
-                    using result_t = decltype(result);
-                    if constexpr (meta::is_maybe_v<result_t>) {
-                        static_assert( meta::is_ndarray_v<meta::get_maybe_type_t<result_t>> );
-                        assign_array(output,*result);
-                    } else {
-                        static_assert( meta::is_ndarray_v<result_t> );
-                        assign_array(output,result);
-                    }
-                });
-
-                this->copy_buffer(output_buffer,output);
-            });
+            using sequence_t = meta::make_index_sequence<meta::len_v<decltype(device_args_pack)>>;
+            this->run_(output,f,device_args_pack,sequence_t{});
         }
     };
 

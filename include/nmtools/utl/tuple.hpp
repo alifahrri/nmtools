@@ -7,14 +7,6 @@
 
 // poor man's tuple
 
-#ifndef nmtools_utl_alignment
-#define nmtools_utl_alignment(x) __align__(x)
-#endif // nmtools_utl_alignment
-
-#ifndef nmtools_utl_align_size
-#define nmtools_utl_align_size 4
-#endif // nmtools_utl_align_size
-
 // NOTE: base class acess is assumed to be unsuppoted when compiling to spirv
 // TODO: revisit this cases
 // #define NMTOOLS_TUPLE_NO_BASE_ACCESS

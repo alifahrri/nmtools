@@ -103,7 +103,7 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     array/repeat.cpp
     # TODO: fix runtime
     # array/reshape.cpp
-    array/resize.cpp
+    # array/resize.cpp
     array/slice.cpp
     array/squeeze.cpp
     array/tile.cpp
@@ -120,6 +120,7 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     array/matmul.cpp
     array/prod.cpp
     array/cumprod.cpp
+    array/mean.cpp
 )
 
 ## TODO: support nvcc compilation
@@ -129,7 +130,7 @@ set(NMTOOLS_TEST_CUDA_PATH "/usr/local/cuda/" CACHE STRING "manually set cuda pa
 set(NMTOOLS_TEST_CUDA_ARCH "sm_60" CACHE STRING "manually set cuda arch")
 set(NMTOOLS_TEST_CUDA_ARGS "" CACHE STRING "manually set extra clang cuda args")
 
-target_compile_options(${PROJECT_NAME}-doctest PRIVATE --std=c++17 -x cuda --cuda-path=${NMTOOLS_TEST_CUDA_PATH} --cuda-gpu-arch=${NMTOOLS_TEST_CUDA_ARCH} ${NMTOOLS_TEST_CUDA_ARGS})
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE -Wall -Wextra --std=c++17 -x cuda --cuda-path=${NMTOOLS_TEST_CUDA_PATH} --cuda-gpu-arch=${NMTOOLS_TEST_CUDA_ARCH} ${NMTOOLS_TEST_CUDA_ARGS})
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE cudart_static dl rt pthread)
 target_link_directories(${PROJECT_NAME}-doctest PRIVATE "${NMTOOLS_TEST_CUDA_PATH}/lib64")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

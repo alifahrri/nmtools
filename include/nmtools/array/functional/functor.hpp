@@ -655,30 +655,8 @@ namespace nmtools::functional
     constexpr auto get_function(const view::decorator_t<view_t,Ts...>& view)
     {
         using view_type = view::decorator_t<view_t,Ts...>;
-        using array_type = typename view_type::array_type;
         auto get_fn = get_function_t<view_type>{view};
-        if constexpr (view::is_view_v<array_type>) {
-            return get_fn() * get_function(view.array);
-        #if 0
-        } else if constexpr (meta::is_tuple_v<array_type>) {
-            const auto& array_pack = view.array;
-            constexpr auto N = meta::len_v<decltype(array_pack)>;
-            return meta::template_reduce<N>([&](auto init, auto index){
-                const auto& array = nmtools::get<index>(array_pack);
-                using array_type = meta::remove_cvref_pointer_t<decltype(array)>;
-                constexpr auto is_view = view::is_view_v<array_type>;
-                if constexpr (is_view && meta::is_pointer_v<decltype(array)>) {
-                    return init * get_function(*array);
-                } else if constexpr (is_view) {
-                    return init * get_function(array);
-                } else {
-                    return init;
-                }
-            }, get_fn());
-        #endif
-        } else {
-            return get_fn();
-        }
+        return get_fn();
     } // get_function
 } // namespace nmtools::functional
 
