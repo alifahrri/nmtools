@@ -110,15 +110,15 @@ namespace nmtools::array
     struct kernel_size
     {
         size_type id[3];
-        size_type x() const
+        constexpr size_type x() const
         {
             return id[0];
         }
-        size_type y() const
+        constexpr size_type y() const
         {
             return id[1];
         }
-        size_type z() const
+        constexpr size_type z() const
         {
             return id[2];
         }

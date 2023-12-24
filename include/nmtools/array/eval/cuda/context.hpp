@@ -3,7 +3,7 @@
 
 #include "nmtools/exception.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/eval/cuda/kernel_helper.hpp"
+#include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 #include <memory>
 
@@ -15,48 +15,28 @@ __global__ void nm_cuda_run_function(const function_t fun
     , out_t *out, const out_shape_t* out_shape_ptr, const out_dim_t out_dim
     , const args_t...args
 ) {
-    namespace cuda = nmtools::array::cuda;
     namespace meta = nmtools::meta;
     namespace na = nmtools::array;
     auto output = na::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
     constexpr auto N = sizeof...(args_t);
     auto args_pack = nmtools_tuple<const args_t&...>(args...);
-    using args_0_t = meta::remove_cvref_pointer_t<decltype(nmtools::get<0>(args_pack))>;
     auto result = [&](){
         if constexpr (N == 0) {
             return fun();
-        } else if constexpr (meta::is_device_array_v<args_0_t>) {
+        } else /* if constexpr (meta::is_device_array_v<args_0_t>) */ {
             return meta::template_reduce<sizeof...(args_t)>([&](auto fn, auto index){
                 // TODO: support constant shape, clipped shape, fixed dim, fixed size, bounded dim, size etc...
                 auto array = na::create_array(nmtools::at(args_pack,index));
                 return fn (array);
             }, fun);
-        } else {
-            // TODO: remove
-            return meta::template_reduce<sizeof...(args_t) / 3>([&](auto fn, auto index){
-                constexpr auto ptr_idx = (size_t)index * 3;
-                constexpr auto shp_idx = ptr_idx + 1;
-                constexpr auto dim_idx = ptr_idx + 2;
-                // TODO: support constant shape, clipped shape, fixed dim, fixed size, bounded dim, size etc...
-                auto array = na::create_array(
-                    nmtools::get<ptr_idx>(args_pack)
-                    , nmtools::get<shp_idx>(args_pack)
-                    , nmtools::get<dim_idx>(args_pack)
-                );
-                return fn (array);
-            }, fun);
         }
     }();
-    using result_t = decltype(result);
-    if constexpr (meta::is_maybe_v<result_t>) {
-        static_assert( meta::is_ndarray_v<meta::get_maybe_type_t<result_t>> );
-        if (static_cast<bool>(result)) {
-            cuda::assign_array(output,*result);
-        }
-    } else {
-        static_assert( meta::is_ndarray_v<result_t> );
-        cuda::assign_array(output,result);
-    }
+    // auto idx = blockIdx.x * blockDim.x + threadIdx.x;
+    // TODO: properly get the thread & kernel id and shape
+    auto thread_id  = na::kernel_size<size_t>{threadIdx.x,0,0};
+    auto block_id   = na::kernel_size<size_t>{blockIdx.x,0,0};
+    auto block_size = na::kernel_size<size_t>{blockDim.x,1,1};
+    na::assign_result(output,result,thread_id,block_id,block_size);
 }
 
 namespace nmtools::array
