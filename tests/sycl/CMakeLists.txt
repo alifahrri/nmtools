@@ -81,6 +81,7 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/matmul.cpp
     array/prod.cpp
     array/cumprod.cpp
+    array/mean.cpp
 )
 
 ## TODO: support nvcc compilation

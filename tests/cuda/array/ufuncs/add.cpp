@@ -18,18 +18,28 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/array/array/ufuncs/add.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/eval/cuda.hpp"
+#include "nmtools/array/array/arange.hpp"
+#include "nmtools/array/array/reshape.hpp"
 #include "nmtools/testing/data/array/add.hpp"
 
 namespace nm = nmtools;
+namespace ix = nm::index;
 namespace na = nm::array;
-namespace cuda = na::cuda;
 
 #define ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(view, add, case_name); \
     using namespace args; \
-    auto result = na::add(__VA_ARGS__, cuda::default_context()); \
+    auto result = na::add(__VA_ARGS__, na::cuda::default_context()); \
+    auto expect = na::add(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect ); \
+}
+
+#define CUDA_ADD_SUBCASE(...) \
+{ \
+    auto result = na::add(__VA_ARGS__, na::cuda::default_context()); \
     auto expect = na::add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
@@ -62,4 +72,26 @@ TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
     // ADD_SUBCASE(case1, a_ls_fb, b_ls_fb);
     // ADD_SUBCASE(case1, a_ls_hb, b_ls_hb);
     // ADD_SUBCASE(case1, a_ls_db, b_ls_db);
+}
+
+TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
+{
+    auto lhs_shape = nmtools_array{128};
+    auto lhs_numel = ix::product(lhs_shape);
+    auto lhs_start = 0;
+    auto lhs_stop  = lhs_start + lhs_numel;
+    auto lhs_step  = 1;
+    auto lhs_flat  = na::arange(lhs_start,lhs_stop,lhs_step);
+
+    auto rhs_shape = nmtools_array{128};
+    auto rhs_numel = ix::product(rhs_shape);
+    auto rhs_start = 0;
+    auto rhs_stop  = rhs_start + rhs_numel;
+    auto rhs_step  = 1;
+    auto rhs_flat  = na::arange(rhs_start,rhs_stop,rhs_step);
+
+    auto lhs = na::reshape(lhs_flat,lhs_shape);
+    auto rhs = na::reshape(rhs_flat,rhs_shape);
+
+    CUDA_ADD_SUBCASE( lhs, rhs );
 }
