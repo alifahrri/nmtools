@@ -16,6 +16,7 @@
 
 #include "nmtools/assert.hpp"
 
+// TODO: remove
 // NOTE: on spirv, we can't have access to base class
 #if (defined(__OPENCL_VERSION__) || defined(__circle_build__)) && !defined(NMTOOLS_NO_BASE_ACCESS)
 #define NMTOOLS_NO_BASE_ACCESS
@@ -886,6 +887,23 @@ namespace nmtools
 
 namespace nmtools::meta
 {
+    template <template<typename...>typename,typename>
+    struct is_same_view : false_type {};
+
+    template <template<typename...>typename lhs_view_t, template<typename...>typename rhs_view_t, typename...view_args_t>
+    struct is_same_view<
+        lhs_view_t,
+        view::decorator_t<rhs_view_t,view_args_t...>
+    > : 
+        is_same<
+            view::decorator_t<lhs_view_t,view_args_t...>,
+            view::decorator_t<rhs_view_t,view_args_t...>
+        >
+    {};
+
+    template <template<typename...>typename lhs_t, typename rhs_t>
+    constexpr inline auto is_same_view_v = is_same_view<lhs_t,rhs_t>::value;
+
     /**
      * @brief specialization of metafunction get_ndarray_value_type for view type
      * 
