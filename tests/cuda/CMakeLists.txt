@@ -121,6 +121,8 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     array/prod.cpp
     array/cumprod.cpp
     array/mean.cpp
+
+    # composition/mean_subtract.cpp
 )
 
 ## TODO: support nvcc compilation
