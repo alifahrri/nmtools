@@ -108,6 +108,11 @@ namespace nmtools::view
             , shape_(*index::shape_ufunc(nmtools::shape<true>(array)...))
             , size_(index::size_ufunc(shape_,nmtools::size<true>(array)...))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return array;
+        }
         
         constexpr auto shape() const
         {

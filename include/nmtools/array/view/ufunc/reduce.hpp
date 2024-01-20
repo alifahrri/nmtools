@@ -23,6 +23,7 @@
 
 namespace nmtools::view::detail
 {
+    // TODO: move to index namespace
     template <typename indices_t, typename array_type, typename axis_type, typename keepdims_type>
     constexpr auto make_reduction_slices(const indices_t& indices_, const array_type& array, const axis_type& axis, keepdims_type keepdims)
     {
@@ -238,6 +239,11 @@ namespace nmtools::view
             , keepdims(keepdims_)
             , shape_(index::remove_dims(nmtools::shape<true>(array_),axis_,keepdims_))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
 
         constexpr auto shape() const
         {
