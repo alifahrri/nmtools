@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/view/alias.hpp"
 
 namespace nmtools::meta
 {
@@ -638,6 +639,12 @@ namespace nmtools::functional
     {
         template <typename...>
         struct GET_FUNCTION_UNSUPPORTED : meta::detail::fail_t {};
+
+        template <typename...>
+        struct GET_OPERANDS_UNSUPPORTED : meta::detail::fail_t {};
+
+        template <typename...>
+        struct GET_GRAPH_UNSUPPORTED : meta::detail::fail_t {};
     }
 
     template <typename view_t>
@@ -658,6 +665,162 @@ namespace nmtools::functional
         auto get_fn = get_function_t<view_type>{view};
         return get_fn();
     } // get_function
+
+    template <typename view_t>
+    struct get_operands_t
+    {
+        view_t view;
+
+        constexpr auto operator()() const noexcept
+        {
+            if constexpr (meta::has_operands_fn_v<view_t>) {
+                return view.operands();
+            } else {
+                return error::GET_OPERANDS_UNSUPPORTED<view_t>{};
+            }
+        }
+    };
+
+    template <template<typename...> typename view_t, typename...Ts>
+    constexpr auto get_operands(const view::decorator_t<view_t,Ts...>& view)
+    {
+        using view_type = view::decorator_t<view_t,Ts...>;
+        auto get_operands = get_operands_t<view_type>{view};
+        return get_operands();
+    }
+
+    template <typename nodes_t, typename edges_t>
+    struct graph_t
+    {
+        static_assert( meta::is_tuple_v<nodes_t>
+            , "invalid type for nodes_t, expect tuple of functions" );
+        static_assert( meta::is_tuple_v<edges_t>
+            , "invalid type for edges_t, expect tuple" );
+        static_assert( meta::len_v<nodes_t> == meta::len_v<edges_t>
+            , "mismatched length of nodes and edges" );
+
+        // TODO: check if edges is tuple<tuple<ct<>...>...>
+
+        using nodes_type = nodes_t;
+        using edges_type = edges_t;
+
+        nodes_type nodes;
+        edges_type edges;
+    };
+
+    template <typename nodes_t, typename edges_t>
+    graph_t(const nodes_t&, const edges_t&) -> graph_t<nodes_t,edges_t>;
+
+    template <typename view_t>
+    struct get_graph_t;
+
+    template <template<typename...> typename view_t, typename...Ts>
+    constexpr auto get_graph(const view::decorator_t<view_t,Ts...>& view)
+    {
+        using view_type = view::decorator_t<view_t,Ts...>;
+        auto get_graph = get_graph_t<view_type>{view};
+        return get_graph();
+    } // get_graph
+
+    namespace fun
+    {
+        struct alias_t
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::alias(args...);
+            }
+        };
+    }
+
+    constexpr inline auto alias = functor_t(unary_fmap_t<fun::alias_t>{});
+
+    template <typename...args_t>
+    struct get_function_t<
+        view::decorator_t<
+            view::alias_t, args_t...
+        >
+    > {
+        using view_type = view::decorator_t<
+            view::alias_t, args_t...
+        >;
+
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            return alias[view.id];
+        }
+    };
+
+    template <template <typename...> typename view_t, typename...args_t>
+    struct get_graph_t<view::decorator_t<view_t,args_t...>>
+    {
+        using view_type = view::decorator_t<view_t,args_t...>;
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            auto operands = get_operands(view);
+
+            constexpr auto N = meta::len_v<decltype(operands)>;
+
+            using empty_graph_t [[maybe_unused]] = graph_t<nmtools_tuple<>,nmtools_tuple<>>;
+
+            auto sub_graph_pack = meta::template_reduce<N>([&](auto sub_graph_pack, auto index){
+                auto operand = at(operands,index);
+                using operand_t = meta::remove_cvref_pointer_t<decltype(operand)>;
+                static_assert( !meta::is_fail_v<operand_t> );
+
+                if constexpr (meta::is_same_view_v<view::alias_t,operand_t>) {
+
+                } else if constexpr (meta::is_view_v<operand_t>) {
+                    auto sub_graph = get_graph(operand);
+                    return utility::tuple_append(sub_graph_pack,sub_graph);
+                } else /* if constexpr (meta::is_ndarray_v<operand_t>) */ {
+                    auto node = nmtools_tuple{alias};
+                    auto edge = nmtools_tuple<nmtools_tuple<>>{nmtools_tuple<>{}};
+                    auto sub_graph = graph_t{node,edge};
+                    return utility::tuple_append(sub_graph_pack,sub_graph);
+                }
+            }, nmtools_tuple<>{});
+
+            auto node = get_function(view);
+
+            using sub_graph_pack_t = decltype(sub_graph_pack);
+            auto edge = meta::template_reduce<N>([](auto init, auto index){
+                constexpr auto r_index = N - (index+1);
+                if constexpr ((r_index+1) == N) {
+                    return utility::tuple_cat(nmtools_tuple{meta::ct_v<(int)-1>},init);
+                } else {
+                    using sub_graph_t = meta::at_t<sub_graph_pack_t,r_index+1>;
+                    using sub_nodes_t = typename sub_graph_t::nodes_type;
+                    constexpr auto distance = nmtools::at(init,meta::ct_v<0>) - (int)meta::len_v<sub_nodes_t>;
+                    return utility::tuple_cat(nmtools_tuple{meta::ct_v<(int)distance>},init);
+                }
+            }, nmtools_tuple<>{});
+
+            // merge sub_graphs
+            auto merged_nodes = meta::template_reduce<N>([&](auto init, auto index){
+                const auto& sub_graph = at(sub_graph_pack,index);
+                return utility::tuple_cat(init,sub_graph.nodes);
+            }, nmtools_tuple<>{});
+
+            auto merged_edges = meta::template_reduce<N>([&](auto init, auto index){
+                const auto& sub_graph = at(sub_graph_pack,index);
+                return utility::tuple_cat(init,sub_graph.edges);
+            }, nmtools_tuple<>{});
+
+            auto new_nodes = utility::tuple_append(merged_nodes,node);
+            auto new_edges = utility::tuple_append(merged_edges,edge);
+
+            return graph_t{
+                /*nodes*/new_nodes,
+                /*edges*/new_edges
+            };
+        }
+    };
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP
