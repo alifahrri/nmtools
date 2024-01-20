@@ -8,7 +8,6 @@
 #include "nmtools/array/array/ufuncs/add.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/functional/functor.hpp"
-#include "nmtools/array/functional/alias.hpp"
 #include "nmtools/array/functional/ufuncs/multiply.hpp"
 #include "nmtools/array/functional/ufuncs/add.hpp"
 #include "nmtools/array/functional/ufuncs/subtract.hpp"
