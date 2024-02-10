@@ -59,8 +59,23 @@ namespace nmtools::meta
     };
 
     #ifdef __OPENCL_VERSION__
+    #if 0
+    // NOTE: the following is ambiguous
     template <typename T>
     struct len<T,enable_if_t<has_address_space_v<T>>> : len<remove_address_space_t<T>> {};
+    #else
+    template <typename T>
+    struct len<const global T> : len<T> {};
+
+    template <typename T>
+    struct len<const local T> : len<T> {};
+
+    template <typename T>
+    struct len<const constant T> : len<T> {};
+
+    template <typename T>
+    struct len<const private T> : len<T> {};
+    #endif
     #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 

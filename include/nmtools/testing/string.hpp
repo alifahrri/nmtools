@@ -20,34 +20,19 @@
 #define NMTOOLS_STRING std::string
 #endif // NMTOOLS_DISABLE_STL
 
-// when using emscripten, compiler complains about 'boost/type_index.hpp' file not found
-// while cmake find boost is success, for now fallback to typeid
-#if __has_include(<boost/type_index.hpp>)
-    #include <boost/type_index.hpp>
-    #define _NMTOOLS_TESTING_HAS_TYPE_INDEX
-#endif
-
-#ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
-#define NMTOOLS_TESTING_GET_TYPENAME(type) \
-boost::typeindex::type_id<type>().pretty_name()
-#else
-#define NMTOOLS_TESTING_GET_TYPENAME(type) \
-typeid(type).name()
-#endif
-
 // allow to test on platform without RTTI support,
 #if defined(__clang__)
-  #if __has_feature(cxx_rtti)
-    #define NMTOOLS_RTTI_ENABLED
-  #endif
+#if __has_feature(cxx_rtti)
+#define NMTOOLS_RTTI_ENABLED
+#endif
 #elif defined(__GNUC__)
-  #if defined(__GXX_RTTI)
-    #define NMTOOLS_RTTI_ENABLED
-  #endif
+#if defined(__GXX_RTTI)
+#define NMTOOLS_RTTI_ENABLED
+#endif
 #elif defined(_MSC_VER)
-  #if defined(_CPPRTTI)
-    #define NMTOOLS_RTTI_ENABLED
-  #endif
+#if defined(_CPPRTTI)
+#define NMTOOLS_RTTI_ENABLED
+#endif
 #endif
 
 namespace nmtools::testing
@@ -55,25 +40,7 @@ namespace nmtools::testing
     template <size_t...I>
     using index_sequence = meta::integer_sequence<size_t,I...>;
 
-    /**
-     * @brief Quick workaround to remove substring from string
-     * 
-     * @tparam string 
-     * @param str 
-     * @param substr 
-     * @return auto 
-     */
-    template <typename string>
-    inline auto remove_string(string& str, const string& substr)
-    {
-        auto start_pos = string::npos;
-        do {
-          start_pos = str.find(substr);
-          if (start_pos != string::npos) {
-            str.erase(start_pos, substr.size());
-          }
-        } while (start_pos != string::npos);
-    }
+    using utils::remove_string;
 
     /**
      * @ingroup testing

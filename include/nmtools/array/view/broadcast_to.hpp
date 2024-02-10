@@ -54,6 +54,16 @@ namespace nmtools::view
             , origin_axes(init_attribute<origin_axes_type>(origin_axes))
             , broadcast_size(bsize)
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple<shape_type,broadcast_size_type>{shape_,broadcast_size};
+        }
         
         constexpr decltype(auto) shape() const noexcept
         {

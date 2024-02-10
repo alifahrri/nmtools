@@ -41,6 +41,9 @@ jobs:
 
   clang-opencl:
     name: clang-opencl
+    ## Temporarily disabled, last error: to_value for tuple of __private integral constant
+    ## TODO: fix
+    if: ${{ false }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2

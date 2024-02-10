@@ -3,6 +3,9 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/view/alias.hpp"
+#include "nmtools/utility/ct_map.hpp"
+#include "nmtools/utility/ct_digraph.hpp"
 
 namespace nmtools::meta
 {
@@ -638,6 +641,12 @@ namespace nmtools::functional
     {
         template <typename...>
         struct GET_FUNCTION_UNSUPPORTED : meta::detail::fail_t {};
+
+        template <typename...>
+        struct GET_OPERANDS_UNSUPPORTED : meta::detail::fail_t {};
+
+        template <typename...>
+        struct GET_GRAPH_UNSUPPORTED : meta::detail::fail_t {};
     }
 
     template <typename view_t>
@@ -658,6 +667,142 @@ namespace nmtools::functional
         auto get_fn = get_function_t<view_type>{view};
         return get_fn();
     } // get_function
+
+    template <typename view_t>
+    struct get_operands_t
+    {
+        view_t view;
+
+        constexpr auto operator()() const noexcept
+        {
+            if constexpr (meta::has_operands_fn_v<view_t>) {
+                return view.operands();
+            } else {
+                return error::GET_OPERANDS_UNSUPPORTED<view_t>{};
+            }
+        }
+    };
+
+    template <template<typename...> typename view_t, typename...Ts>
+    constexpr auto get_operands(const view::decorator_t<view_t,Ts...>& view)
+    {
+        using view_type = view::decorator_t<view_t,Ts...>;
+        auto get_operands = get_operands_t<view_type>{view};
+        return get_operands();
+    }
+
+    namespace fun
+    {
+        struct alias_t
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::alias(args...);
+            }
+        };
+    }
+
+    constexpr inline auto alias = functor_t(unary_fmap_t<fun::alias_t>{});
+
+    template <typename view_t>
+    struct get_compute_graph_t;
+
+    template <template<typename...> typename view_t, typename...Ts>
+    constexpr auto get_compute_graph(const view::decorator_t<view_t,Ts...>& view)
+    {
+        using view_type = view::decorator_t<view_t,Ts...>;
+        auto get_graph = get_compute_graph_t<view_type>{view};
+        return get_graph();
+    } // get_graph
+
+    template <typename functor_t, typename operands_t>
+    struct node_t
+    {
+        // TODO: assert functor_t is functor or functor composition
+        // TODO: assert operands_t is tuple of integral constant
+        // TODO: record out_shape
+
+        using functor_type = functor_t;
+        using operands_type = operands_t;
+
+        functor_type functor;
+        operands_type operands;
+    };
+
+    template <typename functor_t, typename operands_t>
+    node_t(const functor_t&, const operands_t&) -> node_t<functor_t,operands_t>;
+
+    template <typename nodes_t=nmtools_tuple<>, typename edges_t=nmtools_tuple<>, typename node_data_t=nmtools_tuple<>>
+    struct compute_graph_t : utility::ct_digraph<nodes_t,edges_t,node_data_t>
+    {
+        // TODO: validate that node_data_t is tuple of node_t
+        using base_type = utility::ct_digraph<nodes_t,edges_t,node_data_t>;
+    };
+
+    template <template <typename...> typename view_t, typename...args_t>
+    struct get_compute_graph_t<view::decorator_t<view_t,args_t...>>
+    {
+        using view_type = view::decorator_t<view_t,args_t...>;
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            auto operands = get_operands(view);
+            constexpr auto operand_ids = view_type::operands_ids;
+
+            constexpr auto N = meta::len_v<decltype(operands)>;
+            auto sub_graph = meta::template_reduce<N>([&](auto graph, auto index){
+
+                constexpr auto I = decltype(index)::value;
+                const auto& operand = nmtools::get<I>(operands);
+                using operand_t = meta::remove_cvref_pointer_t<decltype(operand)>;
+                static_assert(
+                    meta::is_pointer_v<operand_t>
+                    || meta::is_num_v<operand_t>
+                    || meta::is_view_v<operand_t>
+                    , "expect operand to be pointer, number or view for get_compute_graph"
+                );
+                if constexpr (meta::is_same_view_v<view::alias_t,operand_t>) {
+                    constexpr auto NODE_ID = typename operand_t::id_type{};
+                    // static_assert( meta::is_pointer_v<decltype(operand)> );
+                    return graph.add_node(NODE_ID,operand.array);
+                } else if constexpr (meta::is_view_v<operand_t>) {
+                    auto sub_graph = get_compute_graph(operand);
+                    auto sub_keys = sub_graph.digraph.keys();
+                    constexpr auto N_SUB = meta::len_v<decltype(sub_keys)>;
+                    // MERGE Graph
+                    auto result_graph = meta::template_reduce<N_SUB>([&](auto g, auto index){
+                        auto node_id = nmtools::get<decltype(index)::value>(sub_keys);
+                        auto node = sub_graph.nodes(node_id);
+                        auto out_edges = sub_graph.out_edges(node_id);
+                        constexpr auto N_OUT = meta::len_v<decltype(out_edges)>;
+                        return meta::template_reduce<N_OUT>([&](auto g, auto out_idx){
+                            auto out_edge = nmtools::get<decltype(out_idx)::value>(out_edges);
+                            return g.add_edge(node_id,out_edge);
+                        }, g.add_node(node_id,node));
+                    }, graph);
+                    return result_graph;
+                } else /* if constexpr (meta::is_ndarray_v<operand_t>) */ {
+                    constexpr auto N_NODES = decltype(graph.size())::value;
+                    constexpr auto NODE_ID = meta::ct_v<N_NODES>;
+                    return graph.add_node(NODE_ID,operand);
+                }
+            }, compute_graph_t<>());
+
+            // TODO: support aliasing
+            constexpr auto node_id = typename view_type::id_type{};
+            auto functor = get_function(view);
+
+            auto graph = sub_graph
+                .add_node(node_id,node_t{functor,operand_ids})
+            ;
+            return meta::template_reduce<N>([&](auto graph, auto index){
+                auto operand_id = nmtools::get<decltype(index)::value>(operand_ids);
+                return graph.add_edge(operand_id,node_id);
+            }, graph);
+        }
+    };
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP

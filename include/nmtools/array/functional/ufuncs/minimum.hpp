@@ -1,85 +1,84 @@
-#ifndef NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MULTIPLY_HPP
-#define NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MULTIPLY_HPP
+#ifndef NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MINIMUM_HPP
+#define NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MINIMUM_HPP
 
 #include "nmtools/array/functional/functor.hpp"
-#include "nmtools/array/functional/ufunc/ufunc.hpp"
-#include "nmtools/array/view/ufuncs/multiply.hpp"
+#include "nmtools/array/view/ufuncs/minimum.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        struct multiply_t
+        struct minimum_t
         {
             template <typename...args_t>
             constexpr auto operator()(const args_t&...args) const
             {
-                return view::multiply(args...);
+                return view::minimum(args...);
             }
         };
 
-        struct reduce_multiply_t
+        struct reduce_minimum_t
         {
             template <typename...args_t>
             constexpr auto operator()(const args_t&...args) const
             {
-                return view::reduce_multiply(args...);
+                return view::reduce_minimum(args...);
             }
         };
 
-        struct outer_multiply_t
+        struct outer_minimum_t
         {
             template <typename...args_t>
             constexpr auto operator()(const args_t&...args) const
             {
-                return view::outer_multiply(args...);
+                return view::outer_minimum(args...);
             }
         };
 
-        struct accumulate_multiply_t
+        struct accumulate_minimum_t
         {
             template <typename...args_t>
             constexpr auto operator()(const args_t&...args) const
             {
-                return view::accumulate_multiply(args...);
+                return view::accumulate_minimum(args...);
             }
         };
     }
 
-    constexpr inline auto multiply = functor_t(binary_fmap_t<fun::multiply_t>{});
+    constexpr inline auto minimum = functor_t(binary_fmap_t<fun::minimum_t>{});
+    
+    constexpr inline auto reduce_minimum = functor_t(unary_fmap_t<fun::reduce_minimum_t>{});
 
-    constexpr inline auto reduce_multiply = functor_t(unary_fmap_t<fun::reduce_multiply_t>{});
+    constexpr inline auto outer_minimum = functor_t(binary_fmap_t<fun::outer_minimum_t>{});
 
-    constexpr inline auto outer_multiply = functor_t(binary_fmap_t<fun::outer_multiply_t>{});
-
-    constexpr inline auto accumulate_multiply = functor_t(unary_fmap_t<fun::accumulate_multiply_t>{});
+    constexpr inline auto accumulate_minimum = functor_t(unary_fmap_t<fun::accumulate_minimum_t>{});
 
     template <typename lhs_t, typename rhs_t, typename res_t, typename...arrays_t>
     struct get_function_t<
         view::decorator_t<
-            view::ufunc_t, view::multiply_t<lhs_t,rhs_t,res_t>, arrays_t...
+            view::ufunc_t, view::minimum_t<lhs_t,rhs_t,res_t>, arrays_t...
         >
     > {
         using view_type = view::decorator_t<
-            view::ufunc_t, view::multiply_t<lhs_t,rhs_t,res_t>, arrays_t...
+            view::ufunc_t, view::minimum_t<lhs_t,rhs_t,res_t>, arrays_t...
         >;
 
         view_type view;
 
         constexpr auto operator()() const noexcept
         {
-            return multiply;
+            return minimum;
         }
     };
 
-    template <typename lhs_t, typename rhs_t, typename res_t, typename...arrays_t>
+    template <typename lhs_t, typename rhs_t, typename res_t, typename...args_t>
     struct get_function_t<
         view::decorator_t<
-            view::reduce_t, view::multiply_t<lhs_t,rhs_t,res_t>, arrays_t...
+            view::reduce_t, view::minimum_t<lhs_t,rhs_t,res_t>, args_t...
         >
     > {
         using view_type = view::decorator_t<
-            view::reduce_t, view::multiply_t<lhs_t,rhs_t,res_t>, arrays_t...
+            view::reduce_t, view::minimum_t<lhs_t,rhs_t,res_t>, args_t...
         >;
 
         view_type view;
@@ -93,45 +92,45 @@ namespace nmtools::functional
                     return dtype_t<res_t>{};
                 }
             }();
-            return reduce_multiply[view.axis][dtype][view.initial][view.keepdims];
+            return reduce_minimum[view.axis][dtype][view.initial][view.keepdims];
         }
     };
 
     template <typename lhs_t, typename rhs_t, typename res_t, typename...arrays_t>
     struct get_function_t<
         view::decorator_t<
-            view::outer_t, view::multiply_t<lhs_t,rhs_t,res_t>, arrays_t...
+            view::outer_t, view::minimum_t<lhs_t,rhs_t,res_t>, arrays_t...
         >
     > {
         using view_type = view::decorator_t<
-            view::outer_t, view::multiply_t<lhs_t,rhs_t,res_t>, arrays_t...
+            view::outer_t, view::minimum_t<lhs_t,rhs_t,res_t>, arrays_t...
         >;
 
         view_type view;
 
         constexpr auto operator()() const noexcept
         {
-            return outer_multiply;
+            return outer_minimum;
         }
     };
 
-    template <typename lhs_t, typename rhs_t, typename res_t, typename...arrays_t>
+    template <typename lhs_t, typename rhs_t, typename res_t, typename...args_t>
     struct get_function_t<
         view::decorator_t<
-            view::accumulate_t, view::multiply_t<lhs_t,rhs_t,res_t>, arrays_t...
+            view::accumulate_t, view::minimum_t<lhs_t,rhs_t,res_t>, args_t...
         >
     > {
         using view_type = view::decorator_t<
-            view::accumulate_t, view::multiply_t<lhs_t,rhs_t,res_t>, arrays_t...
+            view::accumulate_t, view::minimum_t<lhs_t,rhs_t,res_t>, args_t...
         >;
 
         view_type view;
 
         constexpr auto operator()() const noexcept
         {
-            return accumulate_multiply[view.axis];
+            return accumulate_minimum[view.axis];
         }
     };
 } // namespace nmtools::functional
 
-#endif // NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MULTIPLY_HPP
+#endif // NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MINIMUM_HPP

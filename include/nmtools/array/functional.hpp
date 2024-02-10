@@ -54,6 +54,7 @@
 #include "nmtools/array/functional/ufuncs/sin.hpp"
 #include "nmtools/array/functional/ufuncs/sinh.hpp"
 #include "nmtools/array/functional/ufuncs/sqrt.hpp"
+#include "nmtools/array/functional/ufuncs/subtract.hpp"
 #include "nmtools/array/functional/ufuncs/tan.hpp"
 #include "nmtools/array/functional/ufuncs/tanh.hpp"
 

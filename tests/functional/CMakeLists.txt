@@ -129,6 +129,19 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/transpose.cpp
         src/var.cpp
         src/where.cpp
+        src/graph/tanh.cpp
+        src/graph/multiply.cpp
+        src/graph/reduce_add_tanh.cpp
+        src/graph/multiply_tanh.cpp
+        src/graph/multiply_add_tanh.cpp
+        src/graph/multiply_add_tanh_add.cpp
+        src/graph/reduce_add_divide.cpp
+        src/graph/var.cpp
+        src/graph/stddev.cpp
+        src/graph/softmax.cpp
+
+        src/misc/ct_map.cpp
+        src/misc/ct_digraph.cpp
     )
 endif()
 
