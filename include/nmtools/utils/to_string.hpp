@@ -38,13 +38,30 @@
 #define NMTOOLS_HAS_SSTREAM false
 #endif
 
+#if defined(__clang__)
+  #if __has_feature(cxx_rtti)
+    #define NMTOOLS_HAS_RTTI
+  #endif
+#elif defined(__GNUG__)
+  #if defined(__GXX_RTTI)
+    #define NMTOOLS_HAS_RTTI
+  #endif
+#elif defined(_MSC_VER)
+  #if defined(_CPPRTTI)
+    #define NMTOOLS_HAS_RTTI
+  #endif
+#endif
+
+
 #if __has_include(<boost/type_index.hpp>)
     #include <boost/type_index.hpp>
     #define NMTOOLS_TESTING_GET_TYPENAME(type) \
     boost::typeindex::type_id<type>().pretty_name()
-#else
+#elif defined(NMTOOLS_HAS_RTTI)
     #define NMTOOLS_TESTING_GET_TYPENAME(type) \
     typeid(type).name()
+#else
+    #define NMTOOLS_TESTING_GET_TYPENAME(type) ""
 #endif
 
 #if HAS_STRING
