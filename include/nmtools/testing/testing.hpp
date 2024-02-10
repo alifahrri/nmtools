@@ -455,6 +455,41 @@ namespace subcase::expect
     NMTOOLS_CHECK_MESSAGE( passed, message ); \
 }
 
+#define NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect ) \
+{ \
+    namespace meta = nmtools::meta; \
+    namespace utils = nmtools::utils; \
+    auto graph_nodes = graph.nodes(); \
+    auto expect_nodes = expect.nodes(); \
+    auto graph_out_edges = graph.out_edges(); \
+    auto expect_out_edges = expect.out_edges(); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::len(graph_nodes), nmtools::len(expect_nodes) ); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::len(graph_out_edges), nmtools::len(expect_out_edges) ); \
+    constexpr auto N_NODES = (meta::len_v<decltype(graph_nodes)> < meta::len_v<decltype(expect_nodes)> ? meta::len_v<decltype(graph_nodes)> : meta::len_v<decltype(expect_nodes)>); \
+    meta::template_for<N_NODES>([&](auto index){ \
+        [[maybe_unused]] auto g_node = nmtools::at(graph_nodes,index); \
+        auto e_node = nmtools::at(expect_nodes,index); \
+        auto g = graph.nodes(e_node); \
+        auto e = graph.nodes(e_node); \
+        if constexpr (meta::is_fail_v<decltype(g)> || meta::is_fail_v<decltype(e)>) { \
+            NMTOOLS_ASSERT_EQUAL( meta::is_fail_v<decltype(g)>, false ); \
+            NMTOOLS_ASSERT_EQUAL( meta::is_fail_v<decltype(e)>, false ); \
+        } else { \
+            if constexpr ( \
+                (meta::is_pointer_v<decltype(e)> && meta::is_pointer_v<decltype(g)>) \
+                || (meta::is_num_v<decltype(e)> && meta::is_num_v<decltype(g)>) \
+            ) { \
+                CHECK( g == e ); \
+            } else { \
+                NMTOOLS_ASSERT_EQUAL( g.functor, e.functor );  \
+                NMTOOLS_ASSERT_EQUAL( g.operands, e.operands );  \
+            } \
+        } \
+    }); \
+    CHECK_MESSAGE( true, (utils::to_string(graph, utils::Graphviz)) ); \
+    CHECK_MESSAGE( true, (utils::to_string(expect, utils::Graphviz)) ); \
+}
+
 /** @} */ // end groupt testing
 
 #endif // NMTOOLS_TESTING_HPP
