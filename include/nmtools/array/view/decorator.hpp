@@ -323,7 +323,7 @@ namespace nmtools::view
                         return init;
                     }
                 }, nmtools_tuple{});
-                if constexpr (meta::len_v<decltype(operands_ids)>) {
+                if constexpr (meta::len_v<decltype(operands_ids)> > 0) {
                     constexpr auto increment = index::sum(meta::to_value_v<decltype(unnamed_operands)>) + 1;
                     constexpr auto id = index::max(meta::to_value_v<decltype(operands_ids)>);
                     return meta::as_value_v<meta::ct<(int)id+increment>>;
