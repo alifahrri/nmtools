@@ -54,6 +54,8 @@ namespace nmtools::view
         using array_type = const T*;
         using id_type = id_t;
 
+        static constexpr auto operands_ids = nmtools_tuple{id_type{}};
+
         array_type array;
         size_t numel;
         id_type id;
