@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MULTIPLY_HPP
 
 #include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"
 
 namespace nmtools::functional

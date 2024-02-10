@@ -16,6 +16,7 @@ namespace nmtools::utility
     template <typename keys_t=nmtools_tuple<>, typename values_t=nmtools_tuple<>>
     struct ct_map
     {
+        // TODO: assert keys to be tuple of constant index
         static_assert( meta::is_tuple_v<keys_t>, "expect keys to be tuple" );
         static_assert( meta::is_tuple_v<values_t>, "expect values to be tuple" );
         static_assert( meta::len_v<keys_t> == meta::len_v<values_t>, "expect keys and values to be same size" );
@@ -26,18 +27,23 @@ namespace nmtools::utility
         keys_type keys_;
         values_type values_;
 
-        ct_map(const keys_t& keys, const values_t& values)
+        constexpr ct_map(const keys_t& keys, const values_t& values)
             : keys_(keys)
             , values_(values)
         {}
 
-        ct_map() {}
+        constexpr ct_map() {}
 
         static constexpr auto SIZE = meta::len_v<keys_t>;
 
         constexpr auto size() const noexcept
         {
             return meta::ct_v<SIZE>;
+        }
+
+        constexpr auto keys() const noexcept
+        {
+            return keys_;
         }
 
         template <typename key_t>
@@ -85,6 +91,29 @@ namespace nmtools::utility
                     new_keys,
                     new_values
                 };
+            }
+        }
+
+        template <typename key_t, typename value_t>
+        constexpr auto update(key_t key, value_t value) const noexcept
+        {
+            auto contain_key = contains(key);
+            if constexpr (!decltype(contain_key)::value) {
+                return insert(key, value);
+            } else {
+                // keep the order
+                constexpr auto KEY = decltype(key)::value;
+                auto init = ct_map<nmtools_tuple<>,nmtools_tuple<>>();
+                return meta::template_reduce<SIZE>([&](auto init, auto index){
+                    constexpr auto I = decltype(index)::value;
+                    constexpr auto key_i = meta::remove_cvref_t<decltype(get<I>(keys_))>::value;
+                    if constexpr (key_i == KEY) {
+                        return init.insert(key,value);
+                    } else {
+                        auto ct_key = meta::ct_v<key_i>;
+                        return init.insert(ct_key,at(ct_key));
+                    }
+                }, init);
             }
         }
     };

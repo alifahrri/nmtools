@@ -113,6 +113,11 @@ namespace nmtools::view
         {
             return array;
         }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{op};
+        }
         
         constexpr auto shape() const
         {

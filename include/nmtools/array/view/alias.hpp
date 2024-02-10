@@ -19,6 +19,8 @@ namespace nmtools::view
         using array_type = resolve_array_type_t<array_t>;
         using id_type = id_t;
 
+        static constexpr auto operands_ids = nmtools_tuple{id_type{}};
+
         // const reference to actual array type
         array_type array;
         id_type id;
@@ -96,7 +98,7 @@ namespace nmtools::view
     {
         // @note using aggregate initialization 
         // since decorator_t doesn't provide constructor
-        return decorator_t<alias_t,array_t,id_t>{array,id};
+        return decorator_t<alias_t,array_t,id_t>{{array,id}};
     } // alias
 
     template <typename T, typename id_t=none_t>
@@ -112,6 +114,12 @@ namespace nmtools::meta
     struct is_ndarray< view::decorator_t<view::alias_t, array_t, id_t> >
     {
         static constexpr auto value = is_ndarray_v<array_t>;
+    };
+
+    template <typename array_t, typename id_t>
+    struct is_num< view::decorator_t<view::alias_t, array_t, id_t> >
+    {
+        static constexpr auto value = is_num_v<array_t>;
     };
 
     // specialization for ptr

@@ -7,6 +7,7 @@
 #include "nmtools/meta/bits/traits/has_bracket.hpp"
 #include "nmtools/meta/bits/traits/has_data.hpp"
 #include "nmtools/meta/bits/traits/has_dim.hpp"
+#include "nmtools/meta/bits/traits/has_id_type.hpp"
 #include "nmtools/meta/bits/traits/has_identity.hpp"
 #include "nmtools/meta/bits/traits/has_operands_fn.hpp"
 #include "nmtools/meta/bits/traits/has_reserve.hpp"
