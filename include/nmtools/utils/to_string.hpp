@@ -96,7 +96,7 @@ namespace nmtools::utils
     {
         // NOTE: quick workaround for checkif if we have full std string features
         // maybe not available on arduino
-        #ifdef NMTOOLS_HAS_SSTREAM
+        #if (NMTOOLS_HAS_SSTREAM)
         auto start_pos = string::npos;
         do {
           start_pos = str.find(substr);
