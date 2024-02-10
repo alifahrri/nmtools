@@ -141,6 +141,7 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/graph/softmax.cpp
 
         src/misc/ct_map.cpp
+        src/misc/ct_digraph.cpp
     )
 endif()
 
