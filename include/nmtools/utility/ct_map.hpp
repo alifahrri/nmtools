@@ -52,7 +52,7 @@ namespace nmtools::utility
             constexpr auto KEY = decltype(key)::value;
             return meta::template_reduce<SIZE>([&](auto init, auto index){
                 constexpr auto I = decltype(index)::value;
-                constexpr auto key_i = meta::remove_cvref_t<decltype(get<I>(keys_))>::value;
+                constexpr auto key_i = meta::remove_cvref_t<decltype(get<I>(this->keys_))>::value;
                 if constexpr (key_i == KEY) {
                     return meta::true_type{};
                 } else {
