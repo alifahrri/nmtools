@@ -24,3 +24,19 @@ TEST_CASE("relu6(case1)" * doctest::test_suite("functional::relu6"))
     ACTIVATIONS_SUBCASE( "case1", fn::relu6, a_h );
     ACTIVATIONS_SUBCASE( "case1", fn::relu6, a_d );
 }
+
+
+namespace view = nmtools::view;
+
+TEST_CASE("relu6" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,relu6,case1);
+    using namespace args;
+
+    auto array = view::relu6(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::relu6;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

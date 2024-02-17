@@ -24,3 +24,18 @@ TEST_CASE("rint(case1)" * doctest::test_suite("functional::rint"))
     FUNCTIONAL_SUBCASE( "case1", fn::rint, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::rint, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("rint" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,rint,case1);
+    using namespace args;
+
+    auto array = view::rint(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::rint;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

@@ -24,3 +24,18 @@ TEST_CASE("isnan(case1)" * doctest::test_suite("functional::isnan"))
     FUNCTIONAL_SUBCASE( "case1", fn::isnan, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::isnan, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("isnan" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,isnan,case1);
+    using namespace args;
+
+    auto array = view::isnan(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::isnan;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

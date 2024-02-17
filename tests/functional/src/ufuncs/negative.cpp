@@ -24,3 +24,19 @@ TEST_CASE("negative(case1)" * doctest::test_suite("functional::negative"))
     FUNCTIONAL_SUBCASE( "case1", fn::negative, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::negative, a_d );
 }
+
+
+namespace view = nmtools::view;
+
+TEST_CASE("negative" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,negative,case1);
+    using namespace args;
+
+    auto array = view::negative(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::negative;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

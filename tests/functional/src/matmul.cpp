@@ -144,3 +144,18 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("functional::matmul"))
     CURRY_MATMUL_SUBCASE("case6", fn::matmul, lhs_h, rhs_h);
     CURRY_MATMUL_SUBCASE("case6", fn::matmul, lhs_d, rhs_d);
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("matmul" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(array,matmul,case4);
+    using namespace args;
+
+    auto a = view::matmul(lhs,rhs);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::matmul;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

@@ -25,3 +25,18 @@ TEST_CASE("repeat(case1)" * doctest::test_suite("functional::repeat"))
     FUNCTIONAL_SUBCASE( "case1", fn::repeat[repeats][axis], array_h );
     FUNCTIONAL_SUBCASE( "case1", fn::repeat[repeats][axis], array_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("repeat" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(array,repeat,case1);
+    using namespace args;
+
+    auto a = view::repeat(array,repeats,axis);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::repeat[repeats][axis];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

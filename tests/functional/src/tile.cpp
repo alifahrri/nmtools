@@ -25,3 +25,18 @@ TEST_CASE("tile(case1)" * doctest::test_suite("functional::tile"))
     FUNCTIONAL_SUBCASE( "case1", fn::tile[reps], array_h );
     FUNCTIONAL_SUBCASE( "case1", fn::tile[reps], array_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("tile" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,tile,case1);
+    using namespace args;
+
+    auto a = view::tile(array,reps);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::tile[reps];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

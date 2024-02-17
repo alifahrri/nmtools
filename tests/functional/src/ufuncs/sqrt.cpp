@@ -24,3 +24,18 @@ TEST_CASE("sqrt(case1)" * doctest::test_suite("functional::sqrt"))
     FUNCTIONAL_SUBCASE( "case1", fn::sqrt, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::sqrt, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("sqrt" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,sqrt,case1);
+    using namespace args;
+
+    auto array = view::sqrt(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::sqrt;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

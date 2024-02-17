@@ -24,3 +24,18 @@ TEST_CASE("reciprocal(case1)" * doctest::test_suite("functional::reciprocal"))
     FUNCTIONAL_SUBCASE( "case1", fn::reciprocal, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::reciprocal, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("reciprocal" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reciprocal,case1);
+    using namespace args;
+
+    auto array = view::reciprocal(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::reciprocal;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

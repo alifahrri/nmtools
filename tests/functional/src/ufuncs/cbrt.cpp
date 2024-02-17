@@ -24,3 +24,19 @@ TEST_CASE("cbrt(case1)" * doctest::test_suite("functional::cbrt"))
     FUNCTIONAL_SUBCASE( "case1", fn::cbrt, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::cbrt, a_d );
 }
+
+
+namespace view = nmtools::view;
+
+TEST_CASE("cbrt" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,cbrt,case1);
+    using namespace args;
+
+    auto array = view::cbrt(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::cbrt;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

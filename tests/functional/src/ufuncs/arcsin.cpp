@@ -24,3 +24,19 @@ TEST_CASE("arcsin(case1)" * doctest::test_suite("functional::arcsin"))
     FUNCTIONAL_SUBCASE( "case1", fn::arcsin, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::arcsin, a_d );
 }
+
+
+namespace view = nmtools::view;
+
+TEST_CASE("arcsin" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,arcsin,case1);
+    using namespace args;
+
+    auto array = view::arcsin(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::arcsin;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

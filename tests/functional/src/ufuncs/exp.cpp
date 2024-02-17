@@ -24,3 +24,19 @@ TEST_CASE("exp(case1)" * doctest::test_suite("functional::exp"))
     FUNCTIONAL_SUBCASE( "case1", fn::exp, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::exp, a_d );
 }
+
+
+namespace view = nmtools::view;
+
+TEST_CASE("exp" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,exp,case1);
+    using namespace args;
+
+    auto array = view::exp(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::exp;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

@@ -121,3 +121,33 @@ TEST_CASE("outer_multiply(case1)" * doctest::test_suite("functional::multiply"))
     CURRY_BINARY_SUBCASE( "case1", fn::outer_multiply, a_h, b_h );
     CURRY_BINARY_SUBCASE( "case1", fn::outer_multiply, a_d, b_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
+    using namespace args;
+
+    auto array = view::multiply(a,b);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::multiply;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}
+
+namespace view = nmtools::view;
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto array = view::reduce_multiply(a,axis,dtype,initial,keepdims);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::reduce_multiply[axis][dtype][initial][keepdims];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

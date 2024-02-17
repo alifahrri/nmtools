@@ -25,3 +25,18 @@ TEST_CASE("squeeze(case1)" * doctest::test_suite("functional::squeeze"))
     FUNCTIONAL_SUBCASE( "case1", fn::squeeze, array_h );
     FUNCTIONAL_SUBCASE( "case1", fn::squeeze, array_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("squeeze" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(squeeze,case1);
+    using namespace args;
+
+    auto a = view::squeeze(array);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::squeeze;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

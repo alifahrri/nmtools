@@ -49,3 +49,18 @@ TEST_CASE("flip(case4)" * doctest::test_suite("functional::flip"))
     FUNCTIONAL_SUBCASE( "case4", fn::flip[axis], array_h );
     // FUNCTIONAL_SUBCASE( "case4", fn::flip[axis], array_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("flip" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(flip,case4);
+    using namespace args;
+
+    auto a = view::flip(array,axis);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::flip[axis];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

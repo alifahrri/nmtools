@@ -142,6 +142,26 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
 
         src/misc/ct_map.cpp
         src/misc/ct_digraph.cpp
+
+        src/arange.cpp
+
+        src/composition/reduce_add_tanh.cpp
+        src/composition/multiply_tanh.cpp
+        src/composition/multiply_add.cpp
+        src/composition/multiply_add_tanh.cpp
+        src/composition/add_tanh.cpp
+        src/composition/reduce_add_divide.cpp
+        src/composition/divide_subtract.cpp
+        src/composition/subtract_fabs.cpp
+        src/composition/subtract_fabs_square.cpp
+        src/composition/fabs_square.cpp
+        src/composition/fabs_square_sum.cpp
+        src/composition/square_sum.cpp
+        src/composition/square_sum_divide.cpp
+        src/composition/sum_divide.cpp
+        src/composition/reduce_maximum_subtract.cpp
+        src/composition/reduce_maximum_subtract_exp.cpp
+        src/composition/subtract_exp.cpp
     )
 endif()
 
