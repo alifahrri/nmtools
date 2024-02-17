@@ -61,6 +61,11 @@ namespace nmtools::view
             , size_(nmtools::size<true>(array_))
         {}
 
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
         constexpr auto shape() const
         {
             return shape_;

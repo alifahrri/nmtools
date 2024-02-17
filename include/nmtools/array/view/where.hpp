@@ -29,6 +29,16 @@ namespace nmtools::view
         constexpr where_t(const condition_t& condition, const x_t& x, const y_t& y)
             : array{initialize<condition_type>(condition), initialize<x_type>(x), initialize<y_type>(y)}
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return array_type{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{};
+        }
         
         constexpr auto shape() const
         {

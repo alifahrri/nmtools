@@ -48,6 +48,16 @@ namespace nmtools::view
             , dst_shape(index::shape_flatten(nmtools::shape(array_),fixed_size_type{}))
         {}
 
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{};
+        }
+
         constexpr auto dim() const noexcept
         {
             // flattened array is strictly 1D

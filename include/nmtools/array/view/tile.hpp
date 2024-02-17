@@ -33,6 +33,16 @@ namespace nmtools::view
             , reps(init_attribute(reps, meta::as_value_v<reps_type>))
             , shape_(index::shape_tile(nmtools::shape</*force_constant_index*/true>(array_),reps))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{reps};
+        }
         
         constexpr decltype(auto) shape() const
         {

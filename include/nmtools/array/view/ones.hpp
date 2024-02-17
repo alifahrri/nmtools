@@ -26,6 +26,11 @@ namespace nmtools::view
             : shape_(init_attribute<shape_type>(shape))
         {}
 
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple{};
+        }
+
         constexpr auto attributes() const
         {
             return nmtools_tuple{shape_,dtype_t<T>{}};

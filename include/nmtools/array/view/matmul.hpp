@@ -59,6 +59,16 @@ namespace nmtools::view
                 nmtools::shape<true>(rhs))
             )
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return array_type{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{};
+        }
         
         constexpr auto shape() const
         {

@@ -37,6 +37,16 @@ namespace nmtools::view
             : array(initialize(array_, meta::as_value_v<array_type>))
             , shape_(index::shape_squeeze(nmtools::shape(array_)))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{};
+        }
         
         constexpr auto shape() const noexcept
         {
