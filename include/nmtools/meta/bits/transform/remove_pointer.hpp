@@ -16,27 +16,19 @@ namespace nmtools::meta
 
     template <typename T>
     struct remove_pointer<T*>
-    {
-        using type = T;
-    };
+        : remove_pointer<T> {};
 
     template <typename T>
-    struct remove_pointer<T* const>
-    {
-        using type = T;
-    };
+    struct remove_pointer<const T*>
+        : remove_pointer<T> {};
 
     template <typename T>
     struct remove_pointer<T* volatile>
-    {
-        using type = T;
-    };
+        : remove_pointer<T> {};
 
     template <typename T>
     struct remove_pointer<T* const volatile>
-    {
-        using type = T;
-    };
+        : remove_pointer<T> {};
 }
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_REMOVE_POINTER_HPP
