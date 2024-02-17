@@ -643,7 +643,13 @@ namespace nmtools::functional
         struct GET_FUNCTION_UNSUPPORTED : meta::detail::fail_t {};
 
         template <typename...>
+        struct GET_FUNCTION_COMPOSITION_UNSUPPORTED : meta::detail::fail_t {};
+
+        template <typename...>
         struct GET_OPERANDS_UNSUPPORTED : meta::detail::fail_t {};
+
+        template <typename...>
+        struct GET_FUNCTION_OPERANDS_UNSUPPORTED : meta::detail::fail_t {};
 
         template <typename...>
         struct GET_GRAPH_UNSUPPORTED : meta::detail::fail_t {};
@@ -690,6 +696,109 @@ namespace nmtools::functional
         auto get_operands = get_operands_t<view_type>{view};
         return get_operands();
     }
+
+    template <typename view_t>
+    struct get_function_operands_t;
+
+    template <typename view_t>
+    struct get_function_composition_t;
+
+    template <template<typename...> typename view_t, typename...Ts>
+    constexpr auto get_function_operands(const view::decorator_t<view_t,Ts...>& view)
+    {
+        using view_type = view::decorator_t<view_t,Ts...>;
+        auto get_op = get_function_operands_t<view_type>{view};
+        return get_op();
+    } // get_function_operands
+
+    template <template<typename...> typename view_t, typename...Ts>
+    constexpr auto get_function_composition(const view::decorator_t<view_t,Ts...>& view)
+    {
+        using view_type = view::decorator_t<view_t,Ts...>;
+        auto get_fn = get_function_composition_t<view_type>{view};
+        return get_fn();
+    } // get_function_composition
+
+    template <template<typename...>typename view_t, typename...args_t>
+    struct get_function_operands_t<
+        view::decorator_t<view_t,args_t...>
+    > {
+        using view_type = view::decorator_t<view_t,args_t...>;
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            auto operands = get_operands(view);
+            static_assert( !meta::is_fail_v<decltype(operands)>);
+            constexpr auto N = view_type::arity;
+            auto all_operands = meta::template_reduce<N>([&](auto init, auto index){
+                const auto& operand = nmtools::at(operands,index);
+                using operand_t = meta::remove_pointer_t<meta::remove_cvref_t<decltype(operand)>>;
+                static_assert(
+                    (meta::is_view_v<operand_t>)
+                    || ((meta::is_num_v<operand_t> || meta::is_ndarray_v<operand_t>)
+                        && !meta::is_view_v<operand_t>
+                    )
+                );
+                if constexpr (meta::is_view_v<operand_t>) {
+                    return utility::tuple_cat(init, get_function_operands(operand));
+                } else if constexpr ((meta::is_num_v<operand_t> || meta::is_ndarray_v<operand_t>)
+                    && !meta::is_view_v<operand_t>
+                ) {
+                    if constexpr ( meta::is_num_v<operand_t> || meta::is_pointer_v<decltype(operand)> ) {
+                        return utility::tuple_append(init, operand);
+                    } else /* if constexpr (meta::is_bounded_array_v<operand_t>) */ {
+                        return utility::tuple_append<const operand_t&>(init, operand);
+                    }
+                }
+            }, nmtools_tuple{});
+            return all_operands;
+        }
+    }; // get_function_operands_t
+
+    template <template<typename...>typename view_t, typename...args_t>
+    struct get_function_composition_t<
+        view::decorator_t<view_t,args_t...>
+    > {
+        using view_type = view::decorator_t<view_t,args_t...>;
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            auto function = get_function(view);
+            auto operands = get_operands(view);
+            static_assert( !meta::is_fail_v<decltype(operands)> );
+            constexpr auto N = view_type::arity;
+            auto composition = meta::template_reduce<N>([&](auto init, auto index){
+                constexpr auto I = decltype(index)::value;
+                constexpr auto r_index = meta::ct_v<(N-1)-I>;
+                const auto& operand = nmtools::at(operands,r_index);
+                using operand_t = meta::remove_pointer_t<meta::remove_cvref_t<decltype(operand)>>;
+                static_assert(
+                    (meta::is_view_v<operand_t>)
+                    || ((meta::is_num_v<operand_t> || meta::is_ndarray_v<operand_t>)
+                        && !meta::is_view_v<operand_t>
+                    )
+                );
+                if constexpr (meta::is_view_v<operand_t>) {
+                    return init * get_function_composition(operand);
+                } else if constexpr ((meta::is_num_v<operand_t> || meta::is_ndarray_v<operand_t>)
+                    && !meta::is_view_v<operand_t>
+                ) {
+                    return init;
+                }
+            }, function);
+            return composition;
+        }
+    }; // get_function_composition_t
+
+    template <typename function_t, template<typename...>typename tuple, typename...operands_t>
+    constexpr auto apply(const function_t& function, const tuple<operands_t...>& operands)
+    {
+        return meta::template_reduce<sizeof...(operands_t)>([&](auto init, auto index){
+            return init (nmtools::at(operands,index));
+        }, function);
+    } // apply
 
     namespace fun
     {
