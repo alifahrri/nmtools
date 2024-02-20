@@ -28,6 +28,16 @@ namespace nmtools::view
             , axis(init_attribute<axis_type>(axis))
             , shape_(index::shape_take(nmtools::shape</*force_constant_index*/true>(array_),indices_,axis))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{indices,axis};
+        }
         
         constexpr auto shape() const
         {

@@ -24,3 +24,18 @@ TEST_CASE("tanhshrink(case1)" * doctest::test_suite("functional::tanhshrink"))
     ACTIVATIONS_SUBCASE( "case1", fn::tanhshrink, a_h );
     ACTIVATIONS_SUBCASE( "case1", fn::tanhshrink, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("tanhshrink" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,tanhshrink,case1);
+    using namespace args;
+
+    auto array = view::tanhshrink(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::tanhshrink;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

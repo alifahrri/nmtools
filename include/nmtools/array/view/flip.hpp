@@ -47,6 +47,16 @@ namespace nmtools::view
             , axes(init_attribute<axis_type>(axis))
             , slices(index::flip_slices(dim_,axes))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{};
+        }
         
         constexpr auto shape() const
         {

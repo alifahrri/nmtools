@@ -357,6 +357,26 @@ struct to_string_t<functional::functor_t<F,operands_t,attributes_t>,none_t,void>
     }
 };
 
+template <template<typename...>typename tuple, typename...functors_t, typename operands_t>
+struct to_string_t<
+    functional::functor_composition_t<tuple<functors_t...>,operands_t>, none_t, void
+> {
+    using composition_type = functional::functor_composition_t<tuple<functors_t...>,operands_t>;
+
+    auto operator()(const composition_type& composition) const noexcept
+    {
+        auto composition_str = nmtools_string("");
+        constexpr auto N = sizeof...(functors_t);
+        meta::template_for<N>([&](auto index){
+            composition_str += to_string(at(composition.functors,index));
+            if (index < (N-1)) {
+                composition_str += " * ";
+            }
+        });
+        return composition_str;
+    }
+};
+
 template <typename functor_t, typename operands_t>
 struct to_string_t<
     functional::node_t<functor_t,operands_t>, none_t, void
@@ -429,6 +449,34 @@ struct to_string_t<
         return graphviz;
     }
 };
+
+#define NMTOOLS_DTYPE_TO_STRING_CASE(T,type,string) \
+if constexpr (meta::is_same_v<T,type>) { \
+    return nmtools_string(string); \
+}
+
+template <typename T>
+struct to_string_t<
+    dtype_t<T>, none_t, void
+>
+{
+    auto operator()(dtype_t<T>) const noexcept
+    {
+        NMTOOLS_DTYPE_TO_STRING_CASE(T,float,"float32")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,double,"float64")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,int64_t,"int64")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,int32_t,"int32")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,int16_t,"int16")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,int8_t,"int8")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,uint64_t,"uint64")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,uint32_t,"uint32")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,uint16_t,"uint16")
+        else NMTOOLS_DTYPE_TO_STRING_CASE(T,uint8_t,"uint8")
+        else return nmtools_string("");
+    }
+};
+
+#undef NMTOOLS_DTYPE_TO_STRING_CASE
 
 template <typename nodes_t, typename edges_t, typename node_data_t>
 struct to_string_t<

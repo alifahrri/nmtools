@@ -24,3 +24,18 @@ TEST_CASE("tanh(case1)" * doctest::test_suite("functional::tanh"))
     FUNCTIONAL_SUBCASE( "case1", fn::tanh, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::tanh, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("tanh" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,tanh,case1);
+    using namespace args;
+
+    auto array = view::tanh(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::tanh;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

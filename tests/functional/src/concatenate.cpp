@@ -1,9 +1,12 @@
 #include "nmtools/array/functional/concatenate.hpp"
 #include "nmtools/testing/data/array/concatenate.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/array/array/arange.hpp"
 
 namespace nm = nmtools;
 namespace fn = nm::functional;
+namespace na = nmtools::array;
+namespace view = nm::view;
 
 #define FUNCTIONAL_SUBCASE(subcase_name, function, ...) \
 SUBCASE(subcase_name) \
@@ -69,4 +72,17 @@ TEST_CASE("constexpr_concatenate(case1)" * doctest::test_suite("functional::conc
     CONSTEXPR_CURRY_BINARY_SUBCASE( "case1", fn::concatenate[axis], lhs_a, rhs_a );
     CONSTEXPR_CURRY_BINARY_SUBCASE( "case1", fn::concatenate[axis], lhs_f, rhs_f );
     CONSTEXPR_CURRY_BINARY_SUBCASE( "case1", fn::concatenate[axis], lhs_h, rhs_h );
+}
+
+TEST_CASE("concatenate" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view, concatenate, case1);
+    using namespace args;
+
+    auto a = view::concatenate(lhs,rhs,axis);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::concatenate[axis];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
 }

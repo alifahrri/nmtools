@@ -77,6 +77,16 @@ namespace nmtools::view
             , shape_(index::shape_outer(nmtools::shape<true>(lhs),nmtools::shape<true>(rhs)))
             , size_(index::size_outer(shape_,nmtools::size<true>(lhs),nmtools::size<true>(rhs)))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return array_type{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{};
+        }
         
         constexpr auto shape() const
         {

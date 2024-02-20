@@ -36,3 +36,18 @@ TEST_CASE("elu(case2)" * doctest::test_suite("functional::elu"))
     ACTIVATIONS_SUBCASE( "case2", fn::elu[alpha], a_h );
     ACTIVATIONS_SUBCASE( "case2", fn::elu[alpha], a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    using namespace args;
+
+    auto array = view::elu(a,alpha);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::elu[alpha];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

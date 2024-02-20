@@ -53,6 +53,16 @@ namespace nmtools::view
             , shape_(index::shape_transpose(nmtools::shape</*force_constant_index*/true>(array_),axes))
         {}
         
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{axes};
+        }
+
         /**
          * @brief return the shape of dst (sliced) array
          * 

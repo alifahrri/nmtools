@@ -1,5 +1,6 @@
 #include "nmtools/array/functional/ufuncs/add.hpp"
 #include "nmtools/testing/data/array/add.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -118,3 +119,18 @@ TEST_CASE("constexpr_add(case1)" * doctest::test_suite("functional::add"))
     CONSTEXPR_CURRY_ADD_SUBCASE("case1", fn::add, a_h, b_h);
 }
 #endif
+
+namespace view = nmtools::view;
+
+TEST_CASE("add" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,add,case1);
+    using namespace args;
+
+    auto array = view::add(a,b);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::add;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

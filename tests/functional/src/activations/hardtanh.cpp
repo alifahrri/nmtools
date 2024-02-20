@@ -24,3 +24,18 @@ TEST_CASE("hardtanh(case1)" * doctest::test_suite("functional::hardtanh"))
     ACTIVATIONS_SUBCASE( "case1", fn::hardtanh, a_h );
     ACTIVATIONS_SUBCASE( "case1", fn::hardtanh, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("hardtanh" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,hardtanh,case1);
+    using namespace args;
+
+    auto array = view::hardtanh(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::hardtanh[-1.][1.];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

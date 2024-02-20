@@ -51,6 +51,11 @@ namespace nmtools::view
             , dst_shape(index::shape_pool2d(src_shape,kernel_size,stride,ceil_mode))
         {}
 
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
         constexpr auto dim() const
         {
             return len(dst_shape);

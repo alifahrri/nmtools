@@ -498,39 +498,10 @@ namespace nmtools::utils
         else return detail::isequal(t,u);
     } // isequal
 
-    template <
-        typename F, typename lhs_operands_t, typename lhs_attributes_t
-        , typename G, typename rhs_operands_t, typename rhs_attributes_t>
-    constexpr auto isequal(
-        const functional::functor_t<F,lhs_operands_t,lhs_attributes_t>& lhs
-        , const functional::functor_t<G,rhs_operands_t,rhs_attributes_t>& rhs
-    ) {
-        if constexpr ( !meta::is_same_v<F,G> || 
-            !meta::is_same_v<lhs_operands_t,rhs_operands_t>
-        ) {
-            // TODO: also check the values of operands
-            return false;
-        } else if constexpr (
-            !meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
-            && !meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
-        ) {
-            constexpr auto M = meta::len_v<lhs_attributes_t>;
-            constexpr auto N = meta::len_v<rhs_attributes_t>;
-            if constexpr (M != N) {
-                return false;
-            } else {
-                auto equal = true;
-                meta::template_for<M>([&](auto index){
-                    equal = equal && isequal(at(lhs.attributes,index),at(rhs.attributes,index));
-                });
-                return equal;
-            }
-        } else if constexpr ( meta::is_same_v<F,G>
-            && meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
-            && meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
-        ) {
-            return true;
-        }
+    template <typename lhs_t, typename rhs_t>
+    constexpr auto isequal(dtype_t<lhs_t>, dtype_t<rhs_t>)
+    {
+        return meta::is_same_v<lhs_t,rhs_t>;
     }
 } // namespace nmtools::utils
 

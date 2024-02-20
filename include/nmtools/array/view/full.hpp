@@ -34,6 +34,11 @@ namespace nmtools::view
             , fill_value(fill_value)
         {}
 
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple{};
+        }
+
         constexpr auto attributes() const
         {
             return nmtools_tuple{shape_,fill_value};

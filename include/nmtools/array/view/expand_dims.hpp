@@ -36,6 +36,16 @@ namespace nmtools::view
             , axis(init_attribute(axis, meta::as_value_v<axis_type>))
             , shape_(index::shape_expand_dims(nmtools::shape(array_),axis))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{axis};
+        }
         
         constexpr auto shape() const noexcept
         {

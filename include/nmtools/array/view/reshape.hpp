@@ -50,6 +50,16 @@ namespace nmtools::view
             : array(initialize(array, meta::as_value_v<array_type>))
             , new_shape(init_attribute(shape, meta::as_value_v<shape_type>)) {}
         
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{new_shape};
+        }
+        
         /**
          * @brief simply return size of new_shape
          * 

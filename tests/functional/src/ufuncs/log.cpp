@@ -24,3 +24,18 @@ TEST_CASE("log(case1)" * doctest::test_suite("functional::log"))
     FUNCTIONAL_SUBCASE( "case1", fn::log, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::log, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("log" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,log,case1);
+    using namespace args;
+
+    auto array = view::log(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::log;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

@@ -34,8 +34,9 @@ namespace nmtools::view::detail
         constexpr auto DIM = meta::fixed_dim_v<array_t>;
         [[maybe_unused]] const auto dim = detail::dim(array);
         // type for slicing is DIMx2 where 2 represent start and stop
+        using size_type = nm_size_t;
         constexpr auto slices_vtype = [=](){
-            using slice_type = nmtools_array<size_t,2>;
+            using slice_type = nmtools_array<size_type,2>;
             if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
                 using slices_type = nmtools_array<slice_type,DIM>;
                 return meta::as_value_v<slices_type>;
@@ -91,7 +92,7 @@ namespace nmtools::view::detail
             }
         }();
         using index_t = meta::get_index_type_t<array_t>;
-        using idx_t   = meta::type_t<meta::promote_index<index_t,meta::type_t<decltype(idx_vtype)>>>;
+        using idx_t [[maybe_unused]] = meta::type_t<meta::promote_index<index_t,meta::type_t<decltype(idx_vtype)>>>;
 
         // indices and the referenced array may have different dim,
         // this variable track index for indices_
@@ -103,7 +104,9 @@ namespace nmtools::view::detail
                 // take all elements at given axis
                 if (in_axis(i)) {
                     // note that shape_ maybe constant index array
-                    at(slices,i) = {static_cast<idx_t>(0),at(shape_,meta::ct_v<i>)};
+                    at(slices,i) = {
+                        static_cast<size_type>(0)
+                        , static_cast<size_type>(at(shape_,meta::ct_v<i>))};
                     // if keepdims is true, also increment indices index
                     if (keepdims)
                         ii++;
@@ -111,7 +114,9 @@ namespace nmtools::view::detail
                 // use indices otherwise, just slice with index:index+1
                 else {
                     auto s = at(indices_,ii++);
-                    at(slices,i) = {s,s+1};
+                    at(slices,i) = {
+                        static_cast<size_type>(s)
+                        , static_cast<size_type>(s+1)};
                 }
             });
         } else {
@@ -119,7 +124,9 @@ namespace nmtools::view::detail
                 // take all elements at given axis
                 if (in_axis(i)) {
                     // note that shape_ maybe constant index array
-                    at(slices,i) = {static_cast<idx_t>(0),at(shape_,i)};
+                    at(slices,i) = {
+                        static_cast<size_type>(0)
+                        , static_cast<size_type>(at(shape_,i))};
                     // if keepdims is true, also increment indices index
                     if (keepdims)
                         ii++;
@@ -127,7 +134,9 @@ namespace nmtools::view::detail
                 // use indices otherwise, just slice with index:index+1
                 else {
                     auto s = at(indices_,ii++);
-                    at(slices,i) = {s,s+1};
+                    at(slices,i) = {
+                        static_cast<size_type>(s)
+                        , static_cast<size_type>(s+1)};
                 }
             }
         }

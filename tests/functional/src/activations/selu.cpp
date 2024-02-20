@@ -24,3 +24,18 @@ TEST_CASE("selu(case1)" * doctest::test_suite("functional::selu"))
     ACTIVATIONS_SUBCASE( "case1", fn::selu, a_h );
     ACTIVATIONS_SUBCASE( "case1", fn::selu, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("selu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,selu,case1);
+    using namespace args;
+
+    auto array = view::selu(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::selu;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

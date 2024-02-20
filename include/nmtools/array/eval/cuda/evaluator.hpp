@@ -30,7 +30,7 @@ namespace nmtools::array
             if (!::nmtools::utils::isequal(out_shape,inp_shape))
                 return;
 
-            auto f = functional::get_function(view);
+            auto f = functional::get_function_composition(view);
             const auto& inp_array = get_array(view);
 
             context->run(f,output,inp_array);

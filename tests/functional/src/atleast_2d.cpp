@@ -1,9 +1,12 @@
 #include "nmtools/array/functional/atleast_2d.hpp"
+#include "nmtools/array/array/arange.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
 namespace fn = nm::functional;
+namespace na = nm::array;
+namespace view = nmtools::view;
 
 #define FUNCTIONAL_SUBCASE(subcase_name, function, ...) \
 SUBCASE(subcase_name) \
@@ -56,4 +59,15 @@ TEST_CASE("atleast_2d(case4)" * doctest::test_suite("functional::atleast_2d"))
     FUNCTIONAL_SUBCASE( "case4", fn::atleast_2d, a_f );
     FUNCTIONAL_SUBCASE( "case4", fn::atleast_2d, a_h );
     FUNCTIONAL_SUBCASE( "case4", fn::atleast_2d, a_d );
+}
+
+TEST_CASE("atleast_2d" * doctest::test_suite("functional::get_function_composition"))
+{
+    auto array = na::arange(10);
+    auto a = view::atleast_2d(array);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::atleast_2d;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
 }

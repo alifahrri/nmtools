@@ -32,6 +32,16 @@ namespace nmtools::view
             , axis(init_attribute(axis, meta::as_value_v<axis_type>))
             , dst_shape(index::shape_repeat(nmtools::shape</*force_constant_index*/true>(array_),repeats,axis))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{repeats,axis};
+        }
         
         constexpr decltype(auto) shape() const
         {

@@ -1,9 +1,12 @@
 #include "nmtools/array/functional/broadcast_to.hpp"
+#include "nmtools/array/array/arange.hpp"
 #include "nmtools/testing/data/array/broadcast_to.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
 namespace fn = nm::functional;
+namespace na = nmtools::array;
+namespace view = nmtools::view;
 
 #define FUNCTIONAL_SUBCASE(subcase_name, function, ...) \
 SUBCASE(subcase_name) \
@@ -110,3 +113,16 @@ TEST_CASE("constexpr_broadcast_to(case10)" * doctest::test_suite("functional::br
     CONSTEXPR_FUNCTIONAL_SUBCASE( "case10", fn::broadcast_to[shape], x );
 }
 #endif
+
+TEST_CASE("broadcast_to" * doctest::test_suite("functional::get_function_composition"))
+{
+    auto array = na::arange(10);
+    auto dst_shape = nmtools_array{2,10};
+    auto bcast_size = nm::None;
+    auto a = view::broadcast_to(array,dst_shape);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::broadcast_to[dst_shape][bcast_size];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

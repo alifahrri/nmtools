@@ -25,3 +25,20 @@ TEST_CASE("pad(case1)" * doctest::test_suite("functional::pad"))
     FUNCTIONAL_SUBCASE( "case1", fn::pad[pad_width_h], array_h );
     FUNCTIONAL_SUBCASE( "case1", fn::pad[pad_width_v], array_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("pad" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(array,pad,case1);
+    using namespace args;
+
+    auto pad_value = 0.0f;
+
+    auto a = view::pad(array,pad_width);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::pad[pad_width][pad_value];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

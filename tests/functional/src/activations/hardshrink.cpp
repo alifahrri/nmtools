@@ -36,3 +36,18 @@ TEST_CASE("hardshrink(case2)" * doctest::test_suite("functional::hardshrink"))
     ACTIVATIONS_SUBCASE( "case2", fn::hardshrink[lambda], a_h );
     ACTIVATIONS_SUBCASE( "case2", fn::hardshrink[lambda], a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,hardshrink,case2);
+    using namespace args;
+
+    auto array = view::hardshrink(a,lambda);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::hardshrink[lambda];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

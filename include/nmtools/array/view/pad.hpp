@@ -46,6 +46,16 @@ namespace nmtools::view
             , pad_value(init_attribute(pad_value, meta::as_value_v<pad_value_type>))
             , shape_(*index::shape_pad(nmtools::shape</*force_constant_index*/true>(array_),pad_width))
         {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{pad_width,pad_value};
+        }
         
         constexpr auto shape() const
         {

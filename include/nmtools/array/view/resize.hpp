@@ -27,6 +27,16 @@ namespace nmtools::view
             , src_shape(nmtools::shape<true>(array_))
         {}
 
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return nmtools_tuple{dst_shape};
+        }
+
         constexpr auto dim() const
         {
             return len(dst_shape);

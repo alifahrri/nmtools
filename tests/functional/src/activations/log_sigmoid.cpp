@@ -24,3 +24,18 @@ TEST_CASE("log_sigmoid(case1)" * doctest::test_suite("functional::log_sigmoid"))
     ACTIVATIONS_SUBCASE( "case1", fn::log_sigmoid, a_h );
     ACTIVATIONS_SUBCASE( "case1", fn::log_sigmoid, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("log_sigmoid" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,log_sigmoid,case1);
+    using namespace args;
+
+    auto array = view::log_sigmoid(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::log_sigmoid;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

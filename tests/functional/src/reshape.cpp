@@ -35,3 +35,18 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("functional::reshape"))
         #endif
     }
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("reshape" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(reshape,case1);
+    using namespace args;
+
+    auto a = view::reshape(array,newshape);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::reshape[newshape];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

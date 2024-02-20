@@ -41,6 +41,11 @@ namespace nmtools::view
             , shape_(index::arange_shape(start,stop,step))
         {}
 
+        constexpr auto operands() const noexcept
+        {
+            return array_type{};
+        }
+
         constexpr auto attributes() const
         {
             return nmtools_tuple{start,stop,step,dtype_t<element_type>{}};

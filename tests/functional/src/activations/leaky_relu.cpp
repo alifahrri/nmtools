@@ -24,3 +24,18 @@ TEST_CASE("leaky_relu(case1)" * doctest::test_suite("functional::leaky_relu"))
     ACTIVATIONS_SUBCASE( "case1", fn::leaky_relu, a_h );
     ACTIVATIONS_SUBCASE( "case1", fn::leaky_relu, a_d );
 }
+
+namespace view = nmtools::view;
+
+TEST_CASE("leaky_relu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,leaky_relu,case1);
+    using namespace args;
+
+    auto array = view::leaky_relu(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::leaky_relu[0.01];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

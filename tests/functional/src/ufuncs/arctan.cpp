@@ -24,3 +24,19 @@ TEST_CASE("arctan(case1)" * doctest::test_suite("functional::arctan"))
     FUNCTIONAL_SUBCASE( "case1", fn::arctan, a_h );
     FUNCTIONAL_SUBCASE( "case1", fn::arctan, a_d );
 }
+
+
+namespace view = nmtools::view;
+
+TEST_CASE("arctan" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,arctan,case1);
+    using namespace args;
+
+    auto array = view::arctan(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::arctan;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}
