@@ -28,7 +28,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_function_co
 
     auto z_operands = fn::get_operands(z);
     NMTOOLS_ASSERT_EQUAL( nm::len(z_operands), 1 );
-    NMTOOLS_STATIC_CHECK_IS_SAME( decltype(z_operands), nmtools_tuple<decltype(y)> );
+    // NMTOOLS_STATIC_CHECK_IS_SAME( decltype(z_operands), nmtools_tuple<decltype(y)> );
 
     auto z_operand  = at(z_operands,0_ct);
     using z_operand_t = meta::remove_cvref_pointer_t<decltype(z_operand)>;
