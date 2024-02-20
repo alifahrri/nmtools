@@ -62,7 +62,7 @@ TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_oper
     CHECK( nm::len(operands) == nm::len(expect) );
     CHECK( &nm::at(operands,0_ct) == &nm::at(expect,0_ct) );
     CHECK( nm::at(operands,1_ct) == nm::at(expect,1_ct) );
-    CHECK( nm::at(operands,2_ct) == nm::at(expect,2_ct) );
+    CHECK( &nm::at(operands,2_ct) == &nm::at(expect,2_ct) );
 }
 
 TEST_CASE("divide_subtract" * doctest::test_suite("functional::apply"))
