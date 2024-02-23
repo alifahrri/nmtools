@@ -21,6 +21,14 @@
 #include "nmtools/math.hpp"
 #include "nmtools/platform/math/constexpr.hpp"
 
+#ifndef NMTOOLS_ISCLOSE_NAN_HANDLING
+#define NMTOOLS_ISCLOSE_NAN_HANDLING 0
+#endif // NMTOOLS_ISCLOSE_NAN_HANDLING
+
+#ifndef NMTOOLS_ISCLOSE_INF_HANDLING
+#define NMTOOLS_ISCLOSE_INF_HANDLING 0
+#endif // NMTOOLS_ISCLOSE_INF_HANDLING
+
 namespace nmtools::utils
 {
     using nmtools::math::fabs;
@@ -256,10 +264,18 @@ namespace nmtools::utils
                 using t_type = meta::get_element_type_t<T>;
                 using u_type = meta::get_element_type_t<U>;
                 using common_t = meta::common_type_t<t_type,u_type,E>;
-                return constexpr_fabs(static_cast<t_type>(t)-static_cast<u_type>(u))
-                    < static_cast<common_t>(eps);
+                auto abs_diff = constexpr_fabs(static_cast<t_type>(t)-static_cast<u_type>(u));
+                auto result = abs_diff < static_cast<common_t>(eps);
+                #if NMTOOLS_ISCLOSE_NAN_HANDLING
+                result = result || (math::isnan(t) && math::isnan(u));
+                #endif
+                #if NMTOOLS_ISCLOSE_INF_HANDLING
+                result = result || (math::isinf(t) && math::isinf(u));
+                #endif
+                return result;
             }
             else {
+                [[maybe_unused]]
                 auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
                     return constexpr_fabs(lhs-rhs) < eps;
                 };
@@ -275,9 +291,9 @@ namespace nmtools::utils
                 auto t_indices = ndindex(t_shape);
                 auto u_indices = ndindex(u_shape);
                 auto numel = t_indices.size();
-                for (size_t i = 0; i<numel; i++)
-                    // dont recurse, we already checked that t and u satify static assert here
-                    close = close && isclose_impl(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
+                for (size_t i = 0; i<numel; i++) {
+                    close = close && isclose(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
+                }
                 return close;
             }
         } // isclose
