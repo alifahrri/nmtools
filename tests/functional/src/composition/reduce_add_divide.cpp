@@ -7,9 +7,7 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("reduce_add_divide" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+TEST_CASE("reduce_add_divide" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case9);
     using namespace args;

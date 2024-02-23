@@ -8,9 +8,7 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail() )
+TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
     using namespace args;
@@ -46,9 +44,7 @@ TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::get_function
     CHECK( &nm::at(operands,1_ct) == &nm::at(expect,1_ct) );
 }
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::apply") * doctest::may_fail())
+TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::apply"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
     using namespace args;

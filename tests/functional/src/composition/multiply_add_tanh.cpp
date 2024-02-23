@@ -11,9 +11,7 @@ namespace meta = nmtools::meta;
 
 using namespace nmtools::literals;
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
     using namespace args;
@@ -69,8 +67,6 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_function_op
     CHECK( &nm::at(operands,2_ct) == &nm::at(expect,2_ct) );
 }
 
-// TODO: fix compile error
-#if 0
 TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::apply"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
@@ -85,4 +81,3 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::apply"))
     
     NMTOOLS_ASSERT_CLOSE( (fn::apply(function,operands)), z );
 }
-#endif
