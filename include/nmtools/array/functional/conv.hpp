@@ -40,12 +40,13 @@ namespace nmtools::functional
         } // operator()
     }; // conv2d_t
 
+    constexpr inline auto conv2d_bias_fun = [](const auto&...args){
+        return view::conv2d(args...);
+    };
+
     constexpr inline auto conv2d = functor_t(conv2d_t{});
 
-    constexpr inline auto conv2d_bias = functor_t(ternary_fmap_t{
-        [](const auto&...args){
-            return view::conv2d(args...);
-    }});
+    constexpr inline auto conv2d_bias = functor_t(ternary_fmap_t<decltype(conv2d_bias_fun)>{conv2d_bias_fun});
     
 } // namespace nmtools::functional
 
