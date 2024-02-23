@@ -11,27 +11,82 @@
 
 namespace nmtools::array
 {
-    template <typename data_t, typename shape_t, typename dim_t, auto...accessor_args_t>
-    struct device_array<::sycl::accessor<data_t,accessor_args_t...>,shape_t,dim_t>
+    template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
+    struct device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+        : base_ndarray_t<device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>>
     {
-        ::sycl::accessor<data_t,accessor_args_t...> buffer;
-        shape_t shape;
-        dim_t dim;
+        using value_type = T;
+        using shape_type = shape_t;
+        using dim_type   = dim_t;
+
+        using accessor_type = ::sycl::accessor<T,accessor_args_t...>;
+        using buffer_type = T*;
+        using stride_type = resolve_stride_type_t<shape_type>;
+        using offset_type = row_major_offset_t<shape_type,stride_type>;
+        using base_type   = base_ndarray_t<device_array>;
+
+        accessor_type accessor_;
+        buffer_type data_;
+        shape_type shape_;
+        dim_type dim_;
+        stride_type strides_;
+        offset_type offset_;
+
+        device_array(accessor_type accessor_, const shape_t& shape_, dim_t dim_)
+            : accessor_(accessor_)
+            , data_   (accessor_.get_pointer().get())
+            , shape_  (shape_)
+            , dim_    (dim_)
+            , strides_(base_type::template compute_strides<stride_type>(shape_))
+            , offset_ (shape_,strides_)
+        {}
+
+        device_array(const device_array& other)
+            : device_array(other.accessor_,other.shape_,other.dim_)
+        {}
     };
 
-    template <typename data_t, typename shape_t, typename dim_t>
-    struct device_array<::sycl::buffer<data_t>,shape_t,dim_t>
+    template <typename T, typename shape_t, typename dim_t>
+    struct device_array<::sycl::buffer<T>,shape_t,dim_t>
+        : base_ndarray_t<device_array<::sycl::buffer<T>,shape_t,dim_t>>
     {
-        ::sycl::buffer<data_t> buffer;
-        shape_t shape;
-        dim_t dim;
+        using value_type = T;
+        using shape_type = shape_t;
+        using dim_type   = dim_t;
+
+        using buffer_type = ::sycl::buffer<T>;
+        using stride_type = resolve_stride_type_t<shape_type>;
+        using offset_type = row_major_offset_t<shape_type,stride_type>;
+        using base_type   = base_ndarray_t<device_array>;
+
+        buffer_type data_;
+        shape_type shape_;
+        dim_type dim_;
+        stride_type strides_;
+        offset_type offset_;
+
+        device_array(buffer_type data_, const shape_t& shape_, dim_t dim_)
+            : data_   (data_)
+            , shape_  (shape_)
+            , dim_    (dim_)
+            , strides_(base_type::template compute_strides<stride_type>(shape_))
+            , offset_ (shape_,strides_)
+        {}
+
+        device_array(const device_array& other)
+            : data_   (other.data_)
+            , shape_  (other.shape_)
+            , dim_    (other.dim_)
+            , strides_(base_type::template compute_strides<stride_type>(shape_))
+            , offset_ (shape_,strides_)
+        {}
 
         template <typename...access_args_t>
         auto accessor(::sycl::handler& cgh, access_args_t...access_args)
         {
-            auto accessor = ::sycl::accessor(buffer, cgh, access_args...);
+            auto accessor = ::sycl::accessor(data_, cgh, access_args...);
             using accessor_t = decltype(accessor);
-            return device_array<accessor_t,shape_t,dim_t>{accessor,shape,dim};
+            return device_array<accessor_t,shape_t,dim_t>(accessor,shape_,dim_);
         }
     };
 
@@ -152,8 +207,19 @@ namespace nmtools::array::sycl
             if (size != accessor_size) {
                 throw sycl_exception(std::string("unexpected size mismatch output: ") + std::to_string(size) + "; accessor: " + std::to_string(accessor_size));
             }
+            // TODO: memcpy?
             for (size_t i=0; i<size; i++) {
                 at(flat_array,i) = host_accessor[i];
+            }
+        }
+
+        template <typename operand_t, typename...accessor_args_t>
+        static auto get_accessor(operand_t operand, [[maybe_unused]] accessor_args_t&&...args)
+        {
+            if constexpr (meta::is_num_v<operand_t>) {
+                return operand;
+            } else {
+                return operand->accessor(nmtools::forward<accessor_args_t>(args)...);
             }
         }
 
@@ -176,33 +242,20 @@ namespace nmtools::array::sycl
                 // create accessor
                 // NOTE: can be unused when sizeof...(args_t) == 0
                 [[maybe_unused]] auto access_mode = ::sycl::read_only;
-                [[maybe_unused]] auto get = [&](const auto& arg){
-                    if constexpr (meta::is_num_v<decltype(arg)>) {
-                        return arg;
-                    } else {
-                        return arg->accessor(cgh,access_mode);
-                    }
-                };
-                auto accessor_pack = nmtools_tuple{get(nmtools::get<Is>(args_pack))...};
 
                 auto output_accessor = ::sycl::accessor(*output_buffer, cgh, ::sycl::write_only);
                 auto output_shape_accessor = ::sycl::accessor(*shape_buffer, cgh, ::sycl::read_only);
 
+                [[maybe_unused]]
                 constexpr auto N = sizeof...(args_t);
+
+                // .accessor() sycl-equivalent to cudaMemcpy + pass to kernel (?)
+                auto operands = nmtools_tuple{get_accessor(nmtools::get<Is>(args_pack),cgh,access_mode)...};
 
                 auto kernel_range = ::sycl::range<1>(thread_size);
                 cgh.parallel_for(kernel_range,[=](::sycl::id<1> id){
                     auto output = create_mutable_array(&output_accessor[0],&output_shape_accessor[0],output_dim);
-                    auto result = [&](){
-                        if constexpr (N == 0) {
-                            return f();
-                        } else {
-                            return meta::template_reduce<sizeof...(args_t)>([&](auto fun, auto index){
-                                auto array = array::create_array(nmtools::at(accessor_pack,index));
-                                return fun (array);
-                            }, f);
-                        }
-                    }();
+                    auto result = functional::apply(f,operands);
                     // TODO: properly get the thread & kernel id and shape
                     auto thread_id  = array::kernel_size<size_t>{id.get(0),0,0};
                     auto block_id   = array::kernel_size<size_t>{0,0,0};
@@ -213,21 +266,13 @@ namespace nmtools::array::sycl
 
             this->copy_buffer(output_buffer,output);
         }
-
-        template <typename function_t, typename output_array_t, typename arg0_t, typename...args_t>
-        auto run(const function_t& f, output_array_t& output, const arg0_t& arg0, const args_t&...args)
+        
+        template <typename function_t, typename output_array_t, template<typename...>typename tuple, typename...operands_t>
+        auto run(const function_t& f, output_array_t& output, const tuple<operands_t...>& operands)
         {
-            auto args_pack = [&](){
-                if constexpr (meta::is_tuple_v<arg0_t>) {
-                    static_assert( sizeof...(args_t) == 0 );
-                    return static_cast<const arg0_t&>(arg0);
-                } else {
-                    return nmtools_tuple<const arg0_t&, const args_t&...>{arg0,args...};
-                }
-            }();
-            constexpr auto N = meta::len_v<decltype(args_pack)>;
-            auto device_args_pack = meta::template_reduce<N>([&](auto init, auto index){
-                const auto& arg_i = nmtools::get<index>(args_pack);
+            constexpr auto N = sizeof...(operands_t);
+            auto device_operands = meta::template_reduce<N>([&](auto init, auto index){
+                const auto& arg_i = nmtools::get<index>(operands);
                 if constexpr (meta::is_num_v<decltype(arg_i)>) {
                     return utility::tuple_append(init,arg_i);
                 } else {
@@ -237,8 +282,8 @@ namespace nmtools::array::sycl
             }, nmtools_tuple<>{});
 
 
-            using sequence_t = meta::make_index_sequence<meta::len_v<decltype(device_args_pack)>>;
-            this->run_(output,f,device_args_pack,sequence_t{});
+            using sequence_t = meta::make_index_sequence<meta::len_v<decltype(device_operands)>>;
+            this->run_(output,f,device_operands,sequence_t{});
         }
     };
 
