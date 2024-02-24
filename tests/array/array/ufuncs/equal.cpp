@@ -51,8 +51,8 @@ TEST_CASE("equal(case1)" * doctest::test_suite("array::equal"))
     // TODO: drop support for vector of bool
     #if 0
     EQUAL_SUBCASE( case1, a_d, b_d );
-    #endif
     EQUAL_SUBCASE( case1, a_h, b_h );
+    #endif
 }
 
 TEST_CASE("equal(case2)" * doctest::test_suite("array::equal"))
