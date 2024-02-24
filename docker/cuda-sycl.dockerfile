@@ -49,12 +49,13 @@ RUN bash scripts/install_doctest.sh
 RUN apt install -y libclang-dev clang-tools libomp-dev llvm-dev lld libboost-dev libboost-fiber-dev libboost-context-dev
 RUN bash scripts/install_opensycl.sh
 
-ARG toolchain=sycl-clang14-omp
-RUN mkdir -p build && cd build \
+ARG toolchain=sycl-clang14-cuda
+RUN mkdir -p build/${toolchain} && cd build/${toolchain} \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${toolchain}.cmake \
         -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
         -DNMTOOLS_BUILD_SYCL_TESTS=ON \
-        ../ \
+        ../.. \
     && make -j2 VERBOSE=1
 
-CMD ["/workspace/nmtools/build/tests/sycl/numeric-tests-sycl-doctest"]
+ENV toolchain=${toolchain}
+CMD ["/workspace/nmtools/build/${toolchain}/tests/sycl/numeric-tests-sycl-doctest"]
