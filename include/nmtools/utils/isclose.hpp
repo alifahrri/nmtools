@@ -261,8 +261,8 @@ namespace nmtools::utils
             }
             else if constexpr (meta::is_num_v<T>) {
                 // use get_element_type to allow view
-                using t_type = meta::conditional_t<meta::is_num_v<T>,T,meta::get_element_type_t<T>>;
-                using u_type = meta::conditional_t<meta::is_num_v<U>,U,meta::get_element_type_t<U>>;
+                using t_type = meta::get_element_type_t<T>;
+                using u_type = meta::get_element_type_t<U>;
                 using common_t = meta::common_type_t<t_type,u_type,E>;
                 auto abs_diff = constexpr_fabs(static_cast<t_type>(t)-static_cast<u_type>(u));
                 auto result = abs_diff < static_cast<common_t>(eps);
