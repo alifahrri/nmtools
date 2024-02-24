@@ -54,7 +54,7 @@ RUN mkdir -p build/${toolchain} && cd build/${toolchain} \
         -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
         -DNMTOOLS_BUILD_SYCL_TESTS=ON \
         ../.. \
-    && make -j2 VERBOSE=1
+    && make -j2 VERBOSE=1 numeric-tests-sycl-doctest
 
 ENV toolchain=${toolchain}
 CMD ["sh", "-c", "/workspace/nmtools/build/${toolchain}/tests/sycl/numeric-tests-sycl-doctest"]
