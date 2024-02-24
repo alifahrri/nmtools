@@ -56,5 +56,4 @@ RUN mkdir -p build/${toolchain} && cd build/${toolchain} \
         ../.. \
     && make -j2 VERBOSE=1
 
-ENV toolchain=${toolchain}
 CMD ["/workspace/nmtools/build/${toolchain}/tests/sycl/numeric-tests-sycl-doctest"]
