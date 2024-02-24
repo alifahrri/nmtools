@@ -8,9 +8,7 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("reduce_maximum_subtract_exp" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+TEST_CASE("reduce_maximum_subtract_exp" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,reduce_maximum,case1);
     using namespace args;
@@ -24,7 +22,7 @@ TEST_CASE("reduce_maximum_subtract_exp" * doctest::test_suite("functional::get_f
     auto y = view::subtract(x,a);
     auto z = view::exp(y);
 
-    auto function = fn::get_function_composition(y);
+    auto function = fn::get_function_composition(z);
     auto expect =
         fn::exp
         * fn::subtract
@@ -58,9 +56,7 @@ TEST_CASE("reduce_maximum_subtract_exp" * doctest::test_suite("functional::get_f
     CHECK( &nm::at(operands,1_ct) == &nm::at(expect,1_ct) );
 }
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("reduce_maximum_subtract_exp" * doctest::test_suite("functional::apply") * doctest::may_fail())
+TEST_CASE("reduce_maximum_subtract_exp" * doctest::test_suite("functional::apply"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,reduce_maximum,case1);
     using namespace args;

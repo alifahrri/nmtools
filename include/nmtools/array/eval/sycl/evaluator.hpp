@@ -30,10 +30,10 @@ namespace nmtools::array
             if (!::nmtools::utils::isequal(out_shape,inp_shape))
                 return;
 
-            auto f = functional::get_function(view);
-            const auto& inp_array = get_array(view);
+            auto f = functional::get_function_composition(view);
+            const auto& operands = functional::get_function_operands(view);
 
-            context->run(f,output,inp_array);
+            context->run(f,output,operands);
         } // operator()
 
         // TODO: provide common base/utility

@@ -10,6 +10,7 @@
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/view/reshape.hpp"
+#include "nmtools/array/ndarray/base_ndarray.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 #ifdef NMTOOLS_KERNEL_MAX_DIM
@@ -27,12 +28,43 @@ namespace nmtools::array
     struct create_vector_t {};
 
     template <typename data_t, typename shape_t, typename dim_t>
-    struct device_array
+    struct device_array : base_ndarray_t<device_array<data_t,shape_t,dim_t>>
     {
-        data_t* buffer;
-        shape_t shape;
-        dim_t dim;
+        using value_type  = data_t;
+        using shape_type  = shape_t;
+        using buffer_type = data_t*;
+        using stride_type = resolve_stride_type_t<shape_type>;
+        using offset_type = row_major_offset_t<shape_type,stride_type>;
+        using base_type   = base_ndarray_t<device_array>;
+
+        // TODO: make buffer not a pointer, wrap the pointer instead
+        data_t* data_;
+        shape_t shape_;
+        dim_t dim_;
+        stride_type strides_;
+        offset_type offset_;
+
+        nmtools_func_attribute
+        device_array(data_t* data_, const shape_t& shape_, dim_t dim_)
+            : data_   (data_)
+            , shape_  (shape_)
+            , dim_    (dim_)
+            , strides_(base_type::template compute_strides<stride_type>(shape_))
+            , offset_ (shape_,strides_)
+        {}
+
+        nmtools_func_attribute
+        device_array(const device_array& other)
+            : data_   (other.data_)
+            , shape_  (other.shape_)
+            , dim_    (other.dim_)
+            , strides_(base_type::template compute_strides<stride_type>(shape_))
+            , offset_ (shape_,strides_)
+        {}
     };
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    device_array(const data_t*, const shape_t&, dim_t) -> device_array<data_t,shape_t,dim_t>;
 
     template <typename T>
     nmtools_func_attribute
@@ -46,8 +78,8 @@ namespace nmtools::array
     nmtools_func_attribute
     auto create_array(const device_array<data_t,shape_t,dim_t>& array)
     {
-        // assume array.shape is passed by value
-        return create_array(array.buffer,array.shape);
+        // assume array.shape_ is passed by value
+        return create_array(array.data_,array.shape_);
     }
 
     template <auto DIM=0, typename size_type=nm_index_t, typename type>
@@ -191,6 +223,167 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto is_device_array_v = is_device_array<T>::value;
 }
+
+namespace nmtools::meta
+{
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct get_element_type<array::device_array<data_t,shape_t,dim_t>>
+    {
+        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        static constexpr auto vtype = [](){
+            using T = typename array_type::value_type;
+            if constexpr (is_num_v<T>) {
+                return as_value_v<T>;
+            } else {
+                return as_value_v<error::GET_ELEMENT_TYPE_UNSUPPORTED<array_type>>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // get_element_type
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct is_ndarray<
+        array::device_array<data_t,shape_t,dim_t>
+    >
+    {
+        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using element_type = typename array_type::value_type;
+        static constexpr auto value = is_num_v<element_type>;
+    }; // is_ndarray
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct fixed_dim<
+        array::device_array<data_t,shape_t,dim_t>
+    >
+    {
+        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using shape_type = typename array_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_fixed_index_array_v<shape_type>) {
+                return len_v<shape_type>;
+            } else {
+                return error::FIXED_DIM_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_dim
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct fixed_shape<
+        array::device_array<data_t,shape_t,dim_t>
+    >
+    {
+        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using shape_type = typename array_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return shape_type {};
+            } else {
+                return error::FIXED_SHAPE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_shape
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct fixed_size<
+        array::device_array<data_t,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<data_t,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_fixed_size_v<buffer_type>) {
+                return fixed_size_v<buffer_type>;
+            } else if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_size
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct bounded_dim<
+        array::device_array<data_t,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<data_t,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_bounded_size_v<shape_type>) {
+                return bounded_size_v<shape_type>;
+            } else if constexpr (is_fixed_size_v<shape_type>) {
+                // TODO: consider to add error mapping fn so this else-if/else block not needed
+                return fixed_size_v<shape_type>;
+            } else {
+                return error::BOUNDED_DIM_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // bounded_dim
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct bounded_size<
+        array::device_array<data_t,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<data_t,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_bounded_size_v<buffer_type>) {
+                return bounded_size_v<buffer_type>;
+            } else if constexpr (is_fixed_size_v<array_type>) {
+                return fixed_size_v<array_type>;
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    };
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct is_index_array<
+        array::device_array<data_t,shape_t,dim_t>
+    >
+    {
+        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using shape_type = typename array_type::shape_type;
+
+        static constexpr auto value = [](){
+            constexpr auto dim = len_v<shape_type>;
+            return (dim == 1)
+                && is_index_v<get_element_type_t<data_t>>
+            ;
+        }();
+    }; // is_index_array
+
+    template <typename data_t, typename shape_t, typename dim_t>
+    struct contiguous_axis<
+        array::device_array<data_t,shape_t,dim_t>
+    > {
+        using array_type  = array::device_array<data_t,shape_t,dim_t>;
+        using offset_type = typename array_type::offset_type;
+        static constexpr auto value = [](){
+            if constexpr (is_row_major_offset_v<offset_type>) {
+                return -1;
+            } else if constexpr (is_column_major_offset_v<offset_type>) {
+                return 0;
+            } else {
+                return error::CONTIGUOUS_AXIS_UNSUPPORTED<array_type>{};
+            }
+        }();
+    };
+} // namespace nmtools::meta
 
 #undef NMTOOLS_KERNEL_MAX_DIM_
 

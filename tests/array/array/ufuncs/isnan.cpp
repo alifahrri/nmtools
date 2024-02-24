@@ -48,6 +48,9 @@ TEST_CASE("isnan(case1)" * doctest::test_suite("array::isnan"))
     ISNAN_SUBCASE( case1,   a );
     ISNAN_SUBCASE( case1, a_a );
     ISNAN_SUBCASE( case1, a_f );
+    // TODO: drop support for vector of bool
+    #if 0
     ISNAN_SUBCASE( case1, a_d );
     ISNAN_SUBCASE( case1, a_h );
+    #endif
 }

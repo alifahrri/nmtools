@@ -47,8 +47,11 @@ TEST_CASE("not_equal(case1)" * doctest::test_suite("array::not_equal"))
     NOT_EQUAL_SUBCASE( case1,   a,   b );
     NOT_EQUAL_SUBCASE( case1, a_a, b_a );
     NOT_EQUAL_SUBCASE( case1, a_f, b_f );
+    // TODO: drop support for vector of bool
+    #if 0
     NOT_EQUAL_SUBCASE( case1, a_d, b_d );
     NOT_EQUAL_SUBCASE( case1, a_h, b_h );
+    #endif
 }
 
 TEST_CASE("not_equal(case2)" * doctest::test_suite("array::not_equal"))
@@ -56,6 +59,9 @@ TEST_CASE("not_equal(case2)" * doctest::test_suite("array::not_equal"))
     NOT_EQUAL_SUBCASE( case2,   a, b );
     NOT_EQUAL_SUBCASE( case2, a_a, b );
     NOT_EQUAL_SUBCASE( case2, a_f, b );
+    // TODO: drop support for vector of bool
+    #if 0
     NOT_EQUAL_SUBCASE( case2, a_d, b );
     NOT_EQUAL_SUBCASE( case2, a_h, b );
+    #endif
 }

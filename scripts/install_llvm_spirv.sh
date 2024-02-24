@@ -19,10 +19,11 @@ echo "using LLVM_VERSION=${LLVM_VERSION}"
 echo "using LLVM_SPV_VERSION=${LLVM_SPV_VERSION}"
 
 DIR=SPIRV-LLVM-Translator
+GIT_REPOSITORY=https://github.com/KhronosGroup/SPIRV-LLVM-Translator
 if [[ -d "$DIR" ]]; then
     echo "$DIR exists. skipping cloning"
 else
-    git clone https://github.com/KhronosGroup/SPIRV-LLVM-Translator
+    git clone ${GIT_REPOSITORY}
 fi
 cd SPIRV-LLVM-Translator
 git fetch && git checkout ${LLVM_SPV_VERSION}

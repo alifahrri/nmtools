@@ -31,9 +31,9 @@ namespace nmtools::array
                 return;
 
             auto f = functional::get_function_composition(view);
-            const auto& inp_array = get_array(view);
+            const auto& operands = functional::get_function_operands(view);
 
-            context->run(f,output,inp_array);
+            context->run(f,output,operands);
         } // operator()
 
         // TODO: provide common base/utility

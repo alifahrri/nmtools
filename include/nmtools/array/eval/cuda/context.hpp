@@ -9,29 +9,18 @@
 
 template <auto out_static_dim=0, typename function_t
     , typename out_t, typename out_shape_t, typename out_dim_t
-    , typename...args_t
+    , template<typename...>typename tuple
+    , typename...operands_t
 >
 __global__ void nm_cuda_run_function(const function_t fun
     , out_t *out, const out_shape_t* out_shape_ptr, const out_dim_t out_dim
-    , const args_t...args
+    , const tuple<operands_t...> operands
 ) {
     namespace meta = nmtools::meta;
     namespace na = nmtools::array;
+    namespace fn = nmtools::functional;
     auto output = na::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
-    constexpr auto N = sizeof...(args_t);
-    auto args_pack = nmtools_tuple<const args_t&...>(args...);
-    auto result = [&](){
-        if constexpr (N == 0) {
-            return fun();
-        } else /* if constexpr (meta::is_device_array_v<args_0_t>) */ {
-            return meta::template_reduce<sizeof...(args_t)>([&](auto fn, auto index){
-                // TODO: support constant shape, clipped shape, fixed dim, fixed size, bounded dim, size etc...
-                auto array = na::create_array(nmtools::at(args_pack,index));
-                return fn (array);
-            }, fun);
-        }
-    }();
-    // auto idx = blockIdx.x * blockDim.x + threadIdx.x;
+    auto result = fn::apply(fun,operands);
     // TODO: properly get the thread & kernel id and shape
     auto thread_id  = na::kernel_size<size_t>{threadIdx.x,0,0};
     auto block_id   = na::kernel_size<size_t>{blockIdx.x,0,0};
@@ -97,7 +86,7 @@ namespace nmtools::array::cuda
     {
         void operator()(array_t* array_ptr) const
         {
-            auto status = cudaFree(array_ptr->buffer);
+            auto status = cudaFree(array_ptr->data_);
             if (status != cudaSuccess) {
                 throw cuda_exception(status, "error when freeing device memory");
             }
@@ -279,7 +268,7 @@ namespace nmtools::array::cuda
 
             nm_cuda_run_function<<<thread_size,warp_size>>>(f
                 ,output_buffer.get(),gpu_out_shape.get(),out_dim
-                ,get_(nmtools::get<Is>(args_pack))...
+                ,utl::tuple{get_(nmtools::get<Is>(args_pack))...}
             );
 
             auto status = cudaDeviceSynchronize();

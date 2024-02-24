@@ -82,6 +82,22 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/prod.cpp
     array/cumprod.cpp
     array/mean.cpp
+
+    composition/add_tanh.cpp
+    # composition/divide_subtract.cpp
+    composition/fabs_square_sum.cpp
+    composition/fabs_square.cpp
+    # composition/multiply_add.cpp
+    composition/multiply_tanh.cpp
+    composition/reduce_add_divide.cpp
+    composition/reduce_add_tanh.cpp
+    composition/reduce_maximum_subtract_exp.cpp
+    composition/square_sum_divide.cpp
+    composition/square_sum.cpp
+    composition/subtract_exp.cpp
+    composition/subtract_fabs_square.cpp
+    composition/subtract_fabs.cpp
+    composition/sum_divide.cpp
 )
 
 ## TODO: support nvcc compilation
@@ -93,8 +109,15 @@ target_compile_options(${PROJECT_NAME}-doctest PRIVATE --std=c++17 ${NMTOOLS_TES
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(${PROJECT_NAME}-doctest PRIVATE -g)
-    target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE _GLIBCXX_DEBUG)
+    target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE
+    _GLIBCXX_DEBUG
+)
 endif()
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif ()
+
+target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE
+    NMTOOLS_ISCLOSE_NAN_HANDLING=1
+    NMTOOLS_ISCLOSE_INF_HANDLING=1
+)

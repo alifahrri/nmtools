@@ -47,8 +47,11 @@ TEST_CASE("greater(case1)" * doctest::test_suite("array::greater"))
     GREATER_SUBCASE( case1,   a,   b );
     GREATER_SUBCASE( case1, a_a, b_a );
     GREATER_SUBCASE( case1, a_f, b_f );
+    // TODO: drop support for vector of bool
+    #if 0
     GREATER_SUBCASE( case1, a_d, b_d );
     GREATER_SUBCASE( case1, a_h, b_h );
+    #endif
 }
 
 TEST_CASE("greater(case2)" * doctest::test_suite("array::greater"))
@@ -56,6 +59,9 @@ TEST_CASE("greater(case2)" * doctest::test_suite("array::greater"))
     GREATER_SUBCASE( case2,   a, b );
     GREATER_SUBCASE( case2, a_a, b );
     GREATER_SUBCASE( case2, a_f, b );
+    // TODO: drop support for vector of bool
+    #if 0
     GREATER_SUBCASE( case2, a_d, b );
     GREATER_SUBCASE( case2, a_h, b );
+    #endif
 }
