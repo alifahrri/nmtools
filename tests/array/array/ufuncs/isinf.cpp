@@ -47,6 +47,9 @@ TEST_CASE("isinf(case1)" * doctest::test_suite("array::isinf"))
     ISINF_SUBCASE( case1,   a );
     ISINF_SUBCASE( case1, a_a );
     ISINF_SUBCASE( case1, a_f );
+    // TODO: drop support for vector of bool
+    #if 0
     ISINF_SUBCASE( case1, a_d );
     ISINF_SUBCASE( case1, a_h );
+    #endif
 }

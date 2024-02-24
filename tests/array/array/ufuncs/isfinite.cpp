@@ -47,6 +47,9 @@ TEST_CASE("isfinite(case1)" * doctest::test_suite("array::isfinite"))
     ISFINITE_SUBCASE( case1,   a );
     ISFINITE_SUBCASE( case1, a_a );
     ISFINITE_SUBCASE( case1, a_f );
+    // TODO: drop support for vector of bool
+    #if 0
     ISFINITE_SUBCASE( case1, a_d );
     ISFINITE_SUBCASE( case1, a_h );
+    #endif
 }

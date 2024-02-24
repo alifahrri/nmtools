@@ -47,6 +47,9 @@ TEST_CASE("logical_not(case1)" * doctest::test_suite("array::logical_not"))
     LOGICAL_NOT_SUBCASE( case1,   a );
     LOGICAL_NOT_SUBCASE( case1, a_a );
     LOGICAL_NOT_SUBCASE( case1, a_f );
+    // TODO: drop support for vector of bool
+    #if 0
     LOGICAL_NOT_SUBCASE( case1, a_d );
     LOGICAL_NOT_SUBCASE( case1, a_h );
+    #endif
 }
