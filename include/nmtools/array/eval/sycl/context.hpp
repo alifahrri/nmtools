@@ -158,35 +158,42 @@ namespace nmtools::array::sycl
         auto create_array(const array_t& array)
         {
             static_assert(
-                meta::is_ndarray_v<array_t>
-                && !meta::is_view_v<array_t>
+                ((meta::is_ndarray_v<meta::remove_pointer_t<array_t>> && meta::is_pointer_v<array_t>)
+                    || meta::is_num_v<array_t> || meta::is_ndarray_v<array_t>)
+                    && !meta::is_view_v<meta::remove_pointer_t<array_t>>
                 , "unsupported array type for create_array"
             );
-            const auto buffer = nmtools::data(array);
-            const auto numel  = nmtools::size(array);
-            const auto shape  = nmtools::shape(array);
-            const auto dim    = nmtools::dim(array);
+            if constexpr (meta::is_num_v<array_t>) {
+                return array;
+            } else if constexpr (meta::is_pointer_v<array_t>) {
+                return create_array(*array);
+            } else {
+                const auto buffer = nmtools::data(array);
+                const auto numel  = nmtools::size(array);
+                const auto shape  = nmtools::shape(array);
+                const auto dim    = nmtools::dim(array);
 
-            using element_t = meta::get_element_type_t<array_t>;
-            using dim_t     = meta::remove_cvref_t<decltype(dim)>;
+                using element_t = meta::get_element_type_t<array_t>;
+                using dim_t     = meta::remove_cvref_t<decltype(dim)>;
 
-            // TODO: keep src shape traits
-            using device_shape_t = nmtools_static_vector<size_t,8>;
-            auto device_shape = device_shape_t{};
-            device_shape.resize(dim);
-            for (size_t i=0; i<dim; i++) {
-                at(device_shape,i) = at(shape,i);
+                // TODO: keep src shape traits
+                using device_shape_t = nmtools_static_vector<size_t,8>;
+                auto device_shape = device_shape_t{};
+                device_shape.resize(dim);
+                for (size_t i=0; i<dim; i++) {
+                    at(device_shape,i) = at(shape,i);
+                }
+
+                using buffer_t = ::sycl::buffer<element_t>;
+                auto sycl_buffer = buffer_t(buffer,(size_t)numel);
+
+                using device_array_t = device_array<buffer_t,device_shape_t,dim_t>;
+                using device_array_ptr = std::shared_ptr<device_array_t>;
+
+                auto array_raw_ptr = new device_array_t{sycl_buffer,device_shape,dim};
+                auto array_ptr = device_array_ptr(array_raw_ptr);
+                return array_ptr;
             }
-
-            using buffer_t = ::sycl::buffer<element_t>;
-            auto sycl_buffer = buffer_t(buffer,(size_t)numel);
-
-            using device_array_t = device_array<buffer_t,device_shape_t,dim_t>;
-            using device_array_ptr = std::shared_ptr<device_array_t>;
-
-            auto array_raw_ptr = new device_array_t{sycl_buffer,device_shape,dim};
-            auto array_ptr = device_array_ptr(array_raw_ptr);
-            return array_ptr;
         }
 
         template <typename T>
@@ -266,13 +273,13 @@ namespace nmtools::array::sycl
 
             this->copy_buffer(output_buffer,output);
         }
-        
+
         template <typename function_t, typename output_array_t, template<typename...>typename tuple, typename...operands_t>
         auto run(const function_t& f, output_array_t& output, const tuple<operands_t...>& operands)
         {
             constexpr auto N = sizeof...(operands_t);
             auto device_operands = meta::template_reduce<N>([&](auto init, auto index){
-                const auto& arg_i = nmtools::get<index>(operands);
+                const auto& arg_i = nmtools::at(operands,index);
                 if constexpr (meta::is_num_v<decltype(arg_i)>) {
                     return utility::tuple_append(init,arg_i);
                 } else {

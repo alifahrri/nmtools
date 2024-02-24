@@ -84,11 +84,12 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/mean.cpp
 
     composition/add_tanh.cpp
-    # composition/divide_subtract.cpp
+    composition/divide_subtract.cpp
     composition/fabs_square_sum.cpp
     composition/fabs_square.cpp
-    # composition/multiply_add.cpp
+    composition/multiply_add.cpp
     composition/multiply_tanh.cpp
+    composition/multiply_add_tanh.cpp
     composition/reduce_add_divide.cpp
     composition/reduce_add_tanh.cpp
     composition/reduce_maximum_subtract_exp.cpp

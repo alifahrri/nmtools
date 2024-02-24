@@ -31,10 +31,26 @@ TEST_CASE("divide_subtract(case1)" * doctest::test_suite("array::divide_subtract
     auto a_step  = 1;
     auto a_flat  = na::arange(a_start,a_stop,a_step);
 
-    auto a = na::reshape(a_flat,a_shape);
+    auto b_shape = nmtools_array{128};
+    auto b_numel = ix::product(b_shape);
+    auto b_start = -b_numel/2;
+    auto b_stop  = b_start + b_numel;
+    auto b_step  = 1;
+    auto b_flat  = na::arange(b_start,b_stop,b_step);
 
-    auto x = view::divide(a,9);
-    auto y = view::subtract(x,a);
+    auto c_shape = nmtools_array{128};
+    auto c_numel = ix::product(c_shape);
+    auto c_start = -c_numel;
+    auto c_stop  = c_numel;
+    auto c_step  = 2;
+    auto c_flat  = na::arange(c_start,c_stop,c_step);
+
+    auto a = na::reshape(a_flat,a_shape);
+    auto b = na::reshape(b_flat,b_shape);
+    auto c = na::reshape(c_flat,c_shape);
+
+    auto x = view::divide(a,b);
+    auto y = view::subtract(x,c);
 
     CUDA_SUBCASE( y );
 }
