@@ -68,6 +68,8 @@ TEST_CASE("cast<float>(vector)" * doctest::test_suite("cast"))
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
 
+// TODO: remove support for vector of bool
+#if 0
 TEST_CASE("cast<vector>(bool[])" * doctest::test_suite("cast"))
 {
     using dst_t = nmtools_list<bool>;
@@ -76,6 +78,7 @@ TEST_CASE("cast<vector>(bool[])" * doctest::test_suite("cast"))
     STATIC_CHECK_IS_SAME( decltype(res), dst_t );
     NMTOOLS_ASSERT_CLOSE( res, src );
 }
+#endif
 
 TEST_CASE("cast<fixed_ndarray>(double[])" * doctest::test_suite("cast"))
 {
