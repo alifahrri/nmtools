@@ -40,3 +40,16 @@ TEST_CASE("arctan" * doctest::test_suite("functional::get_function_composition")
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }
+
+TEST_CASE("arctan" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,arctan,case1);
+    using namespace args;
+
+    auto array = view::arctan(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

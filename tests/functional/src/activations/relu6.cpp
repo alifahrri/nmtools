@@ -39,4 +39,19 @@ TEST_CASE("relu6" * doctest::test_suite("functional::get_function_composition"))
     auto expect = fn::relu6;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+TEST_CASE("relu6" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,relu6,case1);
+    using namespace args;
+
+    auto array = view::relu6(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }

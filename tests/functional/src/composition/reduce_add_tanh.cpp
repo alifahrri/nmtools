@@ -6,9 +6,7 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("reduce_add_tanh" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+TEST_CASE("reduce_add_tanh" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case9);
     using namespace args;
@@ -18,9 +16,11 @@ TEST_CASE("reduce_add_tanh" * doctest::test_suite("functional::get_function_comp
 
     auto function = fn::get_function_composition(y);
     auto expect =
-        fn::tanh
-        * fn::reduce_add[axis][dtype][initial][keepdims]
+          fn::unary_ufunc[y.attributes()]
+        * fn::reduce[x.attributes()]
     ;
+
+    // TODO: make fn::tanh == fn::unary_ufunc[view::tanh_t{}]
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
     NMTOOLS_ASSERT_CLOSE( function (a), y );

@@ -15,7 +15,6 @@ TEST_CASE("fabs_square_sum" * doctest::test_suite("functional::get_function_comp
     NMTOOLS_TESTING_DECLARE_NS(view,fabs,case1);
     using namespace args;
 
-    auto dtype = nm::None;
     auto axis = 0;
     auto x = view::fabs(a);
     auto y = view::square(x);
@@ -23,8 +22,9 @@ TEST_CASE("fabs_square_sum" * doctest::test_suite("functional::get_function_comp
 
     auto function = fn::get_function_composition(z);
     auto expect =
-        fn::reduce_add[z.axis][dtype][z.initial][z.keepdims]
-        * fn::square * fn::fabs
+          fn::reduce[z.attributes()]
+        * fn::unary_ufunc[y.attributes()]
+        * fn::unary_ufunc[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );

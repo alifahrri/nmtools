@@ -38,4 +38,19 @@ TEST_CASE("selu" * doctest::test_suite("functional::get_function_composition"))
     auto expect = fn::selu;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+TEST_CASE("selu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,selu,case1);
+    using namespace args;
+
+    auto array = view::selu(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }

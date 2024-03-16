@@ -50,4 +50,54 @@ TEST_CASE("celu" * doctest::test_suite("functional::get_function_composition"))
     auto expect = fn::celu[alpha];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }
+
+TEST_CASE("celu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,celu,case2);
+    using namespace args;
+
+    auto array = view::celu(a,alpha);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+namespace kwargs = nmtools::args;
+namespace fun = view::fun;
+
+#define NMTOOLS_TESTING_KWARGS_INIT
+
+#ifdef NMTOOLS_TESTING_KWARGS_INIT
+#ifndef __clang__
+
+TEST_CASE("celu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,celu,case2);
+    using namespace args;
+
+    auto array = view::celu(a,{.alpha=alpha});
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[kwargs::ufunc{
+        .op=fun::celu{.alpha=alpha}
+    }];
+    // TODO: make the following expression accepted
+    // auto expect = fn::unary_ufunc[{
+    //     .op=fun::celu{.alpha=alpha}
+    // }];
+
+    // NOTE: the following should be invalid, but current functors is very permissive
+    // auto expect = fn::celu[fun::celu{.alpha=alpha}];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+    NMTOOLS_ASSERT_CLOSE( expect (a), array );
+}
+
+#endif // __clang__
+#endif // NMTOOLS_TESTING_KWARGS_INIT

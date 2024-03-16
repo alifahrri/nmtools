@@ -38,4 +38,44 @@ TEST_CASE("hardtanh" * doctest::test_suite("functional::get_function_composition
     auto expect = fn::hardtanh[-1.][1.];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }
+
+TEST_CASE("hardtanh" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,hardtanh,case1);
+    using namespace args;
+
+    auto array = view::hardtanh(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+namespace kwargs = nmtools::args;
+namespace fun = view::fun;
+
+#define NMTOOLS_TESTING_KWARGS_INIT
+
+#ifdef NMTOOLS_TESTING_KWARGS_INIT
+#ifndef __clang__
+
+TEST_CASE("hardtanh" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,hardtanh,case1);
+    using namespace args;
+
+    auto array = view::hardtanh(a,{.min_val=-1.,.max_val=1.});
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+#endif
+#endif

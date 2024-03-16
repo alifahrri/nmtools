@@ -38,4 +38,19 @@ TEST_CASE("tanhshrink" * doctest::test_suite("functional::get_function_compositi
     auto expect = fn::tanhshrink;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+TEST_CASE("tanhshrink" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,tanhshrink,case1);
+    using namespace args;
+
+    auto array = view::tanhshrink(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }

@@ -23,8 +23,8 @@ TEST_CASE("sum_divide" * doctest::test_suite("functional::get_function_compositi
 
     auto function = fn::get_function_composition(y);
     auto expect =
-        fn::divide
-        * fn::reduce_add[x.axis][dtype][x.initial][x.keepdims]
+        fn::broadcast_binary_ufunc[y.attributes()]
+        * fn::reduce[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );

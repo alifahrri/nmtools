@@ -187,3 +187,7 @@ target_include_directories(
 if (NMTOOLS_CODE_COVERAGE)
     target_link_libraries(numeric-tests-doctest PUBLIC coverage_config)
 endif (NMTOOLS_CODE_COVERAGE)
+target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE
+    # NMTOOLS_ISCLOSE_NAN_HANDLING=1
+    NMTOOLS_ISCLOSE_INF_HANDLING=1
+)

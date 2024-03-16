@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ -z "${LLVM_VERSION}" ]]; then
-  LLVM_VERSION="15"
+  LLVM_VERSION="14"
 else
   LLVM_VERSION="${LLVM_VERSION}"
   echo "set LLVM_VERSION from env"
@@ -42,5 +42,10 @@ apt install -y xxd python3-dev libpython3-dev build-essential ocl-icd-libopencl1
 
 cd ${DIR}
 git fetch && git checkout ${POCL_VERSION}
-mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=${POCL_BUILD_TYPE} -DENABLE_TESTS=OFF -DENABLE_CUDA=OFF -DSPIRV=ON -DLLVM_SPIRV=/usr/local/bin/llvm-spirv -DCMAKE_INSTALL_PREFIX=/usr .. \
+mkdir -p build && cd build \
+    && cmake -DCMAKE_BUILD_TYPE=${POCL_BUILD_TYPE} \
+    -DENABLE_TESTS=OFF \
+    -DENABLE_CUDA=OFF \
+    -DSPIRV=ON -DLLVM_SPIRV=/usr/local/bin/llvm-spirv \
+    -DCMAKE_INSTALL_PREFIX=/usr .. \
     && make -j2 && make install

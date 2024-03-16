@@ -39,3 +39,16 @@ TEST_CASE("log10" * doctest::test_suite("functional::get_function_composition"))
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }
+
+TEST_CASE("log10" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,log10,case1);
+    using namespace args;
+
+    auto array = view::log10(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

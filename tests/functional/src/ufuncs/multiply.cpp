@@ -132,12 +132,13 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_function_composition
     auto array = view::multiply(a,b);
 
     auto function = fn::get_function_composition(array);
-    auto expect = fn::multiply;
+    auto expect = fn::broadcast_binary_ufunc[array.attributes()];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }
 
 namespace view = nmtools::view;
+namespace kwargs = nmtools::args;
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
@@ -147,7 +148,230 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
     auto array = view::reduce_multiply(a,axis,dtype,initial,keepdims);
 
     auto function = fn::get_function_composition(array);
-    auto expect = fn::reduce_multiply[axis][dtype][initial][keepdims];
+    auto expected = fn::reduce[kwargs::reduce{
+        axis
+        , dtype
+        , initial
+        , keepdims
+        , view::multiply_t{}
+    }];
 
-    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
 }
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto op = view::multiply_t{};
+    auto array = view::reduce(a,op,kwargs::reduce{axis,dtype,initial,keepdims});
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[kwargs::reduce{
+        axis
+        , dtype
+        , initial
+        , keepdims
+        , op
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto op = view::multiply_t{};
+    auto array = view::reduce(a,op,kwargs::reduce{axis,dtype,initial,keepdims});
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[op][kwargs::reduce{
+        axis
+        , dtype
+        , initial
+        , keepdims
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+#define NMTOOLS_TESTING_KWARGS_INIT
+
+#ifdef NMTOOLS_TESTING_KWARGS_INIT
+#ifndef __clang__
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto kwargs = kwargs::reduce{
+          .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+        , .op=view::multiply_t{}
+    };
+
+    auto array = view::reduce_multiply(a,axis,dtype,initial,keepdims);
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[kwargs];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto array = view::reduce_multiply(a,axis,dtype,initial,keepdims);
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[kwargs::reduce{
+          .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+        , .op=view::multiply_t{}
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto op = view::multiply_t<>{};
+
+    auto array = view::reduce(a,kwargs::reduce{axis,dtype,initial,keepdims,op});
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[kwargs::reduce{
+          .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+        , .op=view::multiply_t{}
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto op = view::multiply_t<>{};
+
+    auto array = view::reduce(a,kwargs::reduce{
+        .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+        , .op=op
+    });
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[kwargs::reduce{
+          .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+        , .op=view::multiply_t{}
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto array = view::reduce_multiply(a,kwargs::reduce{
+        .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+    });
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[kwargs::reduce{
+          .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+        , .op=view::multiply_t{}
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto op = view::multiply_t{};
+    auto array = view::reduce(a,op,kwargs::reduce{
+        .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+    });
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[kwargs::reduce{
+        .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+        , .op=op
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    using namespace args;
+
+    auto op = view::multiply_t{};
+    auto array = view::reduce(a,op,kwargs::reduce{
+        .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+    });
+
+    auto function = fn::get_function_composition(array);
+    auto expected = fn::reduce[op][kwargs::reduce{
+        .axis=axis
+        , .dtype=dtype
+        , .initial=initial
+        , .keepdims=keepdims
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expected );
+    NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
+}
+
+#endif // __clang__
+#endif // NMTOOLS_TESTING_KWARGS_INIT

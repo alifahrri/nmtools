@@ -1,14 +1,14 @@
 #!/bin/bash
 
 if [[ -z "${LLVM_VERSION}" ]]; then
-  LLVM_VERSION="15"
+  LLVM_VERSION="14"
 else
   LLVM_VERSION="${LLVM_VERSION}"
   echo "set LLVM_VERSION from env: ${LLVM_VERSION}"
 fi
 
 if [[ -z "${LLVM_SPV_VERSION}" ]]; then
-  LLVM_SPV_VERSION="v15.0.0"
+  LLVM_SPV_VERSION="v14.0.0"
 else
   LLVM_SPV_VERSION="${LLVM_SPV_VERSION}"
   echo "set LLVM_SPV_VERSION from env: ${LLVM_SPV_VERSION}"

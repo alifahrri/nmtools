@@ -22,8 +22,8 @@ TEST_CASE("reduce_maximum_subtract" * doctest::test_suite("functional::get_funct
 
     auto function = fn::get_function_composition(y);
     auto expect =
-        fn::subtract
-        * fn::reduce_maximum[x.axis][dtype][x.initial][x.keepdims]
+          fn::broadcast_binary_ufunc[y.attributes()]
+        * fn::reduce[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );

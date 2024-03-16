@@ -21,8 +21,8 @@ TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_comp
 
     auto function = fn::get_function_composition(y);
     auto expect =
-        fn::subtract
-        * fn::divide
+        fn::broadcast_binary_ufunc[y.attributes()]
+        * fn::broadcast_binary_ufunc[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
@@ -40,7 +40,8 @@ TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_comp
 
     auto function = fn::get_function_composition(y);
     auto expect =
-        fn::subtract * fn::divide
+        fn::broadcast_binary_ufunc[y.attributes()]
+        * fn::broadcast_binary_ufunc[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );

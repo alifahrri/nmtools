@@ -17,7 +17,8 @@ TEST_CASE("multiply_add" * doctest::test_suite("functional::get_function_composi
 
     auto function = fn::get_function_composition(y);
     auto expect =
-        fn::add * fn::multiply
+        fn::broadcast_binary_ufunc[y.attributes()]
+        * fn::broadcast_binary_ufunc[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );

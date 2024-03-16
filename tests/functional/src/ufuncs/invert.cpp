@@ -39,4 +39,18 @@ TEST_CASE("invert" * doctest::test_suite("functional::get_function_composition")
     auto expect = fn::invert;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_EQUAL( function (a), array );
+}
+
+TEST_CASE("invert" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,invert,case1);
+    using namespace args;
+
+    auto array = view::invert(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
 }
