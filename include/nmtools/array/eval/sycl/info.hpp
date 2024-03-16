@@ -1,4 +1,4 @@
-// LICENSE: GNU GENERAL PUBLIC LICENSE
+// LICENSE: GNU General Public License v3.0
 // adapted from https://github.com/illuhad/syclinfo/blob/f644f1a25dfd94aa07f7c58f5f6171e5651a966d/syclinfo.cpp:
 // - fix for some global_mem_cache_type
 // - include in nmtools namespace

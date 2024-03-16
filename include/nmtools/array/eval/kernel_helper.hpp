@@ -157,8 +157,9 @@ namespace nmtools::array
     };
 
     template <typename T>
-    auto compute_offset(kernel_size<T> thread_id, kernel_size<T> block_id, kernel_size<T> block_size)
+    constexpr auto compute_offset(kernel_size<T> thread_id, kernel_size<T> block_id, kernel_size<T> block_size)
     {
+        // TODO: check for grid shape
         auto idx = block_id.x() * block_size.x() + thread_id.x();
         return idx;
     }
