@@ -249,7 +249,6 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${MISC_TEST_SOURCES}
 )
 
-target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
@@ -261,9 +260,7 @@ if (NMTOOLS_ENABLE_TEST_BENCHMARKS)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
 endif()
 
-target_compile_options(${PROJECT_NAME}-doctest PRIVATE
-    -std=gnu++17
-)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE --std=c++17)
 target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
