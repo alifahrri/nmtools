@@ -94,6 +94,15 @@ CHECK_MESSAGE(isequal(result,expect), \
     )   \
 );
 
+#define NMTOOLS_ASSERT_NOT_EQUAL_DOCTEST(result,expect) \
+CHECK_MESSAGE(!isequal(result,expect), \
+    (   \
+        std::string{} \
+        + "\n\tActual  : " + STRINGIFY(result) \
+        + "\n\tExpected: " + STRINGIFY(expect) \
+    )   \
+)
+
 #define NMTOOLS_STATIC_ASSERT_EQUAL_DOCTEST(result,expect) \
 { \
     [[maybe_unused]] constexpr auto result_ = isequal(result,expect); \

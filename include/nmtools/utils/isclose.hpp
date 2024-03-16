@@ -20,6 +20,7 @@
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/math.hpp"
 #include "nmtools/platform/math/constexpr.hpp"
+#include "nmtools/utils/isclose/isclose.hpp"
 
 #ifndef NMTOOLS_ISCLOSE_NAN_HANDLING
 #define NMTOOLS_ISCLOSE_NAN_HANDLING 0
@@ -267,10 +268,10 @@ namespace nmtools::utils
                 auto abs_diff = constexpr_fabs(static_cast<t_type>(t)-static_cast<u_type>(u));
                 auto result = abs_diff < static_cast<common_t>(eps);
                 #if NMTOOLS_ISCLOSE_NAN_HANDLING
-                result = result || (math::isnan(t) && math::isnan(u));
+                result = result || (math::isnan(static_cast<common_t>(t)) && math::isnan(static_cast<common_t>(u)));
                 #endif
                 #if NMTOOLS_ISCLOSE_INF_HANDLING
-                result = result || (math::isinf(t) && math::isinf(u));
+                result = result || (math::isinf(static_cast<common_t>(t)) && math::isinf(static_cast<common_t>(u)));
                 #endif
                 return result;
             }
@@ -310,8 +311,8 @@ namespace nmtools::utils
      * @param eps epsilon
      * @return constexpr auto 
      */
-    template <typename T, typename U, typename E=double>
-    constexpr auto isclose(const T& t, const U& u, E eps=static_cast<E>(1e-6))
+    template <typename T, typename U, typename E>
+    constexpr auto isclose(const T& t, const U& u, E eps)
     {
         // TODO: remove tuple_size metafunctions
         // check if tuple_size for T & U is available
@@ -336,73 +337,6 @@ namespace nmtools::utils
         }
         else return detail::isclose(t,u,eps);
     } // isclose
-
-    template <
-        typename F, typename lhs_operands_t, typename lhs_attributes_t
-        , typename G, typename rhs_operands_t, typename rhs_attributes_t>
-    constexpr auto isequal(
-        const functional::functor_t<F,lhs_operands_t,lhs_attributes_t>& lhs
-        , const functional::functor_t<G,rhs_operands_t,rhs_attributes_t>& rhs
-    ) {
-        if constexpr ( !meta::is_same_v<F,G> || 
-            !meta::is_same_v<lhs_operands_t,rhs_operands_t>
-        ) {
-            // TODO: also check the values of operands
-            return false;
-        } else if constexpr (
-            !meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
-            && !meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
-        ) {
-            constexpr auto M = meta::len_v<lhs_attributes_t>;
-            constexpr auto N = meta::len_v<rhs_attributes_t>;
-            if constexpr (M != N) {
-                return false;
-            } else {
-                auto equal = true;
-                meta::template_for<M>([&](auto index){
-                    auto equal_attribute = [&](){
-                        auto lhs_attribute = at(lhs.attributes,index);
-                        auto rhs_attribute = at(rhs.attributes,index);
-                        if constexpr (meta::is_floating_point_v<decltype(lhs_attribute)>
-                            && meta::is_floating_point_v<decltype(rhs_attribute)>)
-                        {
-                            return isclose(lhs_attribute,rhs_attribute);
-                        } else {
-                            return isequal(lhs_attribute,rhs_attribute);
-                        }
-                    }();
-                    equal = equal && equal_attribute;
-                });
-                return equal;
-            }
-        } else if constexpr ( meta::is_same_v<F,G>
-            && meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
-            && meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
-        ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    template <
-        template<typename...>typename lhs_tuple, typename...lhs_functors_t, typename lhs_operands_t,
-        template<typename...>typename rhs_tuple, typename...rhs_functors_t, typename rhs_operands_t
-    >
-    constexpr auto isequal(
-        const functional::functor_composition_t<lhs_tuple<lhs_functors_t...>,lhs_operands_t>& lhs
-        , const functional::functor_composition_t<rhs_tuple<rhs_functors_t...>,rhs_operands_t>& rhs
-    ) {
-        constexpr auto N_LHS = meta::len_v<decltype(lhs.functors)>;
-        constexpr auto N_RHS = meta::len_v<decltype(rhs.functors)>;
-
-        auto equal = N_LHS == N_RHS;
-        constexpr auto N = (N_LHS < N_RHS) ? N_LHS : N_RHS;
-        meta::template_for<N>([&](auto index){
-            equal = equal && isequal(at(lhs.functors,index),at(rhs.functors,index));
-        });
-        return equal;
-    }
 } // namespace nmtools::utils
 
 #endif // NMTOOLS_UTILS_ISCLOSE_HPP

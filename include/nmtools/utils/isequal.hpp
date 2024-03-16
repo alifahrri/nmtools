@@ -1,13 +1,3 @@
-/**
- * @file isequal.hpp
- * @author Fahri Ali Rahman (ali.rahman.fahri@gmail.com)
- * @brief Contains definition of isequal
- * @version 0.1
- * @date 2020-11-17
- * 
- * @copyright Copyright (c) 2020
- * 
- */
 #ifndef NMTOOLS_UTILS_ISEQUAL_HPP
 #define NMTOOLS_UTILS_ISEQUAL_HPP
 
@@ -15,8 +5,8 @@
 #include "nmtools/assert.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/index/ndindex.hpp"
-#include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/utils/isequal/isequal.hpp"
 
 namespace nmtools::utils
 {
@@ -140,23 +130,42 @@ namespace nmtools::utils
 
             // allow none, integer, or ndarray
             // for ndarray, the element type must be integral
-            auto is_none = is_none_v<t1> && is_none_v<t2>;
-            auto is_ellipsis = is_ellipsis_v<t1> && is_ellipsis_v<t2>;
-            auto is_integer = (meta::is_integer_v<t1> || meta::is_integral_constant_v<t1>)
+            auto is_none =
+                is_none_v<t1>
+                && is_none_v<t2>;
+            auto is_ellipsis =
+                is_ellipsis_v<t1>
+                && is_ellipsis_v<t2>;
+            auto is_integer =
+                (meta::is_integer_v<t1> || meta::is_integral_constant_v<t1>)
                 && (meta::is_integer_v<t2> || meta::is_integral_constant_v<t2>);
-            auto is_num_or_array =  (meta::is_num_v<t1> && meta::is_num_v<t2>)
+            auto is_num_or_array =
+                (meta::is_num_v<t1> && meta::is_num_v<t2>)
                 || (meta::is_ndarray_v<t1> && meta::is_ndarray_v<t2>);
-            auto is_index_constant = meta::is_index_array_v<t1> && meta::is_index_array_v<t2>;
-            auto element_is_integer = meta::is_integer_v<t1_t> && meta::is_integer_v<t2_t>;
-            auto is_slice = meta::is_slice_index_v<t1> && meta::is_slice_index_v<t2>;
-            auto is_slice_array = meta::is_slice_index_array_v<t1> && meta::is_slice_index_array_v<t2>;
+            auto is_index_constant =
+                meta::is_index_array_v<t1>
+                && meta::is_index_array_v<t2>;
+            auto element_is_integer =
+                meta::is_integer_v<t1_t>
+                && meta::is_integer_v<t2_t>;
+            auto is_slice = 
+                meta::is_slice_index_v<t1>
+                && meta::is_slice_index_v<t2>;
+            auto is_slice_array =
+                meta::is_slice_index_array_v<t1>
+                && meta::is_slice_index_array_v<t2>;
+            auto is_attribute =
+                meta::is_attribute_v<t1>
+                && meta::is_attribute_v<t2>;
             return (is_num_or_array && element_is_integer)
                 || is_integer 
                 || is_index_constant 
                 || is_none 
                 || is_ellipsis 
                 || is_slice 
-                || is_slice_array;
+                || is_slice_array
+                || is_attribute
+            ;
         } // constrained(T1,T2)
 
         /**
@@ -257,7 +266,7 @@ namespace nmtools::utils
                 return (has_value ? isequal(t,*u) : false);
             }
             // both are either type
-            // match left with left, or right with right, then recursively call isclose
+            // match left with left, or right with right, then recursively call isequal
             else if constexpr (meta::is_either_v<T> && meta::is_either_v<U>) {
                 // get the left and right types for corresponding either type
                 using tlhs_t = meta::get_either_left_t<T>;
@@ -273,7 +282,7 @@ namespace nmtools::utils
                 using tuple_lhs_t = meta::make_tuple_type_t<tlhs_ptr_t,ulhs_ptr_t>;
                 using tuple_rhs_t = meta::make_tuple_type_t<trhs_ptr_t,urhs_ptr_t>;
                 auto same = false;
-                // under the hood, recursively call isclose to properly handle view type
+                // under the hood, recursively call isequal to properly handle view type
                 if (const auto [tptr, uptr] = tuple_lhs_t{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
                     same = isequal(*tptr,*uptr);
                 else if (const auto [tptr, uptr] = tuple_rhs_t{get_if<trhs_t>(&t),get_if<urhs_t>(&u)}; tptr && uptr)
@@ -423,6 +432,9 @@ namespace nmtools::utils
             else if constexpr (meta::is_slice_index_v<T> && meta::is_slice_index_v<U>) {
                 return meta::is_same_v<T,U>;
             }
+            else if constexpr (meta::is_attribute_v<T> && meta::is_attribute_v<U>) {
+                return t == u;
+            }
             // assume both T and U is ndarray
             else {
                 bool equal = true;
@@ -495,7 +507,14 @@ namespace nmtools::utils
             });
             return equal;
         }
+        #if 0
+        else {
+            auto isequal_impl = isequal_t<T,U>{};
+            return isequal_impl(t,u);
+        }
+        #else
         else return detail::isequal(t,u);
+        #endif
     } // isequal
 
     template <typename lhs_t, typename rhs_t>

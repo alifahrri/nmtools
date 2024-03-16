@@ -29,6 +29,15 @@ namespace nmtools::meta
         template <typename T, typename...size_types>
         using funcnd = decltype(declval<T>().operator()(declval<size_types>()...));
 
+        template <typename T, typename...arg_types>
+        using callable = decltype(declval<T>()(declval<arg_types>()...));
+
+        template <typename T, typename U>
+        using equal = decltype(declval<T>()==declval<U>());
+
+        template <typename T>
+        using invert = decltype(~declval<T>());
+
         /**
          * @brief helper alias template to check if given type T has operator [] overload
          * that takes size_types as arguments.
