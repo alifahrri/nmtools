@@ -20,6 +20,7 @@
 #include "nmtools/constants.hpp"
 
 #include "nmtools/array/view/ufunc/detail.hpp"
+#include "nmtools/utils/isequal.hpp"
 
 namespace nmtools::view::detail
 {
@@ -144,6 +145,58 @@ namespace nmtools::view::detail
     } // make_reduction_slices
 } // namespace nmtools::view::detail
 
+namespace nmtools::args
+{
+    template <
+        typename axis_t
+        , typename dtype_t
+        , typename initial_t
+        , typename keepdims_t
+        , typename op_t=none_t>
+    struct reduce
+    {
+        using op_type       = op_t;
+        using axis_type     = axis_t;
+        using dtype_type    = dtype_t;
+        using initial_type  = initial_t;
+        using keepdims_type = keepdims_t;
+
+        axis_type     axis  = {};
+        dtype_type    dtype = {};
+        initial_type  initial   = {};
+        keepdims_type keepdims  = {};
+        op_type       op        = {};
+
+        template <typename...args_t>
+        constexpr auto operator==(const reduce<args_t...>& other) const
+        {
+            using other_type = reduce<args_t...>;
+            return utils::isequal(axis,other.axis)
+                && utils::isequal(initial,other.initial)
+                && utils::isequal(keepdims,other.keepdims)
+                && meta::is_same_v<op_t,typename other_type::op_type>
+                // TODO: check for dtype
+            ;
+        }
+    };
+
+    template <typename...args_t>
+    reduce(args_t...) -> reduce<args_t...>;
+} // namespace nmtools::args
+
+namespace nmtools::meta
+{
+    template <
+        typename axis_t
+        , typename dtype_t
+        , typename initial_t
+        , typename keepdims_t
+        , typename op_t>
+    struct is_attribute<
+        args::reduce<axis_t,dtype_t,initial_t,keepdims_t,op_t>
+    > : true_type {};
+} // namespace nmtools::meta
+
 namespace nmtools::view
 {
     namespace error
@@ -213,7 +266,7 @@ namespace nmtools::view
      * @tparam initial_t 
      * @tparam keepdims_t 
      */
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t, typename dtype_t=none_t>
     struct reduce_t
     {
         // if given array is a view, just use value instead of reference
@@ -225,6 +278,9 @@ namespace nmtools::view
         using reducer_type  = reducer_t<op_t>;
         using element_type  = meta::get_element_type_t<array_t>;
         using keepdims_type = keepdims_t;
+        using dtype_type    = dtype_t;
+
+        using attributes_type = args::reduce<axis_type,dtype_type,initial_type,keepdims_type,op_type>;
 
         using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
         using dst_shape_type = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_t,keepdims_t>;
@@ -237,21 +293,39 @@ namespace nmtools::view
         initial_type  initial;
         reducer_type  reducer;
         keepdims_type keepdims;
+        dtype_type    dtype;
 
         dst_shape_type shape_;
 
-        constexpr reduce_t(op_type op, const array_t& array_, const axis_t& axis_, initial_type initial, keepdims_type keepdims_)
+        constexpr reduce_t(op_type op, const array_t& array_, const axis_t& axis_, initial_type initial, keepdims_type keepdims_, dtype_type dtype=dtype_type{})
             : op(op), array(initialize<array_type>(array_))
             , axis(init_attribute<axis_type>(axis_))
             , initial(initial)
             , reducer{op} // TODO: remove, recurse to scalar reduce ufunc instead of using reducer
             , keepdims(keepdims_)
+            , dtype(dtype)
             , shape_(index::remove_dims(nmtools::shape<true>(array_),axis_,keepdims_))
+        {}
+
+        constexpr reduce_t(const array_t& array_, const args::reduce<axis_t,dtype_t,initial_t,keepdims_t,op_t>& attributes)
+            : reduce_t(
+                  attributes.op
+                , array_
+                , attributes.axis
+                , attributes.initial
+                , attributes.keepdims
+                , attributes.dtype
+            )
         {}
 
         constexpr auto operands() const noexcept
         {
             return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return attributes_type{axis, dtype, initial, keepdims, op};
         }
 
         constexpr auto shape() const
@@ -324,7 +398,7 @@ namespace nmtools::view
         // maybe encountered when reducing scalar type.
         // following numpy, reducing scalar is allowed.
         static constexpr auto num_vtype = [](){
-            using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >;
+            using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >;
             if constexpr (meta::is_num_v<view_t>) {
                 return meta::as_value_v<result_type>;
             } else {
@@ -367,8 +441,8 @@ namespace nmtools::view
      * @tparam initial_t 
      * @tparam keepdims_t 
      */
-    template <typename op_t, typename array_t, typename initial_t, typename keepdims_t>
-    struct reduce_t<op_t,array_t,none_t,initial_t,keepdims_t>
+    template <typename op_t, typename array_t, typename initial_t, typename keepdims_t, typename dtype_t>
+    struct reduce_t<op_t,array_t,none_t,initial_t,keepdims_t,dtype_t>
     {
         using array_type    = resolve_array_type_t<array_t>;
         // use reference for now since raw array decays to pointer
@@ -378,6 +452,9 @@ namespace nmtools::view
         using reducer_type  = reducer_t<op_t>;
         using element_type  = meta::get_element_type_t<array_t>;
         using keepdims_type = keepdims_t;
+        using dtype_type    = dtype_t;
+
+        using attributes_type = args::reduce<axis_type,dtype_type,initial_type,keepdims_type,op_type>;
 
         using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
         using dst_shape_type = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_type,keepdims_t>;
@@ -390,18 +467,41 @@ namespace nmtools::view
         initial_type  initial;
         reducer_type  reducer;
         keepdims_type keepdims;
+        dtype_type    dtype;
 
         dst_shape_type shape_;
 
-        constexpr reduce_t(op_type op, const array_t& array_, axis_type axis_, initial_type initial, keepdims_type keepdims_)
+        constexpr reduce_t(op_type op, const array_t& array_, axis_type axis_, initial_type initial, keepdims_type keepdims_, dtype_type dtype=dtype_type{})
             : op(op)
             , array(initialize<array_type>(array_))
             , axis(axis_)
             , initial(initial)
             , reducer{op}
             , keepdims(keepdims_)
+            , dtype(dtype)
             , shape_(index::remove_dims(nmtools::shape<true>(array_),axis_,keepdims_))
         {}
+
+        constexpr reduce_t(const array_t& array_, const args::reduce<none_t,dtype_t,initial_t,keepdims_t,op_t>& attributes)
+            : reduce_t(
+                  attributes.op
+                , array_
+                , attributes.axis
+                , attributes.initial
+                , attributes.keepdims
+                , attributes.dtype
+            )
+        {}
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return attributes_type{axis, dtype, initial, keepdims, op};
+        }
         
         constexpr auto shape() const
         {
@@ -462,14 +562,14 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t, typename dtype_t>
     struct is_reduction< 
-        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
+        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >
     > : true_type {};
 
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t, typename dtype_t>
     struct is_num< 
-        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
+        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >
     >
     {
         static constexpr auto value = [](){
@@ -513,13 +613,13 @@ namespace nmtools::meta
         }();
     };
 
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t, typename dtype_t>
     struct fixed_size< 
-        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
+        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >
         // , enable_if_t<!is_none_v<axis_t>>
     >
     {
-        using view_type  = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >;
+        using view_type  = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >;
         using shape_type = decltype(declval<view_type>().shape());
         using size_type  = decltype(declval<view_type>().size());
 
@@ -535,19 +635,19 @@ namespace nmtools::meta
         }();
     }; // fixed_size
 
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t, typename dtype_t>
     struct is_ndarray< 
-        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
+        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >
     >
     {
-        using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >;
+        using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >;
         static constexpr auto value = is_ndarray_v<array_t> && !is_num_v<view_t>;
     };
 
     // provide specialization for reducer
-    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t>
+    template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t, typename dtype_t>
     struct get_element_type<
-        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t >
+        view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >
     >
     {
         using type = typename view::reduce_t<op_t, array_t, axis_t, initial_t, keepdims_t>::result_type;
