@@ -6,3 +6,7 @@ add_compile_options(-W -Wall -Werror -Wextra -Wno-gnu-string-literal-operator-te
     --acpp-targets=omp
     --acpp-clang=/usr/bin/clang++-14
 )
+add_link_options(
+    --acpp-targets=omp
+    --acpp-clang=/usr/bin/clang++-14
+)

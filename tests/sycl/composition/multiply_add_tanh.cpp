@@ -1,5 +1,6 @@
 #include "nmtools/array/array/ufuncs/multiply.hpp"
 #include "nmtools/array/array/ufuncs/add.hpp"
+#include "nmtools/array/array/ufuncs/tanh.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
 #include "nmtools/array/eval/sycl.hpp"
@@ -7,6 +8,7 @@
 #include "nmtools/testing/data/array/arange.hpp"
 #include "nmtools/array/functional/ufuncs/multiply.hpp"
 #include "nmtools/array/functional/ufuncs/add.hpp"
+#include "nmtools/array/functional/ufuncs/tanh.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools::array;
@@ -22,7 +24,7 @@ namespace view = nm::view;
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
 
-TEST_CASE("multiply_add(case1)" * doctest::test_suite("array::multiply_add"))
+TEST_CASE("multiply_add_tanh(case1)" * doctest::test_suite("array::multiply_add_tanh"))
 {
     auto a_shape = nmtools_array{128};
     auto a_numel = ix::product(a_shape);
@@ -51,6 +53,7 @@ TEST_CASE("multiply_add(case1)" * doctest::test_suite("array::multiply_add"))
 
     auto x = view::multiply(a,b);
     auto y = view::add(x,c);
+    auto z = view::tanh(y);
 
-    CUDA_SUBCASE( y );
+    CUDA_SUBCASE( z );
 }
