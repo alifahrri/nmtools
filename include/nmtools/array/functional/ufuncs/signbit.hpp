@@ -3,40 +3,16 @@
 
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/ufuncs/signbit.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        struct signbit_t
-        {
-            template <typename...args_t>
-            constexpr auto operator()(const args_t&...args) const
-            {
-                return view::signbit(args...);
-            }
-        };
+        using signbit = fun::unary_ufunc<view::signbit_t>;
     }
 
-    constexpr inline auto signbit = functor_t(unary_fmap_t<fun::signbit_t>{});
-
-    template <typename...arrays_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::ufunc_t, view::signbit_t, arrays_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::ufunc_t, view::signbit_t, arrays_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return signbit;
-        }
-    };
+    constexpr inline auto signbit = functor_t(unary_fmap_t<fun::signbit>{});
 } // namespace nmtools::functional
 
 

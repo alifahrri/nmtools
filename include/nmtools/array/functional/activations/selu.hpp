@@ -3,39 +3,15 @@
 
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/activations/selu.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        struct selu_t
-        {
-            template <typename...args_t>
-            constexpr auto operator()(const args_t&...args) const
-            {
-                return view::selu(args...);
-            }
-        };
+        using selu = fun::unary_ufunc<view::selu_t>;
     }
-    constexpr inline auto selu = functor_t(unary_fmap_t<fun::selu_t>{});
-
-    template <typename...arrays_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::ufunc_t, view::selu_t, arrays_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::ufunc_t, view::selu_t, arrays_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return selu;
-        }
-    };
+    constexpr inline auto selu = functor_t(unary_fmap_t<fun::selu>{});
 } // namespace nmtools::functional
 
 
