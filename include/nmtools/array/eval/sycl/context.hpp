@@ -3,10 +3,13 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/ndarray.hpp"
+#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/eval/sycl/info.hpp"
 #include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/exception.hpp"
 
 #include <sycl/sycl.hpp>
+#include <iostream>
 #include <memory>
 
 namespace nmtools::array
@@ -118,12 +121,18 @@ namespace nmtools::array::sycl
 
     struct context_t
     {
-        using queue_t = ::sycl::queue;
+        using queue_t  = ::sycl::queue;
+        using device_t = ::sycl::device;
 
-        std::shared_ptr<queue_t> queue;
+        // TODO: share same queue for same context (?)
+        // std::shared_ptr<queue_t> queue;
+        nmtools_maybe<device_t> device = meta::Nothing;
 
         context_t()
-            : queue(std::make_shared<queue_t>())
+        {}
+
+        context_t(device_t device)
+            : device(device)
         {}
 
         template <typename T>
@@ -233,6 +242,12 @@ namespace nmtools::array::sycl
         template <typename output_array_t, typename function_t, typename...args_t, auto...Is, template<auto...>typename sequence>
         auto run_(output_array_t& output, const function_t& f, nmtools_tuple<args_t...> args_pack, sequence<Is...>)
         {
+            auto queue = std::shared_ptr<queue_t>();
+            if (!device) {
+                queue = std::make_shared<queue_t>();
+            } else {
+                queue = std::make_shared<queue_t>(*device);
+            }
             using element_t = meta::get_element_type_t<output_array_t>;
             auto numel = nmtools::size(output);
             // TODO: pass actual type (constant / clipped shape) as is to device
@@ -256,17 +271,42 @@ namespace nmtools::array::sycl
                 [[maybe_unused]]
                 constexpr auto N = sizeof...(args_t);
 
-                // .accessor() sycl-equivalent to cudaMemcpy + pass to kernel (?)
+                // get_accessor / .accessor() sycl-equivalent to cudaMemcpy + pass to kernel (?)
                 auto operands = nmtools_tuple{get_accessor(nmtools::get<Is>(args_pack),cgh,access_mode)...};
 
-                auto kernel_range = ::sycl::range<1>(thread_size);
-                cgh.parallel_for(kernel_range,[=](::sycl::id<1> id){
+                auto kernel_range = ::sycl::nd_range<1>(thread_size, warp_size);
+
+                // TODO: fix wrong result on cuda, but correct on openmp:
+                // seems like the work item is clipped to 32(?) on cuda, the rest of work item is not executed
+                #if 0
+                std::cout << "- numel: " << numel << "\n";
+                std::cout << "- warp_size: " << warp_size << "\n";
+                std::cout << "- thread_size: " << thread_size << "\n";
+                std::cout << "- kernel_range: " << kernel_range << "\n";
+
+                ::sycl::stream out(1024, 256, cgh);
+                out << ::sycl::endl;
+                #endif
+
+                // TODO: change to nd_item with 3 dim to properly use thread & block structure like cuda
+                cgh.parallel_for(kernel_range,[=](::sycl::nd_item<1> item){
                     auto output = create_mutable_array(&output_accessor[0],&output_shape_accessor[0],output_dim);
                     auto result = functional::apply(f,operands);
                     // TODO: properly get the thread & kernel id and shape
-                    auto thread_id  = array::kernel_size<size_t>{id.get(0),0,0};
+                    auto thread_id  = array::kernel_size<size_t>{item.get_global_id(),0,0};
                     auto block_id   = array::kernel_size<size_t>{0,0,0};
                     auto block_size = array::kernel_size<size_t>{1,1,1};
+
+                    #if 0
+                    auto idx = compute_offset(thread_id,block_id,block_size);
+                    out << item.get_global_id()
+                        << "->"
+                        << idx
+                        << ";"
+                        << ::sycl::flush
+                    ;
+                    #endif
+
                     array::assign_result(output,result,thread_id,block_id,block_size);
                 });
             });
@@ -293,15 +333,130 @@ namespace nmtools::array::sycl
             this->run_(output,f,device_operands,sequence_t{});
         }
     };
+} // namespace nmtools::array::sycl
 
+#define PRINT_PLATFORM_PROPERTY(platform, prop) \
+    std::cout << "- " << #prop << ": " \
+        << platform.get_info<::sycl::info::platform::prop>() << std::endl;
+    
+#define PRINT_DEVICE_PROPERTY(selected_device, prop) \
+std::cout << "- " << #prop << ": " \
+    << selected_device.get_info<::sycl::info::device::prop>() << std::endl;
+
+namespace nmtools::array::sycl
+{
     inline auto default_context()
     {
         static std::shared_ptr<context_t> default_context;
         if (!default_context) {
-            default_context = std::make_shared<context_t>();
+            auto sycl_devices = ::sycl::device::get_devices();
+            auto platform_idx = 0ul;
+            if (auto env_idx = std::getenv("NMTOOLS_SYCL_DEFAULT_PLATFORM_IDX")) {
+                platform_idx = std::stoi(env_idx);
+            }
+            // TODO: better logging utilities
+            std::cout << "\033[1;33m[nmtools sycl]\033[0m number of sycl devices: " << sycl_devices.size() << "\n";
+            for (auto i=0ul; i<sycl_devices.size(); i++) {
+                auto device = sycl_devices.at(i);
+                auto platform = device.get_platform();
+
+                std::cout << "\033[1;33m[nmtools sycl]\033[0m platform #" << i << ":\n";
+                PRINT_PLATFORM_PROPERTY(platform, name);
+                PRINT_PLATFORM_PROPERTY(platform, vendor);
+                PRINT_PLATFORM_PROPERTY(platform, version);
+                PRINT_PLATFORM_PROPERTY(platform, profile);
+                PRINT_PLATFORM_PROPERTY(platform, extensions);
+            }
+            auto selected_device = sycl_devices.at(platform_idx);
+            std::cout << "\033[1;33m[nmtools sycl]\033[0m default context using platform #" << platform_idx << "\n";
+            // TODO: log level
+            {
+                PRINT_DEVICE_PROPERTY(selected_device, name);
+                PRINT_DEVICE_PROPERTY(selected_device, vendor);
+                PRINT_DEVICE_PROPERTY(selected_device, driver_version);
+                PRINT_DEVICE_PROPERTY(selected_device, profile);
+                PRINT_DEVICE_PROPERTY(selected_device, version);
+                PRINT_DEVICE_PROPERTY(selected_device, opencl_c_version);
+                PRINT_DEVICE_PROPERTY(selected_device, extensions);
+                PRINT_DEVICE_PROPERTY(selected_device, device_type);
+                PRINT_DEVICE_PROPERTY(selected_device, vendor_id);
+                PRINT_DEVICE_PROPERTY(selected_device, max_compute_units);
+                PRINT_DEVICE_PROPERTY(selected_device, max_work_item_dimensions);
+                PRINT_DEVICE_PROPERTY(selected_device, max_work_item_sizes<1>);
+                PRINT_DEVICE_PROPERTY(selected_device, max_work_item_sizes<2>);
+                PRINT_DEVICE_PROPERTY(selected_device, max_work_item_sizes<3>);
+                PRINT_DEVICE_PROPERTY(selected_device, max_work_group_size);
+                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_char);
+                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_short);
+                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_int);
+                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_long);
+                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_float);
+                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_double);
+                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_half);
+                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_char);
+                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_short);
+                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_int);
+                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_long);
+                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_float);
+                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_double);
+                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_half);
+                PRINT_DEVICE_PROPERTY(selected_device, max_clock_frequency);
+                PRINT_DEVICE_PROPERTY(selected_device, address_bits);
+                PRINT_DEVICE_PROPERTY(selected_device, max_mem_alloc_size);
+                PRINT_DEVICE_PROPERTY(selected_device, image_support);
+                PRINT_DEVICE_PROPERTY(selected_device, max_read_image_args);
+                PRINT_DEVICE_PROPERTY(selected_device, max_write_image_args);
+                PRINT_DEVICE_PROPERTY(selected_device, image2d_max_height);
+                PRINT_DEVICE_PROPERTY(selected_device, image2d_max_width);
+                PRINT_DEVICE_PROPERTY(selected_device, image3d_max_height);
+                PRINT_DEVICE_PROPERTY(selected_device, image3d_max_width);
+                PRINT_DEVICE_PROPERTY(selected_device, image3d_max_depth);
+                PRINT_DEVICE_PROPERTY(selected_device, image_max_buffer_size);
+                PRINT_DEVICE_PROPERTY(selected_device, image_max_array_size);
+                PRINT_DEVICE_PROPERTY(selected_device, max_samplers);
+                PRINT_DEVICE_PROPERTY(selected_device, max_parameter_size);
+                PRINT_DEVICE_PROPERTY(selected_device, mem_base_addr_align);
+                
+                PRINT_DEVICE_PROPERTY(selected_device, half_fp_config);
+                PRINT_DEVICE_PROPERTY(selected_device, single_fp_config);
+                PRINT_DEVICE_PROPERTY(selected_device, double_fp_config);
+                PRINT_DEVICE_PROPERTY(selected_device, global_mem_cache_type);
+                PRINT_DEVICE_PROPERTY(selected_device, global_mem_cache_line_size);
+                PRINT_DEVICE_PROPERTY(selected_device, global_mem_cache_size);
+                PRINT_DEVICE_PROPERTY(selected_device, global_mem_size);
+                PRINT_DEVICE_PROPERTY(selected_device, max_constant_buffer_size);
+                PRINT_DEVICE_PROPERTY(selected_device, max_constant_args);
+                PRINT_DEVICE_PROPERTY(selected_device, local_mem_type);
+                PRINT_DEVICE_PROPERTY(selected_device, local_mem_size);
+                PRINT_DEVICE_PROPERTY(selected_device, error_correction_support);
+                PRINT_DEVICE_PROPERTY(selected_device, host_unified_memory);
+                PRINT_DEVICE_PROPERTY(selected_device, profiling_timer_resolution);
+                PRINT_DEVICE_PROPERTY(selected_device, is_endian_little);
+                PRINT_DEVICE_PROPERTY(selected_device, is_available);
+                PRINT_DEVICE_PROPERTY(selected_device, is_compiler_available);
+                PRINT_DEVICE_PROPERTY(selected_device, is_linker_available);
+                PRINT_DEVICE_PROPERTY(selected_device, execution_capabilities);
+                PRINT_DEVICE_PROPERTY(selected_device, queue_profiling);
+                PRINT_DEVICE_PROPERTY(selected_device, built_in_kernels);
+                
+                
+                PRINT_DEVICE_PROPERTY(selected_device, printf_buffer_size);
+                PRINT_DEVICE_PROPERTY(selected_device, preferred_interop_user_sync);
+                PRINT_DEVICE_PROPERTY(selected_device, partition_max_sub_devices);
+                
+                PRINT_DEVICE_PROPERTY(selected_device, partition_properties);
+                PRINT_DEVICE_PROPERTY(selected_device, partition_affinity_domains);
+                PRINT_DEVICE_PROPERTY(selected_device, partition_type_property);
+                PRINT_DEVICE_PROPERTY(selected_device, partition_type_affinity_domain);
+                PRINT_DEVICE_PROPERTY(selected_device, reference_count);
+            }
+            default_context = std::make_shared<context_t>(selected_device);
         }
         return default_context;
     }
 }
+
+#undef PRINT_PLATFORM_PROPERTY
+#undef PRINT_DEVICE_PROPERTY
 
 #endif // NMTOOLS_ARRAY_EVAL_SYCL_CONTEXT_HPP

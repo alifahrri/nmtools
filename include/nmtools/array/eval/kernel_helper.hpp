@@ -156,6 +156,13 @@ namespace nmtools::array
         }
     };
 
+    template <typename T>
+    auto compute_offset(kernel_size<T> thread_id, kernel_size<T> block_id, kernel_size<T> block_size)
+    {
+        auto idx = block_id.x() * block_size.x() + thread_id.x();
+        return idx;
+    }
+
     template <
         typename size_type=nm_size_t
         , typename mutable_array_t
@@ -169,14 +176,14 @@ namespace nmtools::array
         , kernel_size<size_type> block_id
         , kernel_size<size_type> block_size
     ) {
-        if constexpr (meta::is_maybe_v<array_t>) {
+        if constexpr (meta::is_maybe_v<meta::remove_cvref_t<decltype(result)>>) {
             if (!static_cast<bool>(result)) {
                 return;
             }
             assign_result(output,*result,thread_id,block_id,block_size);
         } else {
             auto size = nmtools::size(output);
-            auto idx = block_id.x() * block_size.x() + thread_id.x();
+            auto idx = compute_offset(thread_id,block_id,block_size);
             if (idx < size) {
                 auto flat_lhs = view::mutable_flatten(output);
                 auto flat_rhs = view::flatten(result);
