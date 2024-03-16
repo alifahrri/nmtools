@@ -20,6 +20,33 @@
 
 #include "nmtools/array/view/ufunc/detail.hpp"
 
+namespace nmtools::args
+{
+    template <typename dtype_t, typename op_t=none_t>
+    struct outer
+    {
+        using op_type = op_t;
+        using dtype_type = dtype_t;
+
+        dtype_type dtype = {};
+        op_type op = {};
+
+        constexpr auto operator==(const outer<dtype_t,op_t>&) const
+        {
+            return true;
+        }
+    };
+
+    template <typename...args_t>
+    outer(args_t...) -> outer<args_t...>;
+} // namespace nmtools::args
+
+namespace nmtools::meta
+{
+    template <typename dtype_t, typename op_t>
+    struct is_attribute<args::outer<dtype_t,op_t>> : true_type {};
+} // namespace nmtools::meta
+
 namespace nmtools::view
 {
     /**
@@ -31,7 +58,7 @@ namespace nmtools::view
      * @tparam lhs_t 
      * @tparam rhs_t 
      */
-    template <typename op_t, typename lhs_t, typename rhs_t>
+    template <typename op_t, typename lhs_t, typename rhs_t, typename dtype_t=none_t>
     struct outer_t
     {
         using operands_type = detail::get_operands_type_t<lhs_t,rhs_t>;
@@ -40,6 +67,9 @@ namespace nmtools::view
         using lhs_element_type = meta::get_element_type_t<lhs_t>;
         using rhs_element_type = meta::get_element_type_t<rhs_t>;
         using result_type = detail::get_ufunc_result_type_t<op_t,lhs_element_type,rhs_element_type>;
+        using dtype_type  = dtype_t;
+
+        using attributes_type = args::outer<dtype_type,op_type>;
 
         using lhs_shape_type = decltype(nmtools::shape<true>(meta::declval<lhs_t>()));
         using rhs_shape_type = decltype(nmtools::shape<true>(meta::declval<rhs_t>()));
@@ -53,7 +83,9 @@ namespace nmtools::view
 
         dst_shape_type shape_;
         dst_size_type  size_;
+        dtype_type dtype;
 
+        // TODO: move to common decorator.hpp
         // the following is needed because cant use view::initialize<...>
         // can't handle tuple yet
         static constexpr auto initialize_array(const lhs_t& lhs, const rhs_t& rhs)
@@ -71,11 +103,21 @@ namespace nmtools::view
             }
         } // initialize_array
 
-        constexpr outer_t(op_type op, const lhs_t& lhs, const rhs_t& rhs)
+        constexpr outer_t(op_t op, const lhs_t& lhs, const rhs_t& rhs, dtype_t dtype)
             : op(op)
             , array(initialize_array(lhs,rhs))
             , shape_(index::shape_outer(nmtools::shape<true>(lhs),nmtools::shape<true>(rhs)))
             , size_(index::size_outer(shape_,nmtools::size<true>(lhs),nmtools::size<true>(rhs)))
+            , dtype(dtype)
+        {}
+
+        constexpr outer_t(const lhs_t& lhs, const rhs_t& rhs, const args::outer<dtype_t,op_t>& attributes)
+            : outer_t(
+                attributes.op
+                , lhs
+                , rhs
+                , attributes.dtype
+            )
         {}
 
         constexpr auto operands() const noexcept
@@ -85,7 +127,7 @@ namespace nmtools::view
 
         constexpr auto attributes() const noexcept
         {
-            return nmtools_tuple{};
+            return attributes_type{dtype,op};
         }
         
         constexpr auto shape() const
@@ -123,17 +165,17 @@ namespace nmtools::view
 namespace nmtools::meta
 {
 
-    template <typename op_t, typename lhs_t, typename rhs_t>
+    template <typename op_t, typename lhs_t, typename rhs_t, typename dtype_t>
     struct is_outer<
-        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t, dtype_t >
     > : true_type {};
 
-    template <typename op_t, typename lhs_t, typename rhs_t>
+    template <typename op_t, typename lhs_t, typename rhs_t, typename dtype_t>
     struct bounded_size<
-        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t, dtype_t >
     >
     {
-        using view_type = view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >;
+        using view_type = view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t, dtype_t >;
 
         static constexpr auto value = [](){
             if constexpr (is_bounded_size_v<lhs_t> && is_bounded_size_v<rhs_t>) {
@@ -144,21 +186,21 @@ namespace nmtools::meta
         }();
     }; // bounded_size
 
-    template <typename op_t, typename lhs_t, typename rhs_t>
+    template <typename op_t, typename lhs_t, typename rhs_t, typename dtype_t>
     struct is_ndarray< 
-        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t, dtype_t >
     >
     {
         static constexpr auto value = is_ndarray_v<lhs_t> && is_ndarray_v<rhs_t>;
     };
 
     // provide specialization for reducer
-    template <typename op_t, typename lhs_t, typename rhs_t>
+    template <typename op_t, typename lhs_t, typename rhs_t, typename dtype_t>
     struct get_element_type<
-        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t >
+        view::decorator_t< view::outer_t, op_t, lhs_t, rhs_t, dtype_t >
     >
     {
-        using type = typename view::outer_t<op_t, lhs_t, rhs_t>::result_type;
+        using type = typename view::outer_t<op_t, lhs_t, rhs_t, dtype_t>::result_type;
     };
 } // namespace nmtools::meta
 
