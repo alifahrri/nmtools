@@ -1,12 +1,13 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_EXPM1_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_EXPM1_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct expm1_t
+    struct expm1
     {
         template <typename T>
         nmtools_func_attribute
@@ -15,7 +16,12 @@ namespace nmtools::view
         {
             return math::expm1(t);
         } // operator()
-    }; // expm1_t
+    }; // expm1
+} // namespace nmtools::view::fun
+
+namespace nmtools::view
+{
+    using expm1_t = fun::expm1;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -24,6 +30,26 @@ namespace nmtools::view
     {
         return ufunc(expm1_t{},a);
     } // expm1
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::expm1,none_t>
+    {
+        auto operator()(view::fun::expm1) const
+        {
+            nmtools_string str;
+
+            str += "expm1";
+
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_EXPM1_HPP

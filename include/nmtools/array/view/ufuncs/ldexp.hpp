@@ -1,12 +1,13 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_LDEXP_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_LDEXP_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct ldexp_t
+    struct ldexp
     {
         template <typename T, typename U>
         NMTOOLS_UFUNC_CONSTEXPR
@@ -14,7 +15,11 @@ namespace nmtools::view
         {
             return math::ldexp(t,u);
         } // operator()
-    }; // ldexp_t
+    }; // ldexp
+}
+namespace nmtools::view
+{
+    using ldexp_t = fun::ldexp;
 
     template <typename left_t, typename right_t>
     NMTOOLS_UFUNC_CONSTEXPR
@@ -22,6 +27,26 @@ namespace nmtools::view
     {
         return ufunc(ldexp_t{},a,b);
     } // ldexp
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::ldexp,none_t>
+    {
+        auto operator()(view::fun::ldexp) const
+        {
+            auto str = nmtools_string();
+
+            str += "ldexp";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_LDEXP_HPP

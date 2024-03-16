@@ -1,9 +1,10 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_ADD_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_ADD_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     template <
         typename lhs_t=none_t,
@@ -11,7 +12,7 @@ namespace nmtools::view
         typename res_t=none_t,
         typename=void
     >
-    struct add_t
+    struct add
     {
         // NOTE: tried to disable but not successful
         // TODO: remove by unifying with primary template
@@ -37,13 +38,13 @@ namespace nmtools::view
                 return static_cast<result_type>(t + u);
             }
         } // operator()
-    }; // add_t
+    }; // add
 
     // NOTE: tried to disable but not successful
     // TODO: remove by unifying with primary template
     #if 1
     template <typename res_t>
-    struct add_t<none_t,none_t,res_t
+    struct add<none_t,none_t,res_t
         , meta::enable_if_t<meta::is_num_v<res_t>> 
     >
     {
@@ -54,8 +55,18 @@ namespace nmtools::view
         {
             return t + u;
         } // operator()
-    }; // add_t
+    }; // add
     #endif
+}
+
+namespace nmtools::view
+{
+    template <
+        typename lhs_t=none_t,
+        typename rhs_t=none_t,
+        typename res_t=none_t
+    >
+    using add_t = fun::add<lhs_t,rhs_t,res_t>;
 
     template <typename left_t, typename right_t, typename casting_t=casting::auto_t>
     constexpr auto add(const left_t& a, const right_t& b, casting_t=casting_t{})
@@ -75,19 +86,19 @@ namespace nmtools::view
     } // add
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
-    constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t /*dtype*/, initial_t initial, keepdims_t keepdims)
+    constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,initial,keepdims);
+        return reduce(op_t{},a,axis,dtype,initial,keepdims);
     } // add
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
-    constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t /*dtype*/, initial_t initial)
+    constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,initial);
+        return reduce(op_t{},a,axis,dtype,initial);
     } // add
 
     template <typename left_t, typename axis_t, typename dtype_t>
@@ -103,11 +114,11 @@ namespace nmtools::view
     } // add
 
     template <typename left_t, typename axis_t, typename dtype_t>
-    constexpr auto accumulate_add(const left_t& a, axis_t axis, dtype_t /*dtype*/)
+    constexpr auto accumulate_add(const left_t& a, axis_t axis, dtype_t dtype)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
-        return accumulate(op_t{},a,axis);
+        return accumulate(op_t{},a,axis,dtype);
     } // accumulate_add
 
     template <typename left_t, typename axis_t>
@@ -117,12 +128,38 @@ namespace nmtools::view
     } // accumulate_add
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
-    constexpr auto outer_add(const left_t& a, const right_t& b, dtype_t /*dtype*/=dtype_t{})
+    constexpr auto outer_add(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
-        return outer(op_t{},a,b);
+        return outer(op_t{},a,b,dtype);
     } // outer_add
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <
+        typename lhs_t,
+        typename rhs_t,
+        typename res_t
+    >
+    struct to_string_t<view::fun::add<lhs_t,rhs_t,res_t>,none_t>
+    {
+        auto operator()(view::fun::add<lhs_t,rhs_t,res_t>) const
+        {
+            auto str = nmtools_string();
+
+            str += "add";
+
+            return str;
+        }
+    };
+
+
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_ADD_HPP

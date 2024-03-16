@@ -4,9 +4,9 @@
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct hypot_t
+    struct hypot
     {
         template <typename T, typename U>
         NMTOOLS_UFUNC_CONSTEXPR
@@ -14,7 +14,12 @@ namespace nmtools::view
         {
             return math::hypot(t,u);
         } // operator()
-    }; // hypot_t
+    }; // hypot
+}
+
+namespace nmtools::view
+{
+    using hypot_t = fun::hypot;
 
     template <typename left_t, typename right_t>
     NMTOOLS_UFUNC_CONSTEXPR
@@ -22,6 +27,26 @@ namespace nmtools::view
     {
         return ufunc(hypot_t{},a,b);
     } // hypot
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::hypot,none_t>
+    {
+        auto operator()(view::fun::hypot) const
+        {
+            auto str = nmtools_string();
+
+            str += "hypot";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_HYPOT_HPP

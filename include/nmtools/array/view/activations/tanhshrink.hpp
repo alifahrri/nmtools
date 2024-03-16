@@ -2,15 +2,16 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_TANHSHRINK_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for tanhshrink ufunc
      * 
      */
-    struct tanhshrink_t
+    struct tanhshrink
     {
         template <typename T>
         NMTOOLS_UFUNC_CONSTEXPR
@@ -19,7 +20,32 @@ namespace nmtools::view
         {
             return x - math::tanh(x);
         } // operator()
-    }; // tanhshrink_t
+    }; // tanhshrink
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::tanhshrink,none_t>
+    {
+        auto operator()(view::fun::tanhshrink) const
+        {
+            nmtools_string str;
+
+            str += "tanhshrink";
+
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    using tanhshrink_t = fun::tanhshrink;
 
     /**
      * @brief Create element-wise tanhshrink ufunc view

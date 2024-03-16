@@ -1,16 +1,17 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SELU_HPP
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SELU_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for selu ufunc
      * 
      */
-    struct selu_t
+    struct selu
     {
         template <typename T>
         nmtools_func_attribute
@@ -22,7 +23,32 @@ namespace nmtools::view
             constexpr auto zero  = static_cast<T>(0);
             return scale * (math::max(t,zero) + math::min(alpha * (math::exp(t) - 1), zero));
         } // operator()
-    }; // selu_t
+    }; // selu
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::selu,none_t>
+    {
+        auto operator()(view::fun::selu) const
+        {
+            nmtools_string str;
+
+            str += "selu";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    using selu_t = fun::selu;
 
     /**
      * @brief Create element-wise selu ufunc view.

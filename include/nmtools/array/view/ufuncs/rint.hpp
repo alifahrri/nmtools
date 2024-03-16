@@ -1,12 +1,13 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_RINT_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_RINT_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct rint_t
+    struct rint
     {
         template <typename T>
         nmtools_func_attribute
@@ -15,7 +16,12 @@ namespace nmtools::view
         {
             return math::rint(t);
         } // operator()
-    }; // rint_t
+    }; // rint
+}
+
+namespace nmtools::view
+{
+    using rint_t = fun::rint;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -24,6 +30,26 @@ namespace nmtools::view
     {
         return ufunc(rint_t{},a);
     } // rint
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::rint,none_t>
+    {
+        auto operator()(view::fun::rint) const
+        {
+            nmtools_string str;
+
+            str += "rint";
+
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_RINT_HPP

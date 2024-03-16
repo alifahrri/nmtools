@@ -1,25 +1,51 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SILU_HPP
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SILU_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/array/view/activations/sigmoid.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for silu ufunc
      * 
      */
-    struct silu_t : sigmoid_t
+    struct silu : sigmoid
     {
         template <typename T>
         nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
-            return t * sigmoid(t);
+            return t * sigmoid::eval(t);
         } // operator()
-    }; // silu_t
+    }; // silu
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::silu,none_t>
+    {
+        auto operator()(view::fun::silu) const
+        {
+            nmtools_string str;
+
+            str += "silu";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    using silu_t = fun::silu;
 
     /**
      * @brief Create element-wise Sigmoid Linear Unit (SiLU) ufunc view.

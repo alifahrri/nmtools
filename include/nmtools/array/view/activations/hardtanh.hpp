@@ -1,9 +1,11 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_HARDTANH_HPP
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_HARDTANH_HPP
 
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for hardtanh ufunc.
@@ -12,7 +14,7 @@ namespace nmtools::view
      * @tparam max_val_t 
      */
     template <typename min_val_t=float, typename max_val_t=min_val_t>
-    struct hardtanh_t
+    struct hardtanh
     {
         const min_val_t min_val = -1.0;
         const max_val_t max_val =  1.0;
@@ -28,11 +30,56 @@ namespace nmtools::view
                 return t;
             }
         } // operator()
-    }; // hardtanh_t
 
+        template <template<typename...>typename tuple, typename T, typename U>
+        constexpr auto operator[](const tuple<T,U>& t) const noexcept
+        {
+            return hardtanh<T,U>{nmtools::get<0>(t),nmtools::get<1>(t)};
+        }
+
+        template <template<typename...>typename tuple, typename T>
+        constexpr auto operator[](const tuple<T>& t) const noexcept
+        {
+            return hardtanh<T>{nmtools::get<0>(t)};
+        }
+
+        template <typename T>
+        constexpr auto operator==(const hardtanh<T> other) const
+        {
+            return utils::isclose(min_val,other.min_val)
+                && utils::isclose(max_val,other.max_val);
+        }
+    }; // hardtanh
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
     template <typename min_val_t, typename max_val_t>
-    nmtools_func_attribute
-    hardtanh_t(min_val_t,max_val_t) -> hardtanh_t<min_val_t,max_val_t>;
+    struct to_string_t<view::fun::hardtanh<min_val_t,max_val_t>,none_t>
+    {
+        auto operator()(view::fun::hardtanh<min_val_t,max_val_t> op) const
+        {
+            nmtools_string str;
+
+            str += "hardtanh{.min_val=";
+            str += to_string(op.min_val);
+            str += ",.max_val=";
+            str += to_string(op.max_val);
+            str += "}";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    template <typename min_val_t=float, typename max_val_t=min_val_t>
+    using hardtanh_t = fun::hardtanh<min_val_t,max_val_t>;
 
     /**
      * @brief Create element-wise hardtanh ufunc view.
@@ -49,7 +96,13 @@ namespace nmtools::view
     constexpr auto hardtanh(const array_t& array, const min_val_t min_val=min_val_t{-1.0},
         const max_val_t max_val=max_val_t{1.0})
     {
-        return ufunc(hardtanh_t{min_val,max_val},array);
+        return ufunc(hardtanh_t<min_val_t,max_val_t>{min_val,max_val},array);
+    } // hardtanh
+
+    template <typename array_t, typename min_val_t=float, typename max_val_t=min_val_t>
+    constexpr auto hardtanh(const array_t& array, fun::hardtanh<min_val_t,max_val_t> op)
+    {
+        return ufunc(op,array);
     } // hardtanh
 } // namespace nmtools::view
 

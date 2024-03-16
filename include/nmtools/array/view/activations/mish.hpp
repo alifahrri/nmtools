@@ -2,25 +2,51 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_MISH_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/activations/softplus.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for mish ufunc
      * 
      */
-    struct mish_t
+    struct mish
     {
         template <typename T>
         nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
-            return t * math::tanh(softplus_t<>::softplus(t));
+            return t * math::tanh(softplus<>::eval(t));
         } // operator()
-    }; // mish_t
+    }; // mish
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::mish,none_t>
+    {
+        auto operator()(view::fun::mish) const
+        {
+            nmtools_string str;
+
+            str += "mish";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    using mish_t = fun::mish;
 
     /**
      * @brief Create element-wise mish ufunc view

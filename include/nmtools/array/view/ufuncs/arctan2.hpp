@@ -1,12 +1,13 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_ARCTAN2_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_ARCTAN2_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct arctan2_t
+    struct arctan2
     {
         template <typename T, typename U>
         nmtools_func_attribute
@@ -15,7 +16,12 @@ namespace nmtools::view
         {
             return math::atan2(t,u);
         } // operator()
-    }; // arctan2_t
+    }; // arctan2
+}
+
+namespace nmtools::view
+{
+    using arctan2_t = fun::arctan2;
 
     template <typename left_t, typename right_t>
     nmtools_func_attribute
@@ -24,6 +30,26 @@ namespace nmtools::view
     {
         return ufunc(arctan2_t{},a,b);
     } // arctan2
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::arctan2,none_t>
+    {
+        auto operator()(view::fun::arctan2) const
+        {
+            auto str = nmtools_string();
+
+            str += "arctan2";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_ARCTAN2_HPP
