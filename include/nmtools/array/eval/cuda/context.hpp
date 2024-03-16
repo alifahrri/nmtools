@@ -5,6 +5,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
+#include "nmtools/array/functional/functor.hpp"
 #include <memory>
 
 template <auto out_static_dim=0, typename function_t
