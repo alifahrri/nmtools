@@ -6,12 +6,11 @@
 #include "nmtools/array/view/alias.hpp"
 #include "nmtools/utility/ct_map.hpp"
 #include "nmtools/utility/ct_digraph.hpp"
+#include "nmtools/utils/isequal/isequal.hpp"
+#include "nmtools/utils/isclose/isclose.hpp"
 
 namespace nmtools::meta
 {
-    struct empty_operands_t {};
-    struct empty_attributes_t {};
-
     using view::resolve_array_type;
     using view::resolve_array_type_t;
 
@@ -724,5 +723,75 @@ namespace nmtools::functional
         }
     };
 } // namespace nmtools::functional
+
+namespace nmtools::utils
+{
+    template <
+        typename F, typename lhs_operands_t, typename lhs_attributes_t
+        , typename G, typename rhs_operands_t, typename rhs_attributes_t>
+    constexpr auto isequal(
+        const functional::functor_t<F,lhs_operands_t,lhs_attributes_t>& lhs
+        , const functional::functor_t<G,rhs_operands_t,rhs_attributes_t>& rhs
+    ) {
+        if constexpr ( !meta::is_same_v<F,G> || 
+            !meta::is_same_v<lhs_operands_t,rhs_operands_t>
+        ) {
+            // TODO: also check the values of operands
+            return false;
+        } else if constexpr (
+            !meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
+            && !meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
+        ) {
+            constexpr auto M = meta::len_v<lhs_attributes_t>;
+            constexpr auto N = meta::len_v<rhs_attributes_t>;
+            if constexpr (M != N) {
+                return false;
+            } else {
+                auto equal = true;
+                meta::template_for<M>([&](auto index){
+                    auto equal_attribute = [&](){
+                        auto lhs_attribute = at(lhs.attributes,index);
+                        auto rhs_attribute = at(rhs.attributes,index);
+                        if constexpr (meta::is_floating_point_v<decltype(lhs_attribute)>
+                            && meta::is_floating_point_v<decltype(rhs_attribute)>)
+                        {
+                            return isclose(lhs_attribute,rhs_attribute);
+                        } else {
+                            return isequal(lhs_attribute,rhs_attribute);
+                        }
+                    }();
+                    equal = equal && equal_attribute;
+                });
+                return equal;
+            }
+        } else if constexpr ( meta::is_same_v<F,G>
+            && meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
+            && meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    template <
+        template<typename...>typename lhs_tuple, typename...lhs_functors_t, typename lhs_operands_t,
+        template<typename...>typename rhs_tuple, typename...rhs_functors_t, typename rhs_operands_t
+    >
+    constexpr auto isequal(
+        const functional::functor_composition_t<lhs_tuple<lhs_functors_t...>,lhs_operands_t>& lhs
+        , const functional::functor_composition_t<rhs_tuple<rhs_functors_t...>,rhs_operands_t>& rhs
+    ) {
+        constexpr auto N_LHS = meta::len_v<decltype(lhs.functors)>;
+        constexpr auto N_RHS = meta::len_v<decltype(rhs.functors)>;
+
+        auto equal = N_LHS == N_RHS;
+        constexpr auto N = (N_LHS < N_RHS) ? N_LHS : N_RHS;
+        meta::template_for<N>([&](auto index){
+            equal = equal && isequal(at(lhs.functors,index),at(rhs.functors,index));
+        });
+        return equal;
+    }
+}
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP
