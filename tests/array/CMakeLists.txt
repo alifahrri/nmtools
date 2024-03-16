@@ -261,13 +261,13 @@ if (NMTOOLS_ENABLE_TEST_BENCHMARKS)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
 endif()
 
-apply_nmtools(
-    TARGET ${PROJECT_NAME}-doctest
-    COMPILE_OPTIONS -g
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE
+    -std=gnu++17
 )
 target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${NMTOOLS_INCLUDE_DIR}
 )
 
 if (NMTOOLS_CODE_COVERAGE)
