@@ -153,7 +153,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
         , dtype
         , initial
         , keepdims
-        , view::multiply_t{}
+        , view::multiply_t<>{}
     }];
 
     NMTOOLS_ASSERT_EQUAL( function, expected );
@@ -165,7 +165,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
     NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
     using namespace args;
 
-    auto op = view::multiply_t{};
+    auto op = view::multiply_t<>{};
     auto array = view::reduce(a,op,kwargs::reduce{axis,dtype,initial,keepdims});
 
     auto function = fn::get_function_composition(array);
@@ -186,7 +186,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
     NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
     using namespace args;
 
-    auto op = view::multiply_t{};
+    auto op = view::multiply_t<>{};
     auto array = view::reduce(a,op,kwargs::reduce{axis,dtype,initial,keepdims});
 
     auto function = fn::get_function_composition(array);
@@ -201,7 +201,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
     NMTOOLS_ASSERT_CLOSE( function (a), expect::result );
 }
 
-#define NMTOOLS_TESTING_KWARGS_INIT
+
 
 #ifdef NMTOOLS_TESTING_KWARGS_INIT
 #ifndef __clang__
@@ -215,7 +215,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
         , .dtype=dtype
         , .initial=initial
         , .keepdims=keepdims
-        , .op=view::multiply_t{}
+        , .op=view::multiply_t<>{}
     };
 
     auto array = view::reduce_multiply(a,axis,dtype,initial,keepdims);
@@ -240,7 +240,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
         , .dtype=dtype
         , .initial=initial
         , .keepdims=keepdims
-        , .op=view::multiply_t{}
+        , .op=view::multiply_t<>{}
     }];
 
     NMTOOLS_ASSERT_EQUAL( function, expected );
@@ -262,7 +262,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
         , .dtype=dtype
         , .initial=initial
         , .keepdims=keepdims
-        , .op=view::multiply_t{}
+        , .op=view::multiply_t<>{}
     }];
 
     NMTOOLS_ASSERT_EQUAL( function, expected );

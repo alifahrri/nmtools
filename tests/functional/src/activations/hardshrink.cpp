@@ -70,7 +70,7 @@ TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_compositi
 namespace kwargs = nmtools::args;
 namespace fun = view::fun;
 
-#define NMTOOLS_TESTING_KWARGS_INIT
+
 
 #ifdef NMTOOLS_TESTING_KWARGS_INIT
 #ifndef __clang__

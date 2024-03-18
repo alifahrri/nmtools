@@ -70,15 +70,6 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
     NMTOOLS_ASSERT_EQUAL( function, expect );
     NMTOOLS_ASSERT_CLOSE( function (a), array );
     NMTOOLS_ASSERT_CLOSE( expect (a), array );
-
-    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu[1.f], fn::elu[0.1f] );
-    NMTOOLS_ASSERT_NOT_EQUAL( fn::unary_ufunc[kwargs::ufunc{fun::elu{1.f}}], fn::elu[0.1f] );
-    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu[0.1f], fn::unary_ufunc[kwargs::ufunc{fun::elu{1.f}}] );
-    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{fun::elu{0.1f}}] );
-
-    NMTOOLS_ASSERT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{fun::elu{}}] );
-    NMTOOLS_ASSERT_EQUAL( fn::elu[0.1f], fn::unary_ufunc[kwargs::ufunc{fun::elu{}}][0.1f] );
-    // NMTOOLS_ASSERT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{}][fun::elu{}] );
 }
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
@@ -95,8 +86,6 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
     NMTOOLS_ASSERT_CLOSE( function (a), array );
     NMTOOLS_ASSERT_CLOSE( expect (a), array );
 }
-
-#define NMTOOLS_TESTING_KWARGS_INIT
 
 #ifdef NMTOOLS_TESTING_KWARGS_INIT
 #ifndef __clang__
@@ -116,6 +105,15 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
     NMTOOLS_ASSERT_EQUAL( function, expect );
     NMTOOLS_ASSERT_CLOSE( function (a), array );
     NMTOOLS_ASSERT_CLOSE( expect (a), array );
+
+    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu[1.f], fn::elu[0.1f] );
+    NMTOOLS_ASSERT_NOT_EQUAL( fn::unary_ufunc[kwargs::ufunc{fun::elu{1.f}}], fn::elu[0.1f] );
+    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu[0.1f], fn::unary_ufunc[kwargs::ufunc{fun::elu{1.f}}] );
+    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{fun::elu{0.1f}}] );
+
+    NMTOOLS_ASSERT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{fun::elu{}}] );
+    NMTOOLS_ASSERT_EQUAL( fn::elu[0.1f], fn::unary_ufunc[kwargs::ufunc{fun::elu{}}][0.1f] );
+    // NMTOOLS_ASSERT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{}][fun::elu{}] );
 }
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))

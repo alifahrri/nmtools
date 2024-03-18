@@ -58,7 +58,7 @@ TEST_CASE("prelu" * doctest::test_suite("functional::get_function_composition"))
 namespace kwargs = nmtools::args;
 namespace fun = view::fun;
 
-#define NMTOOLS_TESTING_KWARGS_INIT
+
 
 #ifdef NMTOOLS_TESTING_KWARGS_INIT
 #ifndef __clang__
