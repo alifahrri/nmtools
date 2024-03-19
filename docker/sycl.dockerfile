@@ -46,6 +46,8 @@ COPY scripts/install_doctest.sh scripts/install_doctest.sh
 RUN bash scripts/install_doctest.sh
 
 RUN apt install -y libclang-dev clang-tools libomp-dev llvm-dev lld libboost-dev libboost-fiber-dev libboost-context-dev
+## TODO: read from ARG
+ENV OPENCL_BACKEND=OFF
 RUN bash scripts/install_opensycl.sh
 
 ARG toolchain=sycl-clang14-omp
