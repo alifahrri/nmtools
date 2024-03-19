@@ -117,7 +117,7 @@ jobs:
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/index/numeric-tests-index-doctest'
 
   dockcross-gcc-functional:
-    name: ${{ matrix.name }}-index
+    name: ${{ matrix.name }}-functional
     runs-on: ubuntu-20.04
     strategy:
       matrix:
