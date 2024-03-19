@@ -1,4 +1,6 @@
-from ubuntu:jammy as dev
+# ARG BASE=nvidia/cuda:11.8.0-devel-ubuntu22.04
+ARG BASE=ubuntu:jammy
+from ${BASE} as dev
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia
@@ -46,11 +48,21 @@ COPY scripts/install_doctest.sh scripts/install_doctest.sh
 RUN bash scripts/install_doctest.sh
 
 RUN apt install -y libclang-dev clang-tools libomp-dev llvm-dev lld libboost-dev libboost-fiber-dev libboost-context-dev
-## TODO: read from ARG
-ENV OPENCL_BACKEND=OFF
-RUN bash scripts/install_opensycl.sh
+
+ARG opencl_backend=OFF
+ENV OPENCL_BACKEND=${opencl_backend}
+
+ARG cuda_backend=OFF
+ENV CUDA_BACKEND=${cuda_backend}
+
+ARG level_zero_backend=OFF
+ENV LEVEL_ZERO_BACKEND=${level_zero_backend}
 
 ARG toolchain=sycl-clang14-omp
+ENV TOOLCHAIN=${toolchain}
+
+RUN bash scripts/install_opensycl.sh
+
 RUN mkdir -p build/${toolchain} && cd build/${toolchain} \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${toolchain}.cmake \
         -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
@@ -58,5 +70,4 @@ RUN mkdir -p build/${toolchain} && cd build/${toolchain} \
         ../.. \
     && make -j2 VERBOSE=1 numeric-tests-sycl-doctest
 
-ENV toolchain=${toolchain}
-CMD ["sh", "-c", "/workspace/nmtools/build/${toolchain}/tests/sycl/numeric-tests-sycl-doctest"]
+CMD ["sh", "-c", "/workspace/nmtools/build/${TOOLCHAIN}/tests/sycl/numeric-tests-sycl-doctest"]
