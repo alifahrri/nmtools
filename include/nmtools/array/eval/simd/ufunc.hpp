@@ -340,12 +340,12 @@ namespace nmtools::array::simd
         }
     };
 
-    template <typename simd_tag_t, typename data_t, typename...op_args_t>
-    struct ufunc_simd_t<view::add_t<op_args_t...>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    template <typename simd_tag_t, typename data_t, typename lhs_t, typename rhs_t, typename res_t>
+    struct ufunc_simd_t<view::add_t<lhs_t,rhs_t,res_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
     {
         using simd_t       = simd_op_t<simd_tag_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
-        using ufunc_op_t   = view::add_t<op_args_t...>;
+        using ufunc_op_t   = view::add_t<lhs_t,rhs_t,res_t>;
 
         ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {}
 
