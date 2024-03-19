@@ -6,14 +6,14 @@
 
 namespace nmtools::view::fun
 {
-    struct greater_t
+    struct greater
     {
         template <typename T, typename U>
         constexpr auto operator()(const T& t, const U& u) const
         {
             return t > u;
         } // operator()
-    }; // greater_t
+    }; // greater
 }
 
 namespace nmtools::view

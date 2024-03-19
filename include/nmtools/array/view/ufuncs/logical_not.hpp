@@ -4,7 +4,7 @@
 #include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
-namespace nmtools;:view::fun
+namespace nmtools::view::fun
 {
     struct logical_not
     {
