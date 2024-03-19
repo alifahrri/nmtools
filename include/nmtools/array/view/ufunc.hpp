@@ -279,14 +279,14 @@ namespace nmtools::view
         if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
-            using ret_left_t  = decltype(reduce(op,meta::declval<left_t>(),axis,initial,keepdims));
-            using ret_right_t = decltype(reduce(op,meta::declval<right_t>(),axis,initial,keepdims));
+            using ret_left_t  = decltype(reduce(op,meta::declval<left_t>(),axis,dtype,initial,keepdims));
+            using ret_right_t = decltype(reduce(op,meta::declval<right_t>(),axis,dtype,initial,keepdims));
             using either_t = meta::replace_either_t<array_t,ret_left_t,ret_right_t>;
             if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
-                return either_t{reduce(op,*l_ptr,axis,initial,keepdims)};
+                return either_t{reduce(op,*l_ptr,axis,dtype,initial,keepdims)};
             } else /* if (auto r_ptr = nmtools::get_if<right_t>(&array)) */ {
                 auto r_ptr = nmtools::get_if<right_t>(&array);
-                return either_t{reduce(op,*r_ptr,axis,initial,keepdims)};
+                return either_t{reduce(op,*r_ptr,axis,dtype,initial,keepdims)};
             }
         }
         // keepdims is runtime value, 
@@ -296,13 +296,13 @@ namespace nmtools::view
         // use variant to tell that the return value may be scalar or ndarray,
         // depending on the value of keepdims at runtime
         else if constexpr (meta::is_boolean_v<keepdims_t>) {
-            using left_t   = decltype(reduce(op,array,axis,initial,True));
-            using right_t  = decltype(reduce(op,array,axis,initial,False));
+            using left_t   = decltype(reduce(op,array,axis,dtype,initial,True));
+            using right_t  = decltype(reduce(op,array,axis,dtype,initial,False));
             using either_t = meta::make_either_type_t<left_t,right_t>;
             return (
                 keepdims ?
-                  either_t{reduce(op,array,axis,initial,True)}
-                : either_t{reduce(op,array,axis,initial,False)}
+                  either_t{reduce(op,array,axis,dtype,initial,True)}
+                : either_t{reduce(op,array,axis,dtype,initial,False)}
             );
         }
         // otherwise simply use as it is

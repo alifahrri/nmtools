@@ -156,14 +156,20 @@ namespace nmtools::view
             const auto& b = nmtools::get<1>(array);
             auto ashape = detail::shape(a);
             auto bshape = detail::shape(b);
-            const auto [aidx, bidx] = index::outer(indices_,ashape,bshape);
-            return op(view::detail::apply_at(a,aidx),view::detail::apply_at(b,bidx));
+            const auto [a_idx, b_idx] = index::outer(indices_,ashape,bshape);
+            return op(view::detail::apply_at(a,a_idx),view::detail::apply_at(b,b_idx));
         } // operator()
     }; // outer_t
 } // namespace nmtools::view
 
 namespace nmtools::meta
 {
+
+    namespace error
+    {
+        template <typename...>
+        struct OUTER_BOUNDED_SIZE_UNSUPPORTED : detail::fail_t {};
+    }
 
     template <typename op_t, typename lhs_t, typename rhs_t, typename dtype_t>
     struct is_outer<
@@ -181,7 +187,7 @@ namespace nmtools::meta
             if constexpr (is_bounded_size_v<lhs_t> && is_bounded_size_v<rhs_t>) {
                 return bounded_size_v<lhs_t> * bounded_size_v<rhs_t>;
             } else {
-                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+                return error::OUTER_BOUNDED_SIZE_UNSUPPORTED<view_type>{};
             }
         }();
     }; // bounded_size
