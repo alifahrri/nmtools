@@ -19,7 +19,9 @@ TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::get_function
 
     auto function = fn::get_function_composition(z);
     auto expect =
-        fn::square * fn::fabs * fn::subtract
+          fn::unary_ufunc[z.attributes()]
+        * fn::unary_ufunc[y.attributes()]
+        * fn::broadcast_binary_ufunc[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );

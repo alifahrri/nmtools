@@ -3,40 +3,16 @@
 
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/ufuncs/log1p.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        struct log1p_t
-        {
-            template <typename...args_t>
-            constexpr auto operator()(const args_t&...args) const
-            {
-                return view::log1p(args...);
-            }
-        };
+        using log1p = fun::unary_ufunc<view::log1p_t>;
     }
 
-    constexpr inline auto log1p = functor_t(unary_fmap_t<fun::log1p_t>{});
-
-    template <typename...arrays_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::ufunc_t, view::log1p_t, arrays_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::ufunc_t, view::log1p_t, arrays_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return log1p;
-        }
-    };
+    constexpr inline auto log1p = functor_t(unary_fmap_t<fun::log1p>{});
 } // namespace nmtools::functional
 
 

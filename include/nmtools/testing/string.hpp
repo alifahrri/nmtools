@@ -6,6 +6,8 @@
 
 #include "nmtools/utils/to_string.hpp"
 
+#define NMTOOLS_TESTING_GET_TYPENAME NMTOOLS_TYPENAME_TO_STRING
+
 #ifndef NMTOOLS_DISABLE_STL
 #include <sstream>
 #include <string>

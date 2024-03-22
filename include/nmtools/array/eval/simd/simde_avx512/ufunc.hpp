@@ -5,12 +5,12 @@
 
 namespace nmtools::array::simd
 {
-    template <typename data_t, typename...ufunc_args_t>
-    struct ufunc_simd_t<view::softshrink_t<ufunc_args_t...>,simde_avx512_t,data_t> : simd_op_t<simde_avx512_t,data_t>
+    template <typename data_t, typename lambda_t>
+    struct ufunc_simd_t<view::softshrink_t<lambda_t>,simde_avx512_t,data_t> : simd_op_t<simde_avx512_t,data_t>
     {
         using simd_t = simd_op_t<simde_avx512_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(0));
-        using ufunc_op_t = view::softshrink_t<ufunc_args_t...>;
+        using ufunc_op_t = view::softshrink_t<lambda_t>;
 
         const simd_dtype_t zero = simd_t::set1(0);
         const simd_dtype_t one  = simd_t::set1(1);
@@ -56,12 +56,12 @@ namespace nmtools::array::simd
         }
     }; // ufunc_simd_t
 
-    template <typename data_t, typename...ufunc_args_t>
-    struct ufunc_simd_t<view::hardshrink_t<ufunc_args_t...>,simde_avx512_t,data_t> : simd_op_t<simde_avx512_t,data_t>
+    template <typename data_t, typename lambda_t>
+    struct ufunc_simd_t<view::hardshrink_t<lambda_t>,simde_avx512_t,data_t> : simd_op_t<simde_avx512_t,data_t>
     {
         using simd_t = simd_op_t<simde_avx512_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(0));
-        using ufunc_op_t = view::hardshrink_t<ufunc_args_t...>;
+        using ufunc_op_t = view::hardshrink_t<lambda_t>;
 
         const simd_dtype_t zero = simd_t::set1(0);
         const simd_dtype_t pos_lambda;

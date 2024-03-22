@@ -1,24 +1,50 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_LESS_EQUAL_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_LESS_EQUAL_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct less_equal_t
+    struct less_equal
     {
         template <typename T, typename U>
         constexpr auto operator()(const T& t, const U& u) const
         {
             return t <= u;
         } // operator()
-    }; // less_equal_t
+    }; // less_equal
+}
+
+namespace nmtools::view
+{
+    using less_equal_t = fun::less_equal;
 
     template <typename left_t, typename right_t>
     constexpr auto less_equal(const left_t& a, const right_t& b)
     {
         return ufunc(less_equal_t{},a,b);
     } // less_equal
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::less_equal,none_t>
+    {
+        auto operator()(view::fun::less_equal) const
+        {
+            auto str = nmtools_string();
+
+            str += "less_equal";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_LESS_EQUAL_HPP

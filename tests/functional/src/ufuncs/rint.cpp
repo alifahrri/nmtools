@@ -39,3 +39,16 @@ TEST_CASE("rint" * doctest::test_suite("functional::get_function_composition"))
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }
+
+TEST_CASE("rint" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,rint,case1);
+    using namespace args;
+
+    auto array = view::rint(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}

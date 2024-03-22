@@ -3,40 +3,16 @@
 
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/ufuncs/arccosh.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        struct arccosh_t
-        {
-            template <typename...args_t>
-            constexpr auto operator()(const args_t&...args) const
-            {
-                return view::arccosh(args...);
-            }
-        };
+        using arccosh = fun::unary_ufunc<view::arccosh_t>;
     }
 
-    constexpr inline auto arccosh = functor_t(unary_fmap_t<fun::arccosh_t>{});
-
-    template <typename...arrays_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::ufunc_t, view::arccosh_t, arrays_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::ufunc_t, view::arccosh_t, arrays_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return arccosh;
-        }
-    };
+    constexpr inline auto arccosh = functor_t(unary_fmap_t<fun::arccosh>{});
 } // namespace nmtools::functional
 
 

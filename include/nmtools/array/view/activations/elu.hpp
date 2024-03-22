@@ -2,9 +2,11 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_ELU_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for ELU ufunc.
@@ -12,7 +14,7 @@ namespace nmtools::view
      * @tparam alpha_t 
      */
     template <typename alpha_t=float>
-    struct elu_t
+    struct elu
     {
         const alpha_t alpha = 1.0;
 
@@ -23,7 +25,46 @@ namespace nmtools::view
         {
             return (t > 0? t : alpha * (math::exp(t)-1));
         } // operator()
-    }; // elu_t
+
+        template <template<typename...>typename tuple, typename T>
+        constexpr auto operator[](const tuple<T>& t) const noexcept
+        {
+            return elu<T>{nmtools::get<0>(t)};
+        }
+
+        template <typename T>
+        constexpr auto operator==(const elu<T> other) const
+        {
+            return utils::isclose(alpha,other.alpha);
+        }
+    }; // elu
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename alpha_t>
+    struct to_string_t<view::fun::elu<alpha_t>,none_t>
+    {
+        auto operator()(view::fun::elu<alpha_t> op) const noexcept
+        {
+            nmtools_string str;
+            str += "elu{.alpha=";
+            str += to_string(op.alpha);
+            str += "}";
+
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    template <typename alpha_t=float>
+    using elu_t = fun::elu<alpha_t>;
 
     /**
      * @brief Create element-wise ELU ufunc view.
@@ -41,6 +82,14 @@ namespace nmtools::view
     {
         return ufunc(elu_t<alpha_t>{{alpha}}, array);
     } // elu
+
+    template <typename array_t, typename alpha_t=float>
+    nmtools_func_attribute
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto elu(const array_t& array, fun::elu<alpha_t> op)
+    {
+        return ufunc(op,array);
+    }
 } // namespace nmtools::view
 
 

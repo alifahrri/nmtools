@@ -3,39 +3,20 @@
 
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/activations/celu.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        struct celu_t
-        {
-            template <typename...args_t>
-            constexpr auto operator()(const args_t&...args) const
-            {
-                return view::celu(args...);
-            }
-        };
+        using celu = fun::unary_ufunc<view::celu_t<>>;
     }
-    constexpr inline auto celu = functor_t(unary_fmap_t<fun::celu_t>{});
 
-    template <typename alpha_t, typename ...arrays_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::ufunc_t, view::celu_t<alpha_t>, arrays_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::ufunc_t, view::celu_t<alpha_t>, arrays_t...
-        >;
+    // we want celu[alpha] to works, so do not use fun::unary_ufunc<view::celu_t<>>;
+    constexpr inline auto celu = functor_t(unary_fmap_t<fun::celu>{});
 
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return celu[view.op.alpha];
-        }
-    };
+    // using lambda breaks boost type index: Type name demangling failed
+    // constexpr inline auto celu = functor_t(unary_fmap_t<decltype(celu_fun)>{celu_fun});
 } // namespace nmtools::functional
 
 

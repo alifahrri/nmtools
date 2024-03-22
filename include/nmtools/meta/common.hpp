@@ -178,6 +178,10 @@ namespace nmtools::meta
 
     template <auto I, auto...Is>
     constexpr inline auto ct_v = ct<I,Is...>{};
+
+    // used mostly by functional module
+    struct empty_operands_t {};
+    struct empty_attributes_t {};
 } // nmtools::meta
 
 namespace nmtools::meta

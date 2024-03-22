@@ -38,4 +38,19 @@ TEST_CASE("log_sigmoid" * doctest::test_suite("functional::get_function_composit
     auto expect = fn::log_sigmoid;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+TEST_CASE("log_sigmoid" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,log_sigmoid,case1);
+    using namespace args;
+
+    auto array = view::log_sigmoid(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }

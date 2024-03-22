@@ -3,39 +3,16 @@
 
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/ufuncs/arcsinh.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        struct arcsinh_t
-        {
-            template <typename...args_t>
-            constexpr auto operator()(const args_t&...args) const
-            {
-                return view::arcsinh(args...);
-            }
-        };
+        using arcsinh = fun::unary_ufunc<view::arcsinh_t>;
     }
-    constexpr inline auto arcsinh = functor_t(unary_fmap_t<fun::arcsinh_t>{});
 
-    template <typename...arrays_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::ufunc_t, view::arcsinh_t, arrays_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::ufunc_t, view::arcsinh_t, arrays_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return arcsinh;
-        }
-    };
+    constexpr inline auto arcsinh = functor_t(unary_fmap_t<fun::arcsinh>{});
 } // namespace nmtools::functional
 
 

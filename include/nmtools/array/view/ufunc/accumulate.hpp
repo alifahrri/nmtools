@@ -18,7 +18,49 @@
 #include "nmtools/array/eval.hpp"
 #include "nmtools/constants.hpp"
 
+#include "nmtools/array/view/ufunc/reduce.hpp"
 #include "nmtools/array/view/ufunc/detail.hpp"
+#include "nmtools/utils/isequal.hpp"
+
+namespace nmtools::args
+{
+    template <
+        typename axis_t
+        , typename dtype_t
+        , typename op_t=none_t>
+    struct accumulate
+    {
+        using op_type = op_t;
+        using axis_type = axis_t;
+        using dtype_type = dtype_t;
+
+        axis_type axis   = {};
+        dtype_type dtype = {};
+        op_type op       = {};
+
+        template <typename...args_t>
+        constexpr auto operator==(const accumulate<args_t...>& other) const
+        {
+            using other_type = accumulate<args_t...>;
+            return utils::isequal(axis,other.axis)
+                && meta::is_same_v<op_type,typename other_type::op_type>
+                // TODO: check for dtype
+            ;
+        }
+    };
+
+    template <typename...args_t>
+    accumulate(args_t...) -> accumulate<args_t...>;
+} // namespace nmtools::args
+
+namespace nmtools::meta
+{
+    template <
+          typename axis_t
+        , typename dtype_t
+        , typename op_t>
+    struct is_attribute<args::accumulate<axis_t,dtype_t,op_t>> : true_type {};
+} // namespace nmtools::meta
 
 namespace nmtools::view
 {
@@ -31,7 +73,7 @@ namespace nmtools::view
      * @tparam array_t array type
      * @tparam axis_t axis type
      */
-    template <typename op_t, typename array_t, typename axis_t>
+    template <typename op_t, typename array_t, typename axis_t, typename dtype_t=none_t>
     struct accumulate_t
     {
         using array_type    = resolve_array_type_t<array_t>;
@@ -39,8 +81,11 @@ namespace nmtools::view
         using op_type       = op_t;
         using reducer_type  = reducer_t<op_t>;
         using element_type  = meta::get_element_type_t<array_t>;
+        using dtype_type    = dtype_t;
 
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
+
+        using attributes_type = args::accumulate<axis_type,dtype_type,op_type>;
 
         using shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
         using size_type  = decltype(nmtools::size<true>(meta::declval<array_t>()));
@@ -51,19 +96,35 @@ namespace nmtools::view
         reducer_type reducer;
         shape_type   shape_;
         size_type    size_;
+        dtype_type   dtype;
 
-        constexpr accumulate_t(op_type op, const array_t& array_, const axis_t& axis)
+        constexpr accumulate_t(op_t op, const array_t& array_, const axis_t& axis, dtype_t dtype={})
             : op(op)
             , array(initialize<array_type>(array_))
             , axis(init_attribute<axis_type>(axis))
             , reducer{op}
             , shape_(nmtools::shape<true>(array_))
             , size_(nmtools::size<true>(array_))
+            , dtype(dtype)
+        {}
+
+        constexpr accumulate_t(const array_t& array_, const args::accumulate<axis_t,dtype_t,op_t>& attributes)
+            : accumulate_t(
+                attributes.op
+                , array_
+                , attributes.axis
+                , attributes.dtype
+            )
         {}
 
         constexpr auto operands() const noexcept
         {
             return nmtools_tuple<array_type>{array};
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return attributes_type{axis,dtype,op};
         }
 
         constexpr auto shape() const
@@ -135,21 +196,21 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    template <typename op_t, typename array_t, typename axis_t>
+    template <typename op_t, typename array_t, typename axis_t, typename dtype_t>
     struct is_ndarray< 
-        view::decorator_t< view::accumulate_t, op_t, array_t, axis_t >
+        view::decorator_t< view::accumulate_t, op_t, array_t, axis_t, dtype_t >
     >
     {
         static constexpr auto value = is_ndarray_v<array_t>;
     };
 
     // provide specialization for reducer
-    template <typename op_t, typename array_t, typename axis_t>
+    template <typename op_t, typename array_t, typename axis_t, typename dtype_t>
     struct get_element_type<
-        view::decorator_t< view::accumulate_t, op_t, array_t, axis_t >
+        view::decorator_t< view::accumulate_t, op_t, array_t, axis_t, dtype_t >
     >
     {
-        using type = typename view::accumulate_t<op_t, array_t, axis_t>::result_type;
+        using type = typename view::accumulate_t<op_t, array_t, axis_t, dtype_t>::result_type;
     };
 } // namespace nmtools::meta
 

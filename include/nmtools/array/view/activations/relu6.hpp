@@ -1,11 +1,12 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_RELU6_HPP
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_RELU6_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct relu6_t
+    struct relu6
     {
         template <typename T>
         constexpr auto operator()(const T& t) const
@@ -18,7 +19,32 @@ namespace nmtools::view
             }
             return x;
         } // operator()
-    }; // relu6_t
+    }; // relu6
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::relu6,none_t>
+    {
+        auto operator()(view::fun::relu6) const
+        {
+            nmtools_string str;
+
+            str += "relu6";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    using relu6_t = fun::relu6;
 
     template <typename array_t>
     constexpr auto relu6(const array_t& array)

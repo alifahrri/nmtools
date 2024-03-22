@@ -1,12 +1,13 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_ARCCOSH_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_ARCCOSH_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct arccosh_t
+    struct arccosh
     {
         template <typename T>
         nmtools_func_attribute
@@ -15,7 +16,12 @@ namespace nmtools::view
         {
             return math::acosh(t);
         } // operator()
-    }; // arccosh_t
+    }; // arccosh
+} // namespace nmtools::view::fun
+
+namespace nmtools::view
+{
+    using arccosh_t = fun::arccosh;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -24,6 +30,26 @@ namespace nmtools::view
     {
         return ufunc(arccosh_t{},a);
     } // arccosh
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::arccosh,none_t>
+    {
+        auto operator()(view::fun::arccosh) const
+        {
+            nmtools_string str;
+
+            str += "arccosh";
+
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_ARCCOSH_HPP

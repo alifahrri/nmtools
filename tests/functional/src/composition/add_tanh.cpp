@@ -19,8 +19,11 @@ TEST_CASE("add_tanh" * doctest::test_suite("functional::get_function_composition
 
     auto function = fn::get_function_composition(z);
     auto expect =
-        fn::tanh * fn::add
+          fn::unary_ufunc[z.attributes()]
+        * fn::broadcast_binary_ufunc[y.attributes()]
     ;
+
+    // TODO: make fn::tanh == fn::unary_ufunc[view::tanh_{}]
     NMTOOLS_ASSERT_EQUAL( function, expect );
     NMTOOLS_ASSERT_CLOSE( function (a) (b), z );
 }

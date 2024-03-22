@@ -122,6 +122,7 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     array/cumprod.cpp
     array/mean.cpp
 
+    composition/add_tanh.cpp
     # composition/mean_subtract.cpp
     # composition/reduce_add_divide.cpp
 )

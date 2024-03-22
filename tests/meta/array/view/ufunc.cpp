@@ -52,63 +52,63 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = none_t;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = int[2][3][2];
             using axis_t     = none_t;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = int[2][3][2];
             using axis_t     = int;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = int[2][3][2];
             using axis_t     = int;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = int[2][3][2];
             using axis_t     = none_t;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = int[2][3][2];
             using axis_t     = int[3];
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = int[2][3][2];
             using axis_t     = int[3];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = int[2][3][2];
             using axis_t     = int[2];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = int[2][3][2];
             using axis_t     = int[3];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
         }
 
@@ -116,42 +116,42 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = none_t;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = none_t;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = int[3];
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = int[3];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = int[2];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim_ndarray, view_t );
         }
         {
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = int[3];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim_ndarray, view_t );
         }
     }
@@ -164,7 +164,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = none_t;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
         }
@@ -172,7 +172,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = none_t;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -180,7 +180,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = int;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -188,7 +188,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = int;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -196,7 +196,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2];
             using axis_t     = int;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
         }
@@ -204,7 +204,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2];
             using axis_t     = int;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -212,7 +212,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = int[3];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
         }
@@ -220,7 +220,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = int[3];
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -228,7 +228,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = int[2];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -236,7 +236,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = int[2][3][2];
             using axis_t     = int[1];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -245,7 +245,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = na::fixed_ndarray<int,2,3,2>;
             using axis_t     = none_t;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
         }
@@ -253,7 +253,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = na::fixed_ndarray<int,2,3,2>;
             using axis_t     = none_t;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -261,7 +261,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = na::fixed_ndarray<int,2,3,2>;
             using axis_t     = int[3];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
         }
@@ -269,7 +269,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = na::fixed_ndarray<int,2,3,2>;
             using axis_t     = int[3];
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -277,7 +277,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = na::fixed_ndarray<int,2,3,2>;
             using axis_t     = nmtools_array<int,3>;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
         }
@@ -285,7 +285,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = na::fixed_ndarray<int,2,3,2>;
             using axis_t     = nmtools_array<int,3>;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -293,7 +293,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = na::fixed_ndarray<int,2,3,2>;
             using axis_t     = int[2];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -301,7 +301,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = na::fixed_ndarray<int,2,3,2>;
             using axis_t     = int[1];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
         }
@@ -310,7 +310,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t = na::hybrid_ndarray<int,12,3>;
             using axis_t  = none_t;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
@@ -319,7 +319,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t = na::hybrid_ndarray<int,12,3>;
             using axis_t  = none_t;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
@@ -328,7 +328,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t = na::hybrid_ndarray<int,12,3>;
             using axis_t  = int[3];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
@@ -337,7 +337,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t = na::hybrid_ndarray<int,12,3>;
             using axis_t  = int[3];
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
@@ -346,7 +346,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t = na::hybrid_ndarray<int,12,3>;
             using axis_t  = nmtools_array<int,3>;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
@@ -355,7 +355,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t = na::hybrid_ndarray<int,12,3>;
             using axis_t  = nmtools_array<int,3>;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
@@ -364,7 +364,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t = na::hybrid_ndarray<int,12,3>;
             using axis_t  = int[2];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
@@ -373,7 +373,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t = na::hybrid_ndarray<int,12,3>;
             using axis_t  = int[1];
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
@@ -383,7 +383,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = none_t;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
@@ -392,7 +392,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = none_t;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
@@ -401,7 +401,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = nmtools_array<int,3>;
             using keepdims_t = meta::false_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_t );
@@ -410,7 +410,7 @@ TEST_CASE("reduce" * doctest::test_suite("view"))
             using array_t    = nmtools_array<nmtools_array<nmtools_array<int,2>,3>,2>;
             using axis_t     = nmtools_array<int,3>;
             using keepdims_t = meta::true_type;
-            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t>;
+            using view_t = view::decorator_t<view::reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,none_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_num, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, view_t );
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_size, view_t );
@@ -454,7 +454,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
     {
         {
             // divide * reduce_add
-            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type>;
+            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type, none_t>;
             using rhs_t = size_t;
             // using view_t = decltype(view::divide(declval(lhs_t),declval(rhs_t)));
             using view_t = view::decorator_t< view::ufunc_t, view::divide_t, lhs_t, rhs_t >;
@@ -462,7 +462,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
         }
         {
             // divide * reduce_add
-            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type>;
+            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type, none_t>;
             using rhs_t = size_t;
             using view_t = decltype(view::divide(declval(lhs_t),declval(rhs_t)));
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );
@@ -471,7 +471,7 @@ TEST_CASE("is_fixed_size_ndarray" * doctest::test_suite("view"))
     SUBCASE("multiply")
     {
         {
-            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type>;
+            using lhs_t = view::decorator_t<view::reduce_t, view::add_t<none_t,none_t,float>, int[3][2], size_t, none_t, false_type, none_t>;
             using rhs_t = size_t;
             using view_t = decltype(view::multiply(declval(lhs_t),declval(rhs_t)));
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size_ndarray, view_t );

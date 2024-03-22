@@ -130,7 +130,7 @@ TEST_CASE("add" * doctest::test_suite("functional::get_function_composition"))
     auto array = view::add(a,b);
 
     auto function = fn::get_function_composition(array);
-    auto expect = fn::add;
+    auto expect = fn::broadcast_binary_ufunc[array.attributes()];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }

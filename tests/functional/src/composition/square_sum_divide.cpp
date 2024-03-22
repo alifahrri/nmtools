@@ -9,9 +9,7 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
     using namespace args;
@@ -26,18 +24,16 @@ TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_co
 
     auto function = fn::get_function_composition(z);
     auto expect =
-        fn::divide
-        * fn::reduce_add[y.axis][dtype][y.initial][y.keepdims]
-        * fn::square
+        fn::broadcast_binary_ufunc[z.attributes()]
+        * fn::reduce[y.attributes()]
+        * fn::unary_ufunc[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
-    // NMTOOLS_ASSERT_CLOSE( function (a) (divisor), z );
+    NMTOOLS_ASSERT_CLOSE( function (a) (divisor), z );
 }
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
     using namespace args;
@@ -53,13 +49,13 @@ TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_co
 
     auto function = fn::get_function_composition(z);
     auto expect =
-        fn::divide
-        * fn::reduce_add[y.axis][dtype][y.initial][y.keepdims]
-        * fn::square
+        fn::broadcast_binary_ufunc[z.attributes()]
+        * fn::reduce[y.attributes()]
+        * fn::unary_ufunc[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
-    // NMTOOLS_ASSERT_CLOSE( function (a) (a), z );
+    NMTOOLS_ASSERT_CLOSE( function (a) (a), z );
 }
 
 using namespace nmtools::literals;
@@ -85,9 +81,7 @@ TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_op
     CHECK( &nm::at(operands,1_ct) == &nm::at(expect,1_ct) );
 }
 
-// NOTE: somehow get_function_composition produces wrong result for 3(+?) functions
-// TODO: fix
-TEST_CASE("square_sum_divide" * doctest::test_suite("functional::apply") * doctest::skip())
+TEST_CASE("square_sum_divide" * doctest::test_suite("functional::apply"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
     using namespace args;

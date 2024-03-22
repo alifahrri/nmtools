@@ -38,4 +38,44 @@ TEST_CASE("leaky_relu" * doctest::test_suite("functional::get_function_compositi
     auto expect = fn::leaky_relu[0.01];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }
+
+TEST_CASE("leaky_relu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,leaky_relu,case1);
+    using namespace args;
+
+    auto array = view::leaky_relu(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+namespace kwargs = nmtools::args;
+namespace fun = view::fun;
+
+
+
+#ifdef NMTOOLS_TESTING_KWARGS_INIT
+#ifndef __clang__
+
+TEST_CASE("leaky_relu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,leaky_relu,case1);
+    using namespace args;
+
+    auto array = view::leaky_relu(a,{.negative_slope=0.01});
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+#endif
+#endif

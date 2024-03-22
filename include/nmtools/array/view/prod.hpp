@@ -24,19 +24,19 @@ namespace nmtools::view
      * @return constexpr auto 
      */
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
-    constexpr auto prod(const left_t& a, const axis_t& axis, dtype_t, initial_t initial, keepdims_t keepdims)
+    constexpr auto prod(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = multiply_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,initial,keepdims);
+        return reduce(op_t{},a,axis,dtype,initial,keepdims);
     } // prod
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
-    constexpr auto prod(const left_t& a, const axis_t& axis, dtype_t, initial_t initial)
+    constexpr auto prod(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = multiply_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,initial);
+        return reduce(op_t{},a,axis,dtype,initial);
     } // prod
 
     template <typename left_t, typename axis_t, typename dtype_t>

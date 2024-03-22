@@ -1,12 +1,13 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_ARCCOS_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_ARCCOS_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct arccos_t
+    struct arccos
     {
         template <typename T>
         nmtools_func_attribute
@@ -15,7 +16,12 @@ namespace nmtools::view
         {
             return math::acos(t);
         } // operator()
-    }; // arccos_t
+    }; // arccos
+} // namespace nmtools::view::fun
+
+namespace nmtools::view
+{
+    using arccos_t = fun::arccos;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -24,6 +30,26 @@ namespace nmtools::view
     {
         return ufunc(arccos_t{},a);
     } // arccos
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::arccos,none_t>
+    {
+        auto operator()(view::fun::arccos) const
+        {
+            nmtools_string str;
+
+            str += "arccos";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_ARCCOS_HPP

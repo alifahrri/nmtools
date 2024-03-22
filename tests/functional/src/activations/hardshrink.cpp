@@ -50,4 +50,50 @@ TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_compositi
     auto expect = fn::hardshrink[lambda];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }
+
+TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,hardshrink,case2);
+    using namespace args;
+
+    auto array = view::hardshrink(a,lambda);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+namespace kwargs = nmtools::args;
+namespace fun = view::fun;
+
+
+
+#ifdef NMTOOLS_TESTING_KWARGS_INIT
+#ifndef __clang__
+
+TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,hardshrink,case2);
+    using namespace args;
+
+    auto array = view::hardshrink(a,{.lambda=lambda});
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[kwargs::ufunc{
+        .op=fun::hardshrink{.lambda=lambda}
+    }];
+    // TODO: make the following expression accepted
+    // auto expect = fn::unary_ufunc[{
+    //     .op=fun::hardshrink{.lambda=lambda}
+    // }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+#endif // __clang__
+#endif // NMTOOLS_TESTING_KWARGS_INIT

@@ -1,12 +1,13 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_SIN_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_SIN_HPP
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
-    struct sin_t
+    struct sin
     {
         template <typename T>
         nmtools_func_attribute
@@ -15,7 +16,12 @@ namespace nmtools::view
         {
             return math::sin(t);
         } // operator()
-    }; // sin_t
+    }; // sin
+}
+
+namespace nmtools::view
+{
+    using sin_t = fun::sin;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -24,6 +30,26 @@ namespace nmtools::view
     {
         return ufunc(sin_t{},a);
     } // sin
-};
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::sin,none_t>
+    {
+        auto operator()(view::fun::sin) const
+        {
+            nmtools_string str;
+
+            str += "sin";
+
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_SIN_HPP

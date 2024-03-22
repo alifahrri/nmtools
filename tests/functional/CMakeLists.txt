@@ -170,7 +170,13 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${FUNCTIONAL_TEST_SOURCES}
 )
 
-target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+option( NMTOOLS_KWARGS_INIT "enable kwargs tests using designated initializers (c++20)" OFF)
+if (NMTOOLS_KWARGS_INIT)
+    target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_20)
+    target_compile_definitions( ${PROJECT_NAME}-doctest PRIVATE NMTOOLS_TESTING_KWARGS_INIT )
+else ()
+    target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+endif ()
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
@@ -187,3 +193,7 @@ target_include_directories(
 if (NMTOOLS_CODE_COVERAGE)
     target_link_libraries(numeric-tests-doctest PUBLIC coverage_config)
 endif (NMTOOLS_CODE_COVERAGE)
+target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE
+    # NMTOOLS_ISCLOSE_NAN_HANDLING=1
+    NMTOOLS_ISCLOSE_INF_HANDLING=1
+)

@@ -18,8 +18,8 @@ TEST_CASE("reduce_add_divide" * doctest::test_suite("functional::get_function_co
 
     auto function = fn::get_function_composition(y);
     auto expect =
-        fn::divide
-        * fn::reduce_add[axis][dtype][initial][keepdims]
+        fn::broadcast_binary_ufunc[y.attributes()]
+        * fn::reduce[x.attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );

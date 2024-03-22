@@ -158,12 +158,12 @@ namespace nmtools::array::simd
         }
     }; // ufunc_simd_t
 
-    template <typename simd_tag_t, typename data_t, typename...ufunc_args_t>
-    struct ufunc_simd_t<view::hardtanh_t<ufunc_args_t...>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    template <typename simd_tag_t, typename data_t, typename min_val_t, typename max_val_t>
+    struct ufunc_simd_t<view::hardtanh_t<min_val_t,max_val_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
     {
         using simd_t = simd_op_t<simd_tag_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(0));
-        using ufunc_op_t = view::hardtanh_t<ufunc_args_t...>;
+        using ufunc_op_t = view::hardtanh_t<min_val_t,max_val_t>;
 
         const simd_dtype_t min_val;
         const simd_dtype_t max_val;
@@ -180,12 +180,12 @@ namespace nmtools::array::simd
         }
     }; // ufunc_simd_t
 
-    template <typename simd_tag_t, typename data_t, typename...ufunc_args_t>
-    struct ufunc_simd_t<view::leaky_relu_t<ufunc_args_t...>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    template <typename simd_tag_t, typename data_t, typename negative_slope_t>
+    struct ufunc_simd_t<view::leaky_relu_t<negative_slope_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
     {
         using simd_t = simd_op_t<simd_tag_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(0));
-        using ufunc_op_t = view::leaky_relu_t<ufunc_args_t...>;
+        using ufunc_op_t = view::leaky_relu_t<negative_slope_t>;
 
         const simd_dtype_t zero = simd_t::set1(0);
         const simd_dtype_t negative_slope;
@@ -203,12 +203,12 @@ namespace nmtools::array::simd
         }
     }; // ufunc_simd_t
 
-    template <typename simd_tag_t, typename data_t,typename...ufunc_args_t>
-    struct ufunc_simd_t<view::prelu_t<ufunc_args_t...>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    template <typename simd_tag_t, typename data_t,typename alpha_t>
+    struct ufunc_simd_t<view::prelu_t<alpha_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
     {
         using simd_t = simd_op_t<simd_tag_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(0));
-        using ufunc_op_t = view::prelu_t<ufunc_args_t...>;
+        using ufunc_op_t = view::prelu_t<alpha_t>;
 
         const simd_dtype_t zero = simd_t::set1(0);
         const simd_dtype_t alpha;
@@ -226,12 +226,12 @@ namespace nmtools::array::simd
         }
     }; // ufunc_simd_t
 
-    template <typename simd_tag_t, typename data_t, typename...ufunc_args_t>
-    struct ufunc_simd_t<view::softshrink_t<ufunc_args_t...>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    template <typename simd_tag_t, typename data_t, typename lambda_t>
+    struct ufunc_simd_t<view::softshrink_t<lambda_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
     {
         using simd_t = simd_op_t<simd_tag_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(0));
-        using ufunc_op_t = view::softshrink_t<ufunc_args_t...>;
+        using ufunc_op_t = view::softshrink_t<lambda_t>;
 
         const simd_dtype_t zero = simd_t::set1(0);
         const simd_dtype_t pos_lambda;
@@ -289,12 +289,12 @@ namespace nmtools::array::simd
         }
     }; // ufunc_simd_t
 
-    template <typename simd_tag_t, typename data_t, typename...ufunc_args_t>
-    struct ufunc_simd_t<view::hardshrink_t<ufunc_args_t...>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    template <typename simd_tag_t, typename data_t, typename lambda_t>
+    struct ufunc_simd_t<view::hardshrink_t<lambda_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
     {
         using simd_t = simd_op_t<simd_tag_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(0));
-        using ufunc_op_t = view::hardshrink_t<ufunc_args_t...>;
+        using ufunc_op_t = view::hardshrink_t<lambda_t>;
 
         const simd_dtype_t zero = simd_t::set1(0);
         const simd_dtype_t pos_lambda;
@@ -340,12 +340,12 @@ namespace nmtools::array::simd
         }
     };
 
-    template <typename simd_tag_t, typename data_t, typename...op_args_t>
-    struct ufunc_simd_t<view::add_t<op_args_t...>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
+    template <typename simd_tag_t, typename data_t, typename lhs_t, typename rhs_t, typename res_t>
+    struct ufunc_simd_t<view::add_t<lhs_t,rhs_t,res_t>,simd_tag_t,data_t> : simd_op_t<simd_tag_t,data_t>
     {
         using simd_t       = simd_op_t<simd_tag_t,data_t>;
         using simd_dtype_t = decltype(simd_t::set1(data_t{0}));
-        using ufunc_op_t   = view::add_t<op_args_t...>;
+        using ufunc_op_t   = view::add_t<lhs_t,rhs_t,res_t>;
 
         ufunc_simd_t([[maybe_unused]] ufunc_op_t op) {}
 

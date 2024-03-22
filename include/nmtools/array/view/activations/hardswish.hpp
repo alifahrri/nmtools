@@ -2,14 +2,15 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_HARDSWISH_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for hardswish ufunc.
      * 
      */
-    struct hardswish_t
+    struct hardswish
     {
         template <typename T>
         constexpr auto operator()(const T& x) const
@@ -22,7 +23,32 @@ namespace nmtools::view
                 return x * (x + 3) / 6;
             }
         } // operator()
-    }; // hardswish_t
+    }; // hardswish
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<view::fun::hardswish,none_t>
+    {
+        auto operator()(view::fun::hardswish) const
+        {
+            nmtools_string str;
+
+            str += "hardswish";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    using hardswish_t = fun::hardswish;
 
     /**
      * @brief Create element-wise hardswish ufunc view.

@@ -39,6 +39,24 @@ TEST_CASE("elu(case2)" * doctest::test_suite("functional::elu"))
 
 namespace view = nmtools::view;
 
+namespace kwargs = nmtools::args;
+namespace fun = view::fun;
+
+TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    using namespace args;
+
+    auto array = view::elu(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::elu;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+    NMTOOLS_ASSERT_CLOSE( expect (a), array );
+}
+
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
@@ -50,4 +68,103 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
     auto expect = fn::elu[alpha];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+    NMTOOLS_ASSERT_CLOSE( expect (a), array );
 }
+
+TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    using namespace args;
+
+    auto array = view::elu(a,alpha);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+    NMTOOLS_ASSERT_CLOSE( expect (a), array );
+}
+
+#ifdef NMTOOLS_TESTING_KWARGS_INIT
+#ifndef __clang__
+
+TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    using namespace args;
+
+    auto array = view::elu(a,{.alpha=alpha});
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[kwargs::ufunc{
+        .op=fun::elu{.alpha=alpha}
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+    NMTOOLS_ASSERT_CLOSE( expect (a), array );
+
+    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu[1.f], fn::elu[0.1f] );
+    NMTOOLS_ASSERT_NOT_EQUAL( fn::unary_ufunc[kwargs::ufunc{fun::elu{1.f}}], fn::elu[0.1f] );
+    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu[0.1f], fn::unary_ufunc[kwargs::ufunc{fun::elu{1.f}}] );
+    NMTOOLS_ASSERT_NOT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{fun::elu{0.1f}}] );
+
+    NMTOOLS_ASSERT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{fun::elu{}}] );
+    NMTOOLS_ASSERT_EQUAL( fn::elu[0.1f], fn::unary_ufunc[kwargs::ufunc{fun::elu{}}][0.1f] );
+    // NMTOOLS_ASSERT_EQUAL( fn::elu, fn::unary_ufunc[kwargs::ufunc{}][fun::elu{}] );
+}
+
+TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    using namespace args;
+
+    auto array = view::elu(a,{.alpha=0.1f});
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[kwargs::ufunc{
+        .op=fun::elu{.alpha=0.1f}
+    }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+    NMTOOLS_ASSERT_CLOSE( expect (a), array );
+}
+
+TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    using namespace args;
+
+    auto array = view::elu(a,{.alpha=0.1f});
+
+    auto function = fn::get_function_composition(array);
+    auto expect   = fn::elu[0.1f];
+    // auto expect = fn::elu[kwargs::ufunc{
+    //     .op=fun::elu{.alpha=0.1f}
+    // }];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+    NMTOOLS_ASSERT_CLOSE( expect (a), array );
+}
+
+TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    using namespace args;
+
+    auto array = view::elu(a,{.alpha=0.1f});
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::elu[0.1f];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+    NMTOOLS_ASSERT_CLOSE( expect (a), array );
+}
+
+#endif // __clang__
+#endif // NMTOOLS_TESTING_KWARGS_INIT

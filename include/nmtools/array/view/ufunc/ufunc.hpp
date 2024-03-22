@@ -21,6 +21,38 @@
 
 #include "nmtools/array/view/ufunc/detail.hpp"
 
+namespace nmtools::args
+{
+    template <typename op_t=none_t>
+    struct ufunc
+    {
+        using op_type = op_t;
+
+        op_type op = {};
+
+        template <typename other_op_t>
+        constexpr auto operator==(const ufunc<other_op_t>& other) const
+        {
+            if constexpr (meta::expression_check_v<meta::expr::equal,op_type,other_op_t>) {
+                return op == other.op;   
+            } else {
+                return meta::is_same_v<op_type,op_t>;
+            }
+        }
+    };
+
+    template <typename...args_t>
+    ufunc(args_t...) -> ufunc<args_t...>;
+} // namespace nmtools::args
+
+namespace nmtools::meta
+{
+    template <typename op_t>
+    struct is_attribute<
+        args::ufunc<op_t>
+    > : true_type {};
+} // namespace nmtools::meta
+
 namespace nmtools::view
 {
     /**
@@ -116,7 +148,7 @@ namespace nmtools::view
 
         constexpr auto attributes() const noexcept
         {
-            return nmtools_tuple{op};
+            return args::ufunc<op_t>{op};
         }
         
         constexpr auto shape() const

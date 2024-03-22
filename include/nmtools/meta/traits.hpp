@@ -21,6 +21,7 @@
 #include "nmtools/meta/bits/traits/has_type.hpp"
 #include "nmtools/meta/bits/traits/has_value_type.hpp"
 #include "nmtools/meta/bits/traits/is_assignable.hpp"
+#include "nmtools/meta/bits/traits/is_attribute.hpp"
 #include "nmtools/meta/bits/traits/is_bit_reference.hpp"
 #include "nmtools/meta/bits/traits/is_boolean.hpp"
 #include "nmtools/meta/bits/traits/is_bounded_array.hpp"

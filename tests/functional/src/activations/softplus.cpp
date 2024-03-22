@@ -35,7 +35,48 @@ TEST_CASE("softplus" * doctest::test_suite("functional::get_function_composition
     auto array = view::softplus(a);
 
     auto function = fn::get_function_composition(array);
+    // TODO: make comparison fn::unary_ufunc[fun::softplus()][...] == fn::softplus[...]
     auto expect = fn::softplus[1.][20.];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
 }
+
+TEST_CASE("softplus" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,softplus,case1);
+    using namespace args;
+
+    auto array = view::softplus(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+namespace kwargs = nmtools::args;
+namespace fun = view::fun;
+
+
+
+#ifdef NMTOOLS_TESTING_KWARGS_INIT
+#ifndef __clang__
+
+TEST_CASE("softplus" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(activations,softplus,case1);
+    using namespace args;
+
+    auto array = view::softplus(a,{.beta=1.,.threshold=20.});
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[array.attributes()];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+    NMTOOLS_ASSERT_CLOSE( function (a), array );
+}
+
+#endif
+#endif

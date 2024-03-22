@@ -2,9 +2,11 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_CELU_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for ufunc celu view.
@@ -12,7 +14,7 @@ namespace nmtools::view
      * @tparam alpha_t 
      */
     template <typename alpha_t=float>
-    struct celu_t
+    struct celu
     {
         const alpha_t alpha = 1.0;
 
@@ -24,7 +26,46 @@ namespace nmtools::view
             constexpr auto zero = static_cast<T>(0);
             return math::max(zero,t) + math::min(zero,alpha*(math::exp(t / alpha)-1));
         } // operator()
-    }; // celu_t
+
+        template <template<typename...>typename tuple, typename T>
+        constexpr auto operator[](const tuple<T>& t) const noexcept
+        {
+            return celu<T>{nmtools::get<0>(t)};
+        }
+
+        template <typename T>
+        constexpr auto operator==(const celu<T> other) const
+        {
+            return utils::isclose(alpha,other.alpha);
+        }
+    }; // celu
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename alpha_t>
+    struct to_string_t<view::fun::celu<alpha_t>,none_t>
+    {
+        auto operator()(view::fun::celu<alpha_t> op) const
+        {
+            nmtools_string str;
+            str += "celu{.alpha=";
+            str += to_string(op.alpha);
+            str += "}";
+
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    template <typename alpha_t=float>
+    using celu_t = fun::celu<alpha_t>;
 
     /**
      * @brief Create element-wise celu ufunc view.
@@ -41,6 +82,14 @@ namespace nmtools::view
     auto celu(const array_t& array, alpha_t alpha=alpha_t{1.0})
     {
         return ufunc(celu_t<alpha_t>{{alpha}},array);
+    } // celu
+
+    template <typename array_t, typename alpha_t=float>
+    nmtools_func_attribute
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto celu(const array_t& array, fun::celu<alpha_t> op)
+    {
+        return ufunc(op,array);
     } // celu
 } // namespace nmtools::view
 

@@ -26,6 +26,9 @@ TEST_CASE("arccos(case1)" * doctest::test_suite("functional::arccos"))
 }
 
 namespace view = nmtools::view;
+namespace fun  = view::fun;
+
+using nmtools::args::ufunc;
 
 TEST_CASE("arccos" * doctest::test_suite("functional::get_function_composition"))
 {
@@ -36,6 +39,19 @@ TEST_CASE("arccos" * doctest::test_suite("functional::get_function_composition")
 
     auto function = fn::get_function_composition(array);
     auto expect = fn::arccos;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}
+
+TEST_CASE("arccos" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,arccos,case1);
+    using namespace args;
+
+    auto array = view::arccos(a);
+
+    auto function = fn::get_function_composition(array);
+    auto expect = fn::unary_ufunc[ufunc{fun::arccos()}];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }

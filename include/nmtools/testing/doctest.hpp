@@ -9,6 +9,9 @@
 #undef NMTOOLS_ASSERT_EQUAL
 #define NMTOOLS_ASSERT_EQUAL NMTOOLS_ASSERT_EQUAL_DOCTEST
 
+#undef NMTOOLS_ASSERT_NOT_EQUAL
+#define NMTOOLS_ASSERT_NOT_EQUAL NMTOOLS_ASSERT_NOT_EQUAL_DOCTEST
+
 #define NMTOOLS_REQUIRE_EQUAL(lhs, rhs) \
 { \
     auto lhs_str = nmtools::utils::to_string(lhs); \

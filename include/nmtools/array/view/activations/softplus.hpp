@@ -1,10 +1,12 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SOFTPLUS_HPP
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SOFTPLUS_HPP
 
+#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 
-namespace nmtools::view
+namespace nmtools::view::fun
 {
     /**
      * @brief Function object for softplus ufunc
@@ -12,8 +14,8 @@ namespace nmtools::view
      * @tparam beta_t 
      * @tparam threshold_t 
      */
-    template <typename beta_t=float, typename threshold_t=float>
-    struct softplus_t
+    template <typename beta_t=float, typename threshold_t=beta_t>
+    struct softplus
     {
         const beta_t beta = 1;
         const threshold_t threshold = 20;
@@ -21,28 +23,75 @@ namespace nmtools::view
         template <typename beta_type=float, typename threshold_type=float, typename T>
         nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
-        static auto softplus(const T& x, beta_type beta=beta_type{1}, threshold_type threshold=threshold_type{20})
+        static auto eval(const T& x, beta_type beta=beta_type{1}, threshold_type threshold=threshold_type{20})
         {
-            auto t_times_beta = x * beta;
+            using result_t = decltype(math::exp(x));
+            result_t res = x;
+            auto t_times_beta = res * beta;
             if (t_times_beta > threshold) {
-                return x;
+                return res;
             } else {
-                return math::log(1 + math::exp(t_times_beta)) / beta;
+                return static_cast<result_t>(math::log(1 + math::exp(t_times_beta)) / beta);
             }
-        } // softplus
+        } // eval
 
         template <typename T>
         nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& x) const
         {
-            return softplus(x,beta,threshold);
+            return eval(x,beta,threshold);
         } // operator()
-    }; // softplus_t
 
+        template <template<typename...>typename tuple, typename T, typename U>
+        constexpr auto operator[](const tuple<T,U>& x) const noexcept
+        {
+            return softplus<T,U>{nmtools::get<0>(x),nmtools::get<1>(x)};
+        }
+
+        template <template<typename...>typename tuple, typename T>
+        constexpr auto operator[](const tuple<T>& x) const noexcept
+        {
+            return softplus<T>{nmtools::get<0>(x)};
+        }
+
+        template <typename T>
+        constexpr auto operator==(const softplus<T> other) const
+        {
+            return utils::isclose(beta,other.beta)
+                && utils::isclose(threshold,other.threshold);
+        }
+    }; // softplus
+} // namespace nmtools::view::fun
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
     template <typename beta_t, typename threshold_t>
-    nmtools_func_attribute
-    softplus_t(beta_t,threshold_t) -> softplus_t<beta_t,threshold_t>;
+    struct to_string_t<view::fun::softplus<beta_t,threshold_t>,none_t>
+    {
+        auto operator()(view::fun::softplus<beta_t,threshold_t> op) const
+        {
+            nmtools_string str;
+
+            str += "softplus{.beta=";
+            str += to_string(op.beta);
+            str += ",.threshold=";
+            str += to_string(op.threshold);
+            str += "}";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
+namespace nmtools::view
+{
+    template <typename beta_t=float, typename threshold_t=float>
+    using softplus_t = fun::softplus<beta_t,threshold_t>;
 
     /**
      * @brief Create element-wise softplus ufunc view.
@@ -60,9 +109,16 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto softplus(const array_t& array, beta_t beta=beta_t{1}, threshold_t threshold=threshold_t{20})
     {
-        return ufunc(softplus_t{beta,threshold},array);
+        return ufunc(softplus_t<beta_t,threshold_t>{beta,threshold},array);
     } // softplus
 
+    template <typename array_t, typename beta_t=float, typename threshold_t=float>
+    nmtools_func_attribute
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto softplus(const array_t& array, fun::softplus<beta_t,threshold_t> op)
+    {
+        return ufunc(op,array);
+    } // softplus
 } // namespace nmtools::view
 
 #endif // NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SOFTPLUS_HPP

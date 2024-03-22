@@ -3,39 +3,15 @@
 
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/activations/prelu.hpp"
+#include "nmtools/array/functional/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        struct prelu_t
-        {
-            template <typename...args_t>
-            constexpr auto operator()(const args_t&...args) const
-            {
-                return view::prelu(args...);
-            }
-        };
+        using prelu = fun::unary_ufunc<view::prelu_t<>>;
     }
-    constexpr inline auto prelu = functor_t(unary_fmap_t<fun::prelu_t>{});
-
-    template <typename alpha_t, typename ...arrays_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::ufunc_t, view::prelu_t<alpha_t>, arrays_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::ufunc_t, view::prelu_t<alpha_t>, arrays_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return prelu[view.op.alpha];
-        }
-    };
+    constexpr inline auto prelu = functor_t(unary_fmap_t<fun::prelu>{});
 } // namespace nmtools::functional
 
 
