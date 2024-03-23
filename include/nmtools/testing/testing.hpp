@@ -33,7 +33,9 @@ auto var_name = nmtools::testing::cast<T>(var<value_type_##var_name>);
 #define STRINGIFY(array) \
 nmtools::utils::to_string(array)
 
-#define NMTOOLS_TESTING_OUTPUT_PRECISION 1e-6
+#ifndef NMTOOLS_TESTING_OUTPUT_PRECISION
+#define NMTOOLS_TESTING_OUTPUT_PRECISION (1e-6)
+#endif
 
 /**
  * @brief implementation of typeinfo logging for doctest,
