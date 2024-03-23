@@ -351,8 +351,15 @@ namespace nmtools::array::sycl
         if (!default_context) {
             auto sycl_devices = ::sycl::device::get_devices();
             auto platform_idx = 0ul;
+            auto platform_name = std::string();
             if (auto env_idx = std::getenv("NMTOOLS_SYCL_DEFAULT_PLATFORM_IDX")) {
                 platform_idx = std::stoi(env_idx);
+            }
+            if (auto env_name = std::getenv("NMTOOLS_SYCL_DEFAULT_PLATFORM")) {
+                platform_name = env_name;
+                std::transform(platform_name.begin(), platform_name.end(), platform_name.begin(), 
+                   [](unsigned char c){ return std::tolower(c); }
+                );
             }
             // TODO: better logging utilities
             std::cout << "\033[1;33m[nmtools sycl]\033[0m number of sycl devices: " << sycl_devices.size() << "\n";
@@ -366,6 +373,14 @@ namespace nmtools::array::sycl
                 PRINT_PLATFORM_PROPERTY(platform, version);
                 PRINT_PLATFORM_PROPERTY(platform, profile);
                 PRINT_PLATFORM_PROPERTY(platform, extensions);
+
+                auto name = platform.get_info<::sycl::info::platform::name>();
+                std::transform(name.begin(), name.end(), name.begin(), 
+                   [](unsigned char c){ return std::tolower(c); }
+                );
+                if (name == platform_name) {
+                    platform_idx = i;
+                }
             }
             auto selected_device = sycl_devices.at(platform_idx);
             std::cout << "\033[1;33m[nmtools sycl]\033[0m default context using platform #" << platform_idx << "\n";
