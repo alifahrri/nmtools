@@ -46,6 +46,7 @@ echo "using LLVM_VERSION=${LLVM_VERSION}"
 echo "using ACCELERATED_CPU=${ACCELERATED_CPU}"
 echo "using OPENCL_BACKEND=${OPENCL_BACKEND}"
 echo "using CUDA_BACKEND=${CUDA_BACKEND}"
+echo "using LEVEL_ZERO_BACKEND=${LEVEL_ZERO_BACKEND}"
 
 DIR=OpenSYCL
 GIT_REPOSITORY=https://github.com/OpenSYCL/OpenSYCL
@@ -59,6 +60,15 @@ if [[ -d "$DIR" ]]; then
 else
     git clone --single-branch -b ${VERSION}  ${GIT_REPOSITORY}
 fi
+
+apt install -y python3-dev libpython3-dev \
+    build-essential cmake git pkg-config \
+    make ninja-build apt-utils \
+    intel-opencl-icd clinfo \
+    libboost-context-dev libboost-fiber-dev \
+    libclang-${LLVM_VERSION}-dev clang-${LLVM_VERSION} \
+    llvm-${LLVM_VERSION} libclang-cpp${LLVM_VERSION}-dev libclang-cpp${LLVM_VERSION} \
+    llvm-${LLVM_VERSION}-dev --fix-missing
 
 cd ${DIR}
 

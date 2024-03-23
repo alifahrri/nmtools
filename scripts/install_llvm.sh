@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ -z "${LLVM_VERSION}" ]]; then
-  LLVM_VERSION="15"
+  LLVM_VERSION="14"
 else
   LLVM_VERSION="${LLVM_VERSION}"
   echo "set LLVM_VERSION from env: ${LLVM_VERSION}"
@@ -13,4 +13,4 @@ if [[ -f "llvm.sh" ]]; then
 fi
 wget https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
-sudo ./llvm.sh ${LLVM_VERSION}
+./llvm.sh ${LLVM_VERSION}
