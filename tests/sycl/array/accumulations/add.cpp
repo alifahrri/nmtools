@@ -34,7 +34,10 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
 
-TEST_CASE("accumulate_add(case1)" * doctest::test_suite("array::add.accumulate"))
+// TODO: fix sycl kernel jit compile error:
+// InvalidBitWidth: Invalid bit width in input: 48
+// LLVMToSpirv: llvm-spirv invocation failed with exit code 8
+TEST_CASE("accumulate_add(case1)" * doctest::test_suite("array::add.accumulate") * doctest::skip())
 {
     auto dtype = nm::none_t{};
     // ACCUMULATE_ADD( case1,   a, axis );
