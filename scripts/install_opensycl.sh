@@ -66,7 +66,7 @@ apt install -y python3-dev libpython3-dev \
     make ninja-build apt-utils \
     intel-opencl-icd clinfo \
     libboost-context-dev libboost-fiber-dev \
-    libomp-dev \
+    libomp-dev libgomp1 \
     libclang-${LLVM_VERSION}-dev clang-${LLVM_VERSION} \
     llvm-${LLVM_VERSION} libclang-cpp${LLVM_VERSION}-dev libclang-cpp${LLVM_VERSION} \
     llvm-${LLVM_VERSION}-dev --fix-missing
