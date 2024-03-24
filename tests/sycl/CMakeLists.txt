@@ -15,6 +15,8 @@ if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
+find_package(OpenMP)
+
 enable_testing()
 
 option(NMTOOLS_SYCL_TEST_ALL "test all sycl modules" ON)
@@ -117,6 +119,10 @@ endif()
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif ()
+
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(${PROJECT_NAME}-doctest PRIVATE OpenMP::OpenMP_CXX)
+endif()
 
 target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE
     NMTOOLS_ISCLOSE_NAN_HANDLING=1

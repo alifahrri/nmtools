@@ -1,7 +1,9 @@
 #ifndef NMTOOLS_ASSERT_HPP
 #define NMTOOLS_ASSERT_HPP
 
-#ifdef ARDUINO
+#if defined(NMTOOLS_NOASSERT)
+#include "nmtools/platform/assert/noassert.hpp"
+#elif defined(ARDUINO)
 #include "nmtools/platform/assert/arduino.hpp"
 #elif defined(__CUDA__)
 #include "nmtools/platform/assert/cuda.hpp"

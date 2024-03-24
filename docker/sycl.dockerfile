@@ -61,6 +61,16 @@ ENV LEVEL_ZERO_BACKEND=${level_zero_backend}
 ARG toolchain=sycl-clang14-omp
 ENV TOOLCHAIN=${toolchain}
 
+# for llvm-spirv & pocl
+ENV LLVM_VERSION="14"
+ENV LLVM_SPV_VERSION="v14.0.0"
+ENV POCL_VERSION="v5.0"
+
+# TODO: make the following installation conditional on selected backend
+RUN bash scripts/install_llvm.sh
+RUN bash scripts/install_llvm_spirv.sh
+RUN bash scripts/install_pocl.sh
+
 RUN bash scripts/install_opensycl.sh
 
 RUN mkdir -p build/${toolchain} && cd build/${toolchain} \

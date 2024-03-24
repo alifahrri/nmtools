@@ -22,6 +22,17 @@ jobs:
       - name: run tests
         run: |
           docker run --rm nmtools:sycl-clang14-omp
+  hipsycl-clang14-opencl-docker:
+    name: hipsycl-clang14-opencl-docker
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: build docker
+        run: |
+          docker build . --tag nmtools:sycl-clang14-opencl --build-arg opencl_backend=ON --build-arg toolchain=sycl-clang14-generic --file docker/sycl.dockerfile
+      - name: run tests
+        run: |
+          docker run -e NMTOOLS_SYCL_DEFAULT_PLATFORM=opencl --rm nmtools:sycl-clang14-opencl
   hipsycl-clang14-cuda-docker:
     name: hipsycl-clang14-cuda-docker
     runs-on: ubuntu-20.04

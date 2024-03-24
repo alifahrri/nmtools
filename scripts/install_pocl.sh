@@ -8,7 +8,7 @@ else
 fi
 
 if [[ -z "${POCL_VERSION}" ]]; then
-  POCL_VERSION="v3.1"
+  POCL_VERSION="v5.0"
 else
   POCL_VERSION="${POCL_VERSION}"
   echo "set POCL_VERSION from env"
@@ -20,25 +20,30 @@ else
   echo "set POCL_BUILD_TYPE from env"
 fi
 
+LLVM_SPV_PATH=/usr/local/bin/llvm-spirv
+
 echo "using LLVM_VERSION=${LLVM_VERSION}"
 
 echo "using POCL_VERSION=${POCL_VERSION}"
 
 echo "using POCL_BUILD_TYPE=${POCL_BUILD_TYPE}"
 
-DIR=pocl
-if [[ -d "$DIR" ]]; then
-    echo "$DIR exists. skipping cloning"
-else
-    git clone https://github.com/pocl/pocl.git
-fi
+echo "using LLVM_SPV_PATH=${LLVM_SPV_PATH}"
 
-apt install -y xxd python3-dev libpython3-dev build-essential ocl-icd-libopencl1 intel-opencl-icd \
-    cmake git pkg-config libclang-${LLVM_VERSION}-dev clang \
+apt install -y python3-dev libpython3-dev build-essential ocl-icd-libopencl1 \
+    cmake git pkg-config libclang-${LLVM_VERSION}-dev clang-${LLVM_VERSION} \
     llvm-${LLVM_VERSION} make ninja-build ocl-icd-libopencl1 ocl-icd-dev \
     ocl-icd-opencl-dev libhwloc-dev zlib1g zlib1g-dev clinfo dialog apt-utils \
     libxml2-dev libclang-cpp${LLVM_VERSION}-dev libclang-cpp${LLVM_VERSION} \
-    llvm-${LLVM_VERSION}-dev --fix-missing
+    llvm-${LLVM_VERSION}-dev
+
+DIR=pocl
+GIT_REPOSITORY=https://github.com/pocl/pocl.git
+if [[ -d "$DIR" ]]; then
+    echo "$DIR exists. skipping cloning"
+else
+    git clone ${GIT_REPOSITORY}
+fi
 
 cd ${DIR}
 git fetch && git checkout ${POCL_VERSION}
@@ -46,6 +51,6 @@ mkdir -p build && cd build \
     && cmake -DCMAKE_BUILD_TYPE=${POCL_BUILD_TYPE} \
     -DENABLE_TESTS=OFF \
     -DENABLE_CUDA=OFF \
-    -DSPIRV=ON -DLLVM_SPIRV=/usr/local/bin/llvm-spirv \
+    -DSPIRV=ON -DLLVM_SPIRV=${LLVM_SPV_PATH} \
     -DCMAKE_INSTALL_PREFIX=/usr .. \
     && make -j2 && make install
