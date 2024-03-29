@@ -86,7 +86,7 @@ namespace nmtools::functional
                 , "the return of apply function is invalid!" );
         }
         return result;
-    }
+    } // apply_function
 
     /**
      * @brief Type constructor to compose functors.
@@ -149,6 +149,7 @@ namespace nmtools::functional
     }; // functor_composition_t
 
     template <template<typename...>typename tuple, typename...functors_t>
+    nmtools_func_attribute
     functor_composition_t(const tuple<functors_t...>&) -> functor_composition_t<tuple<functors_t...>>;
 
     /**
@@ -249,6 +250,7 @@ namespace nmtools::functional
     }; // functor_t
 
     template <typename F>
+    nmtools_func_attribute
     functor_t(const F) -> functor_t<F,meta::empty_operands_t,meta::empty_attributes_t>;
 
     template <template<typename...>typename left_tp, typename...left_functors_t, typename left_operands_t
@@ -412,6 +414,7 @@ namespace nmtools::functional
     }; // apply_function_t<functor_composition_t<...>>
 
     template <typename F>
+    nmtools_func_attribute // host device
     apply_function_t(const F&) -> apply_function_t<F>;
 
     template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>

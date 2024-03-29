@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_PLATFOM_CUDA_HPP
-#define NMTOOLS_PLATFOM_CUDA_HPP
+#ifndef NMTOOLS_PLATFORM_CUDA_HPP
+#define NMTOOLS_PLATFORM_CUDA_HPP
 
 #define nmtools_func_attribute __host__ __device__
 
@@ -19,4 +19,4 @@
 #define NMTOOLS_DISABLE_STL
 #endif
 
-#endif // NMTOOLS_PLATFOM_CUDA_HPP
+#endif // NMTOOLS_PLATFORM_CUDA_HPP
