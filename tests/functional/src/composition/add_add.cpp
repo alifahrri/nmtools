@@ -76,15 +76,15 @@ TEST_CASE("add_flatten(case1)" * doctest::test_suite("functional::composition"))
         auto f = fn::add * fn::add;
         static_assert( decltype(f)::arity == 3 );
         FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
-        FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
-        FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
-        FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
-        FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
+        FUNCTIONAL_SUBCASE( "case1", result, f, a_a, b_a, c_a );
+        FUNCTIONAL_SUBCASE( "case1", result, f, a_f, b_f, c_f );
+        FUNCTIONAL_SUBCASE( "case1", result, f, a_h, b_h, c_h );
+        FUNCTIONAL_SUBCASE( "case1", result, f, a_d, b_d, c_d );
 
         CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
-        CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
-        CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
-        CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
-        CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a, b, c );
+        CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a_a, b_a, c_a );
+        CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a_f, b_f, c_f );
+        CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a_h, b_h, c_h );
+        CURRY_TERNARY_FUNCTIONAL_SUBCASE( "case1", result, f, a_d, b_d, c_d );
     }
 }

@@ -6,8 +6,10 @@
 #include "nmtools/array/view/alias.hpp"
 #include "nmtools/utility/ct_map.hpp"
 #include "nmtools/utility/ct_digraph.hpp"
+#include "nmtools/utility/tuple_slice.hpp"
 #include "nmtools/utils/isequal/isequal.hpp"
 #include "nmtools/utils/isclose/isclose.hpp"
+#include "nmtools/array/fwd.hpp"
 
 namespace nmtools::meta
 {
@@ -38,6 +40,7 @@ namespace nmtools::meta
 
 namespace nmtools::functional
 {
+    // TODO: refactor to not use empty_operands_t & empty_attributes_t
     constexpr inline auto EmptyOperands   = meta::empty_operands_t{};
     constexpr inline auto EmptyAttributes = meta::empty_attributes_t{};
 
@@ -64,6 +67,26 @@ namespace nmtools::functional
 
     template <typename functors_t, typename operands_t=meta::empty_operands_t>
     struct functor_composition_t;
+
+    template <typename F>
+    struct apply_function_t;
+
+    template <typename F, template<typename...>typename tuple, typename...new_operands_t>
+    constexpr auto apply_function(const F& function, const tuple<new_operands_t...>& new_operands)
+    {
+        auto result = apply_function_t<F>{function}.apply(new_operands);
+        if constexpr (meta::is_tuple_v<decltype(result)>) {
+            meta::template_for<meta::len_v<decltype(result)>>([&](auto index){
+                using value_t = meta::at_t<decltype(result),decltype(index)::value>;
+                static_assert( !meta::is_fail_v<value_t>
+                    , "the return of apply function is invalid!" );
+            });
+        } else {
+            static_assert( !meta::is_fail_v<decltype(result)>
+                , "the return of apply function is invalid!" );
+        }
+        return result;
+    } // apply_function
 
     /**
      * @brief Type constructor to compose functors.
@@ -102,6 +125,7 @@ namespace nmtools::functional
         nmtools_func_attribute
         ~functor_composition_t() = default;
 
+        // TODO: also consider number of output, now that support multiple return
         static constexpr auto arity = [](){
             using functors = meta::type_list<functors_t...>;
             constexpr auto n_functors = sizeof...(functors_t);
@@ -120,56 +144,12 @@ namespace nmtools::functional
         template <typename...m_operands_t>
         constexpr auto operator()(const m_operands_t&...new_operands) const noexcept
         {
-            using operands_pack_t = meta::pack_operands_type_t<void,operands_t,m_operands_t...>;
-            auto operands_ = initialize_operands<operands_pack_t>(operands,new_operands...);
-            // TODO: constraint number of operands to be <= arity
-            if constexpr ((arity - meta::len_v<operands_pack_t>) > 0) {
-                // currying
-                using function_t = functor_composition_t< tuple<functors_t...>,operands_pack_t>;
-                auto function    = function_t{functors,operands_};
-                return function;
-            } else {
-                // apply
-                // where N = arity_i for the right-most functor, and N-1 for the rest
-                using namespace literals;
-                constexpr auto N = meta::len_v<functors_type>;
-                const auto& [result, idx] = meta::template_reduce<N>([&](const auto& init, auto index){
-                    constexpr auto I = (N-1) - decltype(index)::value;
-                    const auto& functor = nmtools::get<I>(functors);
-                    const auto& [prev_result, operand_idx] = init;
-                    using functor_t      = meta::remove_cvref_t<decltype(functor)>;
-                    using prev_result_t  = meta::remove_cvref_t<decltype(prev_result)>;
-                    constexpr auto arity_ = functor_t::arity;
-                    [[maybe_unused]] constexpr auto op_idx = decltype(operand_idx)::value;
-                    [[maybe_unused]] auto next_op_idx = meta::ct_v<op_idx+arity_>;
-
-                    if constexpr ((arity_ == 1) && meta::is_same_v<prev_result_t,meta::empty_operands_t>) {
-                        return nmtools_tuple{functor(nmtools::get<op_idx>(operands_)),next_op_idx};
-                    } else if constexpr (arity_ == 1) {
-                        // no need to retrieve operands, just keep operand_idx
-                        return nmtools_tuple{functor(prev_result),operand_idx};
-                    } else if constexpr (meta::is_same_v<prev_result_t,meta::empty_operands_t>) {
-                        // NOTE: this case may be encountered at the first apply when arity > 1
-                        auto result_ = meta::template_reduce<arity_-1>([&](auto f, auto index){
-                            constexpr auto II = decltype(index)::value + 1;
-                            return f(nmtools::get<op_idx+II>(operands_));
-                        }, functor(nmtools::get<op_idx>(operands_)));
-                        return nmtools_tuple{result_, next_op_idx};
-                    } else {
-                        // NOTE: similar to above but use prev result as init
-                        auto result_ = meta::template_reduce<arity_-1>([&](auto f, auto index){
-                            constexpr auto II = decltype(index)::value;
-                            return f(nmtools::get<op_idx+II>(operands_));
-                        }, functor(prev_result));
-                        return nmtools_tuple{result_, next_op_idx};
-                    }
-                }, nmtools_tuple{EmptyOperands,0_ct});
-                return result;
-            }
+            return apply_function(*this,pack_operands(new_operands...));
         } // operator()
     }; // functor_composition_t
 
     template <template<typename...>typename tuple, typename...functors_t>
+    nmtools_func_attribute
     functor_composition_t(const tuple<functors_t...>&) -> functor_composition_t<tuple<functors_t...>>;
 
     /**
@@ -188,6 +168,7 @@ namespace nmtools::functional
         using operands_type   = const operands_t;
         using attributes_type = const attributes_t;
 
+        // TODO: also consider number of output, now that support multiple return
         static constexpr auto arity = [](){
             if constexpr (meta::is_same_v<operands_t,meta::empty_operands_t>) {
                 return F::arity;
@@ -254,7 +235,7 @@ namespace nmtools::functional
                 return function_t{fmap,operands,nmtools_tuple{view::init_attribute<new_attribute_t>(new_attribute)}};
             } else {
                 using new_attribute_t = view::resolve_attribute_type_t<m_attribute_t>;
-                auto new_attributes = view::detail::tuple_append(attributes,view::init_attribute<new_attribute_t>(new_attribute));
+                auto new_attributes = utility::tuple_append(attributes,view::init_attribute<new_attribute_t>(new_attribute));
                 using new_attributes_t = decltype(new_attributes);
                 using function_t = functor_t<F,operands_t,new_attributes_t>;
                 return function_t{fmap,operands,new_attributes};
@@ -264,17 +245,76 @@ namespace nmtools::functional
         template <typename...m_operands_t>
         constexpr auto operator()(const m_operands_t&...new_operands) const noexcept
         {
+            return apply_function(*this,pack_operands(new_operands...));
+        } // operator()
+    }; // functor_t
+
+    template <typename F>
+    nmtools_func_attribute
+    functor_t(const F) -> functor_t<F,meta::empty_operands_t,meta::empty_attributes_t>;
+
+    template <template<typename...>typename left_tp, typename...left_functors_t, typename left_operands_t
+        , template<typename...>typename right_tp, typename...right_functors_t, typename right_operands_t>
+    constexpr auto operator*(const functor_composition_t<left_tp<left_functors_t...>,left_operands_t>& left
+        , const functor_composition_t<right_tp<right_functors_t...>,right_operands_t>& right) noexcept
+    {
+        // NOTE: no need to check arity, assume will be applied if operands is complete
+        auto joined_functors = utility::tuple_cat(left.functors,right.functors);
+        return functor_composition_t{joined_functors};
+    } // operator*
+
+    template <template<typename...>typename left_tp, typename...left_functors_t, typename left_operands_t
+        , typename F, typename operands_t, typename attributes_t>
+    constexpr auto operator*(const functor_composition_t<left_tp<left_functors_t...>,left_operands_t>& left
+        , const functor_t<F,operands_t,attributes_t>& right) noexcept
+    {
+        auto joined_functors = utility::tuple_append(left.functors,right);
+        return functor_composition_t{joined_functors};
+    } // operator*
+
+    template <typename F, typename operands_t, typename attributes_t>
+    struct apply_function_t<
+        functor_t<F,operands_t,attributes_t>
+    > {
+        using functor_type = functor_t<F,operands_t,attributes_t>;
+
+        static constexpr auto arity = functor_type::arity;
+
+        functor_type functor;
+
+        template <typename...m_operands_t>
+        constexpr auto operator()(const m_operands_t&...new_operands) const
+        {
             if constexpr (arity == 0 && sizeof...(m_operands_t) == 0) {
                 // assume operands is empty_operands_t
                 static_assert( meta::is_same_v<operands_t,meta::empty_operands_t>
                     , "internal error: expect operands is empty for arity 0" );
-                return fmap(attributes,operands);
+                return functor.fmap(functor.attributes,functor.operands);
             } else if constexpr (arity > 0 && sizeof...(m_operands_t) == 0) {
                 return (*this);
+            } else if constexpr (sizeof...(m_operands_t) > arity) {
+                auto m_new_operands = pack_operands(new_operands...);
+                auto operand = utility::tuple_slice(m_new_operands,None,meta::ct_v<arity>);
+                auto curried_operands = utility::tuple_slice(m_new_operands,meta::ct_v<arity>);
+                static_assert( meta::len_v<decltype(operand)> == arity );
+
+                auto result = apply(operand);
+
+                auto result_operands = [&](){
+                    if constexpr (meta::is_tuple_v<decltype(result)>) {
+                        return cat_operands(result,curried_operands);
+                    } else {
+                        return push_operands(result,curried_operands);
+                    }
+                }();
+                return result_operands;
             } else {
                 using operands_pack_t = meta::pack_operands_type_t<F,operands_t,m_operands_t...>;
                 using function_t = functor_t<F,operands_pack_t,attributes_t>;
-                auto function = function_t{fmap,initialize_operands<operands_pack_t>(operands,new_operands...),attributes};
+                [[maybe_unused]] auto function = function_t{functor.fmap
+                    ,initialize_operands<operands_pack_t>(functor.operands,new_operands...)
+                    ,functor.attributes
+                };
                 if constexpr (sizeof...(m_operands_t) < arity) {
                     // currying
                     return function;
@@ -288,36 +328,102 @@ namespace nmtools::functional
                     }
                 }
             }
+        }
+
+        template <template<typename...>typename m_tuple, typename...m_operands_t, auto...Is>
+        constexpr auto apply(const m_tuple<m_operands_t...>& new_operands, meta::index_sequence<Is...>) const
+        {
+            return (*this)(nmtools::get<Is>(new_operands)...);
+        }
+
+        template <template<typename...>typename m_tuple, typename...m_operands_t>
+        constexpr auto apply(const m_tuple<m_operands_t...>& new_operands) const
+        {
+            return apply(new_operands,meta::make_index_sequence_v<sizeof...(m_operands_t)>);
+        }
+    }; // apply_function_t<functor_t<...>>
+
+    template <template<typename...>typename tuple, typename...functors_t, typename operands_t>
+    struct apply_function_t<
+        functor_composition_t<tuple<functors_t...>,operands_t>
+    > {
+        using composition_type = functor_composition_t<tuple<functors_t...>,operands_t>;
+        using functors_type = const tuple<functors_t...>;
+
+        static constexpr auto arity = composition_type::arity;
+
+        composition_type functors;
+
+        template <typename...m_operands_t>
+        constexpr auto operator()(const m_operands_t&...new_operands) const
+        {
+            using operands_pack_t = meta::pack_operands_type_t<void,operands_t,m_operands_t...>;
+            // TODO: rename initialize_operands to forward_array/forward_operand
+            auto operands_ = initialize_operands<operands_pack_t>(functors.operands,new_operands...);
+            constexpr auto n_operands = meta::len_v<operands_pack_t>;
+
+            auto functor = at(functors.functors,meta::ct_v<-1>);
+            using functor_type = meta::remove_cvref_t<decltype(functor)>;
+            constexpr auto functor_arity = functor_type::arity;
+
+            if constexpr (n_operands >= functor_arity) {
+                auto operand = utility::tuple_slice(operands_,None,meta::ct_v<functor_arity>);
+                auto result  = apply_function_t<functor_type>{functor}.apply(operand);
+
+                auto curried_operands = utility::tuple_slice(operands_,meta::ct_v<functor_arity>);
+                constexpr auto n_curried_ops = meta::len_v<decltype(curried_operands)>;
+
+                auto result_operands = [&](){
+                    if constexpr (meta::is_tuple_v<decltype(result)>) {
+                        return cat_operands(result,curried_operands);
+                    } else {
+                        return push_operands(result,curried_operands);
+                    }
+                }();
+
+                auto curried_functors = utility::tuple_slice(functors.functors,None,meta::ct_v<-1>);
+                using curried_functors_t = meta::remove_cvref_t<decltype(curried_functors)>;
+                constexpr auto n_curried_functors = meta::len_v<curried_functors_t>;
+
+                if constexpr (n_curried_functors > 0) {
+                    return apply_function(functor_composition_t{curried_functors},result_operands);
+                } else if constexpr (n_curried_ops > 0) {
+                    return result_operands;
+                } else {
+                    return result;
+                }
+            } else if constexpr ((arity - n_operands) > 0) {
+                // currying
+                using function_t = functor_composition_t< tuple<functors_t...>,operands_pack_t>;
+                auto function = function_t(functors.functors,operands_);
+                return function;
+            }
         } // operator()
-    }; // functor_t
+
+        template <template<typename...>typename m_tuple, typename...m_operands_t, auto...Is>
+        constexpr auto apply(const m_tuple<m_operands_t...>& new_operands, meta::index_sequence<Is...>) const
+        {
+            return (*this)(nmtools::get<Is>(new_operands)...);
+        }
+
+        template <template<typename...>typename m_tuple, typename...m_operands_t>
+        constexpr auto apply(const m_tuple<m_operands_t...>& new_operands) const
+        {
+            return apply(new_operands,meta::make_index_sequence_v<sizeof...(m_operands_t)>);
+        }
+    }; // apply_function_t<functor_composition_t<...>>
 
     template <typename F>
-    functor_t(const F) -> functor_t<F,meta::empty_operands_t,meta::empty_attributes_t>;
+    nmtools_func_attribute // host device
+    apply_function_t(const F&) -> apply_function_t<F>;
 
-    template <template<typename...>typename left_tp, typename...left_functors_t, typename left_operands_t
-        , template<typename...>typename right_tp, typename...right_functors_t, typename right_operands_t>
-    constexpr auto operator*(const functor_composition_t<left_tp<left_functors_t...>,left_operands_t>& left
-        , const functor_composition_t<right_tp<right_functors_t...>,right_operands_t>& right) noexcept
-    {
-        // NOTE: no need to check arity, assume will be applied if operands is complete
-        auto joined_functors = view::detail::tuple_cat(left.functors,right.functors);
-        return functor_composition_t{joined_functors};
-    } // operator*
-
-    template <template<typename...>typename left_tp, typename...left_functors_t, typename left_operands_t
-        , typename F, typename operands_t, typename attributes_t>
-    constexpr auto operator*(const functor_composition_t<left_tp<left_functors_t...>,left_operands_t>& left
-        , const functor_t<F,operands_t,attributes_t>& right) noexcept
-    {
-        auto joined_functors = view::detail::tuple_append(left.functors,right);
-        return functor_composition_t{joined_functors};
-    } // operator*
-
-    template <typename F, nm_size_t Arity>
+    template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>
     struct fmap_t
     {
         static constexpr auto arity = Arity;
+        static constexpr auto n_outputs = N_OUT;
         using arity_type = meta::integral_constant<nm_size_t,arity>;
+        using n_outputs_type = meta::integral_constant<nm_size_t,n_outputs>;
 
         const F fn;
         arity_type m_arity = arity_type{};
