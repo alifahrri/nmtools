@@ -162,6 +162,11 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/composition/reduce_maximum_subtract.cpp
         src/composition/reduce_maximum_subtract_exp.cpp
         src/composition/subtract_exp.cpp
+
+        src/combinator/bury.cpp
+        src/combinator/dig.cpp
+        src/combinator/swap.cpp
+        src/combinator/dup.cpp
     )
 endif()
 

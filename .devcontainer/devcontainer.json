@@ -46,7 +46,7 @@
 	"build": { 
 		"args": {
             "USERNAME": "${localEnv:USER}",
-            "BASE": "nvidia/cuda:11.8.0-devel-ubuntu20.04"
+            "BASE": "nvidia/cuda:11.8.0-devel-ubuntu22.04"
         },
         "target": "dev"  
 	},
