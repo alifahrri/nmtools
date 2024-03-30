@@ -33,7 +33,6 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( result, expect ); \
 }
 
-// TODO: fix runtime
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("array::broadcast_to"))
 {
     BROADCAST_TO_SUBCASE( case1, x_a, shape );
@@ -46,17 +45,13 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("array::broadcast_to"))
     BROADCAST_TO_SUBCASE( case1, x_hs_hb, shape );
     BROADCAST_TO_SUBCASE( case1, x_hs_db, shape );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     BROADCAST_TO_SUBCASE( case1, x_ds_fb, shape );
     BROADCAST_TO_SUBCASE( case1, x_ds_hb, shape );
     BROADCAST_TO_SUBCASE( case1, x_ds_db, shape );
-    #endif
 
-    // TODO: support eh following combo
-    // BROADCAST_TO_SUBCASE( case1, x_ls_fb, shape );
-    // BROADCAST_TO_SUBCASE( case1, x_ls_hb, shape );
-    // BROADCAST_TO_SUBCASE( case1, x_ls_db, shape );
+    BROADCAST_TO_SUBCASE( case1, x_ls_fb, shape );
+    BROADCAST_TO_SUBCASE( case1, x_ls_hb, shape );
+    BROADCAST_TO_SUBCASE( case1, x_ls_db, shape );
 
     // BROADCAST_TO_SUBCASE( case1, x_f, shape );
     // BROADCAST_TO_SUBCASE( case1, x_d, shape );
@@ -75,12 +70,9 @@ TEST_CASE("broadcast_to(case2)" * doctest::test_suite("array::broadcast_to"))
     BROADCAST_TO_SUBCASE( case2, x_hs_hb, shape );
     BROADCAST_TO_SUBCASE( case2, x_hs_db, shape );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     BROADCAST_TO_SUBCASE( case2, x_ds_fb, shape );
     BROADCAST_TO_SUBCASE( case2, x_ds_hb, shape );
     BROADCAST_TO_SUBCASE( case2, x_ds_db, shape );
-    #endif
 }
 
 TEST_CASE("broadcast_to(case3)" * doctest::test_suite("array::broadcast_to"))
@@ -95,10 +87,7 @@ TEST_CASE("broadcast_to(case3)" * doctest::test_suite("array::broadcast_to"))
     BROADCAST_TO_SUBCASE( case3, x_hs_hb, shape );
     BROADCAST_TO_SUBCASE( case3, x_hs_db, shape );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     BROADCAST_TO_SUBCASE( case3, x_ds_fb, shape );
     BROADCAST_TO_SUBCASE( case3, x_ds_hb, shape );
     BROADCAST_TO_SUBCASE( case3, x_ds_db, shape );
-    #endif
 }

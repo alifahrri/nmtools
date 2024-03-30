@@ -47,9 +47,9 @@ TEST_CASE("atleast_2d(case2)" * doctest::test_suite("array::atleast_2d"))
     // ATLEAST_2D_SUBCASE(case2, a_h);
     // ATLEAST_2D_SUBCASE(case2, a_d);
 
-    // ATLEAST_2D_SUBCASE(case2, a_cs_fb);
-    // ATLEAST_2D_SUBCASE(case2, a_cs_hb);
-    // ATLEAST_2D_SUBCASE(case2, a_cs_db);
+    ATLEAST_2D_SUBCASE(case2, a_cs_fb);
+    ATLEAST_2D_SUBCASE(case2, a_cs_hb);
+    ATLEAST_2D_SUBCASE(case2, a_cs_db);
 
     ATLEAST_2D_SUBCASE(case2, a_fs_fb);
     ATLEAST_2D_SUBCASE(case2, a_fs_hb);
@@ -59,16 +59,13 @@ TEST_CASE("atleast_2d(case2)" * doctest::test_suite("array::atleast_2d"))
     ATLEAST_2D_SUBCASE(case2, a_hs_hb);
     ATLEAST_2D_SUBCASE(case2, a_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     ATLEAST_2D_SUBCASE(case2, a_ds_fb);
     ATLEAST_2D_SUBCASE(case2, a_ds_hb);
     ATLEAST_2D_SUBCASE(case2, a_ds_db);
-    #endif
 
-    // ATLEAST_2D_SUBCASE(case2, a_ls_fb);
-    // ATLEAST_2D_SUBCASE(case2, a_ls_hb);
-    // ATLEAST_2D_SUBCASE(case2, a_ls_db);
+    ATLEAST_2D_SUBCASE(case2, a_ls_fb);
+    ATLEAST_2D_SUBCASE(case2, a_ls_hb);
+    ATLEAST_2D_SUBCASE(case2, a_ls_db);
 }
 
 TEST_CASE("atleast_2d(case3)" * doctest::test_suite("array::atleast_2d"))
@@ -79,9 +76,9 @@ TEST_CASE("atleast_2d(case3)" * doctest::test_suite("array::atleast_2d"))
     // ATLEAST_2D_SUBCASE(case3, a_h);
     // ATLEAST_2D_SUBCASE(case3, a_d);
 
-    // ATLEAST_2D_SUBCASE(case3, a_cs_fb);
-    // ATLEAST_2D_SUBCASE(case3, a_cs_hb);
-    // ATLEAST_2D_SUBCASE(case3, a_cs_db);
+    ATLEAST_2D_SUBCASE(case3, a_cs_fb);
+    ATLEAST_2D_SUBCASE(case3, a_cs_hb);
+    ATLEAST_2D_SUBCASE(case3, a_cs_db);
 
     ATLEAST_2D_SUBCASE(case3, a_fs_fb);
     ATLEAST_2D_SUBCASE(case3, a_fs_hb);
@@ -91,16 +88,13 @@ TEST_CASE("atleast_2d(case3)" * doctest::test_suite("array::atleast_2d"))
     ATLEAST_2D_SUBCASE(case3, a_hs_hb);
     ATLEAST_2D_SUBCASE(case3, a_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     ATLEAST_2D_SUBCASE(case3, a_ds_fb);
     ATLEAST_2D_SUBCASE(case3, a_ds_hb);
     ATLEAST_2D_SUBCASE(case3, a_ds_db);
-    #endif
 
-    // ATLEAST_2D_SUBCASE(case3, a_ls_fb);
-    // ATLEAST_2D_SUBCASE(case3, a_ls_hb);
-    // ATLEAST_2D_SUBCASE(case3, a_ls_db);
+    ATLEAST_2D_SUBCASE(case3, a_ls_fb);
+    ATLEAST_2D_SUBCASE(case3, a_ls_hb);
+    ATLEAST_2D_SUBCASE(case3, a_ls_db);
 }
 
 TEST_CASE("atleast_2d(case4)" * doctest::test_suite("array::atleast_2d"))
@@ -111,9 +105,9 @@ TEST_CASE("atleast_2d(case4)" * doctest::test_suite("array::atleast_2d"))
     // ATLEAST_2D_SUBCASE(case4, a_h);
     // ATLEAST_2D_SUBCASE(case4, a_d);
 
-    // ATLEAST_2D_SUBCASE(case4, a_cs_fb);
-    // ATLEAST_2D_SUBCASE(case4, a_cs_hb);
-    // ATLEAST_2D_SUBCASE(case4, a_cs_db);
+    ATLEAST_2D_SUBCASE(case4, a_cs_fb);
+    ATLEAST_2D_SUBCASE(case4, a_cs_hb);
+    ATLEAST_2D_SUBCASE(case4, a_cs_db);
 
     ATLEAST_2D_SUBCASE(case4, a_fs_fb);
     ATLEAST_2D_SUBCASE(case4, a_fs_hb);
@@ -123,14 +117,11 @@ TEST_CASE("atleast_2d(case4)" * doctest::test_suite("array::atleast_2d"))
     ATLEAST_2D_SUBCASE(case4, a_hs_hb);
     ATLEAST_2D_SUBCASE(case4, a_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     ATLEAST_2D_SUBCASE(case4, a_ds_fb);
     ATLEAST_2D_SUBCASE(case4, a_ds_hb);
     ATLEAST_2D_SUBCASE(case4, a_ds_db);
-    #endif
 
-    // ATLEAST_2D_SUBCASE(case4, a_ls_fb);
-    // ATLEAST_2D_SUBCASE(case4, a_ls_hb);
-    // ATLEAST_2D_SUBCASE(case4, a_ls_db);
+    ATLEAST_2D_SUBCASE(case4, a_ls_fb);
+    ATLEAST_2D_SUBCASE(case4, a_ls_hb);
+    ATLEAST_2D_SUBCASE(case4, a_ls_db);
 }

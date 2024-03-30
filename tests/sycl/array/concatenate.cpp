@@ -42,9 +42,9 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("array::concatenate"))
     // CONCATENATE_SUBCASE(case1, lhs_h, rhs_h, axis);
     // CONCATENATE_SUBCASE(case1, lhs_d, rhs_d, axis);
 
-    // CONCATENATE_SUBCASE(case1, lhs_cs_fb, rhs_cs_fb, axis);
-    // CONCATENATE_SUBCASE(case1, lhs_cs_hb, rhs_cs_hb, axis);
-    // CONCATENATE_SUBCASE(case1, lhs_cs_db, rhs_cs_db, axis);
+    CONCATENATE_SUBCASE(case1, lhs_cs_fb, rhs_cs_fb, axis);
+    CONCATENATE_SUBCASE(case1, lhs_cs_hb, rhs_cs_hb, axis);
+    CONCATENATE_SUBCASE(case1, lhs_cs_db, rhs_cs_db, axis);
 
     CONCATENATE_SUBCASE(case1, lhs_fs_fb, rhs_fs_fb, axis);
     CONCATENATE_SUBCASE(case1, lhs_fs_hb, rhs_fs_hb, axis);
@@ -54,14 +54,11 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("array::concatenate"))
     CONCATENATE_SUBCASE(case1, lhs_hs_hb, rhs_hs_hb, axis);
     CONCATENATE_SUBCASE(case1, lhs_hs_db, rhs_hs_db, axis);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     CONCATENATE_SUBCASE(case1, lhs_ds_fb, rhs_ds_fb, axis);
     CONCATENATE_SUBCASE(case1, lhs_ds_hb, rhs_ds_hb, axis);
     CONCATENATE_SUBCASE(case1, lhs_ds_db, rhs_ds_db, axis);
-    #endif
 
-    // CONCATENATE_SUBCASE(case1, lhs_ls_fb, rhs_ls_fb, axis);
-    // CONCATENATE_SUBCASE(case1, lhs_ls_hb, rhs_ls_hb, axis);
-    // CONCATENATE_SUBCASE(case1, lhs_ls_db, rhs_ls_db, axis);
+    CONCATENATE_SUBCASE(case1, lhs_ls_fb, rhs_ls_fb, axis);
+    CONCATENATE_SUBCASE(case1, lhs_ls_hb, rhs_ls_hb, axis);
+    CONCATENATE_SUBCASE(case1, lhs_ls_db, rhs_ls_db, axis);
 }

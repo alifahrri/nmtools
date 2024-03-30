@@ -54,16 +54,13 @@ TEST_CASE("squeeze(case1)" * doctest::test_suite("array::squeeze"))
     SQUEEZE_SUBCASE(case1, array_hs_hb);
     SQUEEZE_SUBCASE(case1, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     SQUEEZE_SUBCASE(case1, array_ds_fb);
     SQUEEZE_SUBCASE(case1, array_ds_hb);
     SQUEEZE_SUBCASE(case1, array_ds_db);
-    #endif
 
-    // SQUEEZE_SUBCASE(case1, array_ls_fb);
-    // SQUEEZE_SUBCASE(case1, array_ls_hb);
-    // SQUEEZE_SUBCASE(case1, array_ls_db);
+    SQUEEZE_SUBCASE(case1, array_ls_fb);
+    SQUEEZE_SUBCASE(case1, array_ls_hb);
+    SQUEEZE_SUBCASE(case1, array_ls_db);
 }
 
 TEST_CASE("squeeze(case2)" * doctest::test_suite("array::squeeze"))
@@ -74,9 +71,9 @@ TEST_CASE("squeeze(case2)" * doctest::test_suite("array::squeeze"))
     // SQUEEZE_SUBCASE(case2, array_h);
     // SQUEEZE_SUBCASE(case2, array_d);
 
-    // SQUEEZE_SUBCASE(case2, array_cs_fb);
-    // SQUEEZE_SUBCASE(case2, array_cs_hb);
-    // SQUEEZE_SUBCASE(case2, array_cs_db);
+    SQUEEZE_SUBCASE(case2, array_cs_fb);
+    SQUEEZE_SUBCASE(case2, array_cs_hb);
+    SQUEEZE_SUBCASE(case2, array_cs_db);
 
     SQUEEZE_SUBCASE(case2, array_fs_fb);
     SQUEEZE_SUBCASE(case2, array_fs_hb);
@@ -86,16 +83,13 @@ TEST_CASE("squeeze(case2)" * doctest::test_suite("array::squeeze"))
     SQUEEZE_SUBCASE(case2, array_hs_hb);
     SQUEEZE_SUBCASE(case2, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     SQUEEZE_SUBCASE(case2, array_ds_fb);
     SQUEEZE_SUBCASE(case2, array_ds_hb);
     SQUEEZE_SUBCASE(case2, array_ds_db);
-    #endif
 
-    // SQUEEZE_SUBCASE(case2, array_ls_fb);
-    // SQUEEZE_SUBCASE(case2, array_ls_hb);
-    // SQUEEZE_SUBCASE(case2, array_ls_db);
+    SQUEEZE_SUBCASE(case2, array_ls_fb);
+    SQUEEZE_SUBCASE(case2, array_ls_hb);
+    SQUEEZE_SUBCASE(case2, array_ls_db);
 }
 
 TEST_CASE("squeeze(case3)" * doctest::test_suite("array::squeeze"))
@@ -106,9 +100,9 @@ TEST_CASE("squeeze(case3)" * doctest::test_suite("array::squeeze"))
     // SQUEEZE_SUBCASE(case3, array_h);
     // SQUEEZE_SUBCASE(case3, array_d);
 
-    // SQUEEZE_SUBCASE(case3, array_cs_fb);
-    // SQUEEZE_SUBCASE(case3, array_cs_hb);
-    // SQUEEZE_SUBCASE(case3, array_cs_db);
+    SQUEEZE_SUBCASE(case3, array_cs_fb);
+    SQUEEZE_SUBCASE(case3, array_cs_hb);
+    SQUEEZE_SUBCASE(case3, array_cs_db);
 
     SQUEEZE_SUBCASE(case3, array_fs_fb);
     SQUEEZE_SUBCASE(case3, array_fs_hb);
@@ -118,16 +112,13 @@ TEST_CASE("squeeze(case3)" * doctest::test_suite("array::squeeze"))
     SQUEEZE_SUBCASE(case3, array_hs_hb);
     SQUEEZE_SUBCASE(case3, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     SQUEEZE_SUBCASE(case3, array_ds_fb);
     SQUEEZE_SUBCASE(case3, array_ds_hb);
     SQUEEZE_SUBCASE(case3, array_ds_db);
-    #endif
 
-    // SQUEEZE_SUBCASE(case3, array_ls_fb);
-    // SQUEEZE_SUBCASE(case3, array_ls_hb);
-    // SQUEEZE_SUBCASE(case3, array_ls_db);
+    SQUEEZE_SUBCASE(case3, array_ls_fb);
+    SQUEEZE_SUBCASE(case3, array_ls_hb);
+    SQUEEZE_SUBCASE(case3, array_ls_db);
 }
 
 TEST_CASE("squeeze(case4)" * doctest::test_suite("array::squeeze"))
@@ -138,9 +129,9 @@ TEST_CASE("squeeze(case4)" * doctest::test_suite("array::squeeze"))
     // SQUEEZE_SUBCASE(case4, array_h);
     // SQUEEZE_SUBCASE(case4, array_d);
 
-    // SQUEEZE_SUBCASE(case4, array_cs_fb);
-    // SQUEEZE_SUBCASE(case4, array_cs_hb);
-    // SQUEEZE_SUBCASE(case4, array_cs_db);
+    SQUEEZE_SUBCASE(case4, array_cs_fb);
+    SQUEEZE_SUBCASE(case4, array_cs_hb);
+    SQUEEZE_SUBCASE(case4, array_cs_db);
 
     SQUEEZE_SUBCASE(case4, array_fs_fb);
     SQUEEZE_SUBCASE(case4, array_fs_hb);
@@ -150,16 +141,13 @@ TEST_CASE("squeeze(case4)" * doctest::test_suite("array::squeeze"))
     SQUEEZE_SUBCASE(case4, array_hs_hb);
     SQUEEZE_SUBCASE(case4, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     SQUEEZE_SUBCASE(case4, array_ds_fb);
     SQUEEZE_SUBCASE(case4, array_ds_hb);
     SQUEEZE_SUBCASE(case4, array_ds_db);
-    #endif
 
-    // SQUEEZE_SUBCASE(case4, array_ls_fb);
-    // SQUEEZE_SUBCASE(case4, array_ls_hb);
-    // SQUEEZE_SUBCASE(case4, array_ls_db);
+    SQUEEZE_SUBCASE(case4, array_ls_fb);
+    SQUEEZE_SUBCASE(case4, array_ls_hb);
+    SQUEEZE_SUBCASE(case4, array_ls_db);
 }
 
 TEST_CASE("squeeze(case5)" * doctest::test_suite("array::squeeze"))
@@ -170,9 +158,9 @@ TEST_CASE("squeeze(case5)" * doctest::test_suite("array::squeeze"))
     // SQUEEZE_SUBCASE(case5, array_h);
     // SQUEEZE_SUBCASE(case5, array_d);
 
-    // SQUEEZE_SUBCASE(case5, array_cs_fb);
-    // SQUEEZE_SUBCASE(case5, array_cs_hb);
-    // SQUEEZE_SUBCASE(case5, array_cs_db);
+    SQUEEZE_SUBCASE(case5, array_cs_fb);
+    SQUEEZE_SUBCASE(case5, array_cs_hb);
+    SQUEEZE_SUBCASE(case5, array_cs_db);
 
     SQUEEZE_SUBCASE(case5, array_fs_fb);
     SQUEEZE_SUBCASE(case5, array_fs_hb);
@@ -182,16 +170,13 @@ TEST_CASE("squeeze(case5)" * doctest::test_suite("array::squeeze"))
     SQUEEZE_SUBCASE(case5, array_hs_hb);
     SQUEEZE_SUBCASE(case5, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     SQUEEZE_SUBCASE(case5, array_ds_fb);
     SQUEEZE_SUBCASE(case5, array_ds_hb);
     SQUEEZE_SUBCASE(case5, array_ds_db);
-    #endif
 
-    // SQUEEZE_SUBCASE(case5, array_ls_fb);
-    // SQUEEZE_SUBCASE(case5, array_ls_hb);
-    // SQUEEZE_SUBCASE(case5, array_ls_db);
+    SQUEEZE_SUBCASE(case5, array_ls_fb);
+    SQUEEZE_SUBCASE(case5, array_ls_hb);
+    SQUEEZE_SUBCASE(case5, array_ls_db);
 }
 
 TEST_CASE("squeeze(case6)" * doctest::test_suite("array::squeeze"))
@@ -202,9 +187,9 @@ TEST_CASE("squeeze(case6)" * doctest::test_suite("array::squeeze"))
     // SQUEEZE_SUBCASE(case6, array_h);
     // SQUEEZE_SUBCASE(case6, array_d);
 
-    // SQUEEZE_SUBCASE(case6, array_cs_fb);
-    // SQUEEZE_SUBCASE(case6, array_cs_hb);
-    // SQUEEZE_SUBCASE(case6, array_cs_db);
+    SQUEEZE_SUBCASE(case6, array_cs_fb);
+    SQUEEZE_SUBCASE(case6, array_cs_hb);
+    SQUEEZE_SUBCASE(case6, array_cs_db);
 
     SQUEEZE_SUBCASE(case6, array_fs_fb);
     SQUEEZE_SUBCASE(case6, array_fs_hb);
@@ -214,14 +199,11 @@ TEST_CASE("squeeze(case6)" * doctest::test_suite("array::squeeze"))
     SQUEEZE_SUBCASE(case6, array_hs_hb);
     SQUEEZE_SUBCASE(case6, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     SQUEEZE_SUBCASE(case4, array_ds_fb);
     SQUEEZE_SUBCASE(case4, array_ds_hb);
     SQUEEZE_SUBCASE(case4, array_ds_db);
-    #endif
 
-    // SQUEEZE_SUBCASE(case6, array_ls_fb);
-    // SQUEEZE_SUBCASE(case6, array_ls_hb);
-    // SQUEEZE_SUBCASE(case6, array_ls_db);
+    SQUEEZE_SUBCASE(case6, array_ls_fb);
+    SQUEEZE_SUBCASE(case6, array_ls_hb);
+    SQUEEZE_SUBCASE(case6, array_ls_db);
 }
