@@ -61,12 +61,13 @@ else
     git clone --single-branch -b ${VERSION}  ${GIT_REPOSITORY}
 fi
 
+apt update && \
 apt install -y python3-dev libpython3-dev \
     build-essential cmake git pkg-config \
     make ninja-build apt-utils \
     intel-opencl-icd clinfo \
     libboost-context-dev libboost-fiber-dev \
-    libomp-dev libomp-${LLVM_VERSION}-dev libgomp1 \
+    libomp-dev libomp-${LLVM_VERSION}-dev libgomp1 libomp5 \
     libclang-${LLVM_VERSION}-dev clang-${LLVM_VERSION} \
     llvm-${LLVM_VERSION} libclang-cpp${LLVM_VERSION}-dev libclang-cpp${LLVM_VERSION} \
     llvm-${LLVM_VERSION}-dev --fix-missing
