@@ -42,9 +42,9 @@ TEST_CASE("repeat(case1)" * doctest::test_suite("array::repeat"))
     // REPEAT_SUBCASE(case1, array_h, repeats, axis);
     // REPEAT_SUBCASE(case1, array_d, repeats, axis);
 
-    // REPEAT_SUBCASE(case1, array_cs_fb, repeats, axis);
-    // REPEAT_SUBCASE(case1, array_cs_hb, repeats, axis);
-    // REPEAT_SUBCASE(case1, array_cs_db, repeats, axis);
+    REPEAT_SUBCASE(case1, array_cs_fb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_cs_hb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_cs_db, repeats, axis);
 
     REPEAT_SUBCASE(case1, array_fs_fb, repeats, axis);
     REPEAT_SUBCASE(case1, array_fs_hb, repeats, axis);
@@ -54,14 +54,11 @@ TEST_CASE("repeat(case1)" * doctest::test_suite("array::repeat"))
     REPEAT_SUBCASE(case1, array_hs_hb, repeats, axis);
     REPEAT_SUBCASE(case1, array_hs_db, repeats, axis);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     REPEAT_SUBCASE(case1, array_ds_fb, repeats, axis);
     REPEAT_SUBCASE(case1, array_ds_hb, repeats, axis);
     REPEAT_SUBCASE(case1, array_ds_db, repeats, axis);
-    #endif
 
-    // REPEAT_SUBCASE(case1, array_ls_fb, repeats, axis);
-    // REPEAT_SUBCASE(case1, array_ls_hb, repeats, axis);
-    // REPEAT_SUBCASE(case1, array_ls_db, repeats, axis);
+    REPEAT_SUBCASE(case1, array_ls_fb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_ls_hb, repeats, axis);
+    REPEAT_SUBCASE(case1, array_ls_db, repeats, axis);
 }

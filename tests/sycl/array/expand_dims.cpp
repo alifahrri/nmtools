@@ -42,9 +42,9 @@ TEST_CASE("expand_dims(case1)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case1, array_h, axis_a);
     // EXPAND_DIMS_SUBCASE(case1, array_d, axis_a);
 
-    // EXPAND_DIMS_SUBCASE(case1, array_cs_fb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case1, array_cs_hb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case1, array_cs_db, axis_a);
+    EXPAND_DIMS_SUBCASE(case1, array_cs_fb, axis_a);
+    EXPAND_DIMS_SUBCASE(case1, array_cs_hb, axis_a);
+    EXPAND_DIMS_SUBCASE(case1, array_cs_db, axis_a);
 
     EXPAND_DIMS_SUBCASE(case1, array_fs_fb, axis_a);
     EXPAND_DIMS_SUBCASE(case1, array_fs_hb, axis_a);
@@ -54,16 +54,13 @@ TEST_CASE("expand_dims(case1)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case1, array_hs_hb, axis_a);
     EXPAND_DIMS_SUBCASE(case1, array_hs_db, axis_a);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case1, array_ds_fb, axis_a);
     EXPAND_DIMS_SUBCASE(case1, array_ds_hb, axis_a);
     EXPAND_DIMS_SUBCASE(case1, array_ds_db, axis_a);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case1, array_ls_fb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case1, array_ls_hb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case1, array_ls_db, axis_a);
+    EXPAND_DIMS_SUBCASE(case1, array_ls_fb, axis_a);
+    EXPAND_DIMS_SUBCASE(case1, array_ls_hb, axis_a);
+    EXPAND_DIMS_SUBCASE(case1, array_ls_db, axis_a);
 }
 
 TEST_CASE("expand_dims(case2)" * doctest::test_suite("array::expand_dims"))
@@ -74,9 +71,9 @@ TEST_CASE("expand_dims(case2)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case2, array_h, axis);
     // EXPAND_DIMS_SUBCASE(case2, array_d, axis);
 
-    // EXPAND_DIMS_SUBCASE(case2, array_cs_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case2, array_cs_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case2, array_cs_db, axis);
+    EXPAND_DIMS_SUBCASE(case2, array_cs_fb, axis);
+    EXPAND_DIMS_SUBCASE(case2, array_cs_hb, axis);
+    EXPAND_DIMS_SUBCASE(case2, array_cs_db, axis);
 
     EXPAND_DIMS_SUBCASE(case2, array_fs_fb, axis);
     EXPAND_DIMS_SUBCASE(case2, array_fs_hb, axis);
@@ -86,16 +83,13 @@ TEST_CASE("expand_dims(case2)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case2, array_hs_hb, axis);
     EXPAND_DIMS_SUBCASE(case2, array_hs_db, axis);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case2, array_ds_fb, axis);
     EXPAND_DIMS_SUBCASE(case2, array_ds_hb, axis);
     EXPAND_DIMS_SUBCASE(case2, array_ds_db, axis);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case2, array_ls_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case2, array_ls_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case2, array_ls_db, axis);
+    EXPAND_DIMS_SUBCASE(case2, array_ls_fb, axis);
+    EXPAND_DIMS_SUBCASE(case2, array_ls_hb, axis);
+    EXPAND_DIMS_SUBCASE(case2, array_ls_db, axis);
 }
 
 TEST_CASE("expand_dims(case3)" * doctest::test_suite("array::expand_dims"))
@@ -106,9 +100,9 @@ TEST_CASE("expand_dims(case3)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case3, array_h, axis);
     // EXPAND_DIMS_SUBCASE(case3, array_d, axis);
 
-    // EXPAND_DIMS_SUBCASE(case3, array_cs_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case3, array_cs_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case3, array_cs_db, axis);
+    EXPAND_DIMS_SUBCASE(case3, array_cs_fb, axis);
+    EXPAND_DIMS_SUBCASE(case3, array_cs_hb, axis);
+    EXPAND_DIMS_SUBCASE(case3, array_cs_db, axis);
 
     EXPAND_DIMS_SUBCASE(case3, array_fs_fb, axis);
     EXPAND_DIMS_SUBCASE(case3, array_fs_hb, axis);
@@ -118,16 +112,13 @@ TEST_CASE("expand_dims(case3)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case3, array_hs_hb, axis);
     EXPAND_DIMS_SUBCASE(case3, array_hs_db, axis);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case3, array_ds_fb, axis);
     EXPAND_DIMS_SUBCASE(case3, array_ds_hb, axis);
     EXPAND_DIMS_SUBCASE(case3, array_ds_db, axis);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case3, array_ls_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case3, array_ls_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case3, array_ls_db, axis);
+    EXPAND_DIMS_SUBCASE(case3, array_ls_fb, axis);
+    EXPAND_DIMS_SUBCASE(case3, array_ls_hb, axis);
+    EXPAND_DIMS_SUBCASE(case3, array_ls_db, axis);
 }
 
 TEST_CASE("expand_dims(case4)" * doctest::test_suite("array::expand_dims"))
@@ -138,9 +129,9 @@ TEST_CASE("expand_dims(case4)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case4, array_h, axis_a);
     // EXPAND_DIMS_SUBCASE(case4, array_d, axis_a);
 
-    // EXPAND_DIMS_SUBCASE(case4, array_cs_fb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case4, array_cs_hb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case4, array_cs_db, axis_a);
+    EXPAND_DIMS_SUBCASE(case4, array_cs_fb, axis_a);
+    EXPAND_DIMS_SUBCASE(case4, array_cs_hb, axis_a);
+    EXPAND_DIMS_SUBCASE(case4, array_cs_db, axis_a);
 
     EXPAND_DIMS_SUBCASE(case4, array_fs_fb, axis_a);
     EXPAND_DIMS_SUBCASE(case4, array_fs_hb, axis_a);
@@ -150,16 +141,13 @@ TEST_CASE("expand_dims(case4)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case4, array_hs_hb, axis_a);
     EXPAND_DIMS_SUBCASE(case4, array_hs_db, axis_a);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case4, array_ds_fb, axis_a);
     EXPAND_DIMS_SUBCASE(case4, array_ds_hb, axis_a);
     EXPAND_DIMS_SUBCASE(case4, array_ds_db, axis_a);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case4, array_ls_fb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case4, array_ls_hb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case4, array_ls_db, axis_a);
+    EXPAND_DIMS_SUBCASE(case4, array_ls_fb, axis_a);
+    EXPAND_DIMS_SUBCASE(case4, array_ls_hb, axis_a);
+    EXPAND_DIMS_SUBCASE(case4, array_ls_db, axis_a);
 }
 
 TEST_CASE("expand_dims(case5)" * doctest::test_suite("array::expand_dims"))
@@ -170,9 +158,9 @@ TEST_CASE("expand_dims(case5)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case5, array_h, axis_a);
     // EXPAND_DIMS_SUBCASE(case5, array_d, axis_a);
 
-    // EXPAND_DIMS_SUBCASE(case5, array_cs_fb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case5, array_cs_hb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case5, array_cs_db, axis_a);
+    EXPAND_DIMS_SUBCASE(case5, array_cs_fb, axis_a);
+    EXPAND_DIMS_SUBCASE(case5, array_cs_hb, axis_a);
+    EXPAND_DIMS_SUBCASE(case5, array_cs_db, axis_a);
 
     EXPAND_DIMS_SUBCASE(case5, array_fs_fb, axis_a);
     EXPAND_DIMS_SUBCASE(case5, array_fs_hb, axis_a);
@@ -182,16 +170,13 @@ TEST_CASE("expand_dims(case5)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case5, array_hs_hb, axis_a);
     EXPAND_DIMS_SUBCASE(case5, array_hs_db, axis_a);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case5, array_ds_fb, axis_a);
     EXPAND_DIMS_SUBCASE(case5, array_ds_hb, axis_a);
     EXPAND_DIMS_SUBCASE(case5, array_ds_db, axis_a);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case5, array_ls_fb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case5, array_ls_hb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case5, array_ls_db, axis_a);
+    EXPAND_DIMS_SUBCASE(case5, array_ls_fb, axis_a);
+    EXPAND_DIMS_SUBCASE(case5, array_ls_hb, axis_a);
+    EXPAND_DIMS_SUBCASE(case5, array_ls_db, axis_a);
 }
 
 TEST_CASE("expand_dims(case6)" * doctest::test_suite("array::expand_dims"))
@@ -202,9 +187,9 @@ TEST_CASE("expand_dims(case6)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case6, array_h, axis);
     // EXPAND_DIMS_SUBCASE(case6, array_d, axis);
 
-    // EXPAND_DIMS_SUBCASE(case6, array_cs_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case6, array_cs_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case6, array_cs_db, axis);
+    EXPAND_DIMS_SUBCASE(case6, array_cs_fb, axis);
+    EXPAND_DIMS_SUBCASE(case6, array_cs_hb, axis);
+    EXPAND_DIMS_SUBCASE(case6, array_cs_db, axis);
 
     EXPAND_DIMS_SUBCASE(case6, array_fs_fb, axis);
     EXPAND_DIMS_SUBCASE(case6, array_fs_hb, axis);
@@ -214,16 +199,13 @@ TEST_CASE("expand_dims(case6)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case6, array_hs_hb, axis);
     EXPAND_DIMS_SUBCASE(case6, array_hs_db, axis);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case6, array_ds_fb, axis);
     EXPAND_DIMS_SUBCASE(case6, array_ds_hb, axis);
     EXPAND_DIMS_SUBCASE(case6, array_ds_db, axis);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case6, array_ls_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case6, array_ls_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case6, array_ls_db, axis);
+    EXPAND_DIMS_SUBCASE(case6, array_ls_fb, axis);
+    EXPAND_DIMS_SUBCASE(case6, array_ls_hb, axis);
+    EXPAND_DIMS_SUBCASE(case6, array_ls_db, axis);
 }
 
 TEST_CASE("expand_dims(case7)" * doctest::test_suite("array::expand_dims"))
@@ -234,9 +216,9 @@ TEST_CASE("expand_dims(case7)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case7, array_h, axis);
     // EXPAND_DIMS_SUBCASE(case7, array_d, axis);
 
-    // EXPAND_DIMS_SUBCASE(case7, array_cs_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case7, array_cs_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case7, array_cs_db, axis);
+    EXPAND_DIMS_SUBCASE(case7, array_cs_fb, axis);
+    EXPAND_DIMS_SUBCASE(case7, array_cs_hb, axis);
+    EXPAND_DIMS_SUBCASE(case7, array_cs_db, axis);
 
     EXPAND_DIMS_SUBCASE(case7, array_fs_fb, axis);
     EXPAND_DIMS_SUBCASE(case7, array_fs_hb, axis);
@@ -246,16 +228,13 @@ TEST_CASE("expand_dims(case7)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case7, array_hs_hb, axis);
     EXPAND_DIMS_SUBCASE(case7, array_hs_db, axis);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case7, array_ds_fb, axis);
     EXPAND_DIMS_SUBCASE(case7, array_ds_hb, axis);
     EXPAND_DIMS_SUBCASE(case7, array_ds_db, axis);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case7, array_ls_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case7, array_ls_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case7, array_ls_db, axis);
+    EXPAND_DIMS_SUBCASE(case7, array_ls_fb, axis);
+    EXPAND_DIMS_SUBCASE(case7, array_ls_hb, axis);
+    EXPAND_DIMS_SUBCASE(case7, array_ls_db, axis);
 }
 
 TEST_CASE("expand_dims(case8)" * doctest::test_suite("array::expand_dims"))
@@ -266,9 +245,9 @@ TEST_CASE("expand_dims(case8)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case8, array_h, axis);
     // EXPAND_DIMS_SUBCASE(case8, array_d, axis);
 
-    // EXPAND_DIMS_SUBCASE(case8, array_cs_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case8, array_cs_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case8, array_cs_db, axis);
+    EXPAND_DIMS_SUBCASE(case8, array_cs_fb, axis);
+    EXPAND_DIMS_SUBCASE(case8, array_cs_hb, axis);
+    EXPAND_DIMS_SUBCASE(case8, array_cs_db, axis);
 
     EXPAND_DIMS_SUBCASE(case8, array_fs_fb, axis);
     EXPAND_DIMS_SUBCASE(case8, array_fs_hb, axis);
@@ -278,16 +257,13 @@ TEST_CASE("expand_dims(case8)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case8, array_hs_hb, axis);
     EXPAND_DIMS_SUBCASE(case8, array_hs_db, axis);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case8, array_ds_fb, axis);
     EXPAND_DIMS_SUBCASE(case8, array_ds_hb, axis);
     EXPAND_DIMS_SUBCASE(case8, array_ds_db, axis);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case8, array_ls_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case8, array_ls_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case8, array_ls_db, axis);
+    EXPAND_DIMS_SUBCASE(case8, array_ls_fb, axis);
+    EXPAND_DIMS_SUBCASE(case8, array_ls_hb, axis);
+    EXPAND_DIMS_SUBCASE(case8, array_ls_db, axis);
 }
 
 TEST_CASE("expand_dims(case9)" * doctest::test_suite("array::expand_dims"))
@@ -298,9 +274,9 @@ TEST_CASE("expand_dims(case9)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case9, array_h, axis);
     // EXPAND_DIMS_SUBCASE(case9, array_d, axis);
 
-    // EXPAND_DIMS_SUBCASE(case9, array_cs_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case9, array_cs_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case9, array_cs_db, axis);
+    EXPAND_DIMS_SUBCASE(case9, array_cs_fb, axis);
+    EXPAND_DIMS_SUBCASE(case9, array_cs_hb, axis);
+    EXPAND_DIMS_SUBCASE(case9, array_cs_db, axis);
 
     EXPAND_DIMS_SUBCASE(case9, array_fs_fb, axis);
     EXPAND_DIMS_SUBCASE(case9, array_fs_hb, axis);
@@ -310,16 +286,13 @@ TEST_CASE("expand_dims(case9)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case9, array_hs_hb, axis);
     EXPAND_DIMS_SUBCASE(case9, array_hs_db, axis);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case9, array_ds_fb, axis);
     EXPAND_DIMS_SUBCASE(case9, array_ds_hb, axis);
     EXPAND_DIMS_SUBCASE(case9, array_ds_db, axis);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case9, array_ls_fb, axis);
-    // EXPAND_DIMS_SUBCASE(case9, array_ls_hb, axis);
-    // EXPAND_DIMS_SUBCASE(case9, array_ls_db, axis);
+    EXPAND_DIMS_SUBCASE(case9, array_ls_fb, axis);
+    EXPAND_DIMS_SUBCASE(case9, array_ls_hb, axis);
+    EXPAND_DIMS_SUBCASE(case9, array_ls_db, axis);
 }
 
 TEST_CASE("expand_dims(case10)" * doctest::test_suite("array::expand_dims"))
@@ -330,9 +303,9 @@ TEST_CASE("expand_dims(case10)" * doctest::test_suite("array::expand_dims"))
     // EXPAND_DIMS_SUBCASE(case10, array_h, axis_a);
     // EXPAND_DIMS_SUBCASE(case10, array_d, axis_a);
 
-    // EXPAND_DIMS_SUBCASE(case10, array_cs_fb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case10, array_cs_hb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case10, array_cs_db, axis_a);
+    EXPAND_DIMS_SUBCASE(case10, array_cs_fb, axis_a);
+    EXPAND_DIMS_SUBCASE(case10, array_cs_hb, axis_a);
+    EXPAND_DIMS_SUBCASE(case10, array_cs_db, axis_a);
 
     EXPAND_DIMS_SUBCASE(case10, array_fs_fb, axis_a);
     EXPAND_DIMS_SUBCASE(case10, array_fs_hb, axis_a);
@@ -342,14 +315,11 @@ TEST_CASE("expand_dims(case10)" * doctest::test_suite("array::expand_dims"))
     EXPAND_DIMS_SUBCASE(case10, array_hs_hb, axis_a);
     EXPAND_DIMS_SUBCASE(case10, array_hs_db, axis_a);
 
-    // TODO: fix sycl kernel (opencl/cuda)
-    #if 0
     EXPAND_DIMS_SUBCASE(case10, array_ds_fb, axis_a);
     EXPAND_DIMS_SUBCASE(case10, array_ds_hb, axis_a);
     EXPAND_DIMS_SUBCASE(case10, array_ds_db, axis_a);
-    #endif
 
-    // EXPAND_DIMS_SUBCASE(case10, array_ls_fb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case10, array_ls_hb, axis_a);
-    // EXPAND_DIMS_SUBCASE(case10, array_ls_db, axis_a);
+    EXPAND_DIMS_SUBCASE(case10, array_ls_fb, axis_a);
+    EXPAND_DIMS_SUBCASE(case10, array_ls_hb, axis_a);
+    EXPAND_DIMS_SUBCASE(case10, array_ls_db, axis_a);
 }

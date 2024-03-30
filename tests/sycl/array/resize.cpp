@@ -43,12 +43,9 @@ TEST_CASE("resize(case1)" * doctest::test_suite("array::resize"))
     RESIZE_SUBCASE( case1, array_hs_hb, dst_shape_a );
     RESIZE_SUBCASE( case1, array_hs_db, dst_shape_a );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     RESIZE_SUBCASE( case1, array_ds_fb, dst_shape_a );
     RESIZE_SUBCASE( case1, array_ds_hb, dst_shape_a );
     RESIZE_SUBCASE( case1, array_ds_db, dst_shape_a );
-    #endif
 }
 
 TEST_CASE("resize(case2)" * doctest::test_suite("array::resize"))
@@ -61,12 +58,9 @@ TEST_CASE("resize(case2)" * doctest::test_suite("array::resize"))
     RESIZE_SUBCASE( case2, array_hs_hb, dst_shape_a );
     RESIZE_SUBCASE( case2, array_hs_db, dst_shape_a );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     RESIZE_SUBCASE( case2, array_ds_fb, dst_shape_a );
     RESIZE_SUBCASE( case2, array_ds_hb, dst_shape_a );
     RESIZE_SUBCASE( case2, array_ds_db, dst_shape_a );
-    #endif
 }
 
 TEST_CASE("resize(case3)" * doctest::test_suite("array::resize"))
@@ -79,12 +73,9 @@ TEST_CASE("resize(case3)" * doctest::test_suite("array::resize"))
     RESIZE_SUBCASE( case3, array_hs_hb, dst_shape_a );
     RESIZE_SUBCASE( case3, array_hs_db, dst_shape_a );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     RESIZE_SUBCASE( case3, array_ds_fb, dst_shape_a );
     RESIZE_SUBCASE( case3, array_ds_hb, dst_shape_a );
     RESIZE_SUBCASE( case3, array_ds_db, dst_shape_a );
-    #endif
 }
 
 
@@ -98,12 +89,9 @@ TEST_CASE("resize(case4)" * doctest::test_suite("array::resize"))
     RESIZE_SUBCASE( case4, array_hs_hb, dst_shape_a );
     RESIZE_SUBCASE( case4, array_hs_db, dst_shape_a );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     RESIZE_SUBCASE( case4, array_ds_fb, dst_shape_a );
     RESIZE_SUBCASE( case4, array_ds_hb, dst_shape_a );
     RESIZE_SUBCASE( case4, array_ds_db, dst_shape_a );
-    #endif
 }
 
 
@@ -117,12 +105,9 @@ TEST_CASE("resize(case5)" * doctest::test_suite("array::resize"))
     RESIZE_SUBCASE( case5, array_hs_hb, dst_shape_a );
     RESIZE_SUBCASE( case5, array_hs_db, dst_shape_a );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     RESIZE_SUBCASE( case5, array_ds_fb, dst_shape_a );
     RESIZE_SUBCASE( case5, array_ds_hb, dst_shape_a );
     RESIZE_SUBCASE( case5, array_ds_db, dst_shape_a );
-    #endif
 }
 
 TEST_CASE("resize(case6)" * doctest::test_suite("array::resize"))
@@ -135,10 +120,7 @@ TEST_CASE("resize(case6)" * doctest::test_suite("array::resize"))
     RESIZE_SUBCASE( case6, array_hs_hb, dst_shape_a );
     RESIZE_SUBCASE( case6, array_hs_db, dst_shape_a );
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     RESIZE_SUBCASE( case6, array_ds_fb, dst_shape_a );
     RESIZE_SUBCASE( case6, array_ds_hb, dst_shape_a );
     RESIZE_SUBCASE( case6, array_ds_db, dst_shape_a );
-    #endif
 }

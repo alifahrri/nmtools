@@ -42,9 +42,9 @@ TEST_CASE("flatten(case1)" * doctest::test_suite("array::flatten"))
     // FLATTEN_SUBCASE(case1, array_h);
     // FLATTEN_SUBCASE(case1, array_d);
 
-    // FLATTEN_SUBCASE(case1, array_cs_fb);
-    // FLATTEN_SUBCASE(case1, array_cs_hb);
-    // FLATTEN_SUBCASE(case1, array_cs_db);
+    FLATTEN_SUBCASE(case1, array_cs_fb);
+    FLATTEN_SUBCASE(case1, array_cs_hb);
+    FLATTEN_SUBCASE(case1, array_cs_db);
 
     FLATTEN_SUBCASE(case1, array_fs_fb);
     FLATTEN_SUBCASE(case1, array_fs_hb);
@@ -54,16 +54,13 @@ TEST_CASE("flatten(case1)" * doctest::test_suite("array::flatten"))
     FLATTEN_SUBCASE(case1, array_hs_hb);
     FLATTEN_SUBCASE(case1, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     FLATTEN_SUBCASE(case1, array_ds_fb);
     FLATTEN_SUBCASE(case1, array_ds_hb);
     FLATTEN_SUBCASE(case1, array_ds_db);
-    #endif
 
-    // FLATTEN_SUBCASE(case1, array_ls_fb);
-    // FLATTEN_SUBCASE(case1, array_ls_hb);
-    // FLATTEN_SUBCASE(case1, array_ls_db);
+    FLATTEN_SUBCASE(case1, array_ls_fb);
+    FLATTEN_SUBCASE(case1, array_ls_hb);
+    FLATTEN_SUBCASE(case1, array_ls_db);
 }
 
 TEST_CASE("flatten(case2)" * doctest::test_suite("array::flatten"))
@@ -74,9 +71,9 @@ TEST_CASE("flatten(case2)" * doctest::test_suite("array::flatten"))
     // FLATTEN_SUBCASE(case2, array_h);
     // FLATTEN_SUBCASE(case2, array_d);
 
-    // FLATTEN_SUBCASE(case2, array_cs_fb);
-    // FLATTEN_SUBCASE(case2, array_cs_hb);
-    // FLATTEN_SUBCASE(case2, array_cs_db);
+    FLATTEN_SUBCASE(case2, array_cs_fb);
+    FLATTEN_SUBCASE(case2, array_cs_hb);
+    FLATTEN_SUBCASE(case2, array_cs_db);
 
     FLATTEN_SUBCASE(case2, array_fs_fb);
     FLATTEN_SUBCASE(case2, array_fs_hb);
@@ -86,16 +83,13 @@ TEST_CASE("flatten(case2)" * doctest::test_suite("array::flatten"))
     FLATTEN_SUBCASE(case2, array_hs_hb);
     FLATTEN_SUBCASE(case2, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     FLATTEN_SUBCASE(case2, array_ds_fb);
     FLATTEN_SUBCASE(case2, array_ds_hb);
     FLATTEN_SUBCASE(case2, array_ds_db);
-    #endif
 
-    // FLATTEN_SUBCASE(case2, array_ls_fb);
-    // FLATTEN_SUBCASE(case2, array_ls_hb);
-    // FLATTEN_SUBCASE(case2, array_ls_db);
+    FLATTEN_SUBCASE(case2, array_ls_fb);
+    FLATTEN_SUBCASE(case2, array_ls_hb);
+    FLATTEN_SUBCASE(case2, array_ls_db);
 }
 
 TEST_CASE("flatten(case3)" * doctest::test_suite("array::flatten"))
@@ -106,9 +100,9 @@ TEST_CASE("flatten(case3)" * doctest::test_suite("array::flatten"))
     // FLATTEN_SUBCASE(case3, array_h);
     // FLATTEN_SUBCASE(case3, array_d);
 
-    // FLATTEN_SUBCASE(case3, array_cs_fb);
-    // FLATTEN_SUBCASE(case3, array_cs_hb);
-    // FLATTEN_SUBCASE(case3, array_cs_db);
+    FLATTEN_SUBCASE(case3, array_cs_fb);
+    FLATTEN_SUBCASE(case3, array_cs_hb);
+    FLATTEN_SUBCASE(case3, array_cs_db);
 
     FLATTEN_SUBCASE(case3, array_fs_fb);
     FLATTEN_SUBCASE(case3, array_fs_hb);
@@ -118,16 +112,13 @@ TEST_CASE("flatten(case3)" * doctest::test_suite("array::flatten"))
     FLATTEN_SUBCASE(case3, array_hs_hb);
     FLATTEN_SUBCASE(case3, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     FLATTEN_SUBCASE(case3, array_ds_fb);
     FLATTEN_SUBCASE(case3, array_ds_hb);
     FLATTEN_SUBCASE(case3, array_ds_db);
-    #endif
 
-    // FLATTEN_SUBCASE(case3, array_ls_fb);
-    // FLATTEN_SUBCASE(case3, array_ls_hb);
-    // FLATTEN_SUBCASE(case3, array_ls_db);
+    FLATTEN_SUBCASE(case3, array_ls_fb);
+    FLATTEN_SUBCASE(case3, array_ls_hb);
+    FLATTEN_SUBCASE(case3, array_ls_db);
 }
 
 TEST_CASE("flatten(case4)" * doctest::test_suite("array::flatten"))
@@ -138,9 +129,9 @@ TEST_CASE("flatten(case4)" * doctest::test_suite("array::flatten"))
     // FLATTEN_SUBCASE(case4, array_h);
     // FLATTEN_SUBCASE(case4, array_d);
 
-    // FLATTEN_SUBCASE(case4, array_cs_fb);
-    // FLATTEN_SUBCASE(case4, array_cs_hb);
-    // FLATTEN_SUBCASE(case4, array_cs_db);
+    FLATTEN_SUBCASE(case4, array_cs_fb);
+    FLATTEN_SUBCASE(case4, array_cs_hb);
+    FLATTEN_SUBCASE(case4, array_cs_db);
 
     FLATTEN_SUBCASE(case4, array_fs_fb);
     FLATTEN_SUBCASE(case4, array_fs_hb);
@@ -150,14 +141,11 @@ TEST_CASE("flatten(case4)" * doctest::test_suite("array::flatten"))
     FLATTEN_SUBCASE(case4, array_hs_hb);
     FLATTEN_SUBCASE(case4, array_hs_db);
 
-    // TODO: fix for sycl kernel (opencl/cuda)
-    #if 0
     FLATTEN_SUBCASE(case4, array_ds_fb);
     FLATTEN_SUBCASE(case4, array_ds_hb);
     FLATTEN_SUBCASE(case4, array_ds_db);
-    #endif
 
-    // FLATTEN_SUBCASE(case4, array_ls_fb);
-    // FLATTEN_SUBCASE(case4, array_ls_hb);
-    // FLATTEN_SUBCASE(case4, array_ls_db);
+    FLATTEN_SUBCASE(case4, array_ls_fb);
+    FLATTEN_SUBCASE(case4, array_ls_hb);
+    FLATTEN_SUBCASE(case4, array_ls_db);
 }

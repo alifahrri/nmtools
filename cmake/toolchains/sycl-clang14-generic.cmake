@@ -14,6 +14,7 @@ add_compile_options(-W -Wall -Wextra -Werror
 add_link_options(
     --acpp-targets="generic"
     --acpp-clang=/usr/bin/clang++-14
+    -fopenmp
 )
 # To avoid linking device code with assert
 add_compile_definitions(NMTOOLS_NOASSERT NMTOOLS_DISABLE_STL)
