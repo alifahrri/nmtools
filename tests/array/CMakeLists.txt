@@ -113,6 +113,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/reshape.cpp
     array/resize.cpp
     array/slice.cpp
+    array/sliding_window.cpp
     array/squeeze.cpp
     array/stddev.cpp
     array/sum.cpp

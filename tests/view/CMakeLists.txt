@@ -90,6 +90,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/var.cpp
     src/where.cpp
     src/zeros.cpp
+    src/sliding_window.cpp
 )
 if (NOT NMTOOLS_VIEW_TEST_ARRAY_VIEW)
     set (ARRAY_VIEW_TEST_SOURCES "")

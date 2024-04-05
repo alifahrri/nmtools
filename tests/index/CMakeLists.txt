@@ -81,6 +81,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/take.cpp
         src/take_along_axis.cpp
         src/tile.cpp
+        src/sliding_window.cpp
     )
 endif (NMTOOLS_INDEX_TEST_ALL)
 
