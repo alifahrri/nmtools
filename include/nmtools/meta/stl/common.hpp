@@ -33,7 +33,9 @@ namespace nmtools::meta
     template <typename T, typename Allocator=none_t>
     using make_sequence_type_t = type_t<make_sequence_type<T,Allocator>>;
 
+    #ifndef nmtools_list
     #define nmtools_list ::std::vector
+    #endif
 
     #endif // NMTOOLS_META_MAKE_SEQUENCE
 

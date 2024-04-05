@@ -314,6 +314,47 @@ namespace nmtools::array::sycl
             this->copy_buffer(output_buffer,output);
         }
 
+        template <typename F, typename operands_t, typename attributes_t>
+        auto map_to_device(const functional::functor_t<F,operands_t,attributes_t>& f)
+        {
+            static_assert( meta::len_v<operands_t> == 0 );
+            [[maybe_unused]] auto map_attribute = [](auto attribute){
+                if constexpr (meta::is_dynamic_index_array_v<decltype(attribute)>) {
+                    using element_type = meta::get_element_type_t<decltype(attribute)>;
+                    using result_type  = nmtools_static_vector<element_type,8>;
+                    auto result = result_type{};
+                    result.resize(attribute.size());
+                    for (size_t i=0; i<result.size(); i++) {
+                        at(result,i) = at(attribute,i);
+                    }
+                    return result;
+                } else {
+                    return attribute;
+                }
+            };
+            if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
+                return f;
+            } else {
+                constexpr auto N = meta::len_v<attributes_t>;
+                auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
+                    return utility::tuple_append(init,map_attribute(at(f.attributes,I)));
+                }, nmtools_tuple{});
+                return functional::functor_t<F,operands_t,decltype(attributes)>{
+                    f.fmap, f.operands, attributes
+                };
+            }
+        } // map_to_device
+
+        template <template<typename...>typename tuple, typename...functors_t, typename operands_t>
+        auto map_to_device(const functional::functor_composition_t<tuple<functors_t...>,operands_t>& f)
+        {
+            static_assert( meta::len_v<operands_t> == 0 );
+            auto functors = meta::template_reduce<sizeof...(functors_t)>([&](auto init, auto I){
+                return utility::tuple_append(init,map_to_device(at(f.functors,I)));
+            }, nmtools_tuple{});
+            return functional::functor_composition_t<decltype(functors)>{functors};
+        } // map_to_device
+
         template <typename function_t, typename output_array_t, template<typename...>typename tuple, typename...operands_t>
         auto run(const function_t& f, output_array_t& output, const tuple<operands_t...>& operands)
         {
@@ -328,9 +369,10 @@ namespace nmtools::array::sycl
                 }
             }, nmtools_tuple<>{});
 
-
+            // e.g. to convert dynamic allocation to static vector to run on device kernels
+            auto fn = map_to_device(f);
             using sequence_t = meta::make_index_sequence<meta::len_v<decltype(device_operands)>>;
-            this->run_(output,f,device_operands,sequence_t{});
+            this->run_(output,fn,device_operands,sequence_t{});
         }
     };
 } // namespace nmtools::array::sycl

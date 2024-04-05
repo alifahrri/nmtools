@@ -68,6 +68,7 @@
 #include "nmtools/meta/bits/traits/is_trivially_destructible.hpp"
 #include "nmtools/meta/bits/traits/is_true_type.hpp"
 #include "nmtools/meta/bits/traits/is_tuple.hpp"
+#include "nmtools/meta/bits/traits/is_view.hpp"
 #include "nmtools/meta/bits/traits/is_void.hpp"
 
 #include "nmtools/meta/expr.hpp"
