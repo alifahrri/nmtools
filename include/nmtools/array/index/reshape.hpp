@@ -222,7 +222,7 @@ namespace nmtools::meta
                 constexpr auto N = len_v<dst_shape_t>;
                 constexpr auto dst_shape = [&](){
                     auto dst_shape = nmtools_array<int,N>{};
-                    for (auto i=0; i<N; i++) {
+                    for (nm_index_t i=0; i<(nm_index_t)N; i++) {
                         dst_shape[i] = (clipped_min[i] < 0 ? clipped_min[i] : clipped_max[i]);
                     }
                     return dst_shape;
