@@ -75,6 +75,11 @@ namespace nmtools::view
         using axis_type         = meta::fwd_attribute_t<axis_t>;
         using dst_shape_type = meta::resolve_optype_t<index::shape_sliding_window_t
             , src_shape_type, window_shape_type, axis_type>;
+        using dst_size_type = meta::resolve_optype_t<index::product_t,dst_shape_type>;
+        using src_size_type = meta::resolve_optype_t<index::product_t,src_shape_type>;
+
+        static constexpr auto n_inputs  = 1;
+        static constexpr auto n_outputs = 1;
 
         const src_shape_type src_shape;
         const window_shape_type window_shape;
@@ -117,6 +122,10 @@ namespace nmtools::view
         using operand_type = meta::fwd_operand_t<array_t>;
         using array_type   = operand_type;
         using indexer_type = indexer_t;
+        using dst_shape_type = typename indexer_type::dst_shape_type;
+        using src_shape_type = typename indexer_type::src_shape_type;
+        using dst_size_type  = typename indexer_type::dst_size_type;
+        using src_size_type  = typename indexer_type::src_size_type;
 
         using attributes_type = args::indexing<indexer_type>;
 
@@ -198,6 +207,40 @@ namespace nmtools::meta
     > {
         using type = get_element_type_t<array_t>;
     };
+
+    template <typename array_t, typename indexer_t>
+    struct fixed_size<
+        view::decorator_t<view::indexing_t,array_t,indexer_t>
+    >{
+        using view_type = view::decorator_t<view::indexing_t,array_t,indexer_t>;
+        using dst_size_type = typename view_type::dst_size_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_v<dst_size_type>) {
+                return dst_size_type{};
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // fixed_size
+
+    template <typename array_t, typename indexer_t>
+    struct bounded_size<
+        view::decorator_t<view::indexing_t,array_t,indexer_t>
+    >{
+        using view_type = view::decorator_t<view::indexing_t,array_t,indexer_t>;
+        using dst_shape_type = typename view_type::dst_shape_type;
+        using dst_size_type = typename view_type::dst_size_type;
+
+        static constexpr auto value = [](){
+            constexpr auto size = to_value_v<dst_size_type>;
+            if constexpr (!is_fail_v<decltype(size)>) {
+                return size;
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // bounded_size
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_SLIDING_WINDOW_HPP
