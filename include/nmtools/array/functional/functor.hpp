@@ -9,7 +9,7 @@
 #include "nmtools/utility/tuple_slice.hpp"
 #include "nmtools/utils/isequal/isequal.hpp"
 #include "nmtools/utils/isclose/isclose.hpp"
-#include "nmtools/array/fwd.hpp"
+#include "nmtools/utility/fwd.hpp"
 
 namespace nmtools::meta
 {
@@ -321,7 +321,7 @@ namespace nmtools::functional
                 } else {
                     // apply
                     if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
-                        // NOTE: avoid passing empty_attribute_t to fmap, use empty tuple instead
+                        // NOTE: avoid passing empty_attributes_t to fmap, use empty tuple instead
                         return function.fmap(nmtools_tuple<>{},function.operands);
                     } else {
                         return function.fmap(function.attributes,function.operands);

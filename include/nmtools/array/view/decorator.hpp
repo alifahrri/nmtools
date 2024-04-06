@@ -161,23 +161,8 @@ namespace nmtools::view
         }
     } // initialize
 
-    /**
-     * @brief helper trait to check if type T is view
-     * 
-     * @tparam T type to check
-     * @tparam typename sfinae/customization point
-     */
-    template <typename T, typename=void>
-    struct is_view : meta::false_type {};
-
-    /**
-     * @brief helper variable template to check if type T is view
-     * 
-     * @tparam T type to check
-     */
-    template <typename T>
-    nmtools_meta_variable_attribute
-    static inline constexpr bool is_view_v = is_view<T>::value;
+    using meta::is_view;
+    using meta::is_view_v;
 
     namespace error
     {
@@ -582,15 +567,6 @@ namespace nmtools::view
         return decorator_t<view_t,Ts...>{{arrays...}};
     } // make_view
 
-    /**
-     * @brief true case for helper trait to check if type T is view
-     * 
-     * @tparam view_t template template param corresponding to actual view
-     * @tparam Ts template parameters to actual view
-     */
-    template <template<typename...> typename view_t, typename...Ts>
-    struct is_view<decorator_t<view_t,Ts...>> : meta::true_type {};
-
     // TODO: consider to move to meta, to allow decrete_t to access/specialize
     /**
      * @brief get array_type of possibly nested view
@@ -924,10 +900,6 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    // make is_view available from namespace meta
-    using view::is_view;
-    using view::is_view_v;
-
     // make get_array_type available from namespace meta
     using view::get_array_type;
     using view::get_array_type_t;
@@ -976,6 +948,14 @@ namespace nmtools
 
 namespace nmtools::meta
 {
+    /**
+     * @brief true case for helper trait to check if type T is view
+     * 
+     * @tparam view_t template template param corresponding to actual view
+     * @tparam Ts template parameters to actual view
+     */
+    template <template<typename...> typename view_t, typename...Ts>
+    struct is_view<view::decorator_t<view_t,Ts...>> : true_type {};
 
     template <template<typename...>typename lhs_view_t, template<typename...>typename rhs_view_t, typename...view_args_t>
     struct is_same_view<
