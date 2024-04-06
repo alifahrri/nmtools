@@ -112,6 +112,8 @@ namespace nmtools::index
         auto result = result_t{};
 
         auto src_dim = len(src_shape);
+
+        [[maybe_unused]]
         auto win_dim = len(dst_shape) - src_dim;
 
         if constexpr (meta::is_resizable_v<result_t>) {
