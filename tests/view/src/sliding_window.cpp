@@ -38,6 +38,7 @@ TEST_CASE("sliding_window(case1)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case1, x_h, window_shape );
     SLIDING_WINDOW_SUBCASE( case1, x_d, window_shape );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case1, x_cs_fb, window_shape );
     SLIDING_WINDOW_SUBCASE( case1, x_cs_hb, window_shape );
     SLIDING_WINDOW_SUBCASE( case1, x_cs_db, window_shape );
@@ -57,6 +58,7 @@ TEST_CASE("sliding_window(case1)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case1, x_ls_fb, window_shape );
     SLIDING_WINDOW_SUBCASE( case1, x_ls_hb, window_shape );
     SLIDING_WINDOW_SUBCASE( case1, x_ls_db, window_shape );
+    #endif
 }
 
 TEST_CASE("sliding_window(case2)" * doctest::test_suite("view::sliding_window"))
@@ -67,6 +69,7 @@ TEST_CASE("sliding_window(case2)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case2, x_h, window_shape_h );
     SLIDING_WINDOW_SUBCASE( case2, x_d, window_shape_v );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case2, x_cs_fb, window_shape_a );
     SLIDING_WINDOW_SUBCASE( case2, x_cs_hb, window_shape_a );
     SLIDING_WINDOW_SUBCASE( case2, x_cs_db, window_shape_a );
@@ -126,6 +129,7 @@ TEST_CASE("sliding_window(case2)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case2, x_ls_fb, window_shape_h );
     SLIDING_WINDOW_SUBCASE( case2, x_ls_hb, window_shape_h );
     SLIDING_WINDOW_SUBCASE( case2, x_ls_db, window_shape_h );
+    #endif
 }
 
 TEST_CASE("sliding_window(case3)" * doctest::test_suite("view::sliding_window"))
@@ -136,6 +140,7 @@ TEST_CASE("sliding_window(case3)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case3, x_h, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case3, x_d, window_shape, axis );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case3, x_cs_fb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case3, x_cs_hb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case3, x_cs_db, window_shape, axis );
@@ -151,6 +156,7 @@ TEST_CASE("sliding_window(case3)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case3, x_ds_fb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case3, x_ds_hb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case3, x_ds_db, window_shape, axis );
+    #endif
 }
 
 TEST_CASE("sliding_window(case4)" * doctest::test_suite("view::sliding_window"))
@@ -161,6 +167,7 @@ TEST_CASE("sliding_window(case4)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case4, x_h, window_shape_h, axis_h );
     SLIDING_WINDOW_SUBCASE( case4, x_d, window_shape_v, axis_v );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case4, x_cs_fb, window_shape_a, axis_a );
     SLIDING_WINDOW_SUBCASE( case4, x_cs_hb, window_shape_a, axis_a );
     SLIDING_WINDOW_SUBCASE( case4, x_cs_db, window_shape_a, axis_a );
@@ -220,6 +227,7 @@ TEST_CASE("sliding_window(case4)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case4, x_ls_fb, window_shape_h, axis_h );
     SLIDING_WINDOW_SUBCASE( case4, x_ls_hb, window_shape_h, axis_h );
     SLIDING_WINDOW_SUBCASE( case4, x_ls_db, window_shape_h, axis_h );
+    #endif
 }
 
 TEST_CASE("sliding_window(case5)" * doctest::test_suite("view::sliding_window"))
@@ -230,6 +238,7 @@ TEST_CASE("sliding_window(case5)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case5, x_h, window_shape_h );
     SLIDING_WINDOW_SUBCASE( case5, x_d, window_shape_v );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case5, x_cs_fb, window_shape_a );
     SLIDING_WINDOW_SUBCASE( case5, x_cs_hb, window_shape_a );
     SLIDING_WINDOW_SUBCASE( case5, x_cs_db, window_shape_a );
@@ -249,6 +258,7 @@ TEST_CASE("sliding_window(case5)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case5, x_ls_fb, window_shape_a );
     SLIDING_WINDOW_SUBCASE( case5, x_ls_hb, window_shape_a );
     SLIDING_WINDOW_SUBCASE( case5, x_ls_db, window_shape_a );
+    #endif
 }
 
 TEST_CASE("sliding_window(case6)" * doctest::test_suite("view::sliding_window"))
@@ -259,6 +269,7 @@ TEST_CASE("sliding_window(case6)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case6, x_h, window_shape_h, axis_h );
     SLIDING_WINDOW_SUBCASE( case6, x_d, window_shape_v, axis_v );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case6, x_cs_fb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case6, x_cs_hb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case6, x_cs_db, window_shape, axis );
@@ -274,6 +285,7 @@ TEST_CASE("sliding_window(case6)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case6, x_ds_fb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case6, x_ds_hb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case6, x_ds_db, window_shape, axis );
+    #endif
 }
 
 TEST_CASE("sliding_window(case7)" * doctest::test_suite("view::sliding_window"))
@@ -284,6 +296,7 @@ TEST_CASE("sliding_window(case7)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case7, x_h, window_shape_h, axis_h );
     SLIDING_WINDOW_SUBCASE( case7, x_d, window_shape_v, axis_v );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case7, x_cs_fb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case7, x_cs_hb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case7, x_cs_db, window_shape, axis );
@@ -303,6 +316,7 @@ TEST_CASE("sliding_window(case7)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case7, x_ls_fb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case7, x_ls_hb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case7, x_ls_db, window_shape, axis );
+    #endif
 }
 
 TEST_CASE("sliding_window(case8)" * doctest::test_suite("view::sliding_window"))
@@ -313,6 +327,7 @@ TEST_CASE("sliding_window(case8)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case8, x_h, window_shape_h, axis_h );
     SLIDING_WINDOW_SUBCASE( case8, x_d, window_shape_v, axis_v );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case8, x_cs_fb, window_shape_a, axis_f );
     SLIDING_WINDOW_SUBCASE( case8, x_cs_hb, window_shape_f, axis_h );
     SLIDING_WINDOW_SUBCASE( case8, x_cs_db, window_shape_h, axis_v );
@@ -332,6 +347,7 @@ TEST_CASE("sliding_window(case8)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case8, x_ls_fb, window_shape_a, axis_f );
     SLIDING_WINDOW_SUBCASE( case8, x_ls_hb, window_shape_f, axis_h );
     SLIDING_WINDOW_SUBCASE( case8, x_ls_db, window_shape_h, axis_v );
+    #endif
 }
 
 TEST_CASE("sliding_window(case9)" * doctest::test_suite("view::sliding_window"))
@@ -342,6 +358,7 @@ TEST_CASE("sliding_window(case9)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case9, x_h, window_shape_h );
     SLIDING_WINDOW_SUBCASE( case9, x_d, window_shape_v );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case9, x_cs_fb, window_shape_f );
     SLIDING_WINDOW_SUBCASE( case9, x_cs_hb, window_shape_h );
     SLIDING_WINDOW_SUBCASE( case9, x_cs_db, window_shape_v );
@@ -361,6 +378,7 @@ TEST_CASE("sliding_window(case9)" * doctest::test_suite("view::sliding_window"))
     SLIDING_WINDOW_SUBCASE( case9, x_ls_fb, window_shape_f );
     SLIDING_WINDOW_SUBCASE( case9, x_ls_hb, window_shape_h );
     SLIDING_WINDOW_SUBCASE( case9, x_ls_db, window_shape_v );
+    #endif
 }
 
 TEST_CASE("sliding_window(case10)" * doctest::test_suite("view::sliding_window"))
@@ -371,6 +389,7 @@ TEST_CASE("sliding_window(case10)" * doctest::test_suite("view::sliding_window")
     SLIDING_WINDOW_SUBCASE( case10, x_h, window_shape_h, axis_h );
     SLIDING_WINDOW_SUBCASE( case10, x_d, window_shape_v, axis_v );
 
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     SLIDING_WINDOW_SUBCASE( case10, x_cs_fb, window_shape_f, axis_a );
     SLIDING_WINDOW_SUBCASE( case10, x_cs_hb, window_shape_h, axis_f );
     SLIDING_WINDOW_SUBCASE( case10, x_cs_db, window_shape_v, axis_h );
@@ -390,4 +409,5 @@ TEST_CASE("sliding_window(case10)" * doctest::test_suite("view::sliding_window")
     SLIDING_WINDOW_SUBCASE( case10, x_ls_fb, window_shape_f, axis_a );
     SLIDING_WINDOW_SUBCASE( case10, x_ls_hb, window_shape_h, axis_f );
     SLIDING_WINDOW_SUBCASE( case10, x_ls_db, window_shape_v, axis_h );
+    #endif
 }
