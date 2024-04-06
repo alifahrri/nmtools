@@ -35,6 +35,7 @@ namespace nmtools::index
                 }
             }();
 
+            [[maybe_unused]]
             auto dst_dim = [&](){
                 if constexpr (meta::is_num_v<window_shape_t>) {
                     return src_dim + 1;
