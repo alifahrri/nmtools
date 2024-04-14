@@ -104,14 +104,14 @@ namespace nmtools::utils
     template <typename formatter_t, typename T>
     auto to_string(const T& array, formatter_t) -> nmtools_string
     {
-        constexpr auto to_string_impl = impl::to_string_t<T,formatter_t>{};
+        auto to_string_impl = impl::to_string_t<T,formatter_t>{};
         return to_string_impl(array);
     } // auto to_string
 
     template <typename T>
     auto to_string(const T& array) -> nmtools_string
     {
-        constexpr auto to_string_impl = impl::to_string_t<T,none_t>{};
+        auto to_string_impl = impl::to_string_t<T,none_t>{};
         return to_string_impl(array);
     }
 } // namespace nmtools::utils

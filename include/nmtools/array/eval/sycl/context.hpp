@@ -8,6 +8,7 @@
 #include "nmtools/exception.hpp"
 #include "nmtools/utils/to_string.hpp"
 #include "nmtools/array/as_static.hpp"
+#include "nmtools/utl/vector.hpp"
 
 #include <sycl/sycl.hpp>
 #include <iostream>
@@ -607,11 +608,10 @@ std::cout << "- " << #prop << ": " \
 
 namespace nmtools::utils::impl
 {
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        ::sycl::info::device_type, fmt_string_t<chars...>
+        ::sycl::info::device_type, none_t
     > {
-        using result_type = nmtools_string;
         using device_type = ::sycl::info::device_type;
         auto operator()(device_type prop) const noexcept
         {
@@ -638,11 +638,10 @@ namespace nmtools::utils::impl
         }
     }; // device_type
 
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        ::sycl::info::local_mem_type, fmt_string_t<chars...>
+        ::sycl::info::local_mem_type, none_t
     > {
-        using result_type = nmtools_string;
         using local_mem_type = ::sycl::info::local_mem_type;
         auto operator()(local_mem_type prop) const noexcept
         {
@@ -661,11 +660,10 @@ namespace nmtools::utils::impl
         }
     }; // local_mem_type
 
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        ::sycl::info::global_mem_cache_type, fmt_string_t<chars...>
+        ::sycl::info::global_mem_cache_type, none_t
     > {
-        using result_type = nmtools_string;
         using global_mem_cache_type = ::sycl::info::global_mem_cache_type;
         auto operator()(global_mem_cache_type prop) const noexcept
         {
@@ -684,11 +682,10 @@ namespace nmtools::utils::impl
         }
     }; // global_mem_cache_type
 
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        ::sycl::info::fp_config, fmt_string_t<chars...>
+        ::sycl::info::fp_config, none_t
     > {
-        using result_type = nmtools_string;
         using fp_config = ::sycl::info::fp_config;
         auto operator()(fp_config prop) const noexcept
         {
@@ -717,11 +714,10 @@ namespace nmtools::utils::impl
         }
     }; // fp_config
 
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        ::sycl::info::execution_capability, fmt_string_t<chars...>
+        ::sycl::info::execution_capability, none_t
     > {
-        using result_type = nmtools_string;
         using execution_capability = ::sycl::info::execution_capability;
         auto operator()(execution_capability prop) const noexcept
         {
@@ -738,11 +734,10 @@ namespace nmtools::utils::impl
         }
     }; // execution_capability
 
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        ::sycl::info::partition_property, fmt_string_t<chars...>
+        ::sycl::info::partition_property, none_t
     > {
-        using result_type = nmtools_string;
         using partition_property = ::sycl::info::partition_property;
         auto operator()(partition_property prop) const noexcept
         {
@@ -763,11 +758,10 @@ namespace nmtools::utils::impl
         }
     }; // partition_property
 
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        ::sycl::info::partition_affinity_domain, fmt_string_t<chars...>
+        ::sycl::info::partition_affinity_domain, none_t
     > {
-        using result_type = nmtools_string;
         using partition_affinity_domain = ::sycl::info::partition_affinity_domain;
         auto operator()(partition_affinity_domain prop) const noexcept
         {
@@ -794,11 +788,10 @@ namespace nmtools::utils::impl
         }
     }; // partition_affinity_domain
 
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        ::sycl::id<3>, fmt_string_t<chars...>
+        ::sycl::id<3>, none_t
     > {
-        using result_type = nmtools_string;
         auto operator()(const ::sycl::id<3>& idx) const noexcept
         {
             nmtools_string str;
@@ -810,12 +803,11 @@ namespace nmtools::utils::impl
         }
     };
 
-    template <auto N, auto...chars>
+    template <auto N>
     struct to_string_t<
-        ::sycl::range<N>, fmt_string_t<chars...>
+        ::sycl::range<N>, none_t
     >
     {
-        using result_type = nmtools_string;
         auto operator()(const ::sycl::range<N>& range) const noexcept
         {
             nmtools_string str;
@@ -829,12 +821,11 @@ namespace nmtools::utils::impl
         }
     };
 
-    template <auto N, auto...chars>
+    template <auto N>
     struct to_string_t<
-        ::sycl::nd_range<N>, fmt_string_t<chars...>
+        ::sycl::nd_range<N>, none_t
     >
     {
-        using result_type = nmtools_string;
         auto operator()(const ::sycl::nd_range<N>& range) const noexcept
         {
             nmtools_string str;
@@ -849,11 +840,10 @@ namespace nmtools::utils::impl
         }
     };
 
-    template <typename T, auto...chars>
+    template <typename T>
     struct to_string_t<
-        std::vector<T>, fmt_string_t<chars...>, meta::enable_if_t<!meta::is_num_v<T>>
+        std::vector<T>, none_t, meta::enable_if_t<!meta::is_num_v<T>>
     > {
-        using result_type = nmtools_string;
         auto operator()(const std::vector<T>& props) const noexcept
         {
             nmtools_string str;
@@ -867,11 +857,10 @@ namespace nmtools::utils::impl
         }
     };
 
-    template <auto...chars>
+    template <>
     struct to_string_t<
-        std::string, fmt_string_t<chars...>
+        std::string, none_t
     > {
-        using result_type = nmtools_string;
         auto operator()(const std::string& string) const noexcept
         {
             nmtools_string str = string;

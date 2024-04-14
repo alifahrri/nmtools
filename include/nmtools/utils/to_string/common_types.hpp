@@ -214,9 +214,34 @@ namespace nmtools::utils::impl
     template <typename T, typename formatter_t, typename>
     struct to_string_t
     {
-        using result_type = error::TO_STRING_UNSUPPORTED<T>;
+        static constexpr auto result_vtype = [](){
+            if constexpr (is_none_v<formatter_t>) {
+                using mapper_type = to_string_t<T,fmt_string_t<>>;
+                if constexpr (meta::has_result_type_v<mapper_type>) {
+                    using result_type = typename mapper_type::result_type;
+                    return meta::as_value_v<result_type>;
+                } else {
+                    using result_type = error::TO_STRING_UNSUPPORTED<T,formatter_t>;
+                    return meta::as_value_v<result_type>;
+                }
+            } else {
+                using result_type = error::TO_STRING_UNSUPPORTED<T,formatter_t>;
+                return meta::as_value_v<result_type>;
+            }
+        }();
+        using result_type = meta::type_t<decltype(result_vtype)>;
+
+        auto operator()([[maybe_unused]] const T& t) const noexcept
+        {
+            if constexpr (meta::is_fail_v<result_type>) {
+                return result_type{};
+            } else {
+                return to_string(t,fmt_string_t<>{});
+            }
+        }
     }; // struct to_string_t
 
+    #if 0
     template <typename T>
     struct to_string_t
         <T,none_t,meta::enable_if_t<
@@ -229,6 +254,7 @@ namespace nmtools::utils::impl
             return to_string(array,fmt_string_t<>{});
         } // operator()
     }; // struct to_string_t
+    #endif
 
     #define NMTOOLS_DTYPE_TO_STRING_CASE(T,type,string) \
     if constexpr (meta::is_same_v<T,type>) { \
