@@ -1,143 +1,107 @@
 #ifndef NMTOOLS_ARRAY_VIEW_RESIZE_HPP
 #define NMTOOLS_ARRAY_VIEW_RESIZE_HPP
 
-#include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
-#include "nmtools/array/view/decorator.hpp"
-
+#include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/index/resize.hpp"
+#include "nmtools/array/as_static.hpp"
 #include "nmtools/utility/unwrap.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 
 namespace nmtools::view
 {
-    template <typename array_t, typename dst_shape_t>
+    template <typename src_shape_t, typename dst_shape_t>
     struct resize_t
+        : base_indexer_t<resize_t<src_shape_t,dst_shape_t>>
     {
-        using array_type = resolve_array_type_t<array_t>;
-        using dst_shape_type = resolve_attribute_type_t<dst_shape_t>;
-        using src_shape_type = const decltype(nmtools::shape<true>(meta::declval<array_t>()));
+        using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
+        using dst_shape_type = meta::resolve_optype_t<index::shape_resize_t,src_shape_type,dst_shape_t>;
+        using dst_size_type  = meta::resolve_optype_t<index::product_t,dst_shape_type>;
+        using src_size_type  = meta::resolve_optype_t<index::product_t,src_shape_type>;
 
-        array_type     array;
-        dst_shape_type dst_shape;
+        static constexpr auto n_inputs  = 1;
+        static constexpr auto n_outputs = 1;
+
         src_shape_type src_shape;
+        dst_shape_type dst_shape;
 
-        constexpr resize_t(const array_t& array_, const dst_shape_t& dst_shape)
-            : array(initialize<array_type>(array_))
-            , dst_shape(init_attribute<dst_shape_type>(dst_shape))
-            , src_shape(nmtools::shape<true>(array_))
+        constexpr resize_t(const src_shape_t& src_shape
+            , const dst_shape_t& dst_shape
+        )
+            : src_shape(fwd_attribute(src_shape))
+            , dst_shape(index::shape_resize(src_shape,dst_shape))
         {}
 
-        constexpr auto operands() const noexcept
+        template <typename indices_t>
+        constexpr auto indices(const indices_t& indices) const
         {
-            return nmtools_tuple<array_type>{array};
+            auto src_indices = index::resize(indices,src_shape,unwrap(dst_shape));
+            return src_indices;
         }
 
-        constexpr auto attributes() const noexcept
+        template <typename...args_t>
+        constexpr auto operator==(resize_t<args_t...> other) const
         {
-            return nmtools_tuple{dst_shape};
+            return utils::isequal(src_shape,other.src_shape)
+                && utils::isequal(dst_shape,other.dst_shape)
+            ;
         }
-
-        constexpr auto dim() const
-        {
-            return len(dst_shape);
-        }
-
-        constexpr auto shape() const
-        {
-            return dst_shape;
-        }
-
-        constexpr auto size() const
-        {
-            return index::product(dst_shape);
-        }
-
-        template <typename...size_types>
-        constexpr auto index(size_types...indices) const
-        {
-            auto indices_ = pack_indices(indices...);
-            auto tf_indices = index::resize(indices_,src_shape,dst_shape);
-            return tf_indices;
-        }
-    }; // struct resize_t
-
-    /*
-       NOTE: must use always_inline attribute when compiling c++ for opencl kernel, otherwise:
-       on -O3
-       with hybrid shape: invalid cast
-       with fixed shape: can't translate llvm instruction
-       on -O1
-       with hybrid shape: invalid cast
-       with fixed shape: invalid cast
-    */
+    }; // resize_t
 
     template <typename array_t, typename dst_shape_t>
-    nmtools_view_attribute
     constexpr auto resize(const array_t& array, const dst_shape_t& dst_shape)
     {
-        const auto src_shape = nmtools::shape<true>(array);
-        const auto maybe_dst_shape = index::shape_resize(src_shape,dst_shape);
-        using maybe_dst_shape_type = meta::remove_cvref_t<decltype(maybe_dst_shape)>;
-        if constexpr (meta::is_maybe_v<maybe_dst_shape_type>) {
-            using dst_shape_type = meta::get_maybe_type_t<maybe_dst_shape_type>;
-            using resized_type = decorator_t<resize_t,array_t,dst_shape_type>;
-            using return_type  = nmtools_maybe<resized_type>;
-            if (static_cast<bool>(maybe_dst_shape)) {
-                return return_type{resized_type{{array,*maybe_dst_shape}}};
-            } else {
-                return return_type{meta::Nothing};
-            }
-        } else {
-            using resized_type = decorator_t<resize_t,array_t,maybe_dst_shape_type>;
-            return resized_type{{array,maybe_dst_shape}};
-        }
-    } // resize
+        auto src_shape = shape<true>(array);
+        auto indexer = resize_t{src_shape,dst_shape};
+        return indexing(array,indexer);
+    }
 } // namespace nmtools::view
 
-namespace nmtools::meta
+namespace nmtools::array
 {
-    template <typename array_t, typename dst_shape_t>
-    struct is_ndarray<
-        view::decorator_t< view::resize_t, array_t, dst_shape_t>
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::resize_t<args_t...>, max_dim
     >
     {
-        static constexpr auto value = is_ndarray_v<array_t>;
-    };
+        using attribute_type = view::resize_t<args_t...>;
 
-    template <typename array_t, typename dst_shape_t>
-    struct fixed_size<
-        view::decorator_t<view::resize_t,array_t,dst_shape_t>
-    > {
-        using view_type = view::resize_t<array_t,dst_shape_t>;
-        using dst_shape_type = typename view_type::dst_shape_type;
+        attribute_type attribute;
 
-        static constexpr auto value = [](){
-            if constexpr (is_constant_index_array_v<dst_shape_type>) {
-                return index::product(dst_shape_type{});
-            } else {
-                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
-            }
-        }();
-    };
-
-    template <typename array_t, typename dst_shape_t>
-    struct bounded_size<
-        view::decorator_t<view::resize_t,array_t,dst_shape_t>
-    > {
-        using view_type = view::resize_t<array_t,dst_shape_t>;
-        using dst_shape_type = typename view_type::dst_shape_type;
-
-        static constexpr auto value = [](){
-            if constexpr (is_constant_index_array_v<dst_shape_type>) {
-                return index::product(dst_shape_type{});
-            } else if constexpr (is_clipped_index_array_v<dst_shape_type>) {
-                auto max_shape = to_value_v<dst_shape_type>;
-                return index::product(max_shape);
-            } else {
-                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
-            }
-        }();
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            // TODO: error handling
+            auto dst_shape = as_static<max_dim>(unwrap(attribute.dst_shape));
+            return view::resize_t{src_shape,dst_shape};
+        }
     };
 }
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::resize_t<args_t...>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const view::resize_t<args_t...>& kwargs) const noexcept
+        {
+            nmtools_string str;
+            str += "resize{";
+            str += ".src_shape=";
+            str += utils::to_string(kwargs.src_shape,Compact);
+            str += ",";
+            str += ".dst_shape=";
+            str += utils::to_string(kwargs.dst_shape,Compact);
+            str += "}";
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_RESIZE_HPP
