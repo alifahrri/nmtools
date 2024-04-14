@@ -82,6 +82,14 @@ namespace nmtools::meta
         template <typename T>
         using dim = decltype(declval<T>().dim());
 
+        // TODO: proper convention on member function vs member variable
+        template <typename T>
+        using src_size = decltype(declval<T>().src_size);
+
+        // TODO: proper convention on member function vs member variable
+        template <typename T>
+        using dst_size = decltype(declval<T>().dst_size);
+
         /**
          * @brief helper alias template to deduce the return value of member function `identity` of type `T`
          * 

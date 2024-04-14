@@ -4,6 +4,7 @@
 #include "nmtools/platform.hpp"
 #include "nmtools/utils/isclose.hpp"
 #include "nmtools/utils/isequal.hpp"
+#include "nmtools/utils/apply_isequal.hpp"
 #include "nmtools/testing/string.hpp"
 #include "nmtools/testing/array_cast.hpp"
 
@@ -65,10 +66,15 @@ nmtools::utils::to_string(array)
 #define NMTOOLS_ASSERT_CLOSE_DOCTEST(result,expect) \
 { \
     auto result_ = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
+    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
+    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
     std::string message {}; \
     message = message + \
-        + "\n\tActual  :\n" + STRINGIFY(result)  \
-        + "\n\tExpected:\n" + STRINGIFY(expect); \
+        + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+        + STRINGIFY(result) \
+        + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+        + STRINGIFY(expect) \
+    ; \
     NMTOOLS_CHECK_MESSAGE( result_, message ); \
 }
 
@@ -88,13 +94,19 @@ nmtools::utils::to_string(array)
  * 
  */
 #define NMTOOLS_ASSERT_EQUAL_DOCTEST(result,expect) \
-CHECK_MESSAGE(isequal(result,expect), \
-    (   \
-        std::string{} \
-        + "\n\tActual  : " + STRINGIFY(result) \
-        + "\n\tExpected: " + STRINGIFY(expect) \
-    )   \
-);
+{ \
+    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
+    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
+    auto message = std::string{} \
+        + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+        + STRINGIFY(result) \
+        + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+        + STRINGIFY(expect) \
+    ; \
+    CHECK_MESSAGE(isequal(result,expect), \
+        message \
+    ); \
+}
 
 #define NMTOOLS_ASSERT_NOT_EQUAL_DOCTEST(result,expect) \
 CHECK_MESSAGE(!isequal(result,expect), \

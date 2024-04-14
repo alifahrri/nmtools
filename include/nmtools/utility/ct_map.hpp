@@ -77,7 +77,7 @@ namespace nmtools::utility
         }
 
         template <typename key_t, typename value_t>
-        constexpr auto insert(key_t key, value_t value) const noexcept
+        constexpr auto insert(key_t key, [[maybe_unused]] value_t value) const noexcept
         {
             auto contain_key = contains(key);
             if constexpr (decltype(contain_key)::value) {

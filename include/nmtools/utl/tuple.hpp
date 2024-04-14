@@ -7,7 +7,7 @@
 
 // poor man's tuple
 
-// NOTE: base class acess is assumed to be unsuppoted when compiling to spirv
+// NOTE: base class access is assumed to be unsupported when compiling to spirv
 // TODO: revisit this cases
 // #define NMTOOLS_TUPLE_NO_BASE_ACCESS
 
@@ -271,6 +271,61 @@ namespace nmtools::utl
             : base(tp.value1,tp.value2,tp.value3,tp.value4,tp.value5,tp.value6,tp.value7,tp.value8), value9{tp.value9} {}
     };
 
+    // TODO: implement better tuple
+    template <class arg1, class arg2, class arg3, class arg4, class arg5, class arg6, class arg7, class arg8, class arg9, class arg10>
+    struct tuple10 : tuple9<arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9>
+    { 
+        using base = tuple9<arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9>;
+        DECLARE_TUPLE_VAL_TYPE(10)
+        DEFINE_TUPLE_VAL(10)
+        DEFINE_TUPLE_CTOR(10)
+
+        constexpr tuple10(const arg1& val1, const arg2& val2, const arg3& val3, const arg4& val4, const arg5& val5, const arg6& val6, const arg7& val7, const arg8& val8, const arg9& val9, const arg10& val10)
+            : base(val1,val2,val3,val4,val5,val6,val7,val8,val9), value10{val10} {}
+        
+        template <typename var1, typename var2, typename var3, typename var4, typename var5, typename var6, typename var7, typename var8, typename var9, typename var10>
+        constexpr tuple10(const tuple10<var1,var2,var3,var4,var5,var6,var7,var8,var9,var10>& tp)
+            : base(tp.value1,tp.value2,tp.value3,tp.value4,tp.value5,tp.value6,tp.value7,tp.value8,tp.value9), value10{tp.value10} {}
+    };
+
+    // TODO: implement better tuple
+    template <class arg1, class arg2, class arg3, class arg4, class arg5, class arg6, class arg7, class arg8, class arg9, class arg10, class arg11>
+    struct tuple11 : tuple10<arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10>
+    { 
+        using base = tuple10<arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10>;
+        DECLARE_TUPLE_VAL_TYPE(11)
+        DEFINE_TUPLE_VAL(11)
+        DEFINE_TUPLE_CTOR(11)
+
+        constexpr tuple11(const arg1& val1, const arg2& val2, const arg3& val3, const arg4& val4, const arg5& val5, const arg6& val6, const arg7& val7, const arg8& val8, const arg9& val9, const arg10& val10, const arg11& val11)
+            : base(val1,val2,val3,val4,val5,val6,val7,val8,val9,val10), value11{val11} {}
+        
+        template <typename var1, typename var2, typename var3, typename var4, typename var5, typename var6, typename var7, typename var8, typename var9, typename var10, typename var11>
+        constexpr tuple11(const tuple11<var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11>& tp)
+            : base(tp.value1,tp.value2,tp.value3,tp.value4,tp.value5,tp.value6,tp.value7,tp.value8,tp.value9,tp.value10), value11{tp.value11} {}
+    };
+
+    // TODO: implement better tuple
+    template <
+        class arg1, class arg2, class arg3, class arg4, class arg5, class arg6,
+        class arg7, class arg8, class arg9, class arg10, class arg11, class arg12>
+    struct tuple12 : tuple11<arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11>
+    { 
+        using base = tuple11<arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11>;
+        DECLARE_TUPLE_VAL_TYPE(12)
+        DEFINE_TUPLE_VAL(12)
+        DEFINE_TUPLE_CTOR(12)
+
+        constexpr tuple12(const arg1& val1, const arg2& val2, const arg3& val3, const arg4& val4, const arg5& val5, const arg6& val6
+            , const arg7& val7, const arg8& val8, const arg9& val9, const arg10& val10, const arg11& val11, const arg12& val12)
+            : base(val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11), value12{val12} {}
+        
+        template <typename var1, typename var2, typename var3, typename var4, typename var5, typename var6
+            , typename var7, typename var8, typename var9, typename var10, typename var11, typename var12>
+        constexpr tuple12(const tuple12<var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12>& tp)
+            : base(tp.value1,tp.value2,tp.value3,tp.value4,tp.value5,tp.value6,tp.value7,tp.value8,tp.value9,tp.value10,tp.value11), value12{tp.value12} {}
+    };
+
     #define RETURN_TUPLE_BASE_TYPE_IF(numel) \
     if constexpr (N==numel) { \
         using type = tuple##numel<Args...>; \
@@ -291,6 +346,9 @@ namespace nmtools::utl
             else RETURN_TUPLE_BASE_TYPE_IF(7)
             else RETURN_TUPLE_BASE_TYPE_IF(8)
             else RETURN_TUPLE_BASE_TYPE_IF(9)
+            else RETURN_TUPLE_BASE_TYPE_IF(10)
+            else RETURN_TUPLE_BASE_TYPE_IF(11)
+            else RETURN_TUPLE_BASE_TYPE_IF(12)
             // TODO: add error type
         }();
         using type = meta::type_t<decltype(vtype)>;
@@ -310,7 +368,7 @@ namespace nmtools::utl
     template <typename...Args>
     struct tuple : tuple_base_t<Args...>
     {
-        static_assert( sizeof...(Args) <= 9 );
+        static_assert( sizeof...(Args) <= 12 );
         using base = tuple_base_t<Args...>;
         constexpr tuple() : base() {};
 
@@ -329,6 +387,7 @@ namespace nmtools::utl
         constexpr tuple() {};
     };
 
+    // TODO: remove
     template <typename...args_t>
     constexpr auto make_tuple(const args_t&...args)
     {
@@ -357,6 +416,9 @@ namespace nmtools::utl
     HAS_VALUE_N(7)
     HAS_VALUE_N(8)
     HAS_VALUE_N(9)
+    HAS_VALUE_N(10)
+    HAS_VALUE_N(11)
+    HAS_VALUE_N(12)
 
     #define RETURN_TUPLE_ELEM_IF(index) \
     if constexpr (((I+1)==index) && (meta::detail::expression_check<void,has_value##index,tuple_t>::value)) { \
@@ -376,6 +438,9 @@ namespace nmtools::utl
         else RETURN_TUPLE_ELEM_IF(7)
         else RETURN_TUPLE_ELEM_IF(8)
         else RETURN_TUPLE_ELEM_IF(9)
+        else RETURN_TUPLE_ELEM_IF(10)
+        else RETURN_TUPLE_ELEM_IF(11)
+        else RETURN_TUPLE_ELEM_IF(12)
     }
 
     template <auto I, typename...Args>
@@ -391,6 +456,9 @@ namespace nmtools::utl
         else RETURN_TUPLE_ELEM_IF(7)
         else RETURN_TUPLE_ELEM_IF(8)
         else RETURN_TUPLE_ELEM_IF(9)
+        else RETURN_TUPLE_ELEM_IF(10)
+        else RETURN_TUPLE_ELEM_IF(11)
+        else RETURN_TUPLE_ELEM_IF(12)
     }
 
     template <typename T>
@@ -429,6 +497,9 @@ namespace nmtools::utl
             else RETURN_TUPLE_ARG_TYPE_IF(7)
             else RETURN_TUPLE_ARG_TYPE_IF(8)
             else RETURN_TUPLE_ARG_TYPE_IF(9)
+            else RETURN_TUPLE_ARG_TYPE_IF(10)
+            else RETURN_TUPLE_ARG_TYPE_IF(11)
+            else RETURN_TUPLE_ARG_TYPE_IF(12)
         }();
         using type = meta::type_t<decltype(vtype)>;
     };
@@ -445,7 +516,7 @@ namespace nmtools::utl
 
 } // namespace nmtools::utl
 
-// folowing https://en.cppreference.com/w/cpp/language/structured_binding
+// following https://en.cppreference.com/w/cpp/language/structured_binding
 // and based on current implementation of utl::tuple,
 // must expose some of metafunction to std namespace 🤦
 
@@ -523,6 +594,15 @@ NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple8)
 
 NMTOOLS_UTL_STD_TUPLE_SIZE(tuple9)
 NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple9)
+
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple10)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple10)
+
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple11)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple11)
+
+NMTOOLS_UTL_STD_TUPLE_SIZE(tuple12)
+NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple12)
 
 #undef NMTOOLS_UTL_STD_TUPLE_SIZE
 #undef NMTOOLS_UTL_STD_TUPLE_ELEMENT

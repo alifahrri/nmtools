@@ -52,11 +52,53 @@ namespace utils = nmtools::utils;
     ); \
 }
 
+#define NMTOOLS_ASSERT_APPLY_EQUAL_DOCTEST(result,expect) \
+{ \
+    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
+    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
+    auto message = std::string{} \
+        + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+        + STRINGIFY(result) \
+        + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+        + STRINGIFY(expect) \
+    ; \
+    CHECK_MESSAGE(nmtools::utils::apply_isequal(result,expect), \
+        message \
+    ); \
+}
+
+namespace nmtools::testing
+{
+    template <typename T>
+    constexpr auto maybe_shape(const T& t)
+    {
+        if constexpr (meta::is_maybe_v<T>) {
+            using result_type = decltype(shape(*t));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(t)) {
+                return return_type{shape(*t)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            return shape(t);
+        }
+    }
+}
+
 #undef NMTOOLS_ASSERT_CLOSE
 #define NMTOOLS_ASSERT_CLOSE NMTOOLS_ASSERT_CLOSE_DOCTEST
 
 #undef NMTOOLS_ASSERT_EQUAL
 #define NMTOOLS_ASSERT_EQUAL NMTOOLS_ASSERT_EQUAL_DOCTEST
+
+#undef NMTOOLS_ASSERT_APPLY_EQUAL
+#define NMTOOLS_ASSERT_APPLY_EQUAL NMTOOLS_ASSERT_APPLY_EQUAL_DOCTEST
+
+#define NMTOOLS_ASSERT_SHAPE(result,expect) \
+{ \
+    NMTOOLS_ASSERT_EQUAL( nmtools::testing::maybe_shape(result), nmtools::testing::maybe_shape(expect) ); \
+}
 
 #undef NMTOOLS_ASSERT_EQUAL_MSG_OPERANDS
 #define NMTOOLS_ASSERT_EQUAL_MSG_OPERANDS NMTOOLS_ASSERT_EQUAL_MSG_OPERANDS_DOCTEST
