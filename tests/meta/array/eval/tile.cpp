@@ -14,40 +14,55 @@ namespace meta = nm::meta;
 TEST_CASE("tile" * doctest::test_suite("eval") * doctest::skip())
 {
     {
+        using array_type = int[3];
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using reps_type = nmtools_tuple<meta::ct<1>>;
         using view_t = view::decorator_t<
-            view::tile_t, int[3], nmtools_tuple<meta::ct<1>>
+            view::indexing_t, array_type, view::tile_t<src_shape_type,reps_type>
         >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
         using expected_t = nmtools_array<int,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
+        using array_type = int[3];
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using reps_type = nmtools_tuple<meta::ct<1>,meta::ct<2>>;
         using view_t = view::decorator_t<
-            view::tile_t, int[3], nmtools_tuple<meta::ct<1>,meta::ct<2>>
+            view::indexing_t, array_type, view::tile_t<src_shape_type,reps_type>
         >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
         using expected_t = nmtools_array<nmtools_array<int,6>,1>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
+        using array_type = int[3];
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using reps_type = nmtools_list<int>;
         using view_t = view::decorator_t<
-            view::tile_t, int[3], nmtools_list<int>
+            view::indexing_t, array_type, view::tile_t<src_shape_type,reps_type>
         >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
         using expected_t = na::dynamic_ndarray<int>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
+        using array_type = nmtools_list<int>;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using reps_type = nmtools_tuple<meta::ct<1>,meta::ct<2>>;
         using view_t = view::decorator_t<
-            view::tile_t, nmtools_list<int>, nmtools_tuple<meta::ct<1>,meta::ct<2>>
+            view::indexing_t, array_type, view::tile_t<src_shape_type,reps_type>
         >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
         using expected_t = na::dynamic_ndarray<int>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
+        using array_type = na::fixed_ndarray<int,3>;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using reps_type = nmtools_tuple<meta::ct<1>,meta::ct<2>>;
         using view_t = view::decorator_t<
-            view::tile_t, na::fixed_ndarray<int,3>, nmtools_tuple<meta::ct<1>,meta::ct<2>>
+            view::indexing_t, array_type, view::tile_t<src_shape_type,reps_type>
         >;
         using eval_t = meta::resolve_optype_t< na::eval_t, view_t, nm::none_t >;
         using expected_t = na::fixed_ndarray<int,1,6>;

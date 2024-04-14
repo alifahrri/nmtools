@@ -28,7 +28,7 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("functional::transpose"))
 
 namespace view = nmtools::view;
 
-TEST_CASE("transpose" * doctest::test_suite("functional::get_function_composition"))
+TEST_CASE("transpose" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
     NMTOOLS_TESTING_DECLARE_NS(transpose,case1);
     using namespace args;
@@ -39,4 +39,16 @@ TEST_CASE("transpose" * doctest::test_suite("functional::get_function_compositio
     auto expect = fn::transpose[axes_a];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+}
+
+TEST_CASE("transpose" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(transpose,case1);
+    using namespace args;
+
+    auto a = view::transpose(array,axes_a);
+
+    auto function = fn::get_function_composition(a);
+
+    NMTOOLS_ASSERT_EQUAL( function(array), a );
 }

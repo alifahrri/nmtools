@@ -34,10 +34,7 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
 
-// TODO: fix for sycl kernel (opencl/cuda), jit compile error:
-// LLVMToSpirv: llvm-spirv invocation failed with exit code 8
-// InvalidBitWidth: Invalid bit width in input: 40
-TEST_CASE("reshape(case1)" * doctest::test_suite("array::reshape") * doctest::skip())
+TEST_CASE("reshape(case1)" * doctest::test_suite("array::reshape"))
 {
     // RESHAPE_SUBCASE(case1, array, newshape);
     // RESHAPE_SUBCASE(case1, array_a, newshape);
@@ -45,23 +42,48 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("array::reshape") * doctest::sk
     // RESHAPE_SUBCASE(case1, array_h, newshape);
     // RESHAPE_SUBCASE(case1, array_d, newshape);
 
-    // RESHAPE_SUBCASE(case1, array_cs_fb, newshape);
-    // RESHAPE_SUBCASE(case1, array_cs_hb, newshape);
-    // RESHAPE_SUBCASE(case1, array_cs_db, newshape);
+    RESHAPE_SUBCASE(case1, array_cs_fb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_cs_hb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_cs_db, newshape_ct);
 
-    RESHAPE_SUBCASE(case1, array_fs_fb, newshape);
-    RESHAPE_SUBCASE(case1, array_fs_hb, newshape);
-    RESHAPE_SUBCASE(case1, array_fs_db, newshape);
+    RESHAPE_SUBCASE(case1, array_fs_fb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_fs_hb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_fs_db, newshape_ct);
 
-    RESHAPE_SUBCASE(case1, array_hs_fb, newshape);
-    RESHAPE_SUBCASE(case1, array_hs_hb, newshape);
-    RESHAPE_SUBCASE(case1, array_hs_db, newshape);
+    RESHAPE_SUBCASE(case1, array_hs_fb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_hs_hb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_hs_db, newshape_ct);
 
-    RESHAPE_SUBCASE(case1, array_ds_fb, newshape);
-    RESHAPE_SUBCASE(case1, array_ds_hb, newshape);
-    RESHAPE_SUBCASE(case1, array_ds_db, newshape);
+    RESHAPE_SUBCASE(case1, array_ds_fb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_ds_hb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_ds_db, newshape_ct);
 
-    // RESHAPE_SUBCASE(case1, array_ls_fb, newshape);
-    // RESHAPE_SUBCASE(case1, array_ls_hb, newshape);
-    // RESHAPE_SUBCASE(case1, array_ls_db, newshape);
+    RESHAPE_SUBCASE(case1, array_ls_fb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_ls_hb, newshape_ct);
+    RESHAPE_SUBCASE(case1, array_ls_db, newshape_ct);
+
+    // jit compile error when using opencl (via pocl) but works fine on cuda & openmp cpu
+    // LLVMToSpirv: llvm-spirv invocation failed with exit code 8
+    // InvalidBitWidth: Invalid bit width in input: 40
+    #if 0
+    RESHAPE_SUBCASE(case1, array_cs_fb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_cs_hb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_cs_db, newshape_a);
+
+    RESHAPE_SUBCASE(case1, array_fs_fb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_fs_hb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_fs_db, newshape_a);
+
+    RESHAPE_SUBCASE(case1, array_hs_fb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_hs_hb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_hs_db, newshape_a);
+
+    RESHAPE_SUBCASE(case1, array_ds_fb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_ds_hb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_ds_db, newshape_a);
+
+    RESHAPE_SUBCASE(case1, array_ls_fb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_ls_hb, newshape_a);
+    RESHAPE_SUBCASE(case1, array_ls_db, newshape_a);
+    #endif
 }

@@ -424,7 +424,7 @@ TEST_CASE("to_string(optional)" * doctest::test_suite("utils") * doctest::skip(t
 {
     SUBCASE("nullopt")
     {
-        auto arg = std::nullopt;
+        auto arg = meta::Nothing;
         auto str = to_string(arg);
         auto to_print = std::string("\n") + str;
         MESSAGE( to_print );

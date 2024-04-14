@@ -34,10 +34,7 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
 
-// TODO: fix sycl kernel, jit compile error:
-// InvalidBitWidth: Invalid bit width in input: 40
-// LLVMToSpirv: llvm-spirv invocation failed with exit code 8
-TEST_CASE("tile(case1)" * doctest::test_suite("array::tile") * doctest::skip())
+TEST_CASE("tile(case1)" * doctest::test_suite("array::tile"))
 {
     // TILE_SUBCASE(case1, array, reps);
     // TILE_SUBCASE(case1, array_a, reps);
@@ -45,9 +42,9 @@ TEST_CASE("tile(case1)" * doctest::test_suite("array::tile") * doctest::skip())
     // TILE_SUBCASE(case1, array_h, reps);
     // TILE_SUBCASE(case1, array_d, reps);
 
-    // TILE_SUBCASE(case1, array_cs_fb, reps);
-    // TILE_SUBCASE(case1, array_cs_hb, reps);
-    // TILE_SUBCASE(case1, array_cs_db, reps);
+    TILE_SUBCASE(case1, array_cs_fb, reps);
+    TILE_SUBCASE(case1, array_cs_hb, reps);
+    TILE_SUBCASE(case1, array_cs_db, reps);
 
     TILE_SUBCASE(case1, array_fs_fb, reps);
     TILE_SUBCASE(case1, array_fs_hb, reps);
@@ -61,7 +58,7 @@ TEST_CASE("tile(case1)" * doctest::test_suite("array::tile") * doctest::skip())
     TILE_SUBCASE(case1, array_ds_hb, reps);
     TILE_SUBCASE(case1, array_ds_db, reps);
 
-    // TILE_SUBCASE(case1, array_ls_fb, reps);
-    // TILE_SUBCASE(case1, array_ls_hb, reps);
-    // TILE_SUBCASE(case1, array_ls_db, reps);
+    TILE_SUBCASE(case1, array_ls_fb, reps);
+    TILE_SUBCASE(case1, array_ls_hb, reps);
+    TILE_SUBCASE(case1, array_ls_db, reps);
 }
