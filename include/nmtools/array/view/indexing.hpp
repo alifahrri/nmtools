@@ -260,8 +260,8 @@ namespace nmtools::meta
         using dst_size_type  = typename indexing_type::dst_size_type;
 
         static constexpr auto value = [](){
-            if constexpr (!is_fail_v<dst_size_type>) {
-                return dst_size_type{};
+            if constexpr (is_clipped_integer_v<dst_size_type> || is_constant_index_v<dst_size_type>) {
+                return to_value_v<dst_size_type>;
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
             }
