@@ -45,9 +45,11 @@ namespace nmtools::view::fun
 
 namespace nmtools::utils::impl
 {
-    template <typename alpha_t>
-    struct to_string_t<view::fun::prelu<alpha_t>,none_t>
+    template <typename alpha_t, auto...fmt_args>
+    struct to_string_t<view::fun::prelu<alpha_t>,fmt_string_t<fmt_args...>>
     {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::prelu<alpha_t> op) const
         {
             nmtools_string str;

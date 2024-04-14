@@ -41,9 +41,14 @@ namespace nmtools::view::fun
 
 namespace nmtools::utils::impl
 {
-    template <typename negative_slope_t>
-    struct to_string_t<view::fun::leaky_relu<negative_slope_t>,none_t>
-    {
+    template <typename negative_slope_t
+        , auto...fmt_args
+    >
+    struct to_string_t<view::fun::leaky_relu<negative_slope_t>
+        , fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::leaky_relu<negative_slope_t> op) const
         {
             nmtools_string str;

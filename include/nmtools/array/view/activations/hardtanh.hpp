@@ -56,9 +56,14 @@ namespace nmtools::view::fun
 
 namespace nmtools::utils::impl
 {
-    template <typename min_val_t, typename max_val_t>
-    struct to_string_t<view::fun::hardtanh<min_val_t,max_val_t>,none_t>
-    {
+    template <typename min_val_t, typename max_val_t
+        , auto...fmt_args
+    >
+    struct to_string_t<view::fun::hardtanh<min_val_t,max_val_t>
+        , fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::hardtanh<min_val_t,max_val_t> op) const
         {
             nmtools_string str;

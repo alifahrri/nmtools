@@ -143,10 +143,13 @@ namespace nmtools::utils::impl
     template <
         typename lhs_t,
         typename rhs_t,
-        typename res_t
+        typename res_t,
+        auto...fmt_args
     >
-    struct to_string_t<view::fun::add<lhs_t,rhs_t,res_t>,none_t>
+    struct to_string_t<view::fun::add<lhs_t,rhs_t,res_t>,fmt_string_t<fmt_args...>>
     {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::add<lhs_t,rhs_t,res_t>) const
         {
             auto str = nmtools_string();

@@ -36,9 +36,11 @@ namespace nmtools::view
 
 namespace nmtools::utils::impl
 {
-    template <>
-    struct to_string_t<view::fun::isfinite,none_t>
+    template <auto...fmt_args>
+    struct to_string_t<view::fun::isfinite,fmt_string_t<fmt_args...>>
     {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::isfinite) const
         {
             nmtools_string str;

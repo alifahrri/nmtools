@@ -31,9 +31,11 @@ namespace nmtools::view
 
 namespace nmtools::utils::impl
 {
-    template <>
-    struct to_string_t<view::fun::less_equal,none_t>
+    template <auto...fmt_args>
+    struct to_string_t<view::fun::less_equal,fmt_string_t<fmt_args...>>
     {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::less_equal) const
         {
             auto str = nmtools_string();

@@ -72,8 +72,17 @@ namespace nmtools::utils
     #endif
 
     struct graphviz_t {};
-
     constexpr inline auto Graphviz = graphviz_t {};
+
+    template <char tab='\t', char space=' ', char comma=',', char open_bracket='[', char close_bracket=']'>
+    struct fmt_string_t {};
+    constexpr inline auto Compact = fmt_string_t<'\0',' ',',','{','}'> {};
+
+    namespace error
+    {
+        template<typename...>
+        struct TO_STRING_UNSUPPORTED : meta::detail::fail_t {};
+    }
 }
 
 namespace nmtools::utils::impl
@@ -92,12 +101,19 @@ namespace nmtools::utils
      * @param array array to to_string
      * @return auto stream with type of stream_t
      */
-    template <typename formatter_t=none_t, typename T>
-    auto to_string(const T& array, formatter_t=formatter_t{}) -> nmtools_string
+    template <typename formatter_t, typename T>
+    auto to_string(const T& array, formatter_t) -> nmtools_string
     {
         constexpr auto to_string_impl = impl::to_string_t<T,formatter_t>{};
         return to_string_impl(array);
     } // auto to_string
+
+    template <typename T>
+    auto to_string(const T& array) -> nmtools_string
+    {
+        constexpr auto to_string_impl = impl::to_string_t<T,none_t>{};
+        return to_string_impl(array);
+    }
 } // namespace nmtools::utils
 #endif // NMTOOLS_HAS_STRING
 

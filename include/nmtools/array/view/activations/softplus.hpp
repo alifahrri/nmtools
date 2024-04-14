@@ -68,9 +68,11 @@ namespace nmtools::view::fun
 
 namespace nmtools::utils::impl
 {
-    template <typename beta_t, typename threshold_t>
-    struct to_string_t<view::fun::softplus<beta_t,threshold_t>,none_t>
+    template <typename beta_t, typename threshold_t, auto...fmt_args>
+    struct to_string_t<view::fun::softplus<beta_t,threshold_t>,fmt_string_t<fmt_args...>>
     {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::softplus<beta_t,threshold_t> op) const
         {
             nmtools_string str;

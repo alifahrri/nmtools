@@ -26,9 +26,11 @@ namespace nmtools::view::fun
 
 namespace nmtools::utils::impl
 {
-    template <>
-    struct to_string_t<view::fun::relu6,none_t>
+    template <auto...fmt_args>
+    struct to_string_t<view::fun::relu6,fmt_string_t<fmt_args...>>
     {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::relu6) const
         {
             nmtools_string str;

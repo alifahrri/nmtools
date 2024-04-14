@@ -25,9 +25,11 @@ namespace nmtools::view::fun
 
 namespace nmtools::utils::impl
 {
-    template <>
-    struct to_string_t<view::fun::softsign,none_t>
+    template <auto...fmt_args>
+    struct to_string_t<view::fun::softsign,fmt_string_t<fmt_args...>>
     {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::softsign) const
         {
             nmtools_string str;
