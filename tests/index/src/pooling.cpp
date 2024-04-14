@@ -184,18 +184,6 @@ RUN_slice_pool2d_impl(__VA_ARGS__);
 #define APPLY_STRINGIFY(array) \
 nmtools::utils::apply_to_string(array)
 
-#define NMTOOLS_ASSERT_APPLY_EQUAL_DOCTEST(result,expect) \
-{ \
-    auto __result = nmtools::utils::apply_isequal(result,expect); \
-    std::string message {}; \
-    message = message + \
-        + "\n\tActual  : " + APPLY_STRINGIFY(result)  \
-        + "\n\tExpected: " + APPLY_STRINGIFY(expect); \
-    NMTOOLS_CHECK_MESSAGE( __result, message ); \
-}
-
-#define NMTOOLS_ASSERT_APPLY_EQUAL NMTOOLS_ASSERT_APPLY_EQUAL_DOCTEST
-
 #define SLICE_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
