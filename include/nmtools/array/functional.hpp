@@ -74,12 +74,10 @@
 #include "nmtools/array/functional/pooling.hpp"
 #include "nmtools/array/functional/repeat.hpp"
 #include "nmtools/array/functional/reshape.hpp"
-#include "nmtools/array/functional/resize.hpp"
 #include "nmtools/array/functional/slice.hpp"
 #include "nmtools/array/functional/squeeze.hpp"
-#include "nmtools/array/functional/tile.hpp"
-#include "nmtools/array/functional/transpose.hpp"
 #include "nmtools/array/functional/where.hpp"
 #include "nmtools/array/functional/zeros.hpp"
+#include "nmtools/array/functional/indexing.hpp"
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_HPP
