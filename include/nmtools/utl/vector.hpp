@@ -12,6 +12,7 @@
 #include "nmtools/meta/loop.hpp"
 #include "nmtools/meta/bits/transform/common_type.hpp"
 
+// TODO: better handling for no-malloc build
 namespace nmtools::error
 {
     // dummy
@@ -23,6 +24,8 @@ namespace nmtools::error
     inline void no_realloc(void*,size_t) {}
 
     inline void no_free(void*) {}
+
+    inline void no_memcpy(...) {}
 } // namespace nmtools::error
 
 #if __has_include(<malloc.h>) && not defined(NMTOOLS_UTL_NO_MALLOC)
@@ -67,6 +70,10 @@ namespace nmtools::error
 
 #ifndef nmtools_free
 #define nmtools_free ::nmtools::error::no_free
+#endif
+
+#ifndef nmtools_memcpy
+#define nmtools_memcpy ::nmtools::error::no_memcpy
 #endif
 
 #endif
