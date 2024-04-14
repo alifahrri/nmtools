@@ -589,9 +589,9 @@ TEST_CASE("constexpr_conv2d(case10)" * doctest::test_suite("array::conv2d"))
 TEST_CASE("constexpr_conv2d(case11)" * doctest::test_suite("array::conv2d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
-    CONSTEXPR_CONV2D_SUBCASE( case11, input, weight, None, stride_ct, padding_Ct );
-    CONSTEXPR_CONV2D_SUBCASE( case11, input_a, weight_a, None, stride_ct, padding_Ct );
-    CONSTEXPR_CONV2D_SUBCASE( case11, input_f, weight_f, None, stride_ct, padding_Ct );
+    CONSTEXPR_CONV2D_SUBCASE( case11, input, weight, None, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case11, input_a, weight_a, None, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case11, input_f, weight_f, None, stride_ct, padding_ct );
     #else
     CONSTEXPR_CONV2D_SUBCASE( case11, input_cs_fb, weight_cs_fb, None, stride_ct, padding_ct );
     CONSTEXPR_CONV2D_SUBCASE( case11, input_cs_hb, weight_cs_hb, None, stride_ct, padding_ct );
@@ -613,9 +613,9 @@ TEST_CASE("constexpr_conv2d(case11)" * doctest::test_suite("array::conv2d"))
 TEST_CASE("constexpr_conv2d(case12)" * doctest::test_suite("array::conv2d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
-    CONSTEXPR_CONV2D_SUBCASE( case12, input, weight, None, stride_ct, padding_Ct );
-    CONSTEXPR_CONV2D_SUBCASE( case12, input_a, weight_a, None, stride_ct, padding_Ct );
-    CONSTEXPR_CONV2D_SUBCASE( case12, input_f, weight_f, None, stride_ct, padding_Ct );
+    CONSTEXPR_CONV2D_SUBCASE( case12, input, weight, None, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case12, input_a, weight_a, None, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case12, input_f, weight_f, None, stride_ct, padding_ct );
     #else
     CONSTEXPR_CONV2D_SUBCASE( case12, input_cs_fb, weight_cs_fb, None, stride_ct, padding_ct );
     CONSTEXPR_CONV2D_SUBCASE( case12, input_cs_hb, weight_cs_hb, None, stride_ct, padding_ct );

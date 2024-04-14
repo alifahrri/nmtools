@@ -236,7 +236,9 @@ namespace nmtools::meta
         view::decorator_t<view::indexing_t,array_t,indexer_t>
     >{
         using view_type = view::decorator_t<view::indexing_t,array_t,indexer_t>;
-        using dst_size_type = typename view_type::dst_size_type;
+        using indexing_type  = view::indexing_t<array_t,indexer_t>;
+        using dst_shape_type = typename indexing_type::dst_shape_type;
+        using dst_size_type  = typename indexing_type::dst_size_type;
 
         static constexpr auto value = [](){
             if constexpr (is_constant_index_v<dst_size_type>) {
@@ -251,9 +253,10 @@ namespace nmtools::meta
     struct bounded_size<
         view::decorator_t<view::indexing_t,array_t,indexer_t>
     >{
-        using view_type = view::decorator_t<view::indexing_t,array_t,indexer_t>;
-        using dst_shape_type = typename view_type::dst_shape_type;
-        using dst_size_type = typename view_type::dst_size_type;
+        using view_type      = view::decorator_t<view::indexing_t,array_t,indexer_t>;
+        using indexing_type  = view::indexing_t<array_t,indexer_t>;
+        using dst_shape_type = typename indexing_type::dst_shape_type;
+        using dst_size_type  = typename indexing_type::dst_size_type;
 
         static constexpr auto value = [](){
             constexpr auto size = to_value_v<dst_size_type>;
