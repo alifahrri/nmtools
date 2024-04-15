@@ -17,6 +17,7 @@
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/eval.hpp"
 #include "nmtools/constants.hpp"
+#include "nmtools/array/as_static.hpp"
 
 #include "nmtools/array/view/ufunc/detail.hpp"
 
@@ -40,6 +41,24 @@ namespace nmtools::args
     template <typename...args_t>
     outer(args_t...) -> outer<args_t...>;
 } // namespace nmtools::args
+
+namespace nmtools::array
+{
+    template <auto max_dim, typename...args_t>
+    struct as_static_t<
+        args::outer<args_t...>, max_dim
+    >
+    {
+        using attribute_type = args::outer<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            return attribute;
+        }
+    };
+} // nmtools::array
 
 namespace nmtools::meta
 {

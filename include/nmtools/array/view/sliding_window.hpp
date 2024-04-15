@@ -1,69 +1,16 @@
 #ifndef NMTOOLS_ARRAY_VIEW_SLIDING_WINDOW_HPP
 #define NMTOOLS_ARRAY_VIEW_SLIDING_WINDOW_HPP
 
+#include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/index/sliding_window.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/fwd.hpp"
-
-namespace nmtools::args
-{
-    template <typename indexer_t>
-    struct indexing
-    {
-        using indexer_type = indexer_t;
-
-        indexer_type indexer = {};
-
-        template <typename...args_t>
-        constexpr auto operator==(const indexing<args_t...>& other) const
-        {
-            return indexer == other.indexer;
-        }
-    }; // indexing
-
-    template <typename...args_t>
-    indexing(args_t...) -> indexing<args_t...>;
-} // namespace nmtools::args
-
-namespace nmtools::meta
-{
-    template <typename indexer_t>
-    struct is_attribute<args::indexing<indexer_t>> : true_type {};
-} // namespace nmtools::meta
+#include "nmtools/utils/to_string/to_string.hpp"
 
 namespace nmtools::view
 {
-    template <typename indexer_t>
-    struct base_indexer_t
-    {
-        constexpr indexer_t* self()
-        {
-            return static_cast<indexer_t*>(this);
-        }
-
-        constexpr const indexer_t* self() const
-        {
-            return static_cast<const indexer_t*>(this);
-        }
-
-        constexpr auto shape() const
-        {
-            return self()->dst_shape;
-        }
-
-        constexpr auto dim() const
-        {
-            return len(shape());
-        }
-
-        constexpr auto size() const
-        {
-            return index::product(shape());
-        }
-    }; // base_indexer_t
-
     template <typename src_shape_t
         , typename window_shape_t
         , typename axis_t>
@@ -116,72 +63,6 @@ namespace nmtools::view
         }
     }; // sliding_window_t
 
-    template <typename array_t, typename indexer_t>
-    struct indexing_t
-    {
-        using operand_type = meta::fwd_operand_t<array_t>;
-        using array_type   = operand_type;
-        using indexer_type = indexer_t;
-        using dst_shape_type = typename indexer_type::dst_shape_type;
-        using src_shape_type = typename indexer_type::src_shape_type;
-        using dst_size_type  = typename indexer_type::dst_size_type;
-        using src_size_type  = typename indexer_type::src_size_type;
-
-        using attributes_type = args::indexing<indexer_type>;
-
-        operand_type array;
-        indexer_type indexer;
-
-        constexpr indexing_t(const array_t& array, const indexer_t& indexer)
-            : array(fwd_operand(array))
-            , indexer(indexer)
-        {}
-
-        constexpr auto operands() const noexcept
-        {
-            return nmtools_tuple<array_type>{array};
-        } // operands
-
-        constexpr auto attributes() const noexcept
-        {
-            return attributes_type{indexer};
-        }
-
-        constexpr auto shape() const
-        {
-            return indexer.shape();
-        }
-
-        constexpr auto dim() const
-        {
-            return indexer.dim();
-        }
-
-        constexpr auto size() const
-        {
-            return indexer.size();
-        }
-
-        template <typename...size_types>
-        constexpr auto operator()(size_types...indices) const
-        {
-            auto dst_indices = pack_indices(indices...);
-            auto src_indices = indexer.indices(dst_indices);
-            if constexpr (meta::is_pointer_v<array_type>) {
-                return apply_at(*array,src_indices);
-            } else {
-                return apply_at(array,src_indices);
-            }
-        }
-    }; // indexing_t
-
-    template <typename array_t, typename indexer_t>
-    constexpr auto indexing(const array_t& array, const indexer_t& indexer)
-    {
-        using view_type = decorator_t<indexing_t,array_t,indexer_t>;
-        return view_type{{array,indexer}};
-    } // indexing
-
     template <typename array_t, typename window_shape_t, typename axis_t=none_t>
     constexpr auto sliding_window(const array_t& array
         , const window_shape_t& window_shape, const axis_t& axis=axis_t{})
@@ -192,55 +73,33 @@ namespace nmtools::view
     } // sliding_window
 } // namespace nmtools::view
 
-namespace nmtools::meta
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
 {
-    template <typename array_t, typename indexer_t>
-    struct is_ndarray<
-        view::decorator_t<view::indexing_t,array_t,indexer_t>
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::sliding_window_t<args_t...>, fmt_string_t<fmt_args...>
     > {
-        static constexpr auto value = is_ndarray_v<array_t>;
+        using result_type = nmtools_string;
+
+        auto operator()(const view::sliding_window_t<args_t...>& kwargs) const noexcept
+        {
+            nmtools_string str;
+            str += "sliding_window{";
+            str += ".src_shape=";
+            str += to_string(kwargs.src_shape,Compact);
+            str += ",.window_shape=";
+            str += to_string(kwargs.window_shape,Compact);
+            str += ",.axis=";
+            str += to_string(kwargs.axis,Compact);
+            str += "}";
+            return str;
+        }
     };
+}
 
-    template <typename array_t, typename indexer_t>
-    struct get_element_type<
-        view::decorator_t<view::indexing_t,array_t,indexer_t>
-    > {
-        using type = get_element_type_t<array_t>;
-    };
+#endif // NMTOOLS_HAS_STRING
 
-    template <typename array_t, typename indexer_t>
-    struct fixed_size<
-        view::decorator_t<view::indexing_t,array_t,indexer_t>
-    >{
-        using view_type = view::decorator_t<view::indexing_t,array_t,indexer_t>;
-        using dst_size_type = typename view_type::dst_size_type;
-
-        static constexpr auto value = [](){
-            if constexpr (is_constant_index_v<dst_size_type>) {
-                return dst_size_type{};
-            } else {
-                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
-            }
-        }();
-    }; // fixed_size
-
-    template <typename array_t, typename indexer_t>
-    struct bounded_size<
-        view::decorator_t<view::indexing_t,array_t,indexer_t>
-    >{
-        using view_type = view::decorator_t<view::indexing_t,array_t,indexer_t>;
-        using dst_shape_type = typename view_type::dst_shape_type;
-        using dst_size_type = typename view_type::dst_size_type;
-
-        static constexpr auto value = [](){
-            constexpr auto size = to_value_v<dst_size_type>;
-            if constexpr (!is_fail_v<decltype(size)>) {
-                return size;
-            } else {
-                return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
-            }
-        }();
-    }; // bounded_size
-} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_SLIDING_WINDOW_HPP

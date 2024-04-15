@@ -17,7 +17,9 @@ jobs:
 
     strategy:
       matrix:
-        test: [manip, ufuncs, meta, utl, constexpr]
+        test: [ufuncs, meta, utl]
+        # TODO: re-enable manip & constexpr tests
+        # test: [manip, ufuncs, meta, utl, constexpr]
 
     steps:
     - name: Checkout

@@ -4,9 +4,11 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/functional/functor.hpp"
-#include "nmtools/array/eval/sycl/info.hpp"
 #include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/exception.hpp"
+#include "nmtools/utils/to_string.hpp"
+#include "nmtools/array/as_static.hpp"
+#include "nmtools/utl/vector.hpp"
 
 #include <sycl/sycl.hpp>
 #include <iostream>
@@ -108,6 +110,210 @@ namespace nmtools::array
             : ::nmtools::exception(message)
         {}
     };
+}
+
+namespace nmtools::meta
+{
+    template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
+    struct fixed_dim<
+        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+    >
+    {
+        using array_type = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using shape_type = typename array_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_fixed_index_array_v<shape_type>) {
+                return len_v<shape_type>;
+            } else {
+                return error::FIXED_DIM_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_dim
+
+    template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
+    struct fixed_shape<
+        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+    >
+    {
+        using array_type = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using shape_type = typename array_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return shape_type {};
+            } else {
+                return error::FIXED_SHAPE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_shape
+
+    template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
+    struct fixed_size<
+        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_fixed_size_v<buffer_type>) {
+                return fixed_size_v<buffer_type>;
+            } else if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_size
+
+    template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
+    struct bounded_dim<
+        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_bounded_size_v<shape_type>) {
+                return bounded_size_v<shape_type>;
+            } else if constexpr (is_fixed_size_v<shape_type>) {
+                // TODO: consider to add error mapping fn so this else-if/else block not needed
+                return fixed_size_v<shape_type>;
+            } else {
+                return error::BOUNDED_DIM_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // bounded_dim
+
+    template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
+    struct bounded_size<
+        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_bounded_size_v<buffer_type>) {
+                return bounded_size_v<buffer_type>;
+            } else if constexpr (is_fixed_size_v<array_type>) {
+                return fixed_size_v<array_type>;
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // bounded_size
+
+    /* sycl::buffer */
+    template <typename T, typename shape_t, typename dim_t>
+    struct fixed_dim<
+        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+    >
+    {
+        using array_type = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using shape_type = typename array_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_fixed_index_array_v<shape_type>) {
+                return len_v<shape_type>;
+            } else {
+                return error::FIXED_DIM_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_dim
+
+    template <typename T, typename shape_t, typename dim_t>
+    struct fixed_shape<
+        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+    >
+    {
+        using array_type = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using shape_type = typename array_type::shape_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return shape_type {};
+            } else {
+                return error::FIXED_SHAPE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_shape
+
+    template <typename T, typename shape_t, typename dim_t>
+    struct fixed_size<
+        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_fixed_size_v<buffer_type>) {
+                return fixed_size_v<buffer_type>;
+            } else if constexpr (is_constant_index_array_v<shape_type>) {
+                return index::product(shape_type{});
+            } else {
+                return error::FIXED_SIZE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // fixed_size
+
+    template <typename T, typename shape_t, typename dim_t>
+    struct bounded_dim<
+        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_bounded_size_v<shape_type>) {
+                return bounded_size_v<shape_type>;
+            } else if constexpr (is_fixed_size_v<shape_type>) {
+                // TODO: consider to add error mapping fn so this else-if/else block not needed
+                return fixed_size_v<shape_type>;
+            } else {
+                return error::BOUNDED_DIM_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // bounded_dim
+
+    template <typename T, typename shape_t, typename dim_t>
+    struct bounded_size<
+        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+    >
+    {
+        using array_type  = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using shape_type  = typename array_type::shape_type;
+        using buffer_type = typename array_type::buffer_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_bounded_size_v<buffer_type>) {
+                return bounded_size_v<buffer_type>;
+            } else if constexpr (is_fixed_size_v<array_type>) {
+                return fixed_size_v<array_type>;
+            } else {
+                return error::BOUNDED_SIZE_UNSUPPORTED<array_type>{};
+            }
+        }();
+        using value_type = decltype(value);
+    }; // bounded_size
 }
 
 namespace nmtools::array::sycl
@@ -318,7 +524,8 @@ namespace nmtools::array::sycl
         auto map_to_device(const functional::functor_t<F,operands_t,attributes_t>& f)
         {
             static_assert( meta::len_v<operands_t> == 0 );
-            [[maybe_unused]] auto map_attribute = [](auto attribute){
+            #if 0
+            [[maybe_unused]] auto as_static = [](auto attribute){
                 if constexpr (meta::is_dynamic_index_array_v<decltype(attribute)>) {
                     using element_type = meta::get_element_type_t<decltype(attribute)>;
                     using result_type  = nmtools_static_vector<element_type,8>;
@@ -332,12 +539,26 @@ namespace nmtools::array::sycl
                     return attribute;
                 }
             };
+            [[maybe_unused]] auto map_attribute = [=](auto attribute){
+                if constexpr (meta::is_attribute_v<decltype(attribute)>) {
+                    const auto& args = attribute.args();
+                    auto static_args = meta::template_reduce<meta::len_v<decltype(args)>>(
+                        [&](auto init, auto index){
+                            auto static_arg = as_static(nmtools::at(args,index));
+                            return utility::tuple_append(init,static_arg);
+                    }, nmtools_tuple{});
+                    return attribute(static_args);
+                } else {
+                    return as_static(attribute);
+                }
+            };
+            #endif
             if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
                 return f;
             } else {
                 constexpr auto N = meta::len_v<attributes_t>;
                 auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
-                    return utility::tuple_append(init,map_attribute(at(f.attributes,I)));
+                    return utility::tuple_append(init,array::as_static(at(f.attributes,I)));
                 }, nmtools_tuple{});
                 return functional::functor_t<F,operands_t,decltype(attributes)>{
                     f.fmap, f.operands, attributes
@@ -377,13 +598,276 @@ namespace nmtools::array::sycl
     };
 } // namespace nmtools::array::sycl
 
-#define PRINT_PLATFORM_PROPERTY(platform, prop) \
+#define PRINT_SYCL_PLATFORM_PROPERTY(platform, prop) \
     std::cout << "- " << #prop << ": " \
-        << platform.get_info<::sycl::info::platform::prop>() << std::endl;
+        << nmtools::utils::to_string(platform.get_info<::sycl::info::platform::prop>()) << std::endl;
     
-#define PRINT_DEVICE_PROPERTY(selected_device, prop) \
+#define PRINT_SYCL_DEVICE_PROPERTY(selected_device, prop) \
 std::cout << "- " << #prop << ": " \
-    << selected_device.get_info<::sycl::info::device::prop>() << std::endl;
+    << nmtools::utils::to_string(selected_device.get_info<::sycl::info::device::prop>()) << std::endl;
+
+namespace nmtools::utils::impl
+{
+    template <>
+    struct to_string_t<
+        ::sycl::info::device_type, none_t
+    > {
+        using device_type = ::sycl::info::device_type;
+        auto operator()(device_type prop) const noexcept
+        {
+            nmtools_string str;
+            switch (prop) {
+                case device_type::cpu:
+                    str = "CPU"; break;
+                case device_type::gpu:
+                    str = "GPU"; break;
+                case device_type::accelerator:
+                    str = "Accelerator"; break;
+                case device_type::custom:
+                    str = "Custom"; break;
+                case device_type::automatic:
+                    str = "Automatic"; break;
+                case device_type::host:
+                    str = "Host"; break;
+                case device_type::all:
+                    str = "All"; break;
+                default:
+                    str = "UNKNOWN";
+            }
+            return str;
+        }
+    }; // device_type
+
+    template <>
+    struct to_string_t<
+        ::sycl::info::local_mem_type, none_t
+    > {
+        using local_mem_type = ::sycl::info::local_mem_type;
+        auto operator()(local_mem_type prop) const noexcept
+        {
+            nmtools_string str;
+            switch (prop) {
+                case local_mem_type::none:
+                    str = "None"; break;
+                case local_mem_type::local:
+                    str = "Local"; break;
+                case local_mem_type::global:
+                    str = "Global"; break;
+                default:
+                    str = "UNKNOWN";
+            }
+            return str;
+        }
+    }; // local_mem_type
+
+    template <>
+    struct to_string_t<
+        ::sycl::info::global_mem_cache_type, none_t
+    > {
+        using global_mem_cache_type = ::sycl::info::global_mem_cache_type;
+        auto operator()(global_mem_cache_type prop) const noexcept
+        {
+            nmtools_string str;
+            switch (prop) {
+                case global_mem_cache_type::none:
+                    str = "None"; break;
+                case global_mem_cache_type::read_only:
+                    str = "Read-Only"; break;
+                case global_mem_cache_type::read_write:
+                    str = "Read-Write"; break;
+                default:
+                    str = "UNKNOWN";
+            }
+            return str;
+        }
+    }; // global_mem_cache_type
+
+    template <>
+    struct to_string_t<
+        ::sycl::info::fp_config, none_t
+    > {
+        using fp_config = ::sycl::info::fp_config;
+        auto operator()(fp_config prop) const noexcept
+        {
+            nmtools_string str;
+            switch (prop) {
+                case fp_config::denorm:
+                    str = "Denorm"; break;
+                case fp_config::inf_nan:
+                    str = "Inf-Nan"; break;
+                case fp_config::round_to_nearest:
+                    str = "Round-to-Nearest"; break;
+                case fp_config::round_to_zero:
+                    str = "Round-to-Zero"; break;
+                case fp_config::round_to_inf:
+                    str = "Round-to-Inf"; break;
+                case fp_config::fma:
+                    str = "FMA"; break;
+                case fp_config::correctly_rounded_divide_sqrt:
+                    str = "Correctly-Rounded-Divide-Sqrt"; break;
+                case fp_config::soft_float:
+                    str = "Soft-Float"; break;
+                default:
+                    str = "UNKNOWN";
+            }
+            return str;
+        }
+    }; // fp_config
+
+    template <>
+    struct to_string_t<
+        ::sycl::info::execution_capability, none_t
+    > {
+        using execution_capability = ::sycl::info::execution_capability;
+        auto operator()(execution_capability prop) const noexcept
+        {
+            nmtools_string str;
+            switch (prop) {
+                case execution_capability::exec_kernel:
+                    str = "Exec-Kernel"; break;
+                case execution_capability::exec_native_kernel:
+                    str = "Exec-Native-Kernel"; break;
+                default:
+                    str = "UNKNOWN";
+            }
+            return str;
+        }
+    }; // execution_capability
+
+    template <>
+    struct to_string_t<
+        ::sycl::info::partition_property, none_t
+    > {
+        using partition_property = ::sycl::info::partition_property;
+        auto operator()(partition_property prop) const noexcept
+        {
+            nmtools_string str;
+            switch (prop) {
+                case partition_property::no_partition:
+                    str = "No-Partition"; break;
+                case partition_property::partition_equally:
+                    str = "Partition-Equally"; break;
+                case partition_property::partition_by_counts:
+                    str = "Partition-by-Counts"; break;
+                case partition_property::partition_by_affinity_domain:
+                    str = "Partition-by-Affinity-Domain"; break;
+                default:
+                    str = "UNKNOWN";
+            }
+            return str;
+        }
+    }; // partition_property
+
+    template <>
+    struct to_string_t<
+        ::sycl::info::partition_affinity_domain, none_t
+    > {
+        using partition_affinity_domain = ::sycl::info::partition_affinity_domain;
+        auto operator()(partition_affinity_domain prop) const noexcept
+        {
+            nmtools_string str;
+            switch (prop) {
+                case partition_affinity_domain::not_applicable:
+                    str = "Not-Applicable"; break;
+                case partition_affinity_domain::numa:
+                    str = "NUMA"; break;
+                case partition_affinity_domain::L4_cache:
+                    str = "L4 Cache"; break;
+                case partition_affinity_domain::L3_cache:
+                    str = "L3 Cache"; break;
+                case partition_affinity_domain::L2_cache:
+                    str = "L2 Cache"; break;
+                case partition_affinity_domain::L1_cache:
+                    str = "L1 Cache"; break;
+                case partition_affinity_domain::next_partitionable:
+                    str = "Next-Partitionable"; break;
+                default:
+                    str = "UNKNOWN";
+            }
+            return str;
+        }
+    }; // partition_affinity_domain
+
+    template <>
+    struct to_string_t<
+        ::sycl::id<3>, none_t
+    > {
+        auto operator()(const ::sycl::id<3>& idx) const noexcept
+        {
+            nmtools_string str;
+            str += to_string(idx[0]); str += " ";
+            str += to_string(idx[1]); str += " ";
+            str += to_string(idx[2]);
+
+            return str;
+        }
+    };
+
+    template <auto N>
+    struct to_string_t<
+        ::sycl::range<N>, none_t
+    >
+    {
+        auto operator()(const ::sycl::range<N>& range) const noexcept
+        {
+            nmtools_string str;
+            for (size_t i=0; i<N; i++) {
+                str += to_string(range[i]);
+                if (i<(N-1)) {
+                    str += ", ";
+                }
+            }
+            return str;
+        }
+    };
+
+    template <auto N>
+    struct to_string_t<
+        ::sycl::nd_range<N>, none_t
+    >
+    {
+        auto operator()(const ::sycl::nd_range<N>& range) const noexcept
+        {
+            nmtools_string str;
+            str += "global:";
+            str += to_string(range.get_global_range());
+            str += ",";
+            str += to_string(range.get_local_range());
+            str += ",";
+            str += to_string(range.get_group_range());
+            
+            return str;
+        }
+    };
+
+    template <typename T>
+    struct to_string_t<
+        std::vector<T>, none_t, meta::enable_if_t<!meta::is_num_v<T>>
+    > {
+        auto operator()(const std::vector<T>& props) const noexcept
+        {
+            nmtools_string str;
+            for (size_t i=0; i<props.size(); i++) {
+                str += to_string(props[i]);
+                if (i<(props.size()-1)) {
+                    str += ", ";
+                }
+            }
+            return str;
+        }
+    };
+
+    template <>
+    struct to_string_t<
+        std::string, none_t
+    > {
+        auto operator()(const std::string& string) const noexcept
+        {
+            nmtools_string str = string;
+            return str;
+        }
+    };
+}
 
 namespace nmtools::array::sycl
 {
@@ -410,11 +894,11 @@ namespace nmtools::array::sycl
                 auto platform = device.get_platform();
 
                 std::cout << "\033[1;33m[nmtools sycl]\033[0m platform #" << i << ":\n";
-                PRINT_PLATFORM_PROPERTY(platform, name);
-                PRINT_PLATFORM_PROPERTY(platform, vendor);
-                PRINT_PLATFORM_PROPERTY(platform, version);
-                PRINT_PLATFORM_PROPERTY(platform, profile);
-                PRINT_PLATFORM_PROPERTY(platform, extensions);
+                PRINT_SYCL_PLATFORM_PROPERTY(platform, name);
+                PRINT_SYCL_PLATFORM_PROPERTY(platform, vendor);
+                PRINT_SYCL_PLATFORM_PROPERTY(platform, version);
+                PRINT_SYCL_PLATFORM_PROPERTY(platform, profile);
+                PRINT_SYCL_PLATFORM_PROPERTY(platform, extensions);
 
                 auto name = platform.get_info<::sycl::info::platform::name>();
                 std::transform(name.begin(), name.end(), name.begin(), 
@@ -428,84 +912,84 @@ namespace nmtools::array::sycl
             std::cout << "\033[1;33m[nmtools sycl]\033[0m default context using platform #" << platform_idx << "\n";
             // TODO: log level
             {
-                PRINT_DEVICE_PROPERTY(selected_device, name);
-                PRINT_DEVICE_PROPERTY(selected_device, vendor);
-                PRINT_DEVICE_PROPERTY(selected_device, driver_version);
-                PRINT_DEVICE_PROPERTY(selected_device, profile);
-                PRINT_DEVICE_PROPERTY(selected_device, version);
-                PRINT_DEVICE_PROPERTY(selected_device, opencl_c_version);
-                PRINT_DEVICE_PROPERTY(selected_device, extensions);
-                PRINT_DEVICE_PROPERTY(selected_device, device_type);
-                PRINT_DEVICE_PROPERTY(selected_device, vendor_id);
-                PRINT_DEVICE_PROPERTY(selected_device, max_compute_units);
-                PRINT_DEVICE_PROPERTY(selected_device, max_work_item_dimensions);
-                PRINT_DEVICE_PROPERTY(selected_device, max_work_item_sizes<1>);
-                PRINT_DEVICE_PROPERTY(selected_device, max_work_item_sizes<2>);
-                PRINT_DEVICE_PROPERTY(selected_device, max_work_item_sizes<3>);
-                PRINT_DEVICE_PROPERTY(selected_device, max_work_group_size);
-                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_char);
-                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_short);
-                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_int);
-                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_long);
-                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_float);
-                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_double);
-                PRINT_DEVICE_PROPERTY(selected_device, preferred_vector_width_half);
-                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_char);
-                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_short);
-                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_int);
-                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_long);
-                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_float);
-                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_double);
-                PRINT_DEVICE_PROPERTY(selected_device, native_vector_width_half);
-                PRINT_DEVICE_PROPERTY(selected_device, max_clock_frequency);
-                PRINT_DEVICE_PROPERTY(selected_device, address_bits);
-                PRINT_DEVICE_PROPERTY(selected_device, max_mem_alloc_size);
-                PRINT_DEVICE_PROPERTY(selected_device, image_support);
-                PRINT_DEVICE_PROPERTY(selected_device, max_read_image_args);
-                PRINT_DEVICE_PROPERTY(selected_device, max_write_image_args);
-                PRINT_DEVICE_PROPERTY(selected_device, image2d_max_height);
-                PRINT_DEVICE_PROPERTY(selected_device, image2d_max_width);
-                PRINT_DEVICE_PROPERTY(selected_device, image3d_max_height);
-                PRINT_DEVICE_PROPERTY(selected_device, image3d_max_width);
-                PRINT_DEVICE_PROPERTY(selected_device, image3d_max_depth);
-                PRINT_DEVICE_PROPERTY(selected_device, image_max_buffer_size);
-                PRINT_DEVICE_PROPERTY(selected_device, image_max_array_size);
-                PRINT_DEVICE_PROPERTY(selected_device, max_samplers);
-                PRINT_DEVICE_PROPERTY(selected_device, max_parameter_size);
-                PRINT_DEVICE_PROPERTY(selected_device, mem_base_addr_align);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, name);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, vendor);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, driver_version);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, profile);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, version);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, opencl_c_version);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, extensions);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, device_type);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, vendor_id);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_compute_units);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_work_item_dimensions);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_work_item_sizes<1>);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_work_item_sizes<2>);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_work_item_sizes<3>);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_work_group_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, preferred_vector_width_char);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, preferred_vector_width_short);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, preferred_vector_width_int);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, preferred_vector_width_long);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, preferred_vector_width_float);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, preferred_vector_width_double);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, preferred_vector_width_half);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, native_vector_width_char);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, native_vector_width_short);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, native_vector_width_int);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, native_vector_width_long);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, native_vector_width_float);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, native_vector_width_double);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, native_vector_width_half);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_clock_frequency);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, address_bits);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_mem_alloc_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, image_support);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_read_image_args);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_write_image_args);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, image2d_max_height);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, image2d_max_width);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, image3d_max_height);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, image3d_max_width);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, image3d_max_depth);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, image_max_buffer_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, image_max_array_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_samplers);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_parameter_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, mem_base_addr_align);
                 
-                PRINT_DEVICE_PROPERTY(selected_device, half_fp_config);
-                PRINT_DEVICE_PROPERTY(selected_device, single_fp_config);
-                PRINT_DEVICE_PROPERTY(selected_device, double_fp_config);
-                PRINT_DEVICE_PROPERTY(selected_device, global_mem_cache_type);
-                PRINT_DEVICE_PROPERTY(selected_device, global_mem_cache_line_size);
-                PRINT_DEVICE_PROPERTY(selected_device, global_mem_cache_size);
-                PRINT_DEVICE_PROPERTY(selected_device, global_mem_size);
-                PRINT_DEVICE_PROPERTY(selected_device, max_constant_buffer_size);
-                PRINT_DEVICE_PROPERTY(selected_device, max_constant_args);
-                PRINT_DEVICE_PROPERTY(selected_device, local_mem_type);
-                PRINT_DEVICE_PROPERTY(selected_device, local_mem_size);
-                PRINT_DEVICE_PROPERTY(selected_device, error_correction_support);
-                PRINT_DEVICE_PROPERTY(selected_device, host_unified_memory);
-                PRINT_DEVICE_PROPERTY(selected_device, profiling_timer_resolution);
-                PRINT_DEVICE_PROPERTY(selected_device, is_endian_little);
-                PRINT_DEVICE_PROPERTY(selected_device, is_available);
-                PRINT_DEVICE_PROPERTY(selected_device, is_compiler_available);
-                PRINT_DEVICE_PROPERTY(selected_device, is_linker_available);
-                PRINT_DEVICE_PROPERTY(selected_device, execution_capabilities);
-                PRINT_DEVICE_PROPERTY(selected_device, queue_profiling);
-                PRINT_DEVICE_PROPERTY(selected_device, built_in_kernels);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, half_fp_config);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, single_fp_config);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, double_fp_config);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, global_mem_cache_type);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, global_mem_cache_line_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, global_mem_cache_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, global_mem_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_constant_buffer_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, max_constant_args);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, local_mem_type);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, local_mem_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, error_correction_support);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, host_unified_memory);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, profiling_timer_resolution);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, is_endian_little);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, is_available);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, is_compiler_available);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, is_linker_available);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, execution_capabilities);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, queue_profiling);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, built_in_kernels);
                 
                 
-                PRINT_DEVICE_PROPERTY(selected_device, printf_buffer_size);
-                PRINT_DEVICE_PROPERTY(selected_device, preferred_interop_user_sync);
-                PRINT_DEVICE_PROPERTY(selected_device, partition_max_sub_devices);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, printf_buffer_size);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, preferred_interop_user_sync);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, partition_max_sub_devices);
                 
-                PRINT_DEVICE_PROPERTY(selected_device, partition_properties);
-                PRINT_DEVICE_PROPERTY(selected_device, partition_affinity_domains);
-                PRINT_DEVICE_PROPERTY(selected_device, partition_type_property);
-                PRINT_DEVICE_PROPERTY(selected_device, partition_type_affinity_domain);
-                PRINT_DEVICE_PROPERTY(selected_device, reference_count);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, partition_properties);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, partition_affinity_domains);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, partition_type_property);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, partition_type_affinity_domain);
+                PRINT_SYCL_DEVICE_PROPERTY(selected_device, reference_count);
             }
             default_context = std::make_shared<context_t>(selected_device);
         }
@@ -513,7 +997,7 @@ namespace nmtools::array::sycl
     }
 }
 
-#undef PRINT_PLATFORM_PROPERTY
-#undef PRINT_DEVICE_PROPERTY
+#undef PRINT_SYCL_PLATFORM_PROPERTY
+#undef PRINT_SYCL_DEVICE_PROPERTY
 
 #endif // NMTOOLS_ARRAY_EVAL_SYCL_CONTEXT_HPP

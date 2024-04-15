@@ -82,7 +82,7 @@ TEST_CASE("ct_digraph(reduce_add_tanh)" * doctest::test_suite("ct_digraph"))
     NMTOOLS_ASSERT_EQUAL( graph.nodes(2_ct), fn::tanh );
     NMTOOLS_ASSERT_EQUAL( graph.out_edges(0_ct), nmtools_tuple{1_ct} );
     NMTOOLS_ASSERT_EQUAL( graph.out_edges(1_ct), nmtools_tuple{2_ct} );
-    CHECK_MESSAGE( true, utils::to_string(graph) );
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
 TEST_CASE("ct_digraph(mutliply_tanh)" * doctest::test_suite("ct_digraph"))
@@ -118,7 +118,7 @@ TEST_CASE("ct_digraph(mutliply_tanh)" * doctest::test_suite("ct_digraph"))
     NMTOOLS_ASSERT_EQUAL( graph.out_edges(0_ct), nmtools_tuple{2_ct} );
     NMTOOLS_ASSERT_EQUAL( graph.out_edges(1_ct), nmtools_tuple{2_ct} );
     NMTOOLS_ASSERT_EQUAL( graph.out_edges(2_ct), nmtools_tuple{3_ct} );
-    CHECK_MESSAGE( true, utils::to_string(graph) );
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
 TEST_CASE("ct_digraph(mutliply_add_tanh)" * doctest::test_suite("ct_digraph"))
@@ -162,7 +162,7 @@ TEST_CASE("ct_digraph(mutliply_add_tanh)" * doctest::test_suite("ct_digraph"))
     NMTOOLS_ASSERT_EQUAL( graph.out_edges(1_ct), nmtools_tuple{2_ct} );
     NMTOOLS_ASSERT_EQUAL( graph.out_edges(2_ct), nmtools_tuple{3_ct} );
     NMTOOLS_ASSERT_EQUAL( graph.out_edges(3_ct), nmtools_tuple{4_ct} );
-    CHECK_MESSAGE( true, utils::to_string(graph) );
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
 TEST_CASE("ct_digraph(multiply_add_tanh_add)" * doctest::test_suite("ct_digraph"))
@@ -238,7 +238,7 @@ TEST_CASE("ct_digraph(multiply_add_tanh_add)" * doctest::test_suite("ct_digraph"
         , nmtools_tuple{5_ct}
     );
 
-    CHECK_MESSAGE( true, utils::to_string(graph) );
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
 TEST_CASE("ct_digraph(variance)" * doctest::test_suite("ct_digraph"))
@@ -344,7 +344,7 @@ TEST_CASE("ct_digraph(variance)" * doctest::test_suite("ct_digraph"))
         , nmtools_tuple{9_ct}
     );
 
-    CHECK_MESSAGE( true, utils::to_string(graph) );
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
 TEST_CASE("ct_digraph(softmax)" * doctest::test_suite("ct_digraph"))
@@ -417,5 +417,5 @@ TEST_CASE("ct_digraph(softmax)" * doctest::test_suite("ct_digraph"))
         , nmtools_tuple{5_ct}
     );
 
-    CHECK_MESSAGE( true, utils::to_string(graph) );
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }

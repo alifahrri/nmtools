@@ -18,6 +18,7 @@
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/eval.hpp"
 #include "nmtools/constants.hpp"
+#include "nmtools/array/as_static.hpp"
 
 #include "nmtools/array/view/ufunc/detail.hpp"
 #include "nmtools/utils/isequal.hpp"
@@ -183,6 +184,30 @@ namespace nmtools::args
     template <typename...args_t>
     reduce(args_t...) -> reduce<args_t...>;
 } // namespace nmtools::args
+
+namespace nmtools::array
+{
+    template <auto max_dim, typename...args_t>
+    struct as_static_t<
+        args::reduce<args_t...>, max_dim
+    >
+    {
+        using attribute_type = args::reduce<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto axis = as_static<max_dim>(attribute.axis);
+            return args::reduce{axis
+                , attribute.dtype
+                , attribute.initial
+                , attribute.keepdims
+                , attribute.op
+            };
+        }
+    };
+} // nmtools::array
 
 namespace nmtools::meta
 {

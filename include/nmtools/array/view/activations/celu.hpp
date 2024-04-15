@@ -41,27 +41,6 @@ namespace nmtools::view::fun
     }; // celu
 } // namespace nmtools::view::fun
 
-#if NMTOOLS_HAS_STRING
-
-namespace nmtools::utils::impl
-{
-    template <typename alpha_t>
-    struct to_string_t<view::fun::celu<alpha_t>,none_t>
-    {
-        auto operator()(view::fun::celu<alpha_t> op) const
-        {
-            nmtools_string str;
-            str += "celu{.alpha=";
-            str += to_string(op.alpha);
-            str += "}";
-
-            return str;
-        }
-    };
-} // namespace nmtools::utils::impl
-
-#endif // NMTOOLS_HAS_STRING
-
 namespace nmtools::view
 {
     template <typename alpha_t=float>
@@ -92,6 +71,32 @@ namespace nmtools::view
         return ufunc(op,array);
     } // celu
 } // namespace nmtools::view
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename alpha_t
+        , auto...fmt_args
+    >
+    struct to_string_t<view::fun::celu<alpha_t>
+        , fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(view::fun::celu<alpha_t> op) const
+        {
+            nmtools_string str;
+            str += "celu{.alpha=";
+            str += to_string(op.alpha);
+            str += "}";
+
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
 
 
 #endif // NMTOOLS_ARRAY_VIEW_ACTIVATIONS_CELU_HPP

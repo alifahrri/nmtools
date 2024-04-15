@@ -8,15 +8,6 @@ namespace kind = na::kind;
 
 #include "nmtools/utils/apply_isequal.hpp"
 
-#define NMTOOLS_ASSERT_APPLY_EQUAL(result,expect) \
-CHECK_MESSAGE(nmtools::utils::apply_isequal(result,expect), \
-    (   \
-        std::string{} \
-        + "\n\tActual  : " + STRINGIFY(result) \
-        + "\n\tExpected: " + STRINGIFY(expect) \
-    )   \
-);
-
 // split for matmul
 NMTOOLS_TESTING_DECLARE_CASE(array, split)
 {

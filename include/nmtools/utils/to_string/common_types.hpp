@@ -25,7 +25,7 @@ namespace nmtools::utils
     template <typename string>
     inline auto remove_string(string& str, const string& substr)
     {
-        // NOTE: quick workaround for checkif if we have full std string features
+        // NOTE: quick workaround for check if if we have full std string features
         // maybe not available on arduino
         #if (NMTOOLS_HAS_SSTREAM)
         auto start_pos = string::npos;
@@ -41,19 +41,15 @@ namespace nmtools::utils
 
 namespace nmtools::utils::impl
 {
-    template <
-        typename buffer_t
-        , typename shape_buffer_t
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename compute_offset_t
-    >
-    struct to_string_t<
-        const array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t> *, none_t, void
-    > : to_string_t<array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t> *, none_t> {};
+    template <typename T, char tab, char space, char comma, char open_bracket, char close_bracket>
+    struct to_string_t<T,fmt_string_t<tab,space,comma,open_bracket,close_bracket>,meta::enable_if_t<
+        is_ellipsis_v<T> || is_none_v<T> || meta::is_either_v<T> || meta::is_nothing_v<T> || meta::is_maybe_v<T>
+        || meta::is_num_v<T> || meta::is_integral_constant_v<T> || meta::is_ndarray_v<T> || meta::is_list_v<T>
+        || meta::is_pointer_v<T> || meta::is_index_array_v<T> || meta::is_tuple_v<T>
+    >>{
+        using formatter_t = fmt_string_t<tab,space,comma,open_bracket,close_bracket>;
+        using result_type = nmtools_string;
 
-    template <typename T>
-    struct to_string_t<T,none_t,void>
-    {
         auto operator()(const T& array) const noexcept
         {
             nmtools_string str;
@@ -69,10 +65,10 @@ namespace nmtools::utils::impl
                 // assume get_if<type>(&array) is available for either type
                 if (auto l_ptr = nmtools::get_if<lhs_t>(&array)) {
                     // NOTE: this call require forward declaration of to_string above
-                    str += to_string(*l_ptr);
+                    str += to_string(*l_ptr,formatter_t{});
                 } else {
                     auto r_ptr = nmtools::get_if<rhs_t>(&array);
-                    str += to_string(*r_ptr);
+                    str += to_string(*r_ptr,formatter_t{});
                 }
             }
             else if constexpr (meta::is_nothing_v<T>) {
@@ -83,7 +79,7 @@ namespace nmtools::utils::impl
                 // assume casting to bool checks if the objects contains a value
                 // which is supported by std::optional
                 if (static_cast<bool>(array))
-                    str += to_string(*array);
+                    str += to_string(*array,formatter_t{});
                 else str += "Nothing";
             }
             else if constexpr (meta::is_num_v<T>) {
@@ -123,9 +119,14 @@ namespace nmtools::utils::impl
                 auto s = as_array(shape_);
                 auto indices = ndindex(s);
 
+                auto dim = len(shape_);
+                auto last_dim = at(s,dim-1);
+
                 // print empty ndarray
-                if (!len(indices))
-                    str = "[]";
+                if (!len(indices)) {
+                    str += open_bracket;
+                    str += close_bracket;
+                }
                 
                 for (size_t i=0; i<(size_t)len(indices); i++) {
                     auto idx_ = indices[i];
@@ -137,13 +138,17 @@ namespace nmtools::utils::impl
                     // only add open bracket up to axis n
                     // that is equal to zero, starting from last axis
                     for (int ii=len(idx)-1; ii>=0; ii--) {
-                        if (at(idx,ii)==0)
-                            str += "[";
+                        if (at(idx,ii)==0) {
+                            str += open_bracket;
+                        }
                         else break;
                     }
 
-                    str += "\t";
-                    str += to_string(a);
+                    str += tab;
+                    str += to_string(a,formatter_t{});
+                    if (at(idx,dim-1)!=(last_dim-1)) {
+                        str += comma;
+                    }
 
                     int print_comma = 0;
                     // check if we should print closing bracket
@@ -152,14 +157,14 @@ namespace nmtools::utils::impl
                     for (int ii=(int)len(idx)-1; ii>=0; ii--) {
                         // for simplicity just use int
                         if ((int)at(idx,ii)==(int)(at(s,ii)-1)) {
-                            str += "]";
+                            str += close_bracket;
                             // also count how much newline to be printed
                             print_comma++;
                         }
                         else break;
                     }
                     if (print_comma && i<len(indices)-1) {
-                        str += ",";
+                        str += comma;
                         for (int ii=0; ii<print_comma; ii++)
                             str += "\n";
                     }
@@ -174,8 +179,9 @@ namespace nmtools::utils::impl
                     constexpr auto i = decltype(index)::value;
                     const auto& a = nmtools::get<i>(array);
                     str += to_string(a);
-                    if constexpr (i<(N-1))
-                        str += ",\t";
+                    if constexpr (i<(N-1)) {
+                        str += comma; str += tab;
+                    }
                 });
                 str += ")";
             }
@@ -183,12 +189,12 @@ namespace nmtools::utils::impl
                 auto dim = len(array);
                 for (size_t i=0; i<(size_t)dim; i++) {
                     if (i==0) {
-                        str += "[";
+                        str += open_bracket;
                     }
-                    str += "\t";
-                    str += to_string(at(array,i));
+                    str += tab;
+                    str += to_string(at(array,i),formatter_t{});
                     if (i==(size_t)(dim-1)) {
-                        str += "]";
+                        str += close_bracket;
                     }
                 }
             }
@@ -205,47 +211,63 @@ namespace nmtools::utils::impl
         } // operator()
     }; // struct to_string_t
 
-    template <
-        typename buffer_t
-        , typename shape_buffer_t
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename compute_offset_t
-    >
-    struct to_string_t<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t> *, none_t, void
-    > {
-        using array_type = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t>;
+    template <typename T, typename formatter_t, typename>
+    struct to_string_t
+    {
+        static constexpr auto result_vtype = [](){
+            if constexpr (is_none_v<formatter_t>) {
+                using mapper_type = to_string_t<T,fmt_string_t<>>;
+                if constexpr (meta::has_result_type_v<mapper_type>) {
+                    using result_type = typename mapper_type::result_type;
+                    return meta::as_value_v<result_type>;
+                } else {
+                    using result_type = error::TO_STRING_UNSUPPORTED<T,formatter_t>;
+                    return meta::as_value_v<result_type>;
+                }
+            } else {
+                using result_type = error::TO_STRING_UNSUPPORTED<T,formatter_t>;
+                return meta::as_value_v<result_type>;
+            }
+        }();
+        using result_type = meta::type_t<decltype(result_vtype)>;
 
-        auto operator()(const array_type* ptr) const noexcept
+        auto operator()([[maybe_unused]] const T& t) const noexcept
         {
-            auto ptr_str = nmtools_string("");
-
-            #if NMTOOLS_HAS_SSTREAM
-
-            nmtools_sstream ss;
-            auto buffer_name = NMTOOLS_TYPENAME_TO_STRING(buffer_t);
-            auto shape_name  = NMTOOLS_TYPENAME_TO_STRING(shape_buffer_t);
-            ss << "(" << ptr << ")\n"
-            << "<ndarray_t<" << buffer_name << "," << shape_name << "...> >";
-
-            ptr_str += ss.str();
-
-            #endif // NMTOOLS_HAS_SSTREAM
-
-            return ptr_str;
+            if constexpr (meta::is_fail_v<result_type>) {
+                return result_type{};
+            } else {
+                return to_string(t,fmt_string_t<>{});
+            }
         }
-    };
+    }; // struct to_string_t
+
+    #if 0
+    template <typename T>
+    struct to_string_t
+        <T,none_t,meta::enable_if_t<
+            !meta::is_fail_v< typename to_string_t<T,fmt_string_t<>>::result_type >>
+        >
+    {
+        using result_type = typename to_string_t<T,fmt_string_t<>>::result_type;
+        auto operator()(const T& array) const noexcept
+        {
+            return to_string(array,fmt_string_t<>{});
+        } // operator()
+    }; // struct to_string_t
+    #endif
 
     #define NMTOOLS_DTYPE_TO_STRING_CASE(T,type,string) \
     if constexpr (meta::is_same_v<T,type>) { \
         return nmtools_string(string); \
     }
 
-    template <typename T>
+    template <typename T, auto...fmt_args>
     struct to_string_t<
-        dtype_t<T>, none_t, void
+        dtype_t<T>, fmt_string_t<fmt_args...>, void
     >
     {
+        using result_type = nmtools_string;
+
         auto operator()(dtype_t<T>) const noexcept
         {
             NMTOOLS_DTYPE_TO_STRING_CASE(T,float,"float32")

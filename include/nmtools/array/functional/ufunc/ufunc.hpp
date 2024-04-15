@@ -325,11 +325,12 @@ namespace nmtools::functional
 
 namespace nmtools::utils::impl
 {
-    template <typename op_t>
+    template <typename op_t, auto...fmt_args>
     struct to_string_t<
-        functional::fun::unary_ufunc<op_t>, none_t
+        functional::fun::unary_ufunc<op_t>, fmt_string_t<fmt_args...>
     > {
         using ufunc_type = functional::fun::unary_ufunc<op_t>;
+        using result_type = nmtools_string;
 
         auto operator()(const ufunc_type&) const noexcept
         {
@@ -353,11 +354,12 @@ namespace nmtools::utils::impl
         }
     };
 
-    template <typename op_t>
+    template <typename op_t, auto...fmt_args>
     struct to_string_t<
-        functional::fun::binary_ufunc<op_t>, none_t
+        functional::fun::binary_ufunc<op_t>, fmt_string_t<fmt_args...>
     > {
         using ufunc_type = functional::fun::binary_ufunc<op_t>;
+        using result_type = nmtools_string;
 
         auto operator()(const ufunc_type&) const noexcept
         {
@@ -381,11 +383,12 @@ namespace nmtools::utils::impl
         }
     };
 
-    template <typename op_t>
+    template <typename op_t, auto...fmt_args>
     struct to_string_t<
-        functional::fun::broadcast_binary_ufunc<op_t>, none_t
+        functional::fun::broadcast_binary_ufunc<op_t>, fmt_string_t<fmt_args...>
     > {
         using ufunc_type = functional::fun::broadcast_binary_ufunc<op_t>;
+        using result_type = nmtools_string;
 
         auto operator()(const ufunc_type&) const noexcept
         {

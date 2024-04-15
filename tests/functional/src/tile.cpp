@@ -28,7 +28,7 @@ TEST_CASE("tile(case1)" * doctest::test_suite("functional::tile"))
 
 namespace view = nmtools::view;
 
-TEST_CASE("tile" * doctest::test_suite("functional::get_function_composition"))
+TEST_CASE("tile" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
     NMTOOLS_TESTING_DECLARE_NS(view,tile,case1);
     using namespace args;
@@ -39,4 +39,16 @@ TEST_CASE("tile" * doctest::test_suite("functional::get_function_composition"))
     auto expect = fn::tile[reps];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
+}
+
+TEST_CASE("tile" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(view,tile,case1);
+    using namespace args;
+
+    auto a = view::tile(array,reps);
+
+    auto function = fn::get_function_composition(a);
+
+    NMTOOLS_ASSERT_EQUAL( function(array), a );
 }

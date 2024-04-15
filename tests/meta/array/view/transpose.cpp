@@ -22,7 +22,8 @@ TEST_CASE("transpose" * doctest::test_suite("view"))
         {
             using array_t = int[2][3];
             using axes_t  = nm::none_t;
-            using view_t  = view::decorator_t<view::transpose_t,array_t,axes_t>;
+            using src_shape_t = decltype(nm::shape<true>(meta::declval<array_t>()));
+            using view_t  = view::decorator_t<view::indexing_t,array_t,view::transpose_t<src_shape_t,axes_t>>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
         {
@@ -40,7 +41,8 @@ TEST_CASE("transpose" * doctest::test_suite("view"))
         {
             using array_t = na::ndarray_t<nmtools_array<int,6>,nmtools_tuple<meta::ct<2>,meta::ct<3>>>;
             using axes_t  = nm::none_t;
-            using view_t  = view::decorator_t<view::transpose_t,array_t,axes_t>;
+            using src_shape_t = decltype(nm::shape<true>(meta::declval<array_t>()));
+            using view_t  = view::decorator_t<view::indexing_t,array_t,view::transpose_t<src_shape_t,axes_t>>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
         }
     }
@@ -54,7 +56,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_array<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -80,7 +84,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -106,7 +112,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -132,7 +140,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_list<size_t>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -158,7 +168,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,6>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -184,7 +196,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -210,7 +224,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -236,7 +252,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -262,7 +280,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_list<size_t>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -288,7 +308,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = boost::array<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -314,7 +336,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = boost::array<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -340,7 +364,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = boost::array<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -366,7 +392,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = boost::container::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -392,7 +420,9 @@ TEST_CASE("transpose(case1)" * doctest::test_suite("meta::transpose"))
         using shape_type  = boost::container::small_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = none_t;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -422,7 +452,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_array<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -448,7 +480,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_array<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -474,7 +508,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_array<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -500,7 +536,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -526,7 +564,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -552,7 +592,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -578,7 +620,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -604,7 +648,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -630,7 +676,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -656,7 +704,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_list<size_t>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -682,7 +732,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_list<size_t>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -708,7 +760,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_list<size_t>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -734,7 +788,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,6>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -760,7 +816,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,6>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -786,7 +844,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,6>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -812,7 +872,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -838,7 +900,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -864,7 +928,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -890,7 +956,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -916,7 +984,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -942,7 +1012,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -968,7 +1040,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -994,7 +1068,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -1020,7 +1096,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = na::static_vector<size_t,3>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -1046,7 +1124,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_list<size_t>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_array<size_t,3>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -1071,7 +1151,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_list<size_t>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = nmtools_list<size_t>;
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -1096,7 +1178,9 @@ TEST_CASE("transpose(case2)" * doctest::test_suite("meta::transpose"))
         using shape_type  = nmtools_list<size_t>;
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using axes_type   = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using view_type   = view::decorator_t< view::transpose_t, array_type, axes_type >;
+        using src_shape_type = decltype(nm::shape<true>(meta::declval<array_type>()));
+        using src_size_type  = decltype(nm::size<true>(meta::declval<array_type>()));
+        using view_type   = view::decorator_t< view::indexing_t, array_type, view::transpose_t<src_shape_type, axes_type, src_size_type> >;
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );

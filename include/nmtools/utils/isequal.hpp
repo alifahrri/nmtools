@@ -226,7 +226,7 @@ namespace nmtools::utils
 
             // actually constraint the types
             static_assert(
-                constrained(t1,t2) || constrained_either(t1,t2) || constrained_maybe(t1,t2)
+                constrained_maybe(t1,t2) || constrained_either(t1,t2) || constrained(t1,t2)
                 , "unsupported isequal; only support integer scalar type or integer ndarray"
             );
 

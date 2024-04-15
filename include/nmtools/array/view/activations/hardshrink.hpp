@@ -45,9 +45,14 @@ namespace nmtools::view::fun
 
 namespace nmtools::utils::impl
 {
-    template <typename lambda_t>
-    struct to_string_t<view::fun::hardshrink<lambda_t>,none_t>
-    {
+    template <typename lambda_t
+        , auto...fmt_args
+    >
+    struct to_string_t<view::fun::hardshrink<lambda_t>
+        , fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::hardshrink<lambda_t> op) const
         {
             nmtools_string str;

@@ -2,138 +2,126 @@
 #define NMTOOLS_ARRAY_VIEW_TRANSPOSE_HPP
 
 #include "nmtools/constants.hpp"
-#include "nmtools/meta.hpp"
-#include "nmtools/array/at.hpp"
-#include "nmtools/array/shape.hpp"
-#include "nmtools/array/view/decorator.hpp"
 
 #include "nmtools/array/index/transpose.hpp"
 #include "nmtools/array/index/scatter.hpp"
-#include "nmtools/array/index/gather.hpp"
 #include "nmtools/array/index/reverse.hpp"
+
+#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/as_static.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 
 namespace nmtools::view
 {
-
-    /**
-     * @addtogroup view
-     * Collections of functions/class for view objects
-     * @{
-     */
-    
-    /**
-     * @brief Returns a view of the array with axes transposed.
-     * 
-     * For a 1-D array this has no effect, as a transposed vector is simply the same vector.
-     * If axes is given, the indices are permuted by given axis, simply reverese otherwise.
-     * Inspired by <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.transpose.html#numpy.ndarray.transpose">numpy</a>.
-     * 
-     * @tparam array_t array type to be transpose-viewed. only support array1d/array2d for now
-     * @tparam axes_t type of axes, deducible via ctad
-     * @todo support for compile-time axes (e.g. tuple<integral_constant<...>...>)
-     */
-    template <typename array_t, typename axes_t=none_t>
+    template <typename src_shape_t, typename axes_t=none_t, typename src_size_t=none_t>
     struct transpose_t
+        : base_indexer_t<transpose_t<src_shape_t,axes_t,src_size_t>>
     {
-        using value_type = meta::get_element_type_t<array_t>;
-        using const_reference = const value_type&;
-        // array type as required by decorator
-        using array_type = resolve_array_type_t<array_t>;
-        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
-        using dst_shape_type = meta::resolve_optype_t<index::shape_transpose_t,src_shape_type,axes_t>;
-        using axes_type  = resolve_attribute_type_t<axes_t>;
+        using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
+        using axes_type = meta::fwd_attribute_t<axes_t>;
+        using src_size_type = meta::fwd_attribute_t<src_size_t>;
+        using dst_shape_type = meta::resolve_optype_t<index::shape_transpose_t,src_shape_type,axes_type>;
+        // for transpose view, the resulting shape is the same as src
+        using dst_size_type = src_size_type;
 
-        array_type      array;
-        axes_type       axes;
-        dst_shape_type  shape_;
+        static constexpr auto n_inputs  = 1;
+        static constexpr auto n_outputs = 1;
 
-        constexpr transpose_t(const array_t& array_, const axes_t& axes=axes_t{})
-            : array(initialize(array_, meta::as_value_v<array_type>))
-            , axes(init_attribute(axes, meta::as_value_v<axes_type>))
-            , shape_(index::shape_transpose(nmtools::shape</*force_constant_index*/true>(array_),axes))
+        const src_shape_type src_shape;
+        const axes_type axes;
+        const src_size_type src_size;
+        const dst_size_type dst_size;
+        const dst_shape_type dst_shape;
+
+        constexpr transpose_t(const src_shape_t& src_shape
+            , const axes_t& axes=axes_t{}
+            , const src_size_t& src_size=src_size_t{}
+        )
+            : src_shape(fwd_attribute(src_shape))
+            , axes(fwd_attribute(axes))
+            , src_size(fwd_attribute(src_size))
+            , dst_size(src_size)
+            , dst_shape(index::shape_transpose(src_shape,axes))
         {}
-        
-        constexpr auto operands() const noexcept
-        {
-            return nmtools_tuple<array_type>{array};
-        }
 
-        constexpr auto attributes() const noexcept
+        template <typename indices_t>
+        constexpr auto indices(const indices_t& indices) const
         {
-            return nmtools_tuple{axes};
-        }
-
-        /**
-         * @brief return the shape of dst (sliced) array
-         * 
-         * @return constexpr auto 
-         */
-        constexpr decltype(auto) shape() const noexcept
-        {
-            return shape_;
-        } // shape
-        
-        /**
-         * @brief transpose index mapping
-         * 
-         * @tparam size_types variadic template parameter for indices
-         * @param indices 
-         * @return constexpr auto 
-         */
-        template <typename...size_types>
-        constexpr auto index(size_types...indices) const
-        {
-            auto indices_ = pack_indices(indices...);
-
             // TODO: move to index/transpose.hpp
             if constexpr (is_none_v<axes_type>) {
-                return ::nmtools::index::reverse(indices_);
+                return index::reverse(indices);
             } else {
-                return ::nmtools::index::scatter(indices_, axes);
+                return index::scatter(indices, axes);
             }
-        } // index
+        }
+
+        template <typename...args_t>
+        constexpr auto operator==(transpose_t<args_t...> other) const
+        {
+            return utils::isequal(src_shape,other.src_shape)
+                && utils::isequal(dst_shape,other.dst_shape)
+                && utils::isequal(axes,other.axes)
+            ;
+        }
     }; // transpose_t
 
-    /**
-     * @brief make transpose view
-     * 
-     * @tparam array_t 
-     * @tparam axes_t 
-     * @param array 
-     * @param axes 
-     * @return constexpr auto 
-     */
     template <typename array_t, typename axes_t=none_t>
     constexpr auto transpose(const array_t& array, const axes_t& axes=axes_t{})
     {
-        #if !defined(NMTOOLS_NO_BASE_ACCESS)
-        return decorator_t<transpose_t,array_t,axes_t>{{array,axes}};
-        #else // NMTOOLS_NO_BASE_ACCESS
-        using return_t = decorator_t<transpose_t,array_t,axes_t>;
-        using view_t = transpose_t<array_t,axes_t>;
-        return return_t{view_t{array,axes}};
-        #endif // NMTOOLS_NO_BASE_ACCESS
-    } // transpose
-
-    /** @} */ // end group view
-
+        auto src_shape = shape<true>(array);
+        auto src_size  = size<true>(array);
+        auto indexer = transpose_t{src_shape,axes,src_size};
+        return indexing(array,indexer);
+    }
 } // namespace nmtools::view
 
-namespace nmtools
+namespace nmtools::array
 {
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::transpose_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::transpose_t<args_t...>;
 
-    /**
-     * @brief specialization of meta::is_ndarray for transpose view and arbitray axes
-     *
-     * Only enabled when array_t is fixed size, this specialization is necessary since
-     * axes_t may holds runtime value hence fixed_ndarray_shape becomes unavailable.
-     * 
-     * @tparam array_t 
-     * @tparam axes_t 
-     */
-    template <typename array_t, typename axes_t>
-    struct meta::is_ndarray< view::decorator_t<view::transpose_t,array_t,axes_t> >
-     : meta::is_ndarray<array_t> {};
-} // namespace nmtools
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto axes      = as_static<max_dim>(attribute.axes);
+            auto src_size  = as_static<max_dim>(attribute.src_size);
+            return view::transpose_t{src_shape,axes,src_size};
+        }
+    };
+} // namespace nmtools::array
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::transpose_t<args_t...>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const view::transpose_t<args_t...>& kwargs) const noexcept
+        {
+            nmtools_string str;
+            str += "transpose{";
+            str += ".src_shape=";
+            str += to_string(kwargs.src_shape,Compact);
+            str += ",.axes=";
+            str += to_string(kwargs.axes,Compact);
+            str += ",.src_size=";
+            str += to_string(kwargs.src_size,Compact);
+            str += "}";
+            return str;
+        }
+
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_TRANSPOSE_HPP

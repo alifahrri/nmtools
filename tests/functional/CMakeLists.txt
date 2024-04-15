@@ -118,6 +118,7 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/prod.cpp
         src/pooling.cpp
         src/repeat.cpp
+        src/resize.cpp
         src/slice.cpp
         src/softmax.cpp
         src/softmin.cpp

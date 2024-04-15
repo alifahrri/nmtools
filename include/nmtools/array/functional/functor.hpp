@@ -10,6 +10,7 @@
 #include "nmtools/utils/isequal/isequal.hpp"
 #include "nmtools/utils/isclose/isclose.hpp"
 #include "nmtools/utility/fwd.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::meta
 {
@@ -74,18 +75,23 @@ namespace nmtools::functional
     template <typename F, template<typename...>typename tuple, typename...new_operands_t>
     constexpr auto apply_function(const F& function, const tuple<new_operands_t...>& new_operands)
     {
-        auto result = apply_function_t<F>{function}.apply(new_operands);
-        if constexpr (meta::is_tuple_v<decltype(result)>) {
-            meta::template_for<meta::len_v<decltype(result)>>([&](auto index){
-                using value_t = meta::at_t<decltype(result),decltype(index)::value>;
-                static_assert( !meta::is_fail_v<value_t>
-                    , "the return of apply function is invalid!" );
-            });
+        // TODO: better error handling
+        if constexpr (meta::is_maybe_v<F>) {
+            return apply_function(*function, new_operands);
         } else {
-            static_assert( !meta::is_fail_v<decltype(result)>
-                , "the return of apply function is invalid!" );
+            auto result = apply_function_t<F>{function}.apply(new_operands);
+            if constexpr (meta::is_tuple_v<decltype(result)>) {
+                meta::template_for<meta::len_v<decltype(result)>>([&](auto index){
+                    using value_t = meta::at_t<decltype(result),decltype(index)::value>;
+                    static_assert( !meta::is_fail_v<value_t>
+                        , "the return of apply function is invalid!" );
+                });
+            } else {
+                static_assert( !meta::is_fail_v<decltype(result)>
+                    , "the return of apply function is invalid!" );
+            }
+            return result;
         }
-        return result;
     } // apply_function
 
     /**
@@ -371,6 +377,7 @@ namespace nmtools::functional
                 auto result  = apply_function_t<functor_type>{functor}.apply(operand);
 
                 auto curried_operands = utility::tuple_slice(operands_,meta::ct_v<functor_arity>);
+                [[maybe_unused]]
                 constexpr auto n_curried_ops = meta::len_v<decltype(curried_operands)>;
 
                 auto result_operands = [&](){
@@ -622,12 +629,21 @@ namespace nmtools::functional
         return get_op();
     } // get_function_operands
 
-    template <template<typename...> typename view_t, typename...Ts>
-    constexpr auto get_function_composition(const view::decorator_t<view_t,Ts...>& view)
+    template <typename view_type>
+    constexpr auto get_function_composition(const view_type& view)
     {
-        using view_type = view::decorator_t<view_t,Ts...>;
-        auto get_fn = get_function_composition_t<view_type>{view};
-        return get_fn();
+        if constexpr (meta::is_maybe_v<view_type>) {
+            using result_type = meta::remove_cvref_t<decltype(get_function_composition(*view))>;
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(view)) {
+                return return_type{get_function_composition(*view)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            auto get_fn = get_function_composition_t<view_type>{view};
+            return get_fn();
+        }
     } // get_function_composition
 
     template <template<typename...>typename view_t, typename...args_t>
@@ -708,12 +724,22 @@ namespace nmtools::functional
     nmtools_func_attribute
     constexpr auto apply(const function_t& function, const tuple<operands_t...>& operands)
     {
-        constexpr auto arity = function_t::arity;
-        constexpr auto n_operands = sizeof...(operands_t);
-        static_assert( arity == n_operands );
-        return meta::template_reduce<sizeof...(operands_t)>([&](auto init, auto index){
-            return init (nmtools::at(operands,index));
-        }, function());
+        if constexpr (meta::is_maybe_v<function_t>) {
+            using result_type = meta::remove_cvref_t<decltype(apply(*function,operands))>;
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(function)) {
+                return return_type{apply(*function,operands)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            constexpr auto arity = function_t::arity;
+            constexpr auto n_operands = sizeof...(operands_t);
+            static_assert( arity == n_operands );
+            return meta::template_reduce<sizeof...(operands_t)>([&](auto init, auto index){
+                return init (nmtools::at(operands,index));
+            }, function());
+        }
     } // apply
 
     namespace fun

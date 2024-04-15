@@ -325,6 +325,12 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_fs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_fs_db, weight_fs_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
+    // TODO: fix fixed/bounded-size inference for utl
+    //     (gdb) bt
+    // #0  __memmove_avx_unaligned_erms () at ..
+    // #1  0x0000555555808d78 in nmtools::utl::vector<... >::resize 
+    // #2  0x0000555555999899 in nmtools::array::ndarray_t<nmtools::utl::vector<int, nmtools::utl::allocator<int> >, ... > const&)
     CONV2D_SUBCASE( case11, input_hs_fb, weight_hs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_hb, weight_hs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_db, weight_hs_db, None, stride_a, padding_a );
@@ -332,6 +338,7 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_ds_fb, weight_ds_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_hb, weight_ds_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_db, weight_ds_db, None, stride_a, padding_a );
+    #endif // NMTOOLS_DISABLE_STL
 
     CONV2D_SUBCASE( case11, input_ls_fb, weight_ls_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ls_hb, weight_ls_hb, None, stride_a, padding_a );
@@ -341,6 +348,7 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_fs_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_fs_db, weight_cs_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case11, input_hs_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_db, weight_cs_db, None, stride_a, padding_a );
@@ -348,6 +356,7 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_ds_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_db, weight_cs_db, None, stride_a, padding_a );
+    #endif // NMTOOLS_DISABLE_STL
 
     CONV2D_SUBCASE( case11, input_ls_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ls_hb, weight_cs_hb, None, stride_a, padding_a );
@@ -357,6 +366,7 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_cs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_cs_db, weight_fs_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case11, input_hs_fb, weight_fs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_db, weight_fs_db, None, stride_a, padding_a );
@@ -364,6 +374,7 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_ds_fb, weight_fs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_db, weight_fs_db, None, stride_a, padding_a );
+    #endif // NMTOOLS_DISABLE_STL
 
     CONV2D_SUBCASE( case11, input_ls_fb, weight_fs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ls_hb, weight_fs_hb, None, stride_a, padding_a );
@@ -377,9 +388,11 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_fs_hb, weight_hs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_fs_db, weight_hs_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case11, input_ds_fb, weight_hs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_hb, weight_hs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_db, weight_hs_db, None, stride_a, padding_a );
+    #endif // NMTOOLS_DISABLE_STL
 
     CONV2D_SUBCASE( case11, input_ls_fb, weight_hs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ls_hb, weight_hs_hb, None, stride_a, padding_a );
@@ -393,9 +406,11 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_fs_hb, weight_ds_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_fs_db, weight_ds_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case11, input_hs_fb, weight_ds_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_hb, weight_ds_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_db, weight_ds_db, None, stride_a, padding_a );
+    #endif // NMTOOLS_DISABLE_STL
 
     CONV2D_SUBCASE( case11, input_ls_fb, weight_ds_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ls_hb, weight_ds_hb, None, stride_a, padding_a );
@@ -409,6 +424,7 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_fs_hb, weight_ls_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_fs_db, weight_ls_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case11, input_hs_fb, weight_ls_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_hb, weight_ls_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_hs_db, weight_ls_db, None, stride_a, padding_a );
@@ -416,6 +432,7 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case11, input_ds_fb, weight_ls_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_hb, weight_ls_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case11, input_ds_db, weight_ls_db, None, stride_a, padding_a );
+    #endif // NMTOOLS_DISABLE_STL
     #endif
 }
 
@@ -439,6 +456,12 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_fs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_fs_db, weight_fs_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
+    // TODO: fix fixed/bounded-size inference for utl
+    //     (gdb) bt
+    // #0  __memmove_avx_unaligned_erms () at ..
+    // #1  0x0000555555808d78 in nmtools::utl::vector<... >::resize 
+    // #2  0x0000555555999899 in nmtools::array::ndarray_t<nmtools::utl::vector<int, nmtools::utl::allocator<int> >, ... > const&)
     CONV2D_SUBCASE( case12, input_hs_fb, weight_hs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_hb, weight_hs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_db, weight_hs_db, None, stride_a, padding_a );
@@ -446,6 +469,7 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_ds_fb, weight_ds_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_hb, weight_ds_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_db, weight_ds_db, None, stride_a, padding_a );
+    #endif
 
     CONV2D_SUBCASE( case12, input_ls_fb, weight_ls_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ls_hb, weight_ls_hb, None, stride_a, padding_a );
@@ -455,6 +479,7 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_fs_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_fs_db, weight_cs_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case12, input_hs_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_db, weight_cs_db, None, stride_a, padding_a );
@@ -462,6 +487,7 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_ds_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_hb, weight_cs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_db, weight_cs_db, None, stride_a, padding_a );
+    #endif
 
     CONV2D_SUBCASE( case12, input_ls_fb, weight_cs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ls_hb, weight_cs_hb, None, stride_a, padding_a );
@@ -471,6 +497,7 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_cs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_cs_db, weight_fs_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case12, input_hs_fb, weight_fs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_db, weight_fs_db, None, stride_a, padding_a );
@@ -478,6 +505,7 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_ds_fb, weight_fs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_hb, weight_fs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_db, weight_fs_db, None, stride_a, padding_a );
+    #endif
 
     CONV2D_SUBCASE( case12, input_ls_fb, weight_fs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ls_hb, weight_fs_hb, None, stride_a, padding_a );
@@ -491,9 +519,11 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_fs_hb, weight_hs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_fs_db, weight_hs_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case12, input_ds_fb, weight_hs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_hb, weight_hs_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_db, weight_hs_db, None, stride_a, padding_a );
+    #endif
 
     CONV2D_SUBCASE( case12, input_ls_fb, weight_hs_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ls_hb, weight_hs_hb, None, stride_a, padding_a );
@@ -507,9 +537,11 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_fs_hb, weight_ds_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_fs_db, weight_ds_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case12, input_hs_fb, weight_ds_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_hb, weight_ds_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_db, weight_ds_db, None, stride_a, padding_a );
+    #endif
 
     CONV2D_SUBCASE( case12, input_ls_fb, weight_ds_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ls_hb, weight_ds_hb, None, stride_a, padding_a );
@@ -523,6 +555,7 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_fs_hb, weight_ls_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_fs_db, weight_ls_db, None, stride_a, padding_a );
 
+    #if !defined(NMTOOLS_DISABLE_STL)
     CONV2D_SUBCASE( case12, input_hs_fb, weight_ls_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_hb, weight_ls_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_hs_db, weight_ls_db, None, stride_a, padding_a );
@@ -530,6 +563,7 @@ TEST_CASE("conv2d(case12)" * doctest::test_suite("array::conv2d"))
     CONV2D_SUBCASE( case12, input_ds_fb, weight_ls_fb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_hb, weight_ls_hb, None, stride_a, padding_a );
     CONV2D_SUBCASE( case12, input_ds_db, weight_ls_db, None, stride_a, padding_a );
+    #endif
     #endif
 }
 
@@ -589,9 +623,9 @@ TEST_CASE("constexpr_conv2d(case10)" * doctest::test_suite("array::conv2d"))
 TEST_CASE("constexpr_conv2d(case11)" * doctest::test_suite("array::conv2d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
-    CONSTEXPR_CONV2D_SUBCASE( case11, input, weight, None, stride_ct, padding_Ct );
-    CONSTEXPR_CONV2D_SUBCASE( case11, input_a, weight_a, None, stride_ct, padding_Ct );
-    CONSTEXPR_CONV2D_SUBCASE( case11, input_f, weight_f, None, stride_ct, padding_Ct );
+    CONSTEXPR_CONV2D_SUBCASE( case11, input, weight, None, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case11, input_a, weight_a, None, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case11, input_f, weight_f, None, stride_ct, padding_ct );
     #else
     CONSTEXPR_CONV2D_SUBCASE( case11, input_cs_fb, weight_cs_fb, None, stride_ct, padding_ct );
     CONSTEXPR_CONV2D_SUBCASE( case11, input_cs_hb, weight_cs_hb, None, stride_ct, padding_ct );
@@ -613,9 +647,9 @@ TEST_CASE("constexpr_conv2d(case11)" * doctest::test_suite("array::conv2d"))
 TEST_CASE("constexpr_conv2d(case12)" * doctest::test_suite("array::conv2d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
-    CONSTEXPR_CONV2D_SUBCASE( case12, input, weight, None, stride_ct, padding_Ct );
-    CONSTEXPR_CONV2D_SUBCASE( case12, input_a, weight_a, None, stride_ct, padding_Ct );
-    CONSTEXPR_CONV2D_SUBCASE( case12, input_f, weight_f, None, stride_ct, padding_Ct );
+    CONSTEXPR_CONV2D_SUBCASE( case12, input, weight, None, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case12, input_a, weight_a, None, stride_ct, padding_ct );
+    CONSTEXPR_CONV2D_SUBCASE( case12, input_f, weight_f, None, stride_ct, padding_ct );
     #else
     CONSTEXPR_CONV2D_SUBCASE( case12, input_cs_fb, weight_cs_fb, None, stride_ct, padding_ct );
     CONSTEXPR_CONV2D_SUBCASE( case12, input_cs_hb, weight_cs_hb, None, stride_ct, padding_ct );

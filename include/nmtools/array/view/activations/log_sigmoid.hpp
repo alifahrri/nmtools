@@ -28,9 +28,12 @@ namespace nmtools::view::fun
 
 namespace nmtools::utils::impl
 {
-    template <>
-    struct to_string_t<view::fun::log_sigmoid,none_t>
-    {
+    template <auto...fmt_args>
+    struct to_string_t<view::fun::log_sigmoid
+        , fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
         auto operator()(view::fun::log_sigmoid) const
         {
             nmtools_string str;
