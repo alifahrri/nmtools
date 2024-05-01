@@ -64,12 +64,22 @@ namespace nmtools::view
     }; // sliding_window_t
 
     template <typename array_t, typename window_shape_t, typename axis_t=none_t>
-    constexpr auto sliding_window(const array_t& array
+    constexpr auto make_sliding_window(const array_t& array
         , const window_shape_t& window_shape, const axis_t& axis=axis_t{})
     {
         auto src_shape = shape<true>(array);
         auto indexer   = sliding_window_t{src_shape,window_shape,axis};
         return indexing(array,indexer);
+    } // make_sliding_window
+
+    template <typename array_t, typename window_shape_t, typename axis_t=none_t>
+    constexpr auto sliding_window(const array_t& array
+        , const window_shape_t& window_shape, const axis_t& axis=axis_t{})
+    {
+        auto f = [](const auto&...args){
+            return make_sliding_window(args...);
+        };
+        return lift_indexing(f,array,window_shape,axis);
     } // sliding_window
 } // namespace nmtools::view
 
