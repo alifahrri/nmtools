@@ -7,6 +7,7 @@
 #include "nmtools/array/index/scatter.hpp"
 #include "nmtools/array/index/reverse.hpp"
 
+#include "nmtools/utils/isequal/isequal.hpp"
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/as_static.hpp"
 #include "nmtools/utils/to_string/to_string.hpp"
@@ -66,12 +67,21 @@ namespace nmtools::view
     }; // transpose_t
 
     template <typename array_t, typename axes_t=none_t>
-    constexpr auto transpose(const array_t& array, const axes_t& axes=axes_t{})
+    constexpr auto make_transpose(const array_t& array, const axes_t& axes=axes_t{})
     {
         auto src_shape = shape<true>(array);
         auto src_size  = size<true>(array);
         auto indexer = transpose_t{src_shape,axes,src_size};
         return indexing(array,indexer);
+    }
+
+    template <typename array_t, typename axes_t=none_t>
+    constexpr auto transpose(const array_t& array, const axes_t& axes=axes_t{})
+    {
+        auto f = [](const auto&...args){
+            return make_transpose(args...);
+        };
+        return lift_indexing(f,array,axes);
     }
 } // namespace nmtools::view
 
