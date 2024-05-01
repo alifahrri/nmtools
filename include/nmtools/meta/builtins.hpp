@@ -13,7 +13,9 @@
 #endif
 #endif
 
-#define NMTOOLS_HAS_TRIVIAL_DESTRUCTOR __has_trivial_destructor
+#define NMTOOLS_HAS_TRIVIAL_DESTRUCTOR  __has_trivial_destructor
+#define NMTOOLS_HAS_TRIVIAL_COPY        __has_trivial_copy
+#define NMTOOLS_HAS_TRIVIAL_CONSTRUCTOR __has_trivial_constructor
 
 #define NMTOOLS_IS_BASE_OF __is_base_of
 #define NMTOOLS_IS_UNION   __is_union

@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_TRANSFORM_HPP
 #define NMTOOLS_META_TRANSFORM_HPP
 
+#include "nmtools/meta/bits/transform/add_const.hpp"
 #include "nmtools/meta/bits/transform/add_reference.hpp"
 #include "nmtools/meta/bits/transform/append_type.hpp"
 #include "nmtools/meta/bits/transform/append_value.hpp"
