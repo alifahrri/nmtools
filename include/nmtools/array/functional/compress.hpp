@@ -17,11 +17,7 @@ namespace nmtools::functional
         constexpr auto operator()(const attr_tuple<condition_t,axis_t>& attributes, const operand_tuple<array_t>& operands) const
         {
             const auto& [condition, axis] = attributes;
-            if constexpr (meta::is_pointer_v<array_t>) {
-                return view::compress(condition,*nmtools::get<0>(operands),axis);
-            } else {
-                return view::compress(condition,nmtools::get<0>(operands),axis);
-            }
+            return view::compress(condition,get_operand(nmtools::get<0>(operands)),axis);
         } // operator()
     }; // compress_fmap_t
 
