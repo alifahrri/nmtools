@@ -64,6 +64,7 @@ namespace nmtools::meta
                 || is_slice_index_array_v<T>
                 || is_index_array_v<T>
                 || is_integral_constant_v<T>
+                || is_attribute_v<T>
             ) {
                 using type = T;
                 return as_value_v<type>;
@@ -132,7 +133,7 @@ namespace nmtools
     template <typename...Ts>
     constexpr auto pack_operands(const Ts&...ts)
     {
-        using result_t = nmtools_tuple<meta::fwd_operand_t<Ts>...>;
+        using result_t = nmtools_tuple<meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...>;
         return result_t{fwd_operand(ts)...};
     }
 
@@ -147,7 +148,9 @@ namespace nmtools
     constexpr auto push_operands(const T& t, const tuple<Ts...>& ts
         , meta::index_sequence<Is...>)
     {
-        using result_t = tuple<meta::fwd_operand_t<T>,meta::fwd_operand_t<Ts>...>;
+        using result_t = tuple<
+              meta::fwd_operand_t<T>
+            , meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...>;
         return result_t{fwd_operand(t),fwd_operand(nmtools::get<Is>(ts))...};
     }
 
@@ -161,7 +164,9 @@ namespace nmtools
     template <typename T, template<typename...>typename tuple, typename...Ts, auto...Is>
     constexpr auto append_operands(const tuple<Ts...>& ts, const T& t)
     {
-        using result_t = tuple<meta::fwd_operand_t<Ts>...,meta::fwd_operand_t<T>>;
+        using result_t = tuple<
+              meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...
+            , meta::fwd_operand_t<T>>;
         return result_t{fwd_operand(nmtools::get<Is>(ts))...,fwd_operand(t)};
     }
 
