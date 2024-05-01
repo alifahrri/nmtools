@@ -52,11 +52,20 @@ namespace nmtools::view
     }; // tile_t
 
     template <typename array_t, typename reps_t>
-    constexpr auto tile(const array_t& array, const reps_t& reps)
+    constexpr auto make_tile(const array_t& array, const reps_t& reps)
     {
         auto src_shape = shape<true>(array);
         auto indexer   = tile_t{src_shape,reps};
         return indexing(array,indexer);
+    } // make_tile
+
+    template <typename array_t, typename reps_t>
+    constexpr auto tile(const array_t& array, const reps_t& reps)
+    {
+        auto f = [](const auto&...args){
+            return make_tile(args...);
+        };
+        return lift_indexing(f,array,reps);
     } // tile
 } // namespace nmtools::view
 
