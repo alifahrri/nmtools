@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_destructible.hpp"
+#include "nmtools/meta/bits/traits/is_trivially_constructible.hpp"
 #include "nmtools/utility/get_if.hpp"
 
 // poor man's either type

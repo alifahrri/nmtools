@@ -2,7 +2,10 @@
 #define NMTOOLS_UTL_MAYBE_HPP
 
 #include "nmtools/utl/either.hpp"
-#include "nmtools/meta/bits/transform/remove_address_space.hpp"
+#include "nmtools/meta/bits/traits/is_trivially_destructible.hpp"
+#include "nmtools/meta/bits/traits/is_trivially_constructible.hpp"
+#include "nmtools/meta/bits/traits/is_copy_constructible.hpp"
+#include "nmtools/meta/bits/traits/is_copy_assignable.hpp"
 
 namespace nmtools::utl
 {
@@ -34,6 +37,7 @@ namespace nmtools::utl
 
         constexpr maybe(nothing_t) : base(nothing) {}
 
+        // assume copy-constructible
         constexpr maybe(const T& t) : base(t) {}
 
         constexpr bool has_value() const noexcept
@@ -79,9 +83,11 @@ namespace nmtools::utl
     };
 
     template <typename T>
-    struct maybe<T,meta::enable_if_t<!meta::is_trivially_destructible_v<T>
-        /* || !meta::is_trivially_copyable_v<T> */ // TODO: implement is_trivially_copyable
-    >> : either<T,nothing_t>
+    struct maybe<T,meta::enable_if_t<
+        (!meta::is_trivially_destructible_v<T>
+            || !meta::is_trivially_constructible_v<T>)
+        >>
+    : either<T,nothing_t>
     {
     public:
         using base = either<T,nothing_t>;
@@ -102,8 +108,11 @@ namespace nmtools::utl
         {
             if (other.has_value()) {
                 this->tag = base::LEFT;
-                // TODO: check if assignable
-                this->left = other.left;
+                if constexpr (meta::is_copy_assignable_v<T>) {
+                    this->left = other.left;
+                } else {
+                    new(&this->left) T(other.left);
+                }
             } else {
                 this->tag = base::RIGHT;
                 this->right = nothing;
