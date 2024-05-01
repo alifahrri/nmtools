@@ -40,7 +40,7 @@ TEST_CASE("multiply_add_tanh_add(case1)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs_array,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
@@ -66,7 +66,7 @@ TEST_CASE("multiply_add_tanh_add(case2)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
@@ -93,7 +93,7 @@ TEST_CASE("multiply_add_tanh_add(case3)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs_array,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     CHECK_MESSAGE( false, utils::to_string(graph,utils::Graphviz) );
 }
@@ -120,7 +120,7 @@ TEST_CASE("multiply_add_tanh_add(case4)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs_array,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
@@ -148,7 +148,7 @@ TEST_CASE("multiply_add_tanh_add(case5)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
@@ -198,7 +198,7 @@ TEST_CASE("multiply_add_tanh_add(case6)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
@@ -227,7 +227,7 @@ TEST_CASE("multiply_add_tanh_add(case7)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
@@ -274,7 +274,7 @@ TEST_CASE("multiply_add_tanh_add(case8)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
@@ -323,7 +323,7 @@ TEST_CASE("multiply_add_tanh_add(case9)" * doctest::test_suite("functional::get_
     auto c = view::tanh(b);
     auto d = view::add(lhs,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
@@ -351,7 +351,7 @@ TEST_CASE("multiply_add_tanh_add(case10)" * doctest::test_suite("functional::get
     auto c = view::tanh(b);
     auto d = view::add(lhs,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
@@ -398,7 +398,7 @@ TEST_CASE("multiply_add_tanh_add(case11)" * doctest::test_suite("functional::get
     auto c = view::tanh(b);
     auto d = view::add(lhs,c);
 
-    auto graph = fn::get_compute_graph(d);
+    auto graph = nm::unwrap(fn::get_compute_graph(d));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()

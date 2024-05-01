@@ -2,6 +2,9 @@
 #include "nmtools/utility.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+// assume we also have stl
+#include <type_traits>
+
 namespace nm = nmtools;
 namespace utl = nm::utl;
 
@@ -12,14 +15,22 @@ TEST_CASE("array" * doctest::test_suite("utl"))
         {
             using array_t = utl::array<int,3>;
             auto array = array_t{1,2,3};
-            NMTOOLS_STATIC_ASSERT_EQUAL( array.size(), 3 );
+            static_assert( meta::is_trivially_destructible_v<decltype(array)> );
+            static_assert( meta::is_trivially_copyable_v<decltype(array)> );
+            static_assert( std::is_trivially_destructible_v<decltype(array)> );
+            static_assert( std::is_trivially_copyable_v<decltype(array)> );
+            NMTOOLS_ASSERT_EQUAL( array.size(), 3 );
             NMTOOLS_ASSERT_EQUAL( array[0], 1 );
             NMTOOLS_ASSERT_EQUAL( array[1], 2 );
             NMTOOLS_ASSERT_EQUAL( array[2], 3 );
         }
         {
             auto array = utl::array{1,2,3};
-            NMTOOLS_STATIC_ASSERT_EQUAL( array.size(), 3 );
+            static_assert( meta::is_trivially_destructible_v<decltype(array)> );
+            static_assert( meta::is_trivially_copyable_v<decltype(array)> );
+            static_assert( std::is_trivially_destructible_v<decltype(array)> );
+            static_assert( std::is_trivially_copyable_v<decltype(array)> );
+            NMTOOLS_ASSERT_EQUAL( array.size(), 3 );
             NMTOOLS_ASSERT_EQUAL( array[0], 1 );
             NMTOOLS_ASSERT_EQUAL( array[1], 2 );
             NMTOOLS_ASSERT_EQUAL( array[2], 3 );

@@ -98,9 +98,9 @@ nmtools::utils::to_string(array)
     auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
     auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
     auto message = std::string{} \
-        + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+        + "\n\tActual " + "\033[0;90m(" + result_typename + ")\033[0m:\n" \
         + STRINGIFY(result) \
-        + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+        + "\n\tExpected " + "\033[0;90m(" + expect_typename + ")\033[0m:\n" \
         + STRINGIFY(expect) \
     ; \
     CHECK_MESSAGE(isequal(result,expect), \

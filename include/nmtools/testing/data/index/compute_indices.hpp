@@ -4,14 +4,8 @@
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
 inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
 
-#include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/index/as_tuple.hpp"
-#include "nmtools/utils/isequal.hpp"
-#include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-namespace nm = nmtools;
-using nmtools::utils::isequal;
 using namespace nmtools::literals;
 
 NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
@@ -21,6 +15,10 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[2] = {3,2};
         inline int32_t offset   = 0;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_ct  = nmtools_tuple{3_ct,2_ct};
+        inline auto offset_ct = 0_ct;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1_2d)
     {
@@ -32,6 +30,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[2] = {3,2};
         inline int32_t offset   = 1;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2_2d)
     {
@@ -43,6 +42,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[2] = {3,2};
         inline int32_t offset   = 2;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3_2d)
     {
@@ -54,6 +54,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[2] = {3,2};
         inline int32_t offset   = 3;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4_2d)
     {
@@ -65,6 +66,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[2] = {3,2};
         inline int32_t offset   = 4;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5_2d)
     {
@@ -76,6 +78,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[2] = {3,2};
         inline int32_t offset   = 5;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6_2d)
     {
@@ -87,6 +90,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 0;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1_3d)
     {
@@ -98,6 +102,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 1;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2_3d)
     {
@@ -109,6 +114,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 2;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3_3d)
     {
@@ -120,6 +126,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 3;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4_3d)
     {
@@ -131,6 +138,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 4;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5_3d)
     {
@@ -142,6 +150,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 5;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6_3d)
     {
@@ -153,6 +162,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 6;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7_3d)
     {
@@ -164,6 +174,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 7;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8_3d)
     {
@@ -175,6 +186,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 8;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9_3d)
     {
@@ -186,6 +198,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 9;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10_3d)
     {
@@ -197,6 +210,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 10;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11_3d)
     {
@@ -208,6 +222,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 11;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12_3d)
     {
@@ -219,6 +234,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 12;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13_3d)
     {
@@ -230,6 +246,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 13;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case14_3d)
     {
@@ -241,6 +258,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 14;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case15_3d)
     {
@@ -252,6 +270,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 15;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case16_3d)
     {
@@ -263,6 +282,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 16;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case17_3d)
     {
@@ -274,6 +294,7 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t shape[3] = {3,2,3};
         inline int32_t offset   = 17;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case18_3d)
     {

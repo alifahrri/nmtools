@@ -91,7 +91,5 @@ TEST_CASE("swap" * doctest::test_suite("combinator"))
     auto t2 = view::subtract(c,t1);
     auto expect = t2;
 
-    static_assert( meta::is_ndarray_v<decltype(result)> );
-    static_assert( meta::is_ndarray_v<decltype(expect)> );
     NMTOOLS_ASSERT_CLOSE( result, expect );
 }

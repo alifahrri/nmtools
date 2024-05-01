@@ -36,17 +36,21 @@ namespace utils = nmtools::utils;
     auto arguments_string = std::string{}; \
     constexpr auto n_args = meta::len_v<decltype(args_pack)>; \
     meta::template_for<n_args>([&](auto I){ \
-        arguments_string += "\t(#"; \
-        arguments_string += utils::to_string(I); \
-        arguments_string += "): "; \
+        auto arg_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(nmtools::at(args_pack,I))); \
+        arguments_string += "\t(#"; arguments_string += utils::to_string(I); arguments_string += "): "; \
+        arguments_string += "\033[0;90m(" + arg_typename + ")\033[0m:\n\t\t"; \
         arguments_string += utils::to_string(nmtools::at(args_pack,I)); \
         arguments_string += "\n"; \
     }); \
+    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
+    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
     CHECK_MESSAGE(isequal(result,expect), \
         (   \
             std::string{} \
-            + "\n\tActual  : " + STRINGIFY(result) \
-            + "\n\tExpected: " + STRINGIFY(expect) \
+            + "\n\tActual " + "\033[0;90m(" + result_typename + ")\033[0m:\n" \
+            + STRINGIFY(result) \
+            + "\n\tExpected " + "\033[0;90m(" + expect_typename + ")\033[0m:\n" \
+            + STRINGIFY(expect) \
             + "\n\tArguments:\n" + arguments_string \
         )   \
     ); \

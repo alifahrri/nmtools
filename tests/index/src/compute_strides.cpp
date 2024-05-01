@@ -1,239 +1,80 @@
 #include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/testing/data/index/compute_strides.hpp"
 #include "nmtools/utils/isequal.hpp"
-#include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include <array>
-#include <vector>
 
 using nmtools::utils::isequal;
 using namespace nmtools::literals;
 
-TEST_CASE("compute_strides" * doctest::test_suite("index"))
-{
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,)).shape
-     * (8,)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = nmtools_array{3};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2)).shape
-     * (16,8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = nmtools_array{3,2};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2,1)).shape
-     * (16,8,8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = nmtools_array{3,2,1};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1,1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2,3)).shape
-     * (48, 24, 8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = nmtools_array{3,2,3};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{6,3,1}) );
-    }
+#define COMPUTE_STRIDES_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(compute_strides, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::compute_strides(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
 }
 
-#if 0
-TEST_CASE("compute_strides(std::vector)" * doctest::test_suite("index"))
+TEST_CASE("compute_strides(case1)" * doctest::test_suite("index::compute_strides"))
 {
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,)).shape
-     * (8,)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = std::vector{3};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2)).shape
-     * (16,8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = std::vector{3,2};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2,1)).shape
-     * (16,8,8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = std::vector{3,2,1};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1,1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2,3)).shape
-     * (48, 24, 8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = std::vector{3,2,3};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{6,3,1}) );
-    }
-}
-#endif
+    COMPUTE_STRIDES_SUBCASE(case1, shape);
+    COMPUTE_STRIDES_SUBCASE(case1, shape_a);
+    COMPUTE_STRIDES_SUBCASE(case1, shape_v);
+    COMPUTE_STRIDES_SUBCASE(case1, shape_f);
+    COMPUTE_STRIDES_SUBCASE(case1, shape_h);
 
-TEST_CASE("compute_strides(nmtools_tuple)" * doctest::test_suite("index"))
-{
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,)).shape
-     * (8,)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = nmtools_tuple{3};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2)).shape
-     * (16,8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = nmtools_tuple{3,2};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2,1)).shape
-     * (16,8,8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = nmtools_tuple{3,2,1};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1,1}) );
-    }
-    /**
-     * @code{.py}
-     * >>> np.ndarray((3,2,3)).shape
-     * (48, 24, 8)
-     * @endcode
-     * 
-     */
-    {
-        auto shape   = nmtools_tuple{3,2,3};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{6,3,1}) );
-    }
+    COMPUTE_STRIDES_SUBCASE(case1, m_shape_a);
+    COMPUTE_STRIDES_SUBCASE(case1, m_shape_v);
+    COMPUTE_STRIDES_SUBCASE(case1, m_shape_f);
+    COMPUTE_STRIDES_SUBCASE(case1, m_shape_h);
+
+    COMPUTE_STRIDES_SUBCASE(case1, shape_ct);
 }
 
-TEST_CASE("compute_strides(nmtools_tuple<integral_constant>)" * doctest::test_suite("index"))
+TEST_CASE("compute_strides(case2)" * doctest::test_suite("index::compute_strides"))
 {
-    {
-        auto shape   = nmtools_tuple{3_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{1}) );
-    }
-    {
-        auto shape   = nmtools_tuple{3_ct,2_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1}) );
-    }
-    {
-        auto shape   = nmtools_tuple{3_ct,2_ct,1_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1,1}) );
-    }
-    {
-        auto shape   = nmtools_tuple{3_ct,2_ct,3_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{6,3,1}) );
-    }
+    COMPUTE_STRIDES_SUBCASE(case2, shape);
+    COMPUTE_STRIDES_SUBCASE(case2, shape_a);
+    COMPUTE_STRIDES_SUBCASE(case2, shape_v);
+    COMPUTE_STRIDES_SUBCASE(case2, shape_f);
+    COMPUTE_STRIDES_SUBCASE(case2, shape_h);
+
+    COMPUTE_STRIDES_SUBCASE(case2, m_shape_a);
+    COMPUTE_STRIDES_SUBCASE(case2, m_shape_v);
+    COMPUTE_STRIDES_SUBCASE(case2, m_shape_f);
+    COMPUTE_STRIDES_SUBCASE(case2, m_shape_h);
+
+    COMPUTE_STRIDES_SUBCASE(case2, shape_ct);
 }
 
-TEST_CASE("compute_strides(nmtools_tuple<clipped_size_t>)" * doctest::test_suite("index"))
+TEST_CASE("compute_strides(case3)" * doctest::test_suite("index::compute_strides"))
 {
-    {
-        auto shape   = nmtools_tuple{"3:[3]"_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{1}) );
-    }
-    {
-        auto shape   = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1}) );
-    }
-    {
-        auto shape   = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct,"1:[1]"_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1,1}) );
-    }
-    {
-        auto shape   = nmtools_tuple{"3:[3]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{6,3,1}) );
-    }
+    COMPUTE_STRIDES_SUBCASE(case3, shape);
+    COMPUTE_STRIDES_SUBCASE(case3, shape_a);
+    COMPUTE_STRIDES_SUBCASE(case3, shape_v);
+    COMPUTE_STRIDES_SUBCASE(case3, shape_f);
+    COMPUTE_STRIDES_SUBCASE(case3, shape_h);
+
+    COMPUTE_STRIDES_SUBCASE(case3, m_shape_a);
+    COMPUTE_STRIDES_SUBCASE(case3, m_shape_v);
+    COMPUTE_STRIDES_SUBCASE(case3, m_shape_f);
+    COMPUTE_STRIDES_SUBCASE(case3, m_shape_h);
+
+    COMPUTE_STRIDES_SUBCASE(case3, shape_ct);
 }
 
-TEST_CASE("compute_strides(nmtools_array<clipped_size_t>)" * doctest::test_suite("index"))
+TEST_CASE("compute_strides(case4)" * doctest::test_suite("index::compute_strides"))
 {
-    {
-        auto shape   = nmtools_array{"3:[3]"_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{1}) );
-    }
-    {
-        auto shape   = nmtools_array{"3:[3]"_ct,"2:[3]"_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1}) );
-    }
-    {
-        auto shape   = nmtools_array{"3:[3]"_ct,"2:[3]"_ct,"1:[3]"_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{2,1,1}) );
-    }
-    {
-        auto shape   = nmtools_array{"3:[3]"_ct,"2:[3]"_ct,"3:[3]"_ct};
-        auto strides = nmtools::index::compute_strides(shape);
-        CHECK( isequal(strides,nmtools_array{6,3,1}) );
-    }
+    COMPUTE_STRIDES_SUBCASE(case4, shape);
+    COMPUTE_STRIDES_SUBCASE(case4, shape_a);
+    COMPUTE_STRIDES_SUBCASE(case4, shape_v);
+    COMPUTE_STRIDES_SUBCASE(case4, shape_f);
+    COMPUTE_STRIDES_SUBCASE(case4, shape_h);
+
+    COMPUTE_STRIDES_SUBCASE(case4, m_shape_a);
+    COMPUTE_STRIDES_SUBCASE(case4, m_shape_v);
+    COMPUTE_STRIDES_SUBCASE(case4, m_shape_f);
+    COMPUTE_STRIDES_SUBCASE(case4, m_shape_h);
+
+    COMPUTE_STRIDES_SUBCASE(case4, shape_ct);
 }

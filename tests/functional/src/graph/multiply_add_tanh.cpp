@@ -34,7 +34,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
     auto b = view::add(a,rhs_array);
     auto c = view::tanh(b);
 
-    auto graph = fn::get_compute_graph(c);
+    auto graph = nm::unwrap(fn::get_compute_graph(c));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
@@ -50,6 +50,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
         .add_edge(4_ct,5_ct)
     ;
 
+    // TODO: handle maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -68,7 +69,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
     auto b = view::add(a,rhs);
     auto c = view::tanh(b);
 
-    auto graph = fn::get_compute_graph(c);
+    auto graph = nm::unwrap(fn::get_compute_graph(c));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
@@ -83,6 +84,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
         .add_edge(5_ct,6_ct)
     ;
 
+    // TODO: handle maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -102,7 +104,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
     auto b = view::add(a,rhs);
     auto c = view::tanh(b);
 
-    auto graph = fn::get_compute_graph(c);
+    auto graph = nm::unwrap(fn::get_compute_graph(c));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
@@ -117,6 +119,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
         .add_edge(5_ct,6_ct)
     ;
 
+    // TODO: handle maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -136,7 +139,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
     auto b = view::add(a,rhs);
     auto c = view::tanh(b);
 
-    auto graph = fn::get_compute_graph(c);
+    auto graph = nm::unwrap(fn::get_compute_graph(c));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
@@ -152,6 +155,7 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
         .add_edge(7_ct,8_ct)
     ;
 
-    // CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
+    
+        // TODO: handle maybe type// CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }

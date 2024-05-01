@@ -32,7 +32,7 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_compute_graph"))
 
     auto a = view::multiply(lhs_array,rhs_array);
 
-    auto graph = fn::get_compute_graph(a);
+    auto graph = nm::unwrap(fn::get_compute_graph(a));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
@@ -42,6 +42,7 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_compute_graph"))
         .add_edge(1_ct,2_ct)
     ;
 
+    // TODO: support comparison on maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -58,7 +59,7 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_compute_graph"))
     auto lhs = view::alias(lhs_array,3_ct);
     auto a = view::multiply(lhs,rhs_array);
 
-    auto graph = fn::get_compute_graph(a);
+    auto graph = nm::unwrap(fn::get_compute_graph(a));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(3_ct,&lhs_array)
@@ -68,6 +69,7 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_compute_graph"))
         .add_edge(1_ct,5_ct)
     ;
 
+    // TODO: support comparison on maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -84,7 +86,7 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_compute_graph"))
     auto rhs = view::alias(rhs_array,3_ct);
     auto a = view::multiply(lhs_array,rhs);
 
-    auto graph = fn::get_compute_graph(a);
+    auto graph = nm::unwrap(fn::get_compute_graph(a));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
@@ -94,6 +96,7 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_compute_graph"))
         .add_edge(3_ct,5_ct)
     ;
 
+    // TODO: support comparison on maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -111,7 +114,7 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_compute_graph"))
     auto lhs = view::alias(lhs_array,4_ct);
     auto a = view::multiply(lhs,rhs);
 
-    auto graph = fn::get_compute_graph(a);
+    auto graph = nm::unwrap(fn::get_compute_graph(a));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(4_ct,&lhs_array)
@@ -121,5 +124,6 @@ TEST_CASE("multiply" * doctest::test_suite("functional::get_compute_graph"))
         .add_edge(3_ct,6_ct)
     ;
 
+    // TODO: support comparison on maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }

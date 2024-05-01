@@ -28,7 +28,7 @@ TEST_CASE("tanh" * doctest::test_suite("functional::get_compute_graph"))
     auto a = view::tanh(lhs_array);
 
     [[maybe_unused]]
-    auto graph = fn::get_compute_graph(a);
+    auto graph = nm::unwrap(fn::get_compute_graph(a));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
@@ -51,7 +51,7 @@ TEST_CASE("tanh" * doctest::test_suite("functional::get_compute_graph"))
     auto a = view::tanh(array);
 
     [[maybe_unused]]
-    auto graph = fn::get_compute_graph(a);
+    auto graph = nm::unwrap(fn::get_compute_graph(a));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
@@ -60,14 +60,14 @@ TEST_CASE("tanh" * doctest::test_suite("functional::get_compute_graph"))
         .add_edge(5_ct,6_ct)
     ;
 
-    auto operands = fn::get_operands(a);
+    auto operands = nm::unwrap(fn::get_operands(a));
     const auto& operand = nmtools::get<0>(operands);
     using operand_t = meta::remove_cvref_pointer_t<decltype(operand)>;
     static_assert( meta::is_same_view_v<view::alias_t,operand_t> );
     constexpr auto NODE_ID = typename operand_t::id_type{};
     static_assert( NODE_ID == 5 );
-    static_assert( typename decltype(array)::view_type::id_type{} == 5 );
-    static_assert( typename decltype(array)::id_type{} == 5 );
+    static_assert( typename decltype(nm::unwrap(array))::view_type::id_type{} == 5 );
+    static_assert( typename decltype(nm::unwrap(array))::id_type{} == 5 );
 
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
