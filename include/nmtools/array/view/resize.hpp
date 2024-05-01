@@ -48,11 +48,20 @@ namespace nmtools::view
     }; // resize_t
 
     template <typename array_t, typename dst_shape_t>
-    constexpr auto resize(const array_t& array, const dst_shape_t& dst_shape)
+    constexpr auto make_resize(const array_t& array, const dst_shape_t& dst_shape)
     {
         auto src_shape = shape<true>(array);
         auto indexer = resize_t{src_shape,dst_shape};
         return indexing(array,indexer);
+    }
+
+    template <typename array_t, typename dst_shape_t>
+    constexpr auto resize(const array_t& array, const dst_shape_t& dst_shape)
+    {
+        auto f = [](const auto&...args){
+            return make_resize(args...);
+        };
+        return lift_indexing(f,array,dst_shape);
     }
 } // namespace nmtools::view
 
