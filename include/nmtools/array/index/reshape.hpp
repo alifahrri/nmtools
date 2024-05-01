@@ -34,7 +34,7 @@ namespace nmtools::index
 
     /**
      * @brief Compute the resulting shape of reshape op.
-     * Folowing numpy, allow -1 shape value.
+     * Following numpy, allow -1 shape value.
      * 
      * @tparam src_shape_t 
      * @tparam dst_shape_t 
@@ -46,11 +46,31 @@ namespace nmtools::index
     constexpr auto shape_reshape(const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
         using result_t = meta::resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_t>;
-        // currently, get_maybe_type return void by default
-        // TODO: update get_maybe_type default return type to distinct error type
-        using m_result_t = meta::get_maybe_type_t<result_t>;
+        using m_result_t [[maybe_unused]] = meta::get_maybe_type_t<result_t>;
 
-        if constexpr (meta::is_fail_v<result_t>) {
+        // TODO: try to provide common function-lifting utility
+        if constexpr (meta::is_maybe_v<src_shape_t>) {
+            // when src_shape is maybe, then assume the result_t is maybe
+            if (static_cast<bool>(src_shape)) {
+                auto result = shape_reshape(*src_shape,dst_shape);
+                // even if we unwrap the src_shape, the result may be maybe type
+                // since dst_shape may be different shape with src
+                // because std::optional<std::optional<int>> is actually allowed
+                // TODO: support get_if for optional, or add unwrap_if
+                if constexpr (meta::is_maybe_v<decltype(result)>) {
+                    // assume get_maybe_type_t of result == m_result_t
+                    if (static_cast<bool>(result)) {
+                        return result_t{*result};
+                    } else {
+                        return result_t{meta::Nothing};
+                    }
+                } else {
+                    return result_t{result};
+                }
+            } else {
+                return result_t{meta::Nothing};
+            }
+        } else if constexpr (meta::is_fail_v<result_t>) {
             // let the caller decides what to do
             return result_t {};
         } else if constexpr (meta::is_constant_index_array_v<m_result_t>) {
@@ -136,7 +156,28 @@ namespace nmtools::meta
     struct resolve_optype<void, index::shape_reshape_t, src_shape_t, dst_shape_t>
     {
         static constexpr auto vtype = [](){
-            if constexpr (
+            if constexpr (is_maybe_v<src_shape_t>) {
+                using src_shape_type = remove_cvref_t<get_maybe_type_t<src_shape_t>>;
+                using result_type = resolve_optype_t<index::shape_reshape_t, src_shape_type, dst_shape_t>;
+                if constexpr (is_maybe_v<result_type>) {
+                    return as_value_v<result_type>;
+                } else {
+                    using type = nmtools_maybe<result_type>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (
+                is_none_v<src_shape_t>
+                && is_constant_index_array_v<dst_shape_t>
+            ) {
+                constexpr auto numel = index::product(to_value_v<dst_shape_t>);
+                if constexpr (numel == 1) {
+                    using type = dst_shape_t;
+                    return as_value_v<type>;
+                } else {
+                    using type = error::SHAPE_RESHAPE_INVALID<src_shape_t,dst_shape_t>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (
                 is_constant_index_array_v<src_shape_t>
                 && (is_constant_index_array_v<dst_shape_t> || is_clipped_index_array_v<dst_shape_t>)
             ) {
@@ -248,11 +289,6 @@ namespace nmtools::meta
                 }
             } else if constexpr (is_index_array_v<src_shape_t> && is_index_array_v<dst_shape_t>) {
                 using element_t = get_element_type_t<dst_shape_t>;
-                #if 0
-                using indices_t = transform_bounded_array_t<dst_shape_t>;
-                using type = replace_element_type_t<indices_t,make_unsigned_t<element_t>>;
-                return as_value_v<type>;
-                #else
                 constexpr auto DST_DIM = len_v<dst_shape_t>;
                 [[maybe_unused]] constexpr auto DST_B_DIM = bounded_size_v<dst_shape_t>;
                 if constexpr (DST_DIM > 0) {
@@ -265,7 +301,6 @@ namespace nmtools::meta
                     using type = nmtools_list<element_t>;
                     return as_value_v<type>;
                 }
-                #endif
             } else {
                 using type = error::SHAPE_RESHAPE_UNSUPPORTED<src_shape_t,dst_shape_t>;
                 return as_value_v<type>;

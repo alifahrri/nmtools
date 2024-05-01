@@ -20,7 +20,10 @@ namespace nmtools::index
      * @tparam bshape_t 
      */
     struct broadcast_shape_t {};
+}
 
+namespace nmtools::index::impl
+{
     /**
      * @brief broadcast two array shape together
      * 
@@ -175,6 +178,53 @@ namespace nmtools::index
             return return_t{meta::Nothing};
         }
     } // broadcast_shape
+}
+
+namespace nmtools::index
+{
+    template <typename ashape_t, typename bshape_t>
+    constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape)
+    {
+        if constexpr (meta::is_maybe_v<ashape_t>) {
+            using result_type = decltype(broadcast_shape(*ashape,bshape));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
+                , result_type, nmtools_maybe<result_type>
+            >;
+            if (static_cast<bool>(ashape)) {
+                auto result = broadcast_shape(*ashape,bshape);
+                if constexpr (meta::is_maybe_v<result_type>) {
+                    return (static_cast<bool>(result)
+                        ? return_type{result}
+                        : return_type{meta::Nothing})
+                    ;
+                } else {
+                    return return_type{result};
+                }
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else if constexpr (meta::is_maybe_v<bshape_t>) {
+            using result_type = decltype(broadcast_shape(ashape,*bshape));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
+                , result_type, nmtools_maybe<result_type>
+            >;
+            if (static_cast<bool>(bshape)) {
+                auto result = broadcast_shape(ashape,*bshape);
+                if constexpr (meta::is_maybe_v<result_type>) {
+                    return (static_cast<bool>(result)
+                        ? return_type{result}
+                        : return_type{meta::Nothing})
+                    ;
+                } else {
+                    return return_type{result};
+                }
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            return impl::broadcast_shape(ashape,bshape);
+        }
+    }
 
     template <typename ashape_t, typename bshape_t, typename cshape_t, typename...other_shapes_t>
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape, const cshape_t& cshape, const other_shapes_t&...other_shapes)
@@ -199,16 +249,30 @@ namespace nmtools::index
     struct broadcast_size_t {};
 
     template <typename dst_shape_t, typename a_size_t, typename b_size_t, typename...other_sizes_t>
-    constexpr auto broadcast_size([[maybe_unused]] const dst_shape_t& dst_shape, a_size_t, b_size_t, other_sizes_t...)
+    constexpr auto broadcast_size([[maybe_unused]] const dst_shape_t& dst_shape
+        , [[maybe_unused]] a_size_t a_size
+        , [[maybe_unused]] b_size_t b_size
+        , [[maybe_unused]] other_sizes_t... other_sizes)
     {
         using result_t = meta::resolve_optype_t<broadcast_size_t,dst_shape_t,a_size_t,b_size_t,other_sizes_t...>;
-        auto result = result_t {};
 
-        if constexpr (!meta::is_constant_index_v<result_t>) {
-            result = index::product(dst_shape);
+        if constexpr (meta::is_maybe_v<result_t>) {
+            if (static_cast<bool>(a_size)) {
+                auto result = broadcast_size(dst_shape,*a_size,b_size,other_sizes...);
+                // assume not nested optional
+                return result_t{result};
+            } else {
+                return result_t{meta::Nothing};
+            }
+        } else {
+            auto result = result_t {};
+
+            if constexpr (!meta::is_constant_index_v<result_t>) {
+                result = index::product(dst_shape);
+            }
+
+            return result;
         }
-
-        return result;
     } // broadcast_size
 
 } // namespace nmtools::index
@@ -447,7 +511,12 @@ namespace nmtools::meta
 
         static constexpr auto vtype = [](){
             [[maybe_unused]] constexpr auto other_is_all_none = (is_same_v<remove_cvref_t<other_sizes_t>,ct<1ul>> && ...);
-            if constexpr (is_constant_index_array_v<dst_shape_t>) {
+            if constexpr (is_maybe_v<a_size_t>) {
+                using a_size_type = resolve_optype_t<index::broadcast_size_t,dst_shape_t,get_maybe_type_t<a_size_t>>;
+                // TODO: handle other_sizes_t...
+                // TODO: find upper bounds from other_sizes_t...
+                return as_value_v<nmtools_maybe<a_size_type>>;
+            } else if constexpr (is_constant_index_array_v<dst_shape_t>) {
                 constexpr auto size = index::product(to_value_v<dst_shape_t>);
                 using type = ct<size>;
                 return as_value_v<type>;

@@ -31,7 +31,7 @@ namespace nmtools::index
             auto max_dim = [&](){
                 if constexpr ((N>0) && meta::is_constant_index_v<nd_t>) {
                     constexpr auto nd = nd_t{};
-                    constexpr auto max_dim = (N > nd ? N : nd);
+                    constexpr auto max_dim = ((nm_size_t)N > (nm_size_t)nd ? N : nd);
                     return meta::ct_v<max_dim>;
                 } else {
                     return (dim > nd ? dim : nd);

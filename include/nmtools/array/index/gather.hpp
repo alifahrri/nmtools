@@ -8,58 +8,45 @@
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/ndarray.hpp"
 
-namespace nmtools
+namespace nmtools::index
 {
-    namespace index
-    {
-        /**
-         * @brief specific tag to resolve return type
-         * 
-         */
-        struct gather_t {};
+    /**
+     * @brief specific tag to resolve return type
+     * 
+     */
+    struct gather_t {};
     
-        // TODO: cleanup index functions, handling constant index array
-        /**
-         * @brief perform gather op
-         *
-         * perform the following op: `ret[i] = vec[idx[i]]`, reverse of scatter
-         * 
-         * @tparam vector_t type of vec
-         * @tparam indices_t type of indices
-         * @param vec 
-         * @param indices 
-         * @return constexpr auto 
-         * @see scatter
-         */
-        template <typename vector_t, typename indices_t>
-        constexpr auto gather(const vector_t& vector, const indices_t& indices)
-        {
-            // get the size of indices
+    /**
+     * @brief perform gather op
+     *
+     * perform the following op: `ret[i] = vec[idx[i]]`, reverse of scatter
+     * 
+     * @tparam vector_t type of vec
+     * @tparam indices_t type of indices
+     * @param vec 
+     * @param indices 
+     * @return constexpr auto 
+     * @see scatter
+     */
+    template <typename vector_t, typename indices_t>
+    constexpr auto gather(const vector_t& vector, const indices_t& indices)
+    {
+        using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+
+        if constexpr (meta::is_maybe_v<vector_t>) {
+            // assume return_t is also maybe type
+            if (static_cast<bool>(vector)) {
+                auto result = gather(*vector,indices);
+                // TODO: handle nested optional
+                return return_t{result};
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else {
             [[maybe_unused]] auto m = len(indices);
 
-            #if 0
-            // convert to array, avoid tuple_at
-            [[maybe_unused]] auto vec = [&](){
-                if constexpr (meta::is_constant_index_array_v<vector_t>) {
-                    return meta::to_value_v<vector_t>;
-                } else if constexpr (meta::is_fixed_index_array_v<vector_t>) {
-                    using element_t  = meta::get_index_element_type_t<vector_t>;
-                    constexpr auto N = meta::fixed_index_array_size_v<vector_t>;
-                    using type = meta::make_array_type_t<element_t,N>;
-                    auto vec   = type{};
-                    meta::template_for<N>([&](auto i){
-                        at(vec,i) = at(vector,i);
-                    });
-                    return vec;
-                } else {
-                    return vector;
-                }
-            }();
-            #else
             const auto& vec = vector;
-            #endif
 
-            using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
             auto ret = return_t{};
 
             if constexpr (meta::is_resizable_v<return_t>)
@@ -67,7 +54,6 @@ namespace nmtools
             
             [[maybe_unused]] auto gather_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
                 auto idx   = at(indices,i);
-                // TODO: drop tuple w/ runtime value, do not use tuple_at
                 auto value = at(vec,idx);
                 at(ret,i)  = value;
             }; // gather_impl
@@ -79,15 +65,15 @@ namespace nmtools
                         gather_impl(ret, vec, indices, i);
                     });
                 else
-                    for (size_t i=0; i<m; i++) {
+                    for (nm_size_t i=0; i<(nm_size_t)m; i++) {
                         gather_impl(ret, vec, indices, i);
                     }
             }
 
             return ret;
-        } // gather
-    } // namespace index
-} // namespace nmtools
+        }
+    } // gather
+} // namespace nmtools::index
 
 namespace nmtools::meta
 {
@@ -97,15 +83,19 @@ namespace nmtools::meta
         struct GATHER_UNSUPPORTED : detail::fail_t {};
     }
 
-    // TODO: cleanup index metafunctions, handling constant index array
     template <typename vector_t, typename indices_t>
     struct resolve_optype<
         void, index::gather_t, vector_t, indices_t
     >
     {
         static constexpr auto vtype = [](){
-            using element_t = remove_address_space_t<get_index_element_type_t<vector_t>>;
-            if constexpr (is_constant_index_array_v<vector_t>
+            using element_t [[maybe_unused]] = remove_address_space_t<get_index_element_type_t<vector_t>>;
+            if constexpr (is_maybe_v<vector_t>) {
+                using vector_type = get_maybe_type_t<vector_t>;
+                using result_type = resolve_optype_t<index::gather_t,vector_type,indices_t>;
+                using type = nmtools_maybe<result_type>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<vector_t>
                 && is_constant_index_array_v<indices_t>
             ) {
                 constexpr auto vector  = to_value_v<vector_t>;
@@ -144,7 +134,6 @@ namespace nmtools::meta
                 using type = resolve_optype_t<index::gather_t,vector_t,decltype(to_value_v<indices_t>)>;
                 return as_value_v<type>;
             }
-            #if 1
             else if constexpr (is_index_array_v<indices_t>) {
                 [[maybe_unused]] constexpr auto n_vec = len_v<vector_t>;
                 [[maybe_unused]] constexpr auto n_idx = len_v<indices_t>;
@@ -161,70 +150,6 @@ namespace nmtools::meta
                     return as_value_v<type>;
                 }
             }
-            #else
-            else if constexpr (
-                is_dynamic_index_array_v<indices_t>
-            ) // whenever indices is dynamic, chose it
-                return as_value_v<replace_element_type_t<indices_t,element_t>>;
-            // some index array is not ndarray (integral_constant)
-            else if constexpr (
-                is_constant_index_array_v<vector_t> && is_hybrid_index_array_v<indices_t>
-            ) /* exactly follow indices */ {
-                using type = replace_element_type_t<indices_t,element_t>;
-                return as_value_v<type>;
-            }
-            else if constexpr (
-                is_dynamic_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>
-            ) /* vector is dynamic resizable */ {
-                constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
-                using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
-                return as_value_v<replace_element_type_t<return_t,element_t>>;
-            }
-            else if constexpr (
-                is_hybrid_ndarray_v<vector_t> && is_dynamic_index_array_v<indices_t>
-            ) /* indices is dynamic resizable */
-                return as_value_v<replace_element_type_t<indices_t,element_t>>;
-            else if constexpr (
-                is_hybrid_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>
-            ) /* both are hybrid, prefer indices */ {
-                constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
-                using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
-                return as_value_v<replace_element_type_t<return_t,element_t>>;
-            }
-            else if constexpr (
-                is_hybrid_ndarray_v<vector_t> && is_fixed_index_array_v<indices_t>
-            ) /* prefer indices */ {
-                constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
-                using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
-                return as_value_v<replace_element_type_t<return_t,element_t>>;
-            }
-            else if constexpr (
-                is_fixed_size_ndarray_v<vector_t> && is_hybrid_index_array_v<indices_t>
-            ) /* prefer indices */ {
-                constexpr auto max_size = hybrid_index_array_max_size_v<indices_t>;
-                using return_t = resize_hybrid_ndarray_max_size_t<indices_t,max_size>;
-                return as_value_v<replace_element_type_t<return_t,element_t>>;
-            }
-            else if constexpr (
-                is_dynamic_ndarray_v<vector_t> && is_fixed_index_array_v<indices_t>
-            ) /* prefer indices */ {
-                using type = transform_bounded_array_t<tuple_to_array_t<indices_t>>;
-                return as_value_v<replace_element_type_t<type,element_t>>;
-            }
-            else if constexpr (
-                is_fixed_size_ndarray_v<vector_t> && is_dynamic_index_array_v<indices_t>
-            ) /* prefer indices */ {
-                return as_value_v<replace_element_type_t<indices_t,element_t>>;
-            }
-            else if constexpr (
-                is_fixed_size_ndarray_v<vector_t> && is_fixed_index_array_v<indices_t>
-            ) /* prefer indices */ {
-                constexpr auto size = fixed_index_array_size_v<indices_t>;
-                using type = transform_bounded_array_t<tuple_to_array_t<indices_t>>;
-                using return_t = resize_fixed_vector_t<type,size>;
-                return as_value_v<replace_element_type_t<return_t,element_t>>;
-            }
-            #endif
             else {
                 return as_value_v<error::GATHER_UNSUPPORTED<vector_t,indices_t>>;
             }

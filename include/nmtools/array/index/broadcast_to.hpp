@@ -21,7 +21,10 @@ namespace nmtools::index
     struct shape_broadcast_to_t {};
 
     struct shape_broadcast_to_free_axes_t {};
+}
 
+namespace nmtools::index::impl
+{
     // TODO: cleanup index functions
     /**
      * @brief Overloaded version of shape_broadcast_to where the src shape is None (from num type).
@@ -196,6 +199,54 @@ namespace nmtools::index
         // TODO: use optional instead
         return nmtools_tuple<bool,result_t,free_axes_t>{success, res, free_axes};
     } // shape_broadcast_to
+}
+
+namespace nmtools::index
+{
+
+    template <typename ashape_t, typename bshape_t>
+    constexpr auto shape_broadcast_to(const ashape_t& ashape, const bshape_t& bshape)
+    {
+        if constexpr (meta::is_maybe_v<ashape_t>) {
+            using result_type = decltype(shape_broadcast_to(*ashape,bshape));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
+                , result_type, nmtools_maybe<result_type>
+            >;
+            if (static_cast<bool>(ashape)) {
+                auto result = shape_broadcast_to(*ashape,bshape);
+                if constexpr (meta::is_maybe_v<result_type>) {
+                    return (static_cast<bool>(result)
+                        ? return_type{result}
+                        : return_type{meta::Nothing})
+                    ;
+                } else {
+                    return return_type{result};
+                }
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else if constexpr (meta::is_maybe_v<bshape_t>) {
+            using result_type = decltype(shape_broadcast_to(ashape,*bshape));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
+                , result_type, nmtools_maybe<result_type>
+            >;
+            if (static_cast<bool>(*ashape)) {
+                auto result = shape_broadcast_to(ashape,*bshape);
+                if constexpr (meta::is_maybe_v<result_type>) {
+                    return (static_cast<bool>(result)
+                        ? return_type{result}
+                        : return_type{meta::Nothing})
+                    ;
+                } else {
+                    return return_type{result};
+                }
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            return impl::shape_broadcast_to(ashape,bshape);
+        }
+    }
 
     template <typename indices_t, typename src_shape_t, typename dst_shape_t, typename origin_axes_t>
     constexpr auto broadcast_to(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape, const origin_axes_t& origin_axes)
