@@ -40,11 +40,8 @@ namespace nmtools::view
 
         // not supported yet
         // TODO: support moveaxis with compile-time axis
-        // auto src_axis = meta::ct_v<-1>;
-        // auto dst_axis = meta::ct_v<-3>;
-
-        auto src_axis = -1;
-        auto dst_axis = -3;
+        auto src_axis = meta::ct_v<-1>;
+        auto dst_axis = meta::ct_v<-3>;
 
         auto weight_ = view::moveaxis(view::atleast_3d(weight),src_axis,dst_axis);
         auto bias_   = view::moveaxis(view::atleast_3d(bias),src_axis,dst_axis);
