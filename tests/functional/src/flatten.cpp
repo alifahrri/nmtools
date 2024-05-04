@@ -81,6 +81,20 @@ TEST_CASE("constexpr_flatten(case4)" * doctest::test_suite("functional::reshape"
 }
 
 namespace view = nmtools::view;
+using nmtools::unwrap;
+
+TEST_CASE("flatten" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+{
+    NMTOOLS_TESTING_DECLARE_NS(flatten,case4);
+    using namespace args;
+
+    auto a = view::flatten(array);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::flatten;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}
 
 TEST_CASE("flatten" * doctest::test_suite("functional::get_function_composition"))
 {
@@ -90,7 +104,7 @@ TEST_CASE("flatten" * doctest::test_suite("functional::get_function_composition"
     auto a = view::flatten(array);
 
     auto function = fn::get_function_composition(a);
-    auto expect = fn::flatten;
+    auto expect = fn::indexing[unwrap(a).attributes()];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }

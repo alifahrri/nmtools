@@ -17,6 +17,11 @@ target_compile_options(coverage_config INTERFACE
 )
 target_link_options(coverage_config INTERFACE --coverage)
 
+option(NMTOOLS_TESTING_NO_BACKTRACE_LIMIT "add -ftemplate-backtrace-limit=0" OFF)
+if (NMTOOLS_TESTING_NO_BACKTRACE_LIMIT)
+    add_compile_options(-ftemplate-backtrace-limit=0)
+endif ()
+
 option(NMTOOLS_CODE_COVERAGE "build with code coverage reporting" OFF)
 message(STATUS "CODE_COVERAGE ${NMTOOLS_CODE_COVERAGE}")
 
