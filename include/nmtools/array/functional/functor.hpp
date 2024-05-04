@@ -76,6 +76,9 @@ namespace nmtools::functional
         if constexpr (meta::is_maybe_v<F>) {
             return apply_function(*function, new_operands);
         } else {
+            // Triggers gcc error:
+            // error: initializations for multiple members of 'std::_Optional_payload_base
+            #if defined(__clang__)
             auto result = apply_function_t<F>{function}.apply(new_operands);
             if constexpr (meta::is_tuple_v<decltype(result)>) {
                 meta::template_for<meta::len_v<decltype(result)>>([&](auto index){
@@ -88,6 +91,9 @@ namespace nmtools::functional
                     , "the return of apply function is invalid!" );
             }
             return result;
+            #else
+            return apply_function_t<F>{function}.apply(new_operands);
+            #endif
         }
     } // apply_function
 
