@@ -51,23 +51,36 @@ namespace nmtools::meta
     struct fwd_attribute
     {
         static constexpr auto vtype = [](){
+            constexpr auto is_valid_attribute = [](auto vtype){
+                using type = type_t<decltype(vtype)>;
+                return is_none_v<type>
+                    || is_num_v<type>
+                    || is_dtype_v<type>
+                    || is_slice_index_v<type>
+                    || is_slice_index_array_v<type>
+                    || is_index_array_v<type>
+                    || is_integral_constant_v<type>
+                    || is_attribute_v<type>
+                ;
+            };
             if constexpr (is_bounded_array_v<T>) {
                 constexpr auto N = meta::len_v<T>;
                 using element_t = get_element_type_t<T>;
                 using type = nmtools_array<element_t,N>;
                 return as_value_v<type>;
             } else if constexpr (
-                is_none_v<T>
-                || is_num_v<T>
-                || is_dtype_v<T>
-                || is_slice_index_v<T>
-                || is_slice_index_array_v<T>
-                || is_index_array_v<T>
-                || is_integral_constant_v<T>
-                || is_attribute_v<T>
+                is_valid_attribute(as_value_v<T>)
             ) {
                 using type = T;
                 return as_value_v<type>;
+            } else if constexpr (is_maybe_v<T>) {
+                using type = get_maybe_type_t<T>;
+                if constexpr (is_valid_attribute(as_value_v<type>)) {
+                    return as_value_v<T>;
+                } else {
+                    using type = error::FWD_ATTRIBUTE_UNSUPPORTED<T>;
+                    return as_value_v<type>;
+                }
             } else {
                 using type = error::FWD_ATTRIBUTE_UNSUPPORTED<T>;
                 return as_value_v<type>;
