@@ -11,25 +11,36 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
 
+using nmtools::shape, nmtools::size;
+
 TEST_CASE("is_fixed_shape" * doctest::test_suite("view"))
 {
     // shape is known at compile time
     {
         using array_t = int[2][3][2];
         using shape_t = nmtools_tuple<meta::ct<12>>;
-        using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+        using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+        using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+        using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+        using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
     }
     {
         using array_t = na::fixed_ndarray<int,2,3,2>;
         using shape_t = nmtools_tuple<meta::ct<12>>;
-        using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+        using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+        using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+        using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+        using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
     }
     {
         using array_t = na::hybrid_ndarray<int,12,3>;
         using shape_t = nmtools_tuple<meta::ct<12>>;
-        using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+        using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+        using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+        using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+        using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
     }
 }
@@ -41,50 +52,74 @@ TEST_CASE("reshape" * doctest::test_suite("view"))
         {
             using array_t = int[2][3][2];
             using shape_t = nmtools_tuple<meta::ct<12>>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3,2>;
             using shape_t = nmtools_tuple<meta::ct<12>>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
             using shape_t = nmtools_tuple<meta::ct<12>>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::dynamic_ndarray<int>;
             using shape_t = nmtools_tuple<meta::ct<12>>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
 
         {
             using array_t = int[2][3][2];
             using shape_t = nmtools_array<int,1>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3,2>;
             using shape_t = nmtools_array<int,1>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
             using shape_t = nmtools_array<int,1>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::dynamic_ndarray<int>;
             using shape_t = nmtools_array<int,1>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
 
@@ -92,25 +127,37 @@ TEST_CASE("reshape" * doctest::test_suite("view"))
         {
             using array_t = int[2][3][2];
             using shape_t = nmtools_list<int>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3,2>;
             using shape_t = nmtools_list<int>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
             using shape_t = nmtools_list<int>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::dynamic_ndarray<int>;
             using shape_t = nmtools_list<int>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_t );
         }
     }
@@ -120,28 +167,40 @@ TEST_CASE("reshape" * doctest::test_suite("view"))
         {
             using array_t = int[2][3][2];
             using shape_t = nmtools_array<int,3>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             constexpr auto max_size = meta::bounded_size_v<view_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_index, decltype(max_size) );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3,2>;
             using shape_t = nmtools_array<int,3>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             constexpr auto max_size = meta::bounded_size_v<view_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_index, decltype(max_size) );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
             using shape_t = nmtools_array<int,3>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             constexpr auto max_size = meta::bounded_size_v<view_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_index, decltype(max_size) );
         }
         {
             using array_t = na::dynamic_ndarray<int>;
             using shape_t = nmtools_array<int,3>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             constexpr auto max_size = meta::bounded_size_v<view_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, decltype(max_size) );
         }
