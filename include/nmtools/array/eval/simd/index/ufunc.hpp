@@ -245,8 +245,8 @@ namespace nmtools::index
             auto inner_idx  = at(simd_index,meta::ct_v<1>);
             auto inp_index  = (inner_idx * N_ELEM_PACK);
 
-            const auto out_tag = ((inner_idx+1) == (n_simd+static_cast<bool>(n_rest)) ? SIMD::ACCUMULATE : SIMD::NOP);
-            const auto inp_tag = static_cast<bool>(inp_index + N_ELEM_PACK > n_ops) ? static_cast<SIMD>(N_ELEM_PACK - n_rest) : SIMD::PACKED;
+            const auto out_tag = (nm_size_t(inner_idx+1) == nm_size_t(n_simd+static_cast<bool>(n_rest)) ? SIMD::ACCUMULATE : SIMD::NOP);
+            const auto inp_tag = static_cast<bool>(nm_size_t(inp_index + N_ELEM_PACK) > nm_size_t(n_ops)) ? static_cast<SIMD>(N_ELEM_PACK - n_rest) : SIMD::PACKED;
             inp_index = inp_offset + inp_index;
             at(result,meta::ct_v<0>) = tagged_index_t{out_tag,out_index};
             at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,inp_index};
@@ -257,12 +257,12 @@ namespace nmtools::index
             auto inp_index  = at(simd_index,meta::ct_v<1>) * N_ELEM_PACK;
 
             auto rel_scalar_index = n_simd * N_ELEM_PACK + (at(simd_index,meta::ct_v<1>) - n_simd);
-            out_index = out_index > n_ops ? (out_offset + rel_scalar_index) : (out_offset + out_index);
-            inp_index = inp_index > n_ops ? (inp_offset + rel_scalar_index) : (inp_offset + inp_index);
+            out_index = (nm_size_t)out_index > (nm_size_t)n_ops ? (out_offset + rel_scalar_index) : (out_offset + out_index);
+            inp_index = (nm_size_t)inp_index > (nm_size_t)n_ops ? (inp_offset + rel_scalar_index) : (inp_offset + inp_index);
 
             // prefer scalar instead of padding because scalar store for output
-            const auto out_tag = static_cast<bool>(((at(simd_index,meta::ct_v<1>) * N_ELEM_PACK) + N_ELEM_PACK) <= n_ops) ? SIMD::ACCUMULATE_PACKED : SIMD::ACCUMULATE;
-            const auto inp_tag = static_cast<bool>(((at(simd_index,meta::ct_v<1>) * N_ELEM_PACK) + N_ELEM_PACK) <= n_ops) ? SIMD::PACKED : SIMD::SCALAR;
+            const auto out_tag = static_cast<bool>(nm_size_t((at(simd_index,meta::ct_v<1>) * N_ELEM_PACK) + N_ELEM_PACK) <= nm_size_t(n_ops)) ? SIMD::ACCUMULATE_PACKED : SIMD::ACCUMULATE;
+            const auto inp_tag = static_cast<bool>(nm_size_t((at(simd_index,meta::ct_v<1>) * N_ELEM_PACK) + N_ELEM_PACK) <= nm_size_t(n_ops)) ? SIMD::PACKED : SIMD::SCALAR;
             at(result,meta::ct_v<0>) = tagged_index_t{out_tag,out_index};
             at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,inp_index};
         }

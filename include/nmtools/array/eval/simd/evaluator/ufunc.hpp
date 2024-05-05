@@ -273,14 +273,14 @@ namespace nmtools::array
                     const auto reduction_kind = meta::as_type_v<ReductionKind::VERTICAL>;
                     const auto enumerator = index::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape,reduction_axis);
                     for (size_t i=0; i<enumerator.size(); i++) {
-                        auto [out_pack, inp_pack] = enumerator[i];
-                        auto [out_tag,out_offset] = out_pack;
-                        auto [inp_tag,inp_offset] = inp_pack;
+                        const auto [out_pack, inp_pack] = enumerator[i];
+                        const auto [out_tag,out_offset] = out_pack;
+                        const auto [inp_tag,inp_offset] = inp_pack;
                         switch (out_tag) {
                             case SIMD::ACCUMULATE_PACKED: {
-                                auto inp_pack = op.loadu(&inp_data_ptr[inp_offset]);
-                                auto out_pack = op.loadu(&out_data_ptr[out_offset]);
-                                auto tmp = op.eval(out_pack,inp_pack);
+                                const auto inp_pack = op.loadu(&inp_data_ptr[inp_offset]);
+                                const auto out_pack = op.loadu(&out_data_ptr[out_offset]);
+                                const auto tmp = op.eval(out_pack,inp_pack);
                                 op.storeu(&out_data_ptr[out_offset],tmp);
                             } break;
                             case SIMD::ACCUMULATE: {

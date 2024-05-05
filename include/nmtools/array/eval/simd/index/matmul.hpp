@@ -93,8 +93,8 @@ namespace nmtools::index
         const auto res_l = lhs_offset + (inner_step * N_ELEM_PACK);
         const auto res_r = rhs_offset + (inner_step * N_ELEM_PACK);
 
-        const auto tag_l = ((inner_step * N_ELEM_PACK + N_ELEM_PACK) <= n_fmadd) ? SIMD::PACKED : static_cast<SIMD>(N_ELEM_PACK - n_rest);
-        const auto tag_r = ((inner_step * N_ELEM_PACK + N_ELEM_PACK) <= n_fmadd) ? SIMD::PACKED : static_cast<SIMD>(N_ELEM_PACK - n_rest);
+        const auto tag_l = (nm_size_t(inner_step * N_ELEM_PACK + N_ELEM_PACK) <= nm_size_t(n_fmadd)) ? SIMD::PACKED : static_cast<SIMD>(N_ELEM_PACK - n_rest);
+        const auto tag_r = (nm_size_t(inner_step * N_ELEM_PACK + N_ELEM_PACK) <= nm_size_t(n_fmadd)) ? SIMD::PACKED : static_cast<SIMD>(N_ELEM_PACK - n_rest);
 
         auto result  = result_t{};
         at(result,0) = tagged_index_t{SIMD::SCALAR,out_offset};

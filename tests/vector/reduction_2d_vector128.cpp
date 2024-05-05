@@ -12,6 +12,9 @@ namespace na = nm::array;
 namespace simd = na::simd;
 namespace meta = nm::meta;
 
+// TODO: do not explicitly unwrap, fix eval
+using nmtools::unwrap;
+
 #define SIMD_TEST_EQUAL(result, expect) \
 { \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
@@ -37,7 +40,7 @@ TEST_CASE("add.reduce_2d(case1a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case1b)" * doctest::test_suite("simd::vector_128"))
@@ -50,7 +53,7 @@ TEST_CASE("add.reduce_2d(case1b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case2a)" * doctest::test_suite("simd::vector_128"))
@@ -63,7 +66,7 @@ TEST_CASE("add.reduce_2d(case2a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case2b)" * doctest::test_suite("simd::vector_128"))
@@ -76,7 +79,7 @@ TEST_CASE("add.reduce_2d(case2b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case3a)" * doctest::test_suite("simd::vector_128"))
@@ -89,7 +92,7 @@ TEST_CASE("add.reduce_2d(case3a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case3b)" * doctest::test_suite("simd::vector_128"))
@@ -102,7 +105,7 @@ TEST_CASE("add.reduce_2d(case3b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 #if 1
@@ -116,7 +119,7 @@ TEST_CASE("add.reduce_2d(case3c)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case3d)" * doctest::test_suite("simd::vector_128"))
@@ -129,7 +132,7 @@ TEST_CASE("add.reduce_2d(case3d)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 #endif
 
@@ -144,7 +147,7 @@ TEST_CASE("add.reduce_2d(case4a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case4b)" * doctest::test_suite("simd::vector_128"))
@@ -157,7 +160,7 @@ TEST_CASE("add.reduce_2d(case4b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case4c)" * doctest::test_suite("simd::vector_128"))
@@ -170,7 +173,7 @@ TEST_CASE("add.reduce_2d(case4c)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case4d)" * doctest::test_suite("simd::vector_128"))
@@ -183,7 +186,7 @@ TEST_CASE("add.reduce_2d(case4d)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 
@@ -197,7 +200,7 @@ TEST_CASE("add.reduce_2d(case5a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case5b)" * doctest::test_suite("simd::vector_128"))
@@ -210,7 +213,7 @@ TEST_CASE("add.reduce_2d(case5b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case5c)" * doctest::test_suite("simd::vector_128"))
@@ -223,7 +226,7 @@ TEST_CASE("add.reduce_2d(case5c)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case5d)" * doctest::test_suite("simd::vector_128"))
@@ -236,7 +239,7 @@ TEST_CASE("add.reduce_2d(case5d)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case6a)" * doctest::test_suite("simd::vector_128"))
@@ -249,7 +252,7 @@ TEST_CASE("add.reduce_2d(case6a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case6b)" * doctest::test_suite("simd::vector_128"))
@@ -262,7 +265,7 @@ TEST_CASE("add.reduce_2d(case6b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case6c)" * doctest::test_suite("simd::vector_128"))
@@ -275,7 +278,7 @@ TEST_CASE("add.reduce_2d(case6c)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case6d)" * doctest::test_suite("simd::vector_128"))
@@ -288,7 +291,7 @@ TEST_CASE("add.reduce_2d(case6d)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case7a)" * doctest::test_suite("simd::vector_128"))
@@ -301,7 +304,7 @@ TEST_CASE("add.reduce_2d(case7a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case7b)" * doctest::test_suite("simd::vector_128"))
@@ -314,7 +317,7 @@ TEST_CASE("add.reduce_2d(case7b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case8a)" * doctest::test_suite("simd::vector_128"))
@@ -327,7 +330,7 @@ TEST_CASE("add.reduce_2d(case8a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case8b)" * doctest::test_suite("simd::vector_128"))
@@ -340,7 +343,7 @@ TEST_CASE("add.reduce_2d(case8b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case8c)" * doctest::test_suite("simd::vector_128"))
@@ -353,7 +356,7 @@ TEST_CASE("add.reduce_2d(case8c)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case8d)" * doctest::test_suite("simd::vector_128"))
@@ -366,7 +369,7 @@ TEST_CASE("add.reduce_2d(case8d)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case9a)" * doctest::test_suite("simd::vector_128"))
@@ -379,7 +382,7 @@ TEST_CASE("add.reduce_2d(case9a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::False;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case9b)" * doctest::test_suite("simd::vector_128"))
@@ -392,7 +395,7 @@ TEST_CASE("add.reduce_2d(case9b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::False;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case9c)" * doctest::test_suite("simd::vector_128"))
@@ -405,7 +408,7 @@ TEST_CASE("add.reduce_2d(case9c)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::False;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case9d)" * doctest::test_suite("simd::vector_128"))
@@ -418,7 +421,7 @@ TEST_CASE("add.reduce_2d(case9d)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::False;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 
@@ -432,7 +435,7 @@ TEST_CASE("add.reduce_2d(case10a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case10b)" * doctest::test_suite("simd::vector_128"))
@@ -445,7 +448,7 @@ TEST_CASE("add.reduce_2d(case10b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case10c)" * doctest::test_suite("simd::vector_128"))
@@ -458,7 +461,7 @@ TEST_CASE("add.reduce_2d(case10c)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case10d)" * doctest::test_suite("simd::vector_128"))
@@ -471,7 +474,7 @@ TEST_CASE("add.reduce_2d(case10d)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case11a)" * doctest::test_suite("simd::vector_128"))
@@ -486,7 +489,7 @@ TEST_CASE("add.reduce_2d(case11a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case11b)" * doctest::test_suite("simd::vector_128"))
@@ -501,7 +504,7 @@ TEST_CASE("add.reduce_2d(case11b)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case11c)" * doctest::test_suite("simd::vector_128"))
@@ -516,7 +519,7 @@ TEST_CASE("add.reduce_2d(case11c)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case11d)" * doctest::test_suite("simd::vector_128"))
@@ -531,7 +534,7 @@ TEST_CASE("add.reduce_2d(case11d)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case12a)" * doctest::test_suite("simd::vector_128"))
@@ -546,7 +549,7 @@ TEST_CASE("add.reduce_2d(case12a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case13a)" * doctest::test_suite("simd::vector_128"))
@@ -561,7 +564,7 @@ TEST_CASE("add.reduce_2d(case13a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case14a)" * doctest::test_suite("simd::vector_128"))
@@ -576,7 +579,7 @@ TEST_CASE("add.reduce_2d(case14a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("add.reduce_2d(case15a)" * doctest::test_suite("simd::vector_128"))
@@ -591,7 +594,7 @@ TEST_CASE("add.reduce_2d(case15a)" * doctest::test_suite("simd::vector_128"))
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(add.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 /*********************** multiply ******************************/
@@ -606,7 +609,7 @@ TEST_CASE("multiply.reduce_2d(case1a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case1b)" * doctest::test_suite("simd::vector_128"))
@@ -619,7 +622,7 @@ TEST_CASE("multiply.reduce_2d(case1b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case2a)" * doctest::test_suite("simd::vector_128"))
@@ -632,7 +635,7 @@ TEST_CASE("multiply.reduce_2d(case2a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case2b)" * doctest::test_suite("simd::vector_128"))
@@ -645,7 +648,7 @@ TEST_CASE("multiply.reduce_2d(case2b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case3a)" * doctest::test_suite("simd::vector_128"))
@@ -658,7 +661,7 @@ TEST_CASE("multiply.reduce_2d(case3a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case3b)" * doctest::test_suite("simd::vector_128"))
@@ -671,7 +674,7 @@ TEST_CASE("multiply.reduce_2d(case3b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 #if 1
@@ -686,7 +689,7 @@ TEST_CASE("multiply.reduce_2d(case3c)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -700,7 +703,7 @@ TEST_CASE("multiply.reduce_2d(case3d)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 #endif
 
@@ -715,7 +718,7 @@ TEST_CASE("multiply.reduce_2d(case4a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case4b)" * doctest::test_suite("simd::vector_128"))
@@ -728,7 +731,7 @@ TEST_CASE("multiply.reduce_2d(case4b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -742,7 +745,7 @@ TEST_CASE("multiply.reduce_2d(case4c)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -756,7 +759,7 @@ TEST_CASE("multiply.reduce_2d(case4d)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 
@@ -770,7 +773,7 @@ TEST_CASE("multiply.reduce_2d(case5a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case5b)" * doctest::test_suite("simd::vector_128"))
@@ -783,7 +786,7 @@ TEST_CASE("multiply.reduce_2d(case5b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -797,7 +800,7 @@ TEST_CASE("multiply.reduce_2d(case5c)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -811,7 +814,7 @@ TEST_CASE("multiply.reduce_2d(case5d)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case6a)" * doctest::test_suite("simd::vector_128"))
@@ -824,7 +827,7 @@ TEST_CASE("multiply.reduce_2d(case6a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case6b)" * doctest::test_suite("simd::vector_128"))
@@ -837,7 +840,7 @@ TEST_CASE("multiply.reduce_2d(case6b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -851,7 +854,7 @@ TEST_CASE("multiply.reduce_2d(case6c)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -865,7 +868,7 @@ TEST_CASE("multiply.reduce_2d(case6d)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case7a)" * doctest::test_suite("simd::vector_128"))
@@ -878,7 +881,7 @@ TEST_CASE("multiply.reduce_2d(case7a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case7b)" * doctest::test_suite("simd::vector_128"))
@@ -891,7 +894,7 @@ TEST_CASE("multiply.reduce_2d(case7b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::True;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case8a)" * doctest::test_suite("simd::vector_128"))
@@ -904,7 +907,7 @@ TEST_CASE("multiply.reduce_2d(case8a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case8b)" * doctest::test_suite("simd::vector_128"))
@@ -917,7 +920,7 @@ TEST_CASE("multiply.reduce_2d(case8b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -931,7 +934,7 @@ TEST_CASE("multiply.reduce_2d(case8c)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -945,7 +948,7 @@ TEST_CASE("multiply.reduce_2d(case8d)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case9a)" * doctest::test_suite("simd::vector_128"))
@@ -958,7 +961,7 @@ TEST_CASE("multiply.reduce_2d(case9a)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::False;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case9b)" * doctest::test_suite("simd::vector_128"))
@@ -971,7 +974,7 @@ TEST_CASE("multiply.reduce_2d(case9b)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::False;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -985,7 +988,7 @@ TEST_CASE("multiply.reduce_2d(case9c)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::False;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -999,7 +1002,7 @@ TEST_CASE("multiply.reduce_2d(case9d)" * doctest::test_suite("simd::vector_128")
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = nm::False;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 
@@ -1013,7 +1016,7 @@ TEST_CASE("multiply.reduce_2d(case10a)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case10b)" * doctest::test_suite("simd::vector_128"))
@@ -1026,7 +1029,7 @@ TEST_CASE("multiply.reduce_2d(case10b)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -1040,7 +1043,7 @@ TEST_CASE("multiply.reduce_2d(case10c)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -1054,7 +1057,7 @@ TEST_CASE("multiply.reduce_2d(case10d)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case11a)" * doctest::test_suite("simd::vector_128"))
@@ -1069,7 +1072,7 @@ TEST_CASE("multiply.reduce_2d(case11a)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -1085,7 +1088,7 @@ TEST_CASE("multiply.reduce_2d(case11b)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case11c)" * doctest::test_suite("simd::vector_128"))
@@ -1100,7 +1103,7 @@ TEST_CASE("multiply.reduce_2d(case11c)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 // TODO: fix precision
@@ -1116,7 +1119,7 @@ TEST_CASE("multiply.reduce_2d(case11d)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = true;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case12a)" * doctest::test_suite("simd::vector_128"))
@@ -1131,7 +1134,7 @@ TEST_CASE("multiply.reduce_2d(case12a)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case12b)" * doctest::test_suite("simd::vector_128"))
@@ -1146,7 +1149,7 @@ TEST_CASE("multiply.reduce_2d(case12b)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case13a)" * doctest::test_suite("simd::vector_128"))
@@ -1161,7 +1164,7 @@ TEST_CASE("multiply.reduce_2d(case13a)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case13a)" * doctest::test_suite("simd::vector_128"))
@@ -1176,7 +1179,7 @@ TEST_CASE("multiply.reduce_2d(case13a)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 #if 1
@@ -1192,7 +1195,7 @@ TEST_CASE("multiply.reduce_2d(case14a)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 
 TEST_CASE("multiply.reduce_2d(case15a)" * doctest::test_suite("simd::vector_128"))
@@ -1207,6 +1210,6 @@ TEST_CASE("multiply.reduce_2d(case15a)" * doctest::test_suite("simd::vector_128"
     auto dtype     = nm::None;
     auto initial   = nm::None;
     auto keepdims  = false;
-    VECTOR_128_TEST(multiply.reduce,input,axis,dtype,initial,keepdims);
+    VECTOR_128_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
 }
 #endif

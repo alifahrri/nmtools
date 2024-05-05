@@ -16,6 +16,9 @@ using buffer_t = nmtools_list<float>;
 using shape_t  = nmtools_array<size_t,2>;
 using output_t = na::column_major_ndarray_t<buffer_t,shape_t>;
 
+// TODO: do not explicitly unwrap, fix eval
+using nmtools::unwrap;
+
 #define SIMD_TEST_EQUAL(result, expect) \
 { \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
@@ -43,7 +46,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -60,7 +63,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -77,7 +80,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
@@ -94,7 +97,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
@@ -111,7 +114,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
@@ -128,7 +131,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
@@ -145,7 +148,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
@@ -162,7 +165,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
@@ -179,7 +182,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
@@ -196,7 +199,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
@@ -213,7 +216,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
@@ -230,7 +233,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
@@ -247,7 +250,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
@@ -264,7 +267,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
@@ -281,7 +284,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
@@ -298,7 +301,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
@@ -315,7 +318,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
@@ -332,7 +335,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
@@ -349,7 +352,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
@@ -366,7 +369,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -386,7 +389,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -404,7 +407,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -422,7 +425,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
@@ -440,7 +443,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
@@ -458,7 +461,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
@@ -476,7 +479,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
@@ -494,7 +497,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
@@ -512,7 +515,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
@@ -530,7 +533,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
@@ -548,7 +551,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
@@ -566,7 +569,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
@@ -584,7 +587,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
@@ -602,7 +605,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
@@ -620,7 +623,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
@@ -638,7 +641,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
@@ -656,7 +659,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
@@ -674,7 +677,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
@@ -692,7 +695,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
@@ -710,7 +713,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
@@ -728,7 +731,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -748,7 +751,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -766,7 +769,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -784,7 +787,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
@@ -802,7 +805,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
@@ -820,7 +823,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
@@ -838,7 +841,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
@@ -856,7 +859,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
@@ -874,7 +877,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
@@ -892,7 +895,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
@@ -910,7 +913,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
@@ -928,7 +931,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
@@ -946,7 +949,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
@@ -964,7 +967,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
@@ -982,7 +985,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1000,7 +1003,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1018,7 +1021,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1036,7 +1039,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1054,7 +1057,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1072,7 +1075,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1090,7 +1093,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1113,7 +1116,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1131,7 +1134,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1149,7 +1152,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1167,7 +1170,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1185,7 +1188,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1203,7 +1206,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1221,7 +1224,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1239,7 +1242,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1257,7 +1260,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1275,7 +1278,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1293,7 +1296,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1311,7 +1314,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1329,7 +1332,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1347,7 +1350,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1365,7 +1368,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1383,7 +1386,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1401,7 +1404,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1419,7 +1422,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1437,7 +1440,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1455,7 +1458,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 #endif
@@ -1479,7 +1482,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1497,7 +1500,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1515,7 +1518,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1533,7 +1536,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1551,7 +1554,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1569,7 +1572,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1587,7 +1590,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1605,7 +1608,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1623,7 +1626,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1641,7 +1644,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1659,7 +1662,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1677,7 +1680,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1695,7 +1698,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1713,7 +1716,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1731,7 +1734,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1749,7 +1752,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1767,7 +1770,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1785,7 +1788,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1803,7 +1806,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1821,7 +1824,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 #endif
@@ -1844,7 +1847,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1862,7 +1865,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1880,7 +1883,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1898,7 +1901,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1916,7 +1919,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1934,7 +1937,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1952,7 +1955,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1970,7 +1973,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
@@ -1988,7 +1991,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2006,7 +2009,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2024,7 +2027,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2042,7 +2045,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2060,7 +2063,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2078,7 +2081,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2096,7 +2099,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2114,7 +2117,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2132,7 +2135,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2150,7 +2153,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2168,7 +2171,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
@@ -2186,7 +2189,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_SSE"))
         ,/*output*/nm::None
         ,/*resolver*/na::ColumnMajorResolver
     );
-    X86_SSE_TEST(matmul,lhs,rhs);
+    X86_SSE_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 #endif

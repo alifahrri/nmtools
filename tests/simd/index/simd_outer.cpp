@@ -292,7 +292,7 @@ TEST_CASE("outer_simd(case1a)" * doctest::test_suite("simd::index"))
 
     auto n_elem_pack = meta::as_type_v<4>;
 
-    auto simd_shape = nmtools_array{5,1};
+    [[maybe_unused]] auto simd_shape = nmtools_array{5,1};
 
     {
         auto simd_index = nmtools_array{0,0};
@@ -399,7 +399,7 @@ TEST_CASE("outer_simd(case2a)" * doctest::test_suite("simd::index"))
 
     auto n_elem_pack = meta::as_type_v<4>;
 
-    auto simd_shape = nmtools_array{4,2};
+    [[maybe_unused]] auto simd_shape = nmtools_array{4,2};
 
     {
         auto simd_index = nmtools_array{0,0};
@@ -565,11 +565,11 @@ TEST_CASE("outer_simd_enumerator(case1)" * doctest::test_suite("simd::index"))
 
     auto n_elem_pack = meta::as_type_v<4>;
 
-    auto simd_shape = nmtools_array{5,1};
+    [[maybe_unused]] auto simd_shape = nmtools_array{5,1};
 
-    auto out_tags = nmtools_array{SIMD::PACKED,SIMD::PACKED,SIMD::PACKED,SIMD::PACKED,SIMD::PACKED};
-    auto lhs_tags = nmtools_array{SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST};
-    auto rhs_tags = nmtools_array{SIMD::PACKED,SIMD::PACKED,SIMD::PACKED,SIMD::PACKED,SIMD::PACKED};
+    auto out_tags = nmtools_array<SIMD,5>{SIMD::PACKED,SIMD::PACKED,SIMD::PACKED,SIMD::PACKED,SIMD::PACKED};
+    auto lhs_tags = nmtools_array<SIMD,5>{SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST};
+    auto rhs_tags = nmtools_array<SIMD,5>{SIMD::PACKED,SIMD::PACKED,SIMD::PACKED,SIMD::PACKED,SIMD::PACKED};
     auto out_offsets = nmtools_array{0,4,8,12,16};
     auto lhs_offsets = nmtools_array{0,1,2,3,4};
     auto rhs_offsets = nmtools_array{0,0,0,0,0};
@@ -601,11 +601,11 @@ TEST_CASE("outer_simd_enumerator(case2)" * doctest::test_suite("simd::index"))
 
     auto n_elem_pack = meta::as_type_v<4>;
 
-    auto simd_shape = nmtools_array{4,2};
+    [[maybe_unused]] auto simd_shape = nmtools_array{4,2};
 
-    auto out_tags = nmtools_array{SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3};
-    auto lhs_tags = nmtools_array{SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST};
-    auto rhs_tags = nmtools_array{SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3};
+    auto out_tags = nmtools_array<SIMD,8>{SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3};
+    auto lhs_tags = nmtools_array<SIMD,8>{SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST,SIMD::BROADCAST};
+    auto rhs_tags = nmtools_array<SIMD,8>{SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3,SIMD::PACKED,SIMD::PAD_3};
     auto out_offsets = nmtools_array{0,4,5,9,10,14,15,19};
     auto lhs_offsets = nmtools_array{0,0,1,1,2,2,3,3};
     auto rhs_offsets = nmtools_array{0,4,0,4,0,4,0,4};
@@ -637,9 +637,9 @@ TEST_CASE("outer_simd_enumerator(case3)" * doctest::test_suite("simd::index"))
 
     auto n_elem_pack = meta::as_type_v<4>;
 
-    auto simd_shape = nmtools_array{2,4,2};
+    [[maybe_unused]] auto simd_shape = nmtools_array{2,4,2};
 
-    auto out_tags = nmtools_array{
+    auto out_tags = nmtools_array<SIMD,16>{
         SIMD::PACKED,SIMD::PAD_3,
         SIMD::PACKED,SIMD::PAD_3,
         SIMD::PACKED,SIMD::PAD_3,
@@ -649,7 +649,7 @@ TEST_CASE("outer_simd_enumerator(case3)" * doctest::test_suite("simd::index"))
         SIMD::PACKED,SIMD::PAD_3,
         SIMD::PACKED,SIMD::PAD_3,
     };
-    auto lhs_tags = nmtools_array{
+    auto lhs_tags = nmtools_array<SIMD,16>{
         SIMD::BROADCAST,SIMD::BROADCAST,
         SIMD::BROADCAST,SIMD::BROADCAST,
         SIMD::BROADCAST,SIMD::BROADCAST,
@@ -659,7 +659,7 @@ TEST_CASE("outer_simd_enumerator(case3)" * doctest::test_suite("simd::index"))
         SIMD::BROADCAST,SIMD::BROADCAST,
         SIMD::BROADCAST,SIMD::BROADCAST,
     };
-    auto rhs_tags = nmtools_array{
+    auto rhs_tags = nmtools_array<SIMD,16>{
         SIMD::PACKED,SIMD::PAD_3,
         SIMD::PACKED,SIMD::PAD_3,
         SIMD::PACKED,SIMD::PAD_3,
@@ -700,9 +700,9 @@ TEST_CASE("outer_simd_enumerator(case4)" * doctest::test_suite("simd::index"))
 
     auto n_elem_pack = meta::as_type_v<4>;
 
-    auto simd_shape = nmtools_array{2,4,2};
+    [[maybe_unused]] auto simd_shape = nmtools_array{2,4,2};
 
-    auto out_tags = nmtools_array{
+    auto out_tags = nmtools_array<SIMD,16>{
         SIMD::PACKED,SIMD::PAD_2,
         SIMD::PACKED,SIMD::PAD_2,
         SIMD::PACKED,SIMD::PAD_2,
@@ -712,7 +712,7 @@ TEST_CASE("outer_simd_enumerator(case4)" * doctest::test_suite("simd::index"))
         SIMD::PACKED,SIMD::PAD_2,
         SIMD::PACKED,SIMD::PAD_2,
     };
-    auto lhs_tags = nmtools_array{
+    auto lhs_tags = nmtools_array<SIMD,16>{
         SIMD::BROADCAST,SIMD::BROADCAST,
         SIMD::BROADCAST,SIMD::BROADCAST,
         SIMD::BROADCAST,SIMD::BROADCAST,
@@ -722,7 +722,7 @@ TEST_CASE("outer_simd_enumerator(case4)" * doctest::test_suite("simd::index"))
         SIMD::BROADCAST,SIMD::BROADCAST,
         SIMD::BROADCAST,SIMD::BROADCAST,
     };
-    auto rhs_tags = nmtools_array{
+    auto rhs_tags = nmtools_array<SIMD,16>{
         SIMD::PACKED,SIMD::PAD_2,
         SIMD::PACKED,SIMD::PAD_2,
         SIMD::PACKED,SIMD::PAD_2,

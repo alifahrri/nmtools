@@ -12,6 +12,9 @@ namespace na = nm::array;
 namespace ix = nm::index;
 namespace simd = na::simd;
 
+// TODO: do not explicitly unwrap, fix eval
+using nmtools::unwrap;
+
 #define SIMD_TEST_EQUAL(result, expect) \
 { \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
@@ -36,7 +39,7 @@ TEST_CASE("add.outer_nd(case1a)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(add.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 #if 1
@@ -49,7 +52,7 @@ TEST_CASE("add.outer_nd(case1b)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(add.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_nd(case1c)" * doctest::test_suite("simd::x86_AVX"))
@@ -61,7 +64,7 @@ TEST_CASE("add.outer_nd(case1c)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(add.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_nd(case1d)" * doctest::test_suite("simd::x86_AVX"))
@@ -73,7 +76,7 @@ TEST_CASE("add.outer_nd(case1d)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(add.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 #endif
@@ -87,7 +90,7 @@ TEST_CASE("add.outer_nd(case2a)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(add.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 #if 1
@@ -100,7 +103,7 @@ TEST_CASE("add.outer_nd(case2b)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(add.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_nd(case2c)" * doctest::test_suite("simd::x86_AVX"))
@@ -112,7 +115,7 @@ TEST_CASE("add.outer_nd(case2c)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(add.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_nd(case2d)" * doctest::test_suite("simd::x86_AVX"))
@@ -124,7 +127,7 @@ TEST_CASE("add.outer_nd(case2d)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(add.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 #endif
@@ -140,7 +143,7 @@ TEST_CASE("multiply.outer_nd(case1a)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(multiply.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(multiply.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("multiply.outer_nd(case1b)" * doctest::test_suite("simd::x86_AVX"))
@@ -152,7 +155,7 @@ TEST_CASE("multiply.outer_nd(case1b)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(multiply.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(multiply.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("multiply.outer_nd(case1c)" * doctest::test_suite("simd::x86_AVX"))
@@ -164,7 +167,7 @@ TEST_CASE("multiply.outer_nd(case1c)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(multiply.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(multiply.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 // TODO: fix simd int64 multiply
@@ -178,7 +181,7 @@ TEST_CASE("multiply.outer_nd(case1d)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(multiply.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(multiply.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 #endif
 
@@ -191,7 +194,7 @@ TEST_CASE("multiply.outer_nd(case2a)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(multiply.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(multiply.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("multiply.outer_nd(case2b)" * doctest::test_suite("simd::x86_AVX"))
@@ -203,7 +206,7 @@ TEST_CASE("multiply.outer_nd(case2b)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(multiply.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(multiply.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("multiply.outer_nd(case2c)" * doctest::test_suite("simd::x86_AVX"))
@@ -215,7 +218,7 @@ TEST_CASE("multiply.outer_nd(case2c)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(multiply.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(multiply.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 // TODO: fix simd multiply
@@ -229,7 +232,7 @@ TEST_CASE("multiply.outer_nd(case2d)" * doctest::test_suite("simd::x86_AVX"))
     auto rhs_size = ix::product(rhs_shape);
     auto lhs = na::reshape(na::arange(lhs_size,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(rhs_size,dtype),rhs_shape);
-    X86_AVX_TEST(multiply.outer,lhs,rhs,nm::None);
+    X86_AVX_TEST(multiply.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 #endif
