@@ -248,13 +248,6 @@ namespace nmtools::utils
                     same = same && isequal(*t,*u);
                 return same;
             }
-            // comparison of maybe type with nothing type is allowed
-            else if constexpr (meta::is_maybe_v<T> && meta::is_nothing_v<U>) {
-                return !static_cast<bool>(t);
-            }
-            else if constexpr (meta::is_nothing_v<T> && meta::is_maybe_v<U>) {
-                return !static_cast<bool>(u);
-            }
             // only lhs is maybe
             // return true if t is not empty and the value is equal to u
             else if constexpr (meta::is_maybe_v<T>) {
@@ -517,6 +510,12 @@ namespace nmtools::utils
                 equal = equal && isequal(t_,u_);
             });
             return equal;
+        // comparison of maybe type with nothing type is allowed
+        } else if constexpr (meta::is_maybe_v<T> && meta::is_nothing_v<U>) {
+            return !static_cast<bool>(t);
+        }
+        else if constexpr (meta::is_nothing_v<T> && meta::is_maybe_v<U>) {
+            return !static_cast<bool>(u);
         } else if constexpr (meta::is_maybe_v<T> && meta::is_maybe_v<U>) {
             using t_type = meta::get_maybe_type_t<T>;
             using u_type = meta::get_maybe_type_t<U>;
