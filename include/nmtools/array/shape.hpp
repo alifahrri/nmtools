@@ -27,6 +27,7 @@ namespace nmtools::impl
     {
         constexpr auto operator()([[maybe_unused]] const T& a) const noexcept
         {
+            [[maybe_unused]] auto LEN = meta::len_v<T>;
             if constexpr (meta::has_shape_v<T>) {
                 auto shape = a.shape();
                 return nmtools::at(shape,meta::ct_v<0>);
@@ -35,6 +36,8 @@ namespace nmtools::impl
                 return nmtools::at(shape,meta::ct_v<0>);
             } else if constexpr (is_none_v<T>) {
                 return 0;
+            } else if constexpr (LEN > 0) {
+                return LEN;
             } else {
                 using type = error::LEN_UNSUPPORTED<T>;
                 return type{};
@@ -55,14 +58,19 @@ namespace nmtools
     template <typename array_t>
     constexpr auto len(const array_t& array)
     {
-        return impl::len<array_t>(array);
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type  = meta::get_maybe_type_t<array_t>;
+            using result_type = decltype(len(meta::declval<array_type>()));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(array)) {
+                return return_type{len(*array)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            return impl::len<array_t>(array);
+        }
     }
-
-    template <typename T, size_t N>
-    constexpr auto len(const T(&)[N])
-    {
-        return N;
-    } // len
 } // namespace nmtools
 
 namespace nmtools::impl
