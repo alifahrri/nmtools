@@ -1,4 +1,4 @@
-#define NMTOOLS_TESTING_CONSTEXPR
+#define NMTOOLS_BUILD_CONSTEXPR_TESTS
 #define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name) \
 constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \

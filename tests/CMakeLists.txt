@@ -17,6 +17,8 @@ target_compile_options(coverage_config INTERFACE
 )
 target_link_options(coverage_config INTERFACE --coverage)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 option(NMTOOLS_TESTING_NO_BACKTRACE_LIMIT "add -ftemplate-backtrace-limit=0" OFF)
 if (NMTOOLS_TESTING_NO_BACKTRACE_LIMIT)
     add_compile_options(-ftemplate-backtrace-limit=0)
@@ -34,16 +36,6 @@ option(NMTOOLS_TESTING_NOSTL "build tests without stl dependencies" OFF)
 if (NMTOOLS_TESTING_NOSTL)
     add_compile_definitions(NMTOOLS_DISABLE_STL)
 endif (NMTOOLS_TESTING_NOSTL)
-
-option(NMTOOLS_TESTING_CONSTEXPR "constexpr tests only" OFF)
-if (NMTOOLS_TESTING_CONSTEXPR)
-    add_compile_definitions(NMTOOLS_TESTING_CONSTEXPR)
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        add_compile_options(-fconstexpr-ops-limit=100000000)
-    endif ()
-endif (NMTOOLS_TESTING_CONSTEXPR)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 option(NMTOOLS_ADDRESS_SANITIZER "build with -fsanitize=address" OFF)
 message(STATUS "NMTOOLS_ADDRESS_SANITIZER ${ADDRESS_SANITIZER}")
@@ -102,6 +94,15 @@ if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
         # )
     endif(JS_ONLY)
 endif()
+
+option(NMTOOLS_BUILD_CONSTEXPR_TESTS "build constexpr tests" OFF)
+if (NMTOOLS_BUILD_CONSTEXPR_TESTS)
+    # add_compile_definitions(NMTOOLS_BUILD_CONSTEXPR_TESTS)
+    add_subdirectory(constexpr)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(-fconstexpr-ops-limit=100000000)
+    endif ()
+endif (NMTOOLS_BUILD_CONSTEXPR_TESTS)
 
 option(NMTOOLS_BUILD_SIMD_TESTS "build simd test programs" OFF)
 if (NMTOOLS_BUILD_SIMD_TESTS)

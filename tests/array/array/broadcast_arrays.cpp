@@ -17,7 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
-#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY) && defined(NMTOOLS_TESTING_CONSTEXPR)
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY) && defined(NMTOOLS_BUILD_CONSTEXPR_TESTS)
 #define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name) \
 constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -93,7 +93,7 @@ SUBCASE(#case_name) \
     }); \
 }
 
-#ifndef NMTOOLS_TESTING_CONSTEXPR
+#ifndef NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 TEST_CASE("broadcast_arrays(case1)" * doctest::test_suite("array::broadcast_arrays"))
 {
@@ -827,7 +827,7 @@ TEST_CASE("broadcast_arrays(case10)" * doctest::test_suite("array::broadcast_arr
     BROADCAST_ARRAYS_SUBCASE(case10, A, B);
 }
 
-#else // NMTOOLS_TESTING_CONSTEXPR
+#else // NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 TEST_CASE("broadcast_arrays(case1)" * doctest::test_suite("array::constexpr_broadcast_arrays"))
 {
