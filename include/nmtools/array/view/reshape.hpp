@@ -31,20 +31,20 @@ namespace nmtools::view
         //     index::shape_reshape_t, src_shape_type, dst_shape_t
         // >;
         // avoid storing maybe type here since it is not constexpr-friendly (at least for maybe static_vector)
-        using dst_shape_type = decltype(unwrap(index::shape_reshape(meta::declval<src_shape_type>(),meta::declval<dst_shape_t>())));
+        using dst_shape_type   = decltype(unwrap(index::shape_reshape(meta::declval<src_shape_type>(),meta::declval<dst_shape_t>())));
         using dst_strides_type = meta::resolve_optype_t<unwrap_t,meta::resolve_optype_t<
             index::compute_strides_t, dst_shape_type
         >>;
         // reshape doesn't change the number of elements
-        using dst_size_type  = src_size_type;
+        using dst_size_type = src_size_type;
 
         static constexpr auto n_inputs  = 1;
         static constexpr auto n_outputs = 1;
 
-        const src_shape_type src_shape;
-        const dst_shape_type dst_shape;
-        const src_size_type  src_size;
-        const dst_size_type  dst_size;
+        const src_shape_type   src_shape;
+        const dst_shape_type   dst_shape;
+        const src_size_type    src_size;
+        const dst_size_type    dst_size;
         const dst_strides_type dst_strides;
 
         constexpr reshape_t(const src_shape_t& src_shape_

@@ -22,6 +22,7 @@ namespace nmtools::view
     {
         using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
         using src_size_type  = meta::fwd_attribute_t<src_size_t>;
+        using dst_size_type  = meta::fwd_attribute_t<src_size_t>;
 
         using dst_shape_type = meta::resolve_optype_t<
             index::shape_flatten_t,src_shape_type,src_size_type>;
@@ -32,6 +33,7 @@ namespace nmtools::view
         const src_shape_type src_shape;
         const src_size_type  src_size;
         const dst_shape_type dst_shape;
+        const dst_size_type  dst_size;
 
         constexpr flatten_t(const src_shape_t& src_shape
             , const src_size_t& src_size
@@ -39,6 +41,7 @@ namespace nmtools::view
             : src_shape(fwd_attribute(src_shape))
             , src_size(fwd_attribute(src_size))
             , dst_shape(index::shape_flatten(src_shape,src_size))
+            , dst_size(fwd_attribute(src_size))
         {}
 
         template <typename indices_t>
