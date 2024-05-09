@@ -179,7 +179,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
  * Requires `func`, `arg`, and `expect` to be constexpr.
  * 
  */
-#define NMTOOLS_TESTING_CONSTEXPR_ISCLOSE_TEST(func, expect, ...) \
+#define NMTOOLS_BUILD_CONSTEXPR_TESTS_ISCLOSE_TEST(func, expect, ...) \
 { \
     constexpr auto result = func(__VA_ARGS__); \
     static_assert(isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION)); \
@@ -215,7 +215,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
  * Requires `func`, `arg`, and `expect` to be constexpr.
  * 
  */
-#define NMTOOLS_TESTING_CONSTEXPR_ISEQUAL_TEST(func, expect, ...) \
+#define NMTOOLS_BUILD_CONSTEXPR_TESTS_ISEQUAL_TEST(func, expect, ...) \
 { \
     constexpr auto result = func(__VA_ARGS__); \
     static_assert(isequal(result,expect)); \
@@ -269,7 +269,7 @@ nmtools::testing::make_func_args(#func,NMTOOLS_TESTING_RESULT_TYPE(func,__VA_ARG
 {   \
     SUBCASE(NMTOOLS_TESTING_FUNCTION_SIGNATURE(func,__VA_ARGS__))   \
     {   \
-        NMTOOLS_TESTING_CONSTEXPR_ISCLOSE_TEST(func, expect, __VA_ARGS__); \
+        NMTOOLS_BUILD_CONSTEXPR_TESTS_ISCLOSE_TEST(func, expect, __VA_ARGS__); \
     }   \
 }   \
 

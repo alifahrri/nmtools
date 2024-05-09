@@ -195,7 +195,7 @@ jobs:
       - name: build
         run: |
           ./dockcross-${{ matrix.name }} bash -c "emcc -v"
-          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j2 VERBOSE=1'
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
   
@@ -237,7 +237,7 @@ jobs:
       - name: build
         run: |
           ./dockcross-${{ matrix.name }} bash -c "emcc -v"
-          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON  -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON  -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
 
@@ -278,6 +278,6 @@ jobs:
       - name: build
         run: |
           ./dockcross-${{ matrix.name }} bash -c "emcc -v"
-          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js

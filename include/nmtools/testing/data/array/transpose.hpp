@@ -9,7 +9,7 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace kind = na::kind;
 
-#ifndef NMTOOLS_TESTING_CONSTEXPR
+#ifndef NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 NMTOOLS_TESTING_DECLARE_CASE(transpose)
 {
@@ -362,7 +362,7 @@ NMTOOLS_TESTING_DECLARE_CASE(transpose)
     }
 #endif // NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
 }
-#endif // NMTOOLS_TESTING_CONSTEXPR
+#endif // NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 NMTOOLS_TESTING_DECLARE_CASE(constexpr_transpose)
 {
