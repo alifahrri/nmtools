@@ -23,4 +23,14 @@
 
 #endif
 
+// borrow std type traits, may not exist on embedded or gpgpu
+#if __has_include(<type_traits>)
+
+#include <type_traits>
+#define NMTOOLS_IS_TRIVIALLY_CONSTRUCTIBLE(...) (std::is_trivially_constructible_v<__VA_ARGS__>)
+
+// TODO: check if compiler builtins is not available (maybe on msvc?), then use stl if possible
+
+#endif
+
 #endif // NMTOOLS_META_BUILTINS_HPP
