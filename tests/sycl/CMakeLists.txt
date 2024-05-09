@@ -105,6 +105,10 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
 
 ## TODO: support nvcc compilation
 add_executable(${PROJECT_NAME}-doctest tests.cpp ${NMTOOLS_SYCL_TEST_SOURCES})
+add_test(
+    NAME ${PROJECT_NAME}-doctest
+    COMMAND ${PROJECT_NAME}-doctest
+)
 
 set(NMTOOLS_TEST_SYCL_ARGS "" CACHE STRING "manually set extra syclcc args")
 

@@ -78,6 +78,10 @@ endif (NMTOOLS_VECTOR_TEST_512)
 add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${NMTOOLS_VECTOR_TEST_SOURCES}
 )
+add_test(
+    NAME ${PROJECT_NAME}-doctest
+    COMMAND ${PROJECT_NAME}-doctest
+)
 
 set(NMTOOLS_VECTOR_TEST_ARCH "-march=native" CACHE STRING "manually set target arch")
 

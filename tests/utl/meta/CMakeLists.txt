@@ -33,6 +33,10 @@ add_executable(${PROJECT_NAME} tests.cpp
     ## meta view
     src/broadcast_to.cpp
 )
+add_test(
+    NAME ${PROJECT_NAME}
+    COMMAND ${PROJECT_NAME}
+)
 
 # disable stl but still use std::string
 target_compile_definitions(${PROJECT_NAME} PRIVATE

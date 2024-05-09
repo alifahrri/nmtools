@@ -146,6 +146,11 @@ add_executable(${PROJECT_NAME} tests.cpp
     ${META_TRANSFORM_TEST_SOURCES}
     ${META_UTILITY_TEST_SOURCES}
 )
+add_test(
+    NAME ${PROJECT_NAME}
+    COMMAND ${PROJECT_NAME}
+)
+
 # omg
 if ((NOT EMSCRIPTEN) AND (NOT ANDROID))
     target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)

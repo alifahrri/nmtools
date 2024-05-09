@@ -80,6 +80,10 @@ endif (NMTOOLS_SIMD_TEST_INDEX)
 add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${NMTOOLS_SIMD_TEST_SOURCES}
 )
+add_test(
+    NAME ${PROJECT_NAME}-doctest
+    COMMAND ${PROJECT_NAME}-doctest
+)
 
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (NMTOOLS_SIMD_TEST_SSE)

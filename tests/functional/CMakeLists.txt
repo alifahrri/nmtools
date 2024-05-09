@@ -176,6 +176,10 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     ## functional
     ${FUNCTIONAL_TEST_SOURCES}
 )
+add_test(
+    NAME ${PROJECT_NAME}-doctest
+    COMMAND ${PROJECT_NAME}-doctest
+)
 
 option( NMTOOLS_KWARGS_INIT "enable kwargs tests using designated initializers (c++20)" OFF)
 if (NMTOOLS_KWARGS_INIT)

@@ -12,6 +12,10 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/clipped_integer.cpp
     src/static_vector.cpp
 )
+add_test(
+    NAME ${PROJECT_NAME}
+    COMMAND ${PROJECT_NAME}
+)
 
 target_compile_options(
     ${PROJECT_NAME} PRIVATE
