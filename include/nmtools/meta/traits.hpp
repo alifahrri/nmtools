@@ -73,6 +73,7 @@
 #include "nmtools/meta/bits/traits/is_specialization.hpp"
 #include "nmtools/meta/bits/traits/is_unsigned.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_constructible.hpp"
+#include "nmtools/meta/bits/traits/is_trivially_copy_constructible.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_copyable.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_destructible.hpp"
 #include "nmtools/meta/bits/traits/is_true_type.hpp"
