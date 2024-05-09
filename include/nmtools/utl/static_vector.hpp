@@ -57,19 +57,10 @@ namespace nmtools::utl
             : size_(n)
         {}
 
-        // NOTE: broken on c++4opencl, when create_vector<0>, invalid cast
-        #ifndef __OPENCL_VERSION__
         constexpr static_vector(const static_vector& other)
-            // : buffer(other.buffer)
-            // , size_(other.size_)
-        {
-            resize(other.size_);
-            // dumb copy
-            for (size_type i=0; i<size_; i++) {
-                buffer[(index_type)i] = other.buffer[(index_type)i];
-            }
-        }
-        #endif
+            : buffer(other.buffer)
+            , size_(other.size_)
+        {}
 
         constexpr void resize(size_type new_size)
         {
@@ -79,8 +70,6 @@ namespace nmtools::utl
             }
         }
 
-        // TODO: fix, try to avoid this
-        #ifndef __OPENCL_VERSION__
         constexpr static_vector& operator=(const static_vector& other)
         {
             resize(other.size_);
@@ -90,7 +79,6 @@ namespace nmtools::utl
             }
             return *this;
         }
-        #endif
 
         constexpr void push_back(const T& t)
         {

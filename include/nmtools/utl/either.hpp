@@ -4,6 +4,8 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_destructible.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_constructible.hpp"
+#include "nmtools/meta/bits/traits/is_trivially_copy_constructible.hpp"
+#include "nmtools/meta/bits/traits/is_copy_assignable.hpp"
 #include "nmtools/utility/get_if.hpp"
 
 // poor man's either type
@@ -145,6 +147,7 @@ namespace nmtools::utl
         constexpr explicit either(const right_t& val) noexcept
             : right(val), tag{RIGHT} {}
 
+        constexpr either(const either&) = default;
         ~either() = default;
 
         template <typename U>
@@ -155,10 +158,14 @@ namespace nmtools::utl
         }
     };
 
+    // TODO: find out if we can move the constructor to base for better composition & brevity
     #if 1
     template <typename left_t, typename right_t>
     struct either<left_t,right_t,
-        meta::enable_if_t<!meta::is_trivially_destructible_v<left_t> || !meta::is_trivially_destructible_v<right_t>>
+        meta::enable_if_t<
+               (!meta::is_trivially_destructible_v<left_t> || !meta::is_trivially_destructible_v<right_t>)
+            && (!meta::is_trivially_copy_constructible_v<left_t> || !meta::is_trivially_copy_constructible_v<right_t>)
+        >
     > : base_either<either<left_t,right_t>>
     {
     protected:
@@ -176,13 +183,31 @@ namespace nmtools::utl
         friend base;
     public:
 
-        either() noexcept
+        constexpr either() noexcept
             : left{}, tag{LEFT} {}
 
-        explicit either(const left_t& val) noexcept
+        constexpr explicit either(const left_t& val) noexcept
             : left(val), tag{LEFT} {}
-        explicit either(const right_t& val) noexcept
+        constexpr explicit either(const right_t& val) noexcept
             : right(val), tag{RIGHT} {}
+        
+        constexpr either(const either& other)
+        {
+            tag = other.tag;
+            if (other.tag == LEFT) {
+                if constexpr (meta::is_copy_assignable_v<left_t>) {
+                    left = other.left;
+                } else {
+                    new(&this->left) left_t(other.left);
+                }
+            } else {
+                if constexpr (meta::is_copy_assignable_v<right_t>) {
+                    right = other.right;
+                } else {
+                    new(&this->right) right_t(other.right);
+                }
+            }
+        }
 
         ~either()
         {
@@ -190,6 +215,64 @@ namespace nmtools::utl
                 left.~left_t();
             } else {
                 right.~right_t();
+            }
+        }
+
+        template <typename U>
+        constexpr either& operator=(const U& val) noexcept
+        {
+            base::operator=(val);
+            return *this;
+        }
+    }; // either
+
+    // TODO: find out if we can move the constructor to base for better composition & brevity
+    template <typename left_t, typename right_t>
+    struct either<left_t,right_t,
+        meta::enable_if_t<
+                (meta::is_trivially_destructible_v<left_t> && meta::is_trivially_destructible_v<right_t>)
+            &&  (!meta::is_trivially_copy_constructible_v<left_t> || !meta::is_trivially_copy_constructible_v<right_t>)
+        >
+    > : base_either<either<left_t,right_t>>
+    {
+    protected:
+        using base = base_either<either>;
+        enum Tag {LEFT, RIGHT};
+        // assume default constructible
+        union
+        {
+            left_t  left;
+            right_t right;
+        };
+        Tag tag;
+        template <typename,typename>
+        friend struct impl::get_if_t;
+        friend base;
+    public:
+
+        constexpr either() noexcept
+            : left{}, tag{LEFT} {}
+
+        constexpr explicit either(const left_t& val) noexcept
+            : left(val), tag{LEFT} {}
+        constexpr explicit either(const right_t& val) noexcept
+            : right(val), tag{RIGHT} {}
+        
+        constexpr either(const either& other)
+        {
+            tag = other.tag;
+            if (other.tag == LEFT) {
+                if constexpr (meta::is_copy_assignable_v<left_t>) {
+                    left = other.left;
+                } else {
+                    new(&this->left) left_t(other.left);
+                }
+            } else {
+                if constexpr (meta::is_copy_assignable_v<right_t>) {
+                    right = other.right;
+                } else {
+                    new(&this->right) right_t(other.right);
+                }
             }
         }
 
