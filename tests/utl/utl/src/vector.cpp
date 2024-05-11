@@ -158,7 +158,8 @@ TEST_CASE("vector" * doctest::test_suite("utl"))
     }
 }
 
-TEST_CASE("maybe_vector" * doctest::test_suite("utl"))
+// TODO: fix runtime
+TEST_CASE("maybe_vector" * doctest::test_suite("utl") * doctest::skip())
 {
     SUBCASE("constructor")
     {

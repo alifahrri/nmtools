@@ -36,20 +36,20 @@ namespace utils = nmtools::utils;
     auto arguments_string = std::string{}; \
     constexpr auto n_args = meta::len_v<decltype(args_pack)>; \
     meta::template_for<n_args>([&](auto I){ \
-        auto arg_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(nmtools::at(args_pack,I))); \
+        auto arg_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(nmtools::at(args_pack,I)))); \
         arguments_string += "\t(#"; arguments_string += utils::to_string(I); arguments_string += "): "; \
-        arguments_string += "\033[0;90m(" + arg_typename + ")\033[0m:\n\t\t"; \
+        arguments_string += nmtools_string("\033[0;90m(") + arg_typename + nmtools_string(")\033[0m:\n\t\t"); \
         arguments_string += utils::to_string(nmtools::at(args_pack,I)); \
         arguments_string += "\n"; \
     }); \
-    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
-    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
+    auto result_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(result))); \
+    auto expect_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(expect))); \
     CHECK_MESSAGE(isequal(result,expect), \
         (   \
             std::string{} \
-            + "\n\tActual " + "\033[0;90m(" + result_typename + ")\033[0m:\n" \
+            + "\n\tActual " + nmtools_string("\033[0;90m(") + result_typename + nmtools_string(")\033[0m:\n") \
             + STRINGIFY(result) \
-            + "\n\tExpected " + "\033[0;90m(" + expect_typename + ")\033[0m:\n" \
+            + "\n\tExpected " + nmtools_string("\033[0;90m(") + expect_typename + nmtools_string(")\033[0m:\n") \
             + STRINGIFY(expect) \
             + "\n\tArguments:\n" + arguments_string \
         )   \
@@ -58,12 +58,12 @@ namespace utils = nmtools::utils;
 
 #define NMTOOLS_ASSERT_APPLY_EQUAL_DOCTEST(result,expect) \
 { \
-    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
-    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
+    auto result_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(result))); \
+    auto expect_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(expect))); \
     auto message = std::string{} \
-        + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+        + "\n\tActual " + nmtools_string("\033[0;90m<") + result_typename + nmtools_string(">\033[0m:\n") \
         + STRINGIFY(result) \
-        + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+        + "\n\tExpected " + nmtools_string("\033[0;90m<") + expect_typename + nmtools_string(">\033[0m:\n") \
         + STRINGIFY(expect) \
     ; \
     CHECK_MESSAGE(nmtools::utils::apply_isequal(result,expect), \
