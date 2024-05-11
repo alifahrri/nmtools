@@ -133,12 +133,25 @@ namespace nmtools::utl
 
         public:
 
-        vector() {}
+        vector()
+            : buffer_(NULL)
+            , size_(0)
+            , buffer_size_(0)
+            , allocator{}
+        {}
         vector(size_type N)
+            : buffer_(NULL)
+            , size_(0)
+            , buffer_size_(0)
+            , allocator{}
         {
             resize(N);
         }
         vector(const vector& other)
+            : buffer_(NULL)
+            , size_(0)
+            , buffer_size_(0)
+            , allocator{}
         {
             resize(other.size_);
             // dumb copy
@@ -154,6 +167,10 @@ namespace nmtools::utl
         // TODO: fix initialization
         template <typename A, typename B, typename...Ts>
         vector(const A& t, const B& u, const Ts&...ts)
+            : buffer_(NULL)
+            , size_(0)
+            , buffer_size_(0)
+            , allocator{}
         {
             constexpr auto n = sizeof...(Ts) + 2;
             resize(n);

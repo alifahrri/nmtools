@@ -40,6 +40,8 @@ namespace nmtools::utl
         // assume copy-constructible
         constexpr maybe(const T& t) : base(t) {}
 
+        constexpr maybe(const maybe& other) : base(other) {}
+
         constexpr bool has_value() const noexcept
         {
             return this->tag == base::LEFT;
@@ -53,6 +55,18 @@ namespace nmtools::utl
             // other approach for example using placement-new doesn't interact well with constexpr
             // 
             base::operator=(val);
+            return *this;
+        }
+
+        /*constexpr*/ maybe& operator=(const maybe& other)
+        {
+            if (other.has_value()) {
+                this->left = other.left;
+                this->tag  = base::LEFT;
+            } else {
+                this->right = other.right;
+                this->tag  = base::RIGHT;
+            }
             return *this;
         }
 
@@ -132,6 +146,18 @@ namespace nmtools::utl
             // other approach for example using placement-new doesn't interact well with constexpr
             // 
             base::operator=(val);
+            return *this;
+        }
+
+        /*constexpr*/ maybe& operator=(const maybe& other)
+        {
+            if (other.has_value()) {
+                this->left = other.left;
+                this->tag  = base::LEFT;
+            } else {
+                this->right = other.right;
+                this->tag  = base::RIGHT;
+            }
             return *this;
         }
 

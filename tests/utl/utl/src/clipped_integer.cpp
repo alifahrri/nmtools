@@ -13,14 +13,14 @@ using namespace nm::literals;
 TEST_CASE("clipped_integer(case1)" * doctest::test_suite("clipped_integer"))
 {
     auto i = "2:[3]"_ct;
-    // static_assert( meta::is_trivially_destructible_v<decltype(i)> );
-    // static_assert( meta::is_trivially_copyable_v<decltype(i)> );
-    static_assert( meta::is_copy_constructible_v<decltype(i)> );
-    // static_assert( meta::is_trivially_copy_constructible_v<decltype(i)> );
-    // static_assert( std::is_trivially_destructible_v<decltype(i)> );
-    // static_assert( std::is_trivially_copyable_v<decltype(i)> );
-    static_assert( std::is_copy_constructible_v<decltype(i)> );
-    // static_assert( std::is_trivially_copy_constructible_v<decltype(i)> );
+    using T = decltype(i);
+    static_assert( !meta::is_trivially_constructible_v<T> );
+    static_assert( !meta::is_trivially_copy_constructible_v<T> );
+    static_assert( meta::is_default_constructible_v<T> );
+    static_assert( meta::is_copy_constructible_v<T> );
+    static_assert( meta::is_trivially_destructible_v<T> );
+    static_assert( meta::is_copy_assignable_v<T> );
+    static_assert( sizeof(T) == sizeof(nm_size_t) );
 }
 
 TEST_CASE("array(case1)" * doctest::test_suite("clipped_integer"))

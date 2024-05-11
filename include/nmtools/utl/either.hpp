@@ -38,22 +38,37 @@ namespace nmtools::utl
             return static_cast<const Derived&>(*this);
         }
 
+        constexpr Derived& operator=(const Derived& other) noexcept
+        {
+            if (other.self().tag == Derived::LEFT) {
+                self().left = other.self().left;
+                self().tag  = Derived::LEFT;
+                return self();
+            } else {
+                self().right = other.self().right;
+                self().tag   = Derived::RIGHT;
+                return self();
+            }
+        }
+
         template <typename T>
         constexpr Derived& operator=(const T& val) noexcept
         {
             using left_type  = typename Derived::left_type;
             using right_type = typename Derived::right_type;
-            static_assert( meta::is_same_v<T,left_type> || meta::is_same_v<T,right_type>
+            static_assert( meta::is_same_v<T,left_type> || meta::is_same_v<T,right_type> || meta::is_same_v<T,Derived>
                 , "unsupported type for either assignment"
             );
             if constexpr (meta::is_same_v<T,left_type>) {
                 self().left = val;
                 self().tag  = Derived::LEFT;
                 return self();
-            } else {
+            } else if constexpr (meta::is_same_v<T,right_type>) {
                 self().right = val;
-                self().tag  = Derived::RIGHT;
+                self().tag   = Derived::RIGHT;
                 return self();
+            } else {
+                return operator=(static_cast<Derived>(val));
             }
         }
 
@@ -156,6 +171,11 @@ namespace nmtools::utl
             base::operator=(val);
             return *this;
         }
+
+        constexpr either& operator=(const either& other) noexcept
+        {
+            return base::operator=(other);
+        }
     };
 
     // TODO: find out if we can move the constructor to base for better composition & brevity
@@ -182,6 +202,8 @@ namespace nmtools::utl
         friend struct impl::get_if_t;
         friend base;
     public:
+        using left_type  = left_t;
+        using right_type = right_t;
 
         constexpr either() noexcept
             : left{}, tag{LEFT} {}
@@ -221,8 +243,12 @@ namespace nmtools::utl
         template <typename U>
         constexpr either& operator=(const U& val) noexcept
         {
-            base::operator=(val);
-            return *this;
+            return base::operator=(val);
+        }
+
+        constexpr either& operator=(const either& other) noexcept
+        {
+            return base::operator=(other);
         }
     }; // either
 
@@ -249,6 +275,8 @@ namespace nmtools::utl
         friend struct impl::get_if_t;
         friend base;
     public:
+        using left_type  = left_t;
+        using right_type = right_t;
 
         constexpr either() noexcept
             : left{}, tag{LEFT} {}
@@ -279,8 +307,12 @@ namespace nmtools::utl
         template <typename U>
         constexpr either& operator=(const U& val) noexcept
         {
-            base::operator=(val);
-            return *this;
+            return base::operator=(val);
+        }
+
+        constexpr either& operator=(const either& other) noexcept
+        {
+            return base::operator=(other);
         }
     }; // either
     #endif
