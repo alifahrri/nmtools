@@ -7,15 +7,22 @@
 
 #if defined(__GNUC__) || defined(__clang__)
 
+// avoid clang deprecation
 #ifdef __clang_major__
 #if __clang_major__ >= 15
-#define NMTOOLS_IS_TRIVIALLY_DESTRUCTIBLE __is_trivially_destructible
-#endif
-#endif
+#define NMTOOLS_HAS_TRIVIAL_CONSTRUCTOR __is_trivially_constructible
+#define NMTOOLS_HAS_TRIVIAL_DESTRUCTOR  __is_trivially_destructible
+#define NMTOOLS_HAS_TRIVIAL_COPY        __is_trivially_copyable
 
+// trivially constructible may accepts T,Args...
+#define NMTOOLS_IS_TRIVIALLY_CONSTRUCTIBLE __is_trivially_constructible
+
+#else // __clang_major__ >= 15
+#define NMTOOLS_HAS_TRIVIAL_CONSTRUCTOR __has_trivial_constructor
 #define NMTOOLS_HAS_TRIVIAL_DESTRUCTOR  __has_trivial_destructor
 #define NMTOOLS_HAS_TRIVIAL_COPY        __has_trivial_copy
-#define NMTOOLS_HAS_TRIVIAL_CONSTRUCTOR __has_trivial_constructor
+#endif // __clang_major__ >= 15
+#endif
 
 #define NMTOOLS_IS_BASE_OF __is_base_of
 #define NMTOOLS_IS_UNION   __is_union

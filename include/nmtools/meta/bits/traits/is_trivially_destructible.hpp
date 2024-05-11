@@ -11,9 +11,7 @@ namespace nmtools::meta
     struct is_trivially_destructible
     {
         static constexpr auto value = [](){
-            #ifdef NMTOOLS_IS_TRIVIALLY_DESTRUCTIBLE
-            return NMTOOLS_IS_TRIVIALLY_DESTRUCTIBLE(T);
-            #elif defined(NMTOOLS_HAS_TRIVIAL_DESTRUCTOR)
+            #if defined(NMTOOLS_HAS_TRIVIAL_DESTRUCTOR)
             return NMTOOLS_HAS_TRIVIAL_DESTRUCTOR(T);
             #else
             return is_pod_v<T>;
