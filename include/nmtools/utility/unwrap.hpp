@@ -17,6 +17,17 @@ namespace nmtools
             return t;
         }
     }
+
+    template <typename T>
+    constexpr auto unwrap(T& t)
+        -> meta::resolve_optype_t<unwrap_t,T>
+    {
+        if constexpr (meta::is_maybe_v<T>) {
+            return *t;
+        } else {
+            return t;
+        }
+    }
 }
 
 namespace nmtools::meta
