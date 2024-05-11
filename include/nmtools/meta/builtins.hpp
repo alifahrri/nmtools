@@ -34,7 +34,9 @@
 #if __has_include(<type_traits>)
 
 #include <type_traits>
+#if !defined(NMTOOLS_IS_TRIVIALLY_CONSTRUCTIBLE)
 #define NMTOOLS_IS_TRIVIALLY_CONSTRUCTIBLE(...) (std::is_trivially_constructible_v<__VA_ARGS__>)
+#endif
 
 // TODO: check if compiler builtins is not available (maybe on msvc?), then use stl if possible
 
