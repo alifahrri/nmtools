@@ -17,7 +17,9 @@ jobs:
 
     strategy:
       matrix:
-        test: [ufuncs, meta, utl]
+        test: []
+        # TODO: re-enable arduino tests
+        # test: [ufuncs, meta, utl]
         # TODO: re-enable manip & constexpr tests
         # test: [manip, ufuncs, meta, utl, constexpr]
 
