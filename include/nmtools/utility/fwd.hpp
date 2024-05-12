@@ -51,6 +51,7 @@ namespace nmtools::meta
     struct fwd_attribute
     {
         static constexpr auto vtype = [](){
+            [[maybe_unused]]
             constexpr auto is_valid_attribute = [](auto vtype){
                 using type = type_t<decltype(vtype)>;
                 return is_none_v<type>
