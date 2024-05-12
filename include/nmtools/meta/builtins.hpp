@@ -37,6 +37,10 @@
 #if !defined(NMTOOLS_IS_TRIVIALLY_CONSTRUCTIBLE)
 #define NMTOOLS_IS_TRIVIALLY_CONSTRUCTIBLE(...) (std::is_trivially_constructible_v<__VA_ARGS__>)
 #endif
+// Quick workaround since gcc doesn't have __is_trivally_destructible
+#if !defined(NMTOOLS_IS_TRIVIALLY_DESTRUCTIBLE)
+#define NMTOOLS_IS_TRIVIALLY_DESTRUCTIBLE(...) (std::is_trivially_destructible_v<__VA_ARGS__>)
+#endif
 
 // TODO: check if compiler builtins is not available (maybe on msvc?), then use stl if possible
 
