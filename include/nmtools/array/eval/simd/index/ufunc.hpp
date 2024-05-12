@@ -248,8 +248,8 @@ namespace nmtools::index
             const auto out_tag = (nm_size_t(inner_idx+1) == nm_size_t(n_simd+static_cast<bool>(n_rest)) ? SIMD::ACCUMULATE : SIMD::NOP);
             const auto inp_tag = static_cast<bool>(nm_size_t(inp_index + N_ELEM_PACK) > nm_size_t(n_ops)) ? static_cast<SIMD>(N_ELEM_PACK - n_rest) : SIMD::PACKED;
             inp_index = inp_offset + inp_index;
-            at(result,meta::ct_v<0>) = tagged_index_t{out_tag,out_index};
-            at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,inp_index};
+            at(result,meta::ct_v<0>) = tagged_index_t{out_tag,static_cast<index_t>(out_index)};
+            at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,static_cast<index_t>(inp_index)};
         } else if constexpr (reduction_kind == ReductionKind::VERTICAL) {
             auto inp_offset = at(simd_index,meta::ct_v<0>) * at(inp_shape,meta::ct_v<1>);
             auto out_offset = len(out_shape) > 1 ? (at(simd_index,meta::ct_v<0>) / (at(inp_shape,meta::ct_v<0>) / at(out_shape,meta::ct_v<0>))) * at(out_shape,meta::ct_v<-1>) : 0;
@@ -263,8 +263,8 @@ namespace nmtools::index
             // prefer scalar instead of padding because scalar store for output
             const auto out_tag = static_cast<bool>(nm_size_t((at(simd_index,meta::ct_v<1>) * N_ELEM_PACK) + N_ELEM_PACK) <= nm_size_t(n_ops)) ? SIMD::ACCUMULATE_PACKED : SIMD::ACCUMULATE;
             const auto inp_tag = static_cast<bool>(nm_size_t((at(simd_index,meta::ct_v<1>) * N_ELEM_PACK) + N_ELEM_PACK) <= nm_size_t(n_ops)) ? SIMD::PACKED : SIMD::SCALAR;
-            at(result,meta::ct_v<0>) = tagged_index_t{out_tag,out_index};
-            at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,inp_index};
+            at(result,meta::ct_v<0>) = tagged_index_t{out_tag,static_cast<index_t>(out_index)};
+            at(result,meta::ct_v<1>) = tagged_index_t{inp_tag,static_cast<index_t>(inp_index)};
         }
 
         return result;

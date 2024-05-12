@@ -34,7 +34,7 @@ namespace nmtools::index
                     constexpr auto max_dim = ((nm_size_t)N > (nm_size_t)nd ? N : nd);
                     return meta::ct_v<max_dim>;
                 } else {
-                    return (dim > nd ? dim : nd);
+                    return ((nm_size_t)dim > (nm_size_t)nd ? dim : nd);
                 }
             }();
             auto diff = [&](){

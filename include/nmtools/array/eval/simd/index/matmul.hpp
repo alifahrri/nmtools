@@ -97,9 +97,9 @@ namespace nmtools::index
         const auto tag_r = (nm_size_t(inner_step * N_ELEM_PACK + N_ELEM_PACK) <= nm_size_t(n_fmadd)) ? SIMD::PACKED : static_cast<SIMD>(N_ELEM_PACK - n_rest);
 
         auto result  = result_t{};
-        at(result,0) = tagged_index_t{SIMD::SCALAR,out_offset};
-        at(result,1) = tagged_index_t{tag_l,res_l};
-        at(result,2) = tagged_index_t{tag_r,res_r};
+        at(result,0) = tagged_index_t{SIMD::SCALAR,static_cast<index_t>(out_offset)};
+        at(result,1) = tagged_index_t{tag_l,static_cast<index_t>(res_l)};
+        at(result,2) = tagged_index_t{tag_r,static_cast<index_t>(res_r)};
 
         return result;
     }
