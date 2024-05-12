@@ -121,6 +121,7 @@ namespace nmtools::utils::impl
             str += ".src_shape="; str += to_string(kwargs.src_shape,Compact);
             str += ".src_size=";  str += to_string(kwargs.src_size,Compact);
             str += "}";
+            return str;
         }
     };
 }
