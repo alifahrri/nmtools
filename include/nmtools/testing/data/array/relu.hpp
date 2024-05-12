@@ -8,7 +8,7 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#ifndef NMTOOLS_TESTING_CONSTEXPR
+#ifndef NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 NMTOOLS_TESTING_DECLARE_CASE(activations, relu)
 {
@@ -35,7 +35,7 @@ NMTOOLS_TESTING_DECLARE_CASE(activations, relu)
     }
 }
 
-#else  // NMTOOLS_TESTING_CONSTEXPR
+#else  // NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 NMTOOLS_TESTING_DECLARE_CASE(activations, constexpr_relu)
 {
@@ -62,6 +62,6 @@ NMTOOLS_TESTING_DECLARE_CASE(activations, constexpr_relu)
     }
 }
 
-#endif // NMTOOLS_TESTING_CONSTEXPR
+#endif // NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_RELU_HPP

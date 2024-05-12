@@ -32,7 +32,7 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
     auto a = view::multiply(lhs_array,rhs_array);
     auto b = view::tanh(a);
 
-    auto graph = fn::get_compute_graph(b);
+    auto graph = nm::unwrap(fn::get_compute_graph(b));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
@@ -44,6 +44,7 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
         .add_edge(2_ct,3_ct)
     ;
 
+    // TODO: handle maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -61,7 +62,7 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
     auto a = view::multiply(lhs,rhs_array);
     auto b = view::tanh(a);
 
-    auto graph = fn::get_compute_graph(b);
+    auto graph = nm::unwrap(fn::get_compute_graph(b));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(10_ct,&lhs_array)
@@ -73,6 +74,7 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
         .add_edge(12_ct,13_ct)
     ;
 
+    // TODO: handle maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -90,7 +92,7 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
     auto a = view::multiply(lhs_array,rhs);
     auto b = view::tanh(a);
 
-    auto graph = fn::get_compute_graph(b);
+    auto graph = nm::unwrap(fn::get_compute_graph(b));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
@@ -102,6 +104,7 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
         .add_edge(12_ct,13_ct)
     ;
 
+    // TODO: handle maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }
 
@@ -120,7 +123,7 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
     auto a = view::multiply(lhs,rhs);
     auto b = view::tanh(a);
 
-    auto graph = fn::get_compute_graph(b);
+    auto graph = nm::unwrap(fn::get_compute_graph(b));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(10_ct,&lhs_array)
@@ -132,5 +135,6 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
         .add_edge(12_ct,13_ct)
     ;
 
+    // TODO: handle maybe type
     NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
 }

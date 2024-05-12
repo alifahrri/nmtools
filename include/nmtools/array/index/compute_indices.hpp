@@ -56,15 +56,47 @@ namespace nmtools::index
     constexpr auto compute_indices(const offset_t& offset, const shape_t& shape, const strides_t& strides)
     {
         using return_t = meta::resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
-        static_assert( !meta::is_void_v<return_t>
-            , "unsupported return type for compute_indices" );
-        auto indices = return_t{};
-        if constexpr (meta::is_resizable_v<return_t>)
-            indices.resize(len(shape));
+        if constexpr (meta::is_maybe_v<offset_t>) {
+            if (static_cast<bool>(offset)) {
+                auto result = compute_indices(*offset,shape,strides);
+                if constexpr (meta::is_maybe_v<decltype(result)>) {
+                    return (result ? return_t{*result} : return_t{meta::Nothing});
+                } else {
+                    return return_t{result};
+                }
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else if constexpr (meta::is_maybe_v<shape_t>) {
+            if (static_cast<bool>(shape)) {
+                auto result = compute_indices(offset,*shape,strides);
+                if constexpr (meta::is_maybe_v<decltype(result)>) {
+                    return (result ? return_t{*result} : return_t{meta::Nothing});
+                } else {
+                    return return_t{result};
+                }
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else if constexpr (meta::is_maybe_v<strides_t>) {
+            if (static_cast<bool>(strides)) {
+                auto result = compute_indices(offset,shape,*strides);
+                return return_t{result};
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else if constexpr (meta::is_constant_index_array_v<return_t>) {
+            auto result = return_t{};
+            return result;
+        } else {
+            auto indices = return_t{};
+            if constexpr (meta::is_resizable_v<return_t>)
+                indices.resize(len(shape));
 
-        impl::compute_indices(indices, offset, shape, strides);
+            impl::compute_indices(indices, offset, shape, strides);
 
-        return indices;
+            return indices;
+        }
     } // compute indices
 
     /**
@@ -106,10 +138,50 @@ namespace nmtools::meta
     struct resolve_optype< void, index::compute_indices_t, offset_t, shape_t, strides_t >
     {
         static constexpr auto vtype = [](){
-            constexpr auto DIM = len_v<shape_t>;
+            [[maybe_unused]] constexpr auto DIM = len_v<shape_t>;
             [[maybe_unused]] constexpr auto B_DIM = bounded_size_v<shape_t>;
-            using index_type = get_index_element_type_t<shape_t>;
-            if constexpr (!is_index_array_v<shape_t>) {
+            using index_type [[maybe_unused]] = get_index_element_type_t<shape_t>;
+            if constexpr (is_maybe_v<offset_t>) {
+                using offset_type = get_maybe_type_t<offset_t>;
+                using result_type = resolve_optype_t<index::compute_indices_t,offset_type,shape_t,strides_t>;
+                if constexpr (is_maybe_v<result_type>) {
+                    using type = result_type;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_maybe<result_type>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (is_maybe_v<shape_t>) {
+                using shape_type  = get_maybe_type_t<shape_t>;
+                using result_type = resolve_optype_t<index::compute_indices_t,offset_t,shape_type,strides_t>;
+                if constexpr (is_maybe_v<result_type>) {
+                    using type = result_type;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_maybe<result_type>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (is_maybe_v<strides_t>) {
+                using strides_type = get_maybe_type_t<strides_t>;
+                using result_type  = resolve_optype_t<index::compute_indices_t,offset_t,shape_t,strides_type>;
+                using type = nmtools_maybe<result_type>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_constant_index_v<offset_t>
+                && is_constant_index_array_v<shape_t>
+                && is_constant_index_array_v<strides_t>
+            ) {
+                constexpr auto offset  = to_value_v<offset_t>;
+                constexpr auto shape   = to_value_v<shape_t>;
+                constexpr auto strides = to_value_v<strides_t>;
+                constexpr auto result  = index::compute_indices(offset,shape,strides);
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    constexpr auto result_i = at(result,index);
+                    using type = append_type_t<type_t<decltype(init)>,ct<result_i>>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<>>);
+            } else if constexpr (!is_index_array_v<shape_t>) {
                 using type = error::COMPUTE_INDICES_UNSUPPORTED<offset_t,shape_t,strides_t>;
                 return as_value_v<type>;
             } else if constexpr (DIM > 0) {
@@ -122,25 +194,6 @@ namespace nmtools::meta
                 using type = nmtools_list<index_type>;
                 return as_value_v<type>;
             }
-            #if 0
-            using type = transform_bounded_array_t<tuple_to_array_t<shape_t>>;
-            // temporary workaround:
-            // the element type may be constant index,
-            // especially when shape is tuple with single element
-            if constexpr (is_constant_index_array_v<shape_t>) {
-                constexpr auto N = fixed_index_array_size_v<shape_t>;
-                using result_t = make_array_type_t<size_t,N>;
-                return as_value_v<result_t>;
-            }
-            // TODO: better deduction for clipped index
-            else if constexpr (
-                is_clipped_index_array_v<shape_t>
-            ) {
-                using type = resolve_optype_t<index::compute_indices_t,offset_t,decltype(to_value_v<shape_t>),strides_t>;
-                return as_value_v<type>;
-            }
-            else return as_value_v<type>;
-            #endif
         }();
         using type = type_t<remove_cvref_t<decltype(vtype)>>;
     }; // resolve_optype

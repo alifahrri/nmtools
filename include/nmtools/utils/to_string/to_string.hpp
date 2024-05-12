@@ -49,7 +49,15 @@
 #if __has_include(<boost/type_index.hpp>)
     #include <boost/type_index.hpp>
     #define NMTOOLS_TYPENAME_TO_STRING(type) \
-    boost::typeindex::type_id<type>().pretty_name()
+    []()->std::string{ \
+        auto type_id = boost::typeindex::type_id<type>(); \
+        try { \
+            return type_id.pretty_name(); \
+        } catch (std::runtime_error&) { \
+            /* demangling failed, fallback to ugly name */ \
+            return type_id.name(); \
+        } \
+    }()
 #elif defined(NMTOOLS_HAS_RTTI)
     #define NMTOOLS_TYPENAME_TO_STRING(type) \
     typeid(type).name()

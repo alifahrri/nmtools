@@ -101,6 +101,7 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/atleast_1d.cpp
         src/atleast_2d.cpp
         src/atleast_3d.cpp
+        src/atleast_nd.cpp
         src/broadcast_to.cpp
         src/conv.cpp
         src/compress.cpp
@@ -174,6 +175,10 @@ endif()
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     ## functional
     ${FUNCTIONAL_TEST_SOURCES}
+)
+add_test(
+    NAME ${PROJECT_NAME}-doctest
+    COMMAND ${PROJECT_NAME}-doctest
 )
 
 option( NMTOOLS_KWARGS_INIT "enable kwargs tests using designated initializers (c++20)" OFF)

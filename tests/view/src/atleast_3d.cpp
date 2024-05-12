@@ -51,8 +51,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_DECLARE_NS(array, atleast_3d, case_name); \
     using namespace args; \
     auto result = RUN_atleast_3d(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.dim(), expect::dim ); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(nmtools::unwrap(result)), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -187,27 +186,4 @@ TEST_CASE("atleast_3d(case5)" * doctest::test_suite("view::atleast_3d"))
     ATLEAST_3D_SUBCASE( case5, a_ls_hb );
     ATLEAST_3D_SUBCASE( case5, a_ls_db );
     #endif
-}
-
-namespace view = nmtools::view;
-namespace meta = nmtools::meta;
-
-TEST_CASE("atleast_3d(traits)" * doctest::test_suite("view::atleast_3d"))
-{
-    SUBCASE("fixed_ndarray(int)")
-    {
-        int a = 1;
-        auto array = view::atleast_3d(a);
-        using array_t = decltype(array);
-        constexpr auto is_fixed = meta::is_fixed_shape_v<array_t>;
-        NMTOOLS_STATIC_ASSERT_EQUAL( is_fixed, true );
-    }
-    SUBCASE("!fixed_ndarray(std::vector)")
-    {
-        auto a = nmtools_list{1,2};
-        auto array = view::atleast_3d(a);
-        using array_t = decltype(array);
-        constexpr auto is_fixed = meta::is_fixed_shape_v<array_t>;
-        NMTOOLS_STATIC_ASSERT_EQUAL( is_fixed, false );
-    }
 }

@@ -98,9 +98,18 @@ namespace nmtools::view
     template <typename array_t, typename id_t=none_t>
     constexpr auto alias(const array_t& array, id_t id=id_t{})
     {
-        // @note using aggregate initialization 
-        // since decorator_t doesn't provide constructor
-        return decorator_t<alias_t,array_t,id_t>{{array,id}};
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type  = meta::get_maybe_type_t<array_t>;
+            using result_type = decorator_t<alias_t,array_type,id_t>;
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(array)) {
+                return return_type{decorator_t<alias_t,array_type,id_t>{{*array,id}}};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            return decorator_t<alias_t,array_t,id_t>{{array,id}};
+        }
     } // alias
 
     template <typename T, typename id_t=none_t>

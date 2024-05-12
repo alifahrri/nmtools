@@ -2,10 +2,26 @@
 #include "nmtools/utl.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+// assume we also have stl
+#include <type_traits>
+
 namespace nm  = nmtools;
 namespace utl = nm::utl;
 
 using namespace nm::literals;
+
+TEST_CASE("clipped_integer(case1)" * doctest::test_suite("clipped_integer"))
+{
+    auto i = "2:[3]"_ct;
+    using T = decltype(i);
+    static_assert( !meta::is_trivially_constructible_v<T> );
+    static_assert( !meta::is_trivially_copy_constructible_v<T> );
+    static_assert( meta::is_default_constructible_v<T> );
+    static_assert( meta::is_copy_constructible_v<T> );
+    static_assert( meta::is_trivially_destructible_v<T> );
+    static_assert( meta::is_copy_assignable_v<T> );
+    static_assert( sizeof(T) == sizeof(nm_size_t) );
+}
 
 TEST_CASE("array(case1)" * doctest::test_suite("clipped_integer"))
 {
@@ -14,14 +30,26 @@ TEST_CASE("array(case1)" * doctest::test_suite("clipped_integer"))
         using array_t = utl::array<value_t,3>;
 
         auto array = array_t{1,2,3};
-        NMTOOLS_STATIC_ASSERT_EQUAL( array.size(), 3 );
+
+        static_assert( meta::is_trivially_destructible_v<decltype(array)> );
+        // static_assert( meta::is_trivially_copyable_v<decltype(array)> );
+        static_assert( std::is_trivially_destructible_v<decltype(array)> );
+        // static_assert( std::is_trivially_copyable_v<decltype(array)> );
+
+        NMTOOLS_ASSERT_EQUAL( array.size(), 3 );
         NMTOOLS_ASSERT_EQUAL( array[0], 1 );
         NMTOOLS_ASSERT_EQUAL( array[1], 2 );
         NMTOOLS_ASSERT_EQUAL( array[2], 3 );
     }
     {
         auto array = utl::array{"0:[3]"_ct,"1:[3]"_ct,"2:[3]"_ct};
-        NMTOOLS_STATIC_ASSERT_EQUAL( array.size(), 3 );
+
+        // static_assert( meta::is_trivially_destructible_v<decltype(array)> );
+        // static_assert( meta::is_trivially_copyable_v<decltype(array)> );
+        // static_assert( std::is_trivially_destructible_v<decltype(array)> );
+        // static_assert( std::is_trivially_copyable_v<decltype(array)> );
+
+        NMTOOLS_ASSERT_EQUAL( array.size(), 3 );
         NMTOOLS_ASSERT_EQUAL( array[0], 0 );
         NMTOOLS_ASSERT_EQUAL( array[1], 1 );
         NMTOOLS_ASSERT_EQUAL( array[2], 2 );
@@ -34,7 +62,13 @@ TEST_CASE("array(case1)" * doctest::test_suite("clipped_integer"))
         for (size_t i=0; i<array.size(); i++) {
             array[i] = i;
         }
-        NMTOOLS_STATIC_ASSERT_EQUAL( array.size(), 3 );
+
+        // static_assert( meta::is_trivially_destructible_v<decltype(array)> );
+        // static_assert( meta::is_trivially_copyable_v<decltype(array)> );
+        // static_assert( std::is_trivially_destructible_v<decltype(array)> );
+        // static_assert( std::is_trivially_copyable_v<decltype(array)> );
+
+        NMTOOLS_ASSERT_EQUAL( array.size(), 3 );
         NMTOOLS_ASSERT_EQUAL( array[0], 0 );
         NMTOOLS_ASSERT_EQUAL( array[1], 1 );
         NMTOOLS_ASSERT_EQUAL( array[2], 2 );

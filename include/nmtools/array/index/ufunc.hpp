@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::index
 {
@@ -61,16 +62,27 @@ namespace nmtools::index
     struct size_ufunc_t {};
 
     template <typename dst_shape_t, typename a_size_t, typename...sizes_t>
-    constexpr auto size_ufunc(const dst_shape_t& dst_shape, a_size_t, sizes_t...)
+    constexpr auto size_ufunc(const dst_shape_t& dst_shape, [[maybe_unused]] a_size_t a_size, sizes_t...)
     {
         using result_t = meta::resolve_optype_t<size_ufunc_t,dst_shape_t,a_size_t,sizes_t...>;
-        auto res = result_t {};
+        if constexpr (meta::is_maybe_v<result_t>) {
+            // assume a_size is maybe type when result_t is maybe
+            // TODO: handle other sizes & dst_shape
+            if (static_cast<bool>(a_size)) {
+                auto res = product(unwrap(dst_shape));
+                return result_t{res};
+            } else {
+                return result_t{meta::Nothing};
+            }
+        } else {
+            auto res = result_t {};
 
-        if constexpr (!meta::is_constant_index_v<result_t>) {
-            res = product(dst_shape);
+            if constexpr (!meta::is_constant_index_v<result_t>) {
+                res = product(dst_shape);
+            }
+
+            return res;
         }
-
-        return res;
     }
 }
 
@@ -129,7 +141,12 @@ namespace nmtools::meta
         using size_types = type_list<sizes_t...>;
 
         static constexpr auto vtype = [](){
-            if constexpr (is_index_array_v<dst_shape_t> && is_index_v<a_size_t> && (is_index_v<sizes_t> && ...)) {
+            if constexpr (is_maybe_v<a_size_t>) {
+                using size_type = get_maybe_type_t<a_size_t>;
+                using result_type = nmtools_maybe<size_type>;
+                // TODO: consider deduction from dst_shape and other sizes
+                return as_value_v<result_type>;
+            } else if constexpr (is_index_array_v<dst_shape_t> && is_index_v<a_size_t> && (is_index_v<sizes_t> && ...)) {
                 [[maybe_unused]] constexpr auto c_dst_shape = to_value_v<dst_shape_t>;
                 if constexpr (is_constant_index_array_v<dst_shape_t>) {
                     constexpr auto numel = (size_t)index::product(c_dst_shape);

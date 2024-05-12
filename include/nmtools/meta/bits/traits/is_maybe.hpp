@@ -19,10 +19,10 @@ namespace nmtools::meta
     struct is_maybe : false_type {};
 
     template <typename T>
-    struct is_maybe<const T, enable_if_t<!has_address_space_v<T>>> : is_maybe<T> {};
+    struct is_maybe<const T> : is_maybe<T> {};
 
     template <typename T>
-    struct is_maybe<T, enable_if_t<has_address_space_v<T>>> : is_maybe<remove_address_space_t<T>> {};
+    struct is_maybe<T&> : is_maybe<T> {};
 
     template <typename T>
     constexpr inline auto is_maybe_v = is_maybe<T>::value;

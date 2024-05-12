@@ -11,25 +11,36 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
 
+using nmtools::shape, nmtools::size;
+
 TEST_CASE("is_fixed_shape" * doctest::test_suite("view"))
 {
     // shape is known at compile time
     {
         using array_t = int[2][3][2];
         using shape_t = nmtools_tuple<meta::ct<12>>;
-        using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+        using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+        using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+        using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+        using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
     }
     {
         using array_t = na::fixed_ndarray<int,2,3,2>;
         using shape_t = nmtools_tuple<meta::ct<12>>;
-        using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+        using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+        using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+        using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+        using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
     }
     {
         using array_t = na::hybrid_ndarray<int,12,3>;
         using shape_t = nmtools_tuple<meta::ct<12>>;
-        using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+        using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+        using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+        using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+        using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_t );
     }
 }
@@ -41,50 +52,74 @@ TEST_CASE("reshape" * doctest::test_suite("view"))
         {
             using array_t = int[2][3][2];
             using shape_t = nmtools_tuple<meta::ct<12>>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3,2>;
             using shape_t = nmtools_tuple<meta::ct<12>>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
             using shape_t = nmtools_tuple<meta::ct<12>>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::dynamic_ndarray<int>;
             using shape_t = nmtools_tuple<meta::ct<12>>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
 
         {
             using array_t = int[2][3][2];
             using shape_t = nmtools_array<int,1>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3,2>;
             using shape_t = nmtools_array<int,1>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
             using shape_t = nmtools_array<int,1>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::dynamic_ndarray<int>;
             using shape_t = nmtools_array<int,1>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_t );
         }
 
@@ -92,25 +127,37 @@ TEST_CASE("reshape" * doctest::test_suite("view"))
         {
             using array_t = int[2][3][2];
             using shape_t = nmtools_list<int>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3,2>;
             using shape_t = nmtools_list<int>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
             using shape_t = nmtools_list<int>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_t );
         }
         {
             using array_t = na::dynamic_ndarray<int>;
             using shape_t = nmtools_list<int>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_t );
         }
     }
@@ -120,28 +167,40 @@ TEST_CASE("reshape" * doctest::test_suite("view"))
         {
             using array_t = int[2][3][2];
             using shape_t = nmtools_array<int,3>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             constexpr auto max_size = meta::bounded_size_v<view_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_index, decltype(max_size) );
         }
         {
             using array_t = na::fixed_ndarray<int,2,3,2>;
             using shape_t = nmtools_array<int,3>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             constexpr auto max_size = meta::bounded_size_v<view_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_index, decltype(max_size) );
         }
         {
             using array_t = na::hybrid_ndarray<int,12,3>;
             using shape_t = nmtools_array<int,3>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             constexpr auto max_size = meta::bounded_size_v<view_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_index, decltype(max_size) );
         }
         {
             using array_t = na::dynamic_ndarray<int>;
             using shape_t = nmtools_array<int,3>;
-            using view_t  = view::decorator_t<view::reshape_t,array_t,shape_t>;
+            using src_shape_t = decltype(shape<true>(meta::declval<array_t>()));
+            using src_size_t  = decltype(size<true>(meta::declval<array_t>()));
+            using indexer_t   = view::reshape_t<src_shape_t,shape_t,src_size_t>;
+            using view_t  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
             constexpr auto max_size = meta::bounded_size_v<view_t>;
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, decltype(max_size) );
         }
@@ -160,7 +219,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -187,7 +247,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -214,7 +275,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -241,7 +303,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should be returning maybe type, must check src size is compatible at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -269,7 +332,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src size at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -297,7 +361,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -324,7 +389,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src size at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -352,7 +418,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src shape at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -380,7 +447,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src size at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -409,7 +477,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src size at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -437,7 +506,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src size at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -465,7 +535,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src size at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -493,7 +564,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src size at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -521,7 +593,8 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = decltype(nmtools_tuple{1_ct,2_ct,6_ct});
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
         // TODO: should return maybe type, must check src size at runtime
 
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
@@ -554,7 +627,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -581,7 +655,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -608,7 +683,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -636,7 +712,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -663,7 +740,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -690,7 +768,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -717,7 +796,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -744,7 +824,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -771,7 +852,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -799,7 +881,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -826,7 +909,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -853,7 +937,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -880,7 +965,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -907,7 +993,8 @@ TEST_CASE("reshape(case2)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_array<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
@@ -939,7 +1026,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -966,7 +1054,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -993,7 +1082,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1021,7 +1111,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1048,7 +1139,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1075,7 +1167,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1102,7 +1195,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1129,7 +1223,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1156,7 +1251,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1184,7 +1280,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1211,7 +1308,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1238,7 +1336,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1265,7 +1364,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1292,7 +1392,8 @@ TEST_CASE("reshape(case3)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = na::static_vector<size_t,3>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1324,7 +1425,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1351,7 +1453,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1378,7 +1481,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1406,7 +1510,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1433,7 +1538,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1460,7 +1566,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1487,7 +1594,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1514,7 +1622,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1541,7 +1650,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1569,7 +1679,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1596,7 +1707,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1623,7 +1735,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1650,7 +1763,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
@@ -1677,7 +1791,8 @@ TEST_CASE("reshape(case4)" * doctest::test_suite("meta::reshape"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
 
         using new_shape_t = nmtools_list<size_t>;
-        using view_type   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using reshape_t   = decltype(view::reshape(declval(array_type),declval(new_shape_t)));
+        using view_type   = meta::conditional_t<meta::is_maybe_v<reshape_t>,meta::get_maybe_type_t<reshape_t>,reshape_t>;
 
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );

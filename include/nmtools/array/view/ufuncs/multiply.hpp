@@ -88,10 +88,10 @@ namespace nmtools::view
         using rhs_t [[maybe_unused]] = meta::get_element_type_t<right_t>;
         using casting::Casting;
         if constexpr (cast_kind == Casting::AUTO) {
-            return ufunc(multiply_t<>{},a,b);
+            return broadcast_binary_ufunc(multiply_t<>{},a,b);
         } else /* if constexpr (cast_kind == Casting::SAME_KIND) */ {
             static_assert( meta::is_same_v<lhs_t,rhs_t>, "unsupported same-kind cast");
-            return ufunc(multiply_t<lhs_t,rhs_t,rhs_t>{},a,b);
+            return broadcast_binary_ufunc(multiply_t<lhs_t,rhs_t,rhs_t>{},a,b);
         }
         // TODO: support Casting::EQUIV
     } // multiply

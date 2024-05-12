@@ -17,17 +17,7 @@ namespace nmtools::functional
         constexpr auto operator()(sequence<Is...>, const attr_tuple<attributes_t...>& attributes, const operand_tuple<input_t,weight_t>& operands) const
         {
             const auto& [input,weight] = operands;
-            if constexpr (meta::is_pointer_v<input_t> && meta::is_pointer_v<weight_t>) {
-                // NOTE: use fold expr to preserve default attributes
-                // NOTE: this doesn't use bias
-                return view::conv2d(*input,*weight,None,nmtools::get<Is>(attributes)...);
-            } else if constexpr (meta::is_pointer_v<input_t>) {
-                return view::conv2d(*input,weight,None,nmtools::get<Is>(attributes)...);
-            } else if constexpr (meta::is_pointer_v<weight_t>) {
-                return view::conv2d(input,*weight,None,nmtools::get<Is>(attributes)...);
-            } else {
-                return view::conv2d(input,weight,None,nmtools::get<Is>(attributes)...);
-            }
+            return view::conv2d(get_operand(input),get_operand(weight),None,nmtools::get<Is>(attributes)...);
         } // operator()
 
         template <template<typename...>typename attr_tuple

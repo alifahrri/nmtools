@@ -16,7 +16,7 @@ namespace nmtools::args
     {
         using indexer_type = indexer_t;
 
-        indexer_type indexer = {};
+        indexer_type indexer;
 
         template <typename...args_t>
         constexpr auto operator==(const indexing<args_t...>& other) const
@@ -154,6 +154,10 @@ namespace nmtools::view
             auto src_indices = indexer.indices(dst_indices);
             if constexpr (meta::is_pointer_v<array_type>) {
                 return apply_at(*array,src_indices);
+            } else if constexpr (is_none_v<decltype(src_indices)>) {
+                static_assert( meta::is_num_v<array_type>
+                    , "invalid source array for indexing view" );
+                return array;
             } else {
                 return apply_at(array,src_indices);
             }
@@ -163,16 +167,40 @@ namespace nmtools::view
     template <typename array_t, typename indexer_t>
     constexpr auto indexing(const array_t& array, const indexer_t& indexer)
     {
-        using view_type = decorator_t<indexing_t,array_t,indexer_t>;
-        if constexpr (meta::is_maybe_v<typename indexer_t::dst_shape_type>) {
-            using result_type = nmtools_maybe<view_type>;
-            if (static_cast<bool>(indexer)) {
-                return result_type{view_type{{array,indexer}}};
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type = meta::get_maybe_type_t<array_t>;
+            using result_t = decltype(indexing(meta::declval<array_type>(),indexer));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            if (static_cast<bool>(array)) {
+                auto result = indexing(*array,indexer);
+                if constexpr (meta::is_maybe_v<result_t>) {
+                    return (result ? return_t{*result}
+                        : return_t{meta::Nothing}
+                    );
+                } else {
+                    return return_t{result};
+                }
             } else {
-                return result_type{meta::Nothing};
+                return return_t{meta::Nothing};
             }
+        } else if constexpr (meta::is_maybe_v<indexer_t>) {
+            using indexer_type = meta::get_maybe_type_t<indexer_t>;
+            using result_t = decltype(indexing(array,meta::declval<indexer_type>()));
+            using return_t = nmtools_maybe<result_t>;
+            static_assert( !meta::is_maybe_v<typename indexer_type::dst_shape_type> );
+            return (indexer ? return_t{indexing(array,*indexer)}
+                : return_t{meta::Nothing}
+            );
+        } else if constexpr (meta::is_maybe_v<typename indexer_t::dst_shape_type>) {
+            using view_type = decorator_t<indexing_t,array_t,indexer_t>;
+            using result_t  = nmtools_maybe<view_type>;
+            // TODO: remove, invalid indexer configuration handled by returning maybe(indexer)
+            return (indexer ? result_t{view_type{{array,indexer}}}
+                : result_t{meta::Nothing}
+            );
         } else {
-            return view_type{{array,indexer}};
+            using result_t = decorator_t<indexing_t,array_t,indexer_t>;
+            return result_t{{array,indexer}};
         }
     } // indexing
 
@@ -182,6 +210,42 @@ namespace nmtools::view
         return indexing(array,kwargs.indexer);
     }
 
+    template <typename F, typename array_t, typename...args_t>
+    constexpr auto lift_indexing(F&& f, const array_t& array, const args_t&...args)
+    {
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type = meta::get_maybe_type_t<array_t>;
+            using result_t   = decltype(f(meta::declval<array_type>(),args...));
+            // f(...) may results in maybe type (e.g. because of invalid args.. configuration)
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            if (static_cast<bool>(array)) {
+                auto result = f(*array,args...);
+                if constexpr (meta::is_maybe_v<result_t>) {
+                    return (result ? return_t{*result}
+                        : return_t{meta::Nothing}
+                    );
+                } else {
+                    return return_t{result};
+                }
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else if constexpr (meta::is_either_v<array_t>) {
+            using left_t  = meta::get_either_left_t<array_t>;
+            using right_t = meta::get_either_right_t<array_t>;
+            using left_res_t  = decltype(f(meta::declval<left_t>(),args...));
+            using right_res_t = decltype(f(meta::declval<right_t>(),args...));
+            using result_t = meta::replace_either_t<array_t,left_res_t,right_res_t>;
+            if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
+                return result_t{f(*l_ptr,args...)};
+            } else {
+                auto r_ptr = nmtools::get_if<right_t>(&array);
+                return result_t{f(*r_ptr,args...)};
+            }
+        } else {
+            return f(array,args...);
+        }
+    }
 } // namespace nmtools::view
 
 #if NMTOOLS_HAS_STRING
@@ -222,7 +286,10 @@ namespace nmtools::meta
     struct is_ndarray<
         view::decorator_t<view::indexing_t,array_t,indexer_t>
     > {
-        static constexpr auto value = is_ndarray_v<array_t>;
+        using view_type  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
+        using shape_type = decltype(meta::declval<view_type>().shape());
+
+        static constexpr auto value = is_ndarray_v<array_t> || (is_num_v<array_t> && is_index_array_v<shape_type>);
     };
 
     template <typename array_t, typename indexer_t>
@@ -231,6 +298,24 @@ namespace nmtools::meta
     > {
         using type = get_element_type_t<array_t>;
     };
+
+    template <typename array_t, typename indexer_t>
+    struct fixed_shape<
+        view::decorator_t<view::indexing_t,array_t,indexer_t>
+    >{
+        using view_type = view::decorator_t<view::indexing_t,array_t,indexer_t>;
+        using indexing_type  = view::indexing_t<array_t,indexer_t>;
+        using dst_shape_type = typename indexing_type::dst_shape_type;
+        using dst_size_type  = typename indexing_type::dst_size_type;
+
+        static constexpr auto value = [](){
+            if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                return to_value_v<dst_shape_type>;
+            } else {
+                return error::FIXED_SHAPE_UNSUPPORTED<view_type>{};
+            }
+        }();
+    }; // fixed_shape
 
     template <typename array_t, typename indexer_t>
     struct fixed_size<
@@ -243,7 +328,9 @@ namespace nmtools::meta
 
         static constexpr auto value = [](){
             if constexpr (is_constant_index_v<dst_size_type>) {
-                return dst_size_type{};
+                return to_value_v<dst_size_type>;
+            } else if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                return index::product(to_value_v<dst_shape_type>);
             } else {
                 return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
             }
@@ -260,7 +347,10 @@ namespace nmtools::meta
         using dst_size_type  = typename indexing_type::dst_size_type;
 
         static constexpr auto value = [](){
-            if constexpr (is_clipped_integer_v<dst_size_type> || is_constant_index_v<dst_size_type>) {
+            constexpr auto fixed_size = fixed_size_v<view_type>;
+            if constexpr (!is_fail_v<decltype(fixed_size)>) {
+                return fixed_size;
+            } else if constexpr (is_clipped_integer_v<dst_size_type> || is_constant_index_v<dst_size_type>) {
                 return to_value_v<dst_size_type>;
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};

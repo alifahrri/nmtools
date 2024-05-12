@@ -42,16 +42,16 @@ TEST_CASE("stddev" * doctest::test_suite("functional::get_compute_graph"))
     auto divisor = view::alias(3,11_ct);
     auto ddof = view::alias(2,12_ct);
 
-    auto a = view::reduce_add(lhs,axis);
+    auto a = nm::unwrap(view::reduce_add(lhs,axis));
     auto b = view::divide(a,divisor);
     auto c = view::subtract(b,lhs);
     auto d = view::fabs(c);
     auto e = view::square(d);
-    auto f = view::sum(e,axis);
+    auto f = nm::unwrap(view::sum(e,axis));
     auto g = view::divide(f,ddof);
     auto h = view::sqrt(g);
 
-    auto graph = fn::get_compute_graph(h);
+    auto graph = nm::unwrap(fn::get_compute_graph(h));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)

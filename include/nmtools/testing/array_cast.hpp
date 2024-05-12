@@ -51,6 +51,38 @@ inline auto name##_h = nmtools::cast(name, nmtools::array::kind::hybrid);
 #define NMTOOLS_CAST_ARRAYS_DYNAMIC(name) \
 inline auto name##_d = nmtools::cast(name, nmtools::array::kind::dynamic);
 #endif
+
+#ifndef NMTOOLS_MAYBE_CAST_ARRAYS_NESTED
+#define NMTOOLS_MAYBE_CAST_ARRAYS_NESTED(name) \
+inline auto m_##name##_a = nmtools_maybe{nmtools::cast(name, nmtools::array::kind::nested_arr)};
+#endif
+// TODO: remove nested vector support
+#ifndef NMTOOLS_MAYBE_CAST_ARRAYS_NESTED_VEC
+#define NMTOOLS_MAYBE_CAST_ARRAYS_NESTED_VEC(name) \
+inline auto m_##name##_v = nmtools_maybe{nmtools::cast(name, nmtools::array::kind::nested_vec)};
+#endif
+// TODO: add index_vec tag
+#ifndef NMTOOLS_MAYBE_CAST_INDEX_VECTOR
+#define NMTOOLS_MAYBE_CAST_INDEX_VECTOR(name) \
+inline auto m_##name##_v = nmtools_maybe{nmtools::cast(name, nmtools::array::kind::nested_vec)};
+#endif
+#ifndef NMTOOLS_MAYBE_CAST_INDEX_STATIC_VECTOR
+#define NMTOOLS_MAYBE_CAST_INDEX_STATIC_VECTOR(name) \
+inline auto m_##name##_sv = nmtools_maybe{nmtools::cast(name, nmtools::array::kind::static_vec)};
+#endif
+#ifndef NMTOOLS_MAYBE_CAST_ARRAYS_FIXED
+#define NMTOOLS_MAYBE_CAST_ARRAYS_FIXED(name) \
+inline auto m_##name##_f = nmtools_maybe{nmtools::cast(name, nmtools::array::kind::fixed)};
+#endif
+#ifndef NMTOOLS_MAYBE_CAST_ARRAYS_HYBRID
+#define NMTOOLS_MAYBE_CAST_ARRAYS_HYBRID(name) \
+inline auto m_##name##_h = nmtools_maybe{nmtools::cast(name, nmtools::array::kind::hybrid)};
+#endif
+#ifndef NMTOOLS_MAYBE_CAST_ARRAYS_DYNAMIC
+#define NMTOOLS_MAYBE_CAST_ARRAYS_DYNAMIC(name) \
+inline auto m_##name##_d = nmtools_maybe{nmtools::cast(name, nmtools::array::kind::dynamic)};
+#endif
+
 // to easily add new kind
 #ifndef NMTOOLS_CAST_ARRAYS_EXTRA
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name)
@@ -75,6 +107,16 @@ NMTOOLS_CAST_ARRAYS_HYBRID (name) \
 NMTOOLS_CAST_ARRAYS_EXTRA  (name) \
 NMTOOLS_CAST_INDEX_VECTOR  (name) \
 NMTOOLS_CAST_INDEX_STATIC_VECTOR  (name) \
+
+#endif // NMTOOLS_CAST_ARRAYS
+
+#ifndef NMTOOLS_MAYBE_CAST_INDEX_ARRAYS
+#define NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(name) \
+NMTOOLS_MAYBE_CAST_ARRAYS_NESTED (name) \
+NMTOOLS_MAYBE_CAST_ARRAYS_FIXED  (name) \
+NMTOOLS_MAYBE_CAST_ARRAYS_HYBRID (name) \
+NMTOOLS_MAYBE_CAST_INDEX_VECTOR  (name) \
+NMTOOLS_MAYBE_CAST_INDEX_STATIC_VECTOR  (name) \
 
 #endif // NMTOOLS_CAST_ARRAYS
 

@@ -30,10 +30,10 @@ TEST_CASE("reduce_add_divide" * doctest::test_suite("functional::get_compute_gra
     auto divisor = 3;
 
     auto axis = 0;
-    auto a = view::reduce_add(lhs_array,axis);
+    auto a = nm::unwrap(view::reduce_add(lhs_array,axis));
     auto b = view::divide(a,divisor);
 
-    auto graph = fn::get_compute_graph(b);
+    auto graph = nm::unwrap(fn::get_compute_graph(b));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)

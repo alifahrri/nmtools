@@ -88,6 +88,10 @@ endif (NMTOOLS_INDEX_TEST_ALL)
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     ${ARRAY_INDEX_TEST_SOURCES}
 )
+add_test(
+    NAME ${PROJECT_NAME}-doctest
+    COMMAND ${PROJECT_NAME}-doctest
+)
 
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 if (doctest_FOUND)

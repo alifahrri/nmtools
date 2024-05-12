@@ -56,6 +56,18 @@ namespace nmtools::utl
             return (size_type)N;
         }
 
+        // The following is intended to enable copy assignment of maybe<array> type in constexpr function/lambda
+        // but then it deprecates the definition of implicit copy constructor
+        #if 0
+        constexpr array& operator=(const array& other) noexcept
+        {
+            for (size_t i=0; i<N; i++) {
+                buffer[i] = other.buffer[i];
+            }
+            return *this;
+        }
+        #endif
+
         constexpr reference operator[](index_type i) noexcept
         {
             return buffer[i];

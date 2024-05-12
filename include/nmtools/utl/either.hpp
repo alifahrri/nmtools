@@ -3,6 +3,9 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_destructible.hpp"
+#include "nmtools/meta/bits/traits/is_trivially_constructible.hpp"
+#include "nmtools/meta/bits/traits/is_trivially_copy_constructible.hpp"
+#include "nmtools/meta/bits/traits/is_copy_assignable.hpp"
 #include "nmtools/utility/get_if.hpp"
 
 // poor man's either type
@@ -35,22 +38,37 @@ namespace nmtools::utl
             return static_cast<const Derived&>(*this);
         }
 
+        constexpr Derived& operator=(const Derived& other) noexcept
+        {
+            if (other.self().tag == Derived::LEFT) {
+                self().left = other.self().left;
+                self().tag  = Derived::LEFT;
+                return self();
+            } else {
+                self().right = other.self().right;
+                self().tag   = Derived::RIGHT;
+                return self();
+            }
+        }
+
         template <typename T>
         constexpr Derived& operator=(const T& val) noexcept
         {
             using left_type  = typename Derived::left_type;
             using right_type = typename Derived::right_type;
-            static_assert( meta::is_same_v<T,left_type> || meta::is_same_v<T,right_type>
+            static_assert( meta::is_same_v<T,left_type> || meta::is_same_v<T,right_type> || meta::is_same_v<T,Derived>
                 , "unsupported type for either assignment"
             );
             if constexpr (meta::is_same_v<T,left_type>) {
                 self().left = val;
                 self().tag  = Derived::LEFT;
                 return self();
-            } else {
+            } else if constexpr (meta::is_same_v<T,right_type>) {
                 self().right = val;
-                self().tag  = Derived::RIGHT;
+                self().tag   = Derived::RIGHT;
                 return self();
+            } else {
+                return operator=(static_cast<Derived>(val));
             }
         }
 
@@ -144,6 +162,7 @@ namespace nmtools::utl
         constexpr explicit either(const right_t& val) noexcept
             : right(val), tag{RIGHT} {}
 
+        constexpr either(const either&) = default;
         ~either() = default;
 
         template <typename U>
@@ -152,12 +171,21 @@ namespace nmtools::utl
             base::operator=(val);
             return *this;
         }
+
+        constexpr either& operator=(const either& other) noexcept
+        {
+            return base::operator=(other);
+        }
     };
 
+    // TODO: find out if we can move the constructor to base for better composition & brevity
     #if 1
     template <typename left_t, typename right_t>
     struct either<left_t,right_t,
-        meta::enable_if_t<!meta::is_trivially_destructible_v<left_t> || !meta::is_trivially_destructible_v<right_t>>
+        meta::enable_if_t<
+               (!meta::is_trivially_destructible_v<left_t> || !meta::is_trivially_destructible_v<right_t>)
+            && (!meta::is_trivially_copy_constructible_v<left_t> || !meta::is_trivially_copy_constructible_v<right_t>)
+        >
     > : base_either<either<left_t,right_t>>
     {
     protected:
@@ -174,14 +202,34 @@ namespace nmtools::utl
         friend struct impl::get_if_t;
         friend base;
     public:
+        using left_type  = left_t;
+        using right_type = right_t;
 
-        either() noexcept
+        constexpr either() noexcept
             : left{}, tag{LEFT} {}
 
-        explicit either(const left_t& val) noexcept
+        constexpr explicit either(const left_t& val) noexcept
             : left(val), tag{LEFT} {}
-        explicit either(const right_t& val) noexcept
+        constexpr explicit either(const right_t& val) noexcept
             : right(val), tag{RIGHT} {}
+        
+        constexpr either(const either& other)
+        {
+            tag = other.tag;
+            if (other.tag == LEFT) {
+                if constexpr (meta::is_copy_assignable_v<left_t>) {
+                    left = other.left;
+                } else {
+                    new(&this->left) left_t(other.left);
+                }
+            } else {
+                if constexpr (meta::is_copy_assignable_v<right_t>) {
+                    right = other.right;
+                } else {
+                    new(&this->right) right_t(other.right);
+                }
+            }
+        }
 
         ~either()
         {
@@ -195,8 +243,76 @@ namespace nmtools::utl
         template <typename U>
         constexpr either& operator=(const U& val) noexcept
         {
-            base::operator=(val);
-            return *this;
+            return base::operator=(val);
+        }
+
+        constexpr either& operator=(const either& other) noexcept
+        {
+            return base::operator=(other);
+        }
+    }; // either
+
+    // TODO: find out if we can move the constructor to base for better composition & brevity
+    template <typename left_t, typename right_t>
+    struct either<left_t,right_t,
+        meta::enable_if_t<
+                (meta::is_trivially_destructible_v<left_t> && meta::is_trivially_destructible_v<right_t>)
+            &&  (!meta::is_trivially_copy_constructible_v<left_t> || !meta::is_trivially_copy_constructible_v<right_t>)
+        >
+    > : base_either<either<left_t,right_t>>
+    {
+    protected:
+        using base = base_either<either>;
+        enum Tag {LEFT, RIGHT};
+        // assume default constructible
+        union
+        {
+            left_t  left;
+            right_t right;
+        };
+        Tag tag;
+        template <typename,typename>
+        friend struct impl::get_if_t;
+        friend base;
+    public:
+        using left_type  = left_t;
+        using right_type = right_t;
+
+        constexpr either() noexcept
+            : left{}, tag{LEFT} {}
+
+        constexpr explicit either(const left_t& val) noexcept
+            : left(val), tag{LEFT} {}
+        constexpr explicit either(const right_t& val) noexcept
+            : right(val), tag{RIGHT} {}
+        
+        constexpr either(const either& other)
+        {
+            tag = other.tag;
+            if (other.tag == LEFT) {
+                if constexpr (meta::is_copy_assignable_v<left_t>) {
+                    left = other.left;
+                } else {
+                    new(&this->left) left_t(other.left);
+                }
+            } else {
+                if constexpr (meta::is_copy_assignable_v<right_t>) {
+                    right = other.right;
+                } else {
+                    new(&this->right) right_t(other.right);
+                }
+            }
+        }
+
+        template <typename U>
+        constexpr either& operator=(const U& val) noexcept
+        {
+            return base::operator=(val);
+        }
+
+        constexpr either& operator=(const either& other) noexcept
+        {
+            return base::operator=(other);
         }
     }; // either
     #endif

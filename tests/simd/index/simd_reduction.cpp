@@ -804,6 +804,8 @@ TEST_CASE("reduction_2d_enumerator(case1)" * doctest::test_suite("simd::index"))
     auto n_elem_pack = meta::as_type_v<4>;
     auto inp_shape   = nmtools_array{3,4};
     auto out_shape   = nmtools_array{1,4};
+
+    [[maybe_unused]]
     auto simd_shape  = nmtools_array{3,1};
 
     auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
@@ -863,11 +865,13 @@ TEST_CASE("reduction_2d_enumerator(case2)" * doctest::test_suite("simd::index"))
     auto n_elem_pack = meta::as_type_v<4>;
     auto inp_shape   = nmtools_array{3,4};
     auto out_shape   = nmtools_array{1,4};
+
+    [[maybe_unused]]
     auto simd_shape  = nmtools_array{3,1};
 
     auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
-    auto inp_tags = nmtools_array{SIMD::PACKED,SIMD::PACKED,SIMD::PACKED};
-    auto out_tags = nmtools_array{SIMD::ACCUMULATE,SIMD::ACCUMULATE,SIMD::ACCUMULATE};
+    auto inp_tags = nmtools_array<SIMD,3>{SIMD::PACKED,SIMD::PACKED,SIMD::PACKED};
+    auto out_tags = nmtools_array<SIMD,3>{SIMD::ACCUMULATE,SIMD::ACCUMULATE,SIMD::ACCUMULATE};
     auto inp_offsets = nmtools_array{0,4,8};
     auto out_offsets = nmtools_array{0,1,2};
 
@@ -890,10 +894,11 @@ TEST_CASE("reduction_2d_enumerator(case3a)" * doctest::test_suite("simd::index")
     auto n_elem_pack = meta::as_type_v<4>;
     auto inp_shape   = nmtools_array{4,10};
     auto out_shape   = nmtools_array{1,10};
+    [[maybe_unused]]
     auto simd_shape  = nmtools_array{4,4};
 
     auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
-    auto out_tags = nmtools_array{
+    auto out_tags = nmtools_array<SIMD,16>{
         SIMD::ACCUMULATE_PACKED,
         SIMD::ACCUMULATE_PACKED,
         SIMD::ACCUMULATE,
@@ -911,7 +916,7 @@ TEST_CASE("reduction_2d_enumerator(case3a)" * doctest::test_suite("simd::index")
         SIMD::ACCUMULATE,
         SIMD::ACCUMULATE,
     };
-    auto inp_tags = nmtools_array{
+    auto inp_tags = nmtools_array<SIMD,16>{
         SIMD::PACKED,
         SIMD::PACKED,
         SIMD::SCALAR,
@@ -951,10 +956,11 @@ TEST_CASE("reduction_2d_enumerator(case3b)" * doctest::test_suite("simd::index")
     auto n_elem_pack = meta::as_type_v<4>;
     auto inp_shape   = nmtools_array{4,10};
     auto out_shape   = nmtools_array{10};
+    [[maybe_unused]]
     auto simd_shape  = nmtools_array{4,4};
 
     auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
-    auto out_tags = nmtools_array{
+    auto out_tags = nmtools_array<SIMD,16>{
         SIMD::ACCUMULATE_PACKED,
         SIMD::ACCUMULATE_PACKED,
         SIMD::ACCUMULATE,
@@ -972,7 +978,7 @@ TEST_CASE("reduction_2d_enumerator(case3b)" * doctest::test_suite("simd::index")
         SIMD::ACCUMULATE,
         SIMD::ACCUMULATE,
     };
-    auto inp_tags = nmtools_array{
+    auto inp_tags = nmtools_array<SIMD,16>{
         SIMD::PACKED,
         SIMD::PACKED,
         SIMD::SCALAR,
@@ -1012,10 +1018,11 @@ TEST_CASE("reduction_2d_enumerator(case4a)" * doctest::test_suite("simd::index")
     auto n_elem_pack = meta::as_type_v<4>;
     auto inp_shape   = nmtools_array{4,10};
     auto out_shape   = nmtools_array{4,1};
+    [[maybe_unused]]
     auto simd_shape  = nmtools_array{4,4};
 
     auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
-    auto out_tags = nmtools_array{
+    auto out_tags = nmtools_array<SIMD,12>{
         SIMD::NOP,
         SIMD::NOP,
         SIMD::ACCUMULATE,
@@ -1029,7 +1036,7 @@ TEST_CASE("reduction_2d_enumerator(case4a)" * doctest::test_suite("simd::index")
         SIMD::NOP,
         SIMD::ACCUMULATE,
     };
-    auto inp_tags = nmtools_array{
+    auto inp_tags = nmtools_array<SIMD,12>{
         SIMD::PACKED,
         SIMD::PACKED,
         SIMD::PAD_2,
@@ -1067,10 +1074,11 @@ TEST_CASE("reduction_2d_enumerator(case4b)" * doctest::test_suite("simd::index")
     auto n_elem_pack = meta::as_type_v<4>;
     auto inp_shape   = nmtools_array{4,10};
     auto out_shape   = nmtools_array{4};
+    [[maybe_unused]]
     auto simd_shape  = nmtools_array{4,4};
 
     auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape);
-    auto out_tags = nmtools_array{
+    auto out_tags = nmtools_array<SIMD,12>{
         SIMD::NOP,
         SIMD::NOP,
         SIMD::ACCUMULATE,
@@ -1084,7 +1092,7 @@ TEST_CASE("reduction_2d_enumerator(case4b)" * doctest::test_suite("simd::index")
         SIMD::NOP,
         SIMD::ACCUMULATE,
     };
-    auto inp_tags = nmtools_array{
+    auto inp_tags = nmtools_array<SIMD,12>{
         SIMD::PACKED,
         SIMD::PACKED,
         SIMD::PAD_2,
@@ -1122,11 +1130,12 @@ TEST_CASE("reduction_2d_enumerator(case5a)" * doctest::test_suite("simd::index")
     auto n_elem_pack = meta::as_type_v<4>;
     auto inp_shape   = nmtools_array{2,2,5};
     auto out_shape   = nmtools_array{1,2,5};
+    [[maybe_unused]]
     auto simd_shape  = nmtools_array{2,4};
     auto axis = 0;
 
     auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape,axis);
-    auto out_tags = nmtools_array{
+    auto out_tags = nmtools_array<SIMD,8>{
         SIMD::ACCUMULATE_PACKED,
         SIMD::ACCUMULATE_PACKED,
         SIMD::ACCUMULATE,
@@ -1136,7 +1145,7 @@ TEST_CASE("reduction_2d_enumerator(case5a)" * doctest::test_suite("simd::index")
         SIMD::ACCUMULATE,
         SIMD::ACCUMULATE,
     };
-    auto inp_tags = nmtools_array{
+    auto inp_tags = nmtools_array<SIMD,8>{
         SIMD::PACKED,
         SIMD::PACKED,
         SIMD::SCALAR,
@@ -1170,11 +1179,12 @@ TEST_CASE("reduction_2d_enumerator(case5b)" * doctest::test_suite("simd::index")
     auto n_elem_pack = meta::as_type_v<4>;
     auto inp_shape   = nmtools_array{2,2,5};
     auto out_shape   = nmtools_array{2,1,5};
+    [[maybe_unused]]
     auto simd_shape  = nmtools_array{4,2};
     auto axis = 1;
 
     auto enumerator = ix::reduction_2d_enumerator(reduction_kind,n_elem_pack,out_shape,inp_shape,axis);
-    auto out_tags = nmtools_array{
+    auto out_tags = nmtools_array<SIMD,8>{
         SIMD::ACCUMULATE_PACKED,
         SIMD::ACCUMULATE,
         SIMD::ACCUMULATE_PACKED,
@@ -1184,7 +1194,7 @@ TEST_CASE("reduction_2d_enumerator(case5b)" * doctest::test_suite("simd::index")
         SIMD::ACCUMULATE_PACKED,
         SIMD::ACCUMULATE,
     };
-    auto inp_tags = nmtools_array{
+    auto inp_tags = nmtools_array<SIMD,8>{
         SIMD::PACKED,
         SIMD::SCALAR,
         SIMD::PACKED,

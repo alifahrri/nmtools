@@ -27,6 +27,7 @@ namespace nmtools::impl
     {
         constexpr auto operator()([[maybe_unused]] const T& a) const noexcept
         {
+            [[maybe_unused]] auto LEN = meta::len_v<T>;
             if constexpr (meta::has_shape_v<T>) {
                 auto shape = a.shape();
                 return nmtools::at(shape,meta::ct_v<0>);
@@ -35,6 +36,8 @@ namespace nmtools::impl
                 return nmtools::at(shape,meta::ct_v<0>);
             } else if constexpr (is_none_v<T>) {
                 return 0;
+            } else if constexpr (LEN > 0) {
+                return LEN;
             } else {
                 using type = error::LEN_UNSUPPORTED<T>;
                 return type{};
@@ -55,14 +58,19 @@ namespace nmtools
     template <typename array_t>
     constexpr auto len(const array_t& array)
     {
-        return impl::len<array_t>(array);
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type  = meta::get_maybe_type_t<array_t>;
+            using result_type = decltype(len(meta::declval<array_type>()));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(array)) {
+                return return_type{len(*array)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            return impl::len<array_t>(array);
+        }
     }
-
-    template <typename T, size_t N>
-    constexpr auto len(const T(&)[N])
-    {
-        return N;
-    } // len
 } // namespace nmtools
 
 namespace nmtools::impl
@@ -226,8 +234,16 @@ namespace nmtools
     template <bool prefer_constant_index=false, bool disable_clipped_index=false, typename array_t>
     constexpr auto shape(const array_t& array)
     {
-        // TODO: handle maybe type
-        if constexpr (meta::is_either_v<array_t>) {
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type = meta::get_maybe_type_t<array_t>;
+            using result_type = decltype(shape<prefer_constant_index>(meta::declval<array_type>()));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(array)) {
+                return return_type{shape<prefer_constant_index>(*array)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
             using left_shape_t  = decltype(shape(meta::declval<left_t>()));
@@ -328,6 +344,7 @@ namespace nmtools
     template <bool prefer_constant_index=false, typename array_t>
     constexpr auto dim([[maybe_unused]] const array_t& array)
     {
+        // TODO: handle maybe & either type
         if constexpr (prefer_constant_index) {
             constexpr auto fixed_dim = meta::fixed_dim_v<array_t>;
             if constexpr (!meta::is_fail_v<decltype(fixed_dim)>) {
@@ -391,8 +408,17 @@ namespace nmtools
     template <bool prefer_constant_index=false, typename array_t>
     constexpr auto size([[maybe_unused]] const array_t& array)
     {
-        // TODO: handle maybe and either type
-        if constexpr (prefer_constant_index) {
+        // TODO: handle either type
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type = meta::get_maybe_type_t<array_t>;
+            using result_type = decltype(size<prefer_constant_index>(meta::declval<array_type>()));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(array)) {
+                return return_type{size<prefer_constant_index>(*array)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else if constexpr (prefer_constant_index) {
             constexpr auto fixed_size = meta::fixed_size_v<array_t>;
             [[maybe_unused]]
             constexpr auto bounded_size = meta::bounded_size_v<array_t>;

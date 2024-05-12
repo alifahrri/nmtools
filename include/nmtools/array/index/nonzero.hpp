@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_INDEX_NONZERO_HPP
 #define NMTOOLS_ARRAY_INDEX_NONZERO_HPP
 
+#include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
@@ -24,34 +25,43 @@ namespace nmtools::index
     constexpr auto nonzero(const index_array_t& a)
     {
         using return_t = meta::resolve_optype_t<nonzero_t,index_array_t>;
-        
-        auto ret = return_t{};
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
-            ret.resize(len(a));
-        
-            auto n = size_t{0}; // number of nonzero elements
-            auto i = size_t{0};
-
-            auto nonzero_impl = [&](auto idx){
-                if (static_cast<bool>(at(a,idx))) {
-                    at(ret,i) = idx;
-                    n++; i++;
-                }
-            }; // nonzero_impl
-            
-            if constexpr (meta::is_tuple_v<index_array_t>) {
-                constexpr auto N = meta::len_v<index_array_t>;
-                meta::template_for<N>(nonzero_impl);
+        if constexpr (meta::is_maybe_v<return_t>) {
+            if (static_cast<bool>(a)) {
+                auto result = nonzero(*a);
+                return return_t{result};
             } else {
-                for (size_t idx=0; idx<len(a); idx++)
-                    nonzero_impl(idx);
+                return return_t{meta::Nothing};
             }
-        
-            ret.resize(n);
-        }
+        } else {
+            auto ret = return_t{};
 
-        return ret;
+            if constexpr (!meta::is_constant_index_array_v<return_t>) {
+                ret.resize(len(a));
+            
+                auto n = nm_size_t{0}; // number of nonzero elements
+                auto i = nm_size_t{0};
+
+                auto nonzero_impl = [&](auto idx){
+                    if (static_cast<bool>(at(a,idx))) {
+                        at(ret,i) = idx;
+                        n++; i++;
+                    }
+                }; // nonzero_impl
+                
+                if constexpr (meta::is_tuple_v<index_array_t>) {
+                    constexpr auto N = meta::len_v<index_array_t>;
+                    meta::template_for<N>(nonzero_impl);
+                } else {
+                    for (nm_size_t idx=0; idx<len(a); idx++)
+                        nonzero_impl(idx);
+                }
+            
+                ret.resize(n);
+            }
+
+            return ret;
+        }
     } // nonzero
 } // namespace nmtools::index
 
@@ -74,7 +84,12 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<index_array_t>) {
+            if constexpr (is_maybe_v<index_array_t>) {
+                using index_array_type = get_maybe_type_t<index_array_t>;
+                using result_type = resolve_optype_t<index::nonzero_t,index_array_type>;
+                using type = nmtools_maybe<result_type>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<index_array_t>) {
                 constexpr auto index_array = to_value_v<index_array_t>;
                 constexpr auto result = index::nonzero(index_array);
                 using nmtools::len, nmtools::at;
@@ -87,7 +102,7 @@ namespace nmtools::meta
                 constexpr auto element_vtype = [](){
                     using element_t = get_index_element_type_t<index_array_t>;
                     if constexpr (is_boolean_v<element_t>) {
-                        return as_value_v<size_t>;
+                        return as_value_v<nm_size_t>;
                     } else {
                         return as_value_v<make_unsigned_t<element_t>>;
                     }

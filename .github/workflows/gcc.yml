@@ -232,10 +232,10 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
-          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'
 
   dockcross-gcc-constexpr-no-stl-generic-ndarray-eval:
     name: ${{ matrix.name }}-constexpr-no-stl-generic-ndarray-eval
@@ -256,10 +256,10 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
-          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'
   
   dockcross-gcc-constexpr-generic-ndarray-eval:
     name: ${{ matrix.name }}-constexpr-generic-ndarray-eval
@@ -280,7 +280,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_CONSTEXPR=ON  -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON  -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: |
-          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'

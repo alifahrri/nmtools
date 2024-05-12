@@ -90,6 +90,15 @@ namespace nmtools::meta
         template <typename T>
         using dst_size = decltype(declval<T>().dst_size);
 
+        template <typename T>
+        using add_lvalue_reference = decltype(declval<T&>());
+
+        template <typename T>
+        using add_rvalue_reference = decltype(declval<T&&>());
+
+        template <typename T, typename...Args>
+        using constructor = decltype(T(declval<Args>()...));
+
         /**
          * @brief helper alias template to deduce the return value of member function `identity` of type `T`
          * 

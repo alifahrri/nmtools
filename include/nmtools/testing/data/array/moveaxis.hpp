@@ -5,7 +5,7 @@
 
 using namespace nmtools::literals;
 
-#ifndef NMTOOLS_TESTING_CONSTEXPR
+#ifndef NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 NMTOOLS_TESTING_DECLARE_CASE(array, moveaxis)
 {
@@ -709,6 +709,6 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_moveaxis)
     }
 }
 
-#endif // NMTOOLS_TESTING_CONSTEXPR
+#endif // NMTOOLS_BUILD_CONSTEXPR_TESTS
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_MOVEAXIS_HPP

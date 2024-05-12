@@ -14,6 +14,8 @@
 // to get make_dynamic_ndarray & make_fixed_ndarray defn.
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/eval.hpp"
+#include "nmtools/utility/unwrap.hpp"
+#include "nmtools/array/view/indexing.hpp"
 
 #include "nmtools/constants.hpp"
 #include "nmtools/assert.hpp"
@@ -102,11 +104,11 @@ namespace nmtools::view
                 auto src_shape = detail::shape(array);
 
                 // TODO: refactor free_axes/origin_axes
-                auto tf_indices = ::nmtools::index::broadcast_to(indices_,src_shape,shape_,origin_axes);
+                auto tf_indices = ::nmtools::index::broadcast_to(indices_,unwrap(src_shape),unwrap(shape_),unwrap(origin_axes));
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return apply_at(*array,tf_indices);
+                    return apply_at(*array,unwrap(tf_indices));
                 } else {
-                    return apply_at(array,tf_indices);
+                    return apply_at(array,unwrap(tf_indices));
                 }
             }
         } // operator()
@@ -191,6 +193,16 @@ namespace nmtools::view
                 return either_t{view::broadcast_to(*r_ptr,shape,bsize)};
             }
         }
+        else if constexpr (meta::is_maybe_v<array_t>) {
+            using result_t = decltype(view::broadcast_to(*array,shape,bsize));
+            using return_t = nmtools_maybe<result_t>;
+            if (static_cast<bool>(array)) {
+                auto result = view::broadcast_to(*array,shape,bsize);
+                return return_t{result};
+            } else {
+                return return_t{meta::Nothing};
+            }
+        }
         // bypass broadcasting index logic if array_t is simply scalar type
         else if constexpr (meta::is_num_v<array_t>) {
             // NOTE: quick workaround to compile
@@ -215,7 +227,8 @@ namespace nmtools::view
             const auto [success, shape_, free] = index::shape_broadcast_to(ashape,shape);
             #else
             const auto result = index::shape_broadcast_to(ashape,shape);
-            [[maybe_unused]] const auto& success = nmtools::get<0>(result);
+            // TODO: error handling, do not force unwrapping
+            [[maybe_unused]] const auto& success = nmtools::get<0>(unwrap(result));
             const auto& free    = nmtools::get<2>(result);
             #endif
             auto origin_axes = [](auto free){

@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto sqrt(const left_t& a)
     {
-        return ufunc(sqrt_t{},a);
+        return unary_ufunc(sqrt_t{},a);
     } // sqrt
 }
 

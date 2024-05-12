@@ -63,26 +63,36 @@ namespace nmtools::index
     constexpr auto compute_strides(const array_t& shape)
     {
         using return_t  = meta::resolve_optype_t<compute_strides_t,array_t>;
-        using size_type = size_t;
-        auto strides_ = return_t{};
-        if constexpr (!meta::is_constant_index_array_v<return_t> && meta::is_index_array_v<return_t>) {
-            [[maybe_unused]] auto n = (size_type)len(shape);
-            if constexpr (meta::is_resizable_v<return_t>) {
-                strides_.resize(n);
-            }
-            constexpr auto N = meta::len_v<return_t>;
-            if constexpr (N>0) {
-                // this may be clipped shape
-                meta::template_for<N>([&](auto i){
-                    at(strides_,i) = stride(shape,i);
-                });
+        // assume when return_t is maybe then shape_t is also maybe
+        if constexpr (meta::is_maybe_v<return_t>) {
+            if (static_cast<bool>(shape)) {
+                auto result = compute_strides(*shape);
+                return return_t{result};
             } else {
-                for (size_type i=0; i<n; i++) {
-                    at(strides_,i) = stride(shape,i);
+                return return_t{meta::Nothing};
+            }
+        } else {
+            using size_type = size_t;
+            auto strides_ = return_t{};
+            if constexpr (!meta::is_constant_index_array_v<return_t> && meta::is_index_array_v<return_t>) {
+                [[maybe_unused]] auto n = (size_type)len(shape);
+                if constexpr (meta::is_resizable_v<return_t>) {
+                    strides_.resize(n);
+                }
+                constexpr auto N = meta::len_v<return_t>;
+                if constexpr (N>0) {
+                    // this may be clipped shape
+                    meta::template_for<N>([&](auto i){
+                        at(strides_,i) = stride(shape,i);
+                    });
+                } else {
+                    for (size_type i=0; i<n; i++) {
+                        at(strides_,i) = stride(shape,i);
+                    }
                 }
             }
+            return strides_;
         }
-        return strides_;
     } // compute_strides
 } // namespace nmtools::index
 
@@ -101,8 +111,13 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            constexpr auto DIM = len_v<shape_t>;
+            [[maybe_unused]] constexpr auto DIM = len_v<shape_t>;
             using index_type [[maybe_unused]] = get_index_element_type_t<shape_t>;
+            if constexpr (is_maybe_v<shape_t>) {
+                using shape_type = remove_cvref_t<get_maybe_type_t<shape_t>>;
+                using type = nmtools_maybe<resolve_optype_t<index::compute_strides_t,shape_type>>;
+                return as_value_v<type>;
+            } else
             if constexpr (
                 (DIM > 0)
                 && (is_constant_index_array_v<shape_t>

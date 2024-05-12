@@ -4,6 +4,10 @@ project(numeric-tests-utl-array)
 add_executable(${PROJECT_NAME} tests.cpp
     index/compute_strides.cpp
 )
+add_test(
+    NAME ${PROJECT_NAME}
+    COMMAND ${PROJECT_NAME}
+)
 
 target_compile_options(
     ${PROJECT_NAME} PRIVATE

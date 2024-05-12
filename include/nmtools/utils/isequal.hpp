@@ -10,6 +10,12 @@
 
 namespace nmtools::utils
 {
+    namespace error
+    {
+        template <typename...>
+        struct ISEQUAL_UNSUPPORTED : meta::detail::fail_t {};
+    }
+
     namespace detail {
         // TODO: cleanup equality check for boolean type
 #if NMTOOLS_HAS_VECTOR
@@ -224,13 +230,9 @@ namespace nmtools::utils
                 else return false;
             };
 
-            // actually constraint the types
-            static_assert(
-                constrained_maybe(t1,t2) || constrained_either(t1,t2) || constrained(t1,t2)
-                , "unsupported isequal; only support integer scalar type or integer ndarray"
-            );
-
-            if constexpr (is_ellipsis_v<T> && is_ellipsis_v<U>)
+            if constexpr (!(constrained_maybe(t1,t2) || constrained_either(t1,t2) || constrained(t1,t2))) {
+                return error::ISEQUAL_UNSUPPORTED<T,U>{};
+            } else if constexpr (is_ellipsis_v<T> && is_ellipsis_v<U>)
                 return true;
             else if constexpr (is_none_v<T> && is_none_v<U>)
                 return true;
@@ -245,13 +247,6 @@ namespace nmtools::utils
                 if (hast && hasu && same)
                     same = same && isequal(*t,*u);
                 return same;
-            }
-            // comparison of maybe type with nothing type is allowed
-            else if constexpr (meta::is_maybe_v<T> && meta::is_nothing_v<U>) {
-                return !static_cast<bool>(t);
-            }
-            else if constexpr (meta::is_nothing_v<T> && meta::is_maybe_v<U>) {
-                return !static_cast<bool>(u);
             }
             // only lhs is maybe
             // return true if t is not empty and the value is equal to u
@@ -472,6 +467,15 @@ namespace nmtools::utils
         } // isequal
     } // namespace detail
 
+    template <typename lhs_t, typename rhs_t, typename>
+    struct isequal_t
+    {
+        constexpr auto operator()(const lhs_t& lhs, const rhs_t& rhs) const
+        {
+            return detail::isequal(lhs,rhs);
+        }
+    };
+
     /**
      * @brief check if all elements of t is is equals to corresponding elements of u, element-wise.
      * 
@@ -506,15 +510,48 @@ namespace nmtools::utils
                 equal = equal && isequal(t_,u_);
             });
             return equal;
+        // comparison of maybe type with nothing type is allowed
+        } else if constexpr (meta::is_maybe_v<T> && meta::is_nothing_v<U>) {
+            return !static_cast<bool>(t);
         }
-        #if 0
+        else if constexpr (meta::is_nothing_v<T> && meta::is_maybe_v<U>) {
+            return !static_cast<bool>(u);
+        } else if constexpr (meta::is_maybe_v<T> && meta::is_maybe_v<U>) {
+            using t_type = meta::get_maybe_type_t<T>;
+            using u_type = meta::get_maybe_type_t<U>;
+            using result_type = decltype(isequal(meta::declval<t_type>(),meta::declval<u_type>()));
+            static_assert( !meta::is_fail_v<result_type>, "unsupported types for isequal");
+            // Nothing and Nothing should be true here
+            auto is_equal = static_cast<bool>(t) == static_cast<bool>(u);
+            if (is_equal && static_cast<bool>(t)) {
+                return isequal(*t,*u);
+            } else {
+                return is_equal;
+            }
+        } else if constexpr (meta::is_maybe_v<T>) {
+            using t_type = meta::get_maybe_type_t<T>;
+            using result_type = decltype(isequal(meta::declval<t_type>(),u));
+            static_assert( !meta::is_fail_v<result_type>, "unsupported types for isequal");
+            // can safely proceed
+            if (static_cast<bool>(t)) {
+                return isequal(*t,u);
+            } else {
+                return false;
+            }
+        } else if constexpr (meta::is_maybe_v<U>) {
+            using u_type = meta::get_maybe_type_t<U>;
+            using result_type = decltype(isequal(t,meta::declval<u_type>()));
+            static_assert( !meta::is_fail_v<result_type>, "unsupported types for isequal");
+            if (static_cast<bool>(u)) {
+                return isequal(t,*u);
+            } else {
+                return false;
+            }
+        }
         else {
             auto isequal_impl = isequal_t<T,U>{};
             return isequal_impl(t,u);
         }
-        #else
-        else return detail::isequal(t,u);
-        #endif
     } // isequal
 
     template <typename lhs_t, typename rhs_t>

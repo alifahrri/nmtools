@@ -57,6 +57,10 @@ endif (NMTOOLS_SIMDE_TEST_AVX512)
 add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${NMTOOLS_SIMDE_TEST_SOURCES}
 )
+add_test(
+    NAME ${PROJECT_NAME}-doctest
+    COMMAND ${PROJECT_NAME}-doctest
+)
 
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
 target_compile_options(${PROJECT_NAME}-doctest PRIVATE -march=native)

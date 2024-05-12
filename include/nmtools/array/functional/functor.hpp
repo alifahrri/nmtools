@@ -14,9 +14,6 @@
 
 namespace nmtools::meta
 {
-    using view::resolve_array_type;
-    using view::resolve_array_type_t;
-
     using view::resolve_attribute_type;
     using view::resolve_attribute_type_t;
 
@@ -26,13 +23,13 @@ namespace nmtools::meta
     template <typename F, typename...new_operands_t>
     struct pack_operands_type<F,empty_operands_t,new_operands_t...>
     {
-        using type = nmtools_tuple<resolve_array_type_t<new_operands_t>...>;
+        using type = nmtools_tuple<fwd_operand_t<new_operands_t>...>;
     }; // pack_operands_type
 
     template <typename F, template<typename...>typename operand_tuple, typename...operands_t, typename...new_operands_t>
     struct pack_operands_type<F,operand_tuple<operands_t...>,new_operands_t...>
     {
-        using type = nmtools_tuple<operands_t...,resolve_array_type_t<new_operands_t>...>;
+        using type = nmtools_tuple<operands_t...,fwd_operand_t<new_operands_t>...>;
     }; // pack_operands_type
 
     template <typename F, typename operands_t, typename...new_operands_t>
@@ -48,13 +45,13 @@ namespace nmtools::functional
     template <typename operand_pack_t, typename...operands_t>
     constexpr auto initialize_operands(meta::empty_operands_t,const operands_t&...operands)
     {
-        return operand_pack_t{view::initialize<view::resolve_array_type_t<operands_t>>(operands)...};
+        return operand_pack_t{fwd_operand(operands)...};
     }
 
     template <typename operand_pack_t, template<typename...>typename operand_tuple, typename...operands_t, template<auto...>typename sequence, auto...Is, typename...new_operands_t>
     constexpr auto initialize_operands(sequence<Is...>,const operand_tuple<operands_t...>& operands,const new_operands_t&...new_operands)
     {
-        return operand_pack_t{nmtools::get<Is>(operands)...,view::initialize<view::resolve_array_type_t<new_operands_t>>(new_operands)...};
+        return operand_pack_t{nmtools::get<Is>(operands)...,fwd_operand(new_operands)...};
     }
 
     template <typename operand_pack_t, template<typename...>typename operand_tuple, typename...operands_t, typename...new_operands_t>
@@ -79,6 +76,9 @@ namespace nmtools::functional
         if constexpr (meta::is_maybe_v<F>) {
             return apply_function(*function, new_operands);
         } else {
+            // Triggers gcc error:
+            // error: initializations for multiple members of 'std::_Optional_payload_base
+            #if defined(__clang__)
             auto result = apply_function_t<F>{function}.apply(new_operands);
             if constexpr (meta::is_tuple_v<decltype(result)>) {
                 meta::template_for<meta::len_v<decltype(result)>>([&](auto index){
@@ -91,6 +91,9 @@ namespace nmtools::functional
                     , "the return of apply function is invalid!" );
             }
             return result;
+            #else
+            return apply_function_t<F>{function}.apply(new_operands);
+            #endif
         }
     } // apply_function
 
@@ -236,6 +239,7 @@ namespace nmtools::functional
             if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
                 // prefer to make functor copy-able and not taking ref/address
                 // so it is safe to return local copy
+                // TODO: use fwd_attribute
                 using new_attribute_t = view::resolve_attribute_type_t<m_attribute_t>;
                 using function_t = functor_t<F,operands_t,nmtools_tuple<new_attribute_t>>;
                 return function_t{fmap,operands,nmtools_tuple{view::init_attribute<new_attribute_t>(new_attribute)}};
@@ -424,6 +428,22 @@ namespace nmtools::functional
     nmtools_func_attribute // host device
     apply_function_t(const F&) -> apply_function_t<F>;
 
+    // helper function to "erase" pointer
+    template <typename operand_t>
+    static constexpr auto get_operand(const operand_t& operand)
+        -> meta::conditional_t<
+            meta::is_pointer_v<operand_t>
+            , const meta::remove_pointer_t<operand_t>&
+            , const operand_t&
+        >
+    {
+        if constexpr (meta::is_pointer_v<operand_t>) {
+            return *operand;
+        } else {
+            return operand;
+        }
+    }
+
     template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>
     struct fmap_t
     {
@@ -434,21 +454,6 @@ namespace nmtools::functional
 
         const F fn;
         arity_type m_arity = arity_type{};
-
-        template <typename operand_t>
-        static constexpr auto get_operand(const operand_t& operand)
-            -> meta::conditional_t<
-                meta::is_pointer_v<operand_t>
-                , const meta::remove_pointer_t<operand_t>&
-                , const operand_t&
-            >
-        {
-            if constexpr (meta::is_pointer_v<operand_t>) {
-                return *operand;
-            } else {
-                return operand;
-            }
-        }
 
         template<
             template<auto...>typename sequence, auto...Is,
@@ -607,12 +612,23 @@ namespace nmtools::functional
         }
     };
 
-    template <template<typename...> typename view_t, typename...Ts>
-    constexpr auto get_operands(const view::decorator_t<view_t,Ts...>& view)
+    template <typename view_t>
+    constexpr auto get_operands(const view_t& view)
     {
-        using view_type = view::decorator_t<view_t,Ts...>;
-        auto get_operands = get_operands_t<view_type>{view};
-        return get_operands();
+        if constexpr (meta::is_maybe_v<view_t>) {
+            using view_type   = meta::get_maybe_type_t<view_t>;
+            using result_type = decltype(get_operands(meta::declval<view_type>()));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(view)) {
+                return return_type{get_operands(*view)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            using view_type = view_t;
+            auto get_operands = get_operands_t<view_type>{view};
+            return get_operands();
+        }
     }
 
     template <typename view_t>
@@ -759,12 +775,23 @@ namespace nmtools::functional
     template <typename view_t>
     struct get_compute_graph_t;
 
-    template <template<typename...> typename view_t, typename...Ts>
-    constexpr auto get_compute_graph(const view::decorator_t<view_t,Ts...>& view)
+    template <typename view_t>
+    constexpr auto get_compute_graph(const view_t& view)
     {
-        using view_type = view::decorator_t<view_t,Ts...>;
-        auto get_graph = get_compute_graph_t<view_type>{view};
-        return get_graph();
+        if constexpr (meta::is_maybe_v<view_t>) {
+            using view_type = meta::get_maybe_type_t<view_t>;
+            using result_type = decltype(get_compute_graph(meta::declval<view_type>()));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(view)) {
+                return return_type{get_compute_graph(*view)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            using view_type = view_t;
+            auto get_graph = get_compute_graph_t<view_type>{view};
+            return get_graph();
+        }
     } // get_graph
 
     template <typename functor_t, typename operands_t>
@@ -861,69 +888,122 @@ namespace nmtools::utils
     template <
         typename F, typename lhs_operands_t, typename lhs_attributes_t
         , typename G, typename rhs_operands_t, typename rhs_attributes_t>
-    constexpr auto isequal(
-        const functional::functor_t<F,lhs_operands_t,lhs_attributes_t>& lhs
-        , const functional::functor_t<G,rhs_operands_t,rhs_attributes_t>& rhs
-    ) {
-        if constexpr ( !meta::is_same_v<F,G> || 
-            !meta::is_same_v<lhs_operands_t,rhs_operands_t>
+    struct isequal_t<
+        functional::functor_t<F,lhs_operands_t,lhs_attributes_t>
+        , functional::functor_t<G,rhs_operands_t,rhs_attributes_t>
+    > {
+        constexpr auto operator()(
+            const functional::functor_t<F,lhs_operands_t,lhs_attributes_t>& lhs
+            , const functional::functor_t<G,rhs_operands_t,rhs_attributes_t>& rhs
         ) {
-            // TODO: also check the values of operands
-            return false;
-        } else if constexpr (
-            !meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
-            && !meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
-        ) {
-            constexpr auto M = meta::len_v<lhs_attributes_t>;
-            constexpr auto N = meta::len_v<rhs_attributes_t>;
-            if constexpr (M != N) {
+            if constexpr ( !meta::is_same_v<F,G> || 
+                !meta::is_same_v<lhs_operands_t,rhs_operands_t>
+            ) {
+                // TODO: also check the values of operands
                 return false;
+            } else if constexpr (
+                !meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
+                && !meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
+            ) {
+                constexpr auto M = meta::len_v<lhs_attributes_t>;
+                constexpr auto N = meta::len_v<rhs_attributes_t>;
+                if constexpr (M != N) {
+                    return false;
+                } else {
+                    auto equal = true;
+                    meta::template_for<M>([&](auto index){
+                        auto equal_attribute = [&](){
+                            auto lhs_attribute = at(lhs.attributes,index);
+                            auto rhs_attribute = at(rhs.attributes,index);
+                            if constexpr (meta::is_floating_point_v<decltype(lhs_attribute)>
+                                && meta::is_floating_point_v<decltype(rhs_attribute)>)
+                            {
+                                return isclose(lhs_attribute,rhs_attribute);
+                            } else {
+                                return isequal(lhs_attribute,rhs_attribute);
+                            }
+                        }();
+                        equal = equal && equal_attribute;
+                    });
+                    return equal;
+                }
+            } else if constexpr ( meta::is_same_v<F,G>
+                && meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
+                && meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
+            ) {
+                return true;
             } else {
-                auto equal = true;
-                meta::template_for<M>([&](auto index){
-                    auto equal_attribute = [&](){
-                        auto lhs_attribute = at(lhs.attributes,index);
-                        auto rhs_attribute = at(rhs.attributes,index);
-                        if constexpr (meta::is_floating_point_v<decltype(lhs_attribute)>
-                            && meta::is_floating_point_v<decltype(rhs_attribute)>)
-                        {
-                            return isclose(lhs_attribute,rhs_attribute);
-                        } else {
-                            return isequal(lhs_attribute,rhs_attribute);
-                        }
-                    }();
-                    equal = equal && equal_attribute;
-                });
-                return equal;
+                return false;
             }
-        } else if constexpr ( meta::is_same_v<F,G>
-            && meta::is_same_v<lhs_attributes_t,meta::empty_attributes_t>
-            && meta::is_same_v<rhs_attributes_t,meta::empty_attributes_t>
-        ) {
-            return true;
-        } else {
-            return false;
         }
-    }
+    };
 
     template <
         template<typename...>typename lhs_tuple, typename...lhs_functors_t, typename lhs_operands_t,
         template<typename...>typename rhs_tuple, typename...rhs_functors_t, typename rhs_operands_t
     >
-    constexpr auto isequal(
-        const functional::functor_composition_t<lhs_tuple<lhs_functors_t...>,lhs_operands_t>& lhs
-        , const functional::functor_composition_t<rhs_tuple<rhs_functors_t...>,rhs_operands_t>& rhs
-    ) {
-        constexpr auto N_LHS = meta::len_v<decltype(lhs.functors)>;
-        constexpr auto N_RHS = meta::len_v<decltype(rhs.functors)>;
+    struct isequal_t
+    <
+        functional::functor_composition_t<lhs_tuple<lhs_functors_t...>,lhs_operands_t>
+        , functional::functor_composition_t<rhs_tuple<rhs_functors_t...>,rhs_operands_t>
+    >
+    {
+        constexpr auto operator()(
+            const functional::functor_composition_t<lhs_tuple<lhs_functors_t...>,lhs_operands_t>& lhs
+            , const functional::functor_composition_t<rhs_tuple<rhs_functors_t...>,rhs_operands_t>& rhs
+        ) {
+            constexpr auto N_LHS = meta::len_v<decltype(lhs.functors)>;
+            constexpr auto N_RHS = meta::len_v<decltype(rhs.functors)>;
 
-        auto equal = N_LHS == N_RHS;
-        constexpr auto N = (N_LHS < N_RHS) ? N_LHS : N_RHS;
-        meta::template_for<N>([&](auto index){
-            equal = equal && isequal(at(lhs.functors,index),at(rhs.functors,index));
-        });
-        return equal;
-    }
+            auto equal = N_LHS == N_RHS;
+            constexpr auto N = (N_LHS < N_RHS) ? N_LHS : N_RHS;
+            meta::template_for<N>([&](auto index){
+                equal = equal && isequal(at(lhs.functors,index),at(rhs.functors,index));
+            });
+            return equal;
+        }
+    };
+
+    template <
+        typename F, typename lhs_operands_t, typename lhs_attributes_t
+        , template<typename...>typename rhs_tuple, typename...rhs_functors_t, typename rhs_operands_t
+    >
+    struct isequal_t<
+        functional::functor_t<F,lhs_operands_t,lhs_attributes_t>
+        , functional::functor_composition_t<rhs_tuple<rhs_functors_t...>,rhs_operands_t>
+    > {
+        constexpr auto operator()(
+            const functional::functor_t<F,lhs_operands_t,lhs_attributes_t>& lhs
+            , const functional::functor_composition_t<rhs_tuple<rhs_functors_t...>,rhs_operands_t>& rhs
+        ) {
+            if constexpr (sizeof...(rhs_functors_t) == 1) {
+                return isequal(lhs,at(rhs.functors,meta::ct_v<0>));
+            } else {
+                return false;
+            }
+        }
+    };
+
+    template <
+        template<typename...>typename lhs_tuple, typename...lhs_functors_t, typename lhs_operands_t
+        , typename G, typename rhs_operands_t, typename rhs_attributes_t
+    >
+    struct isequal_t<
+        functional::functor_composition_t<lhs_tuple<lhs_functors_t...>,lhs_operands_t>
+        , functional::functor_t<G,rhs_operands_t,rhs_attributes_t>
+    >
+    {
+        constexpr auto operator()(
+            const functional::functor_composition_t<lhs_tuple<lhs_functors_t...>,lhs_operands_t>& lhs
+            , const functional::functor_t<G,rhs_operands_t,rhs_attributes_t>& rhs
+        ) {
+            if constexpr (sizeof...(lhs_functors_t) == 1) {
+                return isequal(at(lhs.functors,meta::ct_v<0>),rhs);
+            } else {
+                return false;
+            }
+        }
+    };
 }
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP

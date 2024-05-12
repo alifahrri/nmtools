@@ -44,7 +44,17 @@ namespace nmtools::view
     constexpr auto ufunc(op_t op, const array_t& array, const arrays_t&...arrays)
     {
         // TODO: check either for arrays...
-        if constexpr (meta::is_either_v<array_t>) {
+        if constexpr (meta::is_maybe_v<array_t>) {
+            // TODO: also check for arrays_t...
+            using result_type = decltype(ufunc(op,*array,arrays...));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(array)) {
+                auto result = ufunc(op,*array,arrays...);
+                return return_type{result};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else if constexpr (meta::is_either_v<array_t>) {
             // handle if array is either type,
             // such case can happen for reduce ufunc with runtime keepdims.
             // TODO: also handle any either type in arrays...
@@ -107,11 +117,29 @@ namespace nmtools::view
     } // ufunc
     #endif
 
-    // TODO: handle optional
     template <typename op_t, typename array_t, typename...op_args_t>
     constexpr auto unary_ufunc(op_t op, const array_t& array, op_args_t...op_args)
     {
-        if constexpr (sizeof...(op_args)) {
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using result_type = decltype(unary_ufunc(op,*array,op_args...));
+            using return_type = nmtools_maybe<result_type>;
+            return (static_cast<bool>(array)
+                ? return_type{unary_ufunc(op,*array,op_args...)}
+                : return_type{meta::Nothing}
+            );
+        } else if constexpr (meta::is_either_v<array_t>) {
+            using lhs_t = meta::get_either_left_t<array_t>;
+            using rhs_t = meta::get_either_right_t<array_t>;
+            using lhs_ufunc_t = decltype(unary_ufunc(op,meta::declval<lhs_t>(),op_args...));
+            using rhs_ufunc_t = decltype(unary_ufunc(op,meta::declval<rhs_t>(),op_args...));
+            using return_t = meta::replace_either_t<array_t,lhs_ufunc_t,rhs_ufunc_t>;
+            if (auto lptr = nmtools::get_if<lhs_t>(&array)) {
+                return return_t{unary_ufunc(op,*lptr,op_args...)};
+            } else /* if (auto rptr = get_if<rhs_t>(&array)) */ {
+                auto rptr = nmtools::get_if<rhs_t>(&array);
+                return return_t{unary_ufunc(op,*rptr,op_args...)};
+            }
+        } else if constexpr (sizeof...(op_args)) {
             return unary_ufunc(op[nmtools_tuple{op_args...}],array);
         } else if constexpr (meta::is_num_v<array_t>) {
             using view_t = decorator_t<scalar_ufunc_t,op_t,array_t>;
@@ -122,11 +150,37 @@ namespace nmtools::view
         }
     } // unary_ufunc
 
-    // TODO: handle optional lhs, rhs
     template <typename op_t, typename lhs_t, typename rhs_t>
     constexpr auto binary_ufunc(op_t op, const lhs_t& lhs, const rhs_t& rhs)
     {
-        if constexpr (meta::is_either_v<lhs_t>) {
+        if constexpr (meta::is_maybe_v<lhs_t>) {
+            using result_type = decltype(binary_ufunc(op,*lhs,rhs));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
+                , result_type, nmtools_maybe<result_type>
+            >;
+            auto get_result = [&](){
+                auto result = binary_ufunc(op,*lhs,rhs);
+                if constexpr (meta::is_maybe_v<result_type>) {
+                    return (result
+                        ? return_type{*result}
+                        : return_type{meta::Nothing}
+                    );
+                } else {
+                    return return_type{result};
+                }
+            };
+            return (static_cast<bool>(lhs)
+                ? get_result()
+                : return_type{meta::Nothing}
+            );
+        } else if constexpr (meta::is_maybe_v<rhs_t>) {
+            using result_type = decltype(binary_ufunc(op,lhs,*rhs));
+            using return_type = nmtools_maybe<result_type>;
+            return (static_cast<bool>(rhs)
+                ? return_type{binary_ufunc(op,lhs,*rhs)}
+                : return_type{meta::Nothing}
+            );
+        } else if constexpr (meta::is_either_v<lhs_t>) {
             using l_lhs_t = meta::get_either_left_t<lhs_t>;
             using l_rhs_t = meta::get_either_right_t<lhs_t>;
             using lhs_ufunc_t = decltype(binary_ufunc(op,meta::declval<lhs_t>(),rhs));
@@ -181,11 +235,38 @@ namespace nmtools::view
     template <typename op_t, typename lhs_t, typename rhs_t>
     constexpr auto broadcast_binary_ufunc(op_t op, const lhs_t& lhs, const rhs_t& rhs)
     {
-        if constexpr (meta::is_either_v<lhs_t>) {
+        if constexpr (meta::is_maybe_v<lhs_t>) {
+            using result_type = decltype(broadcast_binary_ufunc(op,*lhs,rhs));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
+                , result_type, nmtools_maybe<result_type>
+            >;
+            auto get_result = [&](){
+                auto result = broadcast_binary_ufunc(op,*lhs,rhs);
+                if constexpr (meta::is_maybe_v<result_type>) {
+                    return (result
+                        ? return_type{*result}
+                        : return_type{meta::Nothing}
+                    );
+                } else {
+                    return return_type{result};
+                }
+            };
+            return (static_cast<bool>(lhs)
+                ? get_result()
+                : return_type{meta::Nothing}
+            );
+        } else if constexpr (meta::is_maybe_v<rhs_t>) {
+            using result_type = decltype(broadcast_binary_ufunc(op,lhs,*rhs));
+            using return_type = nmtools_maybe<result_type>;
+            return (static_cast<bool>(rhs)
+                ? return_type{broadcast_binary_ufunc(op,lhs,*rhs)}
+                : return_type{meta::Nothing}
+            );
+        } else if constexpr (meta::is_either_v<lhs_t>) {
             using l_lhs_t = meta::get_either_left_t<lhs_t>;
             using l_rhs_t = meta::get_either_right_t<lhs_t>;
-            using lhs_ufunc_t = decltype(broadcast_binary_ufunc(op,meta::declval<lhs_t>(),rhs));
-            using rhs_ufunc_t = decltype(broadcast_binary_ufunc(op,meta::declval<rhs_t>(),rhs));
+            using lhs_ufunc_t = decltype(broadcast_binary_ufunc(op,meta::declval<l_lhs_t>(),rhs));
+            using rhs_ufunc_t = decltype(broadcast_binary_ufunc(op,meta::declval<l_rhs_t>(),rhs));
             using result_t = meta::replace_either_t<lhs_t,lhs_ufunc_t,rhs_ufunc_t>;
             if (auto lptr = nmtools::get_if<l_lhs_t>(&lhs)) {
                 static_assert( meta::is_pointer_v<decltype(lptr)>
@@ -276,7 +357,16 @@ namespace nmtools::view
         // the view type may decide wether to take ref or copy
         // TODO: error handling for duplicate axis
 
-        if constexpr (meta::is_either_v<array_t>) {
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type  = meta::get_maybe_type_t<array_t>;
+            using result_type = decltype(reduce(op,meta::declval<array_type>(),axis,dtype,initial,keepdims));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(array)) {
+                return return_type{reduce(op,*array,axis,dtype,initial,keepdims)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
             using ret_left_t  = decltype(reduce(op,meta::declval<left_t>(),axis,dtype,initial,keepdims));
@@ -315,15 +405,27 @@ namespace nmtools::view
     template <typename array_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t, typename op_t>
     constexpr auto reduce(const array_t& array, const args::reduce<axis_t,dtype_t,initial_t,keepdims_t,op_t>& attributes)
     {
-        using view_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,dtype_t>;
-        return view_t{{array,attributes}};
+        return reduce(
+            attributes.op
+            , array
+            , attributes.axis
+            , attributes.dtype
+            , attributes.initial
+            , attributes.keepdims
+        );
     }
 
     template <typename array_t, typename op_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
     constexpr auto reduce(const array_t& array, op_t op, const args::reduce<axis_t,dtype_t,initial_t,keepdims_t>& attributes)
     {
-        using view_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,dtype_t>;
-        return view_t{{op,array,attributes.axis,attributes.initial,attributes.keepdims,attributes.dtype}};
+        return reduce(
+            op
+            , array
+            , attributes.axis
+            , attributes.dtype
+            , attributes.initial
+            , attributes.keepdims
+        );
     }
 
     /**
@@ -340,17 +442,30 @@ namespace nmtools::view
     template <typename op_t, typename array_t, typename axis_t, typename dtype_t=none_t>
     constexpr auto accumulate(op_t op, const array_t& array, axis_t axis, dtype_t dtype=dtype_t{})
     {
-        // note: axis as reference to prevent array decays
-        using view_t = decorator_t<accumulate_t,op_t,array_t,axis_t,dtype_t>;
-        return view_t{{op,array,axis,dtype}};
+        if constexpr (meta::is_maybe_v<array_t>) {
+            using array_type  = meta::get_maybe_type_t<array_t>;
+            using result_type = decltype(accumulate(op,meta::declval<array_type>(),axis,dtype));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(array)) {
+                return return_type{accumulate(op,*array,axis,dtype)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else {
+            using view_t = decorator_t<accumulate_t,op_t,array_t,axis_t,dtype_t>;
+            return view_t{{op,array,axis,dtype}};
+        }
     } // accumulate
 
     template <typename op_t, typename array_t, typename axis_t, typename dtype_t>
     constexpr auto accumulate(const array_t& array, const args::accumulate<axis_t,dtype_t,op_t>& attributes)
     {
-        // TODO: call overloaded accumulate version, to make it easier for maybe/either
-        using view_t = decorator_t<accumulate_t,op_t,array_t,axis_t,dtype_t>;
-        return view_t{{array,attributes}};
+        return accumulate(
+            attributes.op
+            , array
+            , attributes.axis
+            , attributes.dtype
+        );
     } // accumulate
 
     template <typename array_t, typename op_t, typename axis_t, typename dtype_t>
@@ -373,15 +488,45 @@ namespace nmtools::view
     template <typename op_t, typename lhs_t, typename rhs_t, typename dtype_t=none_t>
     constexpr auto outer(op_t op, const lhs_t& lhs, const rhs_t& rhs, dtype_t dtype=dtype_t{})
     {
-        using view_t = decorator_t<outer_t,op_t,lhs_t,rhs_t,dtype_t>;
-        return view_t{{op,lhs,rhs,dtype}};
+        if constexpr (meta::is_maybe_v<lhs_t>) {
+            using lhs_type = meta::get_maybe_type_t<lhs_t>;
+            using result_type = decltype(outer(op,meta::declval<lhs_type>(),rhs,dtype));
+            using return_type = meta::conditional_t<
+                meta::is_maybe_v<result_type>
+                , result_type
+                , nmtools_maybe<result_type>>
+            ;
+            if (static_cast<bool>(lhs)) {
+                auto result = outer(op,*lhs,rhs,dtype);
+                if constexpr (meta::is_maybe_v<result_type>) {
+                    return result;
+                } else {
+                    return return_type{result};
+                }
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else if constexpr (meta::is_maybe_v<rhs_t>) {
+            using rhs_type = meta::get_maybe_type_t<rhs_t>;
+            using result_type = decltype(outer(op,lhs,meta::declval<rhs_type>(),dtype));
+            using return_type = nmtools_maybe<result_type>;
+            if (static_cast<bool>(rhs)) {
+                return return_type{outer(op,lhs,*rhs,dtype)};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        }
+        // TODO: handle either type
+        else {
+            using view_t = decorator_t<outer_t,op_t,lhs_t,rhs_t,dtype_t>;
+            return view_t{{op,lhs,rhs,dtype}};
+        }
     } // outer
 
     template <typename op_t, typename lhs_t, typename rhs_t, typename dtype_t=none_t>
     constexpr auto outer(const lhs_t& lhs, const rhs_t& rhs, const args::outer<dtype_t,op_t>& attributes)
     {
-        using view_t = decorator_t<outer_t,op_t,lhs_t,rhs_t,dtype_t>;
-        return view_t{{lhs,rhs,attributes}};
+        return outer(attributes.op,lhs,rhs,attributes.dtype);
     } // outer
 
     template <typename array_t, typename op_t, typename dtype_t>

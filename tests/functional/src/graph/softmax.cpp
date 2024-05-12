@@ -33,13 +33,13 @@ TEST_CASE("softmax" * doctest::test_suite("functional::get_compute_graph"))
     
     auto lhs = view::alias(lhs_array,0_ct);
 
-    auto a = view::reduce_maximum(lhs,axis);
+    auto a = nm::unwrap(view::reduce_maximum(lhs,axis));
     auto b = view::subtract(a,lhs);
     auto c = view::exp(b);
-    auto d = view::reduce_add(c,axis);
+    auto d = nm::unwrap(view::reduce_add(c,axis));
     auto e = view::divide(d,c);
 
-    auto graph = fn::get_compute_graph(e);
+    auto graph = nm::unwrap(fn::get_compute_graph(e));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)

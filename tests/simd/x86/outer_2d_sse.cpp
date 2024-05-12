@@ -12,6 +12,9 @@ namespace na = nm::array;
 namespace ix = nm::index;
 namespace simd = na::simd;
 
+// TODO: do not explicitly unwrap, fix eval
+using nmtools::unwrap;
+
 #define SIMD_TEST_EQUAL(result, expect) \
 { \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
@@ -35,7 +38,7 @@ TEST_CASE("add.outer_2d(case1a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case1b)" * doctest::test_suite("simd::x86_SSE"))
@@ -46,7 +49,7 @@ TEST_CASE("add.outer_2d(case1b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case1c)" * doctest::test_suite("simd::x86_SSE"))
@@ -57,7 +60,7 @@ TEST_CASE("add.outer_2d(case1c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case1d)" * doctest::test_suite("simd::x86_SSE"))
@@ -68,7 +71,7 @@ TEST_CASE("add.outer_2d(case1d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case2a)" * doctest::test_suite("simd::x86_SSE"))
@@ -79,7 +82,7 @@ TEST_CASE("add.outer_2d(case2a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case2b)" * doctest::test_suite("simd::x86_SSE"))
@@ -90,7 +93,7 @@ TEST_CASE("add.outer_2d(case2b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case2c)" * doctest::test_suite("simd::x86_SSE"))
@@ -101,7 +104,7 @@ TEST_CASE("add.outer_2d(case2c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case2d)" * doctest::test_suite("simd::x86_SSE"))
@@ -112,7 +115,7 @@ TEST_CASE("add.outer_2d(case2d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case2e)" * doctest::test_suite("simd::x86_SSE"))
@@ -123,7 +126,7 @@ TEST_CASE("add.outer_2d(case2e)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case3a)" * doctest::test_suite("simd::x86_SSE"))
@@ -134,7 +137,7 @@ TEST_CASE("add.outer_2d(case3a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case3b)" * doctest::test_suite("simd::x86_SSE"))
@@ -145,7 +148,7 @@ TEST_CASE("add.outer_2d(case3b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case3c)" * doctest::test_suite("simd::x86_SSE"))
@@ -156,7 +159,7 @@ TEST_CASE("add.outer_2d(case3c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case3d)" * doctest::test_suite("simd::x86_SSE"))
@@ -167,7 +170,7 @@ TEST_CASE("add.outer_2d(case3d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N),new_shape);
     auto rhs = na::arange(K);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case4a)" * doctest::test_suite("simd::x86_SSE"))
@@ -179,7 +182,7 @@ TEST_CASE("add.outer_2d(case4a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case4b)" * doctest::test_suite("simd::x86_SSE"))
@@ -191,7 +194,7 @@ TEST_CASE("add.outer_2d(case4b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case4c)" * doctest::test_suite("simd::x86_SSE"))
@@ -203,7 +206,7 @@ TEST_CASE("add.outer_2d(case4c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case4d)" * doctest::test_suite("simd::x86_SSE"))
@@ -215,7 +218,7 @@ TEST_CASE("add.outer_2d(case4d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case5a)" * doctest::test_suite("simd::x86_SSE"))
@@ -227,7 +230,7 @@ TEST_CASE("add.outer_2d(case5a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case5b)" * doctest::test_suite("simd::x86_SSE"))
@@ -239,7 +242,7 @@ TEST_CASE("add.outer_2d(case5b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case5c)" * doctest::test_suite("simd::x86_SSE"))
@@ -251,7 +254,7 @@ TEST_CASE("add.outer_2d(case5c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case5d)" * doctest::test_suite("simd::x86_SSE"))
@@ -263,7 +266,7 @@ TEST_CASE("add.outer_2d(case5d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case5e)" * doctest::test_suite("simd::x86_SSE"))
@@ -275,7 +278,7 @@ TEST_CASE("add.outer_2d(case5e)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case6a)" * doctest::test_suite("simd::x86_SSE"))
@@ -287,7 +290,7 @@ TEST_CASE("add.outer_2d(case6a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case6b)" * doctest::test_suite("simd::x86_SSE"))
@@ -299,7 +302,7 @@ TEST_CASE("add.outer_2d(case6b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case6c)" * doctest::test_suite("simd::x86_SSE"))
@@ -311,7 +314,7 @@ TEST_CASE("add.outer_2d(case6c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case6d)" * doctest::test_suite("simd::x86_SSE"))
@@ -323,7 +326,7 @@ TEST_CASE("add.outer_2d(case6d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case7a)" * doctest::test_suite("simd::x86_SSE"))
@@ -335,7 +338,7 @@ TEST_CASE("add.outer_2d(case7a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case7b)" * doctest::test_suite("simd::x86_SSE"))
@@ -347,7 +350,7 @@ TEST_CASE("add.outer_2d(case7b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case7c)" * doctest::test_suite("simd::x86_SSE"))
@@ -359,7 +362,7 @@ TEST_CASE("add.outer_2d(case7c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case7d)" * doctest::test_suite("simd::x86_SSE"))
@@ -371,7 +374,7 @@ TEST_CASE("add.outer_2d(case7d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case8a)" * doctest::test_suite("simd::x86_SSE"))
@@ -383,7 +386,7 @@ TEST_CASE("add.outer_2d(case8a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case8b)" * doctest::test_suite("simd::x86_SSE"))
@@ -395,7 +398,7 @@ TEST_CASE("add.outer_2d(case8b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case8c)" * doctest::test_suite("simd::x86_SSE"))
@@ -407,7 +410,7 @@ TEST_CASE("add.outer_2d(case8c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case8e)" * doctest::test_suite("simd::x86_SSE"))
@@ -419,7 +422,7 @@ TEST_CASE("add.outer_2d(case8e)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case9a)" * doctest::test_suite("simd::x86_SSE"))
@@ -431,7 +434,7 @@ TEST_CASE("add.outer_2d(case9a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case9b)" * doctest::test_suite("simd::x86_SSE"))
@@ -443,7 +446,7 @@ TEST_CASE("add.outer_2d(case9b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case9c)" * doctest::test_suite("simd::x86_SSE"))
@@ -455,7 +458,7 @@ TEST_CASE("add.outer_2d(case9c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case10a)" * doctest::test_suite("simd::x86_SSE"))
@@ -467,7 +470,7 @@ TEST_CASE("add.outer_2d(case10a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case10b)" * doctest::test_suite("simd::x86_SSE"))
@@ -479,7 +482,7 @@ TEST_CASE("add.outer_2d(case10b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case10c)" * doctest::test_suite("simd::x86_SSE"))
@@ -491,7 +494,7 @@ TEST_CASE("add.outer_2d(case10c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case11a)" * doctest::test_suite("simd::x86_SSE"))
@@ -503,7 +506,7 @@ TEST_CASE("add.outer_2d(case11a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case11b)" * doctest::test_suite("simd::x86_SSE"))
@@ -515,7 +518,7 @@ TEST_CASE("add.outer_2d(case11b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case11c)" * doctest::test_suite("simd::x86_SSE"))
@@ -527,7 +530,7 @@ TEST_CASE("add.outer_2d(case11c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case11e)" * doctest::test_suite("simd::x86_SSE"))
@@ -539,7 +542,7 @@ TEST_CASE("add.outer_2d(case11e)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case12a)" * doctest::test_suite("simd::x86_SSE"))
@@ -551,7 +554,7 @@ TEST_CASE("add.outer_2d(case12a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case12b)" * doctest::test_suite("simd::x86_SSE"))
@@ -563,7 +566,7 @@ TEST_CASE("add.outer_2d(case12b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case12c)" * doctest::test_suite("simd::x86_SSE"))
@@ -575,7 +578,7 @@ TEST_CASE("add.outer_2d(case12c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case12d)" * doctest::test_suite("simd::x86_SSE"))
@@ -587,7 +590,7 @@ TEST_CASE("add.outer_2d(case12d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 // TODO: fix int8 add outer
@@ -601,7 +604,7 @@ TEST_CASE("add.outer_2d(case13a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case13b)" * doctest::test_suite("simd::x86_SSE"))
@@ -613,7 +616,7 @@ TEST_CASE("add.outer_2d(case13b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case13c)" * doctest::test_suite("simd::x86_SSE"))
@@ -625,7 +628,7 @@ TEST_CASE("add.outer_2d(case13c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case14a)" * doctest::test_suite("simd::x86_SSE"))
@@ -637,7 +640,7 @@ TEST_CASE("add.outer_2d(case14a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case14b)" * doctest::test_suite("simd::x86_SSE"))
@@ -649,7 +652,7 @@ TEST_CASE("add.outer_2d(case14b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case14c)" * doctest::test_suite("simd::x86_SSE"))
@@ -661,7 +664,7 @@ TEST_CASE("add.outer_2d(case14c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case14e)" * doctest::test_suite("simd::x86_SSE"))
@@ -673,7 +676,7 @@ TEST_CASE("add.outer_2d(case14e)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case15a)" * doctest::test_suite("simd::x86_SSE"))
@@ -685,7 +688,7 @@ TEST_CASE("add.outer_2d(case15a)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case15b)" * doctest::test_suite("simd::x86_SSE"))
@@ -697,7 +700,7 @@ TEST_CASE("add.outer_2d(case15b)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case15c)" * doctest::test_suite("simd::x86_SSE"))
@@ -709,7 +712,7 @@ TEST_CASE("add.outer_2d(case15c)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case15d)" * doctest::test_suite("simd::x86_SSE"))
@@ -721,7 +724,7 @@ TEST_CASE("add.outer_2d(case15d)" * doctest::test_suite("simd::x86_SSE"))
     auto new_shape = nmtools_array{M,N};
     auto lhs = na::reshape(na::arange(M*N,dtype),new_shape);
     auto rhs = na::arange(K,dtype);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 #endif
 
@@ -735,7 +738,7 @@ TEST_CASE("add.outer_2d(case16a)" * doctest::test_suite("simd::x86_SSE"))
     auto rhs_shape = nmtools_array{O,P};
     auto lhs = na::reshape(na::arange(M*N),lhs_shape);
     auto rhs = na::reshape(na::arange(O*P),rhs_shape);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case16b)" * doctest::test_suite("simd::x86_SSE"))
@@ -748,7 +751,7 @@ TEST_CASE("add.outer_2d(case16b)" * doctest::test_suite("simd::x86_SSE"))
     auto rhs_shape = nmtools_array{O,P};
     auto lhs = na::reshape(na::arange(M*N),lhs_shape);
     auto rhs = na::reshape(na::arange(O*P),rhs_shape);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case16c)" * doctest::test_suite("simd::x86_SSE"))
@@ -761,7 +764,7 @@ TEST_CASE("add.outer_2d(case16c)" * doctest::test_suite("simd::x86_SSE"))
     auto rhs_shape = nmtools_array{O,P};
     auto lhs = na::reshape(na::arange(M*N),lhs_shape);
     auto rhs = na::reshape(na::arange(O*P),rhs_shape);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case16d)" * doctest::test_suite("simd::x86_SSE"))
@@ -774,7 +777,7 @@ TEST_CASE("add.outer_2d(case16d)" * doctest::test_suite("simd::x86_SSE"))
     auto rhs_shape = nmtools_array{O,P};
     auto lhs = na::reshape(na::arange(M*N),lhs_shape);
     auto rhs = na::reshape(na::arange(O*P),rhs_shape);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case17a)" * doctest::test_suite("simd::x86_SSE"))
@@ -788,7 +791,7 @@ TEST_CASE("add.outer_2d(case17a)" * doctest::test_suite("simd::x86_SSE"))
     auto rhs_shape = nmtools_array{O,P};
     auto lhs = na::reshape(na::arange(M*N,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(O*P,dtype),rhs_shape);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }
 
 TEST_CASE("add.outer_2d(case17b)" * doctest::test_suite("simd::x86_SSE"))
@@ -802,5 +805,5 @@ TEST_CASE("add.outer_2d(case17b)" * doctest::test_suite("simd::x86_SSE"))
     auto rhs_shape = nmtools_array{O,P};
     auto lhs = na::reshape(na::arange(M*N,dtype),lhs_shape);
     auto rhs = na::reshape(na::arange(O*P,dtype),rhs_shape);
-    X86_SSE_TEST(add.outer,lhs,rhs,nm::None);
+    X86_SSE_TEST(add.outer,unwrap(lhs),unwrap(rhs),nm::None);
 }

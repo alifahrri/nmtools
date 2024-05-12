@@ -56,6 +56,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/atleast_1d.cpp
     src/atleast_2d.cpp
     src/atleast_3d.cpp
+    src/atleast_nd.cpp
     src/broadcast_to.cpp
     src/broadcast_arrays.cpp
     src/concatenate.cpp
@@ -221,6 +222,10 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${VIEW_NN_TEST_SOURCES}
     ## view composition
     ${COMPOSITION_TEST_SOURCES}
+)
+add_test(
+    NAME ${PROJECT_NAME}-doctest
+    COMMAND ${PROJECT_NAME}-doctest
 )
 
 target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)

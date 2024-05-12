@@ -4,6 +4,7 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
 #include "nmtools/meta/bits/traits/is_either.hpp"
+#include "nmtools/meta/bits/traits/is_tuple.hpp"
 #include "nmtools/meta/bits/transform/get_either.hpp"
 
 namespace nmtools::meta
@@ -23,10 +24,14 @@ namespace nmtools::meta
     }; // is_slice_index
 
     template <template<typename...>typename tuple>
-    struct is_slice_index<tuple<none_t,none_t>> : true_type {};
+    struct is_slice_index<tuple<none_t,none_t>
+        , enable_if_t<is_tuple_v<tuple<none_t,none_t>>>
+    > : true_type {};
 
     template <template<typename...>typename tuple>
-    struct is_slice_index<tuple<none_t,none_t,none_t>> : true_type {};
+    struct is_slice_index<tuple<none_t,none_t,none_t>
+        , enable_if_t<is_tuple_v<tuple<none_t,none_t,none_t>>>
+    > : true_type {};
 
     template <typename T>
     struct is_slice_index<const T> : is_slice_index<T> {};

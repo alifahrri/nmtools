@@ -7,7 +7,7 @@ else
 fi
 
 if [[ -z "${SIMDE_INSTALL_PREFIX}" ]]; then
-    SIMDE_INSTALL_PREFIX="${PWD}/install"
+    SIMDE_INSTALL_PREFIX="/usr/local/"
 else
     echo "set SIMDE_INSTALL_PREFIX from env"
 fi
@@ -22,8 +22,8 @@ else
     git clone --single-branch -b ${SIMDE_VERSION} https://github.com/simd-everywhere/simde.git
 fi
 
-# sudo apt-get install -y ninja-build ninja-build python3-pip
-# pip3 install meson==0.55.0
+apt-get install -y ninja-build ninja-build python3-pip pkg-config
+pip3 install meson==0.55.0
 
 cd ${DIR}
 mkdir -p build

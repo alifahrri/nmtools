@@ -9,187 +9,123 @@
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/flatten.hpp"
 
+#include "nmtools/utils/isequal/isequal.hpp"
+#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/as_static.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
+
 namespace nmtools::view
 {
-    /**
-     * @addtogroup view
-     * Collections of functions/class for view objects
-     * @{
-     */
-    
-    template <typename array_t, typename=void>
+    template <typename src_shape_t, typename src_size_t>
     struct flatten_t
+        : base_indexer_t<flatten_t<src_shape_t,src_size_t>>
     {
-        using value_type      = meta::get_element_type_t<array_t>;
-        using const_reference = const value_type&;
-        // array type as required by decorator
-        using array_type      = resolve_array_type_t<array_t>;
-        using src_shape_type  = const decltype(nmtools::shape(meta::declval<array_t>()));
-        static constexpr auto fixed_size_vtype = [](){
-            constexpr auto fixed_size = meta::fixed_size_v<array_t>;
-            // NOTE: for now, ignore if array_t is view
-            // TODO: re-enable when all views are cleaned up
-            if constexpr (is_view_v<array_t>) {
-                return meta::as_value_v<meta::error::FIXED_SIZE_UNSUPPORTED<array_t>>;
-            } else if constexpr (meta::is_fail_v<decltype(fixed_size)>) {
-                return meta::as_value_v<decltype(fixed_size)>;
+        using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
+        using src_size_type  = meta::fwd_attribute_t<src_size_t>;
+        using dst_size_type  = meta::fwd_attribute_t<src_size_t>;
+
+        using dst_shape_type = meta::resolve_optype_t<
+            index::shape_flatten_t,src_shape_type,src_size_type>;
+
+        static constexpr auto n_inputs  = 1;
+        static constexpr auto n_outputs = 1;
+
+        const src_shape_type src_shape;
+        const src_size_type  src_size;
+        const dst_shape_type dst_shape;
+        const dst_size_type  dst_size;
+
+        constexpr flatten_t(const src_shape_t& src_shape
+            , const src_size_t& src_size
+        )
+            : src_shape(fwd_attribute(src_shape))
+            , src_size(fwd_attribute(src_size))
+            , dst_shape(index::shape_flatten(src_shape,src_size))
+            , dst_size(fwd_attribute(src_size))
+        {}
+
+        template <typename indices_t>
+        constexpr auto indices(const indices_t& indices) const
+        {
+            if constexpr (is_none_v<src_shape_type>) {
+                return None;
             } else {
-                return meta::as_value_v<meta::ct<(size_t)fixed_size>>;
+                auto i = at(indices,meta::ct_v<0>);
+                auto src_indices = index::compute_indices(i,src_shape);
+                return src_indices;
             }
-        }();
-        using fixed_size_type = meta::type_t<decltype(fixed_size_vtype)>;
-        using dst_shape_type  = const meta::resolve_optype_t<index::shape_flatten_t,src_shape_type,fixed_size_type>;
-
-        array_type     array;
-        dst_shape_type dst_shape;
-
-        constexpr flatten_t(const array_t& array_)
-            : array(initialize<array_type>(array_))
-            , dst_shape(index::shape_flatten(nmtools::shape(array_),fixed_size_type{}))
-        {}
-
-        constexpr auto operands() const noexcept
-        {
-            return nmtools_tuple<array_type>{array};
         }
 
-        constexpr auto attributes() const noexcept
+        template <typename...args_t>
+        constexpr auto operator==(flatten_t<args_t...> other) const
         {
-            return nmtools_tuple{};
+            return utils::isequal(src_shape,other.src_shape)
+                && utils::isequal(dst_shape,other.dst_shape)
+            ;
         }
-
-        constexpr auto dim() const noexcept
-        {
-            // flattened array is strictly 1D
-            return 1;
-        } // dim
-
-        constexpr auto shape() const noexcept
-        {
-            return dst_shape;
-        } // shape
-
-        template <typename size_type>
-        nmtools_index_attribute
-        constexpr auto index(size_type i) const
-        {
-            using index_t = meta::remove_address_space_t<meta::get_index_element_type_t<dst_shape_type>>;
-            auto shape_   = detail::shape(array);
-            auto indices  = index::compute_indices(static_cast<index_t>(i),shape_);
-            return indices;
-        } // index
     }; // flatten_t
 
-    /**
-     * @brief Specialization of flatten view for num input to follows numpy.
-     * needs to support operator() which just return the value, while the default use index().
-     * 
-     * @tparam array_t 
-     */
     template <typename array_t>
-    struct flatten_t<array_t,meta::enable_if_t<meta::is_num_v<array_t>>>
+    constexpr auto make_flatten(const array_t& array)
     {
-        using value_type      = array_t;
-        using const_reference = const value_type&;
-        using array_type      = const array_t;
-        using src_shape_type  = const decltype(nmtools::shape(meta::declval<array_t>()));
-        using fixed_size_type = decltype(meta::fixed_size_v<array_t>);
-        using dst_shape_type  = const meta::resolve_optype_t<index::shape_flatten_t,src_shape_type,fixed_size_type>;
-
-        array_type     array;
-        dst_shape_type dst_shape;
-
-        constexpr flatten_t(const array_t& array_)
-            : array(initialize<array_type>(array_))
-            , dst_shape(index::shape_flatten(nmtools::shape(array_),fixed_size_type{}))
-        {}
-
-        constexpr auto dim() const noexcept
-        {
-            // flattened array is strictly 1D
-            return 1;
-        } // dim
-
-        constexpr auto shape() const noexcept
-        {
-            return dst_shape;
-        } // shape
-
-        template <typename...size_types>
-        constexpr auto operator()(size_types...) const noexcept
-        {
-            // TODO: assert if indices < shape
-
-            return array;
-        } // operator()
-    }; // flatten_t
+        auto src_shape = shape<true>(array);
+        auto src_size  = size<true>(array);
+        auto indexer   = flatten_t{src_shape,src_size};
+        return indexing(array,indexer);
+    }
 
     template <typename array_t>
-    nmtools_view_attribute
     constexpr auto flatten(const array_t& array)
     {
-        // TODO: try to avoid macro branching
-        #ifndef __OPENCL_VERSION__
-        if constexpr (meta::is_either_v<array_t>) {
-            // TODO: support flatten on scalar
-            using left_t  = meta::get_either_left_t<array_t>;
-            using right_t = meta::get_either_right_t<array_t>;
-            // deduce return type for each type
-            using res_left_t  = decltype(view::flatten(meta::declval<left_t>()));
-            using res_right_t = decltype(view::flatten(meta::declval<right_t>()));
-            // NOTE: the following meta snippet is the same with eval,
-            // TODO: consider to add this metafunction (check if the resulting either is the same)
-            constexpr auto vtype = [](){
-                if constexpr (meta::is_same_v<res_left_t,res_right_t>) {
-                    return meta::as_value_v<res_left_t>;
-                } else {
-                    using either_t = meta::replace_either_t<array_t,res_left_t,res_right_t>;
-                    return meta::as_value_v<either_t>;
-                }
-            }();
-            using return_t = meta::type_t<decltype(vtype)>;
-            if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
-                return return_t{view::flatten(*l_ptr)};
-            } else {
-                auto r_ptr = nmtools::get_if<right_t>(&array);
-                return return_t{view::flatten(*r_ptr)};
-            }
-        } else {
-            return decorator_t<flatten_t,array_t>{array};
-        }
-        #else
-        #ifdef NMTOOLS_NO_BASE_ACCESS
-        using array_type = meta::remove_address_space_t<array_t>;
-        using view_type = flatten_t<array_type>;
-        using result_type = decorator_t<flatten_t,array_type>;
-        return result_type{view_type{array}};
-        #else // NMTOOLS_NO_BASE_ACCESS
-        return decorator_t<flatten_t,meta::remove_address_space_t<array_t>>{array};
-        #endif // NMTOOLS_NO_BASE_ACCESS
-        #endif
+        auto f = [](const auto&...args){
+            return make_flatten(args...);
+        };
+        return lift_indexing(f,array);
     } // flatten
-
-    /** @} */ // end group view
 } // namespace nmtools::view
 
-namespace nmtools::meta
+namespace nmtools::array
 {
-    /**
-     * @brief flatten view is 1D
-     * 
-     * @tparam array_t 
-     */
-    template <typename array_t>
-    struct is_array1d<view::decorator_t<view::flatten_t,array_t>> : meta::true_type {};
-} // namespace nmtools::meta
-
-namespace nmtools::meta
-{
-    template <typename array_t>
-    struct is_ndarray< view::decorator_t< view::flatten_t, array_t > >
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::flatten_t<args_t...>, max_dim
+    >
     {
-        static constexpr auto value = is_ndarray_v<array_t> || is_num_v<array_t>;
-    }; 
-} // namespace nmtools::meta
+        using attribute_type = view::flatten_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto src_size  = as_static<max_dim>(attribute.src_size);
+            return view::flatten_t{src_shape,src_size};
+        }
+    };
+} // namespace nmtools::array
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::flatten_t<args_t...>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const view::flatten_t<args_t...>& kwargs) const noexcept
+        {
+            nmtools_string str;
+            str += "flatten{";
+            str += ".src_shape="; str += to_string(kwargs.src_shape,Compact);
+            str += ".src_size=";  str += to_string(kwargs.src_size,Compact);
+            str += "}";
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_FLATTEN_HPP

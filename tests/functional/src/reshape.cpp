@@ -5,6 +5,7 @@
 namespace nm = nmtools;
 namespace fn = nm::functional;
 
+#if 1
 TEST_CASE("reshape(case1)" * doctest::test_suite("functional::reshape"))
 {
     NMTOOLS_TESTING_DECLARE_NS(reshape,case1);
@@ -16,6 +17,10 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("functional::reshape"))
         NMTOOLS_ASSERT_EQUAL( reshaped, expect::expected );
     }
 
+    // breaks on gcc:
+    // error: initializations for multiple members of 'std::_Optional_payload_base
+    // TODO: fix on gcc
+    #if defined(__clang__)
     {
         [[maybe_unused]] auto reshape_1 = fn::reshape[newshape_a];
         NMTOOLS_ASSERT_EQUAL( reshape_1.arity, 1 );
@@ -34,9 +39,25 @@ TEST_CASE("reshape(case1)" * doctest::test_suite("functional::reshape"))
         NMTOOLS_ASSERT_EQUAL( reshaped, expect::expected );
         #endif
     }
+    #endif
 }
+#endif
 
 namespace view = nmtools::view;
+using nmtools::unwrap;
+
+TEST_CASE("reshape" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+{
+    NMTOOLS_TESTING_DECLARE_NS(reshape,case1);
+    using namespace args;
+
+    auto a = view::reshape(array,newshape);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::reshape[newshape];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}
 
 TEST_CASE("reshape" * doctest::test_suite("functional::get_function_composition"))
 {
@@ -46,7 +67,7 @@ TEST_CASE("reshape" * doctest::test_suite("functional::get_function_composition"
     auto a = view::reshape(array,newshape);
 
     auto function = fn::get_function_composition(a);
-    auto expect = fn::reshape[newshape];
+    auto expect = fn::indexing[unwrap(a).attributes()];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }

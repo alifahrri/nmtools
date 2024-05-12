@@ -7,7 +7,7 @@
 // https://godbolt.org/z/d3vsh5T49
 // https://godbolt.org/z/qEGc6orGb
 
-#ifdef ARDUINO
+#if __has_include(<stddef.h>)
 
 #include <stddef.h>
 #include <stdint.h>
@@ -25,9 +25,11 @@ namespace nmtools
     using uint16_t  = ::uint16_t;
     using uint32_t  = ::uint32_t;
     using uint64_t  = ::uint64_t;
+    // use uint8 as bool to avoid vector of bool weirdness, esp. on device kernel
+    using bool_t    = uint8_t;
 } // namespace nmtools
 
-#elif defined(__OPENCL_VERSION__)
+#else
 
 namespace nmtools
 {
@@ -42,44 +44,11 @@ namespace nmtools
     using uint16_t  = unsigned short;
     using uint32_t  = unsigned int;
     using uint64_t  = unsigned long;
+    // use uint8 as bool to avoid vector of bool weirdness, esp. on device kernel
+    using bool_t    = uint8_t;
 }
 
-#elif defined(__CUDA__)
-
-namespace nmtools
-{
-    using size_t = size_t;
-    using float32_t = float;
-    using float64_t = double;
-    using int8_t    = char;
-    using int16_t   = short;
-    using int32_t   = int;
-    using int64_t   = long;
-    using uint8_t   = unsigned char;
-    using uint16_t  = unsigned short;
-    using uint32_t  = unsigned int;
-    using uint64_t  = unsigned long;
-}
-
-#else // (not ARDUINO)
-#include <cstddef>
-#include <cstdint>
-
-namespace nmtools
-{
-    using size_t = std::size_t;
-    using float32_t = float;
-    using float64_t = double;
-    using int8_t    = std::int8_t;
-    using int16_t   = std::int16_t;
-    using int32_t   = std::int32_t;
-    using int64_t   = std::int64_t;
-    using uint8_t   = std::uint8_t;
-    using uint16_t  = std::uint16_t;
-    using uint32_t  = std::uint32_t;
-    using uint64_t  = std::uint64_t;
-}
-#endif // ARDUINO
+#endif
 
 namespace nmtools
 {
@@ -173,11 +142,15 @@ namespace nmtools
 
 // NOTE: to make it consistent for separate host device compilation
 #ifndef nm_size_t
-#define nm_size_t unsigned int
+#define nm_size_t ::nmtools::size_t
 #endif // nm_size_t
 
 #ifndef nm_index_t
 #define nm_index_t int
 #endif // nm_index_t
+
+#ifndef nm_bool_t
+#define nm_bool_t ::nmtools::bool_t
+#endif // nm_bool_t
 
 #endif // NMTOOLS_DEF_HPP

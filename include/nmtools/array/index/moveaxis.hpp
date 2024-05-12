@@ -31,7 +31,24 @@ namespace nmtools::index
 
         using result_t = meta::resolve_optype_t<moveaxis_to_transpose_t, shape_t, source_t, destination_t>;
 
-        if constexpr ((! meta::is_constant_index_array_v<result_t>) && (! meta::is_fail_v<result_t>)) {
+        if constexpr (meta::is_maybe_v<result_t>) {
+            // when result is maybe, assume shape is also maybe
+            if (static_cast<bool>(shape)) {
+                auto result = moveaxis_to_transpose(*shape,source,destination);
+                // note that stl optional can be nested, we avoid that here
+                if constexpr (meta::is_maybe_v<decltype(result)>) {
+                    if (static_cast<bool>(result)) {
+                        return result_t{*result};
+                    } else {
+                        return result_t{meta::Nothing};
+                    }
+                } else {
+                    return result_t{result};
+                }
+            } else {
+                return result_t{meta::Nothing};
+            }
+        } else if constexpr ((! meta::is_constant_index_array_v<result_t>) && (! meta::is_fail_v<result_t>)) {
             using return_t = utl::maybe<result_t>;
 
             auto dim = [&](){
@@ -168,7 +185,16 @@ namespace nmtools::meta
             [[maybe_unused]] constexpr auto valid_src_dst =
                    (is_index_array_v<source_t> && is_index_array_v<destination_t>)
                 || (is_index_v<source_t> && is_index_v<destination_t>);
-            if constexpr (
+            if constexpr (is_maybe_v<shape_t>) {
+                using shape_type = get_maybe_type_t<shape_t>;
+                using result_type = resolve_optype_t<index::moveaxis_to_transpose_t,shape_type,source_t,destination_t>;
+                if constexpr (is_maybe_v<result_type>) {
+                    return as_value_v<result_type>;
+                } else {
+                    using type = nmtools_maybe<result_type>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (
                 (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
                 && (is_constant_index_v<source_t> || is_constant_index_array_v<source_t>) && (is_constant_index_v<destination_t> || is_constant_index_array_v<destination_t>)
             ) {

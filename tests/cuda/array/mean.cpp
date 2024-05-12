@@ -8,6 +8,9 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace ix = nm::index;
 
+// TODO: fix to accept maybe type
+using nmtools::unwrap;
+
 #define CUDA_MEAN_SUBCASE(...) \
 { \
     auto expect = na::mean(__VA_ARGS__); \
@@ -38,7 +41,7 @@ TEST_CASE("mean(case1)" * doctest::test_suite("array::mean"))
     auto keepdims = nm::True;
     {
         auto axis = 0;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
 }
 
@@ -56,11 +59,11 @@ TEST_CASE("mean(case2)" * doctest::test_suite("array::mean"))
     auto keepdims = nm::True;
     {
         auto axis = 0;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 1;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
 }
 
@@ -78,15 +81,15 @@ TEST_CASE("mean(case3)" * doctest::test_suite("array::mean"))
     auto keepdims = nm::True;
     {
         auto axis = 0;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 1;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 2;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
 }
 
@@ -104,19 +107,19 @@ TEST_CASE("mean(case4)" * doctest::test_suite("array::mean"))
     auto keepdims = nm::True;
     {
         auto axis = 0;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 1;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 2;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 3;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
 }
 
@@ -134,22 +137,22 @@ TEST_CASE("mean(case5)" * doctest::test_suite("array::mean"))
     auto keepdims = nm::True;
     {
         auto axis = 0;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 1;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 2;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 3;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
     {
         auto axis = 4;
-        CUDA_MEAN_SUBCASE(input,axis,dtype,keepdims);
+        CUDA_MEAN_SUBCASE(unwrap(input),axis,dtype,keepdims);
     }
 }

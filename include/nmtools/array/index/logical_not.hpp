@@ -21,23 +21,28 @@ namespace nmtools::index
     template <typename array_t>
     constexpr auto logical_not(const array_t& array)
     {
-        using return_t  = meta::resolve_optype_t<logical_not_t,array_t>;
-        using element_t = meta::get_element_or_common_type_t<array_t>;
-        static_assert ( meta::is_boolean_v<element_t>
-            , "unsupported index::logical_not"
-        );
-        auto res = return_t{};
+        using return_t = meta::resolve_optype_t<logical_not_t,array_t>;
+        if constexpr (meta::is_maybe_v<return_t>) {
+            if (static_cast<bool>(array)) {
+                auto result = logical_not(*array);
+                return return_t{result};
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else {
+            auto res = return_t{};
 
-        // only compute if not constant, otherwise assume already computed
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
-            auto s = len(array);
-            if constexpr (meta::is_resizable_v<return_t>)
-                res.resize(s);
-            for (size_t i=0; i<s; i++)
-                at(res,i) = !at(array,i);
+            // only compute if not constant, otherwise assume already computed
+            if constexpr (!meta::is_constant_index_array_v<return_t>) {
+                auto s = len(array);
+                if constexpr (meta::is_resizable_v<return_t>)
+                    res.resize(s);
+                for (size_t i=0; i<s; i++)
+                    at(res,i) = !static_cast<bool>(at(array,i));
+            }
+
+            return res;
         }
-
-        return res;
     } // logical_not
 } // namespace nmtools::index
 
@@ -55,8 +60,13 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<array_t>) {
-                // transform to value, compute at compile-time, then tranform back to type
+            if constexpr (is_maybe_v<array_t>) {
+                using array_type  = get_maybe_type_t<array_t>;
+                using result_type = resolve_optype_t<index::logical_not_t,array_type>;
+                using type = nmtools_maybe<result_type>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<array_t>) {
+                // transform to value, compute at compile-time, then transform back to type
                 // this simplify handling both runtime and compile time
                 constexpr auto array  = to_value_v<array_t>;
                 constexpr auto result = index::logical_not(array);
@@ -69,27 +79,21 @@ namespace nmtools::meta
                     using result_t = append_type_t<init_t,result_i>;
                     return as_value_v<result_t>;
                 }, as_value_v<init_type>);
-            } else if constexpr (is_fixed_index_array_v<array_t>) {
-                using type = tuple_to_array_t<array_t>;
-                return as_value_v<transform_bounded_array_t<type>>;
             } else if constexpr (is_index_array_v<array_t>) {
-                constexpr auto DIM = len_v<array_t>;
-                [[maybe_unused]] constexpr auto B_DIM = bounded_size_v<array_t>;
-                using element_t = remove_address_space_t<get_element_or_common_type_t<array_t>>;
+                [[maybe_unused]]
+                constexpr auto B_DIM = bounded_size_v<array_t>;
+                constexpr auto DIM   = len_v<array_t>;
+                using element_t = nm_bool_t;
                 if constexpr (DIM > 0) {
                     using type = nmtools_array<element_t,DIM>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
-                    // TODO: provide nmtools_static_vector macro
                     using type = nmtools_static_vector<element_t,B_DIM>;
                     return as_value_v<type>;
                 } else {
                     using type = nmtools_list<element_t>;
                     return as_value_v<type>;
                 }
-                #if 0
-                return as_value_v<array_t>;
-                #endif
             } else {
                 return as_value_v<error::INDEX_LOGICAL_NOT_UNSUPPORTED<array_t>>;
             }

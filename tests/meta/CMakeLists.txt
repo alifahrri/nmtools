@@ -3,9 +3,6 @@ project(numeric-tests-doctest-meta)
 
 set( META_VIEW_TEST_SOURCES
     array/view/accumulate.cpp
-    array/view/atleast_1d.cpp
-    array/view/atleast_2d.cpp
-    array/view/atleast_3d.cpp
     array/view/broadcast_to.cpp
     array/view/compress.cpp
     array/view/concatenate.cpp
@@ -35,9 +32,6 @@ set( META_VIEW_TEST_SOURCES
 
 set( META_EVAL_TEST_SOURCES
     array/eval/arange.cpp
-    array/eval/atleast_1d.cpp
-    array/eval/atleast_2d.cpp
-    array/eval/atleast_3d.cpp
     array/eval/broadcast_to.cpp
     array/eval/concatenate.cpp
     array/eval/flip.cpp
@@ -152,6 +146,11 @@ add_executable(${PROJECT_NAME} tests.cpp
     ${META_TRANSFORM_TEST_SOURCES}
     ${META_UTILITY_TEST_SOURCES}
 )
+add_test(
+    NAME ${PROJECT_NAME}
+    COMMAND ${PROJECT_NAME}
+)
+
 # omg
 if ((NOT EMSCRIPTEN) AND (NOT ANDROID))
     target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)

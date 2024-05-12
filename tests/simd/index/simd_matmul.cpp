@@ -484,9 +484,9 @@ TEST_CASE("matmul_simd_inner_enumerator(case1a)" * doctest::test_suite("index::m
     
     using nmtools::index::SIMD;
     auto i = 0ul;
-    auto out_tags = nmtools_array{SIMD::SCALAR,SIMD::SCALAR};
-    auto lhs_tags = nmtools_array{SIMD::PACKED,SIMD::PAD_3};
-    auto rhs_tags = nmtools_array{SIMD::PACKED,SIMD::PAD_3};
+    auto out_tags = nmtools_array<SIMD,2>{SIMD::SCALAR,SIMD::SCALAR};
+    auto lhs_tags = nmtools_array<SIMD,2>{SIMD::PACKED,SIMD::PAD_3};
+    auto rhs_tags = nmtools_array<SIMD,2>{SIMD::PACKED,SIMD::PAD_3};
     auto out_ptr_idxs = nmtools_array{0,0};
     auto lhs_ptr_idxs = nmtools_array{0,4};
     auto rhs_ptr_idxs = nmtools_array{0,4};
@@ -519,7 +519,7 @@ TEST_CASE("matmul_simd_enumerator(case1)" * doctest::test_suite("index::matmul_s
     NMTOOLS_ASSERT_EQUAL( enumerator.size(), 9 );
 
     auto i = 0ul;
-    for (auto [out_tag,out_ptr_idx,inner_enumerator] : enumerator) {
+    for ([[maybe_unused]] const auto [out_tag,out_ptr_idx,inner_enumerator] : enumerator) {
         i++;
     }
 }

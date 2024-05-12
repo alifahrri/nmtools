@@ -3,11 +3,69 @@
 #include "nmtools/utility.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+#include <string>
+
 namespace nm = nmtools;
 namespace utl = nm::utl;
 namespace meta = nm::meta;
 
 using nm::none_t;
+
+class StringWrapper {
+public:
+    // User-defined constructor (not trivial)
+    StringWrapper(const std::string& str) : data(str) {}
+
+private:
+    std::string data;
+};
+
+TEST_CASE("either" * doctest::test_suite("utl"))
+{
+    {
+        using either_t = utl::either<int,double>;
+        static_assert( !meta::is_trivially_constructible_v<either_t> );
+        static_assert( !std::is_trivially_constructible_v<either_t> );
+
+        static_assert( meta::is_trivially_copy_constructible_v<either_t> );
+        static_assert( std::is_trivially_copy_constructible_v<either_t> );
+
+        static_assert( meta::is_default_constructible_v<either_t> );
+        static_assert( std::is_default_constructible_v<either_t> );
+
+        static_assert( meta::is_copy_constructible_v<either_t> );
+        static_assert( std::is_copy_constructible_v<either_t> );
+
+        static_assert( meta::is_move_constructible_v<either_t> );
+        static_assert( std::is_move_constructible_v<either_t> );
+
+        static_assert( meta::is_constructible_v<either_t,int> );
+        static_assert( std::is_constructible_v<either_t,int> );
+
+        static_assert( meta::is_constructible_v<either_t,double> );
+        static_assert( std::is_constructible_v<either_t,double> );
+    }
+    {
+        using either_t = utl::either<StringWrapper,double>;
+        static_assert( !meta::is_trivially_constructible_v<either_t> );
+        static_assert( !std::is_trivially_constructible_v<either_t> );
+
+        static_assert( meta::is_default_constructible_v<either_t> );
+        static_assert( std::is_default_constructible_v<either_t> );
+
+        static_assert( meta::is_copy_constructible_v<either_t> );
+        static_assert( std::is_copy_constructible_v<either_t> );
+
+        static_assert( meta::is_move_constructible_v<either_t> );
+        static_assert( std::is_move_constructible_v<either_t> );
+
+        static_assert( meta::is_constructible_v<either_t,int> );
+        static_assert( std::is_constructible_v<either_t,int> );
+
+        static_assert( meta::is_constructible_v<either_t,double> );
+        static_assert( std::is_constructible_v<either_t,double> );
+    }
+}
 
 TEST_CASE("either" * doctest::test_suite("utl"))
 {

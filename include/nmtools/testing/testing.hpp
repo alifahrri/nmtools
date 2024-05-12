@@ -98,9 +98,9 @@ nmtools::utils::to_string(array)
     auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
     auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
     auto message = std::string{} \
-        + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+        + "\n\tActual " + "\033[0;90m(" + result_typename + ")\033[0m:\n" \
         + STRINGIFY(result) \
-        + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+        + "\n\tExpected " + "\033[0;90m(" + expect_typename + ")\033[0m:\n" \
         + STRINGIFY(expect) \
     ; \
     CHECK_MESSAGE(isequal(result,expect), \
@@ -174,6 +174,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
     /* TODO: check return type! */ \
 } \
 
+// TODO: remove
 /**
  * @brief check if return value of `func(arg)` is close with `expect` at compile-time.
  * Requires `func`, `arg`, and `expect` to be constexpr.
@@ -210,6 +211,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
     /* TODO: check return type! */ \
 } \
 
+// TODO: remove
 /**
  * @brief check if return value of `func(arg)` is close with `expect` at compile-time.
  * Requires `func`, `arg`, and `expect` to be constexpr.
@@ -261,6 +263,7 @@ nmtools::testing::make_func_args(#func,NMTOOLS_TESTING_RESULT_TYPE(func,__VA_ARG
 
 // @todo add subcase for isequal
 
+// TODO: remove
 /**
  * @brief like `NMTOOLS_TESTING_DOCTEST_SUBCASE` but at compile-time
  * 

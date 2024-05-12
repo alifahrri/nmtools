@@ -5,7 +5,8 @@
 #include "nmtools/utility/fwd.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/utility/forward.hpp"
-#include "nmtools/array/ndarray.hpp" // for nmtools_static_vector
+// #include "nmtools/array/ndarray.hpp" // for nmtools_static_vector
+#include "nmtools/utl/static_vector.hpp"
 
 namespace nmtools::array
 {
@@ -20,7 +21,7 @@ namespace nmtools::array
         {
             if constexpr (meta::is_dynamic_index_array_v<attribute_type>) {
                 using element_type = meta::get_element_type_t<attribute_t>;
-                using result_type  = nmtools_static_vector<element_type,max_dim>;
+                using result_type  = utl::static_vector<element_type,max_dim>;
                 auto result = result_type{};
                 result.resize(attribute.size());
                 for (size_t i=0; i<len(result); i++) {
