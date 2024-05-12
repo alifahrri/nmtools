@@ -84,4 +84,47 @@ namespace nmtools::view
     } // flatten
 } // namespace nmtools::view
 
+namespace nmtools::array
+{
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::flatten_t<args_t...>, max_dim
+    >
+    {
+        using attribute_type = view::flatten_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto src_size  = as_static<max_dim>(attribute.src_size);
+            return view::flatten_t{src_shape,src_size};
+        }
+    };
+} // namespace nmtools::array
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::flatten_t<args_t...>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const view::flatten_t<args_t...>& kwargs) const noexcept
+        {
+            nmtools_string str;
+            str += "flatten{";
+            str += ".src_shape="; str += to_string(kwargs.src_shape,Compact);
+            str += ".src_size=";  str += to_string(kwargs.src_size,Compact);
+            str += "}";
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
 #endif // NMTOOLS_ARRAY_VIEW_FLATTEN_HPP

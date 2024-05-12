@@ -120,22 +120,12 @@ namespace nmtools::array
         return array;
     }
 
-    template <typename type, typename shape_type>
-    nmtools_func_attribute
-    auto create_mutable_array(type* data_ptr, const shape_type& shape)
-    {
-        const auto numel = index::product(shape);
-
-        auto ref = view::mutable_ref(data_ptr,numel);
-        return view::reshape(ref,shape);
-    }
-
     template <auto DIM=0, typename dim_type=nm_index_t, typename size_type=nm_index_t, typename type>
     nmtools_func_attribute
     auto create_mutable_array(type* data_ptr, const size_type* shape_ptr, dim_type dim)
     {
         const auto shape = create_vector<DIM>(shape_ptr,dim);
-        return create_mutable_array(data_ptr,shape);
+        return device_array(data_ptr,shape,dim);
     }
 
     template <typename size_type=nm_size_t>
@@ -182,12 +172,19 @@ namespace nmtools::array
                 return;
             }
             assign_result(output,*result,thread_id,block_id,block_size);
+        } else if constexpr (meta::is_maybe_v<mutable_array_t>) {
+            if (!static_cast<bool>(output)) {
+                return;
+            }
+            assign_result(*output,result,thread_id,block_id,block_size);
         } else {
             auto size = nmtools::size(output);
             auto idx = compute_offset(thread_id,block_id,block_size);
             if (idx < size) {
                 auto flat_lhs = view::mutable_flatten(output);
                 auto flat_rhs = view::flatten(result);
+                static_assert( !meta::is_maybe_v<decltype(flat_lhs)> );
+                static_assert( !meta::is_maybe_v<decltype(flat_rhs)> );
                 const auto rhs = flat_rhs(idx);
                 auto& lhs = flat_lhs(idx);
                 lhs = rhs;

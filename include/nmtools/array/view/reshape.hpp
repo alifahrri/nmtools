@@ -117,6 +117,26 @@ namespace nmtools::view
 
 } // namespace nmtools::view
 
+namespace nmtools::array
+{
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::reshape_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::reshape_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto dst_shape = as_static<max_dim>(attribute.dst_shape);
+            auto src_size  = as_static<max_dim>(attribute.src_size);
+            return view::reshape_t{src_shape,dst_shape,src_size};
+        }
+    };
+}
+
 #if NMTOOLS_HAS_STRING
 
 namespace nmtools::utils::impl
