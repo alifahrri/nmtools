@@ -19,6 +19,12 @@ namespace nmtools::meta
     {
         using type = T;
     }; // remove_const
+
+    template <typename T>
+    struct remove_const<T&>
+    {
+        using type = remove_const_t<T>&;
+    };
     
 } // namespace nmtools::meta
 
