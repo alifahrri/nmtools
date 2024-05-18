@@ -4,104 +4,153 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/index/slice.hpp"
 
 namespace nmtools::view
 {
-    template <typename array_t, typename slices_t>
+    template <typename src_shape_t, typename slices_t, typename src_size_t>
     struct slice_t
+        : base_indexer_t<slice_t<src_shape_t,slices_t,src_size_t>>
     {
-        using array_type  = resolve_array_type_t<array_t>;
-        using slices_type = meta::remove_address_space_t<slices_t>;
-        using src_shape_type = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
-        using dst_shape_type = meta::remove_cvref_t<decltype(index::apply_shape_slice(meta::declval<src_shape_type>(),meta::declval<slices_t>()))>;
+        using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
+        using src_size_type  = meta::fwd_attribute_t<src_size_t>;
 
-        array_type array;
-        slices_type slices;
-        dst_shape_type shape_;
+        // TODO: fix fwd_attribute
+        // using slices_type = meta::fwd_attribute_t<slices_t>;
+        using slices_type = slices_t;
 
-        constexpr slice_t(const array_t& array_, const slices_t& slices)
-            : array(initialize<array_type>(array_))
-            , slices(slices)
-            , shape_(index::apply_shape_slice(nmtools::shape(array_),slices))
+        using dst_shape_type = decltype(index::apply_shape_slice(meta::declval<src_shape_type>(),meta::declval<slices_type>()));
+        // TODO: support slice size inference
+        // using dst_size_type  = src_size_type;
+        using dst_size_type = decltype(index::product(meta::declval<dst_shape_type>()));
+
+        static constexpr auto n_inputs  = 1;
+        static constexpr auto n_outputs = 1;
+
+        // currently non-const because split use push_back
+        // TODO: update split to use emplace_back and make this const
+        src_shape_type src_shape;
+        slices_type    slices;
+        src_size_type  src_size;
+        dst_shape_type dst_shape;
+        dst_size_type  dst_size;
+
+        constexpr slice_t(const src_shape_t& src_shape_
+            , const slices_t& slices_
+            , const src_size_t& src_size_
+        )
+            : src_shape(fwd_attribute(src_shape_))
+            // TODO: fix fwd_attribute
+            // , slices(fwd_attribute(slices_))
+            , slices(slices_)
+            , src_size(fwd_attribute(src_size_))
+            , dst_shape(fwd_attribute(index::apply_shape_slice(src_shape,slices)))
+            , dst_size(index::product(dst_shape))
         {}
 
-        constexpr auto shape() const
+        template <typename indices_t>
+        constexpr auto indices(const indices_t& indices) const
         {
-            return shape_;
-        } // shape
+            auto src_indices = index::apply_slice(indices,src_shape,slices);
+            return src_indices;
+        }
 
-        template <typename...size_types>
-        constexpr auto index(size_types...indices) const
+        template <typename...args_t>
+        constexpr auto operator==(slice_t<args_t...> other) const
         {
-            auto indices_ = pack_indices(indices...);
+            return utils::isequal(src_shape,other.src_shape)
+                && utils::isequal(dst_shape,other.dst_shape)
+                // TODO: also check if the slices is the same
+            ;
+        }
+    };
 
-            auto shape_ = detail::shape(array);
-            auto tf_indices = index::apply_slice(indices_,shape_,slices);
-            return tf_indices;
-        } // index
-    }; // slice_t
-
-    template <typename array_t, typename...slices_t>
-    constexpr auto slice(const array_t& array, slices_t...slices)
+    template <typename src_shape_t, typename src_size_t, typename slices_t>
+    constexpr auto slicer(const src_shape_t& src_shape, const slices_t& slices, const src_size_t& src_size)
     {
-        using slices_type = nmtools_tuple<slices_t...>;
-        using view_t = decorator_t<slice_t,array_t,slices_type>;
-        return view_t{{array, slices_type{slices...}}};
-    } // slice
+        auto m_dst_shape = index::apply_shape_slice(src_shape,slices);
+        if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
+            using result_t = decltype(slice_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)});
+            using return_t = nmtools_maybe<result_t>;
+            if (static_cast<bool>(m_dst_shape)) {
+                return return_t{result_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)}};
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else {
+            return slice_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)};
+        }
+    }
 
     template <typename array_t, typename slices_t>
     constexpr auto apply_slice(const array_t& array, const slices_t& slices)
     {
-        using view_t = decorator_t<slice_t,array_t,slices_t>;
-        return view_t{{array, slices}};
+        auto f = [](const auto& array, const auto& slices){
+            auto src_shape = shape<true>(array);
+            auto src_size  = size<true>(array);
+            auto indexer   = slicer(src_shape,slices,src_size);
+            return indexing(array,indexer);
+        };
+        return lift_indexing(f,array,slices);
     } // apply_slice
+
+    template <typename array_t, typename...slices_t>
+    constexpr auto slice(const array_t& array, slices_t...slices)
+    {
+        auto slices_pack = nmtools_tuple{slices...};
+        return apply_slice(array,slices_pack);
+    } // slice
 } // namespace nmtools::view
 
-namespace nmtools::meta
+namespace nmtools::array
 {
-    // TODO: remove, use newer deduction pattern
-    // NOTE: dont support fixed size for now
-    // TODO: fix for fixed size
-    template <typename array_t, typename...slices_t>
-    struct fixed_ndarray_shape< view::slice_t<array_t,slices_t...> >
-    {
-        static inline constexpr auto value = detail::fail_t{};
-        using value_type = decltype(value);
-    }; // fixed_ndarray_shape
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::slice_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::slice_t<args_t...>;
 
-    // TODO: remove, do not provide as metafunction, use newer deduction pattern
-    template <typename array_t, typename...slices_t>
-    struct fixed_size< view::decorator_t< view::slice_t, array_t,slices_t...> >
-    {
-        using view_type = view::decorator_t< view::slice_t, array_t,slices_t... >;
-        static inline constexpr auto value = error::FIXED_SIZE_UNSUPPORTED<view_type>{};
-    }; // fixed_ndarray_shape
+        attribute_type attribute;
 
-    // TODO: remove, do not provide as metafunction, use newer deduction pattern
-    template <typename array_t, typename...slices_t>
-    struct bounded_size< view::decorator_t< view::slice_t, array_t,slices_t...> >
-    {
-        using view_type = view::decorator_t< view::slice_t, array_t,slices_t...>;
-
-        static inline constexpr auto value = [](){
-            using array_type = typename view_type::array_type;
-            // bounded size of slice view can't exceed the array size
-            constexpr auto bounded_size = bounded_size_v<array_type>;
-            if constexpr (!is_fail_v<decltype(bounded_size)>) {
-                return bounded_size;
-            } else {
-                return error::BOUNDED_SIZE_UNSUPPORTED{};
-            }
-        }();
-    }; // fixed_ndarray_shape
-
-    template <typename array_t, typename...slices_t>
-    struct is_ndarray< view::decorator_t< view::slice_t, array_t, slices_t... >>
-    {
-        static constexpr auto value = is_ndarray_v<array_t>;
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto src_size  = as_static<max_dim>(attribute.src_size);
+            auto slices = attribute.slices;
+            // TODO: support fwd_attribute for slices
+            // auto slices    = as_static<max_dim>(attribute.slices);
+            return view::slicer(src_shape,slices,src_size);
+        }
     };
-} // namespace nmtools
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::slice_t<args_t...>, fmt_string_t<fmt_args...>
+    >
+    {
+        using result_type = nmtools_string;
+
+        auto operator()(const view::slice_t<args_t...>& kwargs) const noexcept
+        {
+            nmtools_string str;
+            str += "slice{";
+            str += ".src_shape="; str += to_string(kwargs.src_shape,Compact);
+            str += ",.slices=";   str += NMTOOLS_TYPENAME_TO_STRING(decltype(kwargs.slices));
+            // TODO: support to_string for slices
+            // str += ",.slices=";   str += apply_to_string(kwargs.slices,Compact);
+            str += ",.src_size="; str += to_string(kwargs.src_size,Compact);
+            str += "}";
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_SLICE_HPP
