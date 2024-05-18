@@ -181,10 +181,8 @@ namespace nmtools::array
             auto size = nmtools::size(output);
             auto idx = compute_offset(thread_id,block_id,block_size);
             if (idx < size) {
-                auto flat_lhs = view::mutable_flatten(output);
-                auto flat_rhs = view::flatten(result);
-                static_assert( !meta::is_maybe_v<decltype(flat_lhs)> );
-                static_assert( !meta::is_maybe_v<decltype(flat_rhs)> );
+                auto flat_lhs = unwrap(view::mutable_flatten(output));
+                auto flat_rhs = unwrap(view::flatten(result));
                 const auto rhs = flat_rhs(idx);
                 auto& lhs = flat_lhs(idx);
                 lhs = rhs;

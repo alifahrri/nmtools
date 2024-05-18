@@ -523,7 +523,7 @@ namespace nmtools::array
             );
         }
 
-        auto flat_rhs  = view::flatten(nmtools::forward<ndarray_t>(rhs));
+        auto flat_rhs  = unwrap(view::flatten(nmtools::forward<ndarray_t>(rhs)));
         auto flat_data = view::mutable_flatten(this->data);
         constexpr auto n_rhs = meta::fixed_size_v<decltype(flat_rhs)>;
         static_assert (numel_==n_rhs

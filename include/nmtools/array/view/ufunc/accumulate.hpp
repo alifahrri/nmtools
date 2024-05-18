@@ -208,7 +208,7 @@ namespace nmtools::view
                     return apply_slice(array, slices);
                 }
             }();
-            auto flattened = flatten(sliced);
+            auto flattened = unwrap(view::flatten(sliced));
             return reducer.template operator()<result_type>(flattened);
         } // operator()
     }; // accumulate_t

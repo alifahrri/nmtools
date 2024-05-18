@@ -409,7 +409,7 @@ namespace nmtools::view
                 }
             }();
             // NOTE: use view::flatten to avoid ambiguous call because of ADL
-            auto flattened = view::flatten(sliced);
+            auto flattened = unwrap(view::flatten(sliced));
             // TODO: instead of reduce using reducer_t, return reduce using None axis
             // doing so may simplify evaluation
             return [&](){
@@ -442,9 +442,9 @@ namespace nmtools::view
                 // flatten (and view in general) doesn't accept pointer
                 auto flattened = [&](){
                     if constexpr (meta::is_pointer_v<array_type>) {
-                        return flatten(*array);
+                        return unwrap(view::flatten(*array));
                     } else {
-                        return flatten(array);
+                        return unwrap(view::flatten(array));
                     }
                 }();
                 return [&](){
@@ -551,9 +551,9 @@ namespace nmtools::view
             // flatten (and view in general) doesn't accept pointer
             auto flattened = [&](){
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return flatten(*array);
+                    return unwrap(view::flatten(*array));
                 } else {
-                    return flatten(array);
+                    return unwrap(view::flatten(array));
                 }
             }();
             return [&](){
@@ -570,9 +570,9 @@ namespace nmtools::view
             // reduce the whole array
             auto flattened = [&](){
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return flatten(*array);
+                    return unwrap(view::flatten(*array));
                 } else {
-                    return flatten(array);
+                    return unwrap(view::flatten(array));
                 }
             }();
             return [&](){

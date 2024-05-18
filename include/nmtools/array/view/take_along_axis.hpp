@@ -91,9 +91,9 @@ namespace nmtools::view
                 auto indices_1d = apply_slice(b_indices,*slices);
                 auto out_1d = apply_mutable_slice(output,*slices);
 
-                auto flat_a = flatten(a_1d);
-                auto flat_indices = flatten(indices_1d);
-                auto flat_out = mutable_flatten(out_1d);
+                auto flat_a = unwrap(flatten(a_1d));
+                auto flat_indices = unwrap(flatten(indices_1d));
+                auto flat_out = unwrap(mutable_flatten(out_1d));
 
                 auto n = len(flat_out);
                 // auto n_i = len(flat_indices);

@@ -197,8 +197,8 @@ namespace nmtools
                 );
             }
             using element_t = meta::get_element_type_t<return_t>;
-            auto ret_view = view::mutable_flatten(ret);
-            auto arr_view = view::flatten(array);
+            auto ret_view = unwrap(view::mutable_flatten(ret));
+            auto arr_view = unwrap(view::flatten(array));
             auto n = len(arr_view);
             cast_impl<element_t>(ret_view,arr_view,n);
             return ret;
@@ -221,8 +221,8 @@ namespace nmtools
         if constexpr (meta::is_resizable_v<dst_t>) {
             detail::apply_resize(ret, ::nmtools::shape(array));
         }
-        auto ret_view = view::mutable_flatten(ret);
-        auto arr_view = view::flatten(array);
+        auto ret_view = unwrap(view::mutable_flatten(ret));
+        auto arr_view = unwrap(view::flatten(array));
         auto n = len(arr_view);
 
         for (size_t i=0; i<n; i++) {

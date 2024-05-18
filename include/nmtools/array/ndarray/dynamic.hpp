@@ -53,7 +53,7 @@ namespace nmtools::array
             strides_ = strides();
             numel_   = numel();
             data.resize(numel_);
-            auto array_view = view::flatten(array_ref);
+            auto array_view = unwrap(view::flatten(array_ref));
             for (size_t i=0; i<numel_; i++)
                 nmtools::at(data,i) = nmtools::at(array_view,i);
         }
@@ -490,7 +490,7 @@ namespace nmtools::array
             , "mismatched shape for dynamic_ndarray assignment"
         );
 
-        auto flat_rhs = view::flatten(rhs);
+        auto flat_rhs = unwrap(view::flatten(rhs));
         for (size_t i=0; i<numel_; i++)
             nmtools::at(this->data,i) = nmtools::at(flat_rhs,i);
 
