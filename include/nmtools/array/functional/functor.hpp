@@ -377,12 +377,15 @@ namespace nmtools::functional
             constexpr auto functor_arity = functor_type::arity;
 
             if constexpr (n_operands >= functor_arity) {
-                auto operand = utility::tuple_slice(operands_,None,meta::ct_v<functor_arity>);
-                auto result  = apply_function_t<functor_type>{functor}.apply(operand);
-
                 auto curried_operands = utility::tuple_slice(operands_,meta::ct_v<functor_arity>);
                 [[maybe_unused]]
                 constexpr auto n_curried_ops = meta::len_v<decltype(curried_operands)>;
+                auto curried_functors = utility::tuple_slice(functors.functors,None,meta::ct_v<-1>);
+                using curried_functors_t = meta::remove_cvref_t<decltype(curried_functors)>;
+                constexpr auto n_curried_functors = meta::len_v<curried_functors_t>;
+
+                auto operand = utility::tuple_slice(operands_,None,meta::ct_v<functor_arity>);
+                auto result  = apply_function_t<functor_type>{functor}.apply(operand);
 
                 auto result_operands = [&](){
                     if constexpr (meta::is_tuple_v<decltype(result)>) {
@@ -392,16 +395,18 @@ namespace nmtools::functional
                     }
                 }();
 
-                auto curried_functors = utility::tuple_slice(functors.functors,None,meta::ct_v<-1>);
-                using curried_functors_t = meta::remove_cvref_t<decltype(curried_functors)>;
-                constexpr auto n_curried_functors = meta::len_v<curried_functors_t>;
-
                 if constexpr (n_curried_functors > 0) {
                     return apply_function(functor_composition_t{curried_functors},result_operands);
                 } else if constexpr (n_curried_ops > 0) {
                     return result_operands;
                 } else {
+                    #if 1
+                    auto operand = utility::tuple_slice(operands_,None,meta::ct_v<functor_arity>);
+                    return apply_function_t<functor_type>{functor}.apply(operand);
+                    #else
+                    // breaks on gcc:
                     return result;
+                    #endif
                 }
             } else if constexpr ((arity - n_operands) > 0) {
                 // currying
