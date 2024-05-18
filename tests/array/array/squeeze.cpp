@@ -29,36 +29,14 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
 
-#define RUN_impl(...) \
-nm::array::squeeze(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs squeeze fn to callable lambda
-#define RUN_squeeze(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("squeeze-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_squeeze(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define SQUEEZE_SUBCASE(case_name, array) \
+#define SQUEEZE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(squeeze, case_name) \
-    auto array_ = RUN_squeeze(case_name, args::array); \
-    NMTOOLS_ASSERT_EQUAL( nm::shape(array_), expect::shape ); \
-    NMTOOLS_ASSERT_CLOSE( array_, expect::expected ); \
+    using namespace args; \
+    auto result = nmtools::array::squeeze(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
 }
 
 TEST_CASE("squeeze(case1)" * doctest::test_suite("array::squeeze"))

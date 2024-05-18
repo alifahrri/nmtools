@@ -26,36 +26,14 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
 
-#define RUN_impl(...) \
-nm::view::flatten(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs flatten fn to callable lambda
-#define RUN_flatten(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("flatten-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_flatten(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define FLATTEN_SUBCASE(case_name, array) \
+#define FLATTEN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(flatten,case_name); \
-    auto array_ref = RUN_flatten(case_name, args::array); \
-    NMTOOLS_REQUIRE_EQUAL( array_ref.shape(), expect::shape ); \
-    NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
+    using namespace args; \
+    auto result = view::flatten(__VA_ARGS__); \
+    NMTOOLS_REQUIRE_EQUAL( nmtools::shape(result), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
 }
 
 TEST_CASE("flatten(case1)" * doctest::test_suite("view::flatten"))

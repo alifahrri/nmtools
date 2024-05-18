@@ -12,7 +12,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, where)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        inline bool condition[10] = {true, true, true, true, true, false, false, false, false, false};
+        inline nm_bool_t condition[10] = {true, true, true, true, true, false, false, false, false, false};
         inline int8_t x[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         inline int8_t y[10] = {0,10,20,30,40,50,60,70,80,90};
         NMTOOLS_CAST_ARRAYS(condition)
@@ -28,7 +28,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, where)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        inline bool condition[3][4] = {
+        inline nm_bool_t condition[3][4] = {
             {false,  true,  true, true},
             {false, false,  true, true},
             {false, false, false, true},
@@ -57,7 +57,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, where)
 #ifndef NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        inline bool condition[3][4] = {
+        inline nm_bool_t condition[3][4] = {
             {false,  true,  true, true},
             {false, false,  true, true},
             {false, false, false, true},

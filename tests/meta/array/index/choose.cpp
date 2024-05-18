@@ -81,7 +81,7 @@ TEST_CASE("choose(vector,any)" * doctest::test_suite("meta::choose"))
         using ind_t = nmtools_list<size_t>;
         using arr_t = nmtools_tuple<size_t,int,int,int,nmtools_list<int>>;
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = meta::error::INDEX_CHOOSE_UNHANDLED_CASE<ind_t,arr_t>;
+        using exp_t = meta::error::INDEX_CHOOSE_UNSUPPORTED<ind_t,arr_t>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
@@ -120,7 +120,7 @@ TEST_CASE("choose(array,any)" * doctest::test_suite("meta::choose"))
         using ind_t = nmtools_array<size_t,3>;
         using arr_t = nmtools_tuple<int,int,nmtools_tuple<int>>;
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = meta::error::INDEX_CHOOSE_UNHANDLED_CASE<ind_t,arr_t>;
+        using exp_t = meta::error::INDEX_CHOOSE_UNSUPPORTED<ind_t,arr_t>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
@@ -163,7 +163,7 @@ TEST_CASE("choose(hybrid_ndarray,hybrid_ndarray)" * doctest::test_suite("meta::c
         using ind_t = na::hybrid_ndarray<size_t,4,1>;
         using arr_t = na::hybrid_ndarray<int,5,1>;
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = na::hybrid_ndarray<int,4,1>;
+        using exp_t = nmtools_static_vector<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }
@@ -174,7 +174,7 @@ TEST_CASE("choose(hybrid,raw)" * doctest::test_suite("meta::choose"))
         using ind_t = na::hybrid_ndarray<size_t,3,1>;
         using arr_t = int[3];
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = na::hybrid_ndarray<int,3,1>;
+        using exp_t = nmtools_static_vector<int,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }
@@ -185,28 +185,28 @@ TEST_CASE("choose(hybrid_ndarray,any)" * doctest::test_suite("meta::choose"))
         using ind_t = na::hybrid_ndarray<size_t,4,1>;
         using arr_t = nmtools_list<int>;
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = na::hybrid_ndarray<int,4,1>;
+        using exp_t = nmtools_static_vector<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
         using ind_t = na::hybrid_ndarray<size_t,4,1>;
         using arr_t = nmtools_array<int,5>;
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = na::hybrid_ndarray<int,4,1>;
+        using exp_t = nmtools_static_vector<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
         using ind_t = na::hybrid_ndarray<size_t,4,1>;
         using arr_t = nmtools_tuple<int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = na::hybrid_ndarray<int,4,1>;
+        using exp_t = nmtools_static_vector<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
         using ind_t = na::hybrid_ndarray<size_t,4,1>;
         using arr_t = nmtools_tuple<int,int,int,nmtools_tuple<int>>;
         using res_t = meta::resolve_optype_t<nm::index::choose_t,ind_t,arr_t>;
-        using exp_t = meta::error::INDEX_CHOOSE_UNHANDLED_CASE<ind_t,arr_t>;
+        using exp_t = meta::error::INDEX_CHOOSE_UNSUPPORTED<ind_t,arr_t>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }

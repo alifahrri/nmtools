@@ -5,6 +5,8 @@
 namespace nm = nmtools;
 namespace fn = nm::functional;
 
+using nmtools::unwrap;
+
 #define FUNCTIONAL_SUBCASE(subcase_name, function, ...) \
 SUBCASE(subcase_name) \
 { \
@@ -40,7 +42,7 @@ TEST_CASE("expand_dims(case2)" * doctest::test_suite("functional::expand_dims"))
 
 namespace view = nmtools::view;
 
-TEST_CASE("expand_dims" * doctest::test_suite("functional::get_function_composition"))
+TEST_CASE("expand_dims" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
     NMTOOLS_TESTING_DECLARE_NS(expand_dims, case2);
     using namespace args;
@@ -49,6 +51,19 @@ TEST_CASE("expand_dims" * doctest::test_suite("functional::get_function_composit
 
     auto function = fn::get_function_composition(a);
     auto expect = fn::expand_dims[axis];
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}
+
+TEST_CASE("expand_dims" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(expand_dims, case2);
+    using namespace args;
+
+    auto a = view::expand_dims(array,axis);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::indexing[unwrap(a).attributes()];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }

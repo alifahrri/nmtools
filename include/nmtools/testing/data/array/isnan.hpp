@@ -29,7 +29,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, isnan)
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
         inline int shape[2] = {3,3};
-        inline bool result[3][3] = {
+        inline nm_bool_t result[3][3] = {
             { std::isnan(0.1), std::isnan(INFINITY), std::isnan(0.3) },
             { std::isnan(NAN), std::isnan(   NAN  ), std::isnan(NAN) },
             { std::isnan(0.1), std::isnan(INFINITY), std::isnan(0.3) },

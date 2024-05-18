@@ -5,6 +5,8 @@
 namespace nm = nmtools;
 namespace fn = nm::functional;
 
+using nmtools::unwrap;
+
 #define FUNCTIONAL_SUBCASE(subcase_name, function, ...) \
 SUBCASE(subcase_name) \
 { \
@@ -28,7 +30,7 @@ TEST_CASE("squeeze(case1)" * doctest::test_suite("functional::squeeze"))
 
 namespace view = nmtools::view;
 
-TEST_CASE("squeeze" * doctest::test_suite("functional::get_function_composition"))
+TEST_CASE("squeeze" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
     NMTOOLS_TESTING_DECLARE_NS(squeeze,case1);
     using namespace args;
@@ -37,6 +39,19 @@ TEST_CASE("squeeze" * doctest::test_suite("functional::get_function_composition"
 
     auto function = fn::get_function_composition(a);
     auto expect = fn::squeeze;
+
+    NMTOOLS_ASSERT_EQUAL( function, expect );
+}
+
+TEST_CASE("squeeze" * doctest::test_suite("functional::get_function_composition"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(squeeze,case1);
+    using namespace args;
+
+    auto a = view::squeeze(array);
+
+    auto function = fn::get_function_composition(a);
+    auto expect = fn::indexing[unwrap(a).attributes()];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }

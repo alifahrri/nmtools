@@ -1,5 +1,5 @@
 #include "nmtools/array/index/pad.hpp"
-#include "nmtools/testing/data/array/pad.hpp"
+#include "nmtools/testing/data/index/pad.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define RUN_shape_pad_impl(...) \

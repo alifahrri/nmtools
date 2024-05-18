@@ -949,17 +949,6 @@ RUN_mutable_slice_impl(__VA_ARGS__);
 RUN_apply_mutable_slice_impl(__VA_ARGS__);
 #endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
-#define SLICE_SUBCASE(case_name, input, ...) \
-SUBCASE(#case_name) \
-{ \
-    NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
-    using namespace args; \
-    auto input_ = na::copy(input); \
-    auto result = RUN_mutable_slice(case_name, input_, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect::result) ); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
-}
-
 #define MUTABLE_SLICE_SUBCASE(case_name, input, rhs, ...) \
 SUBCASE(#case_name) \
 { \
@@ -970,6 +959,7 @@ SUBCASE(#case_name) \
     NMTOOLS_REQUIRE_EQUAL( nm::shape(result), nm::shape(expect::result) ); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
     result = rhs; \
+    static_assert( meta::is_ndarray_v<decltype(rhs)> ); \
     NMTOOLS_ASSERT_EQUAL( input_, expect::modified ); \
 }
 
@@ -983,6 +973,7 @@ SUBCASE(#case_name) \
     NMTOOLS_REQUIRE_EQUAL( nm::shape(result), nm::shape(expect::result) ); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
     result = rhs; \
+    static_assert( meta::is_ndarray_v<decltype(rhs)> ); \
     NMTOOLS_ASSERT_EQUAL( input_, expect::modified ); \
 }
 

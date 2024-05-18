@@ -18,7 +18,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, logical_not)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        inline bool a[3][3] = {
+        inline nm_bool_t a[3][3] = {
             { true, false,  true},
             {false,  true, false},
             { true, false,  true},
@@ -28,7 +28,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, logical_not)
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
         inline int shape[2] = {3,3};
-        inline bool result[3][3] = {
+        inline nm_bool_t result[3][3] = {
             { !true, !false,  !true},
             {!false,  !true, !false},
             { !true, !false,  !true},
