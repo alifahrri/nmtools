@@ -186,7 +186,8 @@ namespace nmtools::view
             // so must use push back for now
             // res.resize(n);
             for (size_t i=0; i<n; i++) {
-                res.push_back(split_t{{array,at(split_args,i)}});
+                // TODO: use emplace_back
+                res.push_back(apply_slice(array,at(split_args,i)));
                 // at(res,i) = apply_slice(array, at(split_args,i));
             }
             return res;

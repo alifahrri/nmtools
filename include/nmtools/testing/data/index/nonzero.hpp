@@ -35,7 +35,7 @@ NMTOOLS_TESTING_DECLARE_CASE(nonzero)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        inline bool x[6] = {true,true,false,true,true,true};
+        inline nm_bool_t x[6] = {true,true,false,true,true,true};
         NMTOOLS_CAST_INDEX_ARRAYS(x);
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(x);
     }

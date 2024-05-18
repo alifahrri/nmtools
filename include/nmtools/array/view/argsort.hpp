@@ -86,9 +86,9 @@ namespace nmtools::view
                 auto batch_slice = view::apply_mutable_slice(output,*slice_indices);
                 auto array_slice = [&](){
                     if constexpr (meta::is_pointer_v<array_type>) {
-                        return view::flatten(view::apply_slice(*array,*slice_indices));
+                        return unwrap(view::flatten(view::apply_slice(*array,*slice_indices)));
                     } else {
-                        return view::flatten(view::apply_slice(array,*slice_indices));
+                        return unwrap(view::flatten(view::apply_slice(array,*slice_indices)));
                     }
                 }();
 

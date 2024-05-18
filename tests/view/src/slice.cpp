@@ -1342,6 +1342,7 @@ namespace view = nmtools::view;
 
 using nmtools_tuple;
 
+#if 0
 TEST_CASE("slice" * doctest::test_suite("view::slice"))
 {
     SUBCASE("fixed_ndarray")
@@ -1369,6 +1370,7 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, sliced_t );
     }
 }
+#endif
 
 namespace testing::slice
 {

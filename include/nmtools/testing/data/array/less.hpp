@@ -30,7 +30,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, less)
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
         inline int shape[2] = {3,3};
-        inline bool result[3][3] = {
+        inline nm_bool_t result[3][3] = {
             {(0<0),(1<1),(2<2)},
             {(3<0),(4<1),(5<2)},
             {(6<0),(7<1),(8<2)},
@@ -50,7 +50,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, less)
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
         inline int shape[2] = {3,3};
-        inline bool result[3][3] = {
+        inline nm_bool_t result[3][3] = {
             {(0<2),(1<2),(2<2)},
             {(3<2),(4<2),(5<2)},
             {(6<2),(7<2),(8<2)},

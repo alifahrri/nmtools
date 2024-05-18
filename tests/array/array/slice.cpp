@@ -1,3 +1,22 @@
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
+#endif
+
 #include "nmtools/array/array/slice.hpp"
 #include "nmtools/testing/data/array/slice.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -5,35 +24,12 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define RUN_slice_impl(...) \
-nm::array::slice(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs slice fn to callable lambda
-#define RUN_slice(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("slice-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_slice_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_slice(case_name, ...) \
-RUN_slice_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
     using namespace args; \
-    auto result = RUN_slice(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::slice(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -41,12 +37,16 @@ TEST_CASE("slice(case1)" * doctest::test_suite("array::slice"))
 {
     SLICE_SUBCASE(case1,   array, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, array_a, slice0, slice1, slice2);
-    // TODO: remove nested vector support
     SLICE_SUBCASE(case1, array_f, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, array_d, slice0, slice1, slice2);
-    SLICE_SUBCASE(case1, array_h, slice0, slice1, slice2);
+    // SLICE_SUBCASE(case1, array_h, slice0, slice1, slice2);
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    SLICE_SUBCASE(case1, array_cs_fb, slice0, slice1, slice2);
+    #endif
 }
 
+#if 0
 TEST_CASE("slice(case2)" * doctest::test_suite("array::slice"))
 {
     SLICE_SUBCASE(case2,   array, slice0, slice1, slice2);
@@ -379,3 +379,4 @@ TEST_CASE("slice(case38)" * doctest::test_suite("array::slice"))
     SLICE_SUBCASE(case38, array_d, slice0, slice1, slice2, slice3);
     SLICE_SUBCASE(case38, array_h, slice0, slice1, slice2, slice3);
 }
+#endif

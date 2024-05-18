@@ -6,13 +6,10 @@ set( META_VIEW_TEST_SOURCES
     array/view/broadcast_to.cpp
     array/view/compress.cpp
     array/view/concatenate.cpp
-    array/view/expand_dims.cpp
-    array/view/flatten.cpp
     array/view/full.cpp
     array/view/matmul.cpp
     array/view/mean.cpp
     array/view/moveaxis.cpp
-    array/view/ones.cpp
     array/view/outer.cpp
     array/view/pad.cpp
     array/view/pooling.cpp
@@ -20,25 +17,21 @@ set( META_VIEW_TEST_SOURCES
     array/view/reduce.cpp
     array/view/repeat.cpp
     array/view/reshape.cpp
-    array/view/squeeze.cpp
     array/view/take.cpp
     array/view/tile.cpp
     array/view/transpose.cpp
     array/view/ufunc.cpp
     array/view/var.cpp
     array/view/where.cpp
-    array/view/zeros.cpp
 )
 
 set( META_EVAL_TEST_SOURCES
     array/eval/arange.cpp
     array/eval/broadcast_to.cpp
     array/eval/concatenate.cpp
-    array/eval/flip.cpp
     array/eval/full.cpp
     array/eval/matmul.cpp
     array/eval/mean.cpp
-    array/eval/ones.cpp
     array/eval/prod.cpp
     array/eval/reduce.cpp
     array/eval/repeat.cpp
@@ -47,7 +40,6 @@ set( META_EVAL_TEST_SOURCES
     array/eval/ufunc.cpp
     array/eval/var.cpp
     array/eval/where.cpp
-    array/eval/zeros.cpp
 )
 
 set( META_INDEX_TEST_SOURCES

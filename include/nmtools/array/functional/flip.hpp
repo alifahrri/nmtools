@@ -2,6 +2,7 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_FLIP_HPP
 
 #include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/functional/indexing.hpp"
 #include "nmtools/array/view/flip.hpp"
 
 namespace nmtools::functional
@@ -19,24 +20,6 @@ namespace nmtools::functional
     }
 
     constexpr inline auto flip = functor_t(unary_fmap_t<fun::flip_t>{});
-
-    template <typename...args_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::flip_t, args_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::flip_t, args_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return flip[view.axes];
-        }
-    };
 } // namespace nmtools::functional
 
 

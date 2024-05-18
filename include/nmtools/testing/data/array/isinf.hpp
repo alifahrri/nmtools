@@ -28,7 +28,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, isinf)
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
         inline int shape[2] = {3,3};
-        inline bool result[3][3] = {
+        inline nm_bool_t result[3][3] = {
             { std::isinf(0.1), std::isinf(INFINITY), std::isinf(0.3) },
             { std::isinf(NAN), std::isinf(   NAN  ), std::isinf(NAN) },
             { std::isinf(0.1), std::isinf(INFINITY), std::isinf(0.3) },

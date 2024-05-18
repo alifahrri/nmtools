@@ -5,6 +5,7 @@
 #include "nmtools/platform.hpp"
 #include "nmtools/utl/common.hpp"
 #include "nmtools/utl/array.hpp"
+#include "nmtools/meta/bits/array/resize_bounded_size.hpp"
 
 // poor man's static_vector,
 // very simple and minimalistic implementation of static_vector
@@ -55,6 +56,12 @@ namespace nmtools::utl
         {}
         constexpr static_vector(size_type n)
             : size_(n)
+        {}
+
+        template <typename...Ts>
+        constexpr static_vector(T a, T b, Ts...ts)
+            : buffer{a,b,ts...}
+            , size_(sizeof...(ts)+2)
         {}
 
         constexpr static_vector(const static_vector& other)
@@ -179,5 +186,14 @@ namespace nmtools::utl
         return a.data() + a.size();
     }
 } // namespace nmtools::utl
+
+namespace nmtools::meta
+{
+    template <typename T, size_t Capacity, auto NewSize>
+    struct resize_bounded_size<utl::static_vector<T,Capacity>,NewSize>
+    {
+        using type = utl::static_vector<T,NewSize>;
+    };
+}
 
 #endif // NMTOOLS_UTL_STATIC_VECTOR_HPP

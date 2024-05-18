@@ -79,38 +79,31 @@ namespace nmtools::view
         }
     };
 
-    template <typename array_t, typename dst_shape_t>
-    constexpr auto make_reshaper(const array_t& array, const dst_shape_t& dst_shape)
+    template <typename src_shape_t, typename dst_shape_t, typename src_size_t>
+    constexpr auto reshaper(const src_shape_t& src_shape, const dst_shape_t& dst_shape, const src_size_t& src_size)
     {
-        static_assert( !meta::is_maybe_v<array_t> && !meta::is_maybe_v<dst_shape_t>, "invalid type for array" );
-        auto src_shape   = shape<true>(array);
-        auto src_size    = size<true>(array);
         auto m_dst_shape = index::shape_reshape(src_shape,dst_shape);
         if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
-            using result_t = reshape_t<decltype(src_shape),dst_shape_t,decltype(src_size)>;
+            using result_t = decltype(reshape_t{unwrap(src_shape),dst_shape,unwrap(src_size)});
             using return_t = nmtools_maybe<result_t>;
             if (static_cast<bool>(m_dst_shape)) {
-                return return_t{result_t{src_shape,dst_shape,src_size}};
+                return return_t{result_t{unwrap(src_shape),dst_shape,unwrap(src_size)}};
             } else {
                 return return_t{meta::Nothing};
             }
         } else {
-            return reshape_t{src_shape,dst_shape,src_size};
+            return reshape_t{unwrap(src_shape),dst_shape,unwrap(src_size)};
         }
-    }
-
-    template <typename array_t, typename dst_shape_t>
-    constexpr auto make_reshape(const array_t& array, const dst_shape_t& dst_shape)
-    {
-        auto indexer = make_reshaper(array,dst_shape);
-        return indexing(array,indexer);
     }
 
     template <typename array_t, typename dst_shape_t>
     constexpr auto reshape(const array_t& array, const dst_shape_t& dst_shape)
     {
-        auto f = [](const auto&...args){
-            return make_reshape(args...);
+        auto f = [](const auto& array, const auto& dst_shape){
+            auto src_shape = shape<true>(array);
+            auto src_size  = size<true>(array);
+            auto indexer = reshaper(src_shape,dst_shape,src_size);
+            return indexing(array,indexer);
         };
         return lift_indexing(f,array,dst_shape);
     }
@@ -132,7 +125,7 @@ namespace nmtools::array
             auto src_shape = as_static<max_dim>(attribute.src_shape);
             auto dst_shape = as_static<max_dim>(attribute.dst_shape);
             auto src_size  = as_static<max_dim>(attribute.src_size);
-            return view::reshape_t{src_shape,dst_shape,src_size};
+            return view::reshaper(src_shape,dst_shape,src_size);
         }
     };
 }
@@ -153,9 +146,9 @@ namespace nmtools::utils::impl
             str += "reshape{";
             str += ".src_shape=";
             str += to_string(kwargs.src_shape,Compact);
-            str += ".dst_shape=";
+            str += ",.dst_shape=";
             str += to_string(kwargs.dst_shape,Compact);
-            str += ".src_size=";
+            str += ",.src_size=";
             str += to_string(kwargs.src_size,Compact);
             str += "}";
             return str;

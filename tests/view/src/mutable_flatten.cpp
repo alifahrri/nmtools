@@ -1,363 +1,171 @@
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+#define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
+#endif
+
+#include "nmtools/array/view/mutable_flatten.hpp"
+#include "nmtools/testing/data/array/flatten.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/array/view.hpp"
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/isequal.hpp"
-#include "nmtools/testing/testing.hpp"
 
-#include <array>
-#include <vector>
+namespace nm = nmtools;
+namespace na = nm::array;
+namespace view = nm::view;
+namespace meta = nm::meta;
 
-namespace view = nmtools::view;
-using nmtools::utils::isclose;
-using nmtools::utils::isequal;
-using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_ndarray;
-
-TEST_CASE("mutable_flatten(double[N])" * doctest::test_suite("view::mutable_flatten"))
-{
-    double array[3] = {1.,2.,3.};
-    auto array_ref = view::mutable_flatten(array);
-
-    CHECK( array_ref.dim()==1 );
-    // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isequal(array_ref.shape(),nmtools_array{3}) );
-
-    STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-    {
-        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK( isequal(shape, nmtools_array{3}) );
-    }
-
-    {
-        auto expected = nmtools_array{1.,2.,3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3;
-
-    {
-        nmtools::at(array_ref,0) = 3;
-        auto expected = nmtools_array{3.,2.,3.};
-        CHECK( isclose(array,expected) );
-    }
-
-    {
-        // view should have meta::fixed_ndarray_shape if its underlying array have too
-        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK(( nmtools::get<0>(shape)==3 ));
-        STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    }
+#define MUTABLE_FLATTEN_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(flatten,case_name); \
+    using namespace args; \
+    auto result = view::mutable_flatten(__VA_ARGS__); \
+    NMTOOLS_REQUIRE_EQUAL( nmtools::shape(result), expect::shape ); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
 }
 
-TEST_CASE("mutable_flatten(double[2][3])" * doctest::test_suite("view::mutable_flatten"))
+TEST_CASE("mutable_flatten(case1)" * doctest::test_suite("view::mutable_flatten"))
 {
-    double array[2][3] = {
-        {1.,2.,3.},
-        {3.,4.,5.},
-    };
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    MUTABLE_FLATTEN_SUBCASE( case1, array );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_a );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_f );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_d );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_h );
 
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isequal(array_ref.shape(),nmtools_array{6}) );
-    STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-    {
-        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK( isequal(shape, nmtools_array{6}) );
-    }
+    #else
+    MUTABLE_FLATTEN_SUBCASE( case1, array_cs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_cs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_cs_db );
 
-    {
-        auto expected = nmtools_array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        double expected[2][3] = {
-            {1.,6.,3.},
-            {7.,4.,5.},
-        };
-        CHECK( isclose(array,expected) );
-    }
+    MUTABLE_FLATTEN_SUBCASE( case1, array_fs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_fs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_fs_db );
+
+    MUTABLE_FLATTEN_SUBCASE( case1, array_hs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_hs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_hs_db );
+
+    MUTABLE_FLATTEN_SUBCASE( case1, array_ds_fb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_ds_hb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_ds_db );
+
+    MUTABLE_FLATTEN_SUBCASE( case1, array_ls_fb );
+    MUTABLE_FLATTEN_SUBCASE( case1, array_ls_hb );
+    // rejected by ndarray_t at compile-time
+    // MUTABLE_FLATTEN_SUBCASE( case1, array_ls_db );
+    #endif
 }
 
-TEST_CASE("mutable_flatten(double[2][3][1])" * doctest::test_suite("view::mutable_flatten"))
+TEST_CASE("mutable_flatten(case2)" * doctest::test_suite("view::mutable_flatten"))
 {
-    double array[2][3][1] = {
-        {{1.},{2.},{3.}},
-        {{3.},{4.},{5.}},
-    };
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    MUTABLE_FLATTEN_SUBCASE( case2, array );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_a );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_f );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_d );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_h );
 
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),nmtools_array{6}) );
+    #else
+    MUTABLE_FLATTEN_SUBCASE( case2, array_cs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_cs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_cs_db );
 
-    {
-        auto expected = nmtools_array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        double expected[2][3][1] = {
-            {{1.},{6.},{3.}},
-            {{7.},{4.},{5.}},
-        };
-        CHECK( isclose(array,expected) );
-    }
+    MUTABLE_FLATTEN_SUBCASE( case2, array_fs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_fs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_fs_db );
+
+    MUTABLE_FLATTEN_SUBCASE( case2, array_hs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_hs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_hs_db );
+
+    MUTABLE_FLATTEN_SUBCASE( case2, array_ds_fb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_ds_hb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_ds_db );
+
+    MUTABLE_FLATTEN_SUBCASE( case2, array_ls_fb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_ls_hb );
+    MUTABLE_FLATTEN_SUBCASE( case2, array_ls_db );
+    #endif
 }
 
-TEST_CASE("mutable_flatten(nmtools_array)" * doctest::test_suite("view::mutable_flatten"))
+TEST_CASE("mutable_flatten(case3)" * doctest::test_suite("view::mutable_flatten"))
 {
-    auto array = nmtools_array{1.,2.,3.};
-    auto array_ref = view::mutable_flatten(array);
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    MUTABLE_FLATTEN_SUBCASE( case3, array );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_a );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_f );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_d );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_h );
 
-    CHECK( array_ref.dim()==1 );
-    // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isclose(array_ref.shape(),nmtools_array{3}) );
+    #else
+    MUTABLE_FLATTEN_SUBCASE( case3, array_cs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_cs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_cs_db );
 
-    {
-        auto expected = nmtools_array{1.,2.,3.};
-        CHECK( isclose(array_ref,expected) );
-    }
+    MUTABLE_FLATTEN_SUBCASE( case3, array_fs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_fs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_fs_db );
 
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3;
+    MUTABLE_FLATTEN_SUBCASE( case3, array_hs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_hs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_hs_db );
 
-    {
-        nmtools::at(array_ref,0) = 3;
-        auto expected = nmtools_array{3.,2.,3.};
-        CHECK( isclose(array,expected) );
-    }
+    MUTABLE_FLATTEN_SUBCASE( case3, array_ds_fb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_ds_hb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_ds_db );
 
-    // {
-    //     // view should have meta::fixed_ndarray_shape if its underlying array have too
-    //     constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-    //     STATIC_CHECK(( nmtools::get<0>(shape)==3 ));
-    //     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    // }
+    MUTABLE_FLATTEN_SUBCASE( case3, array_ls_fb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_ls_hb );
+    MUTABLE_FLATTEN_SUBCASE( case3, array_ls_db );
+    #endif
 }
 
-#ifndef NMTOOLS_DISABLE_STL
-// TODO: fix
-#if 0
-TEST_CASE("mutable_flatten(nmtools_array[2])" * doctest::test_suite("view::mutable_flatten"))
+TEST_CASE("mutable_flatten(case4)" * doctest::test_suite("view::mutable_flatten"))
 {
-    auto array = nmtools_array{
-        nmtools_array{1.,2.,3.},
-        nmtools_array{3.,4.,5.},
-    };
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    MUTABLE_FLATTEN_SUBCASE( case4, array );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_a );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_f );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_d );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_h );
 
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isequal(array_ref.shape(),nmtools_array{6}) );
+    #else
+    MUTABLE_FLATTEN_SUBCASE( case4, array_cs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_cs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_cs_db );
 
-    {
-        auto expected = nmtools_array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        auto expected = nmtools_array{
-            nmtools_array{1.,6.,3.},
-            nmtools_array{7.,4.,5.},
-        };
-        CHECK( isclose(array,expected) );
-    }
-}
-#endif
-#endif // NMTOOLS_DISABLE_STL
+    MUTABLE_FLATTEN_SUBCASE( case4, array_fs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_fs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_fs_db );
 
-TEST_CASE("mutable_flatten(nmtools_list)" * doctest::test_suite("view::mutable_flatten"))
-{
-    auto array = nmtools_list{1.,2.,3.};
-    auto array_ref = view::mutable_flatten(array);
+    MUTABLE_FLATTEN_SUBCASE( case4, array_hs_fb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_hs_hb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_hs_db );
 
-    CHECK( array_ref.dim()==1 );
-    // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isequal(array_ref.shape(),nmtools_array{3}) );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_ds_fb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_ds_hb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_ds_db );
 
-    {
-        auto expected = nmtools_array{1.,2.,3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3;
-
-    {
-        nmtools::at(array_ref,0) = 3;
-        auto expected = nmtools_array{3.,2.,3.};
-        CHECK( isclose(array,expected) );
-    }
-
-    // {
-    //     // view should have meta::fixed_ndarray_shape if its underlying array have too
-    //     constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-    //     STATIC_CHECK(( nmtools::get<0>(shape)==3 ));
-    //     STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    // }
+    MUTABLE_FLATTEN_SUBCASE( case4, array_ls_fb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_ls_hb );
+    MUTABLE_FLATTEN_SUBCASE( case4, array_ls_db );
+    #endif
 }
 
-#ifndef NMTOOLS_DISABLE_STL
-// TODO: fix
-#if 0
-TEST_CASE("flatten(nmtools_list[2])" * doctest::test_suite("view::flatten"))
+TEST_CASE("mutable_flatten(case5)" * doctest::test_suite("view::mutable_flatten"))
 {
-    auto array = nmtools_list{
-        nmtools_list{1.,2.,3.},
-        nmtools_list{3.,4.,5.},
-    };
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( !nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isequal(array_ref.shape(),nmtools_array{6}) );
-
-    {
-        auto expected = nmtools_array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        auto expected = nmtools_list{
-            nmtools_list{1.,6.,3.},
-            nmtools_list{7.,4.,5.},
-        };
-        CHECK( isclose(array,expected) );
-    }
-}
-#endif
-#endif // NMTOOLS_DISABLE_STL
-
-TEST_CASE("mutable_flatten(fixed_ndarray[2])" * doctest::test_suite("view::mutable_flatten"))
-{
-    auto array = fixed_ndarray{{
-        {1.,2.,3.},
-        {3.,4.,5.},
-    }};
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-
-    {
-        auto expected = nmtools_array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        double expected[2][3] = {
-            {1.,6.,3.},
-            {7.,4.,5.},
-        };
-        CHECK( isclose(array,expected) );
-    }
-}
-
-TEST_CASE("mutable_flatten(fixed_ndarray[3])" * doctest::test_suite("view::mutable_flatten"))
-{
-    auto array = fixed_ndarray<double,2,3,1>{};
-    array = {
-        {{1.},{2.},{3.}},
-        {{3.},{4.},{5.}},
-    };
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),nmtools_array{6}) );
-
-    {
-        auto expected = nmtools_array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        double expected[2][3][1] = {
-            {{1.},{6.},{3.}},
-            {{7.},{4.},{5.}},
-        };
-        CHECK( isclose(array,expected) );
-    }
-}
-
-TEST_CASE("mutable_flatten(fixed_ndarray[4])" * doctest::test_suite("view::mutable_flatten"))
-{
-    auto array = fixed_ndarray<double,2,1,3,1>{};
-    array = {
-        {{{1.},{2.},{3.}}},
-        {{{3.},{4.},{5.}}},
-    };
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),nmtools_array{6}) );
-
-    {
-        auto expected = nmtools_array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        double expected[2][1][3][1] = {
-            {{{1.},{6.},{3.}}},
-            {{{7.},{4.},{5.}}},
-        };
-        CHECK( isclose(array,expected) );
-    }
-}
-
-TEST_CASE("mutable_flatten(fixed_ndarray[5])" * doctest::test_suite("view::mutable_flatten"))
-{
-    auto array = fixed_ndarray<double,1,2,1,3,1>{};
-    array = {{
-        {{{1.},{2.},{3.}}},
-        {{{3.},{4.},{5.}}},
-    }};
-    auto array_ref = view::mutable_flatten(array);
-    STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-    STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-
-    CHECK( array_ref.dim()==1 );
-    // @note that isclose can also handle comparison between pair/tuple with array
-    CHECK( isclose(array_ref.shape(),nmtools_array{6}) );
-
-    {
-        auto expected = nmtools_array{1.,2.,3.,3.,4.,5.};
-        CHECK( isclose(array_ref,expected) );
-    }
-    {
-        nmtools::at(array_ref,1) = 6;
-        nmtools::at(array_ref,3) = 7;
-        double expected[1][2][1][3][1] = {{
-            {{{1.},{6.},{3.}}},
-            {{{7.},{4.},{5.}}},
-        }};
-        CHECK( isclose(array,expected) );
-    }
+    MUTABLE_FLATTEN_SUBCASE( case5, array );
 }

@@ -20,7 +20,7 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        inline bool x[2] = {true, true};
+        inline nm_bool_t x[2] = {true, true};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -36,7 +36,7 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        inline bool x[2] = {true, false};
+        inline nm_bool_t x[2] = {true, false};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -52,7 +52,7 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        inline bool x[4] = {true, false, true, false};
+        inline nm_bool_t x[4] = {true, false, true, false};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -68,7 +68,7 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        inline bool x[4] = {false, true, false, true};
+        inline nm_bool_t x[4] = {false, true, false, true};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -84,7 +84,7 @@ NMTOOLS_TESTING_DECLARE_CASE(free_axes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        inline bool x[3] = {true, true, false};
+        inline nm_bool_t x[3] = {true, true, false};
     }
 }
 

@@ -19,7 +19,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        inline bool success = true;
+        inline nm_bool_t success = true;
         inline int expected[2] = {5,4};
     }
 
@@ -32,7 +32,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        inline bool success = true;
+        inline nm_bool_t success = true;
         inline int expected[2] = {5,4};
     }
 
@@ -45,7 +45,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        inline bool success = true;
+        inline nm_bool_t success = true;
         inline int expected[2] = {5,4};
     }
 
@@ -58,7 +58,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        inline bool success = true;
+        inline nm_bool_t success = true;
         inline int expected[4] = {8,7,6,5};
     }
 
@@ -71,7 +71,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        inline bool success = true;
+        inline nm_bool_t success = true;
         inline int expected[3] = {256,256,3};
     }
 
@@ -84,7 +84,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        inline bool success = false;
+        inline nm_bool_t success = false;
         inline int expected[2] = {0,0};
     }
 
@@ -97,7 +97,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        inline bool success = false;
+        inline nm_bool_t success = false;
         inline int expected[3] = {0,0,0};
     }
 
@@ -112,7 +112,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
-        inline bool success = true;
+        inline nm_bool_t success = true;
         inline int expected[3] = {8,4,3};
     }
 
@@ -127,7 +127,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9)
     {
-        inline bool success = false;
+        inline nm_bool_t success = false;
         inline int expected[3] = {8,4,3};
     }
 
@@ -144,7 +144,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10)
     {
-        inline bool success = true;
+        inline nm_bool_t success = true;
         inline int expected[6] = {2,2,3,8,4,3};
     }
 
@@ -167,7 +167,7 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11)
     {
-        inline bool success = true;
+        inline nm_bool_t success = true;
         inline int expected[6] = {2,2,3,8,4,3};
     }
 }

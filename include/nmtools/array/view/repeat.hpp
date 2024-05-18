@@ -1,9 +1,8 @@
 #ifndef NMTOOLS_ARRAY_VIEW_REPEAT_HPP
 #define NMTOOLS_ARRAY_VIEW_REPEAT_HPP
 
-#include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/shape.hpp"
 
 #include "nmtools/array/index/product.hpp"
@@ -11,140 +10,136 @@
 
 namespace nmtools::view
 {
-    template <typename array_t, typename repeats_t, typename axis_t>
+    template <typename src_shape_t, typename repeats_t, typename axis_t, typename src_size_t>
     struct repeat_t
+        : base_indexer_t<repeat_t<src_shape_t,repeats_t,axis_t,src_size_t>>
     {
-        using value_type = meta::get_element_type_t<array_t>;
-        using array_type   = resolve_array_type_t<array_t>;
-        using repeats_type = resolve_attribute_type_t<repeats_t>;
-        using axis_type    = resolve_attribute_type_t<axis_t>;
-        using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
-        using dst_shape_type = meta::resolve_optype_t<index::shape_repeat_t,src_shape_type,repeats_t,axis_t>;
+        using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
+        using src_size_type  = meta::fwd_attribute_t<src_size_t>;
+        using repeats_type   = meta::fwd_attribute_t<repeats_t>;
+        using axis_type      = meta::fwd_attribute_t<axis_t>;
+        using dst_shape_type = meta::resolve_optype_t<index::shape_repeat_t,src_shape_type,repeats_type,axis_type>;
 
-        array_type     array;
-        repeats_type   repeats;
-        axis_type      axis;
-        dst_shape_type dst_shape;
+        // TODO: support repeat size inference
+        // using dst_size_type  = src_size_type;
+        using dst_size_type = decltype(index::product(meta::declval<dst_shape_type>()));
 
-        constexpr repeat_t(const array_t& array_, const repeats_t& repeats, const axis_t& axis)
-            : array(initialize(array_, meta::as_value_v<array_type>))
-            , repeats(init_attribute(repeats, meta::as_value_v<repeats_type>))
-            , axis(init_attribute(axis, meta::as_value_v<axis_type>))
-            , dst_shape(index::shape_repeat(nmtools::shape</*force_constant_index*/true>(array_),repeats,axis))
+        static constexpr auto n_inputs  = 1;
+        static constexpr auto n_outputs = 1;
+
+        const src_shape_type src_shape;
+        const repeats_type   repeats;
+        const axis_type      axis;
+        const src_size_type  src_size;
+        const dst_shape_type dst_shape;
+        const dst_size_type  dst_size;
+
+        constexpr repeat_t(const src_shape_t& src_shape_
+            , const repeats_t& repeats_
+            , const axis_t& axis_
+            , const src_size_t& src_size_
+        )
+            : src_shape(fwd_attribute(src_shape_))
+            , repeats(fwd_attribute(repeats_))
+            , axis(fwd_attribute(axis_))
+            , src_size(fwd_attribute(src_size_))
+            , dst_shape(index::shape_repeat(src_shape,repeats,axis))
+            , dst_size(index::product(dst_shape))
         {}
 
-        constexpr auto operands() const noexcept
+        template <typename indices_t>
+        constexpr auto indices(const indices_t& indices) const
         {
-            return nmtools_tuple<array_type>{array};
+            auto src_indices = index::repeat(src_shape,indices,repeats,axis);
+            return src_indices;
         }
 
-        constexpr auto attributes() const noexcept
+        template <typename...args_t>
+        constexpr auto operator==(repeat_t<args_t...> other) const
         {
-            return nmtools_tuple{repeats,axis};
+            return utils::isequal(src_shape,other.src_shape)
+                && utils::isequal(repeats,other.repeats)
+                && utils::isequal(axis,other.axis)
+            ;
         }
-        
-        constexpr decltype(auto) shape() const
-        {
-            return dst_shape;
-        } // shape
-
-        constexpr decltype(auto) dim() const
-        {
-            return len(dst_shape);
-        } // dim
-
-        template <typename...size_types>
-        constexpr auto index(size_types...indices) const
-        {
-            auto indices_ = pack_indices(indices...);
-            auto shape_   = detail::shape(array);
-            return index::repeat(shape_,indices_,repeats,axis);
-        } // index
     }; // repeat_t
 
-    /**
-     * @brief Repeats elements of an array
-     * 
-     * @tparam array_t 
-     * @tparam repeats_t integral type or array1d
-     * @tparam axis_t integral type or none_t
-     * @param array Input array
-     * @param repeats The number of repetitions for each element
-     * @param axis The axis along which to repeat values. If None, use the flattened input array.
-     * @return constexpr auto 
-     */
+    template <typename src_shape_t, typename src_size_t, typename repeats_t, typename axis_t>
+    constexpr auto repeater(const src_shape_t& src_shape, const repeats_t& repeats, const axis_t& axis, const src_size_t& src_size)
+    {
+        auto m_dst_shape = index::shape_repeat(src_shape,repeats,axis);
+        if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
+            using result_t = decltype(repeat_t{unwrap(src_shape),unwrap(repeats),unwrap(axis),unwrap(src_size)});
+            using return_t = nmtools_maybe<result_t>;
+            if (static_cast<bool>(m_dst_shape)) {
+                return return_t{repeat_t{unwrap(src_shape),unwrap(repeats),unwrap(axis),unwrap(src_size)}};
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else {
+            return repeat_t{unwrap(src_shape),unwrap(repeats),unwrap(axis),unwrap(src_size)};
+        }
+    }
+
     template <typename array_t, typename repeats_t, typename axis_t>
     constexpr auto repeat(const array_t& array, const repeats_t& repeats, const axis_t& axis)
     {
-        #if !defined(NMTOOLS_NO_BASE_ACCESS)
-        return decorator_t<repeat_t,array_t,repeats_t,axis_t>{{array,repeats,axis}};
-        #else
-        using array_type = meta::remove_address_space_t<array_t>;
-        using return_t = decorator_t<repeat_t,array_type,repeats_t,axis_t>;
-        using repeated_t = repeat_t<array_type,repeats_t,axis_t>;
-        return return_t{repeated_t{array,repeats,axis}};
-        #endif
-    } // repeat
+        auto f = [](const auto& array, const auto& repeats, const auto& axis){
+            auto src_shape = shape<true>(array);
+            auto src_size  = size<true>(array);
+            auto indexer   = repeater(src_shape,repeats,axis,src_size);
+            return indexing(array,indexer);
+        };
+        return lift_indexing(f,array,repeats,axis);
+    }
 } // namespace nmtools::view
 
-namespace nmtools::meta
+namespace nmtools::array
 {
-    /**
-     * @brief Infer the dimension of repeat view at compile-time.
-     * 
-     * @tparam array_t 
-     * @tparam repeats_t 
-     * @tparam axis_t 
-     */
-    template <typename array_t, typename repeats_t, typename axis_t>
-    struct fixed_dim<
-        view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t>
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::repeat_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::repeat_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto src_size  = as_static<max_dim>(attribute.src_size);
+            auto repeats   = as_static<max_dim>(attribute.repeats);
+            auto axis      = as_static<max_dim>(attribute.axis);
+            return view::repeater(src_shape,repeats,axis,src_size);
+        }
+    };
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::repeat_t<args_t...>, fmt_string_t<fmt_args...>
     >
     {
-        static constexpr auto value = [](){
-            if constexpr (is_none_v<axis_t>) {
-                return 1;
-            } else if constexpr (is_fixed_dim_v<array_t>) {
-                return fixed_dim_v<array_t>;
-            } else {
-                return detail::Fail;
-            }
-        }();
-        // TODO: don't convert fail to void type
-        using value_type = detail::fail_to_void_t<remove_cvref_t<decltype(value)>>;
-    }; // fixed_dim
+        using result_type = nmtools_string;
 
-    template <typename array_t, typename repeats_t, typename axis_t>
-    struct fixed_size<
-        view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t>
-    >
-    {
-        using view_type  = view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t>;
-        using repeat_type = view::repeat_t<array_t,repeats_t,axis_t>;
-        using dst_shape_type = typename repeat_type::dst_shape_type;
+        auto operator()(const view::repeat_t<args_t...>& kwargs) const noexcept
+        {
+            nmtools_string str;
+            str += "repeat{";
+            str += ".src_shape="; str += to_string(kwargs.src_shape);
+            str += ",.repeats=";  str += to_string(kwargs.repeats);
+            str += ",.axis=";     str += to_string(kwargs.axis);
+            str += ",.src_size="; str += to_string(kwargs.src_size);
+            str += "}";
+            return str;
+        }
+    };
+}
 
-        static constexpr auto value = [](){
-            // repeats and axis may change the resulting shape
-            // , can only know the fixed size if the resulting shape is constant
-            if constexpr (is_constant_index_array_v<dst_shape_type>) {
-                return index::product(dst_shape_type{});
-            } else {
-                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
-            }
-        }();
-    }; // fixed_size
-
-    template <typename array_t, typename repeats_t, typename axis_t>
-    struct bounded_size<
-        view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t>
-    > : fixed_size<
-        view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t>
-    > {};
-    
-
-    template <typename array_t, typename repeats_t, typename axis_t>
-    struct is_ndarray< view::decorator_t<view::repeat_t,array_t,repeats_t,axis_t> >
-        : is_ndarray<array_t> {};
-} // namespace nmtools::meta
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_REPEAT_HPP

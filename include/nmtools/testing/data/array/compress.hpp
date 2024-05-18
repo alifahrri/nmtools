@@ -52,7 +52,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, compress)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        inline bool condition[3] = {false,true,true};
+        inline nm_bool_t condition[3] = {false,true,true};
         inline int array[3][2] = {
             {1,2},
             {3,4},
@@ -73,7 +73,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, compress)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
     {
-        inline bool condition[5] = {false,true,true,false,true};
+        inline nm_bool_t condition[5] = {false,true,true,false,true};
         inline int array[3][2] = {
             {1,2},
             {3,4},

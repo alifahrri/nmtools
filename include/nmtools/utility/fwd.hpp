@@ -45,7 +45,37 @@ namespace nmtools::meta
     }; // fwd_operand
 
     template <typename T>
+    struct fwd_mutable_operand
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_view_v<T>
+                || is_num_v<T>
+                || is_none_v<T>
+                || is_constant_index_array_v<T>
+                || is_constant_index_v<T>
+            ) {
+                return as_value_v<T>;
+            } else if constexpr (is_bounded_array_v<T>) {
+                return as_value_v<T&>;
+            } else if constexpr (is_ndarray_v<T>) {
+                return as_value_v<T*>;
+            } else if constexpr (is_pointer_v<T> && is_ndarray_v<remove_pointer_t<T>>) {
+                return as_value_v<T>;
+            } else if constexpr (is_either_v<T> || is_maybe_v<T>) {
+                return as_value_v<T>;
+            } else {
+                using type = error::FWD_OPERAND_UNSUPPORTED<T>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // fwd_operand
+
+    template <typename T>
     using fwd_operand_t = type_t<fwd_operand<T>>;
+
+    template <typename T>
+    using fwd_mutable_operand_t = type_t<fwd_mutable_operand<T>>;
 
     template <typename T>
     struct fwd_attribute
@@ -102,6 +132,20 @@ namespace nmtools
         -> meta::fwd_operand_t<T>
     {
         using result_t = meta::fwd_operand_t<T>;
+        static_assert( !meta::is_fail_v<result_t> );
+        if constexpr (meta::is_pointer_v<result_t> && !meta::is_pointer_v<T>) {
+            return &operand;
+        } else {
+            return operand;
+        }
+    } // fwd_operand
+
+    template <typename T>
+    constexpr auto fwd_mutable_operand(T& operand)
+        -> meta::fwd_mutable_operand_t<T>
+    {
+        using result_t = meta::fwd_mutable_operand_t<T>;
+        static_assert( !meta::is_fail_v<result_t> );
         if constexpr (meta::is_pointer_v<result_t> && !meta::is_pointer_v<T>) {
             return &operand;
         } else {
@@ -141,6 +185,7 @@ namespace nmtools
         -> meta::type_t<fwd_attribute_t<T>>
     {
         auto op = fwd_attribute_t<T>{};
+        static_assert( !meta::is_fail_v<decltype(op(attribute))> );
         return op(attribute);
     } // fwd_attribute
 

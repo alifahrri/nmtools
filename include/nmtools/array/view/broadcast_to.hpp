@@ -228,7 +228,7 @@ namespace nmtools::view
             #else
             const auto result = index::shape_broadcast_to(ashape,shape);
             // TODO: error handling, do not force unwrapping
-            [[maybe_unused]] const auto& success = nmtools::get<0>(unwrap(result));
+            [[maybe_unused]] const auto success = nmtools::get<0>(unwrap(result));
             const auto& free    = nmtools::get<2>(result);
             #endif
             auto origin_axes = [](auto free){

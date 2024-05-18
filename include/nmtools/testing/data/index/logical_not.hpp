@@ -7,13 +7,13 @@ NMTOOLS_TESTING_DECLARE_CASE(logical_not)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        inline bool x[5] = {true, false, false, true, false};
+        inline nm_bool_t x[5] = {true, false, false, true, false};
         NMTOOLS_CAST_INDEX_ARRAYS(x);
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(x);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        inline bool x[5] = {false, true, true, false, true};
+        inline nm_bool_t x[5] = {false, true, true, false, true};
     }
 }
 

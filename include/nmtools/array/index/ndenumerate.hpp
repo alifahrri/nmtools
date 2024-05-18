@@ -100,7 +100,8 @@ namespace nmtools::index
     constexpr auto end(const ndenumerate_t<array_t>& array)
     {
         using ref_t = typename ndenumerate_t<array_t>::ref_t;
-        return ref_t{array,array.size()};
+        using size_type = typename ref_t::size_type;
+        return ref_t{array,(size_type)array.size()};
     }
 
     /**

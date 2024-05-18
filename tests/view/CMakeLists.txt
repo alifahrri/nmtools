@@ -70,6 +70,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/moveaxis.cpp
     src/mutable_flatten.cpp
     src/mutable_ref.cpp
+    src/mutable_reshape.cpp
     src/mutable_slice.cpp
     src/ones.cpp
     src/pad.cpp

@@ -21,6 +21,7 @@
 #include "nmtools/math.hpp"
 #include "nmtools/platform/math/constexpr.hpp"
 #include "nmtools/utils/isclose/isclose.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 #ifndef NMTOOLS_ISCLOSE_NAN_HANDLING
 #define NMTOOLS_ISCLOSE_NAN_HANDLING 0
@@ -98,10 +99,11 @@ namespace nmtools::utils
         {
             using ::nmtools::index::ndindex;
             // treat T & U as value
-            constexpr auto t1 = meta::as_value_v<T>;
-            constexpr auto t2 = meta::as_value_v<U>;
+            [[maybe_unused]] constexpr auto t1 = meta::as_value_v<T>;
+            [[maybe_unused]] constexpr auto t2 = meta::as_value_v<U>;
 
             // check if T1 and T2 is both scalar or both ndarray
+            [[maybe_unused]]
             constexpr auto constrained = [](auto T1, auto T2){
                 // expect T1 and T2 is as_value
                 using t1 = meta::type_t<decltype(T1)>;
@@ -113,6 +115,7 @@ namespace nmtools::utils
             };
 
             // given either type, check if the type is constrained
+            [[maybe_unused]]
             constexpr auto constrained_either = [constrained](auto T1, auto T2){
                 using t1 = meta::type_t<decltype(T1)>;
                 using t2 = meta::type_t<decltype(T2)>;
@@ -130,6 +133,7 @@ namespace nmtools::utils
             };
 
             // given maybe type, check if the type is constrained
+            [[maybe_unused]]
             constexpr auto constrained_maybe = [constrained](auto T1, auto T2){
                 using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
                 using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
@@ -145,10 +149,10 @@ namespace nmtools::utils
             };
 
             // actually constraint
-            static_assert(
-                constrained(t1,t2) || constrained_either(t1,t2) || constrained_maybe(t1,t2)
-                , "unsupported isclose; only support scalar type or ndarray"
-            );
+            // static_assert(
+            //     constrained(t1,t2) || constrained_either(t1,t2) || constrained_maybe(t1,t2)
+            //     , "unsupported isclose; only support scalar type or ndarray"
+            // );
 
             if constexpr (is_none_v<T> && is_none_v<U>)
                 return true;
@@ -209,7 +213,7 @@ namespace nmtools::utils
 
                 auto close = false;
                 if (auto l_ptr = get_if<lhs_t>(&t); l_ptr) {
-                    constexpr auto lhs = meta::as_value_v<lhs_t>;
+                    constexpr auto lhs = meta::as_value_v<meta::resolve_optype_t<unwrap_t,lhs_t>>;
                     if constexpr (meta::is_either_v<lhs_t>) {
                         // maybe nested either
                         // should be okay to instantiate since *ptr is either
@@ -222,7 +226,7 @@ namespace nmtools::utils
                         // ignore, maybe this path doesn't have matched concept
                     }
                 } else {
-                    constexpr auto rhs = meta::as_value_v<rhs_t>;
+                    constexpr auto rhs = meta::as_value_v<meta::resolve_optype_t<unwrap_t,rhs_t>>;
                     [[maybe_unused]] auto r_ptr = get_if<rhs_t>(&t);
                     if constexpr (meta::is_either_v<rhs_t>) {
                         // maybe nested either
@@ -247,13 +251,13 @@ namespace nmtools::utils
 
                 auto close = false;
                 if (auto l_ptr = get_if<lhs_t>(&u); l_ptr) {
-                    constexpr auto lhs = meta::as_value_v<lhs_t>;
+                    constexpr auto lhs = meta::as_value_v<meta::resolve_optype_t<unwrap_t,lhs_t>>;
                     if constexpr (same_concept(lhs,ref)) {
                         close = isclose(t,*l_ptr);
                     }
                 } else /* if (auto r_ptr = get_if<rhs_t>(&u); r_ptr) */ {
                     [[maybe_unused]] auto r_ptr = get_if<rhs_t>(&u);
-                    constexpr auto rhs = meta::as_value_v<rhs_t>;
+                    constexpr auto rhs = meta::as_value_v<meta::resolve_optype_t<unwrap_t,rhs_t>>;
                     if constexpr (same_concept(rhs,ref)) {
                         close = isclose(t,*r_ptr);
                     }

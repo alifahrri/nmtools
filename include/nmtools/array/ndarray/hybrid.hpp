@@ -62,7 +62,7 @@ namespace nmtools::array
             auto array_shape = ::nmtools::shape(array_ref);
             auto n = index::product(array_shape);
             // TODO: better error handling when dimension mismatch
-            auto array_view = view::flatten(array_ref);
+            auto array_view = unwrap(view::flatten(array_ref));
             for (size_t i=0; i<n; i++)
                 at(data,i) = at(array_view,i);
             return data;
@@ -118,7 +118,7 @@ namespace nmtools::array
             for (size_t i=0; i<array_dim; i++)
                 shape_[i] = ::nmtools::at(array_shape,i);
             strides_ = strides();
-            auto array_view = view::flatten(array_ref);
+            auto array_view = unwrap(view::flatten(array_ref));
             for (size_t i=0; i<n; i++)
                 nmtools::at(buffer_,i) = nmtools::at(array_view,i);
         } // init
@@ -708,7 +708,7 @@ namespace nmtools::array
         );
         auto n = index::product(shape(rhs));
 
-        auto flat_rhs = view::flatten(rhs);
+        auto flat_rhs = unwrap(view::flatten(rhs));
         for (size_t i=0; i<n; i++)
             nmtools::at(this->buffer_,i) = nmtools::at(flat_rhs,i);
 

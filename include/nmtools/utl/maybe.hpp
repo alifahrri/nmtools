@@ -122,11 +122,14 @@ namespace nmtools::utl
         {
             if (other.has_value()) {
                 this->tag = base::LEFT;
+                new(&this->left) T(other.left);
+                #if 0
                 if constexpr (meta::is_copy_assignable_v<T>) {
                     this->left = other.left;
                 } else {
                     new(&this->left) T(other.left);
                 }
+                #endif
             } else {
                 this->tag = base::RIGHT;
                 this->right = nothing;
@@ -152,7 +155,11 @@ namespace nmtools::utl
         /*constexpr*/ maybe& operator=(const maybe& other)
         {
             if (other.has_value()) {
-                this->left = other.left;
+                if constexpr (meta::is_copy_assignable_v<T>) {
+                    this->left = other.left;
+                } else {
+                    new(&this->left) T(other.left);
+                }
                 this->tag  = base::LEFT;
             } else {
                 this->right = other.right;

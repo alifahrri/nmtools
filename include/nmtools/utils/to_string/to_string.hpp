@@ -122,6 +122,41 @@ namespace nmtools::utils
         auto to_string_impl = impl::to_string_t<T,none_t>{};
         return to_string_impl(array);
     }
+
+    /**
+     * @brief applicative to_string
+     * 
+     * @tparam T 
+     * @param array 
+     * @return nmtools_string 
+     */
+    template <typename T, typename formatter_t>
+    inline auto apply_to_string(const T& array, formatter_t formatter) -> nmtools_string
+    {
+        if constexpr (meta::is_list_v<T>) {
+            auto str = nmtools_string();
+            for (size_t i=0; i<len(array); i++) {
+                str += nmtools::utils::to_string(at(array,i),formatter);
+                str += ";\n";
+            }
+            return str;
+        } else if constexpr (meta::is_tuple_v<T>) {
+            auto str = nmtools_string();
+            meta::template_for<meta::len_v<T>>([&](auto i){
+                str += nmtools::utils::to_string(at(array,i),formatter);
+                str += ";\n";
+            });
+            return str;
+        } else {
+            return nmtools::utils::to_string(array);
+        }
+    }
+
+    template <typename T>
+    inline auto apply_to_string(const T& array) -> nmtools_string
+    {
+        return apply_to_string(array,None);
+    }
 } // namespace nmtools::utils
 #endif // NMTOOLS_HAS_STRING
 

@@ -12,6 +12,12 @@ set(NMTOOLS_CONSTEXPR_TEST_SOURCES
     src/atleast_1d.cpp
     src/atleast_2d.cpp
     src/atleast_3d.cpp
+    src/broadcast_arrays.cpp
+    src/broadcast_to.cpp
+    src/matmul.cpp
+    src/moveaxis.cpp
+    src/pad.cpp
+    src/transpose.cpp
 )
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp

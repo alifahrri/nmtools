@@ -2,7 +2,7 @@
 #define NMTOOLS_META_HPP
 
 #define NMTOOLS_META_MAKE_STATIC_VECTOR
-#define nmtools_static_vector ::nmtools::array::static_vector
+#define nmtools_static_vector ::nmtools::utl::static_vector
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/platform.hpp"

@@ -423,7 +423,7 @@ namespace nmtools::array::sycl
         auto copy_buffer(device_mem_ptr<T> mem_obj, array_t& array)
         {
             auto host_accessor = ::sycl::host_accessor(*mem_obj);
-            auto flat_array = view::mutable_flatten(array);
+            auto flat_array    = unwrap(view::mutable_flatten(array));
             auto size = nmtools::size(flat_array);
             auto accessor_size = host_accessor.size();
             if (size != accessor_size) {

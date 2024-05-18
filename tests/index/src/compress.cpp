@@ -92,7 +92,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_compress)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
     {
-        bool condition[3] = {false,true,true};
+        nm_bool_t condition[3] = {false,true,true};
         int shape[2] = {3,2};
         int axis = 0;
         auto condition_ct = nmtools_tuple{0_ct,1_ct,1_ct};
@@ -111,7 +111,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_compress)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
     {
-        bool condition[5] = {false,true,true,false,true};
+        nm_bool_t condition[5] = {false,true,true,false,true};
         int shape[2] = {3,2};
         auto axis = None;
         auto condition_ct = nmtools_tuple{0_ct,1_ct,1_ct,0_ct,1_ct};

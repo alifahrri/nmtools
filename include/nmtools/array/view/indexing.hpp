@@ -245,7 +245,7 @@ namespace nmtools::view
         } else {
             return f(array,args...);
         }
-    }
+    } // lift_indexing
 } // namespace nmtools::view
 
 #if NMTOOLS_HAS_STRING
