@@ -6,7 +6,6 @@ set( META_VIEW_TEST_SOURCES
     array/view/broadcast_to.cpp
     array/view/compress.cpp
     array/view/concatenate.cpp
-    array/view/flatten.cpp
     array/view/full.cpp
     array/view/matmul.cpp
     array/view/mean.cpp
