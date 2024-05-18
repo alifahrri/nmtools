@@ -125,6 +125,7 @@ namespace nmtools::utl
         size_type size_ = 0;
         size_type buffer_size_ = 0;
         allocator_type allocator = {};
+        bool initialized = false;
 
         template <typename type, typename allocator_type> friend auto begin(vector<type,allocator_type>&);
         template <typename type, typename allocator_type> friend auto begin(const vector<type,allocator_type>&);
@@ -138,12 +139,14 @@ namespace nmtools::utl
             , size_(0)
             , buffer_size_(0)
             , allocator{}
+            , initialized(true)
         {}
         vector(size_type N)
             : buffer_(NULL)
             , size_(0)
             , buffer_size_(0)
             , allocator{}
+            , initialized(true)
         {
             resize(N);
         }
@@ -152,6 +155,7 @@ namespace nmtools::utl
             , size_(0)
             , buffer_size_(0)
             , allocator{}
+            , initialized(true)
         {
             resize(other.size_);
             // dumb copy
@@ -161,7 +165,9 @@ namespace nmtools::utl
         }
         ~vector()
         {
-            allocator.deallocate(buffer_);
+            if (buffer_) {
+                allocator.deallocate(buffer_);
+            }
         }
         // NOTE: use additional U to not confusing with single arg constructor
         // TODO: fix initialization
@@ -195,7 +201,10 @@ namespace nmtools::utl
         {
             auto old_size = size_;
             size_ = new_size;
-            if (buffer_size_ < new_size) {
+            if (!initialized) {
+                buffer_size_ = new_size;
+                buffer_ = allocator.allocate(new_size);
+            } else if (buffer_size_ < new_size) {
                 buffer_size_ = new_size;
                 // TODO: error handling
                 auto new_buffer = allocator.allocate(new_size);
@@ -218,6 +227,8 @@ namespace nmtools::utl
             }
             buffer_[size_-1] = t;
         }
+
+        // TODO: support emplace_back
 
         reference at(size_type i)
         {
