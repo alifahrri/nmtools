@@ -37,145 +37,145 @@ namespace nmtools::index::impl
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape)
     {
         using result_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
-        using element_t = meta::remove_cvref_t<meta::get_index_element_type_t<result_t>>;
-
-        auto res = result_t{};
-        bool success = true;
-
-        [[maybe_unused]]
-        auto len_ = [](const auto& shape){
-            constexpr auto N = meta::len_v<meta::remove_cvref_t<decltype(shape)>>;
-            if constexpr (N>0) {
-                return meta::ct_v<(size_t)N>;
-            } else {
-                return len(shape);
-            }
-        };
+        using element_t [[maybe_unused]] = meta::remove_cvref_t<meta::get_index_element_type_t<result_t>>;
 
         if constexpr (meta::is_constant_index_array_v<result_t>) {
             // do nothing, already computed at compile-time
             // the type holds broadcasted shape
-        }
-        // for none return type (both ashape and bshape is scalar)
-        // simply bypass this
-        else if constexpr (!is_none_v<ashape_t> && !is_none_v<bshape_t>) {
-            auto adim = len_(ashape);
-            auto bdim = len_(bshape);
-            using adim_t = decltype(adim);
-            using bdim_t = decltype(bdim);
-            using meta::is_constant_index_v;
-            auto rdim = [&](){
-                if constexpr (
-                    is_constant_index_v<adim_t>
-                    && is_constant_index_v<bdim_t>
-                ) {
-                    constexpr auto adim = adim_t::value;
-                    constexpr auto bdim = bdim_t::value;
-                    return meta::ct_v<(adim > bdim ? adim : bdim)>;
-                } else {
-                    return adim > bdim ? adim : bdim;
-                }
-            }();
+            return result_t{};
+        } else {
+            auto res = result_t{};
+            bool success = true;
 
-            if constexpr (meta::is_resizable_v<result_t>)
-                res.resize(rdim);
-            
-            auto broadcast_shape_impl = [&](auto i){
-                using idx_t = meta::remove_address_space_t<meta::make_signed_t<element_t>>;
-                // compute index to fill from behind
-                #if 0
-                // OK in gcc but failed on clang 🤷
-                auto si = [&](){
-                    using rdim_t = decltype(rdim);
-                    if constexpr (is_constant_index_v<rdim_t> && is_constant_index_v<decltype(i)>) {
-                        return meta::ct_v<(rdim_t::value - decltype(i)::value - 1)>;
-                    } else {
-                        return idx_t(rdim - i - 1);
-                    }
-                }();
-                #else
-                auto si = [&](auto rdim, auto i){
-                    using rdim_t = decltype(rdim);
-                    if constexpr (is_constant_index_v<rdim_t> && is_constant_index_v<decltype(i)>) {
-                        return meta::ct_v<(rdim_t::value - decltype(i)::value - 1)>;
-                    } else {
-                        return idx_t(rdim - i - 1);
-                    }
-                }(rdim,i);
-                #endif
-                idx_t ai = ((idx_t)adim - (idx_t)i) - 1;
-                idx_t bi = ((idx_t)bdim - (idx_t)i) - 1;
-                if ((ai>=0) && (bi>=0)) {
-                    auto a = at(ashape,ai);
-                    auto b = at(bshape,bi);
-                    using common_t = meta::promote_index_t<decltype(a),decltype(b)>;
-                    success = ((common_t)a==(common_t)b) || (a==1) || (b==1);
-                    at(res,si) = (common_t)a > (common_t)b ? (common_t)a : (common_t)b;
+            [[maybe_unused]]
+            auto len_ = [](const auto& shape){
+                constexpr auto N = meta::len_v<meta::remove_cvref_t<decltype(shape)>>;
+                if constexpr (N>0) {
+                    return meta::ct_v<(size_t)N>;
+                } else {
+                    return len(shape);
                 }
-                else if (bi<0) {
-                    auto a = at(ashape,ai);
-                    at(res,si) = a;
-                }
-                else if (ai<0) {
-                    auto b = at(bshape,bi);
-                    at(res,si) = b;
-                }
-                else {} // not valid
             };
 
-            constexpr auto N = meta::len_v<result_t>;
-            if constexpr (N > 0) {
-                meta::template_for<N>([&](auto i){
-                    if (success) {
-                        broadcast_shape_impl(i);
+            if constexpr (!is_none_v<ashape_t> && !is_none_v<bshape_t>) {
+                auto adim = len_(ashape);
+                auto bdim = len_(bshape);
+                using adim_t = decltype(adim);
+                using bdim_t = decltype(bdim);
+                using meta::is_constant_index_v;
+                auto rdim = [&](){
+                    if constexpr (
+                        is_constant_index_v<adim_t>
+                        && is_constant_index_v<bdim_t>
+                    ) {
+                        constexpr auto adim = adim_t::value;
+                        constexpr auto bdim = bdim_t::value;
+                        return meta::ct_v<(adim > bdim ? adim : bdim)>;
+                    } else {
+                        return adim > bdim ? adim : bdim;
                     }
-                });
-            } else {
-                for (size_t i=0; i<(size_t)len(res); i++) {
-                    broadcast_shape_impl(i);
-                    if (!success) break;
+                }();
+
+                if constexpr (meta::is_resizable_v<result_t>)
+                    res.resize(rdim);
+                
+                auto broadcast_shape_impl = [&](auto i){
+                    using idx_t = meta::remove_address_space_t<meta::make_signed_t<element_t>>;
+                    // compute index to fill from behind
+                    #if 0
+                    // OK in gcc but failed on clang 🤷
+                    auto si = [&](){
+                        using rdim_t = decltype(rdim);
+                        if constexpr (is_constant_index_v<rdim_t> && is_constant_index_v<decltype(i)>) {
+                            return meta::ct_v<(rdim_t::value - decltype(i)::value - 1)>;
+                        } else {
+                            return idx_t(rdim - i - 1);
+                        }
+                    }();
+                    #else
+                    auto si = [&](auto rdim, auto i){
+                        using rdim_t = decltype(rdim);
+                        if constexpr (is_constant_index_v<rdim_t> && is_constant_index_v<decltype(i)>) {
+                            return meta::ct_v<(rdim_t::value - decltype(i)::value - 1)>;
+                        } else {
+                            return idx_t(rdim - i - 1);
+                        }
+                    }(rdim,i);
+                    #endif
+                    idx_t ai = ((idx_t)adim - (idx_t)i) - 1;
+                    idx_t bi = ((idx_t)bdim - (idx_t)i) - 1;
+                    if ((ai>=0) && (bi>=0)) {
+                        auto a = at(ashape,ai);
+                        auto b = at(bshape,bi);
+                        using common_t = meta::promote_index_t<decltype(a),decltype(b)>;
+                        success = ((common_t)a==(common_t)b) || (a==1) || (b==1);
+                        at(res,si) = (common_t)a > (common_t)b ? (common_t)a : (common_t)b;
+                    }
+                    else if (bi<0) {
+                        auto a = at(ashape,ai);
+                        at(res,si) = a;
+                    }
+                    else if (ai<0) {
+                        auto b = at(bshape,bi);
+                        at(res,si) = b;
+                    }
+                    else {} // not valid
+                };
+
+                constexpr auto N = meta::len_v<result_t>;
+                if constexpr (N > 0) {
+                    meta::template_for<N>([&](auto i){
+                        if (success) {
+                            broadcast_shape_impl(i);
+                        }
+                    });
+                } else {
+                    for (size_t i=0; i<(size_t)len(res); i++) {
+                        broadcast_shape_impl(i);
+                        if (!success) break;
+                    }
                 }
             }
-        }
-        else if constexpr (is_none_v<ashape_t> && !is_none_v<bshape_t>) {
-            // one of the shape is none (from shape of num type):
-            // just copy the other shape, bshape in this case
-            auto bdim = len(bshape);
-            if constexpr (meta::is_resizable_v<result_t>)
-                res.resize(bdim);
-            if constexpr (meta::is_tuple_v<bshape_t>) {
-                constexpr auto N = meta::len_v<bshape_t>;
-                meta::template_for<N>([&](auto i){
-                    at(res,i) = at(bshape,i);
-                });
-            } else {
-                for (size_t i=0; i<bdim; i++)
-                    at(res,i) = at(bshape,i);
+            else if constexpr (is_none_v<ashape_t> && !is_none_v<bshape_t>) {
+                // one of the shape is none (from shape of num type):
+                // just copy the other shape, bshape in this case
+                auto bdim = len(bshape);
+                if constexpr (meta::is_resizable_v<result_t>)
+                    res.resize(bdim);
+                if constexpr (meta::is_tuple_v<bshape_t>) {
+                    constexpr auto N = meta::len_v<bshape_t>;
+                    meta::template_for<N>([&](auto i){
+                        at(res,i) = at(bshape,i);
+                    });
+                } else {
+                    for (size_t i=0; i<bdim; i++)
+                        at(res,i) = at(bshape,i);
+                }
             }
-        }
-        else if constexpr (is_none_v<bshape_t> && !is_none_v<ashape_t>) {
-            // similar to above case, but ashape is index array instead of bshape
-            auto adim = len(ashape);
-            if constexpr (meta::is_resizable_v<result_t>)
-                res.resize(adim);
-            if constexpr (meta::is_tuple_v<ashape_t>) {
-                constexpr auto N = meta::len_v<ashape_t>;
-                meta::template_for<N>([&](auto i){
-                    at(res,i) = at(ashape,i);
-                });
+            else if constexpr (is_none_v<bshape_t> && !is_none_v<ashape_t>) {
+                // similar to above case, but ashape is index array instead of bshape
+                auto adim = len(ashape);
+                if constexpr (meta::is_resizable_v<result_t>)
+                    res.resize(adim);
+                if constexpr (meta::is_tuple_v<ashape_t>) {
+                    constexpr auto N = meta::len_v<ashape_t>;
+                    meta::template_for<N>([&](auto i){
+                        at(res,i) = at(ashape,i);
+                    });
+                } else {
+                    for (size_t i=0; i<adim; i++)
+                        at(res,i) = at(ashape,i);
+                }
             } else {
-                for (size_t i=0; i<adim; i++)
-                    at(res,i) = at(ashape,i);
+                // do nothing
             }
-        } else {
-            // do nothing
-        }
 
-        using return_t = nmtools_maybe<result_t>;
-        if (success) {
-            return return_t{res};
-        } else {
-            return return_t{meta::Nothing};
+            using return_t = nmtools_maybe<result_t>;
+            if (success) {
+                return return_t{res};
+            } else {
+                return return_t{meta::Nothing};
+            }
         }
     } // broadcast_shape
 }
@@ -229,21 +229,19 @@ namespace nmtools::index
     template <typename ashape_t, typename bshape_t, typename cshape_t, typename...other_shapes_t>
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape, const cshape_t& cshape, const other_shapes_t&...other_shapes)
     {
-        // TODO: use optional
-        #if 0
-        const auto [success_,shape_] = broadcast_shape(ashape,bshape);
-        const auto [success, shape]  = broadcast_shape(shape_,cshape,other_shapes...);
-        using return_t = nmtools_tuple<bool,meta::remove_cvref_t<meta::remove_address_space_t<decltype(shape)>>>;
-        return return_t{success && success_, shape};
-        #else
+        // TODO: check if results is constant index, don't make it maybe type if so
         auto result_ = broadcast_shape(ashape,bshape);
-        using result_t = decltype(broadcast_shape(*result_,cshape,other_shapes...));
-        if (result_) {
-            return broadcast_shape(*result_,cshape,other_shapes...);
+        using result_t  = decltype(result_);
+        using results_t = decltype(broadcast_shape(result_,cshape,other_shapes...));
+        using return_t  = meta::conditional_t<meta::is_maybe_v<results_t>,results_t,nmtools_maybe<results_t>>;
+        if constexpr (meta::is_maybe_v<result_t>) {
+            return (result_ ?
+                return_t{broadcast_shape(*result_,cshape,other_shapes...)}
+                : return_t{meta::Nothing}
+            );
         } else {
-            return result_t{meta::Nothing};
+            return return_t{broadcast_shape(result_,cshape,other_shapes...)};
         }
-        #endif
     } // broadcast_shape
 
     struct broadcast_size_t {};
@@ -254,24 +252,32 @@ namespace nmtools::index
         , [[maybe_unused]] b_size_t b_size
         , [[maybe_unused]] other_sizes_t... other_sizes)
     {
-        using result_t = meta::resolve_optype_t<broadcast_size_t,dst_shape_t,a_size_t,b_size_t,other_sizes_t...>;
-
-        if constexpr (meta::is_maybe_v<result_t>) {
-            if (static_cast<bool>(a_size)) {
-                auto result = broadcast_size(dst_shape,*a_size,b_size,other_sizes...);
-                // assume not nested optional
-                return result_t{result};
-            } else {
-                return result_t{meta::Nothing};
-            }
+        if constexpr (meta::is_maybe_v<dst_shape_t>) {
+            using result_t = decltype(broadcast_size(unwrap(dst_shape),a_size,b_size,other_sizes...));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (dst_shape ?
+                return_t{broadcast_size(unwrap(dst_shape),a_size,b_size,other_sizes...)}
+                : return_t{meta::Nothing}
+            );
         } else {
-            auto result = result_t {};
+            using result_t = meta::resolve_optype_t<broadcast_size_t,dst_shape_t,a_size_t,b_size_t,other_sizes_t...>;
+            if constexpr (meta::is_maybe_v<result_t>) {
+                if (static_cast<bool>(a_size)) {
+                    auto result = broadcast_size(dst_shape,*a_size,b_size,other_sizes...);
+                    // assume not nested optional
+                    return result_t{result};
+                } else {
+                    return result_t{meta::Nothing};
+                }
+            } else {
+                auto result = result_t {};
 
-            if constexpr (!meta::is_constant_index_v<result_t>) {
-                result = index::product(dst_shape);
+                if constexpr (!meta::is_constant_index_v<result_t>) {
+                    result = index::product(dst_shape);
+                }
+
+                return result;
             }
-
-            return result;
         }
     } // broadcast_size
 

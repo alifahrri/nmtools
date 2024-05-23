@@ -38,11 +38,11 @@ namespace nmtools::index::impl
     {
         if constexpr (is_none_v<bshape_t>) {
             #if 1
-            return nmtools_tuple<bool,none_t,none_t>{true,None,None};
+            return nmtools_tuple<none_t,none_t>{None,None};
             #else
             // broken on c++ for opencl 😭
             // error: field may not be qualified with an address space
-            return nmtools_tuple{true,None,None};
+            return nmtools_tuple{None,None};
             #endif
         } else {
             // TODO: create specific type resolver
@@ -53,6 +53,10 @@ namespace nmtools::index::impl
 
             auto ret = result_t {};
             auto dim = len(bshape);
+
+            if constexpr (meta::is_resizable_v<result_t>) {
+                ret.resize(dim);
+            }
 
             if constexpr (meta::is_tuple_v<bshape_t>) {
                 constexpr auto N = meta::len_v<bshape_t>;
@@ -65,8 +69,8 @@ namespace nmtools::index::impl
                     at(ret,i) = at(bshape,i);
             }
 
-            using return_t = meta::make_tuple_type_t<bool,result_t,none_t>;
-            return return_t{true,ret,None};
+            using return_t = nmtools_tuple<result_t,none_t>;
+            return return_t{ret,None};
         }
     } // shape_broadcast_to
 
@@ -196,8 +200,12 @@ namespace nmtools::index::impl
         // - free_axes has same len with res,
         // - free_axes value indicates wether the corresponding indices are free (either empty or 1).
         // - free_axes is useful to perform the reverse operation.
-        // TODO: use optional instead
-        return nmtools_tuple<bool,result_t,free_axes_t>{success, res, free_axes};
+        using return_t = nmtools_maybe<nmtools_tuple<result_t,free_axes_t>>;
+        if (success) {
+            return return_t{nmtools_tuple<result_t,free_axes_t>{res, free_axes}};
+        } else {
+            return return_t{meta::Nothing};
+        }
     } // shape_broadcast_to
 }
 
@@ -230,7 +238,7 @@ namespace nmtools::index
             using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
                 , result_type, nmtools_maybe<result_type>
             >;
-            if (static_cast<bool>(*ashape)) {
+            if (static_cast<bool>(bshape)) {
                 auto result = shape_broadcast_to(ashape,*bshape);
                 if constexpr (meta::is_maybe_v<result_type>) {
                     return (static_cast<bool>(result)
@@ -246,7 +254,54 @@ namespace nmtools::index
         } else {
             return impl::shape_broadcast_to(ashape,bshape);
         }
-    }
+    } // shape_broadcast_to
+
+    template <typename bcast_result_t>
+    constexpr auto origin_axes(const bcast_result_t& bcast_result)
+    {
+        if constexpr (meta::is_maybe_v<bcast_result_t>) {
+            using result_type = decltype(origin_axes(*bcast_result));
+            using shape_type  = meta::remove_cvref_t<decltype(nmtools::get<0>(meta::declval<result_type>()))>;
+            using origin_type = meta::remove_cvref_t<decltype(nmtools::get<1>(meta::declval<result_type>()))>;
+            #if 0
+            // unusable in constexpr evaluation :|
+            // works on c++20 but not in c++17: https://godbolt.org/z/3cYacdd17
+            using return_type = nmtools_tuple<nmtools_maybe<shape_type>,nmtools_maybe<origin_type>>;
+            #else
+            using return_type = nmtools_maybe<nmtools_tuple<shape_type,origin_type>>;
+            #endif
+            if (static_cast<bool>(bcast_result)) {
+                auto result = origin_axes(*bcast_result);
+                auto shape  = nmtools::get<0>(result);
+                auto origin = nmtools::get<1>(result);
+                #if 0
+                return return_type{nmtools_maybe{shape},nmtools_maybe{origin}};
+                #else
+                return return_type{nmtools_tuple{shape,origin}};
+                #endif
+            } else {
+                #if 0
+                return return_type{
+                      nmtools_maybe<shape_type>{meta::Nothing}
+                    , nmtools_maybe<origin_type>{meta::Nothing}
+                };
+                #else
+                return return_type{meta::Nothing};
+                #endif
+            }
+        } else {
+            auto shape = nmtools::get<0>(bcast_result);
+            auto free_axes = nmtools::get<1>(bcast_result);
+            static_assert( meta::len_v<bcast_result_t> == 2 );
+            if constexpr (meta::is_index_array_v<decltype(free_axes)>) {
+                auto not_free = logical_not(free_axes);
+                auto origin_axes = nonzero(not_free);
+                return nmtools_tuple{shape,origin_axes};
+            } else {
+                return nmtools_tuple{shape,None};
+            }
+        }
+    } // origin_axes
 
     template <typename indices_t, typename src_shape_t, typename dst_shape_t, typename origin_axes_t>
     constexpr auto broadcast_to(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape, const origin_axes_t& origin_axes)

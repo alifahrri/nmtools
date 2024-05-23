@@ -22,19 +22,23 @@ namespace nmtools::view
         static_assert( sizeof...(arrays_t) >= 2
             , "please provide at least two arrays for broadcast_arrays");
 
-        const auto result = index::broadcast_shape(::nmtools::shape<true>(arrays)...);
-        [[maybe_unused]] const auto success = static_cast<bool>(result);
-
-        using bcast_result_t = meta::get_maybe_type_t<decltype(result)>;
-        using bsize_t  = meta::resolve_optype_t<index::broadcast_size_t,bcast_result_t,decltype(nmtools::size<true>(arrays))...>;
-
-        using result_t = nmtools_tuple<decltype(view::broadcast_to(meta::declval<arrays_t>(),meta::declval<bcast_result_t>(),meta::declval<bsize_t>()))...>;
-        nmtools_assert_prepare_type (return_t, result_t);
-        nmtools_assert (success, "cannot broadcast arrays together", return_t);
-
-        const auto bsize = index::broadcast_size(*result,nmtools::size<true>(arrays)...);
-
-        return return_t{result_t{view::broadcast_to(arrays,*result,bsize)...}};
+        auto bcast_shape = index::broadcast_shape(shape<true>(arrays)...);
+        auto bcast_size  = index::broadcast_size(bcast_shape,size<true>(arrays)...);
+        if constexpr (meta::is_maybe_v<decltype(bcast_shape)>) {
+            // avoid tuple<maybe<...>...> because not usable in constexpr evaluation
+            using bcast_shape_t = meta::get_maybe_type_t<decltype(bcast_shape)>;
+            using bcast_size_t  = meta::get_maybe_type_t<decltype(bcast_size)>;
+            using result_t = nmtools_tuple<decltype(unwrap(view::broadcast_to(arrays,meta::declval<bcast_shape_t>(),meta::declval<bcast_size_t>())))...>;
+            using return_t = nmtools_maybe<result_t>;
+            if (static_cast<bool>(bcast_shape)) {
+                return return_t{nmtools_tuple{unwrap(view::broadcast_to(arrays,*bcast_shape,*bcast_size))...}};
+            } else {
+                return return_t{meta::Nothing};
+            }
+        } else {
+            // unwrap to avoid construction of tuple<maybe<...>...> at compile-time
+            return nmtools_tuple{unwrap(view::broadcast_to(arrays,bcast_shape,bcast_size))...};
+        }
     } // broadcast_arrays
 } // namespace nmtools::view
 

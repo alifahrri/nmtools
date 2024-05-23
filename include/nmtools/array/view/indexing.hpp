@@ -162,6 +162,12 @@ namespace nmtools::view
                 return apply_at(array,src_indices);
             }
         }
+
+        template <typename T, meta::enable_if_t<meta::is_num_v<T> && meta::is_num_v<array_t> && is_none_v<decltype(indexer.shape())>,int> =0>
+        constexpr operator T() const noexcept
+        {
+            return static_cast<T>(array);
+        }
     }; // indexing_t
 
     template <typename array_t, typename indexer_t>
@@ -293,6 +299,16 @@ namespace nmtools::meta
     };
 
     template <typename array_t, typename indexer_t>
+    struct is_num<
+        view::decorator_t<view::indexing_t,array_t,indexer_t>
+    > {
+        using view_type  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
+        using shape_type = decltype(meta::declval<view_type>().shape());
+
+        static constexpr auto value = is_num_v<array_t> && is_none_v<shape_type>;
+    };
+
+    template <typename array_t, typename indexer_t>
     struct get_element_type<
         view::decorator_t<view::indexing_t,array_t,indexer_t>
     > {
@@ -352,6 +368,8 @@ namespace nmtools::meta
                 return fixed_size;
             } else if constexpr (is_clipped_integer_v<dst_size_type> || is_constant_index_v<dst_size_type>) {
                 return to_value_v<dst_size_type>;
+            } else if constexpr (is_clipped_index_array_v<dst_shape_type>) {
+                return index::product(to_value_v<dst_shape_type>);
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
             }
