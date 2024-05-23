@@ -473,7 +473,7 @@ namespace nmtools::utl
     template <typename T>
     inline constexpr auto tuple_size_v = tuple_size<T>::value;
 
-    template <size_t I, typename T>
+    template <nm_size_t I, typename T>
     struct tuple_element;
 
     #define RETURN_TUPLE_ARG_TYPE_IF(index) \
@@ -482,7 +482,7 @@ namespace nmtools::utl
         return meta::as_value_v<type>; \
     }
 
-    template <size_t I, typename...Args>
+    template <nm_size_t I, typename...Args>
     struct tuple_element<I,tuple<Args...>>
     {
         using tuple_type = tuple<Args...>;
@@ -504,7 +504,7 @@ namespace nmtools::utl
         using type = meta::type_t<decltype(vtype)>;
     };
 
-    template <size_t I, typename T>
+    template <nm_size_t I, typename T>
     using tuple_element_t = meta::type_t<tuple_element<I,T>>;
 
     #undef DEFINE_TUPLE_VAL
@@ -534,7 +534,7 @@ namespace std
     template <typename T>
     struct tuple_size;
 
-    template <size_t I, typename T>
+    template <nm_size_t I, typename T>
     struct tuple_element;
 } // namespace std
 #endif // <tuple>
@@ -550,13 +550,13 @@ namespace std
     struct std::tuple_size<const nmtools::utl::tuple<Args...>> : std::tuple_size<nmtools::utl::tuple<Args...>>{}; \
 
 #define NMTOOLS_UTL_STD_TUPLE_ELEMENT(tuple) \
-    template <size_t I, typename...Args> \
+    template <nm_size_t I, typename...Args> \
     struct std::tuple_element<I,nmtools::utl::tuple<Args...>> \
     { \
         using tuple_type = nmtools::utl::tuple<Args...>; \
         using type = nmtools::utl::tuple_element_t<I,tuple_type>; \
     }; \
-    template <size_t I, typename...Args> \
+    template <nm_size_t I, typename...Args> \
     struct std::tuple_element<I,const nmtools::utl::tuple<Args...>> \
     { \
         using tuple_type = nmtools::utl::tuple<Args...>; \

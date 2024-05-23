@@ -12,21 +12,28 @@
 #include "nmtools/meta/loop.hpp"
 #include "nmtools/meta/bits/transform/common_type.hpp"
 
+// To make this file include-able but errored when used
 // TODO: better handling for no-malloc build
 namespace nmtools::error
 {
     // dummy
 
-    inline void no_calloc(size_t,size_t) {}
+    inline void no_calloc(size_t,size_t);
 
-    inline void no_malloc(size_t) {}
+    inline void no_malloc(size_t);
 
-    inline void no_realloc(void*,size_t) {}
+    inline void no_realloc(void*,size_t);
 
-    inline void no_free(void*) {}
+    inline void no_free(void*);
 
-    inline void no_memcpy(...) {}
+    inline void no_memcpy(...);
 } // namespace nmtools::error
+
+#ifdef NULL
+#define nmtools_null NULL
+#else
+#define nmtools_null nullptr
+#endif
 
 #if __has_include(<malloc.h>) && not defined(NMTOOLS_UTL_NO_MALLOC)
 
@@ -121,7 +128,7 @@ namespace nmtools::utl
         using const_reference = const T&;
 
         protected:
-        pointer buffer_ = NULL;
+        pointer buffer_ = nmtools_null;
         size_type size_ = 0;
         size_type buffer_size_ = 0;
         allocator_type allocator = {};
@@ -135,14 +142,14 @@ namespace nmtools::utl
         public:
 
         vector()
-            : buffer_(NULL)
+            : buffer_(nmtools_null)
             , size_(0)
             , buffer_size_(0)
             , allocator{}
             , initialized(true)
         {}
         vector(size_type N)
-            : buffer_(NULL)
+            : buffer_(nmtools_null)
             , size_(0)
             , buffer_size_(0)
             , allocator{}
@@ -151,7 +158,7 @@ namespace nmtools::utl
             resize(N);
         }
         vector(const vector& other)
-            : buffer_(NULL)
+            : buffer_(nmtools_null)
             , size_(0)
             , buffer_size_(0)
             , allocator{}
@@ -165,7 +172,7 @@ namespace nmtools::utl
         }
         ~vector()
         {
-            if (buffer_) {
+            if (buffer_ && (buffer_size_ > 0)) {
                 allocator.deallocate(buffer_);
             }
         }
@@ -173,7 +180,7 @@ namespace nmtools::utl
         // TODO: fix initialization
         template <typename A, typename B, typename...Ts>
         vector(const A& t, const B& u, const Ts&...ts)
-            : buffer_(NULL)
+            : buffer_(nmtools_null)
             , size_(0)
             , buffer_size_(0)
             , allocator{}
@@ -201,7 +208,7 @@ namespace nmtools::utl
         {
             auto old_size = size_;
             size_ = new_size;
-            if (!initialized) {
+            if (!buffer_) {
                 buffer_size_ = new_size;
                 buffer_ = allocator.allocate(new_size);
             } else if (buffer_size_ < new_size) {
