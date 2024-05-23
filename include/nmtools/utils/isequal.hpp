@@ -7,6 +7,7 @@
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/utils/isequal/isequal.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::utils
 {
@@ -190,53 +191,15 @@ namespace nmtools::utils
         {
             using ::nmtools::index::ndindex;
             // treat T & U as value
-            constexpr auto t1 = meta::as_value_v<T>;
-            constexpr auto t2 = meta::as_value_v<U>;
+            [[maybe_unused]] constexpr auto t1 = meta::as_value_v<T>;
+            [[maybe_unused]] constexpr auto t2 = meta::as_value_v<U>;
 
-            // given either type, check if the type is constrained
-            constexpr auto constrained_either = [](auto T1, auto T2){
-                using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
-                using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
-                [[maybe_unused]] auto t1_lhs = meta::as_value_v<meta::get_either_left_t<t1>>;
-                [[maybe_unused]] auto t2_lhs = meta::as_value_v<meta::get_either_left_t<t2>>;
-                [[maybe_unused]] auto t1_rhs = meta::as_value_v<meta::get_either_right_t<t1>>;
-                [[maybe_unused]] auto t2_rhs = meta::as_value_v<meta::get_either_right_t<t2>>;
-                if constexpr (meta::is_either_v<t1> && meta::is_either_v<t2>)
-                    return constrained(t1_lhs,t2_lhs) || constrained(t1_rhs,t2_rhs);
-                else if constexpr (meta::is_either_v<t1>)
-                    return constrained(t1_lhs,T2) || constrained(t1_rhs,T2);
-                else if constexpr (meta::is_either_v<t2>)
-                    return constrained(T1,t2_lhs) || constrained(T1,t2_rhs);
-                else return false;
-            };
-
-            // given maybe type, check if the type is constrained
-            constexpr auto constrained_maybe = [](auto T1, auto T2){
-                using t1 = meta::type_t<meta::remove_cvref_t<decltype(T1)>>;
-                using t2 = meta::type_t<meta::remove_cvref_t<decltype(T2)>>;
-                [[maybe_unused]] auto v1  = meta::as_value_v<meta::get_maybe_type_t<t1>>;
-                [[maybe_unused]] auto v2  = meta::as_value_v<meta::get_maybe_type_t<t2>>;
-                if constexpr (meta::is_maybe_v<t1> && meta::is_maybe_v<t2>)
-                    return constrained(v1,v2);
-                // may be type is 
-                else if constexpr (meta::is_maybe_v<t1> && meta::is_nothing_v<t2>)
-                    return constrained(v1);
-                else if constexpr (meta::is_nothing_v<t1> && meta::is_maybe_v<t2>)
-                    return constrained(v2);
-                else if constexpr (meta::is_maybe_v<t1>)
-                    return constrained(v1,T2);
-                else if constexpr (meta::is_maybe_v<t2>)
-                    return constrained(T1,v2);
-                else return false;
-            };
-
-            if constexpr (!(constrained_maybe(t1,t2) || constrained_either(t1,t2) || constrained(t1,t2))) {
-                return error::ISEQUAL_UNSUPPORTED<T,U>{};
-            } else if constexpr (is_ellipsis_v<T> && is_ellipsis_v<U>)
+            if constexpr (is_ellipsis_v<T> && is_ellipsis_v<U>) {
                 return true;
-            else if constexpr (is_none_v<T> && is_none_v<U>)
+            }
+            else if constexpr (is_none_v<T> && is_none_v<U>) {
                 return true;
-            // both type is maybe type, when both is empty, this also return true
+            } // both type is maybe type, when both is empty, this also return true
             else if constexpr (meta::is_maybe_v<T> && meta::is_maybe_v<U>) {
                 // for maybe type,
                 // assume casting to bool checks if the objects contains a value
@@ -293,14 +256,14 @@ namespace nmtools::utils
 
                 auto equal = false;
                 if (auto l_ptr = get_if<lhs_t>(&t); l_ptr) {
-                    constexpr auto lhs = meta::as_value_v<lhs_t>;
+                    constexpr auto lhs = meta::as_value_v<meta::resolve_optype_t<unwrap_t,lhs_t>>;
                     // TODO: implement nested either
                     // avoid instantiation if not the same concept
                     if constexpr (same_concept(lhs,ref)) {
                         equal = detail::isequal(*l_ptr,u);
                     }
                 } else {
-                    constexpr auto rhs = meta::as_value_v<rhs_t>;
+                    constexpr auto rhs = meta::as_value_v<meta::resolve_optype_t<unwrap_t,rhs_t>>;
                     [[maybe_unused]] auto r_ptr = get_if<rhs_t>(&t);
                     // TODO: implement nested either
                     // avoid instantiation if not the same concept
@@ -333,7 +296,7 @@ namespace nmtools::utils
 
                 auto equal = false;
                 if (auto l_ptr = get_if<lhs_t>(&u)) {
-                    constexpr auto lhs = meta::as_value_v<lhs_t>;
+                    constexpr auto lhs = meta::as_value_v<meta::resolve_optype_t<unwrap_t,lhs_t>>;
                     // TODO: implement nested either
                     // avoid instantiation if not the same concept
                     if constexpr (same_concept(lhs,ref)) {
@@ -341,7 +304,7 @@ namespace nmtools::utils
                     }
                 } else {
                     [[maybe_unused]] auto r_ptr = get_if<rhs_t>(&u);
-                    constexpr auto rhs = meta::as_value_v<rhs_t>;
+                    constexpr auto rhs = meta::as_value_v<meta::resolve_optype_t<unwrap_t,rhs_t>>;
                     if constexpr (same_concept(rhs,ref)) {
                         equal = detail::isequal(t,*r_ptr);
                     }
@@ -361,14 +324,11 @@ namespace nmtools::utils
                 */
             }
             // assume both T and U is integer
-            else if constexpr (meta::is_num_v<T>) {
-                // TODO(wrap std metafunctions): consider to use meta::promote_types_t with index_t as tag
+            else if constexpr (meta::is_num_v<T> && meta::is_num_v<U>) {
                 using value_type = meta::common_type_t<T,U>;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
-            // assume both T and U is integral constant
-            else if constexpr (meta::is_integral_constant_v<T>) {
-                // TODO(wrap std metafunctions): consider to use meta::promote_types_t with index_t as tag
+            else if constexpr (meta::is_integral_constant_v<T> && meta::is_integer_v<U>) {
                 using value_type = meta::common_type_t<typename T::value_type,U>;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
@@ -430,8 +390,7 @@ namespace nmtools::utils
             else if constexpr (meta::is_attribute_v<T> && meta::is_attribute_v<U>) {
                 return t == u;
             }
-            // assume both T and U is ndarray
-            else {
+            else if constexpr (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>) {
                 bool equal = true;
                 auto t_dim = ::nmtools::dim(t);
                 auto u_dim = ::nmtools::dim(u);
@@ -463,6 +422,8 @@ namespace nmtools::utils
                 for (size_t i=0; i<t_indices.size(); i++)
                     equal = equal && ((common_t)apply_at(t, t_indices[i]) == (common_t)apply_at(u, u_indices[i]));
                 return equal;
+            } else {
+                return error::ISEQUAL_UNSUPPORTED<T,U>{};
             }
         } // isequal
     } // namespace detail

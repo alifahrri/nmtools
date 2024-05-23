@@ -82,10 +82,12 @@ namespace nmtools::utility
                 auto src_edge = nmtools::get<I>(keys);
                 auto out_edges = digraph.at(src_edge);
                 constexpr auto N = meta::len_v<decltype(out_edges)>;
+                using src_edge_t = meta::remove_cvref_t<decltype(src_edge)>;
                 return meta::template_reduce<N>([&](auto init, auto index){
                     constexpr auto I = decltype(index)::value;
                     auto dst_edge = nmtools::get<I>(out_edges);
-                    return tuple_append(init,nmtools_tuple{src_edge,dst_edge});
+                    using dst_edge_t = meta::remove_cvref_t<decltype(dst_edge)>;
+                    return tuple_append(init,nmtools_tuple<src_edge_t,dst_edge_t>{src_edge,dst_edge});
                 }, init);
             }, nmtools_tuple{});
         }

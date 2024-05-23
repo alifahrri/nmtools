@@ -1,14 +1,3 @@
-/**
- * @file isclose.hpp
- * @author Fahri Ali Rahman (ali.rahman.fahri@gmail.com)
- * @brief Contains definition of isclose
- * @version 0.1
- * @date 2020-11-17
- * 
- * @copyright Copyright (c) 2020
- * 
- */
-
 #ifndef NMTOOLS_UTILS_ISCLOSE_HPP
 #define NMTOOLS_UTILS_ISCLOSE_HPP
 
@@ -83,6 +72,12 @@ namespace nmtools::utils
         //     return t == u;
         // } // isequal
 #endif // NMTOOLS_HAS_VECTOR
+
+        namespace error
+        {
+            template <typename...>
+            struct ISCLOSE_UNSUPPORTED : meta::detail::fail_t {};
+        }
         /**
          * @brief check if all value of t is near with the value of u, element-wise.
          * 
@@ -264,7 +259,7 @@ namespace nmtools::utils
                 }
                 return close;
             }
-            else if constexpr (meta::is_num_v<T>) {
+            else if constexpr (meta::is_num_v<T> && meta::is_num_v<U>) {
                 // use get_element_type to allow view
                 using t_type = meta::get_element_type_t<T>;
                 using u_type = meta::get_element_type_t<U>;
@@ -279,7 +274,7 @@ namespace nmtools::utils
                 #endif
                 return result;
             }
-            else {
+            else if constexpr (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>) {
                 [[maybe_unused]]
                 auto isclose_impl = [](auto lhs, auto rhs, auto eps) {
                     return constexpr_fabs(lhs-rhs) < eps;
@@ -300,6 +295,8 @@ namespace nmtools::utils
                     close = close && isclose(apply_at(t, t_indices[i]), apply_at(u, u_indices[i]), eps);
                 }
                 return close;
+            } else {
+                return error::ISCLOSE_UNSUPPORTED<T,U>{};
             }
         } // isclose
     } // namespace detail
