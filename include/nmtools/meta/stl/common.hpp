@@ -108,7 +108,8 @@ namespace nmtools::meta
     #define nmtools_tuple ::std::tuple
     #endif // NMTOOLS_META_MAKE_TUPLE
 
-    #ifndef NMTOOLS_META_MAKE_MAYBE_TYPE
+    // somehow std::optional works on clang but not gcc, when not on clang (aka gcc) use utl::maybe instead
+    #if (!defined(NMTOOLS_META_MAKE_MAYBE_TYPE) || !defined(nmtools_maybe)) && defined(__clang__)
     #define NMTOOLS_META_MAKE_MAYBE_TYPE
     template <typename T, typename>
     struct make_maybe_type

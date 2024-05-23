@@ -13,7 +13,7 @@
 
 namespace nmtools::meta
 {
-#ifndef NMTOOLS_META_MAKE_MAYBE_TYPE
+#if !defined(NMTOOLS_META_MAKE_MAYBE_TYPE) || !defined(nmtools_maybe)
 #define NMTOOLS_META_MAKE_MAYBE_TYPE
 
     template <typename T, typename>
