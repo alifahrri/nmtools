@@ -52,6 +52,7 @@ endif (NMTOOLS_VIEW_TEST_ALL)
 set(ARRAY_VIEW_TEST_SOURCES
     src/arange.cpp
     src/argsort.cpp
+    ## TODO: fix
     # src/array_slice.cpp
     src/atleast_1d.cpp
     src/atleast_2d.cpp
@@ -117,6 +118,7 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     src/ufuncs/bitwise_xor.cpp
     src/ufuncs/cbrt.cpp
     src/ufuncs/ceil.cpp
+    ## TODO: fix
     # src/ufuncs/clip.cpp
     src/ufuncs/cos.cpp
     src/ufuncs/cosh.cpp
