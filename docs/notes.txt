@@ -76,3 +76,6 @@ https://godbolt.org/z/WPfvEWPEv
 incompatible warning on "unused" private field:
 clang rejects without [[maybe_unused]] -> https://godbolt.org/z/aMMzrbz4h
 gcc rejects with [[maybe_unused]] -> https://godbolt.org/z/K8zPdz7a4
+
+c++17 vs c++20 tuple<optional<...>>
+https://godbolt.org/z/3cYacdd17
