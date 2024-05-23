@@ -12,7 +12,7 @@ namespace nmtools::functional
         using isinf = fun::unary_ufunc<view::isinf_t>;
     }
 
-    constexpr inline auto isinf = functor_t(unary_fmap_t<fun::isinf>{});
+    constexpr inline auto isinf = functor_t{unary_fmap_t<fun::isinf>{}};
 } // namespace nmtools::functional
 
 

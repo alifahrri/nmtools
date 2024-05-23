@@ -12,7 +12,7 @@ namespace nmtools::functional
         using tanhshrink = fun::unary_ufunc<view::tanhshrink_t>;
     }
 
-    constexpr inline auto tanhshrink = functor_t(unary_fmap_t<fun::tanhshrink>{});
+    constexpr inline auto tanhshrink = functor_t{unary_fmap_t<fun::tanhshrink>{}};
 } // namespace nmtools::functional
 
 

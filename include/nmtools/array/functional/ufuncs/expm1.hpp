@@ -12,7 +12,7 @@ namespace nmtools::functional
         using expm1 = fun::unary_ufunc<view::expm1_t>;
     }
 
-    constexpr inline auto expm1 = functor_t(unary_fmap_t<fun::expm1>{});
+    constexpr inline auto expm1 = functor_t{unary_fmap_t<fun::expm1>{}};
 } // namespace nmtools::functional
 
 

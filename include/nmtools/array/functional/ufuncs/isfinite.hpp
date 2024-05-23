@@ -12,7 +12,7 @@ namespace nmtools::functional
         using isfinite = fun::unary_ufunc<view::isfinite_t>;
     }
 
-    constexpr inline auto isfinite = functor_t(unary_fmap_t<fun::isfinite>{});
+    constexpr inline auto isfinite = functor_t{unary_fmap_t<fun::isfinite>{}};
 } // namespace nmtools::functional
 
 

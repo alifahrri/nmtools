@@ -12,7 +12,7 @@ namespace nmtools::functional
         using arctan = fun::unary_ufunc<view::arctan_t>;
     }
 
-    constexpr inline auto arctan = functor_t(unary_fmap_t<fun::arctan>{});
+    constexpr inline auto arctan = functor_t{unary_fmap_t<fun::arctan>{}};
 } // namespace nmtools::functional
 
 

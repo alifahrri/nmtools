@@ -12,7 +12,7 @@ namespace nmtools::functional
         using isnan = fun::unary_ufunc<view::isnan_t>;
     }
 
-    constexpr inline auto isnan = functor_t(unary_fmap_t<fun::isnan>{});
+    constexpr inline auto isnan = functor_t{unary_fmap_t<fun::isnan>{}};
 } // namespace nmtools::functional
 
 

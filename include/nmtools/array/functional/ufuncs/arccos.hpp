@@ -12,7 +12,7 @@ namespace nmtools::functional
         using arccos = fun::unary_ufunc<view::arccos_t>;
     }
 
-    constexpr inline auto arccos = functor_t(unary_fmap_t<fun::arccos>{});
+    constexpr inline auto arccos = functor_t{unary_fmap_t<fun::arccos>{}};
 } // namespace nmtools::functional
 
 

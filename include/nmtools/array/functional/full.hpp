@@ -18,7 +18,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto full = functor_t(nullary_fmap_t<fun::full_t>{});
+    constexpr inline auto full = functor_t{nullary_fmap_t<fun::full_t>{}};
 
     template <typename...args_t>
     struct get_function_t<

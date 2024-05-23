@@ -12,7 +12,7 @@ namespace nmtools::functional
         using arccosh = fun::unary_ufunc<view::arccosh_t>;
     }
 
-    constexpr inline auto arccosh = functor_t(unary_fmap_t<fun::arccosh>{});
+    constexpr inline auto arccosh = functor_t{unary_fmap_t<fun::arccosh>{}};
 } // namespace nmtools::functional
 
 

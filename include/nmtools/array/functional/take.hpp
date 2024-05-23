@@ -10,7 +10,7 @@ namespace nmtools::functional
         return view::take(args...);
     };
 
-    constexpr inline auto take = functor_t(unary_fmap_t<decltype(take_fun)>{take_fun});
+    constexpr inline auto take = functor_t{unary_fmap_t<decltype(take_fun)>{take_fun}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_TAKE_HPP

@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto squeeze = functor_t(unary_fmap_t<fun::squeeze_t>{});
+    constexpr inline auto squeeze = functor_t{unary_fmap_t<fun::squeeze_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_SQUEEZE_HPP

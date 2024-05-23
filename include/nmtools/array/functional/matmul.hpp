@@ -18,7 +18,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto matmul = functor_t(binary_fmap_t<fun::matmul_t>{});
+    constexpr inline auto matmul = functor_t{binary_fmap_t<fun::matmul_t>{}};
 
     template <typename...args_t>
     struct get_function_t<

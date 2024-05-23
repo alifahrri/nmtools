@@ -13,7 +13,7 @@ namespace nmtools::functional
     }
 
     // we want celu[alpha] to works, so do not use fun::unary_ufunc<view::celu_t<>>;
-    constexpr inline auto celu = functor_t(unary_fmap_t<fun::celu>{});
+    constexpr inline auto celu = functor_t{unary_fmap_t<fun::celu>{}};
 
     // using lambda breaks boost type index: Type name demangling failed
     // constexpr inline auto celu = functor_t(unary_fmap_t<decltype(celu_fun)>{celu_fun});

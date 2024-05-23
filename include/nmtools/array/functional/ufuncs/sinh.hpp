@@ -12,7 +12,7 @@ namespace nmtools::functional
         using sinh = fun::unary_ufunc<view::sinh_t>;
     }
 
-    constexpr inline auto sinh = functor_t(unary_fmap_t<fun::sinh>{});
+    constexpr inline auto sinh = functor_t{unary_fmap_t<fun::sinh>{}};
 } // namespace nmtools::functional
 
 

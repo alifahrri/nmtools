@@ -12,7 +12,7 @@ namespace nmtools::functional
         using relu6 = fun::unary_ufunc<view::relu6_t>;
     } // namespace fun
 
-    constexpr inline auto relu6 = functor_t(unary_fmap_t<fun::relu6>{});
+    constexpr inline auto relu6 = functor_t{unary_fmap_t<fun::relu6>{}};
 } // namespace nmtools::functional
 
 

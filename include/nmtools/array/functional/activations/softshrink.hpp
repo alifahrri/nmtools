@@ -11,7 +11,7 @@ namespace nmtools::functional
     {
         using softshrink = fun::unary_ufunc<view::softshrink_t<>>;
     }
-    constexpr inline auto softshrink = functor_t(unary_fmap_t<fun::softshrink>{});
+    constexpr inline auto softshrink = functor_t{unary_fmap_t<fun::softshrink>{}};
 } // namespace nmtools::functional
 
 

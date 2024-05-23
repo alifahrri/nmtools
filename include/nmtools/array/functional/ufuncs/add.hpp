@@ -18,10 +18,10 @@ namespace nmtools::functional
         using accumulate_add = fun::accumulate<view::add_t<>>;
     }
 
-    constexpr inline auto add = functor_t(binary_fmap_t<fun::add>{});
-    constexpr inline auto reduce_add = functor_t(unary_fmap_t<fun::reduce_add>{});
-    constexpr inline auto outer_add = functor_t(binary_fmap_t<fun::outer_add>{});
-    constexpr inline auto accumulate_add = functor_t(unary_fmap_t<fun::accumulate_add>{});
+    constexpr inline auto add = functor_t{binary_fmap_t<fun::add>{}};
+    constexpr inline auto reduce_add = functor_t{unary_fmap_t<fun::reduce_add>{}};
+    constexpr inline auto outer_add = functor_t{binary_fmap_t<fun::outer_add>{}};
+    constexpr inline auto accumulate_add = functor_t{unary_fmap_t<fun::accumulate_add>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_ADD_HPP

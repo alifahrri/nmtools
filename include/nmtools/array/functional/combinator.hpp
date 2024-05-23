@@ -64,6 +64,9 @@ namespace nmtools::combinator
     template <auto N> using dup_fmap_t  = fmap_t<dup_t<N>,1,N>;
     template <auto N> using bury_fmap_t = fmap_t<bury_t<N>,N+1,N+1>;
 
+    static_assert( meta::is_default_constructible_v<bury_fmap_t<2>> );
+    static_assert( meta::is_default_constructible_v<bury_t<2>> );
+
     template <auto N>
     constexpr inline auto bury_n = functor_t<bury_fmap_t<N>>{};
     template <auto N>
@@ -72,7 +75,7 @@ namespace nmtools::combinator
     constexpr inline auto dup_n = functor_t<dup_fmap_t<N>>{};
 
     constexpr inline auto dup   = dup_n<2>;
-    constexpr inline auto swap  = functor_t(fmap_t<swap_t,2,2>{});
+    constexpr inline auto swap  = functor_t{fmap_t<swap_t,2,2>{}};
     constexpr inline auto dig1  = dig_n<1>;
     constexpr inline auto dig2  = dig_n<2>;
     constexpr inline auto bury1 = bury_n<1>;

@@ -24,7 +24,7 @@ namespace nmtools::functional::fun
 
 namespace nmtools::functional
 {
-    constexpr inline auto accumulate = functor_t(unary_fmap_t<fun::accumulate<>>{});
+    constexpr inline auto accumulate = functor_t{unary_fmap_t<fun::accumulate<>>{}};
 
     template <typename...args_t>
     struct get_function_t<

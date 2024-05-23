@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto tile = functor_t(unary_fmap_t<fun::tile_t>{});
+    constexpr inline auto tile = functor_t{unary_fmap_t<fun::tile_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_TILE_HPP

@@ -19,7 +19,7 @@ namespace nmtools::functional::fun
 
 namespace nmtools::functional
 {
-    constexpr inline auto indexing = functor_t(unary_fmap_t<fun::indexing>{});
+    constexpr inline auto indexing = functor_t{unary_fmap_t<fun::indexing>{}};
 
     template <typename...args_t>
     struct get_function_t<

@@ -12,7 +12,7 @@ namespace nmtools::functional
         using ceil = fun::unary_ufunc<view::ceil_t>;
     }
 
-    constexpr inline auto ceil = functor_t(unary_fmap_t<fun::ceil>{});
+    constexpr inline auto ceil = functor_t{unary_fmap_t<fun::ceil>{}};
 } // namespace nmtools::functional
 
 

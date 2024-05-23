@@ -12,7 +12,7 @@ namespace nmtools::functional
         using cbrt = fun::unary_ufunc<view::cbrt_t>;
     }
 
-    constexpr inline auto cbrt = functor_t(unary_fmap_t<fun::cbrt>{});
+    constexpr inline auto cbrt = functor_t{unary_fmap_t<fun::cbrt>{}};
 } // namespace nmtools::functional
 
 

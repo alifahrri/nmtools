@@ -12,7 +12,7 @@ namespace nmtools::functional
         using floor = fun::unary_ufunc<view::floor_t>;
     }
 
-    constexpr inline auto floor = functor_t(unary_fmap_t<fun::floor>{});
+    constexpr inline auto floor = functor_t{unary_fmap_t<fun::floor>{}};
 } // namespace nmtools::functional
 
 

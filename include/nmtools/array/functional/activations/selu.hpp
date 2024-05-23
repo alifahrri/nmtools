@@ -11,7 +11,7 @@ namespace nmtools::functional
     {
         using selu = fun::unary_ufunc<view::selu_t>;
     }
-    constexpr inline auto selu = functor_t(unary_fmap_t<fun::selu>{});
+    constexpr inline auto selu = functor_t{unary_fmap_t<fun::selu>{}};
 } // namespace nmtools::functional
 
 

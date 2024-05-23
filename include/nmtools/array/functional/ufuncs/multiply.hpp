@@ -18,10 +18,10 @@ namespace nmtools::functional
         using accumulate_multiply = fun::accumulate<view::multiply_t<>>;
     }
 
-    constexpr inline auto multiply = functor_t(binary_fmap_t<fun::multiply>{});
-    constexpr inline auto reduce_multiply = functor_t(unary_fmap_t<fun::reduce_multiply>{});
-    constexpr inline auto outer_multiply = functor_t(binary_fmap_t<fun::outer_multiply>{});
-    constexpr inline auto accumulate_multiply = functor_t(unary_fmap_t<fun::accumulate_multiply>{});
+    constexpr inline auto multiply = functor_t{binary_fmap_t<fun::multiply>{}};
+    constexpr inline auto reduce_multiply = functor_t{unary_fmap_t<fun::reduce_multiply>{}};
+    constexpr inline auto outer_multiply = functor_t{binary_fmap_t<fun::outer_multiply>{}};
+    constexpr inline auto accumulate_multiply = functor_t{unary_fmap_t<fun::accumulate_multiply>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MULTIPLY_HPP

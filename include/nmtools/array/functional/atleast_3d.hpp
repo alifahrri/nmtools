@@ -20,7 +20,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto atleast_3d = functor_t(unary_fmap_t<fun::atleast_3d_t>{});
+    constexpr inline auto atleast_3d = functor_t{unary_fmap_t<fun::atleast_3d_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_ATLEAST_3D_HPP

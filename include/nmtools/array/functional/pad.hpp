@@ -18,7 +18,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto pad = functor_t(unary_fmap_t<fun::pad_t>{});
+    constexpr inline auto pad = functor_t{unary_fmap_t<fun::pad_t>{}};
 
     template <typename...args_t>
     struct get_function_t<

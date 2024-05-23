@@ -18,7 +18,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto concatenate = functor_t(binary_fmap_t<fun::concatenate_t>{});
+    constexpr inline auto concatenate = functor_t{binary_fmap_t<fun::concatenate_t>{}};
 
     template <typename...args_t>
     struct get_function_t<

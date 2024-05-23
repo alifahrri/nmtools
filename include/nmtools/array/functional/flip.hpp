@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto flip = functor_t(unary_fmap_t<fun::flip_t>{});
+    constexpr inline auto flip = functor_t{unary_fmap_t<fun::flip_t>{}};
 } // namespace nmtools::functional
 
 

@@ -12,7 +12,7 @@ namespace nmtools::functional
         using sqrt = fun::unary_ufunc<view::sqrt_t>;
     }
 
-    constexpr inline auto sqrt = functor_t(unary_fmap_t<fun::sqrt>{});
+    constexpr inline auto sqrt = functor_t{unary_fmap_t<fun::sqrt>{}};
 } // namespace nmtools::functional
 
 

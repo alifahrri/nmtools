@@ -12,7 +12,7 @@ namespace nmtools::functional
         using softsign = fun::unary_ufunc<view::softsign_t>;
     }
 
-    constexpr inline auto softsign = functor_t(unary_fmap_t<fun::softsign>{});
+    constexpr inline auto softsign = functor_t{unary_fmap_t<fun::softsign>{}};
 } // namespace nmtools::functional
 
 

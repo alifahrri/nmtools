@@ -6,6 +6,7 @@
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/utils/to_string/common_types.hpp"
+#include "nmtools/array/functional/indexing.hpp"
 
 #include "nmtools/utils/isequal.hpp"
 
@@ -91,9 +92,9 @@ namespace nmtools::utils
 
 namespace nmtools::functional
 {
-    constexpr inline auto unary_ufunc  = functor_t(unary_fmap_t<fun::unary_ufunc<>>{});
-    constexpr inline auto binary_ufunc = functor_t(binary_fmap_t<fun::binary_ufunc<>>{});
-    constexpr inline auto broadcast_binary_ufunc = functor_t(binary_fmap_t<fun::broadcast_binary_ufunc<>>{});
+    constexpr inline auto unary_ufunc  = functor_t{unary_fmap_t<fun::unary_ufunc<>>{}};
+    constexpr inline auto binary_ufunc = functor_t{binary_fmap_t<fun::binary_ufunc<>>{}};
+    constexpr inline auto broadcast_binary_ufunc = functor_t{binary_fmap_t<fun::broadcast_binary_ufunc<>>{}};
 
     template <typename op_t, typename lhs_t, typename rhs_t>
     struct get_function_t<
@@ -132,6 +133,17 @@ namespace nmtools::functional
 
 namespace nmtools::functional
 {
+    template <typename T>
+    struct is_broadcast_view : meta::false_type {};
+
+    template <typename array_t, typename...broadcast_args_t>
+    struct is_broadcast_view<
+        view::decorator_t<view::indexing_t, array_t, view::broadcast_to_t<broadcast_args_t...>>
+    > : meta::true_type {};
+
+    template <typename T>
+    constexpr inline auto is_broadcast_view_v = is_broadcast_view<T>::value;
+
     template <typename...args_t>
     struct get_function_composition_t<
         view::decorator_t<
@@ -159,7 +171,8 @@ namespace nmtools::functional
                         && !meta::is_view_v<operand_t>
                     )
                 );
-                if constexpr (meta::is_same_view_v<view::broadcast_to_t,operand_t>) {
+                #if 1
+                if constexpr (is_broadcast_view_v<operand_t>) {
                     // TODO: refactor ufuncs
                     // skip broadcasting
                     const auto& sub_operand = at(get_operands(operand),meta::ct_v<0>);
@@ -173,7 +186,9 @@ namespace nmtools::functional
                     ) {
                         return init;
                     }
-                } else if constexpr (meta::is_view_v<operand_t>) {
+                } else
+                #endif
+                if constexpr (meta::is_view_v<operand_t>) {
                     return init * get_function_composition(operand);
                 } else if constexpr (
                     (meta::is_num_v<operand_t> || meta::is_ndarray_v<operand_t>)
@@ -214,7 +229,8 @@ namespace nmtools::functional
                     || meta::is_view_v<operand_t>
                     , "expect operand to be pointer, number or view for get_compute_graph"
                 );
-                if constexpr (meta::is_same_view_v<view::broadcast_to_t,operand_t>) {
+                #if 1
+                if constexpr (is_broadcast_view_v<operand_t>) {
                     // broadccast_to has exactly 1 operand
                     // effectively skip broadcast
                     // TODO: refactor functional ufuncs
@@ -267,7 +283,9 @@ namespace nmtools::functional
                             };
                         }
                     }
-                } else if constexpr (meta::is_same_view_v<view::alias_t,operand_t>) {
+                } else
+                #endif
+                if constexpr (meta::is_same_view_v<view::alias_t,operand_t>) {
                     constexpr auto NODE_ID = typename operand_t::id_type{};
                     // static_assert( meta::is_pointer_v<decltype(operand)> );
                     return nmtools_tuple{

@@ -24,7 +24,7 @@ namespace nmtools::functional::fun
 
 namespace nmtools::functional
 {
-    constexpr inline auto outer = functor_t(binary_fmap_t<fun::outer<>>{});
+    constexpr inline auto outer = functor_t{binary_fmap_t<fun::outer<>>{}};
 
     template <typename...args_t>
     struct get_function_t<

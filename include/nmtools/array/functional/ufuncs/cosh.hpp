@@ -12,7 +12,7 @@ namespace nmtools::functional
         using cosh = fun::unary_ufunc<view::cosh_t>;
     }
 
-    constexpr inline auto cosh = functor_t(unary_fmap_t<fun::cosh>{});
+    constexpr inline auto cosh = functor_t{unary_fmap_t<fun::cosh>{}};
 } // namespace nmtools::functional
 
 

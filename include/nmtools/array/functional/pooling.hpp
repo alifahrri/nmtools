@@ -26,9 +26,9 @@ namespace nmtools::functional
             }
         };
     }
-    constexpr inline auto avg_pool2d = functor_t(unary_fmap_t<fun::avg_pool2d_t>{});
+    constexpr inline auto avg_pool2d = functor_t{unary_fmap_t<fun::avg_pool2d_t>{}};
 
-    constexpr inline auto max_pool2d = functor_t(unary_fmap_t<fun::max_pool2d_t>{});
+    constexpr inline auto max_pool2d = functor_t{unary_fmap_t<fun::max_pool2d_t>{}};
 
     template <typename reducer_t, typename...args_t>
     struct get_function_t<
