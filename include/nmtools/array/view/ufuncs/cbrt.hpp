@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto cbrt(const left_t& a)
     {
-        return ufunc(cbrt_t{},a);
+        return unary_ufunc(cbrt_t{},a);
     } // cbrt
 }
 

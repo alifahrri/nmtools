@@ -24,11 +24,11 @@ namespace nmtools::view
     template <typename input_t, typename weight_t, typename stride_t, typename dilation_t>
     struct conv2d_t
     {
-        using input_type    = resolve_array_type_t<input_t>;
-        using weight_type   = resolve_array_type_t<weight_t>;
+        using input_type    = meta::fwd_operand_t<input_t>;
+        using weight_type   = meta::fwd_operand_t<weight_t>;
         using array_type    = nmtools_tuple<input_type>;
-        using stride_type   = resolve_attribute_type_t<stride_t>;
-        using dilation_type = resolve_attribute_type_t<dilation_t>;
+        using stride_type   = meta::fwd_attribute_t<stride_t>;
+        using dilation_type = meta::fwd_attribute_t<dilation_t>;
 
         template <typename f_shape_t>
         static constexpr auto get_kernel_size(const f_shape_t& f_shape)
@@ -83,10 +83,10 @@ namespace nmtools::view
         const groups_type       groups;
 
         constexpr conv2d_t(const input_t& input_, const weight_t& weight_, const stride_t& stride, const dilation_t& dilation)
-            : input(initialize<input_type>(input_))
-            , weight(initialize<weight_type>(weight_))
-            , stride(init_attribute<stride_type>(stride))
-            , dilation(init_attribute<dilation_type>(dilation))
+            : input(fwd_operand(input_))
+            , weight(fwd_operand(weight_))
+            , stride(fwd_attribute(stride))
+            , dilation(fwd_attribute(dilation))
             , input_shape(nmtools::shape<true>(input_))
             , input_size(nmtools::size<true>(input_))
             , filter_shape(nmtools::shape<true>(weight_))
@@ -142,7 +142,7 @@ namespace nmtools::view
             }();
             const auto filtered = multiply(sliced,filter);
 
-            return reduce_add(filtered,None);
+            return unwrap(reduce_add(filtered,None));
         } // operator()
     }; // conv2d_t
 

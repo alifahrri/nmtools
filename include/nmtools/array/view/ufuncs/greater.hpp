@@ -23,7 +23,7 @@ namespace nmtools::view
     template <typename left_t, typename right_t>
     constexpr auto greater(const left_t& a, const right_t& b)
     {
-        return ufunc(greater_t{},a,b);
+        return broadcast_binary_ufunc(greater_t{},a,b);
     } // greater
 }
 

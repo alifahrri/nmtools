@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto arcsinh(const left_t& a)
     {
-        return ufunc(arcsinh_t{},a);
+        return unary_ufunc(arcsinh_t{},a);
     } // arcsinh
 }
 

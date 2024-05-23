@@ -54,7 +54,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto power(const left_t& a, const right_t& b)
     {
-        return ufunc(power_t<>{},a,b);
+        return broadcast_binary_ufunc(power_t<>{},a,b);
     } // power
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>

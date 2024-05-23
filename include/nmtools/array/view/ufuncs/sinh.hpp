@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto sinh(const left_t& a)
     {
-        return ufunc(sinh_t{},a);
+        return unary_ufunc(sinh_t{},a);
     } // sinh
 }
 

@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto cos(const left_t& a)
     {
-        return ufunc(cos_t{},a);
+        return unary_ufunc(cos_t{},a);
     } // cos
 }
 

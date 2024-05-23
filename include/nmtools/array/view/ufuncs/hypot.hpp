@@ -25,7 +25,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto hypot(const left_t& a, const right_t& b)
     {
-        return ufunc(hypot_t{},a,b);
+        return broadcast_binary_ufunc(hypot_t{},a,b);
     } // hypot
 }
 

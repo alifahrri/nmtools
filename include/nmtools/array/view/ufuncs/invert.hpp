@@ -32,7 +32,7 @@ namespace nmtools::view
     template <typename left_t>
     constexpr auto invert(const left_t& a)
     {
-        return ufunc(invert_t{},a);
+        return unary_ufunc(invert_t{},a);
     } // invert
 }
 

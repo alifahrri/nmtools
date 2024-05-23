@@ -42,7 +42,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto fmin(const left_t& a, const right_t& b)
     {
-        return ufunc(fmin_t<>{},a,b);
+        return broadcast_binary_ufunc(fmin_t<>{},a,b);
     } // fmin
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>

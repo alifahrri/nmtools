@@ -23,7 +23,7 @@ namespace nmtools::view
     template <typename left_t>
     constexpr auto logical_not(const left_t& a)
     {
-        return ufunc(logical_not_t{},a);
+        return unary_ufunc(logical_not_t{},a);
     } // logical_not
 }
 

@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto exp(const left_t& a)
     {
-        return ufunc(exp_t{},a);
+        return unary_ufunc(exp_t{},a);
     } // exp
 }
 

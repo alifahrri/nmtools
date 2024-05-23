@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto log(const left_t& a)
     {
-        return ufunc(log_t{},a);
+        return unary_ufunc(log_t{},a);
     } // log
 }
 

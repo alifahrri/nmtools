@@ -23,7 +23,7 @@ namespace nmtools::view
     template <typename left_t>
     constexpr auto negative(const left_t& a)
     {
-        return ufunc(negative_t{},a);
+        return unary_ufunc(negative_t{},a);
     } // negative
 }
 

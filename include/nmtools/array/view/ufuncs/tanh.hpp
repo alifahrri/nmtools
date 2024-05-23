@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto tanh(const left_t& a)
     {
-        return ufunc(tanh_t{},a);
+        return unary_ufunc(tanh_t{},a);
     } // tanh
 }
 

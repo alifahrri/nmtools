@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto tan(const left_t& a)
     {
-        return ufunc(tan_t{},a);
+        return unary_ufunc(tan_t{},a);
     } // tan
 }
 

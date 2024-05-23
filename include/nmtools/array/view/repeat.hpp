@@ -130,10 +130,10 @@ namespace nmtools::utils::impl
         {
             nmtools_string str;
             str += "repeat{";
-            str += ".src_shape="; str += to_string(kwargs.src_shape);
-            str += ",.repeats=";  str += to_string(kwargs.repeats);
-            str += ",.axis=";     str += to_string(kwargs.axis);
-            str += ",.src_size="; str += to_string(kwargs.src_size);
+            str += ".src_shape="; str += to_string(kwargs.src_shape,Compact);
+            str += ",.repeats=";  str += to_string(kwargs.repeats,Compact);
+            str += ",.axis=";     str += to_string(kwargs.axis,Compact);
+            str += ",.src_size="; str += to_string(kwargs.src_size,Compact);
             str += "}";
             return str;
         }
