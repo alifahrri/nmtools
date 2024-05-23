@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto sin(const left_t& a)
     {
-        return ufunc(sin_t{},a);
+        return unary_ufunc(sin_t{},a);
     } // sin
 }
 

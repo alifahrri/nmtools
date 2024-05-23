@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto isnan(const left_t& a)
     {
-        return ufunc(isnan_t{},a);
+        return unary_ufunc(isnan_t{},a);
     } // isnan
 };
 

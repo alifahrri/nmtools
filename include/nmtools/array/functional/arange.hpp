@@ -18,7 +18,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto arange = functor_t(nullary_fmap_t<fun::arange_t>{});
+    constexpr inline auto arange = functor_t{nullary_fmap_t<fun::arange_t>{}};
 
     template <typename...args_t>
     struct get_function_t<

@@ -10,7 +10,7 @@ namespace nmtools::functional
         return view::softmin(args...);
     };
 
-    constexpr inline auto softmin = functor_t(unary_fmap_t<decltype(softmin_fun)>{softmin_fun});
+    constexpr inline auto softmin = functor_t{unary_fmap_t<decltype(softmin_fun)>{softmin_fun}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_SOFTMIN_HPP

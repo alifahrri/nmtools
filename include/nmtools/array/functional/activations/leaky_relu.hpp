@@ -11,7 +11,7 @@ namespace nmtools::functional
     {
         using leaky_relu = fun::unary_ufunc<view::leaky_relu_t<>>;
     }
-    constexpr inline auto leaky_relu = functor_t(unary_fmap_t<fun::leaky_relu>{});
+    constexpr inline auto leaky_relu = functor_t{unary_fmap_t<fun::leaky_relu>{}};
 } // namespace nmtools::functional
 
 

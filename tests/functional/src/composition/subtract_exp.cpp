@@ -7,6 +7,8 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
+using nmtools::unwrap;
+
 TEST_CASE("subtract_exp" * doctest::test_suite("functional::get_function_composition") )
 {
     NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
@@ -17,12 +19,12 @@ TEST_CASE("subtract_exp" * doctest::test_suite("functional::get_function_composi
 
     auto function = fn::get_function_composition(y);
     auto expect =
-          fn::unary_ufunc[y.attributes()]
-        * fn::broadcast_binary_ufunc[x.attributes()]
+          fn::unary_ufunc[unwrap(y).attributes()]
+        * fn::broadcast_binary_ufunc[unwrap(x).attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
-    NMTOOLS_ASSERT_CLOSE( function (a) (b), y );
+    NMTOOLS_ASSERT_CLOSE( unwrap(function) (a) (b), y );
 }
 
 using namespace nmtools::literals;
@@ -35,7 +37,7 @@ TEST_CASE("subtract_exp" * doctest::test_suite("functional::get_function_operand
     auto x = view::subtract(a,b);
     auto y = view::exp(x);
 
-    auto operands = fn::get_function_operands(y);
+    auto operands = unwrap(fn::get_function_operands(y));
     auto expect = nmtools_tuple<decltype(a)&,decltype(b)&>{a,b};
     CHECK( nm::len(operands) == nm::len(expect) );
     CHECK( &nm::at(operands,0_ct) == &nm::at(expect,0_ct) );

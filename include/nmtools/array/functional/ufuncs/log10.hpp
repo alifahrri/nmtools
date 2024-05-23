@@ -12,7 +12,7 @@ namespace nmtools::functional
         using log10 = fun::unary_ufunc<view::log10_t>;
     }
 
-    constexpr inline auto log10 = functor_t(unary_fmap_t<fun::log10>{});
+    constexpr inline auto log10 = functor_t{unary_fmap_t<fun::log10>{}};
 } // namespace nmtools::functional
 
 

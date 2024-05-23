@@ -26,6 +26,7 @@ namespace nmtools::meta
                 || is_none_v<T>
                 || is_constant_index_array_v<T>
                 || is_constant_index_v<T>
+                || is_view_v<T>
             ) {
                 return as_value_v<const T>;
             } else if constexpr (is_bounded_array_v<T>) {

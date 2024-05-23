@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto reshape = functor_t(unary_fmap_t<fun::reshape_t>{});
+    constexpr inline auto reshape = functor_t{unary_fmap_t<fun::reshape_t>{}};
 } // namespace nmtools::functional
 
 #endif //NMTOOLS_ARRAY_FUNCTIONAL_RESHAPE_HPP

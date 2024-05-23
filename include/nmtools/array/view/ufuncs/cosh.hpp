@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto cosh(const left_t& a)
     {
-        return ufunc(cosh_t{},a);
+        return unary_ufunc(cosh_t{},a);
     } // cosh
 }
 

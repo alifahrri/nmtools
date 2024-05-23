@@ -21,7 +21,7 @@ namespace nmtools::view
     template <typename array_t, typename indices_t, typename dst_shape_t>
     struct array_slice_t
     {
-        using array_type   = resolve_array_type_t<array_t>;  
+        using array_type   = meta::fwd_operand_t<array_t>;  
         // assume tuple of view (see function)
         using indices_type = const indices_t;
         using shape_type   = const dst_shape_t;
@@ -31,7 +31,7 @@ namespace nmtools::view
         shape_type   dst_shape;
 
         constexpr array_slice_t(const array_t& array, const indices_t& indices, const dst_shape_t& dst_shape)
-            : array(initialize<array_type>(array))
+            : array(fwd_operand(array))
             , indices(indices)
             , dst_shape(dst_shape)
         {}

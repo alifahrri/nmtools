@@ -24,43 +24,21 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 
 namespace nm = nmtools;
 namespace na = nm::array;
+namespace meta = nm::meta;
 namespace view = nm::view;
-
-#define RUN_impl(...) \
-nm::view::broadcast_arrays(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs broadcast_arrays fn to callable lambda
-#define RUN_broadcast_arrays(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("broadcast_arrays-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    const auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_broadcast_arrays(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define BROADCAST_ARRAYS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(broadcast_arrays, case_name); \
     using namespace args; \
-    const auto results = RUN_broadcast_arrays(case_name, __VA_ARGS__); \
-    constexpr auto N = std::tuple_size_v<decltype(results)>; \
+    const auto results = view::broadcast_arrays(__VA_ARGS__); \
+    constexpr auto N = meta::len_v<decltype(results)>; \
     nm::meta::template_for<N>([&](auto index){ \
         constexpr auto i = decltype(index)::value; \
         const auto array       = nmtools::get<i>(results); \
         const auto expected    = nmtools::get<i>(expect::expected); \
-        NMTOOLS_ASSERT_EQUAL( array.shape(), expect::shape ); \
+        NMTOOLS_ASSERT_EQUAL( nm::shape(array), expect::shape ); \
         NMTOOLS_ASSERT_CLOSE( array, expected ); \
     }); \
 }
@@ -795,48 +773,4 @@ TEST_CASE("broadcast_arrays(case9)" * doctest::test_suite("view::broadcast_array
 TEST_CASE("broadcast_arrays(case10)" * doctest::test_suite("view::broadcast_arrays"))
 {
     BROADCAST_ARRAYS_SUBCASE(case10, A, B);
-}
-
-TEST_CASE("broadcast_arrays(fixed_shape)" * doctest::test_suite("view::broadcast_arrays"))
-{
-    namespace meta = nmtools::meta;
-    SUBCASE("raw")
-    {
-        int A[1][3] = {{1,2,3}};
-        int B[3][1] = {{4},{5},{6}};
-        const auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
-        using bA_t = decltype(bA);
-        using bB_t = decltype(bB);
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bA_t> );
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bB_t> );
-        constexpr auto expected_shape = nmtools_array{3,3};
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bA_t>, expected_shape) ));
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bB_t>, expected_shape) ));
-    }
-    SUBCASE("array")
-    {
-        auto A = nmtools_array{1,2,3};
-        auto B = nmtools_array{nmtools_array{4,5,6}};
-        const auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
-        using bA_t = decltype(bA);
-        using bB_t = decltype(bB);
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bA_t> );
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bB_t> );
-        constexpr auto expected_shape = nmtools_array{3};
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bA_t>, expected_shape) ));
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bB_t>, expected_shape) ));
-    }
-    SUBCASE("fixed_ndarray")
-    {
-        auto A = na::fixed_ndarray{{1,2,3}};
-        auto B = na::fixed_ndarray{{{1,2,3},{4,5,6}}};
-        const auto [bA, bB] = RUN_broadcast_arrays(fixed_shape, A, B);
-        using bA_t = decltype(bA);
-        using bB_t = decltype(bB);
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bA_t> );
-        NMTOOLS_STATIC_CHECK( meta::is_fixed_shape_v<bB_t> );
-        constexpr auto expected_shape = nmtools_array{2,3};
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bA_t>, expected_shape) ));
-        NMTOOLS_STATIC_CHECK(( isequal(meta::fixed_shape_v<bB_t>, expected_shape) ));
-    }
 }

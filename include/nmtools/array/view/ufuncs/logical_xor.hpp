@@ -23,7 +23,7 @@ namespace nmtools::view
     template <typename left_t, typename right_t>
     constexpr auto logical_xor(const left_t& a, const right_t& b)
     {
-        return ufunc(logical_xor_t{},a,b);
+        return broadcast_binary_ufunc(logical_xor_t{},a,b);
     } // logical_xor
 
     template <typename left_t, typename axis_t>

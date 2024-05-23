@@ -21,38 +21,12 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/testing/data/array/matmul.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#define RUN_matmul_impl(...) \
-nmtools::view::matmul(__VA_ARGS__);
-
-namespace nm = nmtools;
-namespace meta = nm::meta;
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs matmul fn to callable lambda
-#define RUN_matmul(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("matmul-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_matmul_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_matmul(case_name, ...) \
-RUN_matmul_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define MATMUL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(array, matmul, case_name); \
     using namespace args; \
-    auto result = RUN_matmul(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::matmul(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
@@ -546,6 +520,7 @@ TEST_CASE("matmul(view_at)" * doctest::test_suite("view::matmul"))
         using at00_t = decltype(at00);
         using elem_t = nmtools::meta::get_element_type_t<at00_t>;
         static_assert( std::is_same_v<elem_t,int> );
+        static_assert( meta::is_num_v<decltype(at00)> );
         NMTOOLS_ASSERT_EQUAL(at00, 20);
     }
     {
@@ -555,6 +530,7 @@ TEST_CASE("matmul(view_at)" * doctest::test_suite("view::matmul"))
         using at000_t = decltype(at000);
         using elem_t  = nmtools::meta::get_element_type_t<at000_t>;
         static_assert( std::is_same_v<elem_t,int> );
+        static_assert( meta::is_num_v<decltype(at000)> );
         NMTOOLS_ASSERT_EQUAL(at000, 20);
     }
 }

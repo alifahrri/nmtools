@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto ones = functor_t(nullary_fmap_t<fun::ones_t>{});
+    constexpr inline auto ones = functor_t{nullary_fmap_t<fun::ones_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_ONES_HPP

@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto arccos(const left_t& a)
     {
-        return ufunc(arccos_t{},a);
+        return unary_ufunc(arccos_t{},a);
     } // arccos
 }
 

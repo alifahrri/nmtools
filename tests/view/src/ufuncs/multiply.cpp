@@ -2,43 +2,17 @@
 #include "nmtools/testing/data/array/multiply.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#include <vector>
-#include <array>
-
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
-
-#define RUN_multiply_impl(...) \
-nm::view::multiply(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs multiply fn to callable lambda
-#define RUN_multiply(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("multiply-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_multiply_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_multiply(case_name, ...) \
-RUN_multiply_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(view, multiply, case_name); \
     using namespace args; \
-    auto result = RUN_multiply(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    auto result = view::multiply(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -60,70 +34,12 @@ TEST_CASE("multiply(case2)" * doctest::test_suite("view::multiply"))
     MULTIPLY_SUBCASE( case2, a_h, b );
 }
 
-#define MULTIPLY_FIXED_SHAPE_SUBCASE(subcase_name, expected_shape, ...) \
-SUBCASE(#subcase_name) \
-{ \
-    auto result = RUN_multiply(subcase_name, __VA_ARGS__); \
-    using result_t = decltype(result); \
-    NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, result_t ); \
-    NMTOOLS_STATIC_ASSERT_EQUAL( meta::fixed_ndarray_shape_v<result_t>, expected_shape ); \
-}
-
-// TODO: fix
-#if 0
-TEST_CASE("multiply(fixed_shape)" * doctest::test_suite("view::multiply"))
-{
-    namespace meta = nmtools::meta;
-    {
-        int A[1][3] = {{1,2,3}};
-        int B[3][1] = {{4},{5},{6}};
-        constexpr auto expected_shape = std::array{3,3};
-        MULTIPLY_FIXED_SHAPE_SUBCASE( raw, expected_shape, A, B );
-    }
-    {
-        auto A = std::array{1,2,3};
-        auto B = std::array{std::array{4,5,6}};
-        constexpr auto expected_shape = std::array{3};
-        MULTIPLY_FIXED_SHAPE_SUBCASE( array, expected_shape, A, B );
-    }
-    {
-        auto A = na::fixed_ndarray{{1,2,3}};
-        auto B = na::fixed_ndarray{{{1,2,3},{4,5,6}}};
-        constexpr auto expected_shape = std::array{2,3};
-        MULTIPLY_FIXED_SHAPE_SUBCASE( fixed_ndarray, expected_shape, A, B );
-    }
-}
-#endif
-
-#define RUN_reduce_multiply_impl(...) \
-nm::view::reduce_multiply(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_multiply fn to callable lambda
-#define RUN_reduce_multiply(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_multiply-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_multiply_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_multiply(case_name, ...) \
-RUN_reduce_multiply_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_multiply(case_name, __VA_ARGS__); \
+    auto result = view::reduce_multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -274,36 +190,13 @@ TEST_CASE("reduce_multiply(case18)" * doctest::test_suite("view::reduce_multiply
     REDUCE_MULTIPLY_SUBCASE( case18, a_h, axis, nm::None, initial, keepdims );
 }
 
-#define RUN_accumulate_multiply_impl(...) \
-nm::view::accumulate_multiply(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_multiply fn to callable lambda
-#define RUN_accumulate_multiply(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_multiply-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_multiply_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_multiply(case_name, ...) \
-RUN_accumulate_multiply_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ACCUMULATE_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(view, accumulate_multiply, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_multiply(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    auto result = view::accumulate_multiply(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -337,36 +230,13 @@ TEST_CASE("accumulate_multiply(case3)" * doctest::test_suite("view::accumulate_m
     ACCUMULATE_MULTIPLY_SUBCASE( case3, a_h, axis );
 }
 
-#define RUN_outer_multiply_impl(...) \
-nm::view::outer_multiply(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_multiply fn to callable lambda
-#define RUN_outer_multiply(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_multiply-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_multiply_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_multiply(case_name, ...) \
-RUN_outer_multiply_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define OUTER_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(view, outer_multiply, case_name); \
     using namespace args; \
-    auto result = RUN_outer_multiply(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
+    auto result = view::outer_multiply(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 

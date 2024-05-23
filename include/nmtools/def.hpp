@@ -33,7 +33,6 @@ namespace nmtools
 
 namespace nmtools
 {
-    using size_t = size_t;
     using float32_t = float;
     using float64_t = double;
     using int8_t    = char;
@@ -44,6 +43,7 @@ namespace nmtools
     using uint16_t  = unsigned short;
     using uint32_t  = unsigned int;
     using uint64_t  = unsigned long;
+    using size_t    = uint64_t; // TODO: use uint32 / uint8 when it's more appropiate
     // use uint8 as bool to avoid vector of bool weirdness, esp. on device kernel
     using bool_t    = uint8_t;
 }
@@ -125,7 +125,7 @@ namespace nmtools
 
     #define NMTOOLS_DECLARE_CLIPPED_TYPE(type) \
     template <auto Max, auto Min=0> \
-    using clipped_##type = clipped_integer_t<type,Min,Max>;
+    using clipped_##type = clipped_integer_t<nmtools::type,Min,Max>;
 
     NMTOOLS_DECLARE_CLIPPED_TYPE(size_t)
     NMTOOLS_DECLARE_CLIPPED_TYPE(int8_t)

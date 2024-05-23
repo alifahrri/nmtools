@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto signbit(const left_t& a)
     {
-        return ufunc(signbit_t{},a);
+        return unary_ufunc(signbit_t{},a);
     } // signbit
 }
 

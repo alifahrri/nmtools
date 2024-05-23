@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto repeat = functor_t(unary_fmap_t<fun::repeat_t>{});
+    constexpr inline auto repeat = functor_t{unary_fmap_t<fun::repeat_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_REPEAT_HPP

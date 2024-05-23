@@ -12,7 +12,7 @@ namespace nmtools::functional
         using negative = fun::unary_ufunc<view::negative_t>;
     }
 
-    constexpr inline auto negative = functor_t(unary_fmap_t<fun::negative>{});
+    constexpr inline auto negative = functor_t{unary_fmap_t<fun::negative>{}};
 } // namespace nmtools::functional
 
 

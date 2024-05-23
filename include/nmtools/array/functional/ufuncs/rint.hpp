@@ -12,7 +12,7 @@ namespace nmtools::functional
         using rint = fun::unary_ufunc<view::rint_t>;
     }
 
-    constexpr inline auto rint = functor_t(unary_fmap_t<fun::rint>{});
+    constexpr inline auto rint = functor_t{unary_fmap_t<fun::rint>{}};
 } // namespace nmtools::functional
 
 

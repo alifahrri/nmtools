@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto fabs(const left_t& a)
     {
-        return ufunc(fabs_t{},a);
+        return unary_ufunc(fabs_t{},a);
     } // fabs
 }
 

@@ -2,6 +2,9 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_CLIP_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/view/ufuncs/less.hpp"
+#include "nmtools/array/view/ufuncs/greater.hpp"
+#include "nmtools/array/view/where.hpp"
 
 namespace nmtools::view
 {
@@ -19,7 +22,11 @@ namespace nmtools::view
     template <typename array_t, typename amin_t, typename amax_t>
     constexpr auto clip(const array_t& array, const amin_t& amin, const amax_t& amax)
     {
-        return ufunc(clip_t{},array,amin,amax);
+        auto lt  = view::less(array,amin);
+        auto wlt = view::where(lt,amin,array);
+        auto gt  = view::greater(wlt,amax);
+        auto wgt = view::where(gt,amax,wlt);
+        return wgt;
     } // clip
 } // namespace nmtools::view
 

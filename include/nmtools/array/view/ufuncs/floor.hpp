@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto floor(const left_t& a)
     {
-        return ufunc(floor_t{},a);
+        return unary_ufunc(floor_t{},a);
     } // floor
 }
 

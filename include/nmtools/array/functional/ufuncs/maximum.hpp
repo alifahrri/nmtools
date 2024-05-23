@@ -18,10 +18,10 @@ namespace nmtools::functional
         using accumulate_maximum = fun::accumulate<view::maximum_t<>>;
     }
 
-    constexpr inline auto maximum = functor_t(binary_fmap_t<fun::maximum>{});
-    constexpr inline auto reduce_maximum = functor_t(unary_fmap_t<fun::reduce_maximum>{});
-    constexpr inline auto outer_maximum = functor_t(binary_fmap_t<fun::outer_maximum>{});
-    constexpr inline auto accumulate_maximum = functor_t(unary_fmap_t<fun::accumulate_maximum>{});
+    constexpr inline auto maximum = functor_t{binary_fmap_t<fun::maximum>{}};
+    constexpr inline auto reduce_maximum = functor_t{unary_fmap_t<fun::reduce_maximum>{}};
+    constexpr inline auto outer_maximum = functor_t{binary_fmap_t<fun::outer_maximum>{}};
+    constexpr inline auto accumulate_maximum = functor_t{unary_fmap_t<fun::accumulate_maximum>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MAXIMUM_HPP

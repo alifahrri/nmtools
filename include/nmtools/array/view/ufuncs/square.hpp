@@ -23,7 +23,7 @@ namespace nmtools::view
     template <typename left_t>
     constexpr auto square(const left_t& a)
     {
-        return ufunc(square_t{},a);
+        return unary_ufunc(square_t{},a);
     } // square
 }
 

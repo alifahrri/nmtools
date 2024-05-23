@@ -20,7 +20,7 @@ namespace nmtools::functional
         };
     } // namespace fun
 
-    constexpr inline auto atleast_nd = functor_t(unary_fmap_t<fun::atleast_nd_t>{});
+    constexpr inline auto atleast_nd = functor_t{unary_fmap_t<fun::atleast_nd_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_ATLEAST_ND_HPP

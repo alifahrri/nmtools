@@ -12,7 +12,7 @@ namespace nmtools::functional
         using fabs = fun::unary_ufunc<view::fabs_t>;
     }
 
-    constexpr inline auto fabs = functor_t(unary_fmap_t<fun::fabs>{});
+    constexpr inline auto fabs = functor_t{unary_fmap_t<fun::fabs>{}};
 } // namespace nmtools::functional
 
 

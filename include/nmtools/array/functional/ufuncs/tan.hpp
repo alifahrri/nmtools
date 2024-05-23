@@ -12,7 +12,7 @@ namespace nmtools::functional
         using tan = fun::unary_ufunc<view::tan_t>;
     }
 
-    constexpr inline auto tan = functor_t(unary_fmap_t<fun::tan>{});
+    constexpr inline auto tan = functor_t{unary_fmap_t<fun::tan>{}};
 } // namespace nmtools::functional
 
 

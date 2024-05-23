@@ -21,7 +21,7 @@ namespace nmtools::functional
         } // operator()
     }; // compress_fmap_t
 
-    constexpr inline auto compress = functor_t(compress_fmap_t{});
+    constexpr inline auto compress = functor_t{compress_fmap_t{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_COMPRESS_HPP

@@ -23,7 +23,7 @@ namespace nmtools::view
     template <typename left_t, typename right_t>
     constexpr auto not_equal(const left_t& a, const right_t& b)
     {
-        return ufunc(not_equal_t{},a,b);
+        return broadcast_binary_ufunc(not_equal_t{},a,b);
     } // not_equal
 }
 

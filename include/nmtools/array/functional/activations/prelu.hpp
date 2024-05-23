@@ -11,7 +11,7 @@ namespace nmtools::functional
     {
         using prelu = fun::unary_ufunc<view::prelu_t<>>;
     }
-    constexpr inline auto prelu = functor_t(unary_fmap_t<fun::prelu>{});
+    constexpr inline auto prelu = functor_t{unary_fmap_t<fun::prelu>{}};
 } // namespace nmtools::functional
 
 

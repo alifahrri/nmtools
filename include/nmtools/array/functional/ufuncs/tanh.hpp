@@ -12,7 +12,7 @@ namespace nmtools::functional
         using tanh = fun::unary_ufunc<view::tanh_t>;
     }
 
-    constexpr inline auto tanh = functor_t(unary_fmap_t<fun::tanh>{});
+    constexpr inline auto tanh = functor_t{unary_fmap_t<fun::tanh>{}};
 } // namespace nmtools::functional
 
 

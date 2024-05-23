@@ -12,7 +12,7 @@ namespace nmtools::functional
         using positive = fun::unary_ufunc<view::positive_t>;
     }
 
-    constexpr inline auto positive = functor_t(unary_fmap_t<fun::positive>{});
+    constexpr inline auto positive = functor_t{unary_fmap_t<fun::positive>{}};
 } // namespace nmtools::functional
 
 

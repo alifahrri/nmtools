@@ -116,10 +116,12 @@ namespace nmtools::functional
         functors_type functors;
         operands_type operands;
 
+        #if 0
         constexpr functor_composition_t()
             : functors{}
             , operands{}
         {}
+        #endif
 
         constexpr functor_composition_t(functors_type& functors)
             : functors(functors)
@@ -161,6 +163,122 @@ namespace nmtools::functional
     nmtools_func_attribute
     functor_composition_t(const tuple<functors_t...>&) -> functor_composition_t<tuple<functors_t...>>;
 
+    namespace detail
+    {
+        template <typename F, typename operands_t, typename attributes_t>
+        struct default_constructible_functor_t
+        {
+            using fmap_type       = const F;
+            using operands_type   = const operands_t;
+            using attributes_type = const attributes_t;
+
+            // TODO: also consider number of output, now that support multiple return
+            static constexpr auto arity = [](){
+                if constexpr (meta::is_same_v<operands_t,meta::empty_operands_t>) {
+                    return F::arity;
+                } else {
+                    return F::arity - meta::len_v<operands_t>;
+                }
+            }();
+
+            static_assert(
+                meta::is_default_constructible_v<F>
+                && meta::is_default_constructible_v<operands_t>
+                && meta::is_default_constructible_v<attributes_t>
+            );
+
+            fmap_type       fmap;
+            operands_type   operands;
+            attributes_type attributes;
+
+            // error on clang but fine on gcc
+            // constexpr functor_t() = default;
+
+            // error on gcc but fine on clang
+            // constexpr functor_t() {}
+
+            constexpr default_constructible_functor_t()
+                : fmap{}
+                , operands{}
+                , attributes{}
+            {}
+
+            constexpr default_constructible_functor_t(const default_constructible_functor_t& other)
+                : fmap{other.fmap}
+                , operands{other.operands}
+                , attributes{other.attributes}
+            {}
+
+            constexpr default_constructible_functor_t(const F& fmap)
+                : fmap(fmap)
+                , operands{}
+                , attributes{}
+            {}
+            
+            constexpr default_constructible_functor_t(const F& fmap, const operands_t& operands, const attributes_t& attributes)
+                : fmap(fmap)
+                , operands(operands)
+                , attributes(attributes)
+            {}
+        };
+
+        template <typename F, typename operands_t, typename attributes_t>
+        struct non_default_constructible_functor_t
+        {
+            using fmap_type       = const F;
+            using operands_type   = const operands_t;
+            using attributes_type = const attributes_t;
+
+            // TODO: also consider number of output, now that support multiple return
+            static constexpr auto arity = [](){
+                if constexpr (meta::is_same_v<operands_t,meta::empty_operands_t>) {
+                    return F::arity;
+                } else {
+                    return F::arity - meta::len_v<operands_t>;
+                }
+            }();
+
+            fmap_type       fmap;
+            operands_type   operands;
+            attributes_type attributes;
+
+            // error on clang but fine on gcc
+            // constexpr functor_t() = default;
+
+            // error on gcc but fine on clang
+            // constexpr functor_t() {}
+
+            constexpr non_default_constructible_functor_t(const non_default_constructible_functor_t& other)
+                : fmap{other.fmap}
+                , operands{other.operands}
+                , attributes{other.attributes}
+            {}
+
+            constexpr non_default_constructible_functor_t(const F& fmap)
+                : fmap(fmap)
+                , operands{}
+                , attributes{}
+            {}
+            
+            constexpr non_default_constructible_functor_t(const F& fmap, const operands_t& operands, const attributes_t& attributes)
+                : fmap(fmap)
+                , operands(operands)
+                , attributes(attributes)
+            {}
+        };
+
+        template <typename F, typename operands_t, typename attributes_t>
+        using functor_base_t = meta::conditional_t<
+            (
+                meta::is_default_constructible_v<F>
+                && meta::is_default_constructible_v<operands_t>
+                && meta::is_default_constructible_v<attributes_t>
+            )
+            , default_constructible_functor_t<F,operands_t,attributes_t>
+            , non_default_constructible_functor_t<F,operands_t,attributes_t>
+        >;
+    }
+
     /**
      * @brief Type constructor for functor type.
      * 
@@ -171,48 +289,11 @@ namespace nmtools::functional
      * @tparam attributes_t 
      */
     template <typename F, typename operands_t, typename attributes_t>
-    struct functor_t
+    struct functor_t : detail::functor_base_t<F,operands_t,attributes_t>
     {
-        using fmap_type       = const F;
-        using operands_type   = const operands_t;
-        using attributes_type = const attributes_t;
+        using base = detail::functor_base_t<F,operands_t,attributes_t>;
 
-        // TODO: also consider number of output, now that support multiple return
-        static constexpr auto arity = [](){
-            if constexpr (meta::is_same_v<operands_t,meta::empty_operands_t>) {
-                return F::arity;
-            } else {
-                return F::arity - meta::len_v<operands_t>;
-            }
-        }();
-
-        fmap_type       fmap;
-        operands_type   operands;
-        attributes_type attributes;
-
-        // error on clang but fine on gcc
-        // constexpr functor_t() = default;
-
-        // error on gcc but fine on clang
-        // constexpr functor_t() {}
-
-        constexpr functor_t()
-            : fmap{}
-            , operands{}
-            , attributes{}
-        {}
-
-        constexpr functor_t(const F& fmap)
-            : fmap(fmap)
-            , operands{}
-            , attributes{}
-        {}
-        
-        constexpr functor_t(const F& fmap, const operands_t& operands, const attributes_t& attributes)
-            : fmap(fmap)
-            , operands(operands)
-            , attributes(attributes)
-        {}
+        using base::fmap, base::operands, base::attributes;
 
         template <typename other_f, typename other_operands, typename other_attributes>
         constexpr auto operator*(const functor_t<other_f,other_operands,other_attributes>& other) const noexcept
@@ -242,13 +323,13 @@ namespace nmtools::functional
                 // TODO: use fwd_attribute
                 using new_attribute_t = view::resolve_attribute_type_t<m_attribute_t>;
                 using function_t = functor_t<F,operands_t,nmtools_tuple<new_attribute_t>>;
-                return function_t{fmap,operands,nmtools_tuple{view::init_attribute<new_attribute_t>(new_attribute)}};
+                return function_t{{fmap,operands,nmtools_tuple{view::init_attribute<new_attribute_t>(new_attribute)}}};
             } else {
                 using new_attribute_t = view::resolve_attribute_type_t<m_attribute_t>;
                 auto new_attributes = utility::tuple_append(attributes,view::init_attribute<new_attribute_t>(new_attribute));
                 using new_attributes_t = decltype(new_attributes);
                 using function_t = functor_t<F,operands_t,new_attributes_t>;
-                return function_t{fmap,operands,new_attributes};
+                return function_t{{fmap,operands,new_attributes}};
             }
         } // operator[]
 
@@ -321,10 +402,10 @@ namespace nmtools::functional
             } else {
                 using operands_pack_t = meta::pack_operands_type_t<F,operands_t,m_operands_t...>;
                 using function_t = functor_t<F,operands_pack_t,attributes_t>;
-                [[maybe_unused]] auto function = function_t{functor.fmap
+                [[maybe_unused]] auto function = function_t{{functor.fmap
                     ,initialize_operands<operands_pack_t>(functor.operands,new_operands...)
                     ,functor.attributes
-                };
+                }};
                 if constexpr (sizeof...(m_operands_t) < arity) {
                     // currying
                     return function;
@@ -449,9 +530,44 @@ namespace nmtools::functional
         }
     }
 
-    template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>
-    struct fmap_t
+    namespace detail
     {
+        template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>
+        struct default_constructible_fmap_t
+        {
+            static constexpr auto arity = Arity;
+            static constexpr auto n_outputs = N_OUT;
+            using arity_type = meta::integral_constant<nm_size_t,arity>;
+            using n_outputs_type = meta::integral_constant<nm_size_t,n_outputs>;
+
+            const F fn = {};
+            arity_type m_arity = arity_type{};
+        };
+
+        template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>
+        struct non_default_constructible_fmap_t
+        {
+            static constexpr auto arity = Arity;
+            static constexpr auto n_outputs = N_OUT;
+            using arity_type = meta::integral_constant<nm_size_t,arity>;
+            using n_outputs_type = meta::integral_constant<nm_size_t,n_outputs>;
+
+            const F fn;
+            arity_type m_arity = arity_type{};
+        };
+
+        template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>
+        using base_fmap_t = meta::conditional_t<
+            meta::is_default_constructible_v<F>
+            , default_constructible_fmap_t<F,Arity,N_OUT>
+            , non_default_constructible_fmap_t<F,Arity,N_OUT>
+        >;
+    }
+
+    template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>
+    struct fmap_t : detail::base_fmap_t<F,Arity,N_OUT>
+    {
+        #if 0
         static constexpr auto arity = Arity;
         static constexpr auto n_outputs = N_OUT;
         using arity_type = meta::integral_constant<nm_size_t,arity>;
@@ -459,6 +575,10 @@ namespace nmtools::functional
 
         const F fn;
         arity_type m_arity = arity_type{};
+        #endif
+
+        using base = detail::base_fmap_t<F,Arity,N_OUT>;
+        using base::fn, base::arity;
 
         template<
             template<auto...>typename sequence, auto...Is,
@@ -624,11 +744,10 @@ namespace nmtools::functional
             using view_type   = meta::get_maybe_type_t<view_t>;
             using result_type = decltype(get_operands(meta::declval<view_type>()));
             using return_type = nmtools_maybe<result_type>;
-            if (static_cast<bool>(view)) {
-                return return_type{get_operands(*view)};
-            } else {
-                return return_type{meta::Nothing};
-            }
+            return (view
+                ? return_type{get_operands(*view)}
+                : return_type{meta::Nothing}
+            );
         } else {
             using view_type = view_t;
             auto get_operands = get_operands_t<view_type>{view};
@@ -642,12 +761,20 @@ namespace nmtools::functional
     template <typename view_t>
     struct get_function_composition_t;
 
-    template <template<typename...> typename view_t, typename...Ts>
-    constexpr auto get_function_operands(const view::decorator_t<view_t,Ts...>& view)
+    template <typename view_type>
+    constexpr auto get_function_operands(const view_type& view)
     {
-        using view_type = view::decorator_t<view_t,Ts...>;
-        auto get_op = get_function_operands_t<view_type>{view};
-        return get_op();
+        if constexpr (meta::is_maybe_v<view_type>) {
+            using result_type = decltype(get_function_operands(*view));
+            using return_type = nmtools_maybe<result_type>;
+            return (view
+                ? return_type{get_function_operands(*view)}
+                : return_type{meta::Nothing}
+            );
+        } else {
+            auto get_op = get_function_operands_t<view_type>{view};
+            return get_op();
+        }
     } // get_function_operands
 
     template <typename view_type>
@@ -656,11 +783,10 @@ namespace nmtools::functional
         if constexpr (meta::is_maybe_v<view_type>) {
             using result_type = meta::remove_cvref_t<decltype(get_function_composition(*view))>;
             using return_type = nmtools_maybe<result_type>;
-            if (static_cast<bool>(view)) {
-                return return_type{get_function_composition(*view)};
-            } else {
-                return return_type{meta::Nothing};
-            }
+            return (view
+                ? return_type{get_function_composition(*view)}
+                : return_type{meta::Nothing}
+            );
         } else {
             auto get_fn = get_function_composition_t<view_type>{view};
             return get_fn();
@@ -741,23 +867,29 @@ namespace nmtools::functional
         }
     }; // get_function_composition_t
 
-    template <typename function_t, template<typename...>typename tuple, typename...operands_t>
+    template <typename function_t, typename operands_t>
     nmtools_func_attribute
-    constexpr auto apply(const function_t& function, const tuple<operands_t...>& operands)
+    constexpr auto apply(const function_t& function, const operands_t& operands)
     {
         if constexpr (meta::is_maybe_v<function_t>) {
             using result_type = meta::remove_cvref_t<decltype(apply(*function,operands))>;
-            using return_type = nmtools_maybe<result_type>;
-            if (static_cast<bool>(function)) {
-                return return_type{apply(*function,operands)};
-            } else {
-                return return_type{meta::Nothing};
-            }
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
+            return (function
+                ? return_type{apply(*function,operands)}
+                : return_type{meta::Nothing}
+            );
+        } else if constexpr (meta::is_maybe_v<operands_t>) {
+            using result_type = decltype(apply(function,*operands));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
+            return (operands
+                ? return_type{apply(function,*operands)}
+                : return_type{meta::Nothing}
+            );
         } else {
             constexpr auto arity = function_t::arity;
-            constexpr auto n_operands = sizeof...(operands_t);
+            constexpr auto n_operands = meta::len_v<operands_t>;
             static_assert( arity == n_operands );
-            return meta::template_reduce<sizeof...(operands_t)>([&](auto init, auto index){
+            return meta::template_reduce<n_operands>([&](auto init, auto index){
                 return init (nmtools::at(operands,index));
             }, function());
         }
@@ -775,7 +907,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto alias = functor_t(unary_fmap_t<fun::alias_t>{});
+    constexpr inline auto alias = functor_t{unary_fmap_t<fun::alias_t>{}};
 
     template <typename view_t>
     struct get_compute_graph_t;

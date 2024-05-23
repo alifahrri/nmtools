@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto zeros = functor_t(nullary_fmap_t<fun::zeros_t>{});
+    constexpr inline auto zeros = functor_t{nullary_fmap_t<fun::zeros_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_ZEROS_HPP

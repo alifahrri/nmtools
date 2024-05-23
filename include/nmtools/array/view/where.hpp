@@ -13,9 +13,9 @@ namespace nmtools::view
     struct where_t
     {
         // deduce array types, copy if view, take const ref if concrete array
-        using condition_type = resolve_array_type_t<condition_t>;
-        using x_type = resolve_array_type_t<x_t>;
-        using y_type = resolve_array_type_t<y_t>;
+        using condition_type = meta::fwd_operand_t<condition_t>;
+        using x_type = meta::fwd_operand_t<x_t>;
+        using y_type = meta::fwd_operand_t<y_t>;
         // needed by decorator_t, also used to deduce underlying array type
         using array_type = nmtools_tuple<condition_type,x_type,y_type>;
         // result type, use common type for now
@@ -27,7 +27,7 @@ namespace nmtools::view
         array_type array;
 
         constexpr where_t(const condition_t& condition, const x_t& x, const y_t& y)
-            : array{initialize<condition_type>(condition), initialize<x_type>(x), initialize<y_type>(y)}
+            : array{fwd_operand(condition), fwd_operand(x), fwd_operand(y)}
         {}
 
         constexpr auto operands() const noexcept
@@ -55,9 +55,10 @@ namespace nmtools::view
         {
             auto indices_ = pack_indices(indices...);
             auto c  = apply_at(nmtools::get<0>(array), indices_);
-            auto x_ = apply_at(nmtools::get<1>(array), indices_);
-            auto y_ = apply_at(nmtools::get<2>(array), indices_);
-            return static_cast<element_type>(c ? x_ : y_);
+            return static_cast<element_type>(c ?
+                  apply_at(nmtools::get<1>(array), indices_)
+                : apply_at(nmtools::get<2>(array), indices_)
+            );
         } // operator()
     }; // where_t
 
@@ -75,20 +76,30 @@ namespace nmtools::view
     template <typename condition_t, typename x_t, typename y_t>
     constexpr auto where(const condition_t& condition, const x_t& x, const y_t& y)
     {
-        // broadcast condition, x, y together
-        // TODO: better error handling
-        // take hybrid_ndarray with fixed-dimension for example,
-        // while the maximum size is known at compile-time,
-        // the size itself is a runtime value, hence may be incompatible.
-        // the next question is when/where to check and handle error
-        // NOTE: using const since atm: the following use utl tuple for arduino,
-        //      and decomposing results reference type and without const, it discards qualifier
-        const auto [condition_, x_, y_] = broadcast_arrays(condition, x, y);
-        using bcondition_t = meta::remove_cvref_t<decltype(condition_)>;
-        using bx_t = meta::remove_cvref_t<decltype(x_)>;
-        using by_t = meta::remove_cvref_t<decltype(y_)>;
+        auto broadcasted = broadcast_arrays(condition, x, y);
+        if constexpr (meta::is_maybe_v<decltype(broadcasted)>) {
+            using bcondition_t = meta::remove_cvref_t<decltype(nmtools::get<0>(*broadcasted))>;
+            using bx_t = meta::remove_cvref_t<decltype(nmtools::get<1>(*broadcasted))>;
+            using by_t = meta::remove_cvref_t<decltype(nmtools::get<2>(*broadcasted))>;
+            using result_t = decorator_t<where_t,bcondition_t,bx_t,by_t>;
+            using return_t = nmtools_maybe<result_t>;
+            return (broadcasted?
+                return_t{result_t{{
+                      nmtools::get<0>(*broadcasted)
+                    , nmtools::get<1>(*broadcasted)
+                    , nmtools::get<2>(*broadcasted)}}}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            auto condition = nmtools::get<0>(broadcasted);
+            auto x = nmtools::get<1>(broadcasted);
+            auto y = nmtools::get<2>(broadcasted);
+            using bcondition_t = meta::remove_cvref_t<decltype(condition)>;
+            using bx_t = meta::remove_cvref_t<decltype(x)>;
+            using by_t = meta::remove_cvref_t<decltype(y)>;
 
-        return decorator_t<where_t,bcondition_t,bx_t,by_t>{{condition_,x_,y_}};
+            return decorator_t<where_t,bcondition_t,bx_t,by_t>{{condition,x,y}};
+        }
     } // where
 } // namespace nmtools::view
 

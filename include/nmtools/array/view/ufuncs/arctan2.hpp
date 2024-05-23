@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto arctan2(const left_t& a, const right_t& b)
     {
-        return ufunc(arctan2_t{},a,b);
+        return broadcast_binary_ufunc(arctan2_t{},a,b);
     } // arctan2
 }
 

@@ -18,7 +18,7 @@ namespace nmtools::functional
             }
         };
     }
-    constexpr inline auto transpose = functor_t(unary_fmap_t<fun::transpose_t>{});
+    constexpr inline auto transpose = functor_t{unary_fmap_t<fun::transpose_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_TRANSPOSE_HPP

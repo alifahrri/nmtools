@@ -12,7 +12,7 @@ namespace nmtools::functional
         using silu = fun::unary_ufunc<view::silu_t>;
     }
 
-    constexpr inline auto silu = functor_t(unary_fmap_t<fun::silu>{});
+    constexpr inline auto silu = functor_t{unary_fmap_t<fun::silu>{}};
 } // namespace nmtools::functional
 
 

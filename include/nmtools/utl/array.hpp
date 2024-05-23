@@ -20,7 +20,7 @@ namespace nmtools::utl
      * @tparam T 
      * @tparam N 
      */
-    template <typename T, size_t N>
+    template <typename T, nm_size_t N>
     struct array
     {
         #if 1
@@ -61,7 +61,7 @@ namespace nmtools::utl
         #if 0
         constexpr array& operator=(const array& other) noexcept
         {
-            for (size_t i=0; i<N; i++) {
+            for (nm_size_t i=0; i<N; i++) {
                 buffer[i] = other.buffer[i];
             }
             return *this;
@@ -90,14 +90,14 @@ namespace nmtools::utl
 
         // TODO: try to avoid macro branching
         #ifndef __OPENCL_VERSION__
-        template <size_t I>
+        template <nm_size_t I>
         constexpr reference get()
         {
             static_assert( I<N );
             return buffer[I];
         }
 
-        template <size_t I>
+        template <nm_size_t I>
         constexpr const_reference get() const
         {
             static_assert( I<N );
@@ -106,31 +106,31 @@ namespace nmtools::utl
         #endif // __OPENCL_VERSION__
     };
 
-    template <typename T, size_t N>
+    template <typename T, nm_size_t N>
     constexpr auto size(const array<T,N>&)
     {
         return (nm_utl_size_t)N;
     }
 
-    template <typename T, size_t N>
+    template <typename T, nm_size_t N>
     constexpr auto begin(const array<T,N>& a)
     {
         return a.buffer;
     }
 
-    template <typename T, size_t N>
+    template <typename T, nm_size_t N>
     constexpr auto begin(array<T,N>& a)
     {
         return a.buffer;
     }
 
-    template <typename T, size_t N>
+    template <typename T, nm_size_t N>
     constexpr auto end(const array<T,N>& a)
     {
         return a.buffer + (nm_utl_index_t)N;
     }
 
-    template <typename T, size_t N>
+    template <typename T, nm_size_t N>
     constexpr auto end(array<T,N>& a)
     {
         return a.buffer + (nm_utl_index_t)N;
@@ -150,23 +150,23 @@ namespace nmtools::utl
     template <typename T>
     struct tuple_size;
 
-    template <size_t I, typename T>
+    template <nm_size_t I, typename T>
     struct tuple_element;
 
-    template <typename T, size_t N>
+    template <typename T, nm_size_t N>
     struct tuple_size<array<T,N>>
     {
         static constexpr auto value = N;
     };
 
-    template <size_t I, typename T, size_t N>
+    template <nm_size_t I, typename T, nm_size_t N>
     struct tuple_element<I, array<T,N>>
     {
         static_assert( I < N );
         using type = T;
     };
     
-    template <size_t I, typename T, size_t N>
+    template <nm_size_t I, typename T, nm_size_t N>
     constexpr decltype(auto) get(const array<T,N>& a)
     {
         // TODO: try to avoid macro branching
@@ -177,7 +177,7 @@ namespace nmtools::utl
         #endif // __OPENCL_VERSION__
     }
 
-    template <size_t I, typename T, size_t N>
+    template <nm_size_t I, typename T, nm_size_t N>
     constexpr decltype(auto) get(array<T,N>& a)
     {
         // TODO: try to avoid macro branching
@@ -206,19 +206,19 @@ namespace std
     template <typename T>
     struct tuple_size;
 
-    template <size_t I, typename T>
+    template <nm_size_t I, typename T>
     struct tuple_element;
 } // namespace std
 #endif // <tuple>
 
-template <typename T, size_t N>
+template <typename T, nm_size_t N>
 struct std::tuple_size<nmtools::utl::array<T,N>>
 {
     using array_type = nmtools::utl::array<T,N>;
     static constexpr auto value = nmtools::utl::tuple_size<array_type>::value;
 };
 
-template <size_t I, typename T, size_t N>
+template <nm_size_t I, typename T, nm_size_t N>
 struct std::tuple_element<I,nmtools::utl::array<T,N>>
 {
     using array_type = nmtools::utl::array<T,N>;
@@ -227,14 +227,14 @@ struct std::tuple_element<I,nmtools::utl::array<T,N>>
 
 // NOTE: the following const specializations are to please avr-gcc 9
 
-template <typename T, size_t N>
+template <typename T, nm_size_t N>
 struct std::tuple_size<const nmtools::utl::array<T,N>>
 {
     using array_type = nmtools::utl::array<T,N>;
     static constexpr auto value = nmtools::utl::tuple_size<array_type>::value;
 };
 
-template <size_t I, typename T, size_t N>
+template <nm_size_t I, typename T, nm_size_t N>
 struct std::tuple_element<I,const nmtools::utl::array<T,N>>
 {
     using array_type = nmtools::utl::array<T,N>;
@@ -251,11 +251,11 @@ template <typename array_type>
 struct std::tuple_size<nmtools_address_generic array_type>
     : std::tuple_size<array_type> {};
 
-template <size_t I, typename array_type>
+template <nm_size_t I, typename array_type>
 struct std::tuple_element<I,nmtools_address_private array_type>
     : std::tuple_element<I,array_type> {};
 
-template <size_t I, typename array_type>
+template <nm_size_t I, typename array_type>
 struct std::tuple_element<I,nmtools_address_generic array_type>
     : std::tuple_element<I,array_type> {};
 

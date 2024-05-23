@@ -11,6 +11,7 @@
 #include "nmtools/array/view/ufuncs/multiply.hpp"
 #include "nmtools/array/at.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/utility/fwd.hpp"
 
 namespace nmtools::view
 {
@@ -23,7 +24,7 @@ namespace nmtools::view
     template <typename lhs_t, typename rhs_t>
     struct matmul_t
     {
-        using operands_type = detail::get_operands_type_t<lhs_t,rhs_t>;
+        using operands_type = decltype(pack_operands(meta::declval<lhs_t>(),meta::declval<rhs_t>()));
         using array_type    = operands_type;
         using lhs_elem_type = meta::get_element_type_t<lhs_t>;
         using rhs_elem_type = meta::get_element_type_t<rhs_t>;
@@ -35,25 +36,8 @@ namespace nmtools::view
         operands_type array;
         dst_shape_type shape_;
 
-        // the following is needed because cant use view::initialize<...>
-        // can't handle tuple yet
-        static constexpr auto initialize_operands(const lhs_t& lhs, const rhs_t& rhs)
-        {
-            using op_lhs_t = meta::at_t<operands_type,0>;
-            using op_rhs_t = meta::at_t<operands_type,1>;
-            if constexpr (meta::is_pointer_v<op_lhs_t> && meta::is_pointer_v<op_rhs_t>) {
-                return operands_type{&lhs,&rhs};
-            } else if constexpr (meta::is_pointer_v<op_lhs_t>) {
-                return operands_type{&lhs,rhs};
-            } else if constexpr (meta::is_pointer_v<op_rhs_t>) {
-                return operands_type{lhs,&rhs};
-            } else {
-                return operands_type{lhs,rhs};
-            }
-        } // initialize_operands
-
         constexpr matmul_t(const lhs_t& lhs, const rhs_t& rhs)
-            : array(initialize_operands(lhs,rhs))
+            : array(pack_operands(lhs,rhs))
             , shape_(*index::shape_matmul(
                 nmtools::shape<true>(lhs),
                 nmtools::shape<true>(rhs))
@@ -112,7 +96,7 @@ namespace nmtools::view
             // element multiplication with broadcasting
             auto multiplied = multiply(l_slice,r_slice);
             auto reduced    = reduce_add(multiplied,/*axis=*/None);
-            return reduced;
+            return unwrap(reduced);
         } // view_at
 
         template <typename...size_types>

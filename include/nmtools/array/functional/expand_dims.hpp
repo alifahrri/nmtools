@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto expand_dims = functor_t(unary_fmap_t<fun::expand_dims_t>{});
+    constexpr inline auto expand_dims = functor_t{unary_fmap_t<fun::expand_dims_t>{}};
 } // namespace nmtools::functional
 
 

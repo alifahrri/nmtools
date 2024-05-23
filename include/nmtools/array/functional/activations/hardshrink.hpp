@@ -12,7 +12,7 @@ namespace nmtools::functional
         using hardshrink = fun::unary_ufunc<view::hardshrink_t<>>;
     }
 
-    constexpr inline auto hardshrink = functor_t(unary_fmap_t<fun::hardshrink>{});
+    constexpr inline auto hardshrink = functor_t{unary_fmap_t<fun::hardshrink>{}};
 } // namespace nmtools::functional
 
 

@@ -24,7 +24,7 @@ namespace nmtools::functional::fun
 
 namespace nmtools::functional
 {
-    constexpr inline auto reduce = functor_t(unary_fmap_t<fun::reduce<>>{});
+    constexpr inline auto reduce = functor_t{unary_fmap_t<fun::reduce<>>{}};
 
     template <typename...args_t>
     struct get_function_t<

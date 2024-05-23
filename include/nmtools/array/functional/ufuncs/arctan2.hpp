@@ -18,7 +18,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto arctan2 = functor_t(binary_fmap_t<fun::arctan2_t>{});
+    constexpr inline auto arctan2 = functor_t{binary_fmap_t<fun::arctan2_t>{}};
 
     template <typename...arrays_t>
     struct get_function_t<

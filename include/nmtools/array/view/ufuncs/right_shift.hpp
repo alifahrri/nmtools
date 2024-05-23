@@ -39,7 +39,7 @@ namespace nmtools::view
     template <typename left_t, typename right_t>
     constexpr auto right_shift(const left_t& a, const right_t& b)
     {
-        return ufunc(right_shift_t<>{},a,b);
+        return broadcast_binary_ufunc(right_shift_t<>{},a,b);
     } // right_shift
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>

@@ -141,9 +141,9 @@ namespace nmtools::view
     template <typename op_t, typename...arrays_t>
     struct ufunc_t
     {
-        using operands_type = detail::get_operands_type_t<arrays_t...>;
-        using array_type = operands_type;
-        using op_type = op_t;
+        using operands_type = decltype(pack_operands(meta::declval<arrays_t>()...));
+        using array_type    = operands_type;
+        using op_type       = op_t;
         using result_type = detail::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
         using shape_type  = const meta::resolve_optype_t<index::shape_ufunc_t,decltype(nmtools::shape<true>(meta::declval<arrays_t>()))...>;
         using size_type   = const meta::resolve_optype_t<index::size_ufunc_t,shape_type,decltype(nmtools::size<true>(meta::declval<arrays_t>()))...>;
@@ -155,8 +155,8 @@ namespace nmtools::view
 
         constexpr ufunc_t(op_type op, const arrays_t&...array)
             : op(op)
-            , array(initialize_operands<operands_type>(array...))
-            , shape_(*index::shape_ufunc(nmtools::shape<true>(array)...))
+            , array(pack_operands(array...))
+            , shape_(unwrap(index::shape_ufunc(nmtools::shape<true>(array)...)))
             , size_(index::size_ufunc(shape_,nmtools::size<true>(array)...))
         {}
 
@@ -185,11 +185,22 @@ namespace nmtools::view
             return size_;
         } // size
 
+        template <typename operand_t, typename indices_t>
+        static constexpr auto apply_at(const operand_t& operand, const indices_t& indices)
+        {
+            static_assert( !meta::is_maybe_v<operand_t> && meta::is_ndarray_v<meta::remove_cvref_pointer_t<operand_t>> );
+            if constexpr (meta::is_pointer_v<operand_t>) {
+                return nmtools::apply_at(*operand,indices);
+            } else {
+                return nmtools::apply_at(operand,indices);
+            }
+        }
+
         template <typename indices_t, size_t...Is>
         static constexpr auto apply_at(op_type op, const operands_type& array, const indices_t& indices, meta::index_sequence<Is...>)
         {
             using view::detail::apply_at;
-            return op(detail::apply_at(nmtools::get<Is>(array),indices)...);
+            return op(ufunc_t::apply_at(nmtools::get<Is>(array),indices)...);
         } // apply_at
 
         template <typename...size_types>

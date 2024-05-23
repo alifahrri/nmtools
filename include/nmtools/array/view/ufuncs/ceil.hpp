@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto ceil(const left_t& a)
     {
-        return ufunc(ceil_t{},a);
+        return unary_ufunc(ceil_t{},a);
     } // ceil
 };
 

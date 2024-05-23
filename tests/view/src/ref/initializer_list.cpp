@@ -15,7 +15,7 @@ TEST_CASE("initializer_list" * doctest::test_suite("view::ref"))
     // auto view = nmtools::view::make_view<ref_t>(list);
     auto view = nmtools::view::ref(list);
     CHECK( unwrap(view)(1)==2 );
-    CHECK( nmtools::dim(view)==1 );
+    CHECK( nmtools::dim(unwrap(view))==1 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{5}) );
     // should fail
     // CHECK(unwrap(view)(1,0)==2);
@@ -47,7 +47,7 @@ TEST_CASE("initializer_list[2]" * doctest::test_suite("view::ref"))
     // auto view = nmtools::view::make_view<ref_t>(list);
     auto view = nmtools::view::ref(list);
     CHECK( unwrap(view)(0,1)==2 );
-    CHECK( nmtools::dim(view)==2 );
+    CHECK( nmtools::dim(unwrap(view))==2 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{1,5}) );
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(unwrap(view))>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(unwrap(view))>);
@@ -75,7 +75,7 @@ TEST_CASE("initializer_list[2]" * doctest::test_suite("view::ref"))
     // auto view = nmtools::view::make_view<ref_t>(list);
     auto view = nmtools::view::ref(list);
     CHECK( unwrap(view)(1,0)==6 );
-    CHECK( nmtools::dim(view)==2 );
+    CHECK( nmtools::dim(unwrap(view))==2 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{2,5}) );
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(unwrap(view))>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(unwrap(view))>);
@@ -103,7 +103,7 @@ TEST_CASE("initializer_list[3]" * doctest::test_suite("view::ref"))
     // auto view = nmtools::view::make_view<ref_t>(list);
     auto view = nmtools::view::ref(list);
     CHECK( unwrap(view)(0,1,0)==6 );
-    CHECK( nmtools::dim(view)==3 );
+    CHECK( nmtools::dim(unwrap(view))==3 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{1,2,5}) );
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(unwrap(view))>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(unwrap(view))>);
@@ -135,7 +135,7 @@ TEST_CASE("ref(ref(ref(initializer_list)))" * doctest::test_suite("view::ref"))
     auto view1 = nmtools::view::ref(view0);
     auto view  = nmtools::view::ref(view1);
     CHECK(unwrap(view)(1)==2);
-    CHECK( nmtools::dim(view)==1 );
+    CHECK( nmtools::dim(unwrap(view))==1 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{5}) );
     // should fail
     // CHECK(unwrap(view)(1,0)==2);
@@ -163,7 +163,7 @@ TEST_CASE("ref(ref(ref(initializer_list[2])))" * doctest::test_suite("view::ref"
     auto view1 = nmtools::view::ref(view0);
     auto view  = nmtools::view::ref(view1);
     CHECK( unwrap(view)(0,1)==2 );
-    CHECK( nmtools::dim(view)==2 );
+    CHECK( nmtools::dim(unwrap(view))==2 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{2,5}) );
     // should fail
     // CHECK(unwrap(view)(1,0)==2);
@@ -192,7 +192,7 @@ TEST_CASE("ref(ref(ref(initializer_list[3])))" * doctest::test_suite("view::ref"
     auto view1 = nmtools::view::ref(view0);
     auto view  = nmtools::view::ref(view1);
     CHECK( unwrap(view)(0,1,0)==6 );
-    CHECK( nmtools::dim(view)==3 );
+    CHECK( nmtools::dim(unwrap(view))==3 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{1,2,5}) );
     STATIC_CHECK( nmtools::meta::has_shape_v<decltype(unwrap(view))>);
     STATIC_CHECK( nmtools::meta::has_dim_v<decltype(unwrap(view))>);
@@ -219,7 +219,7 @@ TEST_CASE("flattten(ref(initializer_list))" * doctest::test_suite("view::ref"))
     auto view0 = nmtools::view::ref(list);
     auto view  = nmtools::view::flatten(view0);
     CHECK( unwrap(view)(1)==2 );
-    CHECK( nmtools::dim(view)==1 );
+    CHECK( nmtools::dim(unwrap(view))==1 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{5}) );
     // should fail
     // CHECK(unwrap(view)(1,0)==2);
@@ -254,7 +254,7 @@ TEST_CASE("flattten(ref(initializer_list[2]))" * doctest::test_suite("view::ref"
     auto view0 = nmtools::view::ref(list);
     auto view  = nmtools::view::flatten(view0);
     CHECK( unwrap(view)(1)==2 );
-    CHECK( nmtools::dim(view)==1 );
+    CHECK( nmtools::dim(unwrap(view))==1 );
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(view), (std::array{10}) );
     // should fail
     // CHECK(unwrap(view)(1,0)==2);

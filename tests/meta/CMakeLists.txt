@@ -8,7 +8,6 @@ set( META_VIEW_TEST_SOURCES
     array/view/concatenate.cpp
     array/view/full.cpp
     array/view/matmul.cpp
-    array/view/mean.cpp
     array/view/moveaxis.cpp
     array/view/outer.cpp
     array/view/pad.cpp
@@ -31,14 +30,12 @@ set( META_EVAL_TEST_SOURCES
     array/eval/concatenate.cpp
     array/eval/full.cpp
     array/eval/matmul.cpp
-    array/eval/mean.cpp
     array/eval/prod.cpp
     array/eval/reduce.cpp
     array/eval/repeat.cpp
     array/eval/take.cpp
     array/eval/tile.cpp
     array/eval/ufunc.cpp
-    array/eval/var.cpp
     array/eval/where.cpp
 )
 
@@ -47,7 +44,6 @@ set( META_INDEX_TEST_SOURCES
     array/index/broadcast_shape.cpp
     array/index/broadcast_to.cpp
     array/index/argsort.cpp
-    array/index/array_slice.cpp
     array/index/choose.cpp
     array/index/compute_indices.cpp
     array/index/compute_strides.cpp
@@ -101,7 +97,6 @@ set( META_TRANSFORM_TEST_SOURCES
     transform/get_either_right.cpp
     transform/get_element_type.cpp
     transform/get_element_or_common_type.cpp
-    transform/get_underlying_array_type.cpp
     transform/hybrid_ndarray_max_size.cpp
     transform/remove_reference.cpp
     transform/replace_element_type.cpp

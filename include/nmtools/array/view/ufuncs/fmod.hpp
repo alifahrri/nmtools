@@ -41,7 +41,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto fmod(const left_t& a, const right_t& b)
     {
-        return ufunc(fmod_t<>{},a,b);
+        return broadcast_binary_ufunc(fmod_t<>{},a,b);
     } // fmod
 
     template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>

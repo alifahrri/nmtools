@@ -18,10 +18,10 @@ namespace nmtools::functional
         using accumulate_subtract = fun::accumulate<view::subtract_t<>>;
     }
 
-    constexpr inline auto subtract = functor_t(binary_fmap_t<fun::subtract>{});
-    constexpr inline auto reduce_subtract = functor_t(unary_fmap_t<fun::reduce_subtract>{});
-    constexpr inline auto outer_subtract = functor_t(binary_fmap_t<fun::outer_subtract>{});
-    constexpr inline auto accumulate_subtract = functor_t(unary_fmap_t<fun::accumulate_subtract>{});
+    constexpr inline auto subtract = functor_t{binary_fmap_t<fun::subtract>{}};
+    constexpr inline auto reduce_subtract = functor_t{unary_fmap_t<fun::reduce_subtract>{}};
+    constexpr inline auto outer_subtract = functor_t{binary_fmap_t<fun::outer_subtract>{}};
+    constexpr inline auto accumulate_subtract = functor_t{unary_fmap_t<fun::accumulate_subtract>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_SUBTRACT_HPP

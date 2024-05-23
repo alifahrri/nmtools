@@ -12,7 +12,7 @@ namespace nmtools::functional
         using softplus = fun::unary_ufunc<view::softplus_t<>>;
     }
 
-    constexpr inline auto softplus = functor_t(unary_fmap_t<fun::softplus>{});
+    constexpr inline auto softplus = functor_t{unary_fmap_t<fun::softplus>{}};
 } // namespace nmtools::functional
 
 

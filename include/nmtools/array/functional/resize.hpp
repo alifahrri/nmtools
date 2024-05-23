@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto resize = functor_t(unary_fmap_t<fun::resize_t>{});
+    constexpr inline auto resize = functor_t{unary_fmap_t<fun::resize_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_RESIZE_HPP

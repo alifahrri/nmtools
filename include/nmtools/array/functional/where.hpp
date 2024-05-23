@@ -18,7 +18,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto where = functor_t(ternary_fmap_t<fun::where_t>{});
+    constexpr inline auto where = functor_t{ternary_fmap_t<fun::where_t>{}};
 
     template <typename...args_t>
     struct get_function_t<

@@ -26,7 +26,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto trunc(const left_t& a)
     {
-        return ufunc(trunc_t{},a);
+        return unary_ufunc(trunc_t{},a);
     } // trunc
 }
 

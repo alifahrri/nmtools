@@ -158,19 +158,8 @@ namespace nmtools::view
             using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
                 , result_type, nmtools_maybe<result_type>
             >;
-            auto get_result = [&](){
-                auto result = binary_ufunc(op,*lhs,rhs);
-                if constexpr (meta::is_maybe_v<result_type>) {
-                    return (result
-                        ? return_type{*result}
-                        : return_type{meta::Nothing}
-                    );
-                } else {
-                    return return_type{result};
-                }
-            };
             return (static_cast<bool>(lhs)
-                ? get_result()
+                ? return_type{binary_ufunc(op,*lhs,rhs)}
                 : return_type{meta::Nothing}
             );
         } else if constexpr (meta::is_maybe_v<rhs_t>) {
@@ -214,10 +203,23 @@ namespace nmtools::view
         }
     } // binary_ufunc
 
-    template <typename op_t, template<typename...>typename tuple, typename lhs_t, typename rhs_t>
-    constexpr auto binary_ufunc(op_t op, const tuple<lhs_t,rhs_t>& arrays)
+    template <typename op_t, typename arrays_t>
+    constexpr auto binary_ufunc(op_t op, const arrays_t& arrays)
     {
-        return binary_ufunc(op,nmtools::get<0>(arrays),nmtools::get<1>(arrays));
+        if constexpr (meta::is_maybe_v<arrays_t>) {
+            using arrays_type = meta::get_maybe_type_t<arrays_t>;
+            using result_type = decltype(binary_ufunc(op,meta::declval<arrays_type>()));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
+            return (arrays?
+                return_type{binary_ufunc(op,*arrays)}
+                : return_type{meta::Nothing}
+            );
+        } else {
+            static_assert( meta::len_v<arrays_t> == 2
+                , "invalid number of operands for binary_ufunc!"
+            );
+            return binary_ufunc(op,nmtools::get<0>(arrays),nmtools::get<1>(arrays));
+        }
     } // binary_ufunc
 
     // TODO: handle optional lhs, rhs
@@ -240,24 +242,13 @@ namespace nmtools::view
             using return_type = meta::conditional_t<meta::is_maybe_v<result_type>
                 , result_type, nmtools_maybe<result_type>
             >;
-            auto get_result = [&](){
-                auto result = broadcast_binary_ufunc(op,*lhs,rhs);
-                if constexpr (meta::is_maybe_v<result_type>) {
-                    return (result
-                        ? return_type{*result}
-                        : return_type{meta::Nothing}
-                    );
-                } else {
-                    return return_type{result};
-                }
-            };
             return (static_cast<bool>(lhs)
-                ? get_result()
+                ? return_type{broadcast_binary_ufunc(op,*lhs,rhs)}
                 : return_type{meta::Nothing}
             );
         } else if constexpr (meta::is_maybe_v<rhs_t>) {
             using result_type = decltype(broadcast_binary_ufunc(op,lhs,*rhs));
-            using return_type = nmtools_maybe<result_type>;
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
             return (static_cast<bool>(rhs)
                 ? return_type{broadcast_binary_ufunc(op,lhs,*rhs)}
                 : return_type{meta::Nothing}
@@ -360,12 +351,13 @@ namespace nmtools::view
         if constexpr (meta::is_maybe_v<array_t>) {
             using array_type  = meta::get_maybe_type_t<array_t>;
             using result_type = decltype(reduce(op,meta::declval<array_type>(),axis,dtype,initial,keepdims));
+            static_assert( !meta::is_maybe_v<result_type> );
+            // using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
             using return_type = nmtools_maybe<result_type>;
-            if (static_cast<bool>(array)) {
-                return return_type{reduce(op,*array,axis,dtype,initial,keepdims)};
-            } else {
-                return return_type{meta::Nothing};
-            }
+            return (array ?
+                return_type{reduce(op,*array,axis,dtype,initial,keepdims)}
+                : return_type{meta::Nothing}
+            );
         } else if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
@@ -445,6 +437,7 @@ namespace nmtools::view
         if constexpr (meta::is_maybe_v<array_t>) {
             using array_type  = meta::get_maybe_type_t<array_t>;
             using result_type = decltype(accumulate(op,meta::declval<array_type>(),axis,dtype));
+            static_assert( !meta::is_maybe_v<result_type> );
             using return_type = nmtools_maybe<result_type>;
             if (static_cast<bool>(array)) {
                 return return_type{accumulate(op,*array,axis,dtype)};
@@ -509,6 +502,7 @@ namespace nmtools::view
         } else if constexpr (meta::is_maybe_v<rhs_t>) {
             using rhs_type = meta::get_maybe_type_t<rhs_t>;
             using result_type = decltype(outer(op,lhs,meta::declval<rhs_type>(),dtype));
+            static_assert( !meta::is_maybe_v<result_type> );
             using return_type = nmtools_maybe<result_type>;
             if (static_cast<bool>(rhs)) {
                 return return_type{outer(op,lhs,*rhs,dtype)};

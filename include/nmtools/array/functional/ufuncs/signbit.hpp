@@ -12,7 +12,7 @@ namespace nmtools::functional
         using signbit = fun::unary_ufunc<view::signbit_t>;
     }
 
-    constexpr inline auto signbit = functor_t(unary_fmap_t<fun::signbit>{});
+    constexpr inline auto signbit = functor_t{unary_fmap_t<fun::signbit>{}};
 } // namespace nmtools::functional
 
 

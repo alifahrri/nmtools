@@ -72,6 +72,15 @@ namespace nmtools::meta
         }();
     }; // is_ndarray
 
+    // TODO: make the following specialization allowed
+    #if 0
+    template <typename T>
+    struct is_ndarray<const T> : is_ndarray<T> {};
+
+    template <typename T>
+    struct is_ndarray<T&> : is_ndarray<T> {};
+    #endif
+
     /**
      * @brief helper variable template to check if T is n-dimensional array
      * 

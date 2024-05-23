@@ -12,7 +12,7 @@ namespace nmtools::functional
         using hardtanh = fun::unary_ufunc<view::hardtanh_t<>>;
     }
 
-    constexpr inline auto hardtanh = functor_t(unary_fmap_t<fun::hardtanh>{});
+    constexpr inline auto hardtanh = functor_t{unary_fmap_t<fun::hardtanh>{}};
 } // namespace nmtools::functional
 
 

@@ -12,7 +12,7 @@ namespace nmtools::functional
         using hardswish = fun::unary_ufunc<view::hardswish_t>;
     }
 
-    constexpr inline auto hardswish = functor_t(unary_fmap_t<fun::hardswish>{});
+    constexpr inline auto hardswish = functor_t{unary_fmap_t<fun::hardswish>{}};
 } // namespace nmtools::functional
 
 

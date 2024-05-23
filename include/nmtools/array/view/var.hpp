@@ -34,7 +34,13 @@ namespace nmtools::view
         auto d = square(c);
         // no reason to start from other initial value
         auto e = sum(d,axis,dtype,/*initial=*/None,keepdims);
+        // TODO: fix unwrap to handle bounded array
+        #if 0
+        // TODO: error handling
+        auto N = detail::mean_divisor(::nmtools::shape(unwrap(array)),axis);
+        #else
         auto N = detail::mean_divisor(::nmtools::shape(array),axis);
+        #endif
         return divide(e,N-ddof);
     } // var
 } // namespace nmtools::view

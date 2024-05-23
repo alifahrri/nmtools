@@ -12,7 +12,7 @@ namespace nmtools::functional
         using divide = fun::broadcast_binary_ufunc<view::divide_t>;
     }
 
-    constexpr inline auto divide = functor_t(binary_fmap_t<fun::divide>{});
+    constexpr inline auto divide = functor_t{binary_fmap_t<fun::divide>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_DIVIDE_HPP

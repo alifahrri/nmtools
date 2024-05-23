@@ -12,7 +12,7 @@ namespace nmtools::functional
         using reciprocal = fun::unary_ufunc<view::reciprocal_t>;
     }
 
-    constexpr inline auto reciprocal = functor_t(unary_fmap_t<fun::reciprocal>{});
+    constexpr inline auto reciprocal = functor_t{unary_fmap_t<fun::reciprocal>{}};
 } // namespace nmtools::functional
 
 

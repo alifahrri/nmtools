@@ -12,7 +12,7 @@ namespace nmtools::functional
         using square = fun::unary_ufunc<view::square_t>;
     }
 
-    constexpr inline auto square = functor_t(unary_fmap_t<fun::square>{});
+    constexpr inline auto square = functor_t{unary_fmap_t<fun::square>{}};
 } // namespace nmtools::functional
 
 

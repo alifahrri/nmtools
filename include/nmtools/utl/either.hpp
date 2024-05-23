@@ -231,14 +231,7 @@ namespace nmtools::utl
             }
         }
 
-        ~either()
-        {
-            if (tag == LEFT) {
-                left.~left_t();
-            } else {
-                right.~right_t();
-            }
-        }
+        ~either() {}
 
         template <typename U>
         constexpr either& operator=(const U& val) noexcept

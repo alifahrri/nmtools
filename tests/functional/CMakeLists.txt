@@ -131,6 +131,10 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/transpose.cpp
         src/var.cpp
         src/where.cpp
+
+        src/graph/transpose.cpp
+        src/graph/reshape.cpp
+        src/graph/broadcast_to.cpp
         src/graph/tanh.cpp
         src/graph/multiply.cpp
         src/graph/reduce_add_tanh.cpp

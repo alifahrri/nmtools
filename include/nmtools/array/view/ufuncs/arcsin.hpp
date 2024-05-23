@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto arcsin(const left_t& a)
     {
-        return ufunc(arcsin_t{},a);
+        return unary_ufunc(arcsin_t{},a);
     } // arcsin
 }
 

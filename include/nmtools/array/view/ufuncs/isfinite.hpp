@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto isfinite(const left_t& a)
     {
-        return ufunc(isfinite_t{},a);
+        return unary_ufunc(isfinite_t{},a);
     } // isfinite
 }
 

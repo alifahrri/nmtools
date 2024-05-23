@@ -22,36 +22,13 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define RUN_array_slice_impl(...) \
-nm::view::array_slice(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs array_slice fn to callable lambda
-#define RUN_array_slice(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("array_slice-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_array_slice_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_array_slice(case_name, ...) \
-RUN_array_slice_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 // TODO: properly deduce ndarray type
 #define ARRAY_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(array, array_slice, case_name); \
     using namespace args; \
-    auto view = RUN_array_slice(case_name, __VA_ARGS__); \
+    auto view = nmtools::view::array_slice(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(view), nm::shape(expect::result) ); \
     using ndarray_t = na::dynamic_ndarray<int>; \
     auto result = static_cast<ndarray_t>(view); \

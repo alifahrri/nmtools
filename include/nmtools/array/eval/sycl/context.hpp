@@ -560,9 +560,9 @@ namespace nmtools::array::sycl
                 auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
                     return utility::tuple_append(init,array::as_static(at(f.attributes,I)));
                 }, nmtools_tuple{});
-                return functional::functor_t<F,operands_t,decltype(attributes)>{
+                return functional::functor_t<F,operands_t,decltype(attributes)>{{
                     f.fmap, f.operands, attributes
-                };
+                }};
             }
         } // map_to_device
 

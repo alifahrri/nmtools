@@ -12,7 +12,7 @@ namespace nmtools::functional
         using mish = fun::unary_ufunc<view::mish_t>;
     }
 
-    constexpr inline auto mish = functor_t(unary_fmap_t<fun::mish>{});
+    constexpr inline auto mish = functor_t{unary_fmap_t<fun::mish>{}};
 } // namespace nmtools::functional
 
 

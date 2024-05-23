@@ -28,9 +28,9 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto slice = functor_t(unary_fmap_t<fun::slice_t>{});
+    constexpr inline auto slice = functor_t{unary_fmap_t<fun::slice_t>{}};
 
-    constexpr inline auto apply_slice = functor_t(unary_fmap_t<fun::apply_slice_t>{});
+    constexpr inline auto apply_slice = functor_t{unary_fmap_t<fun::apply_slice_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_SLICE_HPP

@@ -12,7 +12,7 @@ namespace nmtools::functional
         using arcsin = fun::unary_ufunc<view::arcsin_t>;
     }
 
-    constexpr inline auto arcsin = functor_t(unary_fmap_t<fun::arcsin>{});
+    constexpr inline auto arcsin = functor_t{unary_fmap_t<fun::arcsin>{}};
 } // namespace nmtools::functional
 
 

@@ -9,6 +9,8 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
+using nmtools::unwrap;
+
 TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
@@ -24,13 +26,13 @@ TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_co
 
     auto function = fn::get_function_composition(z);
     auto expect =
-        fn::broadcast_binary_ufunc[z.attributes()]
-        * fn::reduce[y.attributes()]
-        * fn::unary_ufunc[x.attributes()]
+        fn::broadcast_binary_ufunc[unwrap(z).attributes()]
+        * fn::reduce[unwrap(y).attributes()]
+        * fn::unary_ufunc[unwrap(x).attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
-    NMTOOLS_ASSERT_CLOSE( function (a) (divisor), z );
+    NMTOOLS_ASSERT_CLOSE( unwrap(function) (a) (divisor), z );
 }
 
 TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_composition"))
@@ -49,13 +51,13 @@ TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_co
 
     auto function = fn::get_function_composition(z);
     auto expect =
-        fn::broadcast_binary_ufunc[z.attributes()]
-        * fn::reduce[y.attributes()]
-        * fn::unary_ufunc[x.attributes()]
+        fn::broadcast_binary_ufunc[unwrap(z).attributes()]
+        * fn::reduce[unwrap(y).attributes()]
+        * fn::unary_ufunc[unwrap(x).attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
-    NMTOOLS_ASSERT_CLOSE( function (a) (a), z );
+    NMTOOLS_ASSERT_CLOSE( unwrap(function) (a) (a), z );
 }
 
 using namespace nmtools::literals;
@@ -74,7 +76,7 @@ TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_op
     auto y = view::sum(x,axis,dtype,initial,keepdims);
     auto z = view::divide(y,a);
 
-    auto operands = fn::get_function_operands(z);
+    auto operands = unwrap(fn::get_function_operands(z));
     auto expect = nmtools_tuple<decltype(a)&,decltype(a)&>{a,a};
     CHECK( nm::len(operands) == nm::len(expect) );
     CHECK( &nm::at(operands,0_ct) == &nm::at(expect,0_ct) );

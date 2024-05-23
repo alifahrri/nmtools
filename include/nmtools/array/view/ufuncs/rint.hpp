@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto rint(const left_t& a)
     {
-        return ufunc(rint_t{},a);
+        return unary_ufunc(rint_t{},a);
     } // rint
 }
 

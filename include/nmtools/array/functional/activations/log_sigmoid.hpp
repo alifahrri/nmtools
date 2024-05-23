@@ -11,7 +11,7 @@ namespace nmtools::functional
     {
         using log_sigmoid = fun::unary_ufunc<view::log_sigmoid_t>;
     }
-    constexpr inline auto log_sigmoid = functor_t(unary_fmap_t<fun::log_sigmoid>{});
+    constexpr inline auto log_sigmoid = functor_t{unary_fmap_t<fun::log_sigmoid>{}};
 } // namespace nmtools::functional
 
 

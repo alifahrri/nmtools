@@ -12,7 +12,7 @@ namespace nmtools::functional
         using cos = fun::unary_ufunc<view::cos_t>;
     }
 
-    constexpr inline auto cos = functor_t(unary_fmap_t<fun::cos>{});
+    constexpr inline auto cos = functor_t{unary_fmap_t<fun::cos>{}};
 } // namespace nmtools::functional
 
 

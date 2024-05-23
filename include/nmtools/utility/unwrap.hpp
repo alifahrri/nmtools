@@ -9,7 +9,7 @@ namespace nmtools
 
     template <typename T>
     constexpr auto unwrap(const T& t)
-        -> meta::resolve_optype_t<unwrap_t,T>
+        -> const meta::resolve_optype_t<unwrap_t,T>
     {
         if constexpr (meta::is_maybe_v<T>) {
             return *t;
@@ -28,6 +28,22 @@ namespace nmtools
             return t;
         }
     }
+
+    #if 0
+    template <typename T, auto N>
+    constexpr auto unwrap(const T(&t)[N])
+        -> const T(&)[N]
+    {
+        return t;
+    }
+
+    template <typename T, auto N>
+    constexpr auto unwrap(T(&t)[N])
+        -> T(&)[N]
+    {
+        return t;
+    }
+    #endif
 }
 
 namespace nmtools::meta

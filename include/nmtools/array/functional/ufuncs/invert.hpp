@@ -12,7 +12,7 @@ namespace nmtools::functional
         using invert = fun::unary_ufunc<view::invert_t>;
     }
 
-    constexpr inline auto invert = functor_t(unary_fmap_t<fun::invert>{});
+    constexpr inline auto invert = functor_t{unary_fmap_t<fun::invert>{}};
 } // namespace nmtools::functional
 
 

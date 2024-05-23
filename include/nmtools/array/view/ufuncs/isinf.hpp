@@ -28,7 +28,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto isinf(const left_t& a)
     {
-        return ufunc(isinf_t{},a);
+        return unary_ufunc(isinf_t{},a);
     } // isinf
 }
 

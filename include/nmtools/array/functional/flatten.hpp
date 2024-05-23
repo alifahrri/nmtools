@@ -19,7 +19,7 @@ namespace nmtools::functional
         };
     }
 
-    constexpr inline auto flatten = functor_t(unary_fmap_t<fun::flatten_t>{});
+    constexpr inline auto flatten = functor_t{unary_fmap_t<fun::flatten_t>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FLATTEN_HPP

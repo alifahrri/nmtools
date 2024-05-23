@@ -12,7 +12,7 @@ namespace nmtools::functional
         using sin = fun::unary_ufunc<view::sin_t>;
     }
 
-    constexpr inline auto sin = functor_t(unary_fmap_t<fun::sin>{});
+    constexpr inline auto sin = functor_t{unary_fmap_t<fun::sin>{}};
 } // namespace nmtools::functional
 
 
