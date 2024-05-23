@@ -52,7 +52,7 @@ namespace nmtools::index::impl
             >;
 
             auto ret = result_t {};
-            auto dim = len(bshape);
+            [[maybe_unused]] auto dim = len(bshape);
 
             if constexpr (meta::is_resizable_v<result_t>) {
                 ret.resize(dim);
