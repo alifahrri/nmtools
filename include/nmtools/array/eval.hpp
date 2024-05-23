@@ -218,22 +218,20 @@ namespace nmtools::array
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_t, typename view_t>
     constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{}, [[maybe_unused]] meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
-        // TODO: perfect forwarding for eval context
-        // TODO: support maybe type
         if constexpr (meta::is_either_v<view_t>) {
             using left_t   = meta::get_either_left_t<view_t>;
             using right_t  = meta::get_either_right_t<view_t>;
             // deduce return type for each type
             using rleft_t  = decltype(detail::eval(
                 meta::declval<left_t>()
-                ,nmtools::forward<context_t>(context)
-                ,nmtools::forward<output_t>(output)
-                ,resolver));
+                , nmtools::forward<context_t>(context)
+                , nmtools::forward<output_t>(output)
+                , resolver));
             using rright_t = decltype(detail::eval(
                 meta::declval<right_t>()
-                ,nmtools::forward<context_t>(context)
-                ,nmtools::forward<output_t>(output)
-                ,resolver));
+                , nmtools::forward<context_t>(context)
+                , nmtools::forward<output_t>(output)
+                , resolver));
             constexpr auto vtype = [](){
                 if constexpr (meta::is_same_v<rleft_t,rright_t>) {
                     return meta::as_value_v<rleft_t>;
@@ -246,33 +244,33 @@ namespace nmtools::array
             // match either type at runtime
             if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
                 return return_t{detail::eval(*view_ptr
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                    ,resolver)};
+                    , nmtools::forward<context_t>(context)
+                    , nmtools::forward<output_t>(output)
+                    , resolver)};
             } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
                 auto view_rptr = nmtools::get_if<right_t>(&view);
                 return return_t{detail::eval(*view_rptr
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                    ,resolver)};
+                    , nmtools::forward<context_t>(context)
+                    , nmtools::forward<output_t>(output)
+                    , resolver)};
             }
         } else if constexpr (meta::is_maybe_v<view_t>) {
             using view_type   = meta::get_maybe_type_t<view_t>;
             using result_type = decltype(detail::eval(meta::declval<view_type>()
-                ,nmtools::forward<context_t>(context)
-                ,nmtools::forward<output_t>(output)
-                ,resolver));
+                , nmtools::forward<context_t>(context)
+                , nmtools::forward<output_t>(output)
+                , resolver));
+            static_assert(!meta::is_maybe_v<result_type>);
             using return_type = nmtools_maybe<result_type>;
-            if (static_cast<bool>(view)) {
-                auto result = detail::eval(*view
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                    ,resolver);
-                return return_type{result};
-            } else {
-                return return_type{meta::Nothing};
-            }
+            return (view
+                ? return_type{detail::eval(*view
+                    , nmtools::forward<context_t>(context)
+                    , nmtools::forward<output_t>(output)
+                    , resolver)}
+                : return_type{meta::Nothing}
+            );
         } else /* if constexpr (meta::is_ndarray_v<view_t> || meta::is_num_v<view_t>) */ {
+            static_assert( !meta::is_maybe_v<view_t> && !meta::is_either_v<view_t> );
             auto evaluator_ = evaluator<resolver_t>(view,nmtools::forward<context_t>(context));
             return evaluator_(nmtools::forward<output_t>(output));
         }
@@ -295,9 +293,9 @@ namespace nmtools::array
     constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         return detail::eval(view
-            ,nmtools::forward<context_t>(context)
-            ,nmtools::forward<output_t>(output)
-            ,resolver
+            , nmtools::forward<context_t>(context)
+            , nmtools::forward<output_t>(output)
+            , resolver
         );
     }
 
@@ -345,7 +343,25 @@ namespace nmtools::array
         , context_t&& context=context_t{}, output_t&& output=output_t{}
         , meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
-        if constexpr (meta::is_list_v<views_t>) {
+        if constexpr (meta::is_maybe_v<views_t>) {
+            using views_type  = meta::get_maybe_type_t<views_t>;
+            using result_type = decltype(apply_eval(
+                  meta::declval<views_type>()
+                , nmtools::forward<context_t>(context)
+                , nmtools::forward<output_t>(output)
+                , resolver
+            ));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
+            if (static_cast<bool>(views)) {
+                return return_type{apply_eval(*views
+                    , nmtools::forward<context_t>(context)
+                    , nmtools::forward<output_t>(output)
+                    , resolver
+                )};
+            } else {
+                return return_type{meta::Nothing};
+            }
+        } else if constexpr (meta::is_list_v<views_t>) {
             using eval_t = decltype(eval(at(views,0)
                 , nmtools::forward<context_t>(context)
                 , nmtools::forward<output_t>(output)
