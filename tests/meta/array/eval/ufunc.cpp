@@ -120,41 +120,6 @@ TEST_CASE("eval(ufunc)" * doctest::test_suite("eval"))
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
     }
-    SUBCASE("clip")
-    {
-        // TODO: fix
-        #if 0
-        {
-            using shape_t = nmtools_tuple<integral_constant<size_t, 3>, integral_constant<size_t, 2> >;
-            using origin_axes_t = nmtools::array::hybrid_ndarray<size_t, 2, 1>;
-            using view_t = view::decorator_t< view::ufunc_t, view::clip_t,
-                view::decorator_t< view::broadcast_to_t, na::fixed_ndarray<float,3,2>, shape_t, origin_axes_t >,
-                view::decorator_t< view::broadcast_to_t, na::fixed_ndarray<float,2>, shape_t, origin_axes_t >,
-                view::decorator_t< view::broadcast_to_t, float, shape_t, origin_axes_t >
-            >;
-            using eval_t = meta::resolve_optype_t< na::eval_result_t<>, view_t, none_t >;
-            using expected_t = na::fixed_ndarray<float,3,2>;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-            static_assert( meta::is_ndarray_v<view_t> );
-            static_assert( meta::is_fixed_shape_v<view_t> );
-        }
-        #endif
-        // TODO: fix
-        #if 0
-        {
-            using shape_t = nmtools_tuple<integral_constant<size_t, 3>, integral_constant<size_t, 2> >;
-            using origin_axes_t = nmtools::array::hybrid_ndarray<size_t, 2, 1>;
-            using view_t = view::decorator_t< view::ufunc_t, view::clip_t,
-                view::decorator_t< view::broadcast_to_t, float[3][2], shape_t, origin_axes_t >,
-                view::decorator_t< view::broadcast_to_t, float[2], shape_t, origin_axes_t >,
-                view::decorator_t< view::broadcast_to_t, float, shape_t, origin_axes_t >
-            >;
-            using eval_t = meta::resolve_optype_t< na::eval_result_t<>, view_t, none_t >;
-            using expected_t = nmtools_array<nmtools_array<float,2>,3>;
-            NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
-        }
-        #endif
-    }
 }
 
 TEST_CASE("eval(outer_ufunc)" * doctest::test_suite("eval"))

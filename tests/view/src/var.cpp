@@ -20,35 +20,12 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_
 
 namespace nm = nmtools;
 
-#define RUN_var_impl(...) \
-nmtools::view::var(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs var fn to callable lambda
-#define RUN_var(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("view::var-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_var_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_var(case_name, ...) \
-RUN_var_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define VAR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(array, var, case_name); \
     using namespace args; \
-    auto result = RUN_var(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::var(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -332,16 +309,16 @@ TEST_CASE("var(case10)" * doctest::test_suite("view::var"))
         using namespace args;
 
         auto var = view::var(array, axis, nm::None, ddof, keepdims );
-        using var_t = decltype(var);
+        using m_var_t = decltype(var);
+        using var_t   = meta::resolve_optype_t<nm::unwrap_t,m_var_t>;
         static_assert( meta::is_either_v<var_t> );
 
-        using left_t  = meta::get_either_left_t<var_t>;
+        using left_t  = meta::resolve_optype_t<nm::unwrap_t,meta::get_either_left_t<var_t>>;
         using right_t = meta::get_either_right_t<var_t>;
         static_assert( meta::is_num_v<right_t> );
         static_assert( meta::is_ndarray_v<left_t> );
 
-        auto value = nmtools::get_if<right_t>(&var);
-        NMTOOLS_ASSERT_CLOSE( *value, expect::result );
+        NMTOOLS_ASSERT_CLOSE( var, expect::result );
     }
 
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)

@@ -4,6 +4,7 @@
 #include "nmtools/testing/data/array/multiply.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+namespace nm = nmtools;
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
@@ -22,7 +23,7 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_function_compos
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
-    NMTOOLS_ASSERT_CLOSE( function (a) (b), y );
+    NMTOOLS_ASSERT_CLOSE( nm::unwrap(function) (a) (b), y );
 }
 
 using namespace nmtools::literals;
@@ -51,7 +52,9 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::apply"))
     auto x = view::multiply(a,b);
     auto y = view::tanh(x);
 
+    [[maybe_unused]]
     auto function = fn::get_function_composition(y);
+    [[maybe_unused]]
     auto operands = fn::get_function_operands(y);
     
     NMTOOLS_ASSERT_CLOSE( (fn::apply(function,operands)), y );

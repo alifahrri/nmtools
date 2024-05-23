@@ -8,6 +8,8 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
+using nmtools::unwrap;
+
 TEST_CASE("square_sum" * doctest::test_suite("functional::get_function_composition") )
 {
     NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
@@ -18,14 +20,14 @@ TEST_CASE("square_sum" * doctest::test_suite("functional::get_function_compositi
     auto x = view::square(a);
     auto y = view::sum(x,axis);
 
-    auto function = fn::get_function_composition(y);
+    auto function = unwrap(fn::get_function_composition(y));
     auto expect =
-          fn::reduce[y.attributes()]
-        * fn::unary_ufunc[x.attributes()]
+          fn::reduce[unwrap(y).attributes()]
+        * fn::unary_ufunc[unwrap(x).attributes()]
     ;
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
-    NMTOOLS_ASSERT_CLOSE( function (a), y );
+    NMTOOLS_ASSERT_CLOSE( unwrap(function) (a), y );
 }
 
 using namespace nmtools::literals;

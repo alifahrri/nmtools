@@ -6,6 +6,8 @@
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 
+using nmtools::unwrap;
+
 TEST_CASE("reduce_add_tanh" * doctest::test_suite("functional::get_function_composition"))
 {
     NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case9);
@@ -16,8 +18,8 @@ TEST_CASE("reduce_add_tanh" * doctest::test_suite("functional::get_function_comp
 
     auto function = fn::get_function_composition(y);
     auto expect =
-          fn::unary_ufunc[y.attributes()]
-        * fn::reduce[x.attributes()]
+          fn::unary_ufunc[unwrap(y).attributes()]
+        * fn::reduce[unwrap(x).attributes()]
     ;
 
     // TODO: make fn::tanh == fn::unary_ufunc[view::tanh_t{}]
@@ -36,7 +38,7 @@ TEST_CASE("reduce_add_tanh" * doctest::test_suite("functional::get_function_oper
     auto x = view::reduce_add(a,axis,dtype,initial,keepdims);
     auto y = view::tanh(x);
 
-    auto operands = fn::get_function_operands(y);
+    auto operands = unwrap(fn::get_function_operands(y));
     auto expect = nmtools_tuple<decltype(a)&>{a};
     CHECK( nm::len(operands) == nm::len(expect) );
     CHECK( &nm::at(operands,0_ct) == &nm::at(expect,0_ct) );

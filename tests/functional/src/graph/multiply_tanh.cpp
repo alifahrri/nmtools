@@ -44,8 +44,8 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
         .add_edge(2_ct,3_ct)
     ;
 
-    // TODO: handle maybe type
-    NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
+    // TODO: support comparison on maybe type
+    NMTOOLS_ASSERT_GRAPH_EQUAL( nm::unwrap(graph), expect );
 }
 
 TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph"))
@@ -74,8 +74,8 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
         .add_edge(12_ct,13_ct)
     ;
 
-    // TODO: handle maybe type
-    NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
+    // TODO: support comparison on maybe type
+    NMTOOLS_ASSERT_GRAPH_EQUAL( nm::unwrap(graph), expect );
 }
 
 TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph"))
@@ -104,8 +104,8 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
         .add_edge(12_ct,13_ct)
     ;
 
-    // TODO: handle maybe type
-    NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
+    // TODO: support comparison on maybe type
+    NMTOOLS_ASSERT_GRAPH_EQUAL( nm::unwrap(graph), expect );
 }
 
 TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph"))
@@ -135,6 +135,6 @@ TEST_CASE("multiply_tanh" * doctest::test_suite("functional::get_compute_graph")
         .add_edge(12_ct,13_ct)
     ;
 
-    // TODO: handle maybe type
-    NMTOOLS_ASSERT_GRAPH_EQUAL( graph, expect );
+    // TODO: support comparison on maybe type
+    NMTOOLS_ASSERT_GRAPH_EQUAL( nm::unwrap(graph), expect );
 }

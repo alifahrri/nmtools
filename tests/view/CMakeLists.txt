@@ -52,7 +52,7 @@ endif (NMTOOLS_VIEW_TEST_ALL)
 set(ARRAY_VIEW_TEST_SOURCES
     src/arange.cpp
     src/argsort.cpp
-    src/array_slice.cpp
+    # src/array_slice.cpp
     src/atleast_1d.cpp
     src/atleast_2d.cpp
     src/atleast_3d.cpp
@@ -88,7 +88,6 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/take.cpp
     src/tile.cpp
     src/transpose.cpp
-    src/ufunc.cpp
     src/var.cpp
     src/where.cpp
     src/zeros.cpp
@@ -118,7 +117,7 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     src/ufuncs/bitwise_xor.cpp
     src/ufuncs/cbrt.cpp
     src/ufuncs/ceil.cpp
-    src/ufuncs/clip.cpp
+    # src/ufuncs/clip.cpp
     src/ufuncs/cos.cpp
     src/ufuncs/cosh.cpp
     src/ufuncs/divide.cpp

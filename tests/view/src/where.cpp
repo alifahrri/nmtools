@@ -21,36 +21,13 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/where.hpp"
 
-#define RUN_impl(...) \
-nm::view::where(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs where fn to callable lambda
-#define RUN_where(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("where-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_where(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define WHERE_SUBCASE(case_name,condition,x,y) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS( view, where, case_name ); \
-    auto array_view = RUN_where( case_name, args::condition, args::x, args::y ); \
-    NMTOOLS_ASSERT_EQUAL( array_view.dim(), expect::dim ); \
-    NMTOOLS_ASSERT_EQUAL( array_view.shape(), expect::shape ); \
+    auto array_view = nmtools::view::where( args::condition, args::x, args::y ); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::dim(array_view), expect::dim ); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_view), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_view, expect::result ); \
 }
 
