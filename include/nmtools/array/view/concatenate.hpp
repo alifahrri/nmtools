@@ -98,14 +98,32 @@ namespace nmtools::view
     template <typename lhs_array_t, typename rhs_array_t, typename axis_t>
     constexpr auto concatenate(const lhs_array_t& lhs, const rhs_array_t& rhs, axis_t axis)
     {
-        auto ashape = shape(lhs);
-        auto bshape = shape(rhs);
-        [[maybe_unused]] const auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
-        // TODO: use nmtools_assert macro
-        nmtools_cassert (success
-            , "unsupported concatenate, mismatched shape"
-        );
-        return decorator_t<concatenate_t,lhs_array_t,rhs_array_t,axis_t>{{lhs,rhs,axis}};
+        if constexpr (meta::is_maybe_v<lhs_array_t>) {
+            using lhs_type = meta::get_maybe_type_t<lhs_array_t>;
+            using result_t = decltype(concatenate(meta::declval<lhs_type>(),rhs,axis));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (lhs
+                ? return_t{concatenate(*lhs,rhs,axis)}
+                : return_t{meta::Nothing}
+            );
+        } else if constexpr (meta::is_maybe_v<rhs_array_t>) {
+            using rhs_type = meta::get_maybe_type_t<rhs_array_t>;
+            using result_t = decltype(concatenate(lhs,meta::declval<rhs_type>(),axis));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (rhs
+                ? return_t{(concatenate(lhs,*rhs,axis))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            auto ashape = shape(lhs);
+            auto bshape = shape(rhs);
+            [[maybe_unused]] const auto [success, shape] = index::shape_concatenate(ashape,bshape,axis);
+            // TODO: use nmtools_assert macro
+            nmtools_cassert (success
+                , "unsupported concatenate, mismatched shape"
+            );
+            return decorator_t<concatenate_t,lhs_array_t,rhs_array_t,axis_t>{{lhs,rhs,axis}};
+        }
     } // concatenate
 } // namespace nmtools::view
 
