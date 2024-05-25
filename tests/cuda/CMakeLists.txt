@@ -97,6 +97,7 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     array/expand_dims.cpp
     array/flatten.cpp
     array/flip.cpp
+    array/hstack.cpp
     # TODO: fix runtime
     # array/pad.cpp
     array/pooling.cpp
@@ -114,6 +115,7 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     array/zeros.cpp
     array/ones.cpp
     array/full.cpp
+    array/vstack.cpp
 
     array/sum.cpp
     array/cumsum.cpp

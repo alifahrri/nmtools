@@ -66,6 +66,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/flatten.cpp
     src/flip.cpp
     src/full.cpp
+    src/hstack.cpp
     src/matmul.cpp
     src/mean.cpp
     src/moveaxis.cpp
@@ -84,12 +85,14 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/slice.cpp
     src/split.cpp
     src/squeeze.cpp
+    src/stack.cpp
     src/stddev.cpp
     src/take_along_axis.cpp
     src/take.cpp
     src/tile.cpp
     src/transpose.cpp
     src/var.cpp
+    src/vstack.cpp
     src/where.cpp
     src/zeros.cpp
     src/sliding_window.cpp

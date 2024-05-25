@@ -21,10 +21,6 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/testing/data/array/squeeze.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#include <array>
-#include <tuple>
-#include <vector>
-
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;

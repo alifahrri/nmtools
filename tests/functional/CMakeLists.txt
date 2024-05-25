@@ -111,7 +111,9 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/expand_dims.cpp
         src/flatten.cpp
         src/flip.cpp
+        src/hstack.cpp
         src/reshape.cpp
+        src/stack.cpp
         src/matmul.cpp
         src/mean.cpp
         src/moveaxis.cpp
@@ -130,6 +132,7 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/tile.cpp
         src/transpose.cpp
         src/var.cpp
+        src/vstack.cpp
         src/where.cpp
 
         src/graph/transpose.cpp

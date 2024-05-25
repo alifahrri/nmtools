@@ -63,12 +63,14 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/expand_dims.cpp
     array/flatten.cpp
     array/flip.cpp
+    array/hstack.cpp
     array/pad.cpp
     array/pooling.cpp
     array/repeat.cpp
     array/reshape.cpp
     array/slice.cpp
     array/squeeze.cpp
+    array/stack.cpp
     array/tile.cpp
     array/transpose.cpp
     array/where.cpp
@@ -76,6 +78,7 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/arange.cpp
     array/full.cpp
     array/ones.cpp
+    array/vstack.cpp
     array/zeros.cpp
 
     array/sum.cpp
