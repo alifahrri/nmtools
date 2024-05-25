@@ -288,6 +288,7 @@ namespace nmtools::meta
     namespace error
     {
         // error type for in-compatible shapes
+        template <typename...>
         struct BROADCAST_SHAPE_ERROR : detail::fail_t {};
         // error type for unsupported ashape_t bshape_t
         template <typename...>
@@ -346,7 +347,7 @@ namespace nmtools::meta
                     using type = nmtools_array<size_t,dim>;
                     return as_value_v<type>;
                 } else {
-                    return as_value_v<error::BROADCAST_SHAPE_ERROR>;
+                    return as_value_v<error::BROADCAST_SHAPE_ERROR<ashape_t,bshape_t>>;
                 }
             } else if constexpr (is_none_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
                 // broadcasting with none retain shape, just select the shape
