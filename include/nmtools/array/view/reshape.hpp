@@ -83,14 +83,15 @@ namespace nmtools::view
     constexpr auto reshaper(const src_shape_t& src_shape, const dst_shape_t& dst_shape, const src_size_t& src_size)
     {
         auto m_dst_shape = index::shape_reshape(src_shape,dst_shape);
-        if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
+        if constexpr (meta::is_fail_v<decltype(m_dst_shape)>) {
+            return m_dst_shape;
+        } else if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
             using result_t = decltype(reshape_t{unwrap(src_shape),dst_shape,unwrap(src_size)});
             using return_t = nmtools_maybe<result_t>;
-            if (static_cast<bool>(m_dst_shape)) {
-                return return_t{result_t{unwrap(src_shape),dst_shape,unwrap(src_size)}};
-            } else {
-                return return_t{meta::Nothing};
-            }
+            return (m_dst_shape
+                ? return_t{result_t{unwrap(src_shape),dst_shape,unwrap(src_size)}}
+                : return_t{meta::Nothing}
+            );
         } else {
             return reshape_t{unwrap(src_shape),dst_shape,unwrap(src_size)};
         }

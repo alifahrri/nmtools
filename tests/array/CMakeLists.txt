@@ -102,6 +102,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/flatten.cpp
     array/flip.cpp
     array/full.cpp
+    array/hstack.cpp
     array/matmul.cpp
     array/mean.cpp
     array/moveaxis.cpp
@@ -115,6 +116,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/slice.cpp
     array/sliding_window.cpp
     array/squeeze.cpp
+    array/stack.cpp
     array/stddev.cpp
     array/sum.cpp
     array/split.cpp
@@ -122,6 +124,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/tile.cpp
     array/transpose.cpp
     array/var.cpp
+    array/vstack.cpp
     array/where.cpp
     array/zeros.cpp
     array/ufuncs/add.cpp

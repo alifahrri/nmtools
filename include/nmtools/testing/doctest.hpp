@@ -23,8 +23,8 @@ namespace utils = nmtools::utils;
     CHECK_MESSAGE(isequal(result,expect), \
         (   \
             std::string{} \
-            + "\n\tActual  : " + STRINGIFY(result) \
-            + "\n\tExpected: " + STRINGIFY(expect) \
+            + "\n\tActual   :\n" + STRINGIFY(result) \
+            + "\n\tExpected :\n" + STRINGIFY(expect) \
             + "\n\tArguments:\n" + arguments_string \
         )   \
     ); \
@@ -56,6 +56,32 @@ namespace utils = nmtools::utils;
     ); \
 }
 
+#define NMTOOLS_ASSERT_CLOSE_MSG_OPERANDS_DOCTEST(result,expect,...) \
+{ \
+    auto args_pack = nmtools_tuple{__VA_ARGS__}; \
+    auto arguments_string = std::string{}; \
+    constexpr auto n_args = meta::len_v<decltype(args_pack)>; \
+    meta::template_for<n_args>([&](auto I){ \
+        auto arg_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(nmtools::at(args_pack,I)))); \
+        arguments_string += "\t(#"; arguments_string += utils::to_string(I); arguments_string += "): "; \
+        arguments_string += nmtools_string("\033[0;90m(") + arg_typename + nmtools_string(")\033[0m:\n\t\t"); \
+        arguments_string += utils::to_string(nmtools::at(args_pack,I)); \
+        arguments_string += "\n"; \
+    }); \
+    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
+    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
+    CHECK_MESSAGE(isclose(result,expect), \
+        (   \
+            std::string{} \
+            + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+            + STRINGIFY(result) \
+            + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+            + STRINGIFY(expect) \
+            + "\n\tArguments:\n" + arguments_string \
+        )   \
+    ); \
+}
+
 #define NMTOOLS_ASSERT_APPLY_EQUAL_DOCTEST(result,expect) \
 { \
     auto result_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(result))); \
@@ -73,6 +99,7 @@ namespace utils = nmtools::utils;
 
 namespace nmtools::testing
 {
+    // TODO: remove
     template <typename T>
     constexpr auto maybe_shape(const T& t)
     {
@@ -99,6 +126,7 @@ namespace nmtools::testing
 #undef NMTOOLS_ASSERT_APPLY_EQUAL
 #define NMTOOLS_ASSERT_APPLY_EQUAL NMTOOLS_ASSERT_APPLY_EQUAL_DOCTEST
 
+// TODO: remove
 #define NMTOOLS_ASSERT_SHAPE(result,expect) \
 { \
     NMTOOLS_ASSERT_EQUAL( nmtools::testing::maybe_shape(result), nmtools::testing::maybe_shape(expect) ); \
@@ -109,6 +137,9 @@ namespace nmtools::testing
 
 #undef NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES
 #define NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES_DOCTEST
+
+#undef NMTOOLS_ASSERT_CLOSE_MSG_OPERANDS
+#define NMTOOLS_ASSERT_CLOSE_MSG_OPERANDS NMTOOLS_ASSERT_CLOSE_MSG_OPERANDS_DOCTEST
 
 #undef NMTOOLS_ASSERT_NOT_EQUAL
 #define NMTOOLS_ASSERT_NOT_EQUAL NMTOOLS_ASSERT_NOT_EQUAL_DOCTEST

@@ -173,7 +173,9 @@ namespace nmtools::view
     template <typename array_t, typename indexer_t>
     constexpr auto indexing(const array_t& array, const indexer_t& indexer)
     {
-        if constexpr (meta::is_maybe_v<array_t>) {
+        if constexpr (meta::is_fail_v<indexer_t>) {
+            return indexer;
+        } else if constexpr (meta::is_maybe_v<array_t>) {
             using array_type = meta::get_maybe_type_t<array_t>;
             using result_t = decltype(indexing(meta::declval<array_type>(),indexer));
             using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;

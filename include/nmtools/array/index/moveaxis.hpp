@@ -48,8 +48,10 @@ namespace nmtools::index
             } else {
                 return result_t{meta::Nothing};
             }
-        } else if constexpr ((! meta::is_constant_index_array_v<result_t>) && (! meta::is_fail_v<result_t>)) {
-            using return_t = utl::maybe<result_t>;
+        } else if constexpr (!meta::is_fail_v<result_t>
+            && !meta::is_constant_index_array_v<result_t>
+        ) {
+            using return_t = nmtools_maybe<result_t>;
 
             auto dim = [&](){
                 if constexpr (meta::is_constant_index_array_v<shape_t>) {
@@ -169,6 +171,7 @@ namespace nmtools::meta
 {
     namespace error
     {
+        template <typename...>
         struct MOVEAXIS_TO_TRANSPOSE_UNSUPPORTED : detail::fail_t {};
 
         template <typename...>
@@ -243,7 +246,7 @@ namespace nmtools::meta
                     return as_value_v<type>;
                 }
             } else {
-                return as_value_v<error::MOVEAXIS_TO_TRANSPOSE_UNSUPPORTED>;
+                return as_value_v<error::MOVEAXIS_TO_TRANSPOSE_UNSUPPORTED<shape_t,source_t,destination_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;
