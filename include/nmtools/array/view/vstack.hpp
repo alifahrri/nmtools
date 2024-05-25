@@ -18,8 +18,8 @@ namespace nmtools::index
 
         if constexpr (!meta::is_constant_index_array_v<result_t>) {
             auto src_dim = len(src_shape);
-            auto dst_dim = (src_dim == 1 ? 2 : src_dim);
             if constexpr (meta::is_resizable_v<result_t>) {
+                auto dst_dim = (src_dim == 1 ? 2 : src_dim);
                 result.resize(dst_dim);
             }
             if (src_dim == 1) {
