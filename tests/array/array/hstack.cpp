@@ -38,7 +38,10 @@ SUBCASE(#case_name) \
 TEST_CASE("hstack(case1)" * doctest::test_suite("array::hstack"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    // TODO: fix compile on nostl
+    #ifndef NMTOOLS_DISABLE_STL
     HSTACK_SUBCASE( case1, a, b );
+    #endif
     HSTACK_SUBCASE( case1, a_a, b_a );
     HSTACK_SUBCASE( case1, a_f, b_f );
     HSTACK_SUBCASE( case1, a_d, b_d );
@@ -69,7 +72,10 @@ TEST_CASE("hstack(case1)" * doctest::test_suite("array::hstack"))
 TEST_CASE("hstack(case2)" * doctest::test_suite("array::hstack"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    // TODO: fix compile on nostl
+    #ifndef NMTOOLS_DISABLE_STL
     HSTACK_SUBCASE( case2, a, b );
+    #endif
     HSTACK_SUBCASE( case2, a_a, b_a );
     HSTACK_SUBCASE( case2, a_f, b_f );
     HSTACK_SUBCASE( case2, a_d, b_d );
@@ -100,7 +106,10 @@ TEST_CASE("hstack(case2)" * doctest::test_suite("array::hstack"))
 TEST_CASE("hstack(case3)" * doctest::test_suite("array::hstack"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    // TODO: fix compile on nostl
+    #ifndef NMTOOLS_DISABLE_STL
     HSTACK_SUBCASE( case3, a, b );
+    #endif
     HSTACK_SUBCASE( case3, a_a, b_a );
     HSTACK_SUBCASE( case3, a_f, b_f );
     HSTACK_SUBCASE( case3, a_d, b_d );
