@@ -1,38 +1,35 @@
 #include "nmtools/array/array/flip.hpp"
 #include "nmtools/testing/data/array/flip.hpp"
+#include "nmtools/testing/data/array/fliplr.hpp"
+#include "nmtools/testing/data/array/flipud.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-
-#define RUN_flip_impl(...) \
-nm::array::flip(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs flip fn to callable lambda
-#define RUN_flip(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("flip-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_flip_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_flip(case_name, ...) \
-RUN_flip_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define FLIP_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(flip, case_name); \
     using namespace args; \
-    auto result = RUN_flip(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::flip(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define FLIPLR_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(fliplr, case_name); \
+    using namespace args; \
+    auto result = nmtools::array::fliplr(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define FLIPUD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_DECLARE_NS(flipud, case_name); \
+    using namespace args; \
+    auto result = nmtools::array::flipud(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -72,19 +69,56 @@ TEST_CASE("flip(case4)" * doctest::test_suite("array::flip"))
     // FLIP_SUBCASE(case4, array_d, axis_d );
 }
 
-// skip constexpr test for emscripten for now, works for gcc & clang
-#if !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !defined(__arm__) && !defined(__MINGW32__)
-TEST_CASE("flip(case1)" * doctest::test_suite("array::constexpr_flip"))
+TEST_CASE("fliplr(case1)" * doctest::test_suite("array::fliplr"))
 {
-    SUBCASE("case1")
-    {
-        NMTOOLS_TESTING_DECLARE_NS(constexpr_flip, case1);
-        using namespace args;
-        constexpr auto context = nm::None;
-        // TODO: fix shape inference for fixed ndarray
-        constexpr auto output = nm::meta::as_value<int[2][2][2]>{};
-        constexpr auto result = nm::array::flip( array, axis, context, output );
-        NMTOOLS_ASSERT_EQUAL( result, expect::result );
-    }
+    FLIPLR_SUBCASE(case1,   array );
+    FLIPLR_SUBCASE(case1, array_a );
+    FLIPLR_SUBCASE(case1, array_f );
+    FLIPLR_SUBCASE(case1, array_h );
+    // FLIPLR_SUBCASE(case1, array_d );
 }
-#endif
+
+TEST_CASE("fliplr(case2)" * doctest::test_suite("array::fliplr"))
+{
+    FLIPLR_SUBCASE(case2,   array );
+    FLIPLR_SUBCASE(case2, array_a );
+    FLIPLR_SUBCASE(case2, array_f );
+    FLIPLR_SUBCASE(case2, array_h );
+    // FLIPLR_SUBCASE(case2, array_d );
+}
+
+TEST_CASE("fliplr(case3)" * doctest::test_suite("array::fliplr"))
+{
+    FLIPLR_SUBCASE(case3,   array );
+    FLIPLR_SUBCASE(case3, array_a );
+    FLIPLR_SUBCASE(case3, array_f );
+    FLIPLR_SUBCASE(case3, array_h );
+    // FLIPLR_SUBCASE(case3, array_d );
+}
+
+TEST_CASE("flipud(case1)" * doctest::test_suite("array::flipud"))
+{
+    FLIPUD_SUBCASE(case1,   array );
+    FLIPUD_SUBCASE(case1, array_a );
+    FLIPUD_SUBCASE(case1, array_f );
+    FLIPUD_SUBCASE(case1, array_h );
+    // FLIPUD_SUBCASE(case1, array_d );
+}
+
+TEST_CASE("flipud(case2)" * doctest::test_suite("array::flipud"))
+{
+    FLIPUD_SUBCASE(case2,   array );
+    FLIPUD_SUBCASE(case2, array_a );
+    FLIPUD_SUBCASE(case2, array_f );
+    FLIPUD_SUBCASE(case2, array_h );
+    // FLIPUD_SUBCASE(case2, array_d );
+}
+
+TEST_CASE("flipud(case3)" * doctest::test_suite("array::flipud"))
+{
+    FLIPUD_SUBCASE(case3,   array );
+    FLIPUD_SUBCASE(case3, array_a );
+    FLIPUD_SUBCASE(case3, array_f );
+    FLIPUD_SUBCASE(case3, array_h );
+    // FLIPUD_SUBCASE(case3, array_d );
+}
