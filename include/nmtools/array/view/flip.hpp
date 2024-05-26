@@ -5,8 +5,6 @@
 #include "nmtools/array/index/flip.hpp"
 #include "nmtools/array/view/slice.hpp"
 #include "nmtools/array/shape.hpp"
-#include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/utility/apply_at.hpp"
 
 namespace nmtools::view
 {
@@ -29,6 +27,18 @@ namespace nmtools::view
         auto slices = index::flip_slices(a_dim,axis);
         return apply_slice(array,slices);
     } // flip
+
+    template <typename array_t>
+    constexpr inline auto flipud(const array_t& array)
+    {
+        return view::flip(array,meta::ct_v<0>);
+    } // flipud
+
+    template <typename array_t>
+    constexpr inline auto fliplr(const array_t& array)
+    {
+        return view::flip(array,meta::ct_v<1>);
+    } // fliplr
 } // namespace nmtools::view
 
 #endif // NMTOOLS_ARRAY_VIEW_FLIP_HPP
