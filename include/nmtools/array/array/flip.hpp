@@ -32,6 +32,32 @@ namespace nmtools::array
             ,resolver
         );
     } // flip
+
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+        typename array_t>
+    constexpr auto fliplr(const array_t& array,
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    {
+        auto flipped = view::fliplr(array);
+        return eval(flipped
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
+    } // fliplr
+
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+        typename array_t>
+    constexpr auto flipud(const array_t& array,
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    {
+        auto flipped = view::flipud(array);
+        return eval(flipped
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
+    } // flipud
 } // namespace nmtools::array
 
 #endif // NMTOOLS_ARRAY_ARRAY_FLIP_HPP
