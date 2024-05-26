@@ -1,5 +1,7 @@
 #include "nmtools/array/functional/flip.hpp"
 #include "nmtools/testing/data/array/flip.hpp"
+#include "nmtools/testing/data/array/fliplr.hpp"
+#include "nmtools/testing/data/array/flipud.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -50,6 +52,54 @@ TEST_CASE("flip(case4)" * doctest::test_suite("functional::flip"))
     FUNCTIONAL_SUBCASE( "case4", fn::flip[axis], array_f );
     FUNCTIONAL_SUBCASE( "case4", fn::flip[axis], array_h );
     // FUNCTIONAL_SUBCASE( "case4", fn::flip[axis], array_d );
+}
+
+TEST_CASE("fliplr(case1)" * doctest::test_suite("functional::fliplr"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(fliplr, case1);
+    using namespace args;
+
+    FUNCTIONAL_SUBCASE( "case1", fn::fliplr, array );
+    FUNCTIONAL_SUBCASE( "case1", fn::fliplr, array_a );
+    FUNCTIONAL_SUBCASE( "case1", fn::fliplr, array_f );
+    FUNCTIONAL_SUBCASE( "case1", fn::fliplr, array_h );
+    // FUNCTIONAL_SUBCASE( "case1", fn::fliplr, array_d );
+}
+
+TEST_CASE("fliplr(case2)" * doctest::test_suite("functional::fliplr"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(fliplr, case2);
+    using namespace args;
+
+    FUNCTIONAL_SUBCASE( "case2", fn::fliplr, array );
+    FUNCTIONAL_SUBCASE( "case2", fn::fliplr, array_a );
+    FUNCTIONAL_SUBCASE( "case2", fn::fliplr, array_f );
+    FUNCTIONAL_SUBCASE( "case2", fn::fliplr, array_h );
+    // FUNCTIONAL_SUBCASE( "case2", fn::fliplr, array_d );
+}
+
+TEST_CASE("flipud(case1)" * doctest::test_suite("functional::flipud"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(flipud, case1);
+    using namespace args;
+
+    FUNCTIONAL_SUBCASE( "case1", fn::flipud, array );
+    FUNCTIONAL_SUBCASE( "case1", fn::flipud, array_a );
+    FUNCTIONAL_SUBCASE( "case1", fn::flipud, array_f );
+    FUNCTIONAL_SUBCASE( "case1", fn::flipud, array_h );
+    // FUNCTIONAL_SUBCASE( "case1", fn::flipud, array_d );
+}
+
+TEST_CASE("flipud(case2)" * doctest::test_suite("functional::flipud"))
+{
+    NMTOOLS_TESTING_DECLARE_NS(flipud, case2);
+    using namespace args;
+
+    FUNCTIONAL_SUBCASE( "case2", fn::flipud, array );
+    FUNCTIONAL_SUBCASE( "case2", fn::flipud, array_a );
+    FUNCTIONAL_SUBCASE( "case2", fn::flipud, array_f );
+    FUNCTIONAL_SUBCASE( "case2", fn::flipud, array_h );
+    // FUNCTIONAL_SUBCASE( "case2", fn::flipud, array_d );
 }
 
 namespace view = nmtools::view;
