@@ -26,35 +26,13 @@ namespace na = nm::array;
 namespace view = nm::view;
 namespace meta = nm::meta;
 
-#define RUN_impl(...) \
-nm::view::reshape(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reshape fn to callable lambda
-#define RUN_reshape(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reshape-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reshape(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define RESHAPE_SUBCASE(case_name, array, newshape) \
+#define RESHAPE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(reshape, case_name) \
-    auto array_ref = RUN_reshape(case_name, args::array, args::newshape); \
-    NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
+    using namespace args; \
+    auto result = view::reshape(__VA_ARGS__); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
 }
 
 TEST_CASE("reshape(case1)" * doctest::test_suite("view::reshape"))

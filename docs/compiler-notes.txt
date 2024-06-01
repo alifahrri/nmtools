@@ -1,0 +1,100 @@
+### 😭😭😭  
+Documenting various note on behaviour difference between clang & gcc (or with some versions) found when developing this project.
+
+1. template-template parameter  
+  https://stackoverflow.com/questions/49171036/why-clang-fails-to-take-default-template-arguments-of-template-template-paramete  
+  https://godbolt.org/z/GoEGsb
+ 
+1. auto parameter  
+  https://stackoverflow.com/questions/30665506/auto-not-allowed-in-function-prototype-with-clang
+
+1. lambda capture  
+  https://stackoverflow.com/questions/46114214/lambda-implicit-capture-fails-with-variable-declared-from-structured-binding  
+  https://godbolt.org/z/YK7xTs
+
+1. gcc<10 constexpr bug  
+  https://godbolt.org/z/WYxahvxTx
+
+1. constexpr math  
+  error: constexpr function never produces a constant expression
+  https://godbolt.org/z/dxqq3T
+
+1. Constexpr if with a non-bool condition  
+  https://stackoverflow.com/questions/54899466/constexpr-if-with-a-non-bool-condition  
+  https://godbolt.org/z/zTa9dW
+
+1. gcc 7 internal compiler error: in tsubst, at cp/pt.c:13602 (works fine on gcc 8)  
+  https://godbolt.org/z/7r7ToM
+
+1. gcc 8 internal compiler error: in enclosing_instantiation_of, at cp/pt.c:13299 (works fine on gcc 9)  
+  https://godbolt.org/z/7vcvPG8c1  
+  solution: https://godbolt.org/z/Wa3aY3sjh
+
+1. initializer list ctad  
+  https://godbolt.org/z/bT6K7a  
+  https://stackoverflow.com/questions/55205176/is-stdinitializer-listx-y-z-ctad-valid
+
+1. braces around scalar initializer for type  
+  https://godbolt.org/z/r9de57  
+  http://clang-developers.42468.n3.nabble.com/braces-around-scalar-initializer-warning-should-be-error-td4063311.html
+
+1. gcc error 8: mismatched types for 'double' and 'int' when initializing array (fixed on gcc 9)  
+  https://godbolt.org/z/asrh7q
+
+1. clang and gcc disagree on if constexpr inside lambda  
+  https://godbolt.org/z/8qc13s
+  https://stackoverflow.com/questions/59647445/if-constexpr-with-static-assert-in-lambda-which-compiler-is-correct
+
+1. clang and gcc disagree on partial specialization & sfinae, makes ambiguous instantiation on gcc but no issue on clang  
+  https://godbolt.org/z/sW3as8
+
+1. libc++ vs libstdc++  
+  vector of bool omg  
+  https://godbolt.org/z/T99cWj
+
+1. gcc 8 lambda capture variable doesn't keep constexpr-ness: error: '__closure' is not a constant expression  
+  supported on clang, fixed in gcc 9  
+  https://godbolt.org/z/Tdn6Yvf3f
+
+1. gcc and clang disagree on partial specialization & auto template parameter  
+  compiles on clang, failed on gcc  
+  https://godbolt.org/z/vjjMe588z  
+  https://godbolt.org/z/9dT7defcs
+
+1. clang warns unused variable on "if constexpr" inside lambda, while gcc doesn't  
+  https://godbolt.org/z/fWd7YsfTj
+
+1. clang complains about "error: call to implicitly-deleted default constructor" while gcc happily accepts  
+  https://godbolt.org/z/f3hjnP9Tb
+
+1. similar to above, but now it is gcc that complains "error: uninitialized const member" while clang accepts happily  
+  https://godbolt.org/z/6Gc7cYjh4  
+  solution: https://godbolt.org/z/7Eccbqc9Y
+
+1. different warning on unused variables  
+  https://godbolt.org/z/WPfvEWPEv
+
+1. incompatible warning on "unused" private field:  
+  clang rejects without [[maybe_unused]] -> https://godbolt.org/z/aMMzrbz4h  
+  gcc rejects with [[maybe_unused]] -> https://godbolt.org/z/K8zPdz7a4
+
+1. c++17 vs c++20 tuple<optional<...>>  
+  https://godbolt.org/z/3cYacdd17
+
+1. clang error: note: read of variable whose lifetime has ended  
+  works fine on gcc but errored on clang  
+  (cumbersome to minimally reproduce, document as issue instead)  
+  https://github.com/alifahrri/nmtools/issues/198
+
+1. gcc std::optional `error: initializations for multiple members of`  
+  works fine on clang, errored on gcc  
+  (cumbersome to minimally reproduce, document as issue instead)  
+  https://github.com/alifahrri/nmtools/issues/278
+
+1. constexpr vs non-constexpr results in different result with the same args & functions  
+  both gcc & clang produces the same result, inconsistent c++ compile-time vs runtime  
+  https://godbolt.org/z/jrEGMz8so
+
+1. clang vs gcc disagree on constexpr evaluation  
+  (cumbersome to minimally reproduce, document as issue instead)  
+  https://github.com/alifahrri/nmtools/issues/282

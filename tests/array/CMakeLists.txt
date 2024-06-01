@@ -103,7 +103,8 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/flip.cpp
     array/full.cpp
     array/hstack.cpp
-    array/matmul.cpp
+    # break matmul to multiple files to avoid high memory peak
+    # array/matmul.cpp
     array/mean.cpp
     array/moveaxis.cpp
     array/ones.cpp
@@ -113,6 +114,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/repeat.cpp
     array/reshape.cpp
     array/resize.cpp
+    array/roll.cpp
     array/slice.cpp
     array/sliding_window.cpp
     array/squeeze.cpp
@@ -127,7 +129,9 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/vstack.cpp
     array/where.cpp
     array/zeros.cpp
-    array/ufuncs/add.cpp
+)
+set(ARRAY_UFUNCS_TEST_SOURCES
+    # array/ufuncs/add.cpp
     array/ufuncs/amax.cpp
     array/ufuncs/amin.cpp
     array/ufuncs/arccos.cpp
@@ -193,11 +197,26 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/ufuncs/tanh.cpp
     array/ufuncs/trunc.cpp
 )
+set(ARRAY_MATMUL_1_TEST_SOURCES
+    array/matmul-1.cpp
+)
+set(ARRAY_MATMUL_2_TEST_SOURCES
+    array/matmul-2.cpp
+)
+set(ARRAY_MATMUL_3_TEST_SOURCES
+    array/matmul-3.cpp
+)
 if (NOT NMTOOLS_TEST_ARRAY_EVAL)
     set (ARRAY_EVAL_TEST_SOURCES "")
+    set (ARRAY_UFUNCS_TEST_SOURCES "")
+    set (ARRAY_MATMUL_1_TEST_SOURCES "")
+    set (ARRAY_MATMUL_2_TEST_SOURCES "")
+    set (ARRAY_MATMUL_3_TEST_SOURCES "")
 endif ()
 
 set(EVAL_NN_TEST_SOURCES
+    ## spread conv so that it doesn't take all the memory
+    # array/conv-1.cpp
     array/activations/celu.cpp
     array/activations/elu.cpp
     array/activations/hardshrink.cpp
@@ -206,6 +225,7 @@ set(EVAL_NN_TEST_SOURCES
     array/activations/leaky_relu.cpp
     array/activations/log_sigmoid.cpp
     array/activations/mish.cpp
+    # array/conv-2.cpp
     array/activations/prelu.cpp
     array/activations/relu.cpp
     array/activations/relu6.cpp
@@ -214,18 +234,37 @@ set(EVAL_NN_TEST_SOURCES
     array/activations/silu.cpp
     array/activations/softplus.cpp
     array/activations/softsign.cpp
+    # array/conv-3.cpp
     array/activations/softshrink.cpp
     array/activations/tanhshrink.cpp
-    array/conv.cpp
-    array/conv-2.cpp
-    array/conv-3.cpp
-    array/conv-4.cpp
     array/batch_norm.cpp
     array/softmax.cpp
     array/softmin.cpp
+    # array/conv-4.cpp
 )
+## when using single file without splitting, using approx peak of 17GB for compiling conv only
+## with split and reordering, on 8C/16T with 32GB memory, using gcc at -j12 causes OOM
+set(EVAL_CONV_1_TEST_SOURCES
+    ## spread conv so that it doesn't take all the memory
+    ## and avoid memory spike
+    array/conv-1.cpp
+)
+set(EVAL_CONV_2_TEST_SOURCES
+    array/conv-2.cpp
+)
+set(EVAL_CONV_3_TEST_SOURCES
+    array/conv-3.cpp
+)
+set(EVAL_CONV_4_TEST_SOURCES
+    array/conv-4.cpp
+)
+
 if (NOT NMTOOLS_TEST_ARRAY_NN_EVAL)
     set (EVAL_NN_TEST_SOURCES "")
+    set (EVAL_CONV_1_TEST_SOURCES "")
+    set (EVAL_CONV_2_TEST_SOURCES "")
+    set (EVAL_CONV_3_TEST_SOURCES "")
+    set (EVAL_CONV_4_TEST_SOURCES "")
 endif ()
 
 set(MISC_TEST_SOURCES
@@ -237,16 +276,30 @@ if (NOT NMTOOLS_TEST_MISC)
 endif()
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
+    ## split matmul srcs to reduce peak memory
+    ${ARRAY_MATMUL_1_TEST_SOURCES}
+    ## spread conv to reduce memory
+    ${EVAL_CONV_1_TEST_SOURCES}
     ## utility function
     ${UTILS_TEST_SOURCES}
     ## array utility
     ${ARRAY_UTILITY_TEST_SOURCES}
     ## ndarray
     ${NDARRAY_TEST_SOURCES}
+    ## split matmul srcs to reduce peak memory
+    ${ARRAY_MATMUL_2_TEST_SOURCES}
+    ## spread conv to reduce memory
+    ${EVAL_CONV_2_TEST_SOURCES}
     ## ufuncs
     ${ARRAY_UFUNCS_TEST_SOURCES}
+    ## split matmul srcs to reduce peak memory
+    ${ARRAY_MATMUL_3_TEST_SOURCES}
+    ## spread conv to reduce memory
+    ${EVAL_CONV_3_TEST_SOURCES}
     ## array evaluation
     ${ARRAY_EVAL_TEST_SOURCES}
+    ## spread conv to reduce memory
+    ${EVAL_CONV_4_TEST_SOURCES}
     ## array eval nn
     ${EVAL_NN_TEST_SOURCES}
     ## misc

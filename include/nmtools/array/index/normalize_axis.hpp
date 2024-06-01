@@ -84,7 +84,7 @@ namespace nmtools::index
                 auto res = result_t{};
                 using idx_t = meta::make_signed_t<meta::promote_index_t<ndim_t,axis_t>>;
                 if ((-(idx_t)ndim <= (idx_t)axis) && ((idx_t)axis < (idx_t)ndim)) {
-                    res = (axis < 0)  ? (ndim + axis) : axis;
+                    res = (axis < 0)  ? nm_index_t(ndim + axis) : nm_index_t(axis);
                     // ret = res;
                     return return_t{res};
                 } else {
@@ -168,21 +168,23 @@ namespace nmtools::meta
                     using type = error::INDEX_NORMALIZE_AXIS_INVALID<axis_t,ndim_t>;
                     return as_value_v<type>;
                 }
-            #if 0
-            } else if constexpr (is_constant_index_v<axis_t> || is_constant_index_v<ndim_t>) {
-                // TODO: try to deduce from axis/ndim
-                return as_value_v<size_t>;
-            #endif
             } else if constexpr ((is_constant_index_array_v<axis_t> || is_constant_index_v<axis_t>) && is_index_v<ndim_t>) {
                 using type = resolve_optype_t<index::normalize_axis_t,remove_cvref_t<decltype(to_value_v<axis_t>)>,ndim_t>;
                 return as_value_v<type>;
             } else if constexpr (is_index_array_v<axis_t> && is_index_v<ndim_t>) {
-                // simply make unsigned
-                using index_t    = get_element_type_t<axis_t>;
-                using unsigned_t = make_unsigned_t<index_t>;
-                using index_array_t = transform_bounded_array_t<axis_t>;
-                using type = replace_element_type_t<index_array_t,unsigned_t>;
-                return as_value_v<type>;
+                constexpr auto DIM = len_v<axis_t>;
+                [[maybe_unused]] constexpr auto B_DIM = bounded_size_v<axis_t>;
+                if constexpr (DIM > 0) {
+                    using type = nmtools_array<nm_size_t,DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
+                    using type = nmtools_static_vector<nm_size_t,B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small_vector
+                    using type = nmtools_list<nm_size_t>;
+                    return as_value_v<type>;
+                }
             } else if constexpr (is_index_v<axis_t> && is_index_v<ndim_t>) {
                 using type = make_unsigned_t<axis_t>;
                 return as_value_v<type>;

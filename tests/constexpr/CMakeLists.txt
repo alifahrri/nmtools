@@ -17,6 +17,7 @@ set(NMTOOLS_CONSTEXPR_TEST_SOURCES
     src/matmul.cpp
     src/moveaxis.cpp
     src/pad.cpp
+    src/roll.cpp
     src/transpose.cpp
 )
 
