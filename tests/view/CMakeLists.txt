@@ -49,7 +49,7 @@ if (NMTOOLS_VIEW_TEST_ALL)
     SET(NMTOOLS_VIEW_TEST_COMPOSITION     ON CACHE BOOL "test array view composition"   FORCE)
 endif (NMTOOLS_VIEW_TEST_ALL)
 
-set(ARRAY_VIEW_TEST_SOURCES
+set(ARRAY_VIEW_1_TEST_SOURCES
     src/arange.cpp
     src/argsort.cpp
     ## TODO: fix
@@ -67,13 +67,16 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/flip.cpp
     src/full.cpp
     src/hstack.cpp
-    src/matmul.cpp
+    # split matmul to avoid high peak memory
+    # src/matmul.cpp
     src/mean.cpp
     src/moveaxis.cpp
     src/mutable_flatten.cpp
     src/mutable_ref.cpp
     src/mutable_reshape.cpp
     src/mutable_slice.cpp
+)
+set(ARRAY_VIEW_2_TEST_SOURCES
     src/ones.cpp
     src/pad.cpp
     src/pooling.cpp
@@ -82,6 +85,7 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/repeat.cpp
     src/reshape.cpp
     src/resize.cpp
+    src/roll.cpp
     src/slice.cpp
     src/split.cpp
     src/squeeze.cpp
@@ -97,11 +101,24 @@ set(ARRAY_VIEW_TEST_SOURCES
     src/zeros.cpp
     src/sliding_window.cpp
 )
+set (ARRAY_MATMUL_1_TEST_SOURCES
+    src/matmul-1.cpp
+)
+set (ARRAY_MATMUL_2_TEST_SOURCES
+    src/matmul-2.cpp
+)
+set (ARRAY_MATMUL_3_TEST_SOURCES
+    src/matmul-3.cpp
+)
 if (NOT NMTOOLS_VIEW_TEST_ARRAY_VIEW)
-    set (ARRAY_VIEW_TEST_SOURCES "")
+    set (ARRAY_VIEW_1_TEST_SOURCES "")
+    set (ARRAY_VIEW_2_TEST_SOURCES "")
+    set (ARRAY_MATMUL_1_TEST_SOURCES "")
+    set (ARRAY_MATMUL_2_TEST_SOURCES "")
+    set (ARRAY_MATMUL_3_TEST_SOURCES "")
 endif ()
 
-set(ARRAY_UFUNCS_TEST_SOURCES
+set(ARRAY_UFUNCS_1_TEST_SOURCES
     src/cumprod.cpp
     src/cumsum.cpp
     src/prod.cpp
@@ -142,6 +159,9 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     src/ufuncs/isfinite.cpp
     src/ufuncs/isinf.cpp
     src/ufuncs/isnan.cpp
+)
+
+set(ARRAY_UFUNCS_2_TEST_SOURCES
     src/ufuncs/ldexp.cpp
     src/ufuncs/left_shift.cpp
     src/ufuncs/less.cpp
@@ -175,7 +195,8 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     src/ufuncs/trunc.cpp
 )
 if (NOT NMTOOLS_VIEW_TEST_ARRAY_UFUNCS)
-    set (ARRAY_UFUNCS_TEST_SOURCES "")
+    set (ARRAY_UFUNCS_1_TEST_SOURCES "")
+    set (ARRAY_UFUNCS_2_TEST_SOURCES "")
 endif ()
 
 set(COMPOSITION_TEST_SOURCES
@@ -206,25 +227,60 @@ set(VIEW_NN_TEST_SOURCES
     src/activations/softshrink.cpp
     src/activations/softsign.cpp
     src/activations/tanhshrink.cpp
-    src/conv.cpp
-    src/conv-2.cpp
-    src/conv-3.cpp
-    src/conv-4.cpp
     src/batch_norm.cpp
     src/softmax.cpp
     src/softmin.cpp
 )
+
+## when using single file without splitting, using approx peak of 17GB for compiling conv only
+## with split and reordering, on 8C/16T with 32GB memory, using gcc max at -j12
+set(VIEW_CONV_1_TEST_SOURCES
+    ## spread conv so that it doesn't take all the memory
+    ## and avoid memory spike
+    src/conv-1.cpp
+)
+set(VIEW_CONV_2_TEST_SOURCES
+    src/conv-2.cpp
+)
+set(VIEW_CONV_3_TEST_SOURCES
+    src/conv-3.cpp
+)
+set(VIEW_CONV_4_TEST_SOURCES
+    src/conv-4.cpp
+)
 if (NOT NMTOOLS_VIEW_TEST_ARRAY_VIEW_NN)
     set (VIEW_NN_TEST_SOURCES "")
+    set (VIEW_CONV_1_TEST_SOURCES "")
+    set (VIEW_CONV_2_TEST_SOURCES "")
+    set (VIEW_CONV_3_TEST_SOURCES "")
+    set (VIEW_CONV_4_TEST_SOURCES "")
 endif ()
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
-    ## view
-    ${ARRAY_VIEW_TEST_SOURCES}
+    ## split matmul to avoid high memory peak
+    ${ARRAY_MATMUL_1_TEST_SOURCES}
+    ## spread conv to reduce memory
+    ${VIEW_CONV_1_TEST_SOURCES}
+    ## view part 1
+    ${ARRAY_VIEW_1_TEST_SOURCES}
+    ## split matmul to avoid high memory peak
+    ${ARRAY_MATMUL_2_TEST_SOURCES}
+    ## view part 2
+    ${ARRAY_VIEW_2_TEST_SOURCES}
+    ## spread conv to reduce memory
+    ${VIEW_CONV_2_TEST_SOURCES}
     ## ufuncs
-    ${ARRAY_UFUNCS_TEST_SOURCES}
+    ${ARRAY_UFUNCS_1_TEST_SOURCES}
+    ## split matmul to avoid high memory peak
+    ${ARRAY_MATMUL_3_TEST_SOURCES}
+    ## spread conv to reduce memory
+    ${VIEW_CONV_3_TEST_SOURCES}
+    ## ufuncs part 2
+    ${ARRAY_UFUNCS_2_TEST_SOURCES}
     ## array view nn
     ${VIEW_NN_TEST_SOURCES}
+    ## spread conv to reduce memory
+    ${VIEW_CONV_4_TEST_SOURCES}
     ## view composition
     ${COMPOSITION_TEST_SOURCES}
 )

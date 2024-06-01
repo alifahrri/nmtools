@@ -74,6 +74,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/reshape.cpp
         src/resize.cpp
         src/reverse.cpp
+        src/roll.cpp
         src/scatter.cpp
         src/shape_concatenate.cpp
         src/shape_tile.cpp
