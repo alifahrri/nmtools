@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define RECIPROCAL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reciprocal, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reciprocal, case_name); \
     using namespace args; \
     auto result = na::reciprocal(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::reciprocal(__VA_ARGS__); \

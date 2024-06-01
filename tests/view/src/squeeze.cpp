@@ -28,7 +28,7 @@ namespace meta = nm::meta;
 #define SQUEEZE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(squeeze, case_name) \
+    NMTOOLS_TESTING_USE_CASE(squeeze, case_name) \
     using namespace args; \
     auto result = nmtools::view::squeeze(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), expect::shape ); \

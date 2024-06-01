@@ -39,7 +39,7 @@ namespace testing = nmtools::testing;
 #define COMPUTE_INDICES_SUBCASE(case_name, offset, shape) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(compute_indices, case_name); \
+    NMTOOLS_TESTING_USE_CASE(compute_indices, case_name); \
     tester.test(opencl::default_context(),expect::indices,args::offset,args::shape); \
 }
 

@@ -17,7 +17,7 @@ namespace na = nm::array;
 #define ONES_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, ones, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, ones, case_name); \
     using namespace args; \
     SYCL_ONES_SUBCASE(__VA_ARGS__); \
 }

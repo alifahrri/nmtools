@@ -19,7 +19,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("atleast_2d(case1)" * doctest::test_suite("functional::atleast_2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_2d, case1);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_2d, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::atleast_2d, a );
@@ -27,7 +27,7 @@ TEST_CASE("atleast_2d(case1)" * doctest::test_suite("functional::atleast_2d"))
 
 TEST_CASE("atleast_2d(case2)" * doctest::test_suite("functional::atleast_2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_2d, case2);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_2d, case2);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case2", fn::atleast_2d, a );
@@ -39,7 +39,7 @@ TEST_CASE("atleast_2d(case2)" * doctest::test_suite("functional::atleast_2d"))
 
 TEST_CASE("atleast_2d(case3)" * doctest::test_suite("functional::atleast_2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_2d, case3);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_2d, case3);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case3", fn::atleast_2d, a );
@@ -51,7 +51,7 @@ TEST_CASE("atleast_2d(case3)" * doctest::test_suite("functional::atleast_2d"))
 
 TEST_CASE("atleast_2d(case4)" * doctest::test_suite("functional::atleast_2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_2d, case4);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_2d, case4);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case4", fn::atleast_2d, a );

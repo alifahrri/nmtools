@@ -47,7 +47,7 @@ RUN_impl(__VA_ARGS__);
 #define WHERE_SUBCASE(case_name,condition,x,y) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( view, where, case_name ); \
+    NMTOOLS_TESTING_USE_CASE( view, where, case_name ); \
     auto array_array = RUN_where( case_name, args::condition, args::x, args::y ); \
     NMTOOLS_ASSERT_EQUAL( nm::dim(array_array), expect::dim ); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_array), expect::shape ); \

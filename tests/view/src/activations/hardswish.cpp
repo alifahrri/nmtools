@@ -31,7 +31,7 @@ RUN_hardswish_impl(__VA_ARGS__);
 #define HARDSWISH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, hardswish, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, hardswish, case_name); \
     using namespace args; \
     auto result = RUN_hardswish(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

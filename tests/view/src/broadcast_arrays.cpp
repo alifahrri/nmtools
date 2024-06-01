@@ -30,7 +30,7 @@ namespace view = nm::view;
 #define BROADCAST_ARRAYS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(broadcast_arrays, case_name); \
+    NMTOOLS_TESTING_USE_CASE(broadcast_arrays, case_name); \
     using namespace args; \
     const auto results = view::broadcast_arrays(__VA_ARGS__); \
     constexpr auto N = meta::len_v<decltype(results)>; \

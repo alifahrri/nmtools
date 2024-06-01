@@ -18,7 +18,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("expand_dims(case1)" * doctest::test_suite("functional::expand_dims"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(expand_dims, case1);
+    NMTOOLS_TESTING_USE_CASE(expand_dims, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::expand_dims[axis], array );
@@ -30,7 +30,7 @@ TEST_CASE("expand_dims(case1)" * doctest::test_suite("functional::expand_dims"))
 
 TEST_CASE("expand_dims(case2)" * doctest::test_suite("functional::expand_dims"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(expand_dims, case2);
+    NMTOOLS_TESTING_USE_CASE(expand_dims, case2);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case2", fn::expand_dims[axis], array );
@@ -44,7 +44,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("expand_dims" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(expand_dims, case2);
+    NMTOOLS_TESTING_USE_CASE(expand_dims, case2);
     using namespace args;
 
     auto a = view::expand_dims(array,axis);
@@ -57,7 +57,7 @@ TEST_CASE("expand_dims" * doctest::test_suite("functional::get_function_composit
 
 TEST_CASE("expand_dims" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(expand_dims, case2);
+    NMTOOLS_TESTING_USE_CASE(expand_dims, case2);
     using namespace args;
 
     auto a = view::expand_dims(array,axis);

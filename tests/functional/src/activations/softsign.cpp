@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("softsign(case1)" * doctest::test_suite("functional::softsign"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softsign,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softsign,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::softsign, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("softsign" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softsign,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softsign,case1);
     using namespace args;
 
     auto array = view::softsign(a);
@@ -43,7 +43,7 @@ TEST_CASE("softsign" * doctest::test_suite("functional::get_function_composition
 
 TEST_CASE("softsign" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softsign,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softsign,case1);
     using namespace args;
 
     auto array = view::softsign(a);

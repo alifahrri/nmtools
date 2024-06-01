@@ -35,7 +35,7 @@ RUN_minimum_impl(__VA_ARGS__);
 #define MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, minimum, case_name); \
     using namespace args; \
     auto result = RUN_minimum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -86,7 +86,7 @@ RUN_reduce_minimum_impl(__VA_ARGS__);
 #define REDUCE_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_minimum, case_name); \
     using namespace args; \
     auto result = RUN_reduce_minimum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -227,7 +227,7 @@ RUN_accumulate_minimum_impl(__VA_ARGS__);
 #define ACCUMULATE_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_minimum, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_minimum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -290,7 +290,7 @@ RUN_outer_minimum_impl(__VA_ARGS__);
 #define OUTER_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_minimum, case_name); \
     using namespace args; \
     auto result = RUN_outer_minimum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

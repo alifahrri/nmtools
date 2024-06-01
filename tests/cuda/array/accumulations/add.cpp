@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define ACCUMULATE_ADD(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_add, case_name); \
     using namespace args; \
     auto result = na::add.accumulate(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::add.accumulate(__VA_ARGS__); \

@@ -31,7 +31,7 @@ RUN_softplus_impl(__VA_ARGS__);
 #define SOFTPLUS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, softplus, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, softplus, case_name); \
     using namespace args; \
     auto result = RUN_softplus(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

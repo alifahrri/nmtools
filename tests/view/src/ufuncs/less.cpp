@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define LESS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, less, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, less, case_name); \
     using namespace args; \
     auto result = view::less(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("softplus(case1)" * doctest::test_suite("functional::softplus"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softplus,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softplus,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::softplus, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("softplus" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softplus,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softplus,case1);
     using namespace args;
 
     auto array = view::softplus(a);
@@ -44,7 +44,7 @@ TEST_CASE("softplus" * doctest::test_suite("functional::get_function_composition
 
 TEST_CASE("softplus" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softplus,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softplus,case1);
     using namespace args;
 
     auto array = view::softplus(a);
@@ -66,7 +66,7 @@ namespace fun = view::fun;
 
 TEST_CASE("softplus" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softplus,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softplus,case1);
     using namespace args;
 
     auto array = view::softplus(a,{.beta=1.,.threshold=20.});

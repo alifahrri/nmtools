@@ -33,7 +33,7 @@ namespace view = nm::view;
 #define EXPAND_DIMS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(expand_dims, case_name); \
+    NMTOOLS_TESTING_USE_CASE(expand_dims, case_name); \
     using namespace args; \
     auto result = nmtools::view::expand_dims(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), expect::shape ); \

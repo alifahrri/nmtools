@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define FMOD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, fmod, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, fmod, case_name); \
     using namespace args; \
     auto result = view::fmod( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -37,7 +37,7 @@ TEST_CASE("fmod(case2)" * doctest::test_suite("view::fmod"))
 #define REDUCE_FMOD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_fmod, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_fmod, case_name); \
     using namespace args; \
     auto result = view::reduce_fmod(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -117,7 +117,7 @@ TEST_CASE("reduce_fmod(case8)" * doctest::test_suite("view::reduce_fmod"))
 #define ACCUMULATE_FMOD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_fmod, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_fmod, case_name); \
     using namespace args; \
     auto result = view::accumulate_fmod(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -157,7 +157,7 @@ TEST_CASE("accumulate_fmod(case3)" * doctest::test_suite("view::accumulate_fmod"
 #define OUTER_FMOD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_fmod, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_fmod, case_name); \
     using namespace args; \
     auto result = view::outer_fmod(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

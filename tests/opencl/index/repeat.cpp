@@ -48,7 +48,7 @@ TEST_CASE("shape_repeat(case1)" * doctest::test_suite("index::shape_repeat"))
 {
     auto tester = testing::OpenCLTester(shape_repeat_kernel_name,nm_cl_test_repeat_spv,nm_cl_test_repeat_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(shape_repeat,case4);
+    NMTOOLS_TESTING_USE_CASE(shape_repeat,case4);
     tester.test(opencl::default_context()
         ,ix::cast<int>(expect::shape)
         ,ix::cast<int>(args::shape_a)
@@ -61,7 +61,7 @@ TEST_CASE("shape_repeat(case2)" * doctest::test_suite("index::shape_repeat"))
 {
     auto tester = testing::OpenCLTester(shape_repeat_kernel_name,nm_cl_test_repeat_spv,nm_cl_test_repeat_spv_len);
   
-    NMTOOLS_TESTING_DECLARE_NS(shape_repeat,case5);
+    NMTOOLS_TESTING_USE_CASE(shape_repeat,case5);
     tester.test(opencl::default_context()
         ,ix::cast<int>(expect::shape)
         ,ix::cast<int>(args::shape_a)

@@ -20,7 +20,7 @@ namespace meta = nm::meta;
 #define CONSTEXPR_ROLL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_roll, case_name) \
+    NMTOOLS_TESTING_USE_CASE(constexpr_roll, case_name) \
     using namespace args; \
     constexpr auto result = na::roll(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect::result) ); \

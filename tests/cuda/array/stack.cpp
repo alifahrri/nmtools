@@ -27,7 +27,7 @@ namespace meta = nm::meta;
 #define STACK_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( stack, case_name ) \
+    NMTOOLS_TESTING_USE_CASE( stack, case_name ) \
     using namespace args; \
     auto result = nmtools::array::stack(__VA_ARGS__,na::cuda::default_context()); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect::result) ); \

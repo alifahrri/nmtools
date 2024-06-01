@@ -31,7 +31,7 @@ RUN_shape_take_along_axis_impl(__VA_ARGS__);
 #define SHAPE_TAKE_ALONG_AXIS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_take_along_axis, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_take_along_axis, case_name); \
     using namespace args; \
     auto result = RUN_shape_take_along_axis(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

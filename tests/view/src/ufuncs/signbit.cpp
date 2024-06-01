@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define SIGNBIT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, signbit, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, signbit, case_name); \
     using namespace args; \
     auto result = view::signbit( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

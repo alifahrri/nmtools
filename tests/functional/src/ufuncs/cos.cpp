@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("cos(case1)" * doctest::test_suite("functional::cos"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, cos, case1);
+    NMTOOLS_TESTING_USE_CASE(view, cos, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::cos, a );
@@ -30,7 +30,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("cos" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,cos,case1);
+    NMTOOLS_TESTING_USE_CASE(view,cos,case1);
     using namespace args;
 
     auto array = view::cos(a);
@@ -43,7 +43,7 @@ TEST_CASE("cos" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("cos" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,cos,case1);
+    NMTOOLS_TESTING_USE_CASE(view,cos,case1);
     using namespace args;
 
     auto array = view::cos(a);

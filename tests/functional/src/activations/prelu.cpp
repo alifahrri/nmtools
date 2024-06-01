@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("prelu(case1)" * doctest::test_suite("functional::prelu"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,prelu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,prelu,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::prelu, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("prelu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,prelu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,prelu,case1);
     using namespace args;
 
     auto array = view::prelu(a);
@@ -43,7 +43,7 @@ TEST_CASE("prelu" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("prelu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,prelu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,prelu,case1);
     using namespace args;
 
     auto array = view::prelu(a);
@@ -65,7 +65,7 @@ namespace fun = view::fun;
 
 TEST_CASE("prelu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,prelu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,prelu,case1);
     using namespace args;
 
     auto array = view::prelu(a,{.alpha=0.25});

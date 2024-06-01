@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("prod(case1)" * doctest::test_suite("functional::prod"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case1);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::prod[axis], a );
@@ -28,7 +28,7 @@ TEST_CASE("prod(case1)" * doctest::test_suite("functional::prod"))
 
 TEST_CASE("prod(case8)" * doctest::test_suite("functional::prod"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case8);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case8);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case8", fn::prod[axis][dtype][initial], a );
@@ -40,7 +40,7 @@ TEST_CASE("prod(case8)" * doctest::test_suite("functional::prod"))
 
 TEST_CASE("prod(case9)" * doctest::test_suite("functional::prod"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case9);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case9);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case9", fn::prod[axis][dtype][initial][keepdims], a );

@@ -32,7 +32,7 @@ RUN_amin_impl(__VA_ARGS__);
 #define AMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_minimum, case_name); \
     using namespace args; \
     auto result = RUN_amin(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

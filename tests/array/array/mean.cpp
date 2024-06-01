@@ -47,7 +47,7 @@ RUN_mean_impl(__VA_ARGS__);
 #define MEAN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, mean, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, mean, case_name); \
     using namespace args; \
     auto result = RUN_mean(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -230,7 +230,7 @@ TEST_CASE("mean(case7)" * doctest::test_suite("array::mean"))
     auto dtype = nm::None;
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     {
-        NMTOOLS_TESTING_DECLARE_NS(array, mean, case7);
+        NMTOOLS_TESTING_USE_CASE(array, mean, case7);
         using namespace args;
         auto result = na::mean(a, axis, dtype, keepdims);
         using result_t = decltype(result);

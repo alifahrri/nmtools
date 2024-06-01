@@ -28,7 +28,7 @@ namespace na = nm::array;
 #define FLIP_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(flip, case_name); \
+    NMTOOLS_TESTING_USE_CASE(flip, case_name); \
     using namespace args; \
     auto result = na::flip(__VA_ARGS__, na::cuda::default_context()); \
     auto expect = na::flip(__VA_ARGS__); \
@@ -39,7 +39,7 @@ SUBCASE(#case_name) \
 #define FLIPLR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(fliplr, case_name); \
+    NMTOOLS_TESTING_USE_CASE(fliplr, case_name); \
     using namespace args; \
     auto result = na::fliplr(__VA_ARGS__, na::cuda::default_context()); \
     auto expect = na::fliplr(__VA_ARGS__); \
@@ -50,7 +50,7 @@ SUBCASE(#case_name) \
 #define FLIPUD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(flipud, case_name); \
+    NMTOOLS_TESTING_USE_CASE(flipud, case_name); \
     using namespace args; \
     auto result = na::flipud(__VA_ARGS__, na::cuda::default_context()); \
     auto expect = na::flipud(__VA_ARGS__); \

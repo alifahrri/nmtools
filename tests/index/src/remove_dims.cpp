@@ -65,7 +65,7 @@ RUN_impl(__VA_ARGS__);
 #define REMOVE_DIMS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, remove_dims, case_name) \
+    NMTOOLS_TESTING_USE_CASE(index, remove_dims, case_name) \
     using namespace args; \
     auto result = RUN_remove_dims(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define SIGNBIT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, signbit, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, signbit, case_name); \
     using namespace args; \
     auto result = na::signbit(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::signbit(__VA_ARGS__); \

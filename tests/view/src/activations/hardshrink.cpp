@@ -31,7 +31,7 @@ RUN_hardshrink_impl(__VA_ARGS__);
 #define HARDSHRINK_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, hardshrink, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, hardshrink, case_name); \
     using namespace args; \
     auto result = RUN_hardshrink(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

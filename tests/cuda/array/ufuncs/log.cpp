@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define LOG_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, log, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, log, case_name); \
     using namespace args; \
     auto result = na::log(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::log(__VA_ARGS__); \

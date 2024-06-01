@@ -42,7 +42,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("concatenate(case1)" * doctest::test_suite("functional::concatenate"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, concatenate, case1);
+    NMTOOLS_TESTING_USE_CASE(view, concatenate, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::concatenate[axis], lhs, rhs );
@@ -60,7 +60,7 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("functional::concatenate"))
 
 TEST_CASE("constexpr_concatenate(case1)" * doctest::test_suite("functional::concatenate"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_concatenate, case3);
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_concatenate, case3);
     using namespace args;
 
     CONSTEXPR_FUNCTIONAL_SUBCASE( "case1", fn::concatenate[axis], lhs, rhs );
@@ -76,7 +76,7 @@ TEST_CASE("constexpr_concatenate(case1)" * doctest::test_suite("functional::conc
 
 TEST_CASE("concatenate" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, concatenate, case1);
+    NMTOOLS_TESTING_USE_CASE(view, concatenate, case1);
     using namespace args;
 
     auto a = view::concatenate(lhs,rhs,axis);

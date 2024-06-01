@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define ARCSIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, arcsin, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, arcsin, case_name); \
     using namespace args; \
     auto result = na::arcsin(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::arcsin(__VA_ARGS__); \

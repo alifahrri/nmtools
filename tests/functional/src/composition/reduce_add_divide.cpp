@@ -11,7 +11,7 @@ using nmtools::unwrap;
 
 TEST_CASE("reduce_add_divide" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_add,case9);
     using namespace args;
 
     auto b = 3;
@@ -32,7 +32,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("reduce_add_divide" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_add,case9);
     using namespace args;
 
     auto b = 3;
@@ -48,7 +48,7 @@ TEST_CASE("reduce_add_divide" * doctest::test_suite("functional::get_function_op
 
 TEST_CASE("reduce_add_divide" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_add,case9);
     using namespace args;
 
     auto b = 3;

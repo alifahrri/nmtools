@@ -20,7 +20,7 @@ namespace meta = nmtools::meta;
 #define CONSTEXPR_ATLEAST_1D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_atleast_1d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_atleast_1d, case_name); \
     using namespace args; \
     constexpr auto result = nmtools::array::atleast_1d(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
@@ -52,7 +52,7 @@ TEST_CASE("atleast_1d(case2)" * doctest::test_suite("array::constexpr_atleast_1d
     CONSTEXPR_ATLEAST_1D_SUBCASE( case2, a_ls_hb );
 
     {
-        NMTOOLS_TESTING_DECLARE_NS(array, constexpr_atleast_1d, case2);
+        NMTOOLS_TESTING_USE_CASE(array, constexpr_atleast_1d, case2);
         using namespace args;
 
         static_assert( meta::is_fixed_size_v<decltype(a_hs_fb)> );

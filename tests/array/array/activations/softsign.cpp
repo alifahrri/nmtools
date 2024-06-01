@@ -50,7 +50,7 @@ RUN_softsign_impl(__VA_ARGS__);
 #define SOFTSIGN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, softsign, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, softsign, case_name); \
     using namespace args; \
     auto result = RUN_softsign(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

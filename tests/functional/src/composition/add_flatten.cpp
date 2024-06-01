@@ -66,7 +66,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, add_flatten)
 
 TEST_CASE("add_flatten(case1)" * doctest::test_suite("functional::composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(functional,add_flatten,case1);
+    NMTOOLS_TESTING_USE_CASE(functional,add_flatten,case1);
     using namespace args;
     using namespace expect;
 

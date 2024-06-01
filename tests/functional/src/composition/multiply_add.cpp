@@ -9,7 +9,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("multiply_add" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
+    NMTOOLS_TESTING_USE_CASE(view,multiply,case1);
     using namespace args;
 
     auto x = view::multiply(a,b);
@@ -31,7 +31,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("multiply_add" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
+    NMTOOLS_TESTING_USE_CASE(view,multiply,case1);
     using namespace args;
 
     auto x = view::multiply(a,b);
@@ -47,7 +47,7 @@ TEST_CASE("multiply_add" * doctest::test_suite("functional::get_function_operand
 
 TEST_CASE("multiply_add" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
+    NMTOOLS_TESTING_USE_CASE(view,multiply,case1);
     using namespace args;
 
     auto x = view::multiply(a,b);

@@ -48,7 +48,7 @@ RUN_take_along_axis_impl(__VA_ARGS__);
 #define TAKE_ALONG_AXIS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, take_along_axis, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, take_along_axis, case_name); \
     using namespace args; \
     auto view = RUN_take_along_axis(case_name, __VA_ARGS__); \
     NMTOOLS_REQUIRE_EQUAL( nm::shape(*view), nm::shape(expect::result) ); \
@@ -60,7 +60,7 @@ SUBCASE(#case_name) \
 
 #define TAKE_ALONG_AXIS_META_SUBCASE(case_name, ...) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, take_along_axis, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, take_along_axis, case_name); \
     using namespace args; \
     auto view = RUN_take_along_axis(case_name, __VA_ARGS__); \
     using element_t = nm::meta::get_element_type_t<nm::meta::remove_cvref_t<decltype(*view)>>; \

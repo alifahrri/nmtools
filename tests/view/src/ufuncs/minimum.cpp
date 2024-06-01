@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, minimum, case_name); \
     using namespace args; \
     auto result = view::minimum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -37,7 +37,7 @@ TEST_CASE("minimum(case2)" * doctest::test_suite("view::minimum"))
 #define REDUCE_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_minimum, case_name); \
     using namespace args; \
     auto result = view::reduce_minimum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -195,7 +195,7 @@ TEST_CASE("reduce_minimum(case17)" * doctest::test_suite("view::reduce_minimum")
 #define ACCUMULATE_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_minimum, case_name); \
     using namespace args; \
     auto result = view::accumulate_minimum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -235,7 +235,7 @@ TEST_CASE("accumulate_minimum(case3)" * doctest::test_suite("view::accumulate_mi
 #define OUTER_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_minimum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_minimum, case_name); \
     using namespace args; \
     auto result = view::outer_minimum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

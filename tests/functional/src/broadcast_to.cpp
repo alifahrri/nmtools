@@ -27,7 +27,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("functional::broadcast_to"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case1);
+    NMTOOLS_TESTING_USE_CASE(broadcast_to, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::broadcast_to[shape], x );
@@ -48,7 +48,7 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("functional::broadcast_to"
 
 TEST_CASE("broadcast_to(case7)" * doctest::test_suite("functional::broadcast_to"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case7);
+    NMTOOLS_TESTING_USE_CASE(broadcast_to, case7);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case7", fn::broadcast_to[shape], x );
@@ -60,7 +60,7 @@ TEST_CASE("broadcast_to(case7)" * doctest::test_suite("functional::broadcast_to"
 
 TEST_CASE("broadcast_to(case10)" * doctest::test_suite("functional::broadcast_to"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case10);
+    NMTOOLS_TESTING_USE_CASE(broadcast_to, case10);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case10", fn::broadcast_to[shape], x );
@@ -69,7 +69,7 @@ TEST_CASE("broadcast_to(case10)" * doctest::test_suite("functional::broadcast_to
 #if 0
 TEST_CASE("constexpr_broadcast_to(case1)" * doctest::test_suite("functional::broadcast_to"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_broadcast_to, case1);
+    NMTOOLS_TESTING_USE_CASE(constexpr_broadcast_to, case1);
     using namespace args;
 
     CONSTEXPR_FUNCTIONAL_SUBCASE( "case1", fn::broadcast_to[shape], x );
@@ -88,7 +88,7 @@ TEST_CASE("constexpr_broadcast_to(case1)" * doctest::test_suite("functional::bro
 
 TEST_CASE("constexpr_broadcast_to(case7)" * doctest::test_suite("functional::broadcast_to"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_broadcast_to, case7);
+    NMTOOLS_TESTING_USE_CASE(constexpr_broadcast_to, case7);
     using namespace args;
 
     CONSTEXPR_FUNCTIONAL_SUBCASE( "case7", fn::broadcast_to[shape], x );
@@ -107,7 +107,7 @@ TEST_CASE("constexpr_broadcast_to(case7)" * doctest::test_suite("functional::bro
 
 TEST_CASE("constexpr_broadcast_to(case10)" * doctest::test_suite("functional::broadcast_to"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_broadcast_to, case10);
+    NMTOOLS_TESTING_USE_CASE(constexpr_broadcast_to, case10);
     using namespace args;
 
     CONSTEXPR_FUNCTIONAL_SUBCASE( "case10", fn::broadcast_to[shape], x );

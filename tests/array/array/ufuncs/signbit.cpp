@@ -35,7 +35,7 @@ RUN_signbit_impl(__VA_ARGS__);
 #define SIGNBIT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, signbit, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, signbit, case_name); \
     using namespace args; \
     auto result = RUN_signbit(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

@@ -18,7 +18,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("squeeze(case1)" * doctest::test_suite("functional::squeeze"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(squeeze, case1);
+    NMTOOLS_TESTING_USE_CASE(squeeze, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::squeeze, array );
@@ -32,7 +32,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("squeeze" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(squeeze,case1);
+    NMTOOLS_TESTING_USE_CASE(squeeze,case1);
     using namespace args;
 
     auto a = view::squeeze(array);
@@ -45,7 +45,7 @@ TEST_CASE("squeeze" * doctest::test_suite("functional::get_function_composition"
 
 TEST_CASE("squeeze" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(squeeze,case1);
+    NMTOOLS_TESTING_USE_CASE(squeeze,case1);
     using namespace args;
 
     auto a = view::squeeze(array);

@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("log_sigmoid(case1)" * doctest::test_suite("functional::log_sigmoid"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,log_sigmoid,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,log_sigmoid,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::log_sigmoid, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("log_sigmoid" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,log_sigmoid,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,log_sigmoid,case1);
     using namespace args;
 
     auto array = view::log_sigmoid(a);
@@ -43,7 +43,7 @@ TEST_CASE("log_sigmoid" * doctest::test_suite("functional::get_function_composit
 
 TEST_CASE("log_sigmoid" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,log_sigmoid,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,log_sigmoid,case1);
     using namespace args;
 
     auto array = view::log_sigmoid(a);

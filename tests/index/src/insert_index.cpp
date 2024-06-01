@@ -218,7 +218,7 @@ RUN_insert_index_impl(__VA_ARGS__);
 #define INSERT_INDEX_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, insert_index, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, insert_index, case_name); \
     using namespace args; \
     auto result = RUN_insert_index(case_name, __VA_ARGS__); \
     auto isequal = nm::utils::apply_isequal( result, expect::result ); \

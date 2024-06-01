@@ -46,7 +46,7 @@ RUN_impl(__VA_ARGS__);
 #define GATHER_SUBCASE(case_name, vec, indices) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(gather, case_name); \
+    NMTOOLS_TESTING_USE_CASE(gather, case_name); \
     auto result = RUN_gather(case_name, args::vec, args::indices); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 } \
@@ -120,7 +120,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, gahter_constexpr)
 
 TEST_CASE("gather(constexpr)" * doctest::test_suite("index::gather"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(index, gahter_constexpr, case1);
+    NMTOOLS_TESTING_USE_CASE(index, gahter_constexpr, case1);
     [[maybe_unused]] constexpr auto result = nm::index::gather(args::vec,args::indices);
     NMTOOLS_STATIC_ASSERT( (nm::utils::isclose(result,expect::result)) );
 }

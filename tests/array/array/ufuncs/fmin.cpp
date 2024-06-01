@@ -34,7 +34,7 @@ RUN_fmin_impl(__VA_ARGS__);
 #define FMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, fmin, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, fmin, case_name); \
     using namespace args; \
     auto result = RUN_fmin(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -85,7 +85,7 @@ RUN_reduce_fmin_impl(__VA_ARGS__);
 #define REDUCE_FMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_fmin, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_fmin, case_name); \
     using namespace args; \
     auto result = RUN_reduce_fmin(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -226,7 +226,7 @@ RUN_accumulate_fmin_impl(__VA_ARGS__);
 #define ACCUMULATE_FMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_fmin, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_fmin, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_fmin(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -289,7 +289,7 @@ RUN_outer_fmin_impl(__VA_ARGS__);
 #define OUTER_FMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_fmin, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_fmin, case_name); \
     using namespace args; \
     auto result = RUN_outer_fmin(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

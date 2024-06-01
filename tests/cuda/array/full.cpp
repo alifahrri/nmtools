@@ -17,7 +17,7 @@ namespace na = nm::array;
 #define FULL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, full, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, full, case_name); \
     using namespace args; \
     CUDA_FULL_SUBCASE(__VA_ARGS__); \
 }

@@ -12,7 +12,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("fabs_square_sum" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,fabs,case1);
+    NMTOOLS_TESTING_USE_CASE(view,fabs,case1);
     using namespace args;
 
     auto axis = 0;
@@ -35,7 +35,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("fabs_square_sum" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,fabs,case1);
+    NMTOOLS_TESTING_USE_CASE(view,fabs,case1);
     using namespace args;
 
     // auto dtype = nm::None;
@@ -53,7 +53,7 @@ TEST_CASE("fabs_square_sum" * doctest::test_suite("functional::get_function_oper
 
 TEST_CASE("fabs_square_sum" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,fabs,case1);
+    NMTOOLS_TESTING_USE_CASE(view,fabs,case1);
     using namespace args;
 
     // auto dtype = nm::None;

@@ -24,7 +24,7 @@ namespace na = nm::array;
 #define MEAN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, mean, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, mean, case_name); \
     using namespace args; \
     auto result = nmtools::view::mean(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

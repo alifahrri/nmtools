@@ -36,7 +36,7 @@ SUBCASE(subcase_name) \
 #if defined(__clang__) || defined(NMTOOLS_DISABLE_STL)
 TEST_CASE("resize(case1)" * doctest::test_suite("functional::resize"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(resize, case1);
+    NMTOOLS_TESTING_USE_CASE(resize, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::resize[dst_shape_ct], array );
@@ -51,7 +51,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("resize" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(resize,case1);
+    NMTOOLS_TESTING_USE_CASE(resize,case1);
     using namespace args;
 
     auto a = view::resize(array,dst_shape);
@@ -72,7 +72,7 @@ TEST_CASE("resize" * doctest::test_suite("functional::get_function_composition")
 #if defined(__clang__) || defined(NMTOOLS_DISABLE_STL)
 TEST_CASE("resize" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(resize,case1);
+    NMTOOLS_TESTING_USE_CASE(resize,case1);
     using namespace args;
 
     auto a = view::resize(array,dst_shape);

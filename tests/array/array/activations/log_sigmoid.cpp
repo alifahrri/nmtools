@@ -49,7 +49,7 @@ RUN_log_sigmoid_impl(__VA_ARGS__);
 #define LOG_SIGMOID_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, log_sigmoid, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, log_sigmoid, case_name); \
     using namespace args; \
     auto result = RUN_log_sigmoid(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

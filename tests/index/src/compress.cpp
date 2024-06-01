@@ -246,7 +246,7 @@ RUN_shape_compress_impl(__VA_ARGS__);
 #define SHAPE_COMPRESS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_compress, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_compress, case_name); \
     using namespace args; \
     auto result = RUN_shape_compress(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -459,7 +459,7 @@ RUN_compress_impl(__VA_ARGS__);
 #define COMPRESS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, compress, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, compress, case_name); \
     using namespace args; \
     auto result = RUN_compress(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define ELU_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, elu, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, elu, case_name); \
     using namespace args; \
     auto result = na::elu(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::elu(__VA_ARGS__); \

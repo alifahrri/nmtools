@@ -50,7 +50,7 @@ RUN_moveaxis_impl(__VA_ARGS__);
 #define MOVEAXIS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, moveaxis, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, moveaxis, case_name); \
     using namespace args; \
     auto result = RUN_moveaxis(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

@@ -31,7 +31,7 @@ RUN_prelu_impl(__VA_ARGS__);
 #define PRELU_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, prelu, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, prelu, case_name); \
     using namespace args; \
     auto result = RUN_prelu(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

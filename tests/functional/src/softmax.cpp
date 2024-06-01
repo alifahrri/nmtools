@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("softmax(case1)" * doctest::test_suite("functional::softmax"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,softmax,case1);
+    NMTOOLS_TESTING_USE_CASE(array,softmax,case1);
     using namespace args;
 
     SOFTMAX_SUBCASE("case1", fn::softmax, dim, input );
@@ -27,7 +27,7 @@ TEST_CASE("softmax(case1)" * doctest::test_suite("functional::softmax"))
 
 TEST_CASE("softmax(case2)" * doctest::test_suite("functional::softmax"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,softmax,case2);
+    NMTOOLS_TESTING_USE_CASE(array,softmax,case2);
     using namespace args;
 
     SOFTMAX_SUBCASE("case2", fn::softmax, dim, input );
@@ -39,7 +39,7 @@ TEST_CASE("softmax(case2)" * doctest::test_suite("functional::softmax"))
 
 TEST_CASE("softmax(case3)" * doctest::test_suite("functional::softmax"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,softmax,case3);
+    NMTOOLS_TESTING_USE_CASE(array,softmax,case3);
     using namespace args;
 
     SOFTMAX_SUBCASE("case3", fn::softmax, dim, input );
@@ -51,7 +51,7 @@ TEST_CASE("softmax(case3)" * doctest::test_suite("functional::softmax"))
 
 TEST_CASE("softmax(case4)" * doctest::test_suite("functional::softmax"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,softmax,case4);
+    NMTOOLS_TESTING_USE_CASE(array,softmax,case4);
     using namespace args;
 
     SOFTMAX_SUBCASE("case4", fn::softmax, dim, input );
@@ -63,7 +63,7 @@ TEST_CASE("softmax(case4)" * doctest::test_suite("functional::softmax"))
 
 TEST_CASE("softmax(case5)" * doctest::test_suite("functional::softmax"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,softmax,case5);
+    NMTOOLS_TESTING_USE_CASE(array,softmax,case5);
     using namespace args;
 
     SOFTMAX_SUBCASE("case5", fn::softmax, dim, input );

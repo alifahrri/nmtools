@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("clip(case1)" * doctest::test_suite("functional::clip"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, clip, case1);
+    NMTOOLS_TESTING_USE_CASE(array, clip, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::clip, a, amin, amax );
@@ -27,7 +27,7 @@ TEST_CASE("clip(case1)" * doctest::test_suite("functional::clip"))
 
 TEST_CASE("clip(case2)" * doctest::test_suite("functional::clip"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, clip, case2);
+    NMTOOLS_TESTING_USE_CASE(array, clip, case2);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case2", fn::clip, a, amin, amax );
@@ -39,7 +39,7 @@ TEST_CASE("clip(case2)" * doctest::test_suite("functional::clip"))
 
 TEST_CASE("clip(case3)" * doctest::test_suite("functional::clip"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, clip, case3);
+    NMTOOLS_TESTING_USE_CASE(array, clip, case3);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case3", fn::clip, a, amin, amax );

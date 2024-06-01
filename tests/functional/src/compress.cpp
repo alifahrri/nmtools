@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("compress(case1)" * doctest::test_suite("functional::compress"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, compress, case1);
+    NMTOOLS_TESTING_USE_CASE(array, compress, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::compress[condition][axis], array );
@@ -28,7 +28,7 @@ TEST_CASE("compress(case1)" * doctest::test_suite("functional::compress"))
 #if 1
 TEST_CASE("compress(case3)" * doctest::test_suite("functional::compress"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, compress, case3);
+    NMTOOLS_TESTING_USE_CASE(array, compress, case3);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case3", fn::compress[condition][axis], array );
@@ -44,7 +44,7 @@ TEST_CASE("compress(case3)" * doctest::test_suite("functional::compress"))
 #if 0
 TEST_CASE("compress(case5)" * doctest::test_suite("functional::compress"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, compress, case5);
+    NMTOOLS_TESTING_USE_CASE(array, compress, case5);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case5", fn::compress[condition][axis], array );

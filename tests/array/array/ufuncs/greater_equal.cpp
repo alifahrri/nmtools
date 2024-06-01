@@ -35,7 +35,7 @@ RUN_greater_equal_impl(__VA_ARGS__);
 #define GREATER_EQUAL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, greater_equal, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, greater_equal, case_name); \
     using namespace args; \
     auto result = RUN_greater_equal(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

@@ -38,7 +38,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::n
 #define CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, conv2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, conv2d, case_name); \
     using namespace args; \
     auto result = nmtools::view::conv2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -49,7 +49,7 @@ using nmtools::None;
 #define CONSTEXPR_CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_conv2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_conv2d, case_name); \
     using namespace args; \
     constexpr auto result = RUN_conv2d(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \

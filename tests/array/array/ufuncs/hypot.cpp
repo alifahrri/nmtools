@@ -35,7 +35,7 @@ RUN_hypot_impl(__VA_ARGS__);
 #define HYPOT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, hypot, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, hypot, case_name); \
     using namespace args; \
     auto result = RUN_hypot(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

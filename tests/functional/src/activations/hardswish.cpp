@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("hardswish(case1)" * doctest::test_suite("functional::hardswish"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,hardswish,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,hardswish,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::hardswish, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("hardswish" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,hardswish,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,hardswish,case1);
     using namespace args;
 
     auto array = view::hardswish(a);
@@ -43,7 +43,7 @@ TEST_CASE("hardswish" * doctest::test_suite("functional::get_function_compositio
 
 TEST_CASE("hardswish" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,hardswish,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,hardswish,case1);
     using namespace args;
 
     auto array = view::hardswish(a);

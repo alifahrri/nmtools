@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define TRANSPOSE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(transpose, case_name); \
+    NMTOOLS_TESTING_USE_CASE(transpose, case_name); \
     using namespace args; \
     auto result = na::transpose(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::transpose(__VA_ARGS__); \

@@ -12,7 +12,7 @@ using namespace nmtools::literals;
 #define FUNCTIONAL_ROLL_SUBCASE(subcase_name, function, ...) \
 SUBCASE(#subcase_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(roll, subcase_name); \
+    NMTOOLS_TESTING_USE_CASE(roll, subcase_name); \
     using namespace args; \
     auto result = function (__VA_ARGS__); \
     NMTOOLS_REQUIRE_EQUAL( nm::shape(result), nm::shape(expect::result) ); \
@@ -93,7 +93,7 @@ TEST_CASE("roll(case2e)" * doctest::test_suite("functional::roll"))
 
 TEST_CASE("roll" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(roll,case1a);
+    NMTOOLS_TESTING_USE_CASE(roll,case1a);
     using namespace args;
 
     auto a = view::roll(array,shift);
@@ -106,7 +106,7 @@ TEST_CASE("roll" * doctest::test_suite("functional::get_function_composition") *
 
 TEST_CASE("roll" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(roll,case2c);
+    NMTOOLS_TESTING_USE_CASE(roll,case2c);
     using namespace args;
 
     auto a = view::roll(array,shift,axis);

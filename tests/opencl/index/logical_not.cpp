@@ -64,7 +64,7 @@ TEST_CASE("logical_not(case1)" * doctest::test_suite("index::logical_not") * doc
 {
     auto tester = testing::OpenCLTester(logical_not_kernel_name,nm_cl_test_logical_not_spv,nm_cl_test_logical_not_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(logical_not, case1);
+    NMTOOLS_TESTING_USE_CASE(logical_not, case1);
     tester.test(opencl::default_context(),expect::x_a,args::x_a);
 }
 

@@ -54,7 +54,7 @@ RUN_impl(__VA_ARGS__);
 #define TILE_VIEW_SUBCASE(case_name,array,reps) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( view, tile, case_name ); \
+    NMTOOLS_TESTING_USE_CASE( view, tile, case_name ); \
     auto array_view = RUN_tile( case_name, args::array, args::reps ); \
     NMTOOLS_ASSERT_EQUAL( nm::dim(array_view), expect::dim ); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_view), expect::shape ); \

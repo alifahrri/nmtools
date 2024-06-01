@@ -35,7 +35,7 @@ RUN_arctan2_impl(__VA_ARGS__);
 #define ARCTAN2_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, arctan2, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, arctan2, case_name); \
     using namespace args; \
     auto result = RUN_arctan2(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

@@ -13,7 +13,7 @@ using nmtools::unwrap;
 
 TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto dtype = nm::None;
@@ -37,7 +37,7 @@ TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_co
 
 TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto dtype = nm::None;
@@ -64,7 +64,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto dtype = nm::None;
@@ -85,7 +85,7 @@ TEST_CASE("square_sum_divide" * doctest::test_suite("functional::get_function_op
 
 TEST_CASE("square_sum_divide" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto dtype = nm::None;

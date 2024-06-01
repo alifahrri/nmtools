@@ -17,7 +17,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::n
 #define CONSTEXPR_ATLEAST_3D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_atleast_3d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_atleast_3d, case_name); \
     using namespace args; \
     constexpr auto result = nmtools::array::atleast_3d(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nmtools::shape(result), expect::shape ); \

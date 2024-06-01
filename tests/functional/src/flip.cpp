@@ -20,7 +20,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("flip(case1)" * doctest::test_suite("functional::flip"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flip, case1);
+    NMTOOLS_TESTING_USE_CASE(flip, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::flip[axis], array );
@@ -32,7 +32,7 @@ TEST_CASE("flip(case1)" * doctest::test_suite("functional::flip"))
 
 TEST_CASE("flip(case2)" * doctest::test_suite("functional::flip"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flip, case2);
+    NMTOOLS_TESTING_USE_CASE(flip, case2);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case2", fn::flip[axis], array );
@@ -44,7 +44,7 @@ TEST_CASE("flip(case2)" * doctest::test_suite("functional::flip"))
 
 TEST_CASE("flip(case4)" * doctest::test_suite("functional::flip"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flip, case4);
+    NMTOOLS_TESTING_USE_CASE(flip, case4);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case4", fn::flip[axis], array );
@@ -56,7 +56,7 @@ TEST_CASE("flip(case4)" * doctest::test_suite("functional::flip"))
 
 TEST_CASE("fliplr(case1)" * doctest::test_suite("functional::fliplr"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(fliplr, case1);
+    NMTOOLS_TESTING_USE_CASE(fliplr, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::fliplr, array );
@@ -68,7 +68,7 @@ TEST_CASE("fliplr(case1)" * doctest::test_suite("functional::fliplr"))
 
 TEST_CASE("fliplr(case2)" * doctest::test_suite("functional::fliplr"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(fliplr, case2);
+    NMTOOLS_TESTING_USE_CASE(fliplr, case2);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case2", fn::fliplr, array );
@@ -80,7 +80,7 @@ TEST_CASE("fliplr(case2)" * doctest::test_suite("functional::fliplr"))
 
 TEST_CASE("flipud(case1)" * doctest::test_suite("functional::flipud"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flipud, case1);
+    NMTOOLS_TESTING_USE_CASE(flipud, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::flipud, array );
@@ -92,7 +92,7 @@ TEST_CASE("flipud(case1)" * doctest::test_suite("functional::flipud"))
 
 TEST_CASE("flipud(case2)" * doctest::test_suite("functional::flipud"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flipud, case2);
+    NMTOOLS_TESTING_USE_CASE(flipud, case2);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case2", fn::flipud, array );
@@ -106,7 +106,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("flip" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(flip,case4);
+    NMTOOLS_TESTING_USE_CASE(flip,case4);
     using namespace args;
 
     auto a = view::flip(array,axis);
@@ -119,7 +119,7 @@ TEST_CASE("flip" * doctest::test_suite("functional::get_function_composition") *
 
 TEST_CASE("flip" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flip,case4);
+    NMTOOLS_TESTING_USE_CASE(flip,case4);
     using namespace args;
 
     auto a = view::flip(array,axis);

@@ -532,7 +532,7 @@ RUN_moveaxis_to_transpose_impl(__VA_ARGS__);
 #define MOVEAXIS_TO_TRANSPOSE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, moveaxis_to_transpose, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, moveaxis_to_transpose, case_name); \
     using namespace args; \
     auto result = RUN_moveaxis_to_transpose(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -541,7 +541,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_MOVEAXIS_TO_TRANSPOSE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, constexpr_moveaxis_to_transpose, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, constexpr_moveaxis_to_transpose, case_name); \
     using namespace args; \
     constexpr auto result = RUN_moveaxis_to_transpose_impl(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -955,7 +955,7 @@ TEST_CASE("moveaxis_to_transpose(case19)" * doctest::test_suite("index::moveaxis
     MOVEAXIS_TO_TRANSPOSE_SUBCASE( case19, shape, source, destination );
     #endif
     {
-        NMTOOLS_TESTING_DECLARE_NS(index, moveaxis_to_transpose, case19);
+        NMTOOLS_TESTING_USE_CASE(index, moveaxis_to_transpose, case19);
         // using namespace args;
         constexpr auto shape       = meta::to_value_v<decltype(args::shape)>;
         constexpr auto source      = meta::to_value_v<decltype(args::source)>;

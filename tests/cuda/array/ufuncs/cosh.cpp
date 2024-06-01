@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define COSH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, cosh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, cosh, case_name); \
     using namespace args; \
     auto result = na::cosh(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::cosh(__VA_ARGS__); \

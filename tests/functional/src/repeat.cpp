@@ -18,7 +18,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("repeat(case1)" * doctest::test_suite("functional::repeat"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, repeat, case1);
+    NMTOOLS_TESTING_USE_CASE(array, repeat, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::repeat[repeats][axis], array );
@@ -32,7 +32,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("repeat" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,repeat,case1);
+    NMTOOLS_TESTING_USE_CASE(array,repeat,case1);
     using namespace args;
 
     auto a = view::repeat(array,repeats,axis);
@@ -45,7 +45,7 @@ TEST_CASE("repeat" * doctest::test_suite("functional::get_function_composition")
 
 TEST_CASE("repeat" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,repeat,case1);
+    NMTOOLS_TESTING_USE_CASE(array,repeat,case1);
     using namespace args;
 
     auto a = view::repeat(array,repeats,axis);

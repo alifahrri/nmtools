@@ -18,7 +18,7 @@ namespace na = nm::array;
 #define CONSTEXPR_BROADCAST_TO_SUBCASE(case_name, expected, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_broadcast_to, case_name); \
+    NMTOOLS_TESTING_USE_CASE(constexpr_broadcast_to, case_name); \
     using namespace args; \
     constexpr auto result = nmtools::array::broadcast_to(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::expected) ); \

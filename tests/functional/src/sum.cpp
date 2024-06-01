@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("sum(case1)" * doctest::test_suite("functional::sum"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case1);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_add, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::sum[axis], a );
@@ -28,7 +28,7 @@ TEST_CASE("sum(case1)" * doctest::test_suite("functional::sum"))
 
 TEST_CASE("sum(case8)" * doctest::test_suite("functional::sum"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case8);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_add, case8);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case8", fn::sum[axis][dtype][initial], a );
@@ -40,7 +40,7 @@ TEST_CASE("sum(case8)" * doctest::test_suite("functional::sum"))
 
 TEST_CASE("sum(case9)" * doctest::test_suite("functional::sum"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case9);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_add, case9);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case9", fn::sum[axis][dtype][initial][keepdims], a );

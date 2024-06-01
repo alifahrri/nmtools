@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, pad, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, pad, case_name); \
     using namespace args; \
     auto result = na::pad(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::pad(__VA_ARGS__); \

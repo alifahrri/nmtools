@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define SUBTRACT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, subtract, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, subtract, case_name); \
     using namespace args; \
     auto result = view::subtract(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -37,7 +37,7 @@ TEST_CASE("subtract(case2)" * doctest::test_suite("view::subtract"))
 #define REDUCE_SUBTRACT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_subtract, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_subtract, case_name); \
     using namespace args; \
     auto result = view::reduce_subtract(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -117,7 +117,7 @@ TEST_CASE("reduce_subtract(case8)" * doctest::test_suite("view::reduce_subtract"
 #define ACCUMULATE_SUBTRACT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_subtract, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_subtract, case_name); \
     using namespace args; \
     auto result = view::accumulate_subtract(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -157,7 +157,7 @@ TEST_CASE("accumulate_subtract(case3)" * doctest::test_suite("view::accumulate_s
 #define OUTER_SUBTRACT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_subtract, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_subtract, case_name); \
     using namespace args; \
     auto result = view::outer_subtract( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

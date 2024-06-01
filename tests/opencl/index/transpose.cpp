@@ -43,7 +43,7 @@ TEST_CASE("shape_transpose(case1)" * doctest::test_suite("index::shape_transpose
 {
     auto tester = testing::OpenCLTester(shape_transpose_kernel_name,nm_cl_test_transpose_spv,nm_cl_test_transpose_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_transpose,case4);
+    NMTOOLS_TESTING_USE_CASE(index,shape_transpose,case4);
     tester.test(opencl::default_context(),expect::result,args::shape_a,args::axes_a);
 }
 
@@ -51,7 +51,7 @@ TEST_CASE("shape_transpose(case2)" * doctest::test_suite("index::shape_transpose
 {
     auto tester = testing::OpenCLTester(shape_transpose_kernel_name,nm_cl_test_transpose_spv,nm_cl_test_transpose_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_transpose,case5);
+    NMTOOLS_TESTING_USE_CASE(index,shape_transpose,case5);
     tester.test(opencl::default_context(),expect::result,args::shape_a,args::axes_a);
 }
 
@@ -59,7 +59,7 @@ TEST_CASE("shape_transpose(case3)" * doctest::test_suite("index::shape_transpose
 {
     auto tester = testing::OpenCLTester(shape_transpose_kernel_name,nm_cl_test_transpose_spv,nm_cl_test_transpose_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_transpose,case6);
+    NMTOOLS_TESTING_USE_CASE(index,shape_transpose,case6);
     tester.test(opencl::default_context(),expect::result,args::shape_a,args::axes_a);
 }
 
@@ -67,7 +67,7 @@ TEST_CASE("shape_transpose(case4)" * doctest::test_suite("index::shape_transpose
 {
     auto tester = testing::OpenCLTester(shape_transpose_kernel_name,nm_cl_test_transpose_spv,nm_cl_test_transpose_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_transpose,case7);
+    NMTOOLS_TESTING_USE_CASE(index,shape_transpose,case7);
     tester.test(opencl::default_context(),expect::result,args::shape_a,args::axes_a);
 }
 
@@ -75,7 +75,7 @@ TEST_CASE("shape_transpose(case5)" * doctest::test_suite("index::shape_transpose
 {
     auto tester = testing::OpenCLTester(shape_transpose_kernel_name,nm_cl_test_transpose_spv,nm_cl_test_transpose_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_transpose,case8);
+    NMTOOLS_TESTING_USE_CASE(index,shape_transpose,case8);
     tester.test(opencl::default_context(),expect::result,args::shape_a,args::axes_a);
 }
 

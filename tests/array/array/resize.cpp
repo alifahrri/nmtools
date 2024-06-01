@@ -49,7 +49,7 @@ RUN_resize_impl(__VA_ARGS__);
 #define RESIZE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(resize, case_name); \
+    NMTOOLS_TESTING_USE_CASE(resize, case_name); \
     using namespace args; \
     auto result = RUN_resize(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \

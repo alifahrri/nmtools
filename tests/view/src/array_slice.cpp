@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define ARRAY_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, array_slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, array_slice, case_name); \
     using namespace args; \
     auto view = nmtools::view::array_slice(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(view), nm::shape(expect::result) ); \

@@ -169,7 +169,7 @@ RUN_impl(__VA_ARGS__);
 #define ARGSORT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, argsort, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, argsort, case_name); \
     using namespace args; \
     auto result = RUN_argsort(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -178,7 +178,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_ARGSORT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, constexpr_argsort, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, constexpr_argsort, case_name); \
     using namespace args; \
     constexpr auto result = RUN_impl(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

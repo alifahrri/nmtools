@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("arccos(case1)" * doctest::test_suite("functional::arccos"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, arccos, case1);
+    NMTOOLS_TESTING_USE_CASE(view, arccos, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::arccos, a );
@@ -32,7 +32,7 @@ using nmtools::args::ufunc;
 
 TEST_CASE("arccos" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,arccos,case1);
+    NMTOOLS_TESTING_USE_CASE(view,arccos,case1);
     using namespace args;
 
     auto array = view::arccos(a);
@@ -45,7 +45,7 @@ TEST_CASE("arccos" * doctest::test_suite("functional::get_function_composition")
 
 TEST_CASE("arccos" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,arccos,case1);
+    NMTOOLS_TESTING_USE_CASE(view,arccos,case1);
     using namespace args;
 
     auto array = view::arccos(a);

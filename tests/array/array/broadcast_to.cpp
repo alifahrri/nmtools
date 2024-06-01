@@ -27,7 +27,7 @@ namespace na = nm::array;
 #define BROADCAST_TO_SUBCASE(case_name, expected, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case_name); \
+    NMTOOLS_TESTING_USE_CASE(broadcast_to, case_name); \
     using namespace args; \
     auto result = nmtools::array::broadcast_to(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), args::shape ); \

@@ -34,7 +34,7 @@ RUN_trunc_impl(__VA_ARGS__);
 #define TRUNC_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, trunc, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, trunc, case_name); \
     using namespace args; \
     auto result = RUN_trunc(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

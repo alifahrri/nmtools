@@ -48,7 +48,7 @@ RUN_atleast_3d_impl(__VA_ARGS__);
 #define ATLEAST_3D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_3d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case_name); \
     using namespace args; \
     auto result = RUN_atleast_3d(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(nmtools::unwrap(result)), expect::shape ); \

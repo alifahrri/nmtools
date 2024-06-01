@@ -187,7 +187,7 @@ RUN_mean_subtract_impl(__VA_ARGS__);
 #define MEAN_SUBTRACT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(composition, mean_subtract, case_name); \
+    NMTOOLS_TESTING_USE_CASE(composition, mean_subtract, case_name); \
     using namespace args; \
     auto result = RUN_mean_subtract(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -196,7 +196,7 @@ SUBCASE(#case_name) \
 TEST_CASE("mean_subtract(case1)" * doctest::test_suite("composition::mean_subtract"))
 {
     {
-        NMTOOLS_TESTING_DECLARE_NS(composition, mean_subtract, case1);
+        NMTOOLS_TESTING_USE_CASE(composition, mean_subtract, case1);
     }
 
     MEAN_SUBTRACT_SUBCASE( case1, array, axis );
@@ -237,7 +237,7 @@ TEST_CASE("mean_subtract(case4)" * doctest::test_suite("composition::mean_subtra
     // TODO: fix compile-time shape inference
     #if 0
     {
-        NMTOOLS_TESTING_DECLARE_NS(composition, mean_subtract, case4);
+        NMTOOLS_TESTING_USE_CASE(composition, mean_subtract, case4);
         using namespace args;
 
         auto a = composition::mean_subtract( array, axis );

@@ -89,7 +89,7 @@ RUN_shape_outer_impl(__VA_ARGS__);
 #define SHAPE_OUTER_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_outer, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_outer, case_name); \
     using namespace args; \
     auto result = RUN_shape_outer(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -225,7 +225,7 @@ RUN_outer_impl(__VA_ARGS__);
 #define OUTER_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, outer, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, outer, case_name); \
     using namespace args; \
     auto result = RUN_outer(case_name, __VA_ARGS__); \
     auto aidx = nmtools::get<0>(result); \

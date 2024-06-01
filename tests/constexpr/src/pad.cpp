@@ -15,7 +15,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::n
 #define CONSTEXPR_PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_pad, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_pad, case_name); \
     using namespace args; \
     constexpr auto result = nmtools::array::pad(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

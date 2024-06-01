@@ -13,7 +13,7 @@ using namespace nmtools::literals;
 // TODO: fix, reorder result from divide to subtract rhs
 TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_composition") * doctest::skip())
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
+    NMTOOLS_TESTING_USE_CASE(view,subtract,case1);
     using namespace args;
 
     auto x = view::divide(a,3);
@@ -32,7 +32,7 @@ TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_composition") )
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
+    NMTOOLS_TESTING_USE_CASE(view,subtract,case1);
     using namespace args;
 
     auto x = view::divide(a,3);
@@ -50,7 +50,7 @@ TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
+    NMTOOLS_TESTING_USE_CASE(view,subtract,case1);
     using namespace args;
 
     auto x = view::divide(a,3);
@@ -68,7 +68,7 @@ TEST_CASE("divide_subtract" * doctest::test_suite("functional::get_function_oper
 
 TEST_CASE("divide_subtract" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
+    NMTOOLS_TESTING_USE_CASE(view,subtract,case1);
     using namespace args;
 
     auto x = view::divide(a,3);

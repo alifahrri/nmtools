@@ -50,7 +50,7 @@ RUN_compress_impl(__VA_ARGS__);
 #define COMPRESS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, compress, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, compress, case_name); \
     using namespace args; \
     auto result = RUN_compress(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \

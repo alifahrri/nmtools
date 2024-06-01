@@ -207,7 +207,7 @@ using nm::utils::isclose, nm::utils::isequal;
 
 void test_clip()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, clip);
+    NMTOOLS_TESTING_USE_CASE(array, clip);
     NMTOOLS_PIO_SUBCASE( case1, result, view::clip, a, amin, amax );
     NMTOOLS_PIO_SUBCASE( case2, result, view::clip, a, amin, amax );
     NMTOOLS_PIO_SUBCASE( case3, result, view::clip, a, amin, amax );
@@ -215,7 +215,7 @@ void test_clip()
 
 void test_add()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, add);
+    NMTOOLS_TESTING_USE_CASE(view, add);
     NMTOOLS_PIO_SUBCASE( case1, result, view::add, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::add, a, b );
     NMTOOLS_PIO_SUBCASE( case3, result, view::add, a, b );
@@ -226,7 +226,7 @@ using nmtools::None;
 
 void test_reduce_add()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_add);
     NMTOOLS_PIO_SUBCASE( case1, result, view::reduce_add, a, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::reduce_add, a, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::reduce_add, a, axis );
@@ -255,7 +255,7 @@ void test_reduce_add()
 
 void test_accumulate_add()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_add);
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_add);
     NMTOOLS_PIO_SUBCASE( case1, result, view::accumulate_add, a, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::accumulate_add, a, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::accumulate_add, a, axis );
@@ -263,145 +263,145 @@ void test_accumulate_add()
 
 void test_outer_add()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_add);
+    NMTOOLS_TESTING_USE_CASE(view, outer_add);
     NMTOOLS_PIO_SUBCASE( case1, result, view::outer_add, a, b );
 }
 
 void test_sin()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, sin);
+    NMTOOLS_TESTING_USE_CASE(view, sin);
     NMTOOLS_PIO_SUBCASE( case1, result, view::sin, a );
 }
 
 void test_relu()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, relu);
+    NMTOOLS_TESTING_USE_CASE(activations, relu);
     NMTOOLS_PIO_SUBCASE( case1, result, view::relu, a );
 }
 
 void test_relu6()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, relu6);
+    NMTOOLS_TESTING_USE_CASE(activations, relu6);
     NMTOOLS_PIO_SUBCASE( case1, result, view::relu6, a );
 }
 
 void test_prelu()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, prelu);
+    NMTOOLS_TESTING_USE_CASE(activations, prelu);
     NMTOOLS_PIO_SUBCASE( case1, result, view::prelu, a );
 }
 
 void test_leaky_relu()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, leaky_relu);
+    NMTOOLS_TESTING_USE_CASE(activations, leaky_relu);
     NMTOOLS_PIO_SUBCASE( case1, result, view::leaky_relu, a );
 }
 
 void test_sigmoid()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, sigmoid);
+    NMTOOLS_TESTING_USE_CASE(activations, sigmoid);
     NMTOOLS_PIO_SUBCASE( case1, result, view::sigmoid, a );
 }
 
 void test_hardtanh()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, hardtanh);
+    NMTOOLS_TESTING_USE_CASE(activations, hardtanh);
     NMTOOLS_PIO_SUBCASE( case1, result, view::hardtanh, a );
 }
 
 void test_hardshrink()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, hardshrink);
+    NMTOOLS_TESTING_USE_CASE(activations, hardshrink);
     NMTOOLS_PIO_SUBCASE( case1, result, view::hardshrink, a );
 }
 
 void test_hardswish()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, hardswish);
+    NMTOOLS_TESTING_USE_CASE(activations, hardswish);
     NMTOOLS_PIO_SUBCASE( case1, result, view::hardswish, a );
 }
 
 void test_divide()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, divide);
+    NMTOOLS_TESTING_USE_CASE(view, divide);
     NMTOOLS_PIO_SUBCASE( case1, result, view::divide, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::divide, a, b );
 }
 
 void test_greater_equal()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, greater_equal);
+    NMTOOLS_TESTING_USE_CASE(view, greater_equal);
     NMTOOLS_PIO_SUBCASE( case1, result, view::greater_equal, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::greater_equal, a, b );
 }
 
 void test_hypot()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, hypot);
+    NMTOOLS_TESTING_USE_CASE(view, hypot);
     NMTOOLS_PIO_SUBCASE( case1, result, view::hypot, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::hypot, a, b );
 }
 
 void test_invert()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, invert);
+    NMTOOLS_TESTING_USE_CASE(view, invert);
     NMTOOLS_PIO_SUBCASE( case1, result, view::invert, a );
 }
 
 void test_isfinite()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, isfinite);
+    NMTOOLS_TESTING_USE_CASE(view, isfinite);
     NMTOOLS_PIO_SUBCASE( case1, result, view::isfinite, a );
 }
 
 void test_isinf()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, isinf);
+    NMTOOLS_TESTING_USE_CASE(view, isinf);
     NMTOOLS_PIO_SUBCASE( case1, result, view::isinf, a );
 }
 
 void test_isnan()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, isnan);
+    NMTOOLS_TESTING_USE_CASE(view, isnan);
     NMTOOLS_PIO_SUBCASE( case1, result, view::isnan, a );
 }
 
 void test_left_shift()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, left_shift);
+    NMTOOLS_TESTING_USE_CASE(view, left_shift);
     NMTOOLS_PIO_SUBCASE( case1, result, view::left_shift, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::left_shift, a, b );
 }
 
 void test_log_sigmoid()
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations, log_sigmoid);
+    NMTOOLS_TESTING_USE_CASE(activations, log_sigmoid);
     NMTOOLS_PIO_SUBCASE( case1, result, view::log_sigmoid, a );
 }
 
 void test_logical_and()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, logical_and);
+    NMTOOLS_TESTING_USE_CASE(view, logical_and);
     NMTOOLS_PIO_SUBCASE( case1, result, view::logical_and, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::logical_and, a, b );
 }
 
 void test_logical_not()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, logical_not);
+    NMTOOLS_TESTING_USE_CASE(view, logical_not);
     NMTOOLS_PIO_SUBCASE( case1, result, view::logical_not, a );
 }
 
 void test_maximum()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, maximum);
+    NMTOOLS_TESTING_USE_CASE(view, maximum);
     NMTOOLS_PIO_SUBCASE( case1, result, view::maximum, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::maximum, a, b );
 }
 
 void test_mean()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, mean);
+    NMTOOLS_TESTING_USE_CASE(array, mean);
     NMTOOLS_PIO_SUBCASE( case1, result, view::mean, a, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::mean, a, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::mean, a, axis );
@@ -438,45 +438,45 @@ void test_mean()
 
 void test_multiply()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, multiply);
+    NMTOOLS_TESTING_USE_CASE(view, multiply);
     NMTOOLS_PIO_SUBCASE( case1, result, view::multiply, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::multiply, a, b );
 }
 
 void test_power()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, power);
+    NMTOOLS_TESTING_USE_CASE(view, power);
     NMTOOLS_PIO_SUBCASE( case1, result, view::power, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::power, a, b );
 }
 
 void test_reciprocal()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, reciprocal);
+    NMTOOLS_TESTING_USE_CASE(view, reciprocal);
     NMTOOLS_PIO_SUBCASE( case1, result, view::reciprocal, a );
 }
 
 void test_rint()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, rint);
+    NMTOOLS_TESTING_USE_CASE(view, rint);
     NMTOOLS_PIO_SUBCASE( case1, result, view::rint, a );
 }
 
 void test_signbit()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, signbit);
+    NMTOOLS_TESTING_USE_CASE(view, signbit);
     NMTOOLS_PIO_SUBCASE( case1, result, view::signbit, a );
 }
 
 void test_sqrt()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, sqrt);
+    NMTOOLS_TESTING_USE_CASE(view, sqrt);
     NMTOOLS_PIO_SUBCASE( case1, result, view::sqrt, a );
 }
 
 void test_stddev()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, stddev);
+    NMTOOLS_TESTING_USE_CASE(array, stddev);
     NMTOOLS_PIO_SUBCASE( case1, result, view::stddev, array, axis, None, ddof, keepdims );
     NMTOOLS_PIO_SUBCASE( case2, result, view::stddev, array, axis, None, ddof, keepdims );
     NMTOOLS_PIO_SUBCASE( case3, result, view::stddev, array, axis, None, ddof, keepdims );
@@ -498,20 +498,20 @@ void test_stddev()
 
 void test_subtract()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, subtract );
+    NMTOOLS_TESTING_USE_CASE( view, subtract );
     NMTOOLS_PIO_SUBCASE( case1, result, view::subtract, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::subtract, a, b );
 }
 
 void test_trunc()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, trunc );
+    NMTOOLS_TESTING_USE_CASE( view, trunc );
     NMTOOLS_PIO_SUBCASE( case1, result, view::trunc, a );
 }
 
 void test_var()
 {
-    NMTOOLS_TESTING_DECLARE_NS( array, var );
+    NMTOOLS_TESTING_USE_CASE( array, var );
     NMTOOLS_PIO_SUBCASE( case1, result, view::var, array, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::var, array, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::var, array, axis );
@@ -530,305 +530,305 @@ void test_var()
 
 void test_tanhshrink()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, tanhshrink );
+    NMTOOLS_TESTING_USE_CASE( activations, tanhshrink );
     NMTOOLS_PIO_SUBCASE( case1, result, view::tanhshrink, a );
 }
 
 void test_tanh()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, tanh );
+    NMTOOLS_TESTING_USE_CASE( view, tanh );
     NMTOOLS_PIO_SUBCASE( case1, result, view::tanh, a );
 }
 
 void test_tan()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, tan );
+    NMTOOLS_TESTING_USE_CASE( view, tan );
     NMTOOLS_PIO_SUBCASE( case1, result, view::tan, a );
 }
 
 void test_square()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, square );
+    NMTOOLS_TESTING_USE_CASE( view, square );
     NMTOOLS_PIO_SUBCASE( case1, result, view::square, a );
 }
 
 void test_softsign()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, softsign );
+    NMTOOLS_TESTING_USE_CASE( activations, softsign );
     NMTOOLS_PIO_SUBCASE( case1, result, view::softsign, a );
 }
 
 void test_softshrink()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, softshrink );
+    NMTOOLS_TESTING_USE_CASE( activations, softshrink );
     NMTOOLS_PIO_SUBCASE( case1, result, view::softshrink, a );
 }
 
 void test_softplus()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, softplus );
+    NMTOOLS_TESTING_USE_CASE( activations, softplus );
     NMTOOLS_PIO_SUBCASE( case1, result, view::softplus, a );
 }
 
 void test_silu()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, silu );
+    NMTOOLS_TESTING_USE_CASE( activations, silu );
     NMTOOLS_PIO_SUBCASE( case1, result, view::silu, a );
 }
 
 void test_selu()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, selu );
+    NMTOOLS_TESTING_USE_CASE( activations, selu );
     NMTOOLS_PIO_SUBCASE( case1, result, view::selu, a );
 }
 
 void test_celu()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, celu );
+    NMTOOLS_TESTING_USE_CASE( activations, celu );
     NMTOOLS_PIO_SUBCASE( case1, result, view::celu, a );
     NMTOOLS_PIO_SUBCASE( case2, result, view::celu, a, alpha );
 }
 
 void test_elu()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, elu );
+    NMTOOLS_TESTING_USE_CASE( activations, elu );
     NMTOOLS_PIO_SUBCASE( case1, result, view::elu, a );
     NMTOOLS_PIO_SUBCASE( case2, result, view::elu, a, alpha );
 }
 
 void test_exp()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, exp );
+    NMTOOLS_TESTING_USE_CASE( view, exp );
     NMTOOLS_PIO_SUBCASE( case1, result, view::exp, a );
 }
 
 void test_exp2()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, exp2);
+    NMTOOLS_TESTING_USE_CASE( view, exp2);
     NMTOOLS_PIO_SUBCASE( case1, result, view::exp2, a );
 }
 
 void test_expm1()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, expm1 );
+    NMTOOLS_TESTING_USE_CASE( view, expm1 );
     NMTOOLS_PIO_SUBCASE( case1, result, view::expm1, a );
 }
 
 void test_fmax()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, fmax );
+    NMTOOLS_TESTING_USE_CASE( view, fmax );
     NMTOOLS_PIO_SUBCASE( case1, result, view::fmax, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::fmax, a, b );
 }
 
 void test_fmin()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, fmin );
+    NMTOOLS_TESTING_USE_CASE( view, fmin );
     NMTOOLS_PIO_SUBCASE( case1, result, view::fmin, a, b );
     NMTOOLS_PIO_SUBCASE( case1, result, view::fmin, a, b );
 }
 
 void test_fmod()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, fmod );
+    NMTOOLS_TESTING_USE_CASE( view, fmod );
     NMTOOLS_PIO_SUBCASE( case1, result, view::fmod, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::fmod, a, b );
 }
 
 void test_log()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, log );
+    NMTOOLS_TESTING_USE_CASE( view, log );
     NMTOOLS_PIO_SUBCASE( case1, result, view::log, a );
 }
 
 void test_log2()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, log2 );
+    NMTOOLS_TESTING_USE_CASE( view, log2 );
     NMTOOLS_PIO_SUBCASE( case1, result, view::log2, a );
 }
 
 void test_log1p()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, log1p );
+    NMTOOLS_TESTING_USE_CASE( view, log1p );
     NMTOOLS_PIO_SUBCASE( case1, result, view::log1p, a );
 }
 
 void test_log10()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, log10 );
+    NMTOOLS_TESTING_USE_CASE( view, log10 );
     NMTOOLS_PIO_SUBCASE( case1, result, view::log10, a );
 }
 
 void test_sinh()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, sinh );
+    NMTOOLS_TESTING_USE_CASE( view, sinh );
     NMTOOLS_PIO_SUBCASE( case1, result, view::sinh, a );
 }
 
 void test_cos()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, cos );
+    NMTOOLS_TESTING_USE_CASE( view, cos );
     NMTOOLS_PIO_SUBCASE( case1, result, view::cos, a );
 }
 
 void test_cosh()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, cosh );
+    NMTOOLS_TESTING_USE_CASE( view, cosh );
     NMTOOLS_PIO_SUBCASE( case1, result, view::cosh, a );
 }
 
 void test_cbrt()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, cbrt );
+    NMTOOLS_TESTING_USE_CASE( view, cbrt );
     NMTOOLS_PIO_SUBCASE( case1, result, view::cbrt, a );
 }
 
 void test_ceil()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, ceil );
+    NMTOOLS_TESTING_USE_CASE( view, ceil );
     NMTOOLS_PIO_SUBCASE( case1, result, view::ceil, a );
 }
 
 void test_equal()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, equal );
+    NMTOOLS_TESTING_USE_CASE( view, equal );
     NMTOOLS_PIO_SUBCASE( case1, result, view::equal, a, b );
 }
 
 void test_greater()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, greater );
+    NMTOOLS_TESTING_USE_CASE( view, greater );
     NMTOOLS_PIO_SUBCASE( case1, result, view::greater, a, b );
 }
 
 void test_less()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, less );
+    NMTOOLS_TESTING_USE_CASE( view, less );
     NMTOOLS_PIO_SUBCASE( case1, result, view::less, a, b );
 }
 
 void test_logical_or()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, logical_or );
+    NMTOOLS_TESTING_USE_CASE( view, logical_or );
     NMTOOLS_PIO_SUBCASE( case1, result, view::logical_or, a, b );
 }
 
 void test_logical_xor()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, logical_xor );
+    NMTOOLS_TESTING_USE_CASE( view, logical_xor );
     NMTOOLS_PIO_SUBCASE( case1, result, view::logical_xor, a, b );
 }
 
 void test_minimum()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, minimum );
+    NMTOOLS_TESTING_USE_CASE( view, minimum );
     NMTOOLS_PIO_SUBCASE( case1, result, view::minimum, a, b );
 }
 
 void test_fabs()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, fabs );
+    NMTOOLS_TESTING_USE_CASE( view, fabs );
     NMTOOLS_PIO_SUBCASE( case1, result, view::fabs, a );
 }
 
 void test_floor()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, floor );
+    NMTOOLS_TESTING_USE_CASE( view, floor );
     NMTOOLS_PIO_SUBCASE( case1, result, view::floor, a )
 }
 
 void test_less_equal()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, less_equal );
+    NMTOOLS_TESTING_USE_CASE( view, less_equal );
     NMTOOLS_PIO_SUBCASE( case1, result, view::less_equal, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::less_equal, a, b );
 }
 
 void test_not_equal()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, not_equal );
+    NMTOOLS_TESTING_USE_CASE( view, not_equal );
     NMTOOLS_PIO_SUBCASE( case1, result, view::not_equal, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::not_equal, a, b );
 }
 
 void test_positive()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, positive );
+    NMTOOLS_TESTING_USE_CASE( view, positive );
     NMTOOLS_PIO_SUBCASE( case1, result, view::positive, a );
 }
 
 void test_negative()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, negative );
+    NMTOOLS_TESTING_USE_CASE( view, negative );
     NMTOOLS_PIO_SUBCASE( case1, result, view::negative, a );
 }
 
 void test_arccos()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, arccos );
+    NMTOOLS_TESTING_USE_CASE( view, arccos );
     NMTOOLS_PIO_SUBCASE( case1, result, view::arccos, a );
 }
 
 void test_arccosh()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, arccosh );
+    NMTOOLS_TESTING_USE_CASE( view, arccosh );
     NMTOOLS_PIO_SUBCASE( case1, result, view::arccosh, a );
 }
 
 void test_arcsin()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, arcsin );
+    NMTOOLS_TESTING_USE_CASE( view, arcsin );
     NMTOOLS_PIO_SUBCASE( case1, result, view::arcsin, a );
 }
 
 void test_arcsinh()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, arcsinh );
+    NMTOOLS_TESTING_USE_CASE( view, arcsinh );
     NMTOOLS_PIO_SUBCASE( case1, result, view::arcsinh, a );
 }
 
 void test_arctan()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, arctan );
+    NMTOOLS_TESTING_USE_CASE( view, arctan );
     NMTOOLS_PIO_SUBCASE( case1, result, view::arctan, a );
 }
 
 void test_arctan2()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, arctan2 );
+    NMTOOLS_TESTING_USE_CASE( view, arctan2 );
     NMTOOLS_PIO_SUBCASE( case1, result, view::arctan2, a, b );
 }
 
 void test_arctanh()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, arctanh );
+    NMTOOLS_TESTING_USE_CASE( view, arctanh );
     NMTOOLS_PIO_SUBCASE( case1, result, view::arctanh, a );
 }
 
 void test_bitwise_and()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, bitwise_and );
+    NMTOOLS_TESTING_USE_CASE( view, bitwise_and );
     NMTOOLS_PIO_SUBCASE( case1, result, view::bitwise_and, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::bitwise_and, a, b );
 }
 
 void test_bitwise_or()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, bitwise_or );
+    NMTOOLS_TESTING_USE_CASE( view, bitwise_or );
     NMTOOLS_PIO_SUBCASE( case1, result, view::bitwise_or, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::bitwise_or, a, b );
 }
 
 void test_bitwise_xor()
 {
-    NMTOOLS_TESTING_DECLARE_NS( view, bitwise_xor );
+    NMTOOLS_TESTING_USE_CASE( view, bitwise_xor );
     NMTOOLS_PIO_SUBCASE( case1, result, view::bitwise_xor, a, b );
     NMTOOLS_PIO_SUBCASE( case2, result, view::bitwise_xor, a, b );
 }
 
 void test_mish()
 {
-    NMTOOLS_TESTING_DECLARE_NS( activations, mish );
+    NMTOOLS_TESTING_USE_CASE( activations, mish );
     NMTOOLS_PIO_SUBCASE( case1, result, view::mish, a );
 }
 

@@ -24,7 +24,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #define PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, pad, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, pad, case_name); \
     using namespace args; \
     auto result = nmtools::array::pad(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

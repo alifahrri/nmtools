@@ -29,7 +29,7 @@ namespace meta = nm::meta;
 #define ROLL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(roll, case_name) \
+    NMTOOLS_TESTING_USE_CASE(roll, case_name) \
     using namespace args; \
     auto result = view::roll(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect::result) ); \

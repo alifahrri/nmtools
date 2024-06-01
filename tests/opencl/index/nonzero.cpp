@@ -55,7 +55,7 @@ TEST_CASE("nonzero(case1)" * doctest::test_suite("index::nonzero"))
 {
     auto tester = testing::OpenCLTester(nonzero_kernel_name,nm_cl_test_nonzero_spv,nm_cl_test_nonzero_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(nonzero,case1);
+    NMTOOLS_TESTING_USE_CASE(nonzero,case1);
     tester.test(opencl::default_context(),expect::result,args::x);
 }
 

@@ -39,7 +39,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("matmul(case1)" * doctest::test_suite("functional::matmul"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,matmul,case1);
+    NMTOOLS_TESTING_USE_CASE(array,matmul,case1);
     using namespace args;
 
     MATMUL_SUBCASE("case1", fn::matmul, lhs, rhs);
@@ -57,7 +57,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("functional::matmul"))
 
 TEST_CASE("matmul(case2)" * doctest::test_suite("functional::matmul"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,matmul,case2);
+    NMTOOLS_TESTING_USE_CASE(array,matmul,case2);
     using namespace args;
 
     MATMUL_SUBCASE("case2", fn::matmul, lhs, rhs);
@@ -75,7 +75,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("functional::matmul"))
 
 TEST_CASE("matmul(case3)" * doctest::test_suite("functional::matmul"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,matmul,case3);
+    NMTOOLS_TESTING_USE_CASE(array,matmul,case3);
     using namespace args;
 
     MATMUL_SUBCASE("case3", fn::matmul, lhs, rhs);
@@ -93,7 +93,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("functional::matmul"))
 
 TEST_CASE("matmul(case4)" * doctest::test_suite("functional::matmul"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,matmul,case4);
+    NMTOOLS_TESTING_USE_CASE(array,matmul,case4);
     using namespace args;
 
     MATMUL_SUBCASE("case4", fn::matmul, lhs, rhs);
@@ -111,7 +111,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("functional::matmul"))
 
 TEST_CASE("matmul(case5)" * doctest::test_suite("functional::matmul"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,matmul,case5);
+    NMTOOLS_TESTING_USE_CASE(array,matmul,case5);
     using namespace args;
 
     MATMUL_SUBCASE("case5", fn::matmul, lhs, rhs);
@@ -129,7 +129,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("functional::matmul"))
 
 TEST_CASE("matmul(case6)" * doctest::test_suite("functional::matmul"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,matmul,case6);
+    NMTOOLS_TESTING_USE_CASE(array,matmul,case6);
     using namespace args;
 
     MATMUL_SUBCASE("case6", fn::matmul, lhs, rhs);
@@ -149,7 +149,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("matmul" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,matmul,case4);
+    NMTOOLS_TESTING_USE_CASE(array,matmul,case4);
     using namespace args;
 
     auto a = view::matmul(lhs,rhs);

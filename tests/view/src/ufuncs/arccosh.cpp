@@ -35,7 +35,7 @@ RUN_arccosh_impl(__VA_ARGS__);
 #define ARCCOSH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, arccosh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, arccosh, case_name); \
     using namespace args; \
     auto result = RUN_arccosh(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \

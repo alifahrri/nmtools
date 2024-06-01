@@ -34,7 +34,7 @@ RUN_tan_impl(__VA_ARGS__);
 #define TAN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, tan, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, tan, case_name); \
     using namespace args; \
     auto result = RUN_tan(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

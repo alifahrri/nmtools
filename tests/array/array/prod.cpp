@@ -36,7 +36,7 @@ RUN_prod_impl(__VA_ARGS__);
 SUBCASE(#case_name) \
 { \
     /* using test case from reduce_multiply since they're basically the same */ \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case_name); \
     using namespace args; \
     auto result = RUN_prod(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

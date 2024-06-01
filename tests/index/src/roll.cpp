@@ -7,7 +7,7 @@ namespace meta = nmtools::meta;
 #define ROLL_SUBCASE(case_name,...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, roll, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, roll, case_name); \
     using namespace args; \
     auto result = nmtools::index::roll(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
@@ -28,7 +28,7 @@ TEST_CASE("roll(case1a1)" * doctest::test_suite("index::roll"))
 {
     {
         using meta::to_value_v;
-        NMTOOLS_TESTING_DECLARE_NS(index,roll,case1a1);
+        NMTOOLS_TESTING_USE_CASE(index,roll,case1a1);
         using namespace args;
         NMTOOLS_ASSERT_EQUAL( to_value_v<decltype(shape_ct)>, shape );
         NMTOOLS_ASSERT_EQUAL( to_value_v<decltype(indices_ct)>, indices );

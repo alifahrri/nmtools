@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("moveaxis(case1)" * doctest::test_suite("functional::moveaxis"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, moveaxis, case1);
+    NMTOOLS_TESTING_USE_CASE(array, moveaxis, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::moveaxis[source][destination], a );
@@ -28,7 +28,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("functional::moveaxis"))
 
 TEST_CASE("moveaxis(case2)" * doctest::test_suite("functional::moveaxis"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, moveaxis, case2);
+    NMTOOLS_TESTING_USE_CASE(array, moveaxis, case2);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case2", fn::moveaxis[source][destination], a );
@@ -40,7 +40,7 @@ TEST_CASE("moveaxis(case2)" * doctest::test_suite("functional::moveaxis"))
 
 TEST_CASE("moveaxis(case3)" * doctest::test_suite("functional::moveaxis"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, moveaxis, case3);
+    NMTOOLS_TESTING_USE_CASE(array, moveaxis, case3);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case3", fn::moveaxis[source][destination], a );
@@ -52,7 +52,7 @@ TEST_CASE("moveaxis(case3)" * doctest::test_suite("functional::moveaxis"))
 
 TEST_CASE("moveaxis(case8)" * doctest::test_suite("functional::moveaxis"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, moveaxis, case8);
+    NMTOOLS_TESTING_USE_CASE(array, moveaxis, case8);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case8", fn::moveaxis[source][destination], a );

@@ -17,7 +17,7 @@ namespace na = nm::array;
 #define ARANGE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, arange, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, arange, case_name); \
     using namespace args; \
     CUDA_ARANGE_SUBCASE(__VA_ARGS__); \
 }

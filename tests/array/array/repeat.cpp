@@ -51,7 +51,7 @@ RUN_impl(__VA_ARGS__);
 #define REPEAT_SUBCASE(case_name, array_input, repeats, axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, repeat, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, repeat, case_name); \
     auto array_array = RUN_repeat(case_name, args::array_input, args::repeats, args::axis); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_array), expect::shape ); \
     NMTOOLS_ASSERT_EQUAL( nm::dim(array_array), expect::dim ); \

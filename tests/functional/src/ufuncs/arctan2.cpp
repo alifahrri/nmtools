@@ -23,7 +23,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("arctan2(case1)" * doctest::test_suite("functional::arctan2"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, arctan2, case1);
+    NMTOOLS_TESTING_USE_CASE(view, arctan2, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::arctan2, a, b );

@@ -7,7 +7,7 @@ namespace nm = nmtools;
 #define SHAPE_RESIZE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_resize, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_resize, case_name); \
     using namespace args; \
     auto result = nm::index::shape_resize(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::expected ); \
@@ -16,7 +16,7 @@ SUBCASE(#case_name) \
 #define RESIZE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, resize, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, resize, case_name); \
     using namespace args; \
     auto result = nm::index::resize(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::expected ); \

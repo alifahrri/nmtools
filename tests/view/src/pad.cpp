@@ -47,7 +47,7 @@ RUN_pad_impl(__VA_ARGS__);
 #define PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, pad, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, pad, case_name); \
     using namespace args; \
     auto result = RUN_pad(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \

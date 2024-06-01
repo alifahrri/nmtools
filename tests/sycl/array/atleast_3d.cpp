@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define ATLEAST_3D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_3d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case_name); \
     using namespace args; \
     auto result = na::atleast_3d(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::atleast_3d(__VA_ARGS__); \

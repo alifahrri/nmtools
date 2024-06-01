@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define TANH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, tanh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, tanh, case_name); \
     using namespace args; \
     auto result = view::tanh( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

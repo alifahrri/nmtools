@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("softmin(case1)" * doctest::test_suite("functional::softmin"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, softmin, case1);
+    NMTOOLS_TESTING_USE_CASE(array, softmin, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::softmin[dim], input );

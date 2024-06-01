@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("var(case1)" * doctest::test_suite("functional::var"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, var, case1);
+    NMTOOLS_TESTING_USE_CASE(array, var, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::var[axis], array );
@@ -28,7 +28,7 @@ TEST_CASE("var(case1)" * doctest::test_suite("functional::var"))
 
 TEST_CASE("var(case6)" * doctest::test_suite("functional::var"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, var, case6);
+    NMTOOLS_TESTING_USE_CASE(array, var, case6);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case6", fn::var[axis][nm::None][ddof][keepdims], array );

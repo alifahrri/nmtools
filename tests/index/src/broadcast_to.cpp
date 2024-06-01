@@ -14,7 +14,7 @@ namespace kind = na::kind;
 #define SHAPE_BROADCAST_TO_SUBCASE(case_name, ashape, bshape) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, broadcast_to, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, broadcast_to, case_name); \
     auto m_result = nmtools::index::shape_broadcast_to(args::ashape, args::bshape); \
     auto success  = static_cast<bool>(m_result); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \

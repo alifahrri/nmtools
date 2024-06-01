@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("hardshrink(case1)" * doctest::test_suite("functional::hardshrink"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,hardshrink,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,hardshrink,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::hardshrink, a );
@@ -27,7 +27,7 @@ TEST_CASE("hardshrink(case1)" * doctest::test_suite("functional::hardshrink"))
 
 TEST_CASE("hardshrink(case2)" * doctest::test_suite("functional::hardshrink"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,hardshrink,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,hardshrink,case2);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case2", fn::hardshrink[lambda], a );
@@ -41,7 +41,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,hardshrink,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,hardshrink,case2);
     using namespace args;
 
     auto array = view::hardshrink(a,lambda);
@@ -55,7 +55,7 @@ TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_compositi
 
 TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,hardshrink,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,hardshrink,case2);
     using namespace args;
 
     auto array = view::hardshrink(a,lambda);
@@ -77,7 +77,7 @@ namespace fun = view::fun;
 
 TEST_CASE("hardshrink" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,hardshrink,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,hardshrink,case2);
     using namespace args;
 
     auto array = view::hardshrink(a,{.lambda=lambda});

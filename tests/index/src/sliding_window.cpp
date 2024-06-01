@@ -5,7 +5,7 @@
 #define SHAPE_SLIDING_WINDOW_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_sliding_window, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_sliding_window, case_name); \
     using namespace args; \
     auto result = nmtools::index::shape_sliding_window(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::dst_shape, __VA_ARGS__ ); \
@@ -14,7 +14,7 @@ SUBCASE(#case_name) \
 #define SLIDING_WINDOW_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, sliding_window, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, sliding_window, case_name); \
     using namespace args; \
     auto result = nmtools::index::sliding_window(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::expected, __VA_ARGS__ ); \

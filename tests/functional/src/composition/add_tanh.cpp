@@ -11,7 +11,7 @@ namespace meta = nmtools::meta;
 
 TEST_CASE("add_tanh" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
+    NMTOOLS_TESTING_USE_CASE(view,multiply,case1);
     using namespace args;
 
     auto y = view::add(a,b);
@@ -32,7 +32,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("add_tanh" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
+    NMTOOLS_TESTING_USE_CASE(view,multiply,case1);
     using namespace args;
 
     auto y = view::add(a,b);
@@ -47,7 +47,7 @@ TEST_CASE("add_tanh" * doctest::test_suite("functional::get_function_operands"))
 
 TEST_CASE("add_tanh" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
+    NMTOOLS_TESTING_USE_CASE(view,multiply,case1);
     using namespace args;
 
     auto y = view::add(a,b);

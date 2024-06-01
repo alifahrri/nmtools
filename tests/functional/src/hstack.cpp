@@ -29,7 +29,7 @@ namespace fn = nmtools::functional;
 #define FUNCTIONAL_SUBCASE(subcase_name, function, ...) \
 SUBCASE(#subcase_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( TESTING_NAMESPACE, subcase_name ); \
+    NMTOOLS_TESTING_USE_CASE( TESTING_NAMESPACE, subcase_name ); \
     using namespace args; \
     auto result = function (__VA_ARGS__); \
     NMTOOLS_REQUIRE_EQUAL( nm::shape(result), nm::shape(expect::result) ); \
@@ -39,7 +39,7 @@ SUBCASE(#subcase_name) \
 #define BINARY_FUNCTIONAL_SUBCASE(subcase_name, function, a, b) \
 SUBCASE(#subcase_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( TESTING_NAMESPACE, subcase_name ); \
+    NMTOOLS_TESTING_USE_CASE( TESTING_NAMESPACE, subcase_name ); \
     using namespace args; \
     auto result = function (a) (b); \
     NMTOOLS_REQUIRE_EQUAL( nm::shape(result), nm::shape(expect::result) ); \

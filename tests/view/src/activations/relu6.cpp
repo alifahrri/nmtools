@@ -31,7 +31,7 @@ RUN_relu6_impl(__VA_ARGS__);
 #define RELU6_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, relu6, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, relu6, case_name); \
     using namespace args; \
     auto result = RUN_relu6(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

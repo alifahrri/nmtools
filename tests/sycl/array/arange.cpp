@@ -9,7 +9,7 @@ namespace na = nm::array;
 #define ARANGE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, arange, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, arange, case_name); \
     using namespace args; \
     auto expect = na::arange(__VA_ARGS__); \
     /* auto result = na::arange(__VA_ARGS__, na::sycl::default_context()); */ \

@@ -25,7 +25,7 @@ namespace nm = nmtools;
 #define FLIP_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(flip, case_name); \
+    NMTOOLS_TESTING_USE_CASE(flip, case_name); \
     using namespace args; \
     auto result = nmtools::view::flip(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -34,7 +34,7 @@ SUBCASE(#case_name) \
 #define FLIPLR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(fliplr, case_name); \
+    NMTOOLS_TESTING_USE_CASE(fliplr, case_name); \
     using namespace args; \
     auto result = nmtools::view::fliplr(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -43,7 +43,7 @@ SUBCASE(#case_name) \
 #define FLIPUD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(flipud, case_name); \
+    NMTOOLS_TESTING_USE_CASE(flipud, case_name); \
     using namespace args; \
     auto result = nmtools::view::flipud(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

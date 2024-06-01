@@ -31,7 +31,7 @@ RUN_mish_impl(__VA_ARGS__);
 #define MISH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, mish, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, mish, case_name); \
     using namespace args; \
     auto result = RUN_mish(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

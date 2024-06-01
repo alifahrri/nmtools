@@ -50,7 +50,7 @@ RUN_slice_impl(__VA_ARGS__);
 #define SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, slice, case_name); \
     using namespace args; \
     auto result = RUN_slice(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
@@ -1465,7 +1465,7 @@ RUN_apply_slice_impl(__VA_ARGS__);
 #define APPLY_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, slice, case_name); \
     using namespace args; \
     auto result = RUN_apply_slice(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \

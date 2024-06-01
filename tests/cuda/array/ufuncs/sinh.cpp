@@ -30,7 +30,7 @@ namespace cuda = na::cuda;
 #define SINH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, sinh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, sinh, case_name); \
     using namespace args; \
     auto result = na::sinh(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::sinh(__VA_ARGS__); \

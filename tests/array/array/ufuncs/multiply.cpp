@@ -34,7 +34,7 @@ RUN_multiply_impl(__VA_ARGS__);
 #define MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, multiply, case_name); \
     using namespace args; \
     auto result = RUN_multiply(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -85,7 +85,7 @@ RUN_reduce_multiply_impl(__VA_ARGS__);
 #define REDUCE_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case_name); \
     using namespace args; \
     auto result = RUN_reduce_multiply(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -224,7 +224,7 @@ RUN_accumulate_multiply_impl(__VA_ARGS__);
 #define ACCUMULATE_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_multiply, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_multiply(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -287,7 +287,7 @@ RUN_outer_multiply_impl(__VA_ARGS__);
 #define OUTER_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_multiply, case_name); \
     using namespace args; \
     auto result = RUN_outer_multiply(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

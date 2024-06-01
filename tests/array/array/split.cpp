@@ -50,7 +50,7 @@ RUN_split_impl(__VA_ARGS__);
 #define SPLIT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, split, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, split, case_name); \
     using namespace args; \
     auto result = RUN_split(case_name, __VA_ARGS__); \
     auto msg1 = std::string("Expected:\n") + nm::utils::apply_to_string(expect::result); \

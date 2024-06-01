@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("softshrink(case1)" * doctest::test_suite("functional::softshrink"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softshrink,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softshrink,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::softshrink, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("softshrink" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softshrink,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softshrink,case1);
     using namespace args;
 
     auto array = view::softshrink(a);
@@ -43,7 +43,7 @@ TEST_CASE("softshrink" * doctest::test_suite("functional::get_function_compositi
 
 TEST_CASE("softshrink" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softshrink,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softshrink,case1);
     using namespace args;
 
     auto array = view::softshrink(a);
@@ -65,7 +65,7 @@ namespace fun = view::fun;
 
 TEST_CASE("softshrink" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,softshrink,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,softshrink,case1);
     using namespace args;
 
     // NOTE: the following lambda deduced as double

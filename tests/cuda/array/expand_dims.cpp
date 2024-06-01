@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define EXPAND_DIMS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(expand_dims, case_name); \
+    NMTOOLS_TESTING_USE_CASE(expand_dims, case_name); \
     using namespace args; \
     auto result = na::expand_dims(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::expand_dims(__VA_ARGS__); \

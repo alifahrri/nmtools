@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define EXP2_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, exp2, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, exp2, case_name); \
     using namespace args; \
     auto result = view::exp2(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

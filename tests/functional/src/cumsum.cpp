@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("cumsum(case1)" * doctest::test_suite("functional::cumsum"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_add, case1);
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_add, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::cumsum[axis], a );

@@ -192,7 +192,7 @@ RUN_shape_take_impl(__VA_ARGS__);
 #define SHAPE_TAKE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_take, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_take, case_name); \
     using namespace args; \
     auto result = RUN_shape_take(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -201,7 +201,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_SHAPE_TAKE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, constexpr_shape_take, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, constexpr_shape_take, case_name); \
     using namespace args; \
     constexpr auto result = RUN_shape_take_impl(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -290,7 +290,7 @@ RUN_take_impl(__VA_ARGS__);
 #define TAKE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, take, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, take, case_name); \
     using namespace args; \
     auto result = RUN_take(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

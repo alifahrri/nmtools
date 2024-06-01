@@ -9,7 +9,7 @@ using namespace nmtools::literals;
 #define COMPUTE_STRIDES_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(compute_strides, case_name); \
+    NMTOOLS_TESTING_USE_CASE(compute_strides, case_name); \
     using namespace args; \
     auto result = nmtools::index::compute_strides(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \

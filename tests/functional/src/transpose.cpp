@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("transpose(case1)" * doctest::test_suite("functional::transpose"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(transpose, case1);
+    NMTOOLS_TESTING_USE_CASE(transpose, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::transpose[axes_a], array );
@@ -30,7 +30,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("transpose" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(transpose,case1);
+    NMTOOLS_TESTING_USE_CASE(transpose,case1);
     using namespace args;
 
     auto a = view::transpose(array,axes_a);
@@ -43,7 +43,7 @@ TEST_CASE("transpose" * doctest::test_suite("functional::get_function_compositio
 
 TEST_CASE("transpose" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(transpose,case1);
+    NMTOOLS_TESTING_USE_CASE(transpose,case1);
     using namespace args;
 
     auto a = view::transpose(array,axes_a);

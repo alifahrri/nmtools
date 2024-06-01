@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define ARCCOSH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, arccosh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, arccosh, case_name); \
     using namespace args; \
     auto result = na::arccosh(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::arccosh(__VA_ARGS__); \

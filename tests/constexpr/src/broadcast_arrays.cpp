@@ -21,7 +21,7 @@ namespace meta = nm::meta;
 #define CONSTEXPR_BROADCAST_ARRAYS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_broadcast_arrays, case_name); \
+    NMTOOLS_TESTING_USE_CASE(constexpr_broadcast_arrays, case_name); \
     using namespace args; \
     constexpr auto results = nmtools::array::broadcast_arrays(__VA_ARGS__); \
     constexpr auto N = meta::len_v<decltype(nm::unwrap(results))>; \

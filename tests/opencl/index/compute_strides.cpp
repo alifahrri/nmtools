@@ -38,7 +38,7 @@ namespace testing = nmtools::testing;
 #define COMPUTE_STRIDES_SUBCASE(case_name, shape) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(compute_strides, case_name); \
+    NMTOOLS_TESTING_USE_CASE(compute_strides, case_name); \
     tester.test(opencl::default_context(), expect::result, args::shape); \
 }
 

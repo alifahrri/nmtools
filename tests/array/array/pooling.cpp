@@ -50,7 +50,7 @@ RUN_max_pool2d_impl(__VA_ARGS__);
 #define MAX_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, max_pool2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, max_pool2d, case_name); \
     using namespace args; \
     auto result = RUN_max_pool2d(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -392,7 +392,7 @@ RUN_avg_pool2d_impl(__VA_ARGS__);
 #define AVG_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, avg_pool2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, avg_pool2d, case_name); \
     using namespace args; \
     auto result = RUN_avg_pool2d(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
