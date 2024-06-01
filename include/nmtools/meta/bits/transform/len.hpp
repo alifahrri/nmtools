@@ -8,6 +8,8 @@
 #include "nmtools/meta/bits/traits/has_template_get.hpp"
 #include "nmtools/meta/bits/traits/is_fixed_size_ndarray.hpp"
 #include "nmtools/meta/bits/traits/is_num.hpp"
+#include "nmtools/meta/bits/traits/is_const.hpp"
+#include "nmtools/meta/bits/traits/is_reference.hpp"
 #include "nmtools/meta/bits/traits/has_address_space.hpp"
 #include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
@@ -53,7 +55,7 @@ namespace nmtools::meta
     struct len<T&> : len<T> {};
 
     template <typename T, size_t N>
-    struct len<T[N]>
+    struct len<T[N], enable_if_t<!(is_const_v<T> || is_lvalue_reference_v<T> || is_rvalue_reference_v<T>)>>
     {
         static constexpr auto value = N;
     };
