@@ -62,6 +62,73 @@ namespace nmtools::index
         }
     } // shape_roll
 
+    // normalize the size of lhs to rhs (make same size, follow rhs)
+    constexpr auto normalize_length = [](const auto& lhs, const auto& rhs){
+        if constexpr (meta::is_index_v<meta::remove_cvref_t<decltype(rhs)>>) {
+            // assume lhs is index
+            return lhs;
+        } else if constexpr (meta::is_index_v<decltype(lhs)>
+            && meta::is_index_array_v<meta::remove_cvref_t<decltype(rhs)>>
+        ) {
+            constexpr auto SIZE = meta::len_v<meta::remove_cvref_t<decltype(rhs)>>;
+            [[maybe_unused]]
+            constexpr auto B_SIZE = meta::bounded_size_v<meta::remove_cvref_t<decltype(rhs)>>;
+            if constexpr (SIZE > 0) {
+                auto result = nmtools_array<nm_index_t,SIZE>{};
+                for (nm_size_t i=0; i<(nm_size_t)SIZE; i++) {
+                    at(result,i) = lhs;
+                }
+                return result;
+            } else if constexpr (!meta::is_fail_v<decltype(B_SIZE)>) {
+                auto result = nmtools_static_vector<nm_index_t,B_SIZE>{};
+                auto size   = nmtools::len(rhs);
+                result.resize(size);
+                for (nm_size_t i=0; i<(nm_size_t)size; i++) {
+                    at(result,i) = lhs;
+                }
+                return result;
+            } else {
+                // TODO: support small_vector
+                auto result = nmtools_list<nm_index_t>{};
+                auto size   = nmtools::len(rhs);
+                result.resize(size);
+                for (nm_size_t i=0; i<(nm_size_t)size; i++) {
+                    at(result,i) = lhs;
+                }
+                return lhs;
+            }
+        } else /* if constexpr (meta::is_index_array_v<decltype(lhs)>
+            && meta::is_index_array_v<meta::remove_cvref_t<decltype(rhs)>>) */
+        {
+            // assume rhs & lhs is the same length
+            constexpr auto LHS_SIZE = meta::len_v<decltype(lhs)>;
+            [[maybe_unused]] constexpr auto LHS_B_SIZE = meta::bounded_size_v<decltype(lhs)>;
+            if constexpr (LHS_SIZE > 0) {
+                auto result = nmtools_array<nm_index_t,LHS_SIZE>{};
+                auto size   = nmtools::len(lhs);
+                for (nm_size_t i=0; i<(nm_size_t)size; i++) {
+                    at(result,i) = at(lhs,i);
+                }
+                return result;
+            } else if constexpr (!meta::is_fail_v<decltype(LHS_B_SIZE)>) {
+                auto result = nmtools_static_vector<nm_index_t,LHS_B_SIZE>{};
+                auto size   = nmtools::len(lhs);
+                for (nm_size_t i=0; i<(nm_size_t)size; i++) {
+                    at(result,i) = at(lhs,i);
+                }
+                return result;
+            } else {
+                // TODO: support small_vector
+                auto result = nmtools_list<nm_index_t>{};
+                auto size   = nmtools::len(lhs);
+                for (nm_size_t i=0; i<(nm_size_t)size; i++) {
+                    at(result,i) = at(lhs,i);
+                }
+                return result;
+            }
+        }
+    };
+
     template <typename shape_t, typename indices_t, typename shift_t, typename axis_t=none_t>
     constexpr auto roll(const shape_t& shape, const indices_t& indices, const shift_t& shift, const axis_t& axis=axis_t{})
     {
@@ -91,73 +158,6 @@ namespace nmtools::index
                     return index - axis;
                 } else {
                     return index;
-                }
-            };
-
-            // normalize the size of lhs to rhs (make same size, follow rhs)
-            auto normalize_length = [](const auto& lhs, const auto& rhs){
-                if constexpr (meta::is_index_v<meta::remove_cvref_t<decltype(rhs)>>) {
-                    // assume lhs is index
-                    return lhs;
-                } else if constexpr (meta::is_index_v<decltype(lhs)>
-                    && meta::is_index_array_v<meta::remove_cvref_t<decltype(rhs)>>
-                ) {
-                    constexpr auto SIZE = meta::len_v<meta::remove_cvref_t<decltype(rhs)>>;
-                    [[maybe_unused]]
-                    constexpr auto B_SIZE = meta::bounded_size_v<meta::remove_cvref_t<decltype(rhs)>>;
-                    if constexpr (SIZE > 0) {
-                        auto result = nmtools_array<nm_index_t,SIZE>{};
-                        for (nm_size_t i=0; i<(nm_size_t)SIZE; i++) {
-                            at(result,i) = lhs;
-                        }
-                        return result;
-                    } else if constexpr (!meta::is_fail_v<decltype(B_SIZE)>) {
-                        auto result = nmtools_static_vector<nm_index_t,B_SIZE>{};
-                        auto size   = nmtools::len(rhs);
-                        result.resize(size);
-                        for (nm_size_t i=0; i<(nm_size_t)size; i++) {
-                            at(result,i) = lhs;
-                        }
-                        return result;
-                    } else {
-                        // TODO: support small_vector
-                        auto result = nmtools_list<nm_index_t>{};
-                        auto size   = nmtools::len(rhs);
-                        result.resize(size);
-                        for (nm_size_t i=0; i<(nm_size_t)size; i++) {
-                            at(result,i) = lhs;
-                        }
-                        return lhs;
-                    }
-                } else /* if constexpr (meta::is_index_array_v<decltype(lhs)>
-                    && meta::is_index_array_v<meta::remove_cvref_t<decltype(rhs)>>) */
-                {
-                    // assume rhs & lhs is the same length
-                    constexpr auto LHS_SIZE = meta::len_v<decltype(lhs)>;
-                    [[maybe_unused]] constexpr auto LHS_B_SIZE = meta::bounded_size_v<decltype(lhs)>;
-                    if constexpr (LHS_SIZE > 0) {
-                        auto result = nmtools_array<nm_index_t,LHS_SIZE>{};
-                        auto size   = nmtools::len(lhs);
-                        for (nm_size_t i=0; i<(nm_size_t)size; i++) {
-                            at(result,i) = at(lhs,i);
-                        }
-                        return result;
-                    } else if constexpr (!meta::is_fail_v<decltype(LHS_B_SIZE)>) {
-                        auto result = nmtools_static_vector<nm_index_t,LHS_B_SIZE>{};
-                        auto size   = nmtools::len(lhs);
-                        for (nm_size_t i=0; i<(nm_size_t)size; i++) {
-                            at(result,i) = at(lhs,i);
-                        }
-                        return result;
-                    } else {
-                        // TODO: support small_vector
-                        auto result = nmtools_list<nm_index_t>{};
-                        auto size   = nmtools::len(lhs);
-                        for (nm_size_t i=0; i<(nm_size_t)size; i++) {
-                            at(result,i) = at(lhs,i);
-                        }
-                        return result;
-                    }
                 }
             };
 
