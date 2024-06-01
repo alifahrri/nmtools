@@ -31,7 +31,7 @@ TEST_CASE("roll(case1a)" * doctest::test_suite("array::roll"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 
-    // utl::maybe use placement-new which is non-constepxr
+    // utl::maybe use placement-new which is non-constexpr
     #if 0
     CONSTEXPR_ROLL_SUBCASE( case1a, array, shift );
     CONSTEXPR_ROLL_SUBCASE( case1a, array_a, shift );
@@ -44,7 +44,7 @@ TEST_CASE("roll(case1a)" * doctest::test_suite("array::roll"))
     CONSTEXPR_ROLL_SUBCASE( case1a, array_f, shift_ct );
     CONSTEXPR_ROLL_SUBCASE( case1a, array_h, shift_ct );
 
-    // utl::maybe use placement-new which is non-constepxr
+    // utl::maybe use placement-new which is non-constexpr
     #if 0
     CONSTEXPR_ROLL_SUBCASE( case1a, array, shift_cl );
     CONSTEXPR_ROLL_SUBCASE( case1a, array_a, shift_cl );
@@ -56,7 +56,7 @@ TEST_CASE("roll(case1a)" * doctest::test_suite("array::roll"))
     CONSTEXPR_ROLL_SUBCASE( case1a, array_cs_fb, shift_ct );
     CONSTEXPR_ROLL_SUBCASE( case1a, array_cs_hb, shift_ct );
 
-    // utl::maybe use placement-new which is non-constepxr
+    // utl::maybe use placement-new which is non-constexpr
     #if 0
     CONSTEXPR_ROLL_SUBCASE( case1a, array_fs_fb, shift_ct );
     CONSTEXPR_ROLL_SUBCASE( case1a, array_fs_hb, shift_ct );
