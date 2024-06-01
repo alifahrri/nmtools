@@ -35,35 +35,12 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::n
 #include "nmtools/testing/data/array/conv.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#define RUN_conv2d_impl(...) \
-nmtools::array::conv2d(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nmtools::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs conv2d fn to callable lambda
-#define RUN_conv2d(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("array::conv2d-") + #case_name; \
-    auto name  = nmtools::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_conv2d_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_conv2d(case_name, ...) \
-RUN_conv2d_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_DECLARE_NS(array, conv2d, case_name); \
     using namespace args; \
-    auto result = RUN_conv2d(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::conv2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -225,6 +202,7 @@ TEST_CASE("conv2d(case14)" * doctest::test_suite("array::conv2d"))
     #endif
 }
 
+
 TEST_CASE("conv2d(case15)" * doctest::test_suite("array::conv2d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
@@ -316,6 +294,7 @@ TEST_CASE("conv2d(case15)" * doctest::test_suite("array::conv2d"))
     #endif
     #endif
 }
+
 
 TEST_CASE("conv2d(case16)" * doctest::test_suite("array::conv2d"))
 {
