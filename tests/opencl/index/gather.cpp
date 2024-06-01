@@ -42,7 +42,7 @@ namespace testing = nmtools::testing;
 #define GATHER_SUBCASE(case_name, vec, indices) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(gather, case_name); \
+    NMTOOLS_TESTING_USE_CASE(gather, case_name); \
     tester.test(opencl::default_context(), expect::result, args::vec, args::indices); \
 } \
 

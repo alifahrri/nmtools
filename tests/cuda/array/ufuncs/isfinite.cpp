@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define ISFINITE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, isfinite, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, isfinite, case_name); \
     using namespace args; \
     auto result = na::isfinite(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::isfinite(__VA_ARGS__); \

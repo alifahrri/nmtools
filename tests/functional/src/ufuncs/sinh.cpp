@@ -19,7 +19,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("sinh(case1)" * doctest::test_suite("functional::sinh"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, sinh, case1);
+    NMTOOLS_TESTING_USE_CASE(view, sinh, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::sinh, a );
@@ -33,7 +33,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("sinh" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,sinh,case1);
+    NMTOOLS_TESTING_USE_CASE(view,sinh,case1);
     using namespace args;
 
     auto array = view::sinh(a);
@@ -46,7 +46,7 @@ TEST_CASE("sinh" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("sinh" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,sinh,case1);
+    NMTOOLS_TESTING_USE_CASE(view,sinh,case1);
     using namespace args;
 
     auto array = view::sinh(a);

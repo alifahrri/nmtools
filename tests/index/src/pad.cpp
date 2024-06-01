@@ -28,7 +28,7 @@ RUN_shape_pad_impl(__VA_ARGS__);
 #define SHAPE_PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_pad, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_pad, case_name); \
     using namespace args; \
     auto result = RUN_shape_pad(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -100,7 +100,7 @@ TEST_CASE("shape_pad(case6)" * doctest::test_suite("index::shape_pad"))
 #define CONSTEXPR_SHAPE_PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, constexpr_shape_pad, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, constexpr_shape_pad, case_name); \
     using namespace args; \
     constexpr auto result = RUN_shape_pad_impl(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -177,7 +177,7 @@ RUN_index_pad_impl(__VA_ARGS__);
 #define INDEX_PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, pad, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, pad, case_name); \
     using namespace args; \
     auto result = RUN_index_pad(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

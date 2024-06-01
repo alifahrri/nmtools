@@ -23,7 +23,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("flatten(case1)" * doctest::test_suite("functional::reshape"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flatten,case1);
+    NMTOOLS_TESTING_USE_CASE(flatten,case1);
     using namespace args;
 
     FLATTEN_SUBCASE( "case1", fn::flatten, array );
@@ -35,7 +35,7 @@ TEST_CASE("flatten(case1)" * doctest::test_suite("functional::reshape"))
 
 TEST_CASE("flatten(case2)" * doctest::test_suite("functional::reshape"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flatten,case2);
+    NMTOOLS_TESTING_USE_CASE(flatten,case2);
     using namespace args;
 
     FLATTEN_SUBCASE( "case2", fn::flatten, array );
@@ -47,7 +47,7 @@ TEST_CASE("flatten(case2)" * doctest::test_suite("functional::reshape"))
 
 TEST_CASE("flatten(case3)" * doctest::test_suite("functional::reshape"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flatten,case3);
+    NMTOOLS_TESTING_USE_CASE(flatten,case3);
     using namespace args;
 
     FLATTEN_SUBCASE( "case3", fn::flatten, array );
@@ -59,7 +59,7 @@ TEST_CASE("flatten(case3)" * doctest::test_suite("functional::reshape"))
 
 TEST_CASE("flatten(case4)" * doctest::test_suite("functional::reshape"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flatten,case4);
+    NMTOOLS_TESTING_USE_CASE(flatten,case4);
     using namespace args;
 
     FLATTEN_SUBCASE( "case4", fn::flatten, array );
@@ -71,7 +71,7 @@ TEST_CASE("flatten(case4)" * doctest::test_suite("functional::reshape"))
 
 TEST_CASE("constexpr_flatten(case4)" * doctest::test_suite("functional::reshape"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_flatten,case4);
+    NMTOOLS_TESTING_USE_CASE(constexpr_flatten,case4);
     using namespace args;
 
     FLATTEN_SUBCASE( "case4", fn::flatten, array );
@@ -85,7 +85,7 @@ using nmtools::unwrap;
 
 TEST_CASE("flatten" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(flatten,case4);
+    NMTOOLS_TESTING_USE_CASE(flatten,case4);
     using namespace args;
 
     auto a = view::flatten(array);
@@ -98,7 +98,7 @@ TEST_CASE("flatten" * doctest::test_suite("functional::get_function_composition"
 
 TEST_CASE("flatten" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(flatten,case4);
+    NMTOOLS_TESTING_USE_CASE(flatten,case4);
     using namespace args;
 
     auto a = view::flatten(array);

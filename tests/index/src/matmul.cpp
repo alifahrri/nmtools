@@ -405,7 +405,7 @@ RUN_split_impl(__VA_ARGS__);
 #define SPLIT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, split, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, split, case_name); \
     using namespace args; \
     auto result = RUN_split(case_name, __VA_ARGS__); \
     auto lhs = nmtools::get<0>(result); \
@@ -494,7 +494,7 @@ RUN_shape_matmul_impl(__VA_ARGS__);
 #define SHAPE_MATMUL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, shape_matmul, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, shape_matmul, case_name); \
     using namespace args; \
     auto result = RUN_shape_matmul(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -697,7 +697,7 @@ RUN_index_matmul_impl(__VA_ARGS__);
 #define INDEX_MATMUL_SUBCASE(case_name, res_left, res_right, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, matmul, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, matmul, case_name); \
     using namespace args; \
     auto result = RUN_index_matmul(case_name, __VA_ARGS__); \
     auto left   = nmtools::get<0>(result); \
@@ -711,7 +711,7 @@ SUBCASE(#case_name) \
 #define DYNAMIC_INDEX_MATMUL_SUBCASE(case_name, res_left, res_right, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, matmul, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, matmul, case_name); \
     using namespace args; \
     auto result = RUN_index_matmul(case_name, __VA_ARGS__); \
     auto left   = nmtools::get<0>(result); \

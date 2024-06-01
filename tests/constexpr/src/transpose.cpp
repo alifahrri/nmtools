@@ -17,7 +17,7 @@ namespace na = nm::array;
 #define CONSTEXPR_TRANSPOSE_SUBCASE(case_name, array, axes) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( constexpr_transpose, case_name ); \
+    NMTOOLS_TESTING_USE_CASE( constexpr_transpose, case_name ); \
     constexpr auto array = na::transpose(args::array, args::axes); \
     NMTOOLS_STATIC_ASSERT_CLOSE( array, expect::expected ); \
 }

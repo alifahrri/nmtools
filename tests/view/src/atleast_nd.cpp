@@ -31,7 +31,7 @@ using namespace nm::literals;
 #define ATLEAST_1D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_1d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, atleast_1d, case_name); \
     using namespace args; \
     auto result = view::atleast_nd(__VA_ARGS__, 1_ct); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -40,7 +40,7 @@ SUBCASE(#case_name) \
 #define ATLEAST_2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, atleast_2d, case_name); \
     using namespace args; \
     auto result = view::atleast_nd(__VA_ARGS__, 2_ct); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -49,7 +49,7 @@ SUBCASE(#case_name) \
 #define ATLEAST_3D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_3d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case_name); \
     using namespace args; \
     auto result = view::atleast_nd(__VA_ARGS__, 3_ct); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

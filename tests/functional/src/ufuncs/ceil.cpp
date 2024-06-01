@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("ceil(case1)" * doctest::test_suite("functional::ceil"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, ceil, case1);
+    NMTOOLS_TESTING_USE_CASE(view, ceil, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::ceil, a );
@@ -30,7 +30,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("ceil" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,ceil,case1);
+    NMTOOLS_TESTING_USE_CASE(view,ceil,case1);
     using namespace args;
 
     auto array = view::ceil(a);
@@ -43,7 +43,7 @@ TEST_CASE("ceil" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("ceil" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,ceil,case1);
+    NMTOOLS_TESTING_USE_CASE(view,ceil,case1);
     using namespace args;
 
     auto array = view::ceil(a);

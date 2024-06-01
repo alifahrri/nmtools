@@ -70,7 +70,7 @@ RUN_add_impl(__VA_ARGS__);
 #define ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, add, case_name); \
     using namespace args; \
     auto result = RUN_add(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -80,7 +80,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_add, case_name); \
     using namespace args; \
     constexpr auto result = RUN_add(case_name, __VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -113,7 +113,7 @@ RUN_reduce_add_impl(__VA_ARGS__);
 #define REDUCE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_add, case_name); \
     using namespace args; \
     auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -123,7 +123,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_REDUCE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_reduce_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_reduce_add, case_name); \
     using namespace args; \
     constexpr auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -156,7 +156,7 @@ RUN_accumulate_add_impl(__VA_ARGS__);
 #define ACCUMULATE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_add, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -166,7 +166,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_ACCUMULATE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_accumulate_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_accumulate_add, case_name); \
     using namespace args; \
     constexpr auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -199,7 +199,7 @@ RUN_outer_add_impl(__VA_ARGS__);
 #define OUTER_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_add, case_name); \
     using namespace args; \
     auto result = RUN_outer_add(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -209,7 +209,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_OUTER_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_outer_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_outer_add, case_name); \
     using namespace args; \
     constexpr auto result = RUN_outer_add(case_name, __VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

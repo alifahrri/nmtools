@@ -10,7 +10,7 @@ namespace kind = na::kind;
 #define FREE_AXES_SUBCASE(case_name, a, b) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(free_axes, case_name); \
+    NMTOOLS_TESTING_USE_CASE(free_axes, case_name); \
     auto result = ::nmtools::index::free_axes(args::a, args::b); \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES(result, expect::x, args::a, args::b); \
 }

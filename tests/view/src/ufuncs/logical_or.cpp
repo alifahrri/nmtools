@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define LOGICAL_OR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, logical_or, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, logical_or, case_name); \
     using namespace args; \
     auto result = view::logical_or( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -37,7 +37,7 @@ TEST_CASE("logical_or(case2)" * doctest::test_suite("view::logical_or"))
 #define REDUCE_LOGICAL_OR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_logical_or, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_logical_or, case_name); \
     using namespace args; \
     auto result = view::reduce_logical_or(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

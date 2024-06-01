@@ -50,7 +50,7 @@ TEST_CASE("flatten_add(case1)" * doctest::test_suite("functional::composition"))
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case1);
+    NMTOOLS_TESTING_USE_CASE(view,add,case1);
     using namespace args;
     auto flattened = na::flatten(expect::result);
 
@@ -82,7 +82,7 @@ TEST_CASE("flatten_add(case2)" * doctest::test_suite("functional::composition"))
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case2);
+    NMTOOLS_TESTING_USE_CASE(view,add,case2);
     using namespace args;
     auto flattened = na::flatten(expect::result);
 
@@ -116,7 +116,7 @@ TEST_CASE("flatten_add(case3)" * doctest::test_suite("functional::composition"))
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case3);
+    NMTOOLS_TESTING_USE_CASE(view,add,case3);
     using namespace args;
     auto flattened = na::flatten(expect::result);
 
@@ -137,7 +137,7 @@ TEST_CASE("flatten_add(case4)" * doctest::test_suite("functional::composition"))
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case4);
+    NMTOOLS_TESTING_USE_CASE(view,add,case4);
     using namespace args;
     auto flattened = na::flatten(expect::result);
 
@@ -171,7 +171,7 @@ TEST_CASE("constexpr_flatten_add(case1)" * doctest::test_suite("functional::comp
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(array,constexpr_add,case1);
+    NMTOOLS_TESTING_USE_CASE(array,constexpr_add,case1);
     using namespace args;
     constexpr auto flattened = na::flatten(expect::result);
 
@@ -201,7 +201,7 @@ TEST_CASE("flatten_reduce_add(case1)" * doctest::test_suite("functional::composi
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case1);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_add,case1);
     using namespace args;
     auto flattened = na::flatten(expect::result);
 
@@ -220,7 +220,7 @@ TEST_CASE("flatten_reduce_add(case4)" * doctest::test_suite("functional::composi
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case4);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_add,case4);
     using namespace args;
     auto flattened = na::flatten(expect::result);
 
@@ -246,7 +246,7 @@ TEST_CASE("flatten_reduce_add(case9)" * doctest::test_suite("functional::composi
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_add,case9);
     using namespace args;
     auto flattened = na::flatten(expect::result);
 
@@ -265,7 +265,7 @@ TEST_CASE("flatten_reduce_add(case14)" * doctest::test_suite("functional::compos
 {
 
     // TODO: rename test case to array::add instead of view::add
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_add,case14);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_add,case14);
     using namespace args;
     auto flattened = na::flatten(expect::result);
 

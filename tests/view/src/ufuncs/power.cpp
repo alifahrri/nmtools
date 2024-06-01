@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define POWER_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, power, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, power, case_name); \
     using namespace args; \
     auto result = view::power( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -37,7 +37,7 @@ TEST_CASE("power(case2)" * doctest::test_suite("view::power"))
 #define REDUCE_POWER_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_power, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_power, case_name); \
     using namespace args; \
     auto result = view::reduce_power(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -128,7 +128,7 @@ TEST_CASE("reduce_power(case9)" * doctest::test_suite("view::reduce_power"))
 #define ACCUMULATE_POWER_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_power, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_power, case_name); \
     using namespace args; \
     auto result = view::accumulate_power(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -160,7 +160,7 @@ TEST_CASE("accumulate_power(case2)" * doctest::test_suite("view::accumulate_powe
 #define OUTER_POWER_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_power, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_power, case_name); \
     using namespace args; \
     auto result = view::outer_power(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

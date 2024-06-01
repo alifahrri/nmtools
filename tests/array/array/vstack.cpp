@@ -28,7 +28,7 @@ namespace meta = nm::meta;
 #define VSTACK_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( vstack, case_name ) \
+    NMTOOLS_TESTING_USE_CASE( vstack, case_name ) \
     using namespace args; \
     auto result = nmtools::array::vstack(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect::result) ); \

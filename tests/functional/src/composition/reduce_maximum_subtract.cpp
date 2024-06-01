@@ -11,7 +11,7 @@ using nmtools::unwrap;
 
 TEST_CASE("reduce_maximum_subtract" * doctest::test_suite("functional::get_function_composition") )
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_maximum,case1);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_maximum,case1);
     using namespace args;
 
     auto dtype = nm::None;
@@ -36,7 +36,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("reduce_maximum_subtract" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_maximum,case1);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_maximum,case1);
     using namespace args;
 
     auto dtype = nm::None;
@@ -56,7 +56,7 @@ TEST_CASE("reduce_maximum_subtract" * doctest::test_suite("functional::get_funct
 
 TEST_CASE("reduce_maximum_subtract" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_maximum,case1);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_maximum,case1);
     using namespace args;
 
     auto dtype = nm::None;

@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("log(case1)" * doctest::test_suite("functional::log"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, log, case1);
+    NMTOOLS_TESTING_USE_CASE(view, log, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::log, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("log" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,log,case1);
+    NMTOOLS_TESTING_USE_CASE(view,log,case1);
     using namespace args;
 
     auto array = view::log(a);
@@ -42,7 +42,7 @@ TEST_CASE("log" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("log" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,log,case1);
+    NMTOOLS_TESTING_USE_CASE(view,log,case1);
     using namespace args;
 
     auto array = view::log(a);

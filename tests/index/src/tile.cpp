@@ -216,7 +216,7 @@ RUN_shape_tile_impl(__VA_ARGS__);
 #define SHAPE_TILE_SUBCASE(case_name,shape,reps) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( shape_tile, case_name ); \
+    NMTOOLS_TESTING_USE_CASE( shape_tile, case_name ); \
     auto result = RUN_shape_tile( case_name, args::shape,args::reps ); \
     NMTOOLS_ASSERT_EQUAL( result, expect:: result ); \
 }
@@ -224,7 +224,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_SHAPE_TILE_SUBCASE(case_name,shape,reps) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( constexpr_shape_tile, case_name ); \
+    NMTOOLS_TESTING_USE_CASE( constexpr_shape_tile, case_name ); \
     constexpr auto result = RUN_shape_tile_impl( args::shape,args::reps ); \
     NMTOOLS_ASSERT_EQUAL( result, expect:: result ); \
 }
@@ -568,7 +568,7 @@ RUN_impl(__VA_ARGS__);
 #define TILE_SUBCASE(case_name, shape, reps, indices) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(tile, case_name) \
+    NMTOOLS_TESTING_USE_CASE(tile, case_name) \
     auto result = RUN_tile(case_name, args::shape, args::reps, args::indices); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }

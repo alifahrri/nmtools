@@ -36,7 +36,7 @@ RUN_shape_repeat_impl(__VA_ARGS__);
 #define SHAPE_REPEAT_SUBCASE(case_name,ashape,repeats,axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(shape_repeat, case_name); \
+    NMTOOLS_TESTING_USE_CASE(shape_repeat, case_name); \
     auto shape = RUN_shape_repeat(case_name, args::ashape, args::repeats, args::axis); \
     NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
 }
@@ -44,7 +44,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_SHAPE_REPEAT_SUBCASE(case_name,ashape,repeats,axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_shape_repeat, case_name); \
+    NMTOOLS_TESTING_USE_CASE(constexpr_shape_repeat, case_name); \
     constexpr auto shape = RUN_shape_repeat_impl( args::ashape, args::repeats, args::axis ); \
     NMTOOLS_ASSERT_EQUAL( shape, expect::shape ); \
 }
@@ -209,7 +209,7 @@ RUN_impl(__VA_ARGS__);
 #define REPEAT_SUBCASE(case_name, shape, indices, repeats, axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(repeat, case_name); \
+    NMTOOLS_TESTING_USE_CASE(repeat, case_name); \
     auto result = RUN_repeat(case_name, args::shape, args::indices, args::repeats, args::axis); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }

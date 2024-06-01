@@ -40,7 +40,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("add(case1)" * doctest::test_suite("functional::add"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case1);
+    NMTOOLS_TESTING_USE_CASE(view,add,case1);
     using namespace args;
 
     ADD_SUBCASE("case1", fn::add, a,   b);
@@ -58,7 +58,7 @@ TEST_CASE("add(case1)" * doctest::test_suite("functional::add"))
 
 TEST_CASE("add(case2)" * doctest::test_suite("functional::add"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case2);
+    NMTOOLS_TESTING_USE_CASE(view,add,case2);
     using namespace args;
 
     ADD_SUBCASE("case2", fn::add, a,   b);
@@ -76,7 +76,7 @@ TEST_CASE("add(case2)" * doctest::test_suite("functional::add"))
 
 TEST_CASE("add(case3)" * doctest::test_suite("functional::add"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case3);
+    NMTOOLS_TESTING_USE_CASE(view,add,case3);
     using namespace args;
 
     ADD_SUBCASE("case3", fn::add, a, b);
@@ -85,7 +85,7 @@ TEST_CASE("add(case3)" * doctest::test_suite("functional::add"))
 
 TEST_CASE("add(case4)" * doctest::test_suite("functional::add"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case4);
+    NMTOOLS_TESTING_USE_CASE(view,add,case4);
     using namespace args;
 
     ADD_SUBCASE("case4", fn::add, a,   b);
@@ -105,7 +105,7 @@ TEST_CASE("add(case4)" * doctest::test_suite("functional::add"))
 #if 0
 TEST_CASE("constexpr_add(case1)" * doctest::test_suite("functional::add"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,constexpr_add,case1);
+    NMTOOLS_TESTING_USE_CASE(array,constexpr_add,case1);
     using namespace args;
 
     CONSTEXPR_ADD_SUBCASE("case1", fn::add, a,   b);
@@ -124,7 +124,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("add" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,add,case1);
+    NMTOOLS_TESTING_USE_CASE(view,add,case1);
     using namespace args;
 
     auto array = view::add(a,b);

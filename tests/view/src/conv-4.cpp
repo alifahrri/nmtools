@@ -49,7 +49,7 @@ RUN_conv2d_impl(__VA_ARGS__);
 #define CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, conv2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, conv2d, case_name); \
     using namespace args; \
     auto result = RUN_conv2d(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \

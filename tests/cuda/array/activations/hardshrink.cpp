@@ -26,7 +26,7 @@ namespace cuda = na::cuda;
 
 #define HARDSHRINK_SUBCASE(case_name, ...) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, hardshrink, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, hardshrink, case_name); \
     using namespace args; \
     auto result = na::hardshrink(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::hardshrink(__VA_ARGS__); \

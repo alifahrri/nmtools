@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, multiply, case_name); \
     using namespace args; \
     auto result = view::multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -37,7 +37,7 @@ TEST_CASE("multiply(case2)" * doctest::test_suite("view::multiply"))
 #define REDUCE_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case_name); \
     using namespace args; \
     auto result = view::reduce_multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -193,7 +193,7 @@ TEST_CASE("reduce_multiply(case18)" * doctest::test_suite("view::reduce_multiply
 #define ACCUMULATE_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_multiply, case_name); \
     using namespace args; \
     auto result = view::accumulate_multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -233,7 +233,7 @@ TEST_CASE("accumulate_multiply(case3)" * doctest::test_suite("view::accumulate_m
 #define OUTER_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_multiply, case_name); \
     using namespace args; \
     auto result = view::outer_multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

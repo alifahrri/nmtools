@@ -38,7 +38,7 @@ RUN_cosh_impl(__VA_ARGS__);
 #define COSH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, cosh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, cosh, case_name); \
     using namespace args; \
     auto result = RUN_cosh(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

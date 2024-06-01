@@ -25,7 +25,7 @@ namespace na = nm::array;
 
 #define PRELU_SUBCASE(case_name, ...) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, prelu, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, prelu, case_name); \
     using namespace args; \
     auto result = na::prelu(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::prelu(__VA_ARGS__); \

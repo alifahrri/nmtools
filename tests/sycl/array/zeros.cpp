@@ -17,7 +17,7 @@ namespace na = nm::array;
 #define ZEROS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, zeros, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, zeros, case_name); \
     using namespace args; \
     SYCL_ZEROS_SUBCASE(__VA_ARGS__); \
 }

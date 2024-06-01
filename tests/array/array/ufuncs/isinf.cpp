@@ -35,7 +35,7 @@ RUN_isinf_impl(__VA_ARGS__);
 #define ISINF_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, isinf, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, isinf, case_name); \
     using namespace args; \
     auto result = RUN_isinf(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

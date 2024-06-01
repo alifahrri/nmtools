@@ -101,7 +101,7 @@ RUN_square_sum_impl(__VA_ARGS__);
 #define SQUARE_SUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(composition, square_sum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(composition, square_sum, case_name); \
     using namespace args; \
     auto result = RUN_square_sum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -116,7 +116,7 @@ TEST_CASE("square_sum(case1)" * doctest::test_suite("composition::square_sum"))
     // SQUARE_SUM_SUBCASE( case1, a_d, axis, keepdims );
 
     {
-        NMTOOLS_TESTING_DECLARE_NS(composition, square_sum, case1);
+        NMTOOLS_TESTING_USE_CASE(composition, square_sum, case1);
         using namespace args;
 
         auto view = composition::square_sum(a, axis, dtype, keepdims);
@@ -344,7 +344,7 @@ RUN_square_sum_divide_impl(__VA_ARGS__);
 #define SQUARE_SUM_DIVIDE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(composition, square_sum_divide, case_name); \
+    NMTOOLS_TESTING_USE_CASE(composition, square_sum_divide, case_name); \
     using namespace args; \
     auto result = RUN_square_sum_divide(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -368,7 +368,7 @@ TEST_CASE("square_sum_divide(case2)" * doctest::test_suite("composition::square_
     // SQUARE_SUM_DIVIDE_SUBCASE( case2, a_d, N, axis, dtype, keepdims );
 
     {
-        NMTOOLS_TESTING_DECLARE_NS(composition, square_sum_divide, case2);
+        NMTOOLS_TESTING_USE_CASE(composition, square_sum_divide, case2);
         using namespace args;
 
         auto view = composition::square_sum_divide(a, N, axis, dtype, keepdims);

@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("elu(case1)" * doctest::test_suite("functional::elu"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::elu, a );
@@ -27,7 +27,7 @@ TEST_CASE("elu(case1)" * doctest::test_suite("functional::elu"))
 
 TEST_CASE("elu(case2)" * doctest::test_suite("functional::elu"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case2);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case2", fn::elu[alpha], a );
@@ -44,7 +44,7 @@ namespace fun = view::fun;
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case2);
     using namespace args;
 
     auto array = view::elu(a);
@@ -59,7 +59,7 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case2);
     using namespace args;
 
     auto array = view::elu(a,alpha);
@@ -74,7 +74,7 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case2);
     using namespace args;
 
     auto array = view::elu(a,alpha);
@@ -92,7 +92,7 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case2);
     using namespace args;
 
     auto array = view::elu(a,{.alpha=alpha});
@@ -118,7 +118,7 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case2);
     using namespace args;
 
     auto array = view::elu(a,{.alpha=0.1f});
@@ -135,7 +135,7 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case2);
     using namespace args;
 
     auto array = view::elu(a,{.alpha=0.1f});
@@ -153,7 +153,7 @@ TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("elu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,elu,case2);
+    NMTOOLS_TESTING_USE_CASE(activations,elu,case2);
     using namespace args;
 
     auto array = view::elu(a,{.alpha=0.1f});

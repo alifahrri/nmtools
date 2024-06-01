@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define EXPM1_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, expm1, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, expm1, case_name); \
     using namespace args; \
     auto result = na::expm1(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::expm1(__VA_ARGS__); \

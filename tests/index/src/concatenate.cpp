@@ -118,7 +118,7 @@ RUN_shape_concatenate_impl(__VA_ARGS__);
 #define SHAPE_CONCATENATE_SUBCASE(case_name, ashape, bshape, axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(shape_concatenate, case_name) \
+    NMTOOLS_TESTING_USE_CASE(shape_concatenate, case_name) \
     auto result = RUN_shape_concatenate(case_name, args::ashape, args::bshape, args::axis); \
     auto success = nmtools::get<0>(result); \
     auto shape = nmtools::get<1>(result); \
@@ -130,7 +130,7 @@ SUBCASE(#case_name) \
 #define SHAPE_CONCATENATE_SUBCASE(case_name, ashape, bshape, axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(shape_concatenate, case_name) \
+    NMTOOLS_TESTING_USE_CASE(shape_concatenate, case_name) \
     const auto [success, shape] = RUN_shape_concatenate(case_name, args::ashape, args::bshape, args::axis); \
     NMTOOLS_ASSERT_EQUAL( success, expect::success ); \
     if (expect::success) \
@@ -484,7 +484,7 @@ RUN_impl(__VA_ARGS__);
 #define CONCATENATE_SUBCASE(case_name, ashape, bshape, indices, axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index,concatenate,case_name); \
+    NMTOOLS_TESTING_USE_CASE(index,concatenate,case_name); \
     auto result = RUN_concatenate(case_name,args::ashape,args::bshape,args::indices,args::axis); \
     auto aflag = nmtools::get<0>(result) ; \
     auto bflag = nmtools::get<1>(result) ; \
@@ -501,7 +501,7 @@ SUBCASE(#case_name) \
 #define CONCATENATE_SUBCASE(case_name, ashape, bshape, indices, axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index,concatenate,case_name); \
+    NMTOOLS_TESTING_USE_CASE(index,concatenate,case_name); \
     const auto [aflag,bflag,a_idx,b_idx] = RUN_concatenate(case_name, args::ashape,args::bshape,args::indices,args::axis); \
     NMTOOLS_ASSERT_EQUAL( aflag, expect::aflag ); \
     NMTOOLS_ASSERT_EQUAL( bflag, expect::bflag ); \

@@ -17,7 +17,7 @@ SUBCASE(subcase_name) \
 // TODO: fix runtime
 TEST_CASE("take(case1)" * doctest::test_suite("functional::take") * doctest::skip())
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, take, case1);
+    NMTOOLS_TESTING_USE_CASE(view, take, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::take[indices][axis], array );

@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("tile(case1)" * doctest::test_suite("functional::tile"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, tile, case1);
+    NMTOOLS_TESTING_USE_CASE(view, tile, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::tile[reps], array );
@@ -30,7 +30,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("tile" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,tile,case1);
+    NMTOOLS_TESTING_USE_CASE(view,tile,case1);
     using namespace args;
 
     auto a = view::tile(array,reps);
@@ -43,7 +43,7 @@ TEST_CASE("tile" * doctest::test_suite("functional::get_function_composition") *
 
 TEST_CASE("tile" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,tile,case1);
+    NMTOOLS_TESTING_USE_CASE(view,tile,case1);
     using namespace args;
 
     auto a = view::tile(array,reps);

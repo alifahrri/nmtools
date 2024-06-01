@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define LOGICAL_XOR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, logical_xor, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, logical_xor, case_name); \
     using namespace args; \
     auto result = view::logical_xor( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -37,7 +37,7 @@ TEST_CASE("logical_xor(case2)" * doctest::test_suite("view::logical_xor"))
 #define REDUCE_LOGICAL_XOR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_logical_xor, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_logical_xor, case_name); \
     using namespace args; \
     auto result = view::reduce_logical_xor( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

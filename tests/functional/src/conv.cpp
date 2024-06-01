@@ -39,7 +39,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("conv2d(case1)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case1);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case1);
     using namespace args;
 
     CONV2D_SUBCASE( "case1", fn::conv2d, input, weight );
@@ -57,7 +57,7 @@ TEST_CASE("conv2d(case1)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case2)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case2);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case2);
     using namespace args;
 
     CONV2D_SUBCASE( "case2", fn::conv2d, input, weight );
@@ -75,7 +75,7 @@ TEST_CASE("conv2d(case2)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case3)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case3);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case3);
     using namespace args;
 
     CONV2D_SUBCASE( "case3", fn::conv2d, input, weight );
@@ -95,7 +95,7 @@ using nmtools::None;
 
 TEST_CASE("conv2d(case4)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case4);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case4);
     using namespace args;
 
     CONV2D_SUBCASE( "case4", fn::conv2d, input, weight );
@@ -125,7 +125,7 @@ TEST_CASE("conv2d(case4)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case5)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case5);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case5);
     using namespace args;
 
     CONV2D_SUBCASE( "case5", fn::conv2d[stride], input, weight );
@@ -143,7 +143,7 @@ TEST_CASE("conv2d(case5)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case6)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case6);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case6);
     using namespace args;
 
     CONV2D_SUBCASE( "case6", fn::conv2d[stride], input, weight );
@@ -161,7 +161,7 @@ TEST_CASE("conv2d(case6)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case7)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case7);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case7);
     using namespace args;
 
     CONV2D_SUBCASE( "case7", fn::conv2d[stride], input, weight );
@@ -179,7 +179,7 @@ TEST_CASE("conv2d(case7)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case8)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case8);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case8);
     using namespace args;
 
     CONV2D_SUBCASE( "case8", fn::conv2d[stride], input, weight );
@@ -197,7 +197,7 @@ TEST_CASE("conv2d(case8)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case9)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case9);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case9);
     using namespace args;
 
     CONV2D_SUBCASE( "case9", fn::conv2d[stride], input, weight );
@@ -215,7 +215,7 @@ TEST_CASE("conv2d(case9)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case10)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case10);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case10);
     using namespace args;
 
     CONV2D_SUBCASE( "case10", fn::conv2d[stride], input, weight );
@@ -233,7 +233,7 @@ TEST_CASE("conv2d(case10)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case11)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case11);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case11);
     using namespace args;
 
     CONV2D_SUBCASE( "case11", fn::conv2d[stride][padding], input, weight );
@@ -257,7 +257,7 @@ TEST_CASE("conv2d(case11)" * doctest::test_suite("functional::conv2d"))
 
 TEST_CASE("conv2d(case16)" * doctest::test_suite("functional::conv2d"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,conv2d,case16);
+    NMTOOLS_TESTING_USE_CASE(array,conv2d,case16);
     using namespace args;
 
     CONV2D_BIAS_SUBCASE( "case16", fn::conv2d_bias[stride][padding], input, weight, bias );

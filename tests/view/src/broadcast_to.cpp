@@ -29,7 +29,7 @@ namespace view = nm::view;
 #define BROADCAST_TO_SUBCASE(case_name, array, shape_, expected) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case_name); \
+    NMTOOLS_TESTING_USE_CASE(broadcast_to, case_name); \
     auto array_ref = view::broadcast_to(args::array,args::shape_); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), nmtools::shape(expect::expected) ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \

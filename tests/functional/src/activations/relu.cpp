@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("relu(case1)" * doctest::test_suite("functional::relu"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,relu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,relu,case1);
     using namespace args;
 
     RELU_SUBCASE("case1", fn::relu, a);
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("relu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,relu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,relu,case1);
     using namespace args;
 
     auto array = view::relu(a);
@@ -43,7 +43,7 @@ TEST_CASE("relu" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("relu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,relu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,relu,case1);
     using namespace args;
 
     auto array = view::relu(a);

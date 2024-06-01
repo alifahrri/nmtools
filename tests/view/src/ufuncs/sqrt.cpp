@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define SQRT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, sqrt, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, sqrt, case_name); \
     using namespace args; \
     auto result = view::sqrt(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

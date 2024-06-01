@@ -24,7 +24,7 @@ SUBCASE(subcase_name) \
 TEST_CASE("multiply(case1)" * doctest::test_suite("functional::multiply"))
 {
     // TODO: rename namespace to (array, multiply)
-    NMTOOLS_TESTING_DECLARE_NS(view, multiply, case1);
+    NMTOOLS_TESTING_USE_CASE(view, multiply, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::multiply, a, b );
@@ -43,7 +43,7 @@ TEST_CASE("multiply(case1)" * doctest::test_suite("functional::multiply"))
 TEST_CASE("reduce_multiply(case1)" * doctest::test_suite("functional::multiply"))
 {
     // TODO: rename namespace to (array, reduce_multiply)
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case1);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::reduce_multiply[axis], a );
@@ -56,7 +56,7 @@ TEST_CASE("reduce_multiply(case1)" * doctest::test_suite("functional::multiply")
 TEST_CASE("reduce_multiply(case4)" * doctest::test_suite("functional::multiply"))
 {
     // TODO: rename namespace to (array, reduce_multiply)
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case4);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case4);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case4", fn::reduce_multiply[axis], a );
@@ -69,7 +69,7 @@ TEST_CASE("reduce_multiply(case4)" * doctest::test_suite("functional::multiply")
 TEST_CASE("reduce_multiply(case8)" * doctest::test_suite("functional::multiply"))
 {
     // TODO: rename namespace to (array, reduce_multiply)
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case8);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case8);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case8", fn::reduce_multiply[axis][dtype][initial], a );
@@ -82,7 +82,7 @@ TEST_CASE("reduce_multiply(case8)" * doctest::test_suite("functional::multiply")
 TEST_CASE("reduce_multiply(case9)" * doctest::test_suite("functional::multiply"))
 {
     // TODO: rename namespace to (array, reduce_multiply)
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_multiply, case9);
+    NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case9);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case9", fn::reduce_multiply[axis][dtype][initial][keepdims], a );
@@ -94,7 +94,7 @@ TEST_CASE("reduce_multiply(case9)" * doctest::test_suite("functional::multiply")
 
 TEST_CASE("accumulate_multiply(case1)" * doctest::test_suite("functional::multiply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_multiply, case1);
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_multiply, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::accumulate_multiply[axis], a );
@@ -106,7 +106,7 @@ TEST_CASE("accumulate_multiply(case1)" * doctest::test_suite("functional::multip
 
 TEST_CASE("outer_multiply(case1)" * doctest::test_suite("functional::multiply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_multiply, case1);
+    NMTOOLS_TESTING_USE_CASE(view, outer_multiply, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::outer_multiply, a, b );
@@ -126,7 +126,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,multiply,case1);
+    NMTOOLS_TESTING_USE_CASE(view,multiply,case1);
     using namespace args;
 
     auto array = view::multiply(a,b);
@@ -142,7 +142,7 @@ namespace kwargs = nmtools::args;
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto array = view::reduce_multiply(a,axis,dtype,initial,keepdims);
@@ -162,7 +162,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto op = view::multiply_t<>{};
@@ -183,7 +183,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto op = view::multiply_t<>{};
@@ -207,7 +207,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 #ifndef __clang__
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto kwargs = kwargs::reduce{
@@ -229,7 +229,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto array = view::reduce_multiply(a,axis,dtype,initial,keepdims);
@@ -249,7 +249,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto op = view::multiply_t<>{};
@@ -271,7 +271,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto op = view::multiply_t<>{};
@@ -299,7 +299,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto array = view::reduce_multiply(a,kwargs::reduce{
@@ -324,7 +324,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto op = view::multiply_t{};
@@ -350,7 +350,7 @@ TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_comp
 
 TEST_CASE("reduce_multiply" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,reduce_multiply,case9);
+    NMTOOLS_TESTING_USE_CASE(view,reduce_multiply,case9);
     using namespace args;
 
     auto op = view::multiply_t{};

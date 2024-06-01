@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define ARCTANH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, arctanh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, arctanh, case_name); \
     using namespace args; \
     auto result = na::arctanh(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::arctanh(__VA_ARGS__); \

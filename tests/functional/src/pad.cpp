@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("pad(case1)" * doctest::test_suite("functional::pad"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, pad, case1);
+    NMTOOLS_TESTING_USE_CASE(array, pad, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::pad[pad_width], array );
@@ -30,7 +30,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("pad" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array,pad,case1);
+    NMTOOLS_TESTING_USE_CASE(array,pad,case1);
     using namespace args;
 
     auto pad_value = 0.0f;

@@ -51,7 +51,7 @@ RUN_impl(__VA_ARGS__);
 #define RESHAPE_SUBCASE(case_name, array, newshape) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(reshape, case_name) \
+    NMTOOLS_TESTING_USE_CASE(reshape, case_name) \
     auto array_ref = RUN_reshape(case_name, args::array, args::newshape); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }

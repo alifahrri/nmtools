@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, maximum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, maximum, case_name); \
     using namespace args; \
     auto result = view::maximum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -37,7 +37,7 @@ TEST_CASE("maximum(case2)" * doctest::test_suite("view::maximum"))
 #define REDUCE_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_maximum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_maximum, case_name); \
     using namespace args; \
     auto result = view::reduce_maximum( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -195,7 +195,7 @@ TEST_CASE("reduce_maximum(case17)" * doctest::test_suite("view::reduce_maximum")
 #define ACCUMULATE_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_maximum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_maximum, case_name); \
     using namespace args; \
     auto result = view::accumulate_maximum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
@@ -235,7 +235,7 @@ TEST_CASE("accumulate_maximum(case3)" * doctest::test_suite("view::accumulate_ma
 #define OUTER_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_maximum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_maximum, case_name); \
     using namespace args; \
     auto result = view::outer_maximum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define ISINF_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, isinf, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, isinf, case_name); \
     using namespace args; \
     auto result = na::isinf(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::isinf(__VA_ARGS__); \

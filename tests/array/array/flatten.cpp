@@ -51,7 +51,7 @@ RUN_impl(__VA_ARGS__);
 #define FLATTEN_SUBCASE(case_name, array) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(flatten,case_name); \
+    NMTOOLS_TESTING_USE_CASE(flatten,case_name); \
     auto array_ref = RUN_flatten(case_name, args::array); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_ref), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \

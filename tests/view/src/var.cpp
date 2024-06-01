@@ -23,7 +23,7 @@ namespace nm = nmtools;
 #define VAR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, var, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, var, case_name); \
     using namespace args; \
     auto result = nmtools::view::var(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -305,7 +305,7 @@ namespace meta = nm::meta;
 TEST_CASE("var(case10)" * doctest::test_suite("view::var"))
 {
     {
-        NMTOOLS_TESTING_DECLARE_NS(array, var, case10);
+        NMTOOLS_TESTING_USE_CASE(array, var, case10);
         using namespace args;
 
         auto var = view::var(array, axis, nm::None, ddof, keepdims );

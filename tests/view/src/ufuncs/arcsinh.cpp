@@ -35,7 +35,7 @@ RUN_arcsinh_impl(__VA_ARGS__);
 #define ARCSINH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, arcsinh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, arcsinh, case_name); \
     using namespace args; \
     auto result = RUN_arcsinh(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \

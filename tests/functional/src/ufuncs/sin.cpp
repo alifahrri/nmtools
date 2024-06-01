@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("sin(case1)" * doctest::test_suite("functional::sin"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, sin, case1);
+    NMTOOLS_TESTING_USE_CASE(view, sin, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::sin, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("sin" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,sin,case1);
+    NMTOOLS_TESTING_USE_CASE(view,sin,case1);
     using namespace args;
 
     auto array = view::sin(a);
@@ -42,7 +42,7 @@ TEST_CASE("sin" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("sin" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,sin,case1);
+    NMTOOLS_TESTING_USE_CASE(view,sin,case1);
     using namespace args;
 
     auto array = view::sin(a);

@@ -9,7 +9,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("fabs_square" * doctest::test_suite("functional::get_function_composition") )
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto x = view::fabs(a);
@@ -29,7 +29,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("fabs_square" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto x = view::fabs(a);
@@ -43,7 +43,7 @@ TEST_CASE("fabs_square" * doctest::test_suite("functional::get_function_operands
 
 TEST_CASE("fabs_square" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto x = view::fabs(a);

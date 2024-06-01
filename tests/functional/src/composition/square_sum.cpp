@@ -12,7 +12,7 @@ using nmtools::unwrap;
 
 TEST_CASE("square_sum" * doctest::test_suite("functional::get_function_composition") )
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto axis = 0;
@@ -34,7 +34,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("square_sum" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto axis = 0;
@@ -50,7 +50,7 @@ TEST_CASE("square_sum" * doctest::test_suite("functional::get_function_operands"
 
 TEST_CASE("square_sum" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,square,case1);
+    NMTOOLS_TESTING_USE_CASE(view,square,case1);
     using namespace args;
 
     auto axis = 0;

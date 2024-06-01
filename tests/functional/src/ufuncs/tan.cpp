@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("tan(case1)" * doctest::test_suite("functional::tan"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, tan, case1);
+    NMTOOLS_TESTING_USE_CASE(view, tan, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::tan, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("tan" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,tan,case1);
+    NMTOOLS_TESTING_USE_CASE(view,tan,case1);
     using namespace args;
 
     auto array = view::tan(a);
@@ -42,7 +42,7 @@ TEST_CASE("tan" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("tan" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,tan,case1);
+    NMTOOLS_TESTING_USE_CASE(view,tan,case1);
     using namespace args;
 
     auto array = view::tan(a);

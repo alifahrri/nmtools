@@ -49,7 +49,7 @@ RUN_argsort_impl(__VA_ARGS__);
 #define ARGSORT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, argsort, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, argsort, case_name); \
     using namespace args; \
     auto view = RUN_argsort(case_name, __VA_ARGS__); \
     NMTOOLS_REQUIRE_EQUAL( nm::shape(*view), nm::shape(expect::result) ); \

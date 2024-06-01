@@ -34,7 +34,7 @@ RUN_sqrt_impl(__VA_ARGS__);
 #define SQRT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, sqrt, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, sqrt, case_name); \
     using namespace args; \
     auto result = RUN_sqrt(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

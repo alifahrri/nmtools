@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define SIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, sin, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, sin, case_name); \
     using namespace args; \
     auto result = na::sin(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::sin(__VA_ARGS__); \

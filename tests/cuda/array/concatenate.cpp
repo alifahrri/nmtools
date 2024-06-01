@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define CONCATENATE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, concatenate, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, concatenate, case_name); \
     using namespace args; \
     auto result = na::concatenate(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::concatenate(__VA_ARGS__); \

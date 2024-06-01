@@ -32,7 +32,7 @@ RUN_ones_impl(__VA_ARGS__);
 #define ONES_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, ones, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, ones, case_name); \
     using namespace args; \
     auto result = RUN_ones(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

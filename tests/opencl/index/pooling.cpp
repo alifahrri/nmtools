@@ -55,7 +55,7 @@ TEST_CASE("shape_pool2d(case1)" * doctest::test_suite("index::shape_pool2d") * d
 {
     auto tester = testing::OpenCLTester(shape_pool2d_kernel_name,nm_cl_test_pooling_spv,nm_cl_test_pooling_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_pool2d,case1);
+    NMTOOLS_TESTING_USE_CASE(index,shape_pool2d,case1);
     tester.test(opencl::default_context()
         , ix::cast<nm_cl_index_t>(expect::result)
         , ix::cast<nm_cl_index_t>(args::shape_a)

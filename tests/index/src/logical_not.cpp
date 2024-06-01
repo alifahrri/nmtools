@@ -9,7 +9,7 @@ namespace meta = nm::meta;
 #define LOGICAL_NOT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(logical_not, case_name); \
+    NMTOOLS_TESTING_USE_CASE(logical_not, case_name); \
     using namespace args; \
     auto result = ::nmtools::index::logical_not(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES(result, expect::x, __VA_ARGS__); \

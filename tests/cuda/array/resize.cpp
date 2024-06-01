@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define RESIZE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(resize, case_name); \
+    NMTOOLS_TESTING_USE_CASE(resize, case_name); \
     using namespace args; \
     auto result = na::resize(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::resize(__VA_ARGS__); \

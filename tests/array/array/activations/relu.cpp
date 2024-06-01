@@ -61,7 +61,7 @@ RUN_relu_impl(__VA_ARGS__);
 #define RELU_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, relu, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, relu, case_name); \
     using namespace args; \
     auto result = RUN_relu(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -70,7 +70,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_RELU_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, constexpr_relu, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, constexpr_relu, case_name); \
     using namespace args; \
     constexpr auto result = RUN_relu(case_name, __VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \

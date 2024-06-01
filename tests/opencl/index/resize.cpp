@@ -77,7 +77,7 @@ TEST_CASE("shape_resize(case1)" * doctest::test_suite("index::shape_resize"))
 {
     auto tester = testing::OpenCLTester(shape_resize_kernel_name,nm_cl_test_resize_spv,nm_cl_test_resize_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_resize,case1);
+    NMTOOLS_TESTING_USE_CASE(index,shape_resize,case1);
     tester.test(opencl::default_context()
         , ix::cast<nm_cl_index_t>(expect::expected)
         , ix::cast<nm_cl_index_t>(args::src_shape_a)
@@ -89,7 +89,7 @@ TEST_CASE("shape_resize(case2)" * doctest::test_suite("index::shape_resize"))
 {
     auto tester = testing::OpenCLTester(shape_resize_kernel_name,nm_cl_test_resize_spv,nm_cl_test_resize_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_resize,case2);
+    NMTOOLS_TESTING_USE_CASE(index,shape_resize,case2);
     tester.test(opencl::default_context()
         , ix::cast<nm_cl_index_t>(expect::expected)
         , ix::cast<nm_cl_index_t>(args::src_shape_a)
@@ -101,7 +101,7 @@ TEST_CASE("shape_resize(case3)" * doctest::test_suite("index::shape_resize"))
 {
     auto tester = testing::OpenCLTester(shape_resize_kernel_name,nm_cl_test_resize_spv,nm_cl_test_resize_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_resize,case3);
+    NMTOOLS_TESTING_USE_CASE(index,shape_resize,case3);
     tester.test(opencl::default_context()
         , ix::cast<nm_cl_index_t>(expect::expected)
         , ix::cast<nm_cl_index_t>(args::src_shape_a)
@@ -113,7 +113,7 @@ TEST_CASE("shape_resize(case4)" * doctest::test_suite("index::shape_resize"))
 {
     auto tester = testing::OpenCLTester(shape_resize_kernel_name,nm_cl_test_resize_spv,nm_cl_test_resize_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_resize,case4);
+    NMTOOLS_TESTING_USE_CASE(index,shape_resize,case4);
     tester.test(opencl::default_context()
         , ix::cast<nm_cl_index_t>(expect::expected)
         , ix::cast<nm_cl_index_t>(args::src_shape_a)
@@ -125,7 +125,7 @@ TEST_CASE("shape_resize(case5)" * doctest::test_suite("index::shape_resize"))
 {
     auto tester = testing::OpenCLTester(shape_resize_kernel_name,nm_cl_test_resize_spv,nm_cl_test_resize_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_resize,case5);
+    NMTOOLS_TESTING_USE_CASE(index,shape_resize,case5);
     tester.test(opencl::default_context()
         , ix::cast<nm_cl_index_t>(expect::expected)
         , ix::cast<nm_cl_index_t>(args::src_shape_a)
@@ -137,7 +137,7 @@ TEST_CASE("shape_resize(case6)" * doctest::test_suite("index::shape_resize"))
 {
     auto tester = testing::OpenCLTester(shape_resize_kernel_name,nm_cl_test_resize_spv,nm_cl_test_resize_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,shape_resize,case6);
+    NMTOOLS_TESTING_USE_CASE(index,shape_resize,case6);
     tester.test(opencl::default_context()
         , ix::cast<nm_cl_index_t>(expect::expected)
         , ix::cast<nm_cl_index_t>(args::src_shape_a)
@@ -149,7 +149,7 @@ TEST_CASE("resize(case6)" * doctest::test_suite("index::resize"))
 {
     auto tester = testing::OpenCLTester(index_resize_kernel_name,nm_cl_test_resize_spv,nm_cl_test_resize_spv_len);
 
-    NMTOOLS_TESTING_DECLARE_NS(index,resize,case6);
+    NMTOOLS_TESTING_USE_CASE(index,resize,case6);
     tester.test(opencl::default_context()
         , ix::cast<nm_cl_index_t>(expect::expected)
         , ix::cast<nm_cl_index_t>(args::indices_a)

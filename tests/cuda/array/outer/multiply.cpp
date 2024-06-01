@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define OUTER_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_multiply, case_name); \
     using namespace args; \
     auto result = na::multiply.outer(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::multiply.outer(__VA_ARGS__); \

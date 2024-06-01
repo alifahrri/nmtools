@@ -40,7 +40,7 @@ CHECK_MESSAGE(nmtools::utils::apply_isclose(result,expect), \
 #define SLICE_SUBCASE(case_name, a, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, slice, case_name); \
     using namespace args; \
     auto result = na::apply_slice(a, nmtools_tuple{__VA_ARGS__}, cuda::default_context()); \
     auto expect = na::apply_slice(a, nmtools_tuple{__VA_ARGS__}); \

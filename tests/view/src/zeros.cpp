@@ -32,7 +32,7 @@ RUN_zeros_impl(__VA_ARGS__);
 #define ZEROS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, zeros, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, zeros, case_name); \
     using namespace args; \
     auto result = RUN_zeros(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

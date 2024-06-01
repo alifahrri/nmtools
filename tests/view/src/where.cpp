@@ -24,7 +24,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #define WHERE_SUBCASE(case_name,condition,x,y) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( view, where, case_name ); \
+    NMTOOLS_TESTING_USE_CASE( view, where, case_name ); \
     auto array_view = nmtools::view::where( args::condition, args::x, args::y ); \
     NMTOOLS_ASSERT_EQUAL( nmtools::dim(array_view), expect::dim ); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_view), expect::shape ); \

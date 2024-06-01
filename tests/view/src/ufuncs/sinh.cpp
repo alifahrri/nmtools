@@ -13,7 +13,7 @@ namespace view = nm::view;
 #define SINH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, sinh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, sinh, case_name); \
     using namespace args; \
     auto result = view::sinh(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

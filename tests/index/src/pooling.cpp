@@ -35,7 +35,7 @@ RUN_shape_pool2d_impl(__VA_ARGS__);
 #define SHAPE_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_pool2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_pool2d, case_name); \
     using namespace args; \
     auto result = RUN_shape_pool2d(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -44,7 +44,7 @@ SUBCASE(#case_name) \
 #define CONSTEXPR_SHAPE_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, constexpr_shape_pool2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, constexpr_shape_pool2d, case_name); \
     using namespace args; \
     constexpr auto result = RUN_shape_pool2d_impl(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -187,7 +187,7 @@ nmtools::utils::apply_to_string(array)
 #define SLICE_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, slice_pool2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, slice_pool2d, case_name); \
     using namespace args; \
     auto result = RUN_slice_pool2d(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_APPLY_EQUAL( result, expect::result ); \

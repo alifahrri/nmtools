@@ -35,7 +35,7 @@ RUN_shape_conv2d_impl(__VA_ARGS__);
 #define SHAPE_CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_conv2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_conv2d, case_name); \
     using namespace args; \
     auto result = RUN_shape_conv2d(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -202,7 +202,7 @@ RUN_slice_conv2d_impl(__VA_ARGS__);
 #define SLICE_CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, slice_conv2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, slice_conv2d, case_name); \
     using namespace args; \
     auto result = RUN_slice_conv2d(case_name, __VA_ARGS__); \
     for (size_t i=0; i<nm::len(result); i++) { \

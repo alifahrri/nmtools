@@ -5,7 +5,7 @@
 #define NONZERO_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(nonzero, case_name); \
+    NMTOOLS_TESTING_USE_CASE(nonzero, case_name); \
     using namespace args; \
     auto result = ::nmtools::index::nonzero(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \

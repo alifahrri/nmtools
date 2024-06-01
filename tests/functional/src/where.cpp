@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("where(case1)" * doctest::test_suite("functional::where"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, where, case1);
+    NMTOOLS_TESTING_USE_CASE(view, where, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::where, condition, x, y );

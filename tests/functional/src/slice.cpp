@@ -18,7 +18,7 @@ SUBCASE(subcase_name) \
 #if not __GLIBCXX__
 TEST_CASE("slice(case1)" * doctest::test_suite("functional::slice"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, slice, case1);
+    NMTOOLS_TESTING_USE_CASE(array, slice, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::slice[slice0][slice1][slice2], array );
@@ -32,7 +32,7 @@ TEST_CASE("slice(case1)" * doctest::test_suite("functional::slice"))
 
 TEST_CASE("apply_slice(case1)" * doctest::test_suite("functional::apply_slice"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, slice, case1);
+    NMTOOLS_TESTING_USE_CASE(array, slice, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE("case1", fn::apply_slice[dslices], array_d );

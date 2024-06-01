@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("cumprod(case1)" * doctest::test_suite("functional::cumprod"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_multiply, case1);
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_multiply, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::cumprod[axis], a );

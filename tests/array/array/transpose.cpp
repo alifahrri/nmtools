@@ -28,7 +28,7 @@ namespace na = nm::array;
 #define TRANSPOSE_SUBCASE(case_name, array, axes) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS( transpose, case_name ); \
+    NMTOOLS_TESTING_USE_CASE( transpose, case_name ); \
     auto array = na::transpose(args::array, args::axes); \
     NMTOOLS_ASSERT_CLOSE( array, expect::expected ); \
 }

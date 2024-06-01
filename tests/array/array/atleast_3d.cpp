@@ -24,7 +24,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #define ATLEAST_3D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_3d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case_name); \
     using namespace args; \
     auto result = nmtools::array::atleast_3d(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::dim(result), expect::dim ); \

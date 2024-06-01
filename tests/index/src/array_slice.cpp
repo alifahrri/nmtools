@@ -34,7 +34,7 @@ RUN_shape_array_slice_impl(__VA_ARGS__);
 #define SHAPE_ARRAY_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_array_slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_array_slice, case_name); \
     using namespace args; \
     auto result = RUN_shape_array_slice(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

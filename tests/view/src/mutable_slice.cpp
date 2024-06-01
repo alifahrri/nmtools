@@ -952,7 +952,7 @@ RUN_apply_mutable_slice_impl(__VA_ARGS__);
 #define MUTABLE_SLICE_SUBCASE(case_name, input, rhs, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, slice, case_name); \
     using namespace args; \
     auto input_ = na::copy(array); \
     auto result = RUN_mutable_slice(case_name, input_, __VA_ARGS__ ); \
@@ -966,7 +966,7 @@ SUBCASE(#case_name) \
 #define APPLY_MUTABLE_SLICE_SUBCASE(case_name, input, rhs, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, slice, case_name); \
     using namespace args; \
     auto input_ = na::copy(array); \
     auto result = RUN_apply_mutable_slice(case_name, input_, __VA_ARGS__ ); \

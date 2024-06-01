@@ -22,7 +22,7 @@ using nmtools::unwrap;
 #define MEAN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, mean, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, mean, case_name); \
     using namespace args; \
     CUDA_MEAN_SUBCASE(__VA_ARGS__); \
 }

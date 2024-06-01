@@ -55,7 +55,7 @@ RUN_impl(__VA_ARGS__);
 #define EXPAND_DIMS_SUBCASE(case_name, array, axis) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(expand_dims, case_name); \
+    NMTOOLS_TESTING_USE_CASE(expand_dims, case_name); \
     auto array_ref = RUN_expand_dims(case_name, args::array, args::axis); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_ref), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \

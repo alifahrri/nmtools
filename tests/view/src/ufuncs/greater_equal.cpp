@@ -9,7 +9,7 @@ namespace view = nm::view;
 #define GREATER_EQUAL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, greater_equal, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, greater_equal, case_name); \
     using namespace args; \
     auto result = view::greater_equal(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

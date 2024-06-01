@@ -8,7 +8,7 @@ namespace fn = nm::functional;
 #if 1
 TEST_CASE("reshape(case1)" * doctest::test_suite("functional::reshape"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(reshape,case1);
+    NMTOOLS_TESTING_USE_CASE(reshape,case1);
     using namespace args;
 
     {
@@ -48,7 +48,7 @@ using nmtools::unwrap;
 
 TEST_CASE("reshape" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
-    NMTOOLS_TESTING_DECLARE_NS(reshape,case1);
+    NMTOOLS_TESTING_USE_CASE(reshape,case1);
     using namespace args;
 
     auto a = view::reshape(array,newshape);
@@ -61,7 +61,7 @@ TEST_CASE("reshape" * doctest::test_suite("functional::get_function_composition"
 
 TEST_CASE("reshape" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(reshape,case1);
+    NMTOOLS_TESTING_USE_CASE(reshape,case1);
     using namespace args;
 
     auto a = view::reshape(array,newshape);

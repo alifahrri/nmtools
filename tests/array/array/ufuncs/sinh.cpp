@@ -38,7 +38,7 @@ RUN_sinh_impl(__VA_ARGS__);
 #define SINH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, sinh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, sinh, case_name); \
     using namespace args; \
     auto result = RUN_sinh(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

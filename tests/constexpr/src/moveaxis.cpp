@@ -16,7 +16,7 @@ namespace na = nm::array;
 #define CONSTEXPR_MOVEAXIS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, constexpr_moveaxis, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, constexpr_moveaxis, case_name); \
     using namespace args; \
     constexpr auto result = nmtools::array::moveaxis(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \

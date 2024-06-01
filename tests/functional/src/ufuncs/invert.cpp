@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("invert(case1)" * doctest::test_suite("functional::invert"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, invert, case1);
+    NMTOOLS_TESTING_USE_CASE(view, invert, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::invert, a );
@@ -30,7 +30,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("invert" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,invert,case1);
+    NMTOOLS_TESTING_USE_CASE(view,invert,case1);
     using namespace args;
 
     auto array = view::invert(a);
@@ -44,7 +44,7 @@ TEST_CASE("invert" * doctest::test_suite("functional::get_function_composition")
 
 TEST_CASE("invert" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,invert,case1);
+    NMTOOLS_TESTING_USE_CASE(view,invert,case1);
     using namespace args;
 
     auto array = view::invert(a);

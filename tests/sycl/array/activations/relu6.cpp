@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define RELU6_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, relu6, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, relu6, case_name); \
     using namespace args; \
     auto result = na::relu6(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::relu6(__VA_ARGS__); \

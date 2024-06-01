@@ -19,7 +19,7 @@ namespace ix = nm::index;
 #define CUMSUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, cumsum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, cumsum, case_name); \
     using namespace args; \
     CUDA_CUMSUM_SUBCASE(__VA_ARGS__); \
 }

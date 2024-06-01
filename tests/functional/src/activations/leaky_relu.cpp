@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("leaky_relu(case1)" * doctest::test_suite("functional::leaky_relu"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,leaky_relu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,leaky_relu,case1);
     using namespace args;
 
     ACTIVATIONS_SUBCASE( "case1", fn::leaky_relu, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("leaky_relu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,leaky_relu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,leaky_relu,case1);
     using namespace args;
 
     auto array = view::leaky_relu(a);
@@ -43,7 +43,7 @@ TEST_CASE("leaky_relu" * doctest::test_suite("functional::get_function_compositi
 
 TEST_CASE("leaky_relu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,leaky_relu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,leaky_relu,case1);
     using namespace args;
 
     auto array = view::leaky_relu(a);
@@ -65,7 +65,7 @@ namespace fun = view::fun;
 
 TEST_CASE("leaky_relu" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(activations,leaky_relu,case1);
+    NMTOOLS_TESTING_USE_CASE(activations,leaky_relu,case1);
     using namespace args;
 
     auto array = view::leaky_relu(a,{.negative_slope=0.01});

@@ -38,7 +38,7 @@ RUN_expm1_impl(__VA_ARGS__);
 #define EXPM1_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, expm1, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, expm1, case_name); \
     using namespace args; \
     auto result = RUN_expm1(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

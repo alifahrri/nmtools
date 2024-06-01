@@ -35,7 +35,7 @@ RUN_bitwise_and_impl(__VA_ARGS__);
 #define BITWISE_AND_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, bitwise_and, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, bitwise_and, case_name); \
     using namespace args; \
     auto result = RUN_bitwise_and(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

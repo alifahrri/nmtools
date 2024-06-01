@@ -31,7 +31,7 @@ RUN_elu_impl(__VA_ARGS__);
 #define ELU_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, elu, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, elu, case_name); \
     using namespace args; \
     auto result = RUN_elu(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

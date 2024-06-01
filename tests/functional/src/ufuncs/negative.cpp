@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("negative(case1)" * doctest::test_suite("functional::negative"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, negative, case1);
+    NMTOOLS_TESTING_USE_CASE(view, negative, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::negative, a );
@@ -30,7 +30,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("negative" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,negative,case1);
+    NMTOOLS_TESTING_USE_CASE(view,negative,case1);
     using namespace args;
 
     auto array = view::negative(a);
@@ -43,7 +43,7 @@ TEST_CASE("negative" * doctest::test_suite("functional::get_function_composition
 
 TEST_CASE("negative" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,negative,case1);
+    NMTOOLS_TESTING_USE_CASE(view,negative,case1);
     using namespace args;
 
     auto array = view::negative(a);

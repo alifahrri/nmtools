@@ -16,7 +16,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("stddev(case1)" * doctest::test_suite("functional::stddev"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, stddev, case1);
+    NMTOOLS_TESTING_USE_CASE(array, stddev, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::stddev[axis][nm::None][ddof][keepdims], array );

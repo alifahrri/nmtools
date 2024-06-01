@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("arcsinh(case1)" * doctest::test_suite("functional::arcsinh"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, arcsinh, case1);
+    NMTOOLS_TESTING_USE_CASE(view, arcsinh, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::arcsinh, a );
@@ -30,7 +30,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("arcsinh" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,arcsinh,case1);
+    NMTOOLS_TESTING_USE_CASE(view,arcsinh,case1);
     using namespace args;
 
     auto array = view::arcsinh(a);
@@ -43,7 +43,7 @@ TEST_CASE("arcsinh" * doctest::test_suite("functional::get_function_composition"
 
 TEST_CASE("arcsinh" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,arcsinh,case1);
+    NMTOOLS_TESTING_USE_CASE(view,arcsinh,case1);
     using namespace args;
 
     auto array = view::arcsinh(a);

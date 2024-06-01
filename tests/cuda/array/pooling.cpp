@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define MAX_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, max_pool2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, max_pool2d, case_name); \
     using namespace args; \
     auto result = na::max_pool2d(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::max_pool2d(__VA_ARGS__); \
@@ -38,7 +38,7 @@ SUBCASE(#case_name) \
 #define AVG_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, avg_pool2d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, avg_pool2d, case_name); \
     using namespace args; \
     auto result = na::avg_pool2d(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::avg_pool2d(__VA_ARGS__); \

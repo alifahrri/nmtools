@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define ATLEAST_1D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_1d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, atleast_1d, case_name); \
     using namespace args; \
     auto result = na::atleast_1d(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::atleast_1d(__VA_ARGS__); \

@@ -69,7 +69,7 @@ using nm::utils::isclose, nm::utils::isequal;
 
 void test_transpose()
 {
-    NMTOOLS_TESTING_DECLARE_NS(transpose);
+    NMTOOLS_TESTING_USE_CASE(transpose);
     NMTOOLS_PIO_SUBCASE( case1, expected, view::transpose, array );
     NMTOOLS_PIO_SUBCASE( case2, expected, view::transpose, array );
     NMTOOLS_PIO_SUBCASE( case3, expected, view::transpose, array, axes );
@@ -84,7 +84,7 @@ void test_transpose()
 
 void test_zeros()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, zeros);
+    NMTOOLS_TESTING_USE_CASE(array, zeros);
     NMTOOLS_PIO_SUBCASE( case1, result, view::zeros, shape, dtype );
 
     // eval
@@ -93,7 +93,7 @@ void test_zeros()
 
 void test_where()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, where);
+    NMTOOLS_TESTING_USE_CASE(view, where);
     NMTOOLS_PIO_SUBCASE( case1, result, view::where, condition, x, y );
     NMTOOLS_PIO_SUBCASE( case2, result, view::where, condition, x, y );
     NMTOOLS_PIO_SUBCASE( case3, result, view::where, condition, x, y );
@@ -101,7 +101,7 @@ void test_where()
 
 void test_tile()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, tile);
+    NMTOOLS_TESTING_USE_CASE(view, tile);
     NMTOOLS_PIO_SUBCASE( case1, result, view::tile, array, reps );
     NMTOOLS_PIO_SUBCASE( case2, result, view::tile, array, reps );
     NMTOOLS_PIO_SUBCASE( case3, result, view::tile, array, reps );
@@ -111,7 +111,7 @@ void test_tile()
 
 void test_take()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, take);
+    NMTOOLS_TESTING_USE_CASE(view, take);
     NMTOOLS_PIO_SUBCASE( case1, result, view::take, array, indices, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::take, array, indices, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::take, array, indices, axis );
@@ -122,7 +122,7 @@ void test_take()
 
 void test_squeeze()
 {
-    NMTOOLS_TESTING_DECLARE_NS(squeeze);
+    NMTOOLS_TESTING_USE_CASE(squeeze);
     NMTOOLS_PIO_SUBCASE( case1, expected, view::squeeze, array );
     NMTOOLS_PIO_SUBCASE( case2, expected, view::squeeze, array );
     NMTOOLS_PIO_SUBCASE( case3, expected, view::squeeze, array );
@@ -133,7 +133,7 @@ void test_squeeze()
 
 void test_slice()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, slice);
+    NMTOOLS_TESTING_USE_CASE(array, slice);
     NMTOOLS_PIO_SUBCASE( case1, result, view::slice, array, slice0, slice1, slice2 );
     NMTOOLS_PIO_SUBCASE( case2, result, view::slice, array, slice0, slice1, slice2 );
     NMTOOLS_PIO_SUBCASE( case3, result, view::slice, array, slice0, slice1, slice2 );
@@ -164,7 +164,7 @@ void test_slice()
 
 void test_reshape()
 {
-    NMTOOLS_TESTING_DECLARE_NS(reshape);
+    NMTOOLS_TESTING_USE_CASE(reshape);
     NMTOOLS_PIO_SUBCASE( case1, expected, view::reshape, array, newshape );
     NMTOOLS_PIO_SUBCASE( case2, expected, view::reshape, array, newshape );
     NMTOOLS_PIO_SUBCASE( case3, expected, view::reshape, array, newshape );
@@ -172,7 +172,7 @@ void test_reshape()
 
 void test_repeat()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, repeat);
+    NMTOOLS_TESTING_USE_CASE(array, repeat);
     NMTOOLS_PIO_SUBCASE( case1, result, view::repeat, array, repeats, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::repeat, array, repeats, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::repeat, array, repeats, axis );
@@ -183,7 +183,7 @@ void test_repeat()
 
 void test_pad()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, pad);
+    NMTOOLS_TESTING_USE_CASE(array, pad);
     NMTOOLS_PIO_SUBCASE( case1, result, view::pad, array, pad_width );
     NMTOOLS_PIO_SUBCASE( case2, result, view::pad, array, pad_width );
     NMTOOLS_PIO_SUBCASE( case3, result, view::pad, array, pad_width );
@@ -193,19 +193,19 @@ void test_pad()
 
 void test_ones()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, ones);
+    NMTOOLS_TESTING_USE_CASE(array, ones);
     NMTOOLS_PIO_SUBCASE( case1, result, view::ones, shape, dtype );
 }
 
 void test_full()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, full);
+    NMTOOLS_TESTING_USE_CASE(array, full);
     NMTOOLS_PIO_SUBCASE( case1, result, view::full, shape, fill_value );
 }
 
 void test_flip()
 {
-    NMTOOLS_TESTING_DECLARE_NS(flip);
+    NMTOOLS_TESTING_USE_CASE(flip);
     NMTOOLS_PIO_SUBCASE( case1, result, view::flip, array, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::flip, array, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::flip, array, axis );
@@ -214,7 +214,7 @@ void test_flip()
 
 void test_flatten()
 {
-    NMTOOLS_TESTING_DECLARE_NS(flatten);
+    NMTOOLS_TESTING_USE_CASE(flatten);
     NMTOOLS_PIO_SUBCASE( case1, expected, view::flatten, array );
     NMTOOLS_PIO_SUBCASE( case2, expected, view::flatten, array );
     NMTOOLS_PIO_SUBCASE( case3, expected, view::flatten, array );
@@ -223,7 +223,7 @@ void test_flatten()
 
 void test_expand_dims()
 {
-    NMTOOLS_TESTING_DECLARE_NS(expand_dims);
+    NMTOOLS_TESTING_USE_CASE(expand_dims);
     NMTOOLS_PIO_SUBCASE( case1, expected, view::expand_dims, array, axis );
     NMTOOLS_PIO_SUBCASE( case2, expected, view::expand_dims, array, axis );
     NMTOOLS_PIO_SUBCASE( case3, expected, view::expand_dims, array, axis );
@@ -238,7 +238,7 @@ void test_expand_dims()
 
 void test_concatenate()
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, concatenate);
+    NMTOOLS_TESTING_USE_CASE(view, concatenate);
     NMTOOLS_PIO_SUBCASE( case1, expected, view::concatenate, lhs, rhs, axis );
     NMTOOLS_PIO_SUBCASE( case2, expected, view::concatenate, lhs, rhs, axis );
     NMTOOLS_PIO_SUBCASE( case3, expected, view::concatenate, lhs, rhs, axis );
@@ -247,7 +247,7 @@ void test_concatenate()
 
 void test_compress()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, compress);
+    NMTOOLS_TESTING_USE_CASE(array, compress);
     NMTOOLS_PIO_SUBCASE( case1, result, view::compress, condition, array, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::compress, condition, array, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::compress, condition, array, axis );
@@ -257,7 +257,7 @@ void test_compress()
 
 void test_broadcast_to()
 {
-    NMTOOLS_TESTING_DECLARE_NS(broadcast_to);
+    NMTOOLS_TESTING_USE_CASE(broadcast_to);
     NMTOOLS_PIO_SUBCASE( case1, expected, view::broadcast_to, x, shape );
     NMTOOLS_PIO_SUBCASE( case2, expected, view::broadcast_to, x, shape );
     NMTOOLS_PIO_SUBCASE( case3, expected, view::broadcast_to, x, shape );
@@ -273,7 +273,7 @@ void test_broadcast_to()
 
 void test_atleast_3d()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_3d);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_3d);
     NMTOOLS_PIO_SUBCASE( case1, result, view::atleast_3d, a );
     NMTOOLS_PIO_SUBCASE( case2, result, view::atleast_3d, a );
     NMTOOLS_PIO_SUBCASE( case3, result, view::atleast_3d, a );
@@ -283,7 +283,7 @@ void test_atleast_3d()
 
 void test_atleast_2d()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_2d);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_2d);
     NMTOOLS_PIO_SUBCASE( case1, result, view::atleast_2d, a );
     NMTOOLS_PIO_SUBCASE( case2, result, view::atleast_2d, a );
     NMTOOLS_PIO_SUBCASE( case3, result, view::atleast_2d, a );
@@ -292,7 +292,7 @@ void test_atleast_2d()
 
 void test_atleast_1d()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, atleast_1d);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_1d);
     NMTOOLS_PIO_SUBCASE( case1, result, view::atleast_1d, a );
     NMTOOLS_PIO_SUBCASE( case2, result, view::atleast_1d, a );
     NMTOOLS_PIO_SUBCASE( case3, result, view::atleast_1d, a );
@@ -301,7 +301,7 @@ void test_atleast_1d()
 
 void test_arange()
 {
-    NMTOOLS_TESTING_DECLARE_NS(array, arange);
+    NMTOOLS_TESTING_USE_CASE(array, arange);
     NMTOOLS_PIO_SUBCASE( case1, result, view::arange, stop, dtype );
     NMTOOLS_PIO_SUBCASE( case2, result, view::arange, start, stop, dtype );
     NMTOOLS_PIO_SUBCASE( case3, result, view::arange, start, stop, step, dtype );

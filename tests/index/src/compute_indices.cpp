@@ -7,7 +7,7 @@ namespace nm = nmtools;
 #define COMPUTE_INDICES_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(compute_indices, case_name); \
+    NMTOOLS_TESTING_USE_CASE(compute_indices, case_name); \
     using namespace args; \
     auto indices = nmtools::index::compute_indices(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( indices, expect::indices, __VA_ARGS__ ); \

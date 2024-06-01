@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define BROADCAST_TO_SUBCASE(case_name, array, shape) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(broadcast_to, case_name); \
+    NMTOOLS_TESTING_USE_CASE(broadcast_to, case_name); \
     auto result = na::broadcast_to(args::array, args::shape, cuda::default_context()); \
     auto expect = na::broadcast_to(args::array, args::shape); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \

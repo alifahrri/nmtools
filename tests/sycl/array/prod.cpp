@@ -19,7 +19,7 @@ namespace ix = nm::index;
 #define PROD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, prod, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, prod, case_name); \
     using namespace args; \
     SYCL_PROD_SUBCASE(__VA_ARGS__); \
 }

@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define HARDTANH_SUBCASE(case_name,...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, hardtanh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, hardtanh, case_name); \
     using namespace args; \
     auto result = na::hardtanh(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::hardtanh(__VA_ARGS__); \

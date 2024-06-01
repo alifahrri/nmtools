@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define REDUCE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_add, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_add, case_name); \
     using namespace args; \
     auto result = na::add.reduce(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::add.reduce(__VA_ARGS__); \

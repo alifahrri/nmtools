@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define SIGMOID_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, sigmoid, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, sigmoid, case_name); \
     using namespace args; \
     auto result = na::sigmoid(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::sigmoid(__VA_ARGS__); \

@@ -28,7 +28,7 @@ RUN_stddev_impl(__VA_ARGS__);
 #define STDDEV_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, stddev, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, stddev, case_name); \
     using namespace args; \
     auto result = RUN_stddev(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

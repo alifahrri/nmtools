@@ -43,7 +43,7 @@ RUN_shape_slice_impl(__VA_ARGS__);
 #define SHAPE_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_slice, case_name); \
     using namespace args; \
     auto result = RUN_shape_slice(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -477,7 +477,7 @@ RUN_shape_dynamic_slice_impl(__VA_ARGS__);
 #define SHAPE_DYNAMIC_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, shape_dynamic_slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, shape_dynamic_slice, case_name); \
     using namespace args; \
     auto result = RUN_shape_dynamic_slice(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -774,7 +774,7 @@ RUN_dynamic_slice_impl(__VA_ARGS__);
 #define DYNAMIC_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, dynamic_slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, dynamic_slice, case_name); \
     using namespace args; \
     auto result = RUN_dynamic_slice(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -784,7 +784,7 @@ SUBCASE(#case_name) \
 #define APPLY_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, slice, case_name); \
     using namespace args; \
     auto result = RUN_dynamic_slice(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -793,7 +793,7 @@ SUBCASE(#case_name) \
 #define SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, slice, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, slice, case_name); \
     using namespace args; \
     auto result = RUN_slice(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \

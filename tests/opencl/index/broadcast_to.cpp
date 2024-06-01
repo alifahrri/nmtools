@@ -75,7 +75,7 @@ namespace testing = nmtools::testing;
 #define SHAPE_BROADCAST_TO_SUBCASE(case_name, ashape, bshape) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, broadcast_to, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, broadcast_to, case_name); \
     tester.test(opencl::default_context(),expect::shape,args::ashape,args::bshape); \
 }
 

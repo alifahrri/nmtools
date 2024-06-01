@@ -9,7 +9,7 @@ namespace view = nmtools::view;
 #define CLIP_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, clip, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, clip, case_name); \
     using namespace args; \
     auto result = view::clip(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \

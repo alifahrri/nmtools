@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define SQUEEZE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(squeeze, case_name); \
+    NMTOOLS_TESTING_USE_CASE(squeeze, case_name); \
     using namespace args; \
     auto result = na::squeeze(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::squeeze(__VA_ARGS__); \

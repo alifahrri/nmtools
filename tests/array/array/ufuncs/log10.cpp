@@ -34,7 +34,7 @@ RUN_log10_impl(__VA_ARGS__);
 #define LOG10_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, log10, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, log10, case_name); \
     using namespace args; \
     auto result = RUN_log10(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

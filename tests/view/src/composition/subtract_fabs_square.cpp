@@ -121,7 +121,7 @@ RUN_subtract_fabs_square_impl(__VA_ARGS__);
 #define SUBTRACT_FABS_SQUARE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(composition, subtract_fabs_square, case_name); \
+    NMTOOLS_TESTING_USE_CASE(composition, subtract_fabs_square, case_name); \
     using namespace args; \
     auto result = RUN_subtract_fabs_square(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

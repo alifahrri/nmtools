@@ -12,7 +12,7 @@ using nmtools::unwrap;
 
 TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
+    NMTOOLS_TESTING_USE_CASE(view,subtract,case1);
     using namespace args;
 
     auto x = view::subtract(a,b);
@@ -34,7 +34,7 @@ using namespace nmtools::literals;
 
 TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::get_function_operands"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
+    NMTOOLS_TESTING_USE_CASE(view,subtract,case1);
     using namespace args;
 
     auto x = view::subtract(a,b);
@@ -50,7 +50,7 @@ TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::get_function
 
 TEST_CASE("subtract_fabs_square" * doctest::test_suite("functional::apply"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,subtract,case1);
+    NMTOOLS_TESTING_USE_CASE(view,subtract,case1);
     using namespace args;
 
     auto x = view::subtract(a,b);

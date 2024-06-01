@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define REPEAT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(array, repeat, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, repeat, case_name); \
     using namespace args; \
     auto result = na::repeat(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::repeat(__VA_ARGS__); \

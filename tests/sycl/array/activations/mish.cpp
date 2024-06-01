@@ -26,7 +26,7 @@ namespace na = nm::array;
 #define MISH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, mish, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, mish, case_name); \
     using namespace args; \
     auto result = na::mish(__VA_ARGS__, na::sycl::default_context()); \
     auto expect = na::mish(__VA_ARGS__); \

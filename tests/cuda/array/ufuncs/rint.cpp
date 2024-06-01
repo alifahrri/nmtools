@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define RINT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, rint, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, rint, case_name); \
     using namespace args; \
     auto result = na::rint(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::rint(__VA_ARGS__); \

@@ -29,7 +29,7 @@ namespace meta = nm::meta;
 #define MUTABLE_FLATTEN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(flatten,case_name); \
+    NMTOOLS_TESTING_USE_CASE(flatten,case_name); \
     using namespace args; \
     auto result = view::mutable_flatten(__VA_ARGS__); \
     NMTOOLS_REQUIRE_EQUAL( nmtools::shape(result), expect::shape ); \

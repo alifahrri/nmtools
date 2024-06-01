@@ -34,7 +34,7 @@ RUN_right_shift_impl(__VA_ARGS__);
 #define RIGHT_SHIFT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, right_shift, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, right_shift, case_name); \
     using namespace args; \
     auto result = RUN_right_shift(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -85,7 +85,7 @@ RUN_reduce_right_shift_impl(__VA_ARGS__);
 #define REDUCE_RIGHT_SHIFT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_right_shift, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_right_shift, case_name); \
     using namespace args; \
     auto result = RUN_reduce_right_shift(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -188,7 +188,7 @@ RUN_accumulate_right_shift_impl(__VA_ARGS__);
 #define ACCUMULATE_RIGHT_SHIFT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_right_shift, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_right_shift, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_right_shift(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -251,7 +251,7 @@ RUN_outer_right_shift_impl(__VA_ARGS__);
 #define OUTER_RIGHT_SHIFT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_right_shift, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_right_shift, case_name); \
     using namespace args; \
     auto result = RUN_outer_right_shift(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

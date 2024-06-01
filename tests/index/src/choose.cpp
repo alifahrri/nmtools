@@ -87,7 +87,7 @@ RUN_choose_impl(__VA_ARGS__);
 #define CHOOSE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(index, choose, case_name); \
+    NMTOOLS_TESTING_USE_CASE(index, choose, case_name); \
     using namespace args; \
     auto result = RUN_choose(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::expected ); \

@@ -49,7 +49,7 @@ RUN_silu_impl(__VA_ARGS__);
 #define SILU_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(activations, silu, case_name); \
+    NMTOOLS_TESTING_USE_CASE(activations, silu, case_name); \
     using namespace args; \
     auto result = RUN_silu(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

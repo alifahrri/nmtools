@@ -15,7 +15,7 @@ SUBCASE(subcase_name) \
 
 TEST_CASE("isinf(case1)" * doctest::test_suite("functional::isinf"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view, isinf, case1);
+    NMTOOLS_TESTING_USE_CASE(view, isinf, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::isinf, a );
@@ -29,7 +29,7 @@ namespace view = nmtools::view;
 
 TEST_CASE("isinf" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,isinf,case1);
+    NMTOOLS_TESTING_USE_CASE(view,isinf,case1);
     using namespace args;
 
     auto array = view::isinf(a);
@@ -42,7 +42,7 @@ TEST_CASE("isinf" * doctest::test_suite("functional::get_function_composition"))
 
 TEST_CASE("isinf" * doctest::test_suite("functional::get_function_composition"))
 {
-    NMTOOLS_TESTING_DECLARE_NS(view,isinf,case1);
+    NMTOOLS_TESTING_USE_CASE(view,isinf,case1);
     using namespace args;
 
     auto array = view::isinf(a);

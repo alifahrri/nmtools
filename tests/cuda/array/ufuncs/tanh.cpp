@@ -27,7 +27,7 @@ namespace cuda = na::cuda;
 #define TANH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, tanh, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, tanh, case_name); \
     using namespace args; \
     auto result = na::tanh(__VA_ARGS__, cuda::default_context()); \
     auto expect = na::tanh(__VA_ARGS__); \

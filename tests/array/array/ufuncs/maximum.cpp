@@ -35,7 +35,7 @@ RUN_maximum_impl(__VA_ARGS__);
 #define MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, maximum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, maximum, case_name); \
     using namespace args; \
     auto result = RUN_maximum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -86,7 +86,7 @@ RUN_reduce_maximum_impl(__VA_ARGS__);
 #define REDUCE_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, reduce_maximum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, reduce_maximum, case_name); \
     using namespace args; \
     auto result = RUN_reduce_maximum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -227,7 +227,7 @@ RUN_accumulate_maximum_impl(__VA_ARGS__);
 #define ACCUMULATE_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, accumulate_maximum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, accumulate_maximum, case_name); \
     using namespace args; \
     auto result = RUN_accumulate_maximum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
@@ -290,7 +290,7 @@ RUN_outer_maximum_impl(__VA_ARGS__);
 #define OUTER_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(view, outer_maximum, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_maximum, case_name); \
     using namespace args; \
     auto result = RUN_outer_maximum(case_name, __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \

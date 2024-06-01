@@ -8,7 +8,7 @@ using namespace nm::literals;
 #define CONSTEXPR_SHAPE_RESHAPE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(constexpr_shape_reshape, case_name); \
+    NMTOOLS_TESTING_USE_CASE(constexpr_shape_reshape, case_name); \
     using namespace args; \
     constexpr auto result = nmtools::index::shape_reshape(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
@@ -17,7 +17,7 @@ SUBCASE(#case_name) \
 #define SHAPE_RESHAPE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_DECLARE_NS(shape_reshape, case_name); \
+    NMTOOLS_TESTING_USE_CASE(shape_reshape, case_name); \
     using namespace args; \
     auto result = nmtools::index::shape_reshape(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
