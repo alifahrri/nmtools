@@ -1,4 +1,4 @@
-notes on compiler differences 😭😭😭, gcc and clang
+😭😭😭
 
 template-template parameter
 https://stackoverflow.com/questions/49171036/why-clang-fails-to-take-default-template-arguments-of-template-template-paramete
@@ -12,7 +12,7 @@ https://stackoverflow.com/questions/46114214/lambda-implicit-capture-fails-with-
 https://godbolt.org/z/YK7xTs
 
 gcc<10 constexpr bug
-https://godbolt.org/z/En9oT6
+https://godbolt.org/z/WYxahvxTx
 
 constexpr math
 error: constexpr function never produces a constant expression
@@ -79,3 +79,7 @@ gcc rejects with [[maybe_unused]] -> https://godbolt.org/z/K8zPdz7a4
 
 c++17 vs c++20 tuple<optional<...>>
 https://godbolt.org/z/3cYacdd17
+
+constexpr vs non-constexpr results in different result with the same args & functions
+both gcc & clang produces the same result, inconsistent c++ compile-time vs runtime
+https://godbolt.org/z/jrEGMz8so
