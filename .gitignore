@@ -24,3 +24,4 @@ pocl
 *.ll
 llvm.sh
 install
+amdgpu-*
