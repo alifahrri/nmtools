@@ -1,0 +1,2 @@
+set(CMAKE_C_COMPILER hipcc)
+set(CMAKE_CXX_COMPILER hipcc)
