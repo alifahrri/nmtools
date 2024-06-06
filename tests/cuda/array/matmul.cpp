@@ -35,7 +35,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("array::matmul"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 4;
     auto N = 4;
@@ -48,7 +48,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 2;
     auto N = 2;
@@ -61,7 +61,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 4;
     auto N = 4;
@@ -74,7 +74,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 4;
     auto N = 4;
@@ -87,7 +87,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 4;
     auto N = 4;
@@ -100,7 +100,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 16;
@@ -113,7 +113,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 16;
@@ -126,7 +126,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 16;
@@ -139,7 +139,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 16;
@@ -152,7 +152,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 16;
@@ -165,7 +165,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 16;
@@ -178,7 +178,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 16;
@@ -191,7 +191,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 16;
@@ -204,7 +204,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 19;
@@ -217,7 +217,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 19;
@@ -230,7 +230,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 19;
@@ -243,7 +243,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 19;
@@ -256,7 +256,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 1;
     auto N = 19;
@@ -269,7 +269,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::cuda"))
 {
     auto M = 16;
     auto N = 1;
@@ -284,7 +284,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
 
 ////////////////////////////////////////////////////////////////////////////
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -298,7 +298,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -312,7 +312,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 2;
@@ -326,7 +326,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -340,7 +340,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -354,7 +354,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -368,7 +368,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -382,7 +382,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -396,7 +396,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -410,7 +410,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -424,7 +424,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -438,7 +438,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -452,7 +452,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -466,7 +466,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -480,7 +480,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -494,7 +494,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -508,7 +508,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -522,7 +522,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -536,7 +536,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 1;
@@ -550,7 +550,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -568,7 +568,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
 
 #if 1 
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -582,7 +582,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -596,7 +596,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 2;
@@ -610,7 +610,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -624,7 +624,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -638,7 +638,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -652,7 +652,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -666,7 +666,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -680,7 +680,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -694,7 +694,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -708,7 +708,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -722,7 +722,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -736,7 +736,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -750,7 +750,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -764,7 +764,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -778,7 +778,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -792,7 +792,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -806,7 +806,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -820,7 +820,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 1;
@@ -834,7 +834,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -854,7 +854,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
 
 #if 1
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -868,7 +868,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -882,7 +882,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 2;
@@ -896,7 +896,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -910,7 +910,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -924,7 +924,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -938,7 +938,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -952,7 +952,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -966,7 +966,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -980,7 +980,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -994,7 +994,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1008,7 +1008,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1022,7 +1022,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1036,7 +1036,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1050,7 +1050,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1064,7 +1064,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1078,7 +1078,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1092,7 +1092,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1106,7 +1106,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 1;
@@ -1120,7 +1120,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1140,7 +1140,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
 
 #if 1
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1154,7 +1154,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1168,7 +1168,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 2;
@@ -1182,7 +1182,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1196,7 +1196,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1210,7 +1210,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1224,7 +1224,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1238,7 +1238,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1252,7 +1252,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1266,7 +1266,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1280,7 +1280,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1294,7 +1294,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1308,7 +1308,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1322,7 +1322,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1336,7 +1336,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1350,7 +1350,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1364,7 +1364,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1378,7 +1378,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1392,7 +1392,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 1;
@@ -1406,7 +1406,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1424,7 +1424,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
 
 #if 1
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1438,7 +1438,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1452,7 +1452,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 2;
@@ -1466,7 +1466,7 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1480,7 +1480,7 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1494,7 +1494,7 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1508,7 +1508,7 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1522,7 +1522,7 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1536,7 +1536,7 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1550,7 +1550,7 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1564,7 +1564,7 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1578,7 +1578,7 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1592,7 +1592,7 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1606,7 +1606,7 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1620,7 +1620,7 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1634,7 +1634,7 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1648,7 +1648,7 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1662,7 +1662,7 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1676,7 +1676,7 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 1;
@@ -1690,7 +1690,7 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::cuda"))
 {
     auto dtype = nm::int8;
     auto M = 16;

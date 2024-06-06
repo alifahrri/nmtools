@@ -288,9 +288,39 @@ namespace nmtools::array::hip
             this->copy_buffer(output_buffer,output);
         }
 
-        template <typename function_t, typename output_array_t, typename arg0_t, typename...args_t>
-        auto run(const function_t& f, output_array_t& output, const arg0_t& arg0, const args_t&...args)
+        template <typename F, typename operands_t, typename attributes_t>
+        auto map_to_device(const functional::functor_t<F,operands_t,attributes_t>& f)
         {
+            static_assert( meta::len_v<operands_t> == 0 );
+            if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
+                return f;
+            } else {
+                constexpr auto N = meta::len_v<attributes_t>;
+                auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
+                    auto attribute = array::as_static(at(f.attributes,I));
+                    return utility::tuple_append(init,attribute);
+                }, nmtools_tuple{});
+                return functional::functor_t<F,operands_t,decltype(attributes)>{
+                    {f.fmap, f.operands, attributes}
+                };
+            }
+        } // map_to_device
+
+        template <template<typename...>typename tuple, typename...functors_t, typename operands_t>
+        auto map_to_device(const functional::functor_composition_t<tuple<functors_t...>,operands_t>& f)
+        {
+            static_assert( meta::len_v<operands_t> == 0 );
+            auto functors = meta::template_reduce<sizeof...(functors_t)>([&](auto init, auto I){
+                auto functor = map_to_device(at(f.functors,I));
+                return utility::tuple_append(init,functor);
+            }, nmtools_tuple{});
+            return functional::functor_composition_t<decltype(functors)>{functors};
+        } // map_to_device
+
+        template <typename function_t, typename output_array_t, template<typename...>typename tuple, typename...operands_t>
+        auto run(const function_t& f, output_array_t& output, const tuple<operands_t...>& operands)
+        {
+            #if 0
             auto args_pack = [&](){
                 if constexpr (meta::is_tuple_v<arg0_t>) {
                     static_assert( sizeof...(args_t) == 0, "nmtools error" );
@@ -312,6 +342,23 @@ namespace nmtools::array::hip
 
             using sequence_t = meta::make_index_sequence<meta::len_v<decltype(gpu_args_pack)>>;
             this->run_(output,f,gpu_args_pack,sequence_t{});
+            #else
+            constexpr auto N = sizeof...(operands_t);
+            auto device_operands = meta::template_reduce<N>([&](auto init, auto index){
+                const auto& arg_i = nmtools::at(operands,index);
+                if constexpr (meta::is_num_v<decltype(arg_i)>) {
+                    return utility::tuple_append(init,arg_i);
+                } else {
+                    auto device_array = create_array(*arg_i);
+                    return utility::tuple_append(init,device_array);
+                }
+            }, nmtools_tuple<>{});
+
+            // e.g. to convert dynamic allocation to static vector to run on device kernels
+            auto fn = map_to_device(f);
+            using sequence_t = meta::make_index_sequence<meta::len_v<decltype(device_operands)>>;
+            this->run_(output,fn,device_operands,sequence_t{});
+            #endif
         }
     };
 

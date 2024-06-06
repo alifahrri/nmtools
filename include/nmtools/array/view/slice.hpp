@@ -73,11 +73,10 @@ namespace nmtools::view
         if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
             using result_t = decltype(slice_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)});
             using return_t = nmtools_maybe<result_t>;
-            if (static_cast<bool>(m_dst_shape)) {
-                return return_t{result_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)}};
-            } else {
-                return return_t{meta::Nothing};
-            }
+            return (has_value(m_dst_shape)
+                ? return_t{result_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)}}
+                : return_t{meta::Nothing}
+            );
         } else {
             return slice_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)};
         }

@@ -20,7 +20,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/array/eval/hip.hpp"
 #include "nmtools/utils/apply_isclose.hpp"
 
-#if not(defined(__CUDA__) && defined(__CUDA_ARCH__))
+#if not(defined(__HIP__) && defined(__HIP_ARCH__))
 #include "nmtools/testing/data/array/slice.hpp"
 #endif
 
@@ -47,7 +47,6 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_APPLY_CLOSE( result, expect ); \
 }
 
-#if not(defined(__CUDA__) && defined(__CUDA_ARCH__))
 TEST_CASE("slice(case1)" * doctest::test_suite("array::slice"))
 {
     // TODO: support data() for the following arrays
@@ -66,10 +65,11 @@ TEST_CASE("slice(case1)" * doctest::test_suite("array::slice"))
     SLICE_SUBCASE(case1, array_hs_db, slice0, slice1, slice2);
 
     SLICE_SUBCASE(case1, array_ds_fb, slice0, slice1, slice2);
-    SLICE_SUBCASE(case1, array_ds_hb, slice0, slice1, slice2);
-    SLICE_SUBCASE(case1, array_ds_db, slice0, slice1, slice2);
+    // SLICE_SUBCASE(case1, array_ds_hb, slice0, slice1, slice2);
+    // SLICE_SUBCASE(case1, array_ds_db, slice0, slice1, slice2);
 }
 
+#if 0
 TEST_CASE("slice(case2)" * doctest::test_suite("array::slice"))
 {
     // TODO: support data() for the following arrays

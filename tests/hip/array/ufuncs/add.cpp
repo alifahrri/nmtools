@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
 
-#define CUDA_ADD_SUBCASE(...) \
+#define HIP_ADD_SUBCASE(...) \
 { \
     auto result = na::add(__VA_ARGS__, na::hip::default_context()); \
     auto expect = na::add(__VA_ARGS__); \
@@ -93,5 +93,5 @@ TEST_CASE("add(case1)" * doctest::test_suite("array::add"))
     auto lhs = na::reshape(lhs_flat,lhs_shape);
     auto rhs = na::reshape(rhs_flat,rhs_shape);
 
-    CUDA_ADD_SUBCASE( lhs, rhs );
+    HIP_ADD_SUBCASE( lhs, rhs );
 }

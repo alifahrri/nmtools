@@ -344,6 +344,7 @@ namespace nmtools::view
          *  - has index member function that transform indices
          */
 
+        // TODO: remove
         #ifdef NMTOOLS_NO_BASE_ACCESS
         view_type view;
         decorator_t(const view_type& view)
@@ -351,8 +352,10 @@ namespace nmtools::view
         {}
         #endif
 
+        #if 0
         nmtools_func_attribute
         ~decorator_t() = default;
+        #endif
 
         /**
          * @brief return the shape of this array

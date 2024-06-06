@@ -47,9 +47,9 @@ TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::add.reduce"))
     // REDUCE_ADD_SUBCASE( case1, a_d, axis, dtype, initial, keepdims );
     // REDUCE_ADD_SUBCASE( case1, a_h, axis, dtype, initial, keepdims );
 
-    // REDUCE_ADD_SUBCASE( case1, a_cs_fb, axis, dtype, initial, keepdims );
-    // REDUCE_ADD_SUBCASE( case1, a_cs_hb, axis, dtype, initial, keepdims );
-    // REDUCE_ADD_SUBCASE( case1, a_cs_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case1, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case1, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case1, a_cs_db, axis, dtype, initial, keepdims );
 
     REDUCE_ADD_SUBCASE( case1, a_fs_fb, axis, dtype, initial, keepdims );
     REDUCE_ADD_SUBCASE( case1, a_fs_hb, axis, dtype, initial, keepdims );

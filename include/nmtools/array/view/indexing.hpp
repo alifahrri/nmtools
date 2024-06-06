@@ -122,6 +122,11 @@ namespace nmtools::view
             , indexer(indexer)
         {}
 
+        #if 0
+        nmtools_func_attribute
+        ~indexing_t() = default;
+        #endif
+
         constexpr auto operands() const noexcept
         {
             return nmtools_tuple<array_type>{array};

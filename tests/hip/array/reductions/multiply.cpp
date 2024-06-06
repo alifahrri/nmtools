@@ -47,9 +47,9 @@ TEST_CASE("reduce_multiply(case1)" * doctest::test_suite("array::multiply.reduce
     // REDUCE_MULTIPLY_SUBCASE( case1, a_d, axis, dtype, initial, keepdims );
     // REDUCE_MULTIPLY_SUBCASE( case1, a_h, axis, dtype, initial, keepdims );
 
-    // REDUCE_MULTIPLY_SUBCASE( case1, a_cs_fb, axis, dtype, initial, keepdims );
-    // REDUCE_MULTIPLY_SUBCASE( case1, a_cs_hb, axis, dtype, initial, keepdims );
-    // REDUCE_MULTIPLY_SUBCASE( case1, a_cs_db, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case1, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case1, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case1, a_cs_db, axis, dtype, initial, keepdims );
 
     REDUCE_MULTIPLY_SUBCASE( case1, a_fs_fb, axis, dtype, initial, keepdims );
     REDUCE_MULTIPLY_SUBCASE( case1, a_fs_hb, axis, dtype, initial, keepdims );
@@ -76,9 +76,9 @@ TEST_CASE("reduce_multiply(case2)" * doctest::test_suite("array::multiply.reduce
     // REDUCE_MULTIPLY_SUBCASE( case2, a_d, axis, dtype, initial, keepdims );
     // REDUCE_MULTIPLY_SUBCASE( case2, a_h, axis, dtype, initial, keepdims );
 
-    // REDUCE_MULTIPLY_SUBCASE( case2, a_cs_fb, axis, dtype, initial, keepdims );
-    // REDUCE_MULTIPLY_SUBCASE( case2, a_cs_hb, axis, dtype, initial, keepdims );
-    // REDUCE_MULTIPLY_SUBCASE( case2, a_cs_db, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case2, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case2, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_MULTIPLY_SUBCASE( case2, a_cs_db, axis, dtype, initial, keepdims );
 
     REDUCE_MULTIPLY_SUBCASE( case2, a_fs_fb, axis, dtype, initial, keepdims );
     REDUCE_MULTIPLY_SUBCASE( case2, a_fs_hb, axis, dtype, initial, keepdims );

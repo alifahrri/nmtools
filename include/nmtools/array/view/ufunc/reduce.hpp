@@ -22,129 +22,7 @@
 
 #include "nmtools/array/view/ufunc/detail.hpp"
 #include "nmtools/utils/isequal.hpp"
-
-namespace nmtools::view::detail
-{
-    // TODO: move to index namespace
-    template <typename indices_t, typename array_type, typename axis_type, typename keepdims_type>
-    constexpr auto make_reduction_slices(const indices_t& indices_, const array_type& array, const axis_type& axis, keepdims_type keepdims)
-    {
-        // for now, assume axis is int and array is fixed_dim
-        // TODO: support reduce on dynamic dim array
-        using array_t = meta::remove_cvref_pointer_t<array_type>;
-        using axis_t  = meta::remove_cvref_pointer_t<axis_type>;
-        constexpr auto DIM = meta::fixed_dim_v<array_t>;
-        [[maybe_unused]] const auto dim = detail::dim(array);
-        // type for slicing is DIMx2 where 2 represent start and stop
-        using size_type = nm_size_t;
-        constexpr auto slices_vtype = [=](){
-            using slice_type = nmtools_array<size_type,2>;
-            if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
-                using slices_type = nmtools_array<slice_type,DIM>;
-                return meta::as_value_v<slices_type>;
-            } else {
-                using slices_type = nmtools_list<slice_type>;
-                return meta::as_value_v<slices_type>;
-            }
-        }();
-        using slices_type = meta::type_t<decltype(slices_vtype)>;
-        auto slices = slices_type {};
-        auto shape_ = detail::shape(array);
-        if constexpr (meta::is_resizable_v<slices_type>) {
-            slices.resize(dim);
-        }
-
-        // helper lambda to check if axis i is in the specified axis for reduction
-        auto in_axis = [&](auto i){
-            if constexpr (meta::is_index_v<axis_t> && meta::is_pointer_v<axis_type>) {
-                return i==*axis;
-            } else if constexpr (meta::is_index_v<axis_t>) {
-                using common_t = meta::promote_index_t<axis_t,decltype(i)>;
-                return (common_t)i==(common_t)axis;
-            } else {
-                auto f_predicate = [i](auto axis){
-                    using common_t = meta::promote_index_t<decltype(i),decltype(axis)>;
-                    return (common_t)i==(common_t)axis;
-                };
-                // axis is index array (reducing on multiple axes),
-                // axis may be pointer, but can't provide convenience function
-                // since may decay bounded array to pointer
-                if constexpr (meta::is_pointer_v<axis_type>) {
-                    auto found = index::where(f_predicate, *axis);
-                    return static_cast<bool>(len(found));
-                } else {
-                    auto found = index::where(f_predicate, axis);
-                    return static_cast<bool>(len(found));
-                }
-            }
-        };
-
-        // use the same type as axis_t for loop index
-        constexpr auto idx_vtype = [](){
-            if constexpr (meta::is_constant_index_array_v<axis_t>) {
-                // shortcut for now, just use int
-                return meta::as_value_v<int>;
-            } else if constexpr (meta::is_index_array_v<axis_t>) {
-                using type = meta::get_element_type_t<axis_t>;
-                return meta::as_value_v<type>;
-            } else if constexpr (meta::is_integer_v<axis_t>) {
-                return meta::as_value_v<axis_t>;
-            } else {
-                return meta::as_value_v<size_t>;
-            }
-        }();
-        using index_t = meta::get_index_type_t<array_t>;
-        using idx_t [[maybe_unused]] = meta::type_t<meta::promote_index<index_t,meta::type_t<decltype(idx_vtype)>>>;
-
-        // indices and the referenced array may have different dim,
-        // this variable track index for indices_
-        auto ii = idx_t{0};
-        if constexpr (meta::is_fixed_dim_ndarray_v<array_t>) {
-            // here, len(slices) already matched the dimension of source array
-            meta::template_for<DIM>([&](auto index){
-                constexpr auto i = decltype(index)::value;
-                // take all elements at given axis
-                if (in_axis(i)) {
-                    // note that shape_ maybe constant index array
-                    at(slices,i) = {
-                        static_cast<size_type>(0)
-                        , static_cast<size_type>(at(shape_,meta::ct_v<i>))};
-                    // if keepdims is true, also increment indices index
-                    if (keepdims)
-                        ii++;
-                }
-                // use indices otherwise, just slice with index:index+1
-                else {
-                    auto s = at(indices_,ii++);
-                    at(slices,i) = {
-                        static_cast<size_type>(s)
-                        , static_cast<size_type>(s+1)};
-                }
-            });
-        } else {
-            for (size_t i=0; i<dim; i++) {
-                // take all elements at given axis
-                if (in_axis(i)) {
-                    // note that shape_ maybe constant index array
-                    at(slices,i) = {
-                        static_cast<size_type>(0)
-                        , static_cast<size_type>(at(shape_,i))};
-                    // if keepdims is true, also increment indices index
-                    if (keepdims)
-                        ii++;
-                }
-                // use indices otherwise, just slice with index:index+1
-                else {
-                    auto s = at(indices_,ii++);
-                    at(slices,i) = {
-                        static_cast<size_type>(s)
-                        , static_cast<size_type>(s+1)};
-                }
-            }
-        }
-        return slices;
-    } // make_reduction_slices
-} // namespace nmtools::view::detail
+#include "nmtools/array/index/reduce.hpp"
 
 namespace nmtools::args
 {
@@ -399,7 +277,7 @@ namespace nmtools::view
             // apply slice only works with fixed dim ndarray for now
             // TODO: support dynamic dim ndarray
             auto sliced = [&](){
-                auto slices = detail::make_reduction_slices(indices_,array,axis,keepdims);
+                auto slices = index::reduction_slices(indices_,unwrap(detail::shape<true>(array)),axis,keepdims);
                 // this slice operates directly with the underlying array
                 // which may be pointer
                 if constexpr (meta::is_pointer_v<array_type>) {

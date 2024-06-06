@@ -8,7 +8,7 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace ix = nm::index;
 
-#define CUDA_CUMPROD_SUBCASE(...) \
+#define HIP_CUMPROD_SUBCASE(...) \
 { \
     auto expect = na::cumprod(__VA_ARGS__); \
     auto result = na::cumprod(__VA_ARGS__, na::hip::default_context()); \
@@ -21,7 +21,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, cumprod, case_name); \
     using namespace args; \
-    CUDA_CUMPROD_SUBCASE(__VA_ARGS__); \
+    HIP_CUMPROD_SUBCASE(__VA_ARGS__); \
 }
 
 TEST_CASE("cumprod(case1)" * doctest::test_suite("array::cumprod"))
@@ -37,7 +37,7 @@ TEST_CASE("cumprod(case1)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -55,11 +55,11 @@ TEST_CASE("cumprod(case2)" * doctest::test_suite("array::cumprod") * doctest::ma
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -76,15 +76,15 @@ TEST_CASE("cumprod(case3)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -101,23 +101,23 @@ TEST_CASE("cumprod(case4)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -134,7 +134,7 @@ TEST_CASE("cumprod(case5)" * doctest::test_suite("array::cumprod"))
     auto dtype    = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -151,11 +151,11 @@ TEST_CASE("cumprod(case6)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -172,15 +172,15 @@ TEST_CASE("cumprod(case7)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -197,23 +197,23 @@ TEST_CASE("cumprod(case8)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -230,7 +230,7 @@ TEST_CASE("cumprod(case9)" * doctest::test_suite("array::cumprod"))
     auto dtype    = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -247,11 +247,11 @@ TEST_CASE("cumprod(case10)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -268,15 +268,15 @@ TEST_CASE("cumprod(case11)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -293,23 +293,23 @@ TEST_CASE("cumprod(case12)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -326,7 +326,7 @@ TEST_CASE("cumprod(case13)" * doctest::test_suite("array::cumprod"))
     auto dtype    = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -343,11 +343,11 @@ TEST_CASE("cumprod(case14)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -364,15 +364,15 @@ TEST_CASE("cumprod(case15)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -389,23 +389,23 @@ TEST_CASE("cumprod(case16)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -422,7 +422,7 @@ TEST_CASE("cumprod(case17)" * doctest::test_suite("array::cumprod"))
     auto dtype    = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -439,11 +439,11 @@ TEST_CASE("cumprod(case18)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -460,15 +460,15 @@ TEST_CASE("cumprod(case19)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -485,22 +485,22 @@ TEST_CASE("cumprod(case20)" * doctest::test_suite("array::cumprod"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMPROD_SUBCASE(input,axis,dtype);
+        HIP_CUMPROD_SUBCASE(input,axis,dtype);
     }
 }

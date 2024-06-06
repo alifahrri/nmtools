@@ -8,7 +8,7 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace ix = nm::index;
 
-#define CUDA_CUMSUM_SUBCASE(...) \
+#define HIP_CUMSUM_SUBCASE(...) \
 { \
     auto expect = na::cumsum(__VA_ARGS__); \
     auto result = na::cumsum(__VA_ARGS__, na::hip::default_context()); \
@@ -21,7 +21,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, cumsum, case_name); \
     using namespace args; \
-    CUDA_CUMSUM_SUBCASE(__VA_ARGS__); \
+    HIP_CUMSUM_SUBCASE(__VA_ARGS__); \
 }
 
 TEST_CASE("cumsum(case1)" * doctest::test_suite("array::cumsum"))
@@ -37,7 +37,7 @@ TEST_CASE("cumsum(case1)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -54,11 +54,11 @@ TEST_CASE("cumsum(case2)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -75,15 +75,15 @@ TEST_CASE("cumsum(case3)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -100,23 +100,23 @@ TEST_CASE("cumsum(case4)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -133,7 +133,7 @@ TEST_CASE("cumsum(case5)" * doctest::test_suite("array::cumsum"))
     auto dtype    = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -150,11 +150,11 @@ TEST_CASE("cumsum(case6)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -171,15 +171,15 @@ TEST_CASE("cumsum(case7)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -196,23 +196,23 @@ TEST_CASE("cumsum(case8)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -229,7 +229,7 @@ TEST_CASE("cumsum(case9)" * doctest::test_suite("array::cumsum"))
     auto dtype    = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -246,11 +246,11 @@ TEST_CASE("cumsum(case10)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -267,15 +267,15 @@ TEST_CASE("cumsum(case11)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -292,23 +292,23 @@ TEST_CASE("cumsum(case12)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -325,7 +325,7 @@ TEST_CASE("cumsum(case13)" * doctest::test_suite("array::cumsum"))
     auto dtype    = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -342,11 +342,11 @@ TEST_CASE("cumsum(case14)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -363,15 +363,15 @@ TEST_CASE("cumsum(case15)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -388,23 +388,23 @@ TEST_CASE("cumsum(case16)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -421,7 +421,7 @@ TEST_CASE("cumsum(case17)" * doctest::test_suite("array::cumsum"))
     auto dtype    = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -438,11 +438,11 @@ TEST_CASE("cumsum(case18)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -459,15 +459,15 @@ TEST_CASE("cumsum(case19)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }
 
@@ -484,22 +484,22 @@ TEST_CASE("cumsum(case20)" * doctest::test_suite("array::cumsum"))
     auto dtype = nm::None;
     {
         auto axis = 0;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 1;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 2;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 3;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
     {
         auto axis = 4;
-        CUDA_CUMSUM_SUBCASE(input,axis,dtype);
+        HIP_CUMSUM_SUBCASE(input,axis,dtype);
     }
 }

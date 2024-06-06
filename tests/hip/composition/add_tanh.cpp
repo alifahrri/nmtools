@@ -14,7 +14,7 @@ namespace ix = nmtools::index;
 namespace fn = nmtools::functional;
 namespace view = nm::view;
 
-#define CUDA_SUBCASE(...) \
+#define HIP_SUBCASE(...) \
 { \
     auto result = na::eval(__VA_ARGS__, na::hip::default_context()); \
     auto expect = na::eval(__VA_ARGS__); \
@@ -36,5 +36,5 @@ TEST_CASE("add_tanh(case1)" * doctest::test_suite("array::add_tanh"))
     auto x = view::add(a,0.5f);
     auto y = view::tanh(x);
 
-    CUDA_SUBCASE( y );
+    HIP_SUBCASE( y );
 }

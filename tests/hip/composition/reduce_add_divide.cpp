@@ -12,7 +12,7 @@ namespace ix = nmtools::index;
 namespace fn = nmtools::functional;
 namespace view = nm::view;
 
-#define CUDA_SUBCASE(...) \
+#define HIP_SUBCASE(...) \
 { \
     auto result = na::eval(__VA_ARGS__, na::hip::default_context()); \
     auto expect = na::eval(__VA_ARGS__); \
@@ -40,5 +40,5 @@ TEST_CASE("reduce_add_divide(case1)" * doctest::test_suite("array::reduce_add_di
     auto x = view::reduce_add(lhs,axis,dtype,initial,keepdims);
     auto y = view::divide(x,divisor);
 
-    CUDA_SUBCASE( y );
+    HIP_SUBCASE( y );
 }

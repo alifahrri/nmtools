@@ -56,22 +56,27 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
+            using slice_t [[maybe_unused]] = nmtools_tuple<none_t,none_t,int>;
             if constexpr (
-                is_constant_index_v<dim_t>
-                && (is_index_array_v<axes_t> || is_index_v<axes_t> || is_none_v<axes_t>)
+                !is_index_v<dim_t>
+                || !(is_index_array_v<axes_t> || is_index_v<axes_t> || is_none_v<axes_t>)
             ) {
-                using slice_t = nmtools_tuple<none_t,none_t,int>;
+                using type = error::FLIP_SLICES_UNSUPPORTED<dim_t,axes_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_constant_index_v<dim_t>
+            ) {
                 using type = nmtools_array<slice_t,dim_t::value>;
                 return as_value_v<type>;
             } else if constexpr (
-                is_index_v<dim_t>
-                && (is_index_array_v<axes_t> || is_index_v<axes_t> || is_none_v<axes_t>)
+                is_clipped_integer_v<dim_t>
             ) {
-                using slice_t = nmtools_tuple<none_t,none_t,int>;
+                using type = nmtools_static_vector<slice_t,dim_t::max_value>;
+                return as_value_v<type>;
+            } else {
+                // TODO: use small_vector
                 using type = nmtools_list<slice_t>;
                 return as_value_v<type>; 
-            } else {
-                return as_value_v<error::FLIP_SLICES_UNSUPPORTED<dim_t,axes_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;

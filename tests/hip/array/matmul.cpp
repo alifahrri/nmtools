@@ -14,7 +14,7 @@ namespace meta = nm::meta;
 // TODO: fix to accept maybe type
 using nmtools::unwrap;
 
-#define CUDA_TEST(fn,...) \
+#define HIP_TEST(fn,...) \
 { \
     auto expect = na::fn(__VA_ARGS__); \
     auto result = na::fn(__VA_ARGS__,na::hip::default_context()); \
@@ -32,10 +32,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("array::matmul"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 4;
     auto N = 4;
@@ -45,10 +45,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 2;
     auto N = 2;
@@ -58,10 +58,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 4;
     auto N = 4;
@@ -71,10 +71,10 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 4;
     auto N = 4;
@@ -84,10 +84,10 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 4;
     auto N = 4;
@@ -97,10 +97,10 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 16;
@@ -110,10 +110,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 16;
@@ -123,10 +123,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 16;
@@ -136,10 +136,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
    
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 16;
@@ -149,10 +149,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 16;
@@ -162,10 +162,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 16;
@@ -175,10 +175,10 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 16;
@@ -188,10 +188,10 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 16;
@@ -201,10 +201,10 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 19;
@@ -214,10 +214,10 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 19;
@@ -227,10 +227,10 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 19;
@@ -240,10 +240,10 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 19;
@@ -253,10 +253,10 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 1;
     auto N = 19;
@@ -266,10 +266,10 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::hip"))
 {
     auto M = 16;
     auto N = 1;
@@ -279,12 +279,12 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -295,10 +295,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -309,10 +309,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 2;
@@ -323,10 +323,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -337,10 +337,10 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -351,10 +351,10 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 4;
@@ -365,10 +365,10 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -379,10 +379,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -393,10 +393,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -407,10 +407,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
    
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -421,10 +421,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -435,10 +435,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -449,10 +449,10 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -463,10 +463,10 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -477,10 +477,10 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -491,10 +491,10 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -505,10 +505,10 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -519,10 +519,10 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -533,10 +533,10 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 1;
@@ -547,10 +547,10 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::float64;
     auto M = 16;
@@ -561,14 +561,14 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 /////////////////////////////////////////////////////////////////////////
 
 #if 1 
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -579,10 +579,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -593,10 +593,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 2;
@@ -607,10 +607,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -621,10 +621,10 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -635,10 +635,10 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 4;
@@ -649,10 +649,10 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -663,10 +663,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -677,10 +677,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -691,10 +691,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
    
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -705,10 +705,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -719,10 +719,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -733,10 +733,10 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -747,10 +747,10 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -761,10 +761,10 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -775,10 +775,10 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -789,10 +789,10 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -803,10 +803,10 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -817,10 +817,10 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 1;
@@ -831,10 +831,10 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int32;
     auto M = 16;
@@ -845,7 +845,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 #endif
@@ -854,7 +854,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
 
 #if 1
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -865,10 +865,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -879,10 +879,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 2;
@@ -893,10 +893,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -907,10 +907,10 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -921,10 +921,10 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 4;
@@ -935,10 +935,10 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -949,10 +949,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -963,10 +963,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -977,10 +977,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
    
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -991,10 +991,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1005,10 +1005,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1019,10 +1019,10 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1033,10 +1033,10 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1047,10 +1047,10 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1061,10 +1061,10 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1075,10 +1075,10 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1089,10 +1089,10 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1103,10 +1103,10 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 1;
@@ -1117,10 +1117,10 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int64;
     auto M = 16;
@@ -1131,7 +1131,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 #endif
@@ -1140,7 +1140,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
 
 #if 1
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1151,10 +1151,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1165,10 +1165,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 2;
@@ -1179,10 +1179,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1193,10 +1193,10 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1207,10 +1207,10 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 4;
@@ -1221,10 +1221,10 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1235,10 +1235,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1249,10 +1249,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1263,10 +1263,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
    
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1277,10 +1277,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1291,10 +1291,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1305,10 +1305,10 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1319,10 +1319,10 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1333,10 +1333,10 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1347,10 +1347,10 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1361,10 +1361,10 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1375,10 +1375,10 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1389,10 +1389,10 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 1;
@@ -1403,10 +1403,10 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int16;
     auto M = 16;
@@ -1417,14 +1417,14 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 #endif
 
 #if 1
 
-TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1435,10 +1435,10 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1449,10 +1449,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 2;
@@ -1463,10 +1463,10 @@ TEST_CASE("matmul(case1b)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1477,10 +1477,10 @@ TEST_CASE("matmul(case1c)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1491,10 +1491,10 @@ TEST_CASE("matmul(case1d)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 4;
@@ -1505,10 +1505,10 @@ TEST_CASE("matmul(case1e)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1519,10 +1519,10 @@ TEST_CASE("matmul(case2)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1533,10 +1533,10 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1547,10 +1547,10 @@ TEST_CASE("matmul(case4)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
    
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1561,10 +1561,10 @@ TEST_CASE("matmul(case5)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1575,10 +1575,10 @@ TEST_CASE("matmul(case6)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1589,10 +1589,10 @@ TEST_CASE("matmul(case7)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
     
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1603,10 +1603,10 @@ TEST_CASE("matmul(case8)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1617,10 +1617,10 @@ TEST_CASE("matmul(case9)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1631,10 +1631,10 @@ TEST_CASE("matmul(case10)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1645,10 +1645,10 @@ TEST_CASE("matmul(case11)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1659,10 +1659,10 @@ TEST_CASE("matmul(case12)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1673,10 +1673,10 @@ TEST_CASE("matmul(case13)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 1;
@@ -1687,10 +1687,10 @@ TEST_CASE("matmul(case14)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
-TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
+TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::hip"))
 {
     auto dtype = nm::int8;
     auto M = 16;
@@ -1701,7 +1701,7 @@ TEST_CASE("matmul(case15)" * doctest::test_suite("matmul::x86_AVX"))
     auto lhs = na::reshape(na::arange(M*K,dtype),lhs_shape);
 
     auto rhs = na::reshape(na::arange(K*N,dtype),rhs_shape);
-    CUDA_TEST(matmul,unwrap(lhs),unwrap(rhs));
+    HIP_TEST(matmul,unwrap(lhs),unwrap(rhs));
 }
 
 #endif

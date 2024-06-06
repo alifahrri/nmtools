@@ -19,11 +19,12 @@ namespace nmtools::array
 
         auto operator()() const noexcept
         {
-            if constexpr (meta::is_dynamic_index_array_v<attribute_type>) {
+            // TODO: return maybe when size > max_dim
+            if constexpr (meta::is_resizable_v<attribute_type>) {
                 using element_type = meta::get_element_type_t<attribute_t>;
                 using result_type  = utl::static_vector<element_type,max_dim>;
                 auto result = result_type{};
-                result.resize(attribute.size());
+                result.resize(nmtools::size(attribute));
                 for (size_t i=0; i<len(result); i++) {
                     at(result,i) = at(attribute,i);
                 }

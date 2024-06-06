@@ -79,10 +79,8 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/ufuncs/add.cpp
     array/ufuncs/multiply.cpp
 
-    # TODO: fix compile
-    # array/reductions/add.cpp
-    # TODO: fix compile
-    # array/reductions/multiply.cpp
+    array/reductions/add.cpp
+    array/reductions/multiply.cpp
 
     array/outer/add.cpp
     array/outer/multiply.cpp
@@ -90,65 +88,42 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/accumulations/add.cpp
     array/accumulations/multiply.cpp
 
-    # TODO: fix runtime
-    # array/broadcast_to.cpp
-    # TODO: fix compile
-    # array/atleast_1d.cpp
-    # TODO: fix compile
-    # array/atleast_2d.cpp
-    # TODO: fix compile
-    # array/atleast_3d.cpp
-    # TODO: fix compile
-    # array/concatenate.cpp
-    # TODO: fix compile
-    # array/expand_dims.cpp
-    # TODO: fix compile
-    # array/flatten.cpp
-    # TODO: fix compile
-    # array/flip.cpp
-    # TODO: fix compile
-    # array/hstack.cpp
-    # TODO: fix runtime
-    # array/pad.cpp
+    array/broadcast_to.cpp
+    array/atleast_1d.cpp
+    array/atleast_2d.cpp
+    array/atleast_3d.cpp
+    array/concatenate.cpp
+    array/expand_dims.cpp
+    array/flatten.cpp
+    array/flip.cpp
+    array/hstack.cpp
+    array/pad.cpp
     # TODO: fix compile
     # array/pooling.cpp
-    # TODO: fix compile
-    # array/repeat.cpp
-    # TODO: fix runtime
-    # array/reshape.cpp
-    # array/resize.cpp
-    # TODO: fix compile
-    # array/slice.cpp
-    # TODO: fix compile
-    # array/squeeze.cpp
-    # TODO: fix compile
-    # array/tile.cpp
-    # TODO: fix compile
-    # array/transpose.cpp
-    # TODO: fix compile
-    # array/where.cpp
-    # TODO: fix compile
-    # array/moveaxis.cpp
+    array/repeat.cpp
+    array/reshape.cpp
+    array/resize.cpp
+    array/slice.cpp
+    array/squeeze.cpp
+    array/tile.cpp
+    array/transpose.cpp
+    array/where.cpp
+    array/moveaxis.cpp
     array/arange.cpp
     array/zeros.cpp
     array/ones.cpp
     array/full.cpp
-    # TODO: fix compile
-    # array/vstack.cpp
+    array/vstack.cpp
 
-    # TODO: fix compile
-    # array/sum.cpp
+    array/sum.cpp
     array/cumsum.cpp
     array/matmul.cpp
-    # TODO: fix compile
-    # array/prod.cpp
+    array/prod.cpp
     array/cumprod.cpp
-    # TODO: fix compile
-    # array/mean.cpp
+    array/mean.cpp
 
     composition/add_tanh.cpp
-    # composition/mean_subtract.cpp
-    # composition/reduce_add_divide.cpp
+    composition/reduce_add_divide.cpp
 )
 
 ## TODO: support nvcc compilation
