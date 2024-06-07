@@ -10,5 +10,6 @@ else
     wget ${URL}
 fi
 apt install -y ./${FILE}
+apt update
 apt install -y hipcc
 # amdgpu-install --usecase=lrt --no-dkms
