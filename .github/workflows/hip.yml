@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install hip
-        run: bash scripts/install_hip.sh
+        run: sudo bash scripts/install_hip.sh
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
