@@ -12,6 +12,7 @@ fi
 apt install -y ./${FILE}
 apt update
 apt install -y hipcc
+tree -h /opt/rocm*
 hipcc --version
 which hipcc
 # amdgpu-install --usecase=lrt --no-dkms
