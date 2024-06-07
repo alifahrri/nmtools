@@ -10,4 +10,4 @@ else
     wget ${URL}
 fi
 apt install -y ./${FILE}
-amdgpu-install --usecase=hiplibsdk --no-dkms
+amdgpu-install --usecase=lrt --no-dkms
