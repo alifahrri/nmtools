@@ -12,4 +12,6 @@ fi
 apt install -y ./${FILE}
 apt update
 apt install -y hipcc
+hipcc --version
+which hipcc
 # amdgpu-install --usecase=lrt --no-dkms
