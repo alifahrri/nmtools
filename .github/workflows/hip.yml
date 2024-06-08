@@ -22,6 +22,7 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         run: |
+          export PATH=$PATH:/opt/rocm/bin/
           mkdir -p build/hip && cd build/hip
           cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON ../..
           make -j2
