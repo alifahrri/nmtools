@@ -11,7 +11,7 @@ else
 fi
 apt install -y ./${FILE}
 apt update
-apt install -y hipcc
+apt install -y hipcc hip-runtime-amd rocm-device-libs
 tree -h /opt/rocm*
 export PATH=$PATH:/opt/rocm/bin/
 hipcc --version
