@@ -10,6 +10,8 @@
 #include "nmtools/platform/arduino.hpp"
 #elif defined(__CUDA__)
 #include "nmtools/platform/cuda.hpp"
+#elif defined(__HIP__)
+#include "nmtools/platform/hip.hpp"
 #elif defined(__OPENCL_VERSION__)
 #include "nmtools/platform/opencl.hpp"
 #endif // ARDUINO

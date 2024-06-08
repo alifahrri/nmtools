@@ -136,6 +136,9 @@ namespace nmtools::utl
             }
         }
 
+        nmtools_func_attribute
+        ~maybe() = default;
+
         constexpr bool has_value() const noexcept
         {
             return this->tag == base::LEFT;

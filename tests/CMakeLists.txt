@@ -147,6 +147,11 @@ if (NMTOOLS_BUILD_CUDA_TESTS)
     add_subdirectory(cuda)
 endif (NMTOOLS_BUILD_CUDA_TESTS)
 
+option(NMTOOLS_BUILD_HIP_TESTS "build hip test programs" OFF)
+if (NMTOOLS_BUILD_HIP_TESTS)
+    add_subdirectory(hip)
+endif (NMTOOLS_BUILD_HIP_TESTS)
+
 option(NMTOOLS_BUILD_SYCL_TESTS "build sycl test programs" OFF)
 if (NMTOOLS_BUILD_SYCL_TESTS)
     add_subdirectory(sycl)

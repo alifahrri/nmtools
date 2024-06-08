@@ -1,0 +1,28 @@
+name: hip
+
+on:
+  push:
+    branches:
+    - 'master'
+    tags:
+    - 'v*'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  hip:
+    name: hip-6.1
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: install hip
+        run: sudo bash scripts/install_hip.sh
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: |
+          export PATH=$PATH:/opt/rocm/bin/
+          mkdir -p build/hip && cd build/hip
+          cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON ../..
+          make -j2

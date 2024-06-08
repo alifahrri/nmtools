@@ -259,6 +259,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_reduce_add)
 
 NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int8_t a[2][3][2] = {
@@ -274,6 +276,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
             }
         };
         inline int8_t axis = 0;
+        inline auto axis_ct = 0_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
