@@ -2,6 +2,8 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_SOFTMIN_HPP
 
 #include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/functional/ufuncs/negative.hpp"
+#include "nmtools/array/functional/softmax.hpp"
 #include "nmtools/array/view/softmin.hpp"
 
 namespace nmtools::functional

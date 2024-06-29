@@ -37,6 +37,7 @@
 #include "nmtools/meta/bits/transform/transform_bounded_array.hpp"
 #include "nmtools/meta/bits/transform/tuple_to_array.hpp"
 #include "nmtools/meta/bits/transform/type_list_at.hpp"
+#include "nmtools/meta/bits/transform/type_name.hpp"
 
 #include "nmtools/meta/bits/traits/has_type.hpp"
 

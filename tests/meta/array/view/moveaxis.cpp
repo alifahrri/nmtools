@@ -23,7 +23,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -51,7 +51,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -78,7 +78,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -106,7 +106,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -133,7 +133,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -161,7 +161,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -189,7 +189,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -216,7 +216,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -243,7 +243,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -270,7 +270,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );
@@ -297,7 +297,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -324,7 +324,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -351,7 +351,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
@@ -378,7 +378,7 @@ TEST_CASE("moveaxis(case1)" * doctest::test_suite("meta::moveaxis"))
         using array_type  = na::ndarray_t<buffer_type,shape_type>;
         using src_type    = decltype(0_ct);
         using dst_type    = decltype(1_ct);
-        using view_type   = decltype(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>()));
+        using view_type   = decltype(nmtools::unwrap(view::moveaxis(meta::declval<array_type>(),meta::declval<src_type>(),meta::declval<dst_type>())));
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size, view_type );

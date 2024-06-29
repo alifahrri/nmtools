@@ -158,7 +158,7 @@ namespace nmtools::index
             // return ret;
         } else {
             // NOTE: quick hack so no need to modify caller to handle non maybe type
-            using return_t = meta::make_maybe_type_t<result_t>;
+            using return_t = nmtools_maybe<result_t>;
             static_assert( !meta::is_fail_v<result_t>
                 , "unsupported moveaxis_to_transpose"
             );

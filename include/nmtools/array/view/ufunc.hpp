@@ -5,6 +5,7 @@
 #include "nmtools/array/view/ufunc/reduce.hpp"
 #include "nmtools/array/view/ufunc/accumulate.hpp"
 #include "nmtools/array/view/ufunc/outer.hpp"
+#include "nmtools/array/view/alias.hpp"
 
 namespace nmtools::view
 {
@@ -380,7 +381,7 @@ namespace nmtools::view
         else if constexpr (meta::is_boolean_v<keepdims_t>) {
             using left_t   = decltype(reduce(op,array,axis,dtype,initial,True));
             using right_t  = decltype(reduce(op,array,axis,dtype,initial,False));
-            using either_t = meta::make_either_type_t<left_t,right_t>;
+            using either_t = nmtools_either<left_t,right_t>;
             return (
                 keepdims ?
                   either_t{reduce(op,array,axis,dtype,initial,True)}

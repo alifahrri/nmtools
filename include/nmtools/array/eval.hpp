@@ -452,7 +452,7 @@ namespace nmtools::meta
                 // default impl of make_fixed_ndarray only support integral constant for now
                 using stype = ct<s>;
                 if constexpr (is_void_v<type>) {
-                    using type = make_tuple_type_t<stype>;
+                    using type = nmtools_tuple<stype>;
                     return as_value_v<type>;
                 } else {
                     using type = append_type_t<type,stype>;
@@ -496,7 +496,7 @@ namespace nmtools::meta
                 // default impl of make_fixed_ndarray only support integral constant for now
                 using stype = ct<s>;
                 if constexpr (is_void_v<type>) {
-                    using type = make_tuple_type_t<stype>;
+                    using type = nmtools_tuple<stype>;
                     return as_value_v<type>;
                 } else {
                     using type = append_type_t<type,stype>;

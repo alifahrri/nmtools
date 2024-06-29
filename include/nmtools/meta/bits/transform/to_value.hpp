@@ -63,11 +63,20 @@ namespace nmtools::meta
     template <template<typename...>typename Tuple, typename...T, auto...Min, auto...Max>
     struct to_value<
         Tuple<clipped_integer_t<T,Min,Max>...>,
-        enable_if_t< is_tuple_v<Tuple<clipped_integer_t<T,Min,Max>...>> >
+        enable_if_t< is_tuple_v<Tuple<clipped_integer_t<T,Min,Max>...>> && sizeof...(T)>
     >
     {
         using index_t = promote_index_t<T...>;
         static constexpr auto value = nmtools_array{index_t(Max)...};
+    }; // to_value
+
+    template <template<typename...>typename tuple, typename...Ts>
+    struct to_value<
+        tuple<Ts...>
+        , enable_if_t< is_tuple_v<tuple<Ts...>> && (is_constant_index_v<Ts> && ...) && sizeof...(Ts)>
+    > {
+        using index_t = promote_index_t<decltype(Ts::value)...>;
+        static constexpr auto value = nmtools_array{index_t(Ts::value)...};
     }; // to_value
 
     template <template<typename,auto>typename Array, typename T, auto Min, auto Max, auto N>

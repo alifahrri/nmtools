@@ -89,7 +89,7 @@ namespace nmtools::impl
         template <size_t N, typename T>
         constexpr auto repeat(const T& t)
         {
-            auto res = meta::make_array_type_t<T,N>{};
+            auto res = nmtools_array<T,N>{};
             meta::template_for<N>([&](auto index){
                 constexpr auto i = decltype(index)::value;
                 get<i>(res) = t;
@@ -140,7 +140,7 @@ namespace nmtools::impl
             // check for dynamic-shape array but fixed-dimension array
             else if constexpr (meta::nested_array_dim_v<array_t> > 0) {
                 constexpr auto N = meta::nested_array_dim_v<array_t>;
-                auto shape_ = meta::make_array_type_t<size_t,N>{};
+                auto shape_ = nmtools_array<size_t,N>{};
                 meta::template_for<N>([&](auto index){
                     constexpr auto i = decltype(index)::value;
                     // example for 3dim nested dynamic array

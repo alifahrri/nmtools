@@ -13,6 +13,16 @@ namespace meta = nm::meta;
 namespace view = nm::view;
 
 using namespace nmtools::literals;
+using nmtools::unwrap;
+
+#define get_node_id(a) \
+[&](){ \
+    using array_type = decltype(unwrap(a)); \
+    using view_type  = typename array_type::view_type; \
+    constexpr auto view_vtype = meta::as_value_v<view_type>; \
+    constexpr auto node_id    = meta::generate_view_id(array_type::operands_ids,view_vtype); \
+    return node_id; \
+}()
 
 namespace utils = nmtools::utils;
 
@@ -23,14 +33,16 @@ TEST_CASE("broadcast_to" * doctest::test_suite("functional::get_compute_graph") 
 
     auto a = view::broadcast_to(lhs_array,lhs_shape);
 
+    auto a_id = get_node_id(a);
+
     [[maybe_unused]]
     auto graph = nm::unwrap(fn::get_compute_graph(a));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
-        .add_node(1_ct,fn::node_t{fn::broadcast_to[lhs_shape],nmtools_tuple{0_ct}})
-        .add_edge(0_ct,1_ct)
+        .add_node(a_id,fn::node_t{fn::broadcast_to[lhs_shape],nmtools_tuple{0_ct}})
+        .add_edge(0_ct,a_id)
     ;
 
     // TODO: support comparison of maybe graph
@@ -44,14 +56,16 @@ TEST_CASE("broadcast_to" * doctest::test_suite("functional::get_compute_graph"))
 
     auto a = view::broadcast_to(lhs_array,lhs_shape);
 
+    auto a_id = get_node_id(a);
+
     [[maybe_unused]]
     auto graph = nm::unwrap(fn::get_compute_graph(a));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
-        .add_node(1_ct,fn::node_t{fn::indexing[nm::unwrap(a).attributes()],nmtools_tuple{0_ct}})
-        .add_edge(0_ct,1_ct)
+        .add_node(a_id,fn::node_t{fn::indexing[nm::unwrap(a).attributes()],nmtools_tuple{0_ct}})
+        .add_edge(0_ct,a_id)
     ;
 
     // TODO: support comparison of maybe graph

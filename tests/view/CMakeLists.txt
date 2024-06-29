@@ -50,6 +50,7 @@ if (NMTOOLS_VIEW_TEST_ALL)
 endif (NMTOOLS_VIEW_TEST_ALL)
 
 set(ARRAY_VIEW_1_TEST_SOURCES
+    src/alias.cpp
     src/arange.cpp
     src/argsort.cpp
     ## TODO: fix

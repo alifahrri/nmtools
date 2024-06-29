@@ -133,7 +133,7 @@ namespace nmtools::meta
             ) {
                 // TODO: compute at compile-time here, then maps back to type
                 constexpr auto N = fixed_index_array_size_v<indices_t>;
-                using type = make_fixed_ndarray_t<element_t,make_tuple_type_t<ct<N>>>;
+                using type = make_fixed_ndarray_t<element_t,nmtools_tuple<ct<N>>>;
                 return as_value_v<type>;
             } else if constexpr (
                    is_hybrid_index_array_v<indices_t>

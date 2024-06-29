@@ -3,6 +3,9 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/utility/at.hpp"
+#include "nmtools/utility/fwd.hpp"
+#include "nmtools/utility/unwrap.hpp"
+#include "nmtools/array/index/max.hpp"
 #include "nmtools/array/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
 
@@ -17,6 +20,8 @@ namespace nmtools::view
         using const_reference = const value_type&;
         // array type as required by decorator
         using array_type = resolve_array_type_t<array_t>;
+
+        // TODO: assert id is constant index (or none)
         using id_type = id_t;
 
         static constexpr auto operands_ids = nmtools_tuple{id_type{}};
@@ -39,12 +44,79 @@ namespace nmtools::view
             return nmtools_tuple{id};
         }
 
+        constexpr auto shape() const
+        {
+            if constexpr (meta::is_pointer_v<meta::remove_cvref_t<array_type>>) {
+                return nmtools::shape<true>(*array);
+            } else {
+                return nmtools::shape<true>(array);
+            }
+        }
+
+        constexpr auto dim() const
+        {
+            if constexpr (meta::is_pointer_v<meta::remove_cvref_t<array_type>>) {
+                return nmtools::dim<true>(*array);
+            } else {
+                return nmtools::dim<true>(array);
+            }
+        }
+
+        constexpr auto size() const
+        {
+            if constexpr (meta::is_pointer_v<meta::remove_cvref_t<array_type>>) {
+                return nmtools::size<true>(*array);
+            } else {
+                return nmtools::size<true>(array);
+            }
+        }
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        } // operands
+
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
             return pack_indices(indices...);
         } // index
     }; // alias_t
+
+    template <typename array_t, typename id_t>
+    struct alias_t<array_t,id_t,meta::enable_if_t<meta::is_num_v<array_t>>>
+    {
+        using value_type = meta::get_element_type_t<array_t>;
+        using const_reference = const value_type&;
+        // array type as required by decorator
+        using array_type = resolve_array_type_t<array_t>;
+        using id_type = id_t;
+
+        static constexpr auto operands_ids = nmtools_tuple{id_type{}};
+
+        array_type array;
+        id_type id;
+
+        constexpr alias_t(const array_t& array, id_t id)
+            : array(array)
+            , id(id)
+        {}
+
+        constexpr operator value_type() const
+        {
+            return array;
+        }
+
+        constexpr auto attribute() const noexcept
+        {
+            return nmtools_tuple{id};
+        }
+
+        constexpr auto operands() const noexcept
+        {
+            return nmtools_tuple<array_type>{array};
+        } // operands
+    }; // alias
 
     template <typename T, typename id_t>
     struct alias_t<T*, id_t, meta::enable_if_t<meta::is_num_v<T>>>
@@ -95,22 +167,67 @@ namespace nmtools::view
         }
     };
 
+    // TODO: drop none default, make id mandatory
     template <typename array_t, typename id_t=none_t>
     constexpr auto alias(const array_t& array, id_t id=id_t{})
     {
+        // TODO: handle either type
         if constexpr (meta::is_maybe_v<array_t>) {
             using array_type  = meta::get_maybe_type_t<array_t>;
-            using result_type = decorator_t<alias_t,array_type,id_t>;
+            using result_type = decltype(alias(meta::declval<array_type>(),id));
             using return_type = nmtools_maybe<result_type>;
-            if (static_cast<bool>(array)) {
-                return return_type{decorator_t<alias_t,array_type,id_t>{{*array,id}}};
+            return (static_cast<bool>(array)
+                ? return_type{alias(*array,id)}
+                : return_type{meta::Nothing}
+            );
+        } else if constexpr (meta::is_same_view_v<alias_t,array_t> && !is_none_v<id_t>) {
+            // Quick-hack: aliasing an alias will rename
+            const auto& m_array = array.array;
+            if constexpr (meta::is_pointer_v<meta::remove_cvref_t<decltype(m_array)>>) {
+                return alias(*array.array,id);
             } else {
-                return return_type{meta::Nothing};
+                return alias(array.array,id);
             }
+        } else if constexpr (meta::is_view_v<array_t>) {
+            // view is already aliased
+            static_assert( array_t::id_type::value == id_t::value );
+            return array;
         } else {
             return decorator_t<alias_t,array_t,id_t>{{array,id}};
         }
     } // alias
+
+    template <typename...arrays_t>
+    constexpr auto aliased(const arrays_t&...arrays)
+    {
+        auto array_pack = pack_operands(arrays...);
+        constexpr auto N = sizeof...(arrays);
+        constexpr auto initial_ids = meta::template_reduce<N>([&](auto init, auto index){
+            using array_type = decltype(unwrap(at(array_pack,index)));
+            constexpr auto id = get_id_v<meta::remove_cvref_pointer_t<array_type>>;
+            return utility::tuple_append(init,meta::ct_v<(nm_index_t)id>);
+        },nmtools_tuple{});
+        constexpr auto max_id    = index::max(meta::to_value_v<decltype(initial_ids)>);
+        constexpr auto offset_id = max_id + 1; // if max_id: -1, then offset 0
+        constexpr auto final_ids = meta::template_reduce<N>([&](auto init, auto index){
+            constexpr auto id = at(initial_ids,index);
+            constexpr auto final_id = ((id < 0) ? (offset_id + index) : id);
+            return utility::tuple_append(init,meta::ct_v<final_id>);
+        },nmtools_tuple{});
+        auto aliased = meta::template_reduce<N>([&](auto init, auto index){
+            const auto& array = at(array_pack,index);
+            if constexpr (meta::is_pointer_v<meta::remove_cvref_pointer_t<decltype(array)>>) {
+                return append_operands(init,alias(*array,at(final_ids,index)));
+            } else {
+                return append_operands(init,alias(array,at(final_ids,index)));
+            }
+        },nmtools_tuple{});
+        if constexpr (N == 1) {
+            return nmtools::get<0>(aliased);
+        } else {
+            return aliased;
+        }
+    } // aliased
 
     template <typename T, typename id_t=none_t>
     constexpr auto alias(const T* ptr, size_t numel, id_t id=id_t{})
@@ -121,28 +238,36 @@ namespace nmtools::view
 
 namespace nmtools::meta
 {
-    template <typename array_t, typename id_t>
-    struct is_ndarray< view::decorator_t<view::alias_t, array_t, id_t> >
+    template <typename array_t, typename...args_t>
+    struct is_ndarray< view::decorator_t<view::alias_t, array_t, args_t...> >
     {
         static constexpr auto value = is_ndarray_v<array_t>;
     };
 
-    template <typename array_t, typename id_t>
-    struct is_num< view::decorator_t<view::alias_t, array_t, id_t> >
+    template <typename array_t, typename...args_t>
+    struct is_num< view::decorator_t<view::alias_t, array_t, args_t...> >
     {
         static constexpr auto value = is_num_v<array_t>;
     };
 
     // specialization for ptr
-    template <typename array_t, typename id_t>
-    struct is_ndarray< view::decorator_t<view::alias_t, array_t*, id_t> >
+    template <typename array_t, typename...args_t>
+    struct is_ndarray< view::decorator_t<view::alias_t, array_t*, args_t...> >
     {
         static constexpr auto value = is_num_v<array_t>;
     };
 
-    template <typename T, typename id_t>
+    template <typename array_t, typename...args_t>
     struct get_element_type<
-        view::decorator_t<view::alias_t,T*,id_t>
+        view::decorator_t<view::alias_t, array_t, args_t...>
+    >
+    {
+        using type = get_element_type_t<array_t>;
+    };
+
+    template <typename T, typename...args_t>
+    struct get_element_type<
+        view::decorator_t<view::alias_t,T*,args_t...>
     >
     {
         using type = meta::remove_address_space_t<T>;

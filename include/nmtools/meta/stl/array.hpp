@@ -39,7 +39,7 @@ namespace nmtools::meta
     {
         static constexpr auto value = [](){
             constexpr auto rank = std::rank_v<T>;
-            using array_t = typename make_array_type<size_t,rank>::type;
+            using array_t = std::array<size_t,rank>;
             auto shape = array_t{};
             template_for<rank>([&](auto index) {
                 constexpr auto i = decltype(index)::value;

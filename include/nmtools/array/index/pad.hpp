@@ -102,7 +102,7 @@ namespace nmtools::index
     {
         using result_t = meta::resolve_optype_t<pad_t,index_t,src_shape_t,dst_shape_t,pad_width_t>;
         // use maybe type to indicate out of bound index (of src shape)
-        using return_t = meta::make_maybe_type_t<result_t>;
+        using return_t = nmtools_maybe<result_t>;
         using idx_t    = meta::get_index_element_type_t<result_t>;
         using s_idx_t  = meta::make_signed_t<idx_t>;
 

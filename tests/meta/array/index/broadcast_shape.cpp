@@ -133,31 +133,31 @@ using nmtools_tuple;
 TEST_CASE("broadcast_shape" * doctest::test_suite("index"))
 {
     {
-        using ashape_t = decltype(tuple{5_ct,4_ct});
-        using bshape_t = decltype(tuple{1_ct});
+        using ashape_t = decltype(nmtools_tuple{5_ct,4_ct});
+        using bshape_t = decltype(nmtools_tuple{1_ct});
         using result_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
-        using expected_t = decltype(tuple{5_ct,4_ct});
+        using expected_t = decltype(nmtools_tuple{5_ct,4_ct});
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
-        using ashape_t = decltype(tuple{5_ct,4_ct});
-        using bshape_t = decltype(tuple{1_ct});
+        using ashape_t = decltype(nmtools_tuple{5_ct,4_ct});
+        using bshape_t = decltype(nmtools_tuple{1_ct});
         using result_t = meta::resolve_optype_t<broadcast_shape_t,bshape_t,ashape_t>;
-        using expected_t = decltype(tuple{5_ct,4_ct});
+        using expected_t = decltype(nmtools_tuple{5_ct,4_ct});
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
-        using ashape_t = decltype(tuple{5_ct,4_ct});
-        using bshape_t = decltype(tuple{4_ct});
+        using ashape_t = decltype(nmtools_tuple{5_ct,4_ct});
+        using bshape_t = decltype(nmtools_tuple{4_ct});
         using result_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
-        using expected_t = decltype(tuple{5_ct,4_ct});
+        using expected_t = decltype(nmtools_tuple{5_ct,4_ct});
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
-        using ashape_t = decltype(tuple{8_ct,1_ct,6_ct,1_ct});
-        using bshape_t = decltype(tuple{7_ct,1_ct,5_ct});
+        using ashape_t = decltype(nmtools_tuple{8_ct,1_ct,6_ct,1_ct});
+        using bshape_t = decltype(nmtools_tuple{7_ct,1_ct,5_ct});
         using result_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
-        using expected_t = decltype(tuple{8_ct,7_ct,6_ct,5_ct});
+        using expected_t = decltype(nmtools_tuple{8_ct,7_ct,6_ct,5_ct});
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
 }

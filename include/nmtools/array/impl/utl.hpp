@@ -21,10 +21,24 @@ namespace nmtools::impl
         }
     };
 
+    // TODO: remove this specialization
     template <typename...Ts>
     struct len_t<utl::tuple<Ts...>>
     {
         using tuple = const utl::tuple<Ts...>&;
+        using type  = size_t;
+
+        constexpr auto operator()(tuple) const noexcept
+        {
+            return sizeof...(Ts);
+        }
+    };
+
+    // TODO: remove this specialization
+    template <typename...Ts>
+    struct len_t<utl::tuplev2<Ts...>>
+    {
+        using tuple = const utl::tuplev2<Ts...>&;
         using type  = size_t;
 
         constexpr auto operator()(tuple) const noexcept

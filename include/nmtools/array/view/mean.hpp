@@ -122,7 +122,8 @@ namespace nmtools::view
         // but by composing two view (add.reduce + divide) instead
 
         auto shape = ::nmtools::shape<true>(array);
-        auto divisor = detail::mean_divisor(shape,axis);
+        // TODO: error handling
+        auto divisor = detail::mean_divisor(unwrap(shape),axis);
         using divisor_t = decltype(divisor);
         using element_t = meta::get_element_type_t<array_t>;
         auto dtype_  = [&](){

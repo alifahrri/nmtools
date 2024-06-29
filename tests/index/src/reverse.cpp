@@ -21,19 +21,19 @@ using nmtools_array;
 TEST_CASE("reverse" * doctest::test_suite("index"))
 {
     {
-        auto indices  = tuple{1};
+        auto indices  = nmtools_tuple{1};
         auto reversed = nm::index::reverse(indices);
-        CHECK( isequal(reversed,tuple{1}) );
+        CHECK( isequal(reversed,nmtools_tuple{1}) );
     }
     {
-        auto indices  = tuple{0,1};
+        auto indices  = nmtools_tuple{0,1};
         auto reversed = nm::index::reverse(indices);
-        CHECK( isequal(reversed,tuple{1,0}) );
+        CHECK( isequal(reversed,nmtools_tuple{1,0}) );
     }
     {
-        auto indices  = tuple{2,0,1};
+        auto indices  = nmtools_tuple{2,0,1};
         auto reversed = nm::index::reverse(indices);
-        CHECK( isequal(reversed,tuple{1,0,2}) );
+        CHECK( isequal(reversed,nmtools_tuple{1,0,2}) );
     }
     {
         auto indices  = array{1};

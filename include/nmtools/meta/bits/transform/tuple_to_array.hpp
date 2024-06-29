@@ -1,12 +1,14 @@
 #ifndef NMTOOLS_META_BITS_TRANSFORM_TUPLE_TO_ARRAY_HPP
 #define NMTOOLS_META_BITS_TRANSFORM_TUPLE_TO_ARRAY_HPP
 
+#include "nmtools/stl.hpp"
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/transform/get_common_type.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
 
 namespace nmtools::meta
 {
+    // TODO: remove
     template <typename T, typename=void>
     struct tuple_to_array
     {
@@ -22,7 +24,7 @@ namespace nmtools::meta
                 }();
                 using element_t = type_t<decltype(element_vtype)>;
                 constexpr auto N = len_v<T>;
-                return as_value_v<type_t<make_array_type<element_t,N>>>;
+                return as_value_v<nmtools_array<element_t,N>>;
             } else {
                 return as_value_v<T>;
             }

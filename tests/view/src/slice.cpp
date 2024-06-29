@@ -1348,7 +1348,7 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
     SUBCASE("fixed_ndarray")
     {
         auto array  = na::fixed_ndarray{{1,2,3}};
-        auto slice  = tuple{nm::None,nm::None};
+        auto slice  = nmtools_tuple{nm::None,nm::None};
         auto sliced = view::slice(array,slice);
         using sliced_t = decltype(sliced);
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, sliced_t );
@@ -1356,7 +1356,7 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
     SUBCASE("dynamic_ndarray")
     {
         auto array  = na::dynamic_ndarray({1,2,3});
-        auto slice  = tuple{nm::None,nm::None};
+        auto slice  = nmtools_tuple{nm::None,nm::None};
         auto sliced = view::slice(array,slice);
         using sliced_t = decltype(sliced);
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, sliced_t );
@@ -1364,7 +1364,7 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
     SUBCASE("hybrid_ndarray")
     {
         auto array  = na::hybrid_ndarray({1,2,3});
-        auto slice  = tuple{nm::None,nm::None};
+        auto slice  = nmtools_tuple{nm::None,nm::None};
         auto sliced = view::slice(array,slice);
         using sliced_t = decltype(sliced);
         NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, sliced_t );
@@ -1430,7 +1430,7 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
             {1,2,3},
             {4,5,6},
         };
-        auto sliced = view::slice(array, tuple{0,1}, tuple{0,1});
+        auto sliced = view::slice(array, nmtools_tuple{0,1}, nmtools_tuple{0,1});
         int expected[1][1] = {
             {1}
         };

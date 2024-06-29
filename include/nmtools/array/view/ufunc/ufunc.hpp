@@ -90,7 +90,7 @@ namespace nmtools::view
     {
         // dont take reference for the array, a Num type should be copied
         // and view type should be cheap to copy
-        using operands_type = meta::make_tuple_type_t<arrays_t...>;
+        using operands_type = nmtools_tuple<arrays_t...>;
         using array_type    = operands_type;
         using op_type       = op_t;
         using result_type   = detail::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;

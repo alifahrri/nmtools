@@ -4,6 +4,8 @@
 // may decide ro use stl or not, on arduino for example
 #include "nmtools/platform.hpp"
 
+#include "nmtools/stl.hpp"
+
 // collection of utility functions
 // that may be depends on type and value,
 // in contrast to metafunctions which only depends on type

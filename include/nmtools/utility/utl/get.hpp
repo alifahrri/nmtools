@@ -57,6 +57,22 @@ namespace nmtools
         }
     };
     
+    template <size_t I, typename...Args>
+    struct get_t<I,utl::tuplev2<Args...>>
+    {
+        using tuple = utl::tuplev2<Args...>;
+
+        constexpr decltype(auto) operator()(const tuple& tp) const noexcept
+        {
+            return utl::get<I>(tp);
+        }
+
+        constexpr decltype(auto) operator()(tuple& tp) noexcept
+        {
+            return utl::get<I>(tp);
+        }
+    };
+    
 } // namespace nmtools
 
 

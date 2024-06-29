@@ -222,7 +222,7 @@ namespace nmtools
     }
 
     template <typename T, template<typename...>typename tuple, typename...Ts, auto...Is>
-    constexpr auto append_operands(const tuple<Ts...>& ts, const T& t)
+    constexpr auto append_operands(const tuple<Ts...>& ts, const T& t, meta::index_sequence<Is...>)
     {
         using result_t = tuple<
               meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...

@@ -62,7 +62,7 @@ namespace nmtools::meta
             if constexpr (is_constant_index_array_v<indices_t>) {
                 constexpr auto indices = to_value_v<indices_t>;
                 constexpr auto reversed = index::reverse(indices);
-                using init_type = make_tuple_type_t<ct<at(reversed,0)>>;
+                using init_type = nmtools_tuple<ct<at(reversed,0)>>;
                 // convert back to type
                 return template_reduce<::nmtools::len(reversed)-1>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;

@@ -1,6 +1,8 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_HPP
 
+#include "nmtools/array/functional/indexing.hpp"
+
 #include "nmtools/array/functional/activations/celu.hpp"
 #include "nmtools/array/functional/activations/elu.hpp"
 #include "nmtools/array/functional/activations/hardshrink.hpp"
@@ -78,6 +80,5 @@
 #include "nmtools/array/functional/squeeze.hpp"
 #include "nmtools/array/functional/where.hpp"
 #include "nmtools/array/functional/zeros.hpp"
-#include "nmtools/array/functional/indexing.hpp"
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_HPP

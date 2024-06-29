@@ -23,37 +23,37 @@ TEST_CASE("apply_at(double[]...)" * doctest::test_suite("utility"))
 {
     {
         double array[1] = {1};
-        auto indices = tuple{0};
+        auto indices = nmtools_tuple{0};
         auto a = nm::apply_at(array, indices);
         NMTOOLS_ASSERT_CLOSE(a, 1);
     }
     {
         double array[2] = {1, 2};
-        auto indices = tuple{1};
+        auto indices = nmtools_tuple{1};
         auto a = nm::apply_at(array, indices);
         NMTOOLS_ASSERT_CLOSE(a, 2);
     }
     {
         double array[3] = {1, 3, 2};
-        auto indices = tuple{1};
+        auto indices = nmtools_tuple{1};
         auto a = nm::apply_at(array, indices);
         NMTOOLS_ASSERT_CLOSE(a, 3);
     }
     {
         double array[1][1][1][1][1] = {{{{{1}}}}};
-        auto indices = tuple{0,0,0,0,0};
+        auto indices = nmtools_tuple{0,0,0,0,0};
         auto a = nm::apply_at(array, indices);
         NMTOOLS_ASSERT_CLOSE(a, 1);
     }
     {
         double array[1][2][1] = {{{0},{1}}};
         {
-            auto indices = tuple{0,0,0};
+            auto indices = nmtools_tuple{0,0,0};
             auto a = nm::apply_at(array, indices);
             NMTOOLS_ASSERT_CLOSE(a, 0);
         }
         {
-            auto indices = tuple{0,1,0};
+            auto indices = nmtools_tuple{0,1,0};
             auto a = nm::apply_at(array, indices);
             NMTOOLS_ASSERT_CLOSE(a, 1);
         }
@@ -69,17 +69,17 @@ TEST_CASE("apply_at(std::array<...>)" * doctest::test_suite("utility"))
             array{3,4},
         };
         {
-            auto indices = tuple{0,1};
+            auto indices = nmtools_tuple{0,1};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 2);
         }
         {
-            auto indices = tuple{1,0};
+            auto indices = nmtools_tuple{1,0};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 3);
         }
         {
-            auto indices = tuple{1,1};
+            auto indices = nmtools_tuple{1,1};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 4);
         }
@@ -90,22 +90,22 @@ TEST_CASE("apply_at(std::array<...>)" * doctest::test_suite("utility"))
             array{ array{5,6}, array{7,8}, },
         };
         {
-            auto indices = tuple{0,0,0};
+            auto indices = nmtools_tuple{0,0,0};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 1);
         }
         {
-            auto indices = tuple{0,1,0};
+            auto indices = nmtools_tuple{0,1,0};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 3);
         }
         {
-            auto indices = tuple{1,0,0};
+            auto indices = nmtools_tuple{1,0,0};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 5);
         }
         {
-            auto indices = tuple{1,1,1};
+            auto indices = nmtools_tuple{1,1,1};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 8);
         }
@@ -120,17 +120,17 @@ TEST_CASE("apply_at(std::vector<...>)" * doctest::test_suite("utility"))
             vector{3,4},
         };
         {
-            auto indices = tuple{0,1};
+            auto indices = nmtools_tuple{0,1};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 2);
         }
         {
-            auto indices = tuple{1,0};
+            auto indices = nmtools_tuple{1,0};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 3);
         }
         {
-            auto indices = tuple{1,1};
+            auto indices = nmtools_tuple{1,1};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 4);
         }
@@ -141,22 +141,22 @@ TEST_CASE("apply_at(std::vector<...>)" * doctest::test_suite("utility"))
             vector{ vector{5,6}, vector{7,8}, },
         };
         {
-            auto indices = tuple{0,0,0};
+            auto indices = nmtools_tuple{0,0,0};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 1);
         }
         {
-            auto indices = tuple{0,1,0};
+            auto indices = nmtools_tuple{0,1,0};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 3);
         }
         {
-            auto indices = tuple{1,0,0};
+            auto indices = nmtools_tuple{1,0,0};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 5);
         }
         {
-            auto indices = tuple{1,1,1};
+            auto indices = nmtools_tuple{1,1,1};
             auto res = nm::apply_at(a,indices);
             NMTOOLS_ASSERT_CLOSE(res, 8);
         }
@@ -169,12 +169,12 @@ TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
     {
         auto a = dynamic_ndarray{{1,2,3,4,5,6}};
         {
-            auto indices = tuple{1};
+            auto indices = nmtools_tuple{1};
             auto res = nm::apply_at(a, indices);
             NMTOOLS_ASSERT_CLOSE(res, 2);
         }
         {
-            auto indices = tuple{2};
+            auto indices = nmtools_tuple{2};
             auto res = nm::apply_at(a, indices);
             NMTOOLS_ASSERT_CLOSE(res, 3);
         }
@@ -246,17 +246,17 @@ TEST_CASE("apply_at(fixed_ndarray<>)" * doctest::test_suite("utility"))
             { {{1},{2}}, {{3},{4}}, {{5},{6}} }
         };
         {
-            auto indices = tuple{0,1,0};
+            auto indices = nmtools_tuple{0,1,0};
             auto res = nm::apply_at(a, indices);
             NMTOOLS_ASSERT_CLOSE(res, 2);
         }
         {
-            auto indices = tuple{1,0,0};
+            auto indices = nmtools_tuple{1,0,0};
             auto res = nm::apply_at(a, indices);
             NMTOOLS_ASSERT_CLOSE(res, 3);
         }
         {
-            auto indices = tuple{2,1,0};
+            auto indices = nmtools_tuple{2,1,0};
             auto res = nm::apply_at(a, indices);
             NMTOOLS_ASSERT_CLOSE(res, 6);
         }

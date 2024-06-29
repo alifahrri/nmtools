@@ -99,7 +99,7 @@ namespace nmtools::index
         for (size_t i=0; i<bdim; i++)
             at(bidx,i) = at(indices,i+adim);
         
-        using return_t = meta::make_tuple_type_t<aidx_t,bidx_t>;
+        using return_t = nmtools_tuple<aidx_t,bidx_t>;
         return return_t{aidx,bidx};
     }
 } // namespace nmtools::index

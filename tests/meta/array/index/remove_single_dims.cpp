@@ -19,9 +19,9 @@ using std::tuple;
 TEST_CASE("remove_single_dims" * doctest::test_suite("index"))
 {
     {
-        using shape_t = decltype(tuple{1_ct,2_ct,3_ct});
+        using shape_t = decltype(nmtools_tuple{1_ct,2_ct,3_ct});
         using result_t = meta::resolve_optype_t<remove_single_dims_t,shape_t>;
-        using expected_t = decltype(tuple{2_ct,3_ct});
+        using expected_t = decltype(nmtools_tuple{2_ct,3_ct});
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
 }

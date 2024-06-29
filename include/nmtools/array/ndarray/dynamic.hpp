@@ -181,7 +181,7 @@ namespace nmtools::array
             shape_.resize(sizeof...(shape));
             meta::template_for<sizeof...(shape)>([&](auto index){
                 constexpr auto i = decltype(index)::value;
-                using tuple_t = meta::make_tuple_type_t<decltype(shape)...>;
+                using tuple_t = nmtools_tuple<decltype(shape)...>;
                 shape_.at(i) = nmtools::get<i>(tuple_t{shape...});
             });
             strides_ = strides();
@@ -223,7 +223,7 @@ namespace nmtools::array
         constexpr decltype(auto) operator()(size_type n, size_types...ns)
         {
             using common_size_t = meta::promote_index_t<size_type,size_types...>;
-            auto indices = meta::make_array_type_t<common_size_t,sizeof...(ns)+1>{
+            auto indices = nmtools_array<common_size_t,sizeof...(ns)+1>{
                 static_cast<common_size_t>(n), static_cast<common_size_t>(ns)...
             };
             assert (dim()==indices.size());
@@ -244,7 +244,7 @@ namespace nmtools::array
         constexpr decltype(auto) operator()(size_type n, size_types...ns) const
         {
             using common_size_t = meta::promote_index_t<size_type,size_types...>;
-            auto indices = meta::make_array_type_t<common_size_t,sizeof...(ns)+1>{
+            auto indices = nmtools_array<common_size_t,sizeof...(ns)+1>{
                 static_cast<common_size_t>(n), static_cast<common_size_t>(ns)...
             };
             assert (dim()==indices.size());

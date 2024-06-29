@@ -6,6 +6,7 @@
 
 namespace nmtools::view
 {
+    #if 0
     template <
         typename lhs_t=none_t, typename rhs_t=none_t,
         typename res_t=none_t, typename=void>
@@ -15,7 +16,47 @@ namespace nmtools::view
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t, const U& u) const
         {
-            return math::pow(t,u);
+            // TODO: formalize casting rules
+            using common_t [[maybe_unused]] = meta::common_type_t<T,U>;
+            using result_t [[maybe_unused]] = meta::conditional_t<is_none_v<res_t>,common_t,res_t>;
+            auto lhs = [&](){
+                if constexpr (!is_none_v<lhs_t>) {
+                    return static_cast<lhs_t>(t);
+                } else {
+                    return static_cast<result_t>(t);
+                }
+            }();
+            auto rhs = [&](){
+                if constexpr (!is_none_v<rhs_t>) {
+                    return static_cast<rhs_t>(u);
+                } else {
+                    return static_cast<result_t>(u);
+                }
+            }();
+            auto result = math::pow(lhs,rhs);
+            if constexpr (!is_none_v<res_t>) {
+                return static_cast<res_t>(result);
+            } else {
+                return result;
+            }
+        } // operator()
+    }; // power_t
+    #else
+    template <
+        typename lhs_t=none_t, typename rhs_t=none_t,
+        typename res_t=none_t, typename=void>
+    struct power_t
+    {
+        template <typename T, typename U>
+        NMTOOLS_UFUNC_CONSTEXPR
+        auto operator()(const T& t, const U& u) const
+        {
+            if constexpr (meta::is_view_v<T> || meta::is_view_v<U>) {
+                using common_t [[maybe_unused]] = meta::common_type_t<T,U>;
+                return math::pow(static_cast<common_t>(t),static_cast<common_t>(u));
+            } else {
+                return math::pow(t,u);
+            }
         } // operator()
     }; // power_t
 
@@ -49,6 +90,7 @@ namespace nmtools::view
             return math::pow(t,u);
         } // operator()
     }; // power_t
+    #endif
 
     template <typename left_t, typename right_t>
     NMTOOLS_UFUNC_CONSTEXPR

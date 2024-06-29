@@ -16,7 +16,7 @@ Documenting various note on behaviour difference between clang & gcc (or with so
   https://godbolt.org/z/WYxahvxTx
 
 1. constexpr math  
-  error: constexpr function never produces a constant expression
+  error: constexpr function never produces a constant expression  
   https://godbolt.org/z/dxqq3T
 
 1. Constexpr if with a non-bool condition  
@@ -42,7 +42,7 @@ Documenting various note on behaviour difference between clang & gcc (or with so
   https://godbolt.org/z/asrh7q
 
 1. clang and gcc disagree on if constexpr inside lambda  
-  https://godbolt.org/z/8qc13s
+  https://godbolt.org/z/8qc13s  
   https://stackoverflow.com/questions/59647445/if-constexpr-with-static-assert-in-lambda-which-compiler-is-correct
 
 1. clang and gcc disagree on partial specialization & sfinae, makes ambiguous instantiation on gcc but no issue on clang  
@@ -98,3 +98,7 @@ Documenting various note on behaviour difference between clang & gcc (or with so
 1. clang vs gcc disagree on constexpr evaluation  
   (cumbersome to minimally reproduce, document as issue instead)  
   https://github.com/alifahrri/nmtools/issues/282
+
+1. clang vs gcc disagree on capturing constexpr value in lambda expression  
+  clang ok, gcc not ok  
+  https://godbolt.org/z/a1o8P9957

@@ -10,6 +10,7 @@
 #include "nmtools/array/functional/ufuncs/tanh.hpp"
 #include "nmtools/array/functional/ufuncs/exp.hpp"
 #include "nmtools/array/functional/ufuncs/maximum.hpp"
+#include "nmtools/array/functional/activations/relu.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -19,6 +20,50 @@ namespace utils = nmtools::utils;
 namespace utility = nmtools::utility;
 
 using namespace nmtools::literals;
+
+TEST_CASE("ct_digraph(relu)" * doctest::test_suite("ct_digraph"))
+{
+    auto array = nmtools_array{1,2,3,4};
+
+    auto graph = utility::ct_digraph()
+        .add_node(0_ct,&array)
+        .add_node(1_ct,fn::relu)
+        .add_edge(0_ct,1_ct)
+        // .add_edge(0_ct,1_ct)
+    ;
+
+    NMTOOLS_ASSERT_EQUAL( graph.size(), 2 );
+    CHECK( graph.nodes(0_ct) == &array );
+    NMTOOLS_ASSERT_EQUAL( graph.nodes(1_ct), fn::relu );
+
+    auto out_edges = graph.out_edges(0_ct);
+    CHECK( meta::len_v<decltype(out_edges)> == 1 );
+
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
+}
+
+TEST_CASE("ct_digraph(relu)" * doctest::test_suite("ct_digraph"))
+{
+    auto array = nmtools_array{1,2,3,4};
+
+    auto graph = utility::ct_digraph()
+        .add_node(0_ct,&array)
+        .add_node(1_ct,fn::relu)
+        .add_edge(0_ct,1_ct)
+        .add_edge(0_ct,1_ct)
+    ;
+
+    NMTOOLS_ASSERT_EQUAL( graph.size(), 2 );
+    CHECK( graph.nodes(0_ct) == &array );
+    NMTOOLS_ASSERT_EQUAL( graph.nodes(1_ct), fn::relu );
+
+    // make sure edges are not duplicated    
+    auto out_edges = graph.out_edges(0_ct);
+    CHECK( meta::len_v<decltype(out_edges)> == 1 );
+    NMTOOLS_ASSERT_EQUAL( nmtools::at(out_edges,0_ct), 1_ct );
+
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
+}
 
 TEST_CASE("ct_digraph(reduce_add_divide)" * doctest::test_suite("ct_digraph"))
 {

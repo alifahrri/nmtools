@@ -4,6 +4,7 @@
 #include "nmtools/def.hpp"
 #include "nmtools/platform.hpp"
 
+// TODO: remove
 #ifndef nm_utl_size_t
 #define nm_utl_size_t nm_size_t
 #endif // nm_utl_size_t

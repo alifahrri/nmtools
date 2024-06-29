@@ -35,7 +35,7 @@ namespace nmtools::index
         using ndim_t [[maybe_unused]] = decltype(ndim);
 
         if constexpr (! (meta::is_constant_index_v<result_t> || meta::is_constant_index_array_v<result_t>)) {
-            using return_t = meta::make_maybe_type_t<result_t>;
+            using return_t = nmtools_maybe<result_t>;
             // using return_t = utl::maybe<result_t>;
 
             // auto ret = return_t {};
@@ -98,7 +98,7 @@ namespace nmtools::index
         } else {
             // NOTE: quick-hack
             // TODO: no need to return maybe type
-            using return_t = meta::make_maybe_type_t<result_t>;
+            using return_t = nmtools_maybe<result_t>;
 
             auto valid = [&](){
                 const auto result = result_t {};

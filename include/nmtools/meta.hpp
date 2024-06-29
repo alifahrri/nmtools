@@ -1,15 +1,12 @@
 #ifndef NMTOOLS_META_HPP
 #define NMTOOLS_META_HPP
 
-#define NMTOOLS_META_MAKE_STATIC_VECTOR
-#define nmtools_static_vector ::nmtools::utl::static_vector
 
+// stl.hpp define basic sctructure (array, tuple, vector, maybe...)
+// using std:: if possible, auto fallback to utl::
+#include "nmtools/stl.hpp"
 #include "nmtools/meta/common.hpp"
 #include "nmtools/platform.hpp"
-#include "nmtools/meta/def.hpp"
-
-// use stl as default implementation for various type
-// such as maybe (meta::make_maybe_type...)
 
 // must include first, prefer stl
 #ifndef NMTOOLS_DISABLE_STL
@@ -19,6 +16,7 @@
 // TODO: prioritize boost as default
 #include "nmtools/meta/utl.hpp"
 
+// TODO: prioritize boost as default
 #ifdef NMTOOLS_ENABLE_BOOST
 #include "nmtools/meta/boost.hpp"
 #endif
@@ -29,8 +27,6 @@
 
 namespace nmtools::meta
 {
-    // quick workaround to support fixed_shape for raw array.
-    // defined here to avoid compiler error about implicit instantiation on undeclared type (make_array_type)
     // TODO: remove, cleanup fixed shape design
     template <typename T, size_t N>
     struct nested_array_size<T[N]>

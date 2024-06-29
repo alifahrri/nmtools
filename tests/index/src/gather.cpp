@@ -128,21 +128,21 @@ TEST_CASE("gather(constexpr)" * doctest::test_suite("index::gather"))
 TEST_CASE("gather" * doctest::test_suite("index"))
 {
     {
-        auto indices  = tuple{1,2,3};
+        auto indices  = nmtools_tuple{1,2,3};
         auto order    = array{0,1,2};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{1,2,3};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
+        auto indices  = nmtools_tuple{1,2,3};
         auto order    = array{1,0,2};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{2,1,3};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
+        auto indices  = nmtools_tuple{1,2,3};
         auto order    = array{1,2,0};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{2,3,1};
@@ -150,21 +150,21 @@ TEST_CASE("gather" * doctest::test_suite("index"))
     }
     #ifndef NMTOOLS_DISABLE_STL
     {
-        auto indices  = tuple{1,2,3};
+        auto indices  = nmtools_tuple{1,2,3};
         auto order    = vector{0,1,2};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{1,2,3};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
+        auto indices  = nmtools_tuple{1,2,3};
         auto order    = vector{1,0,2};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{2,1,3};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
+        auto indices  = nmtools_tuple{1,2,3};
         auto order    = vector{1,2,0};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{2,3,1};
@@ -172,43 +172,43 @@ TEST_CASE("gather" * doctest::test_suite("index"))
     }
     #endif // NMTOOLS_DISABLE_STL
     {
-        auto indices  = tuple{1,2,3};
-        auto order    = tuple{0,1,2};
+        auto indices  = nmtools_tuple{1,2,3};
+        auto order    = nmtools_tuple{0,1,2};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{1,2,3};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
-        auto order    = tuple{0_ct,1_ct,2_ct};
+        auto indices  = nmtools_tuple{1,2,3};
+        auto order    = nmtools_tuple{0_ct,1_ct,2_ct};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{1,2,3};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
-        auto order    = tuple{1,0,2};
+        auto indices  = nmtools_tuple{1,2,3};
+        auto order    = nmtools_tuple{1,0,2};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{2,1,3};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
-        auto order    = tuple{1_ct,0_ct,2_ct};
+        auto indices  = nmtools_tuple{1,2,3};
+        auto order    = nmtools_tuple{1_ct,0_ct,2_ct};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{2,1,3};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
-        auto order    = tuple{1,2,0};
+        auto indices  = nmtools_tuple{1,2,3};
+        auto order    = nmtools_tuple{1,2,0};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{2,3,1};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );
     }
     {
-        auto indices  = tuple{1,2,3};
-        auto order    = tuple{1_ct,2_ct,0_ct};
+        auto indices  = nmtools_tuple{1,2,3};
+        auto order    = nmtools_tuple{1_ct,2_ct,0_ct};
         auto gatherd = nm::index::gather(indices, order);
         auto expected = array{2,3,1};
         NMTOOLS_ASSERT_EQUAL( gatherd, expected );

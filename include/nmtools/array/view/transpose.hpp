@@ -66,20 +66,38 @@ namespace nmtools::view
         }
     }; // transpose_t
 
-    template <typename array_t, typename axes_t=none_t>
-    constexpr auto make_transpose(const array_t& array, const axes_t& axes=axes_t{})
+    template <typename shape_t, typename size_t, typename axes_t=none_t>
+    constexpr auto transposer(const shape_t& src_shape, size_t src_size, const axes_t& axes=axes_t{})
     {
-        auto src_shape = shape<true>(array);
-        auto src_size  = size<true>(array);
-        auto indexer = transpose_t{src_shape,axes,src_size};
-        return indexing(array,indexer);
+        if constexpr (meta::is_maybe_v<shape_t>) {
+            // assume when shape is maybe, size is also maybe
+            using result_t = decltype(transposer(unwrap(src_shape),unwrap(src_size),axes));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (static_cast<bool>(src_shape)
+                ? return_t{transposer(unwrap(src_shape),unwrap(src_size),axes)}
+                : return_t{meta::Nothing}
+            );
+        } else if constexpr (meta::is_maybe_v<axes_t>) {
+            using result_t = decltype(transposer(src_shape,src_size,unwrap(axes)));
+            using return_t = nmtools_maybe<result_t>;
+            return (static_cast<bool>(axes)
+                ? return_t{transposer(src_shape,src_size,*axes)}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            auto indexer = transpose_t{src_shape,axes,src_size};
+            return indexer;
+        }
     }
 
     template <typename array_t, typename axes_t=none_t>
     constexpr auto transpose(const array_t& array, const axes_t& axes=axes_t{})
     {
-        auto f = [](const auto&...args){
-            return make_transpose(args...);
+        auto f = [](const auto& array, const auto& axes){
+            auto src_shape = shape<true>(array);
+            auto src_size  = size<true>(array);
+            auto indexer = transposer(src_shape,src_size,axes);
+            return indexing(array,indexer);
         };
         return lift_indexing(f,array,axes);
     }
@@ -100,7 +118,7 @@ namespace nmtools::array
             auto src_shape = as_static<max_dim>(attribute.src_shape);
             auto axes      = as_static<max_dim>(attribute.axes);
             auto src_size  = as_static<max_dim>(attribute.src_size);
-            return view::transpose_t{src_shape,axes,src_size};
+            return view::transposer(src_shape,axes,src_size);
         }
     };
 } // namespace nmtools::array

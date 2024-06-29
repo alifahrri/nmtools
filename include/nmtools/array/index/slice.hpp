@@ -683,7 +683,7 @@ namespace nmtools::index
                     constexpr auto NS = meta::len_v<decltype(slice)>;
                     if constexpr (NS==2) {
                         const auto [start, stop] = slice;
-                        using mresult_t = meta::make_tuple_type_t<decltype(start),decltype(stop),none_t>;
+                        using mresult_t = nmtools_tuple<decltype(start),decltype(stop),none_t>;
                         return mresult_t{start,stop,None};
                     }
                     // return as it is to keep dtype
@@ -883,7 +883,7 @@ namespace nmtools::index
         // TODO error handling
         // make sure sizeof...(slices) <= len(shape)
 
-        auto slices_pack = meta::make_tuple_type_t<const slices_t&...>{slices...};
+        auto slices_pack = nmtools_tuple<const slices_t&...>{slices...};
 
         // since res and shape may have different dim,
         // this var is to keep track of the active result index
@@ -1039,7 +1039,7 @@ namespace nmtools::index
         if constexpr (meta::is_resizable_v<return_t>)
             res.resize(dim);
         
-        auto slices_pack = meta::make_tuple_type_t<const slices_t&...>{slices...};
+        auto slices_pack = nmtools_tuple<const slices_t&...>{slices...};
 
         // since res and shape may have different dim,
         // also indices and shape may have different dim,
@@ -1093,7 +1093,7 @@ namespace nmtools::index
                     constexpr auto NS = meta::len_v<decltype(slice)>;
                     if constexpr (NS==2) {
                         const auto [start, stop] = slice;
-                        using mresult_t = meta::make_tuple_type_t<decltype(start),decltype(stop),none_t>;
+                        using mresult_t = nmtools_tuple<decltype(start),decltype(stop),none_t>;
                         return mresult_t{start,stop,None};
                     }
                     // return as it is to keep dtype

@@ -33,12 +33,7 @@ namespace nmtools::view
     {
         auto shape_ = shape<true>(array);
         auto order  = index::moveaxis_to_transpose(shape_,source,destination);
-        // order should be maybe type
-        using result_t = meta::remove_cvref_t<decltype(view::transpose(array,*order))>;
-        nmtools_assert_prepare_type( return_t, result_t );
-        nmtools_assert( order, "unsupported moveaxis arguments", return_t );
-
-        return return_t{view::transpose(array,*order)};
+        return view::transpose(array,order);
     } // moveaxis
 } // namespace nmtools::view
 
