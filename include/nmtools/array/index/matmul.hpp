@@ -97,7 +97,7 @@ namespace nmtools::meta
                 using element_t = get_index_element_type_t<shape_t>;
                 // NOTE: use make_hybrid_ndarray instead of make_hybrid_ndarray_t to avoid including ndarray.hpp
                 using hybrid_t  = typename make_hybrid_ndarray<element_t,max_elements,1>::type;
-                using type = make_tuple_type_t<hybrid_t,hybrid_t>;
+                using type = nmtools_tuple<hybrid_t,hybrid_t>;
                 return as_value_v<type>;
             } else if constexpr (is_fixed_index_array_v<shape_t> && is_constant_index_v<split_t>) {
                 // number of dimension of the array
@@ -113,14 +113,14 @@ namespace nmtools::meta
                 }();
                 using element_t = get_index_element_type_t<shape_t>;
 
-                using left_size_t  = make_tuple_type_t<ct<i>>;
-                using right_size_t = make_tuple_type_t<ct<N-i>>;
+                using left_size_t  = nmtools_tuple<ct<i>>;
+                using right_size_t = nmtools_tuple<ct<N-i>>;
                 using left_t  = typename make_fixed_ndarray<element_t,left_size_t>::type;
                 using right_t = typename make_fixed_ndarray<element_t,right_size_t>::type;
-                using type    = make_tuple_type_t<left_t,right_t>;
+                using type    = nmtools_tuple<left_t,right_t>;
                 return as_value_v<type>;
             } else if constexpr (is_index_array_v<shape_t>) {
-                using type = make_tuple_type_t<shape_t,shape_t>;
+                using type = nmtools_tuple<shape_t,shape_t>;
                 return as_value_v<type>;
             } else {
                 // unhandled type
@@ -150,7 +150,7 @@ namespace nmtools::index
     constexpr auto shape_matmul(const lhs_shape_t& ashape, const rhs_shape_t& bshape)
     {
         using result_t = meta::resolve_optype_t<shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        using return_t = meta::make_maybe_type_t<result_t>;
+        using return_t = nmtools_maybe<result_t>;
 
         if constexpr (meta::is_constant_index_array_v<result_t>) {
             // still use maybe for simplicity at caller site

@@ -111,7 +111,7 @@ namespace nmtools::meta
     >
     {
         // when slicing flattened array, the shape should be single element 1D array
-        using type = make_array_type_t<size_t,1>;
+        using type = nmtools_array<size_t,1>;
     }; // shape_take_t
 
     namespace error

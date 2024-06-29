@@ -42,7 +42,7 @@ namespace nmtools::view::detail
         static_assert( sizeof...(arrays_t) > 0, "nmtools internal error" );
         static constexpr auto vtype = [](){
             // TODO: no need to create full tuple here, use meta::type_list
-            using arrays_type = meta::make_tuple_type_t<arrays_t...>;
+            using arrays_type = nmtools_tuple<arrays_t...>;
             // for view / num type: simply copy (take value),
             // otherwise take reference
             return meta::template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
@@ -51,7 +51,7 @@ namespace nmtools::view::detail
                 using operand_t  = view::resolve_array_type_t<array_t>;
                 using init_t = meta::type_t<decltype(init)>; 
                 if constexpr (meta::is_void_v<init_t>) {
-                    return meta::as_value_v<meta::make_tuple_type_t<operand_t>>;
+                    return meta::as_value_v<nmtools_tuple<operand_t>>;
                 } else {
                     return meta::as_value_v<meta::append_type_t<init_t,operand_t>>;
                 }

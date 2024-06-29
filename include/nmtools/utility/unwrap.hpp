@@ -29,7 +29,7 @@ namespace nmtools
         }
     }
 
-    #if 0
+    #if 1
     template <typename T, auto N>
     constexpr auto unwrap(const T(&t)[N])
         -> const T(&)[N]
