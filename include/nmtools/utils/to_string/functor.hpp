@@ -121,7 +121,7 @@ namespace nmtools::utils::impl
         auto operator()(const graph_type& graph) const noexcept
         {
             auto graphviz = nmtools_string("digraph G");
-            graphviz += "{";
+            graphviz += "{\n";
 
             {
                 auto out_edges = graph.out_edges();
@@ -144,10 +144,21 @@ namespace nmtools::utils::impl
                 meta::template_for<N>([&](auto index){
                     auto node_id  = nmtools::at(nodes,index);
                     auto node = graph.nodes(node_id);
+                    using node_t = meta::remove_cvref_pointer_t<decltype(node)>;
+                    constexpr auto is_buffered =
+                        (meta::is_ndarray_v<node_t> || meta::is_num_v<node_t>)
+                        && !meta::is_view_v<node_t>
+                    ;
 
                     auto node_id_str = to_string(node_id);
                     graphviz += node_id_str;
                     graphviz += "[";
+                    graphviz += "shape=\"box\" ";
+                    if (is_buffered) {
+                        graphviz += "style=\"rounded,filled\" ";
+                        graphviz += "color=\"black\" ";
+                        graphviz += "fillcolor=\"gray93\" ";
+                    }
                     graphviz += "label=";
                     graphviz += "\"";
                     graphviz += "{id: ";

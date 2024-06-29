@@ -72,7 +72,7 @@ TEST_CASE("to_string(double[1][1][1][1])" * doctest::test_suite("utils") * docte
 TEST_CASE("to_string(tuple)" * doctest::test_suite("utils") * doctest::skip(true))
 {
     {
-        auto arg = tuple{1., 2., 3., 4., 5.};
+        auto arg = nmtools_tuple{1., 2., 3., 4., 5.};
         auto str = to_string(arg);
         auto to_print = std::string("\n") + str;
         MESSAGE( to_print );
@@ -124,9 +124,9 @@ TEST_CASE("to_string(double[5])" * doctest::test_suite("utils") * doctest::skip(
 TEST_CASE("to_string(tuple[2])" * doctest::test_suite("utils") * doctest::skip(true))
 {
     {
-        auto arg = tuple{
-            tuple{1., 2., 3.},
-            tuple{4., 5., 6.}
+        auto arg = nmtools_tuple{
+            nmtools_tuple{1., 2., 3.},
+            nmtools_tuple{4., 5., 6.}
         };
         auto str = to_string(arg);
         auto to_print = std::string("\n") + str;
@@ -190,14 +190,14 @@ TEST_CASE("to_string(double[2][3])" * doctest::test_suite("utils") * doctest::sk
 TEST_CASE("to_string(tuple[3])" * doctest::test_suite("utils") * doctest::skip(true))
 {
     {
-        auto arg = tuple{
-            tuple{
-                tuple{1., 2., 3.},
-                tuple{4., 5., 6.},
+        auto arg = nmtools_tuple{
+            nmtools_tuple{
+                nmtools_tuple{1., 2., 3.},
+                nmtools_tuple{4., 5., 6.},
             },
-            tuple{
-                tuple{ 7.,  8.,  9.},
-                tuple{10., 11., 12.},
+            nmtools_tuple{
+                nmtools_tuple{ 7.,  8.,  9.},
+                nmtools_tuple{10., 11., 12.},
             }
         };
         auto str = to_string(arg);

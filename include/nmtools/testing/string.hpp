@@ -63,16 +63,16 @@ namespace nmtools::testing
         NMTOOLS_STRING ss;
         constexpr auto n = (sizeof...(args));
         #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
-        auto typenames = meta::make_array_type_t<NMTOOLS_STRING,n>{
+        auto typenames = nmtools_array<NMTOOLS_STRING,n>{
             {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
         };
         #elif defined(NMTOOLS_RTTI_ENABLED)
-        auto typenames = meta::make_array_type_t<NMTOOLS_STRING,n>{
+        auto typenames = nmtools_array<NMTOOLS_STRING,n>{
             {typeid(decltype(args)).name()...}
         };
         #else
         // empty
-        auto typenames = meta::make_array_type_t<NMTOOLS_STRING,n>{};
+        auto typenames = nmtools_array<NMTOOLS_STRING,n>{};
         #endif
         ss += func;
         ss += '(';
@@ -91,16 +91,16 @@ namespace nmtools::testing
         NMTOOLS_STRING ss;
         constexpr auto n = (sizeof...(args));
         #ifdef _NMTOOLS_TESTING_HAS_TYPE_INDEX
-        auto typenames = meta::make_array_type_t<NMTOOLS_STRING,n>{
+        auto typenames = nmtools_array<NMTOOLS_STRING,n>{
             {boost::typeindex::type_id<decltype(args)>().pretty_name()...}
         };
         #elif defined(NMTOOLS_RTTI_ENABLED)
-        auto typenames = meta::make_array_type_t<NMTOOLS_STRING,n>{
+        auto typenames = nmtools_array<NMTOOLS_STRING,n>{
             {typeid(decltype(args)).name()...}
         };
         #else
         // empty
-        auto typenames = meta::make_array_type_t<NMTOOLS_STRING,n>{};
+        auto typenames = nmtools_array<NMTOOLS_STRING,n>{};
         #endif
         ss += func;
         ss += '(';

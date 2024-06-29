@@ -18,10 +18,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_to)
         inline int bshape[2] = {3,1};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
-        inline auto ashape_ct = tuple{3_ct,1_ct};
-        inline auto bshape_ct = tuple{3_ct,1_ct};
-        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
-        inline auto bshape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto ashape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto bshape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto ashape_cl = nmtools_tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = nmtools_tuple{"3:[3]"_ct,"1:[1]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -37,10 +37,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_to)
         inline int bshape[2] = {3,3};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
-        inline auto ashape_ct = tuple{3_ct,1_ct};
-        inline auto bshape_ct = tuple{3_ct,3_ct};
-        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
-        inline auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct};
+        inline auto ashape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto bshape_ct = nmtools_tuple{3_ct,3_ct};
+        inline auto ashape_cl = nmtools_tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = nmtools_tuple{"3:[3]"_ct,"3:[3]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -56,10 +56,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_to)
         inline int bshape[3] = {3,3,1};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
-        inline auto ashape_ct = tuple{3_ct,1_ct};
-        inline auto bshape_ct = tuple{3_ct,3_ct,1_ct};
-        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
-        inline auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct,"1:[1]"_ct};
+        inline auto ashape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto bshape_ct = nmtools_tuple{3_ct,3_ct,1_ct};
+        inline auto ashape_cl = nmtools_tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = nmtools_tuple{"3:[3]"_ct,"3:[3]"_ct,"1:[1]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -75,10 +75,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_to)
         inline int bshape[3] = {3,3,6};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
-        inline auto ashape_ct = tuple{3_ct,1_ct};
-        inline auto bshape_ct = tuple{3_ct,3_ct,6_ct};
-        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
-        inline auto bshape_cl = tuple{"3:[3]"_ct,"3:[3]"_ct,"6:[6]"_ct};
+        inline auto ashape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto bshape_ct = nmtools_tuple{3_ct,3_ct,6_ct};
+        inline auto ashape_cl = nmtools_tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = nmtools_tuple{"3:[3]"_ct,"3:[3]"_ct,"6:[6]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -94,10 +94,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_to)
         inline int bshape[1] = {3};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
-        inline auto ashape_ct = tuple{3_ct,1_ct};
-        inline auto bshape_ct = tuple{3_ct};
-        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
-        inline auto bshape_cl = tuple{"3:[3]"_ct};
+        inline auto ashape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto bshape_ct = nmtools_tuple{3_ct};
+        inline auto ashape_cl = nmtools_tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = nmtools_tuple{"3:[3]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -113,10 +113,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_to)
         inline int bshape[3] = {3,6,6};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
-        inline auto ashape_ct = tuple{3_ct,1_ct};
-        inline auto bshape_ct = tuple{3_ct,6_ct,6_ct};
-        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
-        inline auto bshape_cl = tuple{"3:[3]"_ct,"6:[6]"_ct,"6:[6]"_ct};
+        inline auto ashape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto bshape_ct = nmtools_tuple{3_ct,6_ct,6_ct};
+        inline auto ashape_cl = nmtools_tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = nmtools_tuple{"3:[3]"_ct,"6:[6]"_ct,"6:[6]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -132,10 +132,10 @@ NMTOOLS_TESTING_DECLARE_CASE(index, broadcast_to)
         inline int bshape[4] = {7,3,3,6};
         NMTOOLS_CAST_INDEX_ARRAYS(ashape)
         NMTOOLS_CAST_INDEX_ARRAYS(bshape)
-        inline auto ashape_ct = tuple{3_ct,1_ct};
-        inline auto bshape_ct = tuple{7_ct,3_ct,3_ct,6_ct};
-        inline auto ashape_cl = tuple{"3:[3]"_ct,"1:[1]"_ct};
-        inline auto bshape_cl = tuple{"7:[7]"_ct,"3:[3]"_ct,"3:[3]"_ct,"6:[6]"_ct};
+        inline auto ashape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto bshape_ct = nmtools_tuple{7_ct,3_ct,3_ct,6_ct};
+        inline auto ashape_cl = nmtools_tuple{"3:[3]"_ct,"1:[1]"_ct};
+        inline auto bshape_cl = nmtools_tuple{"7:[7]"_ct,"3:[3]"_ct,"3:[3]"_ct,"6:[6]"_ct};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {

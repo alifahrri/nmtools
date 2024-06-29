@@ -189,8 +189,8 @@ namespace nmtools::utils
                 using ulhs_ptr_t  = decltype(get_if<ulhs_t>(&u));
                 using trhs_ptr_t  = decltype(get_if<trhs_t>(&t));
                 using urhs_ptr_t  = decltype(get_if<urhs_t>(&u));
-                using tuple_lhs_t = meta::make_tuple_type_t<tlhs_ptr_t,ulhs_ptr_t>;
-                using tuple_rhs_t = meta::make_tuple_type_t<trhs_ptr_t,urhs_ptr_t>;
+                using tuple_lhs_t = nmtools_tuple<tlhs_ptr_t,ulhs_ptr_t>;
+                using tuple_rhs_t = nmtools_tuple<trhs_ptr_t,urhs_ptr_t>;
                 auto close = false;
                 // under the hood, recursively call isclose to properly handle view type
                 if (const auto [tptr, uptr] = tuple_lhs_t{get_if<tlhs_t>(&t), get_if<ulhs_t>(&u)}; tptr && uptr)
