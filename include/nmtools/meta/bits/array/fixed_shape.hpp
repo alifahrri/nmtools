@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_BITS_ARRAY_FIXED_SHAPE_HPP
 #define NMTOOLS_META_BITS_ARRAY_FIXED_SHAPE_HPP
 
+#include "nmtools/stl.hpp"
 #include "nmtools/meta/common.hpp"
 // NOTE: to include error::FIXED_SHAPE_UNSUPPORTED
 // TODO: remove
@@ -36,13 +37,13 @@ namespace nmtools::meta
     {
         static constexpr auto value = [](){
             if constexpr (is_num_v<T>) {
-                using type = typename make_array_type<size_t,1>::type;
+                using type = nmtools_array<size_t,1>;
                 return type{N};
             } else if constexpr (is_bounded_array_v<T>) {
                 auto shape = fixed_shape_v<T>;
                 using shape_t = decltype(shape);
                 constexpr auto len = len_v<shape_t>;
-                using type = typename make_array_type<size_t,1+len>::type;
+                using type = nmtools_array<size_t,1+len>;
                 auto new_shape = type{};
                 for (size_t i=0; i<len; i++) {
                     // assume has operator[]

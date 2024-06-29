@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_BITS_TRANSFORM_TRANSFORM_BOUNDED_ARRAY_HPP
 #define NMTOOLS_META_BITS_TRANSFORM_TRANSFORM_BOUNDED_ARRAY_HPP
 
+#include "nmtools/stl.hpp"
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
 
@@ -36,7 +37,7 @@ namespace nmtools::meta
     struct transform_bounded_array<T[N]>
     {
         using value_type = typename transform_bounded_array<remove_cvref_t<T>>::type;
-        using type = typename make_array_type<remove_cvref_t<value_type>,N>::type;
+        using type = nmtools_array<remove_cvref_t<value_type>,N>;
     };
 } // namespace nmtools::meta
 

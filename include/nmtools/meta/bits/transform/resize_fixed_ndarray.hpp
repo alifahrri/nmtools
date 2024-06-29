@@ -1,8 +1,9 @@
 #ifndef NMTOOLS_META_BITS_TRANSFORM_RESIZE_FIXED_NDARRAY_HPP
 #define NMTOOLS_META_BITS_TRANSFORM_RESIZE_FIXED_NDARRAY_HPP
 
+// expose nmtools_tuple
+#include "nmtools/stl.hpp"
 #include "nmtools/meta/common.hpp"
-#include "nmtools/meta/def.hpp"
 
 namespace nmtools::meta
 {

@@ -18,14 +18,26 @@ namespace nmtools::meta
     template <typename...Args>
     struct is_tuple<utl::tuple<Args...>> : true_type {};
 
+    template <typename...Args>
+    struct is_tuple<utl::tuplev2<Args...>> : true_type {};
+
+    // TODO: remove
+    #if 1
     template <typename...Ts>
     struct is_constant_index_array<utl::tuple<Ts...>,enable_if_t<(is_constant_index_v<Ts> && ...)>> : true_type {};
 
-    template <typename T, size_t N>
-    struct is_fixed_index_array<utl::array<T,N>,enable_if_t<is_index_v<T>>> : true_type {};
-
     template <typename...Ts>
     struct is_fixed_index_array<utl::tuple<Ts...>,enable_if_t<(is_index_v<Ts> && ...)>> : true_type {};
+
+    template <typename...Ts>
+    struct is_constant_index_array<utl::tuplev2<Ts...>,enable_if_t<(is_constant_index_v<Ts> && ...)>> : true_type {};
+
+    template <typename...Ts>
+    struct is_fixed_index_array<utl::tuplev2<Ts...>,enable_if_t<(is_index_v<Ts> && ...)>> : true_type {};
+    #endif
+
+    template <typename T, size_t N>
+    struct is_fixed_index_array<utl::array<T,N>,enable_if_t<is_index_v<T>>> : true_type {};
 
     template <typename T, typename allocator>
     struct is_dynamic_index_array<utl::vector<T,allocator>>
@@ -51,8 +63,12 @@ namespace nmtools::meta
     template <typename T, size_t N>
     struct has_tuple_size<utl::array<T,N>> : true_type {};
 
+    // TODO: remove
     template <typename...Ts>
     struct has_tuple_size<utl::tuple<Ts...>> : true_type {};
+
+    template <typename...Ts>
+    struct has_tuple_size<utl::tuplev2<Ts...>> : true_type {};
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_UTL_TRAITS_HPP

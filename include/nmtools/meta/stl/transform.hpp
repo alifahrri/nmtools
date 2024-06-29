@@ -223,6 +223,7 @@ namespace nmtools::meta
 
 namespace nmtools::meta
 {
+    // TODO: remove
     // the following code breaks gcc: "internal compiler error: in finish_member_declaration, at cp/semantics.c:3237"
     // (even in newest version: 11.2), works fine on clang, check the else block for workaround
     // https://github.com/alifahrri/nmtools/runs/3708887742?check_suite_focus=true
@@ -257,7 +258,8 @@ namespace nmtools::meta
         // }();
     }; // to_value
 
-    #else
+    // avoid ambiguous specialization
+    #elif 0
     template <typename...Ts>
     struct to_value<
         std::tuple<Ts...>,

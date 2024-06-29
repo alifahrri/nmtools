@@ -59,12 +59,21 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
+    // TODO: remove this specialization
     template <typename...Ts, typename new_type>
     struct append_type<utl::tuple<Ts...>,new_type>
     {
         using type = utl::tuple<Ts...,new_type>;
     };
 
+    // TODO: remove this specialization
+    template <typename...Ts, typename new_type>
+    struct append_type<utl::tuplev2<Ts...>,new_type>
+    {
+        using type = utl::tuplev2<Ts...,new_type>;
+    };
+
+    // TODO: remove
     template <typename...Ts>
     struct tuple_to_array<utl::tuple<Ts...>>
     {
@@ -88,6 +97,8 @@ namespace nmtools::meta
         using type = utl::either<Left,Right>;
     };
 
+    // TODO: remove
+    #if 0
     template <typename...Ts>
     struct to_value<utl::tuple<Ts...>
         , enable_if_t<(is_constant_index_v<Ts> && ...)>
@@ -128,6 +139,7 @@ namespace nmtools::meta
             }, error_type{});
         }();
     };
+    #endif
 
     template <typename left_t, typename right_t>
     struct get_either_left<utl::either<left_t,right_t>>
@@ -141,10 +153,19 @@ namespace nmtools::meta
         using type = right_t;
     };
 
+    // TODO: remove this specialization
     template <typename...Ts, size_t I>
     struct type_at<utl::tuple<Ts...>,I>
     {
         using tuple_t = utl::tuple<Ts...>;
+        using type = utl::tuple_element_t<I,tuple_t>;
+    };
+
+    // TODO: remove this specialization
+    template <typename...Ts, size_t I>
+    struct type_at<utl::tuplev2<Ts...>,I>
+    {
+        using tuple_t = utl::tuplev2<Ts...>;
         using type = utl::tuple_element_t<I,tuple_t>;
     };
 

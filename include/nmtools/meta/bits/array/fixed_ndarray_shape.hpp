@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_BITS_ARRAY_FIXED_NDARRAY_SHAPE
 #define NMTOOLS_META_BITS_ARRAY_FIXED_NDARRAY_SHAPE
 
+#include "nmtools/stl.hpp"
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/array/nested_array_size.hpp"
 #include "nmtools/meta/bits/array/nested_array_dim.hpp"
@@ -47,7 +48,7 @@ namespace nmtools::meta
                 // nested_array_dim_v mimics std rank_v
                 // nested_array_size_v mimics std extent_v
                 constexpr auto dim = nested_array_dim_v<T>;
-                using array_t = typename make_array_type<size_t,dim>::type;
+                using array_t = nmtools_array<size_t,dim>;
                 auto shape = array_t{};
                 template_for<dim>([&](auto index){
                     constexpr auto i = decltype(index)::value;
