@@ -118,7 +118,7 @@ namespace nmtools::array
             auto src_shape = as_static<max_dim>(attribute.src_shape);
             auto axes      = as_static<max_dim>(attribute.axes);
             auto src_size  = as_static<max_dim>(attribute.src_size);
-            return view::transposer(src_shape,axes,src_size);
+            return view::transposer(src_shape,src_size,axes);
         }
     };
 } // namespace nmtools::array

@@ -1,6 +1,8 @@
 #ifndef NMTOOLS_STL_HPP
 #define NMTOOLS_STL_HPP
 
+#include "nmtools/platform.hpp"
+
 #ifndef NMTOOLS_DISABLE_STL
 
 #if __has_include(<array>)
@@ -9,15 +11,6 @@
 #include <tuple>
 #include <variant>
 #include <optional>
-#endif
-
-#if __has_include(<vector>)
-#include <vector>
-#endif
-
-#ifndef nmtools_list
-#define nmtools_list ::std::vector
-#endif
 
 #ifndef nmtools_either
 #define nmtools_either ::std::variant
@@ -35,6 +28,16 @@
 #ifndef nmtools_array
 #define nmtools_array ::std::array
 #endif // nmtools_array
+
+#if __has_include(<vector>)
+#include <vector>
+
+#ifndef nmtools_list
+#define nmtools_list ::std::vector
+#endif
+#endif // __has_include(<vector>)
+
+#endif // __has_include(<array>)
 
 #endif // NMTOOLS_DISABLE_STL
 
