@@ -8,7 +8,7 @@
 
 namespace nmtools::utl
 {
-    template <auto I, typename...Ts>
+    template <size_t I, typename...Ts>
     struct tuplev2_base;
 
     template <typename...Ts>
@@ -34,7 +34,7 @@ namespace nmtools::utl
     }
 
     template <>
-    struct tuplev2_base<0UL> {};
+    struct tuplev2_base<0> {};
 
     template <typename T>
     struct tuplev2_base<1,T>
@@ -50,7 +50,7 @@ namespace nmtools::utl
         {}
     };
 
-    template <auto I, typename T, typename...Ts>
+    template <size_t I, typename T, typename...Ts>
     struct tuplev2_base<I,T,Ts...>
         : tuplev2_base<sizeof...(Ts),Ts...>
     {
