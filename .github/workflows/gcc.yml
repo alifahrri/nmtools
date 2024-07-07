@@ -32,7 +32,7 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         # use single thread to minimize memory usage, Process completed with exit code 137.
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j1 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -62,7 +62,7 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         # use single thread to minimize memory usage, Process completed with exit code 137.
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_BUILD_VIEW_TESTS=ON ../.. && make -j2 VERBOSE=1 numeric-tests-view-doctest'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_BUILD_VIEW_TESTS=ON ../.. && make -j1 VERBOSE=1 numeric-tests-view-doctest'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/view/numeric-tests-view-doctest'
@@ -87,7 +87,7 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         # use single thread to minimize memory usage, Process completed with exit code 137.
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_VIEW_TESTS=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1 numeric-tests-view-doctest'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_VIEW_TESTS=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j1 VERBOSE=1 numeric-tests-view-doctest'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/view/numeric-tests-view-doctest'
@@ -111,7 +111,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/gcc-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_INDEX_TESTS=ON ../.. && make -j2 VERBOSE=1 numeric-tests-index-doctest'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/gcc-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_INDEX_TESTS=ON ../.. && make -j1 VERBOSE=1 numeric-tests-index-doctest'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/index/numeric-tests-index-doctest'
@@ -135,7 +135,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/gcc-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_FUNCTIONAL_TESTS=ON ../.. && make -j2 VERBOSE=1 numeric-tests-functional-doctest'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/gcc-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_FUNCTIONAL_TESTS=ON ../.. && make -j1 VERBOSE=1 numeric-tests-functional-doctest'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/functional/numeric-tests-functional-doctest'
@@ -160,7 +160,7 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         # use single thread to minimize memory usage, Process completed with exit code 137.
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_BUILD_VIEW_TESTS=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1 numeric-tests-view-doctest'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_BUILD_VIEW_TESTS=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j1 VERBOSE=1 numeric-tests-view-doctest'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/view/numeric-tests-view-doctest'
@@ -184,7 +184,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j1 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -208,7 +208,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j1 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/array/numeric-tests-doctest'
@@ -232,7 +232,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON ../.. && make -j1 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'
@@ -256,7 +256,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j1 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'
@@ -280,7 +280,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON  -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j2 VERBOSE=1'
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON  -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF ../.. && make -j1 VERBOSE=1'
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'
