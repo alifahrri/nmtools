@@ -129,7 +129,7 @@ namespace nmtools::meta
             if constexpr (is_fixed_index_array_v<shape_t>) {
                 constexpr auto N = len_v<shape_t>;
                 using elem_t = remove_cvref_t<get_index_element_type_t<shape_t>>;
-                return as_value_v<make_array_type_t<elem_t,N>>;
+                return as_value_v<nmtools_array<elem_t,N>>;
             } else if constexpr (is_index_array_v<shape_t>) {
                 return as_value_v<shape_t>;
             } else {
@@ -223,7 +223,7 @@ namespace nmtools::index
             else success = false;
             
             // TODO: use optional instead
-            using return_t = meta::make_tuple_type_t<bool,result_t>;
+            using return_t = nmtools_tuple<bool,result_t>;
             return return_t{success,ret};
         }
     } // shape_concatenate

@@ -2,6 +2,7 @@
 #define NMTOOLS_UTILITY_CT_DIGRAPH_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/array/at.hpp"
 #include "nmtools/utility/ct_map.hpp"
 
 namespace nmtools::utility
@@ -54,19 +55,39 @@ namespace nmtools::utility
         constexpr auto add_edge(from_t from, to_t to) const noexcept
         {
             auto edges = digraph.at(from);
-            auto new_edges = tuple_append(edges,to);
-            auto new_digraph = digraph.update(from,/*edges*/new_edges);
-            using new_digraph_type = decltype(new_digraph);
-            using new_node_data_type = decltype(node_data);
-            using new_ct_digraph_type = ct_digraph<
-                meta::remove_cvref_t<typename new_digraph_type::keys_type>
-                , meta::remove_cvref_t<typename new_digraph_type::values_type>
-                , meta::remove_cvref_t<typename new_node_data_type::values_type>
-            >;
-            return new_ct_digraph_type(
-                new_digraph
-                , node_data
-            );
+            // avoid duplication
+            auto contains = [](auto tuple, auto key){
+                constexpr auto N = meta::len_v<decltype(tuple)>;
+                constexpr auto KEY = meta::to_value_v<decltype(key)>;
+                return meta::template_reduce<N>([&](auto init, auto index){
+                    auto element = nmtools::at(tuple,index);
+                    constexpr auto ELEMENT = meta::to_value_v<decltype(element)>;
+                    if constexpr (ELEMENT == KEY) {
+                        return meta::true_type{};
+                    } else {
+                        return init;
+                    }
+                }, meta::false_type{});
+            };
+            auto has_key = contains(edges,to);
+            constexpr auto HAS_KEY = meta::to_value_v<decltype(has_key)>;
+            if constexpr (HAS_KEY) {
+                return *this;
+            } else {
+                auto new_edges = tuple_append(edges,to);
+                auto new_digraph = digraph.update(from,/*edges*/new_edges);
+                using new_digraph_type = decltype(new_digraph);
+                using new_node_data_type = decltype(node_data);
+                using new_ct_digraph_type = ct_digraph<
+                    meta::remove_cvref_t<typename new_digraph_type::keys_type>
+                    , meta::remove_cvref_t<typename new_digraph_type::values_type>
+                    , meta::remove_cvref_t<typename new_node_data_type::values_type>
+                >;
+                return new_ct_digraph_type(
+                    new_digraph
+                    , node_data
+                );
+            }
         }
 
         constexpr auto nodes() const noexcept
@@ -103,7 +124,7 @@ namespace nmtools::utility
         {
             return digraph.at(key);
         }
-    };
+    }; // ct_digraph
 
     template <typename nodes_t, typename edges_t, typename node_data_t>
     ct_digraph(const ct_map<nodes_t,edges_t>&, const ct_map<nodes_t,node_data_t>&) -> ct_digraph<nodes_t,edges_t,node_data_t>;

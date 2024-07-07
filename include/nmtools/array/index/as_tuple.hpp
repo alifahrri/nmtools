@@ -22,7 +22,7 @@ namespace nmtools::index
     template <template<auto...>typename index_sequence, typename array_t, size_t...Is>
     constexpr decltype(auto) as_tuple(const array_t& array, index_sequence<Is...>)
     {
-        using tuple_t = meta::make_tuple_type_t<meta::remove_cvref_t<decltype(nmtools::get<Is>(array))>...>;
+        using tuple_t = nmtools_tuple<meta::remove_cvref_t<decltype(nmtools::get<Is>(array))>...>;
         return tuple_t{nmtools::get<Is>(array)...};
     } // as_tuple
 

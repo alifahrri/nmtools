@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_VAR_HPP
 #define NMTOOLS_ARRAY_VIEW_VAR_HPP
 
+#include "nmtools/array/view/alias.hpp"
 #include "nmtools/array/view/ufuncs/fabs.hpp"
 #include "nmtools/array/view/ufuncs/square.hpp"
 #include "nmtools/array/view/ufuncs/subtract.hpp"
@@ -27,21 +28,17 @@ namespace nmtools::view
     template <typename array_t, typename axis_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
     constexpr auto var(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{})
     {
+        auto input = view::aliased(array);
         // must keep dimension to properly subtract
-        auto a = mean(array,axis,dtype,/*keepdims=*/True);
-        auto b = subtract(array, a);
-        auto c = fabs(b);
-        auto d = square(c);
+        auto a = view::mean(input,axis,dtype,/*keepdims=*/True);
+        auto b = view::subtract(input, a);
+        auto c = view::fabs(b);
+        auto d = view::square(c);
         // no reason to start from other initial value
-        auto e = sum(d,axis,dtype,/*initial=*/None,keepdims);
-        // TODO: fix unwrap to handle bounded array
-        #if 0
+        auto e = view::sum(d,axis,dtype,/*initial=*/None,keepdims);
         // TODO: error handling
-        auto N = detail::mean_divisor(::nmtools::shape(unwrap(array)),axis);
-        #else
-        auto N = detail::mean_divisor(::nmtools::shape(array),axis);
-        #endif
-        return divide(e,N-ddof);
+        auto N = detail::mean_divisor(::nmtools::shape(unwrap(input)),axis);
+        return view::divide(e,N-ddof);
     } // var
 } // namespace nmtools::view
 

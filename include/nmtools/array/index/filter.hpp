@@ -25,7 +25,7 @@ namespace nmtools::index
         auto chosen  = choose(indices,array);
         using indices_t = meta::remove_cvref_t<decltype(indices)>;
         using chosen_t  = meta::remove_cvref_t<decltype(chosen)>;
-        using return_t  = meta::make_tuple_type_t<indices_t,chosen_t>;
+        using return_t  = nmtools_tuple<indices_t,chosen_t>;
         return return_t{indices, chosen};
     } // filter
 } // namespace nmtools::index

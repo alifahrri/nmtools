@@ -88,7 +88,7 @@ namespace nmtools::meta
                 constexpr auto ind = to_value_v<indices_t>;
                 constexpr auto res = index::scatter(vec, ind);
                 // convert back to type
-                using init_type = make_tuple_type_t<ct<at(res,0)>>;
+                using init_type = nmtools_tuple<ct<at(res,0)>>;
                 return template_reduce<::nmtools::len(res)-1>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;
                     using result_t = append_type_t<init_t,ct<at(res,index+1)>>;

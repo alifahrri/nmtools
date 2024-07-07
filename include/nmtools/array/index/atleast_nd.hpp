@@ -17,9 +17,17 @@ namespace nmtools::index
     template <typename shape_t, typename nd_t>
     constexpr auto shape_atleast_nd(const shape_t& shape, [[maybe_unused]] nd_t nd)
     {
-        using result_t = meta::resolve_optype_t<shape_atleast_nd_t,shape_t,nd_t>;
+        using result_t [[maybe_unused]] = meta::resolve_optype_t<shape_atleast_nd_t,shape_t,nd_t>;
 
-        if constexpr (meta::is_constant_index_array_v<result_t>) {
+        if constexpr (meta::is_maybe_v<shape_t>) {
+            using shape_type = meta::get_maybe_type_t<shape_t>;
+            using result_t   = meta::resolve_optype_t<shape_atleast_nd_t,shape_type,nd_t>;
+            using return_t   = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (static_cast<bool>(shape)
+                ? return_t{shape_atleast_nd(*shape,nd)}
+                : return_t{meta::Nothing}
+            );
+        } else if constexpr (meta::is_constant_index_array_v<result_t>) {
             return result_t {};
         } else {
             auto result = result_t {};

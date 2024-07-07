@@ -150,7 +150,7 @@ namespace nmtools::literals
         );
 
         constexpr auto N = sizeof...(cs);
-        using array_t = meta::make_array_type_t<char,N>;
+        using array_t = nmtools_array<char,N>;
         constexpr auto cs_array = array_t{cs...};
         constexpr auto n = detail::ct_impl(cs_array);
         using type = meta::integral_constant<size_t,n>;

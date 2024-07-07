@@ -141,7 +141,7 @@ namespace nmtools::meta
                     }
                 }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (is_none_v<axis_t>) {
-                using type = make_array_type_t<size_t,1>;
+                using type = nmtools_array<size_t,1>;
                 return as_value_v<type>;
             } else if constexpr (
                 is_index_array_v<shape_t>

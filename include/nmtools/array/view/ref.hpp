@@ -32,7 +32,7 @@ namespace nmtools::view
         constexpr auto identity(size_types...indices)
         {
             using common_size_t = meta::type_t<meta::promote_index<size_types...>>;
-            using indices_t = meta::make_array_type_t<common_size_t,sizeof...(indices)>;
+            using indices_t = nmtools_array<common_size_t,sizeof...(indices)>;
             auto ndindex = indices_t{static_cast<common_size_t>(indices)...};
             return ndindex;
         } // identity

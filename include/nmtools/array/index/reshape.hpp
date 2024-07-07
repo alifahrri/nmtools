@@ -45,7 +45,7 @@ namespace nmtools::index
     template <typename src_shape_t, typename dst_shape_t>
     constexpr auto shape_reshape(const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
-        using result_t = meta::resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_t>;
+        using result_t [[maybe_unused]] = meta::resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_t>;
         using m_result_t [[maybe_unused]] = meta::get_maybe_type_t<result_t>;
 
         // TODO: try to provide common function-lifting utility
@@ -53,6 +53,7 @@ namespace nmtools::index
             // when src_shape is maybe, then assume the result_t is maybe
             if (static_cast<bool>(src_shape)) {
                 auto result = shape_reshape(*src_shape,dst_shape);
+                #if 0
                 // even if we unwrap the src_shape, the result may be maybe type
                 // since dst_shape may be different shape with src
                 // because std::optional<std::optional<int>> is actually allowed
@@ -67,9 +68,24 @@ namespace nmtools::index
                 } else {
                     return result_t{result};
                 }
+                #else
+                using return_t = result_t;
+                return (has_value(result)
+                    ? return_t{unwrap(result)}
+                    : return_t{meta::Nothing}
+                );
+                #endif
             } else {
                 return result_t{meta::Nothing};
             }
+        } else if constexpr (meta::is_maybe_v<dst_shape_t>) {
+            using dst_shape_type = meta::get_maybe_type_t<dst_shape_t>;
+            using result_t = meta::resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_type>;
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (static_cast<bool>(dst_shape)
+                ? return_t{shape_reshape(src_shape,*dst_shape)}
+                : return_t{meta::Nothing}
+            );
         } else if constexpr (meta::is_fail_v<result_t>) {
             // let the caller decides what to do
             return result_t {};

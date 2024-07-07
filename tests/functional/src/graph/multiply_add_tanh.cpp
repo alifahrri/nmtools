@@ -19,6 +19,16 @@ namespace view = nm::view;
 namespace utils = nm::utils;
 
 using namespace nmtools::literals;
+using nmtools::unwrap;
+
+#define get_node_id(a) \
+[&](){ \
+    using array_type = decltype(unwrap(a)); \
+    using view_type  = typename array_type::view_type; \
+    constexpr auto view_vtype = meta::as_value_v<view_type>; \
+    constexpr auto node_id    = meta::generate_view_id(array_type::operands_ids,view_vtype); \
+    return node_id; \
+}()
 
 TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_graph"))
 {
@@ -34,20 +44,27 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
     auto b = view::add(a,rhs_array);
     auto c = view::tanh(b);
 
+    auto a_id = get_node_id(a);
+    auto b_id = get_node_id(b);
+    auto c_id = get_node_id(c);
+
+    // TODO: use the same function as decorator to get the operand ids
+    auto rhs_id = meta::ct_v<decltype(a_id)::value+2>;
+
     auto graph = nm::unwrap(fn::get_compute_graph(c));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
         .add_node(1_ct,&rhs_array)
-        .add_node(2_ct,fn::node_t{fn::multiply,nmtools_tuple{0_ct,1_ct}})
-        .add_node(3_ct,&rhs_array)
-        .add_node(4_ct,fn::node_t{fn::add,nmtools_tuple{2_ct,3_ct}})
-        .add_node(5_ct,fn::node_t{fn::tanh,nmtools_tuple{4_ct}})
-        .add_edge(0_ct,2_ct)
-        .add_edge(1_ct,2_ct)
-        .add_edge(2_ct,4_ct)
-        .add_edge(3_ct,4_ct)
-        .add_edge(4_ct,5_ct)
+        .add_node(a_id,fn::node_t{fn::multiply,nmtools_tuple{0_ct,1_ct}})
+        .add_node(rhs_id,&rhs_array)
+        .add_node(b_id,fn::node_t{fn::add,nmtools_tuple{a_id,rhs_id}})
+        .add_node(c_id,fn::node_t{fn::tanh,nmtools_tuple{b_id}})
+        .add_edge(0_ct,a_id)
+        .add_edge(1_ct,a_id)
+        .add_edge(a_id,b_id)
+        .add_edge(rhs_id,b_id)
+        .add_edge(b_id,c_id)
     ;
 
     // TODO: support comparison on maybe type
@@ -69,19 +86,23 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
     auto b = view::add(a,rhs);
     auto c = view::tanh(b);
 
+    auto a_id = get_node_id(a);
+    auto b_id = get_node_id(b);
+    auto c_id = get_node_id(c);
+
     auto graph = nm::unwrap(fn::get_compute_graph(c));
 
     auto expect = fn::compute_graph_t<>()
-        .add_node(0_ct,&lhs_array)
+        .add_node(2_ct,&lhs_array)
         .add_node(1_ct,&rhs_array)
-        .add_node(3_ct,fn::node_t{fn::multiply,nmtools_tuple{0_ct,1_ct}})
-        .add_node(5_ct,fn::node_t{fn::add,nmtools_tuple{2_ct,1_ct}})
-        .add_node(6_ct,fn::node_t{fn::tanh,nmtools_tuple{5_ct}})
-        .add_edge(0_ct,3_ct)
-        .add_edge(1_ct,3_ct)
-        .add_edge(1_ct,5_ct)
-        .add_edge(3_ct,5_ct)
-        .add_edge(5_ct,6_ct)
+        .add_node(a_id,fn::node_t{fn::multiply,nmtools_tuple{2_ct,1_ct}})
+        .add_node(b_id,fn::node_t{fn::add,nmtools_tuple{a_id,1_ct}})
+        .add_node(c_id,fn::node_t{fn::tanh,nmtools_tuple{b_id}})
+        .add_edge(2_ct,a_id)
+        .add_edge(1_ct,a_id)
+        .add_edge(1_ct,b_id)
+        .add_edge(a_id,b_id)
+        .add_edge(b_id,c_id)
     ;
 
     // TODO: support comparison on maybe type
@@ -104,19 +125,23 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
     auto b = view::add(a,rhs);
     auto c = view::tanh(b);
 
+    auto a_id = get_node_id(a);
+    auto b_id = get_node_id(b);
+    auto c_id = get_node_id(c);
+
     auto graph = nm::unwrap(fn::get_compute_graph(c));
 
     auto expect = fn::compute_graph_t<>()
         .add_node(0_ct,&lhs_array)
         .add_node(1_ct,&rhs_array)
-        .add_node(3_ct,fn::node_t{fn::multiply,nmtools_tuple{0_ct,1_ct}})
-        .add_node(5_ct,fn::node_t{fn::add,nmtools_tuple{2_ct,1_ct}})
-        .add_node(6_ct,fn::node_t{fn::tanh,nmtools_tuple{5_ct}})
-        .add_edge(0_ct,3_ct)
-        .add_edge(1_ct,3_ct)
-        .add_edge(1_ct,5_ct)
-        .add_edge(3_ct,5_ct)
-        .add_edge(5_ct,6_ct)
+        .add_node(a_id,fn::node_t{fn::multiply,nmtools_tuple{0_ct,1_ct}})
+        .add_node(b_id,fn::node_t{fn::add,nmtools_tuple{2_ct,1_ct}})
+        .add_node(c_id,fn::node_t{fn::tanh,nmtools_tuple{5_ct}})
+        .add_edge(0_ct,a_id)
+        .add_edge(1_ct,a_id)
+        .add_edge(1_ct,b_id)
+        .add_edge(a_id,b_id)
+        .add_edge(b_id,c_id)
     ;
 
     // TODO: support comparison on maybe type
@@ -139,20 +164,24 @@ TEST_CASE("multiply_add_tanh" * doctest::test_suite("functional::get_compute_gra
     auto b = view::add(a,rhs);
     auto c = view::tanh(b);
 
+    auto a_id = get_node_id(a);
+    auto b_id = get_node_id(b);
+    auto c_id = get_node_id(c);
+
     auto graph = nm::unwrap(fn::get_compute_graph(c));
 
     [[maybe_unused]]
     auto expect = fn::compute_graph_t<>()
         .add_node(3_ct,&lhs_array)
         .add_node(1_ct,&rhs_array)
-        .add_node(5_ct,fn::node_t{fn::multiply,nmtools_tuple{3_ct,1_ct}})
-        .add_node(7_ct,fn::node_t{fn::add,nmtools_tuple{2_ct,1_ct}})
-        .add_node(8_ct,fn::node_t{fn::tanh,nmtools_tuple{7_ct}})
-        .add_edge(3_ct,5_ct)
-        .add_edge(1_ct,5_ct)
-        .add_edge(1_ct,7_ct)
-        .add_edge(5_ct,7_ct)
-        .add_edge(7_ct,8_ct)
+        .add_node(a_id,fn::node_t{fn::multiply,nmtools_tuple{3_ct,1_ct}})
+        .add_node(b_id,fn::node_t{fn::add,nmtools_tuple{a_id,1_ct}})
+        .add_node(c_id,fn::node_t{fn::tanh,nmtools_tuple{b_id}})
+        .add_edge(3_ct,a_id)
+        .add_edge(1_ct,a_id)
+        .add_edge(1_ct,b_id)
+        .add_edge(a_id,b_id)
+        .add_edge(b_id,c_id)
     ;
 
     

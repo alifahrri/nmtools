@@ -115,7 +115,7 @@ namespace nmtools
          */
         constexpr auto shape() const
         {
-            auto shape_ = meta::make_array_type_t<size_t,dim_>{};
+            auto shape_ = nmtools_array<size_t,dim_>{};
             // get the size for each 'nested' list, dimension known at compile time
             // assuming each element on each 'axis' has the same size
             // this techniques is similar with nmtools::shape, but since

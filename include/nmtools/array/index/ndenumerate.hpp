@@ -56,7 +56,7 @@ namespace nmtools::index
         } // size
 
         constexpr inline auto operator[](size_t i) const
-            -> meta::make_tuple_type_t<index_type,const element_type&>
+            -> nmtools_tuple<index_type,const element_type&>
         {
             auto idx = ndindex_[i];
             const auto& val = apply_at(array,idx);

@@ -21,7 +21,7 @@ namespace nmtools::index
         // using common_t = meta::promote_index_t<size_types...>;
         using common_t = meta::type_t<meta::promote_index<size_type,size_types...>>;
         if constexpr (meta::is_integral_v<common_t>) {
-            using array_t = meta::make_array_type_t<common_t,1+sizeof...(indices)>;
+            using array_t = nmtools_array<common_t,1+sizeof...(indices)>;
             return array_t{index_,indices...};
         } else /* if constexpr (meta::is_index_array_v<size_type>) */ {
             static_assert (sizeof...(indices)==0

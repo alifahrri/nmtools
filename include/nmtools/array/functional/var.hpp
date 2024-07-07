@@ -2,6 +2,8 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_VAR_HPP
 
 #include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/functional/ufuncs/add.hpp"
+#include "nmtools/array/functional/ufuncs/divide.hpp"
 #include "nmtools/array/view/var.hpp"
 
 namespace nmtools::functional

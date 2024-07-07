@@ -186,6 +186,7 @@ namespace nmtools::meta
 
 namespace nmtools::meta
 {
+    // TODO: remove
     /**
      * @brief Create default fixed-size ndarray.
      * Forward declaration, to be defined later.
@@ -196,6 +197,7 @@ namespace nmtools::meta
     template <typename element_t, typename shape_t>
     struct make_fixed_ndarray;
 
+    // TODO: remove
     /**
      * @brief Create default dynamic-size ndarray.
      * Forward declaration, to be defined later.
@@ -205,6 +207,7 @@ namespace nmtools::meta
     template <typename element_t>
     struct make_dynamic_ndarray;
 
+    // TODO: remove
     /**
      * @brief Create default hybrid ndarray.
      * 
@@ -422,62 +425,5 @@ namespace nmtools
     template <typename T>
     inline constexpr auto is_ellipsis_v = is_ellipsis<T>::value;
 } // namespace nmtools
-
-// collections of reserved metafunctions
-namespace nmtools::meta
-{
-    /**
-     * @brief Reserved metafunction to create a tuple type
-     * 
-     * @tparam Ts 
-     * @note implementation should use macro NMTOOLS_META_MAKE_TUPLE
-     */
-    template <typename...Ts>
-    struct make_tuple_type;
-
-    /**
-     * @brief Reserved metafunction to create maybe type
-     * 
-     * @tparam T 
-     * @note implementation should use macro NMTOOLS_META_MAKE_MAYBE_TYPE
-     */
-    template <typename T, typename=void>
-    struct make_maybe_type;
-
-    /**
-     * @brief Reserved metafunction to create an array type
-     * 
-     * @tparam T element type
-     * @tparam N desired length
-     * @tparam typename 
-     * @note implementation should use macro NMTOOLS_META_MAKE_ARRAY_TYPE
-     */
-    template <typename T, size_t N, typename=void>
-    struct make_array_type;
-
-    /**
-     * @brief Reserved metafunction to create a vector type
-     * 
-     * Preferred macro is NMTOOLS_META_MAKE_VECTOR
-     * 
-     * @tparam T 
-     * @tparam typename 
-     */
-    template <typename T, typename=void>
-    struct make_vector;
-
-    template <typename Left, typename Right, typename=void>
-    struct make_either_type;
-
-    // TODO: consider if Allocator should be template-template parameter
-    /**
-     * @brief Reserved metafunction to create a sequence type (std::vector)
-     * 
-     * @tparam ValueType desired value type
-     * @tparam Allocator optional allocator type
-     */
-    template <typename ValueType, typename Allocator=none_t>
-    struct make_sequence_type;
-} // namespace nmtools::meta
 
 #endif // NMTOOLS_META_COMMON_HPP

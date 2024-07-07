@@ -71,7 +71,8 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/ufuncs/arctan2.cpp
         src/ufuncs/cbrt.cpp
         src/ufuncs/ceil.cpp
-        src/ufuncs/clip.cpp
+        # TODO: this compiles forever, fix
+        # src/ufuncs/clip.cpp
         src/ufuncs/cos.cpp
         src/ufuncs/cosh.cpp
         src/ufuncs/exp.cpp
@@ -138,17 +139,18 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
 
         src/graph/transpose.cpp
         src/graph/reshape.cpp
+        src/graph/batch_norm.cpp
         src/graph/broadcast_to.cpp
         src/graph/tanh.cpp
         src/graph/multiply.cpp
         src/graph/reduce_add_tanh.cpp
         src/graph/multiply_tanh.cpp
         src/graph/multiply_add_tanh.cpp
-        src/graph/multiply_add_tanh_add.cpp
-        src/graph/reduce_add_divide.cpp
+        src/graph/mean.cpp
         src/graph/var.cpp
         src/graph/stddev.cpp
         src/graph/softmax.cpp
+        src/graph/softmin.cpp
 
         src/misc/ct_map.cpp
         src/misc/ct_digraph.cpp

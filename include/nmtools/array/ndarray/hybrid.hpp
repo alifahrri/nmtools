@@ -231,7 +231,7 @@ namespace nmtools::array
             // using common_size_t = meta::promote_index_t<size_types...>;
             using promoted_t = meta::promote_index<size_types...>;
             using common_size_t = meta::type_t<promoted_t>;
-            auto indices = meta::make_array_type_t<common_size_t,sizeof...(ns)>{
+            auto indices = nmtools_array<common_size_t,sizeof...(ns)>{
                 static_cast<common_size_t>(ns)...
             };
             static_assert ( dimension == sizeof...(ns)
@@ -252,7 +252,7 @@ namespace nmtools::array
             // using common_size_t = meta::promote_index_t<size_types...>;
             using promoted_t = meta::promote_index<size_types...>;
             using common_size_t = meta::type_t<promoted_t>;
-            auto indices = meta::make_array_type_t<common_size_t,sizeof...(ns)>{
+            auto indices = nmtools_array<common_size_t,sizeof...(ns)>{
                 static_cast<common_size_t>(ns)...
             };
             static_assert ( dimension == sizeof...(ns)

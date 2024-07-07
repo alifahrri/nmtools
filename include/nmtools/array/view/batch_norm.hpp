@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_BATCH_NORM_HPP
 #define NMTOOLS_ARRAY_VIEW_BATCH_NORM_HPP
 
-#include "nmtools/array/view/atleast_3d.hpp"
+#include "nmtools/array/view/atleast_nd.hpp"
 #include "nmtools/array/view/moveaxis.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"
@@ -43,13 +43,20 @@ namespace nmtools::view
         auto src_axis = meta::ct_v<-1>;
         auto dst_axis = meta::ct_v<-3>;
 
-        auto weight_ = view::moveaxis(view::atleast_3d(weight),src_axis,dst_axis);
-        auto bias_   = view::moveaxis(view::atleast_3d(bias),src_axis,dst_axis);
-        auto mean_   = view::moveaxis(view::atleast_3d(mean),src_axis,dst_axis);
-        auto var_    = view::moveaxis(view::atleast_3d(var),src_axis,dst_axis);
+        auto aliased  = view::aliased(input,mean,var,weight,bias);
+        auto a_input  = nmtools::get<0>(aliased);
+        auto a_mean   = nmtools::get<1>(aliased);
+        auto a_var    = nmtools::get<2>(aliased);
+        auto a_weight = nmtools::get<3>(aliased);
+        auto a_bias   = nmtools::get<4>(aliased);
+
+        auto weight_ = view::moveaxis(view::atleast_nd(a_weight,meta::ct_v<3>),src_axis,dst_axis);
+        auto bias_   = view::moveaxis(view::atleast_nd(a_bias,meta::ct_v<3>),src_axis,dst_axis);
+        auto mean_   = view::moveaxis(view::atleast_nd(a_mean,meta::ct_v<3>),src_axis,dst_axis);
+        auto var_    = view::moveaxis(view::atleast_nd(a_var,meta::ct_v<3>),src_axis,dst_axis);
         auto stddev_ = view::sqrt(view::add(var_,eps));
 
-        auto subtracted = view::subtract(input,mean_);
+        auto subtracted = view::subtract(a_input,mean_);
         auto divided    = view::divide(subtracted,stddev_);
         auto multiplied = view::multiply(divided,weight_);
         return view::add(multiplied,bias_);

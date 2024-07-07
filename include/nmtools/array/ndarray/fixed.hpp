@@ -80,7 +80,7 @@ namespace nmtools::array {
          */
         static constexpr auto strides()
         {
-            auto stride = meta::make_array_type_t<size_t,dim()>{};
+            auto stride = nmtools_array<size_t,dim()>{};
             for (size_t i=0; i<dim(); i++)
                 stride[i] = ::nmtools::index::stride(shape_,i);
             return stride;
@@ -269,7 +269,7 @@ namespace nmtools
         : fixed_shape<array::fixed_ndarray<T,Shape1,ShapeN...>> {};
     #if 0
     {
-        static inline constexpr auto value = meta::make_array_type_t<size_t,sizeof...(ShapeN)+1>{Shape1,ShapeN...};
+        static inline constexpr auto value = nmtools_array<size_t,sizeof...(ShapeN)+1>{Shape1,ShapeN...};
         using value_type = decltype(value);
     };
     #endif

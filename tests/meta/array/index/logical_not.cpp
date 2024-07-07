@@ -17,10 +17,10 @@ using std::tuple, std::false_type, std::true_type;
 TEST_CASE("logical_not" * doctest::test_suite("index"))
 {
     {
-        using x_t = decltype(tuple{true_type{},false_type{},false_type{},true_type{},false_type{}});
+        using x_t = decltype(nmtools_tuple{true_type{},false_type{},false_type{},true_type{},false_type{}});
         using res_t = meta::resolve_optype_t<logical_not_t,x_t>;
-        // using exp_t = decltype(tuple{meta::false_type{},meta::true_type{},meta::true_type{},meta::false_type{},meta::true_type{}});
-        using exp_t = decltype(tuple{meta::integral_constant<nm_bool_t,false>{},meta::integral_constant<nm_bool_t,true>{},meta::integral_constant<nm_bool_t,true>{},meta::integral_constant<nm_bool_t,false>{},meta::integral_constant<nm_bool_t,true>{}});
+        // using exp_t = decltype(nmtools_tuple{meta::false_type{},meta::true_type{},meta::true_type{},meta::false_type{},meta::true_type{}});
+        using exp_t = decltype(nmtools_tuple{meta::integral_constant<nm_bool_t,false>{},meta::integral_constant<nm_bool_t,true>{},meta::integral_constant<nm_bool_t,true>{},meta::integral_constant<nm_bool_t,false>{},meta::integral_constant<nm_bool_t,true>{}});
         NMTOOLS_STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }

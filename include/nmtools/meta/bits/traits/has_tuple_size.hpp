@@ -2,6 +2,7 @@
 #define NMTOOLS_META_BITS_TRAITS_HAS_TUPLE_SIZE_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/traits/is_tuple.hpp"
 
 namespace nmtools::meta
 {
@@ -15,6 +16,20 @@ namespace nmtools::meta
      */
     template <typename T, typename=void>
     struct has_tuple_size : false_type {};
+
+    // TODO: enable
+    #if 0
+    template <template<typename...>typename tuple, typename...Ts>
+    struct has_tuple_size<tuple<Ts...>
+        , enable_if_t<is_tuple_v<tuple<Ts...>>>
+    > : true_type {};
+
+    template <typename T>
+    struct has_tuple_size<const T> : has_tuple_size<T> {};
+
+    template <typename T>
+    struct has_tuple_size<T&> : has_tuple_size<T> {};
+    #endif
 
     /**
      * @brief helper variable template to check if std tuple_size<T> is valid

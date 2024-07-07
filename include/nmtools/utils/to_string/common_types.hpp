@@ -104,7 +104,7 @@ namespace nmtools::utils::impl
                         return meta::to_value_v<shape_t>;
                     } else if constexpr (meta::is_tuple_v<shape_t>) {
                         constexpr auto N = meta::len_v<shape_t>;
-                        using array_t = meta::make_array_type_t<index_t,N>;
+                        using array_t = nmtools_array<index_t,N>;
                         auto array = array_t{};
                         meta::template_for<N>([&](auto i){
                             at(array,i) = at(shape_,i);

@@ -28,13 +28,13 @@ namespace meta = nmtools::meta;
 TEST_CASE("isclose(tuple,tuple)" * doctest::test_suite("utils"))
 {
     {
-        auto lhs = tuple{1., 2., 3., 4., 5.};
-        auto rhs = tuple{1., 2., 3., 4., 5.};
+        auto lhs = nmtools_tuple{1., 2., 3., 4., 5.};
+        auto rhs = nmtools_tuple{1., 2., 3., 4., 5.};
         CHECK( isclose(lhs,rhs) );
     }
     {
-        auto lhs = tuple{1., 2., 3., 4., 5.};
-        auto rhs = tuple{1., 2., 3., 4., 1.};
+        auto lhs = nmtools_tuple{1., 2., 3., 4., 5.};
+        auto rhs = nmtools_tuple{1., 2., 3., 4., 1.};
         CHECK( !isclose(lhs,rhs) );
     }
 }
@@ -111,12 +111,12 @@ TEST_CASE("isclose(int[],int[])" * doctest::test_suite("utils"))
 TEST_CASE("isclose(tuple,array)" * doctest::test_suite("utils"))
 {
     {
-        auto lhs = tuple{1., 2., 3., 4., 5.};
+        auto lhs = nmtools_tuple{1., 2., 3., 4., 5.};
         auto rhs = array{1., 2., 3., 4., 5.};
         CHECK( isclose(lhs,rhs) );
     }
     {
-        auto lhs = tuple{1., 2., 3., 4., 5.};
+        auto lhs = nmtools_tuple{1., 2., 3., 4., 5.};
         auto rhs = array{1., 2., 2., 4., 5.};
         CHECK( !isclose(lhs,rhs) );
     }
@@ -130,12 +130,12 @@ TEST_CASE("isclose(array,tuple)" * doctest::test_suite("utils"))
 {
     {
         auto lhs = array{1., 2., 3., 4., 5.};
-        auto rhs = tuple{1., 2., 3., 4., 5.};
+        auto rhs = nmtools_tuple{1., 2., 3., 4., 5.};
         CHECK( isclose(lhs,rhs) );
     }
     {
         auto lhs = array{1., 2., 3., 4., 5.};
-        auto rhs = tuple{1., 2., 2., 4., 5.};
+        auto rhs = nmtools_tuple{1., 2., 2., 4., 5.};
         CHECK( !isclose(lhs,rhs) );
     }
 }
@@ -235,9 +235,9 @@ TEST_CASE("isclose(array[2],tuple[2])" * doctest::test_suite("utils"))
             array{1., 2., 3.},
             array{4., 5., 6.}
         };
-        auto rhs = tuple{
-            tuple{1., 2., 3.},
-            tuple{4., 5., 6.}
+        auto rhs = nmtools_tuple{
+            nmtools_tuple{1., 2., 3.},
+            nmtools_tuple{4., 5., 6.}
         };
         CHECK( isclose(lhs,rhs) );
     }
@@ -246,9 +246,9 @@ TEST_CASE("isclose(array[2],tuple[2])" * doctest::test_suite("utils"))
             array{1., 2., 3.},
             array{4., 5., 6.}
         };
-        auto rhs = tuple{
-            tuple{1., 2., 3.},
-            tuple{4., 1., 6.}
+        auto rhs = nmtools_tuple{
+            nmtools_tuple{1., 2., 3.},
+            nmtools_tuple{4., 1., 6.}
         };
         CHECK( !isclose(lhs,rhs) );
     }
@@ -804,9 +804,9 @@ TEST_CASE("isclose(optional)" * doctest::test_suite("isclose"))
 //             array{1., 2., 3.},
 //             array{4., 5., 6.}
 //         };
-//         auto rhs = tuple{
-//             tuple{1., 2., 3.},
-//             tuple{4, 5, 6, 1}
+//         auto rhs = nmtools_tuple{
+//             nmtools_tuple{1., 2., 3.},
+//             nmtools_tuple{4, 5, 6, 1}
 //         };
 //         CHECK( isclose(lhs,rhs) );
 //     }
@@ -834,12 +834,12 @@ TEST_CASE("isclose(optional)" * doctest::test_suite("isclose"))
 // {
 //     {
 //         auto lhs = array{1., 2., 3., 4., 5.};
-//         auto rhs = tuple{1, 2, 3, 4, 5, 6};
+//         auto rhs = nmtools_tuple{1, 2, 3, 4, 5, 6};
 //         CHECK( isclose(lhs,rhs) );
 //     }
 //     {
 //         auto lhs = array{1., 2., 3., 4., 5.};
-//         auto rhs = tuple{1, 2, 2, 4, 5, 6};
+//         auto rhs = nmtools_tuple{1, 2, 2, 4, 5, 6};
 //         CHECK( !isclose(lhs,rhs) );
 //     }
 // }

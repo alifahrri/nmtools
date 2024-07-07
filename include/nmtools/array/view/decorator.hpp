@@ -10,6 +10,8 @@
 #include "nmtools/array/utility/apply_at.hpp"
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/index/product.hpp"
+#include "nmtools/array/index/alias.hpp"
+#include "nmtools/array/index/append.hpp"
 
 // TODO: move to shape.hpp
 #ifdef NMTOOLS_ENABLE_BOOST
@@ -24,6 +26,7 @@
 #define NMTOOLS_NO_BASE_ACCESS
 #endif
 
+// TODO: remove
 namespace nmtools::view::detail
 {
     using utility::tuple_append, utility::tuple_cat;
@@ -122,7 +125,35 @@ namespace nmtools::meta
 
     template <template<typename...>typename lhs_t, typename rhs_t>
     constexpr inline auto is_same_view_v = is_same_view<lhs_t,rhs_t>::value;
-}
+
+    template <typename T>
+    struct get_type_id
+    {
+        static constexpr auto value = index::generate_alias(meta::type_name_v<T>);
+    };
+
+    template <typename T>
+    constexpr inline auto get_type_id_v = get_type_id<T>::value;
+
+    template <typename operands_ids_t, typename view_type>
+    constexpr auto generate_view_id(const operands_ids_t&, as_value<view_type>)
+    {
+        // avoid calling to_value_v<tuple<>>
+        constexpr auto id_sequence  = [](){
+            constexpr auto type_id = get_type_id_v<view_type>;
+            constexpr auto B_SIZE  = bounded_size_v<operands_ids_t>;
+            static_assert( !is_fail_v<decltype(B_SIZE)> );
+            if constexpr (B_SIZE == 0) {
+                return nmtools_array{type_id};
+            } else {
+                constexpr auto operands_ids = to_value_v<operands_ids_t>;
+                return index::append(operands_ids,type_id);   
+            }
+        }();
+        constexpr auto node_id = index::generate_alias(id_sequence);
+        return meta::ct_v<node_id>;
+    }
+} // namespace nmtools::meta
 
 namespace nmtools::view
 {
@@ -254,6 +285,7 @@ namespace nmtools::view
      */
     template <template<typename...> typename view_t, typename...Ts>
     struct decorator_t
+        // TODO: remove conditional macro, c++ for opencl temporarily dropped
         #ifndef NMTOOLS_NO_BASE_ACCESS
         : view_t<Ts...>
         #endif // NMTOOLS_NO_BASE_ACCESS
@@ -282,6 +314,20 @@ namespace nmtools::view
 
         static constexpr auto arity = meta::ct_v<meta::len_v<operands_type>>;
 
+        static constexpr auto operands_ids = [](){
+            // TODO: check for unique-ness of operands ids
+            return meta::template_reduce<arity>([&](auto init, auto index){
+                constexpr auto I = decltype(index)::value;
+                using operand_type = meta::remove_cvref_t<meta::at_t<operands_type,I>>;
+                if constexpr (meta::has_id_type_v<operand_type>) {
+                    return utility::tuple_append(init,typename operand_type::id_type{});
+                } else {
+                    return utility::tuple_append(init,index);
+                }
+            }, nmtools_tuple{});
+        }();
+
+        #if 0
         // check for "free"/"unnamed" operands, which we can NOT assign the id freely
         static constexpr auto unnamed_operands = [](){
             return meta::template_reduce<arity>([&](auto init, auto index){
@@ -320,20 +366,24 @@ namespace nmtools::view
                 return meta::as_value_v<meta::ct<(int)arity>>;
             }
         }();
-        using id_type = meta::type_t<decltype(id_vtype)>;
 
-        static constexpr auto operands_ids = [](){
-            // TODO: check for unique-ness of operands ids
-            return meta::template_reduce<arity>([&](auto init, auto index){
-                constexpr auto I = decltype(index)::value;
-                using operand_type = meta::remove_cvref_t<meta::at_t<operands_type,I>>;
-                if constexpr (meta::has_id_type_v<operand_type>) {
-                    return utility::tuple_append(init,typename operand_type::id_type{});
-                } else {
-                    return utility::tuple_append(init,index);
-                }
-            }, nmtools_tuple{});
+        #else
+        static constexpr auto id_vtype = [](){
+            if constexpr (meta::has_id_type_v<view_type>) {
+                using type = typename view_type::id_type;
+                return meta::as_value_v<type>;
+            } else {
+                // constexpr auto type_id = meta::get_type_id_v<view_type>;
+                // constexpr auto id_sequence = index::append(operands_ids,type_id);
+                // constexpr auto id = index::generate_alias(id_sequence);
+                constexpr auto id = meta::generate_view_id(operands_ids,meta::as_value_v<view_type>);
+                using type = meta::ct<meta::remove_cvref_pointer_t<decltype(id)>::value>;
+                return meta::as_value_v<type>;
+            }
         }();
+        #endif
+
+        using id_type = meta::type_t<decltype(id_vtype)>;
 
         static_assert( meta::is_constant_index_v<id_type>
             , "invalid identifier for view type" );
@@ -551,6 +601,28 @@ namespace nmtools::view
 
     }; // decorator_t
 
+    template <typename T>
+    struct get_id
+    {
+        static constexpr auto value = -1;
+    };
+
+    template <template<typename...> typename view_t, typename...Ts>
+    struct get_id<
+        decorator_t<view_t,Ts...>
+    > {
+        static constexpr auto value = decorator_t<view_t,Ts...>::id_type::value;
+    };
+
+    template <typename T>
+    struct get_id<const T> : get_id<T> {};
+
+    template <typename T>
+    struct get_id<T&> : get_id<T> {};
+
+    template <typename T>
+    constexpr inline auto get_id_v = get_id<T>::value;
+
     // TODO: remove
     /**
      * @brief make view given parameters arrays
@@ -639,7 +711,7 @@ namespace nmtools::view
                     if constexpr (is_none_v<type_i> && !meta::is_tuple_v<array_t>) {
                         // init typelist, use tuple for now,
                         // TODO: deduce template template of nocv_array_t if possible
-                        using type = meta::make_tuple_type_t<array_t>;
+                        using type = nmtools_tuple<array_t>;
                         return meta::as_value_v<type>;
                     } else if constexpr (is_none_v<type_i> && meta::is_tuple_v<array_t>) {
                         return meta::as_value_v<array_t>;
@@ -805,7 +877,7 @@ namespace nmtools::view
                 // convert to array type that has value semantics
                 constexpr auto N = meta::len_v<attribute_t>;
                 using elem_t = meta::get_element_type_t<attribute_t>;
-                using type = meta::make_array_type_t<elem_t,N>;
+                using type = nmtools_array<elem_t,N>;
                 return meta::as_value_v<const type>;
             } else /* if constexpr (
                    is_none_v<attribute_t>
