@@ -14,6 +14,7 @@ namespace nmtools::view
     {
         struct split_args_t {};
 
+        // TODO: move to index namespace
         /**
          * @brief Given split arguments, create slice arguments
          * 

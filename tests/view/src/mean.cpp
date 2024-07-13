@@ -1044,3 +1044,38 @@ TEST_CASE("mean(case32)" * doctest::test_suite("view::mean"))
 
     #endif
 }
+
+TEST_CASE("mean(case33)" * doctest::test_suite("view::mean"))
+{
+    auto dtype = nm::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    MEAN_SUBCASE(case33, a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_a, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_f, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_h, axis, dtype, keepdims);
+    // TODO: fix utl either
+    #ifndef NMTOOLS_DISABLE_STL
+    MEAN_SUBCASE(case33, a_d, axis, dtype, keepdims);
+    #endif
+
+    #else
+    MEAN_SUBCASE(case33, a_cs_fb, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_cs_hb, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_cs_db, axis, dtype, keepdims);
+
+    MEAN_SUBCASE(case33, a_fs_fb, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_fs_hb, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_fs_db, axis, dtype, keepdims);
+
+    MEAN_SUBCASE(case33, a_hs_fb, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_hs_hb, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_hs_db, axis, dtype, keepdims);
+
+    #ifndef NMTOOLS_DISABLE_STL
+    MEAN_SUBCASE(case33, a_ds_fb, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_ds_hb, axis, dtype, keepdims);
+    MEAN_SUBCASE(case33, a_ds_db, axis, dtype, keepdims);
+    #endif // NMTOOLS_DISABLE_STL
+
+    #endif
+}

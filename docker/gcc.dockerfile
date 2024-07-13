@@ -15,8 +15,8 @@ RUN mkdir build && cd build \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/gcc-werror.cmake \
         -DNMTOOLS_BUILD_EXAMPLES=ON \
         -DNMTOOLS_CODE_COVERAGE=ON \
-        -DNMTOOLS_ENABLE_TEST_BENCHMARKS=ON \
+        -DNMTOOLS_ENABLE_TEST_BENCHMARKS=OFF \
         -DCMAKE_BUILD_TYPE=Debug .. \
-    && make VERBOSE=1 -j2 && make install
+    && make VERBOSE=1 -j1 && make install
 
 CMD ["bash","scripts/run_unit_tests.sh"]

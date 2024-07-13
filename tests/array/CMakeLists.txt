@@ -102,12 +102,15 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/flatten.cpp
     array/flip.cpp
     array/full.cpp
+    array/group_norm.cpp
     array/hstack.cpp
     # break matmul to multiple files to avoid high memory peak
     # array/matmul.cpp
+    array/instance_norm.cpp
     array/mean.cpp
     array/moveaxis.cpp
     array/ones.cpp
+    array/layer_norm.cpp
     array/pad.cpp
     array/prod.cpp
     array/pooling.cpp

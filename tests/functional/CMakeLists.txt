@@ -141,6 +141,9 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/graph/reshape.cpp
         src/graph/batch_norm.cpp
         src/graph/broadcast_to.cpp
+        src/graph/group_norm.cpp
+        src/graph/instance_norm.cpp
+        src/graph/layer_norm.cpp
         src/graph/tanh.cpp
         src/graph/multiply.cpp
         src/graph/reduce_add_tanh.cpp
