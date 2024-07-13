@@ -23,6 +23,7 @@ namespace nmtools::index
     template <typename axis_t, typename m_ndim_t>
     constexpr auto normalize_axis(const axis_t& axis, [[maybe_unused]] const m_ndim_t ndim_)
     {
+        // TODO: support maybe types axis & ndim
         using result_t = meta::resolve_optype_t<normalize_axis_t,axis_t,m_ndim_t>;
 
         [[maybe_unused]] auto ndim = [&](){
@@ -33,6 +34,8 @@ namespace nmtools::index
             }
         }();
         using ndim_t [[maybe_unused]] = decltype(ndim);
+
+        static_assert( !meta::is_fail_v<result_t> && !meta::is_void_v<result_t> );
 
         if constexpr (! (meta::is_constant_index_v<result_t> || meta::is_constant_index_array_v<result_t>)) {
             using return_t = nmtools_maybe<result_t>;

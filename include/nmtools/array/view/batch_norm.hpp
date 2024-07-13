@@ -38,8 +38,6 @@ namespace nmtools::view
         // assume NCHW or CHW
         // TODO: support NHWC
 
-        // not supported yet
-        // TODO: support moveaxis with compile-time axis
         auto src_axis = meta::ct_v<-1>;
         auto dst_axis = meta::ct_v<-3>;
 
