@@ -28,16 +28,26 @@ namespace nmtools::view
     template <typename array_t, typename axis_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
     constexpr auto var(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{})
     {
+        auto dim = ::nmtools::dim<true>(array);
+        // TODO: error handling
+        auto m_axis  = [&](){
+            if constexpr (is_none_v<axis_t>) {
+                return axis;
+            } else {
+                return unwrap(index::normalize_axis(axis,unwrap(dim)));
+            }
+        }();
+
         auto input = view::aliased(array);
         // must keep dimension to properly subtract
-        auto a = view::mean(input,axis,dtype,/*keepdims=*/True);
+        auto a = view::mean(input,m_axis,dtype,/*keepdims=*/True);
         auto b = view::subtract(input, a);
         auto c = view::fabs(b);
         auto d = view::square(c);
         // no reason to start from other initial value
-        auto e = view::sum(d,axis,dtype,/*initial=*/None,keepdims);
+        auto e = view::sum(d,m_axis,dtype,/*initial=*/None,keepdims);
         // TODO: error handling
-        auto N = detail::mean_divisor(::nmtools::shape(unwrap(input)),axis);
+        auto N = detail::mean_divisor(::nmtools::shape(unwrap(input)),m_axis);
         return view::divide(e,N-ddof);
     } // var
 } // namespace nmtools::view

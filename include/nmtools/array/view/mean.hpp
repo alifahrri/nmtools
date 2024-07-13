@@ -6,6 +6,7 @@
 #include "nmtools/array/view/ufuncs/divide.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/ref.hpp"
+#include "nmtools/array/index/normalize_axis.hpp"
 #include "nmtools/array/dtypes.hpp"
 #include "nmtools/meta.hpp"
 
@@ -52,7 +53,7 @@ namespace nmtools::meta
     }; // promote_types
 } // nmtools::meta
 
-namespace nmtools::view::detail
+namespace nmtools::index
 {
     /**
      * @brief Compute the divisor for mean view.
@@ -78,14 +79,13 @@ namespace nmtools::view::detail
         if constexpr (is_none_v<axis_t>) {
             return index::product(shape);
         } else if constexpr (meta::is_index_array_v<axis_t>) {
-            using index_t = meta::get_element_or_common_type_t<axis_t>;
-            auto divisor = index_t{1};
+            auto divisor = nm_index_t{1};
             // TODO: decide what todo when shape is tuple
             if constexpr (meta::is_tuple_v<axis_t>) {
                 constexpr auto N = meta::len_v<axis_t>;
                 meta::template_for<N>([&](auto index){
                     auto idx = at(axis,index);
-                    divisor *= static_cast<index_t>(at(shape_,idx));
+                    divisor *= static_cast<nm_index_t>(at(shape_,idx));
                 });
             } else {
                 for (size_t i=0; i<len(axis); i++) {
@@ -98,6 +98,11 @@ namespace nmtools::view::detail
             return at(shape_,axis);
         }
     } // mean_divisor
+}
+
+namespace nmtools::view::detail
+{
+    using index::mean_divisor;
 }
 
 namespace nmtools::view
@@ -122,8 +127,16 @@ namespace nmtools::view
         // but by composing two view (add.reduce + divide) instead
 
         auto shape = ::nmtools::shape<true>(array);
+        auto dim   = ::nmtools::dim<true>(array);
         // TODO: error handling
-        auto divisor = detail::mean_divisor(unwrap(shape),axis);
+        auto m_axis  = [&](){
+            if constexpr (is_none_v<axis_t>) {
+                return axis;
+            } else {
+                return unwrap(index::normalize_axis(axis,unwrap(dim)));
+            }
+        }();
+        auto divisor = detail::mean_divisor(unwrap(shape),m_axis);
         using divisor_t = decltype(divisor);
         using element_t = meta::get_element_type_t<array_t>;
         auto dtype_  = [&](){
@@ -137,7 +150,7 @@ namespace nmtools::view
         }();
         auto initial = None;
         // TODO: proper type promotions
-        auto reduced = reduce_add(array,axis,dtype_,initial,keepdims);
+        auto reduced = reduce_add(array,m_axis,dtype_,initial,keepdims);
         #if 0
         // failed on clang with no-stl config, but okay on gcc with no-stl config 🤷
         auto mean_   = divide(reduced,divisor);
