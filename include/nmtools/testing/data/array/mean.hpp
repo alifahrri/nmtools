@@ -864,6 +864,41 @@ NMTOOLS_TESTING_DECLARE_CASE(array, mean)
         inline int8_t shape[1] = {2};
         inline float result[2] = {2.5f, 8.5f};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case33)
+    {
+        inline int a[2][3][2] = {
+            {
+                {0,1},
+                {2,3},
+                {4,5},
+            },
+            {
+                { 6, 7},
+                { 8, 9},
+                {10,11},
+            }
+        };
+        NMTOOLS_CAST_ARRAYS(a)
+        inline auto axis = -1;
+        inline auto keepdims = True;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case33)
+    {
+        inline int shape[3] = {2,3,1};
+        inline float result[2][3][1] = {
+            {
+                {0.5},
+                {2.5},
+                {4.5},
+            },
+            {
+                { 6.5},
+                { 8.5},
+                {10.5},
+            }
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_mean)

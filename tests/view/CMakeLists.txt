@@ -229,6 +229,9 @@ set(VIEW_NN_TEST_SOURCES
     src/activations/softsign.cpp
     src/activations/tanhshrink.cpp
     src/batch_norm.cpp
+    src/group_norm.cpp
+    src/instance_norm.cpp
+    src/layer_norm.cpp
     src/softmax.cpp
     src/softmin.cpp
 )
