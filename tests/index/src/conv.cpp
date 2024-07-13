@@ -4,40 +4,17 @@
 #include "nmtools/utils/apply_to_string.hpp"
 
 #include "nmtools/utility/flatten_either.hpp"
-#include "nmtools/testing/data/array/conv.hpp"
+#include "nmtools/testing/data/index/conv2d.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;
-
-#define RUN_shape_conv2d_impl(...) \
-nm::index::shape_conv2d(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs shape_conv2d fn to callable lambda
-#define RUN_shape_conv2d(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("shape_conv2d-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_shape_conv2d_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_shape_conv2d(case_name, ...) \
-RUN_shape_conv2d_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define SHAPE_CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, shape_conv2d, case_name); \
     using namespace args; \
-    auto result = RUN_shape_conv2d(case_name, __VA_ARGS__); \
+    auto result = nmtools::index::shape_conv2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -176,35 +153,12 @@ TEST_CASE("shape_conv2d(case15)" * doctest::test_suite("index"))
     SHAPE_CONV2D_SUBCASE( case15, shape_h, out_channels, kernel_size_h, stride_h, padding_h, dilations_h );
 }
 
-#define RUN_slice_conv2d_impl(...) \
-nm::index::slice_conv2d(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs slice_conv2d fn to callable lambda
-#define RUN_slice_conv2d(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("slice_conv2d-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_slice_conv2d_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_slice_conv2d(case_name, ...) \
-RUN_slice_conv2d_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define SLICE_CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, slice_conv2d, case_name); \
     using namespace args; \
-    auto result = RUN_slice_conv2d(case_name, __VA_ARGS__); \
+    auto result = nmtools::index::slice_conv2d(__VA_ARGS__); \
     for (size_t i=0; i<nm::len(result); i++) { \
         auto res = nm::at(result,i); \
         auto exp = nm::at(expect::result,i); \
