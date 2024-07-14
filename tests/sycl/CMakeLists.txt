@@ -57,7 +57,7 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/resize.cpp
     array/atleast_1d.cpp
     array/atleast_2d.cpp
-    array/atleast_3d.cpp
+    array/atleast_nd.cpp
     array/broadcast_to.cpp
     array/concatenate.cpp
     array/expand_dims.cpp

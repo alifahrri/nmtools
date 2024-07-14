@@ -57,7 +57,6 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     # src/array_slice.cpp
     src/atleast_1d.cpp
     src/atleast_2d.cpp
-    src/atleast_3d.cpp
     src/atleast_nd.cpp
     src/broadcast_to.cpp
     src/broadcast_arrays.cpp

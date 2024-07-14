@@ -20,7 +20,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/array/view/atleast_nd.hpp"
 #include "nmtools/testing/data/array/atleast_1d.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
-#include "nmtools/testing/data/array/atleast_3d.hpp"
+#include "nmtools/testing/data/array/atleast_nd.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -49,7 +49,7 @@ SUBCASE(#case_name) \
 #define ATLEAST_3D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, atleast_nd, case_name); \
     using namespace args; \
     auto result = view::atleast_nd(__VA_ARGS__, 3_ct); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

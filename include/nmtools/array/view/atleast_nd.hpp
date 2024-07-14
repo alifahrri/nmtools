@@ -30,12 +30,6 @@ namespace nmtools::view
     {
         return atleast_nd(array,meta::ct_v<2>);
     }
-
-    template <typename array_t>
-    constexpr auto atleast_3d(const array_t& array)
-    {
-        return atleast_nd(array,meta::ct_v<3>);
-    }
 } // namespace nmtools::view
 
 #endif // NMTOOLS_ARRAY_VIEW_ATLEAST_ND_HPP

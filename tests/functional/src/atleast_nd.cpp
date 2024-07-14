@@ -2,7 +2,7 @@
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/testing/data/array/atleast_1d.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
-#include "nmtools/testing/data/array/atleast_3d.hpp"
+#include "nmtools/testing/data/array/atleast_nd.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -108,17 +108,17 @@ TEST_CASE("atleast_2d(case4)" * doctest::test_suite("functional::atleast_nd"))
     FUNCTIONAL_SUBCASE( "case4", fn::atleast_nd[2_ct], a_d );
 }
 
-TEST_CASE("atleast_3d(case1)" * doctest::test_suite("functional::atleast_nd"))
+TEST_CASE("atleast_nd(case1)" * doctest::test_suite("functional::atleast_nd"))
 {
-    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case1);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_nd, case1);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case1", fn::atleast_nd[3_ct], a );
 }
 
-TEST_CASE("atleast_3d(case2)" * doctest::test_suite("functional::atleast_nd"))
+TEST_CASE("atleast_nd(case2)" * doctest::test_suite("functional::atleast_nd"))
 {
-    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case2);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_nd, case2);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case2", fn::atleast_nd[3_ct], a );
@@ -128,9 +128,9 @@ TEST_CASE("atleast_3d(case2)" * doctest::test_suite("functional::atleast_nd"))
     FUNCTIONAL_SUBCASE( "case2", fn::atleast_nd[3_ct], a_d );
 }
 
-TEST_CASE("atleast_3d(case3)" * doctest::test_suite("functional::atleast_nd"))
+TEST_CASE("atleast_nd(case3)" * doctest::test_suite("functional::atleast_nd"))
 {
-    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case3);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_nd, case3);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case3", fn::atleast_nd[3_ct], a );
@@ -140,9 +140,9 @@ TEST_CASE("atleast_3d(case3)" * doctest::test_suite("functional::atleast_nd"))
     FUNCTIONAL_SUBCASE( "case3", fn::atleast_nd[3_ct], a_d );
 }
 
-TEST_CASE("atleast_3d(case4)" * doctest::test_suite("functional::atleast_nd"))
+TEST_CASE("atleast_nd(case4)" * doctest::test_suite("functional::atleast_nd"))
 {
-    NMTOOLS_TESTING_USE_CASE(array, atleast_3d, case4);
+    NMTOOLS_TESTING_USE_CASE(array, atleast_nd, case4);
     using namespace args;
 
     FUNCTIONAL_SUBCASE( "case4", fn::atleast_nd[3_ct], a );
@@ -176,7 +176,7 @@ TEST_CASE("atleast_2d" * doctest::test_suite("functional::get_function_compositi
     // NMTOOLS_ASSERT_EQUAL( function, expect );
 }
 
-TEST_CASE("atleast_3d" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+TEST_CASE("atleast_nd" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
     auto array = na::arange(10);
     auto a = view::atleast_nd(array,3_ct);

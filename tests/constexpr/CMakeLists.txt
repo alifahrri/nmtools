@@ -11,7 +11,7 @@ enable_testing()
 set(NMTOOLS_CONSTEXPR_TEST_SOURCES
     src/atleast_1d.cpp
     src/atleast_2d.cpp
-    src/atleast_3d.cpp
+    src/atleast_nd.cpp
     src/broadcast_arrays.cpp
     src/broadcast_to.cpp
     src/conv-1.cpp
