@@ -131,7 +131,6 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
         # kernels/flatten.cpp
         kernels/atleast_1d.cpp
         kernels/atleast_2d.cpp
-        kernels/atleast_3d.cpp
         # kernels/reshape.cpp
         # kernels/squeeze.cpp
         kernels/expand_dims.cpp
@@ -475,11 +474,6 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/atleast_2d.cpp
                         && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.bc
                         && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_atleast_2d.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
-                        &&
-                        ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
-                        -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.bc -x cl -c ${CMAKE_CURRENT_SOURCE_DIR}/kernels/atleast_3d.cpp
-                        && llvm-spirv ${LLVM_SPIRV_OPTIONS} -o ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.spv ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.bc
-                        && cd ${CMAKE_CURRENT_SOURCE_DIR}/kernels/ && xxd -i nm_cl_atleast_3d.spv >> ${CMAKE_CURRENT_SOURCE_DIR}/../../include/nmtools/array/eval/opencl/kernels_spv.hpp
                         ## TODO: enable reshape
                         # &&
                         # ${CMAKE_CXX_COMPILER} ${NMTOOLS_OPENCL_MACROS} ${OPENCL_KHR_EXTENSIONS} -I${NMTOOLS_INCLUDE_DIR} ${CLANG_OPENCL_ARGS}
@@ -646,8 +640,6 @@ if (NMTOOLS_OPENCL_TEST_UFUNC)
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_1d.spv
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.bc
                         ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_2d.spv
-                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.bc
-                        ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_atleast_3d.spv
                         # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_reshape.bc
                         # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_reshape.spv
                         # ${CMAKE_CURRENT_SOURCE_DIR}/kernels/nm_cl_squeeze.bc

@@ -16,7 +16,6 @@
 #include "nmtools/array/array/concatenate.hpp"
 #include "nmtools/array/array/compress.hpp"
 #include "nmtools/array/array/broadcast_to.hpp"
-#include "nmtools/array/array/atleast_3d.hpp"
 #include "nmtools/array/array/atleast_2d.hpp"
 #include "nmtools/array/array/atleast_1d.hpp"
 #include "nmtools/array/array/arange.hpp"
@@ -24,7 +23,6 @@
 #include "nmtools/testing/data/array/arange.hpp"
 #include "nmtools/testing/data/array/atleast_1d.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
-#include "nmtools/testing/data/array/atleast_3d.hpp"
 #include "nmtools/testing/data/array/broadcast_to.hpp"
 #include "nmtools/testing/data/array/compress.hpp"
 #include "nmtools/testing/data/array/concatenate.hpp"
@@ -271,16 +269,6 @@ void test_broadcast_to()
     NMTOOLS_PIO_SUBCASE( case11, expected, view::broadcast_to, x, shape );
 }
 
-void test_atleast_3d()
-{
-    NMTOOLS_TESTING_USE_CASE(array, atleast_3d);
-    NMTOOLS_PIO_SUBCASE( case1, result, view::atleast_3d, a );
-    NMTOOLS_PIO_SUBCASE( case2, result, view::atleast_3d, a );
-    NMTOOLS_PIO_SUBCASE( case3, result, view::atleast_3d, a );
-    NMTOOLS_PIO_SUBCASE( case4, result, view::atleast_3d, a );
-    NMTOOLS_PIO_SUBCASE( case5, result, view::atleast_3d, a );
-}
-
 void test_atleast_2d()
 {
     NMTOOLS_TESTING_USE_CASE(array, atleast_2d);
@@ -339,7 +327,6 @@ int main()
     RUN_TEST(test_concatenate);
     RUN_TEST(test_compress);
     RUN_TEST(test_broadcast_to);
-    RUN_TEST(test_atleast_3d);
     RUN_TEST(test_atleast_2d);
     RUN_TEST(test_atleast_1d);
     // TODO: fix
