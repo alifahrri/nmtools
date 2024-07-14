@@ -28,6 +28,12 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
+// NOTE: error on constexpr with nostl
+// note: member call on member 'right' of union with active member 'left' is not allowed in a constant expression
+//                self().right = other.self().right;
+// TODO: fix for no-stl build
+#ifndef NMTOOLS_DISABLE_STL
+
 TEST_CASE("constexpr_conv2d(case1)" * doctest::test_suite("array::conv2d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
@@ -165,3 +171,5 @@ TEST_CASE("constexpr_conv2d(case4)" * doctest::test_suite("array::conv2d"))
     CONSTEXPR_CONV2D_SUBCASE( case4, input_ls_hb, weight_ls_hb, None, stride_ct );
     #endif
 }
+
+#endif

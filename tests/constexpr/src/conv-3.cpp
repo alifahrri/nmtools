@@ -28,6 +28,12 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
+// NOTE: error on constexpr with nostl
+// note: member call on member 'right' of union with active member 'left' is not allowed in a constant expression
+//                self().right = other.self().right;
+// TODO: fix for no-stl build
+#ifndef NMTOOLS_DISABLE_STL
+
 // must increaset constexpr limit on gcc:
 //  error: ‘constexpr’ evaluation operation count exceeds limit of 33554432 (use -fconstexpr-ops-limit= to increase the limit
 
@@ -131,3 +137,5 @@ TEST_CASE("constexpr_conv2d(case12)" * doctest::test_suite("array::conv2d"))
 #endif
 
 #endif // __clang__
+
+#endif // NMTOOLS_DISABLE_STL
