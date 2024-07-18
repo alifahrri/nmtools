@@ -1,6 +1,6 @@
 #define NMTOOLS_CAST_ARRAYS_NESTED_VEC(...)
 
-#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY) && defined(NMTOOLS_BUILD_CONSTEXPR_TESTS)
+#if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name) \
 constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
 constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
@@ -104,8 +104,11 @@ TEST_CASE("constexpr_conv2d(case11)" * doctest::test_suite("array::conv2d"))
     CONSTEXPR_CONV2D_SUBCASE( case11, input_hs_hb, weight_hs_hb, None, stride_ct, padding_ct );
     #endif
 
+    // NOTE: error: 'constexpr' evaluation operation count exceeds limit of 33554432 (use '-fconstexpr-ops-limit=' to increase the limit)
+    #if 0
     CONSTEXPR_CONV2D_SUBCASE( case11, input_ls_fb, weight_ls_fb, None, stride_ct, padding_ct );
     CONSTEXPR_CONV2D_SUBCASE( case11, input_ls_hb, weight_ls_hb, None, stride_ct, padding_ct );
+    #endif
     #endif
 }
 
