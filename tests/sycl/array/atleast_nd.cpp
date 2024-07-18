@@ -23,7 +23,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define ATLEAST_ND_SUBCASE(case_name, ...), nd \
+#define ATLEAST_ND_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, atleast_nd, case_name); \
