@@ -101,7 +101,6 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/ufuncs/tanh.cpp
         src/atleast_1d.cpp
         src/atleast_2d.cpp
-        src/atleast_3d.cpp
         src/atleast_nd.cpp
         src/broadcast_to.cpp
         src/conv.cpp

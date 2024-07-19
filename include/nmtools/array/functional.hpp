@@ -63,7 +63,6 @@
 #include "nmtools/array/functional/arange.hpp"
 #include "nmtools/array/functional/atleast_1d.hpp"
 #include "nmtools/array/functional/atleast_2d.hpp"
-#include "nmtools/array/functional/atleast_3d.hpp"
 #include "nmtools/array/functional/broadcast_to.hpp"
 #include "nmtools/array/functional/concatenate.hpp"
 #include "nmtools/array/functional/expand_dims.hpp"

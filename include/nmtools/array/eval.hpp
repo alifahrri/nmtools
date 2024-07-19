@@ -885,7 +885,7 @@ namespace nmtools::meta
      * 
      * At the moment the implementation should be working for various view type
      * such as ufuncs, outer_ufuncs, accumulate_ufuncs, arange, atleast_1d, full, ones, zeros, flip.
-     * Some views are known to have its own specialization, such as reduce_ufuncs, atleast_2d, atleast_3d, broadcast_to.
+     * Some views are known to have its own specialization, such as reduce_ufuncs, atleast_2d, broadcast_to.
      * 
      * Note that this resolver doesn't handle either type,
      * the resolution of either type should be handled at the caller site.

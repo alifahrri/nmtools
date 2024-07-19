@@ -92,7 +92,7 @@ set(NMTOOLS_CUDA_TEST_SOURCES ${NMTOOLS_CUDA_TEST_SOURCES}
     # array/broadcast_to.cpp
     array/atleast_1d.cpp
     array/atleast_2d.cpp
-    array/atleast_3d.cpp
+    array/atleast_nd.cpp
     array/concatenate.cpp
     array/expand_dims.cpp
     array/flatten.cpp
