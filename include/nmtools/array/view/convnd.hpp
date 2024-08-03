@@ -9,7 +9,7 @@ namespace nmtools::index
     struct conv_reshape_input_t {};
 
     template <typename src_shape_t, typename groups_t, typename n_planes_t>
-    constexpr auto conv_reshape_input(const src_shape_t& src_shape, groups_t groups, [[maybe_unused]] n_planes_t n_planes)
+    constexpr auto conv_reshape_input([[maybe_unused]] const src_shape_t& src_shape, [[maybe_unused]] groups_t groups, [[maybe_unused]] n_planes_t n_planes)
     {
         using result_t = meta::resolve_optype_t<conv_reshape_input_t,src_shape_t,groups_t,n_planes_t>;
 
@@ -30,17 +30,94 @@ namespace nmtools::index
                 at(result,i) = 1;
             }
 
-            auto dst_conv_axis = -nm_index_t(src_dim);
-            auto src_conv_axis = dst_conv_axis+1;
+            auto src_channel_axis = -(nm_index_t)n_planes - 1;
+            auto dst_group_axis   = -(nm_index_t)n_planes - 2;
 
-            at(result,dst_conv_axis)   = groups;
-            at(result,dst_conv_axis+1) = at(src_shape,src_conv_axis) / groups;
+            auto n_channel_per_group = at(src_shape,src_channel_axis) / groups;
 
-            for (nm_index_t i=0; i<nm_index_t(dst_dim-2); i++) {
+            at(result,dst_group_axis)   = groups;
+            at(result,dst_group_axis+1) = n_channel_per_group;
+
+            for (nm_index_t i=1; i<=nm_index_t(n_planes); i++) {
                 at(result,-i) = at(src_shape,-i);
             }
         }
         
+        return result;
+    }
+
+    struct conv_reshape_weight_t {};
+
+    template <typename src_shape_t, typename n_planes_t>
+    constexpr auto conv_reshape_weight(const src_shape_t& src_shape, n_planes_t n_planes)
+    {
+        using result_t = meta::resolve_optype_t<conv_reshape_weight_t,src_shape_t,n_planes_t>;
+
+        auto result = result_t {};
+
+        if constexpr (!meta::is_constant_index_array_v<result_t>
+            && !meta::is_fail_v<result_t>
+        ) {
+            auto src_dim = len(src_shape);
+            [[maybe_unused]]
+            auto dst_dim = src_dim + n_planes - 1;
+
+            if constexpr (meta::is_resizable_v<result_t>) {
+                result.resize(dst_dim);
+            }
+
+            // initialize with 1s
+            for (nm_size_t i=0; i<(nm_size_t)dst_dim; i++) {
+                at(result,i) = 1;
+            }
+
+            // example:
+            // 4,3,2,2
+            // at(result,-1) = at(src_shape,-1) = 2
+            // at(result,-2) = at(src_shape,-2) = 2
+            // at(result,-3) = at(src_shape,-3) = 3
+            // at(result,-4) = 1
+            // at(result,0) = at(src_shape,0) = 4
+
+            for (nm_index_t i=1; i<=nm_index_t(src_dim-(n_planes-1)); i++) {
+                at(result,-i) = at(src_shape,-i);
+            }
+            for (nm_index_t i=0; i<(n_planes-1); i++) {
+                at(result,i) = at(src_shape,i);
+            }
+        }
+
+        return result;
+    }
+
+    struct conv_reshape_bias_t {};
+
+    template <typename src_shape_t, typename n_planes_t>
+    constexpr auto conv_reshape_bias(const src_shape_t& src_shape, n_planes_t n_planes)
+    {
+        using result_t = meta::resolve_optype_t<conv_reshape_bias_t,src_shape_t,n_planes_t>;
+
+        auto result = result_t {};
+
+        if constexpr (!meta::is_constant_index_array_v<result_t>
+            && !meta::is_fail_v<result_t>
+        ) {
+            auto src_dim = len(src_shape);
+            auto dst_dim = src_dim + n_planes;
+            
+            if constexpr (meta::is_resizable_v<result_t>) {
+                result.resize(dst_dim);
+            }
+
+            for (nm_size_t i=0; i<(nm_size_t)src_dim; i++) {
+                at(result,i) = at(src_shape,i);
+            }
+
+            for (nm_size_t i=1; i<(nm_size_t)dst_dim; i++) {
+                at(result,i) = 1;
+            }
+        }
+
         return result;
     }
 
@@ -126,6 +203,15 @@ namespace nmtools::index
         return result;
     }
 
+    struct conv_sum_reshape_t {};
+
+    template <typename src_shape_t, typename n_planes_t>
+    constexpr auto conv_sum_reshape(const src_shape_t&, n_planes_t)
+    {
+        using result_t [[maybe_unused]] = meta::resolve_optype_t<conv_sum_reshape_t,src_shape_t,n_planes_t>;
+        // TODO: implement
+    }
+
     template <typename stride_t, typename n_planes_t>
     constexpr auto conv_slices(const stride_t& stride, n_planes_t)
     {
@@ -176,10 +262,10 @@ namespace nmtools::index
 
     struct conv_pad_t {};
 
-    template <typename src_dim_t, typename padding_t>
-    constexpr auto conv_pad(const src_dim_t& src_dim, const padding_t& padding)
+    template <typename src_dim_t, typename padding_t, typename n_planes_t>
+    constexpr auto conv_pad(const src_dim_t& src_dim, const padding_t& padding, n_planes_t n_planes)
     {
-        using result_t = meta::resolve_optype_t<conv_pad_t,src_dim_t,padding_t>;
+        using result_t = meta::resolve_optype_t<conv_pad_t,src_dim_t,padding_t,n_planes_t>;
 
         auto result = result_t {};
 
@@ -194,12 +280,17 @@ namespace nmtools::index
             }
 
             // axis = -1
+            auto pad_axis = src_dim - n_planes;
             if constexpr (meta::is_index_v<padding_t>) {
-                auto pad_axis = src_dim - 1;
-                at(result,pad_axis) = padding;
-                at(result,pad_axis+src_dim) = padding;
+                for (nm_size_t i=0; i<(nm_size_t)n_planes; i++) {
+                    at(result,i+pad_axis) = padding;
+                    at(result,i+pad_axis+src_dim) = padding;
+                }
             } else {
-                // TODO: implement
+                for (nm_size_t i=0; i<(nm_size_t)len(padding); i++) {
+                    at(result,i+pad_axis) = at(padding,i);
+                    at(result,i+pad_axis+src_dim) = at(padding,i);
+                }
             }
         }
 
@@ -213,6 +304,12 @@ namespace nmtools::meta
     {
         template <typename...>
         struct CONV_RESHAPE_INPUT_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
+        struct CONV_RESHAPE_WEIGHT_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
+        struct CONV_RESHAPE_BIAS_UNSUPPORTED : detail::fail_t {};
 
         template <typename...>
         struct CONV_PAD_UNSUPPORTED : detail::fail_t {};
@@ -276,6 +373,103 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     }; // conv_reshape_input_t
+
+    template <typename src_shape_t, typename n_planes_t>
+    struct resolve_optype<
+        void, index::conv_reshape_weight_t, src_shape_t, n_planes_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<src_shape_t>
+                || !is_index_v<n_planes_t>
+            ) {
+                using type = error::CONV_RESHAPE_WEIGHT_UNSUPPORTED<src_shape_t,n_planes_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_constant_index_array_v<src_shape_t>
+                && is_constant_index_v<n_planes_t>
+            ) {
+                constexpr auto src_shape = to_value_v<src_shape_t>;
+                constexpr auto n_planes  = n_planes_t{};
+                constexpr auto result = index::conv_reshape_weight(src_shape,n_planes);
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(result)>([&](auto init, auto i){
+                    using init_type = type_t<decltype(init)>;
+                    using type = append_type_t<init_type,ct<at(result,i)>>;
+                    return as_value_v<type>;
+                },as_value_v<nmtools_tuple<>>);
+            } else {
+                [[maybe_unused]]
+                constexpr auto B_DIM = bounded_size_v<src_shape_t>;
+                constexpr auto DIM = len_v<src_shape_t>;
+                if constexpr ((DIM > 0) && is_constant_index_v<n_planes_t>) {
+                    using type = nmtools_array<nm_size_t,DIM+n_planes_t::value-1>;
+                    return as_value_v<type>;
+                } else if constexpr (DIM > 0 && is_clipped_integer_v<n_planes_t>) {
+                    using type = nmtools_static_vector<nm_size_t,DIM+n_planes_t::max-1>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)> && is_constant_index_v<n_planes_t>) {
+                    using type = nmtools_static_vector<nm_size_t,B_DIM+n_planes_t::value-1>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)> && is_clipped_integer_v<n_planes_t>) {
+                    using type = nmtools_static_vector<nm_size_t,B_DIM+n_planes_t::max-1>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small vector
+                    using type = nmtools_list<nm_size_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
+    template <typename src_shape_t, typename n_planes_t>
+    struct resolve_optype<
+        void, index::conv_reshape_bias_t, src_shape_t, n_planes_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<src_shape_t>
+                || !is_index_v<n_planes_t>
+            ) {
+                using type = error::CONV_RESHAPE_BIAS_UNSUPPORTED<src_shape_t,n_planes_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_constant_index_array_v<src_shape_t>
+                && is_constant_index_v<n_planes_t>
+            ) {
+                constexpr auto src_shape = to_value_v<src_shape_t>;
+                constexpr auto n_planes  = n_planes_t{};
+                constexpr auto result = index::conv_reshape_bias(src_shape,n_planes);
+                using nmtools::len, nmtools::at;
+                return template_reduce<len(result)>([&](auto init, auto i){
+                    using init_type = type_t<decltype(init)>;
+                    using type = append_type_t<init_type,ct<at(result,i)>>;
+                    return as_value_v<type>;
+                },as_value_v<nmtools_tuple<>>);
+            } else {
+                constexpr auto DIM = len_v<src_shape_t>;
+                [[maybe_unused]]
+                constexpr auto B_DIM = bounded_size_v<src_shape_t>;
+                [[maybe_unused]]
+                constexpr auto N_PLANES = to_value_v<n_planes_t>;
+                if constexpr ((DIM > 0) && is_constant_index_v<n_planes_t>) {
+                    using type = nmtools_array<nm_size_t,DIM+n_planes_t::value>;
+                    return as_value_v<type>;
+                } else if constexpr ((DIM > 0) && (!is_fail_v<decltype(N_PLANES)>)) {
+                    using type = nmtools_static_vector<nm_size_t,DIM+N_PLANES>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)> && (!is_fail_v<decltype(N_PLANES)>)) {
+                    using type = nmtools_static_vector<nm_size_t,B_DIM+N_PLANES>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small vector
+                    using type = nmtools_list<nm_size_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
 
     template <typename weight_shape_t, typename n_planes_t>
     struct resolve_optype<
@@ -417,15 +611,16 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
-    template <typename src_dim_t, typename padding_t>
-    struct resolve_optype<void,index::conv_pad_t,src_dim_t,padding_t>
+    template <typename src_dim_t, typename padding_t, typename n_planes_t>
+    struct resolve_optype<void,index::conv_pad_t,src_dim_t,padding_t, n_planes_t>
     {
         static constexpr auto vtype = [](){
             if constexpr (
                 !is_index_v<src_dim_t>
                 || !(is_index_v<padding_t> || is_index_array_v<padding_t>)
+                || !(is_index_v<n_planes_t>)
             ) {
-                using type = error::CONV_PAD_UNSUPPORTED<src_dim_t,padding_t>;
+                using type = error::CONV_PAD_UNSUPPORTED<src_dim_t,padding_t,n_planes_t>;
                 return as_value_v<type>;
             } else {
                 if constexpr (is_constant_index_v<src_dim_t>) {
@@ -454,7 +649,6 @@ namespace nmtools::meta
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"
 #include "nmtools/array/view/sum.hpp"
-#include "nmtools/array/view/expand_dims.hpp"
 #include "nmtools/array/view/reshape.hpp"
 #include "nmtools/array/view/slice.hpp"
 #include "nmtools/array/view/expand.hpp"
@@ -475,13 +669,17 @@ namespace nmtools::view
             }
         }();
         auto a_weight = [&](){
+            auto src_shape = shape<true>(weight);
+            auto dst_shape = index::conv_reshape_weight(src_shape,n_planes);
+            // TODO:: error handling
+            auto reshaped_weight = unwrap(view::reshape(nmtools::get<1>(aliased),dst_shape));
             if constexpr (is_none_v<dilation_t>) {
-                return nmtools::get<1>(aliased);
+                return reshaped_weight;
             } else {
                 // same as window axis
                 auto axis    = index::conv_window_axis(n_planes);
                 auto spacing = index::conv_expand_spacing(dilation,n_planes);
-                return view::expand(nmtools::get<1>(aliased),axis,spacing);
+                return view::expand(reshaped_weight,axis,spacing);
             }
         }();
 
@@ -499,7 +697,7 @@ namespace nmtools::view
                 // TODO: error handling
                 auto src_dim   = unwrap(dim<true>(reshaped));
                 // TODO: parametrize padding args to n_planes
-                auto pad_width = index::conv_pad(src_dim,padding);
+                auto pad_width = index::conv_pad(src_dim,padding,n_planes);
                 return view::pad(unwrap(reshaped),pad_width);
             }
         }();
@@ -532,10 +730,11 @@ namespace nmtools::view
         );
         auto add_result = [&](){
             if constexpr (!is_none_v<bias_t>) {
-                auto axis   = meta::ct_v<-n_planes>;
+                auto src_shape = shape<true>(bias);
+                auto dst_shape = index::conv_reshape_bias(src_shape,n_planes);
                 auto a_bias = nmtools::get<2>(aliased);
-                auto e_bias = view::expand_dims(a_bias,axis);
-                return view::add(sum_result,e_bias);
+                auto r_bias = view::reshape(a_bias,dst_shape);
+                return view::add(sum_result,r_bias);
             } else {
                 return sum_result;
             }
