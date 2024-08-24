@@ -6,6 +6,8 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 // TODO: move to shape.hpp
 #ifdef NMTOOLS_ENABLE_BOOST
@@ -64,6 +66,9 @@ namespace nmtools::index
             auto dim = len(shape);
             [[maybe_unused]] auto n = dim+n_axes;
 
+            // TODO: propagate error
+            auto normalized_axes = unwrap(normalize_axis(axes,n));
+
             // resize output if necessary
             if constexpr (meta::is_resizable_v<result_t>)
                 new_shape.resize(n);
@@ -72,8 +77,8 @@ namespace nmtools::index
             auto shape_expand_dims_impl = [&](auto i){
                 auto in_axis = [&](){
                     if constexpr (meta::is_index_array_v<axes_t>)
-                        return contains(axes,i);
-                    else return i == (size_t)axes;
+                        return contains(normalized_axes,i);
+                    else return i == (size_t)normalized_axes;
                 }();
                 at(new_shape,i) = (in_axis ? 1 : at(shape,idx));
                 idx += (!in_axis ? 1 : 0);

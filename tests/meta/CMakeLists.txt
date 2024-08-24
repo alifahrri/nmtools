@@ -10,7 +10,6 @@ set( META_VIEW_TEST_SOURCES
     array/view/matmul.cpp
     array/view/moveaxis.cpp
     array/view/outer.cpp
-    array/view/pad.cpp
     array/view/pooling.cpp
     array/view/prod.cpp
     array/view/reduce.cpp

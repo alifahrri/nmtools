@@ -45,11 +45,11 @@ namespace nmtools::view
             }
         }
 
-        using input_shape_type  = decltype(nmtools::shape<true>(meta::declval<input_t>()));
-        using input_size_type   = decltype(nmtools::size<true>(meta::declval<input_t>()));
-        using filter_shape_type = decltype(nmtools::shape<true>(meta::declval<weight_t>()));
-        using out_channels_type = decltype(nmtools::at(meta::declval<filter_shape_type>(),meta::ct_v<0>));
-        using kernel_size_type  = decltype(get_kernel_size(meta::declval<filter_shape_type>()));
+        using input_shape_type  = meta::remove_cvref_t<decltype(nmtools::shape<true>(meta::declval<input_t>()))>;
+        using input_size_type   = meta::remove_cvref_t<decltype(nmtools::size<true>(meta::declval<input_t>()))>;
+        using filter_shape_type = meta::remove_cvref_t<decltype(nmtools::shape<true>(meta::declval<weight_t>()))>;
+        using out_channels_type = meta::remove_cvref_t<decltype(nmtools::at(meta::declval<filter_shape_type>(),meta::ct_v<0>))>;
+        using kernel_size_type  = meta::remove_cvref_t<decltype(get_kernel_size(meta::declval<filter_shape_type>()))>;
 
         using dst_shape_type = meta::resolve_optype_t<index::shape_conv2d_t
                                 ,input_shape_type,out_channels_type
@@ -64,8 +64,8 @@ namespace nmtools::view
         static constexpr auto out_ch_idx = meta::ct_v<-3>;
 
         // TODO: generalize to handle arbitrary "channel" axis
-        using in_channels_type = decltype(nmtools::at(meta::declval<input_shape_type>(),ch_idx));
-        using groups_type = decltype(nmtools::at(meta::declval<filter_shape_type>(),ch_idx) / meta::declval<in_channels_type>());
+        using in_channels_type = meta::remove_cvref_t<decltype(nmtools::at(meta::declval<input_shape_type>(),ch_idx))>;
+        using groups_type = meta::remove_cvref_t<decltype(nmtools::at(meta::declval<filter_shape_type>(),ch_idx) / meta::declval<in_channels_type>())>;
 
 
         input_type    input;
@@ -142,7 +142,8 @@ namespace nmtools::view
             }();
             const auto filtered = multiply(sliced,filter);
 
-            return unwrap(reduce_add(filtered,None));
+            auto result = unwrap(reduce_add(filtered,None));
+            return result;
         } // operator()
     }; // conv2d_t
 
@@ -227,12 +228,13 @@ namespace nmtools::view
             auto bias_ = view::reshape(bias,bias_shape);
             return view::add(conv_,bias_); 
         } else if constexpr (is_none_v<padding_t>) {
-            using view_t = decorator_t<conv2d_t,input_t,weight_t,stride_type,dilation_type>;
-            return view_t{{input,weight,stride_,dilation_}};
+            using input_type = meta::remove_cvref_t<decltype(unwrap(input))>;
+            using view_t = decorator_t<conv2d_t,input_type,weight_t,stride_type,dilation_type>;
+            return view_t{{unwrap(input),weight,stride_,dilation_}};
         } else /* if constexpr (is_index_array_v<padding_t>) */ {
-            auto padding_conv2d = index::padding_conv2d(nmtools::dim<true>(input),padding);
+            auto padding_conv2d = index::padding_conv2d(nmtools::dim<true>(unwrap(input)),padding);
 
-            auto input_ = pad(input,padding_conv2d);
+            auto input_ = unwrap(pad(input,padding_conv2d));
             using input_type = decltype(input_);
             using view_t = decorator_t<conv2d_t,input_type,weight_t,stride_type,dilation_type>;
             return view_t{{input_,weight,stride_,dilation_}};

@@ -241,6 +241,24 @@ set(EVAL_NN_TEST_SOURCES
     # array/conv-3.cpp
     array/activations/softshrink.cpp
     array/activations/tanhshrink.cpp
+    array/conv1d-1.cpp
+    array/conv1d-2.cpp
+    array/conv1d-3.cpp
+    array/conv1d-4.cpp
+    array/conv1d-5.cpp
+    array/conv1d-6.cpp
+    array/conv1d-7.cpp
+    array/conv1d-8.cpp
+    array/conv1d-9.cpp
+    array/conv1d-10.cpp
+    array/conv1d-11.cpp
+    array/conv1d-12.cpp
+    array/conv1d-13.cpp
+    array/conv1d-14.cpp
+    array/conv1d-15.cpp
+    array/conv1d-16.cpp
+    array/conv1d-17.cpp
+    array/conv1d-18.cpp
     array/batch_norm.cpp
     array/softmax.cpp
     array/softmin.cpp

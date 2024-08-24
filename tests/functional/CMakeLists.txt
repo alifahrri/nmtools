@@ -124,6 +124,7 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/resize.cpp
         src/roll.cpp
         src/slice.cpp
+        src/sliding_window.cpp
         src/softmax.cpp
         src/softmin.cpp
         src/squeeze.cpp
@@ -153,6 +154,8 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/graph/stddev.cpp
         src/graph/softmax.cpp
         src/graph/softmin.cpp
+        src/graph/conv1d.cpp
+        src/graph/conv2d.cpp
 
         src/misc/ct_map.cpp
         src/misc/ct_digraph.cpp

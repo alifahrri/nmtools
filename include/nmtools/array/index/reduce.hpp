@@ -3,13 +3,15 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/shape.hpp"
+#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::index
 {
     struct reduction_slices_t {};
 
     template <typename indices_t, typename shape_type, typename axis_type, typename keepdims_type>
-    constexpr auto reduction_slices(const indices_t& indices_, const shape_type& src_shape, const axis_type& axis, keepdims_type keepdims)
+    constexpr auto reduction_slices(const indices_t& indices_, const shape_type& src_shape, const axis_type& m_axis, keepdims_type keepdims)
     {
         using result_t = meta::resolve_optype_t<reduction_slices_t,indices_t,shape_type,axis_type,keepdims_type>;
 
@@ -18,6 +20,17 @@ namespace nmtools::index
         if constexpr (meta::is_resizable_v<result_t>) {
             slices.resize(dim);
         }
+
+        auto src_dim = len(src_shape);
+        [[maybe_unused]]
+        auto axis = [&](){
+            if constexpr (is_none_v<axis_type>) {
+                return m_axis;
+            } else {
+                // TODO: propagate error
+                return unwrap(normalize_axis(m_axis,src_dim));
+            }
+        }();
 
         // helper lambda to check if axis i is in the specified axis for reduction
         auto in_axis = [&](auto i){

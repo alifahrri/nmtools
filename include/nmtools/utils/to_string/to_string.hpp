@@ -49,7 +49,7 @@
 #if __has_include(<boost/type_index.hpp>)
     #include <boost/type_index.hpp>
     #define NMTOOLS_TYPENAME_TO_STRING(type) \
-    []()->std::string{ \
+    []()->nmtools_string{ \
         auto type_id = boost::typeindex::type_id<type>(); \
         try { \
             return type_id.pretty_name(); \
@@ -62,7 +62,7 @@
     #define NMTOOLS_TYPENAME_TO_STRING(type) \
     typeid(type).name()
 #else
-    #define NMTOOLS_TYPENAME_TO_STRING(type) ""
+    #define NMTOOLS_TYPENAME_TO_STRING(type) "(not implemented)"
 #endif
 
 #include "nmtools/meta.hpp"

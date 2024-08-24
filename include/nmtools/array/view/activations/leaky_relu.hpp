@@ -53,7 +53,9 @@ namespace nmtools::utils::impl
         {
             nmtools_string str;
 
-            str += "leaky_relu{.negative_slope=";
+            str += "leaky_relu";
+            str += "{";
+            str += ".negative_slope=";
             str += to_string(op.negative_slope);
             str += "}";
 

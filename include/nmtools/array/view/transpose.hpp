@@ -136,7 +136,8 @@ namespace nmtools::utils::impl
         auto operator()(const view::transpose_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "transpose{";
+            str += "transpose";
+            str += "{";
             str += ".src_shape=";
             str += to_string(kwargs.src_shape,Compact);
             str += ",.axes=";

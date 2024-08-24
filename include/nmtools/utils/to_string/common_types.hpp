@@ -37,6 +37,22 @@ namespace nmtools::utils
         } while (start_pos != string::npos);
         #endif // NMTOOLS_HAS_SSTREAM
     }
+
+    template <typename string>
+    inline auto replace_string(string& str, const string& substr, const string& replacement)
+    {
+        // NOTE: quick workaround for check if if we have full std string features
+        // maybe not available on arduino
+        #if (NMTOOLS_HAS_SSTREAM)
+        auto start_pos = string::npos;
+        do {
+          start_pos = str.find(substr);
+          if (start_pos != string::npos) {
+            str.replace(start_pos, substr.size(), replacement);
+          }
+        } while (start_pos != string::npos);
+        #endif // NMTOOLS_HAS_SSTREAM
+    }
 }
 
 namespace nmtools::utils::impl
@@ -244,21 +260,6 @@ namespace nmtools::utils::impl
             }
         }
     }; // struct to_string_t
-
-    #if 0
-    template <typename T>
-    struct to_string_t
-        <T,none_t,meta::enable_if_t<
-            !meta::is_fail_v< typename to_string_t<T,fmt_string_t<>>::result_type >>
-        >
-    {
-        using result_type = typename to_string_t<T,fmt_string_t<>>::result_type;
-        auto operator()(const T& array) const noexcept
-        {
-            return to_string(array,fmt_string_t<>{});
-        } // operator()
-    }; // struct to_string_t
-    #endif
 
     #define NMTOOLS_DTYPE_TO_STRING_CASE(T,type,string) \
     if constexpr (meta::is_same_v<T,type>) { \

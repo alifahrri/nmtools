@@ -63,6 +63,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/concatenate.cpp
     src/compress.cpp
     src/expand_dims.cpp
+    src/expand.cpp
     src/flatten.cpp
     src/flip.cpp
     src/full.cpp
@@ -227,6 +228,38 @@ set(VIEW_NN_TEST_SOURCES
     src/activations/softshrink.cpp
     src/activations/softsign.cpp
     src/activations/tanhshrink.cpp
+    src/conv1d-1.cpp
+    src/conv1d-2.cpp
+    src/conv1d-3.cpp
+    src/conv1d-4.cpp
+    src/conv1d-5.cpp
+    src/conv1d-6.cpp
+    src/conv1d-7.cpp
+    src/conv1d-8.cpp
+    src/conv1d-9.cpp
+    src/conv1d-10.cpp
+    src/conv1d-11.cpp
+    src/conv1d-12.cpp
+    src/conv1d-13.cpp
+    src/conv1d-14.cpp
+    src/conv1d-15.cpp
+    src/conv1d-16.cpp
+    src/conv1d-17.cpp
+    src/conv1d-18.cpp
+    src/conv2d-1.cpp
+    src/conv2d-2.cpp
+    src/conv2d-3.cpp
+    src/conv2d-4.cpp
+    src/conv2d-5.cpp
+    src/conv2d-6.cpp
+    src/conv2d-7.cpp
+    src/conv2d-8.cpp
+    src/conv2d-9.cpp
+    src/conv2d-10.cpp
+    src/conv2d-11.cpp
+    src/conv2d-12.cpp
+    src/conv2d-13.cpp
+    src/conv2d-14.cpp
     src/batch_norm.cpp
     src/group_norm.cpp
     src/instance_norm.cpp

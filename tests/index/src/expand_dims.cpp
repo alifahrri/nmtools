@@ -1,7 +1,7 @@
 #include "nmtools/array/index/expand_dims.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/testing/data/index/expand_dims.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/testing/array_cast.hpp"
 
 #include "nmtools/stl.hpp"
 
@@ -10,182 +10,12 @@ namespace na = nm::array;
 
 using namespace nm::literals;
 
-NMTOOLS_TESTING_DECLARE_CASE(index, shape_expand_dims)
-{
-    NMTOOLS_TESTING_DECLARE_ARGS(case1)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[1]  = {0};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{0_ct};
-        inline auto axes_cl  = nmtools_tuple{"0:[1]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
-    {
-        inline int expected[4] = {1,1,2,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case2)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[1]  = {1};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{1_ct};
-        inline auto axes_cl  = nmtools_tuple{"1:[1]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
-    {
-        inline int expected[4] = {1,1,2,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case3)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[1]  = {2};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{2_ct};
-        inline auto axes_cl  = nmtools_tuple{"2:[2]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
-    {
-        inline int expected[4] = {1,2,1,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case4)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[1]  = {3};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{3_ct};
-        inline auto axes_cl  = nmtools_tuple{"3:[3]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
-    {
-        inline int expected[4] = {1,2,3,1};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case5)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[2]  = {0,1};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{0_ct,1_ct};
-        inline auto axes_cl  = nmtools_tuple{"0:[1]"_ct,"1:[1]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
-    {
-        inline int expected[5] = {1,1,1,2,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case6)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[2]  = {0,2};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{0_ct,2_ct};
-        inline auto axes_cl  = nmtools_tuple{"0:[1]"_ct,"2:[2]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
-    {
-        inline int expected[5] = {1,1,1,2,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case7)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[2]  = {1,2};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{1_ct,2_ct};
-        inline auto axes_cl  = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
-    {
-        inline int expected[5] = {1,1,1,2,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case8)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[2]  = {2,3};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{2_ct,3_ct};
-        inline auto axes_cl  = nmtools_tuple{"2:[2]"_ct,"3:[3]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
-    {
-        inline int expected[5] = {1,2,1,1,3};
-    }
-
-    NMTOOLS_TESTING_DECLARE_ARGS(case9)
-    {
-        inline int shape[3] = {1,2,3};
-        inline int axes[3]  = {2,3,0};
-        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct};
-        inline auto shape_cl = nmtools_tuple{"1:[1]"_ct,"2:[2]"_ct,"3:[3]"_ct};
-        inline auto axes_ct  = nmtools_tuple{2_ct,3_ct,0_ct};
-        inline auto axes_cl  = nmtools_tuple{"2:[2]"_ct,"3:[3]"_ct,"0:[1]"_ct};
-        NMTOOLS_CAST_INDEX_ARRAYS(shape);
-        NMTOOLS_CAST_INDEX_ARRAYS(axes);
-    }
-    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
-    {
-        inline int expected[6] = {1,1,1,1,2,3};
-    }
-}
-
-#define RUN_shape_expand_dims_impl(...) \
-nm::index::shape_expand_dims(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs shape_expand_dims fn to callable lambda
-#define RUN_shape_expand_dims(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("shape_expand_dims-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_shape_expand_dims_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_shape_expand_dims(case_name, ...) \
-RUN_shape_expand_dims_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define SHAPE_EXPAND_DIMS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, shape_expand_dims, case_name); \
     using namespace args; \
-    auto result = RUN_shape_expand_dims(case_name, __VA_ARGS__); \
+    auto result = nmtools::index::shape_expand_dims(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::expected ); \
 }
 
@@ -346,4 +176,56 @@ TEST_CASE("shape_expand_dims(case9)" * doctest::test_suite("index::shape_expand_
     SHAPE_EXPAND_DIMS_SUBCASE( case9, shape_ct, axes_ct );
     SHAPE_EXPAND_DIMS_SUBCASE( case9, shape_cl, axes_ct );
     SHAPE_EXPAND_DIMS_SUBCASE( case9, shape_cl, axes_cl );
+}
+
+TEST_CASE("shape_expand_dims(case10)" * doctest::test_suite("index::shape_expand_dims"))
+{
+    SHAPE_EXPAND_DIMS_SUBCASE( case10, shape, axes );
+    SHAPE_EXPAND_DIMS_SUBCASE( case10, shape_a, axes_a );
+    SHAPE_EXPAND_DIMS_SUBCASE( case10, shape_f, axes_f );
+    SHAPE_EXPAND_DIMS_SUBCASE( case10, shape_h, axes_h );
+    SHAPE_EXPAND_DIMS_SUBCASE( case10, shape_v, axes_v );
+
+    SHAPE_EXPAND_DIMS_SUBCASE( case10, shape_ct, axes_ct );
+    SHAPE_EXPAND_DIMS_SUBCASE( case10, shape_cl, axes_ct );
+    SHAPE_EXPAND_DIMS_SUBCASE( case10, shape_cl, axes_cl );
+}
+
+TEST_CASE("shape_expand_dims(case11)" * doctest::test_suite("index::shape_expand_dims"))
+{
+    SHAPE_EXPAND_DIMS_SUBCASE( case11, shape, axes );
+    SHAPE_EXPAND_DIMS_SUBCASE( case11, shape_a, axes_a );
+    SHAPE_EXPAND_DIMS_SUBCASE( case11, shape_f, axes_f );
+    SHAPE_EXPAND_DIMS_SUBCASE( case11, shape_h, axes_h );
+    SHAPE_EXPAND_DIMS_SUBCASE( case11, shape_v, axes_v );
+
+    SHAPE_EXPAND_DIMS_SUBCASE( case11, shape_ct, axes_ct );
+    SHAPE_EXPAND_DIMS_SUBCASE( case11, shape_cl, axes_ct );
+    SHAPE_EXPAND_DIMS_SUBCASE( case11, shape_cl, axes_cl );
+}
+
+TEST_CASE("shape_expand_dims(case12)" * doctest::test_suite("index::shape_expand_dims"))
+{
+    SHAPE_EXPAND_DIMS_SUBCASE( case12, shape, axes );
+    SHAPE_EXPAND_DIMS_SUBCASE( case12, shape_a, axes_a );
+    SHAPE_EXPAND_DIMS_SUBCASE( case12, shape_f, axes_f );
+    SHAPE_EXPAND_DIMS_SUBCASE( case12, shape_h, axes_h );
+    SHAPE_EXPAND_DIMS_SUBCASE( case12, shape_v, axes_v );
+
+    SHAPE_EXPAND_DIMS_SUBCASE( case12, shape_ct, axes_ct );
+    SHAPE_EXPAND_DIMS_SUBCASE( case12, shape_cl, axes_ct );
+    SHAPE_EXPAND_DIMS_SUBCASE( case12, shape_cl, axes_cl );
+}
+
+TEST_CASE("shape_expand_dims(case13)" * doctest::test_suite("index::shape_expand_dims"))
+{
+    SHAPE_EXPAND_DIMS_SUBCASE( case13, shape, axes );
+    SHAPE_EXPAND_DIMS_SUBCASE( case13, shape_a, axes_a );
+    SHAPE_EXPAND_DIMS_SUBCASE( case13, shape_f, axes_f );
+    SHAPE_EXPAND_DIMS_SUBCASE( case13, shape_h, axes_h );
+    SHAPE_EXPAND_DIMS_SUBCASE( case13, shape_v, axes_v );
+
+    SHAPE_EXPAND_DIMS_SUBCASE( case13, shape_ct, axes_ct );
+    SHAPE_EXPAND_DIMS_SUBCASE( case13, shape_cl, axes_ct );
+    SHAPE_EXPAND_DIMS_SUBCASE( case13, shape_cl, axes_cl );
 }

@@ -20,6 +20,7 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/array/as_static.hpp"
 
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc/detail.hpp"
 
 namespace nmtools::args
@@ -71,6 +72,44 @@ namespace nmtools::meta
         args::ufunc<op_t>
     > : true_type {};
 } // namespace nmtools::meta
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename op_t
+        , typename formatter_t
+    >
+    struct to_string_t<
+        args::ufunc<op_t>
+        , formatter_t
+    >
+    {
+        using attribute_type = args::ufunc<op_t>;
+        using formatter_type = formatter_t;
+
+        auto operator()([[maybe_unused]] const attribute_type& attribute) const noexcept
+        {
+            nmtools_string str;
+
+            auto op_str = to_string(attribute.op,formatter_type{});
+            if (op_str.empty()) {
+                op_str = NMTOOLS_TYPENAME_TO_STRING(op_t);
+            }
+
+            str += "{";
+
+            str += ".op=";
+            str += op_str;
+
+            str += "}";
+            
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 namespace nmtools::view
 {

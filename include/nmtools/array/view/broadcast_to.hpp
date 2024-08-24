@@ -183,7 +183,8 @@ namespace nmtools::utils::impl
         auto operator()(const view::broadcast_to_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "broadcast_to{";
+            str += "broadcast_to";
+            str += "{";
             str += ".src_shape=";   str += to_string(kwargs.src_shape,Compact);
             str += ",.dst_shape=";  str += to_string(kwargs.dst_shape,Compact);
             str += ",.origin=";     str += to_string(kwargs.origin_axes,Compact);

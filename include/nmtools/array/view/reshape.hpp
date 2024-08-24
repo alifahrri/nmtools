@@ -144,7 +144,8 @@ namespace nmtools::utils::impl
         auto operator()(const view::reshape_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "reshape{";
+            str += "reshape";
+            str += "{";
             str += ".src_shape=";
             str += to_string(kwargs.src_shape,Compact);
             str += ",.dst_shape=";

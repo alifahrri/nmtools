@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_MAXIMUM_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_MAXIMUM_HPP
 
+#include "nmtools/meta.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/constants.hpp"
 
@@ -92,6 +93,36 @@ namespace nmtools::view
         using op_t  = maximum_t<none_t,none_t,res_t>;
         return outer(op_t{},a,b,dtype);
     } // outer_maximum
-};
+}
+
+#include "nmtools/utils/to_string/to_string.hpp"
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <
+        typename lhs_t,
+        typename rhs_t,
+        typename res_t,
+        auto...fmt_args
+    >
+    struct to_string_t<
+        view::maximum_t<lhs_t,rhs_t,res_t>,
+        fmt_string_t<fmt_args...>
+    >
+    {
+        using result_type = nmtools_string;
+
+        auto operator()(view::maximum_t<lhs_t,rhs_t,res_t>) const
+        {
+            auto str = nmtools_string();
+            str += "maximum";
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_VIEW_UFUNCS_MAXIMUM_HPP
