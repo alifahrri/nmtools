@@ -20,6 +20,15 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
+#define CONV_REDUCE_AXIS(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index,conv_reduce_axis,case_name); \
+    using namespace args; \
+    auto result = nmtools::index::conv_sum_axes(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
 #define CONV_RESHAPE_REDUCE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
@@ -51,6 +60,16 @@ TEST_CASE("conv_reshape_weight(case1)" * doctest::test_suite("index::conv_reshap
     CONV_RESHAPE_WEIGHT( case3, src_shape, groups, n_planes );
     CONV_RESHAPE_WEIGHT( case4, src_shape, groups, n_planes );
     CONV_RESHAPE_WEIGHT( case5, src_shape, groups, n_planes );
+}
+
+TEST_CASE("conv_reduce_axis(case1)" * doctest::test_suite("index::conv_reduce_axis"))
+{
+    CONV_REDUCE_AXIS( case1, n_planes );
+}
+
+TEST_CASE("conv_reduce_axis(case2)" * doctest::test_suite("index::conv_reduce_axis"))
+{
+    CONV_REDUCE_AXIS( case2, n_planes );
 }
 
 TEST_CASE("conv_reshape_reduce(case1)" * doctest::test_suite("index::conv_reshape_reduce"))

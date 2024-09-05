@@ -20,7 +20,7 @@ namespace nmtools::index
         ) {
             auto src_dim = len(src_shape);
             [[maybe_unused]]
-            auto dst_dim = src_dim + n_planes;
+            auto dst_dim = src_dim + 2; // 1 (n_output bcast), groups
 
             if constexpr (meta::is_resizable_v<result_t>) {
                 result.resize(dst_dim);
@@ -202,34 +202,26 @@ namespace nmtools::index
 
     struct conv_sum_axes_t {};
 
-    template <typename result_dim_t, typename n_planes_t>
-    constexpr auto conv_sum_axes(result_dim_t result_dim, n_planes_t n_planes)
+    template <typename n_planes_t>
+    constexpr auto conv_sum_axes(n_planes_t n_planes)
     {
-        using result_t = meta::resolve_optype_t<conv_sum_axes_t,result_dim_t,n_planes_t>;
+        using result_t = meta::resolve_optype_t<conv_sum_axes_t,n_planes_t>;
 
         auto result = result_t {};
 
         if constexpr (!meta::is_constant_index_array_v<result_t>
             && !meta::is_fail_v<result_t>
         ) {
+            auto n_axes = n_planes + 1;
             if constexpr (meta::is_resizable_v<result_t>) {
-                result.resize(n_planes * 2);
+                result.resize(n_axes);
             }
 
-            // for (nm_index_t i=0; i<nm_index_t(n_planes); i++) {
-            //     auto idx  = i * 2;
-            //     auto axis = i + 1;
-            //     at(result,idx)   = axis;
-            //     at(result,idx+1) = -axis;
-            // }
+            for (nm_size_t i=0; i<(nm_size_t)n_planes; i++) {
+                at(result,i) = -(i+1);
+            }
 
-            for (nm_index_t i=0; i<(nm_index_t)n_planes; i++) {
-                at(result,i) = (result_dim-1-i);
-            }
-            auto channel_axis = result_dim - n_planes - 1;
-            for (nm_index_t i=0; i<(nm_index_t)n_planes; i++) {
-                at(result,i+n_planes) = channel_axis - n_planes - i;
-            }
+            at(result,n_axes-1) = -(2*n_planes+1);
         }
 
         return result;
@@ -392,12 +384,11 @@ namespace nmtools::meta
                 [[maybe_unused]]
                 constexpr auto B_DIM = bounded_size_v<src_shape_t>;
                 constexpr auto DIM   = len_v<src_shape_t>;
-                constexpr auto N_PLANES = to_value_v<n_planes_t>;
-                if constexpr ((DIM > 0) && !is_fail_v<decltype(N_PLANES)>) {
-                    using type = nmtools_array<nm_size_t,DIM+N_PLANES>;
+                if constexpr (DIM > 0) {
+                    using type = nmtools_array<nm_size_t,DIM+2>;
                     return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(B_DIM)> && !is_fail_v<decltype(N_PLANES)>) {
-                    using type = nmtools_static_vector<nm_size_t,B_DIM+N_PLANES>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
+                    using type = nmtools_static_vector<nm_size_t,B_DIM+2>;
                     return as_value_v<type>;
                 } else {
                     // TODO: support small vector
@@ -628,22 +619,17 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     };
 
-    template <typename result_dim_t, typename n_planes_t>
+    template <typename n_planes_t>
     struct resolve_optype<
-        void, index::conv_sum_axes_t, result_dim_t, n_planes_t
+        void, index::conv_sum_axes_t, n_planes_t
     > {
         static constexpr auto vtype = [](){
-            if constexpr (!is_index_v<n_planes_t>
-                || !is_index_v<result_dim_t>
-            ) {
-                using type = error::CONV_SUM_AXES_UNSUPPORTED<result_dim_t,n_planes_t>;
+            if constexpr (!is_index_v<n_planes_t>) {
+                using type = error::CONV_SUM_AXES_UNSUPPORTED<n_planes_t>;
                 return as_value_v<type>;
-            } else if constexpr (is_constant_index_v<n_planes_t>
-                && is_constant_index_v<result_dim_t>
-            ) {
+            } else if constexpr (is_constant_index_v<n_planes_t>) {
                 constexpr auto n_planes   = clipped_size_t<n_planes_t::value>(n_planes_t::value);
-                constexpr auto result_dim = clipped_size_t<result_dim_t::value>(result_dim_t::value);
-                constexpr auto result     = index::conv_sum_axes(result_dim,n_planes);
+                constexpr auto result     = index::conv_sum_axes(n_planes);
                 using nmtools::at, nmtools::len;
                 return template_reduce<len(result)>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;
@@ -651,7 +637,7 @@ namespace nmtools::meta
                     return as_value_v<type>;
                 }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (is_clipped_integer_v<n_planes_t>) {
-                using type = nmtools_static_vector<nm_index_t,n_planes_t::max*2>;
+                using type = nmtools_static_vector<nm_index_t,n_planes_t::max+1>;
                 return as_value_v<type>;
             } else {
                 // TODO: support small vector
@@ -804,8 +790,7 @@ namespace nmtools::view
         auto multiply_shape = nmtools::shape<true>(multiply_result);
         auto multiply_dim   = nmtools::dim<true>(multiply_result);
 
-        // TODO: error handling
-        auto sum_axes = index::conv_sum_axes(unwrap(multiply_dim),n_planes);
+        auto sum_axes = index::conv_sum_axes(n_planes);
         auto dtype    = None;
         auto initial  = None;
         auto keepdims = False;
