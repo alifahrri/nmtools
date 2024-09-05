@@ -14,7 +14,7 @@ namespace nmtools::functional
 {
     namespace fun
     {
-        struct conv2d
+        struct conv2dv2
         {
             template <typename...args_t>
             constexpr auto operator()(const args_t&...args) const
@@ -24,7 +24,7 @@ namespace nmtools::functional
         };
     } // namespace fun
 
-    constexpr inline auto conv2d = functor_t{binary_fmap_t<fun::conv2d>{}};
+    constexpr inline auto conv2dv2 = functor_t{binary_fmap_t<fun::conv2dv2>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_CONV2D_HPP
