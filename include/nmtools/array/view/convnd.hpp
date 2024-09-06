@@ -788,6 +788,7 @@ namespace nmtools::view
 
         [[maybe_unused]]
         auto multiply_shape = nmtools::shape<true>(multiply_result);
+        [[maybe_unused]]
         auto multiply_dim   = nmtools::dim<true>(multiply_result);
 
         auto sum_axes = index::conv_sum_axes(n_planes);
