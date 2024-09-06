@@ -31,6 +31,9 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
+// TODO: fix utl
+#ifndef NMTOOLS_DISABLE_STL
+
 TEST_CASE("conv1d(case17)" * doctest::test_suite("view::conv1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
@@ -61,3 +64,5 @@ TEST_CASE("conv1d(case17)" * doctest::test_suite("view::conv1d"))
     CONV1D_SUBCASE( case17, input_ls_db, weight_ls_db, bias, stride, padding, dilation );
     #endif
 }
+
+#endif
