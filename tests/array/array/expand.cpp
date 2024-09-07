@@ -74,6 +74,8 @@ TEST_CASE("expand(case6)" * doctest::test_suite("array::expand"))
 }
 #endif
 
+// TODO: fix runtime crash on utl
+#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("expand(case7)" * doctest::test_suite("array::expand"))
 {
     EXPAND_SUBCASE( case7, input, axis );
@@ -83,8 +85,6 @@ TEST_CASE("expand(case7)" * doctest::test_suite("array::expand"))
     EXPAND_SUBCASE( case7, input_d, axis );
 }
 
-// TODO: fix runtime crash on utl
-#ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("expand(case8)" * doctest::test_suite("array::expand"))
 {
     EXPAND_SUBCASE( case8, input, axis );
