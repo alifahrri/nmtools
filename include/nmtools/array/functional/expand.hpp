@@ -20,55 +20,6 @@ namespace nmtools::functional::fun
 namespace nmtools::functional
 {
     constexpr inline auto expand = functor_t{unary_fmap_t<fun::expand>{}};
-
-    #if 0
-    template <typename...args_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::expand_t, args_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::expand_t, args_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return expand[view.attributes()];
-        }
-    };
-    #endif
 } // namespace nmtools::functional
-
-#if 0
-
-#if NMTOOLS_HAS_STRING
-
-namespace nmtools::utils::impl
-{
-    template <auto...fmt_args>
-    struct to_string_t<
-        functional::fun::expand, fmt_string_t<fmt_args...>
-    >
-    {
-        using fun_type = functional::fun::expand;
-        using result_type = nmtools_string;
-
-        auto operator()(const fun_type&) const noexcept
-        {
-            auto str = nmtools_string("");
-
-            str += "expand(";
-            str += ")";
-
-            return str;
-        }
-    };
-}
-
-#endif // NMTOOLS_HAS_STRING
-#endif
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_EXPAND_HPP
