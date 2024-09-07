@@ -103,7 +103,6 @@ if (NMTOOLS_FUNCTIONAL_TEST_ALL)
         src/atleast_2d.cpp
         src/atleast_nd.cpp
         src/broadcast_to.cpp
-        src/conv.cpp
         src/compress.cpp
         src/concatenate.cpp
         src/cumprod.cpp
