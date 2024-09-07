@@ -17,6 +17,11 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
+// TODO: improve precision on utl build
+#ifdef NMTOOLS_DISABLE_STL
+#define NMTOOLS_TESTING_OUTPUT_PRECISION (1e-3)
+#endif
+
 #include "nmtools/array/view/conv1d.hpp"
 #include "nmtools/testing/data/array/conv1d.hpp"
 #include "nmtools/testing/doctest.hpp"

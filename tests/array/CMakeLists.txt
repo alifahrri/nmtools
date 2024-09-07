@@ -101,6 +101,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/cumprod.cpp
     array/cumsum.cpp
     array/expand_dims.cpp
+    array/expand.cpp
     array/flatten.cpp
     array/flip.cpp
     array/full.cpp
