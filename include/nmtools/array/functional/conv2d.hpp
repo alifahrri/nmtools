@@ -14,7 +14,7 @@ namespace nmtools::functional
 {
     namespace fun
     {
-        struct conv2dv2_bias
+        struct conv2d_bias
         {
             template <typename array_t, typename weight_t, typename bias_t, typename...args_t>
             constexpr auto operator()(const array_t& array, const weight_t& weight, const bias_t& bias, const args_t&...args) const
