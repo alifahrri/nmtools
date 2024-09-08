@@ -49,7 +49,7 @@ namespace nmtools::index
     struct conv_reshape_weight_t {};
 
     template <typename src_shape_t, typename n_planes_t, typename groups_t>
-    constexpr auto conv_reshape_weight(const src_shape_t& src_shape, [[maybe_unused]] groups_t groups, [[maybe_unused]] n_planes_t n_planes)
+    constexpr auto conv_reshape_weight([[maybe_unused]] const src_shape_t& src_shape, [[maybe_unused]] groups_t groups, [[maybe_unused]] n_planes_t n_planes)
     {
         using result_t = meta::resolve_optype_t<conv_reshape_weight_t,src_shape_t,n_planes_t,groups_t>;
 
@@ -90,7 +90,7 @@ namespace nmtools::index
     struct conv_reshape_reduce_t {};
 
     template <typename src_shape_t, typename n_planes_t, typename groups_t>
-    constexpr auto conv_reshape_reduce(const src_shape_t& src_shape, [[maybe_unused]] groups_t groups, [[maybe_unused]] n_planes_t n_planes)
+    constexpr auto conv_reshape_reduce([[maybe_unused]] const src_shape_t& src_shape, [[maybe_unused]] groups_t groups, [[maybe_unused]] n_planes_t n_planes)
     {
         using result_t = meta::resolve_optype_t<conv_reshape_reduce_t,src_shape_t,n_planes_t,groups_t>;
 
@@ -125,7 +125,7 @@ namespace nmtools::index
     struct conv_reshape_bias_t {};
 
     template <typename src_shape_t, typename n_planes_t>
-    constexpr auto conv_reshape_bias(const src_shape_t& src_shape, n_planes_t n_planes)
+    constexpr auto conv_reshape_bias([[maybe_unused]] const src_shape_t& src_shape, [[maybe_unused]] n_planes_t n_planes)
     {
         using result_t = meta::resolve_optype_t<conv_reshape_bias_t,src_shape_t,n_planes_t>;
 
@@ -156,7 +156,7 @@ namespace nmtools::index
     struct conv_kernel_size_t {};
 
     template <typename weight_shape_t, typename n_planes_t>
-    constexpr auto conv_kernel_size(const weight_shape_t& weight_shape, n_planes_t n_planes)
+    constexpr auto conv_kernel_size([[maybe_unused]] const weight_shape_t& weight_shape, [[maybe_unused]] n_planes_t n_planes)
     {
         using result_t = meta::resolve_optype_t<conv_kernel_size_t,weight_shape_t,n_planes_t>;
 
@@ -237,7 +237,7 @@ namespace nmtools::index
     }
 
     template <typename stride_t, typename n_planes_t>
-    constexpr auto conv_slices(const stride_t& stride, n_planes_t)
+    constexpr auto conv_slices([[maybe_unused]] const stride_t& stride, n_planes_t)
     {
         // TODO: use resolve_optype, provide better support for slice index array
         if constexpr (meta::is_num_v<stride_t>) {
