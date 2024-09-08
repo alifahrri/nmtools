@@ -77,7 +77,9 @@ namespace nmtools::utils::impl
         {
             nmtools_string str;
 
-            str += "softplus{.beta=";
+            str += "softplus";
+            str += "{";
+            str += ".beta=";
             str += to_string(op.beta);
             str += ",.threshold=";
             str += to_string(op.threshold);

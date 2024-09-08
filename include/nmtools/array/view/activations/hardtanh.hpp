@@ -68,7 +68,9 @@ namespace nmtools::utils::impl
         {
             nmtools_string str;
 
-            str += "hardtanh{.min_val=";
+            str += "hardtanh";
+            str += "{";
+            str += ".min_val=";
             str += to_string(op.min_val);
             str += ",.max_val=";
             str += to_string(op.max_val);

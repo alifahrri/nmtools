@@ -99,7 +99,8 @@ namespace nmtools::utils::impl
         auto operator()(const view::resize_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "resize{";
+            str += "resize";
+            str += "{";
             str += ".src_shape=";
             str += utils::to_string(kwargs.src_shape,Compact);
             str += ",";

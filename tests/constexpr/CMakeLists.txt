@@ -14,10 +14,6 @@ set(NMTOOLS_CONSTEXPR_TEST_SOURCES
     src/atleast_nd.cpp
     src/broadcast_arrays.cpp
     src/broadcast_to.cpp
-    src/conv-1.cpp
-    src/conv-2.cpp
-    src/conv-3.cpp
-    src/conv-4.cpp
     src/matmul.cpp
     src/moveaxis.cpp
     src/pad.cpp

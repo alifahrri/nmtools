@@ -6,6 +6,8 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 // TODO: move to shape.hpp
 #ifdef NMTOOLS_ENABLE_BOOST
@@ -62,18 +64,22 @@ namespace nmtools::index
                 else return 1ul;
             }();
             auto dim = len(shape);
-            [[maybe_unused]] auto n = dim+n_axes;
+            [[maybe_unused]] auto n = dim + n_axes;
+
+            // TODO: propagate error
+            auto normalized_axes = unwrap(normalize_axis(axes,n));
 
             // resize output if necessary
-            if constexpr (meta::is_resizable_v<result_t>)
+            if constexpr (meta::is_resizable_v<result_t>) {
                 new_shape.resize(n);
+            }
             
-            auto idx = size_t{0};
+            auto idx = nm_size_t{0};
             auto shape_expand_dims_impl = [&](auto i){
                 auto in_axis = [&](){
                     if constexpr (meta::is_index_array_v<axes_t>)
-                        return contains(axes,i);
-                    else return i == (size_t)axes;
+                        return contains(normalized_axes,i);
+                    else return i == (nm_size_t)normalized_axes;
                 }();
                 at(new_shape,i) = (in_axis ? 1 : at(shape,idx));
                 idx += (!in_axis ? 1 : 0);
@@ -111,8 +117,8 @@ namespace nmtools
             static constexpr auto vtype = [](){
                 // TODO: use more generic fixed_shape, fixed_size, fixed_dim
                 if constexpr (
-                    (is_constant_index_array_v<shape_t> || is_clipped_index_array_v<shape_t>)
-                    && (is_constant_index_v<axes_t> || is_constant_index_array_v<axes_t>)
+                    is_constant_index_array_v<shape_t>
+                    && is_constant_index_v<axes_t>
                 ) {
                     constexpr auto shape = to_value_v<shape_t>;
                     constexpr auto axes  = to_value_v<axes_t>;
@@ -129,7 +135,6 @@ namespace nmtools
                             return as_value_v<result_t>;
                         }
                     }, as_value_v<nmtools_tuple<>>);
-                #if 1
                 } else if constexpr (is_index_array_v<shape_t> && (is_index_v<axes_t>)) {
                     constexpr auto N = len_v<shape_t>;
                     [[maybe_unused]] constexpr auto B_SIZE = bounded_size_v<shape_t>;
@@ -166,61 +171,6 @@ namespace nmtools
                         using type = nmtools_list<index_t>;
                         return as_value_v<type>;
                     }
-                #else
-                } else if constexpr (is_fixed_index_array_v<shape_t> && (is_index_v<axes_t> || is_fixed_index_array_v<axes_t>)) {
-                    constexpr auto n_axes = [](){
-                        if constexpr (is_index_v<axes_t>) {
-                            return 1;
-                        } else {
-                            return len_v<axes_t>;
-                        }
-                    }();
-                    constexpr auto newdim = len_v<shape_t> + n_axes;
-                    // TODO: try to resize instead of create new type
-                    return as_value_v<nmtools_array<get_index_element_type_t<shape_t>,newdim>>;
-                } else if constexpr ((is_hybrid_index_array_v<shape_t> || is_fixed_index_array_v<shape_t>) && (is_index_v<axes_t> || is_fixed_index_array_v<axes_t> || is_hybrid_index_array_v<axes_t>)) {
-                    constexpr auto n_max_axes = [](){
-                        constexpr auto N = len_v<axes_t>;
-                        using len_type [[maybe_unused]] = decltype(N);
-                        [[maybe_unused]] constexpr auto bounded_size = bounded_size_v<axes_t>;
-                        if constexpr (is_index_v<axes_t>) {
-                            return 1;
-                        } else if constexpr (!is_fail_v<len_type>) {
-                            // NOTE: zero len is invalid
-                            if constexpr (N > 0) {
-                                return N;
-                            } else {
-                                return bounded_size;
-                            }
-                        } else /* if constexpr (is_bounded_size_v<axes_t>) */ {
-                            return bounded_size;
-                        }
-                    }();
-                    constexpr auto shape_dim = [](){
-                        constexpr auto N = len_v<shape_t>;
-                        [[maybe_unused]] constexpr auto bounded_size = bounded_size_v<shape_t>;
-                        if constexpr (!is_fail_v<decltype(N)>) {
-                            if constexpr (N > 0) {
-                                return N;
-                            } else {
-                                return bounded_size;
-                            }
-                        } else {
-                            return bounded_size;
-                        }
-                    }();
-                    constexpr auto max_dim = shape_dim + n_max_axes;
-                    using index_t = get_element_or_common_type_t<shape_t>;
-                    // TODO: try to resize instead of create new type
-                    return as_value_v<nmtools_hybrid_ndarray<index_t,max_dim,1>>;
-                } else if constexpr (is_index_array_v<shape_t> && is_index_v<axes_t>) {
-                    return as_value_v<shape_t>;
-                } else if constexpr ((is_fixed_index_array_v<shape_t> || is_hybrid_index_array_v<shape_t>) && is_index_array_v<axes_t>) {
-                    using index_t = get_element_or_common_type_t<shape_t>;
-                    return as_value_v<replace_element_type_t<axes_t,index_t>>;
-                } else if constexpr (is_index_array_v<shape_t> && is_index_array_v<axes_t>) {
-                    return as_value_v<shape_t>;
-                #endif
                 } else {
                     return as_value_v<error::EXPAND_DIMS_UNSUPPORTED<shape_t,axes_t>>;
                 }

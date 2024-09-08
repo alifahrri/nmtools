@@ -43,6 +43,7 @@ option(NMTOOLS_TEST_NDARRAY         "test ndarray modules"          OFF)
 option(NMTOOLS_TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
 option(NMTOOLS_TEST_ARRAY_EVAL      "test array evaluation"         OFF)
 option(NMTOOLS_TEST_ARRAY_NN_EVAL   "test array nn eval modules"    OFF)
+option(NMTOOLS_TEST_ARRAY_CONV_EVAL "test array conv eval modules"  OFF)
 option(NMTOOLS_TEST_COMPOSITION     "test array view composition"   OFF)
 option(NMTOOLS_TEST_MISC            "test other modules"            OFF)
 
@@ -53,6 +54,7 @@ if (NMTOOLS_TEST_ALL)
     SET(NMTOOLS_TEST_ARRAY_UFUNCS    ON CACHE BOOL "test array ufuncs modules"     FORCE)
     SET(NMTOOLS_TEST_ARRAY_EVAL      ON CACHE BOOL "test array evaluation"         FORCE)
     SET(NMTOOLS_TEST_ARRAY_NN_EVAL   ON CACHE BOOL "test array nn eval modules"    FORCE)
+    SET(NMTOOLS_TEST_ARRAY_CONV_EVAL ON CACHE BOOL "test array conv eval modules"  FORCE)
     SET(NMTOOLS_TEST_COMPOSITION     ON CACHE BOOL "test array view composition"   FORCE)
     SET(NMTOOLS_TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
 endif (NMTOOLS_TEST_ALL)
@@ -99,6 +101,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/cumprod.cpp
     array/cumsum.cpp
     array/expand_dims.cpp
+    array/expand.cpp
     array/flatten.cpp
     array/flip.cpp
     array/full.cpp
@@ -219,8 +222,6 @@ if (NOT NMTOOLS_TEST_ARRAY_EVAL)
 endif ()
 
 set(EVAL_NN_TEST_SOURCES
-    ## spread conv so that it doesn't take all the memory
-    # array/conv-1.cpp
     array/activations/celu.cpp
     array/activations/elu.cpp
     array/activations/hardshrink.cpp
@@ -229,7 +230,6 @@ set(EVAL_NN_TEST_SOURCES
     array/activations/leaky_relu.cpp
     array/activations/log_sigmoid.cpp
     array/activations/mish.cpp
-    # array/conv-2.cpp
     array/activations/prelu.cpp
     array/activations/relu.cpp
     array/activations/relu6.cpp
@@ -238,37 +238,54 @@ set(EVAL_NN_TEST_SOURCES
     array/activations/silu.cpp
     array/activations/softplus.cpp
     array/activations/softsign.cpp
-    # array/conv-3.cpp
     array/activations/softshrink.cpp
     array/activations/tanhshrink.cpp
     array/batch_norm.cpp
     array/softmax.cpp
     array/softmin.cpp
-    # array/conv-4.cpp
 )
-## when using single file without splitting, using approx peak of 17GB for compiling conv only
-## with split and reordering, on 8C/16T with 32GB memory, using gcc at -j12 causes OOM
-set(EVAL_CONV_1_TEST_SOURCES
-    ## spread conv so that it doesn't take all the memory
-    ## and avoid memory spike
-    array/conv-1.cpp
+
+set(EVAL_CONV_TEST_SOURCES
+    array/conv1d-1.cpp
+    array/conv1d-2.cpp
+    array/conv1d-3.cpp
+    array/conv1d-4.cpp
+    array/conv1d-5.cpp
+    array/conv1d-6.cpp
+    array/conv1d-7.cpp
+    array/conv1d-8.cpp
+    array/conv1d-9.cpp
+    array/conv1d-10.cpp
+    array/conv1d-11.cpp
+    array/conv1d-12.cpp
+    array/conv1d-13.cpp
+    array/conv1d-14.cpp
+    array/conv1d-15.cpp
+    array/conv1d-16.cpp
+    array/conv1d-17.cpp
+    array/conv1d-18.cpp
+    array/conv2d-1.cpp
+    array/conv2d-2.cpp
+    array/conv2d-3.cpp
+    array/conv2d-4.cpp
+    array/conv2d-5.cpp
+    array/conv2d-6.cpp
+    array/conv2d-7.cpp
+    array/conv2d-8.cpp
+    array/conv2d-9.cpp
+    array/conv2d-10.cpp
+    array/conv2d-11.cpp
+    array/conv2d-12.cpp
+    array/conv2d-13.cpp
+    array/conv2d-14.cpp
 )
-set(EVAL_CONV_2_TEST_SOURCES
-    array/conv-2.cpp
-)
-set(EVAL_CONV_3_TEST_SOURCES
-    array/conv-3.cpp
-)
-set(EVAL_CONV_4_TEST_SOURCES
-    array/conv-4.cpp
-)
+
+if (NOT NMTOOLS_TEST_ARRAY_CONV_EVAL)
+    set (EVAL_CONV_TEST_SOURCES "")
+endif ()
 
 if (NOT NMTOOLS_TEST_ARRAY_NN_EVAL)
     set (EVAL_NN_TEST_SOURCES "")
-    set (EVAL_CONV_1_TEST_SOURCES "")
-    set (EVAL_CONV_2_TEST_SOURCES "")
-    set (EVAL_CONV_3_TEST_SOURCES "")
-    set (EVAL_CONV_4_TEST_SOURCES "")
 endif ()
 
 set(MISC_TEST_SOURCES
@@ -282,8 +299,6 @@ endif()
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     ## split matmul srcs to reduce peak memory
     ${ARRAY_MATMUL_1_TEST_SOURCES}
-    ## spread conv to reduce memory
-    ${EVAL_CONV_1_TEST_SOURCES}
     ## utility function
     ${UTILS_TEST_SOURCES}
     ## array utility
@@ -292,22 +307,18 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     ${NDARRAY_TEST_SOURCES}
     ## split matmul srcs to reduce peak memory
     ${ARRAY_MATMUL_2_TEST_SOURCES}
-    ## spread conv to reduce memory
-    ${EVAL_CONV_2_TEST_SOURCES}
     ## ufuncs
     ${ARRAY_UFUNCS_TEST_SOURCES}
     ## split matmul srcs to reduce peak memory
     ${ARRAY_MATMUL_3_TEST_SOURCES}
-    ## spread conv to reduce memory
-    ${EVAL_CONV_3_TEST_SOURCES}
     ## array evaluation
     ${ARRAY_EVAL_TEST_SOURCES}
-    ## spread conv to reduce memory
-    ${EVAL_CONV_4_TEST_SOURCES}
     ## array eval nn
     ${EVAL_NN_TEST_SOURCES}
     ## misc
     ${MISC_TEST_SOURCES}
+    ## conv
+    ${EVAL_CONV_TEST_SOURCES}
 )
 
 add_test(

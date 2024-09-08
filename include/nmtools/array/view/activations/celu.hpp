@@ -87,7 +87,9 @@ namespace nmtools::utils::impl
         auto operator()(view::fun::celu<alpha_t> op) const
         {
             nmtools_string str;
-            str += "celu{.alpha=";
+            str += "celu";
+            str += "{";
+            str += ".alpha=";
             str += to_string(op.alpha);
             str += "}";
 

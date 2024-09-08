@@ -57,7 +57,9 @@ namespace nmtools::utils::impl
         {
             nmtools_string str;
 
-            str += "softshrink{.lambda=";
+            str += "softshrink";
+            str += "{";
+            str += ".lambda=";
             str += to_string(op.lambda); 
             str += "}";
 

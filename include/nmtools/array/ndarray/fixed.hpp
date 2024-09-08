@@ -536,4 +536,13 @@ namespace nmtools::array
     } // operator=
 } // namespace nmtools::array
 
+namespace nmtools::meta
+{
+    template <typename T, size_t Shape1, size_t...ShapeN>
+    struct get_element_type<array::fixed_ndarray<T,Shape1,ShapeN...>>
+    {
+        using type = T;
+    };
+}
+
 #endif // NMTOOLS_ARRAY_NDARRAY_FIXED_HPP

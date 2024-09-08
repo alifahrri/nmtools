@@ -138,7 +138,8 @@ namespace nmtools::utils::impl
         auto operator()(const view::slice_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "slice{";
+            str += "slice";
+            str += "{";
             str += ".src_shape="; str += to_string(kwargs.src_shape,Compact);
             str += ",.slices=";   str += NMTOOLS_TYPENAME_TO_STRING(decltype(kwargs.slices));
             // TODO: support to_string for slices

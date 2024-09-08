@@ -101,7 +101,8 @@ namespace nmtools::utils::impl
         auto operator()(const view::tile_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "tile{";
+            str += "tile";
+            str += "{";
             str += ".src_shape=";
             str += to_string(kwargs.src_shape,Compact);
             str += ",.reps=";

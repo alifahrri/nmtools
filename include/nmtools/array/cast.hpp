@@ -186,7 +186,7 @@ namespace nmtools
 
             auto ret = return_t{};
             if constexpr (meta::is_resizable_v<return_t>) {
-                auto shape = ::nmtools::shape(array);
+                auto shape = ::nmtools::shape<true>(array);
                 ret = detail::apply_resize(ret, shape);
             }
             else if constexpr (meta::is_fixed_size_ndarray_v<return_t> && meta::is_fixed_size_ndarray_v<src_t>) {

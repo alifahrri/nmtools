@@ -8,6 +8,8 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/index/where.hpp"
+#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::index
 {
@@ -28,12 +30,22 @@ namespace nmtools::index
      * @return constexpr auto 
      */
     template <typename shape_t, typename axis_t, typename keepdims_t>
-    constexpr auto remove_dims(const shape_t& shape, const axis_t& axis, [[maybe_unused]] keepdims_t keepdims)
+    constexpr auto remove_dims(const shape_t& shape, const axis_t& m_axis, [[maybe_unused]] keepdims_t keepdims)
     {
         // note: axis as reference to prevent raw array to ptr
         using return_t = meta::resolve_optype_t<remove_dims_t,shape_t,axis_t,keepdims_t>;
         // TODO: wrap result in maybe type if necessary
         auto res = return_t {};
+
+        auto src_dim = len(shape);
+        [[maybe_unused]] auto axis = [&](){
+            if constexpr (is_none_v<axis_t>) {
+                return m_axis;
+            } else {
+                // TODO: propagate error
+                return unwrap(index::normalize_axis(m_axis,src_dim));
+            }
+        }();
 
         [[maybe_unused]] auto dim = len(shape);
         if constexpr (meta::is_resizable_v<return_t>) {

@@ -188,6 +188,10 @@ namespace nmtools::meta
                     using type = nmtools_list<nm_size_t>;
                     return as_value_v<type>;
                 }
+            } else if constexpr (is_clipped_integer_v<axis_t> && is_index_v<ndim_t>) {
+                // TODO: make same bit-width as axis_t
+                using type = nm_size_t;
+                return as_value_v<type>;
             } else if constexpr (is_index_v<axis_t> && is_index_v<ndim_t>) {
                 using type = make_unsigned_t<axis_t>;
                 return as_value_v<type>;

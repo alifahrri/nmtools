@@ -50,7 +50,7 @@ namespace nmtools::index
             at(result,group_axis) = channel_per_group;
             at(result,channel_axis) = num_groups;
 
-            // TODO: parametrize number of independed dims
+            // TODO: parametrize number of independent dims
             for (nm_index_t i=0; i<=nm_index_t(src_dim-2); i++) {
                 at(result,-i) = at(src_shape,-i);
             }

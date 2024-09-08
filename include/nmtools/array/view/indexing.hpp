@@ -42,6 +42,7 @@ namespace nmtools::array
         auto operator()() const
         {
             auto indexer = as_static<max_dim>(attribute.indexer);
+            // TODO: handle errors
             return args::indexing{indexer};
         }
     };
@@ -52,6 +53,41 @@ namespace nmtools::meta
     template <typename indexer_t>
     struct is_attribute<args::indexing<indexer_t>> : true_type {};
 } // namespace nmtools::meta
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename indexer_t, auto...fmt_args>
+    struct to_string_t<args::indexing<indexer_t>,fmt_string_t<fmt_args...>>
+    {
+        using formatter_type = fmt_string_t<fmt_args...>;
+        using result_type = nmtools_string;
+        auto operator()(const args::indexing<indexer_t>& indexing) const noexcept
+        {
+            nmtools_string str;
+            str += "{";
+            str += ".indexer=";
+
+            nmtools_string indexer_str;
+            indexer_str = NMTOOLS_TYPENAME_TO_STRING(indexer_t);
+            using str_mapper_t = to_string_t<indexer_t,formatter_type>;
+            if constexpr (meta::has_result_type_v<str_mapper_t>) {
+                if constexpr (!meta::is_fail_v<typename str_mapper_t::result_type>) {
+                    indexer_str = to_string(indexing.indexer,formatter_type{});
+                }
+            }
+            str += indexer_str;
+            str += "}";
+
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
+
+/*===============================================================================*/
 
 namespace nmtools::view
 {
@@ -129,7 +165,11 @@ namespace nmtools::view
 
         constexpr auto operands() const noexcept
         {
-            return nmtools_tuple<array_type>{array};
+            if constexpr (meta::is_tuple_v<array_type>) {
+                return array;
+            } else {
+                return nmtools_tuple<array_type>{array};
+            }
         } // operands
 
         constexpr auto attributes() const noexcept
@@ -152,19 +192,49 @@ namespace nmtools::view
             return indexer.size();
         }
 
+        template <typename m_array_type, typename indices_type>
+        static constexpr auto get_element(const m_array_type& array, [[maybe_unused]] const indices_type& indices)
+        {
+            if constexpr (meta::is_pointer_v<m_array_type>) {
+                return apply_at(*array,indices);
+            } else if constexpr (is_none_v<indices_type>) {
+                static_assert( meta::is_num_v<m_array_type>
+                    , "invalid source array for indexing view" );
+                return array;
+            } else {
+                return apply_at(array,indices);
+            }
+        }
+
         template <typename...size_types>
         constexpr auto operator()(size_types...indices) const
         {
             auto dst_indices = pack_indices(indices...);
             auto src_indices = indexer.indices(dst_indices);
-            if constexpr (meta::is_pointer_v<array_type>) {
-                return apply_at(*array,src_indices);
-            } else if constexpr (is_none_v<decltype(src_indices)>) {
-                static_assert( meta::is_num_v<array_type>
-                    , "invalid source array for indexing view" );
-                return array;
+
+            using src_indices_type   = decltype(src_indices);
+            using nocvptr_array_type = meta::remove_cvref_pointer_t<array_type>;
+            static_assert(
+                (meta::is_index_array_v<src_indices_type> && meta::is_ndarray_v<nocvptr_array_type>)
+                || (meta::is_tuple_v<nocvptr_array_type> && meta::is_either_v<src_indices_type>)
+                || (is_none_v<src_indices_type> && meta::is_num_v<array_type>)
+            );
+
+            if constexpr (meta::is_tuple_v<nocvptr_array_type> && meta::is_either_v<src_indices_type>) {
+                using left_t  = meta::get_either_left_t<src_indices_type>;
+                using right_t = meta::get_either_right_t<src_indices_type>;
+                static_assert( meta::len_v<nocvptr_array_type> == 2 );
+                using element_t = meta::get_element_type_t<view::decorator_t<indexing_t,array_t,indexer_t>>;
+                if (auto l_ptr = nmtools::get_if<left_t>(&src_indices)) {
+                    const auto& left = nmtools::get<0>(array);
+                    return static_cast<element_t>(get_element(left,*l_ptr));
+                } else {
+                    auto r_ptr = nmtools::get_if<right_t>(&src_indices);
+                    const auto& right = nmtools::get<1>(array);
+                    return static_cast<element_t>(get_element(right,*r_ptr));
+                }
             } else {
-                return apply_at(array,src_indices);
+                return get_element(array,src_indices);
             }
         }
 
@@ -261,38 +331,6 @@ namespace nmtools::view
     } // lift_indexing
 } // namespace nmtools::view
 
-#if NMTOOLS_HAS_STRING
-
-namespace nmtools::utils::impl
-{
-    template <typename indexer_t, auto...fmt_args>
-    struct to_string_t<args::indexing<indexer_t>,fmt_string_t<fmt_args...>>
-    {
-        using formatter_type = fmt_string_t<fmt_args...>;
-        using result_type = nmtools_string;
-        auto operator()(const args::indexing<indexer_t>& indexing) const noexcept
-        {
-            nmtools_string str;
-            str += "{.indexer=";
-
-            nmtools_string indexer_str;
-            indexer_str = NMTOOLS_TYPENAME_TO_STRING(indexer_t);
-            using str_mapper_t = to_string_t<indexer_t,formatter_type>;
-            if constexpr (meta::has_result_type_v<str_mapper_t>) {
-                if constexpr (!meta::is_fail_v<typename str_mapper_t::result_type>) {
-                    indexer_str = to_string(indexing.indexer,formatter_type{});
-                }
-            }
-            str += indexer_str;
-            str += "}";
-
-            return str;
-        }
-    };
-}
-
-#endif // NMTOOLS_HAS_STRING
-
 namespace nmtools::meta
 {
     template <typename array_t, typename indexer_t>
@@ -302,7 +340,23 @@ namespace nmtools::meta
         using view_type  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
         using shape_type = decltype(meta::declval<view_type>().shape());
 
-        static constexpr auto value = is_ndarray_v<array_t> || (is_num_v<array_t> && is_index_array_v<shape_type>);
+        static constexpr auto value = [](){
+            if constexpr (is_tuple_v<array_t>) {
+                #if 0
+                constexpr auto N = len_v<array_t>;
+                return meta::template_reduce<N>([&](auto init, auto index){
+                    constexpr auto I = decltype(index)::value;
+                    using tuple_element_t = decltype(nmtools::get<I>(meta::declval<array_t>()));
+                    using type = remove_cvref_pointer_t<tuple_element_t>;
+                    return init && (is_ndarray_v<type> || is_num_v<type>);
+                }, is_index_array_v<shape_type>);
+                #else
+                return is_index_array_v<shape_type>;
+                #endif
+            } else {
+                return is_ndarray_v<array_t> || (is_num_v<array_t> && is_index_array_v<shape_type>);
+            }
+        }();
     };
 
     template <typename array_t, typename indexer_t>
@@ -312,14 +366,38 @@ namespace nmtools::meta
         using view_type  = view::decorator_t<view::indexing_t,array_t,indexer_t>;
         using shape_type = decltype(meta::declval<view_type>().shape());
 
-        static constexpr auto value = is_num_v<array_t> && is_none_v<shape_type>;
+        static constexpr auto value = (is_num_v<array_t> || is_tuple_v<array_t>) && is_none_v<shape_type>;
     };
 
     template <typename array_t, typename indexer_t>
     struct get_element_type<
         view::decorator_t<view::indexing_t,array_t,indexer_t>
     > {
-        using type = get_element_type_t<array_t>;
+        static constexpr auto vtype = [](){
+            if constexpr (is_tuple_v<array_t>) {
+                constexpr auto N = len_v<array_t>;
+                return template_reduce<N>([&](auto init, auto index){
+                    constexpr auto I = decltype(index)::value;
+                    using tuple_element_t = decltype(nmtools::get<I>(meta::declval<array_t>()));
+                    using element_t = get_element_type_t<remove_pointer_t<remove_cvref_t<tuple_element_t>>>;
+
+                    using init_t = type_t<decltype(init)>;
+                    if constexpr (is_none_v<init_t>) {
+                        using type = element_t;
+                        return as_value_v<type>;
+                    } else {
+                        static_assert( !is_ndarray_v<init_t> );
+                        using type = common_type_t<init_t,element_t>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<none_t>);
+            } else {
+                using type = get_element_type_t<array_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+        static_assert( !is_fail_v<type> );
     };
 
     template <typename array_t, typename indexer_t>

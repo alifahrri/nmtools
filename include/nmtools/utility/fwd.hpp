@@ -29,6 +29,10 @@ namespace nmtools::meta
                 || is_view_v<T>
             ) {
                 return as_value_v<const T>;
+            } else if constexpr (is_tuple_v<T>) {
+                // assume the tuple elements is already valid
+                // TODO: check if the elements type is valid
+                return as_value_v<T>;
             } else if constexpr (is_bounded_array_v<T>) {
                 return as_value_v<const T&>;
             } else if constexpr (is_ndarray_v<T>) {
@@ -55,6 +59,10 @@ namespace nmtools::meta
                 || is_constant_index_array_v<T>
                 || is_constant_index_v<T>
             ) {
+                return as_value_v<T>;
+            } else if constexpr (is_tuple_v<T>) {
+                // assume the tuple elements is already valid
+                // TODO: check if the elements type is valid
                 return as_value_v<T>;
             } else if constexpr (is_bounded_array_v<T>) {
                 return as_value_v<T&>;

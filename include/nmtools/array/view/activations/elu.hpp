@@ -55,7 +55,9 @@ namespace nmtools::utils::impl
         auto operator()(view::fun::elu<alpha_t> op) const noexcept
         {
             nmtools_string str;
-            str += "elu{.alpha=";
+            str += "elu";
+            str += "{";
+            str += ".alpha=";
             str += to_string(op.alpha);
             str += "}";
 

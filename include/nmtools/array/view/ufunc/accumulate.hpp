@@ -21,6 +21,7 @@
 
 #include "nmtools/array/view/ufunc/reduce.hpp"
 #include "nmtools/array/view/ufunc/detail.hpp"
+#include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/utils/isequal.hpp"
 
 namespace nmtools::args
@@ -81,6 +82,49 @@ namespace nmtools::meta
         , typename op_t>
     struct is_attribute<args::accumulate<axis_t,dtype_t,op_t>> : true_type {};
 } // namespace nmtools::meta
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename op_t
+        , typename axis_t
+        , typename dtype_t
+        , typename formatter_t
+    >
+    struct to_string_t<
+        args::accumulate<op_t,axis_t,dtype_t>
+        , formatter_t
+    > {
+        using attribute_type = args::accumulate<op_t,axis_t,dtype_t>;
+        using formatter_type = formatter_t;
+
+        auto operator()(const attribute_type& attribute) const noexcept
+        {
+            nmtools_string str;
+
+            auto op_str = to_string(attribute.op);
+            if (op_str.empty()) {
+                op_str = NMTOOLS_TYPENAME_TO_STRING(op_t);
+            }
+
+            str += "{";
+
+            str += ".op=";
+            str += op_str;
+            str += ",.axis=";
+            str += to_string(attribute.axis,formatter_type{});
+            str += ",.dtype=";
+            str += to_string(attribute.dtype,formatter_type{});
+
+            str += "}";
+            
+            return str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
 
 namespace nmtools::view
 {

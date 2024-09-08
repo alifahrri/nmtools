@@ -4,8 +4,10 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/at.hpp"
 #include "nmtools/array/ndarray.hpp"
+#include "nmtools/array/index/normalize_axis.hpp"
 #include "nmtools/platform/math/constexpr.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::index
 {
@@ -48,9 +50,19 @@ namespace nmtools::index
                 result.resize(dst_dim);
             }
 
+            [[maybe_unused]]
+            auto normalized_axis = [&](){
+                if constexpr (is_none_v<axis_t>) {
+                    return axis;
+                } else {
+                    // TODO: propagate error
+                    return unwrap(normalize_axis(axis,src_dim));
+                }
+            }();
+
             if constexpr (meta::is_num_v<window_shape_t> && meta::is_num_v<axis_t>) {
                 for (size_t i=0; i<src_dim; i++) {
-                    if (i==(size_t)axis) { // TODO: normalize axis
+                    if (i==(size_t)normalized_axis) {
                         auto res_i = at(src_shape,i) - (window_shape-1);
                         at(result,i) = res_i;
                     } else {
@@ -79,8 +91,8 @@ namespace nmtools::index
                 }
                 // assume len(axis) == len(window_shape)
                 // TODO: check lens
-                for (size_t i=0; i<len(axis); i++) {
-                    auto axis_i = at(axis,i);
+                for (size_t i=0; i<len(normalized_axis); i++) {
+                    auto axis_i = at(normalized_axis,i);
                     at(result,axis_i) -= (at(window_shape,i) - 1);
                 }
                 for (size_t i=src_dim; i<dst_dim; i++) {

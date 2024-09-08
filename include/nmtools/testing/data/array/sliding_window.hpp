@@ -6,6 +6,8 @@
 
 NMTOOLS_TESTING_DECLARE_CASE(array, sliding_window)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int x[6] = {0,1,2,3,4,5};
@@ -485,6 +487,140 @@ NMTOOLS_TESTING_DECLARE_CASE(array, sliding_window)
                         }
                     }
                 }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        inline int x[1][5][4] = {
+            {
+                { 0, 1, 2, 3},
+                { 4, 5, 6, 7},
+                { 8, 9,10,11},
+                {12,13,14,15},
+                {16,17,18,19},
+            }
+        };
+        inline int window_shape = 3;
+        inline int axis = -1;
+        inline auto window_shape_ct = 3_ct;
+        inline auto axis_ct = meta::ct_v<-1>;
+        NMTOOLS_CAST_ARRAYS(x)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        inline int expected[1][5][2][3] = {
+            {
+                {
+                    {0,1,2},
+                    {1,2,3},
+                },
+                {
+                    {4,5,6},
+                    {5,6,7},
+                },
+                {
+                    {8, 9,10},
+                    {9,10,11},
+                },
+                {
+                    {12,13,14},
+                    {13,14,15},
+                },
+                {
+                    {16,17,18},
+                    {17,18,19},
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        inline int x[1][1][5][4] = {
+            {
+                {
+                    { 0, 1, 2, 3},
+                    { 4, 5, 6, 7},
+                    { 8, 9,10,11},
+                    {12,13,14,15},
+                    {16,17,18,19},
+                }
+            }
+        };
+        inline int window_shape = 3;
+        inline int axis = -1;
+        inline auto window_shape_ct = 3_ct;
+        inline auto axis_ct = meta::ct_v<-1>;
+        NMTOOLS_CAST_ARRAYS(x)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
+    {
+        inline int expected[1][1][5][2][3] = {
+            {
+                {
+                    {
+                        {0,1,2},
+                        {1,2,3},
+                    },
+                    {
+                        {4,5,6},
+                        {5,6,7},
+                    },
+                    {
+                        {8, 9,10},
+                        {9,10,11},
+                    },
+                    {
+                        {12,13,14},
+                        {13,14,15},
+                    },
+                    {
+                        {16,17,18},
+                        {17,18,19},
+                    }
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case13)
+    {
+        inline int x[1][5][3] = {
+            {
+                { 0, 1, 2},
+                { 3, 4, 5},
+                { 6, 7, 8},
+                { 9,10,11},
+                {12,13,14},
+            }
+        };
+        inline int window_shape = 3;
+        inline int axis = -1;
+        inline auto window_shape_ct = 3_ct;
+        inline auto axis_ct = meta::ct_v<-1>;
+        NMTOOLS_CAST_ARRAYS(x)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case13)
+    {
+        inline int expected[1][5][1][3] = {
+            {
+                {
+                    { 0, 1, 2},
+                },
+                {
+                    { 3, 4, 5},
+                },
+                {
+                    { 6, 7, 8},
+                },
+                {
+                    { 9,10,11},
+                },
+                {
+                    {12,13,14},
+                },
             }
         };
     }

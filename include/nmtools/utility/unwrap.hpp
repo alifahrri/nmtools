@@ -2,6 +2,8 @@
 #define NMTOOLS_UTILITY_UNWRAP_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/assert.hpp"
+#include "nmtools/utility/has_value.hpp"
 
 namespace nmtools
 {
@@ -11,6 +13,7 @@ namespace nmtools
     constexpr auto unwrap(const T& t)
         -> const meta::resolve_optype_t<unwrap_t,T>
     {
+        nmtools_cassert( has_value(t), "tried to unwrap invalid state" );
         if constexpr (meta::is_maybe_v<T>) {
             return *t;
         } else {
@@ -22,6 +25,7 @@ namespace nmtools
     constexpr auto unwrap(T& t)
         -> meta::resolve_optype_t<unwrap_t,T>
     {
+        nmtools_cassert( has_value(t), "tried to unwrap invalid state" );
         if constexpr (meta::is_maybe_v<T>) {
             return *t;
         } else {
@@ -29,7 +33,6 @@ namespace nmtools
         }
     }
 
-    #if 1
     template <typename T, auto N>
     constexpr auto unwrap(const T(&t)[N])
         -> const T(&)[N]
@@ -43,7 +46,6 @@ namespace nmtools
     {
         return t;
     }
-    #endif
 }
 
 namespace nmtools::meta

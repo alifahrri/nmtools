@@ -41,12 +41,14 @@ option(NMTOOLS_VIEW_TEST_ARRAY_VIEW      "test array view modules"       OFF)
 option(NMTOOLS_VIEW_TEST_ARRAY_UFUNCS    "test array ufuncs modules"     OFF)
 option(NMTOOLS_VIEW_TEST_ARRAY_VIEW_NN   "test array nn view modules"    OFF)
 option(NMTOOLS_VIEW_TEST_COMPOSITION     "test array view composition"   OFF)
+option(NMTOOLS_VIEW_TEST_CONV            "test array view conv"          OFF)
 
 if (NMTOOLS_VIEW_TEST_ALL)
     SET(NMTOOLS_VIEW_TEST_ARRAY_VIEW      ON CACHE BOOL "test array view modules"       FORCE)
     SET(NMTOOLS_VIEW_TEST_ARRAY_UFUNCS    ON CACHE BOOL "test array ufuncs modules"     FORCE)
     SET(NMTOOLS_VIEW_TEST_ARRAY_VIEW_NN   ON CACHE BOOL "test array nn view modules"    FORCE)
     SET(NMTOOLS_VIEW_TEST_COMPOSITION     ON CACHE BOOL "test array view composition"   FORCE)
+    SET(NMTOOLS_VIEW_TEST_CONV            ON CACHE BOOL "test array view conv"          FORCE)
 endif (NMTOOLS_VIEW_TEST_ALL)
 
 set(ARRAY_VIEW_1_TEST_SOURCES
@@ -63,6 +65,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/concatenate.cpp
     src/compress.cpp
     src/expand_dims.cpp
+    src/expand.cpp
     src/flatten.cpp
     src/flip.cpp
     src/full.cpp
@@ -235,57 +238,70 @@ set(VIEW_NN_TEST_SOURCES
     src/softmin.cpp
 )
 
-## when using single file without splitting, using approx peak of 17GB for compiling conv only
-## with split and reordering, on 8C/16T with 32GB memory, using gcc max at -j12
-set(VIEW_CONV_1_TEST_SOURCES
-    ## spread conv so that it doesn't take all the memory
-    ## and avoid memory spike
-    src/conv-1.cpp
+set(VIEW_CONV_TEST_SOURCES
+    src/conv1d-1.cpp
+    src/conv1d-2.cpp
+    src/conv1d-3.cpp
+    src/conv1d-4.cpp
+    src/conv1d-5.cpp
+    src/conv1d-6.cpp
+    src/conv1d-7.cpp
+    src/conv1d-8.cpp
+    src/conv1d-9.cpp
+    src/conv1d-10.cpp
+    src/conv1d-11.cpp
+    src/conv1d-12.cpp
+    src/conv1d-13.cpp
+    src/conv1d-14.cpp
+    src/conv1d-15.cpp
+    src/conv1d-16.cpp
+    src/conv1d-17.cpp
+    src/conv1d-18.cpp
+    src/conv2d-1.cpp
+    src/conv2d-2.cpp
+    src/conv2d-3.cpp
+    src/conv2d-4.cpp
+    src/conv2d-5.cpp
+    src/conv2d-6.cpp
+    src/conv2d-7.cpp
+    src/conv2d-8.cpp
+    src/conv2d-9.cpp
+    src/conv2d-10.cpp
+    src/conv2d-11.cpp
+    src/conv2d-12.cpp
+    src/conv2d-13.cpp
+    src/conv2d-14.cpp
 )
-set(VIEW_CONV_2_TEST_SOURCES
-    src/conv-2.cpp
-)
-set(VIEW_CONV_3_TEST_SOURCES
-    src/conv-3.cpp
-)
-set(VIEW_CONV_4_TEST_SOURCES
-    src/conv-4.cpp
-)
+
 if (NOT NMTOOLS_VIEW_TEST_ARRAY_VIEW_NN)
     set (VIEW_NN_TEST_SOURCES "")
-    set (VIEW_CONV_1_TEST_SOURCES "")
-    set (VIEW_CONV_2_TEST_SOURCES "")
-    set (VIEW_CONV_3_TEST_SOURCES "")
-    set (VIEW_CONV_4_TEST_SOURCES "")
+endif ()
+
+if (NOT NMTOOLS_VIEW_TEST_CONV)
+    set (VIEW_CONV_TEST_SOURCES "")
 endif ()
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     ## split matmul to avoid high memory peak
     ${ARRAY_MATMUL_1_TEST_SOURCES}
-    ## spread conv to reduce memory
-    ${VIEW_CONV_1_TEST_SOURCES}
     ## view part 1
     ${ARRAY_VIEW_1_TEST_SOURCES}
     ## split matmul to avoid high memory peak
     ${ARRAY_MATMUL_2_TEST_SOURCES}
     ## view part 2
     ${ARRAY_VIEW_2_TEST_SOURCES}
-    ## spread conv to reduce memory
-    ${VIEW_CONV_2_TEST_SOURCES}
     ## ufuncs
     ${ARRAY_UFUNCS_1_TEST_SOURCES}
     ## split matmul to avoid high memory peak
     ${ARRAY_MATMUL_3_TEST_SOURCES}
-    ## spread conv to reduce memory
-    ${VIEW_CONV_3_TEST_SOURCES}
     ## ufuncs part 2
     ${ARRAY_UFUNCS_2_TEST_SOURCES}
     ## array view nn
     ${VIEW_NN_TEST_SOURCES}
-    ## spread conv to reduce memory
-    ${VIEW_CONV_4_TEST_SOURCES}
     ## view composition
     ${COMPOSITION_TEST_SOURCES}
+    ## view conv tests
+    ${VIEW_CONV_TEST_SOURCES}
 )
 add_test(
     NAME ${PROJECT_NAME}-doctest

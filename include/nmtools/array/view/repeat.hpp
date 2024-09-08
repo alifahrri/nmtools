@@ -129,7 +129,8 @@ namespace nmtools::utils::impl
         auto operator()(const view::repeat_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "repeat{";
+            str += "repeat";
+            str += "{";
             str += ".src_shape="; str += to_string(kwargs.src_shape,Compact);
             str += ",.repeats=";  str += to_string(kwargs.repeats,Compact);
             str += ",.axis=";     str += to_string(kwargs.axis,Compact);

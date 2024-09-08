@@ -4,6 +4,7 @@
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/index/sliding_window.hpp"
 #include "nmtools/array/index/product.hpp"
+#include "nmtools/array/index/normalize_axis.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/fwd.hpp"
@@ -63,21 +64,38 @@ namespace nmtools::view
         }
     }; // sliding_window_t
 
-    template <typename array_t, typename window_shape_t, typename axis_t=none_t>
-    constexpr auto make_sliding_window(const array_t& array
+    template <typename src_shape_t, typename window_shape_t, typename axis_t=none_t>
+    constexpr auto sliding_window_indexer(const src_shape_t& src_shape
         , const window_shape_t& window_shape, const axis_t& axis=axis_t{})
     {
-        auto src_shape = shape<true>(array);
-        auto indexer   = sliding_window_t{src_shape,window_shape,axis};
-        return indexing(array,indexer);
-    } // make_sliding_window
+        // TODO: ValueError: Since axis is `None`, must provide window_shape for all dimensions of `x`;
+        // check if we can compute the resulting shape
+        auto dst_shape = index::shape_sliding_window(src_shape,window_shape,axis);
+        if constexpr (meta::is_fail_v<decltype(dst_shape)>) {
+            // let the caller handle compile error
+            auto error = dst_shape;
+            return error;
+        } else if constexpr (meta::is_maybe_v<decltype(dst_shape)>) {
+            using result_t = decltype(sliding_window_t{src_shape,window_shape,axis});
+            using return_t = nmtools_maybe<result_t>;
+            return (dst_shape
+                ? return_t{result_t{src_shape,window_shape,axis}}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            auto indexer = sliding_window_t{src_shape,window_shape,axis};
+            return indexer;
+        }
+    } // sliding_window_indexer
 
     template <typename array_t, typename window_shape_t, typename axis_t=none_t>
     constexpr auto sliding_window(const array_t& array
         , const window_shape_t& window_shape, const axis_t& axis=axis_t{})
     {
-        auto f = [](const auto&...args){
-            return make_sliding_window(args...);
+        auto f = [](const auto& array, const auto& window_shape, const auto& axis){
+            auto src_shape = shape<true>(array);
+            auto indexer   = sliding_window_indexer(src_shape,window_shape,axis);
+            return indexing(array,indexer);
         };
         return lift_indexing(f,array,window_shape,axis);
     } // sliding_window
@@ -96,7 +114,8 @@ namespace nmtools::utils::impl
         auto operator()(const view::sliding_window_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "sliding_window{";
+            str += "sliding_window";
+            str += "{";
             str += ".src_shape=";
             str += to_string(kwargs.src_shape,Compact);
             str += ",.window_shape=";

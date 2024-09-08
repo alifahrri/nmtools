@@ -118,13 +118,6 @@ namespace nmtools::functional
         functors_type functors;
         operands_type operands;
 
-        #if 0
-        constexpr functor_composition_t()
-            : functors{}
-            , operands{}
-        {}
-        #endif
-
         constexpr functor_composition_t(functors_type& functors)
             : functors(functors)
             , operands{}
@@ -569,16 +562,6 @@ namespace nmtools::functional
     template <typename F, nm_size_t Arity, nm_size_t N_OUT=1>
     struct fmap_t : detail::base_fmap_t<F,Arity,N_OUT>
     {
-        #if 0
-        static constexpr auto arity = Arity;
-        static constexpr auto n_outputs = N_OUT;
-        using arity_type = meta::integral_constant<nm_size_t,arity>;
-        using n_outputs_type = meta::integral_constant<nm_size_t,n_outputs>;
-
-        const F fn;
-        arity_type m_arity = arity_type{};
-        #endif
-
         using base = detail::base_fmap_t<F,Arity,N_OUT>;
         using base::fn, base::arity;
 
@@ -866,29 +849,6 @@ namespace nmtools::functional
     template <typename T>
     constexpr inline auto is_broadcast_view_v = is_broadcast_view<T>::value;
 } // namespace nmtools::functional
-
-#if 0
-namespace nmtools::functional
-{
-    template <typename...args_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::alias_t, args_t...
-        >
-    > {
-        using view_type = view::decorator_t<
-            view::alias_t, args_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            return alias[view.id];
-        }
-    };
-} // namespace nmtools::functional
-#endif
 
 namespace nmtools::utils
 {

@@ -54,7 +54,9 @@ namespace nmtools::utils::impl
         {
             nmtools_string str;
 
-            str += "prelu{.alpha=";
+            str += "prelu";
+            str += "{";
+            str += ".alpha=";
             str += to_string(op.alpha);
             str += "}";
 
