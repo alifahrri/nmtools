@@ -203,7 +203,7 @@ namespace nmtools::index
     struct conv_sum_axes_t {};
 
     template <typename n_planes_t>
-    constexpr auto conv_sum_axes(n_planes_t n_planes)
+    constexpr auto conv_sum_axes([[maybe_unused]] n_planes_t n_planes)
     {
         using result_t = meta::resolve_optype_t<conv_sum_axes_t,n_planes_t>;
 
@@ -258,7 +258,7 @@ namespace nmtools::index
     struct conv_expand_spacing_t {};
 
     template <typename dilation_t, typename n_planes_t>
-    constexpr auto conv_expand_spacing(const dilation_t& dilation, n_planes_t n_planes)
+    constexpr auto conv_expand_spacing([[maybe_unused]] const dilation_t& dilation, [[maybe_unused]] n_planes_t n_planes)
     {
         using result_t = meta::resolve_optype_t<conv_expand_spacing_t,dilation_t,n_planes_t>;
 
@@ -287,7 +287,7 @@ namespace nmtools::index
     struct conv_pad_t {};
 
     template <typename src_dim_t, typename padding_t, typename n_planes_t>
-    constexpr auto conv_pad(const src_dim_t& src_dim, const padding_t& padding, n_planes_t n_planes)
+    constexpr auto conv_pad([[maybe_unused]] const src_dim_t& src_dim, [[maybe_unused]] const padding_t& padding, [[maybe_unused]] n_planes_t n_planes)
     {
         using result_t = meta::resolve_optype_t<conv_pad_t,src_dim_t,padding_t,n_planes_t>;
 
