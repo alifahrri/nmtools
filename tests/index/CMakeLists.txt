@@ -53,7 +53,6 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/compute_offset.cpp
         src/compute_strides.cpp
         src/concatenate.cpp
-        src/conv.cpp
         src/convnd.cpp
         src/expand_dims.cpp
         src/expand.cpp

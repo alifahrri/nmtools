@@ -47,7 +47,6 @@ set( META_INDEX_TEST_SOURCES
     array/index/compute_indices.cpp
     array/index/compute_strides.cpp
     array/index/concatenate.cpp
-    array/index/conv.cpp
     array/index/expand_dims.cpp
     array/index/gather.cpp
     array/index/insert_index.cpp
