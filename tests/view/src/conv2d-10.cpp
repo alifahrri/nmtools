@@ -24,9 +24,9 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #define CONV2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_USE_CASE(array, conv2dv2, case_name); \
+    NMTOOLS_TESTING_USE_CASE(array, conv2d, case_name); \
     using namespace args; \
-    auto result = nmtools::view::conv2dv2(__VA_ARGS__); \
+    auto result = nmtools::view::conv2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -34,7 +34,7 @@ SUBCASE(#case_name) \
 // TODO: fix utl
 #ifndef NMTOOLS_DISABLE_STL
 
-TEST_CASE("conv2d(case10)" * doctest::test_suite("view::conv2dv2"))
+TEST_CASE("conv2d(case10)" * doctest::test_suite("view::conv2d"))
 {
     auto bias = nmtools::None;
 

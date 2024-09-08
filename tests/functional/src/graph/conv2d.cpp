@@ -25,7 +25,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
     auto input  = na::reshape(na::arange(ix::product(input_shape)),input_shape);
     auto weight = na::reshape(na::arange(ix::product(weight_shape)),weight_shape);
 
-    auto result = view::conv2dv2(unwrap(input),unwrap(weight));
+    auto result = view::conv2d(unwrap(input),unwrap(weight));
     auto graph  = fn::get_compute_graph(unwrap(result));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
@@ -41,7 +41,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
 
     auto stride = nmtools_array{2,2};
 
-    auto result = view::conv2dv2(unwrap(input),unwrap(weight),None,stride);
+    auto result = view::conv2d(unwrap(input),unwrap(weight),None,stride);
     auto graph  = fn::get_compute_graph(unwrap(result));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
@@ -57,7 +57,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
 
     auto stride = nmtools_array{2,2};
 
-    auto result = view::conv2dv2(unwrap(input),unwrap(weight),None,stride);
+    auto result = view::conv2d(unwrap(input),unwrap(weight),None,stride);
     auto graph  = fn::get_compute_graph(unwrap(result));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
@@ -73,7 +73,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
 
     auto stride = nmtools_array{2,2};
 
-    auto result = view::conv2dv2(unwrap(input),unwrap(weight),None,stride);
+    auto result = view::conv2d(unwrap(input),unwrap(weight),None,stride);
     auto graph  = fn::get_compute_graph(unwrap(result));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
@@ -90,7 +90,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
 
     auto stride = nmtools_array{2,2};
 
-    auto result = view::conv2dv2(unwrap(input),unwrap(weight),None,stride);
+    auto result = view::conv2d(unwrap(input),unwrap(weight),None,stride);
     auto graph  = fn::get_compute_graph(unwrap(result));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
@@ -109,7 +109,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
     auto stride  = nmtools_array{2,2};
     auto padding = nmtools_array{1,1};
 
-    auto result = view::conv2dv2(unwrap(input),unwrap(weight),None,stride,padding);
+    auto result = view::conv2d(unwrap(input),unwrap(weight),None,stride,padding);
     auto graph  = fn::get_compute_graph(unwrap(result));
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );

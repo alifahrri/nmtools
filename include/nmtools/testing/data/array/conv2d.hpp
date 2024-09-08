@@ -4,7 +4,7 @@
 #include "nmtools/testing/testing.hpp"
 #include "nmtools/testing/array_cast.hpp"
 
-NMTOOLS_TESTING_DECLARE_CASE(array, conv2dv2)
+NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
