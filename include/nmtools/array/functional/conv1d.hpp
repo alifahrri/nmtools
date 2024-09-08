@@ -16,15 +16,26 @@ namespace nmtools::functional
     {
         struct conv1d
         {
-            template <typename...args_t>
-            constexpr auto operator()(const args_t&...args) const
+            template <typename array_t, typename weight_t, typename...args_t>
+            constexpr auto operator()(const array_t& array, const weight_t& weight, const args_t&...args) const
             {
-                return view::conv1d(args...);
+                return view::conv1d(array,weight,None,args...);
+            }
+        };
+
+        struct conv1d_bias
+        {
+            template <typename array_t, typename weight_t, typename bias_t, typename...args_t>
+            constexpr auto operator()(const array_t& array, const weight_t& weight, const bias_t& bias, const args_t&...args) const
+            {
+                return view::conv1d(array,weight,bias,args...);
             }
         };
     } // namespace fun
 
     constexpr inline auto conv1d = functor_t{binary_fmap_t<fun::conv1d>{}};
+
+    constexpr inline auto conv1d_bias = functor_t{ternary_fmap_t<fun::conv1d_bias>{}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_CONV1D_HPP
