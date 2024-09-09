@@ -80,11 +80,12 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/scatter.cpp
         src/shape_concatenate.cpp
         src/shape_tile.cpp
+        src/sliding_window.cpp
         src/slice.cpp
         src/take.cpp
         src/take_along_axis.cpp
         src/tile.cpp
-        src/sliding_window.cpp
+        src/tril.cpp
     )
 endif (NMTOOLS_INDEX_TEST_ALL)
 
