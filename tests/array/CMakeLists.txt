@@ -130,6 +130,8 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/split.cpp
     array/take.cpp
     array/tile.cpp
+    array/tril.cpp
+    array/triu.cpp
     array/transpose.cpp
     array/var.cpp
     array/vstack.cpp

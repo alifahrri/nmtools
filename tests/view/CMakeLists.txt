@@ -98,6 +98,8 @@ set(ARRAY_VIEW_2_TEST_SOURCES
     src/take.cpp
     src/tile.cpp
     src/transpose.cpp
+    src/tril.cpp
+    src/triu.cpp
     src/var.cpp
     src/vstack.cpp
     src/where.cpp
