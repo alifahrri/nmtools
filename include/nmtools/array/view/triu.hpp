@@ -66,7 +66,7 @@ namespace nmtools::index
         nm_index_t index_0 = at(indices,meta::ct_v<-2>);
         nm_index_t index_1 = at(indices,meta::ct_v<-1>);
 
-        if (index_0 > (index_1 - k)) {
+        if ((nm_index_t)index_0 > nm_index_t(index_1 - k)) {
             return return_t{meta::Nothing};
         } else {
             return return_t{result};
