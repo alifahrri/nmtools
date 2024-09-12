@@ -66,10 +66,13 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/compress.cpp
     src/expand_dims.cpp
     src/expand.cpp
+    src/eye.cpp
     src/flatten.cpp
     src/flip.cpp
     src/full.cpp
+    src/full_like.cpp
     src/hstack.cpp
+    src/identity.cpp
     # split matmul to avoid high peak memory
     # src/matmul.cpp
     src/mean.cpp
@@ -81,6 +84,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
 )
 set(ARRAY_VIEW_2_TEST_SOURCES
     src/ones.cpp
+    src/ones_like.cpp
     src/pad.cpp
     src/pooling.cpp
     src/ref.cpp
@@ -104,6 +108,7 @@ set(ARRAY_VIEW_2_TEST_SOURCES
     src/vstack.cpp
     src/where.cpp
     src/zeros.cpp
+    src/zeros_like.cpp
     src/sliding_window.cpp
 )
 set (ARRAY_MATMUL_1_TEST_SOURCES

@@ -102,17 +102,21 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/cumsum.cpp
     array/expand_dims.cpp
     array/expand.cpp
+    array/eye.cpp
     array/flatten.cpp
     array/flip.cpp
     array/full.cpp
+    array/full_like.cpp
     array/group_norm.cpp
     array/hstack.cpp
+    array/identity.cpp
     # break matmul to multiple files to avoid high memory peak
     # array/matmul.cpp
     array/instance_norm.cpp
     array/mean.cpp
     array/moveaxis.cpp
     array/ones.cpp
+    array/ones_like.cpp
     array/layer_norm.cpp
     array/pad.cpp
     array/prod.cpp
@@ -137,6 +141,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/vstack.cpp
     array/where.cpp
     array/zeros.cpp
+    array/zeros_like.cpp
 )
 set(ARRAY_UFUNCS_TEST_SOURCES
     # array/ufuncs/add.cpp

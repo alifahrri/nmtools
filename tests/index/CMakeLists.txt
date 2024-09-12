@@ -56,6 +56,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/convnd.cpp
         src/expand_dims.cpp
         src/expand.cpp
+        src/eye.cpp
         src/filter.cpp
         src/free_axes.cpp
         src/gather.cpp
