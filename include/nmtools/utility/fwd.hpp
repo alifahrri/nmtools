@@ -201,8 +201,17 @@ namespace nmtools
     template <typename...Ts>
     constexpr auto pack_operands(const Ts&...ts)
     {
-        using result_t = nmtools_tuple<meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...>;
-        return result_t{fwd_operand(ts)...};
+        if constexpr ((meta::is_maybe_v<Ts> || ...)) {
+            using result_t = nmtools_tuple<meta::fwd_operand_t<meta::remove_cvref_t<decltype(unwrap(meta::declval<Ts>()))>>...>;
+            using return_t = nmtools_maybe<result_t>;
+            return ((has_value(ts) && ...)
+                ? return_t{nmtools_tuple{fwd_operand(unwrap(ts))...}}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            using result_t = nmtools_tuple<meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...>;
+            return result_t{fwd_operand(ts)...};
+        }
     }
 
     template <typename...Ts>
