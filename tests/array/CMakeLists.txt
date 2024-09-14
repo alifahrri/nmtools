@@ -100,6 +100,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/concatenate.cpp
     array/cumprod.cpp
     array/cumsum.cpp
+    array/diagflat.cpp
     array/expand_dims.cpp
     array/expand.cpp
     array/eye.cpp
@@ -134,6 +135,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/split.cpp
     array/take.cpp
     array/tile.cpp
+    array/tri.cpp
     array/tril.cpp
     array/triu.cpp
     array/transpose.cpp
