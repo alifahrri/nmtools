@@ -17,6 +17,7 @@ namespace nmtools::index
 
         auto result = result_t {};
 
+        [[maybe_unused]]
         auto src_dim = len(src_shape);
         if constexpr (meta::is_resizable_v<result_t>) {
             result.resize(src_dim);
