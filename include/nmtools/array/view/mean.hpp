@@ -126,8 +126,9 @@ namespace nmtools::view
         // note that this mean view is created not by create new view type,
         // but by composing two view (add.reduce + divide) instead
 
-        auto shape = ::nmtools::shape<true>(array);
-        auto dim   = ::nmtools::dim<true>(array);
+        // TODO: propagate error handling
+        auto shape = unwrap(::nmtools::shape<true>(array));
+        auto dim   = unwrap(::nmtools::dim<true>(array));
         // TODO: error handling
         auto m_axis  = [&](){
             if constexpr (is_none_v<axis_t>) {

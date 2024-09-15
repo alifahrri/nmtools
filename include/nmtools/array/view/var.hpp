@@ -28,7 +28,8 @@ namespace nmtools::view
     template <typename array_t, typename axis_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
     constexpr auto var(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{})
     {
-        auto dim = ::nmtools::dim<true>(array);
+        // TODO: propagate error handling
+        auto dim = unwrap(::nmtools::dim<true>(array));
         // TODO: error handling
         auto m_axis  = [&](){
             if constexpr (is_none_v<axis_t>) {

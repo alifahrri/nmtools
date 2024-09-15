@@ -419,7 +419,12 @@ namespace nmtools::functional
         template <template<typename...>typename m_tuple, typename...m_operands_t, auto...Is>
         constexpr auto apply(const m_tuple<m_operands_t...>& new_operands, meta::index_sequence<Is...>) const
         {
-            return (*this)(nmtools::get<Is>(new_operands)...);
+            // TODO: propagate error handling
+            if constexpr (meta::is_maybe_v<m_tuple<m_operands_t...>>) {
+                return (*this)(nmtools::get<Is>(unwrap(new_operands))...);
+            } else {
+                return (*this)(nmtools::get<Is>(new_operands)...);
+            }
         }
 
         template <template<typename...>typename m_tuple, typename...m_operands_t>
@@ -495,7 +500,12 @@ namespace nmtools::functional
         template <template<typename...>typename m_tuple, typename...m_operands_t, auto...Is>
         constexpr auto apply(const m_tuple<m_operands_t...>& new_operands, meta::index_sequence<Is...>) const
         {
-            return (*this)(nmtools::get<Is>(new_operands)...);
+            // TODO: propagate error handling
+            if constexpr (meta::is_maybe_v<m_tuple<m_operands_t...>>) {
+                return (*this)(nmtools::get<Is>(unwrap(new_operands))...);
+            } else {
+                return (*this)(nmtools::get<Is>(new_operands)...);
+            }
         }
 
         template <template<typename...>typename m_tuple, typename...m_operands_t>
@@ -572,7 +582,12 @@ namespace nmtools::functional
         >
         constexpr auto expand_operands(sequence<Is...>, const operand_tuple<operands_t...>& operands, const attributes_t&...attributes) const
         {
-            return fn(get_operand(nmtools::get<Is>(operands))...,attributes...);
+            // TODO: propagate error handling
+            if constexpr (meta::is_maybe_v<operand_tuple<operands_t...>>) {
+                return fn(get_operand(nmtools::get<Is>(unwrap(operands)))...,attributes...);
+            } else {
+                return fn(get_operand(nmtools::get<Is>(operands))...,attributes...);
+            }
         }
 
         template<

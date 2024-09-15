@@ -175,7 +175,7 @@ namespace nmtools::view
         if constexpr (meta::is_maybe_v<array_t>) {
             using array_type  = meta::get_maybe_type_t<array_t>;
             using result_type = decltype(alias(meta::declval<array_type>(),id));
-            using return_type = nmtools_maybe<result_type>;
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
             return (static_cast<bool>(array)
                 ? return_type{alias(*array,id)}
                 : return_type{meta::Nothing}
@@ -201,31 +201,43 @@ namespace nmtools::view
     constexpr auto aliased(const arrays_t&...arrays)
     {
         auto array_pack = pack_operands(arrays...);
-        constexpr auto N = sizeof...(arrays);
-        constexpr auto initial_ids = meta::template_reduce<N>([&](auto init, auto index){
-            using array_type = decltype(unwrap(at(array_pack,index)));
-            constexpr auto id = get_id_v<meta::remove_cvref_pointer_t<array_type>>;
-            return utility::tuple_append(init,meta::ct_v<(nm_index_t)id>);
-        },nmtools_tuple{});
-        constexpr auto max_id    = index::max(meta::to_value_v<decltype(initial_ids)>);
-        constexpr auto offset_id = max_id + 1; // if max_id: -1, then offset 0
-        constexpr auto final_ids = meta::template_reduce<N>([&](auto init, auto index){
-            constexpr auto id = at(initial_ids,index);
-            constexpr auto final_id = ((id < 0) ? (offset_id + index) : id);
-            return utility::tuple_append(init,meta::ct_v<final_id>);
-        },nmtools_tuple{});
-        auto aliased = meta::template_reduce<N>([&](auto init, auto index){
-            const auto& array = at(array_pack,index);
-            if constexpr (meta::is_pointer_v<meta::remove_cvref_pointer_t<decltype(array)>>) {
-                return append_operands(init,alias(*array,at(final_ids,index)));
+        auto f = [](const auto& array_pack){
+            constexpr auto N = sizeof...(arrays);
+            constexpr auto initial_ids = meta::template_reduce<N>([&](auto init, auto index){
+                using array_type = decltype(unwrap(at(array_pack,index)));
+                constexpr auto id = get_id_v<meta::remove_cvref_pointer_t<array_type>>;
+                return utility::tuple_append(init,meta::ct_v<(nm_index_t)id>);
+            },nmtools_tuple{});
+            constexpr auto max_id    = index::max(meta::to_value_v<decltype(initial_ids)>);
+            constexpr auto offset_id = max_id + 1; // if max_id: -1, then offset 0
+            constexpr auto final_ids = meta::template_reduce<N>([&](auto init, auto index){
+                constexpr auto id = at(initial_ids,index);
+                constexpr auto final_id = ((id < 0) ? (offset_id + index) : id);
+                return utility::tuple_append(init,meta::ct_v<final_id>);
+            },nmtools_tuple{});
+            auto aliased = meta::template_reduce<N>([&](auto init, auto index){
+                const auto& array = at(array_pack,index);
+                if constexpr (meta::is_pointer_v<meta::remove_cvref_pointer_t<decltype(array)>>) {
+                    return append_operands(init,alias(*array,at(final_ids,index)));
+                } else {
+                    return append_operands(init,alias(array,at(final_ids,index)));
+                }
+            },nmtools_tuple{});
+            if constexpr (N == 1) {
+                return nmtools::get<0>(aliased);
             } else {
-                return append_operands(init,alias(array,at(final_ids,index)));
+                return aliased;
             }
-        },nmtools_tuple{});
-        if constexpr (N == 1) {
-            return nmtools::get<0>(aliased);
+        };
+        if constexpr (meta::is_maybe_v<decltype(array_pack)>) {
+            using result_t = decltype(f(unwrap(array_pack)));
+            using return_t = nmtools_maybe<result_t>;
+            return (array_pack
+                ? return_t{f(unwrap(array_pack))}
+                : return_t{meta::Nothing}
+            );
         } else {
-            return aliased;
+            return f(array_pack);
         }
     } // aliased
 

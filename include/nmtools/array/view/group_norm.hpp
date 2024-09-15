@@ -253,12 +253,12 @@ namespace nmtools::view
     template <typename input_t, typename num_groups_t, typename weight_t, typename bias_t, typename epsilon_t=float>
     constexpr auto group_norm(const input_t& input, num_groups_t num_groups, const weight_t& weight, const bias_t& bias, epsilon_t epsilon=epsilon_t{1e-5})
     {
-        auto src_shape = shape<true>(input);
+        auto src_shape = unwrap(shape<true>(input));
         auto grouped_shape = index::group_norm_reshape(src_shape,num_groups);
 
         // assume bias has the same shape as weight
         // TODO: check and handle error
-        auto wb_shape  = shape<true>(weight);
+        auto wb_shape  = unwrap(shape<true>(weight));
         auto wb_reshape_args = index::group_norm_args_reshape(src_shape,wb_shape);
 
         auto aliased  = view::aliased(input, weight, bias);

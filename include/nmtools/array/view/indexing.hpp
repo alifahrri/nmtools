@@ -254,22 +254,14 @@ namespace nmtools::view
             using array_type = meta::get_maybe_type_t<array_t>;
             using result_t = decltype(indexing(meta::declval<array_type>(),indexer));
             using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
-            if (static_cast<bool>(array)) {
-                auto result = indexing(*array,indexer);
-                if constexpr (meta::is_maybe_v<result_t>) {
-                    return (result ? return_t{*result}
-                        : return_t{meta::Nothing}
-                    );
-                } else {
-                    return return_t{result};
-                }
-            } else {
-                return return_t{meta::Nothing};
-            }
+            return (array
+                ? return_t{indexing(unwrap(array),indexer)}
+                : return_t{meta::Nothing}
+            );
         } else if constexpr (meta::is_maybe_v<indexer_t>) {
             using indexer_type = meta::get_maybe_type_t<indexer_t>;
             using result_t = decltype(indexing(array,meta::declval<indexer_type>()));
-            using return_t = nmtools_maybe<result_t>;
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             static_assert( !meta::is_maybe_v<typename indexer_type::dst_shape_type> );
             return (indexer ? return_t{indexing(array,*indexer)}
                 : return_t{meta::Nothing}

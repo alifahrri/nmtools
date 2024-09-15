@@ -64,6 +64,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/broadcast_arrays.cpp
     src/concatenate.cpp
     src/compress.cpp
+    src/diagflat.cpp
     src/expand_dims.cpp
     src/expand.cpp
     src/eye.cpp
@@ -102,6 +103,7 @@ set(ARRAY_VIEW_2_TEST_SOURCES
     src/take.cpp
     src/tile.cpp
     src/transpose.cpp
+    src/tri.cpp
     src/tril.cpp
     src/triu.cpp
     src/var.cpp
