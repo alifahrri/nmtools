@@ -62,11 +62,12 @@ TEST_CASE("batch_norm(test1)" * doctest::test_suite("functional::get_compute_gra
     auto dst_axis = meta::ct_v<-3>;
 
     auto aliased  = view::aliased(input,mean,var,weight,bias);
-    [[maybe_unused]] auto a_input  = nmtools::get<0>(aliased);
-    [[maybe_unused]] auto a_mean   = nmtools::get<1>(aliased);
-    [[maybe_unused]] auto a_var    = nmtools::get<2>(aliased);
-    [[maybe_unused]] auto a_weight = nmtools::get<3>(aliased);
-    [[maybe_unused]] auto a_bias   = nmtools::get<4>(aliased);
+    // TODO: propagate error handling, aliased may return maybe<tuple<...>> if any of its input is maybe
+    [[maybe_unused]] auto a_input  = nmtools::get<0>(unwrap(aliased));
+    [[maybe_unused]] auto a_mean   = nmtools::get<1>(unwrap(aliased));
+    [[maybe_unused]] auto a_var    = nmtools::get<2>(unwrap(aliased));
+    [[maybe_unused]] auto a_weight = nmtools::get<3>(unwrap(aliased));
+    [[maybe_unused]] auto a_bias   = nmtools::get<4>(unwrap(aliased));
 
     auto a = view::atleast_nd(a_weight,3_ct);
     auto b = view::moveaxis(a,src_axis,dst_axis);
@@ -94,17 +95,18 @@ TEST_CASE("batch_norm(test2)" * doctest::test_suite("functional::get_compute_gra
     auto dst_axis = meta::ct_v<-3>;
 
     auto aliased  = view::aliased(input,mean,var,weight,bias);
-    [[maybe_unused]] auto a_input  = nmtools::get<0>(aliased);
-    [[maybe_unused]] auto a_mean   = nmtools::get<1>(aliased);
-    [[maybe_unused]] auto a_var    = nmtools::get<2>(aliased);
-    [[maybe_unused]] auto a_weight = nmtools::get<3>(aliased);
-    [[maybe_unused]] auto a_bias   = nmtools::get<4>(aliased);
+    // TODO: propagate error handling, aliased may return maybe<tuple<...>> if any of its input is maybe
+    [[maybe_unused]] auto a_input  = nmtools::get<0>(unwrap(aliased));
+    [[maybe_unused]] auto a_mean   = nmtools::get<1>(unwrap(aliased));
+    [[maybe_unused]] auto a_var    = nmtools::get<2>(unwrap(aliased));
+    [[maybe_unused]] auto a_weight = nmtools::get<3>(unwrap(aliased));
+    [[maybe_unused]] auto a_bias   = nmtools::get<4>(unwrap(aliased));
 
     {
         auto a = na::atleast_nd(a_mean,3_ct);
         auto aliased = view::aliased(a,a_input);
-        auto a_a   = nmtools::get<0>(aliased);
-        auto input = nmtools::get<1>(aliased);
+        auto a_a   = nmtools::get<0>(unwrap(aliased));
+        auto input = nmtools::get<1>(unwrap(aliased));
         auto b = view::moveaxis(a_a,src_axis,dst_axis);
         auto c = view::subtract(input,b);
         auto graph = fn::get_compute_graph(unwrap(c));
@@ -143,11 +145,12 @@ TEST_CASE("batch_norm(test3)" * doctest::test_suite("functional::get_compute_gra
     auto dst_axis = meta::ct_v<-3>;
 
     auto aliased  = view::aliased(input,mean,var,weight,bias);
-    [[maybe_unused]] auto a_input  = nmtools::get<0>(aliased);
-    [[maybe_unused]] auto a_mean   = nmtools::get<1>(aliased);
-    [[maybe_unused]] auto a_var    = nmtools::get<2>(aliased);
-    [[maybe_unused]] auto a_weight = nmtools::get<3>(aliased);
-    [[maybe_unused]] auto a_bias   = nmtools::get<4>(aliased);
+    // TODO: propagate error handling, aliased may return maybe<tuple<...>> if any of its input is maybe);
+    [[maybe_unused]] auto a_input  = nmtools::get<0>(unwrap(aliased));
+    [[maybe_unused]] auto a_mean   = nmtools::get<1>(unwrap(aliased));
+    [[maybe_unused]] auto a_var    = nmtools::get<2>(unwrap(aliased));
+    [[maybe_unused]] auto a_weight = nmtools::get<3>(unwrap(aliased));
+    [[maybe_unused]] auto a_bias   = nmtools::get<4>(unwrap(aliased));
 
     auto a = view::atleast_nd(a_mean,3_ct);
     auto b = view::moveaxis(a,src_axis,dst_axis);
@@ -173,11 +176,12 @@ TEST_CASE("batch_norm(test4)" * doctest::test_suite("functional::get_compute_gra
     auto bias   = na::reshape(na::arange(ix::product(bias_shape)),bias_shape);
 
     auto aliased  = view::aliased(input,mean,var,weight,bias);
-    [[maybe_unused]] auto a_input  = nmtools::get<0>(aliased);
-    [[maybe_unused]] auto a_mean   = nmtools::get<1>(aliased);
-    [[maybe_unused]] auto a_var    = nmtools::get<2>(aliased);
-    [[maybe_unused]] auto a_weight = nmtools::get<3>(aliased);
-    [[maybe_unused]] auto a_bias   = nmtools::get<4>(aliased);
+    // TODO: propagate error handling, aliased may return maybe<tuple<...>> if any of its input is maybe
+    [[maybe_unused]] auto a_input  = nmtools::get<0>(unwrap(aliased));
+    [[maybe_unused]] auto a_mean   = nmtools::get<1>(unwrap(aliased));
+    [[maybe_unused]] auto a_var    = nmtools::get<2>(unwrap(aliased));
+    [[maybe_unused]] auto a_weight = nmtools::get<3>(unwrap(aliased));
+    [[maybe_unused]] auto a_bias   = nmtools::get<4>(unwrap(aliased));
 
     auto eps = 0.001f;
 
@@ -216,11 +220,12 @@ TEST_CASE("batch_norm(test5)" * doctest::test_suite("functional::get_compute_gra
     auto bias   = na::reshape(na::arange(ix::product(bias_shape)),bias_shape);
 
     auto aliased  = view::aliased(input,mean,var,weight,bias);
-    [[maybe_unused]] auto a_input  = nmtools::get<0>(aliased);
-    [[maybe_unused]] auto a_mean   = nmtools::get<1>(aliased);
-    [[maybe_unused]] auto a_var    = nmtools::get<2>(aliased);
-    [[maybe_unused]] auto a_weight = nmtools::get<3>(aliased);
-    [[maybe_unused]] auto a_bias   = nmtools::get<4>(aliased);
+    // TODO: propagate error handling, aliased may return maybe<tuple<...>> if any of its input is maybe
+    [[maybe_unused]] auto a_input  = nmtools::get<0>(unwrap(aliased));
+    [[maybe_unused]] auto a_mean   = nmtools::get<1>(unwrap(aliased));
+    [[maybe_unused]] auto a_var    = nmtools::get<2>(unwrap(aliased));
+    [[maybe_unused]] auto a_weight = nmtools::get<3>(unwrap(aliased));
+    [[maybe_unused]] auto a_bias   = nmtools::get<4>(unwrap(aliased));
 
     auto eps = 0.001f;
 

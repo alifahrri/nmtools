@@ -42,11 +42,12 @@ namespace nmtools::view
         auto dst_axis = meta::ct_v<-3>;
 
         auto aliased  = view::aliased(input,mean,var,weight,bias);
-        auto a_input  = nmtools::get<0>(aliased);
-        auto a_mean   = nmtools::get<1>(aliased);
-        auto a_var    = nmtools::get<2>(aliased);
-        auto a_weight = nmtools::get<3>(aliased);
-        auto a_bias   = nmtools::get<4>(aliased);
+        // TODO: propagate error handling, aliased may return maybe<tuple<...>> if any of its input is maybe
+        auto a_input  = nmtools::get<0>(unwrap(aliased));
+        auto a_mean   = nmtools::get<1>(unwrap(aliased));
+        auto a_var    = nmtools::get<2>(unwrap(aliased));
+        auto a_weight = nmtools::get<3>(unwrap(aliased));
+        auto a_bias   = nmtools::get<4>(unwrap(aliased));
 
         auto weight_ = view::moveaxis(view::atleast_nd(a_weight,meta::ct_v<3>),src_axis,dst_axis);
         auto bias_   = view::moveaxis(view::atleast_nd(a_bias,meta::ct_v<3>),src_axis,dst_axis);
