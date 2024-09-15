@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 #include "nmtools/dtypes.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::meta
 {
