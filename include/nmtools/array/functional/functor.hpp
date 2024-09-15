@@ -582,7 +582,12 @@ namespace nmtools::functional
         >
         constexpr auto expand_operands(sequence<Is...>, const operand_tuple<operands_t...>& operands, const attributes_t&...attributes) const
         {
-            return fn(get_operand(nmtools::get<Is>(operands))...,attributes...);
+            // TODO: propagate error handling
+            if constexpr (meta::is_maybe_v<operand_tuple<operands_t...>>) {
+                return fn(get_operand(nmtools::get<Is>(unwrap(operands)))...,attributes...);
+            } else {
+                return fn(get_operand(nmtools::get<Is>(operands))...,attributes...);
+            }
         }
 
         template<
