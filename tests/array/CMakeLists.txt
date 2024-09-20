@@ -114,6 +114,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     # break matmul to multiple files to avoid high memory peak
     # array/matmul.cpp
     array/instance_norm.cpp
+    array/linspace.cpp
     array/mean.cpp
     array/moveaxis.cpp
     array/ones.cpp
@@ -224,10 +225,13 @@ set(ARRAY_MATMUL_3_TEST_SOURCES
 )
 if (NOT NMTOOLS_TEST_ARRAY_EVAL)
     set (ARRAY_EVAL_TEST_SOURCES "")
-    set (ARRAY_UFUNCS_TEST_SOURCES "")
     set (ARRAY_MATMUL_1_TEST_SOURCES "")
     set (ARRAY_MATMUL_2_TEST_SOURCES "")
     set (ARRAY_MATMUL_3_TEST_SOURCES "")
+endif ()
+
+if (NOT NMTOOLS_TEST_ARRAY_UFUNCS)
+    set (ARRAY_UFUNCS_TEST_SOURCES "")
 endif ()
 
 set(EVAL_NN_TEST_SOURCES

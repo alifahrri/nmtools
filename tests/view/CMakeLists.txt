@@ -74,6 +74,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/full_like.cpp
     src/hstack.cpp
     src/identity.cpp
+    src/linspace.cpp
     # split matmul to avoid high peak memory
     # src/matmul.cpp
     src/mean.cpp
