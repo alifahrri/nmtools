@@ -97,6 +97,21 @@ namespace utils = nmtools::utils;
     ); \
 }
 
+#define NMTOOLS_ASSERT_APPLY_CLOSE_DOCTEST(result,expect) \
+{ \
+    auto result_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(result))); \
+    auto expect_typename = nmtools_string(NMTOOLS_TESTING_GET_TYPENAME(decltype(expect))); \
+    auto message = std::string{} \
+        + "\n\tActual " + nmtools_string("\033[0;90m<") + result_typename + nmtools_string(">\033[0m:\n") \
+        + STRINGIFY(result) \
+        + "\n\tExpected " + nmtools_string("\033[0;90m<") + expect_typename + nmtools_string(">\033[0m:\n") \
+        + STRINGIFY(expect) \
+    ; \
+    CHECK_MESSAGE(nmtools::utils::apply_isclose(result,expect), \
+        message \
+    ); \
+}
+
 namespace nmtools::testing
 {
     // TODO: remove
@@ -125,6 +140,9 @@ namespace nmtools::testing
 
 #undef NMTOOLS_ASSERT_APPLY_EQUAL
 #define NMTOOLS_ASSERT_APPLY_EQUAL NMTOOLS_ASSERT_APPLY_EQUAL_DOCTEST
+
+#undef NMTOOLS_ASSERT_APPLY_CLOSE
+#define NMTOOLS_ASSERT_APPLY_CLOSE NMTOOLS_ASSERT_APPLY_CLOSE_DOCTEST
 
 // TODO: remove
 #define NMTOOLS_ASSERT_SHAPE(result,expect) \
