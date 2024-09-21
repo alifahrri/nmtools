@@ -27,15 +27,6 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define NMTOOLS_ASSERT_APPLY_CLOSE(result,expect) \
-CHECK_MESSAGE(nmtools::utils::apply_isclose(result,expect), \
-    (   \
-        std::string{} \
-        + "\n\tActual  : " + STRINGIFY(result) \
-        + "\n\tExpected: " + STRINGIFY(expect) \
-    )   \
-);
-
 #define SLICE_SUBCASE(case_name, a, ...) \
 SUBCASE(#case_name) \
 { \
