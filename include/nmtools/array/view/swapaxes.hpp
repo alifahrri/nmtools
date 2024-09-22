@@ -23,7 +23,7 @@ namespace nmtools::index
                 result.resize(src_dim);
             }
             
-            for (nm_size_t i=0; i<src_dim; i++) {
+            for (nm_size_t i=0; i<(nm_size_t)src_dim; i++) {
                 at(result,i) = i;
             }
 
