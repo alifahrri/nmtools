@@ -134,6 +134,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/stddev.cpp
     array/sum.cpp
     array/split.cpp
+    array/swapaxes.cpp
     array/take.cpp
     array/tile.cpp
     array/tri.cpp

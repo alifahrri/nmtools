@@ -82,6 +82,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/shape_concatenate.cpp
         src/shape_tile.cpp
         src/sliding_window.cpp
+        src/swapaxes.cpp
         src/slice.cpp
         src/take.cpp
         src/take_along_axis.cpp
