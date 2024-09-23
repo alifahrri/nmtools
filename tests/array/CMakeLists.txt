@@ -142,6 +142,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/triu.cpp
     array/transpose.cpp
     array/var.cpp
+    array/vector_norm.cpp
     array/vstack.cpp
     array/where.cpp
     array/zeros.cpp

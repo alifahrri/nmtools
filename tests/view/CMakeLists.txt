@@ -137,6 +137,7 @@ set(ARRAY_UFUNCS_1_TEST_SOURCES
     src/cumsum.cpp
     src/prod.cpp
     src/sum.cpp
+    src/vector_norm.cpp
     src/ufuncs/add.cpp
     src/ufuncs/amax.cpp
     src/ufuncs/amin.cpp
