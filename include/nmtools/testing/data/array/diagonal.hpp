@@ -61,7 +61,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array,diagonal)
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
         inline int result[2][2] = {
-            {0,9},
+            {0,8},
             {1,9},
         };
     }
