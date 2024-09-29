@@ -83,6 +83,8 @@ namespace nmtools::meta
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/index/product.hpp"
+#include "nmtools/utility/unwrap.hpp"
+#include "nmtools/utility/has_value.hpp"
 #include "nmtools/utils/isequal/isequal.hpp"
 #include "nmtools/utils/isclose/isclose.hpp"
 #include "nmtools/utils/to_string/to_string.hpp"
@@ -139,18 +141,11 @@ namespace nmtools::view
     template <typename src_shape_t, typename src_size_t, typename k_t>
     constexpr auto diagflat_indexer(const src_shape_t& src_shape, const src_size_t& src_size, k_t k)
     {
-        if constexpr (meta::is_maybe_v<src_shape_t>) {
-            using result_t = decltype(diagflat_indexer(*src_shape,src_size,k));
+        if constexpr (meta::is_maybe_v<src_shape_t> || meta::is_maybe_v<src_size_t>) {
+            using result_t = decltype(diagflat_indexer(unwrap(src_shape),unwrap(src_size),k));
             using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
-            return (src_shape
-                ? return_t{diagflat_indexer(unwrap(src_shape),src_size,k)}
-                : return_t{meta::Nothing}
-            );
-        } else if constexpr (meta::is_maybe_v<src_size_t>) {
-            using result_t = decltype(diagflat_indexer(src_shape,*src_size,k));
-            using return_t = nmtools_maybe<result_t>;
-            return (src_size
-                ? return_t{diagflat_indexer(src_shape,unwrap(src_size),k)}
+            return (has_value(src_shape) && has_value(src_size)
+                ? return_t{diagflat_indexer(unwrap(src_shape),unwrap(src_size),k)}
                 : return_t{meta::Nothing}
             );
         } else {
