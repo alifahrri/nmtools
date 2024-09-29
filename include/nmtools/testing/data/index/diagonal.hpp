@@ -198,6 +198,44 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_diagonal)
         inline int result[2] = {3,2};
     }
 
+    NMTOOLS_TESTING_DECLARE_ARGS(case2g)
+    {
+        inline int src_shape[3] = {2,3,2};
+        inline int offset = 2;
+        inline int axis1  = 0;
+        inline int axis2  = 1;
+
+        inline auto src_shape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
+        inline int offset_ct = 2_ct;
+        inline int axis1_ct  = 0_ct;
+        inline int axis2_ct  = 1_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2g)
+    {
+        inline int result[2] = {2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2h)
+    {
+        inline int src_shape[3] = {2,3,2};
+        inline int offset = 1;
+        inline int axis1  = 0;
+        inline int axis2  = 1;
+
+        inline auto src_shape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
+        inline int offset_ct = 1_ct;
+        inline int axis1_ct  = 0_ct;
+        inline int axis2_ct  = 1_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2h)
+    {
+        inline int result[2] = {2,2};
+    }
+
     NMTOOLS_TESTING_DECLARE_ARGS(case3a)
     {
         inline int src_shape[4] = {2,1,3,5};
@@ -235,7 +273,85 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_diagonal)
     {
         inline int result[3] = {2,5,1};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3c)
+    {
+        inline int src_shape[4] = {1,2,3,4};
+        inline int offset = 0;
+        inline int axis1  = 0;
+        inline int axis2  = 1;
+
+        inline auto src_shape_ct = nmtools_tuple{1_ct,2_ct,3_ct,4_ct};
+        inline auto offset_ct = 0_ct;
+        inline auto axis1_ct = 0_ct;
+        inline auto axis2_ct = 1_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3c)
+    {
+        inline int result[3] = {3,4,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3d)
+    {
+        inline int src_shape[4] = {1,2,3,4};
+        inline int offset = 1;
+        inline int axis1  = 0;
+        inline int axis2  = 1;
+
+        inline auto src_shape_ct = nmtools_tuple{1_ct,2_ct,3_ct,4_ct};
+        inline auto offset_ct = 1_ct;
+        inline auto axis1_ct  = 0_ct;
+        inline auto axis2_ct  = 1_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3d)
+    {
+        inline int result[3] = {3,4,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3e)
+    {
+        inline int src_shape[4] = {1,2,3,4};
+        inline int offset = 0;
+        inline int axis1  = 1;
+        inline int axis2  = 2;
+
+        inline auto src_shape_ct = nmtools_tuple{1_ct,2_ct,3_ct,4_ct};
+        inline auto offset_ct = 0_ct;
+        inline auto axis1_ct  = 1_ct;
+        inline auto axis2_ct  = 2_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3e)
+    {
+        inline int result[3] = {1,4,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3f)
+    {
+        inline int src_shape[4] = {1,2,3,4};
+        inline int offset = 1;
+        inline int axis1  = 1;
+        inline int axis2  = 2;
+
+        inline auto src_shape_ct = nmtools_tuple{1_ct,2_ct,3_ct,4_ct};
+        inline auto offset_ct = 1_ct;
+        inline auto axis1_ct  = 1_ct;
+        inline auto axis2_ct  = 2_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3f)
+    {
+        inline int result[3] = {1,4,2};
+    }
 }
+
+/******************************************************************************/
 
 NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
 {
@@ -246,6 +362,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1  = 0;
         inline int axis2  = 1;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1a)
     {
@@ -259,6 +378,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1  = 0;
         inline int axis2  = 1;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1b)
     {
@@ -272,6 +394,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 1;
         inline int axis1  = 0;
         inline int axis2  = 1;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2a)
     {
@@ -285,6 +410,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 0;
         inline int axis2 = 1;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3a)
     {
@@ -298,6 +426,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 0;
         inline int axis2 = 1;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3b)
     {
@@ -311,6 +442,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 0;
         inline int axis2 = 1;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3c)
     {
@@ -324,6 +458,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 0;
         inline int axis2 = 1;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3d)
     {
@@ -335,8 +472,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int src_shape[3] = {2,3,2};
         inline int indices[2] = {0,0};
         inline int offset = 0;
-        inline int axsi1 = 1;
+        inline int axis1 = 1;
         inline int axis2 = 2;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4a)
     {
@@ -350,6 +490,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 1;
         inline int axis2 = 2;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4b)
     {
@@ -363,6 +506,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 1;
         inline int axis2 = 2;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4c)
     {
@@ -376,6 +522,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1  = 1;
         inline int axis2  = 2;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4d)
     {
@@ -389,8 +538,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1  = 2;
         inline int axis2  = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
-    NMTOOLS_TESITNG_DECLARE_EXPECT(case5a)
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5a)
     {
         inline int result[3] = {0,0,0};
     }
@@ -402,6 +554,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1  = 2;
         inline int axis2  = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5b)
     {
@@ -415,6 +570,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1  = 2;
         inline int axis2  = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5c)
     {
@@ -428,6 +586,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 2;
         inline int axis2 = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5d)
     {
@@ -441,6 +602,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 2;
         inline int axis2 = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5e)
     {
@@ -454,10 +618,61 @@ NMTOOLS_TESTING_DECLARE_CASE(index,diagonal)
         inline int offset = 0;
         inline int axis1 = 2;
         inline int axis2 = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
     }
-    NMTOOLS_TESITNG_DECLARE_EXPECT(case5f)
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5f)
     {
         inline int result[3] = {1,2,1};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7a)
+    {
+        inline int src_shape[3] = {2,3,2};
+        inline int indices[2] = {0,0};
+        inline int offset = 1;
+        inline int axis1 = 2;
+        inline int axis2 = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7a)
+    {
+        inline int result[3] = {1,0,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7b)
+    {
+        inline int src_shape[3] = {2,3,2};
+        inline int indices[2] = {1,0};
+        inline int offset = 1;
+        inline int axis1 = 2;
+        inline int axis2 = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7b)
+    {
+        inline int result[3] = {1,1,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7c)
+    {
+        inline int src_shape[3] = {2,3,2};
+        inline int indices[2] = {2,0};
+        inline int offset = 1;
+        inline int axis1 = 2;
+        inline int axis2 = 0;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(indices)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7c)
+    {
+        inline int result[3] = {1,2,0};
     }
 }
 
