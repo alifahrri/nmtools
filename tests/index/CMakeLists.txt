@@ -54,6 +54,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/compute_strides.cpp
         src/concatenate.cpp
         src/convnd.cpp
+        src/diagonal.cpp
         src/expand_dims.cpp
         src/expand.cpp
         src/eye.cpp

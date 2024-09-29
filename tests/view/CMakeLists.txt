@@ -65,6 +65,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/concatenate.cpp
     src/compress.cpp
     src/diagflat.cpp
+    src/diagonal.cpp
     src/expand_dims.cpp
     src/expand.cpp
     src/eye.cpp
