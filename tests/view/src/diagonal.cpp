@@ -33,6 +33,45 @@ SUBCASE(#case_name) \
 
 TEST_CASE("diagonal(case1)" * doctest::test_suite("view::diagonal"))
 {
+    SUBCASE("meta")
+    {
+        NMTOOLS_TESTING_USE_CASE( array, diagonal, case1 );
+        {
+            auto result = nmtools::view::diagonal( a );
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, result_t );
+        }
+        {
+            auto result = nmtools::view::diagonal( a_a );
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, result_t );
+        }
+        {
+            auto result = nmtools::view::diagonal( a_f );
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_shape, result_t );
+        }
+        {
+            auto result = nmtools::view::diagonal( a_h );
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_dim, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( !meta::is_fixed_shape, result_t );
+        }
+        {
+            auto result = nmtools::view::diagonal( a_d );
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_ndarray, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( !meta::is_fixed_dim, result_t );
+            NMTOOLS_STATIC_CHECK_TRAIT( !meta::is_fixed_shape, result_t );
+        }
+    }
     DIAGONAL_SUBCASE( case1, a );
     DIAGONAL_SUBCASE( case1, a_a );
     DIAGONAL_SUBCASE( case1, a_f );
@@ -42,7 +81,7 @@ TEST_CASE("diagonal(case1)" * doctest::test_suite("view::diagonal"))
 
 TEST_CASE("diagonal(case2)" * doctest::test_suite("view::diagonal"))
 {
-    // DIAGONAL_SUBCASE( case2, a, offset );
+    DIAGONAL_SUBCASE( case2, a, offset );
     DIAGONAL_SUBCASE( case2, a_a, offset );
     DIAGONAL_SUBCASE( case2, a_f, offset );
     DIAGONAL_SUBCASE( case2, a_h, offset );

@@ -871,6 +871,45 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
         inline auto shape = None;
         inline int8_t result = 66;
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case25)
+    {
+        inline int a[2] = {0,3};
+        NMTOOLS_CAST_ARRAYS(a)
+        inline auto axis = 0;
+        inline auto keepdims = False;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case25)
+    {
+        inline auto shape = None;
+        inline int result = 3;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case26)
+    {
+        inline int a[2] = {0,3};
+        NMTOOLS_CAST_ARRAYS(a)
+        inline auto axis = -1;
+        inline auto keepdims = False;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case26)
+    {
+        inline auto shape = None;
+        inline int result = 3;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case27)
+    {
+        inline int a[2] = {0,3};
+        NMTOOLS_CAST_ARRAYS(a)
+        inline auto axis = 0_ct;
+        inline auto keepdims = True;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case27)
+    {
+        inline int shape[1] = {1};
+        inline int result[1] = {3};
+    }
 #endif // NMTOOLS_TESTING_MINIMIZE_FOOTPRINT
 }
 

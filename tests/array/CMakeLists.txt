@@ -138,6 +138,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/swapaxes.cpp
     array/take.cpp
     array/tile.cpp
+    array/trace.cpp
     array/tri.cpp
     array/tril.cpp
     array/triu.cpp
