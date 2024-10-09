@@ -105,6 +105,7 @@ set(ARRAY_VIEW_2_TEST_SOURCES
     src/take_along_axis.cpp
     src/take.cpp
     src/tile.cpp
+    src/trace.cpp
     src/transpose.cpp
     src/tri.cpp
     src/tril.cpp

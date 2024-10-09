@@ -51,6 +51,18 @@ NMTOOLS_TESTING_DECLARE_CASE(index, remove_dims)
     {
         inline int result[3] = {1,1,3};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        inline int shape[1] = {2};
+        inline int axis = 0;
+        inline auto keepdims = False;
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        inline auto result = None;
+    }
 }
 
 #endif // NMTOOLS_TESTING_DATA_INDEX_REMOVE_DIMS_HPP

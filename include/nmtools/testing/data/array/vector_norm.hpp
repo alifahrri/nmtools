@@ -84,7 +84,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array,vector_norm)
             }
         };
         inline int axis[2] = {0,2};
-        inline int keepdims = True;
+        inline auto keepdims = True;
 
         inline auto axis_ct = nmtools_tuple{0_ct,2_ct};
 
@@ -116,7 +116,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array,vector_norm)
             }
         };
         inline int axis[2] = {-2,-1};
-        inline int keepdims = true;
+        inline auto keepdims = true;
         inline int ord = 1;
 
         inline auto axis_ct = nmtools_tuple{"-2"_ct, "-1"_ct};

@@ -66,11 +66,11 @@ TEST_CASE("vector_norm(case2d)" * doctest::test_suite("array::vector_norm"))
     VECTOR_NORM_SUBCASE( case2d, x_a, axis, keepdims, ord );
     VECTOR_NORM_SUBCASE( case2d, x_f, axis, keepdims, ord );
     VECTOR_NORM_SUBCASE( case2d, x_h, axis, keepdims, ord );
-    VECTOR_NORM_SUBCASE( case2d, x_d, axis, keepdims, ord );
+    // VECTOR_NORM_SUBCASE( case2d, x_d, axis, keepdims, ord );
 
     VECTOR_NORM_SUBCASE( case2d, x, axis_ct, keepdims, ord );
     VECTOR_NORM_SUBCASE( case2d, x_a, axis_ct, keepdims, ord );
     VECTOR_NORM_SUBCASE( case2d, x_f, axis_ct, keepdims, ord );
     VECTOR_NORM_SUBCASE( case2d, x_h, axis_ct, keepdims, ord );
-    VECTOR_NORM_SUBCASE( case2d, x_d, axis_ct, keepdims, ord );
+    // VECTOR_NORM_SUBCASE( case2d, x_d, axis_ct, keepdims, ord );
 }

@@ -532,43 +532,9 @@ namespace nmtools::meta
     >
     {
         static constexpr auto value = [](){
-            // check if keepdims type makes this view reduced to num
-            constexpr auto keepdims_ = [](){
-                if constexpr (is_none_v<keepdims_t>) {
-                    return is_none_v<axis_t>;
-                } else if constexpr (is_integral_constant_v<keepdims_t>) {
-                    return is_none_v<axis_t> && !static_cast<bool>(keepdims_t::value);
-                } else /* constexpr (meta::is_boolean_v<axis_t>) */ {
-                    // TODO: should not be encountered
-                    // runtime boolean value should not be allowed
-                    return false;
-                }
-            }();
-            // check if axis makes it reduce to num
-            constexpr auto value_ = [=](){
-                // note that repeated/duplicate axis are NOT allowed for reduce ufunc,
-                // and such condition is handled by runtime function,
-                // here we assume such condition is already handled
-                // (either by exception, maybe, or assert) by the corresponding function
-                if constexpr (is_fixed_dim_ndarray_v<array_t> 
-                    && (is_fixed_index_array_v<axis_t> || is_integral_v<axis_t>)
-                    && is_integral_constant_v<keepdims_t>
-                ) {
-                    auto array_dim = fixed_dim_v<array_t>;
-                    // dim to reduce, integer axis means reduce 1 dimension
-                    auto axis_dim  = [](){
-                        if constexpr (is_fixed_index_array_v<axis_t>) {
-                            return len_v<axis_t>;
-                        } else {
-                            return 1ul;
-                        }
-                    }();
-                    return (array_dim == axis_dim) && !keepdims_t::value;
-                } else {
-                    return keepdims_;
-                }
-            }();
-            return (is_ndarray_v<array_t> && value_);
+            using view_type = view::reduce_t< op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >;
+            using dst_shape_type = typename view_type::dst_shape_type;
+            return is_none_v<dst_shape_type>;
         }();
     };
 
@@ -578,18 +544,25 @@ namespace nmtools::meta
         // , enable_if_t<!is_none_v<axis_t>>
     >
     {
-        using view_type  = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >;
-        using shape_type = decltype(declval<view_type>().shape());
-        using size_type  = decltype(declval<view_type>().size());
-
         static constexpr auto value = [](){
-            // reduction may change shape
-            if constexpr (is_ndarray_v<view_type> && is_constant_index_v<size_type>) {
-                return size_type::value;
-            } else if constexpr (is_ndarray_v<view_type> && is_constant_index_array_v<shape_type>) {
-                return index::product(shape_type{});
+            using decorator_type = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >;
+            using view_type = view::reduce_t< op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >;
+            if constexpr (has_dst_size_type_v<view_type>) {
+                using dst_size_type = typename view_type::dst_size_type;
+                if constexpr (is_constant_index_v<dst_size_type>) {
+                    return dst_size_type::value;
+                } else {
+                    return error::FIXED_SIZE_UNSUPPORTED<decorator_type>{};
+                }
+            } else if constexpr (has_dst_shape_type_v<view_type>) {
+                using dst_shape_type = typename view_type::dst_shape_type;
+                if constexpr (is_constant_index_array_v<dst_shape_type>) {
+                    return index::product(dst_shape_type{});
+                } else {
+                    return error::FIXED_SIZE_UNSUPPORTED<decorator_type>{};
+                }
             } else {
-                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
+                return error::FIXED_SIZE_UNSUPPORTED<decorator_type>{};
             }
         }();
     }; // fixed_size

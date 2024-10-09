@@ -308,13 +308,16 @@ namespace nmtools::testing::data::function
 #define NMTOOLS_TESTING_DECLARE_CASE(...) NMTOOLS_GET_TESTING_DECLARE_CASE_MACRO(__VA_ARGS__, NMTOOLS_TESTING_DECLARE_CASE2, NMTOOLS_TESTING_DECLARE_CASE1)(__VA_ARGS__)
 
 #define NMTOOLS_TESTING_USE_CASE1(ns) \
-using namespace nmtools::testing::data::ns;
+using namespace nmtools::testing::data::ns; \
+using namespace args;
 
 #define NMTOOLS_TESTING_USE_CASE2(ns1, ns2) \
-using namespace nmtools::testing::data::ns1::ns2;
+using namespace nmtools::testing::data::ns1::ns2; \
+using namespace args;
 
 #define NMTOOLS_TESTING_USE_CASE3(ns1, ns2, ns3) \
-using namespace nmtools::testing::data::ns1::ns2::ns3;
+using namespace nmtools::testing::data::ns1::ns2::ns3; \
+using namespace args;
 
 #define NMTOOLS_TESTING_USE_CASE_MACRO(_1,_2,_3,NAME,...) NAME
 #define NMTOOLS_TESTING_USE_CASE(...) NMTOOLS_TESTING_USE_CASE_MACRO(__VA_ARGS__, NMTOOLS_TESTING_USE_CASE3, NMTOOLS_TESTING_USE_CASE2, NMTOOLS_TESTING_USE_CASE1)(__VA_ARGS__)
