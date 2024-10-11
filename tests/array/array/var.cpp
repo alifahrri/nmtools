@@ -150,7 +150,12 @@ TEST_CASE("var(case10)" * doctest::test_suite("array::var"))
     // VAR_SUBCASE( case10, array_d, axis, nm::None, ddof, keepdims );
 }
 
-TEST_CASE("var(case11)" * doctest::test_suite("array::var"))
+TEST_CASE("var(case11)"
+    * doctest::test_suite("array::var")
+#ifdef NMTOOLS_DISABLE_STL
+    * doctest::skip()
+#endif
+)
 {
     VAR_SUBCASE( case11,   array, axis, nm::None, ddof, keepdims );
     VAR_SUBCASE( case11, array_a, axis, nm::None, ddof, keepdims );
