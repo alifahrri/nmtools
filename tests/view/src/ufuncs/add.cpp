@@ -27,35 +27,12 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
 
-#define RUN_add_impl(...) \
-nm::view::add(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add fn to callable lambda
-#define RUN_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_add(case_name, ...) \
-RUN_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, add, case_name); \
     using namespace args; \
-    auto result = RUN_add(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -246,35 +223,12 @@ TEST_CASE("add(case4)" * doctest::test_suite("view::add"))
     #endif
 }
 
-#define RUN_reduce_add_impl(...) \
-nm::view::reduce_add(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_add fn to callable lambda
-#define RUN_reduce_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_add-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_add(case_name, ...) \
-RUN_reduce_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_add, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::reduce_add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -1165,6 +1119,110 @@ TEST_CASE("reduce_add(case23)" * doctest::test_suite("view::reduce_add"))
     #endif
 }
 
+TEST_CASE("reduce_add(case25)" * doctest::test_suite("view::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case25,   a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_f, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case25, a_d, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_h, axis, dtype, initial, keepdims );
+
+    #else
+    REDUCE_ADD_SUBCASE( case25, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_cs_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case25, a_fs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_fs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_fs_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case25, a_hs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_hs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_hs_db, axis, dtype, initial, keepdims );
+
+    // TODO: fix
+    // REDUCE_ADD_SUBCASE( case25, a_ds_fb, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case25, a_ds_hb, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case25, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case25, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_ls_db, axis, dtype, initial, keepdims );
+    #endif
+}
+
+TEST_CASE("reduce_add(case26)" * doctest::test_suite("view::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case26,   a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_f, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case26, a_d, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_h, axis, dtype, initial, keepdims );
+
+    #else
+    REDUCE_ADD_SUBCASE( case26, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_cs_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case26, a_fs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_fs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_fs_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case26, a_hs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_hs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_hs_db, axis, dtype, initial, keepdims );
+
+    // TODO: fix
+    // REDUCE_ADD_SUBCASE( case26, a_ds_fb, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case26, a_ds_hb, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case26, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case26, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_ls_db, axis, dtype, initial, keepdims );
+    #endif
+}
+
+TEST_CASE("reduce_add(case27)" * doctest::test_suite("view::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case27,   a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_f, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case27, a_d, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_h, axis, dtype, initial, keepdims );
+
+    #else
+    REDUCE_ADD_SUBCASE( case27, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_cs_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case27, a_fs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_fs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_fs_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case27, a_hs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_hs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_hs_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case27, a_ds_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ds_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ds_db, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case27, a_ls_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ls_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ls_db, axis, dtype, initial, keepdims );
+    #endif
+}
+
 TEST_CASE("reduce_add(case24)" * doctest::test_suite("view::reduce_add"))
 {
     auto dtype   = nmtools::None;
@@ -1199,35 +1257,12 @@ TEST_CASE("reduce_add(case24)" * doctest::test_suite("view::reduce_add"))
     #endif
 }
 
-#define RUN_accumulate_add_impl(...) \
-nm::view::accumulate_add(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_add fn to callable lambda
-#define RUN_accumulate_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_add-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_add(case_name, ...) \
-RUN_accumulate_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ACCUMULATE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_add, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::accumulate_add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -1328,35 +1363,12 @@ TEST_CASE("accumulate_add(case3)" * doctest::test_suite("view::accumulate_add"))
     #endif
 }
 
-#define RUN_outer_add_impl(...) \
-nm::view::outer_add(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_add fn to callable lambda
-#define RUN_outer_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_add-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_add(case_name, ...) \
-RUN_outer_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define OUTER_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_add, case_name); \
     using namespace args; \
-    auto result = RUN_outer_add(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::outer_add( __VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result.shape(), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -1476,7 +1488,7 @@ TEST_CASE("outer_add(case1)" * doctest::test_suite("view::outer_add"))
 #define ADD_FIXED_SHAPE_SUBCASE(subcase_name, expected_shape, ...) \
 SUBCASE(#subcase_name) \
 { \
-    auto result = RUN_add(subcase_name, __VA_ARGS__); \
+    auto result = nmtools::view::add(__VA_ARGS__); \
     using result_t = decltype(result); \
     NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fixed_size_ndarray, result_t ); \
     NMTOOLS_STATIC_ASSERT_EQUAL( meta::fixed_ndarray_shape_v<result_t>, expected_shape ); \

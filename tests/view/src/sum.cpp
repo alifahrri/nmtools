@@ -9,36 +9,13 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace view = nm::view;
 
-#define RUN_sum_impl(...) \
-nm::view::sum(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs sum fn to callable lambda
-#define RUN_sum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("sum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_sum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_sum(case_name, ...) \
-RUN_sum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define SUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     /* using test case from reduce_add since they're basically the same */ \
     NMTOOLS_TESTING_USE_CASE(view, reduce_add, case_name); \
     using namespace args; \
-    auto result = RUN_sum(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::sum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -225,4 +202,70 @@ TEST_CASE("sum(case20)" * doctest::test_suite("view::sum"))
     // SUM_SUBCASE( case20, a_v, axis, nmtools::None, initial, keepdims );
     SUM_SUBCASE( case20, a_f, axis, nmtools::None, initial, keepdims );
     SUM_SUBCASE( case20, a_h, axis, nmtools::None, initial, keepdims );
+}
+
+TEST_CASE("sum(case25)" * doctest::test_suite("view::sum"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+
+    SUBCASE("meta")
+    {
+        NMTOOLS_TESTING_USE_CASE( view, reduce_add, case25 );
+        {
+            auto result = nmtools::view::sum(a,axis,dtype,initial,keepdims);
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, result_t );
+        }
+        {
+            auto result = nmtools::view::sum(a_a,axis,dtype,initial,keepdims);
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, result_t );
+        }
+        {
+            auto result = nmtools::view::sum(a_f,axis,dtype,initial,keepdims);
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, result_t );
+        }
+        // {
+        //     auto result = nmtools::view::sum(a_d,axis,dtype,initial,keepdims);
+        //     using result_t = decltype(result);
+        //     NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, result_t );
+        // }
+        {
+            auto result = nmtools::view::sum(a_h,axis,dtype,initial,keepdims);
+            using result_t = decltype(result);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, result_t );
+        }
+    }
+
+    SUM_SUBCASE( case25,   a, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case25, a_a, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case25, a_f, axis, dtype, initial, keepdims );
+    // SUM_SUBCASE( case25, a_d, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case25, a_h, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("sum(case26)" * doctest::test_suite("view::sum"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+
+    SUM_SUBCASE( case26,   a, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case26, a_a, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case26, a_f, axis, dtype, initial, keepdims );
+    // SUM_SUBCASE( case26, a_d, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case26, a_h, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("sum(case27)" * doctest::test_suite("view::sum"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+
+    SUM_SUBCASE( case27,   a, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case27, a_a, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case27, a_f, axis, dtype, initial, keepdims );
+    // SUM_SUBCASE( case27, a_d, axis, dtype, initial, keepdims );
+    SUM_SUBCASE( case27, a_h, axis, dtype, initial, keepdims );
 }

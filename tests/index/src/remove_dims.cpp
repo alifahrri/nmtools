@@ -45,3 +45,21 @@ TEST_CASE("remove_dims(case3)" * doctest::test_suite("index::remove_dims"))
     REMOVE_DIMS_SUBCASE( case3, shape_f, axis );
     REMOVE_DIMS_SUBCASE( case3, shape_h, axis );
 }
+
+TEST_CASE("remove_dims(case4)" * doctest::test_suite("index::remove_dims"))
+{
+    REMOVE_DIMS_SUBCASE( case4, shape, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case4, shape_a, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case4, shape_v, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case4, shape_f, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case4, shape_h, axis, keepdims );
+}
+
+TEST_CASE("remove_dims(case5)" * doctest::test_suite("index::remove_dims"))
+{
+    REMOVE_DIMS_SUBCASE( case5, shape, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case5, shape_a, axis, keepdims );
+    // REMOVE_DIMS_SUBCASE( case5, shape_v, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case5, shape_f, axis, keepdims );
+    REMOVE_DIMS_SUBCASE( case5, shape_h, axis, keepdims );
+}

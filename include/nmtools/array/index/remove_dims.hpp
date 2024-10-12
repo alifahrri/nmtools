@@ -160,6 +160,19 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
+            [[maybe_unused]]
+            constexpr auto DIM = len_v<shape_t>;
+            [[maybe_unused]]
+            constexpr auto B_DIM = bounded_size_v<shape_t>;
+            // TODO: simplify logic
+            if constexpr (
+                !is_index_array_v<shape_t>
+                || !(is_index_v<axis_t> || is_index_array_v<axis_t> || is_none_v<axis_t>)
+                || !(is_index_v<keepdims_t> || is_none_v<keepdims_t>)
+            ) {
+                using type = error::REMOVE_DIMS_UNSUPPORTED<shape_t,axis_t,keepdims_t>;
+                return as_value_v<type>;
+            } else
             if constexpr (
                     is_constant_index_array_v<shape_t>
                 && (is_constant_index_v<axis_t> || is_constant_index_array_v<axis_t> || is_none_v<axis_t>)
@@ -181,107 +194,65 @@ namespace nmtools::meta
                 } else /* if constexpr (is_none_v<decltype(result)>) */ {
                     return as_value_v<decltype(result)>;
                 }
-            } else if constexpr (
-                is_constant_index_array_v<shape_t>
-            ) {
-                using type = resolve_optype_t<index::remove_dims_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,axis_t,keepdims_t>;
-                return as_value_v<type>;
-            } else if constexpr (
-                   is_index_array_v<shape_t>
-                && (is_index_v<axis_t> || is_index_array_v<axis_t>)
-                && (is_constant_index_v<keepdims_t> || is_none_v<keepdims_t>)
-            ) {
-                constexpr auto dim = len_v<shape_t>;
-                [[maybe_unused]] constexpr auto b_dim = bounded_size_v<shape_t>;
-                [[maybe_unused]] constexpr auto keepdims = [](){
-                    if constexpr (is_none_v<keepdims_t>) {
-                        return false;
-                    } else {
-                        return static_cast<bool>(keepdims_t{});
-                    }
-                }();
-                [[maybe_unused]] constexpr auto n_reduce_axes = [](){
-                    [[maybe_unused]] constexpr auto N = len_v<axis_t>;
-                    if constexpr (is_index_v<axis_t>) {
-                        return 1;
-                    } else if constexpr (N > 0) {
-                        return N;
-                    } else {
-                        return detail::fail_t {};
-                    }
-                }();
-                [[maybe_unused]] constexpr auto new_dim = [&](){
-                    if constexpr ((dim > 0) && keepdims) {
-                        return dim;
-                    } else if constexpr ((dim > 0) && !keepdims && !is_fail_v<decltype(n_reduce_axes)>) {
-                        return dim - n_reduce_axes;
-                    } else {
-                        return detail::fail_t {};
-                    }
-                }();
-                if constexpr (!is_fail_v<decltype(new_dim)>) {
-                    using type = nmtools_array<size_t,new_dim>;
-                    return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(b_dim)>) {
-                    using type = array::static_vector<size_t,b_dim>;
-                    return as_value_v<type>;
-                } else {
-                    using type = nmtools_list<size_t>;
-                    return as_value_v<type>;
-                }
-            } else if constexpr (
-                   is_index_array_v<shape_t>
-                && (is_index_v<axis_t> || is_index_array_v<axis_t>)
-                && is_index_v<keepdims_t>
-            ) {
-                constexpr auto dim = len_v<shape_t>;
-                [[maybe_unused]] constexpr auto b_dim = bounded_size_v<shape_t>;
-                if constexpr (dim > 0) {
-                    using type = array::static_vector<size_t,dim>;
-                    return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(b_dim)>) {
-                    using type = array::static_vector<size_t,b_dim>;
-                    return as_value_v<type>;
-                } else {
-                    using type = nmtools_list<size_t>;
-                    return as_value_v<type>;
-                }
-            } else if constexpr (
-                   is_index_array_v<shape_t>
-                && is_none_v<axis_t>
-                && (is_constant_index_v<keepdims_t> || is_none_v<keepdims_t>)
-            ) {
-                constexpr auto size = len_v<shape_t>;
-                [[maybe_unused]]
-                constexpr auto b_size = bounded_size_v<shape_t>;
-                [[maybe_unused]]
-                constexpr auto keepdims = [](){
-                    if constexpr (is_none_v<keepdims_t>) {
-                        return false;
-                    } else {
-                        return static_cast<bool>(keepdims_t{});
-                    }
-                }();
-                if constexpr ((size > 0) && keepdims) {
-                    return template_reduce<size-1>([](auto init, auto){
-                        using init_type = type_t<decltype(init)>;
-                        return as_value_v<append_type_t<init_type,ct<1>>>;
-                    }, as_value_v<nmtools_tuple<ct<1>>>);
-                } else if constexpr (!is_fail_v<decltype(b_size)> && keepdims) {
-                    using type = array::static_vector<size_t,b_size>;
-                    return as_value_v<type>;
-                } else if constexpr (keepdims) {
-                    using type = shape_t;
-                    return as_value_v<type>;
-                } else {
-                    using type = none_t;
-                    return as_value_v<type>;
-                }
             } else {
-                return as_value_v<error::REMOVE_DIMS_UNSUPPORTED<shape_t,axis_t,keepdims_t>>;
+                // keepdims is either True or False, not true or false
+                [[maybe_unused]]
+                constexpr int n_axis = [](){
+                    [[maybe_unused]]
+                    constexpr auto SIZE = len_v<axis_t>;
+                    if constexpr (is_index_v<axis_t>) {
+                        return ct_v<1>;
+                    } else if constexpr (is_none_v<axis_t>) {
+                        if constexpr (DIM > 0) {
+                            return ct_v<DIM>;
+                        } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
+                            return -1;
+                        } else {
+                            return -1;
+                        }
+                    } else if constexpr (SIZE > 0) {
+                        return ct_v<SIZE>;
+                    } else {
+                        return -1;
+                    }
+                }();
+
+                if constexpr ((DIM > 0) && (n_axis > 0)) {
+                    constexpr auto SIZE = DIM - n_axis;
+                    using type = conditional_t<
+                        (is_true_type_v<keepdims_t>)
+                        , nmtools_array<nm_size_t,DIM>
+                        , conditional_t<
+                            (SIZE > 0)
+                            , nmtools_array<nm_size_t,SIZE>
+                            , none_t
+                        >
+                    >;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(B_DIM)> && (n_axis > 0)) {
+                    constexpr auto B_SIZE = B_DIM - n_axis;
+                    using type = conditional_t<
+                        (is_true_type_v<keepdims_t>)
+                        , nmtools_static_vector<nm_size_t,B_DIM>
+                        , conditional_t<
+                            (B_SIZE > 0)
+                            , nmtools_static_vector<nm_size_t,B_SIZE>
+                            , none_t
+                        >
+                    >;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small vector
+                    using type = conditional_t<
+                        (is_none_v<axis_t> && is_false_type_v<keepdims_t>)
+                        , none_t
+                        , nmtools_list<nm_size_t>
+                    >;
+                    return as_value_v<type>;
+                }
             }
         }();
-        using type = transform_bounded_array_t<type_t<decltype(vtype)>>;
+        using type = type_t<decltype(vtype)>;
     }; // resolve_optype
 } // namespace nmtools::meta
 
