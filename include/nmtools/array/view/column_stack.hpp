@@ -19,6 +19,7 @@ namespace nmtools::index
             && !meta::is_constant_index_array_v<result_t>)
         {
             auto src_dim = len(src_shape);
+            [[maybe_unused]]
             auto dst_dim = src_dim == 1 ? 2 : src_dim;
 
             if constexpr (meta::is_resizable_v<result_t>) {
