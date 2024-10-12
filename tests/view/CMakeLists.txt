@@ -136,9 +136,11 @@ if (NOT NMTOOLS_VIEW_TEST_ARRAY_VIEW)
     set (ARRAY_MATMUL_3_TEST_SOURCES "")
 endif ()
 
+## TODO: rename to math
 set(ARRAY_UFUNCS_1_TEST_SOURCES
     src/cumprod.cpp
     src/cumsum.cpp
+    src/dot.cpp
     src/prod.cpp
     src/sum.cpp
     src/vector_norm.cpp
