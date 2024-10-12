@@ -23,42 +23,11 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#include <vector>
-#include <array>
-#include <tuple>
-
-namespace nm = nmtools;
-namespace na = nm::array;
-namespace view = nm::view;
-
-#define RUN_impl(...) \
-nm::view::concatenate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs concatenate fn to callable lambda
-#define RUN_concatenate(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("concatenate-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_concatenate(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define CONCATENATE_SUBCASE(case_name, lhs, rhs, axis) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, concatenate, case_name); \
-    auto array_ref = RUN_concatenate(case_name, args::lhs, args::rhs, args::axis); \
+    auto array_ref = nmtools::view::concatenate( args::lhs, args::rhs, args::axis); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), nmtools::shape(expect::expected) ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }

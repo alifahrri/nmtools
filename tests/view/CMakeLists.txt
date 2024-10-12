@@ -62,10 +62,12 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/atleast_nd.cpp
     src/broadcast_to.cpp
     src/broadcast_arrays.cpp
+    src/column_stack.cpp
     src/concatenate.cpp
     src/compress.cpp
     src/diagflat.cpp
     src/diagonal.cpp
+    src/dstack.cpp
     src/expand_dims.cpp
     src/expand.cpp
     src/eye.cpp
@@ -155,6 +157,8 @@ set(ARRAY_UFUNCS_1_TEST_SOURCES
     src/ufuncs/bitwise_xor.cpp
     src/ufuncs/cbrt.cpp
     src/ufuncs/ceil.cpp
+    src/ufuncs/degrees.cpp
+    src/ufuncs/deg2rad.cpp
     ## TODO: fix
     # src/ufuncs/clip.cpp
     src/ufuncs/cos.cpp
@@ -198,6 +202,8 @@ set(ARRAY_UFUNCS_2_TEST_SOURCES
     src/ufuncs/not_equal.cpp
     src/ufuncs/positive.cpp
     src/ufuncs/power.cpp
+    src/ufuncs/radians.cpp
+    src/ufuncs/rad2deg.cpp
     src/ufuncs/reciprocal.cpp
     src/ufuncs/right_shift.cpp
     src/ufuncs/rint.cpp
