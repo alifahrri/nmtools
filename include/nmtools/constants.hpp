@@ -174,4 +174,14 @@ namespace nmtools::literals
 
 } // namespace nmtools::literals
 
+namespace nmtools
+{
+    template <typename T>
+    inline constexpr T pi_v = 3.141592653589793238462643383279502884197;
+
+    inline constexpr auto Pi = pi_v<float>;
+
+    // not everyone has to be saved
+} // nmtools
+
 #endif // NMTOOLS_CONSTANTS_HPP

@@ -96,12 +96,14 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/atleast_nd.cpp
     # array/broadcast_arrays.cpp
     array/broadcast_to.cpp
+    array/column_stack.cpp
     array/compress.cpp
     array/concatenate.cpp
     array/cumprod.cpp
     array/cumsum.cpp
     array/diagflat.cpp
     array/diagonal.cpp
+    array/dstack.cpp
     array/expand_dims.cpp
     array/expand.cpp
     array/eye.cpp
@@ -169,6 +171,8 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     # array/ufuncs/clip.cpp
     array/ufuncs/cos.cpp
     array/ufuncs/cosh.cpp
+    array/ufuncs/degrees.cpp
+    array/ufuncs/deg2rad.cpp
     array/ufuncs/divide.cpp
     array/ufuncs/equal.cpp
     array/ufuncs/exp.cpp
@@ -205,6 +209,8 @@ set(ARRAY_UFUNCS_TEST_SOURCES
     array/ufuncs/not_equal.cpp
     array/ufuncs/positive.cpp
     array/ufuncs/power.cpp
+    array/ufuncs/radians.cpp
+    array/ufuncs/rad2deg.cpp
     array/ufuncs/reciprocal.cpp
     array/ufuncs/right_shift.cpp
     array/ufuncs/rint.cpp
