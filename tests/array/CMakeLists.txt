@@ -104,6 +104,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/diagflat.cpp
     array/diagonal.cpp
     array/dstack.cpp
+    array/dot.cpp
     array/expand_dims.cpp
     array/expand.cpp
     array/eye.cpp
