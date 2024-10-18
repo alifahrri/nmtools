@@ -141,6 +141,8 @@ set(ARRAY_UFUNCS_1_TEST_SOURCES
     src/cumprod.cpp
     src/cumsum.cpp
     src/dot.cpp
+    src/inner.cpp
+    src/outer.cpp
     src/prod.cpp
     src/sum.cpp
     src/vector_norm.cpp
