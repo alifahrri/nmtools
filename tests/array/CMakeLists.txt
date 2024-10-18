@@ -115,6 +115,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/group_norm.cpp
     array/hstack.cpp
     array/identity.cpp
+    array/inner.cpp
     # break matmul to multiple files to avoid high memory peak
     # array/matmul.cpp
     array/instance_norm.cpp
@@ -123,6 +124,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/moveaxis.cpp
     array/ones.cpp
     array/ones_like.cpp
+    array/outer.cpp
     array/layer_norm.cpp
     array/pad.cpp
     array/prod.cpp
