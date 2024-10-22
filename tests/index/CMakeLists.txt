@@ -62,6 +62,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/filter.cpp
         src/free_axes.cpp
         src/gather.cpp
+        src/kron.cpp
         src/insert_index.cpp
         src/logical_not.cpp
         src/matmul.cpp

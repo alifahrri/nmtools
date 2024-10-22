@@ -142,6 +142,7 @@ set(ARRAY_UFUNCS_1_TEST_SOURCES
     src/cumsum.cpp
     src/dot.cpp
     src/inner.cpp
+    src/kron.cpp
     src/outer.cpp
     src/prod.cpp
     src/sum.cpp

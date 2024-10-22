@@ -119,6 +119,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     # break matmul to multiple files to avoid high memory peak
     # array/matmul.cpp
     array/instance_norm.cpp
+    array/kron.cpp
     array/linspace.cpp
     array/mean.cpp
     array/moveaxis.cpp
