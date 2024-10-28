@@ -38,6 +38,7 @@
 #include "nmtools/meta/bits/traits/is_copy_constructible.hpp"
 #include "nmtools/meta/bits/traits/is_default_constructible.hpp"
 #include "nmtools/meta/bits/traits/is_clipped_index_array.hpp"
+#include "nmtools/meta/bits/traits/is_clipped_index.hpp"
 #include "nmtools/meta/bits/traits/is_clipped_integer.hpp"
 #include "nmtools/meta/bits/traits/is_const.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
