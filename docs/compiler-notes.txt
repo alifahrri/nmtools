@@ -102,3 +102,6 @@ Documenting various note on behaviour difference between clang & gcc (or with so
 1. clang vs gcc disagree on capturing constexpr value in lambda expression  
   clang ok, gcc not ok  
   https://godbolt.org/z/a1o8P9957
+
+1. gcc `for` loop becomes goto in constexpr context (and breaks), works fine on clang
+  https://github.com/alifahrri/nmtools/issues/303

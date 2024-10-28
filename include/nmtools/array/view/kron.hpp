@@ -208,6 +208,8 @@ namespace nmtools::meta
                 is_constant_index_v<lhs_dim_t>
                 && is_constant_index_v<rhs_dim_t>
             ) {
+                // TODO: fix compile-time shape inference on gcc
+                // quick workaround, skip on gcc (https://github.com/alifahrri/nmtools/issues/303)
                 #ifdef __clang__
                 constexpr auto lhs_dim = to_value_v<lhs_dim_t>;
                 constexpr auto rhs_dim = to_value_v<rhs_dim_t>;
