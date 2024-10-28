@@ -13,7 +13,7 @@ namespace nmtools::index
     struct tensordot_lhs_transpose_t {};
 
     template <typename lhs_dim_t, typename axes_t>
-    constexpr auto tensordot_lhs_transpose(lhs_dim_t lhs_dim, const axes_t& axes)
+    constexpr auto tensordot_lhs_transpose([[maybe_unused]] lhs_dim_t lhs_dim, [[maybe_unused]] const axes_t& axes)
     {
         using result_t = meta::resolve_optype_t<tensordot_lhs_transpose_t,lhs_dim_t,axes_t>;
 
@@ -52,7 +52,7 @@ namespace nmtools::index
     struct tensordot_rhs_transpose_t {};
 
     template <typename rhs_dim_t, typename axes_t>
-    constexpr auto tensordot_rhs_transpose(rhs_dim_t rhs_dim, const axes_t& axes)
+    constexpr auto tensordot_rhs_transpose([[maybe_unused]] rhs_dim_t rhs_dim, [[maybe_unused]] const axes_t& axes)
     {
         using result_t = meta::resolve_optype_t<tensordot_rhs_transpose_t,rhs_dim_t,axes_t>;
 
@@ -100,8 +100,10 @@ namespace nmtools::index
     struct tensordot_lhs_reshape_t {};
 
     template <typename lhs_shape_t, typename rhs_shape_t, typename lhs_axes_t>
-    constexpr auto tensordot_lhs_reshape(const lhs_shape_t& lhs_shape, const rhs_shape_t& rhs_shape, const lhs_axes_t& lhs_axes)
-    {
+    constexpr auto tensordot_lhs_reshape([[maybe_unused]] const lhs_shape_t& lhs_shape
+        , [[maybe_unused]] const rhs_shape_t& rhs_shape
+        , [[maybe_unused]] const lhs_axes_t& lhs_axes
+    ) {
         using result_t = meta::resolve_optype_t<tensordot_lhs_reshape_t,lhs_shape_t,rhs_shape_t,lhs_axes_t>;
 
         auto result = result_t {};
