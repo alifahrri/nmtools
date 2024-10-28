@@ -36,7 +36,8 @@ namespace nmtools::index
                 for (nm_size_t i=0; i<(nm_size_t)dst_dim/2; i++) {
                     at(result,i*2+1) = i + (dst_dim/2);
                 }
-            } else if (lhs_dim < rhs_dim) {
+            } else if ((nm_size_t)lhs_dim < (nm_size_t)rhs_dim) {
+                #ifdef __clang__
                 auto rhs_dim_i = [&](){
                     if constexpr (meta::is_constant_index_v<rhs_dim_t>) {
                         return meta::ct_v<rhs_dim_t::value-1>;
@@ -47,6 +48,9 @@ namespace nmtools::index
                         return rhs_dim-1;
                     }
                 }();
+                #else
+                auto rhs_dim_i = nm_index_t(rhs_dim) - 1;
+                #endif
                 auto initial_axes = kron_dst_transpose(lhs_dim,rhs_dim_i);
                 for (nm_size_t i=0; i<(nm_size_t)(dst_dim-1); i++) {
                     at(result,i) = at(initial_axes,i);
@@ -58,6 +62,7 @@ namespace nmtools::index
                     at(result,idx-1) = tmp;
                 }
             } else {
+                #ifdef __clang__
                 auto rhs_dim_i = [&](){
                     if constexpr (meta::is_constant_index_v<rhs_dim_t>) {
                         return meta::ct_v<rhs_dim_t::value+1>;
@@ -81,6 +86,9 @@ namespace nmtools::index
                         return rhs_dim+1;
                     }
                 }();
+                #else
+                auto rhs_dim_i = (nm_index_t)rhs_dim+1;
+                #endif
                 auto initial_axes = kron_dst_transpose(lhs_dim,rhs_dim_i);
                 for (nm_size_t i=0; i<(nm_size_t)dst_dim; i++) {
                     at(result,i) = at(initial_axes,i);
@@ -200,6 +208,7 @@ namespace nmtools::meta
                 is_constant_index_v<lhs_dim_t>
                 && is_constant_index_v<rhs_dim_t>
             ) {
+                #ifdef __clang__
                 constexpr auto lhs_dim = to_value_v<lhs_dim_t>;
                 constexpr auto rhs_dim = to_value_v<rhs_dim_t>;
                 constexpr auto result = index::kron_dst_transpose(clipped_size_t<lhs_dim>(lhs_dim),clipped_size_t<rhs_dim>(rhs_dim));
@@ -209,6 +218,11 @@ namespace nmtools::meta
                     using type = append_type_t<init_t,ct<at(result,I)>>;
                     return as_value_v<type>;
                 }, as_value_v<nmtools_tuple<>>);
+                #else
+                constexpr auto DST_DIM = lhs_dim_t::value + rhs_dim_t::value;
+                using type = nmtools_array<nm_size_t,DST_DIM>;
+                return as_value_v<type>;
+                #endif
             } else {
                 [[maybe_unused]] constexpr auto LHS_MAX = max_value_v<lhs_dim_t>;
                 [[maybe_unused]] constexpr auto RHS_MAX = max_value_v<rhs_dim_t>;
