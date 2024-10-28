@@ -146,6 +146,8 @@ set(ARRAY_UFUNCS_1_TEST_SOURCES
     src/outer.cpp
     src/prod.cpp
     src/sum.cpp
+    src/tensordot.cpp
+    src/vecdot.cpp
     src/vector_norm.cpp
     src/ufuncs/add.cpp
     src/ufuncs/amax.cpp

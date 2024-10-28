@@ -89,6 +89,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/slice.cpp
         src/take.cpp
         src/take_along_axis.cpp
+        src/tensordot.cpp
         src/tile.cpp
         src/tril.cpp
     )
