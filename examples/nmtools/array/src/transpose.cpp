@@ -2,7 +2,6 @@
 #include "nmtools/utility/cast.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/utility/to_string.hpp"
-#include "nmtools/array/cast.hpp"
 
 #include <iostream>
 #include <array>
