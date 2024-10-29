@@ -1,5 +1,5 @@
 #include "nmtools/array/view/transpose.hpp"
-#include "nmtools/array/utility/cast.hpp"
+#include "nmtools/utility/cast.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/utility/to_string.hpp"
 #include "nmtools/array/cast.hpp"
