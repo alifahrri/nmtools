@@ -142,9 +142,12 @@ set(ARRAY_UFUNCS_1_TEST_SOURCES
     src/cumsum.cpp
     src/dot.cpp
     src/inner.cpp
+    src/kron.cpp
     src/outer.cpp
     src/prod.cpp
     src/sum.cpp
+    src/tensordot.cpp
+    src/vecdot.cpp
     src/vector_norm.cpp
     src/ufuncs/add.cpp
     src/ufuncs/amax.cpp

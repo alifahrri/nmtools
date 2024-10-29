@@ -6,6 +6,7 @@
 #include "nmtools/array/utility/at.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/array/index/contains.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
@@ -21,26 +22,6 @@ namespace nmtools::index
      * 
      */
     struct shape_expand_dims_t {};
-
-    // TODO: remove
-    template <typename array_t, typename value_t>
-    constexpr auto contains(const array_t& array, const value_t& value)
-    {
-        if constexpr (meta::is_fixed_index_array_v<array_t>) {
-            bool contain = false;
-            meta::template_for<meta::len_v<array_t>>([&](auto i){
-                if (utils::isequal(at(array,i),value))
-                    contain = true;
-            });
-            return contain;
-        }
-        else {
-            for (size_t i=0; i<len(array); i++)
-                if (utils::isequal(at(array,i),value))
-                    return true;
-            return false;   
-        }
-    } // contains
 
     /**
      * @brief extend the shape with value 1 for each given axis
