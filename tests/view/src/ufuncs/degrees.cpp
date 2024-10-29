@@ -14,7 +14,7 @@ inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_
 inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db);
 #endif
 
-#define NMTOOLS_TESTING_OUTPUT_PRECISION (1e-3)
+#define NMTOOLS_TESTING_PRECISION (1e-3)
 
 #include "nmtools/array/view/ufuncs/degrees.hpp"
 #include "nmtools/testing/data/array/degrees.hpp"

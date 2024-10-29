@@ -19,8 +19,8 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_
 #include "nmtools/testing/doctest.hpp"
 
 // TODO: improve precision
-#undef NMTOOLS_TESTING_OUTPUT_PRECISION
-#define NMTOOLS_TESTING_OUTPUT_PRECISION (1e-4)
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION (1e-4)
 
 #define RUN_batch_norm_impl(...) \
 nmtools::view::batch_norm(__VA_ARGS__);

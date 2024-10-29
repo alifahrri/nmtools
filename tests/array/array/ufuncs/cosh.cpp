@@ -6,8 +6,8 @@
 #include <array>
 
 // lower testing precision for cosh
-#undef NMTOOLS_TESTING_OUTPUT_PRECISION
-#define NMTOOLS_TESTING_OUTPUT_PRECISION 1e-5
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION 1e-5
 
 namespace nm = nmtools;
 namespace na = nm::array;

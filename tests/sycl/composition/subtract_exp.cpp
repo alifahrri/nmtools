@@ -1,4 +1,4 @@
-#define NMTOOLS_TESTING_OUTPUT_PRECISION (1e-2)
+#define NMTOOLS_TESTING_PRECISION (1e-2)
 
 #include "nmtools/array/array/ufuncs/exp.hpp"
 #include "nmtools/array/array/ufuncs/subtract.hpp"
