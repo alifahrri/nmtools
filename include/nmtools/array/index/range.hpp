@@ -9,8 +9,10 @@ namespace nmtools::index
     struct range_t {};
 
     template <typename start_t, typename stop_t, typename step_t=meta::ct<1>>
-    constexpr auto range(start_t start, stop_t stop, step_t step=step_t{})
-    {
+    constexpr auto range([[maybe_unused]] start_t start
+        , [[maybe_unused]] stop_t stop
+        , [[maybe_unused]] step_t step=step_t{}
+    ) {
         using result_t = meta::resolve_optype_t<range_t,start_t,stop_t,step_t>;
 
         auto result = result_t {};
