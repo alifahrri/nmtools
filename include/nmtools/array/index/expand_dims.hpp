@@ -2,8 +2,8 @@
 #define NMTOOLS_ARRAY_INDEX_EXPAND_DIMS_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/index/contains.hpp"

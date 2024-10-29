@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_CUDA_EVALUATOR_HPP
 
 #include "nmtools/array/eval.hpp"
-#include "nmtools/array/data.hpp"
+#include "nmtools/utility/data.hpp"
 #include "nmtools/array/eval/cuda/context.hpp"
 #include "nmtools/array/functional.hpp"
 

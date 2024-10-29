@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/fwd.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/forward.hpp"
 // #include "nmtools/array/ndarray.hpp" // for nmtools_static_vector
 #include "nmtools/utl/static_vector.hpp"

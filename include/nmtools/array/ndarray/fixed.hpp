@@ -3,8 +3,8 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
-#include "nmtools/array/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/forward.hpp"
 #include "nmtools/array/index/product.hpp"
 
@@ -484,7 +484,7 @@ namespace nmtools::meta
 #include "nmtools/array/view/flatten.hpp" // view::flatten
 #include "nmtools/array/view/mutable_flatten.hpp" // view::mutable_flatten
 #include "nmtools/utils/isequal.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::array
 {

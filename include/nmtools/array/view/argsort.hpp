@@ -10,7 +10,7 @@
 #include "nmtools/array/view/slice.hpp"
 #include "nmtools/array/view/mutable_slice.hpp"
 #include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/utility/apply_resize.hpp"
+#include "nmtools/utility/apply_resize.hpp"
 
 // for iota
 #include <numeric>

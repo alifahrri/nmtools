@@ -5,7 +5,7 @@
 #include "nmtools/utility/fwd.hpp"
 #include "nmtools/array/index/atleast_nd.hpp"
 #include "nmtools/array/view/indexing.hpp"
-#include "nmtools/array/as_static.hpp"
+#include "nmtools/utility/as_static.hpp"
 #include "nmtools/utils/to_string/to_string.hpp"
 #include "nmtools/array/view/reshape.hpp"
 

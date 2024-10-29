@@ -2,7 +2,7 @@
 #define NTMOOLS_ARRAY_VIEW_KRON_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::index
 {

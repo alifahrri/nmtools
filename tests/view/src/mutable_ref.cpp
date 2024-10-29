@@ -9,8 +9,8 @@
  */
 
 #include "nmtools/array/view.hpp"
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/utils/isclose.hpp"
 #include "nmtools/utils/isequal.hpp"
 #include "nmtools/testing/doctest.hpp"

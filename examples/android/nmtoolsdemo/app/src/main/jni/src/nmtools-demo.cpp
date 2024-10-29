@@ -24,7 +24,7 @@
 
 #include "nmtools/array/index/ndenumerate.hpp"
 #include "nmtools/utils/to_string.hpp"
-#include "nmtools/array/utility/jni.hpp"
+#include "nmtools/platform/jni.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

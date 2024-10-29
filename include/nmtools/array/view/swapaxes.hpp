@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_SWAPAXES_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
 #include "nmtools/utility/unwrap.hpp"
 

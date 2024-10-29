@@ -21,7 +21,7 @@
 #include "nmtools/array/array/atleast_1d.hpp"
 #include "nmtools/array/array/arange.hpp"
 
-#include "nmtools/array/utility/embind.hpp"
+#include "nmtools/platform/embind.hpp"
 #include <emscripten/bind.h>
 
 namespace em = emscripten;

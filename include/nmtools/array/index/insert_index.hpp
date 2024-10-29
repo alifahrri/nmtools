@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_INSERT_INDEX_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
 
 namespace nmtools::index

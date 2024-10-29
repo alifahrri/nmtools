@@ -2,7 +2,7 @@
 #define NMTOOLS_UTILITY_CT_DIGRAPH_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/utility/ct_map.hpp"
 
 namespace nmtools::utility

@@ -3,7 +3,7 @@
 
 #include "nmtools/testing/platform.hpp"
 #include "nmtools/constants.hpp"
-#include "nmtools/array/cast.hpp"
+#include "nmtools/utility/cast.hpp"
 
 // macro for testing purpose
 

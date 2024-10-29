@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_COLUMN_STACK_HPP
 #define NMTOOLS_ARRAY_VIEW_COLUMN_STACK_HPP
 
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::index

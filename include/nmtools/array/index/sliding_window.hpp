@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_SLIDING_WINDOW_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
 #include "nmtools/platform/math/constexpr.hpp"

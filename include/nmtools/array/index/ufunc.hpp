@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_UFUNC_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::index

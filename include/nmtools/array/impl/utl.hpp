@@ -3,7 +3,7 @@
 
 // Actual implementation for customization point for UTL
 
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 #include "nmtools/utl.hpp"
 

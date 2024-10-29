@@ -4,7 +4,7 @@
 #include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/array/dtypes.hpp"
+#include "nmtools/dtypes.hpp"
 #include "nmtools/testing/testing.hpp"
 
 #include <vector>

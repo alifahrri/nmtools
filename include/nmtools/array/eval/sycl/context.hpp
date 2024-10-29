@@ -7,7 +7,7 @@
 #include "nmtools/array/eval/kernel_helper.hpp"
 #include "nmtools/exception.hpp"
 #include "nmtools/utils/to_string.hpp"
-#include "nmtools/array/as_static.hpp"
+#include "nmtools/utility/as_static.hpp"
 #include "nmtools/utl/vector.hpp"
 
 #include <sycl/sycl.hpp>

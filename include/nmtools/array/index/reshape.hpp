@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_RESHAPE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/ref.hpp"

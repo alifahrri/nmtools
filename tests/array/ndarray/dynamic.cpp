@@ -1,4 +1,4 @@
-#include "nmtools/array/dynamic.hpp"
+#include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include <array>
 

@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_EVALUATOR_HPP
 
 #include "nmtools/array/eval.hpp"
-#include "nmtools/array/data.hpp"
+#include "nmtools/utility/data.hpp"
 #include "nmtools/array/eval/opencl/context.hpp"
 
 #include <memory>

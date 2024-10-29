@@ -3,9 +3,9 @@
 
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/ndarray.hpp"
 
 namespace nmtools::index

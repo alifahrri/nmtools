@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::index
@@ -180,7 +180,7 @@ namespace nmtools::meta
 } // nmtools::meta
 
 #include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/utility/unwrap.hpp"

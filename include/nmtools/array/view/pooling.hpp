@@ -8,7 +8,7 @@
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/array/view/mean.hpp"
 #include "nmtools/array/view/ufuncs/maximum.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::view

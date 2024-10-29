@@ -3,7 +3,7 @@
 
 #include "nmtools/array/index/expand_dims.hpp"
 #include "nmtools/array/view/reshape.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::view
 {

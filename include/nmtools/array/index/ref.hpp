@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_INDEX_REF_HPP
 #define NMTOOLS_ARRAY_INDEX_REF_HPP
 
-#include "nmtools/array/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::index

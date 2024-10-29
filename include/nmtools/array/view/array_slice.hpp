@@ -7,7 +7,7 @@
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/view/discrete.hpp"
 #include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/utility/apply_resize.hpp"
+#include "nmtools/utility/apply_resize.hpp"
 
 namespace nmtools::view
 {

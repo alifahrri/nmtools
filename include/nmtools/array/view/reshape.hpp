@@ -3,10 +3,10 @@
 
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/view/indexing.hpp"
-#include "nmtools/array/as_static.hpp"
+#include "nmtools/utility/as_static.hpp"
 
 #include "nmtools/array/index/reshape.hpp"
 #include "nmtools/array/index/compute_indices.hpp"

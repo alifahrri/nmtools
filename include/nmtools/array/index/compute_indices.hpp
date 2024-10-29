@@ -2,8 +2,8 @@
 #define NMTOOLS_ARRAY_INDEX_COMPUTE_INDICES_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 

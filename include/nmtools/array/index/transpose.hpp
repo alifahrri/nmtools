@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_TRANSPOSE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/utl/static_vector.hpp"

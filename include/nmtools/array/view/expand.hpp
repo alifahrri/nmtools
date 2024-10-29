@@ -6,7 +6,7 @@
 
 /*=====================================================================*/
 
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
 
 namespace nmtools::index
@@ -250,7 +250,7 @@ namespace nmtools::meta
 
 /*=====================================================================*/
 
-#include "nmtools/array/as_static.hpp"
+#include "nmtools/utility/as_static.hpp"
 #include "nmtools/utils/isequal/isequal.hpp"
 #include "nmtools/utils/isclose/isclose.hpp"
 #include "nmtools/utils/to_string/to_string.hpp"

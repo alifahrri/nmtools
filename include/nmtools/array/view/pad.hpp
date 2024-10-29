@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_PAD_HPP
 
 #include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/pad.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/view/indexing.hpp"

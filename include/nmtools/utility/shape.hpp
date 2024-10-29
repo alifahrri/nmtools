@@ -3,8 +3,7 @@
 
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/utility.hpp"
 

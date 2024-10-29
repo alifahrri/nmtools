@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_CONTAINS_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/utils/isequal.hpp"
 
 namespace nmtools::index

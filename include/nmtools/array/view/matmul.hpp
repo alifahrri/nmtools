@@ -9,7 +9,7 @@
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"
-#include "nmtools/array/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/fwd.hpp"
 

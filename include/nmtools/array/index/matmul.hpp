@@ -7,7 +7,7 @@
 #include "nmtools/array/index/broadcast_to.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/at.hpp"
+#include "nmtools/utility/at.hpp"
 
 
 namespace nmtools::index

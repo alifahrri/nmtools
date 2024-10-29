@@ -7,11 +7,11 @@
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
 #include "nmtools/array/index/reverse.hpp"
-#include "nmtools/array/shape.hpp"
-#include "nmtools/array/utility.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/at.hpp"
 // NOTE: to include nmtools_hybrid_ndarray macro
 #include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/utility/cast.hpp"
+#include "nmtools/utility/cast.hpp"
 #include "nmtools/utility/get.hpp"
 #include "nmtools/array/ndarray/base_ndarray.hpp"
 

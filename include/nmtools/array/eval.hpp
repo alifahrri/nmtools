@@ -10,9 +10,9 @@
 #include "nmtools/array/ndarray.hpp"
 
 #include "nmtools/utils/isequal.hpp"
-#include "nmtools/array/utility/apply_at.hpp"
-#include "nmtools/array/utility/apply_resize.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/apply_resize.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::array
 {

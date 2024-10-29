@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_HIP_EVALUATOR_HPP
 
 #include "nmtools/array/eval.hpp"
-#include "nmtools/array/data.hpp"
+#include "nmtools/utility/data.hpp"
 #include "nmtools/array/eval/hip/context.hpp"
 #include "nmtools/array/functional.hpp"
 

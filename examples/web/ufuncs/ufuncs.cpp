@@ -2,7 +2,7 @@
 #include "nmtools/array/view/ufuncs/clip.hpp"
 #include "nmtools/array/array/ufuncs/exp.hpp"
 
-#include "nmtools/array/utility/embind.hpp"
+#include "nmtools/platform/embind.hpp"
 #include <emscripten/bind.h>
 
 namespace em = emscripten;

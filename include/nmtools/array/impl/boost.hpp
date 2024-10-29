@@ -8,7 +8,7 @@
 #include <boost/container/small_vector.hpp>
 #include <boost/container/vector.hpp>
 
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/meta/boost.hpp"
 #include "nmtools/utility/boost/get.hpp"
