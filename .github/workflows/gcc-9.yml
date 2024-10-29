@@ -45,7 +45,7 @@ jobs:
           platform: x64
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
-      - build:
+      - name: build
         run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_INDEX_TESTS=ON .. && make -j2 VERBOSE=1 numeric-tests-index-doctest
       - name: run tests
         run: |
