@@ -4,7 +4,7 @@
 #include "nmtools/testing/platform.hpp"
 #include "nmtools/meta.hpp"
 
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/to_string.hpp"
 
 #define NMTOOLS_TESTING_GET_TYPENAME NMTOOLS_TYPENAME_TO_STRING
 

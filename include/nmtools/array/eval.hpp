@@ -9,7 +9,7 @@
 
 #include "nmtools/array/ndarray.hpp"
 
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 #include "nmtools/utility/shape.hpp"

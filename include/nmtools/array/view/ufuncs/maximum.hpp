@@ -95,7 +95,7 @@ namespace nmtools::view
     } // outer_maximum
 }
 
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 #if NMTOOLS_HAS_STRING
 

@@ -5,7 +5,7 @@
 #include "nmtools/array/index/resize.hpp"
 #include "nmtools/utility/as_static.hpp"
 #include "nmtools/utility/unwrap.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::view
 {

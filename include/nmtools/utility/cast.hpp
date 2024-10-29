@@ -31,7 +31,7 @@ namespace nmtools::array::kind
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
 
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 
 namespace nmtools
 {
@@ -69,7 +69,7 @@ namespace nmtools
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
 
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
 #include "nmtools/utl.hpp"

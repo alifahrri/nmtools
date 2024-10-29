@@ -9,7 +9,7 @@ namespace view = nmtools::view;
 nm::view::softshrink(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs softshrink fn to callable lambda

@@ -3,7 +3,7 @@
 
 #include "nmtools/testing/testing.hpp"
 #include "nmtools/utility/fwd.hpp"
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/to_string.hpp"
 
 namespace meta = nmtools::meta;
 namespace utils = nmtools::utils;

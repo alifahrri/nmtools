@@ -25,7 +25,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 nmtools::view::atleast_2d(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nmtools::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs atleast_2d fn to callable lambda

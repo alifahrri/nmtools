@@ -28,7 +28,7 @@ namespace na = nm::array;
 nm::array::max_pool2d(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs max_pool2d fn to callable lambda
@@ -370,7 +370,7 @@ TEST_CASE("max_pool2d(case10)" * doctest::test_suite("array::max_pool2d"))
 nm::array::avg_pool2d(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs avg_pool2d fn to callable lambda

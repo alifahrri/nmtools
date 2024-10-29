@@ -1,6 +1,6 @@
 #include "nmtools/array/array/linspace.hpp"
 #include "nmtools/testing/data/array/linspace.hpp"
-#include "nmtools/utils/apply_isclose.hpp"
+#include "nmtools/utility/apply_isclose.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define LINSPACE_SUBCASE(case_name, ...) \

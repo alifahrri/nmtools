@@ -3,8 +3,8 @@
 
 #include "nmtools/array/view/ufunc.hpp"
 // TODO: maybe do not include all parts of isclose here, refactor to isclose_t maybe
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/isclose.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::view::fun
 {

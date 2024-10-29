@@ -13,7 +13,7 @@ namespace na = nm::array;
 nm::array::minimum(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs minimum fn to callable lambda
@@ -64,7 +64,7 @@ TEST_CASE("minimum(case2)" * doctest::test_suite("array::minimum"))
 nm::array::minimum.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs reduce_minimum fn to callable lambda
@@ -205,7 +205,7 @@ TEST_CASE("reduce_minimum(case12)" * doctest::test_suite("array::reduce_minimum"
 nm::array::minimum.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs accumulate_minimum fn to callable lambda
@@ -268,7 +268,7 @@ TEST_CASE("accumulate_minimum(case3)" * doctest::test_suite("array::accumulate_m
 nm::array::minimum.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs outer_minimum fn to callable lambda

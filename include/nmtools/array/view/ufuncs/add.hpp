@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_ADD_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_ADD_HPP
 
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
 namespace nmtools::view::fun

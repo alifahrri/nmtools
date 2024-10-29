@@ -3,7 +3,7 @@
 
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/index/ndenumerate.hpp"
-#include "nmtools/utils/isequal/isequal.hpp"
+#include "nmtools/utility/isequal/isequal.hpp"
 
 namespace nmtools::view
 {

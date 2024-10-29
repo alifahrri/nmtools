@@ -4,11 +4,11 @@
 #include "nmtools/array/view/ufunc/ufunc.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/array/functional/functor.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
-#include "nmtools/utils/to_string/common_types.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/common_types.hpp"
 #include "nmtools/array/functional/indexing.hpp"
 
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 
 namespace nmtools::functional::fun
 {

@@ -1,6 +1,6 @@
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/testing/data/index/compute_strides.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 using nmtools::utils::isequal;

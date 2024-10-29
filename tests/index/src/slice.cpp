@@ -21,7 +21,7 @@ using namespace nm::literals;
 nm::index::shape_slice(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs shape_slice fn to callable lambda
@@ -455,7 +455,7 @@ TEST_CASE("shape_slice(case34)" * doctest::test_suite("index::shape_slice"))
 nm::index::shape_dynamic_slice(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs shape_dynamic_slice fn to callable lambda
@@ -729,7 +729,7 @@ TEST_CASE("shape_dynamic_slice(case22)" * doctest::test_suite("index::shape_dyna
 nm::index::slice(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs slice fn to callable lambda
@@ -752,7 +752,7 @@ RUN_slice_impl(__VA_ARGS__);
 nm::index::dynamic_slice(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs dynamic_slice fn to callable lambda

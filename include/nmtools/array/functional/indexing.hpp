@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_INDEXING_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_INDEXING_HPP
 
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/indexing.hpp"
 

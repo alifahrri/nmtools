@@ -1,7 +1,7 @@
 #include "nmtools/array/index/insert_index.hpp"
 #include "nmtools/utility/flatten_either.hpp"
-#include "nmtools/utils/apply_isequal.hpp"
-#include "nmtools/utils/apply_to_string.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
+#include "nmtools/utility/apply_to_string.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
@@ -196,7 +196,7 @@ namespace na = nm::array;
 nm::index::insert_index(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs insert_index fn to callable lambda

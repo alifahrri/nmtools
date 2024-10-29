@@ -23,7 +23,7 @@
 #include "nmtools/array/random_engine.hpp"
 
 #include "nmtools/array/index/ndenumerate.hpp"
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/to_string.hpp"
 #include "nmtools/platform/jni.hpp"
 
 namespace nm = nmtools;

@@ -4,7 +4,7 @@
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/index/tile.hpp"
 #include "nmtools/utility/as_static.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::view
 {

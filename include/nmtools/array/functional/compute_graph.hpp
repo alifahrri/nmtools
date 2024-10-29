@@ -273,8 +273,8 @@ namespace nmtools::functional
     }; // get_compute_graph_t
 } // namespace nmtools::functional
 
-#include "nmtools/utils/to_string/to_string.hpp"
-#include "nmtools/utils/to_string/common_types.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/common_types.hpp"
 
 #if NMTOOLS_HAS_STRING
 

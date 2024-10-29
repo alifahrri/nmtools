@@ -184,9 +184,9 @@ namespace nmtools::meta
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/utility/unwrap.hpp"
-#include "nmtools/utils/isequal/isequal.hpp"
-#include "nmtools/utils/isclose/isclose.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/isequal/isequal.hpp"
+#include "nmtools/utility/isclose/isclose.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::view
 {

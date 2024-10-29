@@ -6,7 +6,7 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/utils/isequal/isequal.hpp"
+#include "nmtools/utility/isequal/isequal.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::utils

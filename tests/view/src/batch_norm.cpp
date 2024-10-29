@@ -26,7 +26,7 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_
 nmtools::view::batch_norm(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nmtools::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs batch_norm fn to callable lambda

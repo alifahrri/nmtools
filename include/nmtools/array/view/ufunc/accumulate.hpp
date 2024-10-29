@@ -21,8 +21,8 @@
 
 #include "nmtools/array/view/ufunc/reduce.hpp"
 #include "nmtools/array/view/ufunc/detail.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
+#include "nmtools/utility/isequal.hpp"
 
 namespace nmtools::args
 {

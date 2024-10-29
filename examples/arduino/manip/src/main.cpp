@@ -25,7 +25,7 @@
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/array/flatten.hpp"
 
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/to_string.hpp"
 #include "nmtools/utils/apply_to_string.hpp"
 
 #include <Arduino.h>

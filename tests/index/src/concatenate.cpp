@@ -95,7 +95,7 @@ NMTOOLS_TESTING_DECLARE_CASE(shape_concatenate)
 nm::index::shape_concatenate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs shape_concatenate fn to callable lambda
@@ -461,7 +461,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, concatenate)
 nm::index::concatenate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs concatenate fn to callable lambda

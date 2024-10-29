@@ -3,7 +3,7 @@
 #include "nmtools/array/array/sum.hpp"
 #include "nmtools/array/array/matmul.hpp"
 #include "nmtools/array/array/mean.hpp"
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/to_string.hpp"
 
 #include <Arduino.h>
 

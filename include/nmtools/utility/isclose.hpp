@@ -6,10 +6,10 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 #include "nmtools/math.hpp"
 #include "nmtools/platform/math/constexpr.hpp"
-#include "nmtools/utils/isclose/isclose.hpp"
+#include "nmtools/utility/isclose/isclose.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 #ifndef NMTOOLS_ISCLOSE_NAN_HANDLING

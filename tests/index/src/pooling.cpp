@@ -1,8 +1,8 @@
 #include "nmtools/array/index/pooling.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/utils/apply_isequal.hpp"
-#include "nmtools/utils/apply_to_string.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
+#include "nmtools/utility/apply_to_string.hpp"
 
 #include "nmtools/testing/data/array/pooling.hpp"
 
@@ -13,7 +13,7 @@ namespace na = nm::array;
 nm::index::shape_pool2d(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs shape_pool2d fn to callable lambda
@@ -162,7 +162,7 @@ TEST_CASE("shape_pool2d(case6)" * doctest::test_suite("index::constexpr_shape_po
 nm::index::slice_pool2d(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs slice_pool2d fn to callable lambda

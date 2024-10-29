@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_LOG10_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_LOG10_HPP
 
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 #include "nmtools/math.hpp"
 

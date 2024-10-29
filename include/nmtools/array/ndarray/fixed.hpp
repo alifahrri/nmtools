@@ -483,7 +483,7 @@ namespace nmtools::meta
 
 #include "nmtools/array/view/flatten.hpp" // view::flatten
 #include "nmtools/array/view/mutable_flatten.hpp" // view::mutable_flatten
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/shape.hpp"
 
 namespace nmtools::array

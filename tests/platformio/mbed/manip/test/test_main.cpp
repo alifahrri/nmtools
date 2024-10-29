@@ -42,8 +42,8 @@
 #include "nmtools/testing/data/array/where.hpp"
 #include "nmtools/testing/data/array/zeros.hpp"
 
-#include "nmtools/utils/isequal.hpp"
-#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utility/isequal.hpp"
+#include "nmtools/utility/isclose.hpp"
 
 // by default mbed declare using namespace std and mbed;
 #define MBED_NO_GLOBAL_USING_DIRECTIVE

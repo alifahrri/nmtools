@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 
 namespace nmtools::index
 {

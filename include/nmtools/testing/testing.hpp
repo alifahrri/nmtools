@@ -2,9 +2,9 @@
 #define NMTOOLS_TESTING_HPP
 
 #include "nmtools/platform.hpp"
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/isequal.hpp"
-#include "nmtools/utils/apply_isequal.hpp"
+#include "nmtools/utility/isclose.hpp"
+#include "nmtools/utility/isequal.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
 #include "nmtools/testing/string.hpp"
 #include "nmtools/testing/array_cast.hpp"
 

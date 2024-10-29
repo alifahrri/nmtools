@@ -28,7 +28,7 @@ namespace na = nmtools::array;
 nm::view::slice(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs slice fn to callable lambda
@@ -1443,7 +1443,7 @@ TEST_CASE("slice" * doctest::test_suite("view::slice"))
 nm::view::apply_slice(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs apply_slice fn to callable lambda
