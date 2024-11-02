@@ -128,10 +128,10 @@ namespace nmtools::utl
         using const_reference = const T&;
 
         protected:
+        allocator_type allocator = {};
         pointer buffer_ = nmtools_null;
         size_type size_ = 0;
         size_type buffer_size_ = 0;
-        allocator_type allocator = {};
         bool initialized = false;
 
         template <typename type, typename allocator_type> friend auto begin(vector<type,allocator_type>&);
@@ -139,29 +139,31 @@ namespace nmtools::utl
         template <typename type, typename allocator_type> friend auto end(vector<type,allocator_type>&);
         template <typename type, typename allocator_type> friend auto end(const vector<type,allocator_type>&);
 
+        static constexpr nm_size_t initial_buffer_size = 4;
+
         public:
 
         vector()
-            : buffer_(nmtools_null)
+            : allocator{}
+            , buffer_(allocator.allocate(initial_buffer_size))
             , size_(0)
-            , buffer_size_(0)
-            , allocator{}
+            , buffer_size_(initial_buffer_size)
             , initialized(true)
         {}
         vector(size_type N)
-            : buffer_(nmtools_null)
-            , size_(0)
-            , buffer_size_(0)
-            , allocator{}
+            : allocator{}
+            , buffer_(allocator.allocate(N))
+            , size_(N)
+            , buffer_size_(N)
             , initialized(true)
         {
             resize(N);
         }
         vector(const vector& other)
-            : buffer_(nmtools_null)
+            : allocator{}
+            , buffer_(allocator.allocate(initial_buffer_size))
             , size_(0)
-            , buffer_size_(0)
-            , allocator{}
+            , buffer_size_(initial_buffer_size)
             , initialized(true)
         {
             resize(other.size_);
@@ -180,10 +182,10 @@ namespace nmtools::utl
         // TODO: fix initialization
         template <typename A, typename B, typename...Ts>
         vector(const A& t, const B& u, const Ts&...ts)
-            : buffer_(nmtools_null)
+            : allocator{}
+            , buffer_(allocator.allocate(initial_buffer_size))
             , size_(0)
-            , buffer_size_(0)
-            , allocator{}
+            , buffer_size_(initial_buffer_size)
         {
             constexpr auto n = sizeof...(Ts) + 2;
             resize(n);

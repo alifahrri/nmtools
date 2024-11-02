@@ -174,6 +174,17 @@ namespace nmtools::utl
 
         constexpr either& operator=(const either& other) noexcept
         {
+            if (other.tag != tag) {
+                if (other.tag == LEFT) {
+                    // left = left_type{};
+                    new(&this->left) left_t{};
+                    tag = LEFT;
+                } else {
+                    // right = right_type{};
+                    new(&this->right) right_t{};
+                    tag = RIGHT;
+                }
+            }
             return base::operator=(other);
         }
     };
@@ -241,6 +252,17 @@ namespace nmtools::utl
 
         constexpr either& operator=(const either& other) noexcept
         {
+            if (other.tag != tag) {
+                if (other.tag == LEFT) {
+                    // left = left_type{};
+                    new(&this->left) left_t{};
+                    tag = LEFT;
+                } else {
+                    // right = right_type{};
+                    new(&this->right) right_t{};
+                    tag = RIGHT;
+                }
+            }
             return base::operator=(other);
         }
     }; // either
@@ -305,6 +327,17 @@ namespace nmtools::utl
 
         constexpr either& operator=(const either& other) noexcept
         {
+            if (other.tag != tag) {
+                if (other.tag == LEFT) {
+                    // left = left_type{};
+                    new(&this->left) left_t{};
+                    tag = LEFT;
+                } else {
+                    // right = right_type{};
+                    new(&this->right) right_t{};
+                    tag = RIGHT;
+                }
+            }
             return base::operator=(other);
         }
     }; // either

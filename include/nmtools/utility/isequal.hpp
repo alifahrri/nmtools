@@ -337,7 +337,7 @@ namespace nmtools::utils
                 bool equal = true;
                 // TODO: static assert whenever possible
                 // NOTE: use assert instead of exception, to support compile with -fno-exceptions
-                nmtools_cassert ( len(t)==len(u)
+                nmtools_cassert ( (nm_size_t)len(t)==(nm_size_t)len(u)
                     , "mismatched dimension"
                 );
                 // prefer fixed size for indexing to allow constant index
