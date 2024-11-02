@@ -22,10 +22,10 @@ function(apply_nmtools)
         message(STATUS "    NMTOOLS_INCLUDE_DIR: ${NMTOOLS_INCLUDE_DIR}")
     endif()
 
-    target_compile_features(
+    target_compile_options(
         ${apply_nmtools_TARGET}
         PRIVATE
-        cxx_std_17
+        -std=c++17
     )
 
     target_include_directories(
