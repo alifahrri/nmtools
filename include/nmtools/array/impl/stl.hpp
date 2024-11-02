@@ -3,7 +3,7 @@
 
 // Actual implementations for various customization point in nmtools for STL
 
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 #include <array>
 #include <tuple>

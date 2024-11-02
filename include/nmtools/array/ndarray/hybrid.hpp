@@ -9,7 +9,7 @@
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/assert.hpp"
 
 #include "nmtools/platform.hpp"
@@ -678,8 +678,8 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
-#include "nmtools/array/shape.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/isequal.hpp"
 
 namespace nmtools::array
 {

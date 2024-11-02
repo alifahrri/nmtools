@@ -5,7 +5,7 @@
 #include "nmtools/array/array/activations/relu.hpp"
 #include "nmtools/array/array/ufuncs/add.hpp"
 #include "nmtools/array/array/matmul.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 
 #include <Arduino.h>
 #include <unity.h>

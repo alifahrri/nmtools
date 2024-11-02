@@ -170,7 +170,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, take)
 nm::index::shape_take(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs shape_take fn to callable lambda
@@ -268,7 +268,7 @@ TEST_CASE("shape_take(case3)" * doctest::test_suite("index::constexpr_shape_take
 nm::index::take(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs take fn to callable lambda

@@ -3,11 +3,11 @@
 
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::index
 {

@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ACTIVATION_HARDSHRINK_HPP
 #define NMTOOLS_ARRAY_VIEW_ACTIVATION_HARDSHRINK_HPP
 
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/isclose.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
 namespace nmtools::view::fun

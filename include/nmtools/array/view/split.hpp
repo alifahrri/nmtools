@@ -2,8 +2,8 @@
 #define NMTOOLS_ARRAY_VIEW_SPLIT_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/constants.hpp"
 
 #include "nmtools/array/view/slice.hpp"

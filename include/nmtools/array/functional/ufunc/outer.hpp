@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_UFUNC_OUTER_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_UFUNC_OUTER_HPP
 
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 

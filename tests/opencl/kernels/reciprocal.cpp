@@ -7,8 +7,8 @@
 #include "nmtools/array/array/ufuncs/reciprocal.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#undef NMTOOLS_TESTING_OUTPUT_PRECISION
-#define NMTOOLS_TESTING_OUTPUT_PRECISION 1e-3
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION 1e-3
 
 namespace nm = nmtools;
 namespace na = nm::array;

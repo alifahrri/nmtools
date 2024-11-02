@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_INDEX_EXTRACT_HPP
 #define NMTOOLS_ARRAY_INDEX_EXTRACT_HPP
 
-#include "nmtools/array/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/index/tuple_at.hpp"

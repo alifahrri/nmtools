@@ -12,7 +12,7 @@
 #include "nmtools/array/view/discrete.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/broadcast_arrays.hpp"
-#include "nmtools/array/utility/apply_resize.hpp"
+#include "nmtools/utility/apply_resize.hpp"
 
 // for index::split
 #include "nmtools/array/index/matmul.hpp"

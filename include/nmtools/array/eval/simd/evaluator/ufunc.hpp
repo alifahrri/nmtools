@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_SIMD_EVALUATOR_UFUNC_HPP
 
 #include "nmtools/array/eval.hpp"
-#include "nmtools/array/data.hpp"
+#include "nmtools/utility/data.hpp"
 #include "nmtools/array/eval/simd/index.hpp"
 #include "nmtools/array/eval/simd/ufunc.hpp"
 #include "nmtools/array/eval/simd/bit_width.hpp"

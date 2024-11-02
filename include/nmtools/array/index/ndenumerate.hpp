@@ -4,8 +4,8 @@
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::index
 {

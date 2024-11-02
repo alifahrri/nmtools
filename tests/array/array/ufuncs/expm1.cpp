@@ -6,8 +6,8 @@
 #include <array>
 
 // lower testing precision for expm1
-#undef NMTOOLS_TESTING_OUTPUT_PRECISION
-#define NMTOOLS_TESTING_OUTPUT_PRECISION 1e-5
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION 1e-5
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -16,7 +16,7 @@ namespace na = nm::array;
 nm::array::expm1(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs expm1 fn to callable lambda

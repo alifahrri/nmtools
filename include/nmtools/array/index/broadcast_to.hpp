@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utl.hpp"
 #include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/gather.hpp"
 #include "nmtools/array/index/compute_strides.hpp"

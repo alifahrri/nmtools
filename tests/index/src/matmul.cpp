@@ -6,7 +6,7 @@ namespace nm = nmtools;
 namespace na = nm::array;
 namespace kind = na::kind;
 
-#include "nmtools/utils/apply_isequal.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
 
 // split for matmul
 NMTOOLS_TESTING_DECLARE_CASE(array, split)
@@ -383,7 +383,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
 nmtools::index::split(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs split fn to callable lambda
@@ -472,7 +472,7 @@ TEST_CASE("split(case6)" * doctest::test_suite("view::detail::split"))
 nmtools::index::shape_matmul(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs shape_matmul fn to callable lambda
@@ -675,7 +675,7 @@ TEST_CASE("shape_matmul(case10)" * doctest::test_suite("view::detail::shape_matm
 nmtools::view::detail::matmul(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs matmul fn to callable lambda

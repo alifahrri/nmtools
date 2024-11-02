@@ -9,7 +9,7 @@
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/utl.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/array/cast.hpp"
+#include "nmtools/utility/cast.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

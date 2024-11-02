@@ -3,14 +3,14 @@
 #include "nmtools/testing/doctest.hpp"
 
 // TODO: improve precision
-#undef NMTOOLS_TESTING_OUTPUT_PRECISION
-#define NMTOOLS_TESTING_OUTPUT_PRECISION (1e-4)
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION (1e-4)
 
 #define RUN_batch_norm_impl(...) \
 nmtools::array::batch_norm(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nmtools::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs batch_norm fn to callable lambda

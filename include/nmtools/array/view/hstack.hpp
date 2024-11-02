@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_HSTACK_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::index
 {

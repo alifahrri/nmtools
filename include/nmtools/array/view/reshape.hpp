@@ -3,18 +3,18 @@
 
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/view/indexing.hpp"
-#include "nmtools/array/as_static.hpp"
+#include "nmtools/utility/as_static.hpp"
 
 #include "nmtools/array/index/reshape.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 
-#include "nmtools/utils/isequal/isequal.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/isequal/isequal.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::view

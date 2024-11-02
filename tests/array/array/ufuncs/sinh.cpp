@@ -6,8 +6,8 @@
 #include <array>
 
 // lower testing precision for sinh
-#undef  NMTOOLS_TESTING_OUTPUT_PRECISION
-#define NMTOOLS_TESTING_OUTPUT_PRECISION 7e-5
+#undef  NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION 7e-5
 
 namespace nm = nmtools;
 namespace na = nm::array;
@@ -16,7 +16,7 @@ namespace na = nm::array;
 nm::array::sinh(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs sinh fn to callable lambda

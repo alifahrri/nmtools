@@ -5,8 +5,8 @@
 #include "nmtools/array/array/flatten.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
-#include "nmtools/array/utility/cast.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/cast.hpp"
+#include "nmtools/utility/shape.hpp"
 
 #include <emscripten/bind.h>
 #include <vector>

@@ -2,9 +2,9 @@
 #define NMTOOLS_TESTING_HPP
 
 #include "nmtools/platform.hpp"
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/isequal.hpp"
-#include "nmtools/utils/apply_isequal.hpp"
+#include "nmtools/utility/isclose.hpp"
+#include "nmtools/utility/isequal.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
 #include "nmtools/testing/string.hpp"
 #include "nmtools/testing/array_cast.hpp"
 
@@ -34,8 +34,8 @@ auto var_name = nmtools::testing::cast<T>(var<value_type_##var_name>);
 #define STRINGIFY(array) \
 nmtools::utils::to_string(array)
 
-#ifndef NMTOOLS_TESTING_OUTPUT_PRECISION
-#define NMTOOLS_TESTING_OUTPUT_PRECISION (1e-6)
+#ifndef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION (1e-6)
 #endif
 
 /**
@@ -65,7 +65,7 @@ nmtools::utils::to_string(array)
  */
 #define NMTOOLS_ASSERT_CLOSE_DOCTEST(result,expect) \
 { \
-    auto result_ = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
+    auto result_ = isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
     auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
     auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
     std::string message {}; \
@@ -80,7 +80,7 @@ nmtools::utils::to_string(array)
 
 #define NMTOOLS_STATIC_ASSERT_CLOSE_DOCTEST(result,expect) \
 { \
-    constexpr auto result_ = isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION); \
+    constexpr auto result_ = isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
     std::string message {}; \
     message = message + \
         + "\n\tActual  : " + STRINGIFY(result)  \
@@ -183,7 +183,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
 #define NMTOOLS_TESTING_CONSTEXPR_ISCLOSE_TEST(func, expect, ...) \
 { \
     constexpr auto result = func(__VA_ARGS__); \
-    static_assert(isclose(result,expect,NMTOOLS_TESTING_OUTPUT_PRECISION)); \
+    static_assert(isclose(result,expect,NMTOOLS_TESTING_PRECISION)); \
     /* TODO: check return type! */ \
 } \
 

@@ -224,7 +224,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, compress)
 nm::index::shape_compress(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs shape_compress fn to callable lambda
@@ -437,7 +437,7 @@ TEST_CASE("shape_compress(case6)" * doctest::test_suite("index::shape_compress")
 nm::index::compress(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs compress fn to callable lambda

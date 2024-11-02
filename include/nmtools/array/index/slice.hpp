@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_DYNAMIC_SLICE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/math.hpp"
 #include "nmtools/array/ndarray.hpp"
@@ -836,7 +836,7 @@ namespace nmtools::meta
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/ref.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/math.hpp"
 
 namespace nmtools::index

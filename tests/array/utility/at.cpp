@@ -2,8 +2,8 @@
 #define NMTOOLS_TEST_SKIP_DYNAMIC_SIZE_ARRAY
 // NOTE: seems like it is required to include these headers first
 // TODO: fix dependency
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ndarray/dynamic.hpp"
 #include "nmtools/constants.hpp"
 
 #include "nmtools/testing/doctest.hpp"

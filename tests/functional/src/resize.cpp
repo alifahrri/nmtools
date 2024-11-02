@@ -2,7 +2,7 @@
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/testing/data/array/resize.hpp"
 #include "nmtools/array/functional/indexing.hpp"
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/to_string.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

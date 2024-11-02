@@ -5,7 +5,7 @@
 #include "nmtools/array/functional/ufuncs/divide.hpp"
 #include "nmtools/array/functional/ufuncs/subtract.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/utils/apply_isequal.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools::array;

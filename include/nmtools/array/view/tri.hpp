@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_TRI_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::index
 {
@@ -80,13 +80,13 @@ namespace nmtools::meta
 /*===========================================================================*/
 
 #include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/view/zeros.hpp"
 #include "nmtools/array/index/product.hpp"
-#include "nmtools/utils/isequal/isequal.hpp"
-#include "nmtools/utils/isclose/isclose.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/isequal/isequal.hpp"
+#include "nmtools/utility/isclose/isclose.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::view
 {

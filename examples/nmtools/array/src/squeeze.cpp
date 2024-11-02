@@ -1,6 +1,6 @@
 #include "nmtools/array/view/squeeze.hpp"
 #include "nmtools/array/ndarray.hpp"
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/to_string.hpp"
 
 #include <iostream>
 #include <array>

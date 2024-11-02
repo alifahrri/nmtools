@@ -1,6 +1,6 @@
-#include "nmtools/array/dynamic.hpp"
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/utility/to_string.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include <array>
 #include <tuple>

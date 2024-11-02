@@ -6,7 +6,7 @@
 #include "nmtools/array/view/indexing.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/reshape.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::view
 {

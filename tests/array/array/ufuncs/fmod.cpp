@@ -12,7 +12,7 @@ namespace na = nm::array;
 nm::array::fmod(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs fmod fn to callable lambda
@@ -63,7 +63,7 @@ TEST_CASE("fmod(case2)" * doctest::test_suite("array::fmod"))
 nm::array::fmod.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs reduce_fmod fn to callable lambda
@@ -166,7 +166,7 @@ TEST_CASE("reduce_fmod(case8)" * doctest::test_suite("array::reduce_fmod"))
 nm::array::fmod.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs accumulate_fmod fn to callable lambda
@@ -229,7 +229,7 @@ TEST_CASE("accumulate_fmod(case3)" * doctest::test_suite("array::accumulate_fmod
 nm::array::fmod.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs outer_fmod fn to callable lambda

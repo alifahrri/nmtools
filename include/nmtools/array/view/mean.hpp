@@ -7,7 +7,7 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
-#include "nmtools/array/dtypes.hpp"
+#include "nmtools/dtypes.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::meta

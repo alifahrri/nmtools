@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_HARDSWISH_HPP
 
 #include "nmtools/array/view/ufunc.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::view::fun
 {

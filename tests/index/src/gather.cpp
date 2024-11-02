@@ -1,7 +1,7 @@
 #include "nmtools/array/index/gather.hpp"
 // TODO: remove as_tuple
 #include "nmtools/array/index/as_tuple.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/index/gather.hpp"
@@ -24,7 +24,7 @@ using nmtools_array;
 nm::index::gather(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs gather fn to callable lambda

@@ -4,8 +4,8 @@
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/shape.hpp"
-#include "nmtools/array/dtypes.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/dtypes.hpp"
 
 namespace nmtools::view
 {

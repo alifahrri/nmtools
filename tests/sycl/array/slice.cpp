@@ -18,7 +18,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/array/array/slice.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/eval/sycl.hpp"
-#include "nmtools/utils/apply_isclose.hpp"
+#include "nmtools/utility/apply_isclose.hpp"
 
 #if not(defined(__CUDA__) && defined(__CUDA_ARCH__))
 #include "nmtools/testing/data/array/slice.hpp"

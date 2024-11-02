@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_DISCRETE_HPP
 #define NMTOOLS_ARRAY_VIEW_DISCRETE_HPP
 
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/assert.hpp"
 

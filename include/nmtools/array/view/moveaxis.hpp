@@ -5,7 +5,7 @@
 #include "nmtools/array/index/normalize_axis.hpp"
 #include "nmtools/array/index/moveaxis.hpp"
 #include "nmtools/array/view/transpose.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::view::detail

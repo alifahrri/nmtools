@@ -1,16 +1,16 @@
 #ifndef NMTOOLS_UTILS_TO_STRING_COMMON_TYPES_HPP
 #define NMTOOLS_UTILS_TO_STRING_COMMON_TYPES_HPP
 
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 #if NMTOOLS_HAS_STRING
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/utility/at.hpp"
 
 namespace nmtools::utils
 {

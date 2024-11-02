@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_ATLEAST_ND_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/ndarray.hpp"
 
 // TODO: move to shape.hpp

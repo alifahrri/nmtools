@@ -8,7 +8,7 @@
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/view/ref/initializer_list.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/assert.hpp"
 
 #include <cassert>
@@ -437,7 +437,7 @@ namespace nmtools::meta
     
 } // namespace nmtools::meta
 
-#include "nmtools/array/fixed.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
 
 namespace nmtools::meta
 {
@@ -461,8 +461,8 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
-#include "nmtools/array/shape.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/isequal.hpp"
 
 namespace nmtools::array
 {

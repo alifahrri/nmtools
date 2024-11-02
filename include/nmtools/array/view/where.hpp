@@ -1,10 +1,10 @@
 #ifndef NMTOOLS_ARRAY_VIEW_WHERE_HPP
 #define NMTOOLS_ARRAY_VIEW_WHERE_HPP
 
-#include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/broadcast_arrays.hpp"
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::view

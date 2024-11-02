@@ -20,9 +20,9 @@
 #include "nmtools/testing/data/array/broadcast_to.hpp"
 #include "nmtools/testing/data/array/split.hpp"
 
-#include "nmtools/utils/isequal.hpp"
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/apply_isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
+#include "nmtools/utility/isclose.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
 
 #include <Arduino.h>
 #include <unity.h>

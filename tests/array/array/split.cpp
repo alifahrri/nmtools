@@ -21,14 +21,14 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/testing/doctest.hpp"
 
 #include "nmtools/testing/data/array/split.hpp"
-#include "nmtools/utils/apply_isequal.hpp"
-#include "nmtools/utils/apply_to_string.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
+#include "nmtools/utility/apply_to_string.hpp"
 
 #define RUN_split_impl(...) \
 nm::array::split(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs split fn to callable lambda

@@ -6,7 +6,7 @@
 nmtools::array::softmax(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nmtools::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs softmax fn to callable lambda

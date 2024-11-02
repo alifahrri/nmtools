@@ -4,7 +4,7 @@
 #include "nmtools/array/view/decorator.hpp"
 
 #include "nmtools/array/index/concatenate.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 namespace nmtools::view
 {

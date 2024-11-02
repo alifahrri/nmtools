@@ -12,7 +12,7 @@ namespace na = nm::array;
 nm::array::fmax(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs fmax fn to callable lambda
@@ -63,7 +63,7 @@ TEST_CASE("fmax(case2)" * doctest::test_suite("array::fmax"))
 nm::array::fmax.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs reduce_fmax fn to callable lambda
@@ -212,7 +212,7 @@ TEST_CASE("reduce_fmax(case13)" * doctest::test_suite("array::reduce_fmax"))
 nm::array::fmax.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs accumulate_fmax fn to callable lambda
@@ -275,7 +275,7 @@ TEST_CASE("accumulate_fmax(case3)" * doctest::test_suite("array::accumulate_fmax
 nm::array::fmax.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs outer_fmax fn to callable lambda

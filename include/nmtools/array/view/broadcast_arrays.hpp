@@ -3,7 +3,7 @@
 
 #include "nmtools/array/view/broadcast_to.hpp"
 #include "nmtools/array/index/broadcast_shape.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/assert.hpp"
 #include "nmtools/array/view/alias.hpp"

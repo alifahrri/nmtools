@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_UTILS_APPLY_ISCLOSE_HPP
 #define NMTOOLS_UTILS_APPLY_ISCLOSE_HPP
 
-#include "nmtools/utils/isclose.hpp"
+#include "nmtools/utility/isclose.hpp"
 
 namespace nmtools::utils
 {

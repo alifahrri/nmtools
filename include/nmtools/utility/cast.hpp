@@ -1,23 +1,75 @@
+#ifndef NMTOOLS_ARRAY_KIND_HPP
+#define NMTOOLS_ARRAY_KIND_HPP
+
+namespace nmtools::array::kind
+{
+    /**
+     * @brief helper tag for easy dispatch
+     * 
+     */
+    struct fixed_t {};
+    struct hybrid_t {};
+    struct dynamic_t {};
+
+    /**
+     * @brief helper inline variable for each tag
+     * 
+     */
+    inline constexpr auto fixed   = fixed_t {};
+    inline constexpr auto hybrid  = hybrid_t {};
+    inline constexpr auto dynamic = dynamic_t {};
+} // namespace nmtools::array::kind
+
+#endif // NMTOOLS_ARRAY_KIND_HPP
+
+#ifndef NMTOOLS_ARRAY_UTILITY_CAST_HPP
+#define NMTOOLS_ARRAY_UTILITY_CAST_HPP
+
+#include "nmtools/meta.hpp"
+#include "nmtools/utility/apply_resize.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/array/view/flatten.hpp"
+#include "nmtools/array/view/mutable_flatten.hpp"
+
+#include "nmtools/utility/isequal.hpp"
+
+namespace nmtools
+{
+    /**
+     * @brief tag to resolve return type of cast op
+     * 
+     */
+    struct cast_t {};
+
+    struct cast_kind_t {};
+
+    namespace meta::error
+    {
+        template <typename...>
+        struct CAST_KIND_UNSUPPORTED : detail::fail_t {};
+    }
+} // namespace nmtools
+
+#endif // NMTOOLS_ARRAY_UTILITY_CAST_HPP
+
 #ifndef NMTOOLS_ARRAY_CAST_HPP
 #define NMTOOLS_ARRAY_CAST_HPP
 
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/ndarray/ndarray.hpp"
-#include "nmtools/array/kind.hpp"
-#include "nmtools/array/utility/cast.hpp"
 
 #ifndef NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
 #include "nmtools/array/ndarray/dynamic.hpp"
 #endif
 #include "nmtools/array/index/product.hpp"
 
-#include "nmtools/array/utility/apply_resize.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/apply_resize.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
 
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
 #include "nmtools/utl.hpp"

@@ -2,11 +2,11 @@
 #define NMTOOLS_ARRAY_VIEW_ALIAS_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/utility/fwd.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/array/index/max.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/view/decorator.hpp"
 
 namespace nmtools::view

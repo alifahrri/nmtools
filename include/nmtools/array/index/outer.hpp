@@ -2,8 +2,8 @@
 #define NMTOOLS_ARRAY_INDEX_OUTER_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/index/product.hpp"
 

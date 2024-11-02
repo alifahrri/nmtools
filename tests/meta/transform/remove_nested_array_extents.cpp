@@ -1,8 +1,8 @@
 #include "nmtools/meta.hpp"
-#include "nmtools/array/fixed.hpp"
-#include "nmtools/array/dynamic.hpp"
+#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ndarray/dynamic.hpp"
 // NOTE: need to include utility for std::array fixed_size specialization
-#include "nmtools/array/utility.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/testing/testing.hpp"
 
 #if __has_include("doctest/doctest.h")

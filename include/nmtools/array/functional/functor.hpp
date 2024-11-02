@@ -8,8 +8,8 @@
 #include "nmtools/utility/ct_map.hpp"
 #include "nmtools/utility/ct_digraph.hpp"
 #include "nmtools/utility/tuple_slice.hpp"
-#include "nmtools/utils/isequal/isequal.hpp"
-#include "nmtools/utils/isclose/isclose.hpp"
+#include "nmtools/utility/isequal/isequal.hpp"
+#include "nmtools/utility/isclose/isclose.hpp"
 #include "nmtools/utility/fwd.hpp"
 #include "nmtools/utility/unwrap.hpp"
 

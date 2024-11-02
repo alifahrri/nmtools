@@ -12,7 +12,7 @@ namespace na = nm::array;
 nm::array::right_shift(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs right_shift fn to callable lambda
@@ -63,7 +63,7 @@ TEST_CASE("right_shift(case2)" * doctest::test_suite("view::right_shift"))
 nm::array::right_shift.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs reduce_right_shift fn to callable lambda
@@ -166,7 +166,7 @@ TEST_CASE("reduce_right_shift(case8)" * doctest::test_suite("array::reduce_right
 nm::array::right_shift.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs accumulate_right_shift fn to callable lambda
@@ -229,7 +229,7 @@ TEST_CASE("accumulate_right_shift(case3)" * doctest::test_suite("array::accumula
 nm::array::right_shift.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs outer_right_shift fn to callable lambda

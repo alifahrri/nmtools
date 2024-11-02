@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_REMOVE_SINGLE_DIMS_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/utility/at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/index/filter.hpp"
 

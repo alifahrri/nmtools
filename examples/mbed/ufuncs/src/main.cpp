@@ -9,7 +9,7 @@
 
 #include "nmtools/array/ndarray/fixed.hpp"
 
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/to_string.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

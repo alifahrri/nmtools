@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_FULL_HPP
 
 #include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"

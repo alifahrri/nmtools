@@ -6,8 +6,8 @@
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/fwd.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
-#include "nmtools/array/as_static.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
+#include "nmtools/utility/as_static.hpp"
 
 namespace nmtools::args
 {

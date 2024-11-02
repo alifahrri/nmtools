@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_UTILS_APPLY_ISEQUAL_HPP
 #define NMTOOLS_UTILS_APPLY_ISEQUAL_HPP
 
-#include "nmtools/utils/isequal.hpp"
+#include "nmtools/utility/isequal.hpp"
 
 namespace nmtools::utils
 {

@@ -14,7 +14,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/shape.hpp"
+#include "nmtools/utility/shape.hpp"
 #include <cassert>
 #include <initializer_list>
 

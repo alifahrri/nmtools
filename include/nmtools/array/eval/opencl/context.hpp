@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_CONTEXT_HPP
 
 #include "nmtools/array/eval.hpp"
-#include "nmtools/array/data.hpp"
+#include "nmtools/utility/data.hpp"
 
 #include <CL/cl.h>
 // for CL_PLATFORM_ICD_SUFFIX_KHR

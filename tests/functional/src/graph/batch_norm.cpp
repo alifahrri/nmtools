@@ -3,7 +3,7 @@
 #include "nmtools/array/array/random.hpp"
 #include "nmtools/array/array/moveaxis.hpp"
 #include "nmtools/array/array/atleast_nd.hpp"
-#include "nmtools/array/random_engine.hpp"
+#include "nmtools/utility/random_engine.hpp"
 #include "nmtools/array/view/batch_norm.hpp"
 #include "nmtools/array/functional/batch_norm.hpp"
 #include "nmtools/utility/has_value.hpp"

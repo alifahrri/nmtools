@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/utility/apply_at.hpp"
+#include "nmtools/utility/at.hpp"
 #include "nmtools/array/view/decorator.hpp"
 #include "nmtools/array/view/slice.hpp"
 #include "nmtools/array/view/flatten.hpp"
@@ -12,15 +12,15 @@
 #include "nmtools/array/index/remove_dims.hpp"
 #include "nmtools/array/index/where.hpp"
 #include "nmtools/array/index/sum.hpp"
-#include "nmtools/array/shape.hpp"
-#include "nmtools/array/dtypes.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/dtypes.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/array/eval.hpp"
 #include "nmtools/constants.hpp"
-#include "nmtools/array/as_static.hpp"
+#include "nmtools/utility/as_static.hpp"
 
 #include "nmtools/array/view/ufunc/detail.hpp"
-#include "nmtools/utils/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::args
 {

@@ -186,9 +186,9 @@
 #include "nmtools/testing/data/array/elu.hpp"
 #include "nmtools/testing/data/array/mish.hpp"
 
-#include "nmtools/utils/isequal.hpp"
-#include "nmtools/utils/isclose.hpp"
-#include "nmtools/utils/to_string.hpp"
+#include "nmtools/utility/isequal.hpp"
+#include "nmtools/utility/isclose.hpp"
+#include "nmtools/utility/to_string.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

@@ -12,7 +12,7 @@ namespace na = nm::array;
 nm::array::fmin(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs fmin fn to callable lambda
@@ -63,7 +63,7 @@ TEST_CASE("fmin(case2)" * doctest::test_suite("array::fmin"))
 nm::array::fmin.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs reduce_fmin fn to callable lambda
@@ -204,7 +204,7 @@ TEST_CASE("reduce_fmin(case12)" * doctest::test_suite("array::reduce_fmin"))
 nm::array::fmin.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs accumulate_fmin fn to callable lambda
@@ -267,7 +267,7 @@ TEST_CASE("accumulate_fmin(case3)" * doctest::test_suite("array::accumulate_fmin
 nm::array::fmin.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/benchmarks/bench.hpp"
+#include "nmtools/testing/benchmarks/bench.hpp"
 using nm::benchmarks::TrackedBench;
 // create immediately invoked lambda
 // that packs outer_fmin fn to callable lambda
