@@ -56,5 +56,5 @@ target_include_directories(
 )
 
 if (NMTOOLS_CODE_COVERAGE)
-    target_link_libraries(numeric-tests-doctest PUBLIC coverage_config)
+    target_link_libraries(${PROJECT_NAME}-doctest PUBLIC coverage_config)
 endif (NMTOOLS_CODE_COVERAGE)
