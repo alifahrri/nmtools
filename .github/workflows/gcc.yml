@@ -92,6 +92,56 @@ jobs:
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/view/numeric-tests-view-doctest'
 
+  dockcross-gcc-utility-no-stl:
+    name: ${{ matrix.name }}-utility-no-stl
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        # use single thread to minimize memory usage, Process completed with exit code 137.
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_UTILITY_TESTS=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j1 VERBOSE=1 numeric-tests-utility-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utility/numeric-tests-utility-doctest'
+
+  dockcross-gcc-utility:
+    name: ${{ matrix.name }}-utility
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        # use single thread to minimize memory usage, Process completed with exit code 137.
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_UTILITY_TESTS=ON ../.. && make -j1 VERBOSE=1 numeric-tests-utility-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utility/numeric-tests-utility-doctest'
+
   dockcross-gcc-index:
     name: ${{ matrix.name }}-index
     runs-on: ubuntu-20.04
