@@ -167,6 +167,11 @@ if (NMTOOLS_BUILD_META_TESTS)
     add_subdirectory(meta)
 endif (NMTOOLS_BUILD_META_TESTS)
 
+option(NMTOOLS_BUILD_UTILITY_TESTS "build utility tests programs" ON)
+if (NMTOOLS_BUILD_UTILITY_TESTS)
+    add_subdirectory(utility)
+endif (NMTOOLS_BUILD_UTILITY_TESTS)
+
 option(NMTOOLS_BUILD_UTL_TESTS "build utl tests programs" ON)
 if (NMTOOLS_BUILD_UTL_TESTS)
     add_subdirectory(utl/utl)

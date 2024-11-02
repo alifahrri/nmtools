@@ -59,26 +59,6 @@ if (NMTOOLS_TEST_ALL)
     SET(NMTOOLS_TEST_MISC            ON CACHE BOOL "test other modules"            FORCE)
 endif (NMTOOLS_TEST_ALL)
 
-set(UTILS_TEST_SOURCES
-    utils/isequal.cpp
-    utils/isclose.cpp
-    utils/to_string.cpp
-)
-if (NOT NMTOOLS_TEST_UTILS)
-    set(UTILS_TEST_SOURCES "")
-endif ()
-
-set(ARRAY_UTILITY_TEST_SOURCES
-    utility/at.cpp
-    utility/apply_at.cpp
-    utility/cast.cpp
-    utility/data.cpp
-    utility/flatten_either.cpp
-)
-if (NOT NMTOOLS_TEST_ARRAY_UTILITY)
-    set (ARRAY_UTILITY_TEST_SOURCES "")
-endif ()
-
 set(NDARRAY_TEST_SOURCES
     ndarray/ndarray.cpp
     ndarray/fixed.cpp
@@ -328,10 +308,6 @@ endif()
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     ## split matmul srcs to reduce peak memory
     ${ARRAY_MATMUL_1_TEST_SOURCES}
-    ## utility function
-    ${UTILS_TEST_SOURCES}
-    ## array utility
-    ${ARRAY_UTILITY_TEST_SOURCES}
     ## ndarray
     ${NDARRAY_TEST_SOURCES}
     ## split matmul srcs to reduce peak memory
