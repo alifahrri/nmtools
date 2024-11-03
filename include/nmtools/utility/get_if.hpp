@@ -19,6 +19,12 @@ namespace nmtools::impl
         {
             return error::GET_IF_UNSUPPORTED<T>{};
         }
+
+        template <typename U>
+        constexpr auto operator()(T*) noexcept
+        {
+            return error::GET_IF_UNSUPPORTED<T>{};
+        }
     }; // get_if_t
 
     template <typename T>
@@ -38,6 +44,13 @@ namespace nmtools
     constexpr auto get_if(const T* t)
     {
         constexpr auto get_if = impl::get_if<T>;
+        return get_if.template operator()<U>(t);
+    } // get_if
+
+    template <typename U, typename T>
+    constexpr auto get_if(T* t)
+    {
+        auto get_if = impl::get_if<T>;
         return get_if.template operator()<U>(t);
     } // get_if
 } // namespace nmtools

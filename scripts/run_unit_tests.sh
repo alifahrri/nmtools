@@ -43,6 +43,7 @@ NMTOOLS_TESTBENCH_EPOCHS=3 NMTOOLS_TESTBENCH_WARMUP=1 NMTOOLS_TESTBENCH_QUIET=1 
     && $BUILD_DIR/tests/meta/numeric-tests-doctest-meta \
     && $BUILD_DIR/tests/utl/meta/numeric-tests-utl-meta \
     && $BUILD_DIR/tests/utl/array/numeric-tests-utl-array \
+    && $BUILD_DIR/tests/utl/utility/numeric-tests-utility-array \
     && $BUILD_DIR/tests/utl/utl/numeric-tests-utl
 
 mkdir -p ${COVERAGE_DIR}

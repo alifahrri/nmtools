@@ -36,6 +36,31 @@ namespace nmtools::impl
                 // TODO: error type
             }
         }
+
+        template <typename T>
+        constexpr auto* operator()(either_t* either) noexcept
+        {
+            // return (*either).template get_if<U>();
+
+            using Tag = typename either_t::Tag;
+            if constexpr (meta::is_same_v<T,left_t>) {
+                using type = left_t*;
+                if (either->tag==Tag::LEFT) {
+                    return type{&(either->left)};
+                } else {
+                    return type{nullptr};
+                }
+            } else if constexpr (meta::is_same_v<T,right_t>) {
+                using type = right_t*;
+                if (either->tag==Tag::RIGHT) {
+                    return type{&(either->right)};
+                } else {
+                    return type{nullptr};
+                }
+            } else {
+                // TODO: error type
+            }
+        }
     };
 } // namespace nmtools::impl
 

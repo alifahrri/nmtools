@@ -136,6 +136,54 @@ jobs:
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/view/numeric-tests-view-doctest'
 
+  dockcross-clang-utility-no-stl:
+    name: ${{ matrix.name }}-utility-no-stl
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64-clang
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_BUILD_UTILITY_TESTS=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1 numeric-tests-utility-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utility/numeric-tests-utility-doctest'
+
+  dockcross-clang-utility:
+    name: ${{ matrix.name }}-utility
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64-clang
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_BUILD_UTILITY_TESTS=ON ../.. && make -j2 VERBOSE=1 numeric-tests-utility-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/utility/numeric-tests-utility-doctest'
+
   dockcross-clang-no-stl-generic-ndarray:
     name: ${{ matrix.name }}-no-stl-generic-ndarray
     runs-on: ubuntu-20.04
