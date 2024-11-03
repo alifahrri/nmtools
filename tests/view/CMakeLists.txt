@@ -138,12 +138,15 @@ endif ()
 
 ## TODO: rename to math
 set(ARRAY_UFUNCS_1_TEST_SOURCES
+    src/cosine_similarity.cpp
     src/cumprod.cpp
     src/cumsum.cpp
     src/dot.cpp
     src/inner.cpp
     src/kron.cpp
+    src/linear.cpp
     src/outer.cpp
+    src/pairwise_distance.cpp
     src/prod.cpp
     src/sum.cpp
     src/tensordot.cpp
@@ -335,7 +338,7 @@ add_test(
     COMMAND ${PROJECT_NAME}-doctest
 )
 
-target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
@@ -350,5 +353,5 @@ target_include_directories(
 )
 
 if (NMTOOLS_CODE_COVERAGE)
-    target_link_libraries(numeric-tests-doctest PUBLIC coverage_config)
+    target_link_libraries(${PROJECT_NAME}-doctest PUBLIC coverage_config)
 endif (NMTOOLS_CODE_COVERAGE)

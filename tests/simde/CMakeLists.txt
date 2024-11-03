@@ -62,7 +62,7 @@ add_test(
     COMMAND ${PROJECT_NAME}-doctest
 )
 
-target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
 target_compile_options(${PROJECT_NAME}-doctest PRIVATE -march=native)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

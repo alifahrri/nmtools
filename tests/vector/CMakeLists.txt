@@ -85,7 +85,7 @@ add_test(
 
 set(NMTOOLS_VECTOR_TEST_ARCH "-march=native" CACHE STRING "manually set target arch")
 
-target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
 target_compile_options(${PROJECT_NAME}-doctest PRIVATE ${NMTOOLS_VECTOR_TEST_ARCH})
 
 # when trying to compile with uint16 dtype:
