@@ -79,6 +79,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/column_stack.cpp
     array/compress.cpp
     array/concatenate.cpp
+    array/cosine_similarity.cpp
     array/cumprod.cpp
     array/cumsum.cpp
     array/diagflat.cpp
@@ -107,7 +108,9 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/ones_like.cpp
     array/outer.cpp
     array/layer_norm.cpp
+    array/linear.cpp
     array/pad.cpp
+    array/pairwise_distance.cpp
     array/prod.cpp
     array/pooling.cpp
     array/repeat.cpp

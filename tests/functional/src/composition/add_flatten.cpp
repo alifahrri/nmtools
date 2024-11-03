@@ -64,6 +64,8 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, add_flatten)
     }
 }
 
+#ifndef NMTOOLS_DISABLE_STL
+
 TEST_CASE("add_flatten(case1)" * doctest::test_suite("functional::composition"))
 {
     NMTOOLS_TESTING_USE_CASE(functional,add_flatten,case1);
@@ -93,3 +95,5 @@ TEST_CASE("add_flatten(case1)" * doctest::test_suite("functional::composition"))
         FUNCTIONAL_SUBCASE( "case1", result, (fn::add (fn::flatten (lhs_d))), rhs );
     }
 }
+
+#endif // NMTOOLS_DISABLE_STL

@@ -85,7 +85,7 @@ add_test(
     COMMAND ${PROJECT_NAME}-doctest
 )
 
-target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
 if (NMTOOLS_SIMD_TEST_SSE)
     target_compile_options(${PROJECT_NAME}-doctest PRIVATE -msse4.1 -msse -msse2 -msse3)
 endif (NMTOOLS_SIMD_TEST_SSE)

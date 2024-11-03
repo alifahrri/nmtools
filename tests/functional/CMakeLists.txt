@@ -250,7 +250,7 @@ if (NMTOOLS_KWARGS_INIT)
     target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_20)
     target_compile_definitions( ${PROJECT_NAME}-doctest PRIVATE NMTOOLS_TESTING_KWARGS_INIT )
 else ()
-    target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+    target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
 endif ()
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
@@ -266,7 +266,7 @@ target_include_directories(
 )
 
 if (NMTOOLS_CODE_COVERAGE)
-    target_link_libraries(numeric-tests-doctest PUBLIC coverage_config)
+    target_link_libraries(${PROJECT_NAME}-doctest PUBLIC coverage_config)
 endif (NMTOOLS_CODE_COVERAGE)
 target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE
     # NMTOOLS_ISCLOSE_NAN_HANDLING=1

@@ -774,7 +774,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif ()
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE OpenCL)
 
-target_compile_features(${PROJECT_NAME}-doctest PRIVATE cxx_std_17)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(${PROJECT_NAME}-doctest PRIVATE -g)
     target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE _GLIBCXX_DEBUG)
