@@ -138,6 +138,7 @@ endif ()
 
 ## TODO: rename to math
 set(ARRAY_UFUNCS_1_TEST_SOURCES
+    src/bilinear.cpp
     src/cosine_similarity.cpp
     src/cumprod.cpp
     src/cumsum.cpp
