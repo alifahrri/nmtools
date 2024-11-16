@@ -51,19 +51,29 @@ namespace nmtools::view
         }
     }; // tile_t
 
-    template <typename array_t, typename reps_t>
-    constexpr auto make_tile(const array_t& array, const reps_t& reps)
+    template <typename src_shape_t, typename reps_t>
+    constexpr auto tile_indexer(const src_shape_t& src_shape, const reps_t& reps)
     {
-        auto src_shape = shape<true>(array);
-        auto indexer   = tile_t{src_shape,reps};
-        return indexing(array,indexer);
-    } // make_tile
+        if constexpr (meta::is_maybe_v<src_shape_t> || meta::is_maybe_v<reps_t>) {
+            using result_t = decltype(tile_indexer(unwrap(src_shape),unwrap(reps)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(src_shape) && has_value(reps)
+                ? return_t{tile_indexer(unwrap(src_shape),unwrap(reps))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            auto indexer = tile_t{src_shape,reps};
+            return indexer;
+        }
+    } // tile_indexer
 
     template <typename array_t, typename reps_t>
     constexpr auto tile(const array_t& array, const reps_t& reps)
     {
-        auto f = [](const auto&...args){
-            return make_tile(args...);
+        auto f = [](const auto& array, const auto& reps){
+            auto src_shape = shape<true>(array);
+            auto indexer = tile_indexer(src_shape,reps);
+            return indexing(array,indexer);
         };
         return lift_indexing(f,array,reps);
     } // tile
@@ -83,7 +93,7 @@ namespace nmtools::array
         {
             auto src_shape = as_static<max_dim>(attribute.src_shape);
             auto reps = as_static<max_dim>(attribute.reps);
-            return view::tile_t{src_shape,reps};
+            return view::tile_indexer(src_shape,reps);
         }
     };
 }

@@ -76,6 +76,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/atleast_nd.cpp
     # array/broadcast_arrays.cpp
     array/broadcast_to.cpp
+    array/bilinear.cpp
     array/column_stack.cpp
     array/compress.cpp
     array/concatenate.cpp

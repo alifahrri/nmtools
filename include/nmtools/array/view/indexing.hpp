@@ -250,6 +250,16 @@ namespace nmtools::view
     {
         if constexpr (meta::is_fail_v<indexer_t>) {
             return indexer;
+        // TODO: simplify with this version, fix segfault
+        #if 0
+        } else if constexpr (meta::is_maybe_v<array_t> || meta::is_maybe_v<indexer_t>) {
+            using result_t = decltype(indexing(unwrap(array),unwrap(indexer)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return ((has_value(array) && has_value(indexer))
+                ? return_t{indexing(unwrap(array),unwrap(indexer))}
+                : return_t{meta::Nothing}
+            );
+        #else
         } else if constexpr (meta::is_maybe_v<array_t>) {
             using array_type = meta::get_maybe_type_t<array_t>;
             using result_t = decltype(indexing(meta::declval<array_type>(),indexer));
@@ -266,6 +276,7 @@ namespace nmtools::view
             return (indexer ? return_t{indexing(array,*indexer)}
                 : return_t{meta::Nothing}
             );
+        #endif
         } else if constexpr (meta::is_maybe_v<typename indexer_t::dst_shape_type>) {
             using view_type = decorator_t<indexing_t,array_t,indexer_t>;
             using result_t  = nmtools_maybe<view_type>;
@@ -288,6 +299,17 @@ namespace nmtools::view
     template <typename F, typename array_t, typename...args_t>
     constexpr auto lift_indexing(F&& f, const array_t& array, const args_t&...args)
     {
+        // TODO: simplify with this version, fix segfault
+        #if 0
+        if constexpr (meta::is_maybe_v<array_t> || (meta::is_maybe_v<args_t> || ...)) {
+            using result_t   = decltype(f(unwrap(array),unwrap(args)...));
+            // f(...) may results in maybe type (e.g. because of invalid args.. configuration)
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(array) && (has_value(args) && ...)
+                ? return_t{f(unwrap(array),unwrap(args)...)}
+                : return_t{meta::Nothing}
+            );
+        #else
         if constexpr (meta::is_maybe_v<array_t>) {
             using array_type = meta::get_maybe_type_t<array_t>;
             using result_t   = decltype(f(meta::declval<array_type>(),args...));
@@ -305,6 +327,7 @@ namespace nmtools::view
             } else {
                 return return_t{meta::Nothing};
             }
+        #endif
         } else if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;

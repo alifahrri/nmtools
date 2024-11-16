@@ -14,8 +14,7 @@
 #include "nmtools/array/view/broadcast_arrays.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 
-// for index::split
-#include "nmtools/array/index/matmul.hpp"
+#include "nmtools/array/index/split.hpp"
 
 namespace nmtools::view
 {
