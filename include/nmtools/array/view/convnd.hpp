@@ -36,7 +36,7 @@ namespace nmtools::index
             at(result,group_axis) = groups;
             at(result,dst_inp_ch_axis) = at(src_shape,src_inp_ch_axis) / groups;
 
-            for (nm_size_t i=1; i<=n_planes; i++) {
+            for (nm_size_t i=1; i<=(nm_size_t)n_planes; i++) {
                 at(result,i+dst_inp_ch_axis) = at(src_shape,i+src_inp_ch_axis);
             }
         }
