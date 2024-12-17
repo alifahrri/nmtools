@@ -1,4 +1,4 @@
-#include "nmtools/array/index/sliding_window.hpp"
+#include "nmtools/array/view/sliding_window.hpp"
 #include "nmtools/testing/data/index/sliding_window.hpp"
 #include "nmtools/testing/doctest.hpp"
 

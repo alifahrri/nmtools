@@ -291,6 +291,17 @@ set(EVAL_CONV_TEST_SOURCES
     array/conv2d-12.cpp
     array/conv2d-13.cpp
     array/conv2d-14.cpp
+    array/conv3d-1a.cpp
+    array/conv3d-1b.cpp
+    array/conv3d-1c.cpp
+    array/conv3d-1d.cpp
+    array/conv3d-1e.cpp
+    array/conv3d-1f.cpp
+    array/conv3d-1g.cpp
+    array/conv3d-1h.cpp
+    array/conv3d-1i.cpp
+    array/conv3d-1j.cpp
+    array/conv3d-1k.cpp
 )
 
 if (NOT NMTOOLS_TEST_ARRAY_CONV_EVAL)

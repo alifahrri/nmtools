@@ -85,7 +85,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, conv_reshape_weight)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        inline int result[5] = {2,1,1,3,3};
+        inline int result[5] = {1,2,1,3,3};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -97,7 +97,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, conv_reshape_weight)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        inline int result[5] = {4,1,3,3,3};
+        inline int result[5] = {1,4,3,3,3};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -111,6 +111,42 @@ NMTOOLS_TESTING_DECLARE_CASE(index, conv_reshape_weight)
     {
         inline int result[5] = {2,2,3,3,3};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        inline int src_shape[5] = {1,3,3,3,3};
+        inline int groups = 1;
+        inline auto n_planes = 3_ct;
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        inline int result[6] = {1,1,3,3,3,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        inline int src_shape[5] = {2,3,2,2,2};
+        inline int groups = 1;
+        inline auto n_planes = 3_ct;
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        inline int result[6] = {1,2,3,2,2,2};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        inline int src_shape[5] = {6,1,2,2,2};
+        inline int groups = 3;
+        inline auto n_planes = 3_ct;
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        inline int result[6] = {3,2,1,2,2,2};
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(index, conv_reduce_axis)
@@ -121,7 +157,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, conv_reduce_axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        inline int result[2] = {-1,-3};
+        inline int result[2] = {-1,3};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -130,7 +166,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, conv_reduce_axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        inline int result[3] = {-1,-2,-5};
+        inline int result[3] = {-1,-2,3};
     }
 }
 
@@ -185,11 +221,27 @@ NMTOOLS_TESTING_DECLARE_CASE(index, conv_reshape_reduce)
     }
 }
 
+NMTOOLS_TESTING_DECLARE_CASE(index,conv_window_axis)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        inline auto n_planes = 3_ct;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline int result[3] = {-1,-2,-3};
+    }
+}
+
 NMTOOLS_TESTING_DECLARE_CASE(index,conv_sum_axes)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        
+        inline auto n_planes = 3_ct;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline int result[4] = {-1,-2,-3,3};
     }
 }
 
@@ -215,6 +267,28 @@ NMTOOLS_TESTING_DECLARE_CASE(index, conv_kernel_size)
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
         inline int result[2] = {3,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        inline int weight_shape[5] = {1,3,3,3,3};
+        inline int n_planes = 3_ct;
+        NMTOOLS_CAST_INDEX_ARRAYS(weight_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline int result[3] = {3,3,3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        inline int weight_shape[5] = {2,3,2,2,2};
+        inline int n_planes = 3_ct;
+        NMTOOLS_CAST_INDEX_ARRAYS(weight_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline int result[3] = {2,2,2};
     }
 }
 

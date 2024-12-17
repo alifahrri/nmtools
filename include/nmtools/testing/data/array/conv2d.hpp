@@ -6,6 +6,8 @@
 
 NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
 {
+    using namespace nmtools::literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int input[1][1][4][4] = {
@@ -920,6 +922,132 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv2d)
                 },
             }
         };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case15)
+    {
+        inline int input[1][3][4][4] =
+        {{{{ 0,  1,  2,  3},
+           { 4,  5,  6,  7},
+           { 8,  9, 10, 11},
+           {12, 13, 14, 15}},
+ 
+          {{16, 17, 18, 19},
+           {20, 21, 22, 23},
+           {24, 25, 26, 27},
+           {28, 29, 30, 31}},
+ 
+          {{32, 33, 34, 35},
+           {36, 37, 38, 39},
+           {40, 41, 42, 43},
+           {44, 45, 46, 47}}}};
+        inline int weight[3][1][2][2] =
+        {{{{ 0,  1},
+           { 2,  3}}},
+ 
+ 
+         {{{ 4,  5},
+           { 6,  7}}},
+ 
+ 
+         {{{ 8,  9},
+           {10, 11}}}};
+        inline int bias[3] = {0,1,2};
+        inline int groups = 3;
+        inline int groups_ct = 3_ct;
+        NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS(weight)
+        NMTOOLS_CAST_ARRAYS(bias)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case15)
+    {
+        inline int result[1][3][3][3] =
+        {{{{  24,   30,   36},
+           {  48,   54,   60},
+           {  72,   78,   84}},
+ 
+          {{ 417,  439,  461},
+           { 505,  527,  549},
+           { 593,  615,  637}},
+ 
+          {{1322, 1360, 1398},
+           {1474, 1512, 1550},
+           {1626, 1664, 1702}}}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case16)
+    {
+        inline int input[1][3][4][4] =
+        {{{{ 0,  1,  2,  3},
+           { 4,  5,  6,  7},
+           { 8,  9, 10, 11},
+           {12, 13, 14, 15}},
+ 
+          {{16, 17, 18, 19},
+           {20, 21, 22, 23},
+           {24, 25, 26, 27},
+           {28, 29, 30, 31}},
+ 
+          {{32, 33, 34, 35},
+           {36, 37, 38, 39},
+           {40, 41, 42, 43},
+           {44, 45, 46, 47}}}};
+        inline int weight[6][1][2][2] =
+        {{{{ 0,  1},
+           { 2,  3}}},
+ 
+ 
+         {{{ 4,  5},
+           { 6,  7}}},
+ 
+ 
+         {{{ 8,  9},
+           {10, 11}}},
+ 
+ 
+         {{{12, 13},
+           {14, 15}}},
+ 
+ 
+         {{{16, 17},
+           {18, 19}}},
+ 
+ 
+         {{{20, 21},
+           {22, 23}}}};
+        inline int bias[6] = {0,1,2,3,4,5};
+        inline int groups = 3;
+        inline int groups_ct = 3_ct;
+        NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS(weight)
+        NMTOOLS_CAST_ARRAYS(bias)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case16)
+    {
+        inline int result[1][6][3][3] =
+        {{{{  24,   30,   36},
+           {  48,   54,   60},
+           {  72,   78,   84}},
+ 
+          {{  65,   87,  109},
+           { 153,  175,  197},
+           { 241,  263,  285}},
+ 
+          {{ 714,  752,  790},
+           { 866,  904,  942},
+           {1018, 1056, 1094}},
+ 
+          {{1011, 1065, 1119},
+           {1227, 1281, 1335},
+           {1443, 1497, 1551}},
+ 
+          {{2428, 2498, 2568},
+           {2708, 2778, 2848},
+           {2988, 3058, 3128}},
+ 
+          {{2981, 3067, 3153},
+           {3325, 3411, 3497},
+           {3669, 3755, 3841}}}};
     }
 }
 
