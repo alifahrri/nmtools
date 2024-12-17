@@ -33,9 +33,9 @@ SUBCASE(#case_name) \
 
 TEST_CASE("conv3d(case1g)" * doctest::test_suite("array::conv3d"))
 {
-    auto padding = nmtools::None;
-    auto dilation = nmtools::None;
-    auto stride = nmtools::None;
+    [[maybe_unused]] auto padding = nmtools::None;
+    [[maybe_unused]] auto dilation = nmtools::None;
+    [[maybe_unused]] auto stride = nmtools::None;
 
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONV3D_SUBCASE( case1g, input, weight, bias, stride, padding, dilation, groups_ct );
