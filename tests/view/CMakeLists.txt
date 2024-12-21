@@ -288,6 +288,8 @@ set(VIEW_CONV_TEST_SOURCES
     src/conv1d-16.cpp
     src/conv1d-17.cpp
     src/conv1d-18.cpp
+    src/conv1d-19.cpp
+    src/conv1d-20.cpp
     src/conv2d-1.cpp
     src/conv2d-2.cpp
     src/conv2d-3.cpp
@@ -302,6 +304,19 @@ set(VIEW_CONV_TEST_SOURCES
     src/conv2d-12.cpp
     src/conv2d-13.cpp
     src/conv2d-14.cpp
+    src/conv2d-15.cpp
+    src/conv2d-16.cpp
+    src/conv3d-1a.cpp
+    src/conv3d-1b.cpp
+    src/conv3d-1c.cpp
+    src/conv3d-1d.cpp
+    src/conv3d-1e.cpp
+    src/conv3d-1f.cpp
+    src/conv3d-1g.cpp
+    src/conv3d-1h.cpp
+    src/conv3d-1i.cpp
+    src/conv3d-1j.cpp
+    src/conv3d-1k.cpp
 )
 
 if (NOT NMTOOLS_VIEW_TEST_ARRAY_VIEW_NN)

@@ -6,6 +6,8 @@
 
 NMTOOLS_TESTING_DECLARE_CASE(array, conv1d)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int input[1][5][4] = {
@@ -651,6 +653,94 @@ NMTOOLS_TESTING_DECLARE_CASE(array, conv1d)
         inline float result[1][1][6] = {
             {
                 {140.5,221.5,235.0,248.5,262.0,176.5}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case19)
+    {
+        inline int input[1][3][4] = {
+            {
+                {0,1, 2, 3},
+                {4,5, 6, 7},
+                {8,9,10,11},
+            }
+        };
+        inline int weight[3][1][2] = {
+            {
+                {0,1},
+            },
+            {
+                {2,3},
+            },
+            {
+                {4,5},
+            },
+        };
+        inline int bias[3] = {0,1,2};
+        inline auto groups = 3;
+        inline auto groups_ct = 3_ct;
+        NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS(weight)
+        NMTOOLS_CAST_ARRAYS(bias)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case19)
+    {
+        inline int result[1][3][3] = {
+            {
+                { 1, 2, 3},
+                {24,29,34},
+                {79,88,97},
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case20)
+    {
+        inline int input[1][3][4] = {
+            {
+                {0,1, 2, 3},
+                {4,5, 6, 7},
+                {8,9,10,11},
+            }
+        };
+        inline int weight[6][1][2] = {
+            {
+                { 0, 1}
+            },
+            {
+                { 2, 3}
+            },
+            {
+                { 4, 5}
+            },
+            {
+                { 6, 7}
+            },
+            {
+                { 8, 9}
+            },
+            {
+                {10,11}
+            },
+        };
+        inline int bias[6] = {0,1,2,3,4,5};
+        inline auto groups = 3;
+        inline auto groups_ct = 3_ct;
+        NMTOOLS_CAST_ARRAYS(input)
+        NMTOOLS_CAST_ARRAYS(weight)
+        NMTOOLS_CAST_ARRAYS(bias)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case20)
+    {
+        inline int result[1][6][3] = {
+            {
+                {  1,  2,  3},
+                {  4,  9, 14},
+                { 43, 52, 61},
+                { 62, 75, 88},
+                {149,166,183},
+                {184,205,226},
             }
         };
     }

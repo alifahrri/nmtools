@@ -26,20 +26,18 @@ namespace nmtools::index
                 result.resize(dst_dim);
             }
 
-            for (nm_size_t i=0; i<(nm_size_t)dst_dim; i++) {
-                at(result,i) = 1;
-            }
+            auto batch_axis = meta::ct_v<0>;
+            auto outch_axis = meta::ct_v<2>;
+            auto group_axis = meta::ct_v<1>;
+            auto dst_inp_ch_axis = meta::ct_v<3>;
+            auto src_inp_ch_axis = meta::ct_v<1>;
+            at(result,batch_axis) = at(src_shape,batch_axis);
+            at(result,outch_axis) = 1;
+            at(result,group_axis) = groups;
+            at(result,dst_inp_ch_axis) = at(src_shape,src_inp_ch_axis) / groups;
 
-            auto src_channel_axis = -(nm_index_t)n_planes - 1;
-            auto dst_group_axis   = -(nm_index_t)n_planes - 2;
-
-            auto n_channel_per_group = at(src_shape,src_channel_axis) / groups;
-
-            at(result,dst_group_axis)   = groups;
-            at(result,dst_group_axis+1) = n_channel_per_group;
-
-            for (nm_index_t i=1; i<=nm_index_t(n_planes); i++) {
-                at(result,-i) = at(src_shape,-i);
+            for (nm_size_t i=1; i<=(nm_size_t)n_planes; i++) {
+                at(result,i+dst_inp_ch_axis) = at(src_shape,i+src_inp_ch_axis);
             }
         }
         
@@ -51,40 +49,49 @@ namespace nmtools::index
     template <typename src_shape_t, typename n_planes_t, typename groups_t>
     constexpr auto conv_reshape_weight([[maybe_unused]] const src_shape_t& src_shape, [[maybe_unused]] groups_t groups, [[maybe_unused]] n_planes_t n_planes)
     {
-        using result_t = meta::resolve_optype_t<conv_reshape_weight_t,src_shape_t,n_planes_t,groups_t>;
-
-        auto result = result_t {};
-
-        if constexpr (!meta::is_constant_index_array_v<result_t>
-            && !meta::is_fail_v<result_t>
+        if constexpr (meta::is_maybe_v<src_shape_t>
+            || meta::is_maybe_v<groups_t>
+            || meta::is_maybe_v<n_planes_t>
         ) {
-            auto src_dim = len(src_shape);
-            [[maybe_unused]]
-            auto dst_dim = src_dim + 1;
+            using result_t = decltype(conv_reshape_weight(unwrap(src_shape),unwrap(groups),unwrap(n_planes)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(src_shape) && has_value(groups) && has_value(n_planes)
+                ? return_t{conv_reshape_weight(unwrap(src_shape),unwrap(groups),unwrap(n_planes))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            using result_t = meta::resolve_optype_t<conv_reshape_weight_t,src_shape_t,n_planes_t,groups_t>;
 
-            if constexpr (meta::is_resizable_v<result_t>) {
-                result.resize(dst_dim);
+            auto result = result_t {};
+
+            if constexpr (!meta::is_constant_index_array_v<result_t>
+                && !meta::is_fail_v<result_t>
+            ) {
+                auto src_dim = len(src_shape);
+                [[maybe_unused]]
+                auto dst_dim = src_dim + 1;
+
+                if constexpr (meta::is_resizable_v<result_t>) {
+                    result.resize(dst_dim);
+                }
+
+                // initialize with 1s
+                for (nm_size_t i=0; i<(nm_size_t)dst_dim; i++) {
+                    at(result,i) = 1;
+                }
+
+                for (nm_index_t i=1; i<=nm_index_t(src_dim-1); i++) {
+                    at(result,-i) = at(src_shape,-i);
+                }
+                auto group_axis = meta::ct_v<0>;
+                auto dst_outch_axis = meta::ct_v<1>;
+                auto src_outch_axis = meta::ct_v<0>;
+                at(result,group_axis) = groups;
+                at(result,dst_outch_axis) = at(src_shape,src_outch_axis) / groups;
             }
 
-            // initialize with 1s
-            for (nm_size_t i=0; i<(nm_size_t)dst_dim; i++) {
-                at(result,i) = 1;
-            }
-
-            for (nm_index_t i=1; i<=nm_index_t(src_dim-(n_planes-1)); i++) {
-                at(result,-i) = at(src_shape,-i);
-            }
-            for (nm_index_t i=0; i<nm_index_t(n_planes-1); i++) {
-                // TODO: check if divisible
-                at(result,i) = at(src_shape,i);
-            }
-            auto group_axis = meta::ct_v<1>;
-            auto outch_axis = meta::ct_v<0>;
-            at(result,group_axis) = groups;
-            at(result,outch_axis) = at(src_shape,outch_axis) / groups;
+            return result;
         }
-
-        return result;
     }
 
     struct conv_reshape_reduce_t {};
@@ -221,7 +228,7 @@ namespace nmtools::index
                 at(result,i) = -(i+1);
             }
 
-            at(result,n_axes-1) = -(2*n_planes+1);
+            at(result,n_axes-1) = 3;
         }
 
         return result;
