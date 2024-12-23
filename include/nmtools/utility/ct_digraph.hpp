@@ -344,7 +344,7 @@ namespace nmtools::utility
             constexpr auto node_ct = meta::ct_v<at(dst_id_map,I)>;
             constexpr auto edges = at(contracted_list,I);
             constexpr auto edges_ct = meta::template_reduce<len(edges)>([&](auto E, auto index){
-                return utility::tuple_append(E,at(edges,index));
+                return utility::tuple_append(E,meta::ct_v<dst_id_map[at(edges,index)]>);
             },nmtools_tuple{});
             return G
                 .add_node(node_ct,res_data.at(node_ct))
