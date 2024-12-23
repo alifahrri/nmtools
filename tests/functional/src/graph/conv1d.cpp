@@ -17,8 +17,7 @@ namespace utils = nmtools::utils;
 using namespace nmtools::literals;
 using nm::unwrap;
 
-// TODO: fix runtime crash (failed unwrap?)
-TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doctest::skip())
+TEST_CASE("conv1d(case1)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{1,5,4};
     auto weight_shape = nmtools_array{1,5,3};
@@ -32,8 +31,7 @@ TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doct
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
-// TODO: fix runtime crash (failed unwrap?)
-TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doctest::skip())
+TEST_CASE("conv1d(case2)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{1,5,4};
     auto weight_shape = nmtools_array{1,5,3};
@@ -49,9 +47,8 @@ TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doct
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
-// TODO: fix runtime crash (failed unwrap?)
 // striding
-TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doctest::skip())
+TEST_CASE("conv1d(case3)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{1,5,4};
     auto weight_shape = nmtools_array{1,5,3};
@@ -69,9 +66,8 @@ TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doct
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
-// TODO: fix runtime crash (failed unwrap?)
 // striding + dilation
-TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doctest::skip())
+TEST_CASE("conv1d(case4)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{1,6,6};
     auto weight_shape = nmtools_array{1,6,3};
@@ -91,9 +87,8 @@ TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doct
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
-// TODO: fix runtime crash (failed unwrap?)
 // batch + striding + dilation
-TEST_CASE("conv1d" * doctest::test_suite("functional::get_compute_graph") * doctest::skip())
+TEST_CASE("conv1d(case5)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{4,6,6};
     auto weight_shape = nmtools_array{4,6,3};
