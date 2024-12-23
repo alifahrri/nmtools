@@ -160,6 +160,7 @@ set(FUNCTIONAL_TEST_GRAPH_SOURCES
     src/graph/layer_norm.cpp
     src/graph/tanh.cpp
     src/graph/multiply.cpp
+    src/graph/matmul.cpp
     src/graph/reduce_add_tanh.cpp
     src/graph/multiply_tanh.cpp
     src/graph/multiply_add_tanh.cpp
