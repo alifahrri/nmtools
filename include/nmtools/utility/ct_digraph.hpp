@@ -9,21 +9,6 @@
 
 namespace nmtools::utility
 {
-    struct default_data_merger_t
-    {
-        template <typename lhs_t, typename rhs_t>
-        constexpr auto operator()(const lhs_t& lhs, const rhs_t& rhs) const
-        {
-            if constexpr (meta::is_tuple_v<lhs_t>) {
-                return tuple_append(lhs,rhs);
-            } else {
-                return nmtools_tuple{lhs,rhs};
-            }
-        }
-    }; // default_data_merger_t
-
-    constexpr auto graph_data_merger = default_data_merger_t {};
-
     template <typename tuple_t, typename key_t>
     constexpr auto contains(const tuple_t& tuple, key_t key)
     {
@@ -241,68 +226,6 @@ namespace nmtools::utility
         constexpr auto out_edges(key_t key) const noexcept
         {
             return digraph.at(key);
-        }
-
-        template <typename from_t, typename to_t, typename merge_fn_t=default_data_merger_t, typename new_node_t=to_t>
-        constexpr auto contract_edge(from_t from, to_t to, merge_fn_t data_merger=merge_fn_t{}, new_node_t new_node=to_t{}) const noexcept
-        {
-            auto has_from = contains(nodes(),from);
-            auto has_to   = contains(nodes(),to);
-            constexpr auto HAS_FROM = meta::to_value_v<decltype(has_from)>;
-            constexpr auto HAS_TO   = meta::to_value_v<decltype(has_to)>;
-            static_assert( HAS_FROM && HAS_TO
-                , "invalid arguments for contract_edge, can not find from/to node" );
-            auto new_data = data_merger(nodes(from),nodes(to));
-            auto nodes = ct_digraph::nodes();
-            auto src_from_edges = out_edges(from);
-            auto src_to_edges   = out_edges(to);
-            auto dst_node_edges = tuple_filter(tuple_cat(src_from_edges,src_to_edges),
-                [&](auto value){
-                    constexpr auto VALUE = decltype(value)::value;
-                    return meta::ct_v<VALUE != from_t::value && VALUE != to_t::value>;
-            });
-            auto new_digraph = meta::template_reduce<SIZE>([&](auto init, auto I){
-                auto node = nmtools::at(nodes,I);
-                constexpr auto FROM = from_t::value;
-                constexpr auto TO   = to_t::value;
-                constexpr auto NODE = decltype(node)::value;
-                if constexpr (NODE == FROM || (NODE == TO)) {
-                    return init;
-                } else {
-                    auto src_edges = out_edges(node);
-                    auto from_index  = tuple_index(src_edges,from);
-                    auto dst_edges_1 = [&](){
-                        if constexpr (meta::is_fail_v<decltype(from_index)>) {
-                            return src_edges;
-                        } else {
-                            return tuple_update(src_edges,from_index,new_node);
-                        }
-                    }();
-                    auto to_index  = tuple_index(dst_edges_1,to);
-                    auto dst_edges = [&](){
-                        if constexpr (meta::is_fail_v<decltype(to_index)>) {
-                            return dst_edges_1;
-                        } else {
-                            return tuple_update(dst_edges_1,to_index,new_node);
-                        }
-                    }();
-                    return init.insert(node,dst_edges);
-                }
-            }, ct_map{}).insert(new_node,dst_node_edges);
-
-            auto new_node_data = node_data.erase(from).erase(to).insert(new_node,new_data);
-
-            using new_digraph_type = decltype(new_digraph);
-            using new_node_data_type = decltype(new_node_data);
-            using new_ct_digraph_type = ct_digraph<
-                meta::remove_cvref_t<typename new_digraph_type::keys_type>
-                , meta::remove_cvref_t<typename new_digraph_type::values_type>
-                , meta::remove_cvref_t<typename new_node_data_type::values_type>
-            >;
-            return new_ct_digraph_type(
-                new_digraph
-                , new_node_data  
-            );
         }
     }; // ct_digraph
 
