@@ -94,6 +94,24 @@ namespace nmtools::utility
             }
         }
 
+        template <typename key_t>
+        constexpr auto erase(key_t key) const noexcept
+        {
+            // keep the order
+            constexpr auto KEY = decltype(key)::value;
+            auto init = ct_map<nmtools_tuple<>,nmtools_tuple<>>();
+            return meta::template_reduce<SIZE>([&](auto init, auto index){
+                constexpr auto I = decltype(index)::value;
+                constexpr auto key_i = meta::remove_cvref_t<decltype(get<I>(keys_))>::value;
+                if constexpr (key_i == KEY) {
+                    return init;
+                } else {
+                    auto ct_key = meta::ct_v<key_i>;
+                    return init.insert(ct_key,at(ct_key));
+                }
+            }, init);
+        }
+
         template <typename key_t, typename value_t>
         constexpr auto update(key_t key, value_t value) const noexcept
         {

@@ -32,6 +32,58 @@ namespace nmtools::utility
         return tuple_append<append_t>(tuple,val,meta::make_index_sequence_v<sizeof...(args_t)>);
     }
 
+    template <typename predicate_t, template<typename...>typename tuple_t, typename...args_t>
+    constexpr auto tuple_filter(const tuple_t<args_t...>& tuple, predicate_t f)
+    {
+        return meta::template_reduce<sizeof...(args_t)>([&](auto init, auto index){
+            constexpr auto I = decltype(index)::value;
+            const auto& elem_i = nmtools::get<I>(tuple);
+            auto pred_i = f(elem_i);
+            // assume integral constant
+            constexpr auto PRED = decltype(pred_i)::value;
+            if constexpr (PRED) {
+                return tuple_append(init,elem_i);
+            } else {
+                return init;
+            }
+        },nmtools_tuple{});
+    } // tuple_filter
+
+    namespace error
+    {
+        template<typename...>
+        struct TUPLE_INDEX_NOT_FOUND : meta::detail::fail_t {};
+    }
+
+    template <template<typename...>typename tuple_t, typename element_t, typename...args_t>
+    constexpr auto tuple_index(const tuple_t<args_t...>& tuple, const element_t&)
+    {
+        return meta::template_reduce<sizeof...(args_t)>([&](auto init, auto index){
+            constexpr auto I = decltype(index)::value;
+            auto arg_i  = nmtools::get<I>(tuple);
+            using arg_t = meta::remove_cvref_t<decltype(arg_i)>;
+            if constexpr (meta::is_same_v<arg_t,element_t>) {
+                return index;
+            } else {
+                return init;
+            }
+        },error::TUPLE_INDEX_NOT_FOUND{});
+    } // tuple_index
+
+    template <template<typename...>typename tuple_t, typename index_t, typename value_t, typename...args_t>
+    constexpr auto tuple_update(const tuple_t<args_t...>& tuple, index_t, const value_t& value)
+    {
+        return meta::template_reduce<sizeof...(args_t)>([&](auto init, auto index){
+            constexpr auto I = decltype(index)::value;
+            if constexpr (I == index_t::value) {
+                return tuple_append(init,value);
+            } else {
+                const auto& elem_i = nmtools::get<I>(tuple);
+                return tuple_append(init,elem_i);
+            }
+        },nmtools_tuple{});
+    } // tuple_update
+
     /**
      * @brief Helper function to join two tuple,
      * Used by matmul and ufuncs.

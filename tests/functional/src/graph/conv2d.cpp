@@ -17,7 +17,7 @@ namespace utils = nmtools::utils;
 using namespace nmtools::literals;
 using nmtools::unwrap, nmtools::None;
 
-TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
+TEST_CASE("conv2d(case1)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{1,1,4,4};
     auto weight_shape = nmtools_array{1,1,3,3};
@@ -31,7 +31,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
-TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
+TEST_CASE("conv2d(case2)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{1,1,5,5};
     auto weight_shape = nmtools_array{1,1,3,3};
@@ -47,7 +47,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
-TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
+TEST_CASE("conv2d(case3)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{1,1,5,5};
     auto weight_shape = nmtools_array{2,1,3,3};
@@ -63,7 +63,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
-TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
+TEST_CASE("conv2d(case4)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{1,4,5,5};
     auto weight_shape = nmtools_array{2,4,3,3};
@@ -79,8 +79,7 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
 
-#if 0
-TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
+TEST_CASE("conv2d(case5)" * doctest::test_suite("functional::get_compute_graph"))
 {
     auto input_shape  = nmtools_array{6,4,5,5};
     auto weight_shape = nmtools_array{2,4,3,3};
@@ -95,7 +94,6 @@ TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
 
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
 }
-#endif
 
 #if 0
 TEST_CASE("conv2d" * doctest::test_suite("functional::get_compute_graph"))
