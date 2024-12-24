@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/either.cpp
     src/vector.cpp
     src/clipped_integer.cpp
+    src/static_queue.cpp
     src/static_vector.cpp
     src/tuplev2.cpp
 )
