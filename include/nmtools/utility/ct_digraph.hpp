@@ -5,6 +5,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/ct_map.hpp"
 #include "nmtools/utl/static_vector.hpp"
+#include "nmtools/utl/static_queue.hpp"
 #include "nmtools/assert.hpp"
 
 namespace nmtools::utility
@@ -103,6 +104,27 @@ namespace nmtools::utility
         });
 
         return nmtools_tuple{list,id_map};
+    } // adjacency_list
+
+    template <typename adjacency_list_t>
+    constexpr auto in_degree(const adjacency_list_t& list)
+    {
+        // assume static_vector or array
+        // TODO: check for another type
+        constexpr auto N = meta::bounded_size_v<typename adjacency_list_t::value_type>;
+
+        using result_t = utl::static_vector<nm_size_t,N>;
+        auto result = result_t {};
+
+        auto n = len(list);
+        result.resize(n);
+
+        for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+            for (nm_size_t j=0; j<(nm_size_t)list[i].size(); j++) {
+                result[list[i][j]]++;
+            }
+        }
+        return result;
     }
 
     template <typename nodes_t=nmtools_tuple<>, typename edges_t=nmtools_tuple<>, typename node_data_t=nmtools_tuple<>>
@@ -354,6 +376,55 @@ namespace nmtools::utility
 
         return result;
     }
-}
+
+    template <typename adjacency_list_t>
+    constexpr auto topological_sort(const adjacency_list_t& adjacency_list)
+    {
+        // assume static_vector or array
+        // TODO: check for another type
+        constexpr auto N = meta::bounded_size_v<typename adjacency_list_t::value_type>;
+
+        auto in_degree = utility::in_degree(adjacency_list);
+
+        auto queue  = utl::static_queue<nm_size_t,N>();
+        auto result = utl::static_vector<nm_size_t,N>();
+
+        // initialize queue with input (in_degree 0)
+        for (nm_size_t i=0; i<adjacency_list.size(); i++) {
+            if (in_degree[i] == 0) {
+                queue.push(i);
+            }
+        }
+        for (; !queue.empty();) {
+            auto node = queue.pop();
+            result.push_back(node);
+            for (nm_size_t j=0; j<(nm_size_t)adjacency_list[node].size(); j++) {
+                auto neighbor = adjacency_list[node][j];
+                in_degree[neighbor] -= 1;
+                if (in_degree[neighbor] == 0) {
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        return result;
+    } // topological_sort
+
+    template <typename nodes_t, typename edges_t, typename node_data_t>
+    constexpr auto topological_sort(const ct_digraph<nodes_t,edges_t,node_data_t>& graph)
+    {
+        constexpr auto adjacency_result  = adjacency_list(decltype(graph.digraph){});
+        constexpr auto adjacency_list    = nmtools::get<0>(adjacency_result);
+        constexpr auto src_id_map        = nmtools::get<1>(adjacency_result);
+
+        constexpr auto sorted = topological_sort(adjacency_list);
+        constexpr auto N = sorted.size();
+
+        return meta::template_reduce<N>([&](auto init, auto index){
+            auto node_id = meta::ct_v<at(src_id_map,at(sorted,index))>;
+            return tuple_append(init,node_id);
+        },nmtools_tuple{});
+    }
+} // nmtools::utility
 
 #endif // NMTOOLS_UTILITY_CT_DIGRAPH_HPP
