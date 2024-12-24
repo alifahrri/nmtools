@@ -836,7 +836,6 @@ TEST_CASE("contracted_edge(case1)" * doctest::test_suite("ct_digraph"))
         make_vector(5),
         make_vector(),
         make_vector(4),
-
     };
 
     auto expected_id = array{0,1,769,447,722,635,765};
@@ -892,6 +891,8 @@ TEST_CASE("contracted_edge(case2)" * doctest::test_suite("ct_digraph"))
     }
 }
 
+
+// var
 TEST_CASE("contracted_edge(case3)" * doctest::test_suite("ct_digraph"))
 {
     using vector = utl::static_vector<int,10>;
@@ -1266,4 +1267,269 @@ TEST_CASE("adjacency_to_graph(case1)" * doctest::test_suite("ct_digraph"))
         meta::remove_cvref_t<decltype(result.nodes(765_ct))>
         , meta::remove_cvref_t<decltype(expected.nodes(765_ct))>
     );
+}
+
+// matmul
+TEST_CASE("in_degree(case1)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,8>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+    auto list = array<vector,7>{
+        make_vector(6),
+        make_vector(2),
+        make_vector(3),
+        make_vector(4),
+        make_vector(5),
+        make_vector(),
+        make_vector(4),
+    };
+
+    auto result = utility::in_degree(list);
+
+    auto expected = make_vector(0,0,1,1,2,1,1);
+
+    NMTOOLS_ASSERT_EQUAL(result,expected);
+}
+
+// softmax
+TEST_CASE("in_degree(case2)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,6>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+
+    auto list = array<vector,6>{
+        make_vector(1,2),
+        make_vector(2),
+        make_vector(3),
+        make_vector(4,5),
+        make_vector(5),
+        make_vector()
+    };
+
+    auto result = utility::in_degree(list);
+
+    auto expected = make_vector(0,1,2,1,1,2);
+    
+    NMTOOLS_ASSERT_EQUAL(result,expected);
+}
+
+// var
+TEST_CASE("in_degree(case3)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,10>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+    
+    auto list = array<vector,10>{
+        make_vector(2,4),
+        make_vector(3),
+        make_vector(3),
+        make_vector(4),
+        make_vector(5),
+        make_vector(6),
+        make_vector(7),
+        make_vector(9),
+        make_vector(9),
+        make_vector()
+    };
+
+    auto result = utility::in_degree(list);
+
+    auto expected = make_vector(0,0,1,2,2,1,1,1,0,2);
+
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+}
+
+// matmul
+TEST_CASE("topological_sort(case1)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,8>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+    auto list = array<vector,7>{
+        make_vector(6),
+        make_vector(2),
+        make_vector(3),
+        make_vector(4),
+        make_vector(5),
+        make_vector(),
+        make_vector(4),
+    };
+    // auto id_map = array{0,1,769,447,722,635,765};
+
+    auto result = utility::topological_sort(list);
+
+    auto expected = vector{0,1,6,2,3,4,5};
+
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+}
+
+// softmax
+TEST_CASE("topological_sort(case2)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,6>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+
+    auto adj_list = array<vector,5>{
+        make_vector(1,4),
+        make_vector(4),
+        make_vector(3),
+        make_vector(),
+        make_vector(2,3)
+    };
+
+    auto result = utility::topological_sort(adj_list);
+
+    auto expected = vector{0,1,4,2,3};
+
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+}
+
+// var
+TEST_CASE("topological_sort(case3)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,10>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+
+    auto adj_list = array<vector,9>{
+        make_vector(2,4),
+        make_vector(3),
+        make_vector(3),
+        make_vector(4),
+        make_vector(8),
+        make_vector(7),
+        make_vector(7),
+        make_vector(),
+        make_vector(5)
+    };
+
+    auto result = utility::topological_sort(adj_list);
+
+    auto expected = vector{0,1,6,2,3,4,8,5,7};
+
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+}
+
+TEST_CASE("topological_sort(case1a)" * doctest::test_suite("ct_digraph"))
+{
+    auto lhs_shape = array{3,4};
+    auto rhs_shape = array{4,3};
+
+    auto lhs = na::reshape(na::arange(ix::product(lhs_shape)),lhs_shape);
+    auto rhs = na::reshape(na::arange(ix::product(rhs_shape)),rhs_shape);
+
+    auto graph = utility::ct_digraph()
+        .add_node(0_ct,&lhs)
+        .add_node(1_ct,&rhs)
+        .add_node(769_ct,fn::transpose[/*axes=*/array{1,0}])
+        .add_node(447_ct,fn::reshape[/*dst_shape=*/array{1,3,4}])
+        .add_node(722_ct,fn::multiply)
+        .add_node(635_ct,fn::sum[/*axis=*/-1])
+        .add_node(765_ct,fn::reshape[/*dst_shape=*/array{3,3,4}] * fn::tile[/*reps=*/array{1,3}])
+        .add_edge(0_ct,765_ct)
+        .add_edge(1_ct,769_ct)
+        .add_edge(769_ct,447_ct)
+        .add_edge(447_ct,722_ct)
+        .add_edge(722_ct,635_ct)
+        .add_edge(765_ct,722_ct)
+    ;
+
+    auto result = utility::topological_sort(graph);
+
+    // auto expected = array{0,1,6,2,3,4,5};
+    auto expected = array{0,1,765,769,447,722,635};
+
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+}
+
+// softmax
+TEST_CASE("topological_sort(case2a)" * doctest::test_suite("ct_digraph"))
+{
+    auto input_shape = array{3,4};
+    auto input = na::reshape(na::arange(ix::product(input_shape)),input_shape);
+
+    auto fused  = fn::subtract * fn::exp;
+
+    auto graph = utility::ct_digraph()
+        .add_node(0_ct,&input)
+        .add_node(263_ct,fn::reduce_maximum[/*axis=*/0])
+        .add_node(407_ct,fn::sum[/*axis=*/0])
+        .add_node(850_ct,fn::divide)
+        .add_node(111_ct,fused)
+        .add_edges(0_ct,tuple{263_ct,111_ct})
+        .add_edge(263_ct,111_ct)
+        .add_edge(407_ct,850_ct)
+        .add_edges(111_ct,tuple{407_ct,850_ct})
+    ;
+
+    auto result = utility::topological_sort(graph);
+
+    // auto expected = array{0,1,4,2,3};
+    auto expected = array{0,263,111,407,850};
+
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+}
+
+// var
+TEST_CASE("topological_sort(case3a)" * doctest::test_suite("ct_digraph"))
+{
+    auto input_shape = array{3,4};
+    auto input = na::reshape(na::arange(ix::product(input_shape)),input_shape);
+
+    auto fused  = fn::square * fn::fabs;
+
+    auto graph = utility::ct_digraph()
+        .add_node(0_ct,&input)
+        .add_node(472_ct,3)
+        .add_node(470_ct,fn::reduce_add[/*axis=*/0])
+        .add_node(51_ct,fn::divide)
+        .add_node(428_ct,fn::subtract)
+        .add_node(433_ct,fn::reduce_add[/*axis=*/0])
+        .add_node(435_ct,3)
+        .add_node(1022_ct,fn::divide)
+        .add_node(391_ct,fused)
+        .add_edges(0_ct,tuple{470_ct,428_ct})
+        .add_edge(472_ct,51_ct)
+        .add_edge(470_ct,51_ct)
+        .add_edge(51_ct,428_ct)
+        .add_edge(428_ct,391_ct)
+        .add_edge(433_ct,1022_ct)
+        .add_edge(435_ct,1022_ct)
+        .add_edge(391_ct,433_ct)
+    ;
+
+    auto result = utility::topological_sort(graph);
+
+    // auto expected = vector{0,1,6,2,3,4,8,5,7};
+    auto expected = array{0,472,435,470,51,428,391,433,1022};
+
+    NMTOOLS_ASSERT_EQUAL( result, expected );
 }
