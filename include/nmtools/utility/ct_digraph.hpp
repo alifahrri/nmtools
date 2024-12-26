@@ -78,14 +78,14 @@ namespace nmtools::utility
 
         constexpr auto nodes = meta::to_value_v<nodes_t>;
 
-        for (nm_size_t i=0; i<N; i++) {
+        for (nm_size_t i=0; i<(nm_size_t)N; i++) {
             id_map[i] = nodes[i];
         }
 
         // given id, return node
         auto reverse_id = [&](auto id)->nm_index_t{
             for (nm_size_t i=0; i<(nm_size_t)len(id_map); i++) {
-                if (id_map[i] == id) {
+                if (id_map[i] == (nm_size_t)id) {
                     return i;
                 }
             }
@@ -124,6 +124,29 @@ namespace nmtools::utility
                 result[list[i][j]]++;
             }
         }
+        return result;
+    } // in_degree
+
+    template <typename adjacency_list_t>
+    constexpr auto predecessors(const adjacency_list_t& adj_list)
+    {
+        // assume static_vector or array
+        // TODO: check for another type
+        constexpr auto N = meta::bounded_size_v<typename adjacency_list_t::value_type>;
+
+        using result_t = utl::static_vector<utl::static_vector<nm_size_t,N>,N>;
+        auto result = result_t {};
+
+        result.resize(adj_list.size());
+
+        for (nm_size_t i=0; i<(nm_size_t)adj_list.size(); i++) {
+            auto edges = adj_list[i];
+            for (nm_size_t j=0; j<(nm_size_t)edges.size(); j++) {
+                auto edge = edges.at(j);
+                result[edge].push_back(i);
+            }
+        }
+
         return result;
     }
 

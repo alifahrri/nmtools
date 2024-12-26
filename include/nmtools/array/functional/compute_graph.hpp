@@ -44,6 +44,17 @@ namespace nmtools::functional
         operands_type operands;
         output_shape_type output_shape     = {};
         output_element_type output_element = {};
+
+        template <typename other_functor_t, typename other_operands_t, typename other_output_shape_t, typename other_output_element_t>
+        constexpr auto operator*(const node_t<other_functor_t,other_operands_t,other_output_shape_t,other_output_element_t>& other) const
+        {
+            auto composition = functor * other.functor;
+            // todo handle different arity
+            auto operands = other.operands;
+            using result_t = node_t<decltype(composition),other_operands_t,output_shape_type,output_element_type>;
+            // TODO: do not discard intermediate shape/type
+            return result_t{composition,operands,output_shape,output_element};
+        }
     };
 
     template <typename functor_t, typename operands_t>
@@ -414,10 +425,49 @@ namespace nmtools::utils::impl
             auto str = nmtools_string("");
             str += "[graphviz_record_layout_open]";
             str += fmap_str;
-            str += " | ";
+            str += " ";
             str += attr_str;
             str += "[graphviz_record_layout_close]";
 
+            return str;
+        }
+    };
+
+    template <template<typename...>typename tuple, typename...functors_t, typename operands_t>
+    struct to_string_t<functional::functor_composition_t<tuple<functors_t...>,operands_t>, graphviz_t>
+    {
+        using composition_type = functional::functor_composition_t<tuple<functors_t...>,operands_t>;
+        using formatter_type = graphviz_t;
+        using result_type = nmtools_string;
+
+        auto operator()(const composition_type& composition) const noexcept
+        {
+            auto str = nmtools_string("");
+            str += "[graphviz_record_layout_open]";
+
+            constexpr auto N = sizeof...(functors_t);
+            meta::template_for<N>([&](auto index){
+                constexpr auto I = decltype(index)::value;
+                const auto& functor = nmtools::get<I>(composition.functors);
+                auto fmap_str = to_string(functor.fmap,utils::Compact);
+                auto attr_str = nmtools_string("");
+                using attributes_t = decltype(functor.attributes);
+                constexpr auto M = meta::len_v<attributes_t>;
+                meta::template_for<M>([&](auto index){
+                    const auto& attribute = nmtools::at(functor.attributes,index);
+                    attr_str += to_string(attribute,utils::Compact);
+                    if (index < (M-1)) {
+                        attr_str += ",";
+                    }
+                });
+                str += fmap_str;
+                str += attr_str;
+                if constexpr (index < N-1) {
+                    str += " | ";
+                }
+            });
+
+            str += "[graphviz_record_layout_close]";
             return str;
         }
     };

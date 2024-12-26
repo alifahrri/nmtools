@@ -23,6 +23,7 @@
 namespace nm = nmtools;
 namespace fn = nmtools::functional;
 namespace meta = nmtools::meta;
+namespace view = nmtools::view;
 namespace na = nmtools::array;
 namespace ix = nmtools::index;
 namespace utils = nmtools::utils;
@@ -944,6 +945,7 @@ TEST_CASE("contracted_edge(case3)" * doctest::test_suite("ct_digraph"))
     }
 }
 
+// matmul
 TEST_CASE("contracted_edge(case1)" * doctest::test_suite("ct_digraph"))
 {
     auto lhs_shape = array{3,4};
@@ -1532,4 +1534,161 @@ TEST_CASE("topological_sort(case3a)" * doctest::test_suite("ct_digraph"))
     auto expected = array{0,472,435,470,51,428,391,433,1022};
 
     NMTOOLS_ASSERT_EQUAL( result, expected );
+}
+
+// matmul
+TEST_CASE("predecessors(case1)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,8>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+
+    auto adj_list = array<vector,8>{
+        make_vector(2),
+        make_vector(3),
+        make_vector(4),
+        make_vector(5),
+        make_vector(6),
+        make_vector(6),
+        make_vector(7),
+        make_vector(),
+    };
+
+    auto result = utility::predecessors(adj_list);
+    auto expected = array<vector,8>{
+        make_vector(),
+        make_vector(),
+        make_vector(0),
+        make_vector(1),
+        make_vector(2),
+        make_vector(3),
+        make_vector(4,5),
+        make_vector(6),
+    };
+
+    NMTOOLS_ASSERT_EQUAL( result.size(), expected.size() );
+    for (nm_size_t i=0; i<(nm_size_t)result.size(); i++) {
+        NMTOOLS_ASSERT_EQUAL( result.at(i), expected.at(i) );
+    }
+}
+
+// softmax
+TEST_CASE("predecessors(case2)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,8>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+
+    auto adj_list = array<vector,6>{
+        make_vector(1,2),
+        make_vector(2),
+        make_vector(3),
+        make_vector(4,5),
+        make_vector(5),
+        make_vector()
+    };
+
+    auto result = utility::predecessors(adj_list);
+    auto expected = array<vector,6>{
+        make_vector(),
+        make_vector(0),
+        make_vector(0,1),
+        make_vector(2),
+        make_vector(3),
+        make_vector(3,4),
+    };
+
+    NMTOOLS_ASSERT_EQUAL( result.size(), expected.size() );
+    for (nm_size_t i=0; i<(nm_size_t)result.size(); i++) {
+        NMTOOLS_ASSERT_EQUAL( result.at(i), expected.at(i) );
+    }
+}
+
+// var
+TEST_CASE("predecessors(case3)" * doctest::test_suite("ct_digraph"))
+{
+    using vector = utl::static_vector<int,10>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+
+    auto adj_list = array<vector,10>{
+        make_vector(2,4),
+        make_vector(3),
+        make_vector(3),
+        make_vector(4),
+        make_vector(5),
+        make_vector(6),
+        make_vector(7),
+        make_vector(9),
+        make_vector(9),
+        make_vector()
+    };
+
+    auto result = utility::predecessors(adj_list);
+    auto expected = array<vector,10>{
+        make_vector(),
+        make_vector(),
+        make_vector(0),
+        make_vector(1,2),
+        make_vector(0,3),
+        make_vector(4),
+        make_vector(5),
+        make_vector(6),
+        make_vector(),
+        make_vector(7,8)
+    };
+
+    NMTOOLS_ASSERT_EQUAL( result.size(), expected.size() );
+    for (nm_size_t i=0; i<(nm_size_t)result.size(); i++) {
+        NMTOOLS_ASSERT_EQUAL( result.at(i), expected.at(i) );
+    }
+}
+
+TEST_CASE("predecessors(case1b)" * doctest::test_suite("functional"))
+{
+    using vector = utl::static_vector<int,8>;
+
+    auto make_vector = [](auto...v){
+        auto vec = vector();
+        (vec.push_back(v),...);
+        return vec;
+    };
+
+    auto adj_list = array<vector,7>{
+        make_vector(2),
+        make_vector(3),
+        make_vector(5),
+        make_vector(4),
+        make_vector(5),
+        make_vector(6),
+        make_vector()
+    };
+
+    auto result = utility::predecessors(adj_list);
+    auto expected = array<vector,7>{
+        make_vector(),
+        make_vector(),
+        make_vector(0),
+        make_vector(1),
+        make_vector(3),
+        make_vector(2,4),
+        make_vector(5),
+    };
+
+    NMTOOLS_ASSERT_EQUAL( result.size(), expected.size() );
+    for (nm_size_t i=0; i<(nm_size_t)result.size(); i++) {
+        NMTOOLS_ASSERT_EQUAL( result.at(i), expected.at(i) );
+    }
 }
