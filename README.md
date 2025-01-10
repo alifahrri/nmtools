@@ -7,6 +7,10 @@
 
 A generic, composable multidimensional array library.
 
+***(Work In Progress)***
+
+The projects is still work in progress, expect missing docs, features, and benchmarks.
+
 ## Requirement
 - C++17 (full language features)
 
