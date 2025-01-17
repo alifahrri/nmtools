@@ -19,7 +19,7 @@
 #include "nmtools/constants.hpp"
 #include "nmtools/utility/as_static.hpp"
 
-#include "nmtools/array/view/ufunc/detail.hpp"
+#include "nmtools/array/view/ufunc-core/detail.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::args
