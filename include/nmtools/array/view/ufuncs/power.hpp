@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_POWER_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_POWER_HPP
 
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/math.hpp"
 
 namespace nmtools::view

@@ -1,9 +1,9 @@
 #define NMTOOLS_CIRCLE_CONTEXT_IMPLEMENTATION
 #define NMTOOLS_DISABLE_STL
-#include "nmtools/array/evaluator/circle/transform.hxx"
+#include "nmtools/evaluator/circle/transform.hxx"
 #include "nmtools/meta.hpp"
 #include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/evaluator/kernel_helper.hpp"
+#include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/array/view/activations/relu.hpp"
 #include "nmtools/exception.hpp"
 #include <cstdio>

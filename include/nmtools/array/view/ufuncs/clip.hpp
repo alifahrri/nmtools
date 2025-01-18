@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_CLIP_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_CLIP_HPP
 
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/array/view/ufuncs/less.hpp"
 #include "nmtools/array/view/ufuncs/greater.hpp"
 #include "nmtools/array/view/where.hpp"

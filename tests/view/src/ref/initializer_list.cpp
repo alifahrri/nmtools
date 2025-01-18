@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ref/initializer_list.hpp"
+#include "nmtools/array/core/ref/initializer_list.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/testing/doctest.hpp"
 

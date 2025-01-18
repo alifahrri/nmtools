@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/array/index/slice.hpp"
 
 namespace nmtools::view

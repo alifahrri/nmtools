@@ -1,9 +1,9 @@
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/array/ufuncs/add.hpp"
-#include "nmtools/array/array/activations/relu.hpp"
-#include "nmtools/array/array/mean.hpp"
-#include "nmtools/array/array/matmul.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/activations/relu.hpp"
+#include "nmtools/array/mean.hpp"
+#include "nmtools/array/matmul.hpp"
 
 #include "nmtools/testing/data/array/add.hpp"
 #include "nmtools/testing/data/array/relu.hpp"

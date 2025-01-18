@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/arctanh.hpp"
+#include "nmtools/array/ufuncs/arctanh.hpp"
 #include "nmtools/testing/data/array/arctanh.hpp"
 #include "nmtools/testing/doctest.hpp"
 

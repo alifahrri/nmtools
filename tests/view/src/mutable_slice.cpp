@@ -1,5 +1,5 @@
 #include "nmtools/array/view/mutable_slice.hpp"
-#include "nmtools/array/array/copy.hpp"
+#include "nmtools/array/copy.hpp"
 #include "nmtools/testing/data/array/slice.hpp"
 #include "nmtools/testing/doctest.hpp"
 

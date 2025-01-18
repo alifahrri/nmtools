@@ -15,9 +15,9 @@ inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 
-#include "nmtools/array/array/vstack.hpp"
+#include "nmtools/array/vstack.hpp"
 #include "nmtools/testing/data/array/vstack.hpp"
-#include "nmtools/array/evaluator/sycl.hpp"
+#include "nmtools/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

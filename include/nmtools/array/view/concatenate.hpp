@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_CONCATENATE_HPP
 #define NMTOOLS_ARRAY_VIEW_CONCATENATE_HPP
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 
 #include "nmtools/array/index/concatenate.hpp"
 #include "nmtools/utility/shape.hpp"

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_MISH_HPP
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_MISH_HPP
 
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/array/view/activations/softplus.hpp"
 #include "nmtools/math.hpp"

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_VAR_HPP
 #define NMTOOLS_ARRAY_VIEW_VAR_HPP
 
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/ufuncs/fabs.hpp"
 #include "nmtools/array/view/ufuncs/square.hpp"
 #include "nmtools/array/view/ufuncs/subtract.hpp"

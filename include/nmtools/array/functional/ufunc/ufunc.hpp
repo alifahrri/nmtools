@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_UFUNC_UFUNC_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_UFUNC_UFUNC_HPP
 
-#include "nmtools/array/view/ufunc-core/ufunc.hpp"
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/utility/to_string/common_types.hpp"

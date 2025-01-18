@@ -16,7 +16,7 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_
 
 #define NMTOOLS_TESTING_PRECISION (1e-3)
 
-#include "nmtools/array/array/ufuncs/rad2deg.hpp"
+#include "nmtools/array/ufuncs/rad2deg.hpp"
 #include "nmtools/testing/data/array/rad2deg.hpp"
 #include "nmtools/testing/doctest.hpp"
 

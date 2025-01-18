@@ -92,7 +92,7 @@ namespace nmtools::meta
     }; // index::dstack_reshape_t
 } // nmtools::meta
 
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/reshape.hpp"
 #include "nmtools/array/view/concatenate.hpp"
 

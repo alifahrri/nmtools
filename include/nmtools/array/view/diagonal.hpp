@@ -179,9 +179,9 @@ namespace nmtools::meta
     }; // index::diagonal_t
 } // nmtools::meta
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"

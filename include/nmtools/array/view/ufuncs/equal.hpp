@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_EQUAL_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_EQUAL_HPP
 
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 
 namespace nmtools::view::fun
 {

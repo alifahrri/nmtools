@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_MAXIMUM_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/constants.hpp"
 
 namespace nmtools::view

@@ -1,5 +1,5 @@
 #include "nmtools/array/view/take.hpp"
-#include "nmtools/array/eval.hpp"
+#include "nmtools/array/core/eval.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

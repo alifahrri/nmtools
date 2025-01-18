@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/sin.hpp"
+#include "nmtools/array/ufuncs/sin.hpp"
 #include "nmtools/testing/data/array/sin.hpp"
 #include "nmtools/testing/doctest.hpp"
 

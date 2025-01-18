@@ -1,9 +1,9 @@
-#include "nmtools/array/evaluator/simd/simde_avx512.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/ufuncs/add.hpp"
-#include "nmtools/array/array/ufuncs/multiply.hpp"
-#include "nmtools/array/array/ufuncs/subtract.hpp"
-#include "nmtools/array/array/ufuncs/divide.hpp"
+#include "nmtools/evaluator/simd/simde_avx512.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/multiply.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/divide.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

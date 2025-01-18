@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/compress.hpp"
 #include "nmtools/array/index/product.hpp"
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 
 namespace nmtools::view
 {

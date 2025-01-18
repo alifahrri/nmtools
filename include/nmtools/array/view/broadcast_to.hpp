@@ -1,12 +1,12 @@
 #ifndef NMTOOLS_ARRAY_VIEW_BROADCAST_TO_HPP
 #define NMTOOLS_ARRAY_VIEW_BROADCAST_TO_HPP
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 
 #include "nmtools/array/index/broadcast_to.hpp"
 
 #include "nmtools/utility/unwrap.hpp"
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 
 namespace nmtools::view
 {

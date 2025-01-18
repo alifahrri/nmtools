@@ -8,7 +8,7 @@
 #include "nmtools/array/index/reverse.hpp"
 
 #include "nmtools/utility/isequal/isequal.hpp"
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/utility/as_static.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"
 

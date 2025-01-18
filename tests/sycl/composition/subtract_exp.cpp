@@ -1,10 +1,10 @@
 #define NMTOOLS_TESTING_PRECISION (1e-2)
 
-#include "nmtools/array/array/ufuncs/exp.hpp"
-#include "nmtools/array/array/ufuncs/subtract.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/evaluator/sycl.hpp"
+#include "nmtools/array/ufuncs/exp.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 #include "nmtools/array/functional/ufuncs/subtract.hpp"

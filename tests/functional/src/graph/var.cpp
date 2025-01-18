@@ -1,14 +1,14 @@
 // #define NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE 4096
 // #define NMTOOLS_ALIAS_DEFAULT_PRIME 1033
 
-#include "nmtools/array/array/ufuncs/multiply.hpp"
-#include "nmtools/array/array/ufuncs/divide.hpp"
-#include "nmtools/array/array/ufuncs/subtract.hpp"
-#include "nmtools/array/array/ufuncs/fabs.hpp"
-#include "nmtools/array/array/ufuncs/square.hpp"
-#include "nmtools/array/array/sum.hpp"
-#include "nmtools/array/array/ufuncs/add.hpp"
-#include "nmtools/array/array/arange.hpp"
+#include "nmtools/array/ufuncs/multiply.hpp"
+#include "nmtools/array/ufuncs/divide.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/fabs.hpp"
+#include "nmtools/array/ufuncs/square.hpp"
+#include "nmtools/array/sum.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/arange.hpp"
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/array/functional/ufuncs/multiply.hpp"
 #include "nmtools/array/functional/ufuncs/add.hpp"
@@ -19,7 +19,7 @@
 #include "nmtools/array/functional/ufunc/ufunc.hpp"
 #include "nmtools/array/view/var.hpp"
 #include "nmtools/utility/has_value.hpp"
-#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 

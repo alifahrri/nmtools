@@ -5,7 +5,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/view/ref.hpp"
 
 namespace nmtools::view

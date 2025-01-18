@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_BITWISE_AND_HPP
 
 #include "nmtools/utility/to_string/to_string.hpp"
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 
 namespace nmtools::view::fun
 {

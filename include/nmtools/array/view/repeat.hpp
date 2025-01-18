@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_REPEAT_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/utility/shape.hpp"
 
 #include "nmtools/array/index/product.hpp"

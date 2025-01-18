@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/positive.hpp"
+#include "nmtools/array/ufuncs/positive.hpp"
 #include "nmtools/testing/data/array/positive.hpp"
 #include "nmtools/testing/doctest.hpp"
 

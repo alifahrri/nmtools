@@ -9,8 +9,8 @@
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_slice.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
-#include "nmtools/array/view/discrete.hpp"
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/discrete.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/view/broadcast_arrays.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 

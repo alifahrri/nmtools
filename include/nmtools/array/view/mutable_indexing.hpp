@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_MUTABLE_INDEXING_HPP
 #define NMTOOLS_ARRAY_VIEW_MUTABLE_INDEXING_HPP
 
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/array/index/ndenumerate.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 

@@ -15,7 +15,7 @@
 #include "nmtools/platform.hpp"
 
 #ifndef NMTOOLS_DISABLE_STL
-#include "nmtools/array/view/ref/initializer_list.hpp"
+#include "nmtools/array/core/ref/initializer_list.hpp"
 #endif
 
 namespace nmtools::array

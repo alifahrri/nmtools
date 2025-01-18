@@ -3,7 +3,7 @@
 #include "nmtools/array/functional/flatten.hpp"
 #include "nmtools/array/functional/ufuncs/add.hpp"
 #include "nmtools/array/view/full.hpp"
-#include "nmtools/array/array/flatten.hpp"
+#include "nmtools/array/flatten.hpp"
 
 #include "nmtools/testing/data/array/add.hpp"
 #include "nmtools/testing/doctest.hpp"

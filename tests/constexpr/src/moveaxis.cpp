@@ -6,7 +6,7 @@ constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::n
 constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
 constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb);
 
-#include "nmtools/array/array/moveaxis.hpp"
+#include "nmtools/array/moveaxis.hpp"
 #include "nmtools/testing/data/constexpr/moveaxis.hpp"
 #include "nmtools/testing/doctest.hpp"
 

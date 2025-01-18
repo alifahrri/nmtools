@@ -1,6 +1,6 @@
 #include "nmtools/array/index/broadcast_shape.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
-#include "nmtools/array/evaluator/opencl/kernel_helper.hpp"
+#include "nmtools/evaluator/opencl/kernel_helper.hpp"
 
 namespace nm = nmtools;
 namespace ix = nm::index;

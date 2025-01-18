@@ -284,10 +284,10 @@ namespace nmtools::meta
 #ifndef NMTOOLS_ARRAY_VIEW_SLIDING_WINDOW_HPP
 #define NMTOOLS_ARRAY_VIEW_SLIDING_WINDOW_HPP
 
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/normalize_axis.hpp"
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/fwd.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"

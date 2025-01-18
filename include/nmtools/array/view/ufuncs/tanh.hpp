@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_TANH_HPP
 
 #include "nmtools/utility/to_string/to_string.hpp"
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/math.hpp"
 
 namespace nmtools::view::fun

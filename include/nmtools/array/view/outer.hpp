@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_OUTER_HPP
 #define NMTOOLS_ARRAY_VIEW_OUTER_HPP
 
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/reshape.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"

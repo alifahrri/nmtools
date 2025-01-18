@@ -3,7 +3,7 @@
 
 #include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/array/functional/functor.hpp"
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 
 namespace nmtools::functional::fun
 {

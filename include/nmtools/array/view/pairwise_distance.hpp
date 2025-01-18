@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_PAIRWISE_DISTANCE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/vector_norm.hpp"
 #include "nmtools/array/view/ufuncs/subtract.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"

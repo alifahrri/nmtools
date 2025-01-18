@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_VIEW_VECDOT_HPP
 #define NMTOOLS_ARRAY_VIEW_VECDOT_HPP
 
-#include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/decorator.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"
 #include "nmtools/array/view/sum.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_LINEAR_HPP
 #define NMTOOLS_ARRAY_VIEW_LINEAR_HPP
 
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/tensordot.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 

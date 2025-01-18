@@ -1,4 +1,4 @@
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/arange.hpp"
 #include "nmtools/array/view/atleast_nd.hpp"
 #include "nmtools/testing/doctest.hpp"

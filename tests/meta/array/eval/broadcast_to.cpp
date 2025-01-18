@@ -1,4 +1,4 @@
-#include "nmtools/array/eval.hpp"
+#include "nmtools/array/core/eval.hpp"
 #include "nmtools/array/view/broadcast_to.hpp"
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"

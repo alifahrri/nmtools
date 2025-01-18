@@ -1,6 +1,6 @@
 #include "nmtools/array/index/resize.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
-#include "nmtools/array/evaluator/opencl/kernel_helper.hpp"
+#include "nmtools/evaluator/opencl/kernel_helper.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 namespace nm = nmtools;

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_MEAN_HPP
 #define NMTOOLS_ARRAY_VIEW_MEAN_HPP
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/divide.hpp"
 #include "nmtools/array/index/product.hpp"

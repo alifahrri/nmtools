@@ -7,16 +7,16 @@ constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::n
 constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
 constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb);
 
-#include "nmtools/array/array/atleast_1d.hpp"
+#include "nmtools/array/atleast_1d.hpp"
 #include "nmtools/testing/data/array/atleast_1d.hpp"
 
-#include "nmtools/array/array/atleast_2d.hpp"
+#include "nmtools/array/atleast_2d.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
 
-#include "nmtools/array/array/transpose.hpp"
+#include "nmtools/array/transpose.hpp"
 #include "nmtools/testing/data/array/transpose.hpp"
 
-#include "nmtools/array/array/moveaxis.hpp"
+#include "nmtools/array/moveaxis.hpp"
 #include "nmtools/testing/data/array/moveaxis.hpp"
 
 #include "nmtools/testing/arduino.hpp"

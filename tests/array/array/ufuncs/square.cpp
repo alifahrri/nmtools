@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/square.hpp"
+#include "nmtools/array/ufuncs/square.hpp"
 #include "nmtools/testing/data/array/square.hpp"
 #include "nmtools/testing/doctest.hpp"
 

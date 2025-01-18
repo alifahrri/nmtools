@@ -17,7 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
-#include "nmtools/array/array/pad.hpp"
+#include "nmtools/array/pad.hpp"
 #include "nmtools/testing/data/array/pad.hpp"
 #include "nmtools/testing/doctest.hpp"
 

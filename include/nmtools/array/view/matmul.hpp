@@ -333,11 +333,11 @@ namespace nmtools::meta
 #ifndef NMTOOLS_ARRAY_VIEW_MATMUL_HPP
 #define NMTOOLS_ARRAY_VIEW_MATMUL_HPP
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/index/broadcast_shape.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"
 #include "nmtools/utility/at.hpp"
@@ -933,7 +933,7 @@ namespace nmtools::meta
 
 /* ========================================================= */
 
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/tile.hpp"
 #include "nmtools/array/view/transpose.hpp"
 #include "nmtools/array/view/reshape.hpp"

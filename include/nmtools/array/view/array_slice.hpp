@@ -1,11 +1,11 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ARRAY_SLICE_HPP
 #define NMTOOLS_ARRAY_VIEW_ARRAY_SLICE_HPP
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/view/broadcast_arrays.hpp"
 #include "nmtools/array/index/array_slice.hpp"
 #include "nmtools/array/index/ndindex.hpp"
-#include "nmtools/array/view/discrete.hpp"
+#include "nmtools/array/core/discrete.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 

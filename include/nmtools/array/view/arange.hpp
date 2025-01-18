@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ARANGE_HPP
 #define NMTOOLS_ARRAY_VIEW_ARANGE_HPP
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/dtypes.hpp"
 #include "nmtools/array/index/arange.hpp"

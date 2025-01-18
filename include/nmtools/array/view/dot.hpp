@@ -264,12 +264,12 @@ namespace nmtools::meta
 
 /******************************************************************************/
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/view/sum.hpp"
 #include "nmtools/array/view/transpose.hpp"
 #include "nmtools/array/view/tile.hpp"
 #include "nmtools/array/view/reshape.hpp"
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"
 
 namespace nmtools::view

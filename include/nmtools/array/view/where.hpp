@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_WHERE_HPP
 
 #include "nmtools/utility/at.hpp"
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/view/broadcast_arrays.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/meta.hpp"

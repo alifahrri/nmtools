@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/array/index/roll.hpp"
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/reshape.hpp"
 #include "nmtools/utility/shape.hpp"

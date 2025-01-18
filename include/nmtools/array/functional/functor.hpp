@@ -2,8 +2,8 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/decorator.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/broadcast_to.hpp"
 #include "nmtools/utility/ct_map.hpp"
 #include "nmtools/utility/ct_digraph.hpp"

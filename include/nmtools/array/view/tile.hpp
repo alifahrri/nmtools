@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_TILE_HPP
 #define NMTOOLS_ARRAY_VIEW_TILE_HPP
 
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/array/index/tile.hpp"
 #include "nmtools/utility/as_static.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"

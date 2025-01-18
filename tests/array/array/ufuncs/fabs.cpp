@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/fabs.hpp"
+#include "nmtools/array/ufuncs/fabs.hpp"
 #include "nmtools/testing/data/array/fabs.hpp"
 #include "nmtools/testing/doctest.hpp"
 

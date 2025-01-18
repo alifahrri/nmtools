@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/less_equal.hpp"
+#include "nmtools/array/ufuncs/less_equal.hpp"
 #include "nmtools/testing/data/array/less_equal.hpp"
 #include "nmtools/testing/doctest.hpp"
 

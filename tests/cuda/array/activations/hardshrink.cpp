@@ -15,8 +15,8 @@ inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 
-#include "nmtools/array/array/activations/hardshrink.hpp"
-#include "nmtools/array/evaluator/cuda.hpp"
+#include "nmtools/array/activations/hardshrink.hpp"
+#include "nmtools/evaluator/cuda.hpp"
 #include "nmtools/testing/data/array/hardshrink.hpp"
 #include "nmtools/testing/doctest.hpp"
 

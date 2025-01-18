@@ -1,0 +1,12 @@
+#pragma once
+#include "nmtools/evaluator/simd/evaluator.hpp"
+#include "nmtools/evaluator/simd/x86_avx.hpp"
+#include "nmtools/evaluator/simd/x86_sse.hpp"
+#include "nmtools/evaluator/simd/vector_512.hpp"
+#include "nmtools/evaluator/simd/vector_128.hpp"
+#include "nmtools/evaluator/simd/simde_avx512.hpp"
+#include "nmtools/evaluator/simd/ufunc.hpp"
+#include "nmtools/evaluator/simd/vector_extension.hpp"
+#include "nmtools/evaluator/simd/index.hpp"
+#include "nmtools/evaluator/simd/bit_width.hpp"
+#include "nmtools/evaluator/simd/vector_256.hpp"

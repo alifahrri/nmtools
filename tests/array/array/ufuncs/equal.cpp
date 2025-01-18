@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/equal.hpp"
+#include "nmtools/array/ufuncs/equal.hpp"
 #include "nmtools/testing/data/array/equal.hpp"
 #include "nmtools/testing/doctest.hpp"
 

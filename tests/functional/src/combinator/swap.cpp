@@ -1,6 +1,6 @@
 #include "nmtools/array/functional/combinator.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/array/functional/ufuncs/divide.hpp"
 #include "nmtools/array/functional/ufuncs/subtract.hpp"
 #include "nmtools/testing/doctest.hpp"

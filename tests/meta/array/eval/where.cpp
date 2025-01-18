@@ -3,7 +3,7 @@
 #include "nmtools/array/ndarray/fixed.hpp"
 #include "nmtools/array/ndarray/hybrid.hpp"
 #include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/eval.hpp"
+#include "nmtools/array/core/eval.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

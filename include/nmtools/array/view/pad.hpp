@@ -1,11 +1,11 @@
 #ifndef NMTOOLS_ARRAY_VIEW_PAD_HPP
 #define NMTOOLS_ARRAY_VIEW_PAD_HPP
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/pad.hpp"
 #include "nmtools/array/index/product.hpp"
-#include "nmtools/array/view/indexing.hpp"
+#include "nmtools/array/core/indexing.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 #include "nmtools/utility/isclose/isclose.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"

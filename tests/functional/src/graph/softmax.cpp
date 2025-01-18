@@ -1,5 +1,5 @@
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/array/functional/ufunc/ufunc.hpp"
 #include "nmtools/array/functional/activations/relu.hpp"
 #include "nmtools/array/functional/softmax.hpp"

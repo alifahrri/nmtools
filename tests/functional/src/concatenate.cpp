@@ -1,7 +1,7 @@
 #include "nmtools/array/functional/concatenate.hpp"
 #include "nmtools/testing/data/array/concatenate.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/array/array/arange.hpp"
+#include "nmtools/array/arange.hpp"
 
 namespace nm = nmtools;
 namespace fn = nm::functional;

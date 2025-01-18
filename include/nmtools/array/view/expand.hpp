@@ -341,9 +341,9 @@ namespace nmtools::utils::impl
 
 /*=====================================================================*/
 
-#include "nmtools/array/view/decorator.hpp"
-#include "nmtools/array/view/indexing.hpp"
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/decorator.hpp"
+#include "nmtools/array/core/indexing.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/utility/fwd.hpp"
 

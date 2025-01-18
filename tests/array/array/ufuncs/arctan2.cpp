@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/arctan2.hpp"
+#include "nmtools/array/ufuncs/arctan2.hpp"
 #include "nmtools/testing/data/array/arctan2.hpp"
 #include "nmtools/testing/doctest.hpp"
 

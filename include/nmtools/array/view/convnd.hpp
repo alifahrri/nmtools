@@ -725,7 +725,7 @@ namespace nmtools::meta
 
 /*=====================================================================*/
 
-#include "nmtools/array/view/alias.hpp"
+#include "nmtools/array/core/alias.hpp"
 #include "nmtools/array/view/sliding_window.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"

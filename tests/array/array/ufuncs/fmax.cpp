@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/fmax.hpp"
+#include "nmtools/array/ufuncs/fmax.hpp"
 #include "nmtools/testing/data/array/fmax.hpp"
 #include "nmtools/testing/doctest.hpp"
 

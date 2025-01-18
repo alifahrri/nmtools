@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SOFTSHRINK_HPP
 #define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SOFTSHRINK_HPP
 
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 // TODO: maybe do not include all parts of isclose here, refactor to isclose_t maybe
 #include "nmtools/utility/isclose.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"

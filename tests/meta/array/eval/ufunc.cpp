@@ -1,5 +1,5 @@
-#include "nmtools/array/eval.hpp"
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/eval.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/sin.hpp"
 #include "nmtools/array/view/ufuncs/clip.hpp"

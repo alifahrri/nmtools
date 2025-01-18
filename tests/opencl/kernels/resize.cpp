@@ -1,9 +1,9 @@
-#include "nmtools/array/evaluator/opencl/kernels/resize.hpp"
+#include "nmtools/evaluator/opencl/kernels/resize.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/evaluator/opencl/evaluator.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/resize.hpp"
-#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/evaluator/opencl/evaluator.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/resize.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/testing/doctest.hpp"
 

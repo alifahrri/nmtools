@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/dtypes.hpp"
 

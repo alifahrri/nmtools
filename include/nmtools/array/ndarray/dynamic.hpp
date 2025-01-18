@@ -9,7 +9,7 @@
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
-#include "nmtools/array/view/ref/initializer_list.hpp"
+#include "nmtools/array/core/ref/initializer_list.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/assert.hpp"
 

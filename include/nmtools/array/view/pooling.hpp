@@ -3,9 +3,9 @@
 
 #include "nmtools/array/index/pooling.hpp"
 #include "nmtools/array/index/product.hpp"
-#include "nmtools/array/view/decorator.hpp"
+#include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/view/slice.hpp"
-#include "nmtools/array/view/ufunc.hpp"
+#include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/array/view/mean.hpp"
 #include "nmtools/array/view/ufuncs/maximum.hpp"
 #include "nmtools/utility/shape.hpp"
