@@ -418,8 +418,7 @@ namespace nmtools::utils::impl
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_SLIDING_WINDOW_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_SLIDING_WINDOW_HPP
 
-#include "nmtools/array/sliding_window.hpp"
-#include "nmtools/core/indexing.hpp"
+#include "nmtools/core/functor.hpp"
 
 namespace nmtools::functional
 {
@@ -443,7 +442,6 @@ namespace nmtools::functional
 #ifndef NMTOOLS_ARRAY_ARRAY_RESIZE_HPP
 #define NMTOOLS_ARRAY_ARRAY_RESIZE_HPP
 
-#include "nmtools/array/sliding_window.hpp"
 #include "nmtools/core/eval.hpp"
 
 namespace nmtools::array
