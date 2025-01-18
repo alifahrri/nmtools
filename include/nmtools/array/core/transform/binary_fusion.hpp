@@ -3,8 +3,8 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/ct_digraph.hpp"
-#include "nmtools/array/functional/functor.hpp"
-#include "nmtools/array/functional/combinator.hpp"
+#include "nmtools/array/core/functor.hpp"
+#include "nmtools/array/core/combinator.hpp"
 
 namespace nmtools::functional
 {

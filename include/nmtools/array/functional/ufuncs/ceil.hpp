@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_CEIL_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_CEIL_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/ufuncs/ceil.hpp"
 #include "nmtools/array/functional/ufunc/ufunc.hpp"
 

@@ -1,5 +1,5 @@
 #include "nmtools/array/functional/resize.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/testing/data/array/resize.hpp"
 #include "nmtools/array/functional/indexing.hpp"
 #include "nmtools/utility/to_string.hpp"

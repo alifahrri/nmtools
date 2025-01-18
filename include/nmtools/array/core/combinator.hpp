@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_COMBINATOR_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 
 namespace nmtools::combinator
 {

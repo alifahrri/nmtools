@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_ZEROS_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_ZEROS_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/functional/full.hpp"
 #include "nmtools/array/view/zeros.hpp"
 

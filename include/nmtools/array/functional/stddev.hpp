@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_STDDEV_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_STDDEV_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/stddev.hpp"
 
 namespace nmtools::functional

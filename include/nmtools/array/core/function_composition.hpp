@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_FUNCTION_COMPOSITION_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_FUNCTION_COMPOSITION_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/core/ufunc/ufunc.hpp"
 #include "nmtools/array/core/ufunc.hpp"
 

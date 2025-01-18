@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_MISH_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_MISH_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/activations/mish.hpp"
 #include "nmtools/array/functional/ufunc/ufunc.hpp"
 

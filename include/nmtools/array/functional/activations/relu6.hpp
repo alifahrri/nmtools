@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_RELU6_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_RELU6_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/activations/relu6.hpp"
 #include "nmtools/array/functional/ufunc/ufunc.hpp"
 

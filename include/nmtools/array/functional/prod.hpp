@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_PROD_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_PROD_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/prod.hpp"
 
 namespace nmtools::functional

@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/combinator.hpp"
+#include "nmtools/array/core/combinator.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/functional/ufuncs/divide.hpp"

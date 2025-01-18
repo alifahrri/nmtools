@@ -7,7 +7,7 @@
 #include "nmtools/array/functional/reshape.hpp"
 #include "nmtools/array/functional/expand.hpp"
 #include "nmtools/array/functional/pad.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/conv1d.hpp"
 
 namespace nmtools::functional

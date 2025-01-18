@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_UFUNC_REDUCE_HPP
 
 #include "nmtools/utility/to_string/to_string.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/core/ufunc.hpp"
 
 namespace nmtools::functional::fun

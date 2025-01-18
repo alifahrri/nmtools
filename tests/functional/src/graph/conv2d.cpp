@@ -2,7 +2,7 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/array/view/conv2d.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/functional/conv2d.hpp"
 #include "nmtools/testing/doctest.hpp"
 

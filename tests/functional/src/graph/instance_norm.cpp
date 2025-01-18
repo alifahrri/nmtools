@@ -2,7 +2,7 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/array/view/instance_norm.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/functional/batch_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
 

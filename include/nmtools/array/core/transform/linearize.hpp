@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_TRANSFORM_LINEARIZE_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_TRANSFORM_LINEARIZE_HPP
 
-#include "nmtools/array/functional/transform/unary_fusion.hpp"
-#include "nmtools/array/functional/transform/binary_fusion.hpp"
+#include "nmtools/array/core/transform/unary_fusion.hpp"
+#include "nmtools/array/core/transform/binary_fusion.hpp"
 
 namespace nmtools::functional
 {

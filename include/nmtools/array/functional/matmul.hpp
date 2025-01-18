@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_MATMUL_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_MATMUL_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/matmul.hpp"
 
 namespace nmtools::functional

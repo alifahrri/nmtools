@@ -1,7 +1,7 @@
 #include "nmtools/array/ufuncs/multiply.hpp"
 #include "nmtools/array/ufuncs/tanh.hpp"
 #include "nmtools/array/arange.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/functional/ufuncs/multiply.hpp"
 #include "nmtools/array/functional/ufuncs/tanh.hpp"
 #include "nmtools/array/reshape.hpp"

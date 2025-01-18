@@ -2,7 +2,7 @@
 #include "nmtools/array/ufuncs/tanh.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/arange.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/functional/ufuncs/multiply.hpp"
 #include "nmtools/array/functional/ufuncs/add.hpp"
 #include "nmtools/array/functional/ufuncs/tanh.hpp"

@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/transform/unary_fusion.hpp"
+#include "nmtools/array/core/transform/unary_fusion.hpp"
 #include "nmtools/utility/ct_digraph.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/tanh.hpp"

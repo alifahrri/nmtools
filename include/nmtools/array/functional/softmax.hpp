@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_SOFTMAX_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_SOFTMAX_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/functional/ufuncs/maximum.hpp"
 #include "nmtools/array/functional/ufuncs/subtract.hpp"
 #include "nmtools/array/functional/ufuncs/exp.hpp"

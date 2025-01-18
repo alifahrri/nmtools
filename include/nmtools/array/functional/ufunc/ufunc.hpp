@@ -3,7 +3,7 @@
 
 #include "nmtools/array/core/ufunc/ufunc.hpp"
 #include "nmtools/array/core/ufunc.hpp"
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/utility/to_string/common_types.hpp"
 #include "nmtools/array/functional/indexing.hpp"

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_COMPRESS_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_COMPRESS_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/compress.hpp"
 
 namespace nmtools::functional

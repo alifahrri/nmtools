@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_SLICE_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_SLICE_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/functional/indexing.hpp"
 #include "nmtools/array/view/slice.hpp"
 

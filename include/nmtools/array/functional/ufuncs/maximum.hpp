@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MAXIMUM_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_MAXIMUM_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/ufuncs/maximum.hpp"
 #include "nmtools/array/functional/ufunc/accumulate.hpp"
 #include "nmtools/array/functional/ufunc/reduce.hpp"

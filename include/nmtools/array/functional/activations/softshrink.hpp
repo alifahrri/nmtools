@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SOFTSHRINK_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SOFTSHRINK_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/activations/softshrink.hpp"
 #include "nmtools/array/functional/ufunc/ufunc.hpp"
 

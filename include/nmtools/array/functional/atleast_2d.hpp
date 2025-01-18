@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_ATLEAST_2D_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_ATLEAST_2D_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/functional/indexing.hpp"
 #include "nmtools/array/functional/reshape.hpp"
 #include "nmtools/array/view/atleast_2d.hpp"

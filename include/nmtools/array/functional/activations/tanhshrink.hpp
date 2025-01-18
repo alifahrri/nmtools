@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_TANHSHRINK_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_TANHSHRINK_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/activations/tanhshrink.hpp"
 #include "nmtools/array/functional/ufunc/ufunc.hpp"
 

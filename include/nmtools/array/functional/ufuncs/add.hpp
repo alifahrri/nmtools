@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_ADD_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_ADD_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/functional/ufunc/accumulate.hpp"
 #include "nmtools/array/functional/ufunc/reduce.hpp"

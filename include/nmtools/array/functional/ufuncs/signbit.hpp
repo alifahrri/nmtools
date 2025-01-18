@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_SIGNBIT_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_UFUNCS_SIGNBIT_HPP
 
-#include "nmtools/array/functional/functor.hpp"
+#include "nmtools/array/core/functor.hpp"
 #include "nmtools/array/view/ufuncs/signbit.hpp"
 #include "nmtools/array/functional/ufunc/ufunc.hpp"
 

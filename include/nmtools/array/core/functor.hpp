@@ -990,5 +990,5 @@ namespace nmtools::utils
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP
 
-#include "nmtools/array/functional/compute_graph.hpp"
-#include "nmtools/array/functional/function_composition.hpp"
+#include "nmtools/array/core/compute_graph.hpp"
+#include "nmtools/array/core/function_composition.hpp"
