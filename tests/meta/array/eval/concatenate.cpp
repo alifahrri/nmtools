@@ -47,7 +47,7 @@ TEST_CASE("eval(concatenate)" * doctest::test_suite("eval"))
         using axis_t = nm::none_t;
         using view_t = view::decorator_t< view::concatenate_t, lhs_t, rhs_t, axis_t >;
         using eval_t = meta::resolve_optype_t< na::eval_result_t<>, view_t, nm::none_t >;
-        using expected_t = na::ndarray_t<na::hybrid_ndarray<int,6,1>,nmtools_array<size_t,1>>;
+        using expected_t = na::ndarray_t<nmtools_static_vector<int,6>,nmtools_array<size_t,1>>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {

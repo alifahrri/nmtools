@@ -26,7 +26,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, matmul, case_name); \
     using namespace args; \
-    auto result = nmtools::view::matmul(__VA_ARGS__); \
+    auto result = nmtools::view::matmulv2(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }

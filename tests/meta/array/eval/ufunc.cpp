@@ -62,7 +62,7 @@ TEST_CASE("eval(ufunc)" * doctest::test_suite("eval"))
         {
             using view_t = view::decorator_t< view::ufunc_t, view::sin_t, na::hybrid_ndarray<int,1,4> >;
             using eval_t = meta::resolve_optype_t< na::eval_result_t<>, view_t, none_t >;
-            using expected_t = na::ndarray_t<na::static_vector<double,1>,nmtools_array<size_t,4>>;
+            using expected_t = na::ndarray_t<nmtools_static_vector<double,1>,nmtools_array<size_t,4>>;
             NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         }
         {
@@ -136,7 +136,7 @@ TEST_CASE("eval(outer_ufunc)" * doctest::test_suite("eval"))
         using rhs_t = na::hybrid_ndarray<int, 3, 1>;
         using view_t = view::decorator_t< view::outer_t, view::add_t<>, lhs_t, rhs_t, none_t >;
         using eval_t = meta::resolve_optype_t< na::eval_result_t<>, view_t, none_t >;
-        using expected_t = na::ndarray_t<na::static_vector<int,18>,nmtools_array<size_t,3>>;
+        using expected_t = na::ndarray_t<nmtools_static_vector<int,18>,nmtools_array<size_t,3>>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         static_assert( meta::bounded_size_v<view_t> == 18 );
         static_assert( meta::fixed_dim_v<view_t> == 3 );
@@ -150,24 +150,24 @@ TEST_CASE("eval(outer_ufunc)" * doctest::test_suite("eval"))
         using rhs_t = na::ndarray_t<na::static_vector<int,3>, nmtools_array<size_t,1>>;
         using view_t = view::decorator_t< view::outer_t, view::add_t<>, lhs_t, rhs_t, none_t >;
         using eval_t = meta::resolve_optype_t< na::eval_result_t<>, view_t, none_t >;
-        using expected_t = na::ndarray_t<na::static_vector<int,18>,nmtools_array<size_t,3>>;
+        using expected_t = na::ndarray_t<nmtools_static_vector<int,18>,nmtools_array<size_t,3>>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
-        using lhs_t = na::ndarray_t<nmtools_array<int, 6>, na::static_vector<size_t,2>>;
-        using rhs_t = na::ndarray_t<nmtools_array<int, 3>, na::static_vector<size_t,1>>;
+        using lhs_t = na::ndarray_t<nmtools_array<int, 6>, nmtools_static_vector<size_t,2>>;
+        using rhs_t = na::ndarray_t<nmtools_array<int, 3>, nmtools_static_vector<size_t,1>>;
         using view_t = view::decorator_t< view::outer_t, view::add_t<>, lhs_t, rhs_t, none_t >;
         using eval_t = meta::resolve_optype_t< na::eval_result_t<>, view_t, none_t >;
-        using expected_t = na::ndarray_t<nmtools_array<int,18>,na::static_vector<size_t,3>>;
+        using expected_t = na::ndarray_t<nmtools_array<int,18>,nmtools_static_vector<size_t,3>>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
     }
     {
         using lhs_shape_t = nmtools_tuple<nm::clipped_size_t<2>,nm::clipped_size_t<3>>;
         using lhs_t = na::ndarray_t<nmtools_array<int, 6>, lhs_shape_t>;
-        using rhs_t = na::ndarray_t<nmtools_array<int, 3>, na::static_vector<size_t,1>>;
+        using rhs_t = na::ndarray_t<nmtools_array<int, 3>, nmtools_static_vector<size_t,1>>;
         using view_t = view::decorator_t< view::outer_t, view::add_t<>, lhs_t, rhs_t, none_t >;
         using eval_t = meta::resolve_optype_t< na::eval_result_t<>, view_t, none_t >;
-        using expected_t = na::ndarray_t<nmtools_array<int,18>,na::static_vector<size_t,3>>;
+        using expected_t = na::ndarray_t<nmtools_array<int,18>,nmtools_static_vector<size_t,3>>;
         NMTOOLS_STATIC_CHECK_IS_SAME( eval_t, expected_t );
         static_assert( meta::fixed_dim_v<lhs_t> == 2 );
         static_assert( meta::bounded_dim_v<lhs_t> == 2 );

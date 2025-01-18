@@ -503,10 +503,10 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("meta::concatenate"))
 
     {
         using left_buffer_type  = nmtools_array<float,12>;
-        using left_shape_type   = na::static_vector<size_t,6>;
+        using left_shape_type   = nmtools_static_vector<size_t,6>;
         using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
         using right_buffer_type = nmtools_array<float,12>;
-        using right_shape_type  = na::static_vector<size_t,6>;
+        using right_shape_type  = nmtools_static_vector<size_t,6>;
         using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
         using axis_type         = nm::none_t;
 
@@ -533,10 +533,10 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("meta::concatenate"))
     }
 
     {
-        using left_buffer_type  = na::static_vector<float,12>;
+        using left_buffer_type  = nmtools_static_vector<float,12>;
         using left_shape_type   = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
         using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
-        using right_buffer_type = na::static_vector<float,12>;
+        using right_buffer_type = nmtools_static_vector<float,12>;
         using right_shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
         using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
         using axis_type         = nm::none_t;
@@ -565,10 +565,10 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("meta::concatenate"))
 
     {
         using left_buffer_type  = nmtools_list<float>;
-        using left_shape_type   = na::static_vector<size_t,3>;
+        using left_shape_type   = nmtools_static_vector<size_t,3>;
         using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
         using right_buffer_type = nmtools_list<float>;
-        using right_shape_type  = na::static_vector<size_t,3>;
+        using right_shape_type  = nmtools_static_vector<size_t,3>;
         using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
         using axis_type         = nm::none_t;
 
@@ -595,11 +595,11 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("meta::concatenate"))
     }
 
     {
-        using left_buffer_type  = na::static_vector<float,12>;
-        using left_shape_type   = na::static_vector<size_t,3>;
+        using left_buffer_type  = nmtools_static_vector<float,12>;
+        using left_shape_type   = nmtools_static_vector<size_t,3>;
         using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
-        using right_buffer_type = na::static_vector<float,12>;
-        using right_shape_type  = na::static_vector<size_t,3>;
+        using right_buffer_type = nmtools_static_vector<float,12>;
+        using right_shape_type  = nmtools_static_vector<size_t,3>;
         using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
         using axis_type         = nm::none_t;
 
@@ -876,10 +876,10 @@ TEST_CASE("concatenate(case2)" * doctest::test_suite("meta::concatenate"))
 
     {
         using left_buffer_type  = nmtools_array<float,12>;
-        using left_shape_type   = na::static_vector<size_t,6>;
+        using left_shape_type   = nmtools_static_vector<size_t,6>;
         using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
         using right_buffer_type = nmtools_array<float,12>;
-        using right_shape_type  = na::static_vector<size_t,6>;
+        using right_shape_type  = nmtools_static_vector<size_t,6>;
         using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
         using axis_type         = decltype(0_ct);
 
@@ -902,10 +902,10 @@ TEST_CASE("concatenate(case2)" * doctest::test_suite("meta::concatenate"))
     }
 
     {
-        using left_buffer_type  = na::static_vector<float,12>;
+        using left_buffer_type  = nmtools_static_vector<float,12>;
         using left_shape_type   = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
         using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
-        using right_buffer_type = na::static_vector<float,12>;
+        using right_buffer_type = nmtools_static_vector<float,12>;
         using right_shape_type  = decltype(nmtools_tuple{2_ct,3_ct,2_ct});
         using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
         using axis_type         = decltype(0_ct);
@@ -933,10 +933,10 @@ TEST_CASE("concatenate(case2)" * doctest::test_suite("meta::concatenate"))
 
     {
         using left_buffer_type  = nmtools_list<float>;
-        using left_shape_type   = na::static_vector<size_t,3>;
+        using left_shape_type   = nmtools_static_vector<size_t,3>;
         using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
         using right_buffer_type = nmtools_list<float>;
-        using right_shape_type  = na::static_vector<size_t,3>;
+        using right_shape_type  = nmtools_static_vector<size_t,3>;
         using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
         using axis_type         = decltype(0_ct);
 
@@ -954,11 +954,11 @@ TEST_CASE("concatenate(case2)" * doctest::test_suite("meta::concatenate"))
     }
 
     {
-        using left_buffer_type  = na::static_vector<float,12>;
-        using left_shape_type   = na::static_vector<size_t,3>;
+        using left_buffer_type  = nmtools_static_vector<float,12>;
+        using left_shape_type   = nmtools_static_vector<size_t,3>;
         using left_array_type   = na::ndarray_t<left_buffer_type,left_shape_type>;
-        using right_buffer_type = na::static_vector<float,12>;
-        using right_shape_type  = na::static_vector<size_t,3>;
+        using right_buffer_type = nmtools_static_vector<float,12>;
+        using right_shape_type  = nmtools_static_vector<size_t,3>;
         using right_array_type  = na::ndarray_t<right_buffer_type,right_shape_type>;
         using axis_type         = decltype(0_ct);
 

@@ -1003,7 +1003,7 @@ namespace nmtools::functional
             template <typename...args_t>
             constexpr auto operator()(const args_t&...args) const
             {
-                return view::matmul(args...);
+                return view::matmulv2(args...);
             }
         };
     }
@@ -1061,7 +1061,7 @@ namespace nmtools::array
     constexpr auto matmul(const lhs_t& lhs, const rhs_t& rhs,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
-        auto a = view::matmul(lhs,rhs);
+        auto a = view::matmulv2(lhs,rhs);
         return eval(a
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)

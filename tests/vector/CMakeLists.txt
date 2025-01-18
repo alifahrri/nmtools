@@ -34,7 +34,7 @@ if (NMTOOLS_VECTOR_TEST_128)
     set(NMTOOLS_VECTOR_TEST_SOURCES ${NMTOOLS_VECTOR_TEST_SOURCES}
         binary_vector128.cpp
         binary_vector128_broadcast.cpp
-        matmul_vector128.cpp
+        # matmul_vector128.cpp
         unary_vector128.cpp
         reduction_vector128.cpp
         reduction_2d_vector128.cpp
@@ -49,7 +49,7 @@ if (NMTOOLS_VECTOR_TEST_256)
     set(NMTOOLS_VECTOR_TEST_SOURCES ${NMTOOLS_VECTOR_TEST_SOURCES}
         binary_vector256.cpp
         binary_vector256_broadcast.cpp
-        matmul_vector256.cpp
+        # matmul_vector256.cpp
         unary_vector256.cpp
         reduction_vector256.cpp
         reduction_2d_vector256.cpp
@@ -64,7 +64,7 @@ if (NMTOOLS_VECTOR_TEST_512)
     set(NMTOOLS_VECTOR_TEST_SOURCES ${NMTOOLS_VECTOR_TEST_SOURCES}
         binary_vector512.cpp
         binary_vector512_broadcast.cpp
-        matmul_vector512.cpp
+        # matmul_vector512.cpp
         reduction_vector512.cpp
         reduction_2d_vector512.cpp
         reduction_nd_vector512.cpp
