@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/stl.hpp"
-#include "nmtools/array/index/filter.hpp"
+#include "nmtools/index/filter.hpp"
 
 namespace nmtools::index
 {

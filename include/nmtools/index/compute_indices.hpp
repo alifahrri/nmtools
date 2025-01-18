@@ -4,8 +4,8 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/index/tuple_at.hpp"
+#include "nmtools/index/compute_strides.hpp"
 
 namespace nmtools::index
 {

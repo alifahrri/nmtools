@@ -7,11 +7,11 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/unwrap.hpp"
-#include "nmtools/array/index/ref.hpp"
-#include "nmtools/array/index/max.hpp"
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/sum.hpp"
-#include "nmtools/array/index/where.hpp"
+#include "nmtools/index/ref.hpp"
+#include "nmtools/index/max.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/sum.hpp"
+#include "nmtools/index/where.hpp"
 
 namespace nmtools::index
 {

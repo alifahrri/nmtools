@@ -5,7 +5,7 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/stl.hpp"
 #include "nmtools/ndarray/fixed.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
+#include "nmtools/index/tuple_at.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::index

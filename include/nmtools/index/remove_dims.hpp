@@ -6,9 +6,9 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/stl.hpp"
 #include "nmtools/constants.hpp"
-#include "nmtools/array/index/ref.hpp"
-#include "nmtools/array/index/where.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/ref.hpp"
+#include "nmtools/index/where.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::index

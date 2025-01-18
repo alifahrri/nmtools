@@ -5,11 +5,11 @@
 #include "nmtools/meta.hpp"
 
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/index/where.hpp"
-#include "nmtools/array/index/cumsum.hpp"
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/sum.hpp"
+#include "nmtools/index/compute_indices.hpp"
+#include "nmtools/index/where.hpp"
+#include "nmtools/index/cumsum.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/sum.hpp"
 #include "nmtools/stl.hpp"
 
 #include "nmtools/assert.hpp"

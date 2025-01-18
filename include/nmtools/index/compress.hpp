@@ -3,11 +3,11 @@
 
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/nonzero.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/index/sum.hpp"
-#include "nmtools/array/index/where.hpp"
-#include "nmtools/array/index/count.hpp"
+#include "nmtools/index/nonzero.hpp"
+#include "nmtools/index/compute_indices.hpp"
+#include "nmtools/index/sum.hpp"
+#include "nmtools/index/where.hpp"
+#include "nmtools/index/count.hpp"
 
 namespace nmtools::index
 {

@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/max.hpp"
+#include "nmtools/index/max.hpp"
 
 namespace nmtools::index
 {

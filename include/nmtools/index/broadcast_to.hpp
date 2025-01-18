@@ -5,13 +5,13 @@
 #include "nmtools/utl.hpp"
 #include "nmtools/stl.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
-#include "nmtools/array/index/gather.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
-#include "nmtools/array/index/compute_offset.hpp"
-#include "nmtools/array/index/logical_not.hpp"
-#include "nmtools/array/index/nonzero.hpp"
+#include "nmtools/index/tuple_at.hpp"
+#include "nmtools/index/gather.hpp"
+#include "nmtools/index/compute_indices.hpp"
+#include "nmtools/index/compute_strides.hpp"
+#include "nmtools/index/compute_offset.hpp"
+#include "nmtools/index/logical_not.hpp"
+#include "nmtools/index/nonzero.hpp"
 
 namespace nmtools::index
 {

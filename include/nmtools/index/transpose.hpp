@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/ref.hpp"
+#include "nmtools/index/ref.hpp"
 #include "nmtools/stl.hpp"
 #include "nmtools/utl/static_vector.hpp"
 

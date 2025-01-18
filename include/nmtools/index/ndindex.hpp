@@ -1,9 +1,9 @@
 #ifndef NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
 #define NMTOOLS_ARRAY_INDEX_NDINDEX_HPP
 
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/compute_strides.hpp"
+#include "nmtools/index/compute_indices.hpp"
 #include "nmtools/meta.hpp"
 
 #include "nmtools/utility/at.hpp"

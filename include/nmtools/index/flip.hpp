@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_FLIP_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/count.hpp"
+#include "nmtools/index/count.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility.hpp"
 

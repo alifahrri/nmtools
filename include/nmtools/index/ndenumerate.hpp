@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_INDEX_NDENUMERATE_HPP
 #define NMTOOLS_ARRAY_INDEX_NDENUMERATE_HPP
 
-#include "nmtools/array/index/ndindex.hpp"
+#include "nmtools/index/ndindex.hpp"
 #include "nmtools/meta.hpp"
 
 #include "nmtools/utility/at.hpp"

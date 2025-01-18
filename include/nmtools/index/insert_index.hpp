@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 
 namespace nmtools::index
 {

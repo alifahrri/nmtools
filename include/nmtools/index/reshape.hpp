@@ -4,8 +4,8 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
 
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/ref.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/ref.hpp"
 #include "nmtools/utl.hpp"
 
 namespace nmtools::index

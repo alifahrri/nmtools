@@ -5,7 +5,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/stl.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 
 namespace nmtools::index
 {

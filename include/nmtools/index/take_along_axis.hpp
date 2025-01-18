@@ -2,8 +2,8 @@
 #define NMTOOLS_ARRAY_INDEX_TAKE_ALONG_AXIS_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
-#include "nmtools/array/index/broadcast_shape.hpp"
+#include "nmtools/index/normalize_axis.hpp"
+#include "nmtools/index/broadcast_shape.hpp"
 
 namespace nmtools::index
 {

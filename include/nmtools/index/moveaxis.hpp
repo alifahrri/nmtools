@@ -4,8 +4,8 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/stl.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
-#include "nmtools/array/index/argsort.hpp"
+#include "nmtools/index/normalize_axis.hpp"
+#include "nmtools/index/argsort.hpp"
 
 #include "nmtools/utl/maybe.hpp"
 

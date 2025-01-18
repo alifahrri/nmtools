@@ -6,8 +6,8 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/stl.hpp"
-#include "nmtools/array/index/contains.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/contains.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 // TODO: move to shape.hpp

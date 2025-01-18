@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_INDEX_FILTER_HPP
 #define NMTOOLS_ARRAY_INDEX_FILTER_HPP
 
-#include "nmtools/array/index/where.hpp"
-#include "nmtools/array/index/choose.hpp"
+#include "nmtools/index/where.hpp"
+#include "nmtools/index/choose.hpp"
 
 #include "nmtools/meta.hpp"
 

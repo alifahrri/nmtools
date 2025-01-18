@@ -4,7 +4,7 @@
 #include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/array/index/tuple_at.hpp"
+#include "nmtools/index/tuple_at.hpp"
 #include "nmtools/assert.hpp"
 
 namespace nmtools::index

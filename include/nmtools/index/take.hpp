@@ -5,7 +5,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
+#include "nmtools/index/compute_indices.hpp"
 #include "nmtools/stl.hpp"
 
 namespace nmtools::index
