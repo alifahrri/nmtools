@@ -18,9 +18,11 @@ namespace nmtools::functional
         auto to = -1;
         for (nm_size_t i=0; i<(nm_size_t)sorted.size(); i++) {
             auto node = sorted[i];
+            // "unary" means only single predecessor
             if (predecessors[node].size() != 1) {
                 continue;
             }
+            // make sure the predecessor in question is not an input node
             auto predecessor = predecessors[node][0];
             if ((predecessors[predecessor].size() == 0) || (adjacency_list[predecessor].size() > 1)) {
                 continue;

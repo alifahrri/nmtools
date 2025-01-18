@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_FUNCTION_COMPOSITION_HPP
 
 #include "nmtools/array/functional/functor.hpp"
-#include "nmtools/array/view/ufunc/ufunc.hpp"
+#include "nmtools/array/view/ufunc-core/ufunc.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
 namespace nmtools::functional

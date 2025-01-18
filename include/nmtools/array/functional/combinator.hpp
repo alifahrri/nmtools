@@ -82,4 +82,19 @@ namespace nmtools::combinator
     constexpr inline auto bury2 = bury_n<2>;
 }
 
+namespace nmtools::meta
+{
+    template <>
+    struct is_combinator<functional::fmap_t<combinator::swap_t,2,2>> : true_type {};
+
+    template <auto N>
+    struct is_combinator<functional::fmap_t<combinator::dup_t<N>,1,N>> : true_type {};
+
+    template <auto N>
+    struct is_combinator<functional::fmap_t<combinator::dig_t<N>,N+1,N+1>> : true_type {};
+
+    template <auto N>
+    struct is_combinator<functional::fmap_t<combinator::bury_t<N>,N+1,N+1>> : true_type {};
+}
+
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_COMBINATOR_HPP

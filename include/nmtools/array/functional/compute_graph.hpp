@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_COMPUTE_GRAPH_HPP
 
 #include "nmtools/array/functional/functor.hpp"
-#include "nmtools/array/view/ufunc/ufunc.hpp"
+#include "nmtools/array/view/ufunc-core/ufunc.hpp"
 #include "nmtools/array/view/ufunc.hpp"
 
 namespace nmtools::functional
@@ -52,6 +52,17 @@ namespace nmtools::functional
             // todo handle different arity
             auto operands = other.operands;
             using result_t = node_t<decltype(composition),other_operands_t,output_shape_type,output_element_type>;
+            // TODO: do not discard intermediate shape/type
+            return result_t{composition,operands,output_shape,output_element};
+        }
+
+        template <typename combinator_t>
+        constexpr auto operator*(const combinator_t& cb) const
+        {
+            auto composition = functor * cb;
+            // todo handle different arity
+            // auto operands = other.operands;
+            using result_t = node_t<decltype(composition),operands_t,output_shape_t,output_element_t>;
             // TODO: do not discard intermediate shape/type
             return result_t{composition,operands,output_shape,output_element};
         }
@@ -284,6 +295,8 @@ namespace nmtools::functional
     }; // get_compute_graph_t
 } // namespace nmtools::functional
 
+/*=================================================================================*/
+
 #include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/utility/to_string/common_types.hpp"
 
@@ -301,7 +314,7 @@ namespace nmtools::utils::impl
         using fmap_type = functional::fmap_t<F,Arity>;
         using formatter_type = formatter_t;
     
-        auto operator()(const fmap_type& fmap) const noexcept
+        inline auto operator()(const fmap_type& fmap) const noexcept
         {
             auto fmap_str = nmtools_string("");
             fmap_str = NMTOOLS_TYPENAME_TO_STRING(F);
@@ -334,7 +347,7 @@ namespace nmtools::utils::impl
         using functor_type = functional::functor_t<F,operands_t,attributes_t>;
         using formatter_type = formatter_t;
 
-        auto operator()(const functor_type& functor) const noexcept
+        inline auto operator()(const functor_type& functor) const noexcept
         {
             auto fmap_str = to_string(functor.fmap,formatter_type{});
 
@@ -361,7 +374,7 @@ namespace nmtools::utils::impl
         using formatter_type = fmt_string_t<fmt_args...>;
         using result_type = nmtools_string;
 
-        auto operator()(const composition_type& composition) const noexcept
+        inline auto operator()(const composition_type& composition) const noexcept
         {
             auto composition_str = nmtools_string("");
             constexpr auto N = sizeof...(functors_t);
@@ -383,7 +396,7 @@ namespace nmtools::utils::impl
         using formatter_type = fmt_string_t<fmt_args...>;
         using result_type = nmtools_string;
 
-        auto operator()(const node_type& node) const noexcept
+        inline auto operator()(const node_type& node) const noexcept
         {
             auto node_str = nmtools_string("");
             node_str += to_string(node.functor,formatter_type{});
@@ -410,7 +423,7 @@ namespace nmtools::utils::impl
         using formatter_type = graphviz_t;
         using result_type    = nmtools_string;
 
-        auto operator()(const functor_type& functor) const noexcept
+        inline auto operator()(const functor_type& functor) const noexcept
         {
             auto fmap_str = to_string(functor.fmap,utils::Compact);
 
@@ -440,14 +453,14 @@ namespace nmtools::utils::impl
         using formatter_type = graphviz_t;
         using result_type = nmtools_string;
 
-        auto operator()(const composition_type& composition) const noexcept
+        inline auto operator()(const composition_type& composition) const noexcept
         {
             auto str = nmtools_string("");
             str += "[graphviz_record_layout_open]";
 
             constexpr auto N = sizeof...(functors_t);
             meta::template_for<N>([&](auto index){
-                constexpr auto I = decltype(index)::value;
+                constexpr auto I = (N-1) - decltype(index)::value;
                 const auto& functor = nmtools::get<I>(composition.functors);
                 auto fmap_str = to_string(functor.fmap,utils::Compact);
                 auto attr_str = nmtools_string("");
@@ -480,7 +493,7 @@ namespace nmtools::utils::impl
         using formatter_type = graphviz_t;
         using result_type = nmtools_string;
 
-        auto operator()(const node_type& node) const noexcept
+        inline auto operator()(const node_type& node) const noexcept
         {
             auto node_str = nmtools_string("");
             node_str += to_string(node.functor,utils::Graphviz);
@@ -504,7 +517,7 @@ namespace nmtools::utils::impl
         // using graph_type = functional::compute_graph_t<nodes_t,edges_t,node_data_t>;
         using graph_type = utility::ct_digraph<nodes_t,edges_t,node_data_t>;
 
-        auto operator()(const graph_type& graph) const noexcept
+        inline auto operator()(const graph_type& graph) const noexcept
         {
             auto graphviz = nmtools_string("digraph G");
             graphviz += "{\n";
