@@ -19,7 +19,7 @@
 #define nmtools_cl_kernel_name_str(out_type, left_type, right_type) nm_stringify(add##_##out_type##_##left_type##right_type)
 #endif
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"

@@ -1,5 +1,5 @@
 #include "nmtools/array/index/broadcast_shape.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <vector>

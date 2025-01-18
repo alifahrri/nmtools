@@ -9,7 +9,7 @@
 #include "nmtools/array/index/max.hpp"
 #include "nmtools/array/index/sum.hpp"
 #include "nmtools/array/index/where.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 
 namespace nmtools::index
 {

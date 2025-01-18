@@ -2,7 +2,7 @@
 #define NMTOOLS_ENABLE_BOOST
 #endif
 #include "nmtools/array/view/transpose.hpp"
-#include "nmtools/array/ndarray/ndarray.hpp"
+#include "nmtools/ndarray/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define declval(type) std::declval<type>()

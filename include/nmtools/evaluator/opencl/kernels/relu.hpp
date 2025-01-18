@@ -12,7 +12,7 @@
 #define nmtools_cl_kernel_name(out_type, inp_type) relu##_##out_type##_##inp_type
 #define nmtools_cl_kernel_name_str(out_type, inp_type) nm_stringify(relu##_##out_type##_##inp_type)
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
 

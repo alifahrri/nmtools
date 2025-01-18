@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 
 // TODO: move to shape.hpp
 #ifdef NMTOOLS_ENABLE_BOOST

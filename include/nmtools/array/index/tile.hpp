@@ -5,7 +5,7 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/utl/static_vector.hpp"
 
 namespace nmtools::index

@@ -15,7 +15,7 @@
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/dtypes.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/core/eval.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/utility/as_static.hpp"

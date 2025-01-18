@@ -7,7 +7,7 @@
 #include "nmtools/utility/forward.hpp"
 #include "nmtools/utility/get.hpp"
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/at.hpp"

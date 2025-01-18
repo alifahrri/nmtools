@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNEL_HELPER_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"

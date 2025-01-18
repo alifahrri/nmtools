@@ -4,7 +4,7 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/dtypes.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

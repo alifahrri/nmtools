@@ -10,10 +10,10 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/at.hpp"
 // NOTE: to include nmtools_hybrid_ndarray macro
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/utility/cast.hpp"
 #include "nmtools/utility/get.hpp"
-#include "nmtools/array/ndarray/base_ndarray.hpp"
+#include "nmtools/ndarray/base_ndarray.hpp"
 
 // experimental version that combine all three to single class
 

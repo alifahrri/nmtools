@@ -2,7 +2,7 @@
 #define NMTOOLS_DISABLE_STL
 #include "nmtools/evaluator/circle/transform.hxx"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/array/view/activations/relu.hpp"
 #include "nmtools/exception.hpp"

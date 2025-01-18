@@ -20,7 +20,7 @@
 #define nmtools_cl_kernel_name_str(out_type, inp_type) nm_stringify(softshrink##_##out_type##_##inp_type)
 #endif
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
 

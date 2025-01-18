@@ -57,10 +57,10 @@ namespace nmtools
 
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/ndarray/ndarray.hpp"
+#include "nmtools/ndarray/ndarray.hpp"
 
 #ifndef NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
-#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
 #endif
 #include "nmtools/array/index/product.hpp"
 

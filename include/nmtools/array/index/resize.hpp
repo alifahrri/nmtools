@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 
 namespace nmtools::index
 {

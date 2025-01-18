@@ -7,7 +7,7 @@
 #include "nmtools/array/index/broadcast_to.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/split.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
@@ -336,7 +336,7 @@ namespace nmtools::meta
 #include "nmtools/array/core/decorator.hpp"
 #include "nmtools/array/index/broadcast_shape.hpp"
 #include "nmtools/array/index/product.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
 #include "nmtools/array/view/ufuncs/multiply.hpp"

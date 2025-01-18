@@ -5,7 +5,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/math.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/utility/flatten_either.hpp"
 #include "nmtools/platform/math/constexpr.hpp"
 

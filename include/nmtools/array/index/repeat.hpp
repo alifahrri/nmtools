@@ -10,7 +10,7 @@
 #include "nmtools/array/index/cumsum.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/sum.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 
 #include "nmtools/assert.hpp"
 

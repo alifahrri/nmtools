@@ -439,7 +439,7 @@ namespace nmtools::meta
     
 } // namespace nmtools::meta
 
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/ndarray/fixed.hpp"
 
 namespace nmtools::meta
 {

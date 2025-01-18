@@ -1,5 +1,5 @@
 #include "nmtools/array/index/choose.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 // quick workaround to support std::vector

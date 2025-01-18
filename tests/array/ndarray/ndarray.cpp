@@ -3,9 +3,9 @@
 #endif
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray/ndarray.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/ndarray.hpp"
+#include "nmtools/ndarray/fixed.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/array/index/ndindex.hpp"
 #include "nmtools/utl.hpp"
 #include "nmtools/testing/doctest.hpp"

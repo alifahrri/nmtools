@@ -1,5 +1,5 @@
 #include "nmtools/array/index/broadcast_shape.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/index/broadcast_shape.hpp"
 

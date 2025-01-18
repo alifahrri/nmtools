@@ -1,5 +1,5 @@
 #include "nmtools/array/index/filter.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 // to allow std::array, vector, tuple identified as array/index

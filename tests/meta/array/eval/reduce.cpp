@@ -1,9 +1,9 @@
 #include "nmtools/array/core/eval.hpp"
 #include "nmtools/array/core/ufunc.hpp"
 #include "nmtools/array/view/ufuncs/add.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/fixed.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

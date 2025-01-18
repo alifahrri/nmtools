@@ -3,14 +3,14 @@
 
 #include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
 #include "nmtools/array/view/flatten.hpp"
 #include "nmtools/array/view/mutable_flatten.hpp"
 #include "nmtools/array/view/reshape.hpp"
-#include "nmtools/array/ndarray/base_ndarray.hpp"
+#include "nmtools/ndarray/base_ndarray.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
 #ifdef NMTOOLS_KERNEL_MAX_DIM

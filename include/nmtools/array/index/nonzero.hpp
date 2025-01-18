@@ -4,7 +4,7 @@
 #include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 
 namespace nmtools::index
 {

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_BROADCAST_TO_HPP
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_BROADCAST_TO_HPP
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/broadcast_to.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"

@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_SYCL_CONTEXT_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/functional/functor.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/exception.hpp"

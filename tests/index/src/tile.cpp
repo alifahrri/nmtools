@@ -1,5 +1,5 @@
 #include "nmtools/array/index/tile.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 
 #include "nmtools/testing/doctest.hpp"
 
@@ -419,7 +419,7 @@ TEST_CASE("shape_tile(case5)" * doctest::test_suite("index::constexpr_shape_tile
 }
 
 #include "nmtools/array/index/tile.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 
 #include "nmtools/testing/doctest.hpp"
 

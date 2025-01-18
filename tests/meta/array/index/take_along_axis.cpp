@@ -1,6 +1,6 @@
 #include "nmtools/array/index/take_along_axis.hpp"
 #include "nmtools/utl.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

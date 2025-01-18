@@ -1,6 +1,6 @@
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <vector>

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_TRANSPOSE_HPP
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_TRANSPOSE_HPP
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/view/ref.hpp"
 #include "nmtools/array/view/transpose.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
