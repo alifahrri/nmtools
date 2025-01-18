@@ -47,9 +47,9 @@ namespace nmtools::view
     }; // random_t
 
     template <typename shape_t, typename T, typename generator_t>
-    constexpr auto random(const shape_t& shape, dtype_t<T>, generator_t generator)
+    constexpr auto random(const shape_t& shape, dtype_t<T>, generator_t& generator)
     {
-        using view_t = decorator_t<random_t, shape_t, T, generator_t>;
+        using view_t = decorator_t<random_t, shape_t, T, generator_t&>;
         return view_t{{shape,generator}};
     } // random
 } // namespace nmtools::array

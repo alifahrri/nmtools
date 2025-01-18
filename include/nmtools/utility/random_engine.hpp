@@ -1,6 +1,9 @@
 #ifndef NMTOOLS_ARRAY_RANDOM_ENGINE_HPP
 #define NMTOOLS_ARRAY_RANDOM_ENGINE_HPP
 
+#if __has_include(<random>)
+
+#define NMTOOLS_HAS_RANDOM_ENGINE
 #include <random>
 
 #include "nmtools/meta.hpp"
@@ -44,5 +47,7 @@ namespace nmtools::array
         return random_engine_t(min,max,gen);
     } // random_engine
 }
+
+#endif // __has_include(<random>)
 
 #endif // NMTOOLS_ARRAY_RANDOM_ENGINE_HPP
