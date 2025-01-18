@@ -33,6 +33,7 @@
 #include "nmtools/meta/bits/traits/is_bounded_array.hpp"
 #include "nmtools/meta/bits/traits/is_bounded_dim.hpp"
 #include "nmtools/meta/bits/traits/is_bounded_size.hpp"
+#include "nmtools/meta/bits/traits/is_combinator.hpp"
 #include "nmtools/meta/bits/traits/is_constructible.hpp"
 #include "nmtools/meta/bits/traits/is_copy_assignable.hpp"
 #include "nmtools/meta/bits/traits/is_copy_constructible.hpp"
