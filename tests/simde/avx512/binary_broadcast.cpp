@@ -1,4 +1,4 @@
-#include "nmtools/array/eval/simd/simde_avx512.hpp"
+#include "nmtools/array/evaluator/simd/simde_avx512.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
 #include "nmtools/array/array/ufuncs/add.hpp"

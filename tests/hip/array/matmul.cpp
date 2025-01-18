@@ -1,4 +1,4 @@
-#include "nmtools/array/eval/hip.hpp"
+#include "nmtools/array/evaluator/hip.hpp"
 #include "nmtools/array/array/matmul.hpp"
 #include "nmtools/array/array/copy.hpp"
 #include "nmtools/array/array/reshape.hpp"

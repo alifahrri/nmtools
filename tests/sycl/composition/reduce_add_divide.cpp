@@ -2,7 +2,7 @@
 #include "nmtools/array/array/ufuncs/divide.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/eval/sycl.hpp"
+#include "nmtools/array/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 

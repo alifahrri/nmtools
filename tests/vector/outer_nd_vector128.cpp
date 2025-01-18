@@ -1,4 +1,4 @@
-#include "nmtools/array/eval/simd/vector_128.hpp"
+#include "nmtools/array/evaluator/simd/vector_128.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/ufuncs/add.hpp"
 #include "nmtools/array/array/ufuncs/multiply.hpp"

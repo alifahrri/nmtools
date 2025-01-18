@@ -1,7 +1,7 @@
 #include "nmtools/array/array/mean.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/eval/hip.hpp"
+#include "nmtools/array/evaluator/hip.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

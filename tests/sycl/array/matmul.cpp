@@ -1,4 +1,4 @@
-#include "nmtools/array/eval/sycl.hpp"
+#include "nmtools/array/evaluator/sycl.hpp"
 #include "nmtools/array/array/matmul.hpp"
 #include "nmtools/array/array/copy.hpp"
 #include "nmtools/array/array/reshape.hpp"

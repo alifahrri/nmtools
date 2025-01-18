@@ -1,4 +1,4 @@
-#include "nmtools/array/eval/simd/x86_avx.hpp"
+#include "nmtools/array/evaluator/simd/x86_avx.hpp"
 #include "nmtools/array/array/matmul.hpp"
 #include "nmtools/array/array/copy.hpp"
 #include "nmtools/array/array/reshape.hpp"

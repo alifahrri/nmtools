@@ -1,6 +1,6 @@
-#include "nmtools/array/eval/opencl/kernels/tile.hpp"
+#include "nmtools/array/evaluator/opencl/kernels/tile.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/eval/opencl/evaluator.hpp"
+#include "nmtools/array/evaluator/opencl/evaluator.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/tile.hpp"
 #include "nmtools/array/array/reshape.hpp"

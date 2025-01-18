@@ -1,6 +1,6 @@
-#include "nmtools/array/eval/opencl/kernels/reshape.hpp"
+#include "nmtools/array/evaluator/opencl/kernels/reshape.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/eval/opencl/evaluator.hpp"
+#include "nmtools/array/evaluator/opencl/evaluator.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
 #include "nmtools/array/array/reshape.hpp"

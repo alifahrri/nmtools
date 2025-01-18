@@ -2,7 +2,7 @@
 #include "nmtools/array/array/ufuncs/subtract.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/eval/cuda.hpp"
+#include "nmtools/array/evaluator/cuda.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 

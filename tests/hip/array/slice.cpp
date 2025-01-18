@@ -17,7 +17,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 
 #include "nmtools/array/array/slice.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/array/eval/hip.hpp"
+#include "nmtools/array/evaluator/hip.hpp"
 #include "nmtools/utility/apply_isclose.hpp"
 
 #if not(defined(__HIP__) && defined(__HIP_ARCH__))

@@ -17,7 +17,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 
 #include "nmtools/array/array/flip.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/array/eval/sycl.hpp"
+#include "nmtools/array/evaluator/sycl.hpp"
 #include "nmtools/testing/data/array/flip.hpp"
 #include "nmtools/testing/data/array/fliplr.hpp"
 #include "nmtools/testing/data/array/flipud.hpp"

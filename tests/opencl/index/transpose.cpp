@@ -1,6 +1,6 @@
 #include "nmtools/array/index/transpose.hpp"
 #include "nmtools/array/view/mutable_ref.hpp"
-#include "nmtools/array/eval/kernel_helper.hpp"
+#include "nmtools/array/evaluator/kernel_helper.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

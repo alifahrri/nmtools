@@ -1,4 +1,4 @@
-#include "nmtools/array/eval/simd/vector_512.hpp"
+#include "nmtools/array/evaluator/simd/vector_512.hpp"
 #include "nmtools/array/array/matmul.hpp"
 #include "nmtools/array/array/copy.hpp"
 #include "nmtools/array/array/reshape.hpp"

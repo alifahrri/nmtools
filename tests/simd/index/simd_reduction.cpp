@@ -1,4 +1,4 @@
-#include "nmtools/array/eval/simd/index.hpp"
+#include "nmtools/array/evaluator/simd/index.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/testing/doctest.hpp"
 

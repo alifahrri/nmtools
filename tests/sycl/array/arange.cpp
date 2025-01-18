@@ -1,6 +1,6 @@
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
-#include "nmtools/array/eval/sycl.hpp"
+#include "nmtools/array/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

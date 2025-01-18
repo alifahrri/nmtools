@@ -1,7 +1,7 @@
-#include "nmtools/array/eval/opencl/kernels/transpose.hpp"
+#include "nmtools/array/evaluator/opencl/kernels/transpose.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/eval/opencl/context.hpp"
-#include "nmtools/array/eval/opencl/evaluator.hpp"
+#include "nmtools/array/evaluator/opencl/context.hpp"
+#include "nmtools/array/evaluator/opencl/evaluator.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/transpose.hpp"
 #include "nmtools/array/array/reshape.hpp"
