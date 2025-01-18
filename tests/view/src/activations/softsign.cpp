@@ -1,4 +1,4 @@
-#include "nmtools/array/view/activations/softsign.hpp"
+#include "nmtools/array/activations/softsign.hpp"
 #include "nmtools/testing/data/array/softsign.hpp"
 #include "nmtools/testing/doctest.hpp"
 

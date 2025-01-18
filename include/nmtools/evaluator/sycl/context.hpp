@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/core/functor.hpp"
+#include "nmtools/core/functor.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/exception.hpp"
 #include "nmtools/utility/to_string.hpp"

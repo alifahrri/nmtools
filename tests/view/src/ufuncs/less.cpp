@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/less.hpp"
+#include "nmtools/array/ufuncs/less.hpp"
 #include "nmtools/testing/data/array/less.hpp"
 #include "nmtools/testing/doctest.hpp"
 

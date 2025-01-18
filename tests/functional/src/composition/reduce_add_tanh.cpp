@@ -1,5 +1,5 @@
-#include "nmtools/array/functional/ufuncs/add.hpp"
-#include "nmtools/array/functional/ufuncs/tanh.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/tanh.hpp"
 #include "nmtools/testing/data/array/add.hpp"
 #include "nmtools/testing/doctest.hpp"
 

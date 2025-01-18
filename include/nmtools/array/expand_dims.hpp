@@ -1,8 +1,65 @@
+#ifndef NMTOOLS_ARRAY_VIEW_EXPAND_DIMS_HPP
+#define NMTOOLS_ARRAY_VIEW_EXPAND_DIMS_HPP
+
+#include "nmtools/array/index/expand_dims.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/utility/shape.hpp"
+
+namespace nmtools::view
+{
+    /**
+     * @brief expand the shape of an array
+     * 
+     * @tparam array_t array_like
+     * @tparam axis_t integer or array of integer
+     * @param array input array
+     * @param axis Position in the expanded axes where the new axis (or axes) is placed.
+     * @return constexpr auto expand_dims view
+     */
+    template <typename array_t, typename axis_t>
+    constexpr auto expand_dims(const array_t& array, const axis_t& axis)
+    {
+        auto src_shape = shape<true>(array);
+        auto dst_shape = index::shape_expand_dims(src_shape,axis);
+        return view::reshape(array,dst_shape);
+    } // expand_dims
+
+} // namespace nmtools::view
+
+#endif // NMTOOLS_ARRAY_VIEW_EXPAND_DIMS_HPP
+
+#ifndef NMTOOLS_ARRAY_FUNCTIONAL_EXPAND_DIMS_HPP
+#define NMTOOLS_ARRAY_FUNCTIONAL_EXPAND_DIMS_HPP
+
+#include "nmtools/core/functor.hpp"
+#include "nmtools/array/indexing.hpp"
+#include "nmtools/array/expand_dims.hpp"
+
+namespace nmtools::functional
+{
+    namespace fun
+    {
+        struct expand_dims_t
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::expand_dims(args...);
+            }
+        };
+    }
+
+    constexpr inline auto expand_dims = functor_t{unary_fmap_t<fun::expand_dims_t>{}};
+} // namespace nmtools::functional
+
+
+#endif // NMTOOLS_ARRAY_FUNCTIONAL_EXPAND_DIMS_HPP
+
 #ifndef NMTOOLS_ARRAY_ARRAY_EXPAND_DIMS_HPP
 #define NMTOOLS_ARRAY_ARRAY_EXPAND_DIMS_HPP
 
-#include "nmtools/array/view/expand_dims.hpp"
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/array/expand_dims.hpp"
+#include "nmtools/core/eval.hpp"
 
 namespace nmtools::array
 {

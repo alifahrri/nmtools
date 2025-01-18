@@ -1,4 +1,4 @@
-#include "nmtools/array/view/split.hpp"
+#include "nmtools/array/split.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/constants.hpp"
 

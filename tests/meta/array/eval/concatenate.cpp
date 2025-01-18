@@ -1,8 +1,8 @@
-#include "nmtools/array/view/concatenate.hpp"
+#include "nmtools/array/concatenate.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/core/eval.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

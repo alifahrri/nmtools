@@ -1,5 +1,5 @@
-#include "nmtools/array/view/matmul.hpp"
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/array/matmul.hpp"
+#include "nmtools/core/eval.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

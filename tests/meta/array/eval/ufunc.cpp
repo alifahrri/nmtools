@@ -1,8 +1,8 @@
-#include "nmtools/array/core/eval.hpp"
-#include "nmtools/array/core/ufunc.hpp"
-#include "nmtools/array/view/ufuncs/add.hpp"
-#include "nmtools/array/view/ufuncs/sin.hpp"
-#include "nmtools/array/view/ufuncs/clip.hpp"
+#include "nmtools/core/eval.hpp"
+#include "nmtools/core/ufunc.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/sin.hpp"
+#include "nmtools/array/ufuncs/clip.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 

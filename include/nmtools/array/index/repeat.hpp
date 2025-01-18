@@ -10,7 +10,7 @@
 #include "nmtools/array/index/cumsum.hpp"
 #include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/sum.hpp"
-#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/stl.hpp"
 
 #include "nmtools/assert.hpp"
 
@@ -155,7 +155,7 @@ namespace nmtools::meta
                 if constexpr (len > 0) {
                     return as_value_v<nmtools_array<index_t,len>>;
                 } else if constexpr (!is_fail_v<decltype(b_size)>) {
-                    using type = array::static_vector<index_t,b_size>;
+                    using type = nmtools_static_vector<index_t,b_size>;
                     return as_value_v<type>;
                 } else {
                     using type = nmtools_list<index_t>;
@@ -289,7 +289,7 @@ namespace nmtools::meta
                 using type = nmtools_array<index_t,N>;
                 return as_value_v<type>;
             } else if constexpr (!is_fail_v<decltype(b_dim)>) {
-                using type = array::static_vector<index_t,b_dim>;
+                using type = nmtools_static_vector<index_t,b_dim>;
                 return as_value_v<type>;
             } else {
                 // TODO: small buffer optimization

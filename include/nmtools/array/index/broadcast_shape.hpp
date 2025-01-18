@@ -3,13 +3,15 @@
 
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/unwrap.hpp"
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/index/max.hpp"
+#include "nmtools/array/index/product.hpp"
 #include "nmtools/array/index/sum.hpp"
 #include "nmtools/array/index/where.hpp"
-#include "nmtools/ndarray.hpp"
 
 namespace nmtools::index
 {
@@ -399,7 +401,7 @@ namespace nmtools::meta
                     }
                 } else if constexpr ((len_a > 0) && !is_fail_v<decltype(b_size_b)>) {
                     constexpr auto dim = (len_a > b_size_b ? len_a : b_size_b);
-                    using type [[maybe_unused]] = array::static_vector<index_t,dim>;
+                    using type [[maybe_unused]] = nmtools_static_vector<index_t,dim>;
                     if constexpr (!is_fail_v<decltype(c_value_a)> && (len_a >= b_size_b)) {
                         // NOTE: the following tries to deduce as bounded-shape to be able to compute at compile-time
                         // but the runtime part index::broadcast_shape is still not support it yet
@@ -442,7 +444,7 @@ namespace nmtools::meta
                         return as_value_v<type>;
                     }
                 } else if constexpr ((len_b > 0) && !is_fail_v<decltype(b_size_a)>) {
-                    using type [[maybe_unused]] = array::static_vector<index_t,(len_b > b_size_a ? len_b : b_size_a)>;
+                    using type [[maybe_unused]] = nmtools_static_vector<index_t,(len_b > b_size_a ? len_b : b_size_a)>;
                     if constexpr (!is_fail_v<decltype(c_value_b)> && (len_b >= b_size_a)) {
                         // NOTE: the following tries to deduce as bounded-shape to be able to compute at compile-time
                         // but the runtime part index::broadcast_shape is still not support it yet
@@ -484,7 +486,7 @@ namespace nmtools::meta
                         return as_value_v<type>;
                     }
                 } else if constexpr (!is_fail_v<decltype(b_size_a)> && !is_fail_v<decltype(b_size_b)>) {
-                    using type = array::static_vector<index_t,(b_size_a > b_size_b ? b_size_a : b_size_b)>;
+                    using type = nmtools_static_vector<index_t,(b_size_a > b_size_b ? b_size_a : b_size_b)>;
                     return as_value_v<type>;
                 } else {
                     // TODO: small buffer optimization

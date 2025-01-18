@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_WHERE_HPP
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/where.hpp"
+#include "nmtools/array/where.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
 

@@ -6,7 +6,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/ndarray.hpp"
+#include "nmtools/stl.hpp"
 
 namespace nmtools::index
 {

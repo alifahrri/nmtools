@@ -4,7 +4,7 @@
 #include "nmtools/evaluator/simd/evaluator/ufunc.hpp"
 #include "nmtools/evaluator/simd/index/matmul.hpp"
 #include "nmtools/evaluator/simd/bit_width.hpp"
-#include "nmtools/array/view/matmul.hpp"
+#include "nmtools/array/matmul.hpp"
 
 namespace nmtools::array
 {

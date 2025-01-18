@@ -93,7 +93,7 @@ namespace nmtools::meta
                     using type = nmtools_array<index_t,N>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(b_dim)>) {
-                    using type = array::static_vector<index_t,b_dim>;
+                    using type = nmtools_static_vector<index_t,b_dim>;
                     return as_value_v<type>;
                 } else {
                     using type = nmtools_list<index_t>;

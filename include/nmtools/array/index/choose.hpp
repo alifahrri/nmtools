@@ -3,7 +3,7 @@
 
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/meta.hpp"

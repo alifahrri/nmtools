@@ -195,7 +195,7 @@ set(FUNCTIONAL_TEST_GRAPH_SOURCES
     src/combinator/swap.cpp
     src/combinator/dup.cpp
 
-    src/transform/unary_fusion.cpp
+    # src/transform/unary_fusion.cpp
 )
 
 set(FUNCTIONAL_TEST_MISC_SOURCES

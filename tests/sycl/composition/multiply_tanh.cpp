@@ -5,8 +5,8 @@
 #include "nmtools/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
-#include "nmtools/array/functional/ufuncs/multiply.hpp"
-#include "nmtools/array/functional/ufuncs/tanh.hpp"
+#include "nmtools/array/ufuncs/multiply.hpp"
+#include "nmtools/array/ufuncs/tanh.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools::array;

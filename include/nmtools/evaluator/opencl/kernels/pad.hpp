@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_PAD_HPP
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/functional/pad.hpp"
+#include "nmtools/array/pad.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 
 #define nmtools_cl_kernel_name(out_type,inp_type) pad##_##out_type##_##inp_type

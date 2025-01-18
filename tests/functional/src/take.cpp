@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/take.hpp"
+#include "nmtools/array/take.hpp"
 #include "nmtools/testing/data/array/take.hpp"
 #include "nmtools/testing/doctest.hpp"
 

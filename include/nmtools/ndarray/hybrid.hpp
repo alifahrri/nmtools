@@ -6,16 +6,15 @@
 #include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/view/mutable_flatten.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/flatten.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/assert.hpp"
 
 #include "nmtools/platform.hpp"
 
 #ifndef NMTOOLS_DISABLE_STL
-#include "nmtools/array/core/ref/initializer_list.hpp"
+#include "nmtools/core/ref/initializer_list.hpp"
 #endif
 
 namespace nmtools::array

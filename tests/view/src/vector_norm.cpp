@@ -1,4 +1,4 @@
-#include "nmtools/array/view/vector_norm.hpp"
+#include "nmtools/array/vector_norm.hpp"
 #include "nmtools/testing/data/array/vector_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
 

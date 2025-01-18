@@ -1,6 +1,6 @@
-#include "nmtools/array/functional/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/testing/data/array/add.hpp"
-#include "nmtools/array/functional/ufunc/ufunc.hpp"
+#include "nmtools/array/ufunc/ufunc.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

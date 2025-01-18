@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_EXPAND_DIMS_HPP
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/expand_dims.hpp"
+#include "nmtools/array/expand_dims.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
 

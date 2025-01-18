@@ -11,7 +11,6 @@
 #include "nmtools/utility/at.hpp"
 // NOTE: to include nmtools_hybrid_ndarray macro
 #include "nmtools/ndarray/hybrid.hpp"
-#include "nmtools/utility/cast.hpp"
 #include "nmtools/utility/get.hpp"
 #include "nmtools/ndarray/base_ndarray.hpp"
 
@@ -598,6 +597,7 @@ namespace nmtools::meta
 } // namespace nmtools::meta
 
 // casting
+#include "nmtools/utility/cast.hpp"
 
 #ifndef NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE
 #define NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE (6)

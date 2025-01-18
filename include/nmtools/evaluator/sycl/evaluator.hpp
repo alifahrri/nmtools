@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_SYCL_EVALUATOR_HPP
 #define NMTOOLS_ARRAY_EVAL_SYCL_EVALUATOR_HPP
 
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/core/eval.hpp"
 #include "nmtools/utility/data.hpp"
 #include "nmtools/evaluator/sycl/context.hpp"
 #include "nmtools/array/functional.hpp"

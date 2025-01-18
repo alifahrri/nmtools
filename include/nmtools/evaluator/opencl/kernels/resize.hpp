@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RESIZE_HPP
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/resize.hpp"
+#include "nmtools/array/resize.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
 

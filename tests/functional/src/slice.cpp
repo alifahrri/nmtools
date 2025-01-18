@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/slice.hpp"
+#include "nmtools/array/slice.hpp"
 #include "nmtools/testing/data/array/slice.hpp"
 #include "nmtools/testing/doctest.hpp"
 

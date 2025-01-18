@@ -1,7 +1,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/meta/utl/array.hpp"
 #include "nmtools/array/index/gather.hpp"
-#include "nmtools/array/view/broadcast_to.hpp"
+#include "nmtools/array/broadcast_to.hpp"
 #include "nmtools/array/activations/relu.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/matmul.hpp"

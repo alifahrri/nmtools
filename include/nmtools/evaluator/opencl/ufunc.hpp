@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/evaluator/opencl/context.hpp"
-#include "nmtools/array/core/ufunc/ufunc.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
 namespace nmtools::array::opencl

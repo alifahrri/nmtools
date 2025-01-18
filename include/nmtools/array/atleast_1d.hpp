@@ -1,8 +1,44 @@
+#ifndef NMTOOLS_ARRAY_VIEW_ATLEAST_1D_HPP
+#define NMTOOLS_ARRAY_VIEW_ATLEAST_1D_HPP
+
+// TODO: remove this file
+
+#include "nmtools/array/atleast_nd.hpp"
+
+#endif // NMTOOLS_ARRAY_VIEW_ATLEAST_1D_HPP
+
+#ifndef NMTOOLS_ARRAY_FUNCTIONAL_ATLEAST_1D_HPP
+#define NMTOOLS_ARRAY_FUNCTIONAL_ATLEAST_1D_HPP
+
+#include "nmtools/core/functor.hpp"
+#include "nmtools/array/indexing.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/array/atleast_1d.hpp"
+
+namespace nmtools::functional
+{
+    namespace fun 
+    {
+        struct atleast_1d_t
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::atleast_1d(args...);
+            }
+        };
+    }
+
+    constexpr inline auto atleast_1d = functor_t{unary_fmap_t<fun::atleast_1d_t>{}};
+} // namespace nmtools::functional
+
+#endif // NMTOOLS_ARRAY_FUNCTIONAL_ATLEAST_1D_HPP
+
 #ifndef NMTOOLS_ARRAY_ARRAY_ATLEAST_1D_HPP
 #define NMTOOLS_ARRAY_ARRAY_ATLEAST_1D_HPP
 
-#include "nmtools/array/view/atleast_1d.hpp"
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/array/atleast_1d.hpp"
+#include "nmtools/core/eval.hpp"
 
 namespace nmtools::array
 {

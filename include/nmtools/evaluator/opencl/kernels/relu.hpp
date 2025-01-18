@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RELU_CL_HPP
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RELU_CL_HPP
 
-#include "nmtools/array/view/activations/relu.hpp"
+#include "nmtools/array/activations/relu.hpp"
 
 #define nmtools_cl_kernel_bin relu_spv
 #define nmtools_cl_kernel_len relu_spv_len
@@ -13,8 +13,8 @@
 #define nmtools_cl_kernel_name_str(out_type, inp_type) nm_stringify(relu##_##out_type##_##inp_type)
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 
 namespace nm = nmtools;
 namespace view = nm::view;

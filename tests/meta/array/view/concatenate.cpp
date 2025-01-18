@@ -1,7 +1,7 @@
 #if __has_include(<boost/array.hpp>)
 #define NMTOOLS_ENABLE_BOOST
 #endif
-#include "nmtools/array/view/concatenate.hpp"
+#include "nmtools/array/concatenate.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"

@@ -18,7 +18,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #endif
 
 #include "nmtools/testing/data/array/pooling.hpp"
-#include "nmtools/array/view/pooling.hpp"
+#include "nmtools/array/pooling.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

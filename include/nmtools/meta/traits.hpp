@@ -30,6 +30,7 @@
 #include "nmtools/meta/bits/traits/is_attribute.hpp"
 #include "nmtools/meta/bits/traits/is_bit_reference.hpp"
 #include "nmtools/meta/bits/traits/is_boolean.hpp"
+#include "nmtools/meta/bits/traits/is_broadcast_view.hpp"
 #include "nmtools/meta/bits/traits/is_bounded_array.hpp"
 #include "nmtools/meta/bits/traits/is_bounded_dim.hpp"
 #include "nmtools/meta/bits/traits/is_bounded_size.hpp"

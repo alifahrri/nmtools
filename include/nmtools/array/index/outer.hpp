@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/ndarray.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/array/index/product.hpp"
 
 namespace nmtools::index
@@ -158,7 +158,7 @@ namespace nmtools::meta
                 } else if constexpr (!is_fail_v<decltype(b_dim_a)> && !is_fail_v<decltype(b_dim_b)>) {
                     constexpr auto new_dim = b_dim_a + b_dim_b;
                     // TODO: consider to use index_t
-                    using type = array::static_vector<size_t,new_dim>;
+                    using type = nmtools_static_vector<size_t,new_dim>;
                     return as_value_v<type>;
                 } else {
                     // TODO: consider to use index_t

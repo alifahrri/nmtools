@@ -5,7 +5,7 @@
 
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/ndarray.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/utl/static_vector.hpp"
 
 #include "nmtools/assert.hpp"

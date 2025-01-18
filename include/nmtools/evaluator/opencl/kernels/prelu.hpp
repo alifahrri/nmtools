@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_PRELU_HPP
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_PRELU_HPP
 
-#include "nmtools/array/view/activations/prelu.hpp"
+#include "nmtools/array/activations/prelu.hpp"
 
 #if 1
 #define nmtools_cl_kernel_bin prelu_spv
@@ -13,8 +13,8 @@
 #endif
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 
 namespace nm = nmtools;
 namespace view = nm::view;

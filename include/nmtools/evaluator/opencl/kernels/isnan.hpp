@@ -3,7 +3,7 @@
 
 // TODO: adjust the following params
 #if 1
-#include "nmtools/array/view/ufuncs/isnan.hpp"
+#include "nmtools/array/ufuncs/isnan.hpp"
 
 #if 1
 #undef nmtools_cl_kernel_bin
@@ -23,8 +23,8 @@
 #endif
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 
 namespace nm = nmtools;
 namespace view = nm::view;

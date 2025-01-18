@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_TILE_HPP
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/tile.hpp"
+#include "nmtools/array/tile.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
 

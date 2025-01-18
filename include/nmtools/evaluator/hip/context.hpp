@@ -5,7 +5,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
-#include "nmtools/array/core/functor.hpp"
+#include "nmtools/core/functor.hpp"
 
 #include "hip/hip_runtime.h"
 

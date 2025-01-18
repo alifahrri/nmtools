@@ -1,5 +1,5 @@
-#include "nmtools/array/core/ref/initializer_list.hpp"
-#include "nmtools/array/view/flatten.hpp"
+#include "nmtools/core/ref/initializer_list.hpp"
+#include "nmtools/array/flatten.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 using nmtools::unwrap;

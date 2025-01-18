@@ -1,8 +1,8 @@
-#include "nmtools/array/functional/matmul.hpp"
-#include "nmtools/array/functional/reshape.hpp"
-#include "nmtools/array/functional/flatten.hpp"
-#include "nmtools/array/functional/ufuncs/add.hpp"
-#include "nmtools/array/view/full.hpp"
+#include "nmtools/array/matmul.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/array/flatten.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/full.hpp"
 #include "nmtools/array/flatten.hpp"
 
 #include "nmtools/testing/data/array/add.hpp"

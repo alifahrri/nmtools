@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/ndarray.hpp"
+#include "nmtools/stl.hpp"
 
 // TODO: move to shape.hpp
 #ifdef NMTOOLS_ENABLE_BOOST
@@ -132,7 +132,7 @@ namespace nmtools::meta
                 constexpr auto max_dim = bounded_size_v<shape_t>;
                 using index_t = get_element_or_common_type_t<shape_t>;
                 // TODO: use resize instead
-                return as_value_v<array::static_vector<index_t,(max_dim > nd ? max_dim : nd)>>;
+                return as_value_v<nmtools_static_vector<index_t,(max_dim > nd ? max_dim : nd)>>;
             } else if constexpr (is_index_array_v<shape_t>) {
                 using index_t = get_element_or_common_type_t<shape_t>;
                 // TODO: support small_vector/small_buffer

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/diagonal.hpp"
+#include "nmtools/array/diagonal.hpp"
 #include "nmtools/testing/data/index/diagonal.hpp"
 #include "nmtools/testing/doctest.hpp"
 

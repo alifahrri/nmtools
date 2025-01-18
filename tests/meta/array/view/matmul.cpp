@@ -1,4 +1,4 @@
-#include "nmtools/array/view/matmul.hpp"
+#include "nmtools/array/matmul.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/hybrid.hpp"

@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/pad.hpp"
+#include "nmtools/array/pad.hpp"
 #include "nmtools/testing/data/array/pad.hpp"
 #include "nmtools/testing/doctest.hpp"
 

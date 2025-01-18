@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/ndarray.hpp"
+#include "nmtools/stl.hpp"
 
 namespace nmtools::index
 {
@@ -100,7 +100,7 @@ namespace nmtools::meta
                 }();
                 // TODO: try to resize & replace element type
                 if constexpr (N>0) {
-                    using type = array::static_vector<size_t,N>;
+                    using type = nmtools_static_vector<size_t,N>;
                     return as_value_v<type>;
                 } else {
                     using type = nmtools_list<size_t>;

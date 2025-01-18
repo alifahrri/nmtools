@@ -2,9 +2,9 @@
 #define NMTOOLS_ARRAY_INDEX_WHERE_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/ndarray.hpp"
 
 namespace nmtools::index
 {
@@ -77,7 +77,7 @@ namespace nmtools::meta
             } else if constexpr (is_constant_index_array_v<array_t> || is_clipped_index_array_v<array_t>) {
                 constexpr auto N = len_v<array_t>;
                 // need to use hybrid array1d since the size will depends on runtime value
-                using type = array::static_vector<index_t,N>;
+                using type = nmtools_static_vector<index_t,N>;
                 return as_value_v<type>;
             } else if constexpr (is_fixed_size_v<array_t> || is_bounded_size_v<array_t>) {
                 // assume index array
@@ -85,7 +85,7 @@ namespace nmtools::meta
                 static_assert( bounded_dim_v<array_t> == 1, "unsupported where" );
                 constexpr auto N = bounded_size_v<array_t>;
                 // need to use hybrid array1d since the size will depends on runtime value
-                using type = array::static_vector<index_t,N>;
+                using type = nmtools_static_vector<index_t,N>;
                 return as_value_v<type>;
             } else {
                 using type = error::WHERE_UNSUPPORTED<array_t, index_t>;

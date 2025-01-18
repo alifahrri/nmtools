@@ -331,13 +331,6 @@ namespace nmtools::array
 
     template <typename shape_type>
     using resolve_stride_type_t = meta::resolve_optype_t<index::compute_strides_t,shape_type>;
-
-    enum LayoutKind : int
-    {
-        UNKNOWN_LAYOUT=-999,
-        ROW_MAJOR=-1,
-        COLUMN_MAJOR=0,
-    };
 } // namespace nmtools::array
 
 #endif // NMTOOLS_ARRAY_NDARRAY_BASE_NDARRAY_HPP

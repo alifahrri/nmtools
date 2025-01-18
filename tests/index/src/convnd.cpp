@@ -1,4 +1,4 @@
-#include "nmtools/array/view/convnd.hpp"
+#include "nmtools/array/convnd.hpp"
 #include "nmtools/testing/data/index/convnd.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -2,7 +2,7 @@
 #define NMTOOLS_ENABLE_BOOST
 #endif
 #include "nmtools/meta.hpp"
-#include "nmtools/array/view/full.hpp"
+#include "nmtools/array/full.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

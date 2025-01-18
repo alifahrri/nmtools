@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/trunc.hpp"
+#include "nmtools/array/ufuncs/trunc.hpp"
 #include "nmtools/testing/data/array/trunc.hpp"
 #include "nmtools/testing/doctest.hpp"
 

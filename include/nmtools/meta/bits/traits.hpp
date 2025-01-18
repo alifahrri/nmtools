@@ -14,6 +14,7 @@
 #include "nmtools/meta/bits/traits/is_const.hpp"
 #include "nmtools/meta/bits/traits/has_reserve.hpp"
 #include "nmtools/meta/bits/traits/is_boolean.hpp"
+#include "nmtools/meta/bits/traits/is_broadcast_view.hpp"
 #include "nmtools/meta/bits/traits/is_tuple.hpp"
 #include "nmtools/meta/bits/traits/has_value_type.hpp"
 #include "nmtools/meta/bits/traits/is_void.hpp"

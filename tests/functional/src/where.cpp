@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/where.hpp"
+#include "nmtools/array/where.hpp"
 #include "nmtools/testing/data/array/where.hpp"
 #include "nmtools/testing/doctest.hpp"
 

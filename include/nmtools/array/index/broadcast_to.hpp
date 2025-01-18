@@ -3,10 +3,11 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utl.hpp"
-#include "nmtools/ndarray.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/array/index/tuple_at.hpp"
 #include "nmtools/array/index/gather.hpp"
+#include "nmtools/array/index/compute_indices.hpp"
 #include "nmtools/array/index/compute_strides.hpp"
 #include "nmtools/array/index/compute_offset.hpp"
 #include "nmtools/array/index/logical_not.hpp"

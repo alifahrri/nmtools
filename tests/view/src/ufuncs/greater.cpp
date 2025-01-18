@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/greater.hpp"
+#include "nmtools/array/ufuncs/greater.hpp"
 #include "nmtools/testing/data/array/greater.hpp"
 #include "nmtools/testing/doctest.hpp"
 

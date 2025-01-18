@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/array/index/ref.hpp"
 #include "nmtools/array/index/where.hpp"

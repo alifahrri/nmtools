@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_SIMD_EVALUATOR_UFUNC_HPP
 #define NMTOOLS_ARRAY_EVAL_SIMD_EVALUATOR_UFUNC_HPP
 
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/core/eval.hpp"
 #include "nmtools/utility/data.hpp"
 #include "nmtools/evaluator/simd/index.hpp"
 #include "nmtools/evaluator/simd/ufunc.hpp"

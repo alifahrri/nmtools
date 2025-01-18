@@ -2,7 +2,7 @@
 #define NMTOOLS_ENABLE_BOOST
 #endif
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/take.hpp"
+#include "nmtools/array/take.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

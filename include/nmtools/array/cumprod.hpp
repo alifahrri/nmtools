@@ -1,8 +1,62 @@
+#ifndef NMTOOLS_ARRAY_VIEW_CUMPROD_HPP
+#define NMTOOLS_ARRAY_VIEW_CUMPROD_HPP
+
+#include "nmtools/array/ufuncs/multiply.hpp"
+
+namespace nmtools::view
+{
+    /**
+     * @brief Create a view that represents the cumulative product of elements along a given axis.
+     *
+     * This view is equivalent to view::accumulate_multiply.
+     * 
+     * @tparam array_t 
+     * @tparam axis_t 
+     * @tparam dtype_t 
+     * @param a     input array.
+     * @param axis  axis in which the cumulative product is to be operated on.
+     * @param dtype desired data type
+     * @return constexpr auto 
+     */
+    template <typename array_t, typename axis_t, typename dtype_t>
+    constexpr auto cumprod(const array_t& a, axis_t axis, dtype_t)
+    {
+        using res_t = get_dtype_t<dtype_t>;
+        using op_t  = multiply_t<none_t,none_t,res_t>;
+        return view::accumulate(op_t{},a,axis);
+    } // cumprod
+
+    template <typename array_t, typename axis_t>
+    constexpr auto cumprod(const array_t& a, axis_t axis)
+    {
+        return view::cumprod(a,axis,None);
+    } // cumprod
+} // namespace nmtools::view
+
+#endif // NMTOOLS_ARRAY_VIEW_CUMPROD_HPP
+
+#ifndef NMTOOLS_ARRAY_FUNCTIONAL_CUMPROD_HPP
+#define NMTOOLS_ARRAY_FUNCTIONAL_CUMPROD_HPP
+
+#include "nmtools/core/functor.hpp"
+#include "nmtools/array/cumprod.hpp"
+
+namespace nmtools::functional
+{
+    constexpr inline auto cumprod_fun = [](const auto&...args){
+        return view::cumprod(args...);
+    };
+
+    constexpr inline auto cumprod = functor_t{unary_fmap_t<decltype(cumprod_fun)>{cumprod_fun}};
+} // namespace nmtools::functional
+
+#endif // NMTOOLS_ARRAY_FUNCTIONAL_CUMPROD_HPP
+
 #ifndef NMTOOLS_ARRAY_ARRAY_CUMPROD_HPP
 #define NMTOOLS_ARRAY_ARRAY_CUMPROD_HPP
 
-#include "nmtools/array/view/cumprod.hpp"
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/array/cumprod.hpp"
+#include "nmtools/core/eval.hpp"
 
 namespace nmtools::array
 {

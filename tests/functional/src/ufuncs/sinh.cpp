@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/sinh.hpp"
+#include "nmtools/array/ufuncs/sinh.hpp"
 #include "nmtools/testing/data/array/sinh.hpp"
 #include "nmtools/testing/doctest.hpp"
 

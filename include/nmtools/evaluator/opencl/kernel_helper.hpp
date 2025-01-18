@@ -4,11 +4,11 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/array/index/product.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
-#include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/view/mutable_flatten.hpp"
-#include "nmtools/array/view/reshape.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/mutable_ref.hpp"
+#include "nmtools/array/flatten.hpp"
+#include "nmtools/core/mutable_flatten.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 
 #ifndef nm_cl_index_t

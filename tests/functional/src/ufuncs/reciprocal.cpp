@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/reciprocal.hpp"
+#include "nmtools/array/ufuncs/reciprocal.hpp"
 #include "nmtools/testing/data/array/reciprocal.hpp"
 #include "nmtools/testing/doctest.hpp"
 

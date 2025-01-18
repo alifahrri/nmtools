@@ -1,5 +1,5 @@
-#include "nmtools/array/view/tile.hpp"
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/array/tile.hpp"
+#include "nmtools/core/eval.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/ndarray/dynamic.hpp"

@@ -5,8 +5,8 @@
 #include "nmtools/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
-#include "nmtools/array/functional/ufuncs/subtract.hpp"
-#include "nmtools/array/functional/ufuncs/fabs.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/fabs.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools::array;

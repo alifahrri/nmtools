@@ -1,6 +1,6 @@
-#include "nmtools/array/functional/ufuncs/subtract.hpp"
-#include "nmtools/array/functional/ufuncs/exp.hpp"
-#include "nmtools/array/functional/ufunc/ufunc.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/exp.hpp"
+#include "nmtools/array/ufunc/ufunc.hpp"
 #include "nmtools/testing/data/array/subtract.hpp"
 #include "nmtools/testing/doctest.hpp"
 

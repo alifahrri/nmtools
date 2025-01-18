@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_UTILITY_EMBIND_HPP
 #define NMTOOLS_ARRAY_UTILITY_EMBIND_HPP
 
-#include "nmtools/array/view/reshape.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/array/flatten.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"

@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_INDEX_CAST_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/ndarray.hpp"
+#include "nmtools/stl.hpp"
 
 namespace nmtools::index
 {

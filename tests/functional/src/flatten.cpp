@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/flatten.hpp"
+#include "nmtools/array/flatten.hpp"
 #include "nmtools/testing/data/array/flatten.hpp"
 #include "nmtools/testing/doctest.hpp"
 

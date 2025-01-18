@@ -1,6 +1,6 @@
 // TODO: adjust the following params
 #if 0
-#include "nmtools/array/view/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
 
 #if 0
 #undef nmtools_cl_kernel_bin
@@ -20,8 +20,8 @@
 #endif
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 

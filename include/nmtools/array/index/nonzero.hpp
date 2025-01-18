@@ -3,8 +3,9 @@
 
 #include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/stl.hpp"
 
 namespace nmtools::index
 {
@@ -112,10 +113,10 @@ namespace nmtools::meta
                 [[maybe_unused]]
                 constexpr auto bounded_size = bounded_size_v<index_array_t>;
                 if constexpr (!is_fail_v<decltype(fixed_size)>) {
-                    using type = array::static_vector<element_t,fixed_size>;
+                    using type = nmtools_static_vector<element_t,fixed_size>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(bounded_size)>) {
-                    using type = array::static_vector<element_t,bounded_size>;
+                    using type = nmtools_static_vector<element_t,bounded_size>;
                     return as_value_v<type>;
                 } else {
                     using type = nmtools_list<element_t>;

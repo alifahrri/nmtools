@@ -3,7 +3,7 @@
 
 // TODO: adjust the following params
 #if 1
-#include "nmtools/array/view/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
 
 #if 1
 #undef nmtools_cl_kernel_bin

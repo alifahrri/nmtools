@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/array/index/ref.hpp"
-#include "nmtools/ndarray.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/utl/static_vector.hpp"
 
 namespace nmtools::index

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/logical_xor.hpp"
+#include "nmtools/array/ufuncs/logical_xor.hpp"
 #include "nmtools/testing/data/array/logical_xor.hpp"
 #include "nmtools/testing/doctest.hpp"
 

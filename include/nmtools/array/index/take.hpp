@@ -6,7 +6,7 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/stl.hpp"
 
 namespace nmtools::index
 {
@@ -186,7 +186,7 @@ namespace nmtools::meta
                 using type = nmtools_array<index_t,DIM>;
                 return as_value_v<type>;
             } else if constexpr (!is_fail_v<decltype(b_dim)>) {
-                using type = array::static_vector<index_t,b_dim>;
+                using type = nmtools_static_vector<index_t,b_dim>;
                 return as_value_v<type>;
             } else {
                 // TODO: small buffer optimization

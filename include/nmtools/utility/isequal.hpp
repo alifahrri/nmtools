@@ -520,6 +520,15 @@ namespace nmtools::utils
     {
         return meta::is_same_v<lhs_t,rhs_t>;
     }
+
+    template <typename lhs_t, typename rhs_t>
+    struct isequal_t<dtype_t<lhs_t>,dtype_t<rhs_t>>
+    {
+        constexpr auto operator()(const dtype_t<lhs_t>&, const dtype_t<rhs_t>&) const
+        {
+            return meta::is_same_v<lhs_t,rhs_t>;
+        }
+    };
 } // namespace nmtools::utils
 
 #endif // NMTOOLS_UTILS_ISEQUAL_HPP

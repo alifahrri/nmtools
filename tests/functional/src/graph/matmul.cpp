@@ -1,11 +1,11 @@
-#include "nmtools/array/view/matmul.hpp"
+#include "nmtools/array/matmul.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/arange.hpp"
-#include "nmtools/array/core/functor.hpp"
-#include "nmtools/array/functional/matmul.hpp"
-#include "nmtools/array/functional/ufuncs/add.hpp"
-#include "nmtools/array/functional/ufuncs/multiply.hpp"
+#include "nmtools/core/functor.hpp"
+#include "nmtools/array/matmul.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/multiply.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

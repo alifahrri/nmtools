@@ -1,7 +1,7 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/reshape.hpp"
-#include "nmtools/array/functional/reshape.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 

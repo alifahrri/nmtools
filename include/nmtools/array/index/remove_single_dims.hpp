@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/array/index/filter.hpp"
 
 namespace nmtools::index
@@ -76,7 +76,7 @@ namespace nmtools::meta
             } else if constexpr (is_fixed_index_array_v<shape_t>) {
                 constexpr auto n = len_v<shape_t>;
                 using index_t = get_element_type_t<shape_t>;
-                using type = make_hybrid_ndarray_t<index_t,n,1>;
+                using type = nmtools_static_vector<index_t,n>;
                 return as_value_v<type>;
             } else if constexpr (is_index_array_v<shape_t>) {
                 return as_value_v<shape_t>;

@@ -1,8 +1,34 @@
+#ifndef NMTOOLS_ARRAY_FUNCTIONAL_FLATTEN_HPP
+#define NMTOOLS_ARRAY_FUNCTIONAL_FLATTEN_HPP
+
+#include "nmtools/core/functor.hpp"
+#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/flatten.hpp"
+
+namespace nmtools::functional
+{
+    namespace fun 
+    {
+        struct flatten_t
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::flatten(args...);
+            }
+        };
+    }
+
+    constexpr inline auto flatten = functor_t{unary_fmap_t<fun::flatten_t>{}};
+} // namespace nmtools::functional
+
+#endif // NMTOOLS_ARRAY_FUNCTIONAL_FLATTEN_HPP
+
 #ifndef NMTOOLS_ARRAY_ARRAY_FLATTEN_HPP
 #define NMTOOLS_ARRAY_ARRAY_FLATTEN_HPP
 
-#include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/core/flatten.hpp"
+#include "nmtools/core/eval.hpp"
 
 namespace nmtools::array
 {

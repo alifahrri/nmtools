@@ -28,8 +28,8 @@ namespace nmtools::array::kind
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/view/mutable_flatten.hpp"
+#include "nmtools/core/flatten.hpp"
+#include "nmtools/core/mutable_flatten.hpp"
 
 #include "nmtools/utility/isequal.hpp"
 
@@ -66,8 +66,8 @@ namespace nmtools
 
 #include "nmtools/utility/apply_resize.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/view/mutable_flatten.hpp"
+#include "nmtools/core/flatten.hpp"
+#include "nmtools/core/mutable_flatten.hpp"
 
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/tuple_cat.hpp"

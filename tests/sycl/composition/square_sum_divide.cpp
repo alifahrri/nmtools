@@ -6,9 +6,9 @@
 #include "nmtools/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
-#include "nmtools/array/functional/ufuncs/square.hpp"
-#include "nmtools/array/functional/sum.hpp"
-#include "nmtools/array/functional/ufuncs/divide.hpp"
+#include "nmtools/array/ufuncs/square.hpp"
+#include "nmtools/array/sum.hpp"
+#include "nmtools/array/ufuncs/divide.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools::array;

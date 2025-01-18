@@ -2,9 +2,9 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_BROADCAST_TO_HPP
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/broadcast_to.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/array/broadcast_to.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 

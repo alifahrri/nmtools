@@ -1,9 +1,9 @@
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/random.hpp"
-#include "nmtools/array/view/layer_norm.hpp"
-#include "nmtools/array/core/functor.hpp"
-#include "nmtools/array/functional/batch_norm.hpp"
+#include "nmtools/array/layer_norm.hpp"
+#include "nmtools/core/functor.hpp"
+#include "nmtools/array/batch_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

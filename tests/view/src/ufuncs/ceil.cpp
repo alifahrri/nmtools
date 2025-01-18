@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/ceil.hpp"
+#include "nmtools/array/ufuncs/ceil.hpp"
 #include "nmtools/testing/data/array/ceil.hpp"
 #include "nmtools/testing/doctest.hpp"
 

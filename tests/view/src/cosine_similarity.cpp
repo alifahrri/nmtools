@@ -1,4 +1,4 @@
-#include "nmtools/array/view/cosine_similarity.hpp"
+#include "nmtools/array/cosine_similarity.hpp"
 #include "nmtools/testing/data/array/cosine_similarity.hpp"
 #include "nmtools/testing/doctest.hpp"
 

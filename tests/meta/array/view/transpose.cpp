@@ -1,7 +1,7 @@
 #if __has_include(<boost/array.hpp>)
 #define NMTOOLS_ENABLE_BOOST
 #endif
-#include "nmtools/array/view/transpose.hpp"
+#include "nmtools/array/transpose.hpp"
 #include "nmtools/ndarray/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 

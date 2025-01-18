@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/concatenate.hpp"
+#include "nmtools/array/concatenate.hpp"
 #include "nmtools/testing/data/array/concatenate.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/arange.hpp"

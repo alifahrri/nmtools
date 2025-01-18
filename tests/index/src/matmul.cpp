@@ -1,4 +1,4 @@
-#include "nmtools/array/view/matmul.hpp"
+#include "nmtools/array/matmul.hpp"
 #include "nmtools/testing/data/array/matmul.hpp"
 #include "nmtools/testing/data/index/matmul.hpp"
 #include "nmtools/testing/data/index/split.hpp"

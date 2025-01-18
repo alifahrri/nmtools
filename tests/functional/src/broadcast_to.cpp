@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/broadcast_to.hpp"
+#include "nmtools/array/broadcast_to.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/testing/data/array/broadcast_to.hpp"
 #include "nmtools/testing/doctest.hpp"

@@ -2,7 +2,7 @@
 #define NMTOOLS_ENABLE_BOOST
 #endif
 
-#include "nmtools/array/view/moveaxis.hpp"
+#include "nmtools/array/moveaxis.hpp"
 #include "nmtools/ndarray/ndarray.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"

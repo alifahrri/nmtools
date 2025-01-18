@@ -1,6 +1,6 @@
 // TODO: adjust the following params
 #if 0
-#include "nmtools/array/view/activations/relu6.hpp"
+#include "nmtools/array/activations/relu6.hpp"
 
 #if 0
 #undef nmtools_cl_kernel_bin
@@ -20,8 +20,8 @@
 #endif
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 
 namespace nm = nmtools;
 namespace view = nm::view;

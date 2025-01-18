@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_ARRAY_COPY_HPP
 #define NMTOOLS_ARRAY_ARRAY_COPY_HPP
 
-#include "nmtools/array/view/ref.hpp"
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/eval.hpp"
 
 namespace nmtools::array
 {

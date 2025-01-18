@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_OPENCL_CONTEXT_HPP
 #define NMTOOLS_ARRAY_EVAL_OPENCL_CONTEXT_HPP
 
-#include "nmtools/array/core/eval.hpp"
+#include "nmtools/core/eval.hpp"
 #include "nmtools/utility/data.hpp"
 
 #include <CL/cl.h>

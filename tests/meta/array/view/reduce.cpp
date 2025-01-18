@@ -2,8 +2,8 @@
 #define NMTOOLS_ENABLE_BOOST
 #endif
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/core/ufunc.hpp"
-#include "nmtools/array/view/ufuncs/add.hpp"
+#include "nmtools/core/ufunc.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"

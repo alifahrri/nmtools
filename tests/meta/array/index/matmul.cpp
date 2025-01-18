@@ -1,6 +1,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/matmul.hpp"
+#include "nmtools/array/matmul.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

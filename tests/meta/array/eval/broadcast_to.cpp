@@ -1,5 +1,5 @@
-#include "nmtools/array/core/eval.hpp"
-#include "nmtools/array/view/broadcast_to.hpp"
+#include "nmtools/core/eval.hpp"
+#include "nmtools/array/broadcast_to.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/ndarray/dynamic.hpp"

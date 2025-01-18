@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_FLIP_HPP
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/flip.hpp"
+#include "nmtools/array/flip.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
 

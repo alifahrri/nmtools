@@ -2,11 +2,11 @@
 #define NMTOOLS_ENABLE_BOOST
 #endif
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/ufuncs/sin.hpp"
-#include "nmtools/array/view/ufuncs/add.hpp"
-#include "nmtools/array/view/ufuncs/divide.hpp"
-#include "nmtools/array/view/ufuncs/multiply.hpp"
-#include "nmtools/array/core/ufunc.hpp"
+#include "nmtools/array/ufuncs/sin.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/divide.hpp"
+#include "nmtools/array/ufuncs/multiply.hpp"
+#include "nmtools/core/ufunc.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

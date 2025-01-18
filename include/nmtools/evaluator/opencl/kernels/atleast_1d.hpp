@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_ATLEAST_1D_HPP
 
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/view/atleast_1d.hpp"
+#include "nmtools/array/atleast_1d.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 #include "nmtools/array/index/cast.hpp"
 

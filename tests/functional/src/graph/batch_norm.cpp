@@ -4,8 +4,8 @@
 #include "nmtools/array/moveaxis.hpp"
 #include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/utility/random_engine.hpp"
-#include "nmtools/array/view/batch_norm.hpp"
-#include "nmtools/array/functional/batch_norm.hpp"
+#include "nmtools/array/batch_norm.hpp"
+#include "nmtools/array/batch_norm.hpp"
 #include "nmtools/utility/has_value.hpp"
 #include "nmtools/testing/doctest.hpp"
 
