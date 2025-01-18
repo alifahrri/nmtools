@@ -1,10 +1,10 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNC_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNC_HPP
 
-#include "nmtools/array/view/ufunc/ufunc.hpp"
-#include "nmtools/array/view/ufunc/reduce.hpp"
-#include "nmtools/array/view/ufunc/accumulate.hpp"
-#include "nmtools/array/view/ufunc/outer.hpp"
+#include "nmtools/array/view/ufunc-core/ufunc.hpp"
+#include "nmtools/array/view/ufunc-core/reduce.hpp"
+#include "nmtools/array/view/ufunc-core/accumulate.hpp"
+#include "nmtools/array/view/ufunc-core/outer.hpp"
 #include "nmtools/array/view/alias.hpp"
 
 namespace nmtools::view
@@ -96,7 +96,7 @@ namespace nmtools::view
         } else if constexpr (sizeof...(arrays) > 0) {
             // enable broadcasting if operands >= 2
             // here, broadcasted array should be view
-            auto b_arrays = broadcast_arrays(array, arrays...);
+            auto b_arrays = view::broadcast_arrays(array, arrays...);
             using b_arrays_t = decltype(b_arrays);
             constexpr auto n_args = meta::len_v<b_arrays_t>;
             static_assert ( n_args == (sizeof...(arrays)+1)
@@ -299,7 +299,7 @@ namespace nmtools::view
             using view_t = decorator_t<scalar_ufunc_t,op_t,lhs_t,rhs_t>;
             return view_t{{op,lhs,rhs}};
         } else {
-            auto broadcasted_arrays = broadcast_arrays(lhs, rhs);
+            auto broadcasted_arrays = view::broadcast_arrays(lhs, rhs);
             return binary_ufunc(op, broadcasted_arrays);
         }
     } // broadcast_binary_ufunc

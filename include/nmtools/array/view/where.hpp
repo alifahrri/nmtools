@@ -76,7 +76,7 @@ namespace nmtools::view
     template <typename condition_t, typename x_t, typename y_t>
     constexpr auto where(const condition_t& condition, const x_t& x, const y_t& y)
     {
-        auto broadcasted = broadcast_arrays(condition, x, y);
+        auto broadcasted = view::broadcast_arrays(condition, x, y);
         if constexpr (meta::is_maybe_v<decltype(broadcasted)>) {
             using bcondition_t = meta::remove_cvref_t<decltype(nmtools::get<0>(*broadcasted))>;
             using bx_t = meta::remove_cvref_t<decltype(nmtools::get<1>(*broadcasted))>;

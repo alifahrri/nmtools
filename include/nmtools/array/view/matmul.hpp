@@ -457,10 +457,10 @@ namespace nmtools::view
     constexpr auto matmul(const lhs_t& lhs, const rhs_t& rhs)
     {
         if constexpr (meta::is_maybe_v<lhs_t> || meta::is_maybe_v<rhs_t>) {
-            using result_t = decltype(matmul(unwrap(lhs),unwrap(rhs)));
+            using result_t = decltype(view::matmul(unwrap(lhs),unwrap(rhs)));
             using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(lhs) && has_value(rhs)
-                ? return_t{matmul(unwrap(lhs),unwrap(rhs))}
+                ? return_t{view::matmul(unwrap(lhs),unwrap(rhs))}
                 : return_t{meta::Nothing}
             );
         } else {
