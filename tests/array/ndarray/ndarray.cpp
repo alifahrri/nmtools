@@ -1,5 +1,5 @@
 #if __has_include(<boost/array.hpp>)
-#include "nmtools/array/impl/boost.hpp"
+#include "nmtools/utility/impl/boost.hpp"
 #endif
 
 #include "nmtools/meta.hpp"
@@ -590,7 +590,7 @@ TEST_CASE("ndarray(case10)" * doctest::test_suite("array::ndarray"))
 }
 
 #if __has_include(<boost/array.hpp>)
-#include "nmtools/array/impl/boost.hpp"
+#include "nmtools/utility/impl/boost.hpp"
 
 // custom array type (boost)
 namespace case11

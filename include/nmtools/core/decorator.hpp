@@ -15,7 +15,7 @@
 
 // TODO: move to shape.hpp
 #ifdef NMTOOLS_ENABLE_BOOST
-#include "nmtools/array/impl/boost.hpp"
+#include "nmtools/utility/impl/boost.hpp"
 #endif
 
 #include "nmtools/assert.hpp"

@@ -3,7 +3,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 // quick workaround to support std::vector
-#include "nmtools/array/impl/stl.hpp"
+#include "nmtools/utility/impl/stl.hpp"
 
 // TODO: properly create testing data for index::choose
 

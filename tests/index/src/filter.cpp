@@ -4,7 +4,7 @@
 
 // to allow std::array, vector, tuple identified as array/index
 #include "nmtools/meta/stl.hpp"
-#include "nmtools/array/impl/stl.hpp"
+#include "nmtools/utility/impl/stl.hpp"
 
 #include <array>
 #include <tuple>
