@@ -48,6 +48,6 @@
 #include "nmtools/array/repeat.hpp"
 #include "nmtools/array/flatten.hpp"
 #include "nmtools/array/expand.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/conv2d.hpp"
 #include "nmtools/array/reshape.hpp"

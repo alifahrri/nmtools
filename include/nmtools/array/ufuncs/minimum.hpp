@@ -101,10 +101,10 @@ namespace nmtools::view
 
 #include "nmtools/core/functor.hpp"
 #include "nmtools/array/ufuncs/minimum.hpp"
-#include "nmtools/array/ufunc/accumulate.hpp"
-#include "nmtools/array/ufunc/reduce.hpp"
-#include "nmtools/array/ufunc/outer.hpp"
-#include "nmtools/array/ufunc/ufunc.hpp"
+#include "nmtools/core/ufunc/accumulate.hpp"
+#include "nmtools/core/ufunc/reduce.hpp"
+#include "nmtools/core/ufunc/outer.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {

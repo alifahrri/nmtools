@@ -419,7 +419,7 @@ namespace nmtools::utils::impl
 #define NMTOOLS_ARRAY_FUNCTIONAL_SLIDING_WINDOW_HPP
 
 #include "nmtools/array/sliding_window.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 
 namespace nmtools::functional
 {

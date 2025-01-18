@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_RESHAPE_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/core/reshape.hpp"
 
 namespace nmtools::functional

@@ -82,7 +82,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_HSTACK_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/hstack.hpp"
 
 namespace nmtools::functional

@@ -121,7 +121,7 @@ namespace nmtools::utils::impl
 #define NMTOOLS_ARRAY_FUNCTIONAL_RESIZE_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/resize.hpp"
 
 namespace nmtools::functional

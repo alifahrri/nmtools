@@ -15,7 +15,7 @@
 #include "nmtools/array/ufuncs/square.hpp"
 #include "nmtools/array/ufuncs/divide.hpp"
 #include "nmtools/array/ufuncs/sqrt.hpp"
-#include "nmtools/array/ufunc/ufunc.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/array/stddev.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"

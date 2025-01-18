@@ -62,7 +62,7 @@ namespace nmtools::utils::impl
 
 #include "nmtools/core/functor.hpp"
 #include "nmtools/array/ufuncs/arcsinh.hpp"
-#include "nmtools/array/ufunc/ufunc.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {

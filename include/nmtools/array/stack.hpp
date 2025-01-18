@@ -23,7 +23,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_STACK_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/stack.hpp"
 
 namespace nmtools::functional

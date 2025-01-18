@@ -1,7 +1,7 @@
 #include "nmtools/array/ufuncs/square.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/divide.hpp"
-#include "nmtools/array/ufunc/ufunc.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/array/sum.hpp"
 #include "nmtools/testing/data/array/add.hpp"
 #include "nmtools/testing/doctest.hpp"

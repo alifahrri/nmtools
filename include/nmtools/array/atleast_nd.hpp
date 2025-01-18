@@ -38,7 +38,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_ATLEAST_ND_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/atleast_nd.hpp"
 

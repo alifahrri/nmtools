@@ -159,7 +159,7 @@ namespace nmtools::utils::impl
 #define NMTOOLS_ARRAY_FUNCTIONAL_TRANSPOSE_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/transpose.hpp"
 
 namespace nmtools::functional

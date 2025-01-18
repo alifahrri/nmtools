@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_FLATTEN_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/core/flatten.hpp"
 
 namespace nmtools::functional

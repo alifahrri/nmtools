@@ -32,7 +32,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_EXPAND_DIMS_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/expand_dims.hpp"
 
 namespace nmtools::functional

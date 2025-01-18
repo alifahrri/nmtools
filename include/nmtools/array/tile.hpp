@@ -132,7 +132,7 @@ namespace nmtools::utils::impl
 #define NMTOOLS_ARRAY_FUNCTIONAL_TILE_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/tile.hpp"
 
 namespace nmtools::functional

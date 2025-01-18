@@ -150,7 +150,7 @@ namespace nmtools::utils::impl
 #define NMTOOLS_ARRAY_FUNCTIONAL_REPEAT_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/repeat.hpp"
 
 namespace nmtools::functional

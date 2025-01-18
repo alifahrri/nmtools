@@ -2,7 +2,7 @@
 #include "nmtools/array/ufuncs/subtract.hpp"
 #include "nmtools/array/ufuncs/fabs.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
-#include "nmtools/array/ufunc/ufunc.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/array/sum.hpp"
 #include "nmtools/testing/data/array/fabs.hpp"
 #include "nmtools/testing/doctest.hpp"

@@ -4,7 +4,7 @@
 #include "nmtools/core/functor.hpp"
 #include "nmtools/array/ufuncs/multiply.hpp"
 #include "nmtools/array/ufuncs/tanh.hpp"
-#include "nmtools/array/ufunc/ufunc.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"

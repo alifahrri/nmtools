@@ -30,7 +30,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_SQUEEZE_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/squeeze.hpp"
 
 namespace nmtools::functional

@@ -47,7 +47,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_FLIP_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/flip.hpp"
 
 namespace nmtools::functional

@@ -116,7 +116,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_VSTACK_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/indexing.hpp"
+#include "nmtools/core/indexing.hpp"
 #include "nmtools/array/vstack.hpp"
 
 namespace nmtools::functional
