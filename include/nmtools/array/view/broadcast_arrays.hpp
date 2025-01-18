@@ -20,6 +20,8 @@ namespace nmtools::view
     template <template<typename...>typename tuple, typename...arrays_t, auto...Is>
     constexpr auto aliased_broadcast_arrays(const tuple<arrays_t...>& arrays, meta::index_sequence<Is...>)
     {
+        static_assert( meta::is_tuple_v<tuple<arrays_t...>>
+            , "unexpected type for aliased_broadcast_arrays, expected tuple type" );
         static_assert( sizeof...(arrays_t) >= 2
             , "please provide at least two arrays for broadcast_arrays");
 
@@ -45,7 +47,18 @@ namespace nmtools::view
     constexpr auto broadcast_arrays(const arrays_t&...arrays)
     {
         auto aliased_pack = view::aliased(arrays...);
-        return aliased_broadcast_arrays(aliased_pack,meta::make_index_sequence_v<sizeof...(arrays_t)>);
+        auto Sequence = meta::make_index_sequence_v<sizeof...(arrays_t)>;
+        using aliased_pack_t = decltype(aliased_pack);
+        if constexpr (meta::is_maybe_v<aliased_pack_t>) {
+            using result_t = decltype(aliased_broadcast_arrays(unwrap(aliased_pack),Sequence));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(aliased_pack)
+                ? return_t{aliased_broadcast_arrays(unwrap(aliased_pack),Sequence)}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            return aliased_broadcast_arrays(aliased_pack,Sequence);
+        }
     }
 } // namespace nmtools::view
 
