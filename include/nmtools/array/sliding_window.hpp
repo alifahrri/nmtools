@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 #include "nmtools/platform/math/constexpr.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 #include "nmtools/utility/unwrap.hpp"
@@ -285,8 +285,8 @@ namespace nmtools::meta
 #define NMTOOLS_ARRAY_VIEW_SLIDING_WINDOW_HPP
 
 #include "nmtools/core/indexing.hpp"
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/fwd.hpp"

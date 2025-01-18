@@ -2,12 +2,12 @@
 #define NMTOOLS_ARRAY_EVAL_SIMD_INDEX_UFUNC_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/evaluator/simd/index/common.hpp"
-#include "nmtools/array/index/compute_offset.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
+#include "nmtools/index/compute_offset.hpp"
+#include "nmtools/index/compute_strides.hpp"
+#include "nmtools/index/compute_indices.hpp"
 
 namespace nmtools::index
 {

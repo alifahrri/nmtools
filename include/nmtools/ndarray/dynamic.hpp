@@ -4,8 +4,8 @@
 #ifndef NMTOOLS_DISABLE_DYNAMIC_ARRAY
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/compute_offset.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/index/compute_offset.hpp"
+#include "nmtools/index/compute_strides.hpp"
 #include "nmtools/array/ref.hpp"
 #include "nmtools/core/flatten.hpp"
 #include "nmtools/core/mutable_flatten.hpp"

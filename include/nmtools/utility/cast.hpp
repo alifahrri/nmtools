@@ -62,7 +62,7 @@ namespace nmtools
 #ifndef NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
 #include "nmtools/ndarray/dynamic.hpp"
 #endif
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 
 #include "nmtools/utility/apply_resize.hpp"
 #include "nmtools/utility/shape.hpp"

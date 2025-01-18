@@ -4,14 +4,14 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/max.hpp"
-#include "nmtools/array/index/sum.hpp"
+#include "nmtools/index/max.hpp"
+#include "nmtools/index/sum.hpp"
 #include "nmtools/utility/data.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/array/index/ref.hpp"
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/alias.hpp"
-#include "nmtools/array/index/append.hpp"
+#include "nmtools/index/ref.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/alias.hpp"
+#include "nmtools/index/append.hpp"
 
 // TODO: move to shape.hpp
 #ifdef NMTOOLS_ENABLE_BOOST
@@ -116,7 +116,7 @@ namespace nmtools::view::detail
     } // apply_at
 } // nmtools::view::detail
 
-#include "nmtools/array/index/pack.hpp"
+#include "nmtools/index/pack.hpp"
 
 namespace nmtools::meta
 {

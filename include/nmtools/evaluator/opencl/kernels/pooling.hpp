@@ -4,7 +4,7 @@
 #include "nmtools/ndarray.hpp"
 #include "nmtools/array/pooling.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
-#include "nmtools/array/index/cast.hpp"
+#include "nmtools/index/cast.hpp"
 
 #define nmtools_cl_kernel_name(reducer,out_type,inp_type) reducer##_pool2d_##out_type##_##inp_type
 #define nmtools_cl_kernel_name_str(reducer,out_type,inp_type) nm_stringify(reducer##_pool2d_##out_type##_##inp_type)

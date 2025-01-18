@@ -1,4 +1,4 @@
-#include "nmtools/array/index/choose.hpp"
+#include "nmtools/index/choose.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 

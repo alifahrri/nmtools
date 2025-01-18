@@ -5,7 +5,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/core/indexing.hpp"
-#include "nmtools/array/index/slice.hpp"
+#include "nmtools/index/slice.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 
 namespace nmtools::view

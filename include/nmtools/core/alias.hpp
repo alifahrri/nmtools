@@ -5,7 +5,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/fwd.hpp"
 #include "nmtools/utility/unwrap.hpp"
-#include "nmtools/array/index/max.hpp"
+#include "nmtools/index/max.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/core/decorator.hpp"
 

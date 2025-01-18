@@ -1,12 +1,12 @@
 #ifndef NMTOOLS_ARRAY_NDARRAY_NDARRAY_HPP
 #define NMTOOLS_ARRAY_NDARRAY_NDARRAY_HPP
 
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/pack.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/index/compute_offset.hpp"
-#include "nmtools/array/index/reverse.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/pack.hpp"
+#include "nmtools/index/compute_strides.hpp"
+#include "nmtools/index/compute_indices.hpp"
+#include "nmtools/index/compute_offset.hpp"
+#include "nmtools/index/reverse.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/at.hpp"
 // NOTE: to include nmtools_hybrid_ndarray macro

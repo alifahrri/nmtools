@@ -4,7 +4,7 @@
 #include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/array/ref.hpp"
 #include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/array/flatten.hpp"

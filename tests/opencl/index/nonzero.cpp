@@ -1,4 +1,4 @@
-#include "nmtools/array/index/nonzero.hpp"
+#include "nmtools/index/nonzero.hpp"
 #include "nmtools/core/mutable_ref.hpp"
 
 namespace nm = nmtools;

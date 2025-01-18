@@ -43,7 +43,7 @@ nmtools_cl_kernel(double,double)
 #else // NMTOOLS_OPENCL_BUILD_KERNELS
 
 #include "nmtools/evaluator/opencl/context.hpp"
-#include "nmtools/array/index/cast.hpp"
+#include "nmtools/index/cast.hpp"
 #include <cstring> // memcpy
 
 extern unsigned char nm_cl_pad_spv[];

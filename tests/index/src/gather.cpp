@@ -1,6 +1,6 @@
-#include "nmtools/array/index/gather.hpp"
+#include "nmtools/index/gather.hpp"
 // TODO: remove as_tuple
-#include "nmtools/array/index/as_tuple.hpp"
+#include "nmtools/index/as_tuple.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"

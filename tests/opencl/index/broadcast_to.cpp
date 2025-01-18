@@ -1,4 +1,4 @@
-#include "nmtools/array/index/broadcast_to.hpp"
+#include "nmtools/index/broadcast_to.hpp"
 #include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/index/take_along_axis.hpp"
+#include "nmtools/index/take_along_axis.hpp"
 #include "nmtools/testing/data/array/take_along_axis.hpp"
 #include "nmtools/testing/doctest.hpp"
 

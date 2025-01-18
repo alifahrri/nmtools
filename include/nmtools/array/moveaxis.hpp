@@ -1,9 +1,9 @@
 #ifndef NMTOOLS_ARRAY_VIEW_MOVEAXIS_HPP
 #define NMTOOLS_ARRAY_VIEW_MOVEAXIS_HPP
 
-#include "nmtools/array/index/argsort.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
-#include "nmtools/array/index/moveaxis.hpp"
+#include "nmtools/index/argsort.hpp"
+#include "nmtools/index/normalize_axis.hpp"
+#include "nmtools/index/moveaxis.hpp"
 #include "nmtools/array/transpose.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"

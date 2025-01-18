@@ -1,4 +1,4 @@
-#include "nmtools/array/index/remove_single_dims.hpp"
+#include "nmtools/index/remove_single_dims.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

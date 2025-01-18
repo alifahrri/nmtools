@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_RESIZE_HPP
 
 #include "nmtools/core/indexing.hpp"
-#include "nmtools/array/index/resize.hpp"
+#include "nmtools/index/resize.hpp"
 #include "nmtools/utility/as_static.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"

@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/fwd.hpp"
-#include "nmtools/array/index/atleast_nd.hpp"
+#include "nmtools/index/atleast_nd.hpp"
 #include "nmtools/core/indexing.hpp"
 #include "nmtools/utility/as_static.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_EXPAND_DIMS_HPP
 #define NMTOOLS_ARRAY_VIEW_EXPAND_DIMS_HPP
 
-#include "nmtools/array/index/expand_dims.hpp"
+#include "nmtools/index/expand_dims.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/utility/shape.hpp"
 

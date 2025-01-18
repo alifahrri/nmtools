@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_TILE_HPP
 
 #include "nmtools/core/indexing.hpp"
-#include "nmtools/array/index/tile.hpp"
+#include "nmtools/index/tile.hpp"
 #include "nmtools/utility/as_static.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"

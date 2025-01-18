@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_MUTABLE_INDEXING_HPP
 
 #include "nmtools/core/indexing.hpp"
-#include "nmtools/array/index/ndenumerate.hpp"
+#include "nmtools/index/ndenumerate.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 
 namespace nmtools::view

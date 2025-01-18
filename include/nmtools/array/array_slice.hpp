@@ -3,8 +3,8 @@
 
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/array/broadcast_arrays.hpp"
-#include "nmtools/array/index/array_slice.hpp"
-#include "nmtools/array/index/ndindex.hpp"
+#include "nmtools/index/array_slice.hpp"
+#include "nmtools/index/ndindex.hpp"
 #include "nmtools/core/discrete.hpp"
 #include "nmtools/array/ref.hpp"
 #include "nmtools/utility/apply_resize.hpp"

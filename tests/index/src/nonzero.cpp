@@ -1,4 +1,4 @@
-#include "nmtools/array/index/nonzero.hpp"
+#include "nmtools/index/nonzero.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/index/nonzero.hpp"
 

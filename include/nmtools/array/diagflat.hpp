@@ -82,7 +82,7 @@ namespace nmtools::meta
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/core/indexing.hpp"
 #include "nmtools/array/flatten.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/has_value.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"

@@ -1,4 +1,4 @@
-#include "nmtools/array/index/insert_index.hpp"
+#include "nmtools/index/insert_index.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

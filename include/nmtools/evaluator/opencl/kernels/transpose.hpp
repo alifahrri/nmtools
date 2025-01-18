@@ -7,7 +7,7 @@
 #include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
-#include "nmtools/array/index/cast.hpp"
+#include "nmtools/index/cast.hpp"
 
 #ifndef nm_stringify
 #define nm_stringify(a) #a

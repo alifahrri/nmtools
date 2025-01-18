@@ -1,4 +1,4 @@
-#include "nmtools/array/index/argsort.hpp"
+#include "nmtools/index/argsort.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

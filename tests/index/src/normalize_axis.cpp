@@ -163,7 +163,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, normalize_axis)
     }
 }
 
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define RUN_impl(...) \

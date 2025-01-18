@@ -1,4 +1,4 @@
-#include "nmtools/array/index/pooling.hpp"
+#include "nmtools/index/pooling.hpp"
 #include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 

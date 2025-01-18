@@ -6,7 +6,7 @@
 #include "nmtools/evaluator/simd/index.hpp"
 #include "nmtools/evaluator/simd/ufunc.hpp"
 #include "nmtools/evaluator/simd/bit_width.hpp"
-#include "nmtools/array/index/insert_index.hpp"
+#include "nmtools/index/insert_index.hpp"
 
 namespace nmtools::array
 {

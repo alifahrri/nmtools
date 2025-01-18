@@ -3,9 +3,9 @@
 
 #include "nmtools/constants.hpp"
 
-#include "nmtools/array/index/transpose.hpp"
-#include "nmtools/array/index/scatter.hpp"
-#include "nmtools/array/index/reverse.hpp"
+#include "nmtools/index/transpose.hpp"
+#include "nmtools/index/scatter.hpp"
+#include "nmtools/index/reverse.hpp"
 
 #include "nmtools/utility/isequal/isequal.hpp"
 #include "nmtools/core/indexing.hpp"

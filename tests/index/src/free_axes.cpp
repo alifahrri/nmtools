@@ -1,4 +1,4 @@
-#include "nmtools/array/index/free_axes.hpp"
+#include "nmtools/index/free_axes.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/index/free_axes.hpp"
 

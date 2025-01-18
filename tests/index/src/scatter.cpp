@@ -1,4 +1,4 @@
-#include "nmtools/array/index/scatter.hpp"
+#include "nmtools/index/scatter.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"

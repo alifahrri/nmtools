@@ -4,7 +4,7 @@
 #include "nmtools/ndarray.hpp"
 #include "nmtools/array/where.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
-#include "nmtools/array/index/cast.hpp"
+#include "nmtools/index/cast.hpp"
 
 #define nmtools_cl_kernel_name(out_type,cond_type,x_type,y_type) where_##out_type##_##cond_type##_##x_type##_##y_type
 #define nmtools_cl_kernel_name_str(out_type,cond_type,x_type,y_type) nm_stringify(where_##out_type##_##cond_type##_##x_type##_##y_type)

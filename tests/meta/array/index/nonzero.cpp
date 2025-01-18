@@ -1,4 +1,4 @@
-#include "nmtools/array/index/nonzero.hpp"
+#include "nmtools/index/nonzero.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/ndarray/fixed.hpp"

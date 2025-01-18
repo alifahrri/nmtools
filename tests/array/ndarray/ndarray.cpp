@@ -6,7 +6,7 @@
 #include "nmtools/ndarray/ndarray.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
-#include "nmtools/array/index/ndindex.hpp"
+#include "nmtools/index/ndindex.hpp"
 #include "nmtools/utl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/utility/cast.hpp"

@@ -1,4 +1,4 @@
-#include "nmtools/array/index/pooling.hpp"
+#include "nmtools/index/pooling.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/meta.hpp"
 

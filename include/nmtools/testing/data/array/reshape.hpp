@@ -3,7 +3,7 @@
 
 #include "nmtools/testing/testing.hpp"
 #include "nmtools/testing/array_cast.hpp"
-#include "nmtools/array/index/as_tuple.hpp"
+#include "nmtools/index/as_tuple.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

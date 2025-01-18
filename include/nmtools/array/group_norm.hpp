@@ -14,7 +14,7 @@
 #include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/array/moveaxis.hpp"
 
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 
 namespace nmtools::index
 {

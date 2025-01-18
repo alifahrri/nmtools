@@ -7,7 +7,7 @@
 /*=====================================================================*/
 
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 
 namespace nmtools::index
 {
@@ -344,7 +344,7 @@ namespace nmtools::utils::impl
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/core/indexing.hpp"
 #include "nmtools/core/alias.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/utility/fwd.hpp"
 
 namespace nmtools::view

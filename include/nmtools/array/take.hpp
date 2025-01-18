@@ -3,7 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/core/decorator.hpp"
-#include "nmtools/array/index/take.hpp"
+#include "nmtools/index/take.hpp"
 #include "nmtools/utility/shape.hpp"
 
 namespace nmtools::view

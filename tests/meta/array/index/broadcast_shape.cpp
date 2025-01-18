@@ -1,4 +1,4 @@
-#include "nmtools/array/index/broadcast_shape.hpp"
+#include "nmtools/index/broadcast_shape.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 

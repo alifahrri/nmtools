@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_EVAL_SIMD_INDEX_MATMUL_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/evaluator/simd/index/common.hpp"
 

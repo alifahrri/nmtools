@@ -4,7 +4,7 @@
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/dtypes.hpp"
-#include "nmtools/array/index/arange.hpp"
+#include "nmtools/index/arange.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
 

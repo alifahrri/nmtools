@@ -2,10 +2,10 @@
 #define NMTOOLS_ARRAY_NDARRAY_HYBRID_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
-#include "nmtools/array/index/compute_offset.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/compute_indices.hpp"
+#include "nmtools/index/compute_strides.hpp"
+#include "nmtools/index/compute_offset.hpp"
 #include "nmtools/array/ref.hpp"
 #include "nmtools/core/flatten.hpp"
 #include "nmtools/utility/shape.hpp"

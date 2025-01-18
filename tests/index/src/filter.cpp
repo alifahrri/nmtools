@@ -1,4 +1,4 @@
-#include "nmtools/array/index/filter.hpp"
+#include "nmtools/index/filter.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 

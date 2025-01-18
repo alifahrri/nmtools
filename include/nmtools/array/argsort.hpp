@@ -1,10 +1,10 @@
 #ifndef NMTOOLS_ARRAY_VIEW_ARGSORT_HPP
 #define NMTOOLS_ARRAY_VIEW_ARGSORT_HPP
 
-#include "nmtools/array/index/ndindex.hpp"
-#include "nmtools/array/index/remove_dims.hpp"
-#include "nmtools/array/index/insert_index.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/ndindex.hpp"
+#include "nmtools/index/remove_dims.hpp"
+#include "nmtools/index/insert_index.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 #include "nmtools/core/discrete.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/array/slice.hpp"

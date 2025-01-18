@@ -1,4 +1,4 @@
-#include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/index/compute_strides.hpp"
 #include "nmtools/testing/data/index/compute_strides.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/testing/doctest.hpp"

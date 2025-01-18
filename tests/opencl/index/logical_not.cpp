@@ -1,4 +1,4 @@
-#include "nmtools/array/index/logical_not.hpp"
+#include "nmtools/index/logical_not.hpp"
 #include "nmtools/core/mutable_ref.hpp"
 
 namespace nm = nmtools;

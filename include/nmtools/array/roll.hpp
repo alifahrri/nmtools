@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_ROLL_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/roll.hpp"
+#include "nmtools/index/roll.hpp"
 #include "nmtools/core/indexing.hpp"
 #include "nmtools/array/flatten.hpp"
 #include "nmtools/array/reshape.hpp"

@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/squeeze.hpp"
+#include "nmtools/index/squeeze.hpp"
 
 namespace nmtools::view
 {

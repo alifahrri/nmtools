@@ -1,4 +1,4 @@
-#include "nmtools/array/index/remove_single_dims.hpp"
+#include "nmtools/index/remove_single_dims.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/ndarray/fixed.hpp"

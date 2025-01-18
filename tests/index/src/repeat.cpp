@@ -1,4 +1,4 @@
-#include "nmtools/array/index/repeat.hpp"
+#include "nmtools/index/repeat.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/ndarray/fixed.hpp"
@@ -175,8 +175,8 @@ TEST_CASE("shape_repeat(case5)" * doctest::test_suite("index::constexpr_shape_re
     CONSTEXPR_SHAPE_REPEAT_SUBCASE( case5, shape_h, repeats, axis );
 }
 
-#include "nmtools/array/index/repeat.hpp"
-#include "nmtools/array/index/as_tuple.hpp"
+#include "nmtools/index/repeat.hpp"
+#include "nmtools/index/as_tuple.hpp"
 #include "nmtools/meta.hpp"
 
 #include "nmtools/testing/doctest.hpp"

@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_BROADCAST_ARRAYS_HPP
 
 #include "nmtools/array/broadcast_to.hpp"
-#include "nmtools/array/index/broadcast_shape.hpp"
+#include "nmtools/index/broadcast_shape.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/assert.hpp"

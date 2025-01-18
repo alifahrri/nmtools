@@ -6,8 +6,8 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/repeat.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/repeat.hpp"
 
 namespace nmtools::view
 {

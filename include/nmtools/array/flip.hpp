@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_FLIP_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/flip.hpp"
+#include "nmtools/index/flip.hpp"
 #include "nmtools/array/slice.hpp"
 #include "nmtools/utility/shape.hpp"
 

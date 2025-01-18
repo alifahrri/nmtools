@@ -8,10 +8,10 @@
 #include "nmtools/core/indexing.hpp"
 #include "nmtools/utility/as_static.hpp"
 
-#include "nmtools/array/index/reshape.hpp"
-#include "nmtools/array/index/compute_indices.hpp"
-#include "nmtools/array/index/compute_offset.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/index/reshape.hpp"
+#include "nmtools/index/compute_indices.hpp"
+#include "nmtools/index/compute_offset.hpp"
+#include "nmtools/index/compute_strides.hpp"
 
 #include "nmtools/utility/isequal/isequal.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"

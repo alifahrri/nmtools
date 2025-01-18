@@ -1,4 +1,4 @@
-#include "nmtools/array/index/gather.hpp"
+#include "nmtools/index/gather.hpp"
 #include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 

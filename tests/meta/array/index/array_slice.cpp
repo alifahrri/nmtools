@@ -1,4 +1,4 @@
-#include "nmtools/array/index/array_slice.hpp"
+#include "nmtools/index/array_slice.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

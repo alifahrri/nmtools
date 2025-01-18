@@ -4,7 +4,7 @@
 #include "nmtools/ndarray.hpp"
 #include "nmtools/array/flatten.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
-#include "nmtools/array/index/cast.hpp"
+#include "nmtools/index/cast.hpp"
 
 #define nmtools_cl_kernel_name(out_type,inp_type) flatten_##out_type##_##inp_type
 #define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(flatten_##out_type##_##inp_type)

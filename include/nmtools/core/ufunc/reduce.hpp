@@ -8,11 +8,11 @@
 #include "nmtools/array/slice.hpp"
 #include "nmtools/array/flatten.hpp"
 #include "nmtools/array/broadcast_arrays.hpp"
-#include "nmtools/array/index/outer.hpp"
-#include "nmtools/array/index/remove_dims.hpp"
-#include "nmtools/array/index/where.hpp"
-#include "nmtools/array/index/sum.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/outer.hpp"
+#include "nmtools/index/remove_dims.hpp"
+#include "nmtools/index/where.hpp"
+#include "nmtools/index/sum.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/dtypes.hpp"
 #include "nmtools/ndarray.hpp"
@@ -23,7 +23,7 @@
 #include "nmtools/core/ufunc/detail.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"
-#include "nmtools/array/index/reduce.hpp"
+#include "nmtools/index/reduce.hpp"
 
 namespace nmtools::args
 {

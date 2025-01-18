@@ -1,4 +1,4 @@
-#include "nmtools/array/index/slice.hpp"
+#include "nmtools/index/slice.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"

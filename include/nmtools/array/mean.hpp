@@ -4,9 +4,9 @@
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/divide.hpp"
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/ref.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/ref.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 #include "nmtools/dtypes.hpp"
 #include "nmtools/meta.hpp"
 

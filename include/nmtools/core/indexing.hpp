@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_INDEXING_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/fwd.hpp"

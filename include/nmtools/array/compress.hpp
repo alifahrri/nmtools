@@ -2,8 +2,8 @@
 #define NMTOOLS_ARRAY_VIEW_COMPRESS_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/compress.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/compress.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/core/decorator.hpp"
 
 namespace nmtools::view

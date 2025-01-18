@@ -2,9 +2,9 @@
 #define NMTOOLS_ARRAY_VIEW_TAKE_ALONG_AXIS_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/take_along_axis.hpp"
-#include "nmtools/array/index/ndindex.hpp"
-#include "nmtools/array/index/insert_index.hpp"
+#include "nmtools/index/take_along_axis.hpp"
+#include "nmtools/index/ndindex.hpp"
+#include "nmtools/index/insert_index.hpp"
 #include "nmtools/array/slice.hpp"
 #include "nmtools/array/flatten.hpp"
 #include "nmtools/core/mutable_slice.hpp"
@@ -14,7 +14,7 @@
 #include "nmtools/array/broadcast_arrays.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 
-#include "nmtools/array/index/split.hpp"
+#include "nmtools/index/split.hpp"
 
 namespace nmtools::view
 {

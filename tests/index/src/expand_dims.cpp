@@ -1,4 +1,4 @@
-#include "nmtools/array/index/expand_dims.hpp"
+#include "nmtools/index/expand_dims.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/data/index/expand_dims.hpp"
 #include "nmtools/testing/doctest.hpp"

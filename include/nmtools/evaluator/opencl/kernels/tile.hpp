@@ -4,7 +4,7 @@
 #include "nmtools/ndarray.hpp"
 #include "nmtools/array/tile.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
-#include "nmtools/array/index/cast.hpp"
+#include "nmtools/index/cast.hpp"
 
 #define nmtools_cl_kernel_name(out_type,inp_type) tile_##out_type##_##inp_type
 #define nmtools_cl_kernel_name_str(out_type,inp_type) nm_stringify(tile_##out_type##_##inp_type)

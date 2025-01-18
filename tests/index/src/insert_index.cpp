@@ -1,4 +1,4 @@
-#include "nmtools/array/index/insert_index.hpp"
+#include "nmtools/index/insert_index.hpp"
 #include "nmtools/utility/flatten_either.hpp"
 #include "nmtools/utility/apply_isequal.hpp"
 #include "nmtools/utility/apply_to_string.hpp"

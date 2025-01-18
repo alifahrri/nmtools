@@ -3,7 +3,7 @@
 
 #include "nmtools/core/decorator.hpp"
 
-#include "nmtools/array/index/broadcast_to.hpp"
+#include "nmtools/index/broadcast_to.hpp"
 
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"

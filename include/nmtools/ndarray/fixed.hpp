@@ -2,11 +2,11 @@
 #define NMTOOLS_ARRAY_NDARRAY_FIXED_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/compute_strides.hpp"
+#include "nmtools/index/compute_strides.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/forward.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 
 /**
  * @defgroup array 

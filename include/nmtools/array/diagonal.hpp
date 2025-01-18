@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_DIAGONAL_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/index/normalize_axis.hpp"
+#include "nmtools/index/normalize_axis.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
@@ -182,7 +182,7 @@ namespace nmtools::meta
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/core/indexing.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/utility/unwrap.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 #include "nmtools/utility/isclose/isclose.hpp"

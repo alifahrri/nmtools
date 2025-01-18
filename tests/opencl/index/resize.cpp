@@ -1,4 +1,4 @@
-#include "nmtools/array/index/resize.hpp"
+#include "nmtools/index/resize.hpp"
 #include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 #include "nmtools/utility/unwrap.hpp"

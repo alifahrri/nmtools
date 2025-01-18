@@ -1,4 +1,4 @@
-#include "nmtools/array/index/reshape.hpp"
+#include "nmtools/index/reshape.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/meta.hpp"
 

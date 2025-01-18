@@ -3,7 +3,7 @@
 
 #include "nmtools/core/decorator.hpp"
 
-#include "nmtools/array/index/concatenate.hpp"
+#include "nmtools/index/concatenate.hpp"
 #include "nmtools/utility/shape.hpp"
 
 namespace nmtools::view

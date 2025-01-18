@@ -3,10 +3,10 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
-#include "nmtools/array/index/broadcast_shape.hpp"
-#include "nmtools/array/index/broadcast_to.hpp"
-#include "nmtools/array/index/product.hpp"
-#include "nmtools/array/index/split.hpp"
+#include "nmtools/index/broadcast_shape.hpp"
+#include "nmtools/index/broadcast_to.hpp"
+#include "nmtools/index/product.hpp"
+#include "nmtools/index/split.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/unwrap.hpp"
 
@@ -333,8 +333,8 @@ namespace nmtools::meta
 #define NMTOOLS_ARRAY_VIEW_MATMUL_HPP
 
 #include "nmtools/core/decorator.hpp"
-#include "nmtools/array/index/broadcast_shape.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/broadcast_shape.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/core/ufunc.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/multiply.hpp"

@@ -1,4 +1,4 @@
-#include "nmtools/array/index/compute_offset.hpp"
+#include "nmtools/index/compute_offset.hpp"
 #include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/evaluator/opencl/kernel_helper.hpp"
 

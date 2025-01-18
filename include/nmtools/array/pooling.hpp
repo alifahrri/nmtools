@@ -1,8 +1,8 @@
 #ifndef NMTOOLS_ARRAY_VIEW_POOLING_HPP
 #define NMTOOLS_ARRAY_VIEW_POOLING_HPP
 
-#include "nmtools/array/index/pooling.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/pooling.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/array/slice.hpp"
 #include "nmtools/core/ufunc.hpp"

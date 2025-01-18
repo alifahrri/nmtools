@@ -1,4 +1,4 @@
-#include "nmtools/array/index/concatenate.hpp"
+#include "nmtools/index/concatenate.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/ndarray/fixed.hpp"
