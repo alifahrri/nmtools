@@ -1,6 +1,13 @@
 # Development Guide
 
-## Testing
+Cheatsheet for development build and tests.
+
+1. [Basic Building & Testing (CPU)](#basic-testing-cpu)
+1. [Build & Test `web-wasm`](#build--test-web-wasm)
+1. [Build & Test `sycl`](#build--test-sycl)
+1. [Run Interactive Notebook](#run-interactive-notebook)
+
+## Basic Building & Testing (CPU)
 
 ### Build Unit Tests
 
@@ -55,6 +62,24 @@ After building the tests, run unit tests:
 ctest
 ```
 
+## Build & Test `web-wasm`
+
+You can use [dockcross](https://github.com/dockcross/dockcross) wasm image to build and test easily:
+```
+export IMAGE=web-wasm
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "emcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TEST_ARRAY_NN_EVAL=ON ../.. && make -j16 VERBOSE=1"
+./dockcross-${IMAGE} node build/${IMAGE}/tests/array/numeric-tests-doctest.js
+```
+
+## Build & Test `sycl`
+
+Targeting OpenMP backend:
+```
+docker build . --tag nmtools:sycl-clang14-omp --file docker/sycl.dockerfile
+```
+
 ## Run Interactive Notebook
 
 This is useful to add/update notebook examples. The notebook is using xeus-cling jupyter kernel to run C++ interactively.
@@ -80,15 +105,4 @@ docker exec -it cling zsh
 Inside the docker container, run jupyter-lab:
 ```
 jupyter-lab --allow-root
-```
-
-## Build & Test web-wasm
-
-You can use [dockcross](https://github.com/dockcross/dockcross) wasm image to build and test easily:
-```
-export IMAGE=web-wasm
-docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
-./dockcross-${IMAGE} bash -c "emcc -v"
-./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TEST_ARRAY_NN_EVAL=ON ../.. && make -j16 VERBOSE=1"
-./dockcross-${IMAGE} node build/${IMAGE}/tests/array/numeric-tests-doctest.js
 ```
