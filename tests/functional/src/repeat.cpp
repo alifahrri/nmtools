@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/repeat.hpp"
+#include "nmtools/array/repeat.hpp"
 #include "nmtools/testing/data/array/repeat.hpp"
 #include "nmtools/testing/doctest.hpp"
 

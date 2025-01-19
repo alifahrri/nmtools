@@ -2,8 +2,8 @@
 #define NMTOOLS_TESTING_OPENCL_HPP
 
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/array/eval/opencl/context.hpp"
-#include "nmtools/array/index/cast.hpp"
+#include "nmtools/evaluator/opencl/context.hpp"
+#include "nmtools/index/cast.hpp"
 
 #include <cstring>
 #include <unordered_map>

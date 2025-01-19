@@ -1,7 +1,7 @@
 // disable nested vector, because current implementation of nested resize and utl vector
 #define NMTOOLS_CAST_ARRAYS_NESTED_VEC(...)
 
-#include "nmtools/array/index/array_slice.hpp"
+#include "nmtools/index/array_slice.hpp"
 #include "nmtools/testing/data/array/array_slice.hpp"
 #include "nmtools/testing/doctest.hpp"
 

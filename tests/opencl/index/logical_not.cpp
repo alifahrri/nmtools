@@ -1,5 +1,5 @@
-#include "nmtools/array/index/logical_not.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
+#include "nmtools/index/logical_not.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 
 namespace nm = nmtools;
 namespace ix = nm::index;

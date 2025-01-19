@@ -1,8 +1,8 @@
 #if __has_include(<boost/array.hpp>)
 #define NMTOOLS_ENABLE_BOOST
 #endif
-#include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/view/repeat.hpp"
+#include "nmtools/ndarray.hpp"
+#include "nmtools/array/repeat.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

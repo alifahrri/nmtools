@@ -1,4 +1,4 @@
-#include "nmtools/array/view/compress.hpp"
+#include "nmtools/array/compress.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

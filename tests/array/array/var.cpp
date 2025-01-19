@@ -1,4 +1,4 @@
-#include "nmtools/array/array/var.hpp"
+#include "nmtools/array/var.hpp"
 #include "nmtools/testing/data/array/var.hpp"
 #include "nmtools/testing/doctest.hpp"
 

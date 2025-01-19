@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/cosh.hpp"
+#include "nmtools/array/ufuncs/cosh.hpp"
 #include "nmtools/testing/data/array/cosh.hpp"
 #include "nmtools/testing/doctest.hpp"
 

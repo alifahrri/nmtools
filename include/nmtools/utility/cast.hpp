@@ -28,8 +28,8 @@ namespace nmtools::array::kind
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/view/mutable_flatten.hpp"
+#include "nmtools/core/flatten.hpp"
+#include "nmtools/core/mutable_flatten.hpp"
 
 #include "nmtools/utility/isequal.hpp"
 
@@ -57,17 +57,17 @@ namespace nmtools
 
 #include "nmtools/meta.hpp"
 
-#include "nmtools/array/ndarray/ndarray.hpp"
+#include "nmtools/ndarray/ndarray.hpp"
 
 #ifndef NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
-#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
 #endif
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/index/product.hpp"
 
 #include "nmtools/utility/apply_resize.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/view/flatten.hpp"
-#include "nmtools/array/view/mutable_flatten.hpp"
+#include "nmtools/core/flatten.hpp"
+#include "nmtools/core/mutable_flatten.hpp"
 
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/tuple_cat.hpp"

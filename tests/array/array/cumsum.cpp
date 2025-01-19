@@ -1,4 +1,4 @@
-#include "nmtools/array/array/cumsum.hpp"
+#include "nmtools/array/cumsum.hpp"
 #include "nmtools/testing/data/array/add.hpp"
 #include "nmtools/testing/doctest.hpp"
 

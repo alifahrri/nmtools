@@ -1,4 +1,4 @@
-#include "nmtools/array/array/softmin.hpp"
+#include "nmtools/array/softmin.hpp"
 #include "nmtools/testing/data/array/softmin.hpp"
 #include "nmtools/testing/doctest.hpp"
 

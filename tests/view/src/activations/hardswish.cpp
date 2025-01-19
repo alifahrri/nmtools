@@ -1,4 +1,4 @@
-#include "nmtools/array/view/activations/hardswish.hpp"
+#include "nmtools/array/activations/hardswish.hpp"
 #include "nmtools/testing/data/array/hardswish.hpp"
 #include "nmtools/testing/doctest.hpp"
 

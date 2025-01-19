@@ -82,9 +82,9 @@ namespace nmtools::utils
     struct graphviz_t {};
     constexpr inline auto Graphviz = graphviz_t {};
 
-    template <char tab='\t', char space=' ', char comma=',', char open_bracket='[', char close_bracket=']'>
+    template <char tab='\t', char space=' ', char comma=',', char open_bracket='[', char close_bracket=']', bool show_types=true>
     struct fmt_string_t {};
-    constexpr inline auto Compact = fmt_string_t<'\0',' ',',','{','}'> {};
+    constexpr inline auto Compact = fmt_string_t<' ',' ',',','{','}',false> {};
 
     namespace error
     {

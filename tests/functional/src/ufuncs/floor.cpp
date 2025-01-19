@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/floor.hpp"
+#include "nmtools/array/ufuncs/floor.hpp"
 #include "nmtools/testing/data/array/floor.hpp"
 #include "nmtools/testing/doctest.hpp"
 

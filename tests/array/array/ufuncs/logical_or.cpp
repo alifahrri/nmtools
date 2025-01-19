@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/logical_or.hpp"
+#include "nmtools/array/ufuncs/logical_or.hpp"
 #include "nmtools/testing/data/array/logical_or.hpp"
 #include "nmtools/testing/doctest.hpp"
 

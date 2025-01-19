@@ -1,5 +1,5 @@
-#include "nmtools/array/index/take.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/index/take.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/constants.hpp"
 

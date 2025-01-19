@@ -73,8 +73,10 @@ RUN bash scripts/install_pocl.sh
 
 RUN bash scripts/install_opensycl.sh
 
-RUN mkdir -p build/${toolchain} && cd build/${toolchain} \
-    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${toolchain}.cmake \
+FROM build as run
+
+RUN mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${TOOLCHAIN}.cmake \
         -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
         -DNMTOOLS_BUILD_SYCL_TESTS=ON \
         ../.. \

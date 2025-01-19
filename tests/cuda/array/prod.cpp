@@ -1,7 +1,7 @@
-#include "nmtools/array/array/prod.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/eval/cuda.hpp"
+#include "nmtools/array/prod.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/evaluator/cuda.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

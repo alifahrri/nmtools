@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/divide.hpp"
+#include "nmtools/array/ufuncs/divide.hpp"
 #include "nmtools/testing/data/array/divide.hpp"
 #include "nmtools/testing/doctest.hpp"
 

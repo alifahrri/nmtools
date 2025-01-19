@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/isnan.hpp"
+#include "nmtools/array/ufuncs/isnan.hpp"
 #include "nmtools/testing/data/array/isnan.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,7 +1,7 @@
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/functional/ufunc/ufunc.hpp"
-#include "nmtools/array/functional/softmin.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
+#include "nmtools/array/softmin.hpp"
 #include "nmtools/utility/has_value.hpp"
 #include "nmtools/testing/doctest.hpp"
 

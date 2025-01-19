@@ -1,4 +1,4 @@
-#include "nmtools/array/index/resize.hpp"
+#include "nmtools/index/resize.hpp"
 #include "nmtools/testing/data/index/resize.hpp"
 #include "nmtools/testing/doctest.hpp"
 

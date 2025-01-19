@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_COS_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_COS_HPP
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/array_cast.hpp"
 #include "nmtools/testing/testing.hpp"
 #include "nmtools/math.hpp"

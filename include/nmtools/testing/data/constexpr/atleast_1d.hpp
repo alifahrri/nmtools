@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_TESTING_DATA_CONSTEXPR_ATLEAST_1D_HPP
 #define NMTOOLS_TESTING_DATA_CONSTEXPR_ATLEAST_1D_HPP
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/testing.hpp"
 
 NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_atleast_1d)

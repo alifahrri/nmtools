@@ -28,4 +28,6 @@
 #include "nmtools/utility/boost/get.hpp"
 #endif
 
+#include "nmtools/utility/random_engine.hpp"
+
 #endif // NMTOOLS_UTILITY_HPP

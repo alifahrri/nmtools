@@ -1,6 +1,6 @@
 #include "nmtools/utl.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

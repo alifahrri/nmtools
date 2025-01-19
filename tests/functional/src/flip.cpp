@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/flip.hpp"
+#include "nmtools/array/flip.hpp"
 #include "nmtools/testing/data/array/flip.hpp"
 #include "nmtools/testing/data/array/fliplr.hpp"
 #include "nmtools/testing/data/array/flipud.hpp"

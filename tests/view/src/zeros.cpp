@@ -1,4 +1,4 @@
-#include "nmtools/array/view/zeros.hpp"
+#include "nmtools/array/zeros.hpp"
 #include "nmtools/testing/data/array/zeros.hpp"
 #include "nmtools/testing/doctest.hpp"
 

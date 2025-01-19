@@ -1,9 +1,9 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_SQRT_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_SQRT_HPP
 
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/testing/testing.hpp"
 
 #include <vector>

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/exp.hpp"
+#include "nmtools/array/ufuncs/exp.hpp"
 #include "nmtools/testing/data/array/exp.hpp"
 #include "nmtools/testing/doctest.hpp"
 

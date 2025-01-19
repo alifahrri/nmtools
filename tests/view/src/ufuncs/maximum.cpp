@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/maximum.hpp"
+#include "nmtools/array/ufuncs/maximum.hpp"
 #include "nmtools/testing/data/array/maximum.hpp"
 #include "nmtools/testing/doctest.hpp"
 

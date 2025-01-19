@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/tan.hpp"
+#include "nmtools/array/ufuncs/tan.hpp"
 #include "nmtools/testing/data/array/tan.hpp"
 #include "nmtools/testing/doctest.hpp"
 

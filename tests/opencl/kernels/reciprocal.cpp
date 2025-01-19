@@ -1,10 +1,10 @@
-#include "nmtools/array/eval/opencl/kernels/reciprocal.hpp"
+#include "nmtools/evaluator/opencl/kernels/reciprocal.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/eval/opencl/context.hpp"
-#include "nmtools/array/eval/opencl/evaluator.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/ones.hpp"
-#include "nmtools/array/array/ufuncs/reciprocal.hpp"
+#include "nmtools/evaluator/opencl/context.hpp"
+#include "nmtools/evaluator/opencl/evaluator.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/ones.hpp"
+#include "nmtools/array/ufuncs/reciprocal.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #undef NMTOOLS_TESTING_PRECISION

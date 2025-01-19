@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/cbrt.hpp"
+#include "nmtools/array/ufuncs/cbrt.hpp"
 #include "nmtools/testing/data/array/cbrt.hpp"
 #include "nmtools/testing/doctest.hpp"
 

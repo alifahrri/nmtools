@@ -1,4 +1,4 @@
-#include "nmtools/array/index/roll.hpp"
+#include "nmtools/index/roll.hpp"
 #include "nmtools/testing/data/index/roll.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,5 +1,5 @@
-#include "nmtools/array/index/pooling.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/index/pooling.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/meta.hpp"
 
 #include "nmtools/testing/doctest.hpp"

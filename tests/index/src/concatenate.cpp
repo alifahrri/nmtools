@@ -1,5 +1,5 @@
-#include "nmtools/array/index/concatenate.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/index/concatenate.hpp"
+#include "nmtools/ndarray.hpp"
 
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -315,8 +315,8 @@ TEST_CASE("shape_concatenate(case4)" * doctest::test_suite("index::shape_concate
     SHAPE_CONCATENATE_SUBCASE( case4, ashape_cl, bshape_cl, axis );
 }
 
-#include "nmtools/array/index/concatenate.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/index/concatenate.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
 

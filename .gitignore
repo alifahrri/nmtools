@@ -27,3 +27,4 @@ llvm.sh
 install
 amdgpu-*
 *.dot
+*.Trash*

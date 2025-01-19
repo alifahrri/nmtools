@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/assert.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/ndindex.hpp"
+#include "nmtools/index/ndindex.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 #include "nmtools/utility/unwrap.hpp"
@@ -520,6 +520,15 @@ namespace nmtools::utils
     {
         return meta::is_same_v<lhs_t,rhs_t>;
     }
+
+    template <typename lhs_t, typename rhs_t>
+    struct isequal_t<dtype_t<lhs_t>,dtype_t<rhs_t>>
+    {
+        constexpr auto operator()(const dtype_t<lhs_t>&, const dtype_t<rhs_t>&) const
+        {
+            return meta::is_same_v<lhs_t,rhs_t>;
+        }
+    };
 } // namespace nmtools::utils
 
 #endif // NMTOOLS_UTILS_ISEQUAL_HPP

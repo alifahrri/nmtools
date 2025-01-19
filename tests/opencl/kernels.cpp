@@ -1,1 +1,1 @@
-#include "nmtools/array/eval/opencl/kernels_spv.hpp"
+#include "nmtools/evaluator/opencl/kernels_spv.hpp"

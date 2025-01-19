@@ -15,11 +15,11 @@ inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 
-#include "nmtools/array/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/array/eval/hip.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/evaluator/hip.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/data/array/add.hpp"
 
 namespace nm = nmtools;

@@ -470,15 +470,15 @@ namespace nmtools::meta
 #include "nmtools/platform.hpp"
 
 #ifndef NMTOOLS_DISABLE_STL
-#include "nmtools/array/impl/stl.hpp"
+#include "nmtools/utility/impl/stl.hpp"
 #endif
 
 // NOTE: currently breaks ref view (maybe circular dependency)
 // #ifdef NMTOOLS_ENABLE_BOOST
-// #include "nmtools/array/impl/boost.hpp"
+// #include "nmtools/utility/impl/boost.hpp"
 // #endif
 
 // UTL should be available on any platform
-#include "nmtools/array/impl/utl.hpp"
+#include "nmtools/utility/impl/utl.hpp"
 
 #endif // NMTOOLS_ARRAY_UTILITY_SHAPE_HPP

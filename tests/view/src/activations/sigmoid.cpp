@@ -1,4 +1,4 @@
-#include "nmtools/array/view/activations/sigmoid.hpp"
+#include "nmtools/array/activations/sigmoid.hpp"
 #include "nmtools/testing/data/array/sigmoid.hpp"
 #include "nmtools/testing/doctest.hpp"
 

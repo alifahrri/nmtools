@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/transpose.hpp"
+#include "nmtools/array/transpose.hpp"
 #include "nmtools/testing/data/array/transpose.hpp"
 #include "nmtools/testing/doctest.hpp"
 

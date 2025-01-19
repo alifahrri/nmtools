@@ -1,4 +1,4 @@
-#include "nmtools/array/view/dot.hpp"
+#include "nmtools/array/dot.hpp"
 #include "nmtools/testing/data/index/dot.hpp"
 #include "nmtools/testing/doctest.hpp"
 

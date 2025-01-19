@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/bitwise_or.hpp"
+#include "nmtools/array/ufuncs/bitwise_or.hpp"
 #include "nmtools/testing/data/array/bitwise_or.hpp"
 #include "nmtools/testing/doctest.hpp"
 

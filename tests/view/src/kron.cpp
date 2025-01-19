@@ -1,4 +1,4 @@
-#include "nmtools/array/view/kron.hpp"
+#include "nmtools/array/kron.hpp"
 #include "nmtools/testing/data/array/kron.hpp"
 #include "nmtools/testing/doctest.hpp"
 

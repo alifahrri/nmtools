@@ -9,6 +9,27 @@
 #include "nmtools/meta/array.hpp"
 #include "nmtools/meta/traits.hpp"
 
+#include <boost/version.hpp>
+#define BOOST_VERSION_MAJOR     (BOOST_VERSION / 100000)
+#define BOOST_VERSION_MINOR     ((BOOST_VERSION / 100) % 1000)
+#define BOOST_VERSION_SUB_MINOR (BOOST_VERSION % 100)
+
+#define XSTR(x) STR(x)
+#define STR(x) #x
+
+#if 0
+#pragma message "BOOST_VERSION_MAJOR: " XSTR(BOOST_VERSION_MAJOR)
+#pragma message "BOOST_VERSION_MINOR: " XSTR(BOOST_VERSION_MINOR)
+#pragma message "BOOST_VERSION_SUB_MINOR: " XSTR(BOOST_VERSION_SUB_MINOR)
+#endif
+
+#undef XSTR
+#undef STR
+
+#ifndef BOOST_CONTAINER_OPTIONS_MIN_VERSION
+#define BOOST_CONTAINER_OPTIONS_MIN_VERSION (65)
+#endif
+
 namespace nmtools::meta
 {
     template <typename T, std::size_t N>
@@ -111,6 +132,7 @@ namespace nmtools::meta
         static constexpr auto value = N;
     };
 
+    #if BOOST_VERSION_MINOR > (BOOST_CONTAINER_OPTIONS_MIN_VERSION)
     template <typename T, std::size_t Capacity, typename Options>
     struct get_element_type<
         ::boost::container::static_vector<T,Capacity,Options>
@@ -118,7 +140,17 @@ namespace nmtools::meta
     {
         using type = T;
     }; // get_element_type
+    #else
+    template <typename T, std::size_t Capacity>
+    struct get_element_type<
+        ::boost::container::static_vector<T,Capacity>
+    >
+    {
+        using type = T;
+    }; // get_element_type
+    #endif
 
+    #if BOOST_VERSION_MINOR > (BOOST_CONTAINER_OPTIONS_MIN_VERSION)
     template <typename T, std::size_t Capacity, typename Options>
     struct fixed_dim<
         ::boost::container::static_vector<T,Capacity,Options>
@@ -127,7 +159,18 @@ namespace nmtools::meta
         static constexpr auto value = 1ul;
         using value_type = decltype(value);
     };
+    #else
+    template <typename T, std::size_t Capacity>
+    struct fixed_dim<
+        ::boost::container::static_vector<T,Capacity>
+    >
+    {
+        static constexpr auto value = 1ul;
+        using value_type = decltype(value);
+    };
+    #endif
 
+    #if BOOST_VERSION_MINOR > (BOOST_CONTAINER_OPTIONS_MIN_VERSION)
     template <typename T, std::size_t Capacity, typename Options>
     struct bounded_size<
         ::boost::container::static_vector<T,Capacity,Options>
@@ -136,7 +179,18 @@ namespace nmtools::meta
         static constexpr auto value = Capacity;
         using value_type = decltype(value);
     };
+    #else
+    template <typename T, std::size_t Capacity>
+    struct bounded_size<
+        ::boost::container::static_vector<T,Capacity>
+    >
+    {
+        static constexpr auto value = Capacity;
+        using value_type = decltype(value);
+    };
+    #endif
 
+    #if BOOST_VERSION_MINOR > (BOOST_CONTAINER_OPTIONS_MIN_VERSION)
     template <typename T, std::size_t Capacity, typename Options, auto NewSize>
     struct resize_bounded_size<
         ::boost::container::static_vector<T,Capacity,Options>, NewSize
@@ -144,6 +198,15 @@ namespace nmtools::meta
     {
         using type = ::boost::container::static_vector<T,NewSize,Options>;
     };
+    #else
+    template <typename T, std::size_t Capacity, auto NewSize>
+    struct resize_bounded_size<
+        ::boost::container::static_vector<T,Capacity>, NewSize
+    >
+    {
+        using type = ::boost::container::static_vector<T,NewSize>;
+    };
+    #endif
 
     namespace error
     {
@@ -153,6 +216,7 @@ namespace nmtools::meta
     } // namespace error
     
 
+    #if BOOST_VERSION_MINOR > (BOOST_CONTAINER_OPTIONS_MIN_VERSION)
     // TODO: remove
     template <typename T, std::size_t Capacity, typename Options>
     struct hybrid_index_array_max_size<
@@ -168,7 +232,25 @@ namespace nmtools::meta
         }();
         using type = decltype(value);
     }; // hybrid_index_array_max_size
+    #else
+    // TODO: remove
+    template <typename T, std::size_t Capacity>
+    struct hybrid_index_array_max_size<
+        ::boost::container::static_vector<T,Capacity>
+    >
+    {
+        static constexpr auto value = [](){
+            if constexpr (is_index_v<T>) {
+                return Capacity;
+            } else {
+                return error::HYBRID_INDEX_ARRAY_BOUNDED_SIZE_UNSUPPORTED<::boost::container::static_vector<T,Capacity>>{};
+            }
+        }();
+        using type = decltype(value);
+    }; // hybrid_index_array_max_size
+    #endif
 
+    #if BOOST_VERSION_MINOR > (BOOST_CONTAINER_OPTIONS_MIN_VERSION)
     template <typename T, std::size_t N, typename Allocator, typename Options>
     struct get_element_type<
         ::boost::container::small_vector<T,N,Allocator,Options>
@@ -176,7 +258,17 @@ namespace nmtools::meta
     {
         using type = T;
     }; // get_element_type
+    #else
+    template <typename T, std::size_t N, typename Allocator>
+    struct get_element_type<
+        ::boost::container::small_vector<T,N,Allocator>
+    >
+    {
+        using type = T;
+    }; // get_element_type
+    #endif
 
+    #if BOOST_VERSION_MINOR > (BOOST_CONTAINER_OPTIONS_MIN_VERSION)
     template <typename T, typename Allocator, typename Options>
     struct get_element_type<
         ::boost::container::vector<T,Allocator,Options>
@@ -184,6 +276,15 @@ namespace nmtools::meta
     {
         using type = T;
     };
+    #else
+    template <typename T, typename Allocator>
+    struct get_element_type<
+        ::boost::container::vector<T,Allocator>
+    >
+    {
+        using type = T;
+    };
+    #endif
 
 } // namespace nmtools::meta
 

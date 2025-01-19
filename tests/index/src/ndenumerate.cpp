@@ -1,4 +1,4 @@
-#include "nmtools/array/index/ndenumerate.hpp"
+#include "nmtools/index/ndenumerate.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <array>

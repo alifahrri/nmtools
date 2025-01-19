@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/activations/hardshrink.hpp"
+#include "nmtools/array/activations/hardshrink.hpp"
 #include "nmtools/testing/data/array/hardshrink.hpp"
 #include "nmtools/testing/doctest.hpp"
 

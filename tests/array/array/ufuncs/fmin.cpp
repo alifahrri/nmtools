@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/fmin.hpp"
+#include "nmtools/array/ufuncs/fmin.hpp"
 #include "nmtools/testing/data/array/fmin.hpp"
 #include "nmtools/testing/doctest.hpp"
 

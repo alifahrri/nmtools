@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/stddev.hpp"
+#include "nmtools/array/stddev.hpp"
 #include "nmtools/testing/data/array/stddev.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ones.hpp"
+#include "nmtools/array/ones.hpp"
 #include "nmtools/testing/data/array/ones.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/log.hpp"
+#include "nmtools/array/ufuncs/log.hpp"
 #include "nmtools/testing/data/array/log.hpp"
 #include "nmtools/testing/doctest.hpp"
 

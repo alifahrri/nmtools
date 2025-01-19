@@ -1,8 +1,8 @@
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/functional/ufunc/ufunc.hpp"
-#include "nmtools/array/functional/activations/relu.hpp"
-#include "nmtools/array/functional/softmax.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
+#include "nmtools/array/activations/relu.hpp"
+#include "nmtools/array/softmax.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

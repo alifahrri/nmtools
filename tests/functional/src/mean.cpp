@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/mean.hpp"
+#include "nmtools/array/mean.hpp"
 #include "nmtools/testing/data/array/mean.hpp"
 #include "nmtools/testing/doctest.hpp"
 

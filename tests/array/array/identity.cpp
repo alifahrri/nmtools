@@ -1,4 +1,4 @@
-#include "nmtools/array/array/identity.hpp"
+#include "nmtools/array/identity.hpp"
 #include "nmtools/testing/data/array/identity.hpp"
 #include "nmtools/testing/doctest.hpp"
 

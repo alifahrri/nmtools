@@ -1,4 +1,4 @@
-#include "nmtools/array/index/where.hpp"
+#include "nmtools/index/where.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

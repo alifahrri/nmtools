@@ -1,4 +1,4 @@
-#include "nmtools/array/array/tri.hpp"
+#include "nmtools/array/tri.hpp"
 #include "nmtools/testing/data/array/tri.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/tile.hpp"
+#include "nmtools/array/tile.hpp"
 #include "nmtools/testing/data/array/tile.hpp"
 #include "nmtools/testing/doctest.hpp"
 

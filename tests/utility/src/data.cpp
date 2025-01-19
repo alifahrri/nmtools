@@ -1,5 +1,5 @@
 #include "nmtools/utility/data.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

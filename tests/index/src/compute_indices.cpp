@@ -1,4 +1,4 @@
-#include "nmtools/array/index/compute_indices.hpp"
+#include "nmtools/index/compute_indices.hpp"
 #include "nmtools/testing/data/index/compute_indices.hpp"
 #include "nmtools/testing/doctest.hpp"
 

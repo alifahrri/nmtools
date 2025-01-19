@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
 #include "nmtools/testing/data/array/subtract.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/isinf.hpp"
+#include "nmtools/array/ufuncs/isinf.hpp"
 #include "nmtools/testing/data/array/isinf.hpp"
 #include "nmtools/testing/doctest.hpp"
 

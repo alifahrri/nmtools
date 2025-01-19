@@ -1,5 +1,5 @@
 #include "nmtools/meta.hpp"
-#include "nmtools/array/view/where.hpp"
+#include "nmtools/array/where.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

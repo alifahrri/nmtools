@@ -1,7 +1,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools::array;

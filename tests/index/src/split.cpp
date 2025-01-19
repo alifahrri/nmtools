@@ -1,4 +1,4 @@
-#include "nmtools/array/index/split.hpp"
+#include "nmtools/index/split.hpp"
 #include "nmtools/testing/data/index/split.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/utility/apply_isequal.hpp"

@@ -1,4 +1,4 @@
-#include "nmtools/array/array/expand.hpp"
+#include "nmtools/array/expand.hpp"
 #include "nmtools/testing/data/array/expand.hpp"
 #include "nmtools/testing/doctest.hpp"
 

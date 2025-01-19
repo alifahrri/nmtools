@@ -1,12 +1,12 @@
-#include "nmtools/array/array/ufuncs/square.hpp"
-#include "nmtools/array/array/sum.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/eval/sycl.hpp"
+#include "nmtools/array/ufuncs/square.hpp"
+#include "nmtools/array/sum.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
-#include "nmtools/array/functional/ufuncs/square.hpp"
-#include "nmtools/array/functional/sum.hpp"
+#include "nmtools/array/ufuncs/square.hpp"
+#include "nmtools/array/sum.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools::array;

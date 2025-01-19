@@ -1,5 +1,5 @@
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/view/ufuncs/add.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 

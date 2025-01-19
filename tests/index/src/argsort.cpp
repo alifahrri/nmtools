@@ -140,7 +140,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, constexpr_argsort)
     }
 }
 
-#include "nmtools/array/index/argsort.hpp"
+#include "nmtools/index/argsort.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define RUN_impl(...) \

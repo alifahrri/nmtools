@@ -10,7 +10,7 @@ constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::n
 constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb);
 #endif
 
-#include "nmtools/array/array/atleast_nd.hpp"
+#include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/testing/data/constexpr/atleast_nd.hpp"
 #include "nmtools/testing/doctest.hpp"
 

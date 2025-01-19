@@ -70,6 +70,8 @@ jobs:
           build/tests/array/numeric-tests-doctest
 
   gcc-9-constexpr-generic-ndarray-eval:
+    # temporarily skipped, OOM on github ci
+    if: ${{ false }}
     name: gcc-9-constexpr-generic-ndarray-eval
     runs-on: ubuntu-20.04
     steps:
@@ -88,6 +90,8 @@ jobs:
           build/tests/array/numeric-tests-doctest
   
   gcc-9-constexpr-no-stl-generic-ndarray-eval:
+    # temporarily skipped, OOM on github ci
+    if: ${{ false }}
     name: gcc-9-constexpr-no-stl-generic-ndarray-eval
     runs-on: ubuntu-20.04
     steps:

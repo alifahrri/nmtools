@@ -1,4 +1,4 @@
-#include "nmtools/array/view/bilinear.hpp"
+#include "nmtools/array/bilinear.hpp"
 #include "nmtools/testing/data/array/bilinear.hpp"
 #include "nmtools/testing/doctest.hpp"
 

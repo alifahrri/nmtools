@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/amin.hpp"
+#include "nmtools/array/ufuncs/amin.hpp"
 #include "nmtools/testing/data/array/minimum.hpp"
 #include "nmtools/testing/doctest.hpp"
 

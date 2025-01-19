@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/activations/elu.hpp"
+#include "nmtools/array/activations/elu.hpp"
 #include "nmtools/testing/data/array/elu.hpp"
 #include "nmtools/testing/doctest.hpp"
 

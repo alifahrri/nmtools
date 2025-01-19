@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/matmul.hpp"
+#include "nmtools/array/matmul.hpp"
 #include "nmtools/testing/data/array/matmul.hpp"
 #include "nmtools/testing/doctest.hpp"
 

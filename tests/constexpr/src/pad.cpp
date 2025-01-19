@@ -8,7 +8,7 @@ constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::n
 constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
 constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb);
 
-#include "nmtools/array/array/pad.hpp"
+#include "nmtools/array/pad.hpp"
 #include "nmtools/testing/data/constexpr/pad.hpp"
 #include "nmtools/testing/doctest.hpp"
 

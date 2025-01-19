@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/activations/mish.hpp"
+#include "nmtools/array/activations/mish.hpp"
 #include "nmtools/testing/data/array/mish.hpp"
 #include "nmtools/testing/doctest.hpp"
 

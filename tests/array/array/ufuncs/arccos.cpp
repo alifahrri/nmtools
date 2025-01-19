@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/arccos.hpp"
+#include "nmtools/array/ufuncs/arccos.hpp"
 #include "nmtools/testing/data/array/arccos.hpp"
 #include "nmtools/testing/doctest.hpp"
 

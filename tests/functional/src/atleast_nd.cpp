@@ -1,5 +1,5 @@
-#include "nmtools/array/functional/atleast_nd.hpp"
-#include "nmtools/array/array/arange.hpp"
+#include "nmtools/array/atleast_nd.hpp"
+#include "nmtools/array/arange.hpp"
 #include "nmtools/testing/data/array/atleast_1d.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
 #include "nmtools/testing/data/array/atleast_nd.hpp"

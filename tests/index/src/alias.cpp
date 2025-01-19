@@ -1,4 +1,4 @@
-#include "nmtools/array/index/alias.hpp"
+#include "nmtools/index/alias.hpp"
 #include "nmtools/testing/data/index/alias.hpp"
 #include "nmtools/testing/doctest.hpp"
 

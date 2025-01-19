@@ -1,10 +1,10 @@
-#include "nmtools/array/eval/opencl/kernels/repeat.hpp"
+#include "nmtools/evaluator/opencl/kernels/repeat.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/eval/opencl/context.hpp"
-#include "nmtools/array/eval/opencl/evaluator.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/repeat.hpp"
-#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/evaluator/opencl/context.hpp"
+#include "nmtools/evaluator/opencl/evaluator.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/repeat.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.13)
 project(numeric-tests-utl-meta)
 
 add_executable(${PROJECT_NAME} tests.cpp

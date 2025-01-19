@@ -1,4 +1,4 @@
-#include "nmtools/array/index/logical_not.hpp"
+#include "nmtools/index/logical_not.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include <tuple>

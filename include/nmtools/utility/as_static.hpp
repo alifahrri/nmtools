@@ -5,7 +5,7 @@
 #include "nmtools/utility/fwd.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/forward.hpp"
-// #include "nmtools/array/ndarray.hpp" // for nmtools_static_vector
+// #include "nmtools/ndarray.hpp" // for nmtools_static_vector
 #include "nmtools/utl/static_vector.hpp"
 
 namespace nmtools::array

@@ -1,4 +1,4 @@
-#include "nmtools/array/array/batch_norm.hpp"
+#include "nmtools/array/batch_norm.hpp"
 #include "nmtools/testing/data/array/batch_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/tanh.hpp"
+#include "nmtools/array/ufuncs/tanh.hpp"
 #include "nmtools/testing/data/array/tanh.hpp"
 #include "nmtools/testing/doctest.hpp"
 

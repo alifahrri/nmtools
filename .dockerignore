@@ -9,3 +9,10 @@ SPIRV-LLVM-Translator
 pocl
 *.spv
 *.bc
+dockcross-*
+*/__pycache__
+.ipynb_checkpoints
+*.db
+*.tar.gz
+*.tar.bz2
+*.Trash*

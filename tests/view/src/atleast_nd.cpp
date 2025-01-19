@@ -17,7 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 #endif
 
-#include "nmtools/array/view/atleast_nd.hpp"
+#include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/testing/data/array/atleast_1d.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
 #include "nmtools/testing/data/array/atleast_nd.hpp"

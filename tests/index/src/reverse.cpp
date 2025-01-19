@@ -1,4 +1,4 @@
-#include "nmtools/array/index/reverse.hpp"
+#include "nmtools/index/reverse.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"

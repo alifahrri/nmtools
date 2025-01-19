@@ -1,5 +1,5 @@
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/utility/isclose.hpp"
 #if __has_include("doctest/doctest.h")
     #include "doctest/doctest.h"

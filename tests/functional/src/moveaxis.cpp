@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/moveaxis.hpp"
+#include "nmtools/array/moveaxis.hpp"
 #include "nmtools/testing/data/array/moveaxis.hpp"
 #include "nmtools/testing/doctest.hpp"
 

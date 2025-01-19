@@ -1,8 +1,8 @@
-#include "nmtools/array/array/mean.hpp"
-#include "nmtools/array/array/ufuncs/subtract.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/eval/cuda.hpp"
+#include "nmtools/array/mean.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/evaluator/cuda.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 

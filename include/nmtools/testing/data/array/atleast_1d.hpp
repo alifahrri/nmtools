@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_ATLEAST_1D_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_ATLEAST_1D_HPP
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/testing.hpp"
 
 NMTOOLS_TESTING_DECLARE_CASE(array, atleast_1d)

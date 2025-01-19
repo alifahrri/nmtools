@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/sqrt.hpp"
+#include "nmtools/array/ufuncs/sqrt.hpp"
 #include "nmtools/testing/data/array/sqrt.hpp"
 #include "nmtools/testing/doctest.hpp"
 

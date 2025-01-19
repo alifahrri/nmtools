@@ -1,8 +1,4 @@
-#ifndef NMTOOLS_META_UTL_HPP
-#define NMTOOLS_META_UTL_HPP
-
+#pragma once
 #include "nmtools/meta/utl/traits.hpp"
 #include "nmtools/meta/utl/array.hpp"
 #include "nmtools/meta/utl/transform.hpp"
-
-#endif // NMTOOLS_META_UTL_HPP

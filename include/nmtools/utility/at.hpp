@@ -371,7 +371,9 @@ namespace nmtools
         } // apply_at_impl
 
         // NOTE: avoid forwarding reference to avoid using stl forward
-        template <typename array_t, typename type_list, size_t...Is, template <auto...> typename sequence>
+        template <typename array_t, typename type_list, size_t...Is, template <auto...> typename sequence
+            // avoid ambiguous call in latest clang/emscripten :(
+            , meta::enable_if_t<!meta::is_const_v<array_t>,int> = 0 >
         constexpr decltype(auto) apply_at_impl(array_t& array, const type_list& indices, sequence<Is...>)
         {
             return nmtools::at(array, nmtools::get<Is>(indices)...);

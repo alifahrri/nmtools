@@ -1,6 +1,6 @@
-#include "nmtools/array/view/slice.hpp"
-#include "nmtools/array/view/ufuncs/add.hpp"
-#include "nmtools/array/view/ufuncs/multiply.hpp"
+#include "nmtools/array/slice.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/multiply.hpp"
 
 namespace composition
 {

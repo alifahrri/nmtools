@@ -1,4 +1,4 @@
-#include "nmtools/array/view/linear.hpp"
+#include "nmtools/array/linear.hpp"
 #include "nmtools/testing/data/array/linear.hpp"
 #include "nmtools/testing/doctest.hpp"
 

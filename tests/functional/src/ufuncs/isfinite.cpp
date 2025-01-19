@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/isfinite.hpp"
+#include "nmtools/array/ufuncs/isfinite.hpp"
 #include "nmtools/testing/data/array/isfinite.hpp"
 #include "nmtools/testing/doctest.hpp"
 

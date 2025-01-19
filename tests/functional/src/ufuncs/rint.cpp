@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/rint.hpp"
+#include "nmtools/array/ufuncs/rint.hpp"
 #include "nmtools/testing/data/array/rint.hpp"
 #include "nmtools/testing/doctest.hpp"
 

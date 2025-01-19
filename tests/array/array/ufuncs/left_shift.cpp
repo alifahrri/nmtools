@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/left_shift.hpp"
+#include "nmtools/array/ufuncs/left_shift.hpp"
 #include "nmtools/testing/data/array/left_shift.hpp"
 #include "nmtools/testing/doctest.hpp"
 

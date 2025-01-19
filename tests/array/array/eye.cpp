@@ -1,4 +1,4 @@
-#include "nmtools/array/array/eye.hpp"
+#include "nmtools/array/eye.hpp"
 #include "nmtools/testing/data/array/eye.hpp"
 #include "nmtools/testing/doctest.hpp"
 

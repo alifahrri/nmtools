@@ -1,6 +1,6 @@
-#include "nmtools/array/view/alias.hpp"
-#include "nmtools/array/view/arange.hpp"
-#include "nmtools/array/view/atleast_nd.hpp"
+#include "nmtools/core/alias.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace view = nmtools::view;

@@ -1,10 +1,10 @@
-#include "nmtools/array/eval/opencl/kernels/sigmoid.hpp"
+#include "nmtools/evaluator/opencl/kernels/sigmoid.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/eval/opencl/context.hpp"
-#include "nmtools/array/eval/opencl/evaluator.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/ones.hpp"
-#include "nmtools/array/array/activations/sigmoid.hpp"
+#include "nmtools/evaluator/opencl/context.hpp"
+#include "nmtools/evaluator/opencl/evaluator.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/ones.hpp"
+#include "nmtools/array/activations/sigmoid.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

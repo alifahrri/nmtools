@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/hypot.hpp"
+#include "nmtools/array/ufuncs/hypot.hpp"
 #include "nmtools/testing/data/array/hypot.hpp"
 #include "nmtools/testing/doctest.hpp"
 

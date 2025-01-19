@@ -15,7 +15,7 @@ inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_
 inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db);
 #endif
 
-#include "nmtools/array/view/array_slice.hpp"
+#include "nmtools/array/array_slice.hpp"
 #include "nmtools/testing/data/array/array_slice.hpp"
 #include "nmtools/testing/doctest.hpp"
 

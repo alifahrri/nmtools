@@ -14,7 +14,7 @@ inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_
 inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db);
 #endif
 
-#include "nmtools/array/array/ufuncs/deg2rad.hpp"
+#include "nmtools/array/ufuncs/deg2rad.hpp"
 #include "nmtools/testing/data/array/deg2rad.hpp"
 #include "nmtools/testing/doctest.hpp"
 
