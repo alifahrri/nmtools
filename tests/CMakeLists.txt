@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.13)
 project(numeric-tests)
 
 option(NMTOOLS_DEFER_STATIC_CHECK "defer static check to runtime for testing purpose" OFF)
@@ -15,7 +15,7 @@ target_compile_options(coverage_config INTERFACE
     -g         # generate debug info
     --coverage # sets all required flags
 )
-# target_link_options(coverage_config INTERFACE --coverage)
+target_link_options(coverage_config INTERFACE --coverage)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
