@@ -25,7 +25,7 @@ namespace nmtools::view
     {
         auto a_dim  = dim<true>(array);
         auto slices = index::flip_slices(a_dim,axis);
-        return apply_slice(array,slices);
+        return view::apply_slice(array,slices);
     } // flip
 
     template <typename array_t>
