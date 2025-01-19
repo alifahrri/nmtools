@@ -75,9 +75,23 @@ docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./doc
 
 ## Build & Test `sycl`
 
-Targeting OpenMP backend:
+Targeting OpenMP backend, build dev image and run container:
 ```
-docker build . --tag nmtools:sycl-clang14-omp --file docker/sycl.dockerfile
+docker build . --tag nmtools:sycl-clang14-omp --target build --file docker/sycl.dockerfile
+docker run -it --name sycl-omp-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:sycl-clang14-omp
+```
+Inside the container, build the tests:
+```
+mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${TOOLCHAIN}.cmake \
+        -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
+        -DNMTOOLS_BUILD_SYCL_TESTS=ON \
+        ../.. \
+    && make -j`nproc` VERBOSE=1 numeric-tests-sycl-doctest
+```
+Then run the test:
+```
+ctest
 ```
 
 ## Run Interactive Notebook
