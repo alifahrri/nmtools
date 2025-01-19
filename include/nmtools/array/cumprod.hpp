@@ -47,7 +47,7 @@ namespace nmtools::functional
         return view::cumprod(args...);
     };
 
-    constexpr inline auto cumprod = functor_t{unary_fmap_t<decltype(cumprod_fun)>{cumprod_fun}};
+    constexpr inline auto cumprod = functor_t{unary_fmap_t<decltype(cumprod_fun)>{{cumprod_fun}}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_CUMPROD_HPP

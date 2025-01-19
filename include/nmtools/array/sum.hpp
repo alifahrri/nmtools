@@ -66,7 +66,7 @@ namespace nmtools::functional
         return view::sum(args...);
     };
 
-    constexpr inline auto sum = functor_t{unary_fmap_t<decltype(sum_fun)>{sum_fun}};
+    constexpr inline auto sum = functor_t{unary_fmap_t<decltype(sum_fun)>{{sum_fun}}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_SUM_HPP

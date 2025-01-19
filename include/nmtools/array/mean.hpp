@@ -176,7 +176,7 @@ namespace nmtools::functional
         return view::mean(args...);
     };
 
-    constexpr inline auto mean = functor_t{unary_fmap_t<decltype(mean_fun)>{mean_fun}};
+    constexpr inline auto mean = functor_t{unary_fmap_t<decltype(mean_fun)>{{mean_fun}}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_MEAN_HPP

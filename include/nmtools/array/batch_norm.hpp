@@ -82,7 +82,7 @@ namespace nmtools::functional
         return view::batch_norm(args...);
     };
 
-    constexpr inline auto batch_norm = functor_t{quinary_fmap_t<decltype(batch_norm_fun)>{batch_norm_fun}};
+    constexpr inline auto batch_norm = functor_t{quinary_fmap_t<decltype(batch_norm_fun)>{{batch_norm_fun}}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_BATCH_NORM_HPP

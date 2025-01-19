@@ -67,7 +67,7 @@ namespace nmtools::functional
         return view::prod(args...);
     };
 
-    constexpr inline auto prod = functor_t{unary_fmap_t<decltype(prod_fun)>{prod_fun}};
+    constexpr inline auto prod = functor_t{unary_fmap_t<decltype(prod_fun)>{{prod_fun}}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_PROD_HPP

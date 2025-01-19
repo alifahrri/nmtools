@@ -5,6 +5,7 @@ Cheatsheet for development build and tests.
 1. [Basic Building & Testing (CPU)](#basic-testing-cpu)
 1. [Build & Test `web-wasm`](#build--test-web-wasm)
 1. [Build & Test `sycl`](#build--test-sycl)
+1. [Build & Test (Ubuntu20.04)](#build--test-ubuntu2004)
 1. [Run Interactive Notebook](#run-interactive-notebook)
 
 ## Basic Building & Testing (CPU)
@@ -88,6 +89,26 @@ mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
         -DNMTOOLS_BUILD_SYCL_TESTS=ON \
         ../.. \
     && make -j`nproc` VERBOSE=1 numeric-tests-sycl-doctest
+```
+Then run the test:
+```
+ctest
+```
+
+## Build & Test (Ubuntu20.04)
+
+Use ubuntu 20.04 for gcc-9 and clang-10:
+```
+docker build . --tag nmtools:bionic --target build --file docker/bionic.dockerfile
+docker run -it --name bionic-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:bionic
+```
+Inside the container, build the tests:
+```
+export TOOLCHAIN=clang10-werror
+mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${TOOLCHAIN}.cmake -DNMTOOLS_TEST_ALL=ON \
+        ../.. \
+    && make -j`nproc` VERBOSE=1
 ```
 Then run the test:
 ```

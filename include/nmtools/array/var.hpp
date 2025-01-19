@@ -70,7 +70,7 @@ namespace nmtools::functional
         return view::var(args...);
     };
 
-    constexpr inline auto var = functor_t{unary_fmap_t<decltype(var_fun)>{var_fun}};
+    constexpr inline auto var = functor_t{unary_fmap_t<decltype(var_fun)>{{var_fun}}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_VAR_HPP

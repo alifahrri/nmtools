@@ -55,7 +55,7 @@ namespace nmtools::functional
         return view::softmax(args...);
     };
 
-    constexpr inline auto softmax = functor_t{unary_fmap_t<decltype(softmax_fun)>{softmax_fun}};
+    constexpr inline auto softmax = functor_t{unary_fmap_t<decltype(softmax_fun)>{{softmax_fun}}};
 
 } // namespace nmtools::functional
 

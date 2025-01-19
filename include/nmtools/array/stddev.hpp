@@ -44,7 +44,7 @@ namespace nmtools::functional
         return view::stddev(args...);
     };
 
-    constexpr inline auto stddev = functor_t{unary_fmap_t<decltype(stddev_fun)>{stddev_fun}};
+    constexpr inline auto stddev = functor_t{unary_fmap_t<decltype(stddev_fun)>{{stddev_fun}}};
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_STDDEV_HPP

@@ -15,7 +15,7 @@ target_compile_options(coverage_config INTERFACE
     -g         # generate debug info
     --coverage # sets all required flags
 )
-target_link_options(coverage_config INTERFACE --coverage)
+# target_link_options(coverage_config INTERFACE --coverage)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
