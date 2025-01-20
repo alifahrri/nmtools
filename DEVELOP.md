@@ -5,6 +5,7 @@ Cheatsheet for development build and tests.
 1. [Basic Building & Testing (CPU)](#basic-testing-cpu)
 1. [Build & Test `web-wasm`](#build--test-web-wasm)
 1. [Build & Test `sycl`](#build--test-sycl)
+1. [Build & Test `cuda`](#build--test-cuda)
 1. [Build & Test (Ubuntu20.04)](#build--test-ubuntu2004)
 1. [Run Interactive Notebook](#run-interactive-notebook)
 
@@ -99,8 +100,8 @@ ctest
 
 Use ubuntu 20.04 for gcc-9 and clang-10:
 ```
-docker build . --tag nmtools:bionic --target build --file docker/bionic.dockerfile
-docker run -it --name bionic-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:bionic
+docker build . --tag nmtools:focal --target build --file docker/focal.dockerfile
+docker run -it --name focal-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:focal
 ```
 Inside the container, build the tests:
 ```
@@ -113,6 +114,30 @@ mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
 Then run the test:
 ```
 ctest
+```
+
+## Build & Test `cuda`
+
+Build the image and run docker container:
+```
+docker build . --tag nmtools:cuda --target dev --file docker/cuda.dockerfile
+docker run -it --name cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:cuda
+```
+Inside the container, build the tests:
+```
+mkdir -p build/cuda && cd build/cuda \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/clang.cmake \
+        -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
+        -DNMTOOLS_BUILD_CUDA_TESTS=ON \
+        -DNMTOOLS_TEST_CUDA_PATH=/usr/local/cuda \
+        -DNMTOOLS_TEST_CUDA_ARCH=sm_80 \
+        ../.. \
+    && make -j`nproc` VERBOSE=1
+```
+To restart:
+```
+docker start cuda-dev
+docker exec -it cuda-dev zsh
 ```
 
 ## Run Interactive Notebook

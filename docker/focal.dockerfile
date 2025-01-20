@@ -1,11 +1,10 @@
-FROM ubuntu:bionic as dev
+FROM ubuntu:focal as dev
 
 WORKDIR /opt/
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia
 
-RUN apt update && apt install software-properties-common -y && add-apt-repository ppa:ubuntu-toolchain-r/test
 RUN apt update && apt install -y \
     gcc-9 \
     g++-9 \
@@ -17,14 +16,9 @@ RUN apt update && apt install -y \
     tar \
     curl \
     clang-10 \
-    libboost-dev
+    libboost-dev \
+    cmake
 RUN pip3 install -U gcovr
-
-RUN wget http://www.cmake.org/files/v3.13/cmake-3.13.3.tar.gz \
-  && tar xf cmake-3.13.3.tar.gz \
-  && cd cmake-3.13.3 \
-  && ./configure \
-  && make install -j`nproc`
 
 # install the tooks i wish to use
 RUN apt-get update && \
