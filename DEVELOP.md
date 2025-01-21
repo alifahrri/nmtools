@@ -6,6 +6,7 @@ Cheatsheet for development build and tests.
 1. [Build & Test `web-wasm`](#build--test-web-wasm)
 1. [Build & Test `sycl`](#build--test-sycl)
 1. [Build & Test `cuda`](#build--test-cuda)
+1. [Build & Test `hip`](#build--test-hip)
 1. [Build & Test (Ubuntu20.04)](#build--test-ubuntu2004)
 1. [Run Interactive Notebook](#run-interactive-notebook)
 
@@ -138,6 +139,18 @@ To restart:
 ```
 docker start cuda-dev
 docker exec -it cuda-dev zsh
+```
+
+## Build & Test `hip`
+
+Build the image and run docker container:
+```
+docker build . --tag nmtools:hip --target dev --file docker/hip.dockerfile
+docker run -it --device /dev/kfd --device /dev/dri --name hip-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:hip
+```
+Inside the container, build the tests:
+```
+mkdir -p build/hip && cd build/hip && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON ../.. && make -j`nproc` VERBOSE=1
 ```
 
 ## Run Interactive Notebook
