@@ -6,6 +6,7 @@ Cheatsheet for development build and tests.
 1. [Build & Test `web-wasm`](#build--test-web-wasm)
 1. [Build & Test `sycl` OpenMP](#build--test-sycl-openmp)
 1. [Build & Test `sycl` OpenCL](#build--test-sycl-opencl)
+1. [Build & Test `sycl` `cuda`](#build--test-sycl-cuda)
 1. [Build & Test `cuda`](#build--test-cuda)
 1. [Build & Test `hip`](#build--test-hip)
 1. [Build & Test (Ubuntu20.04)](#build--test-ubuntu2004)
@@ -100,7 +101,7 @@ ctest
 
 ## Build & Test `sycl` OpenCL
 
-Targeting HIP backend on sycl, build dev image and run container:
+Targeting OpenCL backend on sycl, build dev image and run container:
 ```
 docker build . --tag nmtools:sycl-clang14-opencl --build-arg opencl_backend=ON --build-arg toolchain=sycl-clang14-generic --target build --file docker/sycl.dockerfile
 docker run -it --name sycl-opencl-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:sycl-clang14-opencl
@@ -117,6 +118,22 @@ mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
 Then run the test:
 ```
 NMTOOLS_SYCL_DEFAULT_PLATFORM=opencl ./tests/sycl/numeric-tests-sycl-doctest
+```
+
+## Build & Test `sycl` `cuda`
+Targeting cuda backend on sycl, build dev image and run container:
+```
+docker build . --tag nmtools:sycl-cuda --build-arg toolchain=sycl-clang14-cuda --target build --file docker/sycl-cuda.dockerfile
+docker run -it --name sycl-cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:sycl-cuda
+```
+Inside the container, build the tests:
+```
+mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${TOOLCHAIN}.cmake \
+        -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
+        -DNMTOOLS_BUILD_SYCL_TESTS=ON \
+        ../.. \
+    && make -j`nproc` VERBOSE=1 numeric-tests-sycl-doctest
 ```
 
 ## Build & Test (Ubuntu20.04)

@@ -50,6 +50,10 @@ RUN apt install -y libclang-dev clang-tools libomp-dev llvm-dev lld libboost-dev
 RUN bash scripts/install_opensycl.sh
 
 ARG toolchain=sycl-clang14-cuda
+ENV TOOLCHAIN=${toolchain}
+
+FROM build as run
+
 RUN mkdir -p build/${toolchain} && cd build/${toolchain} \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${toolchain}.cmake \
         -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
