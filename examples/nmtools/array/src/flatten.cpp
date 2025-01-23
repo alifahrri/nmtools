@@ -1,4 +1,4 @@
-#include "nmtools/array/view/flatten.hpp"
+#include "nmtools/array/flatten.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/utility/to_string.hpp"
 

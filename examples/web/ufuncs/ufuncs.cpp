@@ -1,5 +1,5 @@
 #include "nmtools/array/array/sum.hpp"
-#include "nmtools/array/view/ufuncs/clip.hpp"
+#include "nmtools/array/ufuncs/clip.hpp"
 #include "nmtools/array/array/ufuncs/exp.hpp"
 
 #include "nmtools/platform/embind.hpp"

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/expand_dims.hpp"
+#include "nmtools/array/expand_dims.hpp"
 #include "nmtools/array/ndarray.hpp"
 #include "nmtools/utility/to_string.hpp"
 
