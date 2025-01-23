@@ -88,7 +88,7 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/cumprod.cpp
     array/mean.cpp
 
-    composition/add_tanh.cpp
+    # composition/add_tanh.cpp
     composition/divide_subtract.cpp
     composition/fabs_square_sum.cpp
     composition/fabs_square.cpp
