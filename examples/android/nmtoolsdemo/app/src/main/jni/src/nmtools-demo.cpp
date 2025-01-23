@@ -10,7 +10,7 @@
 #include <sstream>
 #include <chrono>
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/reshape.hpp"
 #include "nmtools/array/array/random.hpp"

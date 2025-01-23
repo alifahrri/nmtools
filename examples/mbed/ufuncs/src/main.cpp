@@ -7,7 +7,7 @@
 #include "nmtools/array/array/sum.hpp"
 #include "nmtools/array/array/matmul.hpp"
 
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/ndarray/fixed.hpp"
 
 #include "nmtools/utility/to_string.hpp"
 
