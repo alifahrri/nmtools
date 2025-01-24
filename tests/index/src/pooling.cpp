@@ -1,4 +1,4 @@
-#include "nmtools/array/index/pooling.hpp"
+#include "nmtools/index/pooling.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/utility/apply_isequal.hpp"

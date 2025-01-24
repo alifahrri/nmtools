@@ -1,10 +1,10 @@
-#include "nmtools/array/index/filter.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/index/filter.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 // to allow std::array, vector, tuple identified as array/index
 #include "nmtools/meta/stl.hpp"
-#include "nmtools/array/impl/stl.hpp"
+#include "nmtools/utility/impl/stl.hpp"
 
 #include <array>
 #include <tuple>

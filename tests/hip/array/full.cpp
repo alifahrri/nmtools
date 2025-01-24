@@ -1,6 +1,6 @@
-#include "nmtools/array/array/full.hpp"
+#include "nmtools/array/full.hpp"
 #include "nmtools/testing/data/array/full.hpp"
-#include "nmtools/array/eval/hip.hpp"
+#include "nmtools/evaluator/hip.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

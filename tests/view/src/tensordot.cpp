@@ -1,4 +1,4 @@
-#include "nmtools/array/view/tensordot.hpp"
+#include "nmtools/array/tensordot.hpp"
 #include "nmtools/testing/data/array/tensordot.hpp"
 #include "nmtools/testing/doctest.hpp"
 

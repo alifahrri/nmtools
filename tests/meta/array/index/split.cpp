@@ -1,8 +1,8 @@
-#include "nmtools/array/view/split.hpp"
+#include "nmtools/array/split.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/constants.hpp"
 
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 
 namespace nm = nmtools;
 namespace na = nm::array;

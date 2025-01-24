@@ -1,5 +1,5 @@
-#include "nmtools/array/view/reshape.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/utility/to_string.hpp"
 
 #include <iostream>

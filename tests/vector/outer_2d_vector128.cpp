@@ -1,10 +1,10 @@
-#include "nmtools/array/eval/simd/vector_128.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/ufuncs/add.hpp"
-#include "nmtools/array/array/ufuncs/multiply.hpp"
-#include "nmtools/array/array/ufuncs/subtract.hpp"
-#include "nmtools/array/array/ufuncs/divide.hpp"
-#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/evaluator/simd/vector_128.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/multiply.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/divide.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

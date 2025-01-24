@@ -1,7 +1,7 @@
 ## cuda 12 know to not working: no template named 'texture'
 ## nvidia/cuda:11.7.0-devel-ubuntu22.04 is removed lol
 ARG CUDA_BASE=nvidia/cuda:11.8.0-devel-ubuntu22.04
-from ${CUDA_BASE} as dev
+FROM ${CUDA_BASE} AS dev
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia
@@ -32,9 +32,9 @@ RUN cd $HOME && curl -fsSLO https://raw.githubusercontent.com/romkatv/dotfiles-p
 
 ADD .devcontainer/.zshrc $HOME
 
-from dev as build
-
 WORKDIR /workspace/nmtools
+
+FROM dev AS build
 
 COPY cmake cmake
 COPY scripts scripts

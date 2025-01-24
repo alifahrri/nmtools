@@ -1,6 +1,6 @@
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/view/matmul.hpp"
+#include "nmtools/ndarray.hpp"
+#include "nmtools/array/matmul.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -35,28 +35,28 @@ TEST_CASE("shape_matmul" * doctest::test_suite("index"))
         using lhs_shape_t = na::static_vector<int,2>;
         using rhs_shape_t = na::static_vector<int,2>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        using expect_t    = na::static_vector<size_t,2>;
+        using expect_t    = nmtools_static_vector<size_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = na::static_vector<int,2>;
         using rhs_shape_t = na::static_vector<int,3>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        using expect_t    = na::static_vector<size_t,3>;
+        using expect_t    = nmtools_static_vector<size_t,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = na::static_vector<int,3>;
         using rhs_shape_t = na::static_vector<int,2>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        using expect_t    = na::static_vector<size_t,3>;
+        using expect_t    = nmtools_static_vector<size_t,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
     {
         using lhs_shape_t = na::static_vector<int,2>;
         using rhs_shape_t = na::static_vector<int,2>;
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
-        using expect_t    = na::static_vector<size_t,2>;
+        using expect_t    = nmtools_static_vector<size_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
     }
 }

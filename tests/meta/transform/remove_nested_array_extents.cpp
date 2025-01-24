@@ -1,6 +1,6 @@
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/fixed.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
 // NOTE: need to include utility for std::array fixed_size specialization
 #include "nmtools/utility/at.hpp"
 #include "nmtools/testing/testing.hpp"

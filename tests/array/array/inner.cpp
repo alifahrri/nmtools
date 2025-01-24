@@ -1,4 +1,4 @@
-#include "nmtools/array/array/inner.hpp"
+#include "nmtools/array/inner.hpp"
 #include "nmtools/testing/data/array/inner.hpp"
 #include "nmtools/testing/doctest.hpp"
 

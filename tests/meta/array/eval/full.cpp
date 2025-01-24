@@ -1,5 +1,5 @@
-#include "nmtools/array/eval.hpp"
-#include "nmtools/array/view/full.hpp"
+#include "nmtools/core/eval.hpp"
+#include "nmtools/array/full.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

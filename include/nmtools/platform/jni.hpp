@@ -2,9 +2,9 @@
 #define NMTOOLS_ARRAY_UTILITY_JNI_HPP
 
 #include <jni.h>
-#include "nmtools/array/ndarray.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/view/flatten.hpp"
+#include "nmtools/ndarray.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/array/flatten.hpp"
 
 namespace nmtools::array
 {

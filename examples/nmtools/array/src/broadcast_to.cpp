@@ -1,5 +1,5 @@
-#include "nmtools/array/view/broadcast_to.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/array/broadcast_to.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/utility/to_string.hpp"
 
 #include <iostream>

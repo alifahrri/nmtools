@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ones_like.hpp"
+#include "nmtools/array/ones_like.hpp"
 #include "nmtools/testing/data/array/ones_like.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/tril.hpp"
+#include "nmtools/array/tril.hpp"
 #include "nmtools/testing/data/index/tril.hpp"
 #include "nmtools/testing/doctest.hpp"
 

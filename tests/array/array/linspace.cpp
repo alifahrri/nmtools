@@ -1,4 +1,4 @@
-#include "nmtools/array/array/linspace.hpp"
+#include "nmtools/array/linspace.hpp"
 #include "nmtools/testing/data/array/linspace.hpp"
 #include "nmtools/utility/apply_isclose.hpp"
 #include "nmtools/testing/doctest.hpp"

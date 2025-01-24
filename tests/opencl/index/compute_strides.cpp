@@ -1,6 +1,6 @@
-#include "nmtools/array/index/compute_strides.hpp"
-#include "nmtools/array/view/mutable_ref.hpp"
-#include "nmtools/array/eval/opencl/kernel_helper.hpp"
+#include "nmtools/index/compute_strides.hpp"
+#include "nmtools/core/mutable_ref.hpp"
+#include "nmtools/evaluator/opencl/kernel_helper.hpp"
 
 namespace nm = nmtools;
 namespace ix = nm::index;

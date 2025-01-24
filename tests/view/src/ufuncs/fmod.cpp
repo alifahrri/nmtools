@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/fmod.hpp"
+#include "nmtools/array/ufuncs/fmod.hpp"
 #include "nmtools/testing/data/array/fmod.hpp"
 #include "nmtools/testing/doctest.hpp"
 

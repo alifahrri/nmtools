@@ -1,7 +1,7 @@
 // TODO: improve precision?
 #define NMTOOLS_TESTING_PRECISION (1e-3)
 
-#include "nmtools/array/array/pairwise_distance.hpp"
+#include "nmtools/array/pairwise_distance.hpp"
 #include "nmtools/testing/data/array/pairwise_distance.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/array/arange.hpp"
+#include "nmtools/array/arange.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 #include "nmtools/testing/doctest.hpp"
 

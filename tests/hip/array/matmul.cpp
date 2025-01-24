@@ -1,10 +1,10 @@
-#include "nmtools/array/eval/hip.hpp"
-#include "nmtools/array/array/matmul.hpp"
-#include "nmtools/array/array/copy.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/array/arange.hpp"
+#include "nmtools/evaluator/hip.hpp"
+#include "nmtools/array/matmul.hpp"
+#include "nmtools/array/copy.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/array/arange.hpp"
 #include "nmtools/dtypes.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

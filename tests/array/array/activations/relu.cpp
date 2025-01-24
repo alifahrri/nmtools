@@ -29,7 +29,7 @@ constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::n
 constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb);
 #endif
 
-#include "nmtools/array/array/activations/relu.hpp"
+#include "nmtools/array/activations/relu.hpp"
 #include "nmtools/testing/data/array/relu.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -22,7 +22,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #define NMTOOLS_TESTING_PRECISION (1e-3)
 #endif
 
-#include "nmtools/array/view/conv1d.hpp"
+#include "nmtools/array/conv1d.hpp"
 #include "nmtools/testing/data/array/conv1d.hpp"
 #include "nmtools/testing/doctest.hpp"
 

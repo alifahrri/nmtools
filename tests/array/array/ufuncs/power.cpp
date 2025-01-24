@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/power.hpp"
+#include "nmtools/array/ufuncs/power.hpp"
 #include "nmtools/testing/data/array/power.hpp"
 #include "nmtools/testing/doctest.hpp"
 

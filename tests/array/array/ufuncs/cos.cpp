@@ -14,7 +14,7 @@ inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_
 inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db);
 #endif
 
-#include "nmtools/array/array/ufuncs/cos.hpp"
+#include "nmtools/array/ufuncs/cos.hpp"
 #include "nmtools/testing/data/array/cos.hpp"
 #include "nmtools/testing/doctest.hpp"
 

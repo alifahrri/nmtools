@@ -1,5 +1,5 @@
-#include "nmtools/array/index/expand_dims.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/index/expand_dims.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <array>

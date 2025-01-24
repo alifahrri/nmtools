@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/arccosh.hpp"
+#include "nmtools/array/ufuncs/arccosh.hpp"
 #include "nmtools/testing/data/array/arccosh.hpp"
 #include "nmtools/testing/doctest.hpp"
 

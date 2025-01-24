@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/pooling.hpp"
+#include "nmtools/array/pooling.hpp"
 #include "nmtools/testing/data/array/pooling.hpp"
 #include "nmtools/testing/doctest.hpp"
 

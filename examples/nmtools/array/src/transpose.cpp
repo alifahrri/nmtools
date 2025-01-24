@@ -1,6 +1,6 @@
-#include "nmtools/array/view/transpose.hpp"
+#include "nmtools/array/transpose.hpp"
 #include "nmtools/utility/cast.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/utility/to_string.hpp"
 
 #include <iostream>

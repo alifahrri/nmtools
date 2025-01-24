@@ -1,4 +1,4 @@
-#include "nmtools/array/index/moveaxis.hpp"
+#include "nmtools/index/moveaxis.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 using namespace nmtools::literals;

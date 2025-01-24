@@ -1,4 +1,4 @@
-#include "nmtools/array/view/layer_norm.hpp"
+#include "nmtools/array/layer_norm.hpp"
 #include "nmtools/testing/data/array/layer_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/cumprod.hpp"
+#include "nmtools/array/cumprod.hpp"
 #include "nmtools/testing/data/array/multiply.hpp"
 #include "nmtools/testing/doctest.hpp"
 

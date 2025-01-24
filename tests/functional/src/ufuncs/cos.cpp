@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/cos.hpp"
+#include "nmtools/array/ufuncs/cos.hpp"
 #include "nmtools/testing/data/array/cos.hpp"
 #include "nmtools/testing/doctest.hpp"
 

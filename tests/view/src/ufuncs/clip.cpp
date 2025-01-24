@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/clip.hpp"
+#include "nmtools/array/ufuncs/clip.hpp"
 #include "nmtools/testing/data/array/clip.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -22,7 +22,7 @@
 #include "nmtools/array/array/arange.hpp"
 #include "nmtools/array/array/split.hpp"
 
-#include "nmtools/array/view/mutable_flatten.hpp"
+#include "nmtools/array/mutable_flatten.hpp"
 #include "nmtools/array/array/flatten.hpp"
 
 #include "nmtools/utility/to_string.hpp"

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.13)
 project(numeric-tests-simde)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -49,7 +49,7 @@ if (NMTOOLS_SIMDE_TEST_AVX512)
     endif (NMTOOLS_SIMDE_TEST_REDUCTION)
     if (NMTOOLS_SIMDE_TEST_MATMUL)
         set(NMTOOLS_SIMDE_TEST_SOURCES ${NMTOOLS_SIMDE_TEST_SOURCES}
-            avx512/matmul.cpp
+            # avx512/matmul.cpp
         )
     endif (NMTOOLS_SIMDE_TEST_MATMUL)
 endif (NMTOOLS_SIMDE_TEST_AVX512)

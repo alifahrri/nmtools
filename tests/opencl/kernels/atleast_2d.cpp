@@ -1,9 +1,9 @@
-#include "nmtools/array/eval/opencl/kernels/atleast_2d.hpp"
+#include "nmtools/evaluator/opencl/kernels/atleast_2d.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/eval/opencl/evaluator.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/atleast_2d.hpp"
-#include "nmtools/array/array/reshape.hpp"
+#include "nmtools/evaluator/opencl/evaluator.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/atleast_2d.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

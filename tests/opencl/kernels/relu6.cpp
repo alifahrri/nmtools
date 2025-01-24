@@ -1,10 +1,10 @@
-#include "nmtools/array/eval/opencl/kernels/relu6.hpp"
+#include "nmtools/evaluator/opencl/kernels/relu6.hpp"
 #ifndef NMTOOLS_OPENCL_BUILD_KERNELS
-#include "nmtools/array/eval/opencl/context.hpp"
-#include "nmtools/array/eval/opencl/evaluator.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/ones.hpp"
-#include "nmtools/array/array/activations/relu6.hpp"
+#include "nmtools/evaluator/opencl/context.hpp"
+#include "nmtools/evaluator/opencl/evaluator.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/ones.hpp"
+#include "nmtools/array/activations/relu6.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

@@ -1,5 +1,5 @@
-#include "nmtools/array/view/mean.hpp"
-#include "nmtools/array/view/ufuncs/subtract.hpp"
+#include "nmtools/array/mean.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

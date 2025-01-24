@@ -1,4 +1,4 @@
-#include "nmtools/array/view/swapaxes.hpp"
+#include "nmtools/array/swapaxes.hpp"
 #include "nmtools/testing/data/index/swapaxes.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,5 +1,5 @@
-#include "nmtools/array/index/broadcast_shape.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
+#include "nmtools/index/broadcast_shape.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include <vector>
@@ -49,7 +49,7 @@ TEST_CASE("broadcast_shape(hybrid_ndarray;hybrid_ndarray)" * doctest::test_suite
         using lhs_t = na::hybrid_ndarray<int,3,1>;
         using rhs_t = na::hybrid_ndarray<int,4,1>;
         using res_t = meta::resolve_optype_t<nm::index::broadcast_shape_t,lhs_t,rhs_t>;
-        using exp_t = na::hybrid_ndarray<int,4,1>;
+        using exp_t = nmtools_static_vector<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }
@@ -99,7 +99,7 @@ TEST_CASE("broadcast_shape(array;any)" * doctest::test_suite("index::broadcast_s
         using lhs_t = nmtools_array<int,4>;
         using rhs_t = na::hybrid_ndarray<int,3,1>;
         using res_t = meta::resolve_optype_t<nm::index::broadcast_shape_t,lhs_t,rhs_t>;
-        using exp_t = na::hybrid_ndarray<int,4,1>;
+        using exp_t = nmtools_static_vector<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }
@@ -117,7 +117,7 @@ TEST_CASE("broadcast_shape(array;any)" * doctest::test_suite("index::broadcast_s
         using lhs_t = na::hybrid_ndarray<int,3,1>;
         using rhs_t = nmtools_array<int,4>;
         using res_t = meta::resolve_optype_t<nm::index::broadcast_shape_t,lhs_t,rhs_t>;
-        using exp_t = na::hybrid_ndarray<int,4,1>;
+        using exp_t = nmtools_static_vector<int,4>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
 }

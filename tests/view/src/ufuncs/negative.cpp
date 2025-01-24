@@ -1,4 +1,4 @@
-#include "nmtools/array/view/ufuncs/negative.hpp"
+#include "nmtools/array/ufuncs/negative.hpp"
 #include "nmtools/testing/data/array/negative.hpp"
 #include "nmtools/testing/doctest.hpp"
 

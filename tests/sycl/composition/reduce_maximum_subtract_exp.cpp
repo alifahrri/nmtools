@@ -1,14 +1,14 @@
-#include "nmtools/array/array/ufuncs/maximum.hpp"
-#include "nmtools/array/array/ufuncs/subtract.hpp"
-#include "nmtools/array/array/ufuncs/exp.hpp"
-#include "nmtools/array/array/arange.hpp"
-#include "nmtools/array/array/reshape.hpp"
-#include "nmtools/array/eval/sycl.hpp"
+#include "nmtools/array/ufuncs/maximum.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/exp.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/evaluator/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
-#include "nmtools/array/functional/ufuncs/maximum.hpp"
-#include "nmtools/array/functional/ufuncs/subtract.hpp"
-#include "nmtools/array/functional/ufuncs/exp.hpp"
+#include "nmtools/array/ufuncs/maximum.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/exp.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools::array;

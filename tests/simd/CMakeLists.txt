@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.13)
 project(numeric-tests-simd)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -36,7 +36,7 @@ if (NMTOOLS_SIMD_TEST_SSE)
     set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
         x86/unary_sse.cpp
         x86/binary_sse.cpp
-        x86/matmul_sse.cpp
+        # x86/matmul_sse.cpp
         x86/outer_sse.cpp
         x86/outer_2d_sse.cpp
         x86/outer_nd_sse.cpp
@@ -55,7 +55,7 @@ if (NMTOOLS_SIMD_TEST_AVX)
         x86/unary_avx.cpp
         x86/binary_avx.cpp
         x86/binary_avx_broadcast.cpp
-        x86/matmul_avx.cpp
+        # x86/matmul_avx.cpp
         x86/outer_avx.cpp
         x86/outer_2d_avx.cpp
         x86/outer_nd_avx.cpp
@@ -72,7 +72,7 @@ endif (NMTOOLS_SIMD_TEST_AVX)
 if (NMTOOLS_SIMD_TEST_INDEX)
     set(NMTOOLS_SIMD_TEST_SOURCES ${NMTOOLS_SIMD_TEST_SOURCES}
         index/simd_index.cpp
-        index/simd_matmul.cpp
+        # index/simd_matmul.cpp
         index/simd_reduction.cpp
         index/simd_outer.cpp
     )

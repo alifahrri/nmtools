@@ -15,9 +15,9 @@ inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
 
-#include "nmtools/array/array/slice.hpp"
+#include "nmtools/array/slice.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/array/eval/sycl.hpp"
+#include "nmtools/evaluator/sycl.hpp"
 #include "nmtools/utility/apply_isclose.hpp"
 
 #if not(defined(__CUDA__) && defined(__CUDA_ARCH__))

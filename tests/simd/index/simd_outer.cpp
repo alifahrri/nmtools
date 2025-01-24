@@ -1,5 +1,5 @@
-#include "nmtools/array/eval/simd/index.hpp"
-#include "nmtools/array/index/product.hpp"
+#include "nmtools/evaluator/simd/index.hpp"
+#include "nmtools/index/product.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

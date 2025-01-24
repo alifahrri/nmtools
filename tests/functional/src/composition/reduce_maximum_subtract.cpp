@@ -1,6 +1,6 @@
-#include "nmtools/array/functional/ufuncs/subtract.hpp"
-#include "nmtools/array/functional/ufuncs/maximum.hpp"
-#include "nmtools/array/functional/ufunc/ufunc.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/ufuncs/maximum.hpp"
+#include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/testing/data/array/maximum.hpp"
 #include "nmtools/testing/doctest.hpp"
 

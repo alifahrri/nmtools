@@ -1,6 +1,6 @@
-#include "nmtools/array/view/ufuncs/square.hpp"
-#include "nmtools/array/view/ufuncs/divide.hpp"
-#include "nmtools/array/view/sum.hpp"
+#include "nmtools/array/ufuncs/square.hpp"
+#include "nmtools/array/ufuncs/divide.hpp"
+#include "nmtools/array/sum.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace composition

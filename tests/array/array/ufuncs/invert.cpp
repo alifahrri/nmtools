@@ -1,4 +1,4 @@
-#include "nmtools/array/array/ufuncs/invert.hpp"
+#include "nmtools/array/ufuncs/invert.hpp"
 #include "nmtools/testing/data/array/invert.hpp"
 #include "nmtools/testing/doctest.hpp"
 

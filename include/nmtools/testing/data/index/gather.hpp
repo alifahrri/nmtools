@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_TESTING_DATA_INDEX_GATHER_HPP
 #define NMTOOLS_TESTING_DATA_INDEX_GATHER_HPP
 
-#include "nmtools/array/index/gather.hpp"
+#include "nmtools/index/gather.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"

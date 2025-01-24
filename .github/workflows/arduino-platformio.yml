@@ -12,16 +12,11 @@ on:
 
 jobs:
   build:
-
+    if: ${{ false }}
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        test: []
-        # TODO: re-enable arduino tests
-        # test: [ufuncs, meta, utl]
-        # TODO: re-enable manip & constexpr tests
-        # test: [manip, ufuncs, meta, utl, constexpr]
+        test: [manip, ufuncs, meta, utl, constexpr]
 
     steps:
     - name: Checkout

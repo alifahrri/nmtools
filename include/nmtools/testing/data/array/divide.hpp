@@ -1,10 +1,10 @@
 #ifndef NMTOOLS_TESTING_DATA_ARRAY_DIVIDE_HPP
 #define NMTOOLS_TESTING_DATA_ARRAY_DIVIDE_HPP
 
-#include "nmtools/array/view/ufuncs/divide.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/array/ufuncs/divide.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/testing/testing.hpp"
 
 #include <vector>

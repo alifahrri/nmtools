@@ -1,4 +1,4 @@
-#include "nmtools/array/array/full_like.hpp"
+#include "nmtools/array/full_like.hpp"
 #include "nmtools/testing/data/array/full_like.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/ufuncs/arcsinh.hpp"
+#include "nmtools/array/ufuncs/arcsinh.hpp"
 #include "nmtools/testing/data/array/arcsinh.hpp"
 #include "nmtools/testing/doctest.hpp"
 

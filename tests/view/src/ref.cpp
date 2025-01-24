@@ -9,8 +9,8 @@
  */
 
 // @note need to includ array impl first to make sure overaload/specialization is visible
-#include "nmtools/array/ndarray/fixed.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/fixed.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/array/view.hpp"
 #include "nmtools/utility/isclose.hpp"
 #include "nmtools/utility/isequal.hpp"

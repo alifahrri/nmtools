@@ -1,7 +1,7 @@
-#include "nmtools/array/index/remove_dims.hpp"
-#include "nmtools/array/ndarray/dynamic.hpp"
-#include "nmtools/array/ndarray/hybrid.hpp"
-#include "nmtools/array/ndarray/fixed.hpp"
+#include "nmtools/index/remove_dims.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/fixed.hpp"
 
 #include "nmtools/testing/data/index/remove_dims.hpp"
 #include "nmtools/testing/doctest.hpp"

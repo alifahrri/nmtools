@@ -1,4 +1,4 @@
-#include "nmtools/array/view/instance_norm.hpp"
+#include "nmtools/array/instance_norm.hpp"
 #include "nmtools/testing/data/array/instance_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
 

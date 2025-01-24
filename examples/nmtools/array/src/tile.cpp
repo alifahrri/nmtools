@@ -1,5 +1,5 @@
-#include "nmtools/array/view/tile.hpp"
-#include "nmtools/array/ndarray.hpp"
+#include "nmtools/array/tile.hpp"
+#include "nmtools/ndarray.hpp"
 #include "nmtools/utility/to_string.hpp"
 
 #include <iostream>

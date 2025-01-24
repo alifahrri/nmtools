@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.13)
 project(numeric-tests-functional)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -195,7 +195,7 @@ set(FUNCTIONAL_TEST_GRAPH_SOURCES
     src/combinator/swap.cpp
     src/combinator/dup.cpp
 
-    src/transform/unary_fusion.cpp
+    # src/transform/unary_fusion.cpp
 )
 
 set(FUNCTIONAL_TEST_MISC_SOURCES

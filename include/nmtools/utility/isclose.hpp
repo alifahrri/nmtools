@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/assert.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/array/index/ndindex.hpp"
+#include "nmtools/index/ndindex.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/math.hpp"

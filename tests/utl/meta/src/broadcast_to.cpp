@@ -1,6 +1,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utl/tuple.hpp"
-#include "nmtools/array/view/broadcast_to.hpp"
+#include "nmtools/array/broadcast_to.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

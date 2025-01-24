@@ -1,4 +1,4 @@
-#include "nmtools/array/functional/squeeze.hpp"
+#include "nmtools/array/squeeze.hpp"
 #include "nmtools/testing/data/array/squeeze.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -1,4 +1,4 @@
-#include "nmtools/array/view/dstack.hpp"
+#include "nmtools/array/dstack.hpp"
 #include "nmtools/testing/data/array/dstack.hpp"
 #include "nmtools/testing/doctest.hpp"
 
