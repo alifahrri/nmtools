@@ -3,7 +3,9 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/divide.hpp"
+#include "nmtools/array/ufuncs/square.hpp"
 #include "nmtools/array/ufuncs/subtract.hpp"
+#include "nmtools/array/sum.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/utility/apply_isequal.hpp"
 
@@ -250,7 +252,104 @@ TEST_CASE("bury3(case2)" * doctest::test_suite("combinator"))
     }
 }
 
-#if 0
+TEST_CASE("bury1" * doctest::test_suite("combinator"))
+{
+    auto a = nmtools_array{1,2,3};
+    auto b = nmtools_array{1,2,3};
+
+    auto f = fn::square * fn::add * cb::bury1;
+
+    auto result = f (a) (b);
+
+    auto e1 = view::add(b,a);
+    auto expect = view::square(e1);
+
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("bury2" * doctest::test_suite("combinator"))
+{
+    auto a = nmtools_array{1,2,3};
+    auto b = nmtools_array{1,2,3};
+    auto c = nmtools_array{1,2,3};
+
+    auto f = fn::add * fn::square * fn::add * cb::bury2;
+
+    auto result = f (a) (b) (c);
+
+    auto e1 = view::add(b,c);
+    auto e2 = view::square(e1);
+    auto e3 = view::add(e2,a);
+    auto expect = e3;
+
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("bury2" * doctest::test_suite("combinator"))
+{
+    auto a = nmtools_array{1,2,3};
+    auto b = nmtools_array{1,2,3};
+    auto c = nmtools_array{1,2,3};
+
+    auto axis = 0;
+
+    auto f = fn::sum[axis] * fn::add * fn::square * fn::add * cb::bury2;
+
+    auto result = f (a) (b) (c);
+
+    auto e1 = view::add(b,c);
+    auto e2 = view::square(e1);
+    auto e3 = view::add(e2,a);
+    auto e4 = view::sum(e3,axis);
+    auto expect = e4;
+
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("bury2" * doctest::test_suite("combinator"))
+{
+    auto a = nmtools_array{1,2,3};
+    auto b = nmtools_array{1,2,3};
+    auto c = nmtools_array{1,2,3};
+
+    auto axis = 0;
+
+    auto f = fn::sum[axis] * fn::square * fn::add * fn::add * cb::bury2;
+
+    auto result = f (a) (b) (c);
+
+    auto e1 = view::add(b,c);
+    auto e2 = view::add(e1,a);
+    auto e3 = view::square(e2);
+    auto e4 = view::sum(e3,axis);
+    auto expect = e4;
+
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("bury2" * doctest::test_suite("combinator"))
+{
+    auto a = nmtools_array{1,2,3};
+    auto b = nmtools_array{1,2,3};
+    auto c = nmtools_array{1,2,3};
+
+    auto axis = 0;
+
+    auto f = fn::subtract * fn::divide * fn::sum[axis] * cb::bury2;
+
+    NMTOOLS_ASSERT_EQUAL( decltype(f)::arity, 3 );
+
+    auto result = f (a) (b) (c);
+
+    auto e1 = view::sum(b,axis);
+    auto e2 = view::divide(e1,c);
+    auto e3 = view::subtract(e2,a);
+    auto expect = e3;
+
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+#if 1
 // crashed at runtime for clang,
 // compile error for gcc:
 // error: initializations for multiple members of 'std::_Optional_payload_base
@@ -273,7 +372,7 @@ TEST_CASE("bury2" * doctest::test_suite("combinator") * doctest::skip())
 
     auto b = a_numel;
 
-    auto f = fn::subtract * fn::divide * fn::reduce_add[0] * cb::bury2;
+    auto f = fn::subtract * fn::divide * fn::sum[0] * cb::bury2;
 
     auto result = f (c) (a) (b);
     // (fn::subtract * fn::divide * fn::reduce_add * cb::bury2) (c) (a) (b)
@@ -282,7 +381,7 @@ TEST_CASE("bury2" * doctest::test_suite("combinator") * doctest::skip())
     // (fn::subtract) (fn::divide(fn::reduce_add(a),b)) (c)
     // fn::subtract(fn::divide(fn::reduce_add(a),b),c)
 
-    auto t1 = view::reduce_add(a,0);
+    auto t1 = view::sum(a,0);
     auto t2 = view::divide(t1,b);
     auto t3 = view::subtract(t2,c);
     auto expect = t3;

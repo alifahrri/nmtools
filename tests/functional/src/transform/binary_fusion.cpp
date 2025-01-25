@@ -142,5 +142,7 @@ TEST_CASE("transform_binary_fusion(case1a)" * doctest::test_suite("functional"))
 
     auto result = fn::transform_binary_fusion(graph);
 
+    // TODO: compare graph
+
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
 }

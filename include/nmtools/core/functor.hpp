@@ -137,7 +137,8 @@ namespace nmtools::functional
             auto arity = 0;
             meta::template_for<n_functors>([&](auto index){
                 constexpr auto I = decltype(index)::value;
-                auto arity_i = meta::type_list_at_t<I,functors>::arity;
+                using functor_t = meta::type_list_at_t<I,functors>;
+                auto arity_i = functor_t::arity - (functor_t::n_outputs - 1);
                 // NOTE: the result from one functor will be passed to the following functor, so -1 except the right-most
                 arity += (I == n_functors - 1 ? arity_i : (arity_i-1));
             });
@@ -174,6 +175,7 @@ namespace nmtools::functional
                     return F::arity - meta::len_v<operands_t>;
                 }
             }();
+            static constexpr auto n_outputs = F::n_outputs;
 
             static_assert(
                 meta::is_default_constructible_v<F>
@@ -231,6 +233,7 @@ namespace nmtools::functional
                     return F::arity - meta::len_v<operands_t>;
                 }
             }();
+            static constexpr auto n_outputs = F::n_outputs;
 
             fmap_type       fmap;
             operands_type   operands;
@@ -288,6 +291,8 @@ namespace nmtools::functional
         using base = detail::functor_base_t<F,operands_t,attributes_t>;
 
         using base::fmap, base::operands, base::attributes;
+
+        using base::arity, base::n_outputs;
 
         template <typename other_f, typename other_operands, typename other_attributes>
         constexpr auto operator*(const functor_t<other_f,other_operands,other_attributes>& other) const noexcept
@@ -572,7 +577,7 @@ namespace nmtools::functional
     struct fmap_t : detail::base_fmap_t<F,Arity,N_OUT>
     {
         using base = detail::base_fmap_t<F,Arity,N_OUT>;
-        using base::fn, base::arity;
+        using base::fn, base::arity, base::n_outputs;
 
         template<
             template<auto...>typename sequence, auto...Is,
@@ -619,9 +624,11 @@ namespace nmtools::functional
     {
         static constexpr auto arity = 0;
         using arity_type = meta::integral_constant<nm_size_t,arity>;
+        using n_outputs_type = meta::integral_constant<nm_size_t,1>;
 
         F fn;
-        arity_type m_arity = arity_type{};
+        static constexpr auto m_arity = arity_type{};
+        static constexpr auto n_outputs = n_outputs_type{};
 
         template <
             template<auto...>typename sequence, auto...Is,
@@ -736,7 +743,7 @@ namespace nmtools::functional
         }
     };
 
-    template <typename view_t>
+    template <typename view_t, meta::enable_if_t<meta::is_view_v<meta::remove_cvref_pointer_t<decltype(unwrap(meta::declval<view_t>()))>>,int> = 0>
     constexpr auto get_operands(const view_t& view)
     {
         if constexpr (meta::is_maybe_v<view_t>) {

@@ -221,6 +221,49 @@ namespace nmtools::utility
             }
         }
 
+        template <typename from_t, typename to_t>
+        constexpr auto remove_edge(from_t from, to_t to) const noexcept
+        {
+            auto edges = digraph.at(from);
+            auto has_key = contains(edges,to);
+            constexpr auto HAS_KEY = meta::to_value_v<decltype(has_key)>;
+            if constexpr (!HAS_KEY) {
+                return *this;
+            } else {
+                constexpr auto N = meta::len_v<decltype(edges)>;
+                auto result = meta::template_reduce<N>([&](auto init, auto I){
+                    auto init_edges = nmtools::get<0>(init);
+                    auto is_removed = nmtools::get<1>(init);
+                    [[maybe_unused]]
+                    auto res_edges = tuple_append(init_edges,at(edges,I));
+                    if constexpr (!decltype(is_removed)::value) {
+                        auto edge = at(edges,I);
+                        if constexpr (decltype(edge)::value == to_t::value) {
+                            return nmtools_tuple{init_edges,True};
+                        } else  {
+                            return nmtools_tuple{res_edges,False};
+                        }
+                    } else {
+                        return nmtools_tuple{res_edges,True};
+                    }
+                }, nmtools_tuple{nmtools_tuple{},False});
+
+                auto new_edges = nmtools::get<0>(result);
+                auto new_digraph = digraph.update(from,/*edges*/new_edges);
+                using new_digraph_type = decltype(new_digraph);
+                using new_node_data_type = decltype(node_data);
+                using new_ct_digraph_type = ct_digraph<
+                    meta::remove_cvref_t<typename new_digraph_type::keys_type>
+                    , meta::remove_cvref_t<typename new_digraph_type::values_type>
+                    , meta::remove_cvref_t<typename new_node_data_type::values_type>
+                >;
+                return new_ct_digraph_type(
+                    new_digraph
+                    , node_data
+                );
+            }
+        }
+
         template <typename from_t, typename tos_t>
         constexpr auto add_edges(from_t from, tos_t tos) const noexcept
         {
