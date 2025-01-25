@@ -48,11 +48,15 @@ namespace nmtools::functional
         constexpr auto operator*(const node_t<other_functor_t,other_operands_t,other_output_shape_t,other_output_element_t>& other) const
         {
             auto composition = functor * other.functor;
-            // todo handle different arity
-            auto operands = other.operands;
-            using result_t = node_t<decltype(composition),other_operands_t,output_shape_type,output_element_type>;
+            constexpr auto arity = decltype(composition)::arity;
+            constexpr auto N = arity - meta::len_v<decltype(other.operands)>;
+            auto dst_operands = meta::template_reduce<N>([&](auto init, auto I){
+                auto operand = at(operands,I);
+                return utility::tuple_append(init,operand) ;
+            }, other.operands);
+            using result_t = node_t<decltype(composition),decltype(dst_operands),output_shape_type,output_element_type>;
             // TODO: do not discard intermediate shape/type
-            return result_t{composition,operands,output_shape,output_element};
+            return result_t{composition,dst_operands,output_shape,output_element};
         }
 
         template <typename combinator_t>
@@ -435,11 +439,11 @@ namespace nmtools::utils::impl
                 }
             });
             auto str = nmtools_string("");
-            str += "[graphviz_record_layout_open]";
+            // str += "[graphviz_record_layout_open]";
             str += fmap_str;
             str += " ";
             str += attr_str;
-            str += "[graphviz_record_layout_close]";
+            // str += "[graphviz_record_layout_close]";
 
             return str;
         }
@@ -455,7 +459,7 @@ namespace nmtools::utils::impl
         inline auto operator()(const composition_type& composition) const noexcept
         {
             auto str = nmtools_string("");
-            str += "[graphviz_record_layout_open]";
+            // str += "[graphviz_record_layout_open]";
 
             constexpr auto N = sizeof...(functors_t);
             meta::template_for<N>([&](auto index){
@@ -479,7 +483,7 @@ namespace nmtools::utils::impl
                 }
             });
 
-            str += "[graphviz_record_layout_close]";
+            // str += "[graphviz_record_layout_close]";
             return str;
         }
     };
@@ -495,7 +499,27 @@ namespace nmtools::utils::impl
         inline auto operator()(const node_type& node) const noexcept
         {
             auto node_str = nmtools_string("");
+            constexpr auto N = meta::len_v<decltype(node.operands)>;
+            node_str += "[graphviz_record_layout_open] ";
+            if (N >= 1) {
+                node_str += "[graphviz_record_layout_open] ";
+            }
+            meta::template_for<N>([&](auto I){
+                auto id = at(node.operands,I);
+                node_str += "[graphviz_record_fieldid_open] ";
+                node_str += to_string(id);
+                node_str += "[graphviz_record_fieldid_close] ";
+                node_str += to_string(I);
+                if (I < (N-1)) {
+                    node_str += " | ";
+                }
+            });
+            if (N >= 1) {
+                node_str += "[graphviz_record_layout_close] ";
+                node_str += " | ";
+            }
             node_str += to_string(node.functor,utils::Graphviz);
+            node_str += " [graphviz_record_layout_close] ";
             if constexpr (!is_none_v<output_element_t>) {
                 using element_t = meta::type_t<output_element_t>;
                 node_str += " | ";
@@ -581,6 +605,8 @@ namespace nmtools::utils::impl
 
                     replace_string(node_string,nmtools_string("[graphviz_record_layout_open]"),nmtools_string("{"));
                     replace_string(node_string,nmtools_string("[graphviz_record_layout_close]"),nmtools_string("}"));
+                    replace_string(node_string,nmtools_string("[graphviz_record_fieldid_open]"),nmtools_string("<"));
+                    replace_string(node_string,nmtools_string("[graphviz_record_fieldid_close]"),nmtools_string(">"));
 
                     graphviz += node_string;
 

@@ -125,6 +125,7 @@ namespace nmtools::functional
     struct compress_fmap_t
     {
         static constexpr auto arity = 1;
+        static constexpr auto n_outputs = 1;
 
         template <
             template<typename...>typename attr_tuple, typename condition_t, typename axis_t,
