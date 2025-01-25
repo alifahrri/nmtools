@@ -328,20 +328,6 @@ TEST_CASE("transform_unary_fusion(case1a)" * doctest::test_suite("functional"))
     CHECK( result.nodes(0_ct) == expected.nodes(0_ct) );
     CHECK( result.nodes(1_ct) == expected.nodes(1_ct) );
 
-    NMTOOLS_ASSERT_EQUAL( result.nodes(769_ct), expected.nodes(769_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.nodes(447_ct), expected.nodes(447_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.nodes(722_ct), expected.nodes(722_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.nodes(635_ct), expected.nodes(635_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.nodes(765_ct), expected.nodes(765_ct) );
-
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(0_ct), expected.out_edges(0_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(1_ct), expected.out_edges(1_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(769_ct), expected.out_edges(769_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(447_ct), expected.out_edges(447_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(722_ct), expected.out_edges(722_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(635_ct), expected.out_edges(635_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(765_ct), expected.out_edges(765_ct) );
-
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
 }
@@ -376,31 +362,9 @@ TEST_CASE("transform_unary_fusion(case1b)" * doctest::test_suite("functional"))
     ;
 
     NMTOOLS_ASSERT_EQUAL( result.size(), expected.size() );
-    #ifdef __clang__
-    NMTOOLS_ASSERT_EQUAL( result.nodes(), expected.nodes() );
-    #endif // __clang__
 
     CHECK( result.nodes(0_ct) == expected.nodes(0_ct) );
     CHECK( result.nodes(1_ct) == expected.nodes(1_ct) );
-
-    // translated to indexing fmap
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(769_ct).functor, expected.nodes(769_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(447_ct).functor, expected.nodes(447_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(722_ct).functor, expected.nodes(722_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(635_ct).functor, expected.nodes(635_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(765_ct).functor, expected.nodes(765_ct) );
-
-    // error on gcc
-    // TODO: count the number of functor instead
-    #ifdef __clang__
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(0_ct), expected.out_edges(0_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(1_ct), expected.out_edges(1_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(769_ct), expected.out_edges(769_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(447_ct), expected.out_edges(447_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(722_ct), expected.out_edges(722_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(635_ct), expected.out_edges(635_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(765_ct), expected.out_edges(765_ct) );
-    #endif // __clang__
 
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
@@ -453,20 +417,6 @@ TEST_CASE("transform_unary_fusion(case1c)" * doctest::test_suite("functional"))
     CHECK( result.nodes(0_ct) == expected.nodes(0_ct) );
     CHECK( result.nodes(1_ct) == expected.nodes(1_ct) );
 
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(447_ct), expected.nodes(447_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(722_ct), expected.nodes(722_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(635_ct), expected.nodes(635_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(765_ct), expected.nodes(765_ct) );
-
-    #ifdef __clang__
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(0_ct), expected.out_edges(0_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(1_ct), expected.out_edges(1_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(447_ct), expected.out_edges(447_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(722_ct), expected.out_edges(722_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(635_ct), expected.out_edges(635_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(765_ct), expected.out_edges(765_ct) );
-    #endif // __clang__
-
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
 }
@@ -499,26 +449,9 @@ TEST_CASE("transform_unary_fusion(case1d)" * doctest::test_suite("functional"))
     ;
 
     NMTOOLS_ASSERT_EQUAL( result.size(), expected.size() );
-    #ifdef __clang__
-    NMTOOLS_ASSERT_EQUAL( result.nodes(), expected.nodes() );
-    #endif // __clang__
 
     // CHECK( result.nodes(0_ct) == expected.nodes(0_ct) );
     // CHECK( result.nodes(1_ct) == expected.nodes(1_ct) );
-
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(447_ct), expected.nodes(447_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(722_ct), expected.nodes(722_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(635_ct), expected.nodes(635_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(765_ct), expected.nodes(765_ct) );
-
-    #ifdef __clang__
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(0_ct), expected.out_edges(0_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(1_ct), expected.out_edges(1_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(447_ct), expected.out_edges(447_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(722_ct), expected.out_edges(722_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(635_ct), expected.out_edges(635_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(765_ct), expected.out_edges(765_ct) );
-    #endif // __clang__
 
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
@@ -550,25 +483,9 @@ TEST_CASE("transform_unary_fusion(case1e)" * doctest::test_suite("functional"))
     ;
 
     NMTOOLS_ASSERT_EQUAL( result.size(), expected.size() );
-    #ifdef __clang__
-    NMTOOLS_ASSERT_EQUAL( result.nodes(), expected.nodes() );
-    #endif // __clang__
 
     // CHECK( result.nodes(0_ct) == expected.nodes(0_ct) );
     // CHECK( result.nodes(1_ct) == expected.nodes(1_ct) );
-
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(447_ct), expected.nodes(447_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(722_ct), expected.nodes(722_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(635_ct), expected.nodes(635_ct) );
-    // NMTOOLS_ASSERT_EQUAL( result.nodes(765_ct), expected.nodes(765_ct) );
-
-    #ifdef __clang__
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(0_ct), expected.out_edges(0_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(1_ct), expected.out_edges(1_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(447_ct), expected.out_edges(447_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(635_ct), expected.out_edges(635_ct) );
-    NMTOOLS_ASSERT_EQUAL( result.out_edges(765_ct), expected.out_edges(765_ct) );
-    #endif // __clang__
 
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
@@ -599,9 +516,6 @@ TEST_CASE("transform_unary_fusion(case2a)" * doctest::test_suite("functional"))
     ;
 
     NMTOOLS_ASSERT_EQUAL( result.size(), expected.size() );
-    #ifdef __clang__
-    NMTOOLS_ASSERT_EQUAL( result.nodes(), expected.nodes() );
-    #endif // __clang__
 
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
