@@ -29,8 +29,14 @@ namespace nmtools::functional
                 continue;
             }
             // unlike find_unary_fusion, here we allow returning input node
-            lhs = predecessors[node][0];
-            rhs = predecessors[node][1];
+            auto m_lhs = predecessors[node][0];
+            auto m_rhs = predecessors[node][1];
+            // if both lhs and rhs is inputs skip
+            if ((predecessors[m_lhs].size() == 0) && (predecessors[m_rhs].size() == 0)) {
+                continue;
+            }
+            lhs = m_lhs;
+            rhs = m_rhs;
             to = node;
             break;
         }
