@@ -165,7 +165,7 @@ namespace nmtools::index::impl
                         at(res,i) = at(ashape,i);
                     });
                 } else {
-                    for (size_t i=0; i<adim; i++)
+                    for (nm_size_t i=0; i<(nm_size_t)adim; i++)
                         at(res,i) = at(ashape,i);
                 }
             } else {
