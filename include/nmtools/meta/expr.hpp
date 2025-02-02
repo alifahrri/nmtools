@@ -125,6 +125,9 @@ namespace nmtools::meta
         template <typename T>
         using operands_fn = decltype(declval<T>().operands());
 
+        template <typename T>
+        using operands = decltype(declval<T>().operands);
+
         /**
          * @brief helper alias template to check if T has member type 'type'
          * 
