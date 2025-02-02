@@ -48,6 +48,7 @@ namespace nmtools::functional
         constexpr auto operator*(const node_t<other_functor_t,other_operands_t,other_output_shape_t,other_output_element_t>& other) const
         {
             auto composition = functor * other.functor;
+            // constexpr auto n_outs = other_functor_t::n_outputs;
             constexpr auto arity = decltype(composition)::arity;
             constexpr auto N = arity - meta::len_v<decltype(other.operands)>;
             auto dst_operands = meta::template_reduce<N>([&](auto init, auto I){

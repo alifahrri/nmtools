@@ -13,7 +13,20 @@ namespace nmtools::combinator
         template <typename lhs_t, typename rhs_t>
         constexpr auto operator()(const lhs_t& lhs, const rhs_t& rhs) const
         {
+            #if 0
+            if constexpr (meta::is_maybe_v<lhs_t> || meta::is_maybe_v<rhs_t>) {
+                using result_t = decltype(pack_operands(unwrap(rhs),unwrap(lhs)));
+                using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+                return (has_value(lhs) && has_value(rhs)
+                    ? return_t{pack_operands(unwrap(rhs),unwrap(lhs))}
+                    : return_t{meta::Nothing}
+                );
+            } else {
+                return pack_operands(rhs,lhs);
+            }
+            #else
             return pack_operands(rhs,lhs);
+            #endif
         }
     }; // swap_t
 
@@ -29,6 +42,16 @@ namespace nmtools::combinator
         }
     }; // dup_t
 
+    template <typename functor_t, typename operands_t, typename output_shape_t, typename output_element_t, auto N>
+    constexpr auto operator*(const functional::node_t<functor_t,operands_t,output_shape_t,output_element_t>& node, dup_t<N> cb)
+    {
+        auto composition = node.functor * cb;
+        // TODO: better handling arity
+        using result_t = functional::node_t<decltype(composition),operands_t,output_shape_t,output_element_t>;
+        // TODO: do not discard intermediate shape/type
+        return result_t{composition,node.operands,node.output_shape,node.output_element};
+    }
+
     template <auto N>
     struct dig_t
     {
@@ -36,10 +59,19 @@ namespace nmtools::combinator
         constexpr auto operator()(const operands_t&...operands) const
         {
             auto operands_pack = pack_operands(operands...);
-            const auto& operand_i = at(operands_pack,meta::ct_v<N>);
-            auto left  = utility::tuple_slice(operands_pack,None,meta::ct_v<N>);
-            auto right = utility::tuple_slice(operands_pack,meta::ct_v<N+1>);
-            return cat_operands(push_operands(operand_i,left),right);
+            if constexpr (meta::is_maybe_v<decltype(operands_pack)>) {
+                using result_t = decltype((*this)(unwrap(operands_pack)));
+                using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+                return (operands_pack
+                    ? return_t{(*this)(unwrap(operands_pack))}
+                    : return_t{meta::Nothing}
+                );
+            } else {
+                const auto& operand_i = at(operands_pack,meta::ct_v<N>);
+                auto left  = utility::tuple_slice(operands_pack,None,meta::ct_v<N>);
+                auto right = utility::tuple_slice(operands_pack,meta::ct_v<N+1>);
+                return cat_operands(push_operands(operand_i,left),right);
+            }
         }
     }; // dig_t
 
