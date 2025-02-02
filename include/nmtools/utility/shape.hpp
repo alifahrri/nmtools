@@ -139,20 +139,20 @@ namespace nmtools::impl
             // check for dynamic-shape array but fixed-dimension array
             else if constexpr (meta::nested_array_dim_v<array_t> > 0) {
                 constexpr auto N = meta::nested_array_dim_v<array_t>;
-                auto shape_ = nmtools_array<size_t,N>{};
+                auto shape_ = nmtools_array<nm_size_t,N>{};
                 meta::template_for<N>([&](auto index){
                     constexpr auto i = decltype(index)::value;
                     // example for 3dim nested dynamic array
                     // vector<vector<vector<>>>; N==3
                     // i==0:
-                    // s: size_t
+                    // s: nm_size_t
                     // i==1:
-                    // indices = array<size_t,1>{0};
+                    // indices = array<nm_size_t,1>{0};
                     // a: vector<vector>>
-                    // s: size_t
+                    // s: nm_size_t
                     // i==2:
-                    // indices = array<size_t,2>{0,0};
-                    // s: size_t
+                    // indices = array<nm_size_t,2>{0,0};
+                    // s: nm_size_t
                     if constexpr (i==0) {
                         auto s = nmtools::len(array);
                         nmtools::get<i>(shape_) = s;
@@ -272,9 +272,9 @@ namespace nmtools
             if constexpr (!meta::is_fail_v<decltype(fixed_shape)>) {
                 return meta::template_reduce<len(fixed_shape)-1>([&](auto init, auto index){
                     using init_type = decltype(init);
-                    using type = meta::append_type_t<init_type,meta::ct<(size_t)at(fixed_shape,ct_v<index+1>)>>;
+                    using type = meta::append_type_t<init_type,meta::ct<(nm_size_t)at(fixed_shape,ct_v<index+1>)>>;
                     return type{};
-                }, nmtools_tuple<meta::ct<static_cast<size_t>(at(fixed_shape,ct_v<0>))>>{});
+                }, nmtools_tuple<meta::ct<static_cast<nm_size_t>(at(fixed_shape,ct_v<0>))>>{});
             } else {
                 return impl::shape<array_t>(array);
             }
@@ -347,7 +347,7 @@ namespace nmtools
         if constexpr (prefer_constant_index) {
             constexpr auto fixed_dim = meta::fixed_dim_v<array_t>;
             if constexpr (!meta::is_fail_v<decltype(fixed_dim)>) {
-                return meta::ct_v<(size_t)fixed_dim>;
+                return meta::ct_v<(nm_size_t)fixed_dim>;
             } else {
                 return impl::dim<array_t>(array);
             }
@@ -374,17 +374,17 @@ namespace nmtools::impl
             } else {
                 auto shape = nmtools::shape(array);
                 if constexpr (is_none_v<decltype(shape)>) {
-                    return size_t{1};
+                    return nm_size_t{1};
                 } else {
-                    auto product = ::size_t{1};
-                    for (size_t i=0; i<nmtools::len(shape); i++) {
+                    auto product = nm_size_t{1};
+                    for (nm_size_t i=0; i<(nm_size_t)nmtools::len(shape); i++) {
                         product *= nmtools::at(shape,i);
                     }
                     return product;
                 }
             }
         }
-    }; // size_t
+    };
 
     template <typename T>
     struct numel_t<T,meta::enable_if_t<meta::has_address_space_v<T>>>
@@ -424,20 +424,20 @@ namespace nmtools
             [[maybe_unused]]
             constexpr auto c_shape = meta::to_value_v<decltype(shape(array))>;
             if constexpr (!meta::is_fail_v<decltype(fixed_size)>) {
-                using type = meta::ct<(size_t)fixed_size>;
+                using type = meta::ct<(nm_size_t)fixed_size>;
                 return type{};
             } else if constexpr (!meta::is_fail_v<decltype(bounded_size)>) {
-                using type = clipped_size_t<(size_t)bounded_size>;
-                return type{static_cast<size_t>(nmtools::size(array))};
+                using type = clipped_size_t<(nm_size_t)bounded_size>;
+                return type{static_cast<nm_size_t>(nmtools::size(array))};
             } else if constexpr (!meta::is_fail_v<decltype(c_shape)> && !is_none_v<decltype(c_shape)>) {
                 constexpr auto c_sum = [&](){
-                    size_t c_sum = 1;
-                    for (size_t i=0; i<len(c_shape); i++) {
+                    nm_size_t c_sum = 1;
+                    for (nm_size_t i=0; i<(nm_size_t)len(c_shape); i++) {
                         c_sum *= at(c_shape,i);
                     }
                     return c_sum;
                 }();
-                using type = clipped_size_t<size_t(c_sum)>;
+                using type = clipped_size_t<nm_size_t(c_sum)>;
                 return type{nmtools::size(array)};
             } else if constexpr (meta::is_num_v<array_t>) {
                 return meta::ct_v<1ul>;
