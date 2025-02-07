@@ -70,7 +70,26 @@ namespace nmtools::functional
             // TODO: do not discard intermediate shape/type
             return result_t{composition,operands,output_shape,output_element};
         }
-    };
+
+        // useful when dealing with duplicated inputs when fusing binary op
+        template <typename operand_t>
+        constexpr auto remove_operand(operand_t) const
+        {
+            auto new_operands = utility::tuple_filter(operands,[](auto elem){
+                constexpr auto to_remove = decltype(elem)::value == operand_t::value;
+                return meta::ct_v<!to_remove>;
+            });
+            using result_t = node_t<functor_t,decltype(new_operands),output_shape_t,output_element_t>;
+            return result_t{functor,new_operands,output_shape,output_element};
+        }
+
+        template <typename new_operands_t>
+        constexpr auto set_operands(new_operands_t) const
+        {
+            using result_t = node_t<functor_t,new_operands_t,output_shape_t,output_element_t>;
+            return result_t{functor,new_operands_t{},output_shape,output_element};
+        }
+    }; // node_t
 
     template <typename functor_t, typename operands_t>
     node_t(const functor_t&, const operands_t&) -> node_t<functor_t,operands_t>;
@@ -557,6 +576,8 @@ namespace nmtools::utils::impl
                     graphviz += to_string(src_edge,utils::Compact);
                     graphviz += " -> ";
                     graphviz += to_string(dst_edge,utils::Compact);
+                    graphviz += ":";
+                    graphviz += to_string(src_edge,utils::Compact);
                     graphviz += "\n";
                 });
             }

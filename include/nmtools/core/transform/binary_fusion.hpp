@@ -5,6 +5,7 @@
 #include "nmtools/utility/ct_digraph.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/combinator.hpp"
+#include "nmtools/index/contains.hpp"
 
 namespace nmtools::functional
 {
@@ -98,6 +99,32 @@ namespace nmtools::functional
                 }
                 return index;
             };
+            // find the index of predecessor of binary_to that is also predecessors of lhs/rhs
+            // useful to remove edge
+            // currently assume only single edge that is relevant
+            // TODO: generalize to more edges
+            constexpr auto index_dups = [&](auto preds, auto r_preds){
+                auto index_dup = [](auto preds, auto r_pred){
+                    // check if should insert dup
+                    auto index = -1;
+                    for (nm_size_t i=0; i<(nm_size_t)preds.size(); i++) {
+                        if (preds[i] == r_pred) {
+                            index = i;
+                            break;
+                        };
+                    }
+                    return index;
+                };
+                auto index = -1;
+                for (nm_size_t i=0; i<(nm_size_t)r_preds.size(); i++){
+                    if (auto idx = index_dup(preds,r_preds.at(i)); idx > -1) {
+                        index = idx;
+                        break;
+                    }
+                }
+                // return index of predecessors of lhs/rhs (not binary_to ones)
+                return index;
+            };
             auto to_ct  = meta::ct_v<src_id_map[to]>;
             auto node = graph.nodes(to_ct);
 
@@ -127,7 +154,77 @@ namespace nmtools::functional
             if constexpr (predecessors[m_lhs].size() > 0 && predecessors[m_rhs].size()) {
                 auto lhs_node = graph.nodes(lhs_ct);
                 auto rhs_node = graph.nodes(rhs_ct);
-                auto fused = fuse_binary(lhs_node,rhs_node,node);
+
+                [[maybe_unused]]
+                constexpr auto order = utility::topological_sort(adjacency_list);
+
+                constexpr auto m_lhs_idx = vector_index(order,m_lhs);
+                constexpr auto m_rhs_idx = vector_index(order,m_rhs);
+
+                auto fuse_operands = [](auto fst, auto snd){
+                    constexpr auto FST = meta::to_value_v<decltype(fst)>;
+                    constexpr auto N = meta::len_v<decltype(snd)>;
+                    return meta::template_reduce<N>([&](auto init, auto I){
+                        auto operand = at(snd,I);
+                        if constexpr (index::contains(FST,decltype(operand)::value)) {
+                            return init;
+                        } else {
+                            return utility::tuple_append(init,operand);
+                        }
+                    },fst);
+                };
+
+                // assume lhs & rhs is unary
+                // TODO: handle lhs & rhs with arbitrary arity
+                auto fused = [&](){
+                    if constexpr (m_lhs_idx < m_rhs_idx) {
+                        auto fused = [&](){
+                            constexpr auto index_dup = index_dups(predecessors[to],predecessors[m_rhs]);
+                            if constexpr (index_dup >= 0) {
+                                constexpr auto rhs_arity = meta::len_v<decltype(rhs_node.operands)>;
+                                constexpr auto RHS_ARITY = rhs_arity > 0 ? rhs_arity : 1;
+                                return node * combinator::dig_n<RHS_ARITY> * rhs_node * combinator::bury_n<RHS_ARITY> * combinator::dup * lhs_node;
+                            } else {
+                                return node * combinator::dig1 * rhs_node * combinator::bury1 * lhs_node;
+                            }
+                        }();
+                        if constexpr (meta::is_same_v<meta::remove_cvref_t<decltype(fused.operands)>,meta::empty_operands_t>) {
+                            return fused;
+                        } else {
+                            auto op1 = fuse_operands(lhs_node.operands,rhs_node.operands);
+                            auto op2 = utility::tuple_filter(op1,[&](auto value){
+                                constexpr auto VALUE = decltype(value)::value;
+                                constexpr auto pred = (VALUE != src_id_map[m_lhs]) && (VALUE != src_id_map[m_rhs]);
+                                return meta::ct_v<pred>;
+                            });
+                            auto new_operands = op2;
+                            return fused.set_operands(new_operands);
+                        }
+                    } else {
+                        auto fused = [&](){
+                            constexpr auto index_dup = index_dups(predecessors[to],predecessors[m_lhs]);
+                            if constexpr (index_dup >= 0) {
+                                constexpr auto lhs_arity = meta::len_v<decltype(lhs_node.operands)>;
+                                constexpr auto LHS_ARITY = lhs_arity > 0 ? lhs_arity : 1;
+                                return node * combinator::dig_n<LHS_ARITY> * lhs_node * combinator::bury_n<LHS_ARITY> * combinator::dup * rhs_node;
+                            } else {
+                                return node * lhs_node * combinator::bury1 * rhs_node;
+                            }
+                        }();
+                        if constexpr (meta::is_same_v<meta::remove_cvref_t<decltype(fused.operands)>,meta::empty_operands_t>) {
+                            return fused;
+                        } else {
+                            auto op1 = fuse_operands(rhs_node.operands,lhs_node.operands);
+                            auto op2 = utility::tuple_filter(op1,[&](auto value){
+                                constexpr auto VALUE = decltype(value)::value;
+                                constexpr auto pred = (VALUE != src_id_map[m_lhs]) && (VALUE != src_id_map[m_rhs]);
+                                return meta::ct_v<pred>;
+                            });
+                            auto new_operands = op2;
+                            return fused.set_operands(new_operands);
+                        }
+                    }
+                }();
 
                 auto g1 = utility::contracted_edge(graph,nmtools_tuple{lhs_ct,to_ct},to_ct,fused);
                 auto g2 = utility::contracted_edge(g1,nmtools_tuple{rhs_ct,to_ct},to_ct,fused);
@@ -139,17 +236,15 @@ namespace nmtools::functional
                     return g2;
                 }
             } else if constexpr (predecessors[m_lhs].size() > 0) {
-                constexpr auto insert_dup = check_dups(predecessors[to],predecessors[m_lhs]);
-                if constexpr (insert_dup) {
+                constexpr auto index_dup = index_dups(predecessors[to],predecessors[m_lhs]);
+                if constexpr (index_dup >= 0) {
+                    constexpr auto pred = predecessors[m_lhs][index_dup];
+                    auto pred_ct  = meta::ct_v<src_id_map[pred]>;
                     auto lhs_node = graph.nodes(lhs_ct);
                     // TODO: check if node has operands
                     constexpr auto LHS_ARITY = meta::len_v<decltype(lhs_node.operands)>;
-                    auto fused = node * lhs_node * combinator::bury_n<LHS_ARITY> * combinator::dup;
+                    auto fused = node.remove_operand(pred_ct) * lhs_node * combinator::bury_n<LHS_ARITY> * combinator::dup;
                     auto g1 = utility::contracted_edge(graph,nmtools_tuple{lhs_ct,to_ct},to_ct,fused);
-
-                    // TODO: select which pred to be removed
-                    constexpr auto pred = predecessors[m_lhs][0];
-                    auto pred_ct = meta::ct_v<src_id_map[pred]>;
                     auto g2 = g1.remove_edge(pred_ct,to_ct);
 
                     constexpr auto n_repeats = n_repeats_t::value;
@@ -171,16 +266,16 @@ namespace nmtools::functional
                     }
                 }
             } else if constexpr (predecessors[m_rhs].size() > 0) {
-                constexpr auto insert_dup = check_dups(predecessors[to],predecessors[m_rhs]);
-                if constexpr (insert_dup) {
+                constexpr auto index_dup = index_dups(predecessors[to],predecessors[m_rhs]);
+                if constexpr (index_dup >= 0) {
+                    constexpr auto pred = predecessors[m_rhs][index_dup];
+                    auto pred_ct  = meta::ct_v<src_id_map[pred]>;
                     auto rhs_node = graph.nodes(rhs_ct);
+
                     // TODO: check if node has operands
                     constexpr auto RHS_ARITY = meta::len_v<decltype(rhs_node.operands)>;
-                    auto fused = node * combinator::swap * rhs_node * combinator::bury_n<RHS_ARITY> * combinator::dup;
+                    auto fused = (node * combinator::swap * rhs_node * combinator::bury_n<RHS_ARITY> * combinator::dup).set_operands(rhs_node.operands);
                     auto g1 = utility::contracted_edge(graph,nmtools_tuple{rhs_ct,to_ct},to_ct,fused);
-                    // TODO: select which pred to be removed
-                    constexpr auto pred = predecessors[m_rhs][0];
-                    auto pred_ct = meta::ct_v<src_id_map[pred]>;
                     auto g2 = g1.remove_edge(pred_ct,to_ct);
 
                     constexpr auto n_repeats = n_repeats_t::value;
